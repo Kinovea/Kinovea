@@ -1,0 +1,31 @@
+
+On both cases, be sure the DLLs in the /bin folder are in your PATH when you
+run the program.
+
+To use these libraries with MSVC++ you must:
+- Extract this package to some folder. Be sure to not mix MSVC and MinGW
+  folders;
+- Get msinttypes and extract it to the same /include folder as above;
+- Add the /include folder to "Additional Include Directories";
+- Add the /lib folder to "Additional Library Directories";
+- Add these libraries to "Additional Dependencies":
+    swscale-0.lib avdevice-52.lib avformat-52.lib avcodec-51.lib avutil-49.lib
+- If you are compiling C programs, "#define inline _inline" before including
+  FFmpeg headers.
+- If you are compiling C++ programs, "extern "C" {}" around the FFmpeg include
+  files.
+
+To use these libraries with MinGW you must:
+- Extract this package to some folder. If you extract them to MinGW's default
+  folders, you will not have to add any extra folder flag;
+- If you have not extracted the files to MinGW's default folder, add
+  "-I<path to that /include folder>" to CFLAGS;
+- Ignore the .lib files from this package (you may even delete them). Instead
+  copy or move the DLL files to the /lib folder;
+- If you have not extracted the files to MinGW's default folder or copied or
+  moved the DLLs to the /lib folder, add
+  "-L<path to that /bin folder>" to LDFLAGS;
+- Add these libraries to LDFLAGS:
+    -lswscale -lavdevice -lavformat -lavcodec -lavutil
+- If you are compiling C++ programs, "extern "C" {}" around the FFmpeg include
+  files.

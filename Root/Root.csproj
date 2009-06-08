@@ -1,0 +1,314 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Videa.Root</RootNamespace>
+    <AssemblyName>Kinovea</AssemblyName>
+    <StartupObject>Videa.Root.Program</StartupObject>
+    <ApplicationIcon>kinoveabundle.ico</ApplicationIcon>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ManifestCertificateThumbprint>4199BE45A0B72AC0126562F0FD2A5A5B02D397DA</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Root_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>false</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <TargetZone>LocalIntranet</TargetZone>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <PublishUrl>C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Sources - Kinovea\publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>false</MapFileExtensions>
+    <SupportUrl>http://www.kinovea.org</SupportUrl>
+    <ProductName>Kinovea</ProductName>
+    <PublisherName>Joan Charmant</PublisherName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationVersion>0.7.0.0</ApplicationVersion>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>PdbOnly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\CommandSwitchUICulture.cs" />
+    <Compile Include="Commands\CommandToggleFileExplorer.cs" />
+    <Compile Include="UserInterface\FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\FormPreferences.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FormPreferences.Designer.cs">
+      <DependentUpon>FormPreferences.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\HelpVideosDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\HelpVideosDialog.Designer.cs">
+      <DependentUpon>HelpVideosDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Languages\RootLang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RootLang.resx</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="UserInterface\SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\SupervisorUserInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\SupervisorUserInterface.Designer.cs">
+      <DependentUpon>SupervisorUserInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\KinoveaMainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\KinoveaMainWindow.Designer.cs">
+      <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Kernel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Languages\RootLang.es.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.nl.resx" />
+    <EmbeddedResource Include="Languages\RootLang.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RootLang.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\SplashScreen.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\KinoveaMainWindow.en.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\KinoveaMainWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>KinoveaMainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="app.manifest" />
+    <None Include="HelpIndex.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileBrowser\FileBrowser.csproj">
+      <Project>{85924D93-541A-46E6-BF9A-EBE3B73887EC}</Project>
+      <Name>FileBrowser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScreenManager\ScreenManager.csproj">
+      <Project>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</Project>
+      <Name>ScreenManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Services.csproj">
+      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
+      <Name>Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Updater\Updater.csproj">
+      <Project>{0A577C03-D217-4540-AAB4-D167A85E32C0}</Project>
+      <Name>Updater</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Splash.png" />
+    <EmbeddedResource Include="Languages\RootLang.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.it.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.pl.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.pt.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.ro.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormPreferences.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormPreferences.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\HelpVideosDialog.resx">
+      <DependentUpon>HelpVideosDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\%24this.Icon.ico" />
+    <EmbeddedResource Include="UserInterface\SupervisorUserInterface.resx">
+      <DependentUpon>SupervisorUserInterface.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="fr\Kinovea.FileBrowser.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="fr\Kinovea.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="fr\Kinovea.ScreenManager.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="fr\Kinovea.Updater.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="kinoveabundle.ico" />
+    <None Include="LogConf.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\drawings.png" />
+    <None Include="Resources\video.png" />
+    <None Include="Resources\configure.png" />
+    <None Include="Resources\closegrey.png" />
+    <None Include="Resources\videos.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

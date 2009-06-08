@@ -1,0 +1,42 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=kinovea.en.chm
+Contents file=toc.en.hhc
+Default Window=definitions
+Default topic=en\001_Welcome.html
+Display compile progress=Yes
+Enhanced decompilation=Yes
+Full-text search=Yes
+Language=0x409 Anglais (États-Unis)
+Title=Kinovea Help
+
+[WINDOWS]
+definitions="Kinovea","toc.en.hhc",,"en\001_Welcome.html","en\001_Welcome.html",,,,,0x63520,,0x304e,,,,,,,,0
+
+
+[FILES]
+en\404_KeyboardShortcuts.html
+en\001_Welcome.html
+en\002_Faq.html
+en\003_Licences.html
+en\100_TechnicalObservation.html
+en\101_VisualizingSportMotion.html
+en\102_BreakingDownTechnique.html
+en\103_ImprovingImage.html
+en\104_Comparing.html
+en\200_AnalyzeInterpretation.html
+en\300_GeneralTasks.html
+en\301_ChangingInterfaceLanguage.html
+en\302_CheckingForUpdates.html
+en\303_GettingMoreHelp.html
+en\400_InterfaceReference.html
+en\401_InterfaceOrganization.html
+en\402_MenuCommands.html
+en\304_GeneralPreferences.html
+en\201_KeyImagesCreation.html
+en\202_ImagesExport.html
+en\203_VideoSaving.html
+en\204_Grids.html
+
+[INFOTYPES]
+
