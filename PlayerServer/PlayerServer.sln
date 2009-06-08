@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlayerServer", "PlayerServer\PlayerServer.vcproj", "{F80DBE6D-D394-4811-B5E6-7528F849C71A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|Win32.Build.0 = Debug|Win32
+		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Release|Win32.ActiveCfg = Release|Win32
+		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

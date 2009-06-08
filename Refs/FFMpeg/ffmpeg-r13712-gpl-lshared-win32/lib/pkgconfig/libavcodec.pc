@@ -1,0 +1,14 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 51.57.2
+Requires: 
+Requires.private: theora vorbisenc libavutil = 49.7.0
+Conflicts:
+Libs: -L${libdir} -lavcodec 
+Libs.private: -lz -lpthreadGC2 -lws2_32 -lm -lvfw32 -la52 -lfaac -lfaad -lgsm -lmp3lame -lm -ltheora -logg -lvorbisenc -lvorbis -logg -lx264 -lm -lxvidcore -lws2_32 -lvfw32
+Cflags: -I${includedir}

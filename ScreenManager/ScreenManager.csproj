@@ -1,0 +1,745 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Videa.ScreenManager</RootNamespace>
+    <AssemblyName>Kinovea.ScreenManager</AssemblyName>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <BaseAddress>18153472</BaseAddress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <BaseAddress>18153472</BaseAddress>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>18153472</BaseAddress>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <BaseAddress>18153472</BaseAddress>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AForge, Version=1.5.0.0, Culture=neutral, PublicKeyToken=75f8e82c5042a70f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging, Version=1.6.2.0, Culture=neutral, PublicKeyToken=38eb47741dd0492e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video">
+      <HintPath>..\Refs\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow">
+      <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="CPI.Plot3D, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\CPI.Plot3D.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PdfSharp, Version=1.0.898.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\PdfSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayerServer">
+      <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbstractScreen.cs" />
+    <Compile Include="AnalysisExporterPDF.cs" />
+    <Compile Include="CaptureScreen\CaptureScreen.cs" />
+    <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.Designer.cs">
+      <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteDrawing.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteKeyframe.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandAddChrono.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteChrono.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandModifyChrono.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteTrack.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
+    <Compile Include="Commands\ScreenManager\CommandAddCaptureScreen.cs" />
+    <Compile Include="Commands\ScreenManager\CommandAddPlayerScreen.cs" />
+    <Compile Include="Commands\ScreenManager\CommandImageColors.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandLoadMovie.cs" />
+    <Compile Include="Commands\ScreenManager\CommandLoadMovieInScreen.cs" />
+    <Compile Include="Commands\ScreenManager\CommandImageMirror.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandPlayMovie.cs" />
+    <Compile Include="Commands\ScreenManager\CommandRemoveScreen.cs" />
+    <Compile Include="Commands\ScreenManager\CommandShowScreens.cs" />
+    <Compile Include="Commands\ScreenManager\CommandSwapScreens.cs" />
+    <Compile Include="Commands\ScreenManager\CommandToggleCommonControls.cs" />
+    <Compile Include="PlayerScreen\ColorProfile.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
+    <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
+    <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingAngle2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingCross2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingLine2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\AbstractDrawing.cs" />
+    <Compile Include="PlayerScreen\Drawings\AbstractDrawingTool.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingPencil.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingText.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolAngle2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolCross2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolLine2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPencil.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
+    <Compile Include="PlayerScreen\Import\IMetadataParser.cs" />
+    <Compile Include="PlayerScreen\Keyframe.cs" />
+    <Compile Include="PlayerScreen\KeyframeLabel.cs" />
+    <Compile Include="PlayerScreen\LineLengthHelper.cs" />
+    <Compile Include="PlayerScreen\LineStyle.cs">
+    </Compile>
+    <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
+    <Compile Include="PlayerScreen\Metadata.cs" />
+    <Compile Include="PlayerScreen\Mosaic.cs" />
+    <Compile Include="PlayerScreen\Plane3D.cs" />
+    <Compile Include="PlayerScreen\Track.cs" />
+    <Compile Include="PlayerScreen\TrackPosition.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
+      <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.Designer.cs">
+      <DependentUpon>FormConfigureSpeed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureFading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureFading.Designer.cs">
+      <DependentUpon>FormConfigureFading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureGrids.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureGrids.Designer.cs">
+      <DependentUpon>FormConfigureGrids.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.Designer.cs">
+      <DependentUpon>FormConfigureChrono.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing.Designer.cs">
+      <DependentUpon>FormConfigureDrawing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormColorProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormColorProfile.Designer.cs">
+      <DependentUpon>FormColorProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigurePdf.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigurePdf.Designer.cs">
+      <DependentUpon>FormConfigurePdf.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.Designer.cs">
+      <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.Designer.cs">
+      <DependentUpon>FormDiapoExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFileSave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFileSave.Designer.cs">
+      <DependentUpon>FormFileSave.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFramesExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFramesExport.Designer.cs">
+      <DependentUpon>FormFramesExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.Designer.cs">
+      <DependentUpon>FormKeyframeComments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureMosaic.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureMosaic.Designer.cs">
+      <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
+      <DependentUpon>FormRafaleExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormEventList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormEventList.Designer.cs">
+      <DependentUpon>FormEventList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormVideoExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormVideoExport.Designer.cs">
+      <DependentUpon>FormVideoExport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FrequencyViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FrequencyViewer.Designer.cs">
+      <DependentUpon>FrequencyViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\Magnifier.cs" />
+    <Compile Include="PlayerScreen\UserInterface\StaticColorPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\StaticColorPicker.Designer.cs">
+      <DependentUpon>StaticColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.Designer.cs">
+      <DependentUpon>StaticStylePicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\ThumbBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\ThumbBox.Designer.cs">
+      <DependentUpon>ThumbBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\CommonControls.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CommonControls.Designer.cs">
+      <DependentUpon>CommonControls.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IScreen.cs" />
+    <Compile Include="Languages\ScreenManagerLang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScreenManagerLang.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFileLoader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFileLoader.Designer.cs">
+      <DependentUpon>FormFileLoader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFilterTuner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFilterTuner.Designer.cs">
+      <DependentUpon>FormFilterTuner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFramesFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFramesFilter.Designer.cs">
+      <DependentUpon>FormFramesFilter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFramesImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormFramesImport.Designer.cs">
+      <DependentUpon>FormFramesImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FrameTracker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FrameTracker.Designer.cs">
+      <DependentUpon>FrameTracker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\PlayerScreen.cs" />
+    <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.Designer.cs">
+      <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\SelectionTracker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\SelectionTracker.Designer.cs">
+      <DependentUpon>SelectionTracker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\SpeedSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\SpeedSlider.designer.cs">
+      <DependentUpon>SpeedSlider.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ScreenManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenManagerState.cs" />
+    <Compile Include="UserInterface\ScreenManagerUserInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\ScreenManagerUserInterface.Designer.cs">
+      <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\ThumbListLoader.cs" />
+    <Compile Include="UserInterface\ThumbListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\ThumbListView.Designer.cs">
+      <DependentUpon>ThumbListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\ThumbListViewItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\ThumbListViewItem.Designer.cs">
+      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.resx">
+      <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
+      <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMosaic.resx">
+      <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Services\Services.csproj">
+      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
+      <Name>Services</Name>
+    </ProjectReference>
+    <Folder Include="CaptureScreen\UserInterface" />
+    <Folder Include="Commands\CaptureScreen" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\ThumbBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThumbBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\CommonControls.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CommonControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.es.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ScreenManagerLang.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFileLoader.resx">
+      <DependentUpon>FormFileLoader.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFilterTuner.resx">
+      <DependentUpon>FormFilterTuner.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesFilter.resx">
+      <DependentUpon>FormFramesFilter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesImport.resx">
+      <DependentUpon>FormFramesImport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FrameTracker.resx">
+      <DependentUpon>FrameTracker.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\PlayerScreenUserInterface2.resx">
+      <DependentUpon>PlayerScreenUserInterface2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\SelectionTracker.resx">
+      <DependentUpon>SelectionTracker.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\SpeedSlider.resx">
+      <DependentUpon>SpeedSlider.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\ScreenManagerUserInterface.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\closegrey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sync5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\swap4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqnext6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqfirst7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqprev5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqlast5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqsync3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqplay16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\activepencil.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqbackdock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqbumperleft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqbumperright.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqcursor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqhandlerleft2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqhandlerright3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqmiddlebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqpause6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\liqplay17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\playmulti3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\playonce4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\primselec_locked3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\primselec_unlocked3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\resizer4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpeedTrkBack5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpeedTrkCursor7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpeedTrkDecrease2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpeedTrkIncrease2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MenuFileNewIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.it.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.nl.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.pl.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.pt.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.ro.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureSpeed.resx">
+      <DependentUpon>FormConfigureSpeed.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureFading.resx">
+      <DependentUpon>FormConfigureFading.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureGrids.resx">
+      <DependentUpon>FormConfigureGrids.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureChrono.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormConfigureChrono.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing.resx">
+      <DependentUpon>FormConfigureDrawing.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormColorProfile.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormColorProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigurePdf.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormConfigurePdf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormDiapoExport.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormDiapoExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFileSave.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormFileSave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesExport.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormFramesExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormKeyframeComments.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormKeyframeComments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormRafaleExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormEventList.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormEventList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormVideoExport.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FormVideoExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FrequencyViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FrequencyViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\StaticColorPicker.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StaticColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\StaticStylePicker.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>StaticStylePicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\ThumbListView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThumbListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\ThumbListViewItem.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close15x15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\comment20x20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TextToolIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dock16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\undock16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\comments2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\angle5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\move.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\screencap5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\snaprafale.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\outward4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\filesave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder_new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SwatchIcon3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\import6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diaporama.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pdfexport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handlersetright.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handlersetleft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\chrono.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Spectrum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Spectrum2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\magnifier2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\magnifierActive2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\chrono5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layout1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layoutB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layoutC2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\layoutD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\missing3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plane4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cross5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handopen24b.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handclose24c.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\resettimescale.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

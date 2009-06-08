@@ -1,0 +1,842 @@
+/*
+Copyright © Joan Charmant 2008.
+joan.charmant@gmail.com 
+ 
+This file is part of Kinovea.
+
+Kinovea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 
+as published by the Free Software Foundation.
+
+Kinovea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kinovea. If not, see http://www.gnu.org/licenses/.
+
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using CPI.Plot3D;
+using System.Drawing;
+using System.Windows.Forms;
+using Videa.Services;
+using System.Drawing.Drawing2D;
+
+namespace Videa.ScreenManager
+{
+    public class Plane3D
+    {
+        #region Properties
+        public bool Visible
+        {
+            get { return m_bVisible; }
+            set { m_bVisible = value; }
+        }
+        public int Divisions
+        {
+            get { return m_iDivisions; }
+            set { m_iDivisions = value; }
+        }
+        public Color GridColor
+        {
+            get { return m_PenEdges.Color; }
+            set { m_PenEdges = new Pen(value, 1);}
+        }
+        public bool Support3D
+        {
+            get { return m_bSupport3D; }
+            set { m_bSupport3D = value;}
+        }
+        public bool Selected
+        {
+            get { return m_bSelected; }
+            set { m_bSelected = value; }
+        }
+
+        #endregion
+
+        #region Members
+        private double m_fStretchFactor = 1.0;
+        private Point m_DirectZoomTopLeft;
+        private bool m_bVisible = false;
+        private Point3D m_GridLocation;
+        private Point3D MemoGridLocation;
+        private int m_iAngleAxisX;
+        private int m_iAngleAxisY;
+
+        private float m_fSideLength;
+        private int m_iDivisions;
+        private Point3D m_CameraLocation;
+        private bool m_bSupport3D;
+        private Pen m_PenEdges;
+
+        private Point[] m_SourceCorners;            // unscaled quadrilateral.
+        private Point[] m_RescaledSourceCorners;    // rescaled quadrilateral.
+        private Point[] m_HomoPlane;                // quadrilateral defining the reference plane. (in rescaled coordinates)
+
+        private bool m_bInitialized = false;
+        private bool m_bValidPlane = true;
+        private float m_fShift = 0.0F;                     // used only for expand/retract, to stay relative to the original mapping.
+
+        private static readonly int m_iMinimumSurface = 5000;
+        private static readonly int m_iMinimumDivisions = 2;
+        private static readonly int m_iDefaultDivisions = 8;
+        private static readonly int m_iMaximumDivisions = 20;
+
+        private Size m_ImageSize;
+        private bool m_bSelected = false;
+        #endregion
+
+        public Plane3D(float _sidelength, int _divisions, bool _support3D)
+        {
+            m_fStretchFactor = 1.0f;
+            m_DirectZoomTopLeft = new Point(0, 0);
+
+            m_fSideLength = _sidelength;
+            m_iDivisions = _divisions;
+            if (m_iDivisions == 0) m_iDivisions = m_iDefaultDivisions;
+            
+            m_bSupport3D = _support3D;
+            m_PenEdges = Pens.White;
+
+            m_CameraLocation = new Point3D(0, 0, -500);
+            m_GridLocation = new Point3D(0, 0, 0);
+            m_fShift = 0;
+
+            MemoGridLocation = new Point3D(m_GridLocation.X, m_GridLocation.Y, m_GridLocation.Z);
+
+            m_HomoPlane = new Point[4];
+            m_HomoPlane[0] = new Point(0, 0);
+            m_HomoPlane[1] = new Point(1, 0);
+            m_HomoPlane[2] = new Point(1, 1);
+            m_HomoPlane[3] = new Point(0, 1);
+
+            m_SourceCorners = new Point[4];
+            m_SourceCorners[0] = new Point(0, 0);
+            m_SourceCorners[1] = new Point(1, 0);
+            m_SourceCorners[2] = new Point(1, 1);
+            m_SourceCorners[3] = new Point(0, 1);
+
+            m_RescaledSourceCorners = new Point[4];
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            RedefineHomography();
+        }
+
+        public void Reset()
+        {
+            // Used on metadata over load.
+
+            m_bVisible = false;
+
+            m_iDivisions = m_iDefaultDivisions;
+            m_fShift = 0.0F;
+            m_bValidPlane = true;
+            m_bInitialized = false;
+
+            m_SourceCorners[0] = new Point(0, 0);
+            m_SourceCorners[1] = new Point(1, 0);
+            m_SourceCorners[2] = new Point(1, 1);
+            m_SourceCorners[3] = new Point(0, 1);
+
+            RescaleCoordinates(1.0, new Point(0, 0));
+            RedefineHomography();
+        }
+
+        public void Draw(Graphics _canvas, double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+            if (m_fStretchFactor != _fStretchFactor || _DirectZoomTopLeft.X != m_DirectZoomTopLeft.X || _DirectZoomTopLeft.Y != m_DirectZoomTopLeft.Y)
+            {
+                m_fStretchFactor = _fStretchFactor;
+                m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
+                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                RedefineHomography();
+            }
+            
+            PreferencesManager pm = PreferencesManager.Instance();
+            if (m_bSupport3D)
+            {
+                m_PenEdges = new Pen(pm.Plane3DColor, 1);
+                m_PenEdges.DashStyle = DashStyle.Dash;
+            }
+            else
+            {
+                m_PenEdges = new Pen(pm.GridColor, 1);
+                m_PenEdges.DashStyle = DashStyle.Dash;
+            }
+            
+            #region 3D code (unused)
+            //-----------------------------------------------------------
+            // Draw the 3d grid.
+            // - Plotter3D is used like logo programming.
+            // - At startup, the turtle is looking right and seen from above.
+            // - If no other angle is specified, we draw the grid on the 
+            // horizontal plane (we start with a turn down 90°).
+            //-----------------------------------------------------------
+            /*bool bIsNumberOfDivisionsEven = (m_iDivisions % 2 == 0);
+            float fRowLength = m_fSideLength / m_iDivisions;
+            using (Plotter3D plotGrid = new Plotter3D(_canvas, m_CameraLocation))
+            {
+                plotGrid.m_PenColor = m_PenEdges.Color;
+                plotGrid.PenWidth = m_PenEdges.Width;
+
+                plotGrid.Location = m_GridLocation;
+                
+                RotateAndPlace(plotGrid);
+                SetCornersPositions(plotGrid);
+
+                plotGrid.TurnDown(90);
+
+                // B.1. away/home lines
+                for (int i = 0; i < m_iDivisions; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        // away
+                        plotGrid.Forward(m_fSideLength);
+                        plotGrid.TurnUp(90);
+                        plotGrid.Forward(fRowLength);
+                        plotGrid.TurnUp(90);
+                    }
+                    else
+                    {
+                        // home
+                        plotGrid.Forward(m_fSideLength);
+                        plotGrid.TurnDown(90);
+                        plotGrid.Forward(fRowLength);
+                        plotGrid.TurnDown(90);
+                    }
+                }
+
+
+                float rotation = 90;
+                if (!bIsNumberOfDivisionsEven)
+                {
+                    rotation = 270;
+                }
+
+                plotGrid.TurnDown(rotation);
+
+                // B.2. Left/Right lines
+                for (int i = 0; i < m_iDivisions; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        // lefty
+                        plotGrid.Forward(m_fSideLength);
+                        plotGrid.TurnUp(rotation);
+                        plotGrid.Forward(fRowLength);
+                        plotGrid.TurnUp(rotation);
+                    }
+                    else
+                    {
+                        // rihgty
+                        plotGrid.Forward(m_fSideLength);
+                        plotGrid.TurnDown(rotation);
+                        plotGrid.Forward(fRowLength);
+                        plotGrid.TurnDown(rotation);
+                    }
+                }
+
+                // finish
+                if (bIsNumberOfDivisionsEven)
+                {
+                    plotGrid.Forward(m_fSideLength);
+                    plotGrid.TurnUp(180);
+                    plotGrid.PenUp();
+                    plotGrid.Forward(m_fSideLength);
+                    plotGrid.TurnUp(90);
+                    plotGrid.PenDown();
+                    plotGrid.Forward(m_fSideLength);
+                }
+                else
+                {
+                    plotGrid.Forward(m_fSideLength);
+                    plotGrid.TurnUp(270);
+                    plotGrid.Forward(m_fSideLength);
+                }
+
+
+                m_Bounding = plotGrid.BoundingBox;
+            }*/
+            #endregion
+
+            // Draw handlers as small filled circle.
+            SolidBrush br = new SolidBrush(m_PenEdges.Color);
+            for (int i = 0; i < m_RescaledSourceCorners.Length; i++)
+            {
+                _canvas.FillEllipse(br, GetRescaledHandleRectangle(i+1));
+            }
+            
+            if (m_bSupport3D)
+            {
+                if (m_bValidPlane)
+                {
+                    // Compute the homography that turns a [0,1] square into our quadrilateral.
+                    // We use the RescaledCoordinates here, as they may have been expanded/contracted. 
+                    // m_HomoPlane will keep the original associated coords.
+                    // We need to keep the whole original homography because expand/contract is subject to rounding errors
+                    float[] homography = GetHomographyMatrix(m_RescaledSourceCorners);
+                    
+                    // Rows
+                    for (int iRow = 0; iRow <= m_iDivisions; iRow++)
+                    {
+                        float v = (float)iRow / m_iDivisions;
+                        PointF h1 = ProjectiveMapping(new PointF(0, v), homography);
+                        PointF h2 = ProjectiveMapping(new PointF(1, v), homography);
+                        _canvas.DrawLine(m_PenEdges, h1, h2);
+                    }
+
+                    // Columns
+                    for (int iCol = 0; iCol <= m_iDivisions; iCol++)
+                    {
+                        float h = (float)iCol / m_iDivisions;
+                        PointF h1 = ProjectiveMapping(new PointF(h, 0), homography);
+                        PointF h2 = ProjectiveMapping(new PointF(h, 1), homography);
+                        _canvas.DrawLine(m_PenEdges, h1, h2);
+                    }
+                }
+                else
+                {
+                    // Invalid quadrilateral (not convex) Only draw the borders
+                    _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[0], m_RescaledSourceCorners[1]);
+                    _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[1], m_RescaledSourceCorners[2]);
+                    _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[2], m_RescaledSourceCorners[3]);
+                    _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[3], m_RescaledSourceCorners[0]);
+                }
+            }
+            else
+            {
+                // For the 2d plane we don't use the homography at all.
+                float fRowLength =  (float)(m_RescaledSourceCorners[0].Y - m_RescaledSourceCorners[3].Y) / m_iDivisions;
+                float fColLength = (float)(m_RescaledSourceCorners[0].X - m_RescaledSourceCorners[1].X) / m_iDivisions;
+
+                // Rows
+                for (int iRow = 0; iRow <= m_iDivisions; iRow++)
+                {
+                    _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[0].X, m_RescaledSourceCorners[3].Y + (iRow * fRowLength), m_RescaledSourceCorners[1].X, m_RescaledSourceCorners[3].Y + (iRow * fRowLength));
+                }
+
+                // Columns
+                for (int iCol = 0; iCol <= m_iDivisions; iCol++)
+                {
+                    _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[1].X + (iCol * fColLength), m_RescaledSourceCorners[0].Y, m_RescaledSourceCorners[1].X + (iCol * fColLength), m_RescaledSourceCorners[3].Y);    
+                }
+            }
+        }
+        public int HitTest(Point _point)
+        {
+            //-----------------------------------------------------
+            // This function is used by the PointerTool 
+            // to know if we hit this particular drawing and where.
+            //
+            // Hit Result:
+            // -1: miss, 0: on object, 1+: on handle.
+            //
+            // _point is mouse coordinates already descaled 
+            // (in original image coords).
+            //-----------------------------------------------------
+            
+            int iHitResult = -1;
+
+            // On a corner ?
+            for (int i = 0; i < m_SourceCorners.Length; i++)
+            {
+                if (GetHandleRectangle(i+1).Contains(_point))
+                {
+                    iHitResult = i+1;
+                }
+            }
+
+            // On main grid ?
+            if (iHitResult == -1 && IsPointInObject(_point))
+            {
+                iHitResult = 0;
+            }
+            
+            return iHitResult;
+        }
+        private Rectangle GetHandleRectangle(int _iHandleId)
+        {
+            //----------------------------------------------------------------------------
+            // This function is only used for Hit Testing.
+            // The Rectangle here is bigger than the bounding box of the handlers circles.
+            //----------------------------------------------------------------------------
+            int widen = 6;
+            int x = (int)((float)m_SourceCorners[_iHandleId - 1].X - (float)widen);
+            int y = (int)((float)m_SourceCorners[_iHandleId - 1].Y - (float)widen);
+
+            return new Rectangle(x, y, widen * 2, widen*2);
+        }
+        private Rectangle GetRescaledHandleRectangle(int _iHandleId)
+        {
+            // Only used for drawing handlers.
+            int x = (int)((float)m_RescaledSourceCorners[_iHandleId - 1].X - (float)4);
+            int y = (int)((float)m_RescaledSourceCorners[_iHandleId - 1].Y - (float)4);
+ 
+            return new Rectangle(x, y, 8, 8);
+        }
+        private bool IsPointInObject(Point _point)
+        {
+            bool bIsPointInObject = false;
+            if (m_bValidPlane)
+            {
+                GraphicsPath areaPath = new GraphicsPath();
+                areaPath.AddLine(m_SourceCorners[0], m_SourceCorners[1]);
+                areaPath.AddLine(m_SourceCorners[1], m_SourceCorners[2]);
+                areaPath.AddLine(m_SourceCorners[2], m_SourceCorners[3]);
+                areaPath.CloseAllFigures();
+
+                // Create region from the path
+                Region areaRegion = new Region(areaPath);
+
+                // point is descaled.
+                bIsPointInObject = areaRegion.IsVisible(_point);
+            }
+            
+            return bIsPointInObject;
+        }
+        public void MouseMove(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        {
+            if ((_ModifierKeys & Keys.Alt) == Keys.Alt)
+            {
+                // => Remesh.
+                m_iDivisions = m_iDivisions + ((_deltaX - _deltaY)/4);
+                if (m_iDivisions < m_iMinimumDivisions)
+                {
+                    m_iDivisions = m_iMinimumDivisions;
+                }
+                else if (m_iDivisions > m_iMaximumDivisions)
+                {
+                    m_iDivisions = m_iMaximumDivisions;
+                }
+            }
+            else if ((_ModifierKeys & Keys.Control) == Keys.Control)
+            {
+                // Grow the grid (on the same plane).
+                int Offset = (_deltaX - _deltaY) / 2;
+                
+                if (m_bSupport3D)
+                {
+                    if (m_bValidPlane)
+                    {
+                        // find new corners by growing the current homography.
+                        float[] homography = GetHomographyMatrix(m_HomoPlane);
+                        float fShift = m_fShift + ((float)(_deltaX - _deltaY) / 200);
+
+                        PointF[] shiftedCorners = new PointF[4];
+                        shiftedCorners[0] = ProjectiveMapping(new PointF(-fShift, -fShift), homography);
+                        shiftedCorners[1] = ProjectiveMapping(new PointF(1 + fShift, -fShift), homography);
+                        shiftedCorners[2] = ProjectiveMapping(new PointF(1 + fShift, 1 + fShift), homography);
+                        shiftedCorners[3] = ProjectiveMapping(new PointF(-fShift, 1 + fShift), homography);
+
+                        // Check for minimum surface.
+                        int iOldArea = GetQuadrilateralArea(m_RescaledSourceCorners);
+                        int iNewArea = GetQuadrilateralArea(shiftedCorners);
+
+                        if ((iOldArea < m_iMinimumSurface && iNewArea > iOldArea) || (iNewArea > m_iMinimumSurface))
+                        {
+                            // Ok, use those new corners, but do not redefine the homography. 
+                            // We'll keep it relative to the original until
+                            // the user moves a corner or the whole grid at once.
+                            m_fShift = fShift;
+                            
+                            m_RescaledSourceCorners[0] = new Point((int)shiftedCorners[0].X, (int)shiftedCorners[0].Y);
+                            m_RescaledSourceCorners[1] = new Point((int)shiftedCorners[1].X, (int)shiftedCorners[1].Y);
+                            m_RescaledSourceCorners[2] = new Point((int)shiftedCorners[2].X, (int)shiftedCorners[2].Y);
+                            m_RescaledSourceCorners[3] = new Point((int)shiftedCorners[3].X, (int)shiftedCorners[3].Y);
+
+                            UnscaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                        }
+                    }
+                }
+                else
+                {
+                    float fGrowFactor = 1 + ((float)Offset / 100); // for offset [-10;+10] => Growth [0.9;1.1]
+
+                    int width = m_RescaledSourceCorners[1].X - m_RescaledSourceCorners[0].X;
+                    int height = m_RescaledSourceCorners[3].Y - m_RescaledSourceCorners[0].Y;
+
+                    float fNewWidth; 
+                    float fNewHeight;
+
+                    fNewWidth = (float)width * fGrowFactor;
+                    fNewHeight = (float)height * fGrowFactor;
+
+                    int shiftx = ((int)fNewWidth - width) / 2;
+                    int shifty = ((int)fNewHeight - height) / 2;                   
+                    Size shift = new Size(shiftx, shifty);
+
+                    m_RescaledSourceCorners[0] = new Point(m_RescaledSourceCorners[0].X - shift.Width, m_RescaledSourceCorners[0].Y - shift.Height);
+                    m_RescaledSourceCorners[1] = new Point(m_RescaledSourceCorners[1].X + shift.Width, m_RescaledSourceCorners[1].Y - shift.Height);
+                    m_RescaledSourceCorners[2] = new Point(m_RescaledSourceCorners[2].X + shift.Width, m_RescaledSourceCorners[2].Y + shift.Height);
+                    m_RescaledSourceCorners[3] = new Point(m_RescaledSourceCorners[3].X - shift.Width, m_RescaledSourceCorners[3].Y + shift.Height);
+
+                    UnscaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                }
+
+                
+            }
+            else
+            {
+                // => Simple Move
+                for (int i = 0; i < m_SourceCorners.Length; i++)
+                {
+                    m_SourceCorners[i] = new Point(m_SourceCorners[i].X + _deltaX, m_SourceCorners[i].Y + _deltaY);
+                }
+            
+                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                RedefineHomography();
+                m_fShift = 0.0F;
+            }
+        }
+        public void MoveHandleTo(Point point, int handleNumber)
+        {
+            // _point is mouse coordinates already descaled.
+            if (m_bSupport3D)
+            {
+                // If 3D, only move the selected corner.
+
+                // Redefine the homography.
+                m_SourceCorners[handleNumber - 1] = point;
+                m_RescaledSourceCorners[handleNumber - 1] = RescalePoint(point, m_fStretchFactor, m_DirectZoomTopLeft);
+
+                RedefineHomography();
+                m_fShift = 0.0F;
+
+                // Check if it is convex. angles must all be > 180 or < 180.
+                double[] iAngles = new double[4];
+                iAngles[0] = GetAngle(m_SourceCorners[0], m_SourceCorners[1], m_SourceCorners[2]);
+                iAngles[1] = GetAngle(m_SourceCorners[1], m_SourceCorners[2], m_SourceCorners[3]);
+                iAngles[2] = GetAngle(m_SourceCorners[2], m_SourceCorners[3], m_SourceCorners[0]);
+                iAngles[3] = GetAngle(m_SourceCorners[3], m_SourceCorners[0], m_SourceCorners[1]);
+
+                if ((iAngles[0] > 0 && iAngles[1] > 0 && iAngles[2] > 0 && iAngles[3] > 0) ||
+                    (iAngles[0] < 0 && iAngles[1] < 0 && iAngles[2] < 0 && iAngles[3] < 0))
+                {
+                    m_bValidPlane = true;
+                }
+                else
+                {
+                    m_bValidPlane = false;
+                }
+            }
+            else
+            {
+                // If 2D, move while keeping it rectangle.
+                // TODO shift key keeps ratio.
+                switch (handleNumber)
+                {
+                    case 1:
+                        m_SourceCorners[0] = point;
+                        m_SourceCorners[1] = new Point(m_SourceCorners[1].X, point.Y);
+                        m_SourceCorners[3] = new Point(point.X, m_SourceCorners[3].Y);
+                        break;
+                    case 2:
+                        m_SourceCorners[1] = point;
+                        m_SourceCorners[0] = new Point(m_SourceCorners[0].X, point.Y);
+                        m_SourceCorners[2] = new Point(point.X, m_SourceCorners[2].Y);
+                        break;
+                    case 3:
+                        m_SourceCorners[2] = point;
+                        m_SourceCorners[3] = new Point(m_SourceCorners[3].X, point.Y);
+                        m_SourceCorners[1] = new Point(point.X, m_SourceCorners[1].Y);
+                        break;
+                    case 4:
+                        m_SourceCorners[3] = point;
+                        m_SourceCorners[2] = new Point(m_SourceCorners[2].X, point.Y);
+                        m_SourceCorners[0] = new Point(point.X, m_SourceCorners[0].Y);
+                        break;
+                    default:
+                        break;
+                }
+                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                RedefineHomography();
+            }
+        }
+        public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+            // Initialize corners positions
+            
+            m_fStretchFactor = _fStretchFactor;
+            m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            RedefineHomography();
+
+            if (!m_bInitialized)
+            {
+                m_bInitialized = true;
+
+                m_ImageSize = new Size(_ImageSize.Width, _ImageSize.Height);
+                
+                int horzTenth = (int)(((double)_ImageSize.Width) / 10);
+                int vertTenth = (int)(((double)_ImageSize.Height) / 10);
+
+                if (m_bSupport3D)
+                {
+                    // initialize with a faked perspective.
+                    m_SourceCorners[0] = new Point(3 * horzTenth, 4 * vertTenth);
+                    m_SourceCorners[1] = new Point(7 * horzTenth, 4 * vertTenth);
+                    m_SourceCorners[2] = new Point(9 * horzTenth, 8 * vertTenth);
+                    m_SourceCorners[3] = new Point(1 * horzTenth, 8 * vertTenth);
+                }
+                else
+                {
+                    // initialize with a rectangle.
+                    m_SourceCorners[0] = new Point(2 * horzTenth, 2 * vertTenth);
+                    m_SourceCorners[1] = new Point(8 * horzTenth, 2 * vertTenth);
+                    m_SourceCorners[2] = new Point(8 * horzTenth, 8 * vertTenth);
+                    m_SourceCorners[3] = new Point(2 * horzTenth, 8 * vertTenth);
+                }
+                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                RedefineHomography();
+                m_fShift = 0.0F;
+            }
+            #region old 3D stuff
+            //int left = (int)((double)_ImageSize.Width * m_fStretchFactor) / 2;
+            //int top = (int)((double)_ImageSize.Height * m_fStretchFactor) / 2;
+            //m_CameraLocation = new Point3D(left, top, -500);
+            //m_GridLocation = new Point3D(left, top, 0);
+            #endregion
+        }
+
+        #region Scaling
+        private Point RescalePoint(Point _point, double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+            return new Point((int)((double)(_point.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(_point.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
+        }
+        private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+            for (int i = 0; i < m_RescaledSourceCorners.Length; i++)
+            {
+                m_RescaledSourceCorners[i] = new Point((int)((double)(m_SourceCorners[i].X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_SourceCorners[i].Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
+            }
+        }
+        private void UnscaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+            for (int i = 0; i < m_SourceCorners.Length; i++)
+            {
+                m_SourceCorners[i] = new Point((int)((double)(m_RescaledSourceCorners[i].X + _DirectZoomTopLeft.X) / _fStretchFactor), (int)((double)(m_RescaledSourceCorners[i].Y + _DirectZoomTopLeft.Y) / _fStretchFactor));
+            }
+        }
+        private void RedefineHomography()
+        {
+            for (int i = 0; i < m_RescaledSourceCorners.Length; i++)
+            {
+                m_HomoPlane[i] = m_RescaledSourceCorners[i];
+            }
+        }
+        #endregion
+
+        #region Geometry Routines
+        private double GetAngle(Point A, Point B, Point C)
+        {
+            // Compute the angle ABC.
+            // using scalar and vector product between vectors BA and BC.
+
+            double bax = ((double)A.X - (double)B.X);
+            double bcx = ((double)C.X - (double)B.X);
+            double scalX =  bax * bcx;
+
+            double bay = ((double)A.Y - (double)B.Y);
+            double bcy = ((double)C.Y - (double)B.Y);
+            double scalY = bay * bcy;
+            
+            double scal = scalX + scalY;
+            
+            double normab = Math.Sqrt(bax * bax + bay * bay);
+            double normbc = Math.Sqrt(bcx * bcx + bcy * bcy);
+            double norm = normab * normbc;
+
+            double angle = Math.Acos((double)(scal / norm));
+
+            if ((bax * bcy - bay * bcx) < 0)
+            {
+                angle = -angle;
+            }
+
+            double deg = (angle * 180) / Math.PI;
+            return deg;
+        }
+        private int GetQuadrilateralArea(Point[] _corners)
+        {
+            PointF[] floatCorners = new PointF[_corners.Length];
+            
+            for(int i=0;i<_corners.Length;i++)
+            {
+                floatCorners[i] = new PointF((float)_corners[i].X, (float)_corners[i].Y);
+            }
+            return GetQuadrilateralArea(floatCorners);
+        }
+        private int GetQuadrilateralArea(PointF[] _corners)
+        {
+            int area1 = GetTriangleArea(_corners[0], _corners[1], _corners[2]);
+            int area2 = GetTriangleArea(_corners[0], _corners[2], _corners[3]);
+            
+            return area1 + area2;
+        }
+        private int GetTriangleArea(PointF A, PointF B, PointF C)
+        {
+            double bax = ((double)A.X - (double)B.X);
+            double bcx = ((double)C.X - (double)B.X);
+            double bay = ((double)A.Y - (double)B.Y);
+            double bcy = ((double)C.Y - (double)B.Y);
+            double acx = ((double)C.X - (double)A.X);
+            double acy = ((double)C.Y - (double)A.Y);
+
+            double normab = Math.Sqrt(bax * bax + bay * bay);
+            double normbc = Math.Sqrt(bcx * bcx + bcy * bcy);
+            double normac = Math.Sqrt(acx * acx + acy * acy);
+
+            double semiperimeter = (normab + normbc + normac) / 2;
+
+            double area = Math.Sqrt(semiperimeter * (semiperimeter - normab) * (semiperimeter - normbc) * (semiperimeter - normac));
+            return (int)area;
+        }
+        private float[] GetHomographyMatrix(Point[] _SourceCoords)
+        {
+            float[] homography = new float[18];
+
+            float sx = (_SourceCoords[0].X - _SourceCoords[1].X) + (_SourceCoords[2].X - _SourceCoords[3].X);
+            float sy = (_SourceCoords[0].Y - _SourceCoords[1].Y) + (_SourceCoords[2].Y - _SourceCoords[3].Y);
+            float dx1 = _SourceCoords[1].X - _SourceCoords[2].X;
+            float dx2 = _SourceCoords[3].X - _SourceCoords[2].X;
+            float dy1 = _SourceCoords[1].Y - _SourceCoords[2].Y;
+            float dy2 = _SourceCoords[3].Y - _SourceCoords[2].Y;
+
+            float z = (dx1 * dy2) - (dy1 * dx2);
+            float g = ((sx * dy2) - (sy * dx2)) / z;
+            float h = ((sy * dx1) - (sx * dy1)) / z;
+
+            // Transformation matrix. From the square to the quadrilateral.
+            float a = homography[0] = _SourceCoords[1].X - _SourceCoords[0].X + g * _SourceCoords[1].X;
+            float b = homography[1] = _SourceCoords[3].X - _SourceCoords[0].X + h * _SourceCoords[3].X;
+            float c = homography[2] = _SourceCoords[0].X;
+            float d = homography[3] = _SourceCoords[1].Y - _SourceCoords[0].Y + g * _SourceCoords[1].Y;
+            float e = homography[4] = _SourceCoords[3].Y - _SourceCoords[0].Y + h * _SourceCoords[3].Y;
+            float f = homography[5] = _SourceCoords[0].Y;
+            homography[6] = g;
+            homography[7] = h;
+            homography[8] = 1;
+
+            // Inverse Transformation Matrix. From the quadrilateral to our square.
+            homography[9] = e - f * h;
+            homography[10] = c * h - b;
+            homography[11] = b * f - c * e;
+            homography[12] = f * g - d;
+            homography[13] = a - c * g;
+            homography[14] = c * d - a * f;
+            homography[15] = d * h - e * g;
+            homography[16] = b * g - a * h;
+            homography[17] = a * e - b * d;
+
+            return homography;
+        }
+        private PointF ProjectiveMapping(PointF _SourcePoint, float[] _Homography) 
+        {
+            double x = (_Homography[0] * _SourcePoint.X + _Homography[1] * _SourcePoint.Y + _Homography[2]) / (_Homography[6] * _SourcePoint.X + _Homography[7] * _SourcePoint.Y + 1);
+            double y = (_Homography[3] * _SourcePoint.X + _Homography[4] * _SourcePoint.Y + _Homography[5]) / (_Homography[6] * _SourcePoint.X + _Homography[7] * _SourcePoint.Y + 1);
+
+            return new PointF((float)x, (float)y);
+        }
+        private PointF InverseProjectiveMapping(PointF _SourcePoint, float[] _Homography)
+        {
+            double x = (_Homography[9] * _SourcePoint.X + _Homography[10] * _SourcePoint.Y + _Homography[11]) / (_Homography[15] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + 1);
+            double y = (_Homography[12] * _SourcePoint.X + _Homography[13] * _SourcePoint.Y + _Homography[14]) / (_Homography[15] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + 1);
+            double z = (_Homography[18] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + _Homography[17]) / (_Homography[15] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + 1);
+            
+            return new PointF((float)x / (float)z, (float)y / (float)z);
+        }
+        #endregion
+
+        #region Unused 3D stuff
+        private void SetCornersPositions(Plotter3D p)
+        {
+            // Set the screen position (2D) for the 4 corners.
+            /*
+            p.PenUp();
+            
+            p.Forward(m_fSideLength);
+            p.TurnDown(90);
+            m_CornerNearRight = p.Location.GetScreenPosition(m_CameraLocation);
+
+            p.Forward(m_fSideLength);
+            p.TurnDown(90);
+            m_CornerFarRight = p.Location.GetScreenPosition(m_CameraLocation);
+
+
+            p.Forward(m_fSideLength);
+            p.TurnDown(90);
+            m_CornerFarLeft = p.Location.GetScreenPosition(m_CameraLocation);
+
+            p.Forward(m_fSideLength);
+            p.TurnDown(90);
+            m_CornerNearLeft = p.Location.GetScreenPosition(m_CameraLocation);
+
+            p.PenDown();*/
+        }
+        private void RotateAndPlace(Plotter3D p)
+        {
+            //----------------------------------------------------------------
+            // Rotate the play head according to current angles values.
+            // Then move to near/left corner.
+            // At that point, the turtle is looking right and seen from above.
+            //----------------------------------------------------------------
+            p.PenUp();
+
+            // Rotate around the X axis:
+            p.TurnDown(90);
+            p.TurnLeft(m_iAngleAxisX);
+
+            // Rotate around the Y axis:
+            p.TurnUp(90);
+            p.TurnDown(m_iAngleAxisY);
+
+            // Move to the origin point. (near/left)
+            p.TurnUp(90);
+            p.Forward(m_fSideLength / 2);
+            p.TurnUp(90);
+            p.Forward(m_fSideLength / 2);
+            p.TurnUp(180);
+
+            // At that point turtle is looking right and seen from above.
+            // At near / left corner.
+            p.PenDown();
+        }
+        private void DrawCube(Plotter3D p, float sideLength)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                DrawSquare(p, sideLength);
+                p.Forward(sideLength);
+                p.TurnUp(90);
+            }
+        }
+        private void DrawSquare(Plotter3D p, float sideLength)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                p.Forward(sideLength);  // Draw a line sideLength long
+                p.TurnRight(90);        // Turn right 90 degrees
+            }
+        }
+        public void ResetAngles()
+        {
+             m_iAngleAxisY = 0;
+
+             if (m_bSupport3D)
+             {
+                 m_iAngleAxisX = 45;
+             }
+             else
+             {
+                 m_iAngleAxisX = 90;
+             }
+        }
+        #endregion
+    }
+}
