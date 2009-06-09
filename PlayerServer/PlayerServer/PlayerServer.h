@@ -193,7 +193,7 @@ namespace VideaPlayerServer
 			List <Bitmap^>^ ExtractForMosaic(int _iNumberOfFramesNeeded);
 
 			//Bitmap^ GetThumbnail(String^ _FilePath);
-			InfosThumbnail^ GetThumbnail(String^ _FilePath);
+			InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth);
 
 		// -- Delegués --
 			delegate bool UpdateProgressDelegate(int _iTotal, int _iValue, bool _bDone, int _iResult );
