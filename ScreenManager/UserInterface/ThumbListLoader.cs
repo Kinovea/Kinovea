@@ -94,7 +94,7 @@ namespace Videa.ScreenManager
                 {
                     try
                     {
-                    	InfosThumbnail it = m_PlayerServer.GetThumbnail(fileNames[i]);
+                    	InfosThumbnail it = m_PlayerServer.GetThumbnail(fileNames[i], 200);
                         m_InfosThumbnailQueue.Insert(0, it);
                     }
                     catch (Exception)
