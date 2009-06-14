@@ -82,8 +82,6 @@
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Zusätzlicher Bildschirm zum Abspielen/Analyse</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Lösche Zeichnung</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Entferne ein Key Image</value></data>
-   <data name="CommandImageColors_FriendlyName" xml:space="preserve"><value>Passe Bild an</value></data>
-   <data name="CommandImageMirror_FriendlyName" xml:space="preserve"><value>Spiegele Bild</value></data>
    <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Lade Video</value></data>
    <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Lade Video</value></data>
    <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Video abspielen</value></data>
@@ -173,15 +171,10 @@
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Das PDF-Dokument wird aus Schlüsselbildern erstellt. \n Bitte erst Schlüsselbilder auswählen und dann das Dokument erstellen.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Fortschritt :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Speichere Video...</value></data>
-   <data name="FormFilterBrightness_lblValue_Text" xml:space="preserve"><value>Helligkeit :</value></data>
-   <data name="FormFilterColors_lblValue_Text" xml:space="preserve"><value>Sättigung :</value></data>
-   <data name="FormFilterContrast_lblValue_Text" xml:space="preserve"><value>Kontrast :</value></data>
-   <data name="FormFilterSharpen_lblValue_Text" xml:space="preserve"><value>Scharfzeichnen :</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exportierte Bilder :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exprotiere Bilder...</value></data>
-   <data name="FormFramesFilter_Infos" xml:space="preserve"><value>Gefilterte Bilder...</value></data>
-   <data name="FormFramesFilter_Title" xml:space="preserve"><value>Filtere Bilder...</value></data>
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Entkomprimierte Bilder :</value></data>
+   <data name="FormProgressBar_Title" xml:space="preserve"><value>Fortschritt</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Improtiere Bilder...</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Anwenden/Übernehmen</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
@@ -233,7 +226,6 @@
    
    
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Konfiguriere Trajektorien Bildschirm</value></data>
-   <data name="mnuContrast" xml:space="preserve"><value>Kontrast...</value></data>
    
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Löschen</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Lösche Trajektorien nach diesem Punkt</value></data>
@@ -319,6 +311,12 @@
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Variiere Abspielgeschwindigkeit</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Speichere das aktuelle Bild als Datei</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Markiere den Arbeitsbereich</value></data>
+   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Nur Videoränder...</value></data>
+   
+   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Scharfzeichnen...</value></data>
+   
+   
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Kontrast...</value></data>
    
    
 </root>

@@ -83,7 +83,6 @@ extern "C"
 #define TRACE
 #include <stdio.h>
 
-#include "ImageFilter.h"
 //------------------------
 
 
@@ -185,8 +184,6 @@ namespace VideaPlayerServer
 			int64_t GetTimeStamp(int64_t _iPosition);
 			int64_t GetFrameNumber(int64_t _iPosition);
 			
-			void	FilterImage(int _iFilter);
-
 			int		SaveMovie( String^ _FilePath, int FrameInterval, int64_t _iSelStart, int64_t _iSelEnd, String^ _Metadata, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap^ _delegateGetOutputBitmap);
 			bool	IsSelectionAnalyzable(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, int _maxSeconds, int _maxMemory);
 			
@@ -241,15 +238,12 @@ namespace VideaPlayerServer
 				int								m_iVideoStream;
 				int								m_iMetadataStream;
 			
-			//Filtrage Image
-				ImageFilter^					m_ImageFilter;
 			
 		private:
 			
 			// Initialisation
 			void	ResetPrimarySelection(void);
 			void	ResetInfosVideo(void);
-			void	ResetImageFilter(void);
 		
 			// Loading
 			int		GetFirstStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);

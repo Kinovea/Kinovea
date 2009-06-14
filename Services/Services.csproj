@@ -10,6 +10,7 @@
     <RootNamespace>Videa.Services</RootNamespace>
     <AssemblyName>Kinovea.Services</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DrawtimeFilterOutput.cs" />
     <Compile Include="IXMLExportable.cs" />
     <Compile Include="InfosTextDecoration.cs" />
     <Compile Include="CommandManager.cs" />

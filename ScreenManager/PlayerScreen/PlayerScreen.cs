@@ -33,19 +33,6 @@ namespace Videa.ScreenManager
 {
     public class PlayerScreen : AbstractScreen
     {
-        #region Enum
-        public enum ImageFilterType
-        {
-            Unknown,
-            Colors,
-            Brightness,
-            Contrast,
-            Sharpen,
-            Mirror,
-            Edges
-        }
-        #endregion
-
         #region Delegates
        	// Assigned and implemented in ScreenManager.
        	// non visible here : (DelegateCloseMe) CloseMe, (DelegateSetMeAsActiveScreen) SetMeAsActiveScreen.
@@ -156,43 +143,31 @@ namespace Videa.ScreenManager
             set { m_PlayerScreenUI.SyncPosition = value; }
         }
 
-        public MirrorFilterParams MirrorFilter
-        {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.GetMirrorFilterParams();}
-            set { m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.SetMirrorFilterParams(value);  }
-        }
-        public FilterParams SharpenFilter
-        {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.GetSharpenFilterParams(); }
-            set { m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.SetSharpenFilterParams(value); }
-        }
-        public FilterParams BrightnessFilter
-        {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.GetBrightnessFilterParams(); }
-            set { m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.SetBrightnessFilterParams(value); }
-        }
-        public FilterParams ContrastFilter
-        {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.GetContrastFilterParams(); }
-            set { m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.SetContrastFilterParams(value); }
-        }
-        public FilterParams ColorsFilter
-        {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.GetColorsFilterParams(); }
-            set { m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.SetColorsFilterParams(value); }
-        }
-        public FilterParams EdgesFilter
-        {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.GetEdgesFilterParams(); }
-            set { m_PlayerScreenUI.m_PlayerServer.m_ImageFilter.SetEdgesFilterParams(value); }
-        }
         public String FilePath
         {
             get { return m_FullFileName; }
             set { m_FullFileName = value; }
         }
         
-        // Impacts rendering
+        // Pseudo Filters (Impacts rendering)
+        public bool Deinterlaced
+        {
+            get { return m_PlayerScreenUI.Deinterlaced; }
+            set
+            {
+                m_PlayerScreenUI.Deinterlaced = value;
+                RefreshImage();
+            }
+        }
+        public bool Mirrored
+        {
+            get { return m_PlayerScreenUI.Mirrored; }
+            set
+            {
+                m_PlayerScreenUI.Mirrored = value;
+                RefreshImage();
+            }
+        }
         public bool ShowGrid
         {
             get { return m_PlayerScreenUI.ShowGrid; }
@@ -208,24 +183,6 @@ namespace Videa.ScreenManager
             set
             {
                 m_PlayerScreenUI.Show3DPlane = value;
-                RefreshImage();
-            }
-        }
-        public bool Mirrored
-        {
-            get { return m_PlayerScreenUI.Mirrored; }
-            set
-            {
-                m_PlayerScreenUI.Mirrored = value;
-                RefreshImage();
-            }
-        }
-        public bool Deinterlaced
-        {
-            get { return m_PlayerScreenUI.Deinterlaced; }
-            set
-            {
-                m_PlayerScreenUI.Deinterlaced = value;
                 RefreshImage();
             }
         }
@@ -294,6 +251,10 @@ namespace Videa.ScreenManager
         {
         	return m_PlayerScreenUI.OnKeyPress(_keycode);
         }
+        public override void RefreshImage()
+        {
+            m_PlayerScreenUI.RefreshImage();
+        }
         #endregion
 
         #region Délégués appelées depuis l'UI
@@ -331,20 +292,6 @@ namespace Videa.ScreenManager
             // Lorsque l'utilisateur lance la boîte de dialogue ouvrir.
             m_PlayerScreenUI.StopPlaying();
         }
-        
-        public void RefreshImage()
-        {
-            m_PlayerScreenUI.RefreshImage();
-        }
-
-        public void FilterImage(ImageFilterType _ImageFilterType)
-        {
-            formFramesFilter fff = new formFramesFilter(m_ResourceManager, m_PlayerScreenUI.m_PlayerServer, _ImageFilterType);
-            fff.ShowDialog();
-            fff.Dispose();
-
-            m_PlayerScreenUI.UpdateKeyframes();
-        }
 
         public void GotoNextFrame()
         {
@@ -360,46 +307,12 @@ namespace Videa.ScreenManager
             m_PlayerScreenUI.ResetSelectionImages(_memo);
         }
 
-        #region Static utilities
-        /*public static double GetFadingFactor(long _iCurrentTimestamp, InfosFading _InfosFading)
+        public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
         {
-            double fOpacityFactor = 0.0f;
-
-            if (!_InfosFading.Enabled)
-            {
-                // No fading. (= only if on the Key frame)
-                if (_iCurrentTimestamp == _InfosFading.ReferenceTimestamp)
-                {
-                    fOpacityFactor = 1.0f;
-                }
-                else
-                {
-                    fOpacityFactor = 0.0f;
-                }
-            }
-            else if (_InfosFading.AlwaysVisible)
-            {
-                // infinite fading. (= persisting drawing)
-                fOpacityFactor = 1.0f;
-            }
-            else
-            {
-                // Custom value. Compute opacity value.
-                long iDistanceTimestamps = Math.Abs(_iCurrentTimestamp - _InfosFading.ReferenceTimestamp);
-                long iFadingTimestamps = _InfosFading.FadingFrames * _InfosFading.AverageTimeStampsPerFrame;
-
-                if (iDistanceTimestamps > iFadingTimestamps)
-                {
-                    fOpacityFactor = 0.0f;
-                }
-                else
-                {
-                    fOpacityFactor = 1.0f - ((double)iDistanceTimestamps / (double)iFadingTimestamps);
-                }
-            }
-
-            return fOpacityFactor;
-        }*/
-        #endregion
+        	// A video filter just finished and is passing us its output object.
+        	// It is used as a communication channel between the filter and the player.
+        	m_PlayerScreenUI.SetDrawingtimeFilterOutput(_dfo);
+        	
+        }
     }
 }

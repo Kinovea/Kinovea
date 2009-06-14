@@ -45,7 +45,8 @@ namespace Videa.Services
     public delegate void DelegateActivateKeyboardHandler();
     public delegate void DelegateDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow);
     public delegate void DelegateRefreshFileExplorer(bool _bRefreshThumbnails);
-
+    public delegate void DelegateVideoProcessingDone(DrawtimeFilterOutput _dfo);
+    
     public class DelegatesPool
     {
         #region Exposed Delegates
@@ -59,6 +60,7 @@ namespace Videa.Services
         public DelegateActivateKeyboardHandler ActivateKeyboardHandler;
         public DelegateDisplayThumbnails DisplayThumbnails;
         public DelegateRefreshFileExplorer RefreshFileExplorer;
+        public DelegateVideoProcessingDone VideoProcessingDone;
         #endregion
   
         #region Instance & Constructor

@@ -59,6 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
     </Reference>
+    <Reference Include="AForge.Math">
+      <HintPath>..\Refs\AForge.Math.dll</HintPath>
+    </Reference>
     <Reference Include="AForge.Video">
       <HintPath>..\Refs\AForge.Video.dll</HintPath>
     </Reference>
@@ -108,10 +111,8 @@
     <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
     <Compile Include="Commands\ScreenManager\CommandAddCaptureScreen.cs" />
     <Compile Include="Commands\ScreenManager\CommandAddPlayerScreen.cs" />
-    <Compile Include="Commands\ScreenManager\CommandImageColors.cs" />
     <Compile Include="Commands\PlayerScreen\CommandLoadMovie.cs" />
     <Compile Include="Commands\ScreenManager\CommandLoadMovieInScreen.cs" />
-    <Compile Include="Commands\ScreenManager\CommandImageMirror.cs" />
     <Compile Include="Commands\PlayerScreen\CommandPlayMovie.cs" />
     <Compile Include="Commands\ScreenManager\CommandRemoveScreen.cs" />
     <Compile Include="Commands\ScreenManager\CommandShowScreens.cs" />
@@ -223,9 +224,9 @@
     <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.Designer.cs">
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureMosaic.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureMosaic.Designer.cs">
-      <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.Designer.cs">
+      <DependentUpon>FormProgressBar.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.cs">
       <SubType>Form</SubType>
@@ -270,6 +271,21 @@
     <Compile Include="PlayerScreen\UserInterface\ThumbBox.Designer.cs">
       <DependentUpon>ThumbBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.Designer.cs">
+      <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.Designer.cs">
+      <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterAutoLevels.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterContrast.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterEdgesOnly.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
     <Compile Include="UserInterface\CommonControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -287,18 +303,6 @@
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormFileLoader.Designer.cs">
       <DependentUpon>FormFileLoader.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFilterTuner.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFilterTuner.Designer.cs">
-      <DependentUpon>FormFilterTuner.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesFilter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesFilter.Designer.cs">
-      <DependentUpon>FormFramesFilter.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormFramesImport.cs">
       <SubType>Form</SubType>
@@ -365,8 +369,14 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMosaic.resx">
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
+      <DependentUpon>FormProgressBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\VideoFilters\FormConfigureMosaic.resx">
       <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
+      <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +386,7 @@
     </ProjectReference>
     <Folder Include="CaptureScreen\UserInterface" />
     <Folder Include="Commands\CaptureScreen" />
+    <Folder Include="PlayerScreen\VideoFilters" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlayerScreen\UserInterface\ThumbBox.resx">
@@ -399,14 +410,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormFileLoader.resx">
       <DependentUpon>FormFileLoader.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFilterTuner.resx">
-      <DependentUpon>FormFilterTuner.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesFilter.resx">
-      <DependentUpon>FormFramesFilter.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesImport.resx">

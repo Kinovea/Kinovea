@@ -82,8 +82,6 @@
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Aggiungi uno schermo per Riproduzione/Analisi</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Cancella il disegno</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Rimuovi un'Immagine Chiave</value></data>
-   <data name="CommandImageColors_FriendlyName" xml:space="preserve"><value>Regola l'Immagine</value></data>
-   <data name="CommandImageMirror_FriendlyName" xml:space="preserve"><value>Immagine Speculare</value></data>
    <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Carica il Video</value></data>
    <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Carica il Video</value></data>
    <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Riproduci il Video</value></data>
@@ -173,15 +171,10 @@
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Il documento Pdf verra' creato dalle Immagini Chiave.\n Aggiungi qualche Immagine Chiave PRIMA di generare il documento. </value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>In esecuzione :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Salvataggio Video...</value></data>
-   <data name="FormFilterBrightness_lblValue_Text" xml:space="preserve"><value>Luminosita' :</value></data>
-   <data name="FormFilterColors_lblValue_Text" xml:space="preserve"><value>Saturazione :</value></data>
-   <data name="FormFilterContrast_lblValue_Text" xml:space="preserve"><value>Contrasto :</value></data>
-   <data name="FormFilterSharpen_lblValue_Text" xml:space="preserve"><value>Nitidezza</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Immagini esportate :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Esportazione Immagini...</value></data>
-   <data name="FormFramesFilter_Infos" xml:space="preserve"><value>Fotogrammi filtrati :</value></data>
-   <data name="FormFramesFilter_Title" xml:space="preserve"><value>Filtraggio Fotogrammi...</value></data>
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Fotogrammi decompressi : </value></data>
+   <data name="FormProgressBar_Title" xml:space="preserve"><value>In esecuzione</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importazione Fotogrammi...</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Applica</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value></data>
@@ -233,7 +226,6 @@
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Colore e Dimensione...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistenza...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configura vista Traiettoria</value></data>
-   <data name="mnuContrast" xml:space="preserve"><value>Contrasto...</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlaccia</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Cancella</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Cancella la Traiettoria dopo questo Punto</value></data>
@@ -319,6 +311,12 @@
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varia la velocita' di riproduzione</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Salva su File l'immagine attuale</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Imposta la Zona Lavoro</value></data>
+   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo Contorni...</value></data>
+   
+   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Nitidezza...</value></data>
+   
+   
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrasto...</value></data>
    
    
 </root>

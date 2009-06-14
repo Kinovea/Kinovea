@@ -82,8 +82,6 @@
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Voeg scherm toe voor afspelen/analyse </value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Verwijder tekening</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Verwijder een kern-afbeelding</value></data>
-   <data name="CommandImageColors_FriendlyName" xml:space="preserve"><value>Afbeelding aanpassen</value></data>
-   <data name="CommandImageMirror_FriendlyName" xml:space="preserve"><value>Spiegel afbeelding</value></data>
    <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Laad video</value></data>
    <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Laad video</value></data>
    <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Speel video</value></data>
@@ -173,15 +171,10 @@
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Het Pdf-bestand wordt gemaakt uit de kernbeelden. \n Voer a.u.b. enkele kernbeelden in, voordat u het document gaat maken.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Voortgang :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Bewaar video…</value></data>
-   <data name="FormFilterBrightness_lblValue_Text" xml:space="preserve"><value>Helderheid :</value></data>
-   <data name="FormFilterColors_lblValue_Text" xml:space="preserve"><value>Verzadiging :</value></data>
-   <data name="FormFilterContrast_lblValue_Text" xml:space="preserve"><value>Contrast :</value></data>
-   <data name="FormFilterSharpen_lblValue_Text" xml:space="preserve"><value>Verscherpen :</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Geëxporteerd afbeeldingen:</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exporteren van de afbeeldingen…</value></data>
-   <data name="FormFramesFilter_Infos" xml:space="preserve"><value>Gefilterde frames :</value></data>
-   <data name="FormFramesFilter_Title" xml:space="preserve"><value>Filteren frames :</value></data>
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Gekozen frames :</value></data>
+   <data name="FormProgressBar_Title" xml:space="preserve"><value>Voortgang</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importeren van frames :</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
@@ -233,7 +226,6 @@
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Kleur en formaat...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistentie...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configureer Trajectory beeldscherm</value></data>
-   <data name="mnuContrast" xml:space="preserve"><value>Contrast…</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Verwijder</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Verwijder Trajectory vanaf dit punt</value></data>
@@ -319,6 +311,12 @@
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varieer afspeelsnelheid</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Bewaar huidig beeld in bestand</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Definieer werkgebied</value></data>
+   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Randen alleen…</value></data>
+   
+   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Verscherp…</value></data>
+   
+   
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast…</value></data>
    
    
 </root>

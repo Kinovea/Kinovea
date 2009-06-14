@@ -53,5 +53,6 @@ namespace Videa.ScreenManager
         public abstract void refreshUICulture();
         public abstract void CloseScreen();
         public abstract bool OnKeyPress(Keys _key);
+        public abstract void RefreshImage();
     }   
 }

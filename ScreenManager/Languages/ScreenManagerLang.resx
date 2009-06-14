@@ -82,8 +82,6 @@
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Add Screen for Playback</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Delete Drawing</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Remove a Key Image</value></data>
-   <data name="CommandImageColors_FriendlyName" xml:space="preserve"><value>Adjust Image</value></data>
-   <data name="CommandImageMirror_FriendlyName" xml:space="preserve"><value>Mirror Image</value></data>
    <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Load Video</value></data>
    <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Load Video</value></data>
    <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Play Video</value></data>
@@ -128,7 +126,7 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Right-to-left motion</value></data>
    <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frequency :</value></data>
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaic Mode</value></data>
-   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of this segment :</value></data>
+   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Seal measure</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration of each diapositive : {0} hundredth of seconds.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each diapositive : {0:0.00} seconds.</value></data>
@@ -173,15 +171,10 @@
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>The Pdf document will be created out of Key Images.\n Please add some Key Images before generating the document. </value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progress :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Saving Video...</value></data>
-   <data name="FormFilterBrightness_lblValue_Text" xml:space="preserve"><value>Brightness :</value></data>
-   <data name="FormFilterColors_lblValue_Text" xml:space="preserve"><value>Saturation :</value></data>
-   <data name="FormFilterContrast_lblValue_Text" xml:space="preserve"><value>Contrast :</value></data>
-   <data name="FormFilterSharpen_lblValue_Text" xml:space="preserve"><value>Sharpen</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exported Images :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Exporting Images...</value></data>
-   <data name="FormFramesFilter_Infos" xml:space="preserve"><value>Filtered Frames :</value></data>
-   <data name="FormFramesFilter_Title" xml:space="preserve"><value>Filtering Frames...</value></data>
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Decompressed Frames : </value></data>
+   <data name="FormProgressBar_Title" xml:space="preserve"><value>Progress</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importing Frames...</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Apply</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
@@ -233,7 +226,6 @@
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Color and Size...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistence...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configure Trajectory Display</value></data>
-   <data name="mnuContrast" xml:space="preserve"><value>Contrast...</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Delete</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Delete Trajectory after this Point</value></data>
@@ -319,6 +311,12 @@
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Vary Playback Speed</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Save the Current Image to File</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Set the Working Zone</value></data>
+   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Edges Only...</value></data>
+   <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Auto Levels...</value></data>
+   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Sharpen...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaic...</value></data>
+   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
    
    
 </root>

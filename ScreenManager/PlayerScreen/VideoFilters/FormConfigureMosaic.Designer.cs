@@ -51,7 +51,6 @@ namespace Videa.ScreenManager
         	this.btnOK.TabIndex = 20;
         	this.btnOK.Text = "Apply";
         	this.btnOK.UseVisualStyleBackColor = true;
-        	this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
         	// 
         	// btnCancel
         	// 

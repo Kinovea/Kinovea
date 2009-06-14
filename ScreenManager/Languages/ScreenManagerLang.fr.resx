@@ -82,8 +82,6 @@
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Ajouter un Écran de Lecture</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Effacer le Dessin</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Supprimer une Image Clé</value></data>
-   <data name="CommandImageColors_FriendlyName" xml:space="preserve"><value>Ajustement de l'Image</value></data>
-   <data name="CommandImageMirror_FriendlyName" xml:space="preserve"><value>Image Miroir</value></data>
    <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Charger une Vidéo</value></data>
    <data name="CommandLoadMovieInScreen_FriendlyName" xml:space="preserve"><value>Charger une Vidéo</value></data>
    <data name="CommandPlayMovie_FriendlyName" xml:space="preserve"><value>Lire une Vidéo</value></data>
@@ -128,7 +126,7 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Mouvement de droite à gauche</value></data>
    <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Fréquence :</value></data>
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mode Mosaïque</value></data>
-   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle de ce segment :</value></data>
+   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle du segment :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Étalonner la mesure</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durée de chaque diapositive : {0} centièmes de secondes.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durée de chaque diapositive : {0:0.00} secondes.</value></data>
@@ -173,15 +171,10 @@
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Le document Pdf sera créé à partir d'Images Clés. \nVeuillez ajouter quelques Images Clés avant de générer le document.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progression :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Enregistrement de la Vidéo...</value></data>
-   <data name="FormFilterBrightness_lblValue_Text" xml:space="preserve"><value>Luminosité :</value></data>
-   <data name="FormFilterColors_lblValue_Text" xml:space="preserve"><value>Saturation :</value></data>
-   <data name="FormFilterContrast_lblValue_Text" xml:space="preserve"><value>Contraste :</value></data>
-   <data name="FormFilterSharpen_lblValue_Text" xml:space="preserve"><value>Renforcement</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Images Exportées :</value></data>
    <data name="FormFramesExport_Title" xml:space="preserve"><value>Export des Images...</value></data>
-   <data name="FormFramesFilter_Infos" xml:space="preserve"><value>Images Filtrées :</value></data>
-   <data name="FormFramesFilter_Title" xml:space="preserve"><value>Filtrage des Images...</value></data>
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Images Décompressées : </value></data>
+   <data name="FormProgressBar_Title" xml:space="preserve"><value>Progression</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Import des images...</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Appliquer</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuler</value></data>
@@ -233,7 +226,6 @@
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Couleur et Taille...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistance...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurer l'affichage de la Trajectoire</value></data>
-   <data name="mnuContrast" xml:space="preserve"><value>Contraste...</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Désentrelacer</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Effacer</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Effacer la Trajectoire après ce point</value></data>
@@ -319,6 +311,12 @@
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varier la Vitesse de Lecture</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Enregistrer l'Image en Cours dans un Fichier</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Spécifier la Zone de Travail</value></data>
+   <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contours Seulement...</value></data>
+   <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveaux Automatiques...</value></data>
+   <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Renforcement des Contours...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaïque...</value></data>
+   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverse...</value></data>
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste Automatique...</value></data>
    
    
 </root>
