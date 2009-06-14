@@ -95,14 +95,18 @@ namespace Videa.Root
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             PreferencesManager.ReleaseVersion = String.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build);
             
+            // Set type of release (Experimental vs Production) 
+            PreferencesManager.ExperimentalRelease = true; 
+            
             // Display some system infos in the log.
-            log.Info("Kinovea version : " + PreferencesManager.ReleaseVersion);
+            log.Info(String.Format("Kinovea version : {0}, ({1})", PreferencesManager.ReleaseVersion, PreferencesManager.ExperimentalRelease?"Experimental":"Production"));
             log.Info(".NET Framework Version : " + Environment.Version.ToString());
             log.Info("OS Version : " + System.Environment.OSVersion.ToString());
             log.Info("Primary Screen : " + SystemInformation.PrimaryMonitorSize.ToString());
             log.Info("Virtual Screen : " + SystemInformation.VirtualScreen.ToString());
             
             // Since it is the very first call, it will both instanciate and import.
+            // Previous calls were done on static prioperties, no instanciation. 
             PreferencesManager pm = PreferencesManager.Instance();
             
             // Get Manager for i18n
@@ -442,7 +446,7 @@ namespace Videa.Root
             mnuMotion = new ToolStripMenuItem();
             mnuMotion.Tag = new ItemResourceInfo(RootResourceManager, "mnuMotion");
             mnuMotion.Text = ((ItemResourceInfo)mnuMotion.Tag).resManager.GetString(((ItemResourceInfo)mnuMotion.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuMotion.Visible = false;
+            mnuMotion.Visible = PreferencesManager.ExperimentalRelease;
             #endregion
 
             #region Options
