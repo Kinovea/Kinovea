@@ -27,7 +27,7 @@ import zipfile
 def MoveToDestination(module):
 	print "Moving to " + module + "directory."
 	for file in glob.glob(module + "Lang*.resx"):
-		shutil.copy(file, os.path.join(destination + "\\" + module + "\\Languages", file))
+		shutil.copy(file, os.path.join(devDir + "\\" + module + "\\Languages", file))
 
 #------------------------------------------------------------------------------------------
 # Function that removes empty resource strings from a resx file.
@@ -54,8 +54,10 @@ def ValidateResx(file):
 # Program Entry point.
 #------------------------------------------------------------------------------------------
 
-saxonDir = '"C:\\Program Files\\saxonb9-1-0-6n\\bin\\Transform"'
-
+# saxonDir : The directory of saxon binaries.
+# devDir : the directory where you checked out Kinovea trunk svn.
+saxonDir = '"C:\\Program Files\\saxonb9-1-0-6n\\bin\\Transform"'		 
+devDir = "C:\\Documents and Settings\\Administrateur\\Mes documents\\Dev  Prog\\Videa\\Sources\\trunk"
 
 print "Cleanup"
 if (os.path.isfile('content.xml')):
@@ -82,8 +84,6 @@ for file in glob.glob("*.resx"):
 
 
 # 3. Move final files to their destination.
-destination = "C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Kinovea"
-
 print "\nMoving resources to their final destination"
 MoveToDestination("Root")
 MoveToDestination("Updater")
