@@ -29,10 +29,12 @@ using System.Reflection;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Videa.Services;
+using VideaPlayerServer;
 using System.IO;
 
 namespace Videa.ScreenManager
 {
+	
     public class ScreenManagerKernel : IKernel , IMessageFilter
     {
         #region Imports Win32
@@ -104,29 +106,23 @@ namespace Videa.ScreenManager
         public AbstractScreen m_ActiveScreen = null;
         private bool m_bCommonControlsVisible = false;
 
+        // Video Filters
+        private AbstractVideoFilter[] m_VideoFilters;
+        
         //Menus
         public ToolStripMenuItem    m_mnuCloseFile;
         public ToolStripMenuItem    m_mnuCloseFile2;
         private ToolStripMenuItem   mnuSave;
-        //private ToolStripMenuItem   mnuExportToPDF;
         private ToolStripMenuItem   mnuLoadAnalysis;
 
         public ToolStripMenuItem    mnuSwapScreens;
         public ToolStripMenuItem    mnuToggleCommonCtrls;
 
         public ToolStripMenuItem    m_mnuCatchImage;
-        public ToolStripMenuItem    m_mnuColors;
-        public ToolStripMenuItem    m_mnuBrightness;
-        public ToolStripMenuItem    m_mnuContrast;
-        public ToolStripMenuItem    m_mnuSharpen;
+        public ToolStripMenuItem    m_mnuDeinterlace;
         public ToolStripMenuItem    m_mnuMirror;
-        public ToolStripMenuItem    m_mnuEdges;
         public ToolStripMenuItem    m_mnuGrid;
         public ToolStripMenuItem    m_mnu3DPlane;
-        public ToolStripMenuItem    m_mnuDeinterlace;
-
-        private bool m_bDebugMirror = false;
-
 
         #region Synchronization
         
@@ -156,7 +152,7 @@ namespace Videa.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Constructor
+        #region Constructor & initialization
         public ScreenManagerKernel()
         {
             log.Debug("Module Construction : ScreenManager.");
@@ -175,15 +171,46 @@ namespace Videa.ScreenManager
             UI = new ScreenManagerUserInterface();
 
             PlugDelegates();
-
+            InitializeVideoFilters();
+            
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
 
             dp.LoadMovieInScreen = DoLoadMovieInScreen;
-            //dp.CompilePlayerScreen = DoCompilePlayerScreen;
             dp.StopPlaying = DoStopPlaying;
             dp.DeactivateKeyboardHandler = DoDeactivateKeyboardHandler;
             dp.ActivateKeyboardHandler = DoActivateKeyboardHandler;
+            dp.VideoProcessingDone = DoVideoProcessingDone;
+        }
+        private void PlugDelegates()
+        {
+
+            m_OrganizeMenuProxy = new OrganizeMenuProxy(((ScreenManagerUserInterface)this.UI).OrganizeMenuProxy);
+
+            ((ScreenManagerUserInterface)this.UI).m_CallbackDropLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
+            ((ScreenManagerUserInterface)this.UI).GotoFirst += new ScreenManagerUserInterface.GotoFirstHandler(CommonCtrlsGotoFirst);
+            ((ScreenManagerUserInterface)this.UI).GotoLast += new ScreenManagerUserInterface.GotoLastHandler(CommonCtrlsGotoLast);
+            ((ScreenManagerUserInterface)this.UI).GotoPrev += new ScreenManagerUserInterface.GotoPrevHandler(CommonCtrlsGotoPrev);
+            ((ScreenManagerUserInterface)this.UI).GotoNext += new ScreenManagerUserInterface.GotoNextHandler(CommonCtrlsGotoNext);
+            ((ScreenManagerUserInterface)this.UI).Play += new ScreenManagerUserInterface.PlayHandler(CommonCtrlsPlay);
+            ((ScreenManagerUserInterface)this.UI).Swap += new ScreenManagerUserInterface.SwapHandler(CommonCtrlsSwap);
+            ((ScreenManagerUserInterface)this.UI).Sync += new ScreenManagerUserInterface.SyncHandler(CommonCtrlsSync);
+            ((ScreenManagerUserInterface)this.UI).PositionChanged += new ScreenManagerUserInterface.PositionChangedHandler(CommonCtrlsPositionChanged);
+
+            ((ScreenManagerUserInterface)this.UI).m_ThumbsViewer.m_CallBackLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
+
+        }
+        private void InitializeVideoFilters()
+        {
+        	// Creates Video Filters
+        	m_VideoFilters = new AbstractVideoFilter[(int)VideoFilterType.NumberOfVideoFilters];
+        	
+        	m_VideoFilters[(int)VideoFilterType.AutoLevels] = new VideoFilterAutoLevels();
+        	m_VideoFilters[(int)VideoFilterType.AutoContrast] = new VideoFilterContrast();
+        	m_VideoFilters[(int)VideoFilterType.Sharpen] = new VideoFilterSharpen();
+        	m_VideoFilters[(int)VideoFilterType.EdgesOnly] = new VideoFilterEdgesOnly();
+			m_VideoFilters[(int)VideoFilterType.Mosaic] = new VideoFilterMosaic();
+        	m_VideoFilters[(int)VideoFilterType.Reverse] = new VideoFilterReverse();
         }
         #endregion
 
@@ -340,37 +367,23 @@ namespace Videa.ScreenManager
             m_mnuCatchImage.MergeIndex = 3; // (Image)
             m_mnuCatchImage.MergeAction = MergeAction.MatchOnly;
 
-            // Couleurs
-            m_mnuColors = new ToolStripMenuItem();
-            m_mnuColors.Tag = new ItemResourceInfo(resManager, "mnuColors");
-            m_mnuColors.Text = ((ItemResourceInfo)m_mnuColors.Tag).resManager.GetString(((ItemResourceInfo)m_mnuColors.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_mnuColors.Click += new EventHandler(mnuColorsOnClick);
-            m_mnuColors.MergeAction = MergeAction.Append;
+            // Deinterlace
+            m_mnuDeinterlace = new ToolStripMenuItem();
+            m_mnuDeinterlace.Tag = new ItemResourceInfo(resManager, "mnuDeinterlace");
+            m_mnuDeinterlace.Text = ((ItemResourceInfo)m_mnuDeinterlace.Tag).resManager.GetString(((ItemResourceInfo)m_mnuDeinterlace.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            m_mnuDeinterlace.Checked = false;
+            m_mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
+            m_mnuDeinterlace.Click += new EventHandler(mnuDeinterlaceOnClick);
+            m_mnuDeinterlace.MergeAction = MergeAction.Append;
 
-            // Luminosité
-            m_mnuBrightness = new ToolStripMenuItem();
+            // Brightness
+            /*m_mnuBrightness = new ToolStripMenuItem();
             m_mnuBrightness.Tag = new ItemResourceInfo(resManager, "mnuBrightness");
             m_mnuBrightness.Text = ((ItemResourceInfo)m_mnuBrightness.Tag).resManager.GetString(((ItemResourceInfo)m_mnuBrightness.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             m_mnuBrightness.Click += new EventHandler(mnuBrightnessOnClick);
-            m_mnuBrightness.MergeAction = MergeAction.Append;
+            m_mnuBrightness.MergeAction = MergeAction.Append;*/
 
-            // Contraste
-            m_mnuContrast = new ToolStripMenuItem();
-            m_mnuContrast.Tag = new ItemResourceInfo(resManager, "mnuContrast");
-            m_mnuContrast.Text = ((ItemResourceInfo)m_mnuContrast.Tag).resManager.GetString(((ItemResourceInfo)m_mnuContrast.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_mnuContrast.Click += new EventHandler(mnuContrastOnClick);
-            m_mnuContrast.MergeAction = MergeAction.Append;
-
-            // Sharpen
-            m_mnuSharpen = new ToolStripMenuItem();
-            m_mnuSharpen.Tag = new ItemResourceInfo(resManager, "mnuSharpen");
-            m_mnuSharpen.Text = ((ItemResourceInfo)m_mnuSharpen.Tag).resManager.GetString(((ItemResourceInfo)m_mnuSharpen.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_mnuSharpen.Click += new EventHandler(mnuSharpenOnClick);
-            m_mnuSharpen.MergeAction = MergeAction.Append;
-
-            ToolStripSeparator mnuSep = new ToolStripSeparator();
-
-            // Mirroir
+            // Mirror
             m_mnuMirror = new ToolStripMenuItem();
             m_mnuMirror.Tag = new ItemResourceInfo(resManager, "mnuMirror");
             m_mnuMirror.Text = ((ItemResourceInfo)m_mnuMirror.Tag).resManager.GetString(((ItemResourceInfo)m_mnuMirror.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -379,14 +392,7 @@ namespace Videa.ScreenManager
             m_mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             m_mnuMirror.MergeAction = MergeAction.Append;
 
-            // Edges Only
-            m_mnuEdges = new ToolStripMenuItem();
-            m_mnuEdges.Tag = new ItemResourceInfo(resManager, "mnuEdges");
-            m_mnuEdges.Text = ((ItemResourceInfo)m_mnuEdges.Tag).resManager.GetString(((ItemResourceInfo)m_mnuEdges.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_mnuEdges.Click += new EventHandler(mnuEdgesOnClick);
-            m_mnuEdges.MergeAction = MergeAction.Append;
-
-
+            ToolStripSeparator mnuSep = new ToolStripSeparator();
             ToolStripSeparator mnuSep2 = new ToolStripSeparator();
             ToolStripSeparator mnuSep3 = new ToolStripSeparator();
 
@@ -408,43 +414,36 @@ namespace Videa.ScreenManager
             m_mnu3DPlane.Click += new EventHandler(mnu3DPlaneOnClick);
             m_mnu3DPlane.MergeAction = MergeAction.Append;
 
-            // Deinterlace
-            m_mnuDeinterlace = new ToolStripMenuItem();
-            m_mnuDeinterlace.Tag = new ItemResourceInfo(resManager, "mnuDeinterlace");
-            m_mnuDeinterlace.Text = ((ItemResourceInfo)m_mnuDeinterlace.Tag).resManager.GetString(((ItemResourceInfo)m_mnuDeinterlace.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_mnuDeinterlace.Checked = false;
-            m_mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
-            m_mnuDeinterlace.Click += new EventHandler(mnuDeinterlaceOnClick);
-            m_mnuDeinterlace.MergeAction = MergeAction.Append;
-
-
-            DisableAllImageMenus();
+            ConfigureVideoFilterMenus(null, true);
 
             //---------------------------------
             //Organisation du sous menu Image
             //---------------------------------
-            ToolStripItem[] subImage = new ToolStripItem[] { m_mnuDeinterlace, mnuSep3, m_mnuColors, m_mnuBrightness, m_mnuContrast, m_mnuSharpen, mnuSep, m_mnuMirror, m_mnuEdges, mnuSep2, m_mnuGrid, m_mnu3DPlane };
-            m_mnuCatchImage.DropDownItems.AddRange(subImage);
+            m_mnuCatchImage.DropDownItems.AddRange(new ToolStripItem[] 
+													{ 
+                                                   		m_mnuDeinterlace, 
+                                                   		mnuSep, 
+                                                   		m_VideoFilters[(int)VideoFilterType.AutoLevels].Menu,  
+                                                   		m_VideoFilters[(int)VideoFilterType.AutoContrast].Menu,  
+                                                   		m_VideoFilters[(int)VideoFilterType.Sharpen].Menu, 
+                                                   		mnuSep2, 
+                                                   		m_mnuMirror, 
+                                                   		m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
+                                                   		mnuSep3, 
+                                                   		m_mnuGrid, 
+                                                   		m_mnu3DPlane});
             #endregion
 
             #region Motion
 
             ToolStripMenuItem mnuCatchMotion = new ToolStripMenuItem();
-            mnuCatchMotion.MergeIndex = 4; // (Motion)
+            mnuCatchMotion.MergeIndex = 4;
             mnuCatchMotion.MergeAction = MergeAction.MatchOnly;
 
-            // Stabilize
-            ToolStripMenuItem mnuStabilize = new ToolStripMenuItem();
-            mnuStabilize.Tag = new ItemResourceInfo(resManager, "mnuStabilize");
-            mnuStabilize.Text = ((ItemResourceInfo)mnuStabilize.Tag).resManager.GetString(((ItemResourceInfo)mnuStabilize.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
-            // Fluidify
-            ToolStripMenuItem mnuFluidify = new ToolStripMenuItem();
-            mnuFluidify.Tag = new ItemResourceInfo(resManager, "mnuFluidify");
-            mnuFluidify.Text = ((ItemResourceInfo)mnuFluidify.Tag).resManager.GetString(((ItemResourceInfo)mnuFluidify.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuFluidify.Enabled = false;
-
-            mnuCatchMotion.DropDownItems.AddRange(new ToolStripItem[] { mnuStabilize, mnuFluidify });
+            mnuCatchMotion.DropDownItems.AddRange(new ToolStripItem[] 
+                                                  {  
+                                                  		m_VideoFilters[(int)VideoFilterType.Mosaic].Menu,
+                                                  		m_VideoFilters[(int)VideoFilterType.Reverse].Menu});
             
             #endregion
             
@@ -556,24 +555,7 @@ namespace Videa.ScreenManager
         }
         #endregion
 
-        private void PlugDelegates()
-        {
-
-            m_OrganizeMenuProxy = new OrganizeMenuProxy(((ScreenManagerUserInterface)this.UI).OrganizeMenuProxy);
-
-            ((ScreenManagerUserInterface)this.UI).m_CallbackDropLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
-            ((ScreenManagerUserInterface)this.UI).GotoFirst += new ScreenManagerUserInterface.GotoFirstHandler(CommonCtrlsGotoFirst);
-            ((ScreenManagerUserInterface)this.UI).GotoLast += new ScreenManagerUserInterface.GotoLastHandler(CommonCtrlsGotoLast);
-            ((ScreenManagerUserInterface)this.UI).GotoPrev += new ScreenManagerUserInterface.GotoPrevHandler(CommonCtrlsGotoPrev);
-            ((ScreenManagerUserInterface)this.UI).GotoNext += new ScreenManagerUserInterface.GotoNextHandler(CommonCtrlsGotoNext);
-            ((ScreenManagerUserInterface)this.UI).Play += new ScreenManagerUserInterface.PlayHandler(CommonCtrlsPlay);
-            ((ScreenManagerUserInterface)this.UI).Swap += new ScreenManagerUserInterface.SwapHandler(CommonCtrlsSwap);
-            ((ScreenManagerUserInterface)this.UI).Sync += new ScreenManagerUserInterface.SyncHandler(CommonCtrlsSync);
-            ((ScreenManagerUserInterface)this.UI).PositionChanged += new ScreenManagerUserInterface.PositionChangedHandler(CommonCtrlsPositionChanged);
-
-            ((ScreenManagerUserInterface)this.UI).m_ThumbsViewer.m_CallBackLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
-
-        }
+        
         public void UpdateStatusBar()
         {
             //------------------------------------------------------------------
@@ -671,57 +653,28 @@ namespace Videa.ScreenManager
         }
         private void DoOrganizeMenu()
         {
+        	// Show / hide menus depending on state of active screen
+        	// and global screen configuration.
+        	
             #region Menus depending only on the state of the active screen
             bool bActiveScreenIsEmpty = false;
             if (m_ActiveScreen != null && screenList.Count > 0)
             {
-                if (m_ActiveScreen is PlayerScreen)
+            	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+                if (player != null)
                 {
                     // 1. Video is loaded : save-able and analysis is loadable.
-                    if (((PlayerScreen)m_ActiveScreen).m_bIsMovieLoaded)
+                    if (player.m_bIsMovieLoaded)
                     {
                         mnuSave.Enabled = true;
                         mnuLoadAnalysis.Enabled = true;
-                        
-                        // 1.a. Video has keyframes data: exportable.
-                        /*if (((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.HasData)
-                        {
-                            mnuExportToPDF.Enabled = true;
-                        }
-                        else
-                        {
-                            mnuExportToPDF.Enabled = false;
-                        }*/
-                    
-                        // 1.b. Video is in analysis mode: adjustable
-                        if (((PlayerScreen)m_ActiveScreen).IsInAnalysisMode)
-                        {
-                            EnableAllImageMenus();
-                            if(!m_bDebugMirror)
-                                m_mnuMirror.Checked = ((PlayerScreen)m_ActiveScreen).MirrorFilter.bMirrored;
-                        }
-                        else
-                        {
-                            DisableAllImageMenus();
+                        m_mnuDeinterlace.Checked = player.Deinterlaced;
+                        m_mnuMirror.Checked = player.Mirrored;
+                        m_mnuGrid.Checked = player.ShowGrid;
+                        m_mnu3DPlane.Checked = player.Show3DPlane;
 
-                            if (!m_bDebugMirror)
-                            {
-                                if (m_mnuMirror.Checked)
-                                {
-                                    m_mnuMirror.Checked = false;
-                                    CommandManager cm = CommandManager.Instance();
-                                    cm.ResetHistory();
-                                }
-                                ((PlayerScreen)m_ActiveScreen).MirrorFilter.bMirrored = false;
-                            }
-                        }
-
-                        // 1.c. Grid, 3DPlane, Deinterlace (+ mirror ?)
-                        m_mnuGrid.Checked = ((PlayerScreen)m_ActiveScreen).ShowGrid;
-                        m_mnu3DPlane.Checked = ((PlayerScreen)m_ActiveScreen).Show3DPlane;
-                        m_mnuDeinterlace.Checked = ((PlayerScreen)m_ActiveScreen).Deinterlaced;
-                        if(m_bDebugMirror)
-                            m_mnuMirror.Checked = ((PlayerScreen)m_ActiveScreen).Mirrored;
+                        // Video Filters menus
+                        ConfigureVideoFilterMenus(player, false);
                     }
                     else
                     {
@@ -743,21 +696,19 @@ namespace Videa.ScreenManager
 
             if (bActiveScreenIsEmpty)
             {
-                // File
                 mnuLoadAnalysis.Enabled = false;
-                //mnuExportToPDF.Enabled  = false;
-                mnuSave.Enabled         = false;
-
-                // Image
-                DisableAllImageMenus();
-                m_mnuMirror.Checked         = false;
-                m_mnuGrid.Checked           = false;
-                m_mnu3DPlane.Checked        = false;
-                m_mnuDeinterlace.Checked    = false;
+                mnuSave.Enabled = false;
+				m_mnuDeinterlace.Checked = false;
+				m_mnuMirror.Checked = false;
+                m_mnuGrid.Checked = false;
+                m_mnu3DPlane.Checked = false;
+				
+                // Video Filters menus
+				ConfigureVideoFilterMenus(null, true);
             }
             #endregion
 
-            #region Menus depending on the specifc configuration
+            #region Menus depending on the specifc screen configuration
             // File
             m_mnuCloseFile.Visible  = false;
             m_mnuCloseFile.Enabled  = false;
@@ -889,32 +840,83 @@ namespace Videa.ScreenManager
             #endregion
 
         }
-        private void DisableAllImageMenus()
+        private void ConfigureVideoFilterMenus(PlayerScreen _player, bool _bDisableAll)
         {
-            m_mnuCatchImage.Enabled = false;
-
-            m_mnuColors.Enabled = false;
-            m_mnuBrightness.Enabled = false;
-            m_mnuContrast.Enabled = false;
-            m_mnuSharpen.Enabled = false;
-            m_mnuEdges.Enabled = false;
-            if(!m_bDebugMirror)
-                m_mnuMirror.Enabled = false;
-        }
-        private void EnableAllImageMenus()
-        {
-            m_mnuCatchImage.Enabled = true;
+			// determines if any given video filter menu should be
+			// visible, enabled, checked...
+        	
+        	//----------------------------------------------------------
+        	// 1. Is a given menu enabled ? (analysis mode/regular mode)
+        	//----------------------------------------------------------
+        	bool bEnable = false;
+        	
+        	if(!_bDisableAll && _player != null)
+        	{
+        		bEnable = _player.IsInAnalysisMode;
+        	}
+        	        	
+    		foreach(AbstractVideoFilter vf in m_VideoFilters)
+        	{
+        		vf.Menu.Enabled = bEnable;
+        	}
             
-            m_mnuColors.Enabled = true;
-            m_mnuBrightness.Enabled = true;
-            m_mnuContrast.Enabled = true;
-            m_mnuSharpen.Enabled = true;
-            m_mnuEdges.Enabled = true;
-            if(!m_bDebugMirror)
-                m_mnuMirror.Enabled = true;
+            // Associate the input frames
+            if(bEnable)
+            {
+            	List<DecompressedFrame> frameList = _player.m_PlayerScreenUI.m_PlayerServer.m_FrameList;
+	            
+            	foreach(AbstractVideoFilter vf in m_VideoFilters)
+            	{
+            		vf.FrameList = frameList;
+            	}
+            }
+
+            //----------------------------------------------------------
+            // 2. Is a given menu visible ?
+            //----------------------------------------------------------
+            foreach(AbstractVideoFilter vf in m_VideoFilters)
+        	{
+            	if(vf.Experimental)
+            	{
+            		// Experimental filters = depends on current release type.
+            		vf.Menu.Visible = PreferencesManager.ExperimentalRelease;
+            	}
+            	else
+            	{
+            		// Production filters = always visible.
+            		vf.Menu.Visible = true;
+            	}
+        	}
+                      
+            //----------------------------------------------------------
+            // 3. Is a given boolean menu checked ?
+        	//----------------------------------------------------------
+            /*if(!_bDisableAll && _player != null)
+        	{
+	            if (_player.IsInAnalysisMode)
+	            {        		
+	                m_mnuMirror.Checked = _player.MirrorFilter.bMirrored;
+	            }
+	            else
+	            {
+	                if (m_mnuMirror.Checked)
+	                {
+	                	// We switched back to regular mode.
+	                    m_mnuMirror.Checked = false;
+	                    CommandManager cm = CommandManager.Instance();
+	                    cm.ResetHistory();
+	                }
+	                
+	                _player.MirrorFilter.bMirrored = false;
+	            }	            	
+            }
+			else
+			{
+				m_mnuMirror.Checked = false;	
+			}*/
         }
 
-        #region EventHandlers des menus
+        #region Menus events handlers
 
         #region File
         private void mnuCloseFileOnClick(object sender, EventArgs e)
@@ -1646,169 +1648,41 @@ namespace Videa.ScreenManager
         #endregion
 
         #region Image
+        private void mnuDeinterlaceOnClick(object sender, EventArgs e)
+        {
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(m_ActiveScreen != null)
+        	{
+        		m_mnuDeinterlace.Checked = !m_mnuDeinterlace.Checked;
+        		player.Deinterlaced = m_mnuDeinterlace.Checked;	
+        	}
+        }
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
-            if (m_bDebugMirror)
-            {
-                if (m_ActiveScreen != null)
-                {
-                    if (m_ActiveScreen is PlayerScreen)
-                    {
-                        // Inversion et mise à jour du menu.
-                        ((PlayerScreen)m_ActiveScreen).Mirrored = !((PlayerScreen)m_ActiveScreen).Mirrored;
-                        m_mnuMirror.Checked = ((PlayerScreen)m_ActiveScreen).Mirrored;
-                    }
-                }
-            }
-            else
-            {
-                //-------------------------------------------------------------------
-                // Si on a pu cliquer ici, c'est que l'écran actif contient 
-                // un Player Screen en mode Analyse.
-                // On fait les vérifs de bases et on invoque une commande réversible.
-                //-------------------------------------------------------------------
-                if (m_ActiveScreen != null)
-                {
-                    if (m_ActiveScreen is PlayerScreen)
-                    {
-                        m_bAdjustingImage = true;
-                        IUndoableCommand command = new CommandImageMirror((PlayerScreen)m_ActiveScreen, m_mnuMirror);
-                        CommandManager cm = CommandManager.Instance();
-                        cm.LaunchUndoableCommand(command);
-                        m_bAdjustingImage = false;
-                    }
-                }
-            }
-        }
-        private void mnuSharpenOnClick(object sender, EventArgs e)
-        {
-            //-------------------------------------------------------------------
-            // Si on a pu cliquer ici, c'est que l'écran actif contient 
-            // un Player Screen en mode Analyse.
-            // On fait les vérifs de bases et on invoque une commande réversible.
-            //-------------------------------------------------------------------
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    m_bAdjustingImage = true;
-                    IUndoableCommand command = new CommandImageColors((PlayerScreen)m_ActiveScreen, PlayerScreen.ImageFilterType.Sharpen);
-                    CommandManager.Instance().LaunchUndoableCommand(command);
-                    m_bAdjustingImage = false;
-                }
-            }
-        }
-        private void mnuBrightnessOnClick(object sender, EventArgs e)
-        {
-            //-------------------------------------------------------------------
-            // Si on a pu cliquer ici, c'est que l'écran actif contient 
-            // un Player Screen en mode Analyse.
-            // On fait les vérifs de bases et on invoque une commande réversible.
-            //-------------------------------------------------------------------
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    m_bAdjustingImage = true;
-                    IUndoableCommand command = new CommandImageColors((PlayerScreen)m_ActiveScreen, PlayerScreen.ImageFilterType.Brightness);
-                    CommandManager.Instance().LaunchUndoableCommand(command);
-                    m_bAdjustingImage = false;
-                }
-            }
-
-        }
-        private void mnuContrastOnClick(object sender, EventArgs e)
-        {
-            //-------------------------------------------------------------------
-            // Si on a pu cliquer ici, c'est que l'écran actif contient 
-            // un Player Screen en mode Analyse.
-            // On fait les vérifs de bases et on invoque une commande réversible.
-            //-------------------------------------------------------------------
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    m_bAdjustingImage = true;
-                    IUndoableCommand command = new CommandImageColors((PlayerScreen)m_ActiveScreen, PlayerScreen.ImageFilterType.Contrast);
-                    CommandManager.Instance().LaunchUndoableCommand(command);
-                    m_bAdjustingImage = false;
-                }
-            }
-
-        }
-        private void mnuColorsOnClick(object sender, EventArgs e)
-        {
-            //-------------------------------------------------------------------
-            // Si on a pu cliquer ici, c'est que l'écran actif contient 
-            // un Player Screen en mode Analyse.
-            // On fait les vérifs de bases et on invoque une commande réversible.
-            //-------------------------------------------------------------------
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    m_bAdjustingImage = true;
-                    IUndoableCommand command = new CommandImageColors((PlayerScreen)m_ActiveScreen, PlayerScreen.ImageFilterType.Colors);
-                    CommandManager.Instance().LaunchUndoableCommand(command);
-                    m_bAdjustingImage = false;
-                }
-            }
-
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(m_ActiveScreen != null)
+        	{
+        		m_mnuMirror.Checked = !m_mnuMirror.Checked;
+        		player.Mirrored = m_mnuMirror.Checked;
+        	}
         }
         private void mnuGridOnClick(object sender, EventArgs e)
         {
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    // Inversion et mise à jour du menu.
-                    ((PlayerScreen)m_ActiveScreen).ShowGrid = !((PlayerScreen)m_ActiveScreen).ShowGrid;
-                    m_mnuGrid.Checked = ((PlayerScreen)m_ActiveScreen).ShowGrid;
-                }
-            }
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(m_ActiveScreen != null)
+        	{
+        		m_mnuGrid.Checked = !m_mnuGrid.Checked;
+        		player.ShowGrid = m_mnuGrid.Checked;
+        	}
         }
         private void mnu3DPlaneOnClick(object sender, EventArgs e)
         {
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    // Inversion et mise à jour du menu.
-                    ((PlayerScreen)m_ActiveScreen).Show3DPlane = !((PlayerScreen)m_ActiveScreen).Show3DPlane;
-                    m_mnu3DPlane.Checked = ((PlayerScreen)m_ActiveScreen).Show3DPlane;
-                }
-            }
-        }
-        private void mnuDeinterlaceOnClick(object sender, EventArgs e)
-        {
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen is PlayerScreen)
-                {
-                    // Inversion et mise à jour du menu.
-                    ((PlayerScreen)m_ActiveScreen).Deinterlaced = !((PlayerScreen)m_ActiveScreen).Deinterlaced;
-                    m_mnuDeinterlace.Checked = ((PlayerScreen)m_ActiveScreen).Deinterlaced;
-                }
-            }
-        }
-        private void mnuEdgesOnClick(object sender, EventArgs e)
-        {
-            //-------------------------------------------------------------------
-            // Si on a pu cliquer ici, c'est que l'écran actif contient 
-            // un Player Screen en mode Analyse.
-            // On fait les vérifs de bases et on invoque une commande réversible.
-            //-------------------------------------------------------------------
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
-                {
-                    m_bAdjustingImage = true;
-                    IUndoableCommand command = new CommandImageColors((PlayerScreen)m_ActiveScreen, PlayerScreen.ImageFilterType.Edges);
-                    CommandManager cm = CommandManager.Instance();
-                    cm.LaunchUndoableCommand(command);
-                    m_bAdjustingImage = false;
-                }
-            }
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(m_ActiveScreen != null)
+        	{
+        		m_mnu3DPlane.Checked = !m_mnu3DPlane.Checked;
+        		player.Show3DPlane = m_mnu3DPlane.Checked;
+        	}
         }
         #endregion
 
@@ -2178,6 +2052,19 @@ namespace Videa.ScreenManager
         public void DoActivateKeyboardHandler()
         {
             m_bAllowKeyboardHandler = true;
+        }
+        public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
+        {
+        	if(_dfo != null)
+        	{
+        		PlayerScreen player = m_ActiveScreen as PlayerScreen;
+	        	if(player != null)
+	        	{
+	        		player.SetDrawingtimeFilterOutput(_dfo);
+	        	}	
+        	}
+        	
+        	m_ActiveScreen.RefreshImage();
         }
         #endregion
 
@@ -3398,4 +3285,18 @@ namespace Videa.ScreenManager
         }
         #endregion
     }
+
+	#region Global enums
+	public enum VideoFilterType
+	{
+		AutoLevels,
+		AutoContrast,
+		Sharpen,
+		EdgesOnly,
+		Mosaic,
+		Reverse,
+		NumberOfVideoFilters
+	};
+    #endregion
+
 }

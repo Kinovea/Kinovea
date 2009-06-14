@@ -220,10 +220,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ImageFilter.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\PlayerServer.cpp"
 				>
 			</File>
@@ -253,10 +249,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\ImageFilter.h"
-				>
-			</File>
 			<File
 				RelativePath=".\PlayerServer.h"
 				>

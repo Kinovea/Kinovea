@@ -93,6 +93,10 @@ namespace Videa.ScreenManager
             bool bWasHandled = false;
             return bWasHandled;
         }
+		public override void RefreshImage()
+		{
+			// Not implemented.
+		}
         #endregion
 
         #region Délégués appelées depuis l'UI

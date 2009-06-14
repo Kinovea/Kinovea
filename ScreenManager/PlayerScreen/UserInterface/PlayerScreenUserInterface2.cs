@@ -1,3 +1,4 @@
+#region License
 /*
 Copyright © Joan Charmant 2008-2009.
 joan.charmant@gmail.com
@@ -16,13 +17,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
- */
+*/
+#endregion
 
-
+#region Using directives
+//using CPI.Plot3D;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Data;
 using System.Text;
@@ -32,11 +36,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Resources;
 using System.Runtime.InteropServices;
-using CPI.Plot3D;
 using VideaPlayerServer;
 using Videa.Services;
-using System.Drawing.Drawing2D;
-
+#endregion
 
 namespace Videa.ScreenManager
 {
@@ -185,7 +187,27 @@ namespace Videa.ScreenManager
 			get { return m_bIsCurrentlyPlaying; }
 		}
 
-		// Modifies Rendering
+		// Pseudo Filters (Modifies Rendering)
+		public bool Deinterlaced
+		{
+			get { return m_PlayerServer.m_InfosVideo.bDeinterlaced;}
+			set
+			{
+				m_PlayerServer.m_InfosVideo.bDeinterlaced = value;
+
+				// If there was a selection it must be imported again.
+				// (This means we'll loose color adjustments.)
+				if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
+				{
+					SwitchToAnalysisMode(true);
+				}
+			}
+		}
+		public bool Mirrored
+		{
+			get { return m_Metadata.Mirrored; }
+			set { m_Metadata.Mirrored = value; }
+		}
 		public bool ShowGrid
 		{
 			get { return m_Metadata.Grid.Visible; }
@@ -196,26 +218,8 @@ namespace Videa.ScreenManager
 			get { return m_Metadata.Plane.Visible; }
 			set { m_Metadata.Plane.Visible = value; }
 		}
-		public bool Mirrored
-		{
-			get { return m_Metadata.Mirrored; }
-			set { m_Metadata.Mirrored = value; }
-		}
-		public bool Deinterlaced
-		{
-			get { return m_PlayerServer.m_InfosVideo.bDeinterlaced;}
-			set
-			{
-				m_PlayerServer.m_InfosVideo.bDeinterlaced = value;
-
-				// If there was a selection it must be imported again.
-				// (this means we'll loose color adjustments.)
-				if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
-				{
-					SwitchToAnalysisMode(true);
-				}
-			}
-		}
+		
+		// Synchro
 		public bool Synched
 		{
 			get { return m_bSynched; }
@@ -226,6 +230,8 @@ namespace Videa.ScreenManager
 			get { return m_iSyncPosition; }
 			set { m_iSyncPosition = value; }
 		}
+		
+		// Slowness (when video wasn't captured realtime)
 		public double SlowFactor
 		{
 			get { return m_fSlowFactor; }
@@ -244,7 +250,6 @@ namespace Videa.ScreenManager
 		private string m_FullPath = "";
 		
 		// Playback current state
-		private Mosaic m_Mosaic = new Mosaic();
 		private bool m_bIsCurrentlyPlaying;
 		private int m_iFramesToDecode = 1;
 		private bool m_bSeekToStart;
@@ -293,8 +298,12 @@ namespace Videa.ScreenManager
 		private formKeyframeComments m_KeyframeCommentsHub;
 		private bool m_bDocked;
 		private bool m_bTextEdit;
-		private bool m_bMeasuring = false;
+		private bool m_bMeasuring;
 
+		// Video Filters Management
+		private bool m_bDrawtimeFiltered;
+		private DrawtimeFilterOutput m_DrawingFilterOutput;
+		
 		// Others
 		private Magnifier m_Magnifier;
 		private double m_fDirectZoomFactor;       // Direct zoom (CTRL+/-)
@@ -479,7 +488,7 @@ namespace Videa.ScreenManager
 			HideResizers();
 			SetupKeyframesPanel();
 			m_Metadata.Reset();// unloadmovie complet ?
-			m_Mosaic.Disable();
+			m_bDrawtimeFiltered = false;
 
 			trkSelection.Minimum = 0;
 			trkSelection.Maximum = 100;
@@ -1276,7 +1285,7 @@ namespace Videa.ScreenManager
 			m_Metadata.Plane.Visible = false;
 			m_Metadata.Grid.Visible = false;
 			
-			m_Mosaic.Disable();
+			m_bDrawtimeFiltered = false;
 		}
 		#endregion
 
@@ -1697,7 +1706,7 @@ namespace Videa.ScreenManager
 			// MouseWheel was recorded on one of the controls.
 			int iScrollOffset = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
 
-			if(m_Mosaic.Enabled)
+			/*if(m_Mosaic.Enabled)
 			{
 				// We get two events, one for the picbox, the other for the panel.
 				// We'll ignore one of them.
@@ -1727,7 +1736,7 @@ namespace Videa.ScreenManager
 					m_SurfaceScreen.Invalidate();
 				}
 			}
-			else if ((ModifierKeys & Keys.Control) == Keys.Control)
+			else*/ if ((ModifierKeys & Keys.Control) == Keys.Control)
 			{
 				if (iScrollOffset > 0)
 				{
@@ -3508,6 +3517,11 @@ namespace Videa.ScreenManager
 										double fDeltaX = (double)((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).MouseDelta.X;
 										double fDeltaY = (double)((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).MouseDelta.Y;
 										
+										if(Mirrored)
+										{
+											fDeltaX = -fDeltaX;
+										}
+										
 										// Block at borders.
 										int iNewLeft = (int)((double)m_DirectZoomWindow.Left - fDeltaX);
 										int iNewTop = (int)((double)m_DirectZoomWindow.Top - fDeltaY);
@@ -3522,6 +3536,8 @@ namespace Videa.ScreenManager
 										
 										// Reposition.
 										m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
+									
+										log.Debug(String.Format("Zoom Window : Location:{0}, Size:{1}", m_DirectZoomWindow.Location, m_DirectZoomWindow.Size));
 									}
 								}
 							}
@@ -3664,9 +3680,9 @@ namespace Videa.ScreenManager
 			{
 				if (m_PlayerServer.m_bIsMovieLoaded)
 				{
-					if(m_Mosaic.Enabled)
+					if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 					{
-						m_Mosaic.Draw(e.Graphics, m_SurfaceScreen.Size);
+						m_DrawingFilterOutput.Draw(e.Graphics, m_SurfaceScreen.Size);
 					}
 					else if(m_PlayerServer.m_BmpImage != null)
 					{
@@ -3780,24 +3796,51 @@ namespace Videa.ScreenManager
 			// - Focus region
 			// - Rotate 90°/-90°
 			// - Mirror
-			//if (m_Metadata.Mirrored)
-			//{
-			//    g.DrawImage(_sourceImage, _iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
-			//}
-			//else
-			//{
-			//    g.DrawImage(_sourceImage, 0, 0, _iNewSize.Width, _iNewSize.Height);
-			//}
-
-			if (m_fDirectZoomFactor > 1.0f)
+			
+			Rectangle rDst;
+			if(m_Metadata.Mirrored)
 			{
-				Rectangle rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
-				g.DrawImage(_sourceImage, rDst, m_DirectZoomWindow, GraphicsUnit.Pixel);
+				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
 			}
 			else
 			{
-				g.DrawImage(_sourceImage, 0, 0, _iNewSize.Width, _iNewSize.Height);
+				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
 			}
+			
+			Rectangle rSrc;
+			if (m_fDirectZoomFactor > 1.0f)
+			{
+				rSrc = m_DirectZoomWindow;
+			}
+			else
+			{
+				rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);	
+			}
+			
+			g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
+			
+			/*
+			if(m_Metadata.Mirrored)
+				{
+					
+				}
+				else
+				{
+					g.DrawImage(_sourceImage, rDst, m_DirectZoomWindow, GraphicsUnit.Pixel);
+				}
+			}
+			else
+			{
+				if(m_Metadata.Mirrored)
+				{
+					
+				}
+				else
+				{
+					g.DrawImage(_sourceImage, 0, 0, _iNewSize.Width, _iNewSize.Height);
+				}
+				
+			}*/
 			
 
 
@@ -5129,6 +5172,25 @@ namespace Videa.ScreenManager
 		}
 		#endregion
 
+		#region VideoFilters Management
+		public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
+		{
+			// A video filter just finished and is passing us its output object.
+        	// It is used as a communication channel between the filter and the player.
+        	// Depending on the filter type, we may need to switch to a special mode, 
+        	// keep track of old pre-filter parameters,
+        	// delegate the draw to the filter, etc...
+        	
+        	m_bDrawtimeFiltered = true;
+        	m_DrawingFilterOutput = _dfo;
+        	
+        	// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
+        	DockKeyframePanel();
+			m_bStretchModeOn = true;
+			StretchSqueezeSurface();
+		}
+		#endregion
+		
 		#region Keyboard Handling
 		public bool OnKeyPress(Keys _keycode)
 		{
@@ -5399,8 +5461,8 @@ namespace Videa.ScreenManager
 					m_Mosaic.Disable();
 					StretchSqueezeSurface();
 					m_SurfaceScreen.Invalidate();
-				}
-				*/
+				}*/
+				
 				
 				// Launch sequence saving configuration dialog
 				formRafaleExport fre = new formRafaleExport(this, m_FullPath, m_iSelDuration, m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds, m_PlayerServer.m_InfosVideo.fFps);
