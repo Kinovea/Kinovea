@@ -193,6 +193,18 @@ namespace Videa.Services.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExperimentalRelease {
+            get {
+                return ((bool)(this["ExperimentalRelease"]));
+            }
+            set {
+                this["ExperimentalRelease"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0.0.0")]
         public string Release {
             get {

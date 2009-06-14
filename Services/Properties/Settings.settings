@@ -47,6 +47,9 @@
     <Setting Name="Release" Type="System.String" Scope="User">
       <Value Profile="(Default)">0.0.0</Value>
     </Setting>
+	<Setting Name="ExperimentalRelease" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="ExplorerVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
