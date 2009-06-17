@@ -62,7 +62,6 @@ namespace Videa.ScreenManager
 		#region Members
 		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
-		private List<Bitmap> m_InputFrames;
 		//private bool m_bKeyImagesOnly = false;
 		private bool m_bIsRightToLeft = false;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -85,20 +84,31 @@ namespace Videa.ScreenManager
 		#region AbstractVideoFilter Implementation
 		public override void Menu_OnClick(object sender, EventArgs e)
         {
-			// 1. Display configuration dialog box.
-			formConfigureMosaic fcm = new formConfigureMosaic(m_FrameList.Count);
-			if (fcm.ShowDialog() == DialogResult.OK)
+			if(m_Menu.Checked)
 			{
-				SetInputFrames(fcm.FramesToExtract);
-				m_bIsRightToLeft = fcm.IsRightToLeft;
-				
-				DrawtimeFilterOutput dfo = new DrawtimeFilterOutput();
-				dfo.Draw = new DelegateDraw(Draw);
-				
-				// Notify the ScreenManager that we are done.
+				// Toggle off filter.
+				DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, false);
 				ProcessingOver(dfo);
 			}
-			fcm.Dispose();
+			else
+			{
+				// 1. Display configuration dialog box.
+				formConfigureMosaic fcm = new formConfigureMosaic(m_FrameList.Count);
+				if (fcm.ShowDialog() == DialogResult.OK)
+				{
+					DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
+					
+					// Set up the output object so it becomes independant from this filter instance.
+					// (otherwise another use of this filter on a video in the second video will interfere)
+					dfo.InputFrames = GetInputFrames(fcm.FramesToExtract);
+					dfo.PrivateData = fcm.IsRightToLeft;
+					dfo.Draw = new DelegateDraw(Draw);
+					
+					// Notify the ScreenManager that we are done.
+					ProcessingOver(dfo);
+				}
+				fcm.Dispose();
+			}
         }
 		protected override void Process()
 		{
@@ -108,11 +118,12 @@ namespace Videa.ScreenManager
 		#endregion
 		
 		#region Draw Implementation
-		public void Draw(Graphics g, Size _iNewSize)
+		public static void Draw(Graphics g, Size _iNewSize, List<Bitmap> _inputFrames, object _privateData)
 		{
 			// This method will be called by a player screen at draw time.
+			// static: the DrawingtimeFilterObject contains all that is needed to use the method.
 			
-			if(m_InputFrames != null && m_InputFrames.Count > 0)
+			if(_inputFrames != null && _inputFrames.Count > 0 && _privateData is bool )
 			{
 				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 				g.CompositingQuality = CompositingQuality.HighSpeed;
@@ -128,22 +139,22 @@ namespace Videa.ScreenManager
 				// - Each image must be scaled down by a factor of 1/6.
 				//---------------------------------------------------------------------------
 				
-				int iSide = (int)Math.Ceiling(Math.Sqrt((double)m_InputFrames.Count));
+				int iSide = (int)Math.Ceiling(Math.Sqrt((double)_inputFrames.Count));
 				int iThumbWidth = _iNewSize.Width / iSide;
 				int iThumbHeight = _iNewSize.Height / iSide;
 					
-				Rectangle rSrc = new Rectangle(0, 0, m_InputFrames[0].Width, m_InputFrames[0].Height);
+				Rectangle rSrc = new Rectangle(0, 0, _inputFrames[0].Width, _inputFrames[0].Height);
 		
 				for(int i=0;i<iSide;i++)
 				{
 					for(int j=0;j<iSide;j++)
 					{
 						int iImageIndex = j*iSide + i;
-						if(iImageIndex < m_InputFrames.Count && m_InputFrames[iImageIndex] != null)
+						if(iImageIndex < _inputFrames.Count && _inputFrames[iImageIndex] != null)
 						{
 							// compute left coord depending on "RightToLeft" status.
 							int iLeft;
-							if(m_bIsRightToLeft)
+							if((bool)_privateData)
 							{
 								iLeft = (iSide - 1 - i)*iThumbWidth;
 							}
@@ -153,7 +164,7 @@ namespace Videa.ScreenManager
 							}
 							
 							Rectangle rDst = new Rectangle(iLeft, j*iThumbHeight, iThumbWidth, iThumbHeight);
-							g.DrawImage(m_InputFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
+							g.DrawImage(_inputFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
 						}
 					}
 				}
@@ -162,11 +173,11 @@ namespace Videa.ScreenManager
 		#endregion
 		
 		#region Private methods
-		private void SetInputFrames(int _iFramesToExtract)
+		private List<Bitmap> GetInputFrames(int _iFramesToExtract)
 		{
 			// Get the subset of images we will be using for the mosaic.
 			
-			m_InputFrames = new List<Bitmap>();
+		 	List<Bitmap> inputFrames = new List<Bitmap>();
 			double fExtractStep = (double)m_FrameList.Count / _iFramesToExtract;
 
 			int iExtracted = 0;
@@ -174,10 +185,12 @@ namespace Videa.ScreenManager
 			{
 				if(i >= iExtracted * fExtractStep)
 				{
-					m_InputFrames.Add(m_FrameList[i].BmpImage);
+					inputFrames.Add(m_FrameList[i].BmpImage);
 					iExtracted++;
 				}
 			}
+			
+			return inputFrames;
 		}
 		#endregion
 	}

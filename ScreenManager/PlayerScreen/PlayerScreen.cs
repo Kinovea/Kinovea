@@ -186,6 +186,10 @@ namespace Videa.ScreenManager
                 RefreshImage();
             }
         }
+        public int DrawtimeFilterType
+        {
+        	get {return m_PlayerScreenUI.DrawtimeFilterType;}
+        }
         #endregion
 
         #region members
@@ -306,13 +310,11 @@ namespace Videa.ScreenManager
         {
             m_PlayerScreenUI.ResetSelectionImages(_memo);
         }
-
         public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
         {
         	// A video filter just finished and is passing us its output object.
         	// It is used as a communication channel between the filter and the player.
         	m_PlayerScreenUI.SetDrawingtimeFilterOutput(_dfo);
-        	
         }
     }
 }

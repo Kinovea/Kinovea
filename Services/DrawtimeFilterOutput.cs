@@ -19,12 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Videa.Services
 {
 	
-	public delegate void DelegateDraw(Graphics _canvas, Size _newSize);
+	public delegate void DelegateDraw(Graphics _canvas, Size _newSize, List<Bitmap> _inputFrames, object _privateData);
     
 	
 	/// <summary>
@@ -33,12 +34,7 @@ namespace Videa.Services
 	/// Once a filter is configured (and possibly preprocessed) it returns such an object.
 	/// This is used for filters that needs back and forth communication with the player.
 	/// 
-	/// For example Mosaic filter configuration will simply set the input frames for the mosaic.
-	/// The player will then ask the filter to draw them at the right canvas size.
-	/// 
-	/// Other example, the Kinorama filter will need to know which poses 
-	/// should be included in the final image.
-	/// 
+	/// An object of this class needs to be like a self contained filter. 
 	/// It can also be used for filters that alter the image size.
 	/// </summary>
 	public class DrawtimeFilterOutput
@@ -46,11 +42,40 @@ namespace Videa.Services
 		#region Delegates
 		public DelegateDraw Draw;
 		#endregion
-		
-		#region Propertie/members
-		public Size ImageSize;
+
+		#region Properties
+		public int VideoFilterType 
+		{
+			get { return m_iVideoFilterType; }
+		}				
+		public bool Active
+		{
+			get { return m_bActive; }
+		}
+		public List<Bitmap> InputFrames
+		{
+			get { return m_InputFrames; }
+			set { m_InputFrames = value; }
+		}
+		public object PrivateData
+		{
+			get { return m_PrivateData; }
+			set { m_PrivateData = value; }
+		}
 		#endregion
 		
+		#region Propertie/members
+		private int m_iVideoFilterType;
+		private bool m_bActive;
+		private List<Bitmap> m_InputFrames;
+		private object m_PrivateData;
+		#endregion
+		
+		public DrawtimeFilterOutput(int _VideoFilterType, bool _bActive)
+		{
+			m_iVideoFilterType = _VideoFilterType;
+			m_bActive = _bActive;
+		}
 		
 	}
 }

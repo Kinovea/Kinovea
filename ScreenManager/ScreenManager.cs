@@ -891,29 +891,20 @@ namespace Videa.ScreenManager
             //----------------------------------------------------------
             // 3. Is a given boolean menu checked ?
         	//----------------------------------------------------------
-            /*if(!_bDisableAll && _player != null)
+            
+        	// Uncheck all togglable menus
+        	foreach(AbstractVideoFilter vf in m_VideoFilters)
         	{
-	            if (_player.IsInAnalysisMode)
-	            {        		
-	                m_mnuMirror.Checked = _player.MirrorFilter.bMirrored;
-	            }
-	            else
-	            {
-	                if (m_mnuMirror.Checked)
-	                {
-	                	// We switched back to regular mode.
-	                    m_mnuMirror.Checked = false;
-	                    CommandManager cm = CommandManager.Instance();
-	                    cm.ResetHistory();
-	                }
-	                
-	                _player.MirrorFilter.bMirrored = false;
-	            }	            	
-            }
-			else
-			{
-				m_mnuMirror.Checked = false;	
-			}*/
+        		vf.Menu.Checked = false;
+        	}
+        	
+        	if(_player != null)
+        	{
+        		if(_player.DrawtimeFilterType > -1)
+        		{
+        			m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;
+        		}
+        	}
         }
 
         #region Menus events handlers
@@ -2055,13 +2046,17 @@ namespace Videa.ScreenManager
         }
         public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         {
+        	// Todo, désactiver les filtres drawtime dans le player s'il y en a.
+        	
         	if(_dfo != null)
         	{
+    			m_VideoFilters[_dfo.VideoFilterType].Menu.Checked = _dfo.Active;
+    			
         		PlayerScreen player = m_ActiveScreen as PlayerScreen;
 	        	if(player != null)
 	        	{
 	        		player.SetDrawingtimeFilterOutput(_dfo);
-	        	}	
+	        	}
         	}
         	
         	m_ActiveScreen.RefreshImage();
