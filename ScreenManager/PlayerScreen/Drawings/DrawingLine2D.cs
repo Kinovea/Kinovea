@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using PdfSharp.Drawing;
 using System.Xml;
 using Videa.Services;
 using System.Resources;
@@ -193,27 +192,6 @@ namespace Videa.ScreenManager
                 }
             }
             return iHitResult;
-        }
-        public override void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor)
-        {
-            // Scale to PDF stretch
-            RescaleCoordinates(_fStrecthFactor, new Point(0, 0));
-
-            // Convert Pen
-            XPen penLine = new XPen(XColor.FromArgb(m_PenStyle.Color), m_PenStyle.Size);
-
-            // PDFSharp doesn't support arrows yet... :-(
-
-            // Draw lines
-            _gfx.DrawLine(penLine, _iImageLeft + m_RescaledStartPoint.X, _iImageTop + m_RescaledStartPoint.Y, _iImageLeft + m_RescaledEndPoint.X, _iImageTop + m_RescaledEndPoint.Y);
-
-            XPen penHandlers = new XPen(XColor.FromArgb(m_PenStyle.Color), 1);
-            // Draw Ellipses...
-            _gfx.DrawEllipse(penHandlers, GetShiftedRescaledHandleRectangle(1, _iImageLeft, _iImageTop));
-            _gfx.DrawEllipse(penHandlers, GetShiftedRescaledHandleRectangle(2, _iImageLeft, _iImageTop));
-
-            // Scale back to screen stretch
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override void ToXmlString(XmlTextWriter _xmlWriter)
         {

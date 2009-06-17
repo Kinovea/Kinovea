@@ -21,7 +21,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using CPI.Plot3D;
 using System.Drawing;
 using System.Windows.Forms;
 using Videa.Services;
@@ -64,14 +63,9 @@ namespace Videa.ScreenManager
         private double m_fStretchFactor = 1.0;
         private Point m_DirectZoomTopLeft;
         private bool m_bVisible = false;
-        private Point3D m_GridLocation;
-        private Point3D MemoGridLocation;
-        private int m_iAngleAxisX;
-        private int m_iAngleAxisY;
 
         private float m_fSideLength;
         private int m_iDivisions;
-        private Point3D m_CameraLocation;
         private bool m_bSupport3D;
         private Pen m_PenEdges;
 
@@ -104,11 +98,7 @@ namespace Videa.ScreenManager
             m_bSupport3D = _support3D;
             m_PenEdges = Pens.White;
 
-            m_CameraLocation = new Point3D(0, 0, -500);
-            m_GridLocation = new Point3D(0, 0, 0);
             m_fShift = 0;
-
-            MemoGridLocation = new Point3D(m_GridLocation.X, m_GridLocation.Y, m_GridLocation.Z);
 
             m_HomoPlane = new Point[4];
             m_HomoPlane[0] = new Point(0, 0);
@@ -169,102 +159,6 @@ namespace Videa.ScreenManager
                 m_PenEdges.DashStyle = DashStyle.Dash;
             }
             
-            #region 3D code (unused)
-            //-----------------------------------------------------------
-            // Draw the 3d grid.
-            // - Plotter3D is used like logo programming.
-            // - At startup, the turtle is looking right and seen from above.
-            // - If no other angle is specified, we draw the grid on the 
-            // horizontal plane (we start with a turn down 90°).
-            //-----------------------------------------------------------
-            /*bool bIsNumberOfDivisionsEven = (m_iDivisions % 2 == 0);
-            float fRowLength = m_fSideLength / m_iDivisions;
-            using (Plotter3D plotGrid = new Plotter3D(_canvas, m_CameraLocation))
-            {
-                plotGrid.m_PenColor = m_PenEdges.Color;
-                plotGrid.PenWidth = m_PenEdges.Width;
-
-                plotGrid.Location = m_GridLocation;
-                
-                RotateAndPlace(plotGrid);
-                SetCornersPositions(plotGrid);
-
-                plotGrid.TurnDown(90);
-
-                // B.1. away/home lines
-                for (int i = 0; i < m_iDivisions; i++)
-                {
-                    if (i % 2 == 0)
-                    {
-                        // away
-                        plotGrid.Forward(m_fSideLength);
-                        plotGrid.TurnUp(90);
-                        plotGrid.Forward(fRowLength);
-                        plotGrid.TurnUp(90);
-                    }
-                    else
-                    {
-                        // home
-                        plotGrid.Forward(m_fSideLength);
-                        plotGrid.TurnDown(90);
-                        plotGrid.Forward(fRowLength);
-                        plotGrid.TurnDown(90);
-                    }
-                }
-
-
-                float rotation = 90;
-                if (!bIsNumberOfDivisionsEven)
-                {
-                    rotation = 270;
-                }
-
-                plotGrid.TurnDown(rotation);
-
-                // B.2. Left/Right lines
-                for (int i = 0; i < m_iDivisions; i++)
-                {
-                    if (i % 2 == 0)
-                    {
-                        // lefty
-                        plotGrid.Forward(m_fSideLength);
-                        plotGrid.TurnUp(rotation);
-                        plotGrid.Forward(fRowLength);
-                        plotGrid.TurnUp(rotation);
-                    }
-                    else
-                    {
-                        // rihgty
-                        plotGrid.Forward(m_fSideLength);
-                        plotGrid.TurnDown(rotation);
-                        plotGrid.Forward(fRowLength);
-                        plotGrid.TurnDown(rotation);
-                    }
-                }
-
-                // finish
-                if (bIsNumberOfDivisionsEven)
-                {
-                    plotGrid.Forward(m_fSideLength);
-                    plotGrid.TurnUp(180);
-                    plotGrid.PenUp();
-                    plotGrid.Forward(m_fSideLength);
-                    plotGrid.TurnUp(90);
-                    plotGrid.PenDown();
-                    plotGrid.Forward(m_fSideLength);
-                }
-                else
-                {
-                    plotGrid.Forward(m_fSideLength);
-                    plotGrid.TurnUp(270);
-                    plotGrid.Forward(m_fSideLength);
-                }
-
-
-                m_Bounding = plotGrid.BoundingBox;
-            }*/
-            #endregion
-
             // Draw handlers as small filled circle.
             SolidBrush br = new SolidBrush(m_PenEdges.Color);
             for (int i = 0; i < m_RescaledSourceCorners.Length; i++)
@@ -596,12 +490,6 @@ namespace Videa.ScreenManager
                 RedefineHomography();
                 m_fShift = 0.0F;
             }
-            #region old 3D stuff
-            //int left = (int)((double)_ImageSize.Width * m_fStretchFactor) / 2;
-            //int top = (int)((double)_ImageSize.Height * m_fStretchFactor) / 2;
-            //m_CameraLocation = new Point3D(left, top, -500);
-            //m_GridLocation = new Point3D(left, top, 0);
-            #endregion
         }
 
         #region Scaling
@@ -753,90 +641,5 @@ namespace Videa.ScreenManager
         }
         #endregion
 
-        #region Unused 3D stuff
-        private void SetCornersPositions(Plotter3D p)
-        {
-            // Set the screen position (2D) for the 4 corners.
-            /*
-            p.PenUp();
-            
-            p.Forward(m_fSideLength);
-            p.TurnDown(90);
-            m_CornerNearRight = p.Location.GetScreenPosition(m_CameraLocation);
-
-            p.Forward(m_fSideLength);
-            p.TurnDown(90);
-            m_CornerFarRight = p.Location.GetScreenPosition(m_CameraLocation);
-
-
-            p.Forward(m_fSideLength);
-            p.TurnDown(90);
-            m_CornerFarLeft = p.Location.GetScreenPosition(m_CameraLocation);
-
-            p.Forward(m_fSideLength);
-            p.TurnDown(90);
-            m_CornerNearLeft = p.Location.GetScreenPosition(m_CameraLocation);
-
-            p.PenDown();*/
-        }
-        private void RotateAndPlace(Plotter3D p)
-        {
-            //----------------------------------------------------------------
-            // Rotate the play head according to current angles values.
-            // Then move to near/left corner.
-            // At that point, the turtle is looking right and seen from above.
-            //----------------------------------------------------------------
-            p.PenUp();
-
-            // Rotate around the X axis:
-            p.TurnDown(90);
-            p.TurnLeft(m_iAngleAxisX);
-
-            // Rotate around the Y axis:
-            p.TurnUp(90);
-            p.TurnDown(m_iAngleAxisY);
-
-            // Move to the origin point. (near/left)
-            p.TurnUp(90);
-            p.Forward(m_fSideLength / 2);
-            p.TurnUp(90);
-            p.Forward(m_fSideLength / 2);
-            p.TurnUp(180);
-
-            // At that point turtle is looking right and seen from above.
-            // At near / left corner.
-            p.PenDown();
-        }
-        private void DrawCube(Plotter3D p, float sideLength)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                DrawSquare(p, sideLength);
-                p.Forward(sideLength);
-                p.TurnUp(90);
-            }
-        }
-        private void DrawSquare(Plotter3D p, float sideLength)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                p.Forward(sideLength);  // Draw a line sideLength long
-                p.TurnRight(90);        // Turn right 90 degrees
-            }
-        }
-        public void ResetAngles()
-        {
-             m_iAngleAxisY = 0;
-
-             if (m_bSupport3D)
-             {
-                 m_iAngleAxisX = 45;
-             }
-             else
-             {
-                 m_iAngleAxisX = 90;
-             }
-        }
-        #endregion
     }
 }

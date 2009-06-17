@@ -29,7 +29,6 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using PdfSharp.Drawing;
 using Videa.Services;
 
 namespace Videa.ScreenManager
@@ -256,90 +255,6 @@ namespace Videa.ScreenManager
             }
 
             return iHitResult;
-        }
-        public override void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor)
-        {
-            // should never be called.
-        }
-        public void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor, long _iTimestamp)
-        {
-            if (_iTimestamp >= m_iVisibleTimestamp && _iTimestamp <= m_iInvisibleTimestamp)
-            {
-                // Scale to PDF stretch
-                RescaleCoordinates(_fStrecthFactor, new Point(0, 0));
-                Rectangle RescaledBackground = new Rectangle(m_RescaledTopLeft.X, m_RescaledTopLeft.Y, (int)m_BackgroundSize.Width + 11, (int)m_BackgroundSize.Height + 7);
-
-                // We check if the Drawing doesn't go outside image. (Possible with Texts)
-                int iShiftHorz = (_iImageLeft + _iImageWidth) - (_iImageLeft + RescaledBackground.X + RescaledBackground.Width);
-                if (iShiftHorz > 0)
-                {
-                    // Ok : Not outside the right border
-                    if (RescaledBackground.X > 0)
-                    {
-                        // Ok : Not outside the left border
-                        iShiftHorz = 0;
-                    }
-                    else
-                    {
-                        // Shift and small margin
-                        iShiftHorz = -RescaledBackground.X + 2;
-                    }
-                }
-                else
-                {
-                    // small margin
-                    iShiftHorz -= 2;
-                }
-
-                int iShiftVert = (_iImageTop + _iImageHeight) - (_iImageTop + RescaledBackground.Y + RescaledBackground.Height);
-                if (iShiftVert > 0)
-                {
-                    // Not outside the right border
-                    if (RescaledBackground.Y > 0)
-                    {
-                        // Not outside the bottom border
-                        iShiftVert = 0;
-                    }
-                    else
-                    {
-                        // Shift and small margin
-                        iShiftVert = -RescaledBackground.Y + 2;
-                    }
-                }
-                else
-                {
-                    iShiftVert -= 2;
-                }
-
-
-                // Shift the drawing so it's inside picture
-                ShiftCoordinates(iShiftHorz, iShiftVert, _fStrecthFactor);
-
-
-                // Draw background
-                DrawBackgroundOnPDF(_gfx, _iImageLeft, _iImageTop);
-
-                // draw chrono value
-                Font f = m_TextStyle.GetInternalFont();
-                XFont font = new XFont(f.Name, f.Size, XFontStyle.Bold);
-                XSolidBrush brush = new XSolidBrush(XColor.FromArgb(m_TextStyle.GetFadingForeColor(255)));
-
-                string text = GetTextValue(_iTimestamp);
-                _gfx.DrawString(text, font, brush, new Point(m_RescaledTopLeft.X + _iImageLeft + (int)(((double)RescaledBackground.Width - m_BackgroundSize.Width) / 2), m_RescaledTopLeft.Y + (int)((double)m_TextStyle.FontSize * 1.1) + _iImageTop));
-
-                // draw label
-                if (m_bShowLabel && m_Label.Length > 0)
-                {
-                    DrawLabelOnPDF(_gfx, _iImageLeft, _iImageTop);
-                }
-                
-                // Shift back
-                ShiftCoordinates(-iShiftHorz, -iShiftVert, _fStrecthFactor);
-
-                // Scale back to screen stretch
-                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            }
-           
         }
         public override void ToXmlString(XmlTextWriter _xmlWriter)
         {
@@ -787,40 +702,6 @@ namespace Videa.ScreenManager
         	Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
         	SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor((float)_fOpacityFactor));
             _canvas.DrawString(m_Text, fontText, fontBrush, new Point(m_RescaledTopLeft.X + 7, m_RescaledTopLeft.Y + 5));
-        }
-        private void DrawBackgroundOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop)
-        {
-            // Draw background (Rounded rectangle)
-            XBrush FillBrush = new XSolidBrush(XColor.FromArgb(m_TextStyle.GetFadingBackColor(0.5f).ToArgb()));
-           	
-            double fFixWidthFactor = 0.80;
-            Rectangle RescaledBackground = new Rectangle(m_RescaledTopLeft.X, m_RescaledTopLeft.Y, (int)(m_BackgroundSize.Width * fFixWidthFactor), (int)m_BackgroundSize.Height);
-
-            _gfx.DrawRoundedRectangle(FillBrush, _iImageLeft + RescaledBackground.X, _iImageTop + RescaledBackground.Y, RescaledBackground.Width, RescaledBackground.Height, m_TextStyle.FontSize, m_TextStyle.FontSize);
-        }
-        private void DrawLabelOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop)
-        {
-            if (m_Label.Length > 0)
-            {
-                Font fontText = m_TextStyle.GetInternalFont(0.5f);
-                
-                // Get size. Size is not rescaled.
-                Button but = new Button(); // Hack to get a Graphics object.
-                SizeF labelSize = but.CreateGraphics().MeasureString(m_Label + " ", fontText);
-
-                double fFixWidthFactor = 0.80;
-                Rectangle LabelRectangle = new Rectangle(m_RescaledTopLeft.X + m_TextStyle.FontSize / 2, m_RescaledTopLeft.Y - (int)labelSize.Height - 1, (int)((double)labelSize.Width * fFixWidthFactor), (int)labelSize.Height);
-
-                XBrush FillBrush = new XSolidBrush(XColor.FromArgb(m_TextStyle.GetFadingBackColor(0.5f).ToArgb()));
-                
-                _gfx.DrawRoundedRectangle(FillBrush, _iImageLeft + LabelRectangle.X, _iImageTop + LabelRectangle.Y, LabelRectangle.Width, LabelRectangle.Height, m_TextStyle.FontSize / 2, m_TextStyle.FontSize / 2);
-
-                // Draw label text
-                XFont font = new XFont(fontText.Name, fontText.Size);
-                XSolidBrush brush = new XSolidBrush(XColor.FromArgb(m_TextStyle.GetFadingForeColor(0.5f).ToArgb()));
-
-                _gfx.DrawString(m_Label, font, brush, new Point(_iImageLeft + LabelRectangle.X + 5, _iImageTop + LabelRectangle.Y + (int)((double)fontText.Size * 1.1)));
-            }
         }
         private void ShiftCoordinates(int _iShiftHorz, int _iShiftVert, double _fStretchFactor)
         {

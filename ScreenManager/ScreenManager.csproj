@@ -68,19 +68,11 @@
     <Reference Include="AForge.Video.DirectShow">
       <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
-    <Reference Include="CPI.Plot3D, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\CPI.Plot3D.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="PdfSharp, Version=1.0.898.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\PdfSharp.dll</HintPath>
-    </Reference>
     <Reference Include="PlayerServer">
       <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
     </Reference>
@@ -92,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractScreen.cs" />
-    <Compile Include="AnalysisExporterPDF.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.cs">
       <SubType>UserControl</SubType>

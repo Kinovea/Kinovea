@@ -34,7 +34,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using AForge.Video.DirectShow;
-using CPI.Plot3D;
 using Videa.Services;
 using VideaPlayerServer;
 
@@ -4928,41 +4927,6 @@ namespace Videa.ScreenManager
 				if (dp.ActivateKeyboardHandler != null)
 				{
 					dp.ActivateKeyboardHandler();
-				}
-			}
-		}
-		private void btnPdf_Click(object sender, EventArgs e)
-		{
-			if (m_Metadata.Keyframes.Count < 1)
-			{
-				MessageBox.Show(m_ResourceManager.GetString("Error_SavePdf_NoKeyFrames", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-				                m_ResourceManager.GetString("Error_SavePdf", Thread.CurrentThread.CurrentUICulture),
-				                MessageBoxButtons.OK,
-				                MessageBoxIcon.Exclamation);
-			}
-			else if ((m_PlayerServer.m_bIsMovieLoaded) && (m_PlayerServer.m_BmpImage != null))
-			{
-				StopPlaying();
-
-				SaveFileDialog saveFileDialog = new SaveFileDialog();
-				saveFileDialog.Title = m_ResourceManager.GetString("dlgExportToPDF_Title", Thread.CurrentThread.CurrentUICulture);
-				saveFileDialog.RestoreDirectory = true;
-				saveFileDialog.Filter = m_ResourceManager.GetString("dlgExportToPDF_Filter", Thread.CurrentThread.CurrentUICulture);
-				saveFileDialog.FilterIndex = 1;
-				saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_Metadata.FullPath);
-
-				if (saveFileDialog.ShowDialog() == DialogResult.OK)
-				{
-					string filePath = saveFileDialog.FileName;
-					if (filePath.Length > 0)
-					{
-						if (!filePath.ToLower().EndsWith(".pdf"))
-						{
-							filePath = filePath + ".pdf";
-						}
-						AnalysisExporterPDF aepdf = new AnalysisExporterPDF();
-						aepdf.Export(filePath, m_Metadata);
-					}
 				}
 			}
 		}
