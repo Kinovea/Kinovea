@@ -237,6 +237,22 @@ namespace Videa.ScreenManager
 			get { return m_fSlowFactor; }
 			set { m_fSlowFactor = value; }
 		}
+		
+		// DrawtimeFilterType
+		public int DrawtimeFilterType
+		{
+			get
+			{
+				if(m_bDrawtimeFiltered)
+				{
+					return m_DrawingFilterOutput.VideoFilterType;
+				}
+				else
+				{
+					return -1;	
+				}
+			}
+		}
 		#endregion
 
 		#region Members
@@ -489,6 +505,8 @@ namespace Videa.ScreenManager
 			SetupKeyframesPanel();
 			m_Metadata.Reset();// unloadmovie complet ?
 			m_bDrawtimeFiltered = false;
+			EnableDisableAllPlayingControls(true);
+	        EnableDisableDrawingTools(true);
 
 			trkSelection.Minimum = 0;
 			trkSelection.Maximum = 100;
@@ -1341,78 +1359,6 @@ namespace Videa.ScreenManager
 		#endregion
 		
 		#region Conversions  / Rescalings
-		/*private string MillisecondsToTimecode(long _iTotalMilliseconds, int _iFrameInterval, double _fSlowFactor, double _fFps)
-		{
-			// [2008-01-05] TimeCode granularity is now in Hundredth, not in Frames.
-
-			//-------------------------------------------
-			// Input    : Milliseconds (Can be negative.)
-			// Output   : 'hh:mm:ss:00'
-			//--------------------------------------------
-			int iMinutes, iSeconds, iMilliseconds, iFrames;
-			int iTotalHours, iTotalMinutes, iTotalSeconds;
-			string timecode;
-			bool bNegative = (_iTotalMilliseconds < 0);
-
-
-			//-------------------------------------------------
-			// calcul heures, minutes, secondes, millisecondes.
-			//-------------------------------------------------
-			iTotalSeconds   = (int)(_iTotalMilliseconds / 1000);
-			iTotalMinutes   = iTotalSeconds / 60;
-			iTotalHours     = iTotalMinutes / 60;
-
-			iMinutes        = iTotalMinutes - (iTotalHours * 60);
-			iSeconds        = iTotalSeconds - (iTotalMinutes * 60);
-			iMilliseconds   = (int)_iTotalMilliseconds - (iTotalSeconds * 1000);
-			
-			//-------------------------------------------------------------------------------------
-			// Petit Hack au cas où la frame réelle sur laquelle on est positionnée
-			// est avant le début de la selection primaire.
-			// Si on fait un seek(selStart) et qu'on tombre sur la dernière I-Frame avant SelStart.
-			// On restera dans cet état jusqu'à ce qu'on emmerge dans la selection primaire.
-			//-------------------------------------------------------------------------------------
-			
-			// Calcul frames
-			if (_iFrameInterval > 0)
-				iFrames = iMilliseconds / _iFrameInterval;
-			else
-				iFrames = 0;
-
-			bool bThousandth = (_fSlowFactor * _fFps >= 100);
-			
-			// Since the time can be relative to a sync point, it can be negative.
-			if (bNegative)
-			{
-				iTotalHours = -iTotalHours;
-				iMinutes = -iMinutes;
-				iSeconds = -iSeconds;
-				iFrames = -iFrames;
-				iMilliseconds = -iMilliseconds;
-
-				if (!bThousandth)
-				{
-					timecode = String.Format("- {0:0}:{1:00}:{2:00}:{3:00}", iTotalHours, iMinutes, iSeconds, iMilliseconds / 10);
-				}
-				else
-				{
-					timecode = String.Format("- {0:0}:{1:00}:{2:00}:{3:000}", iTotalHours, iMinutes, iSeconds, iMilliseconds);
-				}
-			}
-			else
-			{
-				if (!bThousandth)
-				{
-					timecode = String.Format("{0:0}:{1:00}:{2:00}:{3:00}", iTotalHours, iMinutes, iSeconds, iMilliseconds / 10);
-				}
-				else
-				{
-					timecode = String.Format("{0:0}:{1:00}:{2:00}:{3:000}", iTotalHours, iMinutes, iSeconds, iMilliseconds);
-				}
-			}
-
-			return timecode;
-		}*/
 		private string TimeStampsToTimecode(long _iTimeStamp, TimeCodeFormat _timeCodeFormat, bool _bSynched)
 		{
 			//-------------------------
@@ -3102,6 +3048,7 @@ namespace Videa.ScreenManager
 			mnuPlayPause.Text = ((ItemResourceInfo)mnuPlayPause.Tag).resManager.GetString(((ItemResourceInfo)mnuPlayPause.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuSetSelectionStart.Text = ((ItemResourceInfo)mnuSetSelectionStart.Tag).resManager.GetString(((ItemResourceInfo)mnuSetSelectionStart.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuSetSelectionEnd.Text = ((ItemResourceInfo)mnuSetSelectionEnd.Tag).resManager.GetString(((ItemResourceInfo)mnuSetSelectionEnd.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			mnuSetCaptureSpeed.Text = ((ItemResourceInfo)mnuSetCaptureSpeed.Tag).resManager.GetString(((ItemResourceInfo)mnuSetCaptureSpeed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			//mnuLockSelection déjà fait plus haut...
 			mnuSavePic.Text = ((ItemResourceInfo)mnuSavePic.Tag).resManager.GetString(((ItemResourceInfo)mnuSavePic.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuCloseScreen.Text = ((ItemResourceInfo)mnuCloseScreen.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseScreen.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -3682,7 +3629,7 @@ namespace Videa.ScreenManager
 				{
 					if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 					{
-						m_DrawingFilterOutput.Draw(e.Graphics, m_SurfaceScreen.Size);
+						m_DrawingFilterOutput.Draw(e.Graphics, m_SurfaceScreen.Size, m_DrawingFilterOutput.InputFrames, m_DrawingFilterOutput.PrivateData);
 					}
 					else if(m_PlayerServer.m_BmpImage != null)
 					{
@@ -3819,30 +3766,6 @@ namespace Videa.ScreenManager
 			
 			g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
 			
-			/*
-			if(m_Metadata.Mirrored)
-				{
-					
-				}
-				else
-				{
-					g.DrawImage(_sourceImage, rDst, m_DirectZoomWindow, GraphicsUnit.Pixel);
-				}
-			}
-			else
-			{
-				if(m_Metadata.Mirrored)
-				{
-					
-				}
-				else
-				{
-					g.DrawImage(_sourceImage, 0, 0, _iNewSize.Width, _iNewSize.Height);
-				}
-				
-			}*/
-			
-
 
 			#region other perf tests
 			// 1.b. Testing Crop - Does not impact performances.
@@ -5181,13 +5104,79 @@ namespace Videa.ScreenManager
         	// keep track of old pre-filter parameters,
         	// delegate the draw to the filter, etc...
         	
-        	m_bDrawtimeFiltered = true;
-        	m_DrawingFilterOutput = _dfo;
-        	
-        	// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
-        	DockKeyframePanel();
-			m_bStretchModeOn = true;
-			StretchSqueezeSurface();
+        	if(_dfo.Active)
+        	{	
+	        	m_bDrawtimeFiltered = true;
+	        	m_DrawingFilterOutput = _dfo;
+	        	
+	        	// Disable playing and drawing.
+	        	DisablePlayAndDraw();
+	        			
+	        	// Disable all player controls
+	        	EnableDisableAllPlayingControls(false);
+	        	EnableDisableDrawingTools(false);
+	        	
+	        	// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
+	        	DockKeyframePanel();
+				m_bStretchModeOn = true;
+				StretchSqueezeSurface();
+        	}
+        	else
+        	{
+        		m_bDrawtimeFiltered = false;
+	        	m_DrawingFilterOutput = null;
+
+	        	EnableDisableAllPlayingControls(true);
+	        	EnableDisableDrawingTools(true);
+	        	
+	        	// TODO:recall saved state.
+        	}
+		}
+		private void DisablePlayAndDraw()
+		{
+			StopPlaying();
+			m_ActiveTool = DrawingToolType.Pointer;
+			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+			DisableMagnifier();
+			UnzoomDirectZoom();
+		}
+		private void EnableDisableAllPlayingControls(bool _bEnable)
+		{
+			buttonGotoFirst.Enabled = _bEnable;
+			buttonGotoLast.Enabled = _bEnable;
+			buttonGotoNext.Enabled = _bEnable;
+			buttonGotoPrevious.Enabled = _bEnable;
+			buttonPlay.Enabled = _bEnable;
+			
+			btnSetHandlerLeft.Enabled = _bEnable;
+			btnSetHandlerRight.Enabled = _bEnable;
+			btnHandlersReset.Enabled = _bEnable;
+			btn_HandlersLock.Enabled = _bEnable;
+			
+			btnPdf.Enabled = _bEnable;
+			btnRafale.Enabled = _bEnable;
+			
+			lblSpeedTuner.Enabled = _bEnable;
+			trkFrame.Enabled = _bEnable;
+			trkSelection.Enabled = _bEnable;
+			sldrSpeed.Enabled = _bEnable;
+			buttonPlayingMode.Enabled = _bEnable;
+			btnDiaporama.Enabled = _bEnable;
+		}
+		private void EnableDisableDrawingTools(bool _bEnable)
+		{
+			btnShowComments.Enabled = _bEnable;
+			btn3dplane.Enabled = _bEnable;
+			btnDrawingToolAngle2D.Enabled = _bEnable;
+			btnDrawingToolChrono.Enabled = _bEnable;
+			btnDrawingToolCross2D.Enabled = _bEnable;
+			btnDrawingToolLine2D.Enabled = _bEnable;
+			btnDrawingToolPencil.Enabled = _bEnable;
+			btnDrawingToolPointer.Enabled = _bEnable;
+			btnDrawingToolText.Enabled = _bEnable;
+			btnMagnifier.Enabled = _bEnable;
+			btnColorProfile.Enabled = _bEnable;
+			btnAddKeyframe.Enabled = _bEnable;
 		}
 		#endregion
 		
@@ -5208,11 +5197,7 @@ namespace Videa.ScreenManager
 					}
 				case Keys.Escape:
 					{
-						StopPlaying();
-						m_ActiveTool = DrawingToolType.Pointer;
-						SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
-						DisableMagnifier();
-						UnzoomDirectZoom();
+						DisablePlayAndDraw();
 						_surfaceScreen.Invalidate();
 						bWasHandled = true;
 						break;
@@ -5345,9 +5330,16 @@ namespace Videa.ScreenManager
 					dlgSave.RestoreDirectory = true;
 					dlgSave.Filter = m_ResourceManager.GetString("dlgSaveFilter", Thread.CurrentThread.CurrentUICulture);
 					dlgSave.FilterIndex = 1;
-					//dlgSave.FileName = BuildFilename(m_FullPath, m_iCurrentPosition, TimeCodeFormat.ClassicTime);
-					dlgSave.FileName = BuildFilename(m_FullPath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
-
+					
+					if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
+					{
+						dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FullPath);
+					}
+					else
+					{
+						dlgSave.FileName = BuildFilename(m_FullPath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+					}
+					
 					if (dlgSave.ShowDialog() == DialogResult.OK)
 					{
 
@@ -5791,14 +5783,21 @@ namespace Videa.ScreenManager
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
 			output.SetResolution(m_PlayerServer.m_BmpImage.HorizontalResolution, m_PlayerServer.m_BmpImage.VerticalResolution);
 
-			int iKeyFrameIndex = -1;
-			if (m_iActiveKeyFrameIndex >= 0 && m_Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
+			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 			{
-				iKeyFrameIndex = m_iActiveKeyFrameIndex;
+				m_DrawingFilterOutput.Draw(Graphics.FromImage(output), iNewSize, m_DrawingFilterOutput.InputFrames, m_DrawingFilterOutput.PrivateData);
 			}
-
-			FlushOnGraphics(m_PlayerServer.m_BmpImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
-
+			else
+			{	
+				int iKeyFrameIndex = -1;
+				if (m_iActiveKeyFrameIndex >= 0 && m_Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
+				{
+					iKeyFrameIndex = m_iActiveKeyFrameIndex;
+				}
+	
+				FlushOnGraphics(m_PlayerServer.m_BmpImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+			}
+			
 			return output;
 		}
 		private string BuildFilename(string _FilePath, Int64 _position, TimeCodeFormat _timeCodeFormat)
