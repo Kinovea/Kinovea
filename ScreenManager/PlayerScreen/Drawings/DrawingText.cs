@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using PdfSharp.Drawing;
 using System.Xml;
 using System.Windows.Forms;
 using Videa.Services;
@@ -212,76 +211,6 @@ namespace Videa.ScreenManager
                 // Update scaled coordinates accordingly.
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             }
-        }
-        public override void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor)
-        {
-            // Scale to PDF stretch
-            RescaleCoordinates(_fStrecthFactor, new Point(0,0));
-             
-            double fFixWidthFactor = 0.75;
-            m_RescaledBackground.Width = (int)(m_RescaledBackground.Width * fFixWidthFactor);
-
-            // We check if the Drawing doesn't go outside image. (Possible with Text)
-            int iShiftHorz = (_iImageLeft + _iImageWidth) - (_iImageLeft + m_RescaledBackground.X + m_RescaledBackground.Width);
-            if (iShiftHorz > 0)
-            {
-                // Ok : Not outside the right border
-                if (m_RescaledBackground.X > 0)
-                {
-                    // Ok : Not outside the left border
-                    iShiftHorz = 0;
-                }
-                else
-                {
-                    // Shift and small margin
-                    iShiftHorz = - m_RescaledBackground.X + 2;
-                }
-            }
-            else
-            {
-                // small margin
-                iShiftHorz -= 2;
-            }
-
-            int iShiftVert = (_iImageTop + _iImageHeight) - (_iImageTop + m_RescaledBackground.Y + m_RescaledBackground.Height);
-            if (iShiftVert > 0)
-            {
-                // Not outside the right border
-                if (m_RescaledBackground.Y > 0)
-                {
-                    // Not outside the bottom border
-                    iShiftVert = 0;
-                }
-                else
-                {
-                    // Shift and small margin
-                    iShiftVert = - m_RescaledBackground.Y + 2;
-                }
-            }
-            else
-            {
-                iShiftVert -= 2;
-            }
-
-            // Shift the drawing so it's inside picture
-            ShiftCoordinates(iShiftHorz, iShiftVert, _fStrecthFactor);
-            m_RescaledBackground.Width = (int)(m_RescaledBackground.Width * fFixWidthFactor);
-
-            // Draw background
-            DrawBackgroundOnPDF(_gfx, _iImageLeft, _iImageTop);
-
-            // Draw text
-            Font f = m_TextStyle.GetInternalFont();
-            XFont font = new XFont(f.Name, f.Size);
-            XSolidBrush brush = new XSolidBrush(XColor.FromArgb(m_TextStyle.GetFadingForeColor(255)));
-
-            _gfx.DrawString(m_Text, font, brush, new Point(m_RescaledBackground.X + _iImageLeft + 5, m_RescaledBackground.Y + (int)((double)m_TextStyle.FontSize * 1.1) + _iImageTop));
-            
-            // Shift back
-            ShiftCoordinates(-iShiftHorz, -iShiftVert, _fStrecthFactor);
-
-            // Scale back to screen stretch
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override void ToXmlString(XmlTextWriter _xmlWriter)
         {
@@ -482,16 +411,6 @@ namespace Videa.ScreenManager
             gp.CloseFigure();
 
             _canvas.FillPath(new SolidBrush(Color.FromArgb((int)((double)m_iDefaultBackgroundAlpha * _fOpacityFactor), m_TextStyle.BackColor)), gp);
-        }
-        private void DrawBackgroundOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop)
-        {
-            // Draw background (Rounded rectangle)
-            int radius = 6;
-            int diameter = radius * 2;
-
-            XBrush fillBrush = new XSolidBrush(XColor.FromArgb(m_TextStyle.GetFadingBackColor(0.5f).ToArgb()));
-           	
-            _gfx.DrawRoundedRectangle(fillBrush, _iImageLeft + m_RescaledBackground.X, _iImageTop + m_RescaledBackground.Y, m_RescaledBackground.Width, m_RescaledBackground.Height, diameter, diameter);
         }
         private void ShiftCoordinates(int _iShiftHorz, int _iShiftVert, double _fStretchFactor)
         {

@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using PdfSharp.Drawing;
 using System.Xml;
 using Videa.Services;
 using System.Resources;
@@ -141,25 +140,6 @@ namespace Videa.ScreenManager
             }
             
             return iHitResult;
-        }
-        public override void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor)
-        {
-            // Scale to PDF stretch
-            RescaleCoordinates(_fStrecthFactor, new Point(0, 0));
-
-            // Convert Pen
-            XPen pen = new XPen(m_PenStyle.Color, 1);
-            XBrush FillBrush = new XSolidBrush(XColor.FromArgb(m_iDefaultBackgroundAlpha, m_PenStyle.Color.R, m_PenStyle.Color.G, m_PenStyle.Color.B));
-
-            // Draw lines
-            _gfx.DrawLine(pen, _iImageLeft + RescaledCenterPoint.X - m_iDefaultRadius, _iImageTop + RescaledCenterPoint.Y, _iImageLeft + RescaledCenterPoint.X + m_iDefaultRadius, _iImageTop + RescaledCenterPoint.Y);
-            _gfx.DrawLine(pen, _iImageLeft + RescaledCenterPoint.X, _iImageTop + RescaledCenterPoint.Y - m_iDefaultRadius, _iImageLeft + RescaledCenterPoint.X, _iImageTop + RescaledCenterPoint.Y + m_iDefaultRadius);
-
-            // Draw Ellipse
-            _gfx.DrawEllipse(FillBrush, RescaledCenterPoint.X - m_iDefaultRadius - 1 + _iImageLeft, RescaledCenterPoint.Y - m_iDefaultRadius - 1 + _iImageTop, (m_iDefaultRadius * 2) + 2, (m_iDefaultRadius * 2) + 2);
-            
-            // Scale back to screen stretch
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override void ToXmlString(XmlTextWriter _xmlWriter)
         {

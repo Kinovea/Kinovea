@@ -44,8 +44,6 @@ shutil.copy(os.path.join(refdir, "msvcr80.dll"), destdir)
 
 #Others libraries
 shutil.copy(os.path.join(refdir, "log4net.dll"), destdir)
-shutil.copy(os.path.join(refdir, "PdfSharp.dll"), destdir)		# Todo : remove dependency.
-shutil.copy(os.path.join(refdir, "CPI.Plot3D.dll"), destdir)	# Todo : remove dependency.
 shutil.copy(os.path.join(refdir, "pthreadGC2.dll"), destdir)
 shutil.copy(os.path.join(refdir, "ExpTreeLib.dll"), destdir)
 

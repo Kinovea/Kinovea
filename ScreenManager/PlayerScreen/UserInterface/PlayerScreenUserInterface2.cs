@@ -5507,6 +5507,10 @@ namespace Videa.ScreenManager
 		}
 		private void btnPdf_Click(object sender, EventArgs e)
 		{
+			
+			// TODO: to be replaced by ODF export with templates support. (Impress)
+			
+			/*
 			if (m_Metadata.Keyframes.Count < 1)
 			{
 				MessageBox.Show(m_ResourceManager.GetString("Error_SavePdf_NoKeyFrames", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
@@ -5538,7 +5542,7 @@ namespace Videa.ScreenManager
 						aepdf.Export(filePath, m_Metadata);
 					}
 				}
-			}
+			}*/
 		}
 		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, Int64 _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
 		{

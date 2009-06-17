@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using PdfSharp.Drawing;
 using System.Xml;
 using Videa.Services;
 using System.Resources;
@@ -143,42 +142,6 @@ namespace Videa.ScreenManager
             }
 
             return iHitResult;
-        }
-        public override void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor)
-        {
-            // Scale to PDF stretch
-            RescaleCoordinates(_fStrecthFactor, new Point(0,0));
-
-            int x1 = 0, y1 = 0;     // previous point
-            int x2, y2;             // current point
-
-            IEnumerator<Point> enumerator = m_RescaledPointList.GetEnumerator();
-
-            if (enumerator.MoveNext())
-            {
-                x1 = ((Point)enumerator.Current).X;
-                y1 = ((Point)enumerator.Current).Y;
-            }
-
-            // Convert Pen
-            double fPenWidth = (double)m_PenStyle.Size * _fStrecthFactor;
-            if (fPenWidth < 1) fPenWidth = 1;
-            XPen pen = new XPen(XColor.FromArgb(m_PenStyle.Color), fPenWidth);
-
-            while (enumerator.MoveNext())
-            {
-                x2 = ((Point)enumerator.Current).X;
-                y2 = ((Point)enumerator.Current).Y;
-
-                _gfx.DrawLine(pen, _iImageLeft + x1, _iImageTop + y1, _iImageLeft + x2, _iImageTop + y2);
-
-                x1 = x2;
-                y1 = y2;
-            }
-
-
-            // Scale back to screen stretch
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override void ToXmlString(XmlTextWriter _xmlWriter)
         {

@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
-using PdfSharp.Drawing;
 using System.Xml;
 using Videa.Services;
 
@@ -58,7 +57,6 @@ namespace Videa.ScreenManager
         
         // Export
         public abstract void ToXmlString(XmlTextWriter _xmlXriter);
-        public abstract void DrawOnPDF(XGraphics _gfx, int _iImageLeft, int _iImageTop, int _iImageWidth, int _iImageHeight, double _fStrecthFactor);
         
         // Decoration
         public abstract void UpdateDecoration(Color _color);

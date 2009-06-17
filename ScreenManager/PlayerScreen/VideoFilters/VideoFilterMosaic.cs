@@ -62,8 +62,6 @@ namespace Videa.ScreenManager
 		#region Members
 		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
-		//private bool m_bKeyImagesOnly = false;
-		private bool m_bIsRightToLeft = false;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
