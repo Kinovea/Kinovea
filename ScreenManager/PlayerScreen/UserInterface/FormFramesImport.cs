@@ -29,10 +29,10 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Threading;
 
-using VideaPlayerServer;
+using Kinovea.VideoFiles;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class formFramesImport : Form
     {

@@ -26,7 +26,7 @@ using System.Xml;
 using System.IO;
 using System.Windows.Forms;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     public class ApplicationInfos
     {

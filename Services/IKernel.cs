@@ -20,7 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System.Windows.Forms;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     public interface IKernel
     {

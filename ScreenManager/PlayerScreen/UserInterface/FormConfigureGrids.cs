@@ -25,12 +25,12 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Videa.Services;
+using Kinovea.Services;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// The dialog let the user configure an instance of a grid.
@@ -65,9 +65,9 @@ namespace Videa.ScreenManager
             colPicker.Name = "colPicker";
             colPicker.Size = new System.Drawing.Size(160, 120);
             colPicker.TabIndex = 5;
-            colPicker.ColorPicked += new Videa.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
+            colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
             
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 			m_SurfaceScreen = _SurfaceScreen;
             
             m_Grid = _grid;

@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formConfigurePdf
     {
@@ -175,7 +175,7 @@ namespace Videa.ScreenManager
             // 
             // button4
             // 
-            this.button4.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.layoutD;
+            this.button4.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.layoutD;
             this.button4.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button4.Location = new System.Drawing.Point(305, 30);
@@ -186,7 +186,7 @@ namespace Videa.ScreenManager
             // 
             // button3
             // 
-            this.button3.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.layoutC2;
+            this.button3.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.layoutC2;
             this.button3.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Location = new System.Drawing.Point(210, 30);
@@ -197,7 +197,7 @@ namespace Videa.ScreenManager
             // 
             // button2
             // 
-            this.button2.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.layoutB;
+            this.button2.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.layoutB;
             this.button2.FlatAppearance.BorderColor = System.Drawing.Color.Red;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Location = new System.Drawing.Point(115, 30);
@@ -220,7 +220,7 @@ namespace Videa.ScreenManager
             // 
             // button1
             // 
-            this.button1.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.layout1;
+            this.button1.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.layout1;
             this.button1.FlatAppearance.BorderColor = System.Drawing.Color.Gainsboro;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Location = new System.Drawing.Point(20, 30);

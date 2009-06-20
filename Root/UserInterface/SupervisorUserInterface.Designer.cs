@@ -1,4 +1,4 @@
-namespace Videa.Root
+namespace Kinovea.Root
 {
     partial class SupervisorUserInterface
     {
@@ -64,7 +64,7 @@ namespace Videa.Root
             this.buttonCloseExplo.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.buttonCloseExplo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.buttonCloseExplo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCloseExplo.Image = global::Videa.Root.Properties.Resources.closegrey;
+            this.buttonCloseExplo.Image = global::Kinovea.Root.Properties.Resources.closegrey;
             this.buttonCloseExplo.Location = new System.Drawing.Point(176, -1);
             this.buttonCloseExplo.Name = "buttonCloseExplo";
             this.buttonCloseExplo.Size = new System.Drawing.Size(20, 20);

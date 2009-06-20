@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Videa.ScreenManager.Languages {
+namespace Kinovea.ScreenManager.Languages {
 	using System;
 	
 	
@@ -39,7 +39,7 @@ namespace Videa.ScreenManager.Languages {
 		internal static global::System.Resources.ResourceManager ResourceManager {
 			get {
 				if (object.ReferenceEquals(resourceMan, null)) {
-					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", typeof(ScreenManagerLang).Assembly);
+					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", typeof(ScreenManagerLang).Assembly);
 					resourceMan = temp;
 				}
 				return resourceMan;

@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using Videa.Services;
-using VideaPlayerServer;
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// AbstractVideoFilter define the way all Video Filters should behave.

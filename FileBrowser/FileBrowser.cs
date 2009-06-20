@@ -29,10 +29,10 @@ using System.Threading;
 using System.Reflection;
 using System.Management;
 using System.IO;
-using Videa.Services;
+using Kinovea.Services;
 
 [assembly: CLSCompliant(true)]
-namespace Videa.FileBrowser
+namespace Kinovea.FileBrowser
 {
     public class FileBrowserKernel : IKernel
     {

@@ -28,9 +28,9 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class formKeyframeComments : Form
     {
@@ -83,7 +83,7 @@ namespace Videa.ScreenManager
         }
         public void RefreshUICulture()
         {
-            ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             this.Text = "   " + rm.GetString("dlgKeyframeComment_Title", Thread.CurrentThread.CurrentUICulture);
         }
         #endregion

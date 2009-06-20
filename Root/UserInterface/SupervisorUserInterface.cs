@@ -27,11 +27,11 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using Videa.Services;
-using Videa.FileBrowser;
-using Videa.ScreenManager;
+using Kinovea.Services;
+using Kinovea.FileBrowser;
+using Kinovea.ScreenManager;
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     public partial class SupervisorUserInterface : UserControl
     {

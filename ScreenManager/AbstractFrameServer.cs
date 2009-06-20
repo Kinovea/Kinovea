@@ -1,5 +1,6 @@
+﻿#region License
 /*
-Copyright � Joan Charmant 2008.
+Copyright © Joan Charmant 2009.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,29 +16,23 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
-
-
+#endregion
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Drawing;
 
-namespace Kinovea.Services
+namespace Kinovea.ScreenManager
 {
-    public class LanguageIdentifier
-    {
-        public string szTwoLetterISOLanguageName;
-        public string szLocalizedLanguageName;
-
-        public LanguageIdentifier(string _szIso, string _szLoc)
-        {
-            szTwoLetterISOLanguageName = _szIso;
-            szLocalizedLanguageName = _szLoc;
-        }
-        public override string ToString()
-        {
-            return szLocalizedLanguageName;
-        }
-    };
+	/// <summary>
+	/// AbstractFrameServer. 
+	/// Abstract class that encapsulates all the metadata and configuration for managing frames in a screen.
+	/// Concrete implementations will be responsible for holding frames or have access to them,
+	/// holding key images and drawings and other meta data, 
+	/// and provide a Draw method used by the screens.
+	/// </summary>
+	public abstract class AbstractFrameServer
+	{
+		public abstract void Draw(Graphics _canvas);
+        
+	}
 }

@@ -28,9 +28,9 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Threading;
 using System.Reflection;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// This dialog let the user specify the original speed of the camera used.
@@ -55,7 +55,7 @@ namespace Videa.ScreenManager
         public formConfigureSpeed(double _fFps, PlayerScreenUserInterface _psui)
         {
             InitializeComponent();
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_psui = _psui;
             m_fSlowFactor = m_psui.SlowFactor;
             m_fFps = _fFps;

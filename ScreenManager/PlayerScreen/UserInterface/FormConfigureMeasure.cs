@@ -30,9 +30,9 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// This dialog let the user specify how many real-world-units long is this line.
@@ -63,7 +63,7 @@ namespace Videa.ScreenManager
         	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.LineLengthHelper.CurrentUnit.ToString()));
         	
             InitializeComponent();
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
             LocalizeForm();
         }

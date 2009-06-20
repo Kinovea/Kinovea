@@ -24,7 +24,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class DrawingToolText : AbstractDrawingTool
     {

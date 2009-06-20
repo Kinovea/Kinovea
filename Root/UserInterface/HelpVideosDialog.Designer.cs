@@ -1,4 +1,4 @@
-namespace Videa.Root
+namespace Kinovea.Root
 {
     partial class HelpVideosDialog
     {
@@ -134,7 +134,7 @@ namespace Videa.Root
         	this.btnVideos.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnVideos.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnVideos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnVideos.Image = global::Videa.Root.Properties.Resources.videos;
+        	this.btnVideos.Image = global::Kinovea.Root.Properties.Resources.videos;
         	this.btnVideos.Location = new System.Drawing.Point(16, 15);
         	this.btnVideos.Name = "btnVideos";
         	this.btnVideos.Size = new System.Drawing.Size(80, 74);

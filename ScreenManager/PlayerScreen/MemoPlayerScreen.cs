@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// this class stores a state of a PlayerScreen in order to reinstate it later.

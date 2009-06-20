@@ -25,7 +25,7 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// FormProgressBar is a simple form to display a progress bar.
@@ -36,7 +36,7 @@ namespace Videa.ScreenManager
 	{
 		#region Members
 		private bool m_IsIdle;
-		private ResourceManager m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+		private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 		#endregion
 		
 		#region Constructor

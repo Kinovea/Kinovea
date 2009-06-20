@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 
     public struct ScreenState

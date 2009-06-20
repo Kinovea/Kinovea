@@ -29,7 +29,7 @@ using System.Resources;
 using System.Threading;
 using System.Reflection;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class formFramesExport : Form
     {
@@ -53,7 +53,7 @@ namespace Videa.ScreenManager
             m_bKeyframesOnly = _bKeyframesOnly;
             m_iEstimatedTotal = _iEstimatedTotal;
 
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
                 
             this.Text = "   " + m_ResourceManager.GetString("FormFramesExport_Title", Thread.CurrentThread.CurrentUICulture);
             labelInfos.Text = m_ResourceManager.GetString("FormFramesExport_Infos", Thread.CurrentThread.CurrentUICulture) + " 0 / ~?";

@@ -5,15 +5,15 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using VideaPlayerServer;
-using Videa.Services;
+using Kinovea.VideoFiles;
+using Kinovea.Services;
 using System.IO;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// A control that let the user explore a folder.
@@ -75,7 +75,7 @@ namespace Videa.ScreenManager
 			
 			InitializeComponent();
 
-			ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+			ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 			RefreshUICulture(rm);
 
 			m_iCurrentSize = (int)m_PreferencesManager.ExplorerThumbsSize;

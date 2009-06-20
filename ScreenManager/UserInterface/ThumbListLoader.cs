@@ -5,10 +5,10 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-using Videa.Services;
-using VideaPlayerServer;
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class ThumbListLoader
     {

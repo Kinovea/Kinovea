@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class ScreenManagerUserInterface
     {
@@ -37,7 +37,7 @@ namespace Videa.ScreenManager
             this.btnShowThumbView = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             
-            this.ComCtrls = new Videa.ScreenManager.CommonControls();
+            this.ComCtrls = new Kinovea.ScreenManager.CommonControls();
             
             this.pnlScreens.SuspendLayout();
             this.splitScreensPanel.Panel1.SuspendLayout();
@@ -112,7 +112,7 @@ namespace Videa.ScreenManager
             this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClose.Image = global::Videa.ScreenManager.Properties.Resources.closegrey;
+            this.btnClose.Image = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
             this.btnClose.Location = new System.Drawing.Point(551, 2);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(20, 20);
@@ -184,14 +184,14 @@ namespace Videa.ScreenManager
             this.ComCtrls.Playing = false;
             this.ComCtrls.Size = new System.Drawing.Size(545, 45);
             this.ComCtrls.TabIndex = 4;
-            this.ComCtrls.GotoLast += new Videa.ScreenManager.CommonControls.GotoLastHandler(this.ComCtrls_GotoLast);
-            this.ComCtrls.GotoPrev += new Videa.ScreenManager.CommonControls.GotoPrevHandler(this.ComCtrls_GotoPrev);
-            this.ComCtrls.GotoFirst += new Videa.ScreenManager.CommonControls.GotoFirstHandler(this.ComCtrls_GotoFirst);
-            this.ComCtrls.PositionChanged += new Videa.ScreenManager.CommonControls.PositionChangedHandler(this.ComCtrls_PositionChanged);
-            this.ComCtrls.Play += new Videa.ScreenManager.CommonControls.PlayHandler(this.ComCtrls_Play);
-            this.ComCtrls.Swap += new Videa.ScreenManager.CommonControls.SwapHandler(this.ComCtrls_Swap);
-            this.ComCtrls.Sync += new Videa.ScreenManager.CommonControls.SyncHandler(this.ComCtrls_Sync);
-            this.ComCtrls.GotoNext += new Videa.ScreenManager.CommonControls.GotoNextHandler(this.ComCtrls_GotoNext);
+            this.ComCtrls.GotoLast += new Kinovea.ScreenManager.CommonControls.GotoLastHandler(this.ComCtrls_GotoLast);
+            this.ComCtrls.GotoPrev += new Kinovea.ScreenManager.CommonControls.GotoPrevHandler(this.ComCtrls_GotoPrev);
+            this.ComCtrls.GotoFirst += new Kinovea.ScreenManager.CommonControls.GotoFirstHandler(this.ComCtrls_GotoFirst);
+            this.ComCtrls.PositionChanged += new Kinovea.ScreenManager.CommonControls.PositionChangedHandler(this.ComCtrls_PositionChanged);
+            this.ComCtrls.Play += new Kinovea.ScreenManager.CommonControls.PlayHandler(this.ComCtrls_Play);
+            this.ComCtrls.Swap += new Kinovea.ScreenManager.CommonControls.SwapHandler(this.ComCtrls_Swap);
+            this.ComCtrls.Sync += new Kinovea.ScreenManager.CommonControls.SyncHandler(this.ComCtrls_Sync);
+            this.ComCtrls.GotoNext += new Kinovea.ScreenManager.CommonControls.GotoNextHandler(this.ComCtrls_GotoNext);
             // 
             // ScreenManagerUserInterface
             // 
@@ -227,7 +227,7 @@ namespace Videa.ScreenManager
         public System.Windows.Forms.SplitContainer splitScreens;
         public System.Windows.Forms.Panel pnlScreens;
         private System.Windows.Forms.Button btnClose;
-        public Videa.ScreenManager.CommonControls ComCtrls;
+        public Kinovea.ScreenManager.CommonControls ComCtrls;
         private System.Windows.Forms.Button btnShowThumbView;
         private System.Windows.Forms.Button button1;
 

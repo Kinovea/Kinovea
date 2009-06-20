@@ -28,9 +28,9 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Threading;
 using System.Reflection;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Dialog that let the user change the color and style of a specific drawing
@@ -71,7 +71,7 @@ namespace Videa.ScreenManager
             // This constructor is called when we will be updating 
             // the DrawingTool entry in the main ColorProfile.
             
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_bPreConfigure = true;
 
             // We will make the updates on a copy of the color profile
@@ -87,7 +87,7 @@ namespace Videa.ScreenManager
         public formConfigureDrawing(AbstractDrawing _drawing, PictureBox _SurfaceScreen)
         {
             // This constructor is called when we will be updating a specific drawing.
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_bPreConfigure = false;
             m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;

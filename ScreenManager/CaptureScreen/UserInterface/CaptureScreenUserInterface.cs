@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
  */
 
 using AForge.Video;
+using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,17 +34,16 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using AForge.Video.DirectShow;
-using Videa.Services;
-using VideaPlayerServer;
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
-{
+namespace Kinovea.ScreenManager
+{ 
+	public delegate void DelegateInvalidate();	
 
 	public partial class CaptureScreenUserInterface : UserControl
 	{
 		#region Imports Win32
-		
 		[DllImport("winmm.dll", SetLastError = true)]
 		private static extern uint timeSetEvent(int msDelay, int msResolution, TimerEventHandler handler, ref int userCtx, int eventType);
 
@@ -55,80 +55,21 @@ namespace Videa.ScreenManager
 
 		[DllImport("user32.dll")]
 		static extern uint GetDoubleClickTime();
-
-		/*
-        [DllImport("gdi32.dll")]
-        public static extern long BitBlt (System.IntPtr a, int b, int c, int d, int e, System.IntPtr f, int g, int h, int i);
-
-        public enum TernaryRasterOperations : uint
-        {
-            SRCCOPY = 0x00CC0020, // dest = source
-            SRCPAINT = 0x00EE0086, // dest = source OR dest
-            SRCAND = 0x008800C6, // dest = source AND dest
-            SRCINVERT = 0x00660046, // dest = source XOR dest
-            SRCERASE = 0x00440328, // dest = source AND (NOT dest )
-            NOTSRCCOPY = 0x00330008, // dest = (NOT source)
-            NOTSRCERASE = 0x001100A6, // dest = (NOT src) AND (NOT dest)
-            MERGECOPY = 0x00C000CA, // dest = (source AND pattern)
-            MERGEPAINT = 0x00BB0226, // dest = (NOT source) OR dest
-            PATCOPY = 0x00F00021, // dest = pattern
-            PATPAINT = 0x00FB0A09, // dest = DPSnoo
-            PATINVERT = 0x005A0049, // dest = pattern XOR dest
-            DSTINVERT = 0x00550009, // dest = (NOT dest)
-            BLACKNESS = 0x00000042, // dest = BLACK
-            WHITENESS = 0x00FF0062, // dest = WHITE
-        };
-        public enum StretchMode
-        {
-            STRETCH_ANDSCANS = 1,
-            STRETCH_ORSCANS = 2,
-            STRETCH_DELETESCANS = 3,
-            STRETCH_HALFTONE = 4,
-        }
-
-        [DllImport("gdi32.dll")]
-        public static extern bool BitBlt(IntPtr hObject, int nXDest, int nYDest, int nWidth,
-           int nHeight, IntPtr hObjSource, int nXSrc, int nYSrc, TernaryRasterOperations dwRop);
-
-        [DllImport("gdi32.dll")]
-        static extern bool StretchBlt(  IntPtr hdcDest, int nXOriginDest, int nYOriginDest,
-                                        int nWidthDest, int nHeightDest,
-                                        IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc,
-                                        TernaryRasterOperations dwRop);
-        
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        static extern IntPtr CreateCompatibleDC(IntPtr hdc);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        static extern bool DeleteDC(IntPtr hdc);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
-
-        [DllImport("gdi32.dll", ExactSpelling = true, SetLastError = true)]
-        static extern bool DeleteObject(IntPtr hObject);
-
-        [DllImport("gdi32.dll")]
-        static extern bool SetStretchBltMode(IntPtr hdc, StretchMode iStretchMode);
-		 */
-
 		#endregion
 
 		#region Délégués
-
+		
 		// 1. Affectées et accédées depuis PlayerScreen.cs
 		public delegate void DelegateCloseMeUI();		
 		public delegate void DelegateSetMeAsActiveScreenUI();
 
 		public delegate void ReportReady(bool _bIntervalOnly);
-		public delegate void ReportSelectionChanged(bool _bInitialization);
-
+		
 		public DelegateCloseMeUI				m_CloseMeUI;
 		public DelegateSetMeAsActiveScreenUI 	m_SetMeAsActiveScreenUI;
 		
 		public ReportReady                 	m_ReportReady;
-		public ReportSelectionChanged      	m_ReportSelectionChanged;
-
+		
 		// 2. Internes
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
 		private delegate void CallbackPlayLoop();
@@ -146,16 +87,6 @@ namespace Videa.ScreenManager
 			public int iLastDropCount;
 			public int iLastFrameInterval;
 		};
-		#endregion
-
-		#region Enums
-		private enum PlayingMode
-		{
-			Once,
-			Loop,
-			Bounce
-		}
-		
 		#endregion
 
 		#region Properties
@@ -231,13 +162,15 @@ namespace Videa.ScreenManager
 		private string m_FullPath = "";
 		
 		// Capture
-		private VideoCaptureDevice m_VideoDevice;
+		private FrameServerCapture m_FrameServer;
+		
+		/*private VideoCaptureDevice m_VideoDevice;
 		private Bitmap m_CurrentFrame;
 		private bool m_bFirstFrame = true;
 		private Size m_DecodingSize;
 		private bool m_bHandlingFrame = false;
 		private int m_iMaxSizeBufferFrames = 5*25;
-		private List<Bitmap> m_FrameBuffer = new List<Bitmap>();
+		private List<Bitmap> m_FrameBuffer = new List<Bitmap>();*/
 		
 		// Playback current state
 		private bool m_bIsCurrentlyPlaying;
@@ -246,7 +179,6 @@ namespace Videa.ScreenManager
 		private bool m_bSynched;
 		private Int64 m_iSyncPosition;
 		private uint m_IdMultimediaTimer;
-		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private int m_iDroppedFrames;                  // For debug purposes only.
 		private int m_iDecodedFrames;
 		private int m_iSlowmotionPercentage = 100;
@@ -366,6 +298,8 @@ namespace Videa.ScreenManager
 		public CaptureScreenUserInterface(ResourceManager _resManager)
 		{
 			log.Debug("Constructing the CaptureScreen user interface.");
+		
+			 m_FrameServer = new FrameServerCapture(DoInvalidate);
 			
 			InitializeComponent();
 			
@@ -410,21 +344,18 @@ namespace Videa.ScreenManager
 		{
 			m_bDocked = true;
 			
-			// Testing first video device.
-            FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
+			// Associating a video device with this Capture Screen.
+			FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
 			if ( videoDevices.Count > 0 )
 			{
-				m_VideoDevice = new VideoCaptureDevice( videoDevices[0].MonikerString );
-				m_VideoDevice.NewFrame += new NewFrameEventHandler( video_NewFrame );
-				
-				// use default frame rate from device.
-				m_VideoDevice.DesiredFrameRate = 0;
-				
-				log.Debug(String.Format("Video Device : MonikerString:{0}, Name:{1}",videoDevices[0].MonikerString, videoDevices[0].Name));
-				
-				// Launch.
-				
+				// TODO: Ask user to choose video device.
+				int iSelectedDevice = 0;
+				m_FrameServer.SetDevice(videoDevices, iSelectedDevice);
 				buttonPlay_Click(null, EventArgs.Empty);
+			}
+			else
+			{
+				log.Debug(String.Format("Video Device : No video device found."));
 			}
 		}
 		public int PostLoadProcess(int _iMovieLoadResult, string _FilePath)
@@ -829,7 +760,7 @@ namespace Videa.ScreenManager
 
 			if (m_bIsCurrentlyPlaying)
 			{
-				buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
 				m_bIsCurrentlyPlaying = false;
 			}
 
@@ -1229,11 +1160,12 @@ namespace Videa.ScreenManager
 		{
 			//Only called when destroying the whole screen.
 
-			m_KeyframeCommentsHub.Hide();
-			m_PlayerServer.UnloadMovie();
+			//m_KeyframeCommentsHub.Hide();
 			
-			m_Metadata.Plane.Visible = false;
-			m_Metadata.Grid.Visible = false;
+			m_FrameServer.SignalToStop();
+			
+			//m_Metadata.Plane.Visible = false;
+			//m_Metadata.Grid.Visible = false;
 		}
 		#endregion
 
@@ -1478,6 +1410,19 @@ namespace Videa.ScreenManager
 		#region Video Controls
 
 		#region Playback Controls
+		private void buttonRecord_Click(object sender, EventArgs e)
+        {
+        	if(m_FrameServer.IsRecording)
+        	{
+        		// Change btn image.
+        	}
+        	else
+        	{
+        		
+        	}
+        	
+        	m_FrameServer.ToggleRecord();
+        }
 		public void buttonGotoFirst_Click(object sender, EventArgs e)
 		{
 			if (m_PlayerServer.m_bIsMovieLoaded)
@@ -1558,27 +1503,27 @@ namespace Videa.ScreenManager
 		}
 		private void buttonPlay_Click(object sender, EventArgs e)
 		{
-			if(m_VideoDevice.IsRunning)
-			{
-				m_VideoDevice.SignalToStop( );
-				buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
-			}
-			else
-			{
-				m_FrameBuffer.Clear();
-				_surfaceScreen.Visible = true;
-				m_bFirstFrame = true;
-				
-    			m_DecodingSize = new Size(720, 576);
-	    		
-				m_fStretchFactor = 1;
-				ShowResizers();
-	    		StretchSqueezeSurface();
-				
-				m_VideoDevice.Start( );
-				buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqpause6;
-			}
+			// Toggle play / pause capture.
 			
+			// Prepare the interface for after the change.
+			if(m_FrameServer.IsRunning)
+			{
+				// We are running, we'll be paused.		   		
+				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;	
+			}
+		   	else
+		   	{
+		   		// We are paused, we'll be running.		   		
+		   		_surfaceScreen.Visible = true;				
+		   		m_fStretchFactor = 1;
+				ShowResizers();
+	    		StretchSqueezeSurface();								
+				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
+		   	}
+
+		   	// Actually do the toggle.
+		   	m_FrameServer.TogglePlay();
+		   	
 			SetAsActiveScreen();				
 		}
 		public void buttonGotoNext_Click(object sender, EventArgs e)
@@ -1635,14 +1580,14 @@ namespace Videa.ScreenManager
 				{
 					// Go into Pause mode.
 					StopPlaying();
-					buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+					buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
 					m_bIsCurrentlyPlaying = false;
 					ActivateKeyframe(m_iCurrentPosition);
 				}
 				else
 				{
 					// Go into Play mode
-					buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqpause6;
+					buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
 					Application.Idle += new EventHandler(this.IdleDetector);
 					StartMultimediaTimer(GetFrameInterval());
 					m_bIsCurrentlyPlaying = true;
@@ -1717,7 +1662,7 @@ namespace Videa.ScreenManager
 		private void trkSelection_SelectionChanged(object sender, EventArgs e)
 		{
 			// Mise à jour effective.
-			if (m_PlayerServer.m_bIsMovieLoaded && !m_bResetingHandlers)
+			/*if (m_PlayerServer.m_bIsMovieLoaded && !m_bResetingHandlers)
 			{
 				SwitchToAnalysisMode(false);
 				m_Metadata.SelectionStart = m_iSelStart;
@@ -1731,7 +1676,7 @@ namespace Videa.ScreenManager
 				
 				EnableDisableKeyframes();
 				ActivateKeyframe(m_iCurrentPosition);
-			}
+			}*/
 		}
 		private void trkSelection_TargetAcquired(object sender, EventArgs e)
 		{
@@ -1769,7 +1714,7 @@ namespace Videa.ScreenManager
 
 				if (m_bHandlersLocked)
 				{
-					btn_HandlersLock.Image = Videa.ScreenManager.Properties.Resources.primselec_locked3;
+					btn_HandlersLock.Image = Kinovea.ScreenManager.Properties.Resources.primselec_locked3;
 					toolTips.SetToolTip(btn_HandlersLock, m_ResourceManager.GetString("LockSelectionUnlock", Thread.CurrentThread.CurrentUICulture));
 					
 					// Chaînes du menu contextuel
@@ -1780,7 +1725,7 @@ namespace Videa.ScreenManager
 				}
 				else
 				{
-					btn_HandlersLock.Image = Videa.ScreenManager.Properties.Resources.primselec_unlocked3;
+					btn_HandlersLock.Image = Kinovea.ScreenManager.Properties.Resources.primselec_unlocked3;
 					toolTips.SetToolTip(btn_HandlersLock, m_ResourceManager.GetString("LockSelectionLock", Thread.CurrentThread.CurrentUICulture));
 					
 					// Chaînes du menu contextuel
@@ -2194,11 +2139,6 @@ namespace Videa.ScreenManager
 			// Draw the border around the screen to mark it as selected.
 			// Called back from main drawing routine.
 			_canvas.DrawRectangle(m_PenImageBorder, 0, 0, _surfaceScreen.Width - m_PenImageBorder.Width, _surfaceScreen.Height - m_PenImageBorder.Width);
-			// Order : top, left, bottom, right.
-			/*_canvas.DrawLine(m_PenImageBorder, 0, 0, _surfaceScreen.Width, 0);
-			_canvas.DrawLine(m_PenImageBorder, 0, 0, 0, _surfaceScreen.Height);
-			_canvas.DrawLine(m_PenImageBorder, 0, _surfaceScreen.Height - m_PenImageBorder.Width, _surfaceScreen.Width, _surfaceScreen.Height - m_PenImageBorder.Width);
-			_canvas.DrawLine(m_PenImageBorder, _surfaceScreen.Width - m_PenImageBorder.Width, 0, _surfaceScreen.Width - m_PenImageBorder.Width, _surfaceScreen.Height);*/
 		}
 		#endregion
 
@@ -2237,7 +2177,7 @@ namespace Videa.ScreenManager
 		}
 		private void btnClose_Click(object sender, EventArgs e)
 		{
-			m_VideoDevice.SignalToStop( );
+			m_FrameServer.SignalToStop();
 			
 			// Propagate to PlayerScreen which will report to ScreenManager.
 			if (m_CloseMeUI != null) { m_CloseMeUI(); }
@@ -2259,8 +2199,8 @@ namespace Videa.ScreenManager
 			// Check if the stretch factor is not going to outsize the panel.
 			// If so, force maximized, unless screen is smaller than video.
 			//---------------------------------------------------------------
-			int iTargetHeight = (int)((double)m_DecodingSize.Height * m_fStretchFactor);
-			int iTargetWidth = (int)((double)m_DecodingSize.Width * m_fStretchFactor);
+			int iTargetHeight = (int)((double)m_FrameServer.DecodingSize.Height * m_fStretchFactor);
+			int iTargetWidth = (int)((double)m_FrameServer.DecodingSize.Width * m_fStretchFactor);
 			
 			if (iTargetHeight > _panelCenter.Height || iTargetWidth > _panelCenter.Width)
 			{
@@ -2270,25 +2210,25 @@ namespace Videa.ScreenManager
 				}
 			}
 			
-			if ((m_bStretchModeOn) || (m_DecodingSize.Width > _panelCenter.Width) || (m_DecodingSize.Height > _panelCenter.Height))
+			if ((m_bStretchModeOn) || (m_FrameServer.DecodingSize.Width > _panelCenter.Width) || (m_FrameServer.DecodingSize.Height > _panelCenter.Height))
 			{
 				//-------------------------------------------------------------------------------
 				// Maximiser :
 				//Redimensionner l'image selon la dimension la plus proche de la taille du panel.
 				//-------------------------------------------------------------------------------
-				float WidthRatio = (float)m_DecodingSize.Width / _panelCenter.Width;
-				float HeightRatio = (float)m_DecodingSize.Height / _panelCenter.Height;
+				float WidthRatio = (float)m_FrameServer.DecodingSize.Width / _panelCenter.Width;
+				float HeightRatio = (float)m_FrameServer.DecodingSize.Height / _panelCenter.Height;
 				
 				if (WidthRatio > HeightRatio)
 				{
 					m_SurfaceScreen.Width = _panelCenter.Width;
-					m_SurfaceScreen.Height = (int)((float)m_DecodingSize.Height / WidthRatio);
+					m_SurfaceScreen.Height = (int)((float)m_FrameServer.DecodingSize.Height / WidthRatio);
 					
 					m_fStretchFactor = (1 / WidthRatio);
 				}
 				else
 				{
-					m_SurfaceScreen.Width = (int)((float)m_DecodingSize.Width / HeightRatio);
+					m_SurfaceScreen.Width = (int)((float)m_FrameServer.DecodingSize.Width / HeightRatio);
 					m_SurfaceScreen.Height = _panelCenter.Height;
 					
 					m_fStretchFactor = (1 / HeightRatio);
@@ -2296,8 +2236,8 @@ namespace Videa.ScreenManager
 			}
 			else
 			{
-				m_SurfaceScreen.Width = (int)((double)m_DecodingSize.Width * m_fStretchFactor);
-				m_SurfaceScreen.Height = (int)((double)m_DecodingSize.Height * m_fStretchFactor);
+				m_SurfaceScreen.Width = (int)((double)m_FrameServer.DecodingSize.Width * m_fStretchFactor);
+				m_SurfaceScreen.Height = (int)((double)m_FrameServer.DecodingSize.Height * m_fStretchFactor);
 			}
 			
 			//recentrer
@@ -2386,13 +2326,13 @@ namespace Videa.ScreenManager
 			// On resize à condition que l'image soit:
 			// Supérieure à la taille originale, inférieure à la taille du panel.
 			//-------------------------------------------------------------------
-			if (_iTargetHeight > m_DecodingSize.Height &&
+			if (_iTargetHeight > m_FrameServer.DecodingSize.Height &&
 			    _iTargetHeight < _panelCenter.Height &&
-			    _iTargetWidth > m_DecodingSize.Width &&
+			    _iTargetWidth > m_FrameServer.DecodingSize.Width &&
 			    _iTargetWidth < _panelCenter.Width)
 			{
-				double fHeightFactor = ((_iTargetHeight) / (double)m_DecodingSize.Height);
-				double fWidthFactor = ((_iTargetWidth) / (double)m_DecodingSize.Width);
+				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.DecodingSize.Height);
+				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.DecodingSize.Width);
 
 				m_fStretchFactor = (fWidthFactor + fHeightFactor) / 2;
 				m_bStretchModeOn = false;
@@ -2617,9 +2557,6 @@ namespace Videa.ScreenManager
 		private void IdleDetector(object sender, EventArgs e)
 		{
 			m_bIsIdle = true;
-			//#if TRACE
-			////Console.WriteLine("                             Total (5):{0}", m_NotIdleWatch.ElapsedMilliseconds);
-			//#endif
 		}
 		private int ShowNextFrame(Int64 _iSeekTarget, bool _bAllowUIUpdate)
 		{
@@ -2758,7 +2695,7 @@ namespace Videa.ScreenManager
 
 					if (_bAllowUIUpdate)
 					{
-						buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+						buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
 						_surfaceScreen.Invalidate();
 					}
 				}
@@ -2865,15 +2802,15 @@ namespace Videa.ScreenManager
 			// 3. Menu Contextuel
 			//-----------------------------------
 			// On nothing.
-			mnuPlayPause.Text = ((ItemResourceInfo)mnuPlayPause.Tag).resManager.GetString(((ItemResourceInfo)mnuPlayPause.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuSetSelectionStart.Text = ((ItemResourceInfo)mnuSetSelectionStart.Tag).resManager.GetString(((ItemResourceInfo)mnuSetSelectionStart.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuSetSelectionEnd.Text = ((ItemResourceInfo)mnuSetSelectionEnd.Tag).resManager.GetString(((ItemResourceInfo)mnuSetSelectionEnd.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			//mnuPlayPause.Text = ((ItemResourceInfo)mnuPlayPause.Tag).resManager.GetString(((ItemResourceInfo)mnuPlayPause.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			//mnuSetSelectionStart.Text = ((ItemResourceInfo)mnuSetSelectionStart.Tag).resManager.GetString(((ItemResourceInfo)mnuSetSelectionStart.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			//mnuSetSelectionEnd.Text = ((ItemResourceInfo)mnuSetSelectionEnd.Tag).resManager.GetString(((ItemResourceInfo)mnuSetSelectionEnd.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			//mnuLockSelection déjà fait plus haut...
-			mnuSavePic.Text = ((ItemResourceInfo)mnuSavePic.Tag).resManager.GetString(((ItemResourceInfo)mnuSavePic.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuCloseScreen.Text = ((ItemResourceInfo)mnuCloseScreen.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseScreen.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			//mnuSavePic.Text = ((ItemResourceInfo)mnuSavePic.Tag).resManager.GetString(((ItemResourceInfo)mnuSavePic.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			//mnuCloseScreen.Text = ((ItemResourceInfo)mnuCloseScreen.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseScreen.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			
 			// On drawing
-			mnuDeleteDrawing.Text = ((ItemResourceInfo)mnuDeleteDrawing.Tag).resManager.GetString(((ItemResourceInfo)mnuDeleteDrawing.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			/*mnuDeleteDrawing.Text = ((ItemResourceInfo)mnuDeleteDrawing.Tag).resManager.GetString(((ItemResourceInfo)mnuDeleteDrawing.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuTrackTrajectory.Text = ((ItemResourceInfo)mnuTrackTrajectory.Tag).resManager.GetString(((ItemResourceInfo)mnuTrackTrajectory.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuConfigureFading.Text = ((ItemResourceInfo)mnuConfigureFading.Tag).resManager.GetString(((ItemResourceInfo)mnuConfigureFading.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuGotoKeyframe.Text = ((ItemResourceInfo)mnuGotoKeyframe.Tag).resManager.GetString(((ItemResourceInfo)mnuGotoKeyframe.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -2907,7 +2844,7 @@ namespace Videa.ScreenManager
 			// On Grid
 			mnuGridsConfigure.Text = ((ItemResourceInfo)mnuGridsConfigure.Tag).resManager.GetString(((ItemResourceInfo)mnuGridsConfigure.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuGridsHide.Text = ((ItemResourceInfo)mnuGridsHide.Tag).resManager.GetString(((ItemResourceInfo)mnuGridsHide.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
+			
 
 			//-----------------------------------
 			// 4. Drawing Tools
@@ -2935,6 +2872,7 @@ namespace Videa.ScreenManager
 			{
 				EnableDisableKeyframes();
 			}
+			*/
 
 			// 6. Drawings.
 			// Because this method is called when we change the general preferences (to update language)
@@ -3366,23 +3304,16 @@ namespace Videa.ScreenManager
 		}
 		private void SurfaceScreen_Paint(object sender, PaintEventArgs e)
 		{
-			if(m_FrameBuffer != null)
+			// Draw the image.
+			m_FrameServer.Draw(e.Graphics);
+			
+			// Draw selection Border if needed.
+			if (m_bShowImageBorder)
 			{
-				if(m_FrameBuffer.Count > 0)
-				{
-					if(m_FrameBuffer[m_FrameBuffer.Count-1] != null)
-					{						
-						FlushOnGraphics(m_FrameBuffer[m_FrameBuffer.Count-1], e.Graphics, m_SurfaceScreen.Size);
-						
-						// Draw Selection Border if needed.
-						if (m_bShowImageBorder)
-						{
-							DrawImageBorder(e.Graphics);
-						}			
-					}
-				}
-			}
-			m_bHandlingFrame = false;
+				DrawImageBorder(e.Graphics);
+			}		
+			
+			
 		}
 		private void SurfaceScreen_MouseEnter(object sender, EventArgs e)
 		{
@@ -3479,6 +3410,10 @@ namespace Videa.ScreenManager
 					m_Metadata.Chronos[i].Draw(_canvas, _fStretchFactor * _fDirectZoomFactor, (i == m_Metadata.SelectedChrono), _iPosition, _DirectZoomTopLeft);
 				}
 			}
+		}
+		private void DoInvalidate()
+		{
+			m_SurfaceScreen.Invalidate();
 		}
 		#endregion
 
@@ -3917,7 +3852,7 @@ namespace Videa.ScreenManager
 			splitKeyframes.SplitterDistance = splitKeyframes.Height - 25;
 
 			// change image
-			btnDockBottom.BackgroundImage = Videa.ScreenManager.Properties.Resources.undock16x16;
+			btnDockBottom.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.undock16x16;
 
 			// change status
 			m_bDocked = true;
@@ -3929,7 +3864,7 @@ namespace Videa.ScreenManager
 			splitKeyframes.SplitterDistance = splitKeyframes.Height - 140;
 
 			// change image
-			btnDockBottom.BackgroundImage = Videa.ScreenManager.Properties.Resources.dock16x16;
+			btnDockBottom.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.dock16x16;
 			btnDockBottom.Visible = true;
 
 			// change status
@@ -4025,7 +3960,7 @@ namespace Videa.ScreenManager
 				{
 					UnzoomDirectZoom();
 					m_Magnifier.Mode = MagnifierMode.Direct;
-					btnMagnifier.BackgroundImage = Videa.ScreenManager.Properties.Resources.magnifierActive2;
+					btnMagnifier.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.magnifierActive2;
 					SetCursor(Cursors.Cross);
 				}
 				else if (m_Magnifier.Mode == MagnifierMode.Direct)
@@ -4033,7 +3968,7 @@ namespace Videa.ScreenManager
 					// Revert to no magnification.
 					UnzoomDirectZoom();
 					m_Magnifier.Mode = MagnifierMode.NotVisible;
-					btnMagnifier.BackgroundImage = Videa.ScreenManager.Properties.Resources.magnifier2;
+					btnMagnifier.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.magnifier2;
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					m_SurfaceScreen.Invalidate();
 				}
@@ -4048,7 +3983,7 @@ namespace Videa.ScreenManager
 		{
 			// Revert to no magnification.
 			m_Magnifier.Mode = MagnifierMode.NotVisible;
-			btnMagnifier.BackgroundImage = Videa.ScreenManager.Properties.Resources.magnifier2;
+			btnMagnifier.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.magnifier2;
 			SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 		}
 		private void btn3dplane_Click(object sender, EventArgs e)
@@ -5407,45 +5342,6 @@ namespace Videa.ScreenManager
 			m_iSelEnd = mps.SelEnd;
 		}
 		#endregion
-
-		#region Capture
-		private void video_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
-		{
-			// It seems we are still in the worker thread, so we shouldn't touch the UI here.
-			// Access to controls is buggy.
-			
-			if(!m_bHandlingFrame)
-			{
-				m_bHandlingFrame = true;
-				
-				Bitmap bmp = (Bitmap)eventArgs.Frame.Clone();
-				m_FrameBuffer.Add(bmp);
-				
-				// Roll the buffer.
-				if(m_FrameBuffer.Count > m_iMaxSizeBufferFrames)
-				{
-					m_FrameBuffer.RemoveAt(0);
-				}
-				
-	    		if(m_bFirstFrame)
-	    		{
-	    			m_bFirstFrame = false;
-	    			m_DecodingSize = new Size(bmp.Width, bmp.Height);
-	    		
-	    			/*m_fStretchFactor = 1;
-					ShowResizers();
-	    			StretchSqueezeSurface();
-	    			_surfaceScreen.Invalidate();*/
-	    		}
-    		
-	    		_surfaceScreen.Invalidate();
-			}
-		}
-		#endregion
-		
-		
-		
-		
-		
+        
 	}
 }

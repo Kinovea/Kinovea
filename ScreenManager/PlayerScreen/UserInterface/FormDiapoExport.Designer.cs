@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formDiapoExport
     {
@@ -31,7 +31,7 @@ namespace Videa.ScreenManager
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpboxConfig = new System.Windows.Forms.GroupBox();
-            this.freqViewer = new Videa.ScreenManager.FrequencyViewer();
+            this.freqViewer = new Kinovea.ScreenManager.FrequencyViewer();
             this.lblInfosFrequency = new System.Windows.Forms.Label();
             this.trkInterval = new System.Windows.Forms.TrackBar();
             this.grpboxConfig.SuspendLayout();

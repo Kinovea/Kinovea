@@ -1,4 +1,4 @@
-namespace Videa.Updater
+namespace Kinovea.Updater
 {
     partial class DownloadGrid
     {

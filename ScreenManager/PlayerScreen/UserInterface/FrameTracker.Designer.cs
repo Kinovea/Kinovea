@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class FrameTracker
     {
@@ -58,7 +58,7 @@ namespace Videa.ScreenManager
             this.NavCursor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.NavCursor.BackColor = System.Drawing.Color.Transparent;
             this.NavCursor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.NavCursor.Image = global::Videa.ScreenManager.Properties.Resources.liqcursor;
+            this.NavCursor.Image = global::Kinovea.ScreenManager.Properties.Resources.liqcursor;
             this.NavCursor.Location = new System.Drawing.Point(160, 0);
             this.NavCursor.Name = "NavCursor";
             this.NavCursor.Size = new System.Drawing.Size(26, 20);
@@ -69,7 +69,7 @@ namespace Videa.ScreenManager
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Image = global::Videa.ScreenManager.Properties.Resources.liqbumperright;
+            this.label1.Image = global::Kinovea.ScreenManager.Properties.Resources.liqbumperright;
             this.label1.Location = new System.Drawing.Point(320, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(10, 20);
@@ -77,7 +77,7 @@ namespace Videa.ScreenManager
             // 
             // label2
             // 
-            this.label2.Image = global::Videa.ScreenManager.Properties.Resources.liqbumperleft;
+            this.label2.Image = global::Kinovea.ScreenManager.Properties.Resources.liqbumperleft;
             this.label2.Location = new System.Drawing.Point(10, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(10, 20);
@@ -87,7 +87,7 @@ namespace Videa.ScreenManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqbackdock;
+            this.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqbackdock;
             this.Controls.Add(this.NavCursor);
             this.Controls.Add(this.BumperRight);
             this.Controls.Add(this.BumperLeft);

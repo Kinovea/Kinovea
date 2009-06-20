@@ -30,9 +30,9 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using VideaPlayerServer;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     /// <summary>
 	/// formPreviewVideoFilter is a dialog to let the user decide 
@@ -52,7 +52,7 @@ namespace Videa.ScreenManager
             InitializeComponent();
 
             // Culture
-            ResourceManager resManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
 			this.Text = "   " + _windowTitle;
             btnOK.Text = resManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);

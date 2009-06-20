@@ -24,7 +24,7 @@ using System.Text;
 using System.Drawing;
 using System.Xml;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// A class to represent a 3D (x, y, time) point for trajectories.

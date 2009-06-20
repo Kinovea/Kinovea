@@ -40,12 +40,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #pragma once
 
 using namespace System;
-using namespace System::Drawing;
-using namespace System::Text;
-using namespace System::Windows::Forms;
-using namespace System::Threading;
-using namespace System::ComponentModel;
 using namespace System::Collections::Generic;				
+using namespace System::ComponentModel;
+using namespace System::Diagnostics;
+using namespace System::Drawing;
+using namespace System::IO;
+using namespace System::Reflection;
+using namespace System::Text;
+using namespace System::Threading;
+using namespace System::Windows::Forms;
 
 
 //------------------------
@@ -65,10 +68,6 @@ using namespace System::Collections::Generic;
 #define OUTPUT_MUXER_AVI 2
 
 
-//---------------------------------------------------
-// FFMpeg rev.10489, Checkout du SVN le 13 Sept 2007.
-//---------------------------------------------------
-
 extern "C" 
 {
 #define __STDC_CONSTANT_MACROS
@@ -86,15 +85,17 @@ extern "C"
 //------------------------
 
 
-namespace VideaPlayerServer 
+namespace Kinovea
 {
+	namespace VideoFiles
+	{
+
 
 	// TODO: Utiliser des classes pour contenir InfosVideo et PrimarySelection.
 	// NE PAS faire ref struct, les struct sont des types values en C# et VB.
 
 
 	// Delegates
-	/*public delegate Bitmap^ DelegateFlushDrawings(Int64 _iPosition);*/
 	public delegate bool DelegateGetOutputBitmap(Graphics^ _canvas, int64_t _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly);
 
 //-------------------------------------------------------------------------------------------------	
@@ -166,11 +167,9 @@ namespace VideaPlayerServer
 	public ref class PlayerServer
 	{
 		public:
-			
-			// TODO : Finalizer (?)
 			PlayerServer();
 			~PlayerServer(void);
-
+			// TODO : Finalizer (?)
 
 		public:
 			int		LoadMovie(String^ _FilePath);
@@ -187,8 +186,6 @@ namespace VideaPlayerServer
 			int		SaveMovie( String^ _FilePath, int FrameInterval, int64_t _iSelStart, int64_t _iSelEnd, String^ _Metadata, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap^ _delegateGetOutputBitmap);
 			bool	IsSelectionAnalyzable(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, int _maxSeconds, int _maxMemory);
 			
-			List <Bitmap^>^ ExtractForMosaic(int _iNumberOfFramesNeeded);
-
 			//Bitmap^ GetThumbnail(String^ _FilePath);
 			InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth);
 
@@ -199,18 +196,18 @@ namespace VideaPlayerServer
 			/// <summary>
 			/// Usually a form or a winform control that implements "Invoke/BeginInvode"
 			/// </summary>
-			System::Windows::Forms::ContainerControl^ m_sender;
+			ContainerControl^ m_sender;
 
 			/// <summary>
 			/// The delegate method (callback) on the sender to call
 			/// </summary>
-			System::Delegate^ m_senderDelegate;
+			Delegate^ m_senderDelegate;
 
 
 		// -- Variables --
 
-			System::IO::FileStream^								m_TraceLog;
-			System::Diagnostics::TextWriterTraceListener^		m_TraceListener;
+			FileStream^								m_TraceLog;
+			TextWriterTraceListener^		m_TraceListener;
 
 			// Entrée/Sortie du LoadMovie
 				BackgroundWorker^				m_bgWorker;
@@ -272,20 +269,20 @@ namespace VideaPlayerServer
 			int		GreatestCommonDenominator(int a, int b);
 
 			// Unused / Testing only.
-			void	BlitImage(int _iImageWidth, int _iImageHeight, int _iStride, System::Drawing::Imaging::PixelFormat _PixelFormat, System::IntPtr _ImageData );
+			void	BlitImage(int _iImageWidth, int _iImageHeight, int _iStride, System::Drawing::Imaging::PixelFormat _PixelFormat, IntPtr _ImageData );
 			int		TranscodeToScratch(AVFormatContext* _pInputFormatContext, AVCodecContext* _pInputCodecContext, int _iVideoStreamIndex, int* _piTranscodedFrames);
 			int		GetNumberOfFrames(AVFormatContext* _pInputFormatContext, AVCodecContext* _pInputCodecContext, int _iVideoStreamIndex, bool _bForceCount);
 			void	SaveFrame(AVFrame* pFrame, int width, int height, int iFrame);
 
 #ifdef TRACE
-			float	TraceMemoryUsage(System::Diagnostics::PerformanceCounter^ _ramCounter, float _fLastRamValue, String^ _comment, float* _fRamBalance);
+			float	TraceMemoryUsage(PerformanceCounter^ _ramCounter, float _fLastRamValue, String^ _comment, float* _fRamBalance);
 #endif
 
 
-			static log4net::ILog^ log = log4net::LogManager::GetLogger(System::Reflection::MethodBase::GetCurrentMethod()->DeclaringType);
+			static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 			
 
 	};
 //-------------------------------------------------------------------------------------------------
-
+}
 }

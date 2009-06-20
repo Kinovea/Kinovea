@@ -23,7 +23,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public abstract class AbstractDrawingTool
     {

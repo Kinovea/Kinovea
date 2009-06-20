@@ -1,4 +1,4 @@
-namespace Videa.Root
+namespace Kinovea.Root
 {
     partial class FormAbout
     {

@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     public class HelpItem
     {

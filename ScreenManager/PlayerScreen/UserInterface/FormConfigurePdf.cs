@@ -26,7 +26,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Work in progress...

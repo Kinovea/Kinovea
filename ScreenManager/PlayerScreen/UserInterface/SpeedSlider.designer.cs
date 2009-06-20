@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class SpeedSlider
     {
@@ -43,7 +43,7 @@ namespace Videa.ScreenManager
             // 
             // btnCursor
             // 
-            this.btnCursor.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.SpeedTrkCursor7;
+            this.btnCursor.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.SpeedTrkCursor7;
             this.btnCursor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnCursor.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCursor.FlatAppearance.BorderSize = 0;
@@ -60,7 +60,7 @@ namespace Videa.ScreenManager
             // 
             this.btnIncrease.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIncrease.BackColor = System.Drawing.Color.White;
-            this.btnIncrease.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.SpeedTrkIncrease2;
+            this.btnIncrease.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.SpeedTrkIncrease2;
             this.btnIncrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnIncrease.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIncrease.FlatAppearance.BorderSize = 0;
@@ -77,7 +77,7 @@ namespace Videa.ScreenManager
             // btnDecrease
             // 
             this.btnDecrease.BackColor = System.Drawing.Color.White;
-            this.btnDecrease.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.SpeedTrkDecrease2;
+            this.btnDecrease.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.SpeedTrkDecrease2;
             this.btnDecrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.btnDecrease.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDecrease.FlatAppearance.BorderSize = 0;
@@ -96,7 +96,7 @@ namespace Videa.ScreenManager
             this.btnRail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRail.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.SpeedTrkBack5;
+            this.btnRail.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.SpeedTrkBack5;
             this.btnRail.FlatAppearance.BorderSize = 0;
             this.btnRail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRail.Location = new System.Drawing.Point(15, 0);

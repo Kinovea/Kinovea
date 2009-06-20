@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
 	/// <summary>
 	/// This class encapsulate fading / persistence infos and utilities.

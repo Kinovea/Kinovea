@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formFileLoader
     {

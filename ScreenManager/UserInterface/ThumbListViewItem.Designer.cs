@@ -1,4 +1,4 @@
-﻿namespace Videa.ScreenManager
+﻿namespace Kinovea.ScreenManager
 {
     partial class ThumbListViewItem
     {
@@ -57,7 +57,7 @@
         	this.picBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
         	this.picBox.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.picBox.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.missing3;
+        	this.picBox.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.missing3;
         	this.picBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.picBox.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.picBox.Location = new System.Drawing.Point(3, 3);

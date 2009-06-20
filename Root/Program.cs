@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 [assembly: CLSCompliant(false)]
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "LogConf.xml", Watch = true)]
-namespace Videa.Root
+namespace Kinovea.Root
 {
     static class Program
     {

@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formRafaleExport
     {
@@ -37,7 +37,7 @@ namespace Videa.ScreenManager
             this.lblInfosFrequency = new System.Windows.Forms.Label();
             this.grpboxConfig = new System.Windows.Forms.GroupBox();
             this.chkKeyframesOnly = new System.Windows.Forms.CheckBox();
-            this.freqViewer = new Videa.ScreenManager.FrequencyViewer();
+            this.freqViewer = new Kinovea.ScreenManager.FrequencyViewer();
             this.chkBlend = new System.Windows.Forms.CheckBox();
             this.trkInterval = new System.Windows.Forms.TrackBar();
             this.grpboxInfos.SuspendLayout();

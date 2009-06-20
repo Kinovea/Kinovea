@@ -28,11 +28,11 @@ using System.Threading;
 using System.Reflection;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using Videa.Services;
-using VideaPlayerServer;
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 using System.IO;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	
     public class ScreenManagerKernel : IKernel , IMessageFilter
@@ -160,7 +160,7 @@ namespace Videa.ScreenManager
             Application.AddMessageFilter(this);
             
             //Gestion i18n
-            resManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             screenList = new List<AbstractScreen>();
             mStoredStates = new List<ScreenManagerState>();
             
@@ -318,7 +318,7 @@ namespace Videa.ScreenManager
             mnuOneCapture.Text = ((ItemResourceInfo)mnuOneCapture.Tag).resManager.GetString(((ItemResourceInfo)mnuOneCapture.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
             mnuOneCapture.MergeAction = MergeAction.Append;
-            mnuOneCapture.Enabled = false;
+            
 
             // Two captures
             ToolStripMenuItem mnuTwoCaptures = new ToolStripMenuItem();
@@ -326,7 +326,7 @@ namespace Videa.ScreenManager
             mnuTwoCaptures.Text = ((ItemResourceInfo)mnuTwoCaptures.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoCaptures.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
             mnuTwoCaptures.MergeAction = MergeAction.Append;
-			mnuTwoCaptures.Enabled = false;
+			
             
             // Two mixed
             ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
@@ -334,7 +334,7 @@ namespace Videa.ScreenManager
             mnuTwoMixed.Text = ((ItemResourceInfo)mnuTwoMixed.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoMixed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
-            mnuTwoMixed.Enabled = false;
+            
             
             //Swap - activé seulement si DualFull ?
             mnuSwapScreens = new ToolStripMenuItem();
@@ -478,7 +478,7 @@ namespace Videa.ScreenManager
             toolOnePlayer.Tag = new ItemResourceInfo(resManager, "toolOnePlayer", "mnuMonoPlayer");
             toolOnePlayer.Name                  = "toolOnePlayer";
             toolOnePlayer.DisplayStyle          = ToolStripItemDisplayStyle.Image;
-            toolOnePlayer.Image                 = (System.Drawing.Image)(Videa.ScreenManager.Properties.Resources.MonoPlayer3);
+            toolOnePlayer.Image                 = (System.Drawing.Image)(Kinovea.ScreenManager.Properties.Resources.MonoPlayer3);
             toolOnePlayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolOnePlayer.AutoSize              = true;
             toolOnePlayer.ToolTipText           = ((ItemResourceInfo)toolOnePlayer.Tag).resManager.GetString(((ItemResourceInfo)toolOnePlayer.Tag).strToolTipText, Thread.CurrentThread.CurrentUICulture); ;
@@ -493,7 +493,7 @@ namespace Videa.ScreenManager
             //toolTwoPlayers.Text = ((ItemResourceInfo)toolTwoPlayers.Tag).resManager.GetString(((ItemResourceInfo)toolTwoPlayers.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             //toolTwoPlayers.TextAlign = ContentAlignment.BottomCenter;
             //toolTwoPlayers.TextImageRelation = TextImageRelation.ImageAboveText;
-            toolTwoPlayers.Image = (System.Drawing.Image)(Videa.ScreenManager.Properties.Resources.DualPlayer2);
+            toolTwoPlayers.Image = (System.Drawing.Image)(Kinovea.ScreenManager.Properties.Resources.DualPlayer2);
             toolTwoPlayers.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolTwoPlayers.AutoSize = true;
             toolTwoPlayers.ToolTipText = ((ItemResourceInfo)toolTwoPlayers.Tag).resManager.GetString(((ItemResourceInfo)toolTwoPlayers.Tag).strToolTipText, Thread.CurrentThread.CurrentUICulture); ;
@@ -573,7 +573,7 @@ namespace Videa.ScreenManager
             {
                 case 1:
                     {
-                        if (screenList[0].GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
+                        if (screenList[0].GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
                         {
                             if(((PlayerScreen)screenList[0]).m_bIsMovieLoaded)
                             {
@@ -597,7 +597,7 @@ namespace Videa.ScreenManager
                     {
                         //bool bLeftIsFull = false;
 
-                        if (screenList[0].GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
+                        if (screenList[0].GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
                         {
                             if(((PlayerScreen)screenList[0]).m_bIsMovieLoaded)
                             {
@@ -615,7 +615,7 @@ namespace Videa.ScreenManager
                             // Ecran de gauche en capture.
                         }
 
-                        if (screenList[1].GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
+                        if (screenList[1].GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
                         {
                             StatusString += " | ";
                             
@@ -1751,7 +1751,7 @@ namespace Videa.ScreenManager
                 // Demander un GotoPrev à tout le monde
                 foreach (AbstractScreen screen in screenList)
                 {
-                    if (screen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
+                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
                     {
                         ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoPrevious_Click(sender, e);
                     }
@@ -1774,7 +1774,7 @@ namespace Videa.ScreenManager
                 // Demander un GotoNext à tout le monde
                 foreach (AbstractScreen screen in screenList)
                 {
-                    if (screen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
+                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
                     {
                         ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoNext_Click(sender, e);
                     }
@@ -2026,7 +2026,7 @@ namespace Videa.ScreenManager
             // Stopper chaque écran
             foreach (AbstractScreen screen in screenList)
             {
-                if (screen.GetType().FullName.Equals("Videa.ScreenManager.PlayerScreen"))
+                if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
                 {
                     ((PlayerScreen)screen).StopPlaying();
                 }

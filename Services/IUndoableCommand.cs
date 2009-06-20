@@ -21,7 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     public interface IUndoableCommand : ICommand
     {

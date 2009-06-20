@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formColorProfile
     {
@@ -170,7 +170,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolChrono
         	// 
         	this.btnDrawingToolChrono.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnDrawingToolChrono.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.chrono5;
+        	this.btnDrawingToolChrono.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.chrono5;
         	this.btnDrawingToolChrono.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnDrawingToolChrono.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolChrono.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -233,7 +233,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolAngle2D
         	// 
         	this.btnDrawingToolAngle2D.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnDrawingToolAngle2D.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.angle5;
+        	this.btnDrawingToolAngle2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.angle5;
         	this.btnDrawingToolAngle2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnDrawingToolAngle2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -264,7 +264,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolCross2D
         	// 
         	this.btnDrawingToolCross2D.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnDrawingToolCross2D.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.cross5;
+        	this.btnDrawingToolCross2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.cross5;
         	this.btnDrawingToolCross2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolCross2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolCross2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -295,7 +295,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolLine2D
         	// 
         	this.btnDrawingToolLine2D.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnDrawingToolLine2D.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.line6;
+        	this.btnDrawingToolLine2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.line6;
         	this.btnDrawingToolLine2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolLine2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolLine2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -326,7 +326,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolPencil
         	// 
         	this.btnDrawingToolPencil.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnDrawingToolPencil.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.activepencil;
+        	this.btnDrawingToolPencil.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
         	this.btnDrawingToolPencil.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPencil.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPencil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -357,7 +357,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolText
         	// 
         	this.btnDrawingToolText.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnDrawingToolText.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.TextToolIcon;
+        	this.btnDrawingToolText.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.TextToolIcon;
         	this.btnDrawingToolText.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolText.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -377,7 +377,7 @@ namespace Videa.ScreenManager
         	this.btnSaveProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnSaveProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnSaveProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSaveProfile.Image = global::Videa.ScreenManager.Properties.Resources.filesave;
+        	this.btnSaveProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.filesave;
         	this.btnSaveProfile.Location = new System.Drawing.Point(43, 5);
         	this.btnSaveProfile.Name = "btnSaveProfile";
         	this.btnSaveProfile.Size = new System.Drawing.Size(25, 25);
@@ -392,7 +392,7 @@ namespace Videa.ScreenManager
         	this.btnLoadProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnLoadProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnLoadProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnLoadProfile.Image = global::Videa.ScreenManager.Properties.Resources.folder_new;
+        	this.btnLoadProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.folder_new;
         	this.btnLoadProfile.Location = new System.Drawing.Point(12, 5);
         	this.btnLoadProfile.Name = "btnLoadProfile";
         	this.btnLoadProfile.Size = new System.Drawing.Size(25, 25);
@@ -407,7 +407,7 @@ namespace Videa.ScreenManager
         	this.btnDefaultProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnDefaultProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnDefaultProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnDefaultProfile.Image = global::Videa.ScreenManager.Properties.Resources.SwatchIcon3;
+        	this.btnDefaultProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.SwatchIcon3;
         	this.btnDefaultProfile.Location = new System.Drawing.Point(214, 5);
         	this.btnDefaultProfile.Name = "btnDefaultProfile";
         	this.btnDefaultProfile.Size = new System.Drawing.Size(25, 25);

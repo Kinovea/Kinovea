@@ -23,9 +23,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.FileBrowser
+namespace Kinovea.FileBrowser
 {
 	/// <summary>
 	/// FormEditShortcut allows the user to edit the friendly name

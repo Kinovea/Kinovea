@@ -24,11 +24,11 @@ using System.Text;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 using System.Windows.Forms;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     //--------------------------------------------
     // CommandLoadMovieInScreen.
@@ -54,7 +54,7 @@ namespace Videa.ScreenManager
         #region constructor
         public CommandLoadMovieInScreen(ScreenManagerKernel _smk, String _filePath, int _iForceScreen, bool _bStoreState)
         {
-            m_ResManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             screenManagerKernel = _smk;
             filePath = _filePath;
             ForceScreen = _iForceScreen;

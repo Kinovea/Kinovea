@@ -28,13 +28,13 @@ using System.Globalization;
 using System.Resources;
 using System.Threading;
 using System.Reflection;
-using Videa.Services;
-using Videa.FileBrowser;
-using Videa.ScreenManager;
-using Videa.Updater;
+using Kinovea.Services;
+using Kinovea.FileBrowser;
+using Kinovea.ScreenManager;
+using Kinovea.Updater;
 using System.IO;
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
 
     //public delegate void DelegateClosingRequest();
@@ -110,7 +110,7 @@ namespace Videa.Root
             PreferencesManager pm = PreferencesManager.Instance();
             
             // Get Manager for i18n
-            RootResourceManager = new ResourceManager("Videa.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
+            RootResourceManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
             
             log.Debug("Build the modules tree.");
             BuildSubTree();

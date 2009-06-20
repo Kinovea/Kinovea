@@ -26,9 +26,9 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     public partial class KinoveaMainWindow : Form
     {

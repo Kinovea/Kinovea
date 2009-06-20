@@ -31,7 +31,7 @@ using System.Resources;
 using System.Reflection;
 using System.Threading;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// This dialog let the user save a diaporama of the key images.
@@ -53,7 +53,7 @@ namespace Videa.ScreenManager
         {
             m_PlayerScreenUserInterface = _psui;
             m_FullPath = _FullPath;
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 
             InitializeComponent();
 

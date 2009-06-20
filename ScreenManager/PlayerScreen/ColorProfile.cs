@@ -23,9 +23,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Xml;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Class to hold a set of decorations informations for the various tools.

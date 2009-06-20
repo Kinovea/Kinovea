@@ -35,9 +35,9 @@ using System.Threading;
 using System.Windows.Forms;
 
 using ExpTreeLib;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.FileBrowser
+namespace Kinovea.FileBrowser
 {
 	/// <summary>
 	/// The user interface for all explorer like stuff.
@@ -51,7 +51,7 @@ namespace Videa.FileBrowser
 		private CShItem m_CurrentShortcutItem;	// Current item in shortcuts tab.
 		private bool m_bExpanding;			// True if the exptree is currently auto expanding. To avoid reentry.
 		private bool m_bInitializing = true;
-		private ResourceManager m_ResManager = new ResourceManager("Videa.FileBrowser.Languages.FileBrowserLang", Assembly.GetExecutingAssembly());
+		private ResourceManager m_ResManager = new ResourceManager("Kinovea.FileBrowser.Languages.FileBrowserLang", Assembly.GetExecutingAssembly());
 		private PreferencesManager m_PreferencesManager = PreferencesManager.Instance();
 		
 		#region Context menu

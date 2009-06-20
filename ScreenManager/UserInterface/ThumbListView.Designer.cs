@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class ThumbListView
     {
@@ -209,7 +209,7 @@ namespace Videa.ScreenManager
         	this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnClose.Image = global::Videa.ScreenManager.Properties.Resources.closegrey;
+        	this.btnClose.Image = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
         	this.btnClose.Location = new System.Drawing.Point(630, 3);
         	this.btnClose.Name = "btnClose";
         	this.btnClose.Size = new System.Drawing.Size(20, 20);

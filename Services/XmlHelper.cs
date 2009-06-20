@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     public static class XmlHelper
     {
