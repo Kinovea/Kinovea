@@ -28,9 +28,9 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
-using VideaPlayerServer;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// This is the loader for files.

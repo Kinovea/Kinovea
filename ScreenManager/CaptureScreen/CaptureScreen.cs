@@ -26,7 +26,7 @@ using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class CaptureScreen : AbstractScreen
     {
@@ -48,7 +48,7 @@ namespace Videa.ScreenManager
 
         #region Members
 		public CaptureScreenUserInterface	m_CaptureScreenUI;
-		public ResourceManager             m_ResourceManager;
+		private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
         private Guid m_UniqueId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -60,7 +60,7 @@ namespace Videa.ScreenManager
             m_UniqueId = System.Guid.NewGuid();
             
             //Gestion i18n
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
 			// Create UI
             m_CaptureScreenUI = new CaptureScreenUserInterface(m_ResourceManager);
@@ -74,19 +74,19 @@ namespace Videa.ScreenManager
         #region AbstractScreen Implementation
         public override void DisplayAsInactiveScreen()
         {
-            // Not Implemented.
+            m_CaptureScreenUI.DisplayAsInactiveScreen();
         }
         public override void DisplayAsActiveScreen()
         {
-            // Not Implemented.
+        	m_CaptureScreenUI.DisplayAsActiveScreen();
         }
         public override void refreshUICulture() 
         {
-            // Not Implemented.
+        	m_CaptureScreenUI.RefreshUICulture(m_ResourceManager);
         }
         public override void CloseScreen()
         {
-            // Not Implemented.
+        	m_CaptureScreenUI.UnloadMovie();
         }
         public override bool OnKeyPress(Keys _key)
         {

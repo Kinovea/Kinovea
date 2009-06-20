@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class CaptureScreenUserInterface
     {
@@ -84,6 +84,7 @@ namespace Videa.ScreenManager
         	this.pnlThumbnails = new System.Windows.Forms.Panel();
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.btnAddKeyframe = new System.Windows.Forms.Button();
+        	this.buttonRecord = new System.Windows.Forms.Button();
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
         	this.groupBoxSpeedTuner.SuspendLayout();
@@ -121,7 +122,7 @@ namespace Videa.ScreenManager
         	// 
         	this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnClose.BackColor = System.Drawing.Color.Transparent;
-        	this.btnClose.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.closegrey;
+        	this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
         	this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnClose.Cursor = System.Windows.Forms.Cursors.Default;
         	this.btnClose.FlatAppearance.BorderSize = 0;
@@ -149,6 +150,7 @@ namespace Videa.ScreenManager
         	// panelVideoControls
         	// 
         	this.panelVideoControls.BackColor = System.Drawing.Color.White;
+        	this.panelVideoControls.Controls.Add(this.buttonRecord);
         	this.panelVideoControls.Controls.Add(this.btnRafale);
         	this.panelVideoControls.Controls.Add(this.lblWorkingZone);
         	this.panelVideoControls.Controls.Add(this.btnSnapShot);
@@ -177,7 +179,7 @@ namespace Videa.ScreenManager
         	this.btnRafale.FlatAppearance.BorderSize = 0;
         	this.btnRafale.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnRafale.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnRafale.Image = global::Videa.ScreenManager.Properties.Resources.snaprafale;
+        	this.btnRafale.Image = global::Kinovea.ScreenManager.Properties.Resources.snaprafale;
         	this.btnRafale.Location = new System.Drawing.Point(310, 68);
         	this.btnRafale.MinimumSize = new System.Drawing.Size(25, 25);
         	this.btnRafale.Name = "btnRafale";
@@ -209,7 +211,7 @@ namespace Videa.ScreenManager
         	this.btnSnapShot.FlatAppearance.BorderSize = 0;
         	this.btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSnapShot.Image = global::Videa.ScreenManager.Properties.Resources.screencap5;
+        	this.btnSnapShot.Image = global::Kinovea.ScreenManager.Properties.Resources.screencap5;
         	this.btnSnapShot.Location = new System.Drawing.Point(280, 68);
         	this.btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
         	this.btnSnapShot.Name = "btnSnapShot";
@@ -233,7 +235,7 @@ namespace Videa.ScreenManager
         	// 
         	// buttonGotoFirst
         	// 
-        	this.buttonGotoFirst.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqfirst7;
+        	this.buttonGotoFirst.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqfirst7;
         	this.buttonGotoFirst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoFirst.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoFirst.FlatAppearance.BorderColor = System.Drawing.Color.White;
@@ -242,17 +244,18 @@ namespace Videa.ScreenManager
         	this.buttonGotoFirst.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonGotoFirst.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonGotoFirst.Location = new System.Drawing.Point(25, 68);
+        	this.buttonGotoFirst.Location = new System.Drawing.Point(310, 5);
         	this.buttonGotoFirst.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoFirst.Name = "buttonGotoFirst";
         	this.buttonGotoFirst.Size = new System.Drawing.Size(30, 25);
         	this.buttonGotoFirst.TabIndex = 4;
         	this.buttonGotoFirst.UseVisualStyleBackColor = true;
+        	this.buttonGotoFirst.Visible = false;
         	this.buttonGotoFirst.Click += new System.EventHandler(this.buttonGotoFirst_Click);
         	// 
         	// buttonGotoPrevious
         	// 
-        	this.buttonGotoPrevious.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqprev5;
+        	this.buttonGotoPrevious.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqprev5;
         	this.buttonGotoPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoPrevious.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoPrevious.FlatAppearance.BorderSize = 0;
@@ -260,18 +263,19 @@ namespace Videa.ScreenManager
         	this.buttonGotoPrevious.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoPrevious.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonGotoPrevious.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonGotoPrevious.Location = new System.Drawing.Point(60, 68);
+        	this.buttonGotoPrevious.Location = new System.Drawing.Point(292, 7);
         	this.buttonGotoPrevious.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoPrevious.Name = "buttonGotoPrevious";
         	this.buttonGotoPrevious.Size = new System.Drawing.Size(30, 25);
         	this.buttonGotoPrevious.TabIndex = 3;
         	this.buttonGotoPrevious.UseVisualStyleBackColor = true;
+        	this.buttonGotoPrevious.Visible = false;
         	this.buttonGotoPrevious.Click += new System.EventHandler(this.buttonGotoPrevious_Click);
         	// 
         	// buttonGotoNext
         	// 
         	this.buttonGotoNext.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonGotoNext.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqnext6;
+        	this.buttonGotoNext.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqnext6;
         	this.buttonGotoNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoNext.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoNext.FlatAppearance.BorderSize = 0;
@@ -279,17 +283,18 @@ namespace Videa.ScreenManager
         	this.buttonGotoNext.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonGotoNext.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonGotoNext.Location = new System.Drawing.Point(140, 68);
+        	this.buttonGotoNext.Location = new System.Drawing.Point(275, 7);
         	this.buttonGotoNext.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoNext.Name = "buttonGotoNext";
         	this.buttonGotoNext.Size = new System.Drawing.Size(30, 25);
         	this.buttonGotoNext.TabIndex = 2;
         	this.buttonGotoNext.UseVisualStyleBackColor = false;
+        	this.buttonGotoNext.Visible = false;
         	this.buttonGotoNext.Click += new System.EventHandler(this.buttonGotoNext_Click);
         	// 
         	// buttonGotoLast
         	// 
-        	this.buttonGotoLast.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqlast5;
+        	this.buttonGotoLast.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqlast5;
         	this.buttonGotoLast.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoLast.FlatAppearance.BorderSize = 0;
@@ -297,17 +302,18 @@ namespace Videa.ScreenManager
         	this.buttonGotoLast.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoLast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonGotoLast.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonGotoLast.Location = new System.Drawing.Point(175, 68);
+        	this.buttonGotoLast.Location = new System.Drawing.Point(264, 7);
         	this.buttonGotoLast.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoLast.Name = "buttonGotoLast";
         	this.buttonGotoLast.Size = new System.Drawing.Size(30, 25);
         	this.buttonGotoLast.TabIndex = 1;
         	this.buttonGotoLast.UseVisualStyleBackColor = true;
+        	this.buttonGotoLast.Visible = false;
         	this.buttonGotoLast.Click += new System.EventHandler(this.buttonGotoLast_Click);
         	// 
         	// buttonPlay
         	// 
-        	this.buttonPlay.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqplay17;
+        	this.buttonPlay.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
         	this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonPlay.FlatAppearance.BorderSize = 0;
@@ -315,7 +321,7 @@ namespace Videa.ScreenManager
         	this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonPlay.Location = new System.Drawing.Point(95, 65);
+        	this.buttonPlay.Location = new System.Drawing.Point(15, 65);
         	this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
         	this.buttonPlay.Name = "buttonPlay";
         	this.buttonPlay.Size = new System.Drawing.Size(40, 30);
@@ -403,7 +409,7 @@ namespace Videa.ScreenManager
         	this.ImageResizerNE.BackColor = System.Drawing.Color.DimGray;
         	this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.ImageResizerNE.Image = global::Videa.ScreenManager.Properties.Resources.resizer4;
+        	this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
         	this.ImageResizerNE.Location = new System.Drawing.Point(92, 78);
         	this.ImageResizerNE.Name = "ImageResizerNE";
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
@@ -417,7 +423,7 @@ namespace Videa.ScreenManager
         	this.ImageResizerNW.BackColor = System.Drawing.Color.DimGray;
         	this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
         	this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.ImageResizerNW.Image = global::Videa.ScreenManager.Properties.Resources.resizer4;
+        	this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
         	this.ImageResizerNW.Location = new System.Drawing.Point(57, 78);
         	this.ImageResizerNW.Name = "ImageResizerNW";
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
@@ -431,7 +437,7 @@ namespace Videa.ScreenManager
         	this.ImageResizerSW.BackColor = System.Drawing.Color.DimGray;
         	this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.ImageResizerSW.Image = global::Videa.ScreenManager.Properties.Resources.resizer4;
+        	this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
         	this.ImageResizerSW.Location = new System.Drawing.Point(57, 103);
         	this.ImageResizerSW.Name = "ImageResizerSW";
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
@@ -446,7 +452,7 @@ namespace Videa.ScreenManager
         	this.ImageResizerSE.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
         	this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
-        	this.ImageResizerSE.Image = global::Videa.ScreenManager.Properties.Resources.resizer4;
+        	this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
         	this.ImageResizerSE.Location = new System.Drawing.Point(92, 103);
         	this.ImageResizerSE.Name = "ImageResizerSE";
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
@@ -630,7 +636,7 @@ namespace Videa.ScreenManager
         	// 
         	this.ActiveScreenIndicator.BackColor = System.Drawing.Color.Transparent;
         	this.ActiveScreenIndicator.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.ActiveScreenIndicator.Image = global::Videa.ScreenManager.Properties.Resources.activepencil;
+        	this.ActiveScreenIndicator.Image = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
         	this.ActiveScreenIndicator.Location = new System.Drawing.Point(1, 3);
         	this.ActiveScreenIndicator.Margin = new System.Windows.Forms.Padding(0);
         	this.ActiveScreenIndicator.Name = "ActiveScreenIndicator";
@@ -680,7 +686,7 @@ namespace Videa.ScreenManager
         	// btn3dplane
         	// 
         	this.btn3dplane.BackColor = System.Drawing.Color.Transparent;
-        	this.btn3dplane.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.plane4;
+        	this.btn3dplane.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.plane4;
         	this.btn3dplane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btn3dplane.FlatAppearance.BorderSize = 0;
         	this.btn3dplane.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -697,7 +703,7 @@ namespace Videa.ScreenManager
         	// btnMagnifier
         	// 
         	this.btnMagnifier.BackColor = System.Drawing.Color.Transparent;
-        	this.btnMagnifier.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.magnifier2;
+        	this.btnMagnifier.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.magnifier2;
         	this.btnMagnifier.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnMagnifier.FlatAppearance.BorderSize = 0;
         	this.btnMagnifier.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -714,7 +720,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolChrono
         	// 
         	this.btnDrawingToolChrono.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolChrono.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.chrono5;
+        	this.btnDrawingToolChrono.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.chrono5;
         	this.btnDrawingToolChrono.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolChrono.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolChrono.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -732,7 +738,7 @@ namespace Videa.ScreenManager
         	// 
         	this.btnDockBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnDockBottom.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDockBottom.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.dock16x16;
+        	this.btnDockBottom.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.dock16x16;
         	this.btnDockBottom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDockBottom.Cursor = System.Windows.Forms.Cursors.Default;
         	this.btnDockBottom.FlatAppearance.BorderSize = 0;
@@ -750,7 +756,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolCross2D
         	// 
         	this.btnDrawingToolCross2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolCross2D.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.cross5;
+        	this.btnDrawingToolCross2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.cross5;
         	this.btnDrawingToolCross2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolCross2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolCross2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -767,7 +773,7 @@ namespace Videa.ScreenManager
         	// btnShowComments
         	// 
         	this.btnShowComments.BackColor = System.Drawing.Color.Transparent;
-        	this.btnShowComments.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.comments2;
+        	this.btnShowComments.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.comments2;
         	this.btnShowComments.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnShowComments.FlatAppearance.BorderSize = 0;
         	this.btnShowComments.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -784,7 +790,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolLine2D
         	// 
         	this.btnDrawingToolLine2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolLine2D.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.line6;
+        	this.btnDrawingToolLine2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.line6;
         	this.btnDrawingToolLine2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolLine2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolLine2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -801,7 +807,7 @@ namespace Videa.ScreenManager
         	// btnColorProfile
         	// 
         	this.btnColorProfile.BackColor = System.Drawing.Color.Transparent;
-        	this.btnColorProfile.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.SwatchIcon3;
+        	this.btnColorProfile.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.SwatchIcon3;
         	this.btnColorProfile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnColorProfile.FlatAppearance.BorderSize = 0;
         	this.btnColorProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -818,7 +824,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolText
         	// 
         	this.btnDrawingToolText.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolText.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.TextToolIcon;
+        	this.btnDrawingToolText.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.TextToolIcon;
         	this.btnDrawingToolText.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolText.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -835,7 +841,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolPencil
         	// 
         	this.btnDrawingToolPencil.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPencil.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.activepencil;
+        	this.btnDrawingToolPencil.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
         	this.btnDrawingToolPencil.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPencil.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPencil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -852,7 +858,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolAngle2D
         	// 
         	this.btnDrawingToolAngle2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolAngle2D.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.angle5;
+        	this.btnDrawingToolAngle2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.angle5;
         	this.btnDrawingToolAngle2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnDrawingToolAngle2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -869,7 +875,7 @@ namespace Videa.ScreenManager
         	// btnDrawingToolPointer
         	// 
         	this.btnDrawingToolPointer.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPointer.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.move;
+        	this.btnDrawingToolPointer.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.move;
         	this.btnDrawingToolPointer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPointer.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPointer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -910,7 +916,7 @@ namespace Videa.ScreenManager
         	// btnAddKeyframe
         	// 
         	this.btnAddKeyframe.BackColor = System.Drawing.Color.Transparent;
-        	this.btnAddKeyframe.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.MenuFileNewIcon;
+        	this.btnAddKeyframe.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.MenuFileNewIcon;
         	this.btnAddKeyframe.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnAddKeyframe.FlatAppearance.BorderSize = 0;
         	this.btnAddKeyframe.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -923,6 +929,24 @@ namespace Videa.ScreenManager
         	this.btnAddKeyframe.TabIndex = 0;
         	this.btnAddKeyframe.UseVisualStyleBackColor = false;
         	this.btnAddKeyframe.Click += new System.EventHandler(this.btnAddKeyframe_Click);
+        	// 
+        	// buttonRecord
+        	// 
+        	this.buttonRecord.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
+        	this.buttonRecord.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonRecord.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.buttonRecord.FlatAppearance.BorderSize = 0;
+        	this.buttonRecord.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+        	this.buttonRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+        	this.buttonRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.buttonRecord.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonRecord.Location = new System.Drawing.Point(58, 65);
+        	this.buttonRecord.MinimumSize = new System.Drawing.Size(30, 25);
+        	this.buttonRecord.Name = "buttonRecord";
+        	this.buttonRecord.Size = new System.Drawing.Size(40, 30);
+        	this.buttonRecord.TabIndex = 24;
+        	this.buttonRecord.UseVisualStyleBackColor = true;
+        	this.buttonRecord.Click += new System.EventHandler(this.buttonRecord_Click);
         	// 
         	// CaptureScreenUserInterface
         	// 
@@ -951,6 +975,7 @@ namespace Videa.ScreenManager
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Button buttonRecord;
 
         #endregion
 

@@ -25,11 +25,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
-using Videa.Services;
+using Kinovea.Services;
 using AForge.Imaging;
 using System.Drawing.Imaging;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public delegate void ShowClosestFrame(Point _mouse, long _iBeginTimestamp, List<TrackPosition> _positions, int _iPixelTotalDistance, bool _b2DOnly);
     

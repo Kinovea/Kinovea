@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class SelectionTracker
     {
@@ -51,7 +51,7 @@ namespace Videa.ScreenManager
             // 
             // EndOfTrackLeft
             // 
-            this.EndOfTrackLeft.Image = global::Videa.ScreenManager.Properties.Resources.liqbumperleft;
+            this.EndOfTrackLeft.Image = global::Kinovea.ScreenManager.Properties.Resources.liqbumperleft;
             this.EndOfTrackLeft.Location = new System.Drawing.Point(10, 0);
             this.EndOfTrackLeft.Name = "EndOfTrackLeft";
             this.EndOfTrackLeft.Size = new System.Drawing.Size(12, 20);
@@ -63,7 +63,7 @@ namespace Videa.ScreenManager
             this.HandlerRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.HandlerRight.BackColor = System.Drawing.Color.Transparent;
             this.HandlerRight.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.HandlerRight.Image = global::Videa.ScreenManager.Properties.Resources.liqhandlerright3;
+            this.HandlerRight.Image = global::Kinovea.ScreenManager.Properties.Resources.liqhandlerright3;
             this.HandlerRight.Location = new System.Drawing.Point(244, 0);
             this.HandlerRight.Name = "HandlerRight";
             this.HandlerRight.Size = new System.Drawing.Size(14, 20);
@@ -76,7 +76,7 @@ namespace Videa.ScreenManager
             this.HandlerLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.HandlerLeft.BackColor = System.Drawing.Color.Transparent;
             this.HandlerLeft.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.HandlerLeft.Image = global::Videa.ScreenManager.Properties.Resources.liqhandlerleft2;
+            this.HandlerLeft.Image = global::Kinovea.ScreenManager.Properties.Resources.liqhandlerleft2;
             this.HandlerLeft.Location = new System.Drawing.Point(61, 0);
             this.HandlerLeft.Name = "HandlerLeft";
             this.HandlerLeft.Size = new System.Drawing.Size(14, 20);
@@ -88,7 +88,7 @@ namespace Videa.ScreenManager
             // 
             this.SelectedZone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.SelectedZone.BackColor = System.Drawing.Color.White;
-            this.SelectedZone.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqmiddlebar;
+            this.SelectedZone.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqmiddlebar;
             this.SelectedZone.Location = new System.Drawing.Point(70, 0);
             this.SelectedZone.Name = "SelectedZone";
             this.SelectedZone.Size = new System.Drawing.Size(174, 20);
@@ -111,7 +111,7 @@ namespace Videa.ScreenManager
             // 
             this.EndOfTrackRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.EndOfTrackRight.BackColor = System.Drawing.Color.White;
-            this.EndOfTrackRight.Image = global::Videa.ScreenManager.Properties.Resources.liqbumperright;
+            this.EndOfTrackRight.Image = global::Kinovea.ScreenManager.Properties.Resources.liqbumperright;
             this.EndOfTrackRight.Location = new System.Drawing.Point(295, 0);
             this.EndOfTrackRight.Name = "EndOfTrackRight";
             this.EndOfTrackRight.Size = new System.Drawing.Size(12, 20);
@@ -122,7 +122,7 @@ namespace Videa.ScreenManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqbackdock;
+            this.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqbackdock;
             this.Controls.Add(this.HandlerRight);
             this.Controls.Add(this.HandlerLeft);
             this.Controls.Add(this.SelectedZone);

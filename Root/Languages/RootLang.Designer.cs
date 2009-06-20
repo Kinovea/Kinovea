@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Videa.Root.Languages {
+namespace Kinovea.Root.Languages {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Videa.Root.Languages {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Videa.Root.Languages.RootLang", typeof(RootLang).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.Root.Languages.RootLang", typeof(RootLang).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Videa.Root</RootNamespace>
     <AssemblyName>Kinovea</AssemblyName>
-    <StartupObject>Videa.Root.Program</StartupObject>
+    <StartupObject>Kinovea.Root.Program</StartupObject>
     <ApplicationIcon>kinoveabundle.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>4199BE45A0B72AC0126562F0FD2A5A5B02D397DA</ManifestCertificateThumbprint>

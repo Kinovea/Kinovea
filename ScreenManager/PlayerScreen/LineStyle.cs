@@ -22,9 +22,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
 
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Class that holds the style information for lines, including size, shape and color.

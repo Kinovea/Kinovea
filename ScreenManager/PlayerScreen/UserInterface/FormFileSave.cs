@@ -28,9 +28,9 @@ using System.Resources;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Threading;
-using VideaPlayerServer;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager 
+namespace Kinovea.ScreenManager 
 {
     public partial class formFileSave : Form
     {
@@ -64,7 +64,7 @@ namespace Videa.ScreenManager
             //m_DelegateFlushDrawings = _DelegateFlushDrawings;
             m_DelegateOutputBitmap = _DelegateOutputBitmap;
 
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 
             this.Text = "   " + m_ResourceManager.GetString("FormFileSave_Title", Thread.CurrentThread.CurrentUICulture);
             labelInfos.Text = m_ResourceManager.GetString("FormFileSave_Infos", Thread.CurrentThread.CurrentUICulture) + " 0%";

@@ -23,7 +23,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class DrawingToolPointer : AbstractDrawingTool
     {
@@ -498,10 +498,10 @@ namespace Videa.ScreenManager
         }
         private void SetupHandCursors()
         {
-            Bitmap bmpOpen = Videa.ScreenManager.Properties.Resources.handopen24b;
+            Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Resources.handopen24b;
             m_curHandOpen = new Cursor(bmpOpen.GetHicon());
 
-            Bitmap bmpClose = Videa.ScreenManager.Properties.Resources.handclose24c;
+            Bitmap bmpClose = Kinovea.ScreenManager.Properties.Resources.handclose24c;
             m_curHandClose = new Cursor(bmpClose.GetHicon());
 
             m_iLastCursorType = 0;

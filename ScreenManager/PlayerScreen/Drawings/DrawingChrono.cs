@@ -29,9 +29,9 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class DrawingChrono : AbstractDrawing
     {
@@ -334,7 +334,7 @@ namespace Videa.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             return rm.GetString("ToolTip_DrawingToolChrono", Thread.CurrentThread.CurrentUICulture);
         }
         public override int GetHashCode()

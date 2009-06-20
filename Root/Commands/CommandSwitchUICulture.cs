@@ -6,10 +6,10 @@ using System.Reflection;
 using System.Threading;
 using System.Globalization;
 
-using Videa.Services;
+using Kinovea.Services;
 
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     class CommandSwitchUICulture : IUndoableCommand
     {
@@ -19,7 +19,7 @@ namespace Videa.Root
         {
             get
             {
-                ResourceManager rm = new ResourceManager("Videa.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
+                ResourceManager rm = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
                 return rm.GetString("CommandSwitchUICulture_FriendlyName", Thread.CurrentThread.CurrentUICulture);
             }
         }

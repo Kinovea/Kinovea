@@ -27,7 +27,7 @@ using System.Resources;
 //using System.Threading;
 //using System.Reflection;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     public class ItemResourceInfo
     {

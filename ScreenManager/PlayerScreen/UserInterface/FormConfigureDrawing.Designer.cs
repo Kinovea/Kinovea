@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formConfigureDrawing
     {
@@ -33,8 +33,8 @@ namespace Videa.ScreenManager
             this.grpConfig = new System.Windows.Forms.GroupBox();
             this.cmbFontSize = new System.Windows.Forms.ComboBox();
             this.lblFontSize = new System.Windows.Forms.Label();
-            this.stlPicker = new Videa.ScreenManager.StaticStylePicker();
-            this.colPicker = new Videa.ScreenManager.StaticColorPicker();
+            this.stlPicker = new Kinovea.ScreenManager.StaticStylePicker();
+            this.colPicker = new Kinovea.ScreenManager.StaticColorPicker();
             this.grpConfig.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,8 +118,8 @@ namespace Videa.ScreenManager
             this.stlPicker.Name = "stlPicker";
             this.stlPicker.Size = new System.Drawing.Size(162, 77);
             this.stlPicker.TabIndex = 15;
-            this.stlPicker.ToolType = Videa.ScreenManager.DrawingToolType.Line2D;
-            this.stlPicker.StylePicked += new Videa.ScreenManager.StaticStylePicker.DelegateStylePicked(this.stlPicker_StylePicked);
+            this.stlPicker.ToolType = Kinovea.ScreenManager.DrawingToolType.Line2D;
+            this.stlPicker.StylePicked += new Kinovea.ScreenManager.StaticStylePicker.DelegateStylePicked(this.stlPicker_StylePicked);
             // 
             // colPicker
             // 
@@ -128,7 +128,7 @@ namespace Videa.ScreenManager
             this.colPicker.Name = "colPicker";
             this.colPicker.Size = new System.Drawing.Size(160, 120);
             this.colPicker.TabIndex = 5;
-            this.colPicker.ColorPicked += new Videa.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
+            this.colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
             // 
             // formConfigureDrawing
             // 

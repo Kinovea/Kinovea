@@ -26,11 +26,11 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Resources;
 using System.Reflection;
-using Videa.Services;
-//using VideaPlayerServer;
+using Kinovea.Services;
+//using Kinovea.VideoFiles;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     //-------------------------------------------------
     // CommandLoadMovie
@@ -45,7 +45,7 @@ namespace Videa.ScreenManager
         {
             get
             {
-                ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
                 return rm.GetString("CommandLoadMovie_FriendlyName", Thread.CurrentThread.CurrentUICulture);
             }
         }

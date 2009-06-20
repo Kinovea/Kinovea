@@ -29,10 +29,10 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 using System.Drawing.Drawing2D;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// The dialog lets the user configure the whole color profile.
@@ -59,7 +59,7 @@ namespace Videa.ScreenManager
         	m_TempColorProfile.Load(m_ColorProfile);
 
             InitializeComponent();
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 
             SetupForm();
             LocalizeForm();

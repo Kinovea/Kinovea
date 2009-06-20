@@ -1,4 +1,4 @@
-namespace Videa.Root
+namespace Kinovea.Root
 {
     partial class FormSplashScreen
     {
@@ -57,7 +57,7 @@ namespace Videa.Root
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackgroundImage = global::Videa.Root.Properties.Resources.Splash;
+            this.pictureBox1.BackgroundImage = global::Kinovea.Root.Properties.Resources.Splash;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;

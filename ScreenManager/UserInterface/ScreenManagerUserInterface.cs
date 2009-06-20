@@ -26,10 +26,10 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Resources;
-using Videa.Services;
+using Kinovea.Services;
 using System.Threading;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class ScreenManagerUserInterface : UserControl
     {

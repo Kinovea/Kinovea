@@ -21,7 +21,7 @@ using System;
 using System.Drawing;
 using System.Xml;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
 	/// <summary>
 	/// A class to encapsulate all text decoration informations

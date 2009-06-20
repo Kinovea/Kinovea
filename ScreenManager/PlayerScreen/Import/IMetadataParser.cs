@@ -20,7 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Xml;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Interface for all metadata parsers.

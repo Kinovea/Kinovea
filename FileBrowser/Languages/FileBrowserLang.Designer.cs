@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Videa.FileBrowser.Languages {
+namespace Kinovea.FileBrowser.Languages {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Videa.FileBrowser.Languages {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Videa.FileBrowser.Languages.FileBrowserLang", typeof(FileBrowserLang).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.FileBrowser.Languages.FileBrowserLang", typeof(FileBrowserLang).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

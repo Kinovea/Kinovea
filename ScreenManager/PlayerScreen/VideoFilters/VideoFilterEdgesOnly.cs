@@ -27,10 +27,10 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using AForge.Imaging.Filters;
-using Videa.Services;
-using VideaPlayerServer;
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// VideoFilterEdgesOnly.
@@ -69,7 +69,7 @@ namespace Videa.ScreenManager
 			// l14n : VideoFilterEdgesOnly_FriendlyName remplace mnuEdges
 			log.Debug("Constructing VideoFilterEdgesOnly.");
 			
-			ResourceManager resManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
 			// Menu
             m_Menu = new ToolStripMenuItem();

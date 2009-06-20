@@ -1,4 +1,4 @@
-namespace Videa.Updater
+namespace Kinovea.Updater
 {
     partial class UpdateDialog
     {
@@ -197,7 +197,7 @@ namespace Videa.Updater
             this.btnSoftware.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
             this.btnSoftware.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.btnSoftware.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSoftware.Image = global::Videa.Updater.Properties.Resources.Install;
+            this.btnSoftware.Image = global::Kinovea.Updater.Properties.Resources.Install;
             this.btnSoftware.Location = new System.Drawing.Point(0, 0);
             this.btnSoftware.Name = "btnSoftware";
             this.btnSoftware.Size = new System.Drawing.Size(80, 74);
@@ -230,7 +230,7 @@ namespace Videa.Updater
             this.btnManuals.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
             this.btnManuals.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.btnManuals.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnManuals.Image = global::Videa.Updater.Properties.Resources.manual3;
+            this.btnManuals.Image = global::Kinovea.Updater.Properties.Resources.manual3;
             this.btnManuals.Location = new System.Drawing.Point(0, 0);
             this.btnManuals.Name = "btnManuals";
             this.btnManuals.Size = new System.Drawing.Size(80, 74);
@@ -276,7 +276,7 @@ namespace Videa.Updater
             this.btnVideos.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
             this.btnVideos.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
             this.btnVideos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnVideos.Image = global::Videa.Updater.Properties.Resources.videos;
+            this.btnVideos.Image = global::Kinovea.Updater.Properties.Resources.videos;
             this.btnVideos.Location = new System.Drawing.Point(0, 0);
             this.btnVideos.Name = "btnVideos";
             this.btnVideos.Size = new System.Drawing.Size(80, 74);

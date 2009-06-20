@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class ThumbBox
     {
@@ -57,7 +57,7 @@ namespace Videa.ScreenManager
         	// 
         	this.btnComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnComment.BackColor = System.Drawing.Color.Transparent;
-        	this.btnComment.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.comment20x20;
+        	this.btnComment.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.comment20x20;
         	this.btnComment.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.btnComment.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
         	this.btnComment.FlatAppearance.BorderSize = 0;
@@ -77,7 +77,7 @@ namespace Videa.ScreenManager
         	// 
         	this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnClose.BackColor = System.Drawing.Color.Transparent;
-        	this.btnClose.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.close15x15;
+        	this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.close15x15;
         	this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
         	this.btnClose.FlatAppearance.BorderSize = 0;
         	this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;

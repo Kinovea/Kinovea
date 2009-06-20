@@ -24,14 +24,14 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
-using Videa.Services;
+using Kinovea.Services;
 using System.Resources;
 using System.Threading;
 using System.Reflection;
 using System.Windows.Forms;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class DrawingLine2D : AbstractDrawing
     {
@@ -283,7 +283,7 @@ namespace Videa.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             return rm.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture);
         }
         public override int GetHashCode()

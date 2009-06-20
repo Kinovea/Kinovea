@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
-using Videa.Services;
+using Kinovea.Services;
 using System.Drawing.Drawing2D;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class Plane3D
     {

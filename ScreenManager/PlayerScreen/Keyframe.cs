@@ -29,7 +29,7 @@ using System.Xml;
 using AForge.Imaging.Filters;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class Keyframe : IComparable
     {

@@ -26,7 +26,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Represent a key image as a thumbnail.

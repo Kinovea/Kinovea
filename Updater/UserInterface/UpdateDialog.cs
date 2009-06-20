@@ -31,12 +31,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using CodeProject.Downloader;
-using Videa.Services;
+using Kinovea.Services;
 using System.Net;
 
 
 
-namespace Videa.Updater
+namespace Kinovea.Updater
 {
     public partial class UpdateDialog : Form
     {

@@ -31,7 +31,7 @@ using System.Threading;
 using System.Resources;
 using System.Reflection;
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     public partial class FormSplashScreen : Form
     {
@@ -39,7 +39,7 @@ namespace Videa.Root
         {
             InitializeComponent();
             this.BackColor = Color.White;
-            ResourceManager resManager = new ResourceManager("Videa.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
+            ResourceManager resManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
             lblInfo.Text = resManager.GetString("dlgSplash_LoadInfos", Thread.CurrentThread.CurrentUICulture);
             
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;

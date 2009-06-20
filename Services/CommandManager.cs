@@ -26,7 +26,7 @@ using System.Threading;
 
 
 [assembly: CLSCompliant(true)]
-namespace Videa.Services
+namespace Kinovea.Services
 {
     /// <summary>
     /// Manages Commands execution and undo/redo mechanics.

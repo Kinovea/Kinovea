@@ -28,7 +28,7 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Threading;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class CommonControls : UserControl
     {
@@ -146,7 +146,7 @@ namespace Videa.ScreenManager
         }
         private void PlayStopped()
         {
-            buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+            buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
         }
         private void trkFrame_PositionChanging(object sender, long _iPosition)
         {
@@ -169,11 +169,11 @@ namespace Videa.ScreenManager
         {
             if (m_bPlaying)
             {
-                buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqpause6;
+                buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
             }
             else
             {
-                buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+                buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
             }
         }
 

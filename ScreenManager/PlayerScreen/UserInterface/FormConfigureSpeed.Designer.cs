@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class formConfigureSpeed
     {
@@ -125,7 +125,7 @@ namespace Videa.ScreenManager
             // 
             // btnReset
             // 
-            this.btnReset.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.resettimescale;
+            this.btnReset.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.resettimescale;
             this.btnReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnReset.Location = new System.Drawing.Point(75, 65);
             this.btnReset.Name = "btnReset";

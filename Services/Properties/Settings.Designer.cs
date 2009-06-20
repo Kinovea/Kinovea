@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Videa.Services.Properties {
+namespace Kinovea.Services.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

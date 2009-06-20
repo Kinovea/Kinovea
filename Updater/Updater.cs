@@ -31,11 +31,11 @@ using System.Drawing;
 using System.Xml;
 using System.Collections.Specialized;
 using System.Configuration;
-using Videa.Services;
+using Kinovea.Services;
 
 
 [assembly: CLSCompliant(true)]
-namespace Videa.Updater
+namespace Kinovea.Updater
 {
     public class UpdaterKernel : IKernel 
     {
@@ -56,7 +56,7 @@ namespace Videa.Updater
         public UpdaterKernel()
         {
             log.Debug("Module Construction : Updater.");
-            resManager = new ResourceManager("Videa.Updater.Languages.UpdaterLang", Assembly.GetExecutingAssembly());
+            resManager = new ResourceManager("Kinovea.Updater.Languages.UpdaterLang", Assembly.GetExecutingAssembly());
         }
         #endregion
 

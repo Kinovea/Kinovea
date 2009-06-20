@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-namespace Videa.FileBrowser
+namespace Kinovea.FileBrowser
 {
 	partial class formEditShortcut
 	{

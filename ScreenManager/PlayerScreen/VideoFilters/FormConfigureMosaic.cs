@@ -30,9 +30,9 @@ using System.IO;
 using System.Threading;
 using System.Resources;
 using System.Reflection;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// This form lets the user choose how many images will be visible when in the mosaic.
@@ -56,8 +56,7 @@ namespace Videa.ScreenManager
         private int m_iDurationinFrames;
         private static readonly int m_iDefaultFramesToExtract = 25;
         private int m_iFramesToExtract = m_iDefaultFramesToExtract;
-        private ResourceManager m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-        
+        private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
         #endregion
 
         public formConfigureMosaic(int _iTotalImages)

@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Resources;
 using System.Reflection;
-using VideaPlayerServer;
+using Kinovea.VideoFiles;
 using System.Windows.Forms;
-using Videa.Services;
+using Kinovea.Services;
 
 [assembly: CLSCompliant(false)]
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class PlayerScreen : AbstractScreen
     {
@@ -209,7 +209,7 @@ namespace Videa.ScreenManager
             m_UniqueId = System.Guid.NewGuid();
 
             //Gestion i18n
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
             m_bIsMovieLoaded = false;
             m_sFileName = "";

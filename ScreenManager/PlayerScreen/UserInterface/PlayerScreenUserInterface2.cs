@@ -17,11 +17,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
-*/
+ */
 #endregion
 
 #region Using directives
-//using CPI.Plot3D;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,11 +35,11 @@ using System.IO;
 using System.Diagnostics;
 using System.Resources;
 using System.Runtime.InteropServices;
-using VideaPlayerServer;
-using Videa.Services;
+using Kinovea.VideoFiles;
+using Kinovea.Services;
 #endregion
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 
 	public enum DrawingToolType
@@ -132,7 +131,7 @@ namespace Videa.ScreenManager
 		#region Délégués
 
 		// 1. Affectées et accédées depuis PlayerScreen.cs
-		public delegate void DelegateCloseMeUI();		
+		public delegate void DelegateCloseMeUI();
 		public delegate void DelegateSetMeAsActiveScreenUI();
 
 		public delegate void ReportReady(bool _bIntervalOnly);
@@ -249,7 +248,7 @@ namespace Videa.ScreenManager
 				}
 				else
 				{
-					return -1;	
+					return -1;
 				}
 			}
 		}
@@ -506,7 +505,7 @@ namespace Videa.ScreenManager
 			m_Metadata.Reset();// unloadmovie complet ?
 			m_bDrawtimeFiltered = false;
 			EnableDisableAllPlayingControls(true);
-	        EnableDisableDrawingTools(true);
+			EnableDisableDrawingTools(true);
 
 			trkSelection.Minimum = 0;
 			trkSelection.Maximum = 100;
@@ -886,7 +885,7 @@ namespace Videa.ScreenManager
 
 			if (m_bIsCurrentlyPlaying)
 			{
-				buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
 				m_bIsCurrentlyPlaying = false;
 			}
 
@@ -1440,7 +1439,7 @@ namespace Videa.ScreenManager
 						frameString = String.Format("0");
 					}
 					outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
-					break;	
+					break;
 				case TimeCodeFormat.Timestamps:
 					outputTimeCode = String.Format("{0}", (int)iTimeStamp);
 					break;
@@ -1633,14 +1632,14 @@ namespace Videa.ScreenManager
 				{
 					// Go into Pause mode.
 					StopPlaying();
-					buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+					buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
 					m_bIsCurrentlyPlaying = false;
 					ActivateKeyframe(m_iCurrentPosition);
 				}
 				else
 				{
 					// Go into Play mode
-					buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqpause6;
+					buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
 					Application.Idle += new EventHandler(this.IdleDetector);
 					StartMultimediaTimer(GetFrameInterval());
 					m_bIsCurrentlyPlaying = true;
@@ -1793,7 +1792,7 @@ namespace Videa.ScreenManager
 
 				if (m_bHandlersLocked)
 				{
-					btn_HandlersLock.Image = Videa.ScreenManager.Properties.Resources.primselec_locked3;
+					btn_HandlersLock.Image = Kinovea.ScreenManager.Properties.Resources.primselec_locked3;
 					toolTips.SetToolTip(btn_HandlersLock, m_ResourceManager.GetString("LockSelectionUnlock", Thread.CurrentThread.CurrentUICulture));
 					
 					// Chaînes du menu contextuel
@@ -1804,7 +1803,7 @@ namespace Videa.ScreenManager
 				}
 				else
 				{
-					btn_HandlersLock.Image = Videa.ScreenManager.Properties.Resources.primselec_unlocked3;
+					btn_HandlersLock.Image = Kinovea.ScreenManager.Properties.Resources.primselec_unlocked3;
 					toolTips.SetToolTip(btn_HandlersLock, m_ResourceManager.GetString("LockSelectionLock", Thread.CurrentThread.CurrentUICulture));
 					
 					// Chaînes du menu contextuel
@@ -2206,14 +2205,14 @@ namespace Videa.ScreenManager
 				{
 					// On était en mode Once, on passe en mode Loop.
 					m_ePlayingMode = PlayingMode.Loop;
-					buttonPlayingMode.Image = Videa.ScreenManager.Properties.Resources.playmulti3;
+					buttonPlayingMode.Image = Kinovea.ScreenManager.Properties.Resources.playmulti3;
 					toolTips.SetToolTip(buttonPlayingMode, m_ResourceManager.GetString("ToolTip_PlayingMode_Loop", Thread.CurrentThread.CurrentUICulture));
 				}
 				else if (m_ePlayingMode == PlayingMode.Loop)
 				{
 					// On était en mode Loop, on passe en mode Once.
 					m_ePlayingMode = PlayingMode.Once;
-					buttonPlayingMode.Image = Videa.ScreenManager.Properties.Resources.playonce4;
+					buttonPlayingMode.Image = Kinovea.ScreenManager.Properties.Resources.playonce4;
 					toolTips.SetToolTip(buttonPlayingMode, m_ResourceManager.GetString("ToolTip_PlayingMode_Once", Thread.CurrentThread.CurrentUICulture));
 				}
 				
@@ -2240,11 +2239,6 @@ namespace Videa.ScreenManager
 			// Draw the border around the screen to mark it as selected.
 			// Called back from main drawing routine.
 			_canvas.DrawRectangle(m_PenImageBorder, 0, 0, _surfaceScreen.Width - m_PenImageBorder.Width, _surfaceScreen.Height - m_PenImageBorder.Width);
-			// Order : top, left, bottom, right.
-			/*_canvas.DrawLine(m_PenImageBorder, 0, 0, _surfaceScreen.Width, 0);
-			_canvas.DrawLine(m_PenImageBorder, 0, 0, 0, _surfaceScreen.Height);
-			_canvas.DrawLine(m_PenImageBorder, 0, _surfaceScreen.Height - m_PenImageBorder.Width, _surfaceScreen.Width, _surfaceScreen.Height - m_PenImageBorder.Width);
-			_canvas.DrawLine(m_PenImageBorder, _surfaceScreen.Width - m_PenImageBorder.Width, 0, _surfaceScreen.Width - m_PenImageBorder.Width, _surfaceScreen.Height);*/
 		}
 		#endregion
 
@@ -2901,7 +2895,7 @@ namespace Videa.ScreenManager
 
 					if (_bAllowUIUpdate)
 					{
-						buttonPlay.BackgroundImage = Videa.ScreenManager.Properties.Resources.liqplay17;
+						buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
 						_surfaceScreen.Invalidate();
 					}
 				}
@@ -2988,7 +2982,7 @@ namespace Videa.ScreenManager
 			//--------------------------
 			lblSelStartSelection.AutoSize = true;
 			lblSelDuration.AutoSize = true;
-				
+			
 			lblSpeedTuner.Text = m_ResourceManager.GetString("lblSpeedTuner_Text", Thread.CurrentThread.CurrentUICulture) + " " + m_iSlowmotionPercentage + "%";
 			lblWorkingZone.Text = m_ResourceManager.GetString("lblWorkingZone_Text", Thread.CurrentThread.CurrentUICulture);
 			lblSelStartSelection.Text = m_ResourceManager.GetString("lblSelStartSelection_Text", Thread.CurrentThread.CurrentUICulture) + " : " + TimeStampsToTimecode(m_iSelStart, m_PrefManager.TimeCodeFormat, false);
@@ -3483,7 +3477,7 @@ namespace Videa.ScreenManager
 										
 										// Reposition.
 										m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
-									
+										
 										log.Debug(String.Format("Zoom Window : Location:{0}, Size:{1}", m_DirectZoomWindow.Location, m_DirectZoomWindow.Size));
 									}
 								}
@@ -3761,7 +3755,7 @@ namespace Videa.ScreenManager
 			}
 			else
 			{
-				rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);	
+				rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
 			}
 			
 			g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
@@ -3917,7 +3911,7 @@ namespace Videa.ScreenManager
 		private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
 		{
 			// Set focus to enable mouse scroll
-			panelVideoControls.Focus();	
+			panelVideoControls.Focus();
 		}
 		
 		#region Keyframes Panel
@@ -3967,7 +3961,7 @@ namespace Videa.ScreenManager
 
 					tBox.pbThumbnail.Image = kf.Thumbnail;
 					tBox.Title = kf.Title;
-					//tBox.TimeCode = 
+					//tBox.TimeCode =
 					
 					
 					tBox.Tag = iKeyframeIndex;
@@ -4065,8 +4059,8 @@ namespace Videa.ScreenManager
 						m_Metadata[i].Disabled = false;
 						
 						tb.Enabled = true;
-						tb.pbThumbnail.Image = m_Metadata[i].Thumbnail;						
-						tb.Title = m_Metadata[i].Title;						
+						tb.pbThumbnail.Image = m_Metadata[i].Thumbnail;
+						tb.Title = m_Metadata[i].Title;
 					}
 					else
 					{
@@ -4074,7 +4068,7 @@ namespace Videa.ScreenManager
 						
 						tb.Enabled = false;
 						tb.pbThumbnail.Image = m_Metadata[i].DisabledThumbnail;
-						tb.Title = m_Metadata[i].Title;						
+						tb.Title = m_Metadata[i].Title;
 					}
 				}
 			}
@@ -4328,7 +4322,7 @@ namespace Videa.ScreenManager
 			splitKeyframes.SplitterDistance = splitKeyframes.Height - 25;
 
 			// change image
-			btnDockBottom.BackgroundImage = Videa.ScreenManager.Properties.Resources.undock16x16;
+			btnDockBottom.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.undock16x16;
 
 			// If there is 0 images, the arrow isn't visible.
 			if (m_Metadata.Count == 0)
@@ -4344,7 +4338,7 @@ namespace Videa.ScreenManager
 			splitKeyframes.SplitterDistance = splitKeyframes.Height - 140;
 
 			// change image
-			btnDockBottom.BackgroundImage = Videa.ScreenManager.Properties.Resources.dock16x16;
+			btnDockBottom.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.dock16x16;
 			btnDockBottom.Visible = true;
 
 			// change status
@@ -4440,7 +4434,7 @@ namespace Videa.ScreenManager
 				{
 					UnzoomDirectZoom();
 					m_Magnifier.Mode = MagnifierMode.Direct;
-					btnMagnifier.BackgroundImage = Videa.ScreenManager.Properties.Resources.magnifierActive2;
+					btnMagnifier.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.magnifierActive2;
 					SetCursor(Cursors.Cross);
 				}
 				else if (m_Magnifier.Mode == MagnifierMode.Direct)
@@ -4448,7 +4442,7 @@ namespace Videa.ScreenManager
 					// Revert to no magnification.
 					UnzoomDirectZoom();
 					m_Magnifier.Mode = MagnifierMode.NotVisible;
-					btnMagnifier.BackgroundImage = Videa.ScreenManager.Properties.Resources.magnifier2;
+					btnMagnifier.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.magnifier2;
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					m_SurfaceScreen.Invalidate();
 				}
@@ -4463,7 +4457,7 @@ namespace Videa.ScreenManager
 		{
 			// Revert to no magnification.
 			m_Magnifier.Mode = MagnifierMode.NotVisible;
-			btnMagnifier.BackgroundImage = Videa.ScreenManager.Properties.Resources.magnifier2;
+			btnMagnifier.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.magnifier2;
 			SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 		}
 		private void btn3dplane_Click(object sender, EventArgs e)
@@ -4704,7 +4698,7 @@ namespace Videa.ScreenManager
 		private void mnuSealMeasure_Click(object sender, EventArgs e)
 		{
 			// display a dialog that let the user specify how many real-world-units long is this line.
-		
+			
 			if(m_Metadata.SelectedDrawingFrame >= 0 && m_Metadata.SelectedDrawing >= 0)
 			{
 				DrawingLine2D line = m_Metadata[m_Metadata.SelectedDrawingFrame].Drawings[m_Metadata.SelectedDrawing] as DrawingLine2D;
@@ -4729,7 +4723,7 @@ namespace Videa.ScreenManager
 						fcm.Dispose();
 						
 						m_SurfaceScreen.Invalidate();
-						this.ContextMenuStrip = popMenu;					
+						this.ContextMenuStrip = popMenu;
 						
 						if (dp.ActivateKeyboardHandler != null)
 						{
@@ -4737,7 +4731,7 @@ namespace Videa.ScreenManager
 						}
 					}
 				}
-			}			
+			}
 		}
 		private void mnuDeleteDrawing_Click(object sender, EventArgs e)
 		{
@@ -5099,38 +5093,38 @@ namespace Videa.ScreenManager
 		public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
 		{
 			// A video filter just finished and is passing us its output object.
-        	// It is used as a communication channel between the filter and the player.
-        	// Depending on the filter type, we may need to switch to a special mode, 
-        	// keep track of old pre-filter parameters,
-        	// delegate the draw to the filter, etc...
-        	
-        	if(_dfo.Active)
-        	{	
-	        	m_bDrawtimeFiltered = true;
-	        	m_DrawingFilterOutput = _dfo;
-	        	
-	        	// Disable playing and drawing.
-	        	DisablePlayAndDraw();
-	        			
-	        	// Disable all player controls
-	        	EnableDisableAllPlayingControls(false);
-	        	EnableDisableDrawingTools(false);
-	        	
-	        	// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
-	        	DockKeyframePanel();
+			// It is used as a communication channel between the filter and the player.
+			// Depending on the filter type, we may need to switch to a special mode,
+			// keep track of old pre-filter parameters,
+			// delegate the draw to the filter, etc...
+			
+			if(_dfo.Active)
+			{
+				m_bDrawtimeFiltered = true;
+				m_DrawingFilterOutput = _dfo;
+				
+				// Disable playing and drawing.
+				DisablePlayAndDraw();
+				
+				// Disable all player controls
+				EnableDisableAllPlayingControls(false);
+				EnableDisableDrawingTools(false);
+				
+				// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
+				DockKeyframePanel();
 				m_bStretchModeOn = true;
 				StretchSqueezeSurface();
-        	}
-        	else
-        	{
-        		m_bDrawtimeFiltered = false;
-	        	m_DrawingFilterOutput = null;
+			}
+			else
+			{
+				m_bDrawtimeFiltered = false;
+				m_DrawingFilterOutput = null;
 
-	        	EnableDisableAllPlayingControls(true);
-	        	EnableDisableDrawingTools(true);
-	        	
-	        	// TODO:recall saved state.
-        	}
+				EnableDisableAllPlayingControls(true);
+				EnableDisableDrawingTools(true);
+				
+				// TODO:recall saved state.
+			}
 		}
 		private void DisablePlayAndDraw()
 		{
@@ -5290,7 +5284,7 @@ namespace Videa.ScreenManager
 						break;
 					}
 				case Keys.End:
-                    {
+					{
 						buttonGotoLast_Click(null, EventArgs.Empty);
 						bWasHandled = true;
 						break;
@@ -5447,7 +5441,7 @@ namespace Videa.ScreenManager
 					}
 					fcm.Dispose();
 				}
-				else		
+				else
 				{
 					m_bStretchModeOn = m_Mosaic.MemoStretchMode;
 					m_Mosaic.Disable();
@@ -5792,13 +5786,13 @@ namespace Videa.ScreenManager
 				m_DrawingFilterOutput.Draw(Graphics.FromImage(output), iNewSize, m_DrawingFilterOutput.InputFrames, m_DrawingFilterOutput.PrivateData);
 			}
 			else
-			{	
+			{
 				int iKeyFrameIndex = -1;
 				if (m_iActiveKeyFrameIndex >= 0 && m_Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
 				{
 					iKeyFrameIndex = m_iActiveKeyFrameIndex;
 				}
-	
+				
 				FlushOnGraphics(m_PlayerServer.m_BmpImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 			}
 			
@@ -5813,10 +5807,10 @@ namespace Videa.ScreenManager
 
 			TimeCodeFormat tcf;
 			if(_timeCodeFormat == TimeCodeFormat.TimeAndFrames)
-				tcf = TimeCodeFormat.ClassicTime;		
+				tcf = TimeCodeFormat.ClassicTime;
 			else
 				tcf = _timeCodeFormat;
-				
+			
 			// Timecode string (Not relative to sync position)
 			string suffix = TimeStampsToTimecode(_position - m_iSelStart, tcf, false);
 			string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, tcf, false);

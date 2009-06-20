@@ -22,7 +22,7 @@ using System;
 using System.IO;
 using System.Xml;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
 	/// <summary>
 	/// A class to encapsulate one item of the shortcut folders.

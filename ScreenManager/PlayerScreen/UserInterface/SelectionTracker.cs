@@ -27,7 +27,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class SelectionTracker : UserControl
     {

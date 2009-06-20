@@ -5,10 +5,10 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     public class CommandToggleFileExplorer : IUndoableCommand
     {
@@ -16,7 +16,7 @@ namespace Videa.Root
         {
             get
             {
-                ResourceManager rm = new ResourceManager("Videa.Supervisor.Languages.SupervisorLang", Assembly.GetExecutingAssembly());
+                ResourceManager rm = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
                 return rm.GetString("CommandToggleFileExplorer_FriendlyName", Thread.CurrentThread.CurrentUICulture);
             }
         }

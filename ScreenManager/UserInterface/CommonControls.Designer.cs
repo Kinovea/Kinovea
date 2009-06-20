@@ -1,4 +1,4 @@
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     partial class CommonControls
     {
@@ -40,7 +40,7 @@ namespace Videa.ScreenManager
             this.buttonGotoNext = new System.Windows.Forms.Button();
             this.buttonGotoLast = new System.Windows.Forms.Button();
             this.buttonPlay = new System.Windows.Forms.Button();
-            this.trkFrame = new Videa.ScreenManager.FrameTracker();
+            this.trkFrame = new Kinovea.ScreenManager.FrameTracker();
             this.lblTrkFrameInfos = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -72,7 +72,7 @@ namespace Videa.ScreenManager
             this.btnSync.FlatAppearance.BorderSize = 0;
             this.btnSync.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnSync.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSync.Image = global::Videa.ScreenManager.Properties.Resources.liqsync3;
+            this.btnSync.Image = global::Kinovea.ScreenManager.Properties.Resources.liqsync3;
             this.btnSync.Location = new System.Drawing.Point(290, 10);
             this.btnSync.Margin = new System.Windows.Forms.Padding(0);
             this.btnSync.MinimumSize = new System.Drawing.Size(25, 25);
@@ -89,7 +89,7 @@ namespace Videa.ScreenManager
             this.btnSwap.FlatAppearance.BorderSize = 0;
             this.btnSwap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnSwap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSwap.Image = global::Videa.ScreenManager.Properties.Resources.swap4;
+            this.btnSwap.Image = global::Kinovea.ScreenManager.Properties.Resources.swap4;
             this.btnSwap.Location = new System.Drawing.Point(320, 10);
             this.btnSwap.Margin = new System.Windows.Forms.Padding(0);
             this.btnSwap.MinimumSize = new System.Drawing.Size(25, 25);
@@ -102,7 +102,7 @@ namespace Videa.ScreenManager
             // buttonGotoFirst
             // 
             this.buttonGotoFirst.BackColor = System.Drawing.Color.Transparent;
-            this.buttonGotoFirst.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqfirst7;
+            this.buttonGotoFirst.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqfirst7;
             this.buttonGotoFirst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonGotoFirst.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonGotoFirst.FlatAppearance.BorderSize = 0;
@@ -120,7 +120,7 @@ namespace Videa.ScreenManager
             // buttonGotoPrevious
             // 
             this.buttonGotoPrevious.BackColor = System.Drawing.Color.Transparent;
-            this.buttonGotoPrevious.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqprev5;
+            this.buttonGotoPrevious.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqprev5;
             this.buttonGotoPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonGotoPrevious.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonGotoPrevious.FlatAppearance.BorderSize = 0;
@@ -138,7 +138,7 @@ namespace Videa.ScreenManager
             // buttonGotoNext
             // 
             this.buttonGotoNext.BackColor = System.Drawing.Color.Transparent;
-            this.buttonGotoNext.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqnext6;
+            this.buttonGotoNext.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqnext6;
             this.buttonGotoNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonGotoNext.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonGotoNext.FlatAppearance.BorderSize = 0;
@@ -156,7 +156,7 @@ namespace Videa.ScreenManager
             // buttonGotoLast
             // 
             this.buttonGotoLast.BackColor = System.Drawing.Color.Transparent;
-            this.buttonGotoLast.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqlast5;
+            this.buttonGotoLast.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqlast5;
             this.buttonGotoLast.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonGotoLast.FlatAppearance.BorderSize = 0;
@@ -174,7 +174,7 @@ namespace Videa.ScreenManager
             // buttonPlay
             // 
             this.buttonPlay.BackColor = System.Drawing.Color.Transparent;
-            this.buttonPlay.BackgroundImage = global::Videa.ScreenManager.Properties.Resources.liqplay17;
+            this.buttonPlay.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
             this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonPlay.FlatAppearance.BorderSize = 0;
@@ -203,8 +203,8 @@ namespace Videa.ScreenManager
             this.trkFrame.ReportOnMouseMove = true;
             this.trkFrame.Size = new System.Drawing.Size(307, 20);
             this.trkFrame.TabIndex = 14;
-            this.trkFrame.PositionChanging += new Videa.ScreenManager.FrameTracker.PositionChangingHandler(this.trkFrame_PositionChanging);
-            this.trkFrame.PositionChanged += new Videa.ScreenManager.FrameTracker.PositionChangedHandler(this.trkFrame_PositionChanged);
+            this.trkFrame.PositionChanging += new Kinovea.ScreenManager.FrameTracker.PositionChangingHandler(this.trkFrame_PositionChanging);
+            this.trkFrame.PositionChanged += new Kinovea.ScreenManager.FrameTracker.PositionChangedHandler(this.trkFrame_PositionChanged);
             // 
             // lblTrkFrameInfos
             // 
@@ -251,7 +251,7 @@ namespace Videa.ScreenManager
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Button btnSync;
         private System.Windows.Forms.Label lblSyncOffset;
-        public Videa.ScreenManager.FrameTracker trkFrame;
+        public Kinovea.ScreenManager.FrameTracker trkFrame;
         private System.Windows.Forms.Label lblTrkFrameInfos;
     }
 }

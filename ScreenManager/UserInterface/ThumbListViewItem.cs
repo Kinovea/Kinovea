@@ -12,9 +12,9 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.FileIO;
 
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Thumbnail control.
@@ -104,7 +104,7 @@ namespace Videa.ScreenManager
 		private string m_DurationText = "0:00:00";
 		private int m_iCurrentThumbnailIndex;
 		private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
-		private ResourceManager m_ResManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+		private ResourceManager m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 		
 		#region Context menu
 		private ContextMenuStrip  popMenu = new ContextMenuStrip();

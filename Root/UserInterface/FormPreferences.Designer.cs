@@ -1,4 +1,4 @@
-namespace Videa.Root
+namespace Kinovea.Root
 {
     partial class formPreferences
     {
@@ -60,7 +60,7 @@ namespace Videa.Root
             this.lblFading = new System.Windows.Forms.Label();
             this.trkFading = new System.Windows.Forms.TrackBar();
             this.chkEnablePersistence = new System.Windows.Forms.CheckBox();
-            this.colPicker = new Videa.ScreenManager.StaticColorPicker();
+            this.colPicker = new Kinovea.ScreenManager.StaticColorPicker();
             this.panel1.SuspendLayout();
             this.pageGeneral.SuspendLayout();
             this.grpGeneral.SuspendLayout();
@@ -95,7 +95,7 @@ namespace Videa.Root
             this.btnDrawings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnDrawings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDrawings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDrawings.Image = global::Videa.Root.Properties.Resources.drawings;
+            this.btnDrawings.Image = global::Kinovea.Root.Properties.Resources.drawings;
             this.btnDrawings.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnDrawings.Location = new System.Drawing.Point(-1, 125);
             this.btnDrawings.Name = "btnDrawings";
@@ -114,7 +114,7 @@ namespace Videa.Root
             this.btnPlayAnalyze.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnPlayAnalyze.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlayAnalyze.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPlayAnalyze.Image = global::Videa.Root.Properties.Resources.video;
+            this.btnPlayAnalyze.Image = global::Kinovea.Root.Properties.Resources.video;
             this.btnPlayAnalyze.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnPlayAnalyze.Location = new System.Drawing.Point(-1, 65);
             this.btnPlayAnalyze.Name = "btnPlayAnalyze";
@@ -134,7 +134,7 @@ namespace Videa.Root
             this.btnGeneral.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.btnGeneral.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGeneral.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGeneral.Image = global::Videa.Root.Properties.Resources.configure;
+            this.btnGeneral.Image = global::Kinovea.Root.Properties.Resources.configure;
             this.btnGeneral.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnGeneral.Location = new System.Drawing.Point(4, 5);
             this.btnGeneral.Name = "btnGeneral";
@@ -476,8 +476,8 @@ namespace Videa.Root
             this.colPicker.Size = new System.Drawing.Size(160, 120);
             this.colPicker.TabIndex = 10;
             this.colPicker.Visible = false;
-            this.colPicker.MouseLeft += new Videa.ScreenManager.StaticColorPicker.DelegateMouseLeft(this.colPicker_MouseLeft);
-            this.colPicker.ColorPicked += new Videa.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
+            this.colPicker.MouseLeft += new Kinovea.ScreenManager.StaticColorPicker.DelegateMouseLeft(this.colPicker_MouseLeft);
+            this.colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
             // 
             // formPreferences
             // 
@@ -542,7 +542,7 @@ namespace Videa.Root
         private System.Windows.Forms.GroupBox grpColors;
         private System.Windows.Forms.GroupBox grpSwitchToAnalysis;
         private System.Windows.Forms.GroupBox grpGeneral;
-        private Videa.ScreenManager.StaticColorPicker colPicker;
+        private Kinovea.ScreenManager.StaticColorPicker colPicker;
         private System.Windows.Forms.Label lblTimeMarkersFormat;
         private System.Windows.Forms.Label lblWorkingZoneLogic;
         private System.Windows.Forms.ComboBox cmbTimeCodeFormat;

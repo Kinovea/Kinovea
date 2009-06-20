@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
     //------------------------------------------------------------------------------
     // The delegates pool is an area to share services between distant modules.

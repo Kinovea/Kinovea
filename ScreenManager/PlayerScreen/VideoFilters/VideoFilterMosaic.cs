@@ -29,10 +29,10 @@ using System.Windows.Forms;
 
 using AForge.Imaging;
 using AForge.Imaging.Filters;
-using Videa.Services;
-using VideaPlayerServer;
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// VideoFilterMosaic.
@@ -68,7 +68,7 @@ namespace Videa.ScreenManager
 		#region Constructor
 		public VideoFilterMosaic()
 		{
-			ResourceManager resManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
 			// Menu
             m_Menu = new ToolStripMenuItem();

@@ -25,9 +25,9 @@ using System.Text;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class CommandAddCaptureScreen : IUndoableCommand
     {
@@ -35,7 +35,7 @@ namespace Videa.ScreenManager
         {
             get 
             {
-                ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
                 return rm.GetString("CommandAddCaptureScreen_FriendlyName", Thread.CurrentThread.CurrentUICulture);
             }
         }

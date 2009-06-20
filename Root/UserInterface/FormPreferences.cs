@@ -28,10 +28,10 @@ using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
-using Videa.Services;
+using Kinovea.Services;
 
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     public partial class formPreferences : Form
     {
@@ -70,7 +70,7 @@ namespace Videa.Root
             m_prefManager = PreferencesManager.Instance();
             ImportPreferences();
             
-            m_ResourceManager = new ResourceManager("Videa.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
 
             m_PickingColor = -1;
             InitPages();

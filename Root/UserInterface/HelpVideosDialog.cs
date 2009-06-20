@@ -29,10 +29,10 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-using Videa.ScreenManager;
-using Videa.Services;
+using Kinovea.ScreenManager;
+using Kinovea.Services;
 
-namespace Videa.Root
+namespace Kinovea.Root
 {
     public partial class HelpVideosDialog : Form
     {

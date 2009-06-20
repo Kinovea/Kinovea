@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
 	
 	public delegate void DelegateDraw(Graphics _canvas, Size _newSize, List<Bitmap> _inputFrames, object _privateData);

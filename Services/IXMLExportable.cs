@@ -20,7 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Xml;
 
-namespace Videa.Services
+namespace Kinovea.Services
 {
 	/// <summary>
 	/// Interface for all classes that can be stored on disk as part of an xml file.

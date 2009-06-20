@@ -29,9 +29,9 @@ using System.IO;
 using System.Threading;
 using System.Resources;
 using System.Reflection;
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public partial class formRafaleExport : Form
     {
@@ -57,7 +57,7 @@ namespace Videa.ScreenManager
             m_fTimestampsPerSeconds = _tsps;
             m_fDurationInSeconds = m_iSelectionDuration / m_fTimestampsPerSeconds;
             m_fFramesPerSeconds = _fps;
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_iEstimatedTotal = 0;
 
             InitializeComponent();

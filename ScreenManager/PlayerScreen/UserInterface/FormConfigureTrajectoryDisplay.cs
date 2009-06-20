@@ -29,7 +29,7 @@ using System.Resources;
 using System.Reflection;
 using System.Threading;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// The dialog lets the user configure a track instance.
@@ -56,7 +56,7 @@ namespace Videa.ScreenManager
         {
             InitializeComponent();
             chkShowTrajectory.Location = chkShowTitles.Location;
-            m_ResourceManager = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 
             m_SurfaceScreen = _SurfaceScreen;
             m_Track = _track;

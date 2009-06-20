@@ -24,7 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public abstract class AbstractScreen : IScreen
     {

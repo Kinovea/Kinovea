@@ -28,9 +28,9 @@ using System.Text;
 using System.Xml;
 using System.Xml.Xsl;
 
-using Videa.Services;
+using Kinovea.Services;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
 
     public delegate long DelegateRemapTimestamp(long _iInputTimestamp, bool bRelative);

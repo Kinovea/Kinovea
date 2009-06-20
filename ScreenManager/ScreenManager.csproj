@@ -83,8 +83,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
+    <Compile Include="CaptureScreen\FrameServerCapture.cs" />
     <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>

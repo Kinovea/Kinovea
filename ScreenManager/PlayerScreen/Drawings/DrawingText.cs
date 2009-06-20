@@ -25,12 +25,12 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
 using System.Windows.Forms;
-using Videa.Services;
+using Kinovea.Services;
 using System.Resources;
 using System.Reflection;
 using System.Threading;
 
-namespace Videa.ScreenManager
+namespace Kinovea.ScreenManager
 {
     public class DrawingText : AbstractDrawing
     {
@@ -267,7 +267,7 @@ namespace Videa.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Videa.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             return rm.GetString("ToolTip_DrawingToolText", Thread.CurrentThread.CurrentUICulture);
         }
         public override int GetHashCode()
