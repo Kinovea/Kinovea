@@ -7,7 +7,7 @@
     <ProjectGuid>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Videa.Services</RootNamespace>
+    <RootNamespace>Kinovea.Services</RootNamespace>
     <AssemblyName>Kinovea.Services</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>

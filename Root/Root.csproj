@@ -7,7 +7,7 @@
     <ProjectGuid>{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Videa.Root</RootNamespace>
+    <RootNamespace>Kinovea.Root</RootNamespace>
     <AssemblyName>Kinovea</AssemblyName>
     <StartupObject>Kinovea.Root.Program</StartupObject>
     <ApplicationIcon>kinoveabundle.ico</ApplicationIcon>

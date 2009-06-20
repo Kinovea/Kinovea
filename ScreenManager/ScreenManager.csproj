@@ -7,7 +7,7 @@
     <ProjectGuid>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Videa.ScreenManager</RootNamespace>
+    <RootNamespace>Kinovea.ScreenManager</RootNamespace>
     <AssemblyName>Kinovea.ScreenManager</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
