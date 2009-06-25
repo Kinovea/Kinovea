@@ -19,14 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Resources;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
-using Kinovea.Services;
 using System.Windows.Forms;
 
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -123,7 +121,7 @@ namespace Kinovea.ScreenManager
                     CommandManager.LaunchCommand(clm);
 
                     //Si on a pu charger la vidéo, sauver dans l'historique
-                    if (ps.m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
+                    if (ps.m_PlayerScreenUI.m_VideoFile.Loaded)
                     {
                         SaveFileToHistory(filePath);
                     }
@@ -144,7 +142,7 @@ namespace Kinovea.ScreenManager
                             CommandManager.LaunchCommand(clm);
 
                             //Si on a pu charger la vidéo, sauver dans l'historique
-                            if (((PlayerScreen)screenManagerKernel.screenList[0]).m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
+                            if (((PlayerScreen)screenManagerKernel.screenList[0]).m_PlayerScreenUI.m_VideoFile.Loaded)
                             {
                                 SaveFileToHistory(filePath);
                             }
@@ -155,43 +153,44 @@ namespace Kinovea.ScreenManager
                         }
                     case 1:
                         {
-                            PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[0];
-
-                            bool bLoad = true;
-                            if (ps.m_PlayerScreenUI.Metadata.Dirty)
-                            {
-                                DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-                                                                  m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
-                                                                  MessageBoxButtons.YesNoCancel,
-                                                                  MessageBoxIcon.Question);
-
-                                if (dr == DialogResult.Yes)
-                                {
-                                    // Launch the save dialog.
-                                    // Note: if we cancel this one, we will go on without saving...
-                                    screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
-                                }
-                                else if (dr == DialogResult.Cancel)
-                                {
-                                    // Cancel the load.
-                                    bLoad = false;
-                                    screenManagerKernel.CancelLastCommand = true;
-                                }
-                                // else (DialogResult.No) => Do nothing.
-                            }
-
-                            if (bLoad)
-                            {
-                                clm = new CommandLoadMovie(ps, filePath);
-                                CommandManager.LaunchCommand(clm);
-
-                                //Si on a pu charger la vidéo, sauver dans l'historique
-                                if (ps.m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
-                                {
-                                    SaveFileToHistory(filePath);
-                                }
-                            }
-
+                			PlayerScreen ps = screenManagerKernel.screenList[0] as PlayerScreen;
+                			if(ps!=null)
+                			{
+	                            bool bLoad = true;
+	                            if (ps.m_PlayerScreenUI.Metadata.Dirty)
+	                            {
+	                                DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
+	                                                                  m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
+	                                                                  MessageBoxButtons.YesNoCancel,
+	                                                                  MessageBoxIcon.Question);
+	
+	                                if (dr == DialogResult.Yes)
+	                                {
+	                                    // Launch the save dialog.
+	                                    // Note: if we cancel this one, we will go on without saving...
+	                                    screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
+	                                }
+	                                else if (dr == DialogResult.Cancel)
+	                                {
+	                                    // Cancel the load.
+	                                    bLoad = false;
+	                                    screenManagerKernel.CancelLastCommand = true;
+	                                }
+	                                // else (DialogResult.No) => Do nothing.
+	                            }
+	
+	                            if (bLoad)
+	                            {
+	                                clm = new CommandLoadMovie(ps, filePath);
+	                                CommandManager.LaunchCommand(clm);
+	
+	                                //Si on a pu charger la vidéo, sauver dans l'historique
+	                                if (ps.m_PlayerScreenUI.m_VideoFile.Loaded)
+	                                {
+	                                    SaveFileToHistory(filePath);
+	                                }
+	                            }
+                			}
                             
                             break;
                         }
@@ -200,11 +199,14 @@ namespace Kinovea.ScreenManager
                             //Chercher un écran vide. 
                             int iEmptyScreen = -1;
 
-                            if (((PlayerScreen)screenManagerKernel.screenList[0]).m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded == false)
+                            PlayerScreen ps0 = screenManagerKernel.screenList[0] as PlayerScreen;
+                            PlayerScreen ps1 = screenManagerKernel.screenList[1] as PlayerScreen;
+                            
+                            if (ps0 != null && ps0.m_PlayerScreenUI.m_VideoFile.Loaded == false)
                             {
                                 iEmptyScreen = 0;
                             }
-                            else if (((PlayerScreen)screenManagerKernel.screenList[1]).m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded == false)
+                            else if (ps1 != null && ps1.m_PlayerScreenUI.m_VideoFile.Loaded == false)
                             {
                                 iEmptyScreen = 1;
                             }
@@ -217,7 +219,7 @@ namespace Kinovea.ScreenManager
                                 CommandManager.LaunchCommand(clm);
 
                                 //Si on a pu charger la vidéo, sauver dans l'historique
-                                if (((PlayerScreen)screenManagerKernel.screenList[iEmptyScreen]).m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
+                                if (((PlayerScreen)screenManagerKernel.screenList[iEmptyScreen]).m_PlayerScreenUI.m_VideoFile.Loaded)
                                 {
                                     SaveFileToHistory(filePath);
                                 }
@@ -234,53 +236,55 @@ namespace Kinovea.ScreenManager
                                 // (étant donné que l'utilisateur à la possibilité d'annuler l'opération
                                 // et de revenir à l'ancienne vidéo facilement, autant éviter une boîte de dialogue.)
 
-                                PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[1];
-
-                                bool bLoad = true;
-                                if (ps.m_PlayerScreenUI.Metadata.Dirty)
+                                PlayerScreen ps = screenManagerKernel.screenList[1] as PlayerScreen;
+                                if(ps != null)
                                 {
-                                    DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-                                                                      m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
-                                                                      MessageBoxButtons.YesNoCancel,
-                                                                      MessageBoxIcon.Question);
-
-                                    if (dr == DialogResult.Yes)
-                                    {
-                                        // Launch the save dialog.
-                                        // Note: if we cancel this one, we will go on without saving...
-                                        screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
-                                    }
-                                    else if (dr == DialogResult.Cancel)
-                                    {
-                                        // Cancel the load.
-                                        bLoad = false;
-                                        screenManagerKernel.CancelLastCommand = true;
-                                    }
-                                    // else (DialogResult.No) => Do nothing.
-                                }
-
-                                if (bLoad)
-                                {
-
-                                    clm = new CommandLoadMovie(ps, filePath);
-                                    CommandManager.LaunchCommand(clm);
-
-                                    //Si on a pu charger la vidéo, sauver dans l'historique
-                                    if (ps.m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
-                                    {
-                                        SaveFileToHistory(filePath);
-                                    }
-                                    else
-                                    {
-                                        //----------------------------------------------------------------------------
-                                        // Echec de chargement, vérifier si on ne vient pas d'invalider l'écran actif.
-                                        //----------------------------------------------------------------------------
-                                        if (screenManagerKernel.m_ActiveScreen == ps)
-                                        {
-                                            screenManagerKernel.Screen_SetActiveScreen(screenManagerKernel.screenList[0]);
-                                        }
-                                    }
-                                }
+	                                bool bLoad = true;
+	                                if (ps.m_PlayerScreenUI.Metadata.Dirty)
+	                                {
+	                                    DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
+	                                                                      m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
+	                                                                      MessageBoxButtons.YesNoCancel,
+	                                                                      MessageBoxIcon.Question);
+	
+	                                    if (dr == DialogResult.Yes)
+	                                    {
+	                                        // Launch the save dialog.
+	                                        // Note: if we cancel this one, we will go on without saving...
+	                                        screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
+	                                    }
+	                                    else if (dr == DialogResult.Cancel)
+	                                    {
+	                                        // Cancel the load.
+	                                        bLoad = false;
+	                                        screenManagerKernel.CancelLastCommand = true;
+	                                    }
+	                                    // else (DialogResult.No) => Do nothing.
+	                                }
+	
+	                                if (bLoad)
+	                                {
+	
+	                                    clm = new CommandLoadMovie(ps, filePath);
+	                                    CommandManager.LaunchCommand(clm);
+	
+	                                    //Si on a pu charger la vidéo, sauver dans l'historique
+	                                    if (ps.m_PlayerScreenUI.m_VideoFile.Loaded)
+	                                    {
+	                                        SaveFileToHistory(filePath);
+	                                    }
+	                                    else
+	                                    {
+	                                        //----------------------------------------------------------------------------
+	                                        // Echec de chargement, vérifier si on ne vient pas d'invalider l'écran actif.
+	                                        //----------------------------------------------------------------------------
+	                                        if (screenManagerKernel.m_ActiveScreen == ps)
+	                                        {
+	                                            screenManagerKernel.Screen_SetActiveScreen(screenManagerKernel.screenList[0]);
+	                                        }
+	                                    }
+	                                }
+	                            }
                             }
 
                             // Vérifier qu'on a un écran actif.

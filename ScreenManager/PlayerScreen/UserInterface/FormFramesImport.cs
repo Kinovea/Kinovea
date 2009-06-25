@@ -20,36 +20,31 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 
 using Kinovea.VideoFiles;
-
 
 namespace Kinovea.ScreenManager
 {
     public partial class formFramesImport : Form
     {
         private ResourceManager m_ResourceManager   = null;
-        private PlayerServer    m_PlayerServer      = null;
+        private VideoFile    m_VideoFile      = null;
         private long            m_iSelStart         = 0;
         private long            m_iSelEnd = 0;
         private bool            m_IsIdle = true;
         private bool            m_bForceReload = false;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public formFramesImport(ResourceManager _ResourceManager, PlayerServer _PlayerServer, long _iSelStart, long _iSelEnd, bool _bForceReload)
+        public formFramesImport(ResourceManager _ResourceManager, VideoFile _PlayerServer, long _iSelStart, long _iSelEnd, bool _bForceReload)
         {
             InitializeComponent();
 
             m_ResourceManager = _ResourceManager;
-            m_PlayerServer = _PlayerServer;
+            m_VideoFile = _PlayerServer;
             m_iSelStart = _iSelStart;
             m_iSelEnd = _iSelEnd;
             m_bForceReload = _bForceReload;
@@ -95,10 +90,10 @@ namespace Kinovea.ScreenManager
             // Les appels ici sont synchrones mais on peut remonter de 
             // l'information par bgWorker_ProgressChanged().
             //-------------------------------------------------------------
-            m_PlayerServer.m_bgWorker = bgWorker;
+            m_VideoFile.BgWorker = bgWorker;
             try
             {
-            	m_PlayerServer.ImportFramesToAnalysisList(m_iSelStart, m_iSelEnd, m_bForceReload);
+            	m_VideoFile.ExtractToMemory(m_iSelStart, m_iSelEnd, m_bForceReload);
             }
             catch(Exception exp)
             {

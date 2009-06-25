@@ -19,7 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;

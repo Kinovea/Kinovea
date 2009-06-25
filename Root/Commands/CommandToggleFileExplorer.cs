@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Resources;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
-using Kinovea.Services;
+using System.Windows.Forms;
 
+using Kinovea.Services;
 
 namespace Kinovea.Root
 {

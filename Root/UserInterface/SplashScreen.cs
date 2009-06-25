@@ -18,18 +18,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-
-
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Threading;
-using System.Resources;
-using System.Reflection;
 
 namespace Kinovea.Root
 {
@@ -38,10 +28,7 @@ namespace Kinovea.Root
         public FormSplashScreen()
         {
             InitializeComponent();
-            this.BackColor = Color.White;
-            ResourceManager resManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
-            lblInfo.Text = resManager.GetString("dlgSplash_LoadInfos", Thread.CurrentThread.CurrentUICulture);
-            
+            lblInfo.Text = Kinovea.Root.Languages.RootLang.dlgSplash_LoadInfos;
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             lblVersion.Text = "Kinovea - " + v.Major + "." + v.Minor + "." + v.Build;
         }

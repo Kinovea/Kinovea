@@ -20,17 +20,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.Globalization;
-using System.Resources;
-using System.Threading;
+using System.IO;
 using System.Reflection;
-using System.Drawing;
+using System.Resources;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
+
 using Kinovea.Services;
 using Kinovea.VideoFiles;
-using System.IO;
 
 namespace Kinovea.ScreenManager
 {
@@ -863,7 +861,7 @@ namespace Kinovea.ScreenManager
             // Associate the input frames
             if(bEnable)
             {
-            	List<DecompressedFrame> frameList = _player.m_PlayerScreenUI.m_PlayerServer.m_FrameList;
+            	List<DecompressedFrame> frameList = _player.m_PlayerScreenUI.m_VideoFile.FrameList;
 	            
             	foreach(AbstractVideoFilter vf in m_VideoFilters)
             	{

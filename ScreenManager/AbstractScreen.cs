@@ -19,14 +19,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
-
 
 namespace Kinovea.ScreenManager
 {
-    public abstract class AbstractScreen : IScreen
+    public abstract class AbstractScreen
     {
     	public delegate void DelegateCloseMe(AbstractScreen _screen);
         public delegate void DelegateSetMeAsActiveScreen(AbstractScreen _screen);        

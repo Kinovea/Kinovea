@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using Kinovea.Services;
@@ -29,17 +27,17 @@ namespace Kinovea.ScreenManager
         private List<InfosThumbnail> m_InfosThumbnailQueue;
         private int m_iLastFilled = -1;
         private SplitterPanel m_Panel;
-        private PlayerServer m_PlayerServer;
+        private VideoFile m_VideoFile;
         private int m_iTotalFilesToLoad = 0;    // only for debug info
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public ThumbListLoader(List<String> _fileNames, SplitterPanel _panel, PlayerServer _PlayerServer)
+        public ThumbListLoader(List<String> _fileNames, SplitterPanel _panel, VideoFile _PlayerServer)
         {
             m_FileNames = _fileNames;
             m_Panel = _panel;
-            m_PlayerServer = _PlayerServer;
+            m_VideoFile = _PlayerServer;
 
             m_iTotalFilesToLoad = _fileNames.Count;
             m_InfosThumbnailQueue = new List<InfosThumbnail>();
@@ -94,7 +92,7 @@ namespace Kinovea.ScreenManager
                 {
                     try
                     {
-                    	InfosThumbnail it = m_PlayerServer.GetThumbnail(fileNames[i], 200);
+                    	InfosThumbnail it = m_VideoFile.GetThumbnail(fileNames[i], 200);
                         m_InfosThumbnailQueue.Insert(0, it);
                     }
                     catch (Exception)

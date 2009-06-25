@@ -9,9 +9,9 @@
 //-----------------------------------------------------------------*/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Collections.Generic;
 
 namespace CodeProject.Downloader
 {
@@ -406,7 +406,6 @@ namespace CodeProject.Downloader
         /// <summary>
         /// Checks whether a WebResponse is an error.
         /// </summary>
-        /// <param name="response"></param>
         private static void ValidateResponse(WebResponse response, string url)
         {
             if (response is HttpWebResponse)
@@ -436,7 +435,6 @@ namespace CodeProject.Downloader
         /// could not be determined.
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="progressKnown"></param>
         /// <returns></returns>
         private long GetFileSize(string url)
         {

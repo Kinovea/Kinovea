@@ -18,17 +18,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Xsl;
-
-using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -153,27 +151,28 @@ namespace Kinovea.ScreenManager
         #region Members
         public GetTimeCode m_TimeStampsToTimecodeCallback;      // Public because accessed from DrawingChrono.
         private ShowClosestFrame m_ShowClosestFrameCallback;
-        private PreferencesManager m_PrefManager; 
+        
+        private PreferencesManager m_PrefManager = PreferencesManager.Instance();
         private string m_FullPath;
-        private List<Keyframe> m_Keyframes;
-        private int m_iSelectedDrawingFrame;
-        private int m_iSelectedDrawing;
-        private List<Track> m_Tracks;
-        private int m_iSelectedTrack;
-        private List<DrawingChrono> m_Chronos;
-        private int m_iSelectedChrono;
-        private Plane3D m_Plane;
-        private Plane3D m_Grid;
+        private List<Keyframe> m_Keyframes = new List<Keyframe>();
+        private int m_iSelectedDrawingFrame = -1;
+        private int m_iSelectedDrawing = -1;
+        private List<Track> m_Tracks = new List<Track>();
+        private int m_iSelectedTrack = -1;
+        private List<DrawingChrono> m_Chronos = new List<DrawingChrono>();
+        private int m_iSelectedChrono = -1;
+        private Plane3D m_Plane = new Plane3D(500, 8, true);
+        private Plane3D m_Grid = new Plane3D(500, 8, false);
         private bool m_Mirrored;
-        private string m_GlobalTitle;
-        private Size m_ImageSize;
-        private Int64 m_iAverageTimeStampsPerFrame;
+        private string m_GlobalTitle = " ";
+        private Size m_ImageSize = new Size(0,0);
+        private Int64 m_iAverageTimeStampsPerFrame = 1;
         private Int64 m_iFirstTimeStamp;
         private Int64 m_iSelectionStart;
         private LineLengthHelper m_LineLengthHelper = new LineLengthHelper();
 
         // Read from XML, used for adapting the data to the current video
-        private Size m_InputImageSize;
+        private Size m_InputImageSize = new Size(0, 0);
         private Int64 m_iInputAverageTimeStampsPerFrame;    // The one read from the XML
         private Int64 m_iInputFirstTimeStamp;
         private Int64 m_iInputSelectionStart;
@@ -187,35 +186,15 @@ namespace Kinovea.ScreenManager
 
         #region Constructor
         public Metadata(GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
-        {
-            log.Debug("Constructing Metadata");
-            m_PrefManager = PreferencesManager.Instance();
+        { 
             m_TimeStampsToTimecodeCallback = _TimeStampsToTimecodeCallback;
             m_ShowClosestFrameCallback = _ShowClosestFrameCallback;
-            
-            m_Keyframes = new List<Keyframe>();
-            m_Tracks = new List<Track>();
-            m_Chronos = new List<DrawingChrono>();
-            m_Plane = new Plane3D(500, 8, true);
-            m_Grid = new Plane3D(500, 8, false);
-            
-            m_Mirrored = false;
-            m_GlobalTitle = " ";
-            m_ImageSize = new Size(0, 0);
-            m_iAverageTimeStampsPerFrame = 1;
-            m_iFirstTimeStamp = 0;
-            m_iSelectionStart = 0;
-
-            UnselectAll();
-            
-            m_iInputAverageTimeStampsPerFrame = 0;
-            m_iInputFirstTimeStamp = 0;
-            m_InputImageSize = new Size(0, 0);
-            m_iInputSelectionStart = 0;
-            m_InputFileName = "";
-
+           
             CleanupHash();
         }
+        #endregion
+
+        #region Public Interface
         public static Metadata FromXmlString(String _xmlString, int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
         {
             Metadata md = new Metadata(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback);
@@ -247,50 +226,6 @@ namespace Kinovea.ScreenManager
             
             return md;
         }
-        private static string ConvertFormat(string _xmlString)
-        {
-        	string result;
-        	
-        	XmlDocument mdDoc = new XmlDocument();
-			mdDoc.LoadXml(_xmlString);
-
-    		XmlNode rootNode = mdDoc.DocumentElement;
-    		XmlNode formatNode = rootNode.SelectSingleNode("descendant::FormatVersion");
-
-    		double format = double.Parse(formatNode.InnerText, CultureInfo.InvariantCulture);
-    		
-    		if(format <= 1.2)
-    		{
-    			log.Debug(String.Format("Old format detected ({0}). Converting to new format.", formatNode.InnerText));
-    			
-    			try
-    			{
-	    			// Convert from 1.2 to 1.3.
-					XslCompiledTransform xslt = new XslCompiledTransform();
-					xslt.Load(@"xslt\kva-1.2to1.3.xsl");
-					
-					StringWriter writer = new StringWriter();
-					XmlTextWriter xmlWriter = new XmlTextWriter(writer);
-	
-					xslt.Transform(mdDoc, xmlWriter);
-	    			
-					result = writer.ToString();
-    			}
-    			catch(Exception)
-    			{
-    				result = _xmlString;
-    			}
-    		}
-    		else
-    		{
-    			result = _xmlString;
-    		}
-    		
-        	return result;
-        }
-        #endregion
-
-        #region Public Interface
         public void Clear()
         {
             m_Keyframes.Clear();
@@ -381,22 +316,6 @@ namespace Kinovea.ScreenManager
             ResetCoreContent();
             CleanupHash();
         }
-        private void ResetCoreContent()
-        {
-            // Semi reset: we keep Image size and AverageTimeStampsPerFrame
-            m_Keyframes.Clear();
-            m_Chronos.Clear();
-            
-            /*for(Track t in m_Tracks)
-            {
-            	t.Release();
-            }*/
-            StopAllTracking();
-            m_Tracks.Clear();
-            m_Grid.Reset();
-            m_Plane.Reset();
-            m_Mirrored = false;
-        }
         public void UpdateTrajectoriesForKeyframes()
         {
             // Called when keyframe added, removed or title changed
@@ -430,6 +349,12 @@ namespace Kinovea.ScreenManager
         {
             m_iLastCleanHash = GetHashCode();
             log.Debug(String.Format("Hash cleaned up. Metadata hash is: {0}", m_iLastCleanHash));
+        }
+        public override int GetHashCode()
+        {
+            // Combine all fields hashes, using XOR operator.
+            int iHashCode = GetKeyframesHashCode() ^ GetChronometersHashCode() ^ GetTracksHashCode();
+            return iHashCode;
         }
         public List<Bitmap> GetFullImages()
         {
@@ -534,34 +459,6 @@ namespace Kinovea.ScreenManager
 
             return bDrawingHit;
         }
-        private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
-        {
-            //----------------------------------------------------------
-            // Look for a hit in all drawings of a particular Key Frame.
-            // The drawing being hit becomes Selected.
-            //----------------------------------------------------------
-            bool bDrawingHit = false;
-            Keyframe kf = m_Keyframes[_iKeyFrameIndex];
-            int hitRes = -1;
-            int iCurrentDrawing = 0;
-
-            while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
-            {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseLocation, _iTimestamp);
-                if (hitRes >= 0)
-                {
-                    bDrawingHit = true;
-                    m_iSelectedDrawing = iCurrentDrawing;
-                    m_iSelectedDrawingFrame = _iKeyFrameIndex;
-                }
-                else
-                {
-                    iCurrentDrawing++;
-                }
-            }
-
-            return bDrawingHit;
-        }
         public bool IsOnChronometer(Point _MouseLocation, long _iTimestamp)
         {
             // Note: Mouse coordinates are already descaled.
@@ -631,7 +528,6 @@ namespace Kinovea.ScreenManager
             return bGridHit;
         }
         #endregion
-
         #endregion
 
         #region Lower level Helpers
@@ -709,6 +605,50 @@ namespace Kinovea.ScreenManager
             }
 
             return iOutputTimestamp;
+        }
+        private void ResetCoreContent()
+        {
+            // Semi reset: we keep Image size and AverageTimeStampsPerFrame
+            m_Keyframes.Clear();
+            m_Chronos.Clear();
+            
+            /*for(Track t in m_Tracks)
+            {
+            	t.Release();
+            }*/
+            StopAllTracking();
+            m_Tracks.Clear();
+            m_Grid.Reset();
+            m_Plane.Reset();
+            m_Mirrored = false;
+        }
+        private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
+        {
+            //----------------------------------------------------------
+            // Look for a hit in all drawings of a particular Key Frame.
+            // The drawing being hit becomes Selected.
+            //----------------------------------------------------------
+            bool bDrawingHit = false;
+            Keyframe kf = m_Keyframes[_iKeyFrameIndex];
+            int hitRes = -1;
+            int iCurrentDrawing = 0;
+
+            while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
+            {
+                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseLocation, _iTimestamp);
+                if (hitRes >= 0)
+                {
+                    bDrawingHit = true;
+                    m_iSelectedDrawing = iCurrentDrawing;
+                    m_iSelectedDrawingFrame = _iKeyFrameIndex;
+                }
+                else
+                {
+                    iCurrentDrawing++;
+                }
+            }
+
+            return bDrawingHit;
         }
         private int ActiveKeyframes()
         {
@@ -873,12 +813,6 @@ namespace Kinovea.ScreenManager
 
             CleanupHash();
         }
-        public override int GetHashCode()
-        {
-            // Combine all fields hashes, using XOR operator.
-            int iHashCode = GetKeyframesHashCode() ^ GetChronometersHashCode() ^ GetTracksHashCode();
-            return iHashCode;
-        }
         private int GetKeyframesHashCode()
         {
             // Keyframes hashcodes are XORed with one another. 
@@ -909,11 +843,50 @@ namespace Kinovea.ScreenManager
             }
             return iHashCode;    
         }
+		private static string ConvertFormat(string _xmlString)
+        {
+        	string result;
+        	
+        	XmlDocument mdDoc = new XmlDocument();
+			mdDoc.LoadXml(_xmlString);
 
+    		XmlNode rootNode = mdDoc.DocumentElement;
+    		XmlNode formatNode = rootNode.SelectSingleNode("descendant::FormatVersion");
+
+    		double format = double.Parse(formatNode.InnerText, CultureInfo.InvariantCulture);
+    		
+    		if(format <= 1.2)
+    		{
+    			log.Debug(String.Format("Old format detected ({0}). Converting to new format.", formatNode.InnerText));
+    			
+    			try
+    			{
+	    			// Convert from 1.2 to 1.3.
+					XslCompiledTransform xslt = new XslCompiledTransform();
+					xslt.Load(@"xslt\kva-1.2to1.3.xsl");
+					
+					StringWriter writer = new StringWriter();
+					XmlTextWriter xmlWriter = new XmlTextWriter(writer);
+	
+					xslt.Transform(mdDoc, xmlWriter);
+	    			
+					result = writer.ToString();
+    			}
+    			catch(Exception)
+    			{
+    				result = _xmlString;
+    			}
+    		}
+    		else
+    		{
+    			result = _xmlString;
+    		}
+    		
+        	return result;
+        }
         #endregion
         
         #region Parse Kinovea Analysis
-        
         private void ParseAnalysis(XmlTextReader _xmlReader)
         {
             while (_xmlReader.Read())

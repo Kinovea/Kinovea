@@ -18,15 +18,13 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using AForge.Imaging;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-using AForge.Imaging.Filters;
+
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 

@@ -29,6 +29,8 @@ namespace Kinovea.ScreenManager
 	/// Concrete implementations will be responsible for holding frames or have access to them,
 	/// holding key images and drawings and other meta data, 
 	/// and provide a Draw method used by the screens.
+	/// 
+	/// This is intended to decorrelate the user interface from controller.
 	/// </summary>
 	public abstract class AbstractFrameServer
 	{

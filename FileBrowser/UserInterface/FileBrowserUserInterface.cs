@@ -22,15 +22,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.Management;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 

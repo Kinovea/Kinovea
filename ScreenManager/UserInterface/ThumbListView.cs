@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
-using Kinovea.VideoFiles;
-using Kinovea.Services;
-using System.IO;
-using System.Resources;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
-using System.Diagnostics;
+using System.Windows.Forms;
+
+using Kinovea.Services;
+using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
@@ -49,7 +46,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Members
-		private PlayerServer m_PlayerServer = new PlayerServer();
+		private VideoFile m_VideoFile = new VideoFile();
 
 		private int m_iLeftMargin = 30;
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
@@ -126,7 +123,7 @@ namespace Kinovea.ScreenManager
 				SetupPlaceHolders(_fileNames);
 
 				// Create the new loader and launch it.
-				ThumbListLoader tll = new ThumbListLoader(_fileNames, splitResizeBar.Panel2, m_PlayerServer);
+				ThumbListLoader tll = new ThumbListLoader(_fileNames, splitResizeBar.Panel2, m_VideoFile);
 				m_Loaders.Add(tll);
 				tll.Launch();
 			}

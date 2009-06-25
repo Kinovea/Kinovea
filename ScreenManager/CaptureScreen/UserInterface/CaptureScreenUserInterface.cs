@@ -18,12 +18,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
  */
 
-using AForge.Video;
-using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -31,9 +28,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Resources;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+
+using AForge.Video.DirectShow;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -121,14 +119,14 @@ namespace Kinovea.ScreenManager
 		}
 		public bool Deinterlaced
 		{
-			get { return m_PlayerServer.m_InfosVideo.bDeinterlaced;}
+			get { return m_VideoFile.Infos.bDeinterlaced;}
 			set
 			{
-				m_PlayerServer.m_InfosVideo.bDeinterlaced = value;
+				m_VideoFile.Infos.bDeinterlaced = value;
 
 				// If there was a selection it must be imported again.
 				// (this means we'll loose color adjustments.)
-				if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
+				if (m_VideoFile.Selection.iAnalysisMode == 1)
 				{
 					SwitchToAnalysisMode(true);
 				}
@@ -154,7 +152,7 @@ namespace Kinovea.ScreenManager
 		#region Members
 
 		// Low level routines.
-		public PlayerServer m_PlayerServer = new PlayerServer();
+		public VideoFile m_VideoFile = new VideoFile();
 
 		// General
 		private ResourceManager m_ResourceManager;
@@ -396,7 +394,7 @@ namespace Kinovea.ScreenManager
 				// Tentative de récupération des meta données
 				// Ne charge pas les images.
 				//------------------------------------------
-				ParseMetadata(m_PlayerServer.GetMetadata());
+				ParseMetadata(m_VideoFile.GetMetadata());
 
 				//--------------------------
 				// Affichage Première frame.
@@ -415,8 +413,8 @@ namespace Kinovea.ScreenManager
 					// Cas le plus courant : taille image non standard.
 					//-------------------------------------------------
 					iPostLoadResult = -1;
-					m_PlayerServer.m_InfosVideo.iDurationTimeStamps = 0;
-					m_PlayerServer.m_InfosVideo.iFirstTimeStamp = 0;
+					m_VideoFile.Infos.iDurationTimeStamps = 0;
+					m_VideoFile.Infos.iFirstTimeStamp = 0;
 					InitTimestamps();
 					log.Error("First frame couldn't be loaded - aborting");
 				}
@@ -432,8 +430,8 @@ namespace Kinovea.ScreenManager
 						log.Error(String.Format("First frame loaded but negative timestamp ({0}) - aborting", m_iCurrentPosition));
 						iPostLoadResult = -2;
 
-						m_PlayerServer.m_InfosVideo.iDurationTimeStamps = 0;
-						m_PlayerServer.m_InfosVideo.iFirstTimeStamp = 0;
+						m_VideoFile.Infos.iDurationTimeStamps = 0;
+						m_VideoFile.Infos.iFirstTimeStamp = 0;
 						InitTimestamps();
 					}
 					else
@@ -455,7 +453,7 @@ namespace Kinovea.ScreenManager
 						// 1. Timestamps et panels de Selections / FrameTrack
 						//---------------------------------------------------
 						log.Debug(String.Format("First frame loaded. Timestamp : {0}", m_iCurrentPosition));
-						log.Debug(String.Format("Announced first timestamp : {0}", m_PlayerServer.m_InfosVideo.iFirstTimeStamp));
+						log.Debug(String.Format("Announced first timestamp : {0}", m_VideoFile.Infos.iFirstTimeStamp));
 						
 						//-----------------------------------------------------------------------------
 						// [2008-04-26] Time stamp non 0 :Assez courant en fait.
@@ -463,12 +461,12 @@ namespace Kinovea.ScreenManager
 						// Sans que cela soit répercuté sur iFirstTimeStamp...
 						// On fixe à la main.
 						//-----------------------------------------------------------------------------
-						m_PlayerServer.m_InfosVideo.iFirstTimeStamp = m_iCurrentPosition;
+						m_VideoFile.Infos.iFirstTimeStamp = m_iCurrentPosition;
 						m_iStartingPosition = m_iCurrentPosition;
-						m_iTotalDuration = m_PlayerServer.m_InfosVideo.iDurationTimeStamps;
+						m_iTotalDuration = m_VideoFile.Infos.iDurationTimeStamps;
 
 						// Set temporary values.
-						double fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+						double fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 						m_iSelStart     = m_iStartingPosition;
 						m_iSelEnd       = (long)((double)(m_iTotalDuration + m_iStartingPosition) - fAverageTimeStampsPerFrame);
 						m_iSelDuration  = m_iTotalDuration;
@@ -485,7 +483,7 @@ namespace Kinovea.ScreenManager
 						// We now have solid facts for m_iSelStart, m_iSelEnd and m_iSelDuration.
 						// Let's update all variables with them.
 						m_iCurrentPosition = m_iSelStart;
-						m_PlayerServer.m_InfosVideo.iFirstTimeStamp = m_iCurrentPosition;
+						m_VideoFile.Infos.iFirstTimeStamp = m_iCurrentPosition;
 						m_iStartingPosition = m_iCurrentPosition;
 						m_iTotalDuration = m_iSelDuration;
 						trkSelection.Minimum = m_iSelStart;
@@ -513,10 +511,10 @@ namespace Kinovea.ScreenManager
 						
 						// Setup Metadata global infos in case we want to flush it to a file (or mux).
 						// (Might have already been stored if muxed metadata)
-						Size imageSize = new Size(m_PlayerServer.m_InfosVideo.iDecodingWidth, m_PlayerServer.m_InfosVideo.iDecodingHeight);
+						Size imageSize = new Size(m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight);
 						m_Metadata.ImageSize = imageSize;
-						m_Metadata.AverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame;
-						m_Metadata.FirstTimeStamp = m_PlayerServer.m_InfosVideo.iFirstTimeStamp;
+						m_Metadata.AverageTimeStampsPerFrame = m_VideoFile.Infos.iAverageTimeStampsPerFrame;
+						m_Metadata.FirstTimeStamp = m_VideoFile.Infos.iFirstTimeStamp;
 						m_Metadata.Plane.SetLocations(imageSize, 1.0, new Point(0,0));
 						m_Metadata.Grid.SetLocations(imageSize, 1.0, new Point(0,0));
 						((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).ImgSize = imageSize;
@@ -570,7 +568,7 @@ namespace Kinovea.ScreenManager
 			if (_metadata != null)
 			{
 				// TODO - save previous metadata for undo.
-				m_Metadata = Metadata.FromXmlString(_metadata, m_PlayerServer.m_InfosVideo.iDecodingWidth, m_PlayerServer.m_InfosVideo.iDecodingHeight, m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame, m_FullPath, new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));
+				m_Metadata = Metadata.FromXmlString(_metadata, m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight, m_VideoFile.Infos.iAverageTimeStampsPerFrame, m_FullPath, new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));
 				UpdateKeyframesMarkers();
 				OrganizeKeyframes();
 			}
@@ -596,7 +594,7 @@ namespace Kinovea.ScreenManager
 				iCurrentKeyframe++;
 
 				// Récupérer l'image
-				if (kf.Position < (m_PlayerServer.m_InfosVideo.iFirstTimeStamp + m_PlayerServer.m_InfosVideo.iDurationTimeStamps))
+				if (kf.Position < (m_VideoFile.Infos.iFirstTimeStamp + m_VideoFile.Infos.iDurationTimeStamps))
 				{
 					m_iFramesToDecode = 1;
 					ShowNextFrame(kf.Position, true);
@@ -606,7 +604,7 @@ namespace Kinovea.ScreenManager
 
 					// Readjust and complete the Keyframe
 					kf.Position = m_iCurrentPosition;
-					kf.ImportImage(m_PlayerServer.m_BmpImage);
+					kf.ImportImage(m_VideoFile.CurrentImage);
 					kf.GenerateDisabledThumbnail();
 
 					// EditBoxes
@@ -649,7 +647,7 @@ namespace Kinovea.ScreenManager
 			UpdateNavigationCursor();
 			ActivateKeyframe(m_iCurrentPosition);
 
-			Size sz = new Size(m_PlayerServer.m_InfosVideo.iDecodingWidth, m_PlayerServer.m_InfosVideo.iDecodingHeight);
+			Size sz = new Size(m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight);
 			m_Metadata.ImageSize = sz;
 			m_Metadata.Plane.SetLocations(sz, 1.0, new Point(0,0));
 			m_Metadata.Grid.SetLocations(sz, 1.0, new Point(0, 0));
@@ -674,9 +672,9 @@ namespace Kinovea.ScreenManager
 			//--------------------------
 			// Setup data
 			//--------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
-				double  fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+				double  fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 				m_iSelStart = m_iStartingPosition;
 				m_iSelEnd = (long)((double)(m_iTotalDuration + m_iStartingPosition) - fAverageTimeStampsPerFrame);
 				m_iSelDuration = m_iTotalDuration;
@@ -713,7 +711,7 @@ namespace Kinovea.ScreenManager
 			//--------------------------
 			// Setup data
 			//--------------------------
-			if (!m_PlayerServer.m_bIsMovieLoaded)
+			if (!m_VideoFile.Loaded)
 			{
 				m_iCurrentPosition = 0;
 			}
@@ -1175,17 +1173,17 @@ namespace Kinovea.ScreenManager
 			panelDebug.Visible = true;
 
 			dbgDurationTimeStamps.Text = String.Format("TotalDuration (ts): {0:0}", m_iTotalDuration);
-			dbgFFps.Text = String.Format("Fps Avg (f): {0:0.00}", m_PlayerServer.m_InfosVideo.fFps);
+			dbgFFps.Text = String.Format("Fps Avg (f): {0:0.00}", m_VideoFile.Infos.fFps);
 			dbgSelectionStart.Text = String.Format("SelStart (ts): {0:0}", m_iSelStart);
 			dbgSelectionEnd.Text = String.Format("SelEnd (ts): {0:0}", m_iSelEnd);
 			dbgSelectionDuration.Text = String.Format("SelDuration (ts): {0:0}", m_iSelDuration);
 			dbgCurrentPositionAbs.Text = String.Format("CurrentPosition (abs, ts): {0:0}", m_iCurrentPosition);
 			dbgCurrentPositionRel.Text = String.Format("CurrentPosition (rel, ts): {0:0}", m_iCurrentPosition-m_iSelStart);
-			dbgStartOffset.Text = String.Format("StartOffset (ts): {0:0}", m_PlayerServer.m_InfosVideo.iFirstTimeStamp);
+			dbgStartOffset.Text = String.Format("StartOffset (ts): {0:0}", m_VideoFile.Infos.iFirstTimeStamp);
 			dbgDrops.Text = String.Format("Drops (f): {0:0}", m_iDroppedFrames);
 
-			dbgCurrentFrame.Text = String.Format("CurrentFrame (f): {0}", m_PlayerServer.m_PrimarySelection.iCurrentFrame);
-			dbgDurationFrames.Text = String.Format("Duration (f) : {0}", m_PlayerServer.m_PrimarySelection.iDurationFrame);
+			dbgCurrentFrame.Text = String.Format("CurrentFrame (f): {0}", m_VideoFile.Selection.iCurrentFrame);
+			dbgDurationFrames.Text = String.Format("Duration (f) : {0}", m_VideoFile.Selection.iDurationFrame);
 
 			//dbgAvailableRam.Text = String.Format("Avail. RAM (Mb) : {0}", m_RamCounter.NextValue());
 
@@ -1198,7 +1196,7 @@ namespace Kinovea.ScreenManager
 			log.Debug("");
 			log.Debug("Timestamps Full Dump");
 			log.Debug("--------------------");
-			double fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+			double fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 			log.Debug("Average ts per frame     : " + fAverageTimeStampsPerFrame);
 			log.Debug("");
 			log.Debug("m_iStartingPosition      : " + m_iStartingPosition);
@@ -1325,8 +1323,8 @@ namespace Kinovea.ScreenManager
 			// timestamp to milliseconds. (Needed for most formats)
 			double iSeconds;
 
-			if (m_PlayerServer.m_bIsMovieLoaded)
-				iSeconds = (double)iTimeStamp / m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds;
+			if (m_VideoFile.Loaded)
+				iSeconds = (double)iTimeStamp / m_VideoFile.Infos.fAverageTimeStampsPerSeconds;
 			else
 				iSeconds = 0;
 
@@ -1336,7 +1334,7 @@ namespace Kinovea.ScreenManager
 			
 			// If there are more than 100 frames per seconds, we display milliseconds.
 			// This can happen when the user manually tune the input fps.
-			bool bShowThousandth = (m_fSlowFactor *  m_PlayerServer.m_InfosVideo.fFps >= 100);
+			bool bShowThousandth = (m_fSlowFactor *  m_VideoFile.Infos.fFps >= 100);
 			
 			string outputTimeCode;
 			switch (tcf)
@@ -1345,9 +1343,9 @@ namespace Kinovea.ScreenManager
 					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth);
 					break;
 				case TimeCodeFormat.Frames:
-					if (m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame != 0)
+					if (m_VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
 					{
-						outputTimeCode = String.Format("{0}", (int)((double)iTimeStamp / m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame) + 1);
+						outputTimeCode = String.Format("{0}", (int)((double)iTimeStamp / m_VideoFile.Infos.iAverageTimeStampsPerFrame) + 1);
 					}
 					else
 					{
@@ -1425,7 +1423,7 @@ namespace Kinovea.ScreenManager
         }
 		public void buttonGotoFirst_Click(object sender, EventArgs e)
 		{
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				SetAsActiveScreen();
 				StopPlaying();
@@ -1443,7 +1441,7 @@ namespace Kinovea.ScreenManager
 		public void buttonGotoPrevious_Click(object sender, EventArgs e)
 		{
 			// Faire un seek de l'équivalent d'une frame en arrière ?
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				SetAsActiveScreen();
 				StopPlaying();
@@ -1475,7 +1473,7 @@ namespace Kinovea.ScreenManager
 					// (Devrait rester rare).
 					//--------------------------------------------------------------------------------------
 
-					//double  fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+					//double  fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 					//Int64   iAverageTimeStampsPerFrame = (Int64)Math.Round(fAverageTimeStampsPerFrame);
 
 					/*Int64 iOldCurrentPosition = m_iCurrentPosition;
@@ -1528,7 +1526,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void buttonGotoNext_Click(object sender, EventArgs e)
 		{
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				SetAsActiveScreen();
 				StopPlaying();
@@ -1555,7 +1553,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void buttonGotoLast_Click(object sender, EventArgs e)
 		{
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				SetAsActiveScreen();
 				StopPlaying();
@@ -1574,7 +1572,7 @@ namespace Kinovea.ScreenManager
 			// This function is accessed from ScreenManager.
 			// Eventually from a worker thread. (no SetAsActiveScreen here).
 			//--------------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				if (m_bIsCurrentlyPlaying)
 				{
@@ -1636,7 +1634,7 @@ namespace Kinovea.ScreenManager
 		private void trkSelection_SelectionChanging(object sender, EventArgs e)
 		{
 			/*
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				//SetAsActiveScreen();
 				StopPlaying();
@@ -1662,7 +1660,7 @@ namespace Kinovea.ScreenManager
 		private void trkSelection_SelectionChanged(object sender, EventArgs e)
 		{
 			// Mise à jour effective.
-			/*if (m_PlayerServer.m_bIsMovieLoaded && !m_bResetingHandlers)
+			/*if (m_VideoFile.Loaded && !m_bResetingHandlers)
 			{
 				SwitchToAnalysisMode(false);
 				m_Metadata.SelectionStart = m_iSelStart;
@@ -1685,7 +1683,7 @@ namespace Kinovea.ScreenManager
 			// Clic dans la sélection : déplacement.
 			// Mets à jour la position courante dans la selection primaire
 			//--------------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				SetAsActiveScreen();
 				StopPlaying();
@@ -1708,7 +1706,7 @@ namespace Kinovea.ScreenManager
 			//-----------------------------------------
 			// Vérouiller les poignées de la selection.
 			//-----------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				m_bHandlersLocked = !m_bHandlersLocked;
 
@@ -1742,7 +1740,7 @@ namespace Kinovea.ScreenManager
 			//------------------------------------------------------
 			// Positionner le handler de gauche à la frame courante.
 			//------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded && !m_bHandlersLocked)
+			if (m_VideoFile.Loaded && !m_bHandlersLocked)
 			{
 				//m_iSelStart = m_iCurrentPosition;
 				trkSelection.SelStart = m_iCurrentPosition;
@@ -1758,7 +1756,7 @@ namespace Kinovea.ScreenManager
 			//------------------------------------------------------
 			// Positionner le handler de droite à la frame courante.
 			//------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded && !m_bHandlersLocked)
+			if (m_VideoFile.Loaded && !m_bHandlersLocked)
 			{
 				//m_iSelEnd = m_iCurrentPosition;
 				trkSelection.SelEnd = m_iCurrentPosition;
@@ -1774,7 +1772,7 @@ namespace Kinovea.ScreenManager
 			//------------------------------------------------------
 			// Replacer les Handlers  au maximums
 			//------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded && !m_bHandlersLocked)
+			if (m_VideoFile.Loaded && !m_bHandlersLocked)
 			{
 				m_bResetingHandlers = true;
 				trkSelection.SelStart = trkSelection.Minimum;
@@ -1806,11 +1804,11 @@ namespace Kinovea.ScreenManager
 			// sinon affiche la borne la plus proche.
 			//--------------------------------------------------------------
 			
-			if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
+			if (m_VideoFile.Selection.iAnalysisMode == 1)
 			{
 				// En mode analyse on est toujours dans la zone, mais
 				// On peut avoir besoin de faire un refresh de l'image.
-				ShowNextFrame(m_PlayerServer.m_PrimarySelection.iCurrentFrame, true);
+				ShowNextFrame(m_VideoFile.Selection.iCurrentFrame, true);
 			}
 			else
 			{
@@ -1881,7 +1879,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_iSelStart = trkSelection.SelStart;
 				m_iSelEnd = trkSelection.SelEnd;
-				double fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+				double fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 				m_iSelDuration = m_iSelEnd - m_iSelStart + (long)fAverageTimeStampsPerFrame;
 			}
 			*/
@@ -1896,7 +1894,7 @@ namespace Kinovea.ScreenManager
 			// Common position changed, we get a new frame to jump to.
 			// target frame may be over the total.
 
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				m_iFramesToDecode = 1;
 
@@ -1910,8 +1908,8 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					m_iCurrentPosition = _iFrame * m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame;
-					m_iCurrentPosition += m_PlayerServer.m_InfosVideo.iFirstTimeStamp;
+					m_iCurrentPosition = _iFrame * m_VideoFile.Infos.iAverageTimeStampsPerFrame;
+					m_iCurrentPosition += m_VideoFile.Infos.iFirstTimeStamp;
 
 					if (m_iCurrentPosition > m_iSelEnd)
 					{
@@ -1940,7 +1938,7 @@ namespace Kinovea.ScreenManager
 			// Appelée lors de déplacement de type MouseMove
 			// UNIQUEMENT si mode Analyse.
 			//---------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				//SetAsActiveScreen();
 				//StopPlaying();
@@ -1963,7 +1961,7 @@ namespace Kinovea.ScreenManager
 			// Appelée uniquement lors de déplacement automatique
 			// MouseUp, DoubleClick
 			//---------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				SetAsActiveScreen();
 				StopPlaying();
@@ -1986,7 +1984,7 @@ namespace Kinovea.ScreenManager
 			// ( = Le curseur a bougé, afficher l'image)
 			//--------------------------------------------------------------
 
-			if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 0)
+			if (m_VideoFile.Selection.iAnalysisMode == 0)
 			{
 				this.Cursor = Cursors.WaitCursor;
 			}
@@ -1998,7 +1996,7 @@ namespace Kinovea.ScreenManager
 			if (_bUpdateNavCursor) { UpdateNavigationCursor();}
 			if (m_bShowInfos) { UpdateDebugInfos(); }
 
-			if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 0)
+			if (m_VideoFile.Selection.iAnalysisMode == 0)
 			{
 				this.Cursor = Cursors.Default;
 			}
@@ -2052,7 +2050,7 @@ namespace Kinovea.ScreenManager
 		private void sldrSpeed_ValueChanged(object sender, EventArgs e)
 		{
 			/*
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				//---------------------------------------------------------------------------
 				// Désactivation de SetAsActiveScreen : update des menus prend des ressources
@@ -2089,7 +2087,7 @@ namespace Kinovea.ScreenManager
 			// HAUT / BAS du clavier.
 			// Fonction publique car appellée depuis le ScreenManager.
 			//--------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				// Passe le Handled à true pour éviter le traitement par windows.
 				if (e.KeyCode == Keys.Down)
@@ -2387,7 +2385,7 @@ namespace Kinovea.ScreenManager
 		private void MultimediaTimerTick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
 		{
 			// We comes here more often than we should, by bunches.
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				//if (!m_bIsInPlayLoop)
 				//{
@@ -2429,7 +2427,7 @@ namespace Kinovea.ScreenManager
 				// Si c'est le cas, on stoppe la lecture pour rewind.
 				// m_iFramesToDecode est toujours strictement positif. (Car on est en Play)
 				//----------------------------------------------------------------------------
-				long    TargetPosition = m_iCurrentPosition + (m_iFramesToDecode * m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame);
+				long    TargetPosition = m_iCurrentPosition + (m_iFramesToDecode * m_VideoFile.Infos.iAverageTimeStampsPerFrame);
 
 				if ((TargetPosition > m_iSelEnd) || (TargetPosition >= (m_iStartingPosition + m_iTotalDuration)))
 				{
@@ -2577,10 +2575,10 @@ namespace Kinovea.ScreenManager
 			//m_NotIdleWatch.Start();
 			//m_DecodeWatch.Reset();
 			//m_DecodeWatch.Start();
-			int res = m_PlayerServer.GetNextFrame((long)_iSeekTarget, m_iFramesToDecode);
+			int res = m_VideoFile.GetNextFrame((long)_iSeekTarget, m_iFramesToDecode);
 			//Console.WriteLine("decoding:{0}", m_DecodeWatch.ElapsedMilliseconds);
 			#else
-			int res = m_PlayerServer.GetNextFrame((long)_iSeekTarget, m_iFramesToDecode);
+			int res = m_VideoFile.GetNextFrame((long)_iSeekTarget, m_iFramesToDecode);
 			#endif
 
 			if (res == 0)
@@ -2590,7 +2588,7 @@ namespace Kinovea.ScreenManager
 				//#endif
 				
 				m_iDecodedFrames++;
-				m_iCurrentPosition = m_PlayerServer.m_PrimarySelection.iCurrentTimeStamp;
+				m_iCurrentPosition = m_VideoFile.Selection.iCurrentTimeStamp;
 
 				// Compute or stop tracking
 				
@@ -2606,7 +2604,7 @@ namespace Kinovea.ScreenManager
 						{
 							if (t.EditMode)
 							{
-								t.TrackCurrentPosition(m_iCurrentPosition, m_PlayerServer.m_BmpImage);
+								t.TrackCurrentPosition(m_iCurrentPosition, m_VideoFile.CurrentImage);
 							}
 						}
 					}
@@ -2684,7 +2682,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void StopPlaying(bool _bAllowUIUpdate)
 		{
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				if (m_bIsCurrentlyPlaying)
 				{
@@ -2704,7 +2702,7 @@ namespace Kinovea.ScreenManager
 		public void RefreshImage()
 		{
 			// For cases where m_SurfaceScreen.Invalidate() is not enough.
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				ShowNextFrame(m_iCurrentPosition, true);
 			}
@@ -2715,9 +2713,9 @@ namespace Kinovea.ScreenManager
 
 			int iFrameInterval = 40;
 
-			if (m_PlayerServer.m_bIsMovieLoaded && (m_PlayerServer.m_InfosVideo.iFrameInterval > 0))
+			if (m_VideoFile.Loaded && (m_VideoFile.Infos.iFrameInterval > 0))
 			{
-				iFrameInterval = (int)((double)m_PlayerServer.m_InfosVideo.iFrameInterval / ((double)m_iSlowmotionPercentage / 100));
+				iFrameInterval = (int)((double)m_VideoFile.Infos.iFrameInterval / ((double)m_iSlowmotionPercentage / 100));
 			}
 			return iFrameInterval;
 		}
@@ -2737,7 +2735,7 @@ namespace Kinovea.ScreenManager
 			// Display the dialog box that let the user specify the capture speed.
 			// Used to adpat time for high speed cameras.
 			//--------------------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				DelegatesPool dp = DelegatesPool.Instance();
 				if (dp.DeactivateKeyboardHandler != null)
@@ -2745,7 +2743,7 @@ namespace Kinovea.ScreenManager
 					dp.DeactivateKeyboardHandler();
 				}
 
-				formConfigureSpeed fcs = new formConfigureSpeed(m_PlayerServer.m_InfosVideo.fFps, this);
+				formConfigureSpeed fcs = new formConfigureSpeed(m_VideoFile.Infos.fFps, this);
 				if (_center)
 				{
 					fcs.StartPosition = FormStartPosition.CenterScreen;
@@ -2897,9 +2895,9 @@ namespace Kinovea.ScreenManager
 		#region SurfaceScreen Events
 		private void _surfaceScreen_MouseDown(object sender, MouseEventArgs e)
 		{
-			if(m_PlayerServer != null)
+			if(m_VideoFile != null)
 			{
-				if (m_PlayerServer.m_bIsMovieLoaded)
+				if (m_VideoFile.Loaded)
 				{
 					if (e.Button == MouseButtons.Left)
 					{
@@ -3152,9 +3150,9 @@ namespace Kinovea.ScreenManager
 			// After the drawing is created, we fall back to Pointer tool.
 			// (except for pencil/cross)
 
-			if(m_PlayerServer != null)
+			if(m_VideoFile != null)
 			{
-				if (m_PlayerServer.m_bIsMovieLoaded)
+				if (m_VideoFile.Loaded)
 				{
 					if (e.Button == MouseButtons.None && m_Magnifier.Mode == MagnifierMode.Direct)
 					{
@@ -3207,12 +3205,12 @@ namespace Kinovea.ScreenManager
 										int iNewTop = (int)((double)m_DirectZoomWindow.Top - fDeltaY);
 										
 										if (iNewLeft < 0) iNewLeft = 0;
-										if (iNewLeft + m_DirectZoomWindow.Width >= m_PlayerServer.m_InfosVideo.iDecodingWidth)
-											iNewLeft = m_PlayerServer.m_InfosVideo.iDecodingWidth - m_DirectZoomWindow.Width;
+										if (iNewLeft + m_DirectZoomWindow.Width >= m_VideoFile.Infos.iDecodingWidth)
+											iNewLeft = m_VideoFile.Infos.iDecodingWidth - m_DirectZoomWindow.Width;
 										
 										if (iNewTop < 0) iNewTop = 0;
-										if (iNewTop + m_DirectZoomWindow.Height >= m_PlayerServer.m_InfosVideo.iDecodingHeight)
-											iNewTop = m_PlayerServer.m_InfosVideo.iDecodingHeight - m_DirectZoomWindow.Height;
+										if (iNewTop + m_DirectZoomWindow.Height >= m_VideoFile.Infos.iDecodingHeight)
+											iNewTop = m_VideoFile.Infos.iDecodingHeight - m_DirectZoomWindow.Height;
 										
 										// Reposition.
 										m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
@@ -3231,9 +3229,9 @@ namespace Kinovea.ScreenManager
 		}
 		private void SurfaceScreen_MouseUp(object sender, MouseEventArgs e)
 		{
-			if(m_PlayerServer != null)
+			if(m_VideoFile != null)
 			{
-				if (m_PlayerServer.m_bIsMovieLoaded)
+				if (m_VideoFile.Loaded)
 				{
 					if (e.Button == MouseButtons.Left)
 					{
@@ -3247,7 +3245,7 @@ namespace Kinovea.ScreenManager
 							{
 								if (m_Metadata.Tracks[m_Metadata.SelectedTrack].EditMode)
 								{
-									m_Metadata.Tracks[m_Metadata.SelectedTrack].UpdateCurrentPos(m_PlayerServer.m_BmpImage);
+									m_Metadata.Tracks[m_Metadata.SelectedTrack].UpdateCurrentPos(m_VideoFile.CurrentImage);
 								}
 							}
 						}
@@ -3456,7 +3454,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnAddKeyframe_Click(object sender, EventArgs e)
 		{
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				AddKeyframe();
 
@@ -3689,7 +3687,7 @@ namespace Kinovea.ScreenManager
 			// Public because called from CommandAddKeyframe.Execute()
 			// Title becomes the current timecode. (relative to sel start or sel minimum ?)
 			
-			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_PlayerServer.m_BmpImage);
+			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_VideoFile.CurrentImage);
 			
 			if (_iPosition != m_iCurrentPosition)
 			{
@@ -3702,7 +3700,7 @@ namespace Kinovea.ScreenManager
 				trkSelection.SelPos = trkFrame.Position;
 
 				// Readjust and complete the Keyframe
-				kf.ImportImage(m_PlayerServer.m_BmpImage);
+				kf.ImportImage(m_VideoFile.CurrentImage);
 			}
 
 			m_Metadata.Add(kf);
@@ -3768,7 +3766,7 @@ namespace Kinovea.ScreenManager
 			{
 				if (kf.Position >= m_iSelStart && kf.Position <= m_iSelEnd)
 				{
-					kf.ImportImage(m_PlayerServer.m_FrameList[(int)m_PlayerServer.GetFrameNumber(kf.Position)].BmpImage);
+					kf.ImportImage(m_VideoFile.FrameList[(int)m_VideoFile.GetFrameNumber(kf.Position)].BmpImage);
 					kf.GenerateDisabledThumbnail();
 					bAtLeastOne = true;
 				}
@@ -3950,7 +3948,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnMagnifier_Click(object sender, EventArgs e)
 		{
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				m_ActiveTool = DrawingToolType.Pointer;
 
@@ -4031,7 +4029,7 @@ namespace Kinovea.ScreenManager
 
             SetAsActiveScreen();
             
-            if (m_PlayerServer.m_bIsMovieLoaded && m_Metadata.Count > 0)
+            if (m_VideoFile.Loaded && m_Metadata.Count > 0)
             {
                 // Get previous Keyframe.
                 int iPrevKeyframe = -1;
@@ -4068,7 +4066,7 @@ namespace Kinovea.ScreenManager
 		{
 			SetAsActiveScreen();
 
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				// As of now, Keyframes infobox should display when we are on a keyframe
 				m_KeyframeCommentsHub.UserActivated = true;
@@ -4169,7 +4167,7 @@ namespace Kinovea.ScreenManager
 
 					// Ajouter un Track sur ce point.
 					DrawingCross2D dc = (DrawingCross2D)m_Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing];
-					m_Metadata.Tracks.Add(new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_PlayerServer.m_BmpImage));
+					m_Metadata.Tracks.Add(new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_VideoFile.CurrentImage));
 
 					// Complete Setup
 					m_Metadata.Tracks[m_Metadata.Tracks.Count - 1].m_ShowClosestFrame = new ShowClosestFrame(OnShowClosestFrame);
@@ -4523,7 +4521,7 @@ namespace Kinovea.ScreenManager
 		private void SetupDirectZoom()
 		{
 			m_fDirectZoomFactor = 1.0f;
-			m_DirectZoomWindow = new Rectangle(0, 0, m_PlayerServer.m_InfosVideo.iDecodingWidth, m_PlayerServer.m_InfosVideo.iDecodingHeight);
+			m_DirectZoomWindow = new Rectangle(0, 0, m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight);
 		}
 		private void IncreaseDirectZoom()
 		{
@@ -4557,17 +4555,17 @@ namespace Kinovea.ScreenManager
 		{
 			m_fDirectZoomFactor = _fZoomFactor;
 
-			int iNewWidth = (int)((double)m_PlayerServer.m_InfosVideo.iDecodingWidth / m_fDirectZoomFactor);
-			int iNewHeight = (int)((double)m_PlayerServer.m_InfosVideo.iDecodingHeight / m_fDirectZoomFactor);
+			int iNewWidth = (int)((double)m_VideoFile.Infos.iDecodingWidth / m_fDirectZoomFactor);
+			int iNewHeight = (int)((double)m_VideoFile.Infos.iDecodingHeight / m_fDirectZoomFactor);
 
 			int iNewLeft = _Center.X - (iNewWidth / 2);
 			int iNewTop = _Center.Y - (iNewHeight / 2);
 
 			if (iNewLeft < 0) iNewLeft = 0;
-			if (iNewLeft + iNewWidth >= m_PlayerServer.m_InfosVideo.iDecodingWidth) iNewLeft = m_PlayerServer.m_InfosVideo.iDecodingWidth - iNewWidth;
+			if (iNewLeft + iNewWidth >= m_VideoFile.Infos.iDecodingWidth) iNewLeft = m_VideoFile.Infos.iDecodingWidth - iNewWidth;
 
 			if (iNewTop < 0) iNewTop = 0;
-			if (iNewTop + iNewHeight >= m_PlayerServer.m_InfosVideo.iDecodingHeight) iNewTop = m_PlayerServer.m_InfosVideo.iDecodingHeight - iNewHeight;
+			if (iNewTop + iNewHeight >= m_VideoFile.Infos.iDecodingHeight) iNewTop = m_VideoFile.Infos.iDecodingHeight - iNewHeight;
 
 			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, iNewWidth, iNewHeight);
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).DirectZoomTopLeft = m_DirectZoomWindow.Location;
@@ -4718,7 +4716,7 @@ namespace Kinovea.ScreenManager
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Exporter l'image en cours.
-			if ((m_PlayerServer.m_bIsMovieLoaded) && (m_PlayerServer.m_BmpImage != null))
+			if ((m_VideoFile.Loaded) && (m_VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
 				try
@@ -4806,7 +4804,7 @@ namespace Kinovea.ScreenManager
 			// 4. SaveImageSequence (below) to perform the real work. (saving the pics)
 			//---------------------------------------------------------------------------------
 
-			if ((m_PlayerServer.m_bIsMovieLoaded) && (m_PlayerServer.m_BmpImage != null))
+			if ((m_VideoFile.Loaded) && (m_VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
 
@@ -4817,7 +4815,7 @@ namespace Kinovea.ScreenManager
 				}
 /*
 				// Launch sequence saving configuration dialog
-				formRafaleExport fre = new formRafaleExport(this, m_FullPath, m_iSelDuration, m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds, m_PlayerServer.m_InfosVideo.fFps);
+				formRafaleExport fre = new formRafaleExport(this, m_FullPath, m_iSelDuration, m_VideoFile.Infos.fAverageTimeStampsPerSeconds, m_VideoFile.Infos.fFps);
 				fre.ShowDialog();
 				fre.Dispose();*/
 
@@ -4844,7 +4842,7 @@ namespace Kinovea.ScreenManager
 				                MessageBoxButtons.OK,
 				                MessageBoxIcon.Exclamation);
 			}
-			else if ((m_PlayerServer.m_bIsMovieLoaded) && (m_PlayerServer.m_BmpImage != null))
+			else if ((m_VideoFile.Loaded) && (m_VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
 
@@ -4937,9 +4935,9 @@ namespace Kinovea.ScreenManager
 					// Build the file name
 					string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
 
-					Size iNewSize = new Size((int)((double)m_PlayerServer.m_BmpImage.Width * m_fStretchFactor), (int)((double)m_PlayerServer.m_BmpImage.Height * m_fStretchFactor));
+					Size iNewSize = new Size((int)((double)m_VideoFile.CurrentImage.Width * m_fStretchFactor), (int)((double)m_VideoFile.CurrentImage.Height * m_fStretchFactor));
 					Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-					outputImage.SetResolution(m_PlayerServer.m_BmpImage.HorizontalResolution, m_PlayerServer.m_BmpImage.VerticalResolution);
+					outputImage.SetResolution(m_VideoFile.CurrentImage.HorizontalResolution, m_VideoFile.CurrentImage.VerticalResolution);
 					Graphics g = Graphics.FromImage(outputImage);
 
 					if (_bBlendDrawings)
@@ -4950,12 +4948,12 @@ namespace Kinovea.ScreenManager
 							iKeyFrameIndex = m_iActiveKeyFrameIndex;
 						}
 
-						FlushOnGraphics(m_PlayerServer.m_BmpImage, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+						FlushOnGraphics(m_VideoFile.CurrentImage, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 					}
 					else
 					{
 						// image only.
-						g.DrawImage(m_PlayerServer.m_BmpImage, 0, 0, iNewSize.Width, iNewSize.Height);
+						g.DrawImage(m_VideoFile.CurrentImage, 0, 0, iNewSize.Width, iNewSize.Height);
 					}
 
 					// Save the file
@@ -5032,22 +5030,22 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				iFrameInterval = m_PlayerServer.m_InfosVideo.iFrameInterval;
+				iFrameInterval = m_VideoFile.Infos.iFrameInterval;
 			}
 
 			// On lui passe un pointeur de fonction
-			// variable sur delegate dont le type est déclaré dans m_playerServer
+			// variable sur delegate dont le type est déclaré dans m_VideoFile
 			//DelegateFlushDrawings dfd = FlushDrawings;
 			DelegateGetOutputBitmap dgob = GetOutputBitmap;
 			
 			// video alone or metadata muxed along
 			if (_bVideoAlone)
 			{
-				ffs = new formFileSave(m_PlayerServer, _filePath, iFrameInterval, m_iSelStart, m_iSelEnd, null, _bFlushDrawings, false, dgob);
+				ffs = new formFileSave(m_VideoFile, _filePath, iFrameInterval, m_iSelStart, m_iSelEnd, null, _bFlushDrawings, false, dgob);
 			}
 			else
 			{
-				ffs = new formFileSave(m_PlayerServer, _filePath, iFrameInterval, m_iSelStart, m_iSelEnd, m_Metadata, _bFlushDrawings, false, dgob);
+				ffs = new formFileSave(m_VideoFile, _filePath, iFrameInterval, m_iSelStart, m_iSelEnd, m_Metadata, _bFlushDrawings, false, dgob);
 			}
 
 			// Launch transcoding by showing the progress bar dialog.
@@ -5061,7 +5059,7 @@ namespace Kinovea.ScreenManager
 			//DelegateFlushDrawings dfd = FlushDrawings;
 			DelegateGetOutputBitmap dgob = GetOutputBitmap;
 			
-			formFileSave ffs = new formFileSave(m_PlayerServer, _filePath, _iFrameInterval, m_iSelStart, m_iSelEnd, null, true, true, dgob);
+			formFileSave ffs = new formFileSave(m_VideoFile, _filePath, _iFrameInterval, m_iSelStart, m_iSelEnd, null, true, true, dgob);
 			ffs.ShowDialog();
 			ffs.Dispose();
 		}
@@ -5108,9 +5106,9 @@ namespace Kinovea.ScreenManager
 			// grids, chronos, magnifier, etc.
 			// image should be at same strech factor than the one visible on screen.
 
-			Size iNewSize = new Size((int)((double)m_PlayerServer.m_BmpImage.Width * m_fStretchFactor), (int)((double)m_PlayerServer.m_BmpImage.Height * m_fStretchFactor));
+			Size iNewSize = new Size((int)((double)m_VideoFile.CurrentImage.Width * m_fStretchFactor), (int)((double)m_VideoFile.CurrentImage.Height * m_fStretchFactor));
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-			output.SetResolution(m_PlayerServer.m_BmpImage.HorizontalResolution, m_PlayerServer.m_BmpImage.VerticalResolution);
+			output.SetResolution(m_VideoFile.CurrentImage.HorizontalResolution, m_VideoFile.CurrentImage.VerticalResolution);
 
 			int iKeyFrameIndex = -1;
 			if (m_iActiveKeyFrameIndex >= 0 && m_Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
@@ -5118,7 +5116,7 @@ namespace Kinovea.ScreenManager
 				iKeyFrameIndex = m_iActiveKeyFrameIndex;
 			}
 
-			FlushOnGraphics(m_PlayerServer.m_BmpImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+			FlushOnGraphics(m_VideoFile.CurrentImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 
 			return output;
 			*/
@@ -5244,28 +5242,28 @@ namespace Kinovea.ScreenManager
 			// Appelé au chargement, une fois que tout est ok et la première frame ok.
 			// Appelé sur modification de la selection par l'utilisateur.
 			//------------------------------------------------------------------------
-			if (m_PlayerServer.m_bIsMovieLoaded)
+			if (m_VideoFile.Loaded)
 			{
 				if (IsSelectionAnalyzable())
 				{
-					formFramesImport ffi = new formFramesImport(m_ResourceManager, m_PlayerServer, trkSelection.SelStart, trkSelection.SelEnd, _bForceReload);
+					formFramesImport ffi = new formFramesImport(m_ResourceManager, m_VideoFile, trkSelection.SelStart, trkSelection.SelEnd, _bForceReload);
 					ffi.ShowDialog();
 					ffi.Dispose();
 				}
-				else if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
+				else if (m_VideoFile.Selection.iAnalysisMode == 1)
 				{
 					// Exiting Analysis mode.
 					// TODO - free memory for images now ?
-					m_PlayerServer.m_PrimarySelection.iAnalysisMode = 0;
+					m_VideoFile.Selection.iAnalysisMode = 0;
 				}
 
 				// Ici on a éventuellement changé de mode.
-				if (m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
+				if (m_VideoFile.Selection.iAnalysisMode == 1)
 				{
 					// We now have solid facts. Update all variables with them.
-					m_iSelStart = m_PlayerServer.GetTimeStamp(0);
-					m_iSelEnd = m_PlayerServer.GetTimeStamp(m_PlayerServer.m_PrimarySelection.iDurationFrame - 1);
-					double fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+					m_iSelStart = m_VideoFile.GetTimeStamp(0);
+					m_iSelEnd = m_VideoFile.GetTimeStamp(m_VideoFile.Selection.iDurationFrame - 1);
+					double fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
 
 					// Remapper le frame tracker - Utilisation des données réelles.
@@ -5289,7 +5287,7 @@ namespace Kinovea.ScreenManager
 
 					m_iSelEnd = trkSelection.SelEnd;
 
-					double fAverageTimeStampsPerFrame = m_PlayerServer.m_InfosVideo.fAverageTimeStampsPerSeconds / m_PlayerServer.m_InfosVideo.fFps;
+					double fAverageTimeStampsPerFrame = m_VideoFile.Infos.fAverageTimeStampsPerSeconds / m_VideoFile.Infos.fFps;
 					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
 
 					// Remapper le FrameTracker
@@ -5309,7 +5307,7 @@ namespace Kinovea.ScreenManager
 		{
 			/*
 			// Check the current selection against the preferences
-			return m_PlayerServer.IsSelectionAnalyzable(trkSelection.SelStart, trkSelection.SelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory);
+			return m_VideoFile.IsSelectionAnalyzable(trkSelection.SelStart, trkSelection.SelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory);
 			*/
 			return false;
 		}

@@ -20,10 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-//using System.Globalization;
 using System.Resources;
+
+//using System.Globalization;
+
 //using System.Threading;
 //using System.Reflection;
 

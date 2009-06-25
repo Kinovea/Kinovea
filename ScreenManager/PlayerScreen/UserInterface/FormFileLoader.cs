@@ -20,14 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
+
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
@@ -95,14 +91,13 @@ namespace Kinovea.ScreenManager
             // /!\ Cette fonction s'execute dans l'espace du WORKER THREAD.
             // Les fonctions appelées d'ici ne doivent pas toucher l'UI.
             //-------------------------------------------------------------
-            m_PlayerScreen.m_PlayerScreenUI.m_PlayerServer.m_bgWorker = bgMovieLoader;
-            int iRes = m_PlayerScreen.m_PlayerScreenUI.m_PlayerServer.LoadMovie((String)e.Argument);
+            m_PlayerScreen.m_PlayerScreenUI.m_VideoFile.BgWorker = bgMovieLoader;
+            LoadResult res = m_PlayerScreen.m_PlayerScreenUI.m_VideoFile.Load((String)e.Argument);
 
-            if(iRes == 8)
+            if(res == LoadResult.Cancelled)
                 e.Cancel = true;
 
-            e.Result = iRes;
-
+            e.Result = res;
         }
 
         private void bgMovieLoader_ProgressChanged(object sender, ProgressChangedEventArgs e)

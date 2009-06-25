@@ -20,19 +20,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms; 
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Resources;
 using System.Threading;
-using System.Reflection;
-using Kinovea.Services;
+using System.Windows.Forms;
+
 using Kinovea.FileBrowser;
 using Kinovea.ScreenManager;
+using Kinovea.Services;
 using Kinovea.Updater;
-using System.IO;
 
 namespace Kinovea.Root
 {
