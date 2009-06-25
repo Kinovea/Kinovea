@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Resources;
-using System.Reflection;
-using System.Threading;
 using System.Globalization;
+using System.Reflection;
+using System.Resources;
+using System.Threading;
 
 using Kinovea.Services;
-
 
 namespace Kinovea.Root
 {

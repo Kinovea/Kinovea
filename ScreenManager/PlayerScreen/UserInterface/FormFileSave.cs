@@ -19,15 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Resources;
-using System.Windows.Forms;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
+
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager 
@@ -35,7 +32,7 @@ namespace Kinovea.ScreenManager
     public partial class formFileSave : Form
     {
         #region Members
-        private PlayerServer m_PlayerServer = null;
+        private VideoFile m_VideoFile = null;
         private Int64 m_iSelStart;
         private Int64 m_iSelEnd;
         private String m_FilePath;
@@ -49,11 +46,11 @@ namespace Kinovea.ScreenManager
         private DelegateGetOutputBitmap m_DelegateOutputBitmap;
         #endregion
 
-        public formFileSave(PlayerServer _PlayerServer, String _FilePath, int _iFramesInterval, Int64 _iSelStart, Int64 _iSelEnd, Metadata _metadata, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap _DelegateOutputBitmap)
+        public formFileSave(VideoFile _PlayerServer, String _FilePath, int _iFramesInterval, Int64 _iSelStart, Int64 _iSelEnd, Metadata _metadata, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap _DelegateOutputBitmap)
         {
             InitializeComponent();
 
-            m_PlayerServer = _PlayerServer;
+            m_VideoFile = _PlayerServer;
             m_iSelStart = _iSelStart;
             m_iSelEnd = _iSelEnd;
             m_FilePath = _FilePath;
@@ -107,14 +104,17 @@ namespace Kinovea.ScreenManager
             // L'appel ici est synchrone, (on ne ressort que quand on a fini) 
             // mais on peut remonter de l'information par bgWorker_ProgressChanged().
             //-------------------------------------------------------------
-            m_PlayerServer.m_bgWorker = bgWorker;
+            
+            // TODO: report on save errors !
+            
+            m_VideoFile.BgWorker = bgWorker;
             if (m_Metadata == null)
             {
-                m_PlayerServer.SaveMovie(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, "", m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
+                m_VideoFile.Save(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, "", m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
             }
             else
             {
-                m_PlayerServer.SaveMovie(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, m_Metadata.ToXmlString(), m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
+                m_VideoFile.Save(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, m_Metadata.ToXmlString(), m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
             }
             e.Result = 0;
         }

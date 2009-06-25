@@ -19,16 +19,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+using System.Reflection;
 using System.Resources;
 using System.Threading;
-using System.Reflection;
-using Kinovea.Services;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {

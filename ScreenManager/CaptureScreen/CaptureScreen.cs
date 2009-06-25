@@ -20,10 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager

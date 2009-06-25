@@ -20,12 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Resources;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 

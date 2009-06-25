@@ -19,15 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Resources;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
-using Kinovea.Services;
-using Kinovea.VideoFiles;
 using System.Windows.Forms;
 
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {

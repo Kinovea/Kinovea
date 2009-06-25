@@ -20,14 +20,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
-using System.IO;
 using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
+using System.IO;
 using System.Xml;
-using AForge.Imaging.Filters;
 
+using AForge.Imaging.Filters;
 
 namespace Kinovea.ScreenManager
 {

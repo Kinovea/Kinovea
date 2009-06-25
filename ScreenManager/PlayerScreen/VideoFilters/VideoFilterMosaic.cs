@@ -27,8 +27,6 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
-using AForge.Imaging;
-using AForge.Imaging.Filters;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 

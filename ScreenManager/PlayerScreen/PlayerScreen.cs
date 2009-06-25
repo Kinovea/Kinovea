@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override bool Full
         {
-        	get { return m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded; }	
+        	get { return m_PlayerScreenUI.m_VideoFile.Loaded; }	
         }
         public override UserControl UI
         {
@@ -60,13 +60,13 @@ namespace Kinovea.ScreenManager
         
         public bool HasMovie
         {
-            get { return m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded; }
+            get { return m_PlayerScreenUI.m_VideoFile.Loaded; }
         }
         public bool IsPlaying
         {
             get
             {
-                if (!m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
+                if (!m_PlayerScreenUI.m_VideoFile.Loaded)
                 {
                     return false;
                 }
@@ -80,13 +80,13 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                if (!m_PlayerScreenUI.m_PlayerServer.m_bIsMovieLoaded)
+                if (!m_PlayerScreenUI.m_VideoFile.Loaded)
                 {
                     return false;
                 }
                 else
                 {
-                    return (m_PlayerScreenUI.m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1) ? true : false;
+                    return (m_PlayerScreenUI.m_VideoFile.Selection.iAnalysisMode == 1) ? true : false;
                 }
             }
         }
@@ -96,10 +96,10 @@ namespace Kinovea.ScreenManager
             {
                 // Get the approximate frame we should be on.
                 // Only as accurate as the framerate is stable regarding to the timebase.
-                Int64 iCurrentTimestamp = m_PlayerScreenUI.m_PlayerServer.m_PrimarySelection.iCurrentTimeStamp;
-                iCurrentTimestamp -= m_PlayerScreenUI.m_PlayerServer.m_InfosVideo.iFirstTimeStamp;
+                Int64 iCurrentTimestamp = m_PlayerScreenUI.m_VideoFile.Selection.iCurrentTimeStamp;
+                iCurrentTimestamp -= m_PlayerScreenUI.m_VideoFile.Infos.iFirstTimeStamp;
 
-                return (int)(iCurrentTimestamp / m_PlayerScreenUI.m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame);
+                return (int)(iCurrentTimestamp / m_PlayerScreenUI.m_VideoFile.Infos.iAverageTimeStampsPerFrame);
             }
 
             set
@@ -110,20 +110,20 @@ namespace Kinovea.ScreenManager
         public Int64 Position
         {
             // Used to feed SyncPosition. 
-            get { return m_PlayerScreenUI.m_PlayerServer.m_PrimarySelection.iCurrentTimeStamp - m_PlayerScreenUI.m_PlayerServer.m_InfosVideo.iFirstTimeStamp; }
+            get { return m_PlayerScreenUI.m_VideoFile.Selection.iCurrentTimeStamp - m_PlayerScreenUI.m_VideoFile.Infos.iFirstTimeStamp; }
         }
         public int LastFrame
         {
             get 
             {
-                if (m_PlayerScreenUI.m_PlayerServer.m_PrimarySelection.iAnalysisMode == 1)
+                if (m_PlayerScreenUI.m_VideoFile.Selection.iAnalysisMode == 1)
                 {
-                    return m_PlayerScreenUI.m_PlayerServer.m_PrimarySelection.iDurationFrame - 1;
+                    return m_PlayerScreenUI.m_VideoFile.Selection.iDurationFrame - 1;
                 }
                 else
                 {
-                    Int64 iDurationTimestamp = m_PlayerScreenUI.m_PlayerServer.m_InfosVideo.iDurationTimeStamps;
-                    return (int)(iDurationTimestamp / m_PlayerScreenUI.m_PlayerServer.m_InfosVideo.iAverageTimeStampsPerFrame) -1;
+                    Int64 iDurationTimestamp = m_PlayerScreenUI.m_VideoFile.Infos.iDurationTimeStamps;
+                    return (int)(iDurationTimestamp / m_PlayerScreenUI.m_VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
                 }
             }
         }

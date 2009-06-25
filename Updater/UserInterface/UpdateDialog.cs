@@ -20,21 +20,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
-using System.Resources;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Resources;
+using System.Threading;
+using System.Windows.Forms;
+
 using CodeProject.Downloader;
 using Kinovea.Services;
-using System.Net;
-
-
 
 namespace Kinovea.Updater
 {

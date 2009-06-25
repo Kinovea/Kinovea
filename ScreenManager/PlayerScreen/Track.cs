@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
             ArrowFollows
         }  
 
-        #region Delegate
+        #region Delegates
         // To ask the UI to display the frame closest to selected pos.
         // used when moving the target in direct interactive mode.
         public ShowClosestFrame m_ShowClosestFrame;     
@@ -131,34 +131,40 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private double m_fStretchFactor;
-        private Point m_DirectZoomTopLeft;
-        private List<TrackPosition> m_Positions;
-        private List<TrackPosition> m_RescaledPositions;
-        private List<KeyframeLabel> m_KeyframesLabels;
+        private static readonly int m_iDefaultCrossRadius = 4;
+        private static readonly int m_iArrowWidth = 6;
+        private static readonly int m_iArrowDistance = 10;
+        private static readonly int m_iArrowLength = 25;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly int m_iTemplateEdge = 20;
+        private static readonly int m_iSearchExpansionFactor = 5;
+        private static readonly float m_fSearchTreshold = 0.80f;
+        private static readonly int m_iAllowedFramesOver = 12;  // Length of fading in frames.
         
-        private ExhaustiveTemplateMatching m_TemplateMatcher;
-        private int m_iSearchExpansionFactor = 5;
-        private float m_fSearchTreshold = 0.80f;
-        private Size m_TemplateSize;
-        private Size m_SearchSize;
+        private double m_fStretchFactor = 1.0;
+        private Point m_DirectZoomTopLeft = new Point(0, 0);
+        private List<TrackPosition> m_Positions = new List<TrackPosition>();
+        private List<TrackPosition> m_RescaledPositions = new List<TrackPosition>();
+        private List<KeyframeLabel> m_KeyframesLabels = new List<KeyframeLabel>();
+        
+        private ExhaustiveTemplateMatching m_TemplateMatcher = new ExhaustiveTemplateMatching(m_fSearchTreshold);
+        private Size m_TemplateSize = new Size(m_iTemplateEdge, m_iTemplateEdge);
+        private Size m_SearchSize = new Size(m_iTemplateEdge*m_iSearchExpansionFactor, m_iTemplateEdge*m_iSearchExpansionFactor);
 
-        private bool m_bEditMode;
-        private long m_iBeginTimeStamp;     // absolute.
-        private long m_iEndTimeStamp;       // absolute.
-        private int m_iTotalDistance;       // This is used to normalize timestamps to a par scale with distances.
-
+        private bool m_bEditMode = true;
+        private long m_iBeginTimeStamp;     			// absolute.
+        private long m_iEndTimeStamp = long.MaxValue; // absolute.
+        private int m_iTotalDistance;       			// This is used to normalize timestamps to a par scale with distances.
         private int m_iCurrentPoint;
 
         // Decoration
-        private TrackView m_TrackView;
-        private LineStyle m_LineStyle; 
-        private bool m_bShowTarget;
-        private bool m_bShowKeyframesTitles;
+        private TrackView m_TrackView = TrackView.Trajectory;
+        private LineStyle m_LineStyle = LineStyle.DefaultValue; 
+        private bool m_bShowTarget = true;
+        private bool m_bShowKeyframesTitles = true;
         private bool m_bShowTrajectory;
-        private KeyframeLabel m_MainLabel;
-        private InfosFading m_InfosFading;
-        private static readonly int m_iAllowedFramesOver = 12;  // Length of fading in frames.
+        private KeyframeLabel m_MainLabel = new KeyframeLabel(true, Color.Black);
+        private InfosFading m_InfosFading = new InfosFading(long.MaxValue, 1);
         
         // Memorization poul
         private TrackView m_MemoTrackView;
@@ -167,15 +173,7 @@ namespace Kinovea.ScreenManager
         private bool m_bMemoShowKeyframesTitles;
         private bool m_bMemoShowTrajectory;
         private string m_MemoLabel;
-        
         private Metadata m_ParentMetadata;
-        
-        private static readonly int m_iDefaultCrossRadius = 4;
-        private static readonly int m_iArrowWidth = 6;
-        private static readonly int m_iArrowDistance = 10;
-        private static readonly int m_iArrowLength = 25;
-        
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
@@ -186,11 +184,7 @@ namespace Kinovea.ScreenManager
             // _bmp is the whole picture, if null it means we don't need it 
             // because we already have the points templates.
             //-------------------------------------------------------------
-            m_Positions = new List<TrackPosition>();
-            m_KeyframesLabels = new List<KeyframeLabel>();
-            m_TemplateSize = new Size(20, 20);
-            m_SearchSize = new Size(m_TemplateSize.Width * m_iSearchExpansionFactor, m_TemplateSize.Height * m_iSearchExpansionFactor);
-
+            
             // Create the first point
             if (_bmp != null)
             {
@@ -207,34 +201,14 @@ namespace Kinovea.ScreenManager
                 m_Positions.Add(new TrackPosition(_x, _y, 0));
             }
 
-            m_RescaledPositions = new List<TrackPosition>();
             m_RescaledPositions.Add(RescalePosition(m_Positions[0], m_fStretchFactor, m_DirectZoomTopLeft));
-
-            m_TemplateMatcher = new ExhaustiveTemplateMatching(m_fSearchTreshold);
-
             m_iBeginTimeStamp = _t;
-            m_iEndTimeStamp = long.MaxValue;
-            m_bEditMode = true;
-            m_fStretchFactor = 1.0;
-            m_DirectZoomTopLeft = new Point(0, 0);
-            m_iTotalDistance = 0;
-
-            m_bShowTarget = true;
-            m_bShowKeyframesTitles = true;
-            m_bShowTrajectory = false;
-
-            // Visual init
-            m_LineStyle = LineStyle.DefaultValue;
-            m_TrackView = TrackView.Trajectory;
-
-            m_MainLabel = new KeyframeLabel(true, Color.Black);
             m_MainLabel.TrackPos = m_Positions[0];
             
             // We use the InfosFading utility to fade the track away.
             // The refererence frame will be the last point (at which fading start).
             // AverageTimeStampsPerFrame will be updated when we get the parent metadata.
             // Ref frame must be updated each time last point change.
-            m_InfosFading = new InfosFading(m_iEndTimeStamp, 1);
             m_InfosFading.FadingFrames = m_iAllowedFramesOver;
             m_InfosFading.UseDefault = false;
             
@@ -845,9 +819,76 @@ namespace Kinovea.ScreenManager
         	m_MainLabel.Text = m_MemoLabel;
             m_MainLabel.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        
+        public static Track FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        {
+            Track trk = new Track(0,0,0, null);
+            trk.m_bEditMode = false;
+
+            if (_remapTimestampCallback != null)
+            {
+                while (_xmlReader.Read())
+                {
+                    if (_xmlReader.IsStartElement())
+                    {
+                        if (_xmlReader.Name == "TimePosition")
+                        {
+                            trk.m_iBeginTimeStamp = _remapTimestampCallback(long.Parse(_xmlReader.ReadString()), false);
+                        }
+                        else if (_xmlReader.Name == "Mode")
+                        {
+                            trk.m_TrackView = (TrackView)int.Parse(_xmlReader.ReadString());
+                        }
+                        else if (_xmlReader.Name == "TrackPositionList")
+                        {
+                            trk.ParseTrackPositionList(_xmlReader, trk, _scale, _remapTimestampCallback);
+                        }
+                        else if (_xmlReader.Name == "TrackLine")
+                        {
+                            trk.ParseTrackLine(_xmlReader, trk);
+                        }
+                        else if (_xmlReader.Name == "MainLabel")
+                        {
+                            trk.ParseMainLabel(_xmlReader, trk);
+                        }
+                        else if (_xmlReader.Name == "KeyframeLabelList")
+                        {
+                            trk.ParseKeyframeLabelList(_xmlReader, trk, _scale, _remapTimestampCallback);
+                        }
+                        else if (_xmlReader.Name == "Label")
+                        {
+                            trk.ParseLabel(_xmlReader, trk);
+                        }
+                        else
+                        {
+                            // forward compatibility : ignore new fields.
+                        }
+                    }
+                    else if (_xmlReader.Name == "Track")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        // Fermeture d'un tag interne.
+                    }
+                }
+
+                if (trk.m_Positions.Count > 0)
+                {
+                    trk.m_iEndTimeStamp = trk.m_Positions[trk.m_Positions.Count - 1].T + trk.m_iBeginTimeStamp;
+                    trk.m_MainLabel.TrackPos = trk.m_Positions[0];
+                    trk.m_MainLabel.RescaledTrackPos = trk.m_RescaledPositions[0];
+                    trk.m_MainLabel.Text = trk.Label;
+                    trk.m_MainLabel.ResetBackground(1.0, new Point(0, 0));
+                }
+                trk.RescaleCoordinates(trk.m_fStretchFactor, trk.m_DirectZoomTopLeft);
+            }
+            
+            return trk;
+        }
         #endregion
 
+       	#region Private methods
         private TrackPosition RescalePosition(TrackPosition _position, double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             return new TrackPosition((int)((double)(_position.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(_position.Y - _DirectZoomTopLeft.Y) * _fStretchFactor), _position.T);
@@ -964,7 +1005,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawMarker(Graphics _canvas)
         {
-            // This draw the target marker (CrashTest Dummy style target)
+            // This draws the target marker (CrashTest Dummy style target)
             // If editmode, we draw the whole target, otherwise only the white sectors.
             
             if (m_bEditMode)
@@ -1030,75 +1071,8 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-
+        
         #region Xml routines
-        public static Track FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
-        {
-            Track trk = new Track(0,0,0, null);
-            trk.m_bEditMode = false;
-
-            if (_remapTimestampCallback != null)
-            {
-                while (_xmlReader.Read())
-                {
-                    if (_xmlReader.IsStartElement())
-                    {
-                        if (_xmlReader.Name == "TimePosition")
-                        {
-                            trk.m_iBeginTimeStamp = _remapTimestampCallback(long.Parse(_xmlReader.ReadString()), false);
-                        }
-                        else if (_xmlReader.Name == "Mode")
-                        {
-                            trk.m_TrackView = (TrackView)int.Parse(_xmlReader.ReadString());
-                        }
-                        else if (_xmlReader.Name == "TrackPositionList")
-                        {
-                            trk.ParseTrackPositionList(_xmlReader, trk, _scale, _remapTimestampCallback);
-                        }
-                        else if (_xmlReader.Name == "TrackLine")
-                        {
-                            trk.ParseTrackLine(_xmlReader, trk);
-                        }
-                        else if (_xmlReader.Name == "MainLabel")
-                        {
-                            trk.ParseMainLabel(_xmlReader, trk);
-                        }
-                        else if (_xmlReader.Name == "KeyframeLabelList")
-                        {
-                            trk.ParseKeyframeLabelList(_xmlReader, trk, _scale, _remapTimestampCallback);
-                        }
-                        else if (_xmlReader.Name == "Label")
-                        {
-                            trk.ParseLabel(_xmlReader, trk);
-                        }
-                        else
-                        {
-                            // forward compatibility : ignore new fields.
-                        }
-                    }
-                    else if (_xmlReader.Name == "Track")
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        // Fermeture d'un tag interne.
-                    }
-                }
-
-                if (trk.m_Positions.Count > 0)
-                {
-                    trk.m_iEndTimeStamp = trk.m_Positions[trk.m_Positions.Count - 1].T + trk.m_iBeginTimeStamp;
-                    trk.m_MainLabel.TrackPos = trk.m_Positions[0];
-                    trk.m_MainLabel.RescaledTrackPos = trk.m_RescaledPositions[0];
-                    trk.m_MainLabel.Text = trk.Label;
-                    trk.m_MainLabel.ResetBackground(1.0, new Point(0, 0));
-                }
-                trk.RescaleCoordinates(trk.m_fStretchFactor, trk.m_DirectZoomTopLeft);
-            }
-            
-            return trk;
-        }
         private void ParseTrackLine(XmlTextReader _xmlReader, Track _track)
         {
             while (_xmlReader.Read())
@@ -1123,7 +1097,6 @@ namespace Kinovea.ScreenManager
                     // Fermeture d'un tag interne.
                 }
             }
-
         }
         private void ParseTrackPositionList(XmlTextReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
@@ -1326,5 +1299,8 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+        
+        #endregion
+         
     }
 }

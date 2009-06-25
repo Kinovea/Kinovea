@@ -19,7 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -32,21 +31,13 @@ namespace Kinovea.Root
     {
         static Mutex mutex;
         static string AppGuid = "b049b83e-90f3-4e84-9289-52ee6ea2a9ea";
-        static bool InstanceExists
+        static bool FirstInstance
         {
             get
             {
                 bool bGotMutex;
                 mutex = new Mutex(false, "Local\\" + AppGuid, out bGotMutex);
-
-                if (bGotMutex)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return bGotMutex;
             }
         }
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -59,7 +50,7 @@ namespace Kinovea.Root
             // Each time the program runs, we try to register a mutex.
             // If it fails, we are already running. 
             //--------------------------------------------------------
-            if (!Program.InstanceExists)
+            if (Program.FirstInstance)
             {
             	SanityCheckDirectories();
             	

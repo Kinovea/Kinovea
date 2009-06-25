@@ -18,13 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using AForge.Video;
-using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
+
+using AForge.Video;
+using AForge.Video.DirectShow;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
@@ -60,7 +62,9 @@ namespace Kinovea.ScreenManager
 		private bool m_bPainting;									// 'true' between paint requests.
 		private Stopwatch m_BufferWatch = new Stopwatch();		// For instrumentation only.
 		private bool m_bIsRecording;
-		private PlayerServer m_PlayerServer = new PlayerServer();
+		private VideoFile m_VideoFile = new VideoFile();
+		//private bool m_bSavingContextEncodingSuccess;
+		
 		#endregion
 		
 		#region Constructor
@@ -136,7 +140,10 @@ namespace Kinovea.ScreenManager
 		public void SignalToStop()
 		{
 			log.Debug("Stopping capture.");
-			m_VideoDevice.SignalToStop();
+			if(m_VideoDevice != null && m_VideoDevice.IsRunning)
+			{
+				m_VideoDevice.SignalToStop();	
+			}
 		}
 		public void ToggleRecord()
 		{
@@ -144,18 +151,34 @@ namespace Kinovea.ScreenManager
 			{
 				// Stop recording
 				m_bIsRecording = false;
+				
+				// Close the recording context.
+				m_VideoFile.CloseSavingContext(true);
 			}
 			else
 			{
+				// Restart capturing if needed.
 				if(!m_VideoDevice.IsRunning)
 				{
 					SignalToStart();
 				}
 				
-				m_bIsRecording = true;
-				
-				// Ask ffmpegHelper to open a recording context.
+				// Open a recording context.
 				// (on which file name ?)
+				SaveResult result = m_VideoFile.OpenSavingContext("test.avi");
+				
+				if(result == SaveResult.Success)
+				{
+					m_bIsRecording = true;
+				}
+				else
+				{
+					m_VideoFile.CloseSavingContext(false);
+					m_bIsRecording = false;	
+					DisplayError(result);
+				}
+				
+				// If preroll is enabled, flush buffer to file now.
 				
 			}
 		}
@@ -190,7 +213,7 @@ namespace Kinovea.ScreenManager
 			//If recording, append the new frame to file.
 			if(m_bIsRecording)
 			{
-				
+				m_VideoFile.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
 			}
 			
 			#region Instrumentation
@@ -208,10 +231,64 @@ namespace Kinovea.ScreenManager
 		}
 		private void SignalToStart()
 		{
+			if(m_VideoDevice.IsRunning)
+			{
+				SignalToStop();
+			}
 			m_FrameBuffer.Clear();
 			m_BufferWatch.Start();
 			m_VideoDevice.Start();
 		}
+		private void DisplayError(SaveResult _result)
+		{
+			// Display error message.
+			switch(_result)
+			{
+				case SaveResult.MuxerNotFound:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.MuxerParametersNotAllocated:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.MuxerParametersNotSet:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.VideoStreamNotCreated:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.EncoderNotFound:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.EncoderParametersNotAllocated:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.EncoderParametersNotSet:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.EncoderNotOpened:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.FileNotOpened:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;
+				case SaveResult.FileHeaderNotWritten:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;	
+				case SaveResult.InputFrameNotAllocated:
+					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
+					break;	
+				default:
+					break;
+			}
+		}
+		private void DisplayErrorMessage(string error)
+        {			
+        	MessageBox.Show(
+				error,
+				Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
+        }
 		#endregion
 	}
 }

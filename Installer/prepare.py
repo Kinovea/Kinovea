@@ -30,11 +30,11 @@ shutil.copy(os.path.join(refdir, "AForge.Math.dll"), destdir)
 shutil.copy(os.path.join(refdir, "AForge.Video.dll"), destdir)
 shutil.copy(os.path.join(refdir, "AForge.Video.DirectShow.dll"), destdir)
 
-#FFMpeg - Todo : get from ref dir. 
-shutil.copy(os.path.join(bindir, "avcodec-51.dll"), destdir)
-shutil.copy(os.path.join(bindir, "avformat-52.dll"), destdir)
-shutil.copy(os.path.join(bindir, "avutil-49.dll"), destdir)
-shutil.copy(os.path.join(bindir, "swscale-0.dll"), destdir)
+#FFMpeg
+shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\avcodec-51.dll"), destdir)
+shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\avformat-52.dll"), destdir)
+shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\avutil-49.dll"), destdir)
+shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\swscale-0.dll"), destdir)
 
 #Microsoft
 shutil.copy(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)

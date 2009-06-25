@@ -19,18 +19,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
 namespace Kinovea.Services
 {
     public static class XmlHelper
     {
-
     	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-    	
         public static Point PointParse(string _sPoint, char _delim)
         {
             Point point = new Point(0, 0);
@@ -75,7 +71,5 @@ namespace Kinovea.Services
 
             return output;
         }
-        
-        
     }
 }

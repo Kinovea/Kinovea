@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("www.kinovea.org")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright © 2006-2008 Joan Charmant")]
+[assembly: AssemblyCopyright("Copyright © 2006-2009 Joan Charmant")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

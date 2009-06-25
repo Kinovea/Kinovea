@@ -18,18 +18,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-
-
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
 using Kinovea.Services;
-using Kinovea.FileBrowser;
-using Kinovea.ScreenManager;
 
 namespace Kinovea.Root
 {
@@ -205,8 +196,6 @@ namespace Kinovea.Root
 
         }
         #endregion
-
-        
 
     }
 }

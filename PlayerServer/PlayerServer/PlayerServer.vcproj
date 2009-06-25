@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libavcodec\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libavformat\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libswscale\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libavutil\&quot;"
+				AdditionalIncludeDirectories="..\..\Refs\FFMpeg\include\;..\..\Refs\FFMpeg\include\libavcodec\;..\..\Refs\FFMpeg\include\libavformat\;..\..\Refs\FFMpeg\include\libswscale\;..\..\Refs\FFMpeg\include\libavutil\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -59,9 +59,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="avformat-52.lib avcodec-51.lib avutil-49.lib swscale-0.lib $(NOINHERIT)"
+				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib $(NOINHERIT)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\lib&quot;"
+				AdditionalLibraryDirectories="..\..\Refs\FFMpeg\lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"
@@ -193,16 +193,8 @@
 			AssemblyName="System.Windows.Forms, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
 		/>
 		<AssemblyReference
-			RelativePath="..\..\Refs\AForge.dll"
-			AssemblyName="AForge, Version=1.5.0.0, PublicKeyToken=75f8e82c5042a70f, processorArchitecture=IA64"
-		/>
-		<AssemblyReference
 			RelativePath="..\..\Refs\AForge.Imaging.dll"
 			AssemblyName="AForge.Imaging, Version=1.7.0.0, PublicKeyToken=38eb47741dd0492e, processorArchitecture=IA64"
-		/>
-		<AssemblyReference
-			RelativePath="..\..\Refs\AForge.Math.dll"
-			AssemblyName="AForge.Math, Version=1.6.0.0, PublicKeyToken=e12ceb15b47eb5cc, processorArchitecture=IA64"
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Refs\log4net.dll"
@@ -217,10 +209,6 @@
 			>
 			<File
 				RelativePath=".\AssemblyInfo.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PlayerServer.cpp"
 				>
 			</File>
 			<File
@@ -243,6 +231,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\VideoFile.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -250,7 +242,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\PlayerServer.h"
+				RelativePath=".\InfosVideo.h"
 				>
 			</File>
 			<File
@@ -258,9 +250,37 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SavingContext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Stdafx.h"
 				>
 			</File>
+			<File
+				RelativePath=".\VideoFile.h"
+				>
+			</File>
+			<Filter
+				Name="FFMpeg"
+				>
+				<File
+					RelativePath="..\..\Refs\FFMpeg\include\libavcodec\avcodec.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Refs\FFMpeg\include\libavformat\avformat.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Refs\FFMpeg\include\libavutil\avstring.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Refs\FFMpeg\include\libswscale\swscale.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
