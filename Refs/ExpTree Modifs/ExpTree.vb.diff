@@ -1,0 +1,364 @@
+*** /ExpTreeLib/ExpTree.vb	Sat Apr 19 17:21:14 2008
+--- /ExpTreeLib/ExpTree.vb	Wed May 27 12:00:47 2009
+***************
+*** 27,32 ****
+--- 27,39 ----
+  
+      Private m_showHiddenFolders As Boolean = True
+  
++ 	Private m_bShortcutsMode As Boolean = False
++ 	
++ 	Private m_shortcuts As New ArrayList()
++ 	
++ 	Private m_RootDisplayName As String
++ 	
++ 	Private m_bManualCollapse As Boolean = False
+  
+  #Region " Windows Form Designer generated code "
+  
+***************
+*** 84,107 ****
+      'Do not modify it using the code editor.
+      Friend WithEvents tv1 As System.Windows.Forms.TreeView
+      <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+!         Me.tv1 = New System.Windows.Forms.TreeView()
+          Me.SuspendLayout()
+          '
+          'tv1
+          '
+          Me.tv1.Dock = System.Windows.Forms.DockStyle.Fill
+          Me.tv1.HideSelection = False
+!         Me.tv1.ImageIndex = -1
+          Me.tv1.Name = "tv1"
+-         Me.tv1.SelectedImageIndex = -1
+          Me.tv1.ShowRootLines = False
+          Me.tv1.Size = New System.Drawing.Size(200, 264)
+          Me.tv1.TabIndex = 0
+          '
+          'ExpTree
+          '
+!         Me.AllowDrop = True
+!         Me.Controls.AddRange(New System.Windows.Forms.Control() {Me.tv1})
+          Me.Name = "ExpTree"
+          Me.Size = New System.Drawing.Size(200, 264)
+          Me.ResumeLayout(False)
+--- 91,112 ----
+      'Do not modify it using the code editor.
+      Friend WithEvents tv1 As System.Windows.Forms.TreeView
+      <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+!         Me.tv1 = New System.Windows.Forms.TreeView
+          Me.SuspendLayout()
+          '
+          'tv1
+          '
+          Me.tv1.Dock = System.Windows.Forms.DockStyle.Fill
+          Me.tv1.HideSelection = False
+!         Me.tv1.Location = New System.Drawing.Point(0, 0)
+          Me.tv1.Name = "tv1"
+          Me.tv1.ShowRootLines = False
+          Me.tv1.Size = New System.Drawing.Size(200, 264)
+          Me.tv1.TabIndex = 0
+          '
+          'ExpTree
+          '
+!         Me.Controls.Add(Me.tv1)
+          Me.Name = "ExpTree"
+          Me.Size = New System.Drawing.Size(200, 264)
+          Me.ResumeLayout(False)
+***************
+*** 128,134 ****
+              Return Root.Tag
+          End Get
+          Set(ByVal Value As CShItem)
+!             If Value.IsFolder Then
+                  If Not IsNothing(Root) Then
+                      ClearTree()
+                  End If
+--- 133,139 ----
+              Return Root.Tag
+          End Get
+          Set(ByVal Value As CShItem)
+!             If Value.IsFolder And Not m_bShortcutsMode Then
+                  If Not IsNothing(Root) Then
+                      ClearTree()
+                  End If
+***************
+*** 222,227 ****
+--- 227,233 ----
+          Profile = &H28
+          Systemx86 = &H29
+          AdminTools = &H30
++         Special = &HFF
+      End Enum
+  
+      Private m_StartUpDirectory As StartDir = StartDir.Desktop
+***************
+*** 244,249 ****
+--- 250,285 ----
+      End Property
+  #End Region
+  
++ #Region "       ShortcutMode"
++ 	<Category("Options"), _
++   	Description("The firt level of nodes is set up manually."), _
++   	DefaultValue(False), Browsable(True)> _
++ Public Property ShortcutsMode() As Boolean
++         Get
++             Return m_bShortcutsMode
++         End Get
++         Set(ByVal Value As Boolean)
++             If Not (Value = m_bShortcutsMode) Then
++                 m_bShortcutsMode = Value
++                 tv1.Refresh()
++             End If
++         End Set
++     End Property
++ #End Region
++ 
++ #Region "       RootDisplayName"
++ 	<Browsable(False)> _
++ Public Property RootDisplayName() As String
++         Get
++             Return Root.Text
++         End Get
++         Set(ByVal Value As String)
++             Root.Text = Value
++             tv1.Refresh()
++         End Set
++     End Property
++ #End Region
++ 
+  #End Region
+  
+  #Region "   Public Methods"
+***************
+*** 272,277 ****
+--- 308,314 ----
+              Else
+                  Me.RootItem = rootCSI
+              End If
++             
+              'Try to expand the node
+              If Not Me.ExpandANode(SelCSI) Then
+                  Dim nodeList As New ArrayList()
+***************
+*** 286,291 ****
+--- 323,331 ----
+              End If
+              'Reset refresh variable for BeforeExpand method
+  		Finally
++ 	    	If m_bShortcutsMode Then
++ 	       		Root.Text = m_RootDisplayName
++ 	       	End If        
+              Me.tv1.EndUpdate()
+          End Try
+          EnableEventPost = True
+***************
+*** 338,343 ****
+--- 378,401 ----
+      End Function
+  #End Region
+  
++ #Region "       IsOnSelectedItem"
++     Public Function IsOnSelectedItem(ByVal pos As Drawing.Point) As Boolean
++         IsOnSelectedItem = tv1.SelectedNode.Equals(tv1.GetNodeAt(pos))
++     End Function
++ #End Region
++ 
++ #Region "       SetShortcuts"
++     Public Sub SetShortcuts(ByVal shortcuts As ArrayList)        
++         m_shortcuts.Clear()
++         Dim shortcut As String
++         For Each shortcut In shortcuts
++             m_shortcuts.Add(GetCShItem(shortcut))
++         Next        
++     End Sub
++ #End Region
++ 
++ 
++ 
+  #End Region
+  
+  #Region "   Initial Dir Set Handler"
+***************
+*** 346,351 ****
+--- 404,446 ----
+          If Not IsNothing(Root) Then
+              ClearTree()
+          End If
++         
++         If m_bShortcutsMode Then
++ 			' Special mode for shortcuts, 
++ 			' add root, then each shortcut as child node and expand them.
++         	
++         	'We give root the desktop icon + no text.
++         	'we don't build tree automatically.
++         	Dim special As CShItem
++         	special = GetCShItem(CType(Val(StartDir.Desktop), ShellDll.CSIDL))
++         	If IsNothing(m_RootDisplayName)  Then
++     			m_RootDisplayName = "Root"
++         	End If
++         	Root = New TreeNode(m_RootDisplayName)
++         	Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
++ 	        Root.SelectedImageIndex = Root.ImageIndex
++ 	        Root.Tag = special
++ 	        
++ 	        'Build subtree from shortcuts
++ 	        Dim test As Boolean = False
++ 	        If test Then
++ 	        	Dim testlist As new ArrayList()
++ 	        	testlist.Add("C:\Documents And Settings\Administrateur\Mes documents\Mes Podcasts")
++ 				testlist.Add("C:\Documents And Settings\Administrateur\Mes documents\My Dropbox")
++ 	        	SetShortcuts(testlist)
++ 	        End If
++ 	        
++ 	        'Build tree (no sort)
++ 	        Dim CSI As CShItem
++ 	        For Each CSI In m_shortcuts
++             	Root.Nodes.Add(MakeNode(CSI))
++             Next
++         
++ 	        tv1.Nodes.Add(Root)
++ 	        Root.Expand()
++         	
++ 		Else
++         	' Normal mode, add the root and expand it.
+  			Dim special As CShItem
+          	special = GetCShItem(CType(Val(m_StartUpDirectory), ShellDll.CSIDL))
+              Root = New TreeNode(special.DisplayName)
+***************
+*** 355,360 ****
+--- 450,456 ----
+  	        BuildTree(special.GetDirectories())	        
+  	        tv1.Nodes.Add(Root)
+  	        Root.Expand()        	
++         End If
+      End Sub
+  
+      Private Sub BuildTree(ByVal L1 As ArrayList)
+***************
+*** 418,423 ****
+--- 514,520 ----
+                  Next
+              End If
+  
++ 			m_bManualCollapse = False
+              tv1.SelectedNode = e.Node
+  
+          Else    'Ensure content is accurate
+***************
+*** 446,453 ****
+              RefreshNode(node)
+          End If
+  
+!         '[jcharmant] always expand
+!         If Not tv1.SelectedNode.IsExpanded Then tv1.SelectedNode.Expand()
+  
+          If EnableEventPost Then 'turned off during RefreshTree
+              If CSI.Path.StartsWith(":") Then
+--- 543,554 ----
+              RefreshNode(node)
+          End If
+  
+!         'Always expand and scroll
+!         If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then 
+!         	tv1.SelectedNode.Expand()
+!         End If
+!         tv1.SelectedNode.EnsureVisible()
+!         m_bManualCollapse = False
+  
+          If EnableEventPost Then 'turned off during RefreshTree
+              If CSI.Path.StartsWith(":") Then
+***************
+*** 462,467 ****
+--- 563,572 ----
+  #Region "   RefreshNode Sub"
+  
+      Private Sub RefreshNode(ByVal thisRoot As TreeNode)
++         
++         If thisRoot Is Root AndAlso m_bShortcutsMode Then
++         	'Do not get directories.	
++         Else
+  	        'Debug.WriteLine("In RefreshNode: Node = " & thisRoot.Tag.path & " -- " & thisRoot.Tag.displayname)
+  	        If Not (thisRoot.Nodes.Count = 1 AndAlso thisRoot.Nodes(0).Text.Equals(" : ")) Then
+  	            Dim thisItem As CShItem = thisRoot.Tag
+***************
+*** 511,517 ****
+                  End If
+              End If
+          End If
+!         'Debug.WriteLine("Exited RefreshNode")
+      End Sub
+  
+  #End Region
+--- 616,622 ----
+  	                End If
+  	            End If
+  	        End If
+! 	    End If
+      End Sub
+  
+  #End Region
+***************
+*** 548,553 ****
+--- 653,671 ----
+          If Not tv1.ShowRootLines AndAlso e.Node Is Root Then
+              e.Cancel = True
+          End If
++         
++         m_bManualCollapse = True
++         
++     End Sub
++ #End Region
++ 
++ #Region "   TreeView AfterCollapse Event"
++     Private Sub tv1_AfterCollapse(ByVal sender As Object, ByVal e As TreeViewEventArgs) Handles tv1.AfterCollapse
++ 		'Reset the ManualCollapse if we were already selected.
++ 		' (won't be reseted in AfterSelect as usual).
++         If e.Node Is tv1.SelectedNode Then
++         	m_bManualCollapse = False
++         End If
+      End Sub
+  #End Region
+  
+***************
+*** 600,606 ****
+  
+  #Region "   Drag/Drop From Tree Processing"
+  
+!     Private Sub tv1_ItemDrag(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemDragEventArgs) Handles tv1.ItemDrag
+          'Primary (internal) data type
+          Dim toDrag As New ArrayList()
+          Dim csi As CShItem = CType(e.Item, TreeNode).Tag
+--- 718,724 ----
+  
+  #Region "   Drag/Drop From Tree Processing"
+  
+!     Private Sub tv1_ItemDrag(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemDragEventArgs)
+          'Primary (internal) data type
+          Dim toDrag As New ArrayList()
+          Dim csi As CShItem = CType(e.Item, TreeNode).Tag
+***************
+*** 799,803 ****
+--- 917,937 ----
+          End If
+      End Sub
+  #End Region
++ 
++ #Region "   Propagation of treeview events"
++     Private Sub tv1_MouseEnter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tv1.MouseEnter
++         MyBase.OnMouseEnter(e)
++     End Sub
++     Private Sub tv1_MouseDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles tv1.MouseDown
++         MyBase.OnMouseDown(e)
++     End Sub
++     Private Sub tv1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tv1.Click
++         MyBase.OnClick(e)
++     End Sub
++     Private Sub tv1_DoubleClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tv1.DoubleClick
++         MyBase.OnDoubleClick(e)
++     End Sub
++ #End Region
++ 
+  
+  End Class
