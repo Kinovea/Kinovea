@@ -142,6 +142,7 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_Metadata; }
 		}
+		// Flags. Used by ScreenManager for menus. (Fix ?)
 		public bool Deinterlaced
 		{
 			get { return m_FrameServer.VideoFile.Infos.bDeinterlaced;}
@@ -173,7 +174,7 @@ namespace Kinovea.ScreenManager
 			set { m_Metadata.Plane.Visible = value; }
 		}
 		
-		public double SlowFactor
+		public double HighSpeedFactor
 		{
 			// For highspeed cameras.
 			get { return m_fHighSpeedFactor; }
@@ -201,6 +202,7 @@ namespace Kinovea.ScreenManager
 
 		#region Members
 		private FrameServerPlayer m_FrameServer;
+		private Metadata m_Metadata;
 		
 		// General
 		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
@@ -236,7 +238,6 @@ namespace Kinovea.ScreenManager
 		private bool m_bResetingHandlers;
 		
 		// Keyframes, Drawings, etc.
-		private Metadata m_Metadata;
 		private int m_iActiveKeyFrameIndex = -1;	// The index of the keyframe we are on, or -1 if not a KF.
 		private DrawingToolType m_ActiveTool;
 		private AbstractDrawingTool[] m_DrawingTools;
@@ -325,7 +326,7 @@ namespace Kinovea.ScreenManager
 			// So we don't need to do an extra ResetData here.
 			
 			// Controls that renders differently between run time and design time. 
-			HideResizers();
+			ShowHideResizers(false);
 			SetupPrimarySelectionPanel();
 			SetupKeyframeCommentsHub();
 			pnlThumbnails.Controls.Clear();
@@ -352,7 +353,7 @@ namespace Kinovea.ScreenManager
 			ResetData();
 			
 			// 2. Reset all interface.
-			HideResizers();
+			ShowHideResizers(false);
 			SetupPrimarySelectionPanel();
 			pnlThumbnails.Controls.Clear();
 			DockKeyframePanel();
@@ -433,12 +434,8 @@ namespace Kinovea.ScreenManager
 					m_iSelStart     = m_iStartingPosition;
 					m_iSelEnd       = (long)((double)(m_iTotalDuration + m_iStartingPosition) - fAverageTimeStampsPerFrame);
 					m_iSelDuration  = m_iTotalDuration;
-					trkSelection.Minimum = m_iSelStart;
-					trkSelection.Maximum = m_iSelEnd;
-					m_bResetingHandlers = true;
-					trkSelection.SelStart = trkSelection.Minimum;
-					trkSelection.SelEnd = trkSelection.Maximum;
-					m_bResetingHandlers = false;
+					
+					trkSelection.UpdateInternalState(m_iSelStart, m_iSelEnd, m_iSelStart, m_iSelEnd, m_iSelStart);
 
 					// On switche en mode analyse si possible.
 					SwitchToAnalysisMode(false);
@@ -449,15 +446,11 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.VideoFile.Infos.iFirstTimeStamp = m_iCurrentPosition;
 					m_iStartingPosition = m_iCurrentPosition;
 					m_iTotalDuration = m_iSelDuration;
-					trkSelection.Minimum = m_iSelStart;
-					trkSelection.Maximum = m_iSelEnd;
-					m_bResetingHandlers = true;
-					trkSelection.SelStart = trkSelection.Minimum;
-					trkSelection.SelEnd = trkSelection.Maximum;
-					m_bResetingHandlers = false;
-
-					trkSelection.SelPos = m_iCurrentPosition;
-					trkSelection.UpdateSelectedZone();
+					
+					trkSelection.UpdateInternalState(m_iSelStart, m_iSelEnd, m_iSelStart, m_iSelEnd, m_iSelStart);
+					
+					//trkSelection.SelPos = m_iCurrentPosition;
+					//trkSelection.UpdateSelectedZone();
 					UpdatePrimarySelectionPanelInfos();
 
 					sldrSpeed.Enabled = true;
@@ -835,7 +828,7 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		#region Fix - Various Inits & Setups
+		#region Various Inits & Setups
 		private void InitializeDrawingTools()
         {
 			// Create Drawing Tools
@@ -927,18 +920,9 @@ namespace Kinovea.ScreenManager
 		}
 		private void SetupPrimarySelectionPanel()
 		{
-			//--------------------------
 			// Setup controls
-			//--------------------------
-			trkSelection.Minimum = m_iSelStart;
-			trkSelection.Maximum = m_iSelEnd;
-
-			// /!\ La ligne suivante déclenche un SelectionChanged qui va déboucher sur un Switch To Analysis Mode
-			// Ce qui peut entrâiner la modification de m_iSelEnd...
-			trkSelection.SelStart   = m_iSelStart;
-			trkSelection.SelEnd     = m_iSelEnd;
-			trkSelection.SelPos     = m_iCurrentPosition;
-
+			trkSelection.UpdateInternalState(m_iSelStart, m_iSelEnd, m_iSelStart, m_iSelEnd, m_iCurrentPosition);
+			
 			//--------------------------
 			// Setup Labels
 			//--------------------------
@@ -948,7 +932,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Problem: The screensurface hasn't got its final size...
 			// So it doesn't make much sense to call it here...
-			ShowResizers();
+			ShowHideResizers(true);
 			StretchSqueezeSurface();
 			// Since it hadn't its final size, we don't really know if the pic is too large...
 			m_bStretchModeOn = false;
@@ -993,36 +977,12 @@ namespace Kinovea.ScreenManager
 		{
 			lblFileName.Text = Path.GetFileName(m_FrameServer.VideoFile.FilePath);
 		}
-		private void InitTimestamps()
+		private void ShowHideResizers(bool _bShow)
 		{
-			m_iTotalDuration = 0;
-			m_iSelStart = 0;
-			m_iSelEnd = 0;
-			m_iSelDuration = 0;
-			m_iCurrentPosition = 0;
-			m_iStartingPosition = 0;
-			m_fHighSpeedFactor = 1.0f;
-			
-			m_bHandlersLocked = false;
-			m_bResetingHandlers = false;	
-		}
-		private void SetupKeyframesPanel()
-		{
-			OrganizeKeyframes();
-		}
-		private void ShowResizers()
-		{
-			ImageResizerNE.Visible = true;
-			ImageResizerNW.Visible = true;
-			ImageResizerSE.Visible = true;
-			ImageResizerSW.Visible = true;
-		}
-		private void HideResizers()
-		{
-			ImageResizerNE.Visible = false;
-			ImageResizerNW.Visible = false;
-			ImageResizerSE.Visible = false;
-			ImageResizerSW.Visible = false;
+			ImageResizerNE.Visible = _bShow;
+			ImageResizerNW.Visible = _bShow;
+			ImageResizerSE.Visible = _bShow;
+			ImageResizerSW.Visible = _bShow;
 		}
 		private void BuildContextMenus()
 		{
@@ -1095,7 +1055,6 @@ namespace Kinovea.ScreenManager
 			panelDebug.Width = 180;
 			panelDebug.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 			panelDebug.BackColor = Color.Black;
-		
 		}
 		#endregion
 		
@@ -1140,8 +1099,6 @@ namespace Kinovea.ScreenManager
 				DockKeyframePanel();
 			}
 		}
-		
-		#region Conversions  / Rescalings
 		private string TimeStampsToTimecode(long _iTimeStamp, TimeCodeFormat _timeCodeFormat, bool _bSynched)
 		{
 			//-------------------------
@@ -1266,8 +1223,6 @@ namespace Kinovea.ScreenManager
 
 			return new Point((int)fUnzoomedX, (int)fUnzoomedY);
 		}
-		#endregion
-		
 		#endregion
 
 		#region Debug Helpers
@@ -1525,11 +1480,8 @@ namespace Kinovea.ScreenManager
 		{
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				//SetAsActiveScreen();
 				StopPlaying();
 
-				// Mettre à jour les données et leur affichage, l'image n'est pas rafraichie ici.
-				
 				// Modifs des timestamps
 				UpdatePrimarySelectionPanelData();
 				UpdatePrimarySelectionPanelInfos();
@@ -1574,8 +1526,6 @@ namespace Kinovea.ScreenManager
 			{
 				SetAsActiveScreen();
 				StopPlaying();
-
-				trkSelection.SelPos = trkSelection.SelTarget + trkSelection.Minimum;
 				m_iFramesToDecode = 1;
 
 				ShowNextFrame(trkSelection.SelTarget, true);
@@ -1613,16 +1563,12 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnSetHandlerLeft_Click(object sender, EventArgs e)
 		{
-			//------------------------------------------------------
-			// Positionner le handler de gauche à la frame courante.
-			//------------------------------------------------------
+			// Set the left handler of the selection at the current frame.
 			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
 			{
-				//m_iSelStart = m_iCurrentPosition;
+				// We try not to change the current position. 
+				m_iSelStart = m_iCurrentPosition;
 				trkSelection.SelStart = m_iCurrentPosition;
-				
-				//trkSelection_SelectionChanging(null, EventArgs.Empty);
-				//trkSelection_SelectionChanged(null, EventArgs.Empty);
 			}
 		}
 		private void btnSetHandlerRight_Click(object sender, EventArgs e)
@@ -1632,11 +1578,8 @@ namespace Kinovea.ScreenManager
 			//------------------------------------------------------
 			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
 			{
-				//m_iSelEnd = m_iCurrentPosition;
+				m_iSelEnd = m_iCurrentPosition;
 				trkSelection.SelEnd = m_iCurrentPosition;
-				
-				//trkSelection_SelectionChanging(null, EventArgs.Empty);
-				//trkSelection_SelectionChanged(null, EventArgs.Empty);
 			}
 		}
 		private void btnHandlersReset_Click(object sender, EventArgs e)
@@ -1646,10 +1589,7 @@ namespace Kinovea.ScreenManager
 			//------------------------------------------------------
 			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
 			{
-				m_bResetingHandlers = true;
-				trkSelection.SelStart = trkSelection.Minimum;
-				trkSelection.SelEnd = trkSelection.Maximum;
-				m_bResetingHandlers = false;
+				trkSelection.Reset();
 				
 				// We need to force the reloading of all frames.
 				SwitchToAnalysisMode(true);
@@ -1667,6 +1607,7 @@ namespace Kinovea.ScreenManager
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 		}
+		
 		private void UpdateFramePrimarySelection()
 		{
 			//--------------------------------------------------------------
@@ -1718,10 +1659,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdatePrimarySelectionPanelData()
 		{
-			//-------------------------------------------------------------
-			// Update les données en fonction de la selection
-			// (Après modif par l'utilisateur)
-			//--------------------------------------------------------------
+			// Update WorkingZone data according to control.
 			if ((m_iSelStart != trkSelection.SelStart) || (m_iSelEnd != trkSelection.SelEnd))
 			{
 				m_iSelStart = trkSelection.SelStart;
@@ -1873,8 +1811,7 @@ namespace Kinovea.ScreenManager
 				// Selection Start will be taken care of directly in the FrameTracker.
 				ts[i] = m_Metadata.Keyframes[i].Position;
 			}
-			trkFrame.KeyframesTimestamps = ts;
-			trkFrame.Invalidate();
+			trkFrame.UpdateKeyframesMarkers(ts);
 		}
 		#endregion
 
@@ -2098,139 +2035,59 @@ namespace Kinovea.ScreenManager
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				int iTargetHeight, iTargetWidth;
-				double fHeightFactor, fWidthFactor;
-
-				iTargetHeight = (ImageResizerSE.Top - pbSurfaceScreen.Top + e.Y);
-				iTargetWidth = (ImageResizerSE.Left - pbSurfaceScreen.Left + e.X);
-
-				//-------------------------------------------------------------------
-				// On resize à condition que l'image soit:
-				// Supérieure à la taille originale, inférieure à la taille du panel.
-				//-------------------------------------------------------------------
-				if (iTargetHeight > m_FrameServer.VideoFile.Infos.iDecodingHeight &&
-				    iTargetHeight < panelCenter.Height &&
-				    iTargetWidth > m_FrameServer.VideoFile.Infos.iDecodingWidth &&
-				    iTargetWidth < panelCenter.Width)
-				{
-					fHeightFactor = ((iTargetHeight) / (double)m_FrameServer.VideoFile.Infos.iDecodingHeight);
-					fWidthFactor = ((iTargetWidth) / (double)m_FrameServer.VideoFile.Infos.iDecodingWidth);
-
-					m_fStretchFactor = (fWidthFactor + fHeightFactor) / 2;
-					m_bStretchModeOn = false;
-					StretchSqueezeSurface();
-					//rafraîchir
-					pbSurfaceScreen.Invalidate();
-				}
+				int iTargetHeight = (ImageResizerSE.Top - pbSurfaceScreen.Top + e.Y);
+				int iTargetWidth = (ImageResizerSE.Left - pbSurfaceScreen.Left + e.X);
+				ResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
 		private void ImageResizerSW_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				int iTargetHeight, iTargetWidth;
-				double fHeightFactor, fWidthFactor;
-
-				iTargetHeight = (ImageResizerSW.Top - pbSurfaceScreen.Top + e.Y);
-				iTargetWidth = pbSurfaceScreen.Width + (pbSurfaceScreen.Left - (ImageResizerSW.Left + e.X));
-
-				//-------------------------------------------------------------------
-				// On resize à condition que l'image soit:
-				// Supérieure à la taille originale, inférieure à la taille du panel.
-				//-------------------------------------------------------------------
-				if (iTargetHeight > m_FrameServer.VideoFile.Infos.iDecodingHeight &&
-				    iTargetHeight < panelCenter.Height &&
-				    iTargetWidth > m_FrameServer.VideoFile.Infos.iDecodingWidth &&
-				    iTargetWidth < panelCenter.Width)
-				{
-					fHeightFactor = ((iTargetHeight) / (double)m_FrameServer.VideoFile.Infos.iDecodingHeight);
-					fWidthFactor = ((iTargetWidth) / (double)m_FrameServer.VideoFile.Infos.iDecodingWidth);
-
-					m_fStretchFactor = (fWidthFactor + fHeightFactor) / 2;
-					m_bStretchModeOn = false;
-					StretchSqueezeSurface();
-					//rafraîchir
-					pbSurfaceScreen.Invalidate();
-				}
+				int iTargetHeight = (ImageResizerSW.Top - pbSurfaceScreen.Top + e.Y);
+				int iTargetWidth = pbSurfaceScreen.Width + (pbSurfaceScreen.Left - (ImageResizerSW.Left + e.X));
+				ResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
 		private void ImageResizerNW_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				int iTargetHeight, iTargetWidth;
-				double fHeightFactor, fWidthFactor;
-
-				iTargetHeight = pbSurfaceScreen.Height + (pbSurfaceScreen.Top - (ImageResizerNW.Top + e.Y));
-				iTargetWidth = pbSurfaceScreen.Width + (pbSurfaceScreen.Left - (ImageResizerNW.Left + e.X));
-
-				//-------------------------------------------------------------------
-				// On resize à condition que l'image soit:
-				// Supérieure à la taille originale, inférieure à la taille du panel.
-				//-------------------------------------------------------------------
-				if (iTargetHeight > m_FrameServer.VideoFile.Infos.iDecodingHeight &&
-				    iTargetHeight < panelCenter.Height &&
-				    iTargetWidth > m_FrameServer.VideoFile.Infos.iDecodingWidth &&
-				    iTargetWidth < panelCenter.Width)
-				{
-					fHeightFactor = ((iTargetHeight) / (double)m_FrameServer.VideoFile.Infos.iDecodingHeight);
-					fWidthFactor = ((iTargetWidth) / (double)m_FrameServer.VideoFile.Infos.iDecodingWidth);
-
-					m_fStretchFactor = (fWidthFactor + fHeightFactor) / 2;
-					m_bStretchModeOn = false;
-					StretchSqueezeSurface();
-					//rafraîchir
-					pbSurfaceScreen.Invalidate();
-				}
+				int iTargetHeight = pbSurfaceScreen.Height + (pbSurfaceScreen.Top - (ImageResizerNW.Top + e.Y));
+				int iTargetWidth = pbSurfaceScreen.Width + (pbSurfaceScreen.Left - (ImageResizerNW.Left + e.X));
+				ResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
 		private void ImageResizerNE_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				int iTargetHeight, iTargetWidth;
-				double fHeightFactor, fWidthFactor;
-
-				iTargetHeight = pbSurfaceScreen.Height + (pbSurfaceScreen.Top - (ImageResizerNE.Top + e.Y));
-				iTargetWidth = (ImageResizerNE.Left - pbSurfaceScreen.Left + e.X);
-
-				//-------------------------------------------------------------------
-				// On resize à condition que l'image soit:
-				// Supérieure à la taille originale, inférieure à la taille du panel.
-				//-------------------------------------------------------------------
-				if (iTargetHeight > m_FrameServer.VideoFile.Infos.iDecodingHeight &&
-				    iTargetHeight < panelCenter.Height &&
-				    iTargetWidth > m_FrameServer.VideoFile.Infos.iDecodingWidth &&
-				    iTargetWidth < panelCenter.Width)
-				{
-					fHeightFactor = ((iTargetHeight) / (double)m_FrameServer.VideoFile.Infos.iDecodingHeight);
-					fWidthFactor = ((iTargetWidth) / (double)m_FrameServer.VideoFile.Infos.iDecodingWidth);
-
-					m_fStretchFactor = (fWidthFactor + fHeightFactor) / 2;
-					m_bStretchModeOn = false;
-					StretchSqueezeSurface();
-					//rafraîchir
-					pbSurfaceScreen.Invalidate();
-				}
+				int iTargetHeight = pbSurfaceScreen.Height + (pbSurfaceScreen.Top - (ImageResizerNE.Top + e.Y));
+				int iTargetWidth = (ImageResizerNE.Left - pbSurfaceScreen.Left + e.X);
+				ResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
-		private void ImageResizerNW_MouseDoubleClick(object sender, MouseEventArgs e)
+		private void ResizeImage(int _iTargetWidth, int _iTargetHeight)
 		{
-			Resizers_MouseDoubleClick();
+			//-------------------------------------------------------------------
+			// Resize at the following condition:
+			// Bigger than original image size, smaller than panel size.
+			//-------------------------------------------------------------------
+			if (_iTargetHeight > m_FrameServer.VideoFile.Infos.iDecodingHeight &&
+			    _iTargetHeight < panelCenter.Height &&
+			    _iTargetWidth > m_FrameServer.VideoFile.Infos.iDecodingWidth &&
+			    _iTargetWidth < panelCenter.Width)
+			{
+				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoFile.Infos.iDecodingHeight);
+				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoFile.Infos.iDecodingWidth);
+
+				m_fStretchFactor = (fWidthFactor + fHeightFactor) / 2;
+				m_bStretchModeOn = false;
+				StretchSqueezeSurface();
+				pbSurfaceScreen.Invalidate();
+			}
 		}
-		private void ImageResizerNE_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			Resizers_MouseDoubleClick();
-		}
-		private void ImageResizerSE_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			Resizers_MouseDoubleClick();
-		}
-		private void ImageResizerSW_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			Resizers_MouseDoubleClick();
-		}
-		private void Resizers_MouseDoubleClick()
+		private void Resizers_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			// Maximiser l'écran ou repasser à la taille originale.
 			if (!m_bStretchModeOn)
@@ -2439,7 +2296,6 @@ namespace Kinovea.ScreenManager
 				m_iCurrentPosition = m_FrameServer.VideoFile.Selection.iCurrentTimeStamp;
 
 				// Compute or stop tracking
-				
 				if (m_Metadata.Tracks.Count > 0)
 				{
 					if (_iSeekTarget >= 0 || m_iFramesToDecode > 1)
@@ -2458,7 +2314,7 @@ namespace Kinovea.ScreenManager
 					}
 				}
 
-				// Rendu de l'image à l'écran
+				// Display image
 				if(_bAllowUIUpdate) pbSurfaceScreen.Invalidate();
 			}
 			else
@@ -3911,7 +3767,6 @@ namespace Kinovea.ScreenManager
 				SetAsActiveScreen();
 				m_ActiveTool = DrawingToolType.Line2D;
 				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorLine2D, 0));
-				
 				PrepareKeyframesDock();
 			}
 		}
@@ -4009,7 +3864,6 @@ namespace Kinovea.ScreenManager
 			SetAsActiveScreen();
 			pbSurfaceScreen.Invalidate();
 		}
-		
 		private void UpdateCursor()
 		{
 			// Ther current cursor must be updated.
@@ -4087,6 +3941,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void LocateForm(Form _form)
 		{
+			// A helper function to center the dialog boxes.
 			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width)
 			{
 				_form.StartPosition = FormStartPosition.CenterScreen;
@@ -4638,6 +4493,82 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		#region Analysis mode
+		public void SwitchToAnalysisMode(bool _bForceReload)
+		{
+			//------------------------------------------------------------------------
+			// Switcher la selection courante si possible.
+			// Appelé au chargement, une fois que tout est ok et la première frame ok.
+			// Appelé sur modification de la selection par l'utilisateur.
+			//------------------------------------------------------------------------
+			if (m_FrameServer.VideoFile.Loaded)
+			{
+				if (IsSelectionAnalyzable())
+				{
+					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoFile, trkSelection.SelStart, trkSelection.SelEnd, _bForceReload);
+					ffi.ShowDialog();
+					ffi.Dispose();
+				}
+				else if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				{
+					// Exiting Analysis mode.
+					// TODO - free memory for images now ?
+					m_FrameServer.VideoFile.Selection.iAnalysisMode = 0;
+				}
+
+				// Ici on a éventuellement changé de mode.
+				if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				{
+					// We now have solid facts. Update all variables with them.
+					m_iSelStart = m_FrameServer.VideoFile.GetTimeStamp(0);
+					m_iSelEnd = m_FrameServer.VideoFile.GetTimeStamp(m_FrameServer.VideoFile.Selection.iDurationFrame - 1);
+					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
+					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
+
+					// Remapper le frame tracker - Utilisation des données réelles.
+					trkFrame.Minimum = m_iSelStart;
+					trkFrame.Maximum = m_iSelEnd;
+					trkFrame.ReportOnMouseMove = true;
+
+					// Afficher la première image.
+					m_iFramesToDecode = 1;
+					ShowNextFrame(m_iSelStart, true);
+					UpdateNavigationCursor();
+				}
+				else
+				{
+					m_iSelStart = trkSelection.SelStart;
+					// Hack : If we changed the trkSelection.SelEnd before the trkSelection.SelStart
+					// (As we do when we first load the video), the selstart will not take into account
+					// a possible shift of unreadable first frames.
+					// We make the ad-hoc modif here.
+					if (m_iSelStart < m_iStartingPosition) m_iSelStart = m_iStartingPosition;
+
+					m_iSelEnd = trkSelection.SelEnd;
+
+					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
+					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
+
+					// Remapper le FrameTracker
+					trkFrame.Minimum = m_iSelStart;
+					trkFrame.Maximum = m_iSelEnd;
+					trkFrame.ReportOnMouseMove = false;
+				}
+
+				UpdatePrimarySelectionPanelInfos();
+				SetAsActiveScreen();
+
+				if (m_ReportSelectionChanged != null) { m_ReportSelectionChanged(true); }
+				if (m_bShowInfos) { UpdateDebugInfos(); }
+			}
+		}
+		private bool IsSelectionAnalyzable()
+		{
+			// Check the current selection against the preferences
+			return m_FrameServer.VideoFile.CanExtractToMemory(trkSelection.SelStart, trkSelection.SelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory);
+		}
+		#endregion
+		
 		#region Export video and frames
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
@@ -4733,7 +4664,7 @@ namespace Kinovea.ScreenManager
 			// Workflow:
 			// 1. formRafaleExport  : configure the export, calls:
 			// 2. FileSaveDialog    : choose the file name, then:
-			// 3. formFrameExport   : Progress holder and updater, calls:
+			// 3. formFrameExport   : Progress bar holder and updater, calls:
 			// 4. SaveImageSequence (below) to perform the real work. (saving the pics)
 			//---------------------------------------------------------------------------------
 
@@ -5130,124 +5061,6 @@ namespace Kinovea.ScreenManager
 			}
 
 			return new Bitmap(memStr);
-		}
-		private Bitmap ConvertToPNG(Bitmap _image)
-		{
-			//---------------------------------------------
-			// NOT USED.
-			// Doesn't seem to have any effect anyway.
-			// TODO: find a way to make png files smaller ?
-			//---------------------------------------------
-
-			// Intermediate MemoryStream for the conversion.
-			MemoryStream memStr = new MemoryStream();
-
-			//Get the list of available encoders
-			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-
-			//find the encoder with the image/jpeg mime-type
-			ImageCodecInfo ici = null;
-			foreach (ImageCodecInfo codec in codecs)
-			{
-				if (codec.MimeType == "image/png")
-				{
-					ici = codec;
-				}
-			}
-
-			if (ici != null)
-			{
-				//Create a collection of encoder parameters (we only need one in the collection)
-				EncoderParameters ep = new EncoderParameters();
-
-				//We'll store images at 90% quality as compared with the original
-				ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)75);
-
-				_image.Save(memStr, ici, ep);
-			}
-			else
-			{
-				// No encoder found (is that common ?) Use default system.
-				_image.Save(memStr, ImageFormat.Png);
-			}
-
-			return new Bitmap(memStr);
-		}
-		#endregion
-
-		#region Analysis mode
-		public void SwitchToAnalysisMode(bool _bForceReload)
-		{
-			//------------------------------------------------------------------------
-			// Switcher la selection courante si possible.
-			// Appelé au chargement, une fois que tout est ok et la première frame ok.
-			// Appelé sur modification de la selection par l'utilisateur.
-			//------------------------------------------------------------------------
-			if (m_FrameServer.VideoFile.Loaded)
-			{
-				if (IsSelectionAnalyzable())
-				{
-					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoFile, trkSelection.SelStart, trkSelection.SelEnd, _bForceReload);
-					ffi.ShowDialog();
-					ffi.Dispose();
-				}
-				else if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-				{
-					// Exiting Analysis mode.
-					// TODO - free memory for images now ?
-					m_FrameServer.VideoFile.Selection.iAnalysisMode = 0;
-				}
-
-				// Ici on a éventuellement changé de mode.
-				if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-				{
-					// We now have solid facts. Update all variables with them.
-					m_iSelStart = m_FrameServer.VideoFile.GetTimeStamp(0);
-					m_iSelEnd = m_FrameServer.VideoFile.GetTimeStamp(m_FrameServer.VideoFile.Selection.iDurationFrame - 1);
-					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
-					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
-
-					// Remapper le frame tracker - Utilisation des données réelles.
-					trkFrame.Minimum = m_iSelStart;
-					trkFrame.Maximum = m_iSelEnd;
-					trkFrame.ReportOnMouseMove = true;
-
-					// Afficher la première image.
-					m_iFramesToDecode = 1;
-					ShowNextFrame(m_iSelStart, true);
-					UpdateNavigationCursor();
-				}
-				else
-				{
-					m_iSelStart = trkSelection.SelStart;
-					// Hack : If we changed the trkSelection.SelEnd before the trkSelection.SelStart
-					// (As we do when we first load the video), the selstart will not take into account
-					// a possible shift of unreadable first frames.
-					// We make the ad-hoc modif here.
-					if (m_iSelStart < m_iStartingPosition) m_iSelStart = m_iStartingPosition;
-
-					m_iSelEnd = trkSelection.SelEnd;
-
-					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
-					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
-
-					// Remapper le FrameTracker
-					trkFrame.Minimum = m_iSelStart;
-					trkFrame.Maximum = m_iSelEnd;
-					trkFrame.ReportOnMouseMove = false;
-				}
-
-				UpdatePrimarySelectionPanelInfos();
-				SetAsActiveScreen();
-
-				if (m_ReportSelectionChanged != null) { m_ReportSelectionChanged(true); }
-				if (m_bShowInfos) { UpdateDebugInfos(); }
-			}
-		}
-		private bool IsSelectionAnalyzable()
-		{
-			// Check the current selection against the preferences
-			return m_FrameServer.VideoFile.CanExtractToMemory(trkSelection.SelStart, trkSelection.SelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory);
 		}
 		#endregion
 

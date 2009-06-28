@@ -310,13 +310,8 @@ namespace Kinovea.ScreenManager
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
         	this.trkSelection.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqbackdock;
         	this.trkSelection.Location = new System.Drawing.Point(91, 5);
-        	this.trkSelection.Maximum = ((long)(100));
-        	this.trkSelection.Minimum = ((long)(0));
         	this.trkSelection.Name = "trkSelection";
-        	this.trkSelection.SelEnd = ((long)(100));
         	this.trkSelection.SelLocked = false;
-        	this.trkSelection.SelPos = ((long)(2));
-        	this.trkSelection.SelStart = ((long)(0));
         	this.trkSelection.Size = new System.Drawing.Size(259, 20);
         	this.trkSelection.TabIndex = 17;
         	this.trkSelection.SelectionChanged += new Kinovea.ScreenManager.SelectionTracker.SelectionChangedHandler(this.trkSelection_SelectionChanged);
@@ -631,7 +626,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNE.TabIndex = 9;
         	this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
-        	this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseDoubleClick);
+        	this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
         	// 
         	// ImageResizerNW
         	// 
@@ -645,7 +640,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNW.TabIndex = 8;
         	this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
-        	this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseDoubleClick);
+        	this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
         	// 
         	// ImageResizerSW
         	// 
@@ -659,7 +654,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSW.TabIndex = 7;
         	this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
-        	this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseDoubleClick);
+        	this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
         	// 
         	// ImageResizerSE
         	// 
@@ -674,7 +669,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSE.TabIndex = 6;
         	this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
-        	this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseDoubleClick);
+        	this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
         	// 
         	// panelDebug
         	// 
