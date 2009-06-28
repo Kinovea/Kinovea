@@ -93,7 +93,6 @@ namespace Kinovea.ScreenManager
             this.SelectedZone.Name = "SelectedZone";
             this.SelectedZone.Size = new System.Drawing.Size(174, 20);
             this.SelectedZone.TabIndex = 10;
-            this.SelectedZone.DoubleClick += new System.EventHandler(this.SelectedZone_DoubleClick);
             this.SelectedZone.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SelectedZone_MouseClick);
             this.SelectedZone.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectedZone_Paint);
             // 

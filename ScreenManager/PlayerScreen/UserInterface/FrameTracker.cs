@@ -26,74 +26,55 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+	/// <summary>
+	/// A control to let the user specify the current position in the video.
+	/// The control is comprised of a cursor and a list of hairlines for keyframes
+	/// 
+	/// When control is modified by user:
+	/// - The internal data is modified.
+	/// - Events are raised, which are listened to by parent control.
+	/// - Parent control update its own internal data state by reading the properties.
+	/// 
+	/// When control appearence needs to be updated
+	/// - This is when internal data of the parent control have been modified by other means.
+	/// - (At initialization for example)
+	/// - The public properties setters are provided, they doesn't raise the events back. 
+	/// </summary>
     public partial class FrameTracker : UserControl
     {
-
         #region Properties
         [Category("Behavior"), Browsable(true)]
         public long Minimum
         {
-            get
-            {
-                return m_iMinimum;
-            }
+        	get{return m_iMinimum;}
             set
             {
                 m_iMinimum = value;
-
-                if (m_iPosition < m_iMinimum) { m_iPosition = m_iMinimum; }
-
-                // -> Déplacer le curseur.
-                if (m_iMaximum - m_iMinimum > 0)
-                {
-                    NavCursor.Left = BumperLeft.Width + Rescale(m_iPosition - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
-                }
+                if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
+                UpdateAppearence();
             }
         }
         [Category("Behavior"), Browsable(true)]
         public long Maximum
         {
-            get
-            {
-                return m_iMaximum;
-            }
+            get{return m_iMaximum;}
             set
             {
                 m_iMaximum = value;
-
-                if (m_iPosition > m_iMaximum) { m_iPosition = m_iMaximum; }
-                
-                // -> Déplacer le curseur.
-                if (m_iMaximum - m_iMinimum > 0)
-                {
-                    NavCursor.Left = BumperLeft.Width + Rescale(m_iPosition - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
-                }
+                if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
+                UpdateAppearence();
             }
         }
         [Category("Behavior"), Browsable(true)]
         public long Position
         {
-            get
-            {
-                return m_iPosition;
-            }
+            get{return m_iPosition;}
             set
             {
-                //-----------------------------------------------------------
-                // /!\ Positionner manuellement la position ne déclenche pas
-                // l'event en retour.
-                // Ne fait que déplacer le curseur.
-                //-----------------------------------------------------------
-                if (value < m_iMinimum) value = m_iMinimum;
-                if (value > m_iMaximum) value = m_iMaximum;
-
-                m_iPosition  = value;
-
-                // -> Déplacer le curseur.
-                if (m_iMaximum - m_iMinimum > 0)
-                {
-                    NavCursor.Left = BumperLeft.Width + Rescale(m_iPosition - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
-                }
+            	m_iPosition  = value;
+                if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
+                if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
+				UpdateAppearence();
             }
         }
         [Category("Behavior"), Browsable(true)]
@@ -101,28 +82,6 @@ namespace Kinovea.ScreenManager
         {
             get { return m_bReportOnMouseMove;  }
             set { m_bReportOnMouseMove = value; }
-        }
-        public long[] KeyframesTimestamps
-        {
-            set
-            {
-                if (m_KeyframesTimestamps == null)
-                {
-                    m_KeyframesTimestamps = new long[value.Length];
-                }
-                else if (m_KeyframesTimestamps.Length != value.Length)
-                {
-                    // dispose ?
-                    m_KeyframesTimestamps = new long[value.Length];
-                }
-
-                for (int i = 0; i < value.Length; i++)
-                {
-                    m_KeyframesTimestamps[i] = value[i];
-                }
-
-                UpdateMarkers();
-            }
         }
         #endregion
 
@@ -138,25 +97,46 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region EventDelegates
-        // Déclarations de Types
+        #region Events Delegates
         public delegate void PositionChangingHandler(object sender, long _iPosition);
         public delegate void PositionChangedHandler(object sender, long _iPosition);
 
-        // Déclarations des évènements
         [Category("Action"), Browsable(true)]
         public event PositionChangingHandler PositionChanging;
         [Category("Action"), Browsable(true)]
         public event PositionChangedHandler PositionChanged;
         #endregion
 
+        #region Constructor
         public FrameTracker()
         {
             InitializeComponent();
             m_iMaxWidth = this.Width - BumperLeft.Width - BumperRight.Width - NavCursor.Width;
         }
+		#endregion
+		
+		#region Public Methods
+		public void UpdateKeyframesMarkers(long[] _markers)
+		{
+			if (m_KeyframesTimestamps == null)
+            {
+                m_KeyframesTimestamps = new long[_markers.Length];
+            }
+            else if (m_KeyframesTimestamps.Length != _markers.Length)
+            {
+                m_KeyframesTimestamps = new long[_markers.Length];
+            }
 
-        #region Manipulation du contrôle
+            for (int i = 0; i < _markers.Length; i++)
+            {
+                m_KeyframesTimestamps[i] = _markers[i];
+            }
+
+            UpdateAppearence();	
+		}
+		#endregion
+        
+		#region Event Handlers - User Manipulation
         private void NavCursor_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -189,45 +169,62 @@ namespace Kinovea.ScreenManager
                     (MouseCoords.X < this.Width - BumperRight.Width - (NavCursor.Width / 2)))
                 {
                     NavCursor.Left = MouseCoords.X - (NavCursor.Width / 2);
-                    UpdateValue();
+                    UpdateValuesAndReport();
                 }
             }
         }
         private void NavCursor_MouseUp(object sender, MouseEventArgs e)
         {
-            UpdateValue();
+            UpdateValuesAndReport();
         }
         #endregion
 
-        #region Binding UI to Data
+        #region Event Handlers - Automatic
         private void FrameTracker_Resize(object sender, EventArgs e)
         {
             m_iMaxWidth = this.Width - BumperLeft.Width - BumperRight.Width - NavCursor.Width;
-            UpdateNavCursor();
-            UpdateMarkers();
+            UpdateAppearence();
         }
-        private void UpdateValue()
+        private void FrameTracker_Paint(object sender, PaintEventArgs e)
         {
-            m_iPosition = m_iMinimum + Rescale(NavCursor.Left - BumperLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum);
-            if (PositionChanged != null) { PositionChanged(this, m_iPosition); }
+            if (m_KeyframesMarks != null)
+            {
+                foreach (int mark in m_KeyframesMarks)
+                {
+                    if (mark > 0)
+                    {
+                        e.Graphics.DrawLine(m_PenKeyImageMark, mark, 2, mark, this.Height - 4);
+                    }
+                }
+            }
         }
+        #endregion
+        
+        #region Binding UI to Data
         private int Rescale(long _iOldValue, long _iOldMax, long _iNewMax)
         {
             // Rescale : Pixels -> Values
             return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
         }
-        private void UpdateNavCursor()
+        private void UpdateValuesAndReport()
         {
-            //------------------------------------------------
-            // Redessine en fonction des données.
-            // (Au chargement ou sur Resize)
-            //------------------------------------------------
+            m_iPosition = m_iMinimum + Rescale(NavCursor.Left - BumperLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum);
+            if (PositionChanged != null) { PositionChanged(this, m_iPosition); }
+        }
+        private void UpdateAppearence()
+        {
+        	// Internal state of data has been modified programmatically.
+        	// (for example, at initialization or reset.)
+        	// This method update the appearence of the control only, it doesn't raise the events back.
+    	
             if (m_iMaximum - m_iMinimum > 0)
             {
-                NavCursor.Left = BumperLeft.Width + Rescale(m_iPosition - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
+            	NavCursor.Left = BumperLeft.Width + Rescale(m_iPosition - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
             }
+
+            UpdateMarkers();
         }
-        private void UpdateMarkers()
+       	private void UpdateMarkers()
         {
             if (m_KeyframesTimestamps != null)
             {
@@ -249,19 +246,5 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-
-        private void FrameTracker_Paint(object sender, PaintEventArgs e)
-        {
-            if (m_KeyframesMarks != null)
-            {
-                foreach (int mark in m_KeyframesMarks)
-                {
-                    if (mark > 0)
-                    {
-                        e.Graphics.DrawLine(m_PenKeyImageMark, mark, 2, mark, this.Height - 4);
-                    }
-                }
-            }
-        }
     }
 }
