@@ -28,6 +28,15 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+	/// <summary>
+	/// A class to encapsulate a little label.
+	/// Mainly used for Keyframe labels but could be used for small textual labels too.
+	/// The label is comprised of a reference position, 
+	/// a background possibly shifted away, and a connector to link to two.
+	/// The background position can be absolute or relative to the ref point.
+	/// The ref point is stored in TrackPos.
+	/// Background shift is directly stored in Background.Location. 
+	/// </summary>
     public class KeyframeLabel
     {
         #region Properties
@@ -57,7 +66,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         public long iTimestamp;                 // Absolute.
-        public TrackPosition RescaledTrackPos;  
+        public TrackPosition RescaledTrackPos = new TrackPosition(0, 0, 0);
         public Rectangle Background;            // Absolute positionning (as original image size)
         public Rectangle RescaledBackground;    // Relative positionning (as current image size)
         public bool m_bBackgroundIsRelative;
@@ -66,7 +75,7 @@ namespace Kinovea.ScreenManager
         private string m_Text;
         private InfosTextDecoration m_TextDecoration;
         private double m_fRescaledFontSize;
-        private TrackPosition m_TrackPos;
+        private TrackPosition m_TrackPos = new TrackPosition(0, 0, 0);
         #endregion
 
         #region Construction
@@ -132,7 +141,11 @@ namespace Kinovea.ScreenManager
             }
 
             RescaledBackground.Size = new Size((int)((double)Background.Width * _fStretchFactor), (int)((double)Background.Height * _fStretchFactor));
-            RescaledTrackPos = new TrackPosition((int)((double)(m_TrackPos.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TrackPos.Y - _DirectZoomTopLeft.Y) * _fStretchFactor), m_TrackPos.T);
+            
+            if(m_TrackPos != null)
+            {
+            	RescaledTrackPos = new TrackPosition((int)((double)(m_TrackPos.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TrackPos.Y - _DirectZoomTopLeft.Y) * _fStretchFactor), m_TrackPos.T);
+            }
         }
         public override int GetHashCode()
         {

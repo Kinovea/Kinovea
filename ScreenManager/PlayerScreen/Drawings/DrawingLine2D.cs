@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         // Decoration
         private LineStyle m_PenStyle;
         private LineStyle m_MemoPenStyle;
-        private InfosTextDecoration m_TextStyle = new InfosTextDecoration();
+        private KeyframeLabel m_LabelMeasure = new KeyframeLabel(true, Color.Black);
         private bool m_bShowMeasure = false;        
         private Metadata m_ParentMetadata;
         #endregion
@@ -89,7 +89,9 @@ namespace Kinovea.ScreenManager
 
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-
+            SetMeasureLabelPosition();
+            m_LabelMeasure.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
+            
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
         }
@@ -129,11 +131,15 @@ namespace Kinovea.ScreenManager
                 
                 if(m_bShowMeasure)
                 {
+                	// Text of the measure. (The helpers knows the unit)
 	                string text = m_ParentMetadata.LineLengthHelper.GetLengthText(m_StartPoint, m_EndPoint);
-	                int ix = m_RescaledStartPoint.X + ((m_RescaledEndPoint.X - m_RescaledStartPoint.X)/2);
-	                int iy = m_RescaledStartPoint.Y + ((m_RescaledEndPoint.Y - m_RescaledStartPoint.Y)/2);
+	                m_LabelMeasure.Text = text;
 	                
-	                _canvas.DrawString(text, m_TextStyle.GetInternalFont((float)_fStretchFactor), penEdges.Brush, new Point(ix, iy));
+	                SetMeasureLabelPosition();
+	                m_LabelMeasure.ResetBackground(_fStretchFactor, _DirectZoomTopLeft);
+	                
+	                // Draw.
+	                m_LabelMeasure.Draw(_canvas, fOpacityFactor);
                 }
             }
         }
@@ -172,7 +178,12 @@ namespace Kinovea.ScreenManager
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (fOpacityFactor > 0)
             {
-                if (GetHandleRectangle(1).Contains(_point))
+            	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
+            	{
+            		// Hitting the label is like hitting the main line.
+            		iHitResult = 0;
+            	}
+            	else if (GetHandleRectangle(1).Contains(_point))
                 {
                     iHitResult = 1;
                 }
@@ -299,6 +310,8 @@ namespace Kinovea.ScreenManager
         {
             m_RescaledStartPoint = new Point((int)((double)(m_StartPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_StartPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
             m_RescaledEndPoint = new Point((int)((double)(m_EndPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_EndPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
+        
+        	m_LabelMeasure.Rescale(_fStretchFactor, _DirectZoomTopLeft);
         }
         private Rectangle GetHandleRectangle(int _handle)
         {
@@ -357,6 +370,16 @@ namespace Kinovea.ScreenManager
             Region areaRegion = new Region(areaPath);
 
             return areaRegion.IsVisible(_point);
+        }
+        private void SetMeasureLabelPosition()
+        {
+        	// Label coordinates
+            int ix = m_StartPoint.X + ((m_EndPoint.X - m_StartPoint.X)/2);
+            int iy = m_StartPoint.Y + ((m_EndPoint.Y - m_StartPoint.Y)/2);
+            
+            m_LabelMeasure.TrackPos = new TrackPosition(ix, iy, 0);
+            m_LabelMeasure.Background = new Rectangle(10,-20, m_LabelMeasure.Background.Width, m_LabelMeasure.Background.Height);
+	                
         }
         #endregion
     }
