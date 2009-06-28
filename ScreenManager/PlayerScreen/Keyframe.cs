@@ -62,9 +62,13 @@ namespace Kinovea.ScreenManager
             get { return m_Comments; }
             set { m_Comments = value; }  
         }
+        /// <summary>
+    	/// The title of a keyframe is dynamic.
+    	/// It is the timecode until the user actually manually changes it.
+    	/// </summary>
         public String Title
         {
-            get 
+        	get 
             { 
             	if(m_Title != null)
             	{
