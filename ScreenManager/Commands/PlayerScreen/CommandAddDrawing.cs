@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                 {
                     //Redo.
                     m_Metadata[iIndex].Drawings.Insert(0, m_Drawing);
-                    m_psui._surfaceScreen.Invalidate();
+                    m_psui.pbSurfaceScreen.Invalidate();
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
                 {
                     m_Metadata[iIndex].Drawings.RemoveAt(0);
                     m_psui.OnUndrawn();
-                    m_psui._surfaceScreen.Invalidate();
+                    m_psui.pbSurfaceScreen.Invalidate();
                 }
             }
             else

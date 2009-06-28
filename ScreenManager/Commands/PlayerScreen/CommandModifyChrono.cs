@@ -110,7 +110,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            m_psui._surfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();
         }
         public void Unexecute()
         {
@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
             m_Metadata.Chronos[m_iChronoIndex].Hide(m_iInvisibleTimestamp);
             m_Metadata.Chronos[m_iChronoIndex].CountDown = m_bCountdown;
             
-            m_psui._surfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();
         }
     }
 }

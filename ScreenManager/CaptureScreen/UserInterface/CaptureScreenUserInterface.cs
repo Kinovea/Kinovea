@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
  */
 
+using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,12 +27,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-
-using AForge.Video.DirectShow;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -79,96 +79,37 @@ namespace Kinovea.ScreenManager
 		
 		#endregion
 
-		#region Structs
-		public struct DropWatcher
-		{
-			public int iLastDropCount;
-			public int iLastFrameInterval;
-		};
-		#endregion
-
-		#region Properties
-		public Metadata Metadata
-		{
-			get { return m_Metadata; }
-		}
-		public int SlowmotionPercentage
-		{
-			get { return m_iSlowmotionPercentage; }
-		}
-		public bool IsCurrentlyPlaying
-		{
-			get { return m_bIsCurrentlyPlaying; }
-		}
-
-		// Modifies Rendering
-		public bool ShowGrid
-		{
-			get { return m_Metadata.Grid.Visible; }
-			set { m_Metadata.Grid.Visible = value; }
-		}
-		public bool Show3DPlane
-		{
-			get { return m_Metadata.Plane.Visible; }
-			set { m_Metadata.Plane.Visible = value; }
-		}
-		public bool Mirrored
-		{
-			get { return m_Metadata.Mirrored; }
-			set { m_Metadata.Mirrored = value; }
-		}
-		public bool Deinterlaced
-		{
-			get { return m_VideoFile.Infos.bDeinterlaced;}
-			set
-			{
-				m_VideoFile.Infos.bDeinterlaced = value;
-
-				// If there was a selection it must be imported again.
-				// (this means we'll loose color adjustments.)
-				if (m_VideoFile.Selection.iAnalysisMode == 1)
-				{
-					SwitchToAnalysisMode(true);
-				}
-			}
-		}
-		public bool Synched
-		{
-			get { return m_bSynched; }
-			set { m_bSynched = value; }
-		}
-		public Int64 SyncPosition
-		{
-			get { return m_iSyncPosition; }
-			set { m_iSyncPosition = value; }
-		}
-		public double SlowFactor
-		{
-			get { return m_fSlowFactor; }
-			set { m_fSlowFactor = value; }
-		}
-		#endregion
-
 		#region Members
-
-		// Low level routines.
-		public VideoFile m_VideoFile = new VideoFile();
-
-		// General
-		private ResourceManager m_ResourceManager;
-		private PreferencesManager m_PrefManager;
-		private string m_FullPath = "";
 		
-		// Capture
+		// Notes de refactoring.
+		// Les données de temps qui étaient en TS devraient être stockées une seule fois.
+		// donc à déplacer dans le FrameServer.
+		
+		// En fait on ne devrait plus avoir que des event handlers ici.
+		// Selon le pattern Model View Controller.
+		// Model = m_FrameServer.
+		// View = onglet Design.
+		// Cotroller = Tous les event handlers.
+		
+		// Le tableau des drawing tools par contre ne devrait pas être dans un objet meta data.
+		// On peut dire que les drawing tools sont les controllers des boutons de tools...
+		// Ou alors il faut garder un objet spécial à part.
+		
+		// Il y aurait peut-être quand même quelque chose à faire à cause des menu contextuels...
+		// Chaque drawing tool étant une classe déjà de toute façon.
+		// Un DrawingToolsManager, qui aura la fonction de HitTest ?
+		
 		private FrameServerCapture m_FrameServer;
+		private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
 		
-		/*private VideoCaptureDevice m_VideoDevice;
-		private Bitmap m_CurrentFrame;
-		private bool m_bFirstFrame = true;
-		private Size m_DecodingSize;
-		private bool m_bHandlingFrame = false;
-		private int m_iMaxSizeBufferFrames = 5*25;
-		private List<Bitmap> m_FrameBuffer = new List<Bitmap>();*/
+		private uint m_IdMultimediaTimer;
+		
+	// Subject to be removed during refactoring:
+		
+		private VideoFile m_VideoFile = new VideoFile();
+		private string m_FullPath = "";
+		private bool m_bShowInfos;
 		
 		// Playback current state
 		private bool m_bIsCurrentlyPlaying;
@@ -176,7 +117,7 @@ namespace Kinovea.ScreenManager
 		private bool m_bSeekToStart;
 		private bool m_bSynched;
 		private Int64 m_iSyncPosition;
-		private uint m_IdMultimediaTimer;
+		
 		private int m_iDroppedFrames;                  // For debug purposes only.
 		private int m_iDecodedFrames;
 		private int m_iSlowmotionPercentage = 100;
@@ -189,7 +130,6 @@ namespace Kinovea.ScreenManager
 		private Panel panelCenter
 		{
 			get { return _panelCenter; }
-			//set { _panelCenter = value; }
 		}
 		private PictureBox m_SurfaceScreen
 		{
@@ -224,6 +164,7 @@ namespace Kinovea.ScreenManager
 		private double m_fDirectZoomFactor;       // Direct zoom (CTRL+/-)
 		private Rectangle m_DirectZoomWindow = new Rectangle(0, 0, 0, 0);
 		private Double m_fSlowFactor = 1.0f;             // Only for when capture fps is different from Playing fps.
+		
 		
 		#region Context Menus
 		private ContextMenuStrip  popMenu;
@@ -272,24 +213,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuGridsHide;
 		#endregion
 
-		// Debug
-		private bool m_bShowInfos;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
-		#if TRACE
-		//-------------------------------------------------------------------
-		// Debug only :
-		// Performance Counters needs Admin rights.
-		//-------------------------------------------------------------------
-		//private PerformanceCounter m_RamCounter;
-		/*private PerformanceCounter m_RenderedPerSecond;
-        private PerformanceCounter m_DecodedPerSecond;
-        private PerformanceCounter m_DropsPerSecond;
-        private Stopwatch m_DecodeWatch;
-        private Stopwatch m_RenderingWatch;
-        private Stopwatch m_NotIdleWatch;*/
-		#endif
-
 		#endregion
 
 		#region Constructor
@@ -297,25 +221,14 @@ namespace Kinovea.ScreenManager
 		{
 			log.Debug("Constructing the CaptureScreen user interface.");
 		
-			 m_FrameServer = new FrameServerCapture(DoInvalidate);
+			m_FrameServer = new FrameServerCapture(DoInvalidate);
 			
+			// Initialize UI.
 			InitializeComponent();
-			
-			Dock = DockStyle.Fill;
-			
-			m_ResourceManager = _resManager;
-			m_PrefManager = PreferencesManager.Instance();
-			lblFileName.Text = "";
-			SetupDirectZoom();
+			this.Dock = DockStyle.Fill;
 			HideResizers();
-
-			// log.Debug("Selection settings initialization.");
-			InitTimestamps();
-			//SetupPrimarySelectionPanel();
-			//SetupNavigationPanel();
-			//SetupSpeedTunerPanel();
-
-			// log.Debug("Keyframes and drawings tools settings initialization.");
+			
+			
 			//SetupKeyframesAndDrawingTools();
 
 			// log.Debug("Menus initialization.");
@@ -325,15 +238,6 @@ namespace Kinovea.ScreenManager
 			m_CallbackTimerEventHandler = new TimerEventHandler(MultimediaTimerTick);
 			m_CallbackPlayLoop = new CallbackPlayLoop(PlayLoop);
 			m_ProxySetAsActiveScreen = new ProxySetAsActiveScreen(SetAsActiveScreen);
-			
-			// Advanced infos panel
-			SetupDebugPanel(false);
-			
-			//-----------
-			// Capture
-			//-----------
-			
-			
 		}
 		#endregion
 
@@ -744,7 +648,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SetUpForNewMovie()
 		{
-			SetupDirectZoom();
+			ResetDirectZoom();
 
 			// Problem: The screensurface hasn't got its final size...
 			// So it doesn't make much sense to call it here...
@@ -829,9 +733,6 @@ namespace Kinovea.ScreenManager
 		private void InitTimestamps()
 		{
 			m_iTotalDuration = 0;
-			m_iSelStart = 0;
-			m_iSelEnd = 0;
-			m_iSelDuration = 0;
 			m_iCurrentPosition = 0;
 			m_iStartingPosition = 0;
 			m_bHandlersLocked = false;
@@ -2384,7 +2285,6 @@ namespace Kinovea.ScreenManager
 		}
 		private void MultimediaTimerTick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
 		{
-			// We comes here more often than we should, by bunches.
 			if (m_VideoFile.Loaded)
 			{
 				//if (!m_bIsInPlayLoop)
@@ -4515,10 +4415,10 @@ namespace Kinovea.ScreenManager
 		#region DirectZoom
 		private void UnzoomDirectZoom()
 		{
-			SetupDirectZoom();
+			ResetDirectZoom();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).DirectZoomTopLeft = m_DirectZoomWindow.Location;
 		}
-		private void SetupDirectZoom()
+		private void ResetDirectZoom()
 		{
 			m_fDirectZoomFactor = 1.0f;
 			m_DirectZoomWindow = new Rectangle(0, 0, m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight);

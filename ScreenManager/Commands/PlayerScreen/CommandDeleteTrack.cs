@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
 
             m_Metadata.Tracks.RemoveAt(m_iTrackIndex);
             m_Metadata.SelectedTrack = -1;
-            m_psui._surfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();
         }
         public void Unexecute()
         {
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
             // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
             // We must still be able to undo any Add action that where performed before.
             m_Metadata.Tracks.Insert(m_iTrackIndex, m_Track);
-            m_psui._surfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();
         }
     }
 }

@@ -150,11 +150,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private long m_iMinimum = 2;
-        private long m_iMaximum = 86;
+        private long m_iMinimum = 0;
+        private long m_iMaximum = 99;
 
-        private long m_iSelStart = 2;
-        private long m_iSelEnd = 86;
+        private long m_iSelStart = 0;
+        private long m_iSelEnd = 99;
         private int m_iMaxWidth = 0;        // Taille maximale réelle de la selection en pixels.
 
         private bool m_bSelLocked = false;

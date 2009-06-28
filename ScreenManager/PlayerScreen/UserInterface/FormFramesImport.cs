@@ -19,19 +19,18 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.ComponentModel;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
     public partial class formFramesImport : Form
     {
-        private ResourceManager m_ResourceManager   = null;
         private VideoFile    m_VideoFile      = null;
         private long            m_iSelStart         = 0;
         private long            m_iSelEnd = 0;
@@ -39,18 +38,17 @@ namespace Kinovea.ScreenManager
         private bool            m_bForceReload = false;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public formFramesImport(ResourceManager _ResourceManager, VideoFile _PlayerServer, long _iSelStart, long _iSelEnd, bool _bForceReload)
+        public formFramesImport(VideoFile _PlayerServer, long _iSelStart, long _iSelEnd, bool _bForceReload)
         {
             InitializeComponent();
 
-            m_ResourceManager = _ResourceManager;
             m_VideoFile = _PlayerServer;
             m_iSelStart = _iSelStart;
             m_iSelEnd = _iSelEnd;
             m_bForceReload = _bForceReload;
 
-            this.Text       = "   " + m_ResourceManager.GetString("FormFramesImport_Title", Thread.CurrentThread.CurrentUICulture);
-            labelInfos.Text = m_ResourceManager.GetString("FormFramesImport_Infos", Thread.CurrentThread.CurrentUICulture) + " 0 / ~?";
+            this.Text       = "   " + ScreenManagerLang.FormFramesImport_Title;
+            labelInfos.Text = ScreenManagerLang.FormFramesImport_Infos + " 0 / ~?";
 
             progressBar.Minimum = 0;
             progressBar.Maximum = 100;
@@ -130,8 +128,7 @@ namespace Kinovea.ScreenManager
                 progressBar.Maximum = iTotal;
                 progressBar.Value   = iValue;
 
-                labelInfos.Text = m_ResourceManager.GetString("FormFramesImport_Infos", Thread.CurrentThread.CurrentUICulture)
-                                  + " " + iValue + " / ~" + iTotal;
+                labelInfos.Text = ScreenManagerLang.FormFramesImport_Infos + " " + iValue + " / ~" + iTotal;
             }
         }
 

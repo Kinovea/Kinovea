@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpConfig = new System.Windows.Forms.GroupBox();
-            this.tbFPSOriginal = new System.Windows.Forms.TextBox();
+            this.tbFPSRealWorld = new System.Windows.Forms.TextBox();
             this.lblSlowFactor = new System.Windows.Forms.Label();
             this.lblFPSDisplayTime = new System.Windows.Forms.Label();
             this.lblFPSCaptureTime = new System.Windows.Forms.Label();
@@ -51,7 +51,6 @@ namespace Kinovea.ScreenManager
             this.btnOK.TabIndex = 25;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // btnCancel
             // 
@@ -63,7 +62,6 @@ namespace Kinovea.ScreenManager
             this.btnCancel.TabIndex = 30;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // grpConfig
             // 
@@ -71,7 +69,7 @@ namespace Kinovea.ScreenManager
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.grpConfig.Controls.Add(this.btnReset);
-            this.grpConfig.Controls.Add(this.tbFPSOriginal);
+            this.grpConfig.Controls.Add(this.tbFPSRealWorld);
             this.grpConfig.Controls.Add(this.lblSlowFactor);
             this.grpConfig.Controls.Add(this.lblFPSDisplayTime);
             this.grpConfig.Controls.Add(this.lblFPSCaptureTime);
@@ -84,13 +82,13 @@ namespace Kinovea.ScreenManager
             // 
             // tbFPSOriginal
             // 
-            this.tbFPSOriginal.Location = new System.Drawing.Point(101, 65);
-            this.tbFPSOriginal.Name = "tbFPSOriginal";
-            this.tbFPSOriginal.Size = new System.Drawing.Size(51, 20);
-            this.tbFPSOriginal.TabIndex = 24;
-            this.tbFPSOriginal.Text = "0000";
-            this.tbFPSOriginal.TextChanged += new System.EventHandler(this.tbFPSOriginal_TextChanged);
-            this.tbFPSOriginal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbFPSOriginal_KeyPress);
+            this.tbFPSRealWorld.Location = new System.Drawing.Point(101, 65);
+            this.tbFPSRealWorld.Name = "tbFPSOriginal";
+            this.tbFPSRealWorld.Size = new System.Drawing.Size(51, 20);
+            this.tbFPSRealWorld.TabIndex = 24;
+            this.tbFPSRealWorld.Text = "0000";
+            this.tbFPSRealWorld.TextChanged += new System.EventHandler(this.tbFPSRealWorld_TextChanged);
+            this.tbFPSRealWorld.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbFPSRealWorld_KeyPress);
             // 
             // lblSlowFactor
             // 
@@ -132,7 +130,7 @@ namespace Kinovea.ScreenManager
             this.btnReset.Size = new System.Drawing.Size(20, 20);
             this.btnReset.TabIndex = 25;
             this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler(this.button1_Click);
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // formConfigureSpeed
             // 
@@ -165,7 +163,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblFPSCaptureTime;
         private System.Windows.Forms.Label lblSlowFactor;
         private System.Windows.Forms.Label lblFPSDisplayTime;
-        private System.Windows.Forms.TextBox tbFPSOriginal;
+        private System.Windows.Forms.TextBox tbFPSRealWorld;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.ToolTip toolTips;
 

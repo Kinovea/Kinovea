@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
             {
                 //Redo.
                 m_Metadata.Chronos.Insert(0, m_Chrono);
-                m_psui._surfaceScreen.Invalidate();
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
         public void Unexecute()
@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
             {
                 m_Metadata.Chronos.RemoveAt(0);
                 m_psui.OnUndrawn();
-                m_psui._surfaceScreen.Invalidate();
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
     }

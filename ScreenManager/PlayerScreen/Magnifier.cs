@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private double m_fStretchFactor = double.MaxValue;
 
-        private Size m_iImageSize;
+        private Size m_iImageSize = new Size(1, 1);
 
         // TODO : turn everything into Rectangles.
         
@@ -80,8 +80,8 @@ namespace Kinovea.ScreenManager
         private int m_iMagWidth = 0;
         private int m_iMagHeight = 0;
 
-        private Point m_ImgTopLeft;     // Location of source zone in source image system.
-        private int m_iImgWidth = 0;    // size of the source zone in the original image
+        private Point m_ImgTopLeft = new Point(0, 0); // Location of source zone in source image system.
+        private int m_iImgWidth = 0;    				// size of the source zone in the original image
         private int m_iImgHeight = 0;
 
         // Default coeffs
@@ -93,19 +93,8 @@ namespace Kinovea.ScreenManager
         private int m_iSrcCustomTop = 0;
         private int m_iSrcCustomWidth = 0;
         private int m_iSrcCustomHeight = 0;
-        private Point m_LastPoint;
+        private Point m_LastPoint = new Point(0,0);
         private Hit m_MovingObject = Hit.None;
-        #endregion
-
-        #region Constructor  
-        public Magnifier()
-        {
-            m_LastPoint.X = 0;
-            m_LastPoint.Y = 0;
-
-            m_iImageSize = new Size(1, 1);
-            m_ImgTopLeft = new Point(0, 0);
-        }
         #endregion
 
         #region Public Interface
@@ -346,6 +335,14 @@ namespace Kinovea.ScreenManager
         public bool IsOnObject(MouseEventArgs e)
         {
             return (HitTest(new Point(e.X, e.Y)) != Hit.None);
+        }
+        public void ResetData()
+        {
+        	m_LastPoint.X = 0;
+            m_LastPoint.Y = 0;
+
+            m_iImageSize = new Size(1, 1);
+            m_ImgTopLeft = new Point(0, 0);	
         }
         #endregion
 

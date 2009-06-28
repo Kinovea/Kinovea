@@ -41,10 +41,10 @@ namespace Kinovea.ScreenManager
     {
         public string FriendlyName
         {
-            get { return m_ResManager.GetString("CommandLoadMovieInScreen_FriendlyName", Thread.CurrentThread.CurrentUICulture);}
+            get { return Languages.ScreenManagerLang.CommandLoadMovieInScreen_FriendlyName;}
         }
 
-        private ResourceManager m_ResManager;
+        private ResourceManager m_ResManager  = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
         private String filePath;
         private ScreenManagerKernel screenManagerKernel;
         private int ForceScreen;
@@ -52,7 +52,6 @@ namespace Kinovea.ScreenManager
         #region constructor
         public CommandLoadMovieInScreen(ScreenManagerKernel _smk, String _filePath, int _iForceScreen, bool _bStoreState)
         {
-            m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             screenManagerKernel = _smk;
             filePath = _filePath;
             ForceScreen = _iForceScreen;
@@ -121,7 +120,7 @@ namespace Kinovea.ScreenManager
                     CommandManager.LaunchCommand(clm);
 
                     //Si on a pu charger la vidéo, sauver dans l'historique
-                    if (ps.m_PlayerScreenUI.m_VideoFile.Loaded)
+                    if (ps.FrameServer.VideoFile.Loaded)
                     {
                         SaveFileToHistory(filePath);
                     }
@@ -138,17 +137,21 @@ namespace Kinovea.ScreenManager
                             CommandManager.LaunchCommand(caps);
 
                             // Charger la vidéo dedans
-                            clm = new CommandLoadMovie((PlayerScreen)screenManagerKernel.screenList[0], filePath);
-                            CommandManager.LaunchCommand(clm);
-
-                            //Si on a pu charger la vidéo, sauver dans l'historique
-                            if (((PlayerScreen)screenManagerKernel.screenList[0]).m_PlayerScreenUI.m_VideoFile.Loaded)
+                            PlayerScreen ps = screenManagerKernel.screenList[0] as PlayerScreen;
+                            if(ps != null)
                             {
-                                SaveFileToHistory(filePath);
-                            }
+	                            clm = new CommandLoadMovie(ps, filePath);
+	                            CommandManager.LaunchCommand(clm);
+	
+	                            //Si on a pu charger la vidéo, sauver dans l'historique
+	                            if (ps.FrameServer.VideoFile.Loaded)
+	                            {
+	                                SaveFileToHistory(filePath);
+	                            }
 
-                            //Afficher l'écran qu'on vient de le créer.
-                            CommandManager.LaunchCommand(css);
+                            	//Afficher l'écran qu'on vient de le créer.
+                            	CommandManager.LaunchCommand(css);
+                            }
                             break;
                         }
                     case 1:
@@ -185,7 +188,7 @@ namespace Kinovea.ScreenManager
 	                                CommandManager.LaunchCommand(clm);
 	
 	                                //Si on a pu charger la vidéo, sauver dans l'historique
-	                                if (ps.m_PlayerScreenUI.m_VideoFile.Loaded)
+	                                if (ps.FrameServer.VideoFile.Loaded)
 	                                {
 	                                    SaveFileToHistory(filePath);
 	                                }
@@ -202,11 +205,11 @@ namespace Kinovea.ScreenManager
                             PlayerScreen ps0 = screenManagerKernel.screenList[0] as PlayerScreen;
                             PlayerScreen ps1 = screenManagerKernel.screenList[1] as PlayerScreen;
                             
-                            if (ps0 != null && ps0.m_PlayerScreenUI.m_VideoFile.Loaded == false)
+                            if (ps0 != null && ps0.FrameServer.VideoFile.Loaded == false)
                             {
                                 iEmptyScreen = 0;
                             }
-                            else if (ps1 != null && ps1.m_PlayerScreenUI.m_VideoFile.Loaded == false)
+                            else if (ps1 != null && ps1.FrameServer.VideoFile.Loaded == false)
                             {
                                 iEmptyScreen = 1;
                             }
@@ -219,7 +222,7 @@ namespace Kinovea.ScreenManager
                                 CommandManager.LaunchCommand(clm);
 
                                 //Si on a pu charger la vidéo, sauver dans l'historique
-                                if (((PlayerScreen)screenManagerKernel.screenList[iEmptyScreen]).m_PlayerScreenUI.m_VideoFile.Loaded)
+                                if (((PlayerScreen)screenManagerKernel.screenList[iEmptyScreen]).FrameServer.VideoFile.Loaded)
                                 {
                                     SaveFileToHistory(filePath);
                                 }
@@ -269,7 +272,7 @@ namespace Kinovea.ScreenManager
 	                                    CommandManager.LaunchCommand(clm);
 	
 	                                    //Si on a pu charger la vidéo, sauver dans l'historique
-	                                    if (ps.m_PlayerScreenUI.m_VideoFile.Loaded)
+	                                    if (ps.FrameServer.VideoFile.Loaded)
 	                                    {
 	                                        SaveFileToHistory(filePath);
 	                                    }

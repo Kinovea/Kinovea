@@ -42,6 +42,10 @@ namespace Kinovea.ScreenManager
         {
         	get { return m_CaptureScreenUI; }	
         }
+		public override string FilePath
+		{
+			get { return ""; }
+		}
         #endregion
 
         #region Members

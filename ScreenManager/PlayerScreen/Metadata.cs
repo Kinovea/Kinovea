@@ -612,10 +612,6 @@ namespace Kinovea.ScreenManager
             m_Keyframes.Clear();
             m_Chronos.Clear();
             
-            /*for(Track t in m_Tracks)
-            {
-            	t.Release();
-            }*/
             StopAllTracking();
             m_Tracks.Clear();
             m_Grid.Reset();
