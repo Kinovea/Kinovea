@@ -3314,6 +3314,11 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Keyframes Panel
+		private void pnlThumbnails_MouseEnter(object sender, EventArgs e)
+		{
+			// Give focus to disable keyframe box editing.
+			pnlThumbnails.Focus();
+		}
 		private void splitKeyframes_Resize(object sender, EventArgs e)
 		{
 			// Redo the dock/undock if needed to be at the right place.
@@ -3352,28 +3357,25 @@ namespace Kinovea.ScreenManager
 
 				foreach (Keyframe kf in m_Metadata.Keyframes)
 				{
-					ThumbBox tBox = new ThumbBox();
-					SetupDefaultThumbBox(tBox);
+					KeyframeBox box = new KeyframeBox(kf);
+					SetupDefaultThumbBox(box);
 					
 					// Finish the setup
-					tBox.Left = iPixelsOffset + iPixelsSpacing;
+					box.Left = iPixelsOffset + iPixelsSpacing;
 
-					tBox.pbThumbnail.Image = kf.Thumbnail;
-					tBox.Title = kf.Title;
-					//tBox.TimeCode =
+					box.pbThumbnail.Image = kf.Thumbnail;
+					box.UpdateTitle(kf.Title);
+					box.Tag = iKeyframeIndex;
+					box.pbThumbnail.SizeMode = PictureBoxSizeMode.CenterImage;
 					
-					
-					tBox.Tag = iKeyframeIndex;
-					tBox.pbThumbnail.SizeMode = PictureBoxSizeMode.CenterImage;
-					
-					tBox.CloseThumb += new ThumbBox.CloseThumbHandler(ThumbBoxClose);
-					tBox.ClickThumb += new ThumbBox.ClickThumbHandler(ThumbBoxClick);
-					tBox.ClickInfos += new ThumbBox.ClickInfosHandler(ThumbBoxInfosClick);
+					box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
+					box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
+					box.ClickInfos += new KeyframeBox.ClickInfosHandler(ThumbBoxInfosClick);
 					
 					// TODO - Titre de la Keyframe en ToolTip.
-					iPixelsOffset += (iPixelsSpacing + tBox.Width);
+					iPixelsOffset += (iPixelsSpacing + box.Width);
 
-					pnlThumbnails.Controls.Add(tBox);
+					pnlThumbnails.Controls.Add(box);
 
 					iKeyframeIndex++;
 				}
@@ -3387,7 +3389,7 @@ namespace Kinovea.ScreenManager
 				m_iActiveKeyFrameIndex = -1;
 			}
 		}
-		private void SetupDefaultThumbBox(ThumbBox _ThumbBox)
+		private void SetupDefaultThumbBox(KeyframeBox _ThumbBox)
 		{
 			_ThumbBox.Top = 10;
 			_ThumbBox.Cursor = Cursors.Hand;
@@ -3415,7 +3417,7 @@ namespace Kinovea.ScreenManager
 				{
 					m_iActiveKeyFrameIndex = i;
 					if(_bAllowUIUpdate)
-						((ThumbBox)pnlThumbnails.Controls[i]).Selected = true;
+						((KeyframeBox)pnlThumbnails.Controls[i]).DisplayAsSelected(true);
 
 					// Make sure the thumbnail is always in the visible area by auto scrolling.
 					if(_bAllowUIUpdate) pnlThumbnails.ScrollControlIntoView(pnlThumbnails.Controls[i]);
@@ -3423,7 +3425,7 @@ namespace Kinovea.ScreenManager
 				else
 				{
 					if(_bAllowUIUpdate)
-						((ThumbBox)pnlThumbnails.Controls[i]).Selected = false;
+						((KeyframeBox)pnlThumbnails.Controls[i]).DisplayAsSelected(false);
 				}
 			}
 
@@ -3446,7 +3448,7 @@ namespace Kinovea.ScreenManager
 			// We leverage the fact that pnlThumbnail is exclusively populated with thumboxes.
 			for (int i = 0; i < pnlThumbnails.Controls.Count; i++)
 			{
-				ThumbBox tb = pnlThumbnails.Controls[i] as ThumbBox;
+				KeyframeBox tb = pnlThumbnails.Controls[i] as KeyframeBox;
 				if(tb != null)
 				{
 					m_Metadata[i].TimeCode = TimeStampsToTimecode(m_Metadata[i].Position - m_iSelStart, m_PrefManager.TimeCodeFormat, false);
@@ -3457,8 +3459,7 @@ namespace Kinovea.ScreenManager
 						m_Metadata[i].Disabled = false;
 						
 						tb.Enabled = true;
-						tb.pbThumbnail.Image = m_Metadata[i].Thumbnail;
-						tb.Title = m_Metadata[i].Title;
+						tb.pbThumbnail.Image = m_Metadata[i].Thumbnail;	
 					}
 					else
 					{
@@ -3466,8 +3467,9 @@ namespace Kinovea.ScreenManager
 						
 						tb.Enabled = false;
 						tb.pbThumbnail.Image = m_Metadata[i].DisabledThumbnail;
-						tb.Title = m_Metadata[i].Title;
 					}
+
+					tb.UpdateTitle(m_Metadata[i].Title);
 				}
 			}
 		}
@@ -3662,7 +3664,7 @@ namespace Kinovea.ScreenManager
 		#region ThumbBox event Handlers
 		private void ThumbBoxClose(object sender, EventArgs e)
 		{
-			RemoveKeyframe((int)((ThumbBox)sender).Tag);
+			RemoveKeyframe((int)((KeyframeBox)sender).Tag);
 
 			// Set as active screen is done after in case we don't have any keyframes left.
 			SetAsActiveScreen();
@@ -3673,7 +3675,7 @@ namespace Kinovea.ScreenManager
 			SetAsActiveScreen();
 			StopPlaying();
 
-			long iTargetPosition = m_Metadata[(int)((ThumbBox)sender).Tag].Position;
+			long iTargetPosition = m_Metadata[(int)((KeyframeBox)sender).Tag].Position;
 
 			trkSelection.SelPos = iTargetPosition;
 			m_iFramesToDecode = 1;

@@ -159,15 +159,18 @@ namespace Kinovea.ScreenManager
             // This must not be called at each info modification otherwise the update routine breaks...
             if (m_Keyframe != null)
             {
-                m_Keyframe.Title = txtTitle.Text;
+            	if(m_Keyframe.Title != txtTitle.Text)
+            	{
+            		m_Keyframe.Title = txtTitle.Text;
 
-                m_Keyframe.Comments.Clear();
-                foreach (string line in rtbComment.Lines)
-                {
-                    m_Keyframe.Comments.Add(line + "\n");
-                }
-
-                m_psui.OnKeyframesTitleChanged();
+	                m_Keyframe.Comments.Clear();
+	                foreach (string line in rtbComment.Lines)
+	                {
+	                    m_Keyframe.Comments.Add(line + "\n");
+	                }
+	
+	                m_psui.OnKeyframesTitleChanged();
+            	}
             }
         }
         #endregion

@@ -481,7 +481,7 @@ namespace Kinovea.ScreenManager
         	this.sldrSpeed.SmallChange = 1;
         	this.sldrSpeed.StickyValue = 100;
         	this.sldrSpeed.TabIndex = 15;
-        	this.sldrSpeed.Value = 50;
+        	this.sldrSpeed.Value = 100;
         	this.sldrSpeed.ValueChanged += new Kinovea.ScreenManager.SpeedSlider.ValueChangedHandler(this.sldrSpeed_ValueChanged);
         	this.sldrSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sldrSpeed_KeyDown);
         	// 
@@ -612,7 +612,6 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
         	this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
         	this.panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
-        	//this.panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	// 
         	// ImageResizerNE
         	// 
@@ -1116,6 +1115,8 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.Size = new System.Drawing.Size(350, 102);
         	this.pnlThumbnails.TabIndex = 3;
         	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
+        	this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
+        	// 
         	// 
         	// pictureBox1
         	// 
