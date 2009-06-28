@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
         	this.lblFileName.Name = "lblFileName";
         	this.lblFileName.Size = new System.Drawing.Size(67, 13);
         	this.lblFileName.TabIndex = 3;
-        	this.lblFileName.Text = "VideoFile.ext";
+        	this.lblFileName.Text = "";
         	// 
         	// btnClose
         	// 

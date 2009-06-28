@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
@@ -36,62 +37,75 @@ namespace Kinovea.ScreenManager
 	/// </summary>
     public partial class formConfigureSpeed : Form
     {
+    	#region Properties
+    	
+    	#endregion
+    	public double SlowFactor
+    	{
+    		get 
+    		{ 
+	    		if (m_fRealWorldFps < 1)
+	            {
+	                // Fall back to original.
+	                return m_fSlowFactor;
+	            }
+	            else
+	            {
+	                return m_fRealWorldFps / m_fVideoFps;
+	            }
+    		}
+    	}
     	#region Members
-        private ResourceManager m_ResourceManager;
-        private PlayerScreenUserInterface m_psui;   	// Just to access the SlowFactor property.
-        
-        private double m_fFps;						// This is the fps read in the video. (ex: 24 fps)
+        private double m_fVideoFps;					// This is the fps read in the video. (ex: 24 fps)
+        private double m_fRealWorldFps;				// The current fps modified value (ex: 1000 fps).
         private double m_fSlowFactor;					// The current slow factor. (if we already used the dialog)
-        private double m_fOriginalFps;				// The current fps modified value (ex: 1000 fps).
         #endregion
         
         #region Construction & Initialization
-        public formConfigureSpeed(double _fFps, PlayerScreenUserInterface _psui)
+        public formConfigureSpeed(double _fFps, double _fSlowFactor)
         {
-            InitializeComponent();
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            m_psui = _psui;
-            m_fSlowFactor = m_psui.SlowFactor;
-            m_fFps = _fFps;
-            m_fOriginalFps = m_fFps * m_fSlowFactor;
+            m_fSlowFactor = _fSlowFactor;
+            m_fVideoFps = _fFps;
+            m_fRealWorldFps = m_fVideoFps * m_fSlowFactor;
             
+            InitializeComponent();
             LocalizeForm();
         }
         private void LocalizeForm()
         {
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureSpeed_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            lblFPSCaptureTime.Text = m_ResourceManager.GetString("dlgConfigureSpeed_lblFPSCaptureTime", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n");
-            toolTips.SetToolTip(btnReset, m_ResourceManager.GetString("dlgConfigureSpeed_ToolTip_Reset", Thread.CurrentThread.CurrentUICulture));
+            this.Text = "   " + ScreenManagerLang.dlgConfigureSpeed_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            lblFPSCaptureTime.Text = ScreenManagerLang.dlgConfigureSpeed_lblFPSCaptureTime.Replace("\\n", "\n");
+            toolTips.SetToolTip(btnReset, ScreenManagerLang.dlgConfigureSpeed_ToolTip_Reset);
             
             // Update text box with current value. (Will update computed values too)
-            tbFPSOriginal.Text = String.Format("{0:0.00}", m_fOriginalFps);
+            tbFPSRealWorld.Text = String.Format("{0:0.00}", m_fRealWorldFps);
         }
         #endregion
 
         #region User choices handlers
         private void UpdateValues()
         {
-            lblFPSDisplayTime.Text = String.Format(m_ResourceManager.GetString("dlgConfigureSpeed_lblFPSDisplayTime", Thread.CurrentThread.CurrentUICulture), m_fFps);
-            int timesSlower = (int)(m_fOriginalFps / m_fFps);
+            lblFPSDisplayTime.Text = String.Format(ScreenManagerLang.dlgConfigureSpeed_lblFPSDisplayTime, m_fVideoFps);
+            int timesSlower = (int)(m_fRealWorldFps / m_fVideoFps);
             lblSlowFactor.Visible = timesSlower > 1;
-            lblSlowFactor.Text = String.Format(m_ResourceManager.GetString("dlgConfigureSpeed_lblSlowFactor", Thread.CurrentThread.CurrentUICulture), timesSlower);
+            lblSlowFactor.Text = String.Format(ScreenManagerLang.dlgConfigureSpeed_lblSlowFactor, timesSlower);
         }
-        private void tbFPSOriginal_TextChanged(object sender, EventArgs e)
+        private void tbFPSRealWorld_TextChanged(object sender, EventArgs e)
         {
             try
             {
             	// FIXME: check how this play with culture variations on decimal separator.
-                m_fOriginalFps = double.Parse(tbFPSOriginal.Text);
-                if (m_fOriginalFps > 2000)
+                m_fRealWorldFps = double.Parse(tbFPSRealWorld.Text);
+                if (m_fRealWorldFps > 2000)
                 {
-                    tbFPSOriginal.Text = "2000";
+                    tbFPSRealWorld.Text = "2000";
                 }
-                else if (m_fOriginalFps < 1)
+                else if (m_fRealWorldFps < 1)
                 {
-                    m_fOriginalFps = m_fFps;
+                    m_fRealWorldFps = m_fVideoFps;
                 }
             }
             catch
@@ -101,7 +115,7 @@ namespace Kinovea.ScreenManager
 
             UpdateValues();
         }
-        private void tbFPSOriginal_KeyPress(object sender, KeyPressEventArgs e)
+        private void tbFPSRealWorld_KeyPress(object sender, KeyPressEventArgs e)
         {
         	// We only accept numbers, points and coma in there.
             char key = e.KeyChar;
@@ -110,32 +124,11 @@ namespace Kinovea.ScreenManager
                 e.Handled = true;
             }
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void btnReset_Click(object sender, EventArgs e)
         {
             // Fall back To original.
-            tbFPSOriginal.Text = String.Format("{0:0.00}", m_fFps);
+            tbFPSRealWorld.Text = String.Format("{0:0.00}", m_fVideoFps);
         }
         #endregion
-        
-        #region OK/Cancel Handlers
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            // Save value.
-            if (m_fOriginalFps < 1)
-            {
-                // Fall back to original.
-                m_psui.SlowFactor = m_fFps;
-            }
-            else
-            {
-                m_psui.SlowFactor = m_fOriginalFps / m_fFps;
-            }
-        }
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-             // Nothing more to do.           
-        }
-        #endregion
-
     }
 }

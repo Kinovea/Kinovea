@@ -32,6 +32,7 @@ namespace Kinovea.ScreenManager
 	/// This is the loader for files.
 	/// Launches the background thread that calls into ffmpeg.
 	/// Display a progress bar while running.
+	/// TODO: replace with FormProgressBar and a BgWorker in the caller. See VideoFilters.
 	/// </summary>
     public partial class formFileLoader : Form
     {
@@ -48,8 +49,8 @@ namespace Kinovea.ScreenManager
             m_PlayerScreen = _PlayerScreen;
             m_FilePath = _FilePath;
 
-            Text = "   " + m_PlayerScreen.m_ResourceManager.GetString("LoadMovieProgress_Title", Thread.CurrentThread.CurrentUICulture);
-            buttonCancel.Text = m_PlayerScreen.m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture); ;
+            Text = "   " + Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovieProgress_Title;
+            buttonCancel.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.Generic_Cancel;
 
             progressBar.Minimum  = 0;
             progressBar.Maximum  = 100;
@@ -91,8 +92,8 @@ namespace Kinovea.ScreenManager
             // /!\ Cette fonction s'execute dans l'espace du WORKER THREAD.
             // Les fonctions appelées d'ici ne doivent pas toucher l'UI.
             //-------------------------------------------------------------
-            m_PlayerScreen.m_PlayerScreenUI.m_VideoFile.BgWorker = bgMovieLoader;
-            LoadResult res = m_PlayerScreen.m_PlayerScreenUI.m_VideoFile.Load((String)e.Argument);
+            m_PlayerScreen.FrameServer.VideoFile.BgWorker = bgMovieLoader;
+            LoadResult res = m_PlayerScreen.FrameServer.VideoFile.Load((String)e.Argument);
 
             if(res == LoadResult.Cancelled)
                 e.Cancel = true;
@@ -124,9 +125,9 @@ namespace Kinovea.ScreenManager
                     if (progressBar.Style != ProgressBarStyle.Marquee)
                         progressBar.Style = ProgressBarStyle.Marquee;
 
-                    labelInfos.Text = m_PlayerScreen.m_ResourceManager.GetString("LoadMovieProgress_Infos", Thread.CurrentThread.CurrentUICulture)
+                    labelInfos.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovieProgress_Infos
                                                      + " " + iValue + " / " +
-                                                     m_PlayerScreen.m_ResourceManager.GetString("LoadMovieProgress_TotalUnknown", Thread.CurrentThread.CurrentUICulture);
+                                                     Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovieProgress_TotalUnknown;
                 }
                 else
                 {
@@ -140,8 +141,7 @@ namespace Kinovea.ScreenManager
                     progressBar.Maximum = iTotal;
                     progressBar.Value = iValue;
 
-                    labelInfos.Text = m_PlayerScreen.m_ResourceManager.GetString("LoadMovieProgress_Infos", Thread.CurrentThread.CurrentUICulture)
-                                                        + " " + iValue + " / ~" + iTotal;
+                    labelInfos.Text = Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovieProgress_Infos + " " + iValue + " / ~" + iTotal;
                 }
             }
         }

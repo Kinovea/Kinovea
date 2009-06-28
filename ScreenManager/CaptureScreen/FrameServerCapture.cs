@@ -33,6 +33,7 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// FrameServerCapture encapsulate all the metadata and configuration for managing frames in a capture screen.
+	/// This is the object that maintain the interface with file level operations done by VideoFile class.
 	/// </summary>
 	public class FrameServerCapture : AbstractFrameServer
 	{
@@ -64,7 +65,8 @@ namespace Kinovea.ScreenManager
 		private bool m_bIsRecording;
 		private VideoFile m_VideoFile = new VideoFile();
 		//private bool m_bSavingContextEncodingSuccess;
-		
+		//m_Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));
+			
 		#endregion
 		
 		#region Constructor

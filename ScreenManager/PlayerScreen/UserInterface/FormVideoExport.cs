@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.IO;
 using System.Reflection;
@@ -30,40 +31,37 @@ namespace Kinovea.ScreenManager
     public partial class formVideoExport : Form
     {
         private PlayerScreen m_PlayerScreen;
-        private ResourceManager m_ResourceManager;
+        private int m_iSlowmotionPercentage;
 
         public formVideoExport(PlayerScreen _ActiveScreen)
         {
+        	m_iSlowmotionPercentage = ((PlayerScreenUserInterface)_ActiveScreen.UI).SlowmotionPercentage;
+        	m_PlayerScreen = _ActiveScreen;
+        	
             InitializeComponent();
-            
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            m_ResourceManager = rm;
-
-            m_PlayerScreen = _ActiveScreen;
-
             InitCulture();
         }
 
         private void InitCulture()
         {
-            this.Text = "   " + m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_Title", Thread.CurrentThread.CurrentUICulture);
-            groupSaveMethod.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_GroupSaveMethod", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgSaveAnalysisOrVideo_Title;
+            groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;
             
-            radioSaveVideo.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioVideo", Thread.CurrentThread.CurrentUICulture);
-            radioSaveAnalysis.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioAnalysis", Thread.CurrentThread.CurrentUICulture);
-            radioSaveMuxed.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioMuxed", Thread.CurrentThread.CurrentUICulture);
-            radioSaveBoth.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioBoth", Thread.CurrentThread.CurrentUICulture);
+            radioSaveVideo.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioVideo;
+            radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
+            radioSaveMuxed.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioMuxed;
+            radioSaveBoth.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBoth;
 
 
-            groupOptions.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_GroupOptions", Thread.CurrentThread.CurrentUICulture);
+            groupOptions.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupOptions;
 
-            checkSlowMotion.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_CheckSlow", Thread.CurrentThread.CurrentUICulture);
-            checkSlowMotion.Text = checkSlowMotion.Text + m_PlayerScreen.m_PlayerScreenUI.SlowmotionPercentage.ToString() + "%).";
+            checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
+            checkSlowMotion.Text = checkSlowMotion.Text + m_iSlowmotionPercentage.ToString() + "%).";
 
-            checkBlendDrawings.Text = m_ResourceManager.GetString("dlgSaveAnalysisOrVideo_CheckBlend", Thread.CurrentThread.CurrentUICulture);
+            checkBlendDrawings.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckBlend;
 
-            btnOK.Text = m_ResourceManager.GetString("Generic_Save", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            btnOK.Text = ScreenManagerLang.Generic_Save;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
 
             EnableDisableOptions();
 
@@ -118,7 +116,7 @@ namespace Kinovea.ScreenManager
             string filePath = null;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = m_ResourceManager.GetString("dlgSaveVideoTitle", Thread.CurrentThread.CurrentUICulture);
+            saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.FilterIndex = 1;
 
@@ -126,12 +124,12 @@ namespace Kinovea.ScreenManager
             bool bVideoAlone;
             if (radioSaveMuxed.Checked)
             {
-                saveFileDialog.Filter = m_ResourceManager.GetString("dlgSaveVideoFilterMuxed", Thread.CurrentThread.CurrentUICulture);
+                saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterMuxed;
                 bVideoAlone = false;
             }
             else
             {
-                saveFileDialog.Filter = m_ResourceManager.GetString("dlgSaveVideoFilterAlone", Thread.CurrentThread.CurrentUICulture);
+                saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
                 bVideoAlone = true;
             }
 
@@ -154,7 +152,7 @@ namespace Kinovea.ScreenManager
         {
             // Analysis only.
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = m_ResourceManager.GetString("dlgSaveAnalysisTitle", Thread.CurrentThread.CurrentUICulture);
+            saveFileDialog.Title = ScreenManagerLang.dlgSaveAnalysisTitle;
 
 
             if (_filePath == null)
@@ -170,7 +168,7 @@ namespace Kinovea.ScreenManager
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(_filePath);
             }
             saveFileDialog.FilterIndex = 1;
-            saveFileDialog.Filter = m_ResourceManager.GetString("dlgSaveAnalysisFilter", Thread.CurrentThread.CurrentUICulture);
+            saveFileDialog.Filter = ScreenManagerLang.dlgSaveAnalysisFilter;
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {

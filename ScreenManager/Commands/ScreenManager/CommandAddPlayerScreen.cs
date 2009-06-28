@@ -56,15 +56,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// Execution de la commande
+        /// Add a PlayerScreen to the screen list and initialize it.
         /// </summary>
         public void Execute()
         {
             PlayerScreen screen = new PlayerScreen();
             
+            // Delegates
             screen.CloseMe += new AbstractScreen.DelegateCloseMe(screenManagerKernel.Screen_CloseAsked);
             screen.SetMeAsActiveScreen += new AbstractScreen.DelegateSetMeAsActiveScreen(screenManagerKernel.Screen_SetActiveScreen);
-            
             screen.m_PlayerIsReady += new PlayerScreen.PlayerIsReady(screenManagerKernel.Player_IsReady);
             screen.m_PlayerSelectionChanged  += new PlayerScreen.PlayerSelectionChanged(screenManagerKernel.Player_SelectionChanged);
 

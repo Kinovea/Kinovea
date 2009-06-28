@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
         	this.groupBoxSpeedTuner = new System.Windows.Forms.GroupBox();
         	this.markerSpeedTuner = new System.Windows.Forms.Button();
         	this.PrimarySelection = new System.Windows.Forms.Button();
-        	this._panelCenter = new System.Windows.Forms.Panel();
+        	this.panelCenter = new System.Windows.Forms.Panel();
         	this.ImageResizerNE = new System.Windows.Forms.Label();
         	this.ImageResizerNW = new System.Windows.Forms.Label();
         	this.ImageResizerSW = new System.Windows.Forms.Label();
@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
         	this.dbgSelectionStart = new System.Windows.Forms.Label();
         	this.dbgFFps = new System.Windows.Forms.Label();
         	this.dbgDurationTimeStamps = new System.Windows.Forms.Label();
-        	this._surfaceScreen = new System.Windows.Forms.PictureBox();
+        	this.pbSurfaceScreen = new System.Windows.Forms.PictureBox();
         	this.ActiveScreenIndicator = new System.Windows.Forms.Label();
         	this.toolTips = new System.Windows.Forms.ToolTip(this.components);
         	this.splitKeyframes = new System.Windows.Forms.SplitContainer();
@@ -95,14 +95,13 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPointer = new System.Windows.Forms.Button();
         	this.pnlThumbnails = new System.Windows.Forms.Panel();
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
-        	this.btnCopyDrawings = new System.Windows.Forms.Button();
         	this.btnAddKeyframe = new System.Windows.Forms.Button();
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
         	this.groupBoxSpeedTuner.SuspendLayout();
-        	this._panelCenter.SuspendLayout();
+        	this.panelCenter.SuspendLayout();
         	this.panelDebug.SuspendLayout();
-        	((System.ComponentModel.ISupportInitialize)(this._surfaceScreen)).BeginInit();
+        	((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).BeginInit();
         	this.splitKeyframes.Panel1.SuspendLayout();
         	this.splitKeyframes.Panel2.SuspendLayout();
         	this.splitKeyframes.SuspendLayout();
@@ -128,7 +127,7 @@ namespace Kinovea.ScreenManager
         	this.lblFileName.Name = "lblFileName";
         	this.lblFileName.Size = new System.Drawing.Size(67, 13);
         	this.lblFileName.TabIndex = 3;
-        	this.lblFileName.Text = "VideoFile.ext";
+        	this.lblFileName.Text = "";
         	// 
         	// btnClose
         	// 
@@ -599,26 +598,26 @@ namespace Kinovea.ScreenManager
         	this.PrimarySelection.TabIndex = 0;
         	this.PrimarySelection.UseVisualStyleBackColor = false;
         	// 
-        	// _panelCenter
+        	// panelCenter
         	// 
-        	this._panelCenter.BackColor = System.Drawing.Color.Black;
-        	this._panelCenter.Controls.Add(this.ImageResizerNE);
-        	this._panelCenter.Controls.Add(this.ImageResizerNW);
-        	this._panelCenter.Controls.Add(this.ImageResizerSW);
-        	this._panelCenter.Controls.Add(this.ImageResizerSE);
-        	this._panelCenter.Controls.Add(this.panelDebug);
-        	this._panelCenter.Controls.Add(this._surfaceScreen);
-        	this._panelCenter.Controls.Add(this.ActiveScreenIndicator);
-        	this._panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
-        	this._panelCenter.Location = new System.Drawing.Point(0, 0);
-        	this._panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
-        	this._panelCenter.Name = "_panelCenter";
-        	this._panelCenter.Size = new System.Drawing.Size(350, 235);
-        	this._panelCenter.TabIndex = 2;
-        	this._panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
-        	this._panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
-        	this._panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
-        	//this._panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
+        	this.panelCenter.BackColor = System.Drawing.Color.Black;
+        	this.panelCenter.Controls.Add(this.ImageResizerNE);
+        	this.panelCenter.Controls.Add(this.ImageResizerNW);
+        	this.panelCenter.Controls.Add(this.ImageResizerSW);
+        	this.panelCenter.Controls.Add(this.ImageResizerSE);
+        	this.panelCenter.Controls.Add(this.panelDebug);
+        	this.panelCenter.Controls.Add(this.pbSurfaceScreen);
+        	this.panelCenter.Controls.Add(this.ActiveScreenIndicator);
+        	this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
+        	this.panelCenter.Location = new System.Drawing.Point(0, 0);
+        	this.panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
+        	this.panelCenter.Name = "_panelCenter";
+        	this.panelCenter.Size = new System.Drawing.Size(350, 235);
+        	this.panelCenter.TabIndex = 2;
+        	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
+        	this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
+        	this.panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
+        	//this.panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	// 
         	// ImageResizerNE
         	// 
@@ -835,19 +834,19 @@ namespace Kinovea.ScreenManager
         	// 
         	// _surfaceScreen
         	// 
-        	this._surfaceScreen.Cursor = System.Windows.Forms.Cursors.Arrow;
-        	this._surfaceScreen.Location = new System.Drawing.Point(43, 29);
-        	this._surfaceScreen.Name = "_surfaceScreen";
-        	this._surfaceScreen.Size = new System.Drawing.Size(101, 73);
-        	this._surfaceScreen.TabIndex = 2;
-        	this._surfaceScreen.TabStop = false;
-        	this._surfaceScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseMove);
-        	this._surfaceScreen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDoubleClick);
-        	this._surfaceScreen.MouseDown += new System.Windows.Forms.MouseEventHandler(this._surfaceScreen_MouseDown);
-        	this._surfaceScreen.Paint += new System.Windows.Forms.PaintEventHandler(this.SurfaceScreen_Paint);
-        	this._surfaceScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseUp);
-        	this._surfaceScreen.MouseEnter += new System.EventHandler(this.SurfaceScreen_MouseEnter);
-        	this._surfaceScreen.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
+        	this.pbSurfaceScreen.Cursor = System.Windows.Forms.Cursors.Arrow;
+        	this.pbSurfaceScreen.Location = new System.Drawing.Point(43, 29);
+        	this.pbSurfaceScreen.Name = "_surfaceScreen";
+        	this.pbSurfaceScreen.Size = new System.Drawing.Size(101, 73);
+        	this.pbSurfaceScreen.TabIndex = 2;
+        	this.pbSurfaceScreen.TabStop = false;
+        	this.pbSurfaceScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseMove);
+        	this.pbSurfaceScreen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDoubleClick);
+        	this.pbSurfaceScreen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDown);
+        	this.pbSurfaceScreen.Paint += new System.Windows.Forms.PaintEventHandler(this.SurfaceScreen_Paint);
+        	this.pbSurfaceScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseUp);
+        	this.pbSurfaceScreen.MouseEnter += new System.EventHandler(this.SurfaceScreen_MouseEnter);
+        	this.pbSurfaceScreen.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	
         	// 
         	// ActiveScreenIndicator
@@ -874,7 +873,7 @@ namespace Kinovea.ScreenManager
         	// 
         	// splitKeyframes.Panel1
         	// 
-        	this.splitKeyframes.Panel1.Controls.Add(this._panelCenter);
+        	this.splitKeyframes.Panel1.Controls.Add(this.panelCenter);
         	// 
         	// splitKeyframes.Panel2
         	// 
@@ -1117,7 +1116,6 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.Controls.Add(this.btnPdf);
         	this.pnlThumbnails.Controls.Add(this.pictureBox1);
         	this.pnlThumbnails.Controls.Add(this.btnAnalysisMode);
-        	this.pnlThumbnails.Controls.Add(this.btnCopyDrawings);
         	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
         	this.pnlThumbnails.Name = "pnlThumbnails";
         	this.pnlThumbnails.Size = new System.Drawing.Size(350, 102);
@@ -1133,24 +1131,6 @@ namespace Kinovea.ScreenManager
         	this.pictureBox1.TabIndex = 2;
         	this.pictureBox1.TabStop = false;
         	this.pictureBox1.Visible = false;
-        	// 
-        	// btnCopyDrawings
-        	// 
-        	this.btnCopyDrawings.BackColor = System.Drawing.Color.Transparent;
-        	this.btnCopyDrawings.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.import6;
-        	this.btnCopyDrawings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-        	this.btnCopyDrawings.FlatAppearance.BorderSize = 0;
-        	this.btnCopyDrawings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-        	this.btnCopyDrawings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnCopyDrawings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnCopyDrawings.ForeColor = System.Drawing.Color.Black;
-        	this.btnCopyDrawings.Location = new System.Drawing.Point(320, 58);
-        	this.btnCopyDrawings.Name = "btnCopyDrawings";
-        	this.btnCopyDrawings.Size = new System.Drawing.Size(25, 25);
-        	this.btnCopyDrawings.TabIndex = 6;
-        	this.btnCopyDrawings.UseVisualStyleBackColor = false;
-        	this.btnCopyDrawings.Visible = false;
-        	this.btnCopyDrawings.Click += new System.EventHandler(this.btnCopyDrawings_Click);
         	// 
         	// btnAddKeyframe
         	// 
@@ -1177,6 +1157,7 @@ namespace Kinovea.ScreenManager
         	this.Controls.Add(this.splitKeyframes);
         	this.Controls.Add(this.panelVideoControls);
         	this.Controls.Add(this.panelTop);
+        	this.Dock = System.Windows.Forms.DockStyle.Fill;
         	this.MinimumSize = new System.Drawing.Size(350, 510);
         	this.Name = "PlayerScreenUserInterface";
         	this.Size = new System.Drawing.Size(350, 510);
@@ -1185,10 +1166,10 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.ResumeLayout(false);
         	this.panelVideoControls.PerformLayout();
         	this.groupBoxSpeedTuner.ResumeLayout(false);
-        	this._panelCenter.ResumeLayout(false);
+        	this.panelCenter.ResumeLayout(false);
         	this.panelDebug.ResumeLayout(false);
         	this.panelDebug.PerformLayout();
-        	((System.ComponentModel.ISupportInitialize)(this._surfaceScreen)).EndInit();
+        	((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).EndInit();
         	this.splitKeyframes.Panel1.ResumeLayout(false);
         	this.splitKeyframes.Panel2.ResumeLayout(false);
         	this.splitKeyframes.ResumeLayout(false);
@@ -1200,7 +1181,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         private System.Windows.Forms.Panel panelTop;
-        private System.Windows.Forms.Panel _panelCenter;
+        public System.Windows.Forms.Panel panelCenter;
         private System.Windows.Forms.Panel panelVideoControls;
         private System.Windows.Forms.Button buttonPlay;
         private System.Windows.Forms.Button buttonGotoLast;
@@ -1240,7 +1221,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblWorkingZone;
         private System.Windows.Forms.Label dbgDurationFrames;
         private System.Windows.Forms.Label dbgCurrentFrame;
-        public System.Windows.Forms.PictureBox _surfaceScreen;
+        public System.Windows.Forms.PictureBox pbSurfaceScreen;
         private System.Windows.Forms.Button btnSetHandlerRight;
         private System.Windows.Forms.Button btnSetHandlerLeft;
         private System.Windows.Forms.Label dbgAvailableRam;
@@ -1250,7 +1231,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel pnlThumbnails;
         private System.Windows.Forms.Button btnDrawingToolPointer;
-        private System.Windows.Forms.Button btnCopyDrawings;
         private SpeedSlider sldrSpeed;
         private System.Windows.Forms.Button btnDrawingToolCross2D;
         private System.Windows.Forms.Button btnDrawingToolAngle2D;

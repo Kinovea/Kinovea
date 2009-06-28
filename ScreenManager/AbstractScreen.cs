@@ -44,6 +44,10 @@ namespace Kinovea.ScreenManager
         {
         	get;
         }
+        public abstract string FilePath
+        {
+        	get;
+        }
 
         public abstract void DisplayAsInactiveScreen();
         public abstract void DisplayAsActiveScreen();

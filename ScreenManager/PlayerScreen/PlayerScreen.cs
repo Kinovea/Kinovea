@@ -21,12 +21,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Resources;
+using System.IO;
 using System.Reflection;
-using Kinovea.VideoFiles;
+using System.Resources;
+using System.Text;
 using System.Windows.Forms;
+
 using Kinovea.Services;
+using Kinovea.VideoFiles;
 
 [assembly: CLSCompliant(false)]
 namespace Kinovea.ScreenManager
@@ -46,7 +48,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override bool Full
         {
-        	get { return m_PlayerScreenUI.m_VideoFile.Loaded; }	
+        	get { return FrameServer.VideoFile.Loaded; }	
         }
         public override UserControl UI
         {
@@ -57,16 +59,25 @@ namespace Kinovea.ScreenManager
             get { return m_UniqueId; }
             set { m_UniqueId = value; }
         }
-        
-        public bool HasMovie
-        {
-            get { return m_PlayerScreenUI.m_VideoFile.Loaded; }
-        }
+		public override string FilePath
+		{
+			get { return FrameServer.VideoFile.FilePath; }
+		}
+ 		
+        public FrameServerPlayer FrameServer
+		{
+			get { return m_FrameServer; }
+			set { m_FrameServer = value; }
+		}
+        public string FileName
+		{
+			get { return Path.GetFileName(FrameServer.VideoFile.FilePath); }
+		}
         public bool IsPlaying
         {
             get
             {
-                if (!m_PlayerScreenUI.m_VideoFile.Loaded)
+                if (!FrameServer.VideoFile.Loaded)
                 {
                     return false;
                 }
@@ -80,13 +91,13 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                if (!m_PlayerScreenUI.m_VideoFile.Loaded)
+                if (!FrameServer.VideoFile.Loaded)
                 {
                     return false;
                 }
                 else
                 {
-                    return (m_PlayerScreenUI.m_VideoFile.Selection.iAnalysisMode == 1) ? true : false;
+                    return (FrameServer.VideoFile.Selection.iAnalysisMode == 1);
                 }
             }
         }
@@ -96,12 +107,11 @@ namespace Kinovea.ScreenManager
             {
                 // Get the approximate frame we should be on.
                 // Only as accurate as the framerate is stable regarding to the timebase.
-                Int64 iCurrentTimestamp = m_PlayerScreenUI.m_VideoFile.Selection.iCurrentTimeStamp;
-                iCurrentTimestamp -= m_PlayerScreenUI.m_VideoFile.Infos.iFirstTimeStamp;
+                Int64 iCurrentTimestamp = FrameServer.VideoFile.Selection.iCurrentTimeStamp;
+                iCurrentTimestamp -= FrameServer.VideoFile.Infos.iFirstTimeStamp;
 
-                return (int)(iCurrentTimestamp / m_PlayerScreenUI.m_VideoFile.Infos.iAverageTimeStampsPerFrame);
+                return (int)(iCurrentTimestamp / FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
             }
-
             set
             {
                 m_PlayerScreenUI.SetCurrentFrame(value);
@@ -110,26 +120,26 @@ namespace Kinovea.ScreenManager
         public Int64 Position
         {
             // Used to feed SyncPosition. 
-            get { return m_PlayerScreenUI.m_VideoFile.Selection.iCurrentTimeStamp - m_PlayerScreenUI.m_VideoFile.Infos.iFirstTimeStamp; }
+            get { return FrameServer.VideoFile.Selection.iCurrentTimeStamp - FrameServer.VideoFile.Infos.iFirstTimeStamp; }
         }
         public int LastFrame
         {
             get 
             {
-                if (m_PlayerScreenUI.m_VideoFile.Selection.iAnalysisMode == 1)
+                if (FrameServer.VideoFile.Selection.iAnalysisMode == 1)
                 {
-                    return m_PlayerScreenUI.m_VideoFile.Selection.iDurationFrame - 1;
+                    return FrameServer.VideoFile.Selection.iDurationFrame - 1;
                 }
                 else
                 {
-                    Int64 iDurationTimestamp = m_PlayerScreenUI.m_VideoFile.Infos.iDurationTimeStamps;
-                    return (int)(iDurationTimestamp / m_PlayerScreenUI.m_VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
+                    Int64 iDurationTimestamp = FrameServer.VideoFile.Infos.iDurationTimeStamps;
+                    return (int)(iDurationTimestamp / FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
                 }
             }
         }
         public int FrameInterval
         {
-            get { return m_PlayerScreenUI.GetFrameInterval(); }
+            get { return m_PlayerScreenUI.PlaybackFrameInterval; }
         }
         public bool Synched
         {
@@ -143,12 +153,6 @@ namespace Kinovea.ScreenManager
             set { m_PlayerScreenUI.SyncPosition = value; }
         }
 
-        public String FilePath
-        {
-            get { return m_FullFileName; }
-            set { m_FullFileName = value; }
-        }
-        
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
         {
@@ -193,11 +197,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region members
-        public bool                         m_bIsMovieLoaded;
-        public PlayerScreenUserInterface    m_PlayerScreenUI;
-        public String                       m_sFileName;
-        private string                      m_FullFileName;
-        public ResourceManager              m_ResourceManager;
+        public PlayerScreenUserInterface m_PlayerScreenUI;
+		private FrameServerPlayer m_FrameServer = new FrameServerPlayer();
         private Guid m_UniqueId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -208,15 +209,9 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing a PlayerScreen.");
             m_UniqueId = System.Guid.NewGuid();
 
-            //Gestion i18n
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
-            m_bIsMovieLoaded = false;
-            m_sFileName = "";
-
             // Create UI and PlayerServer.
-            m_PlayerScreenUI = new PlayerScreenUserInterface(m_ResourceManager);
-
+            m_PlayerScreenUI = new PlayerScreenUserInterface(m_FrameServer);
+            
             // UI Delegates. (Assigned and implemented here, called from UI)
             m_PlayerScreenUI.m_CloseMeUI += new PlayerScreenUserInterface.DelegateCloseMeUI(ScreenUI_CloseAsked);
             m_PlayerScreenUI.m_SetMeAsActiveScreenUI += new PlayerScreenUserInterface.DelegateSetMeAsActiveScreenUI(ScreenUI_SetAsActiveScreen);
@@ -233,23 +228,21 @@ namespace Kinovea.ScreenManager
             // L'écran n'est plus l'écran actif.
             // Fonction appelée depuis le ScreenManager, lorsqu'un autre écran vient de se signaler comme écran actif.
             //--------------------------------------------------------------------------------------------------------
-            m_PlayerScreenUI.DisplayAsInactiveScreen();
+            m_PlayerScreenUI.DisplayAsActiveScreen(false);
         }
         public override void DisplayAsActiveScreen()
         {
-            m_PlayerScreenUI.DisplayAsActiveScreen();
+            m_PlayerScreenUI.DisplayAsActiveScreen(true);
         }
         public override void CloseScreen()
         {
             // Fonction appelée lors de la fermeture complète de l'appli.
-            //base.CloseScreen();
             m_PlayerScreenUI.StopPlaying();
-            m_PlayerScreenUI.UnloadMovie();
+            m_PlayerScreenUI.ResetToEmptyState();
         }
         public override void refreshUICulture()
         {
-            // Changement de langue demandé (ou chargement)
-            m_PlayerScreenUI.RefreshUICulture(m_ResourceManager);
+            m_PlayerScreenUI.RefreshUICulture();
         }
         public override bool OnKeyPress(Keys _keycode)
         {

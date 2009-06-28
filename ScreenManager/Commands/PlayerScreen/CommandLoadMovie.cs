@@ -18,13 +18,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -39,18 +39,18 @@ namespace Kinovea.ScreenManager
 
     public class CommandLoadMovie : ICommand
     {
+        #region Properties
         public string FriendlyName
         {
-            get
-            {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("CommandLoadMovie_FriendlyName", Thread.CurrentThread.CurrentUICulture);
-            }
+            get{ return ScreenManagerLang.CommandLoadMovie_FriendlyName;}
         }
-
-        String              m_FilePath;
-        PlayerScreen        m_PlayerScreen;
-
+		#endregion
+        
+        #region Members
+        private string m_FilePath;
+        private PlayerScreen m_PlayerScreen;
+		#endregion
+		
         #region constructor
         public CommandLoadMovie( PlayerScreen _PlayerScreen, String _FilePath)
         {
@@ -60,9 +60,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// Execution de la commande
+        /// Command execution. 
+        /// Load the given file in the given screen.
         /// </summary>
-        
         public void Execute()
         {
             DelegatesPool dp = DelegatesPool.Instance();
@@ -76,26 +76,19 @@ namespace Kinovea.ScreenManager
 
         private void DirectLoad()
         {
-            
-            LoadResult res = m_PlayerScreen.m_PlayerScreenUI.m_VideoFile.Load(m_FilePath);
+        	if(m_PlayerScreen.FrameServer.Loaded)
+        	{
+        		m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
+        	}
+        	
+            LoadResult res = m_PlayerScreen.FrameServer.Load(m_FilePath);
 
-            //------------------------------------------------------------------
-            // Eviter d'utiliser MessageBoxIcon.Error.
-            // (Fait vraiment peur, et devrait être réservé aux crash imminents)
-            //------------------------------------------------------------------
-
-            switch (res)
+        	switch (res)
             {
                 case LoadResult.Success:
                     {
-                        // Chargement a priori OK. 
-
-                        m_PlayerScreen.m_bIsMovieLoaded = true;
-                        m_PlayerScreen.m_sFileName = Path.GetFileName(m_FilePath);
-                        m_PlayerScreen.FilePath = m_FilePath;
-
                         // Essayer de charger la première frame et autres initialisations.
-                        int iPostLoadProcess = m_PlayerScreen.m_PlayerScreenUI.PostLoadProcess(res, m_FilePath);
+                        int iPostLoadProcess = m_PlayerScreen.m_PlayerScreenUI.PostLoadProcess();
 
                         switch (iPostLoadProcess)
                         {
@@ -107,14 +100,14 @@ namespace Kinovea.ScreenManager
                                 {
                                     // Le chargement de la première frame à complètement échoué.
                                     // Cause la plus probable, taille image non standard.
+                                   	m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
                                     DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_ImageFormatError);
-                                    Unload();
                                     break;
                                 }
                             case -2:
                                 {
                                     // Chargement de la première frame à montré que le fichier était problématique.
-                                    Unload();
+                                    m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
                                     DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_InconsistantMovieError);
                                     break;
                                 }
@@ -125,89 +118,46 @@ namespace Kinovea.ScreenManager
                     }
                 case LoadResult.FileNotOpenned:
                     {
-                        //--------------------------------------------
-                        // FFMPEG_ERROR_FILE_NOT_OPENED
-                        // Exemple : tentative d'ouverture d'une image, fichier introuvable.
-                        //--------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_FileNotOpened);
                         break;
                     }
                 case LoadResult.StreamInfoNotFound:
                     {
-                        //--------------------------------------------
-                        // FFMPEG_ERROR_STREAM_INFO_NOT_FOUND
-                        //--------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_StreamInfoNotFound);
                         break;
                     }
                 case LoadResult.VideoStreamNotFound:
                     {
-                        //--------------------------------------------
-                        // FFMPEG_ERROR_VIDEO_STREAM_NOT_FOUND
-                        // Exemple : tentative d'ouverture d'un mp3
-                        //--------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_VideoStreamNotFound);
                         break;
                     }
                 case LoadResult.CodecNotFound:
                     {
-                        //--------------------------------------------------
-                        // FFMPEG_ERROR_CODEC_NOT_FOUND
-                        // Exemple : tentative d'ouverture d'un fichier wmv3
-                        //--------------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
                         break;
                     }
                 case LoadResult.CodecNotOpened:
                     {
-                        //--------------------------------------------
-                        // FFMPEG_ERROR_CODEC_NOT_OPENED
-                        //--------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotOpened);
                         break;
                     }
                 case LoadResult.CodecNotSupported:
                     {
-                        //--------------------------------------------
-                        // FFMPEG_ERROR_CODEC_NOT_SUPPORTED
-                        // Exemple : tentative d'ouverture d'un .dpa
-                        //--------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotSupported);
                         break;
                     }
                 case LoadResult.Cancelled:
                     {
-                        //-----------------------------------------------------------------------------------
-                        // FFMPEG_ERROR_LOAD_CANCELLED
-                        // Ne devrait jamais passer par là. 
-                        // Ne pas lire la valeur de e.Result si e.Cancelled est a true.
-                        //-----------------------------------------------------------------------------------
-                        Unload();
                         break;
                     }
                 case LoadResult.FrameCountError:
                     {
-                        //----------------------------------------------------------------------------
-                        // FFMPEG_ERROR_FRAMECOUNT_ERROR
-                        // On utilise le même message d'erreur que si le codec n'avait pas été trouvé.
-                        //----------------------------------------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
                         break;
                     }
 
                 default:
                     {
-                        //--------------------------------------------
-                        // Exemple : crash dans le PlayerServer
-                        //--------------------------------------------
-                        Unload();
                         DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_UnkownError);
                         break;
                     }
@@ -223,12 +173,6 @@ namespace Kinovea.ScreenManager
                	Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error,
                	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
-        }
-        private void Unload()
-        {
-            m_PlayerScreen.m_bIsMovieLoaded = false;
-            m_PlayerScreen.m_PlayerScreenUI.DisableControls();
-            m_PlayerScreen.m_PlayerScreenUI.UnloadMovie();
         }
     }
 }

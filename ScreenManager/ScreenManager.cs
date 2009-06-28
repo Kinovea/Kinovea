@@ -552,7 +552,6 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-
         
         public void UpdateStatusBar()
         {
@@ -571,67 +570,54 @@ namespace Kinovea.ScreenManager
             {
                 case 1:
                     {
-                        if (screenList[0].GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        {
-                            if(((PlayerScreen)screenList[0]).m_bIsMovieLoaded)
+            			PlayerScreen ps = screenList[0] as PlayerScreen;
+            			if(ps != null)
+            			{
+            				if(ps.Full)
                             {
-                                StatusString += ((PlayerScreen)screenList[0]).m_sFileName;
+                                StatusString += ps.FileName;
                             }
                             else
                             {
                                 // Un seul écran de lecture, avec rien dedans.
                                 StatusString += StatusString += resManager.GetString("statusEmptyScreen", Thread.CurrentThread.CurrentUICulture); 
-                            }
-                        }
-                        else
-                        {
-                            // Un seul écran de capture
-                        }
+                            }            				
+            			}
 
                         break;
                     }
                 
                 case 2:
                     {
-                        //bool bLeftIsFull = false;
-
-                        if (screenList[0].GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        {
-                            if(((PlayerScreen)screenList[0]).m_bIsMovieLoaded)
+                        PlayerScreen ps0 = screenList[0] as PlayerScreen;
+            			if(ps0 != null)
+            			{
+            				if(ps0.Full)
                             {
-                                StatusString += ((PlayerScreen)screenList[0]).m_sFileName;
-                                //bLeftIsFull = true;
+                                StatusString += ps0.FileName;
                             }
                             else
                             {
                                 // Ecran de gauche en lecture, avec rien dedans.
                                 StatusString += StatusString += resManager.GetString("statusEmptyScreen", Thread.CurrentThread.CurrentUICulture); ;
-                            }
-                        }
-                        else
-                        {
-                            // Ecran de gauche en capture.
-                        }
+                            }	
+            			}
 
-                        if (screenList[1].GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        {
-                            StatusString += " | ";
+            			PlayerScreen ps1 = screenList[1] as PlayerScreen;
+            			if(ps1 != null)
+            			{
+            				StatusString += " | ";
                             
-                            if (((PlayerScreen)screenList[1]).m_bIsMovieLoaded)
+                            if (ps1.Full)
                             {
-                                StatusString += ((PlayerScreen)screenList[1]).m_sFileName;
+                                StatusString += ps1.FileName;
                             }
                             else
                             {
                                 // Ecran de droite en lecture, avec rien dedans.
                                 StatusString += resManager.GetString("statusEmptyScreen", Thread.CurrentThread.CurrentUICulture);
-                            }
-                        }
-                        else
-                        {
-                            // Ecran de droite en capture.
-                        }
-
+                            }	
+            			}
                         break;
                     }
                 default:
@@ -662,7 +648,7 @@ namespace Kinovea.ScreenManager
                 if (player != null)
                 {
                     // 1. Video is loaded : save-able and analysis is loadable.
-                    if (player.m_bIsMovieLoaded)
+                    if (player.Full)
                     {
                         mnuSave.Enabled = true;
                         mnuLoadAnalysis.Enabled = true;
@@ -742,7 +728,7 @@ namespace Kinovea.ScreenManager
                     else if(screenList[0] is PlayerScreen)
                     {
                     	// Only screen is an full PlayerScreen.
-                        strClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).m_sFileName;
+                        strClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                         m_mnuCloseFile.Text = strClosingText;
                         m_mnuCloseFile.Enabled = true;
                         m_mnuCloseFile.Visible = true;
@@ -772,7 +758,7 @@ namespace Kinovea.ScreenManager
                         {
                             bAllScreensEmpty = false;
                             
-                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).m_sFileName;
+                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                             m_mnuCloseFile.Text = strCompleteClosingText;
                             m_mnuCloseFile.Enabled = true;
                             m_mnuCloseFile.Visible = true;
@@ -797,7 +783,7 @@ namespace Kinovea.ScreenManager
                         {
                             bAllScreensEmpty = false;
                             
-                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[1]).m_sFileName;
+                            string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
                             m_mnuCloseFile2.Text = strCompleteClosingText;
                             m_mnuCloseFile2.Enabled = true;
                             m_mnuCloseFile2.Visible = true;
@@ -861,7 +847,7 @@ namespace Kinovea.ScreenManager
             // Associate the input frames
             if(bEnable)
             {
-            	List<DecompressedFrame> frameList = _player.m_PlayerScreenUI.m_VideoFile.FrameList;
+            	List<DecompressedFrame> frameList = _player.FrameServer.VideoFile.FrameList;
 	            
             	foreach(AbstractVideoFilter vf in m_VideoFilters)
             	{
@@ -1013,23 +999,22 @@ namespace Kinovea.ScreenManager
         {
             //---------------------------------------------------------------------------
             // Launch the dialog box where the user can choose to save the video,
-            // the metadat or both.
+            // the metadata or both.
             // Public because accessed from the closing command when we realize there are 
             // unsaved modified data.
             //---------------------------------------------------------------------------
-            if (m_ActiveScreen != null)
+            
+            PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+            if (ps != null)
             {
-                if (m_ActiveScreen is PlayerScreen)
-                {
                     DoStopPlaying();
                     DoDeactivateKeyboardHandler();
                     
-                    formVideoExport fve = new formVideoExport((PlayerScreen)m_ActiveScreen);
+                    formVideoExport fve = new formVideoExport(ps);
                     fve.ShowDialog();
                     fve.Dispose();
 
                     DoActivateKeyboardHandler();
-                }
             }
         }
         private void mnuExportToPDFOnClick(object sender, EventArgs e)
@@ -1924,7 +1909,7 @@ namespace Kinovea.ScreenManager
             {
                 if ((screenList[0] is PlayerScreen) && (screenList[1] is PlayerScreen))
                 {
-                    if (((PlayerScreen)screenList[0]).HasMovie && ((PlayerScreen)screenList[1]).HasMovie)
+                    if (((PlayerScreen)screenList[0]).Full && ((PlayerScreen)screenList[1]).Full)
                     {
                         m_bSynching = true;
                         ((PlayerScreen)screenList[0]).Synched = true;
@@ -2878,19 +2863,20 @@ namespace Kinovea.ScreenManager
         {
             ScreenManagerState mState = new ScreenManagerState();
 
-            foreach (AbstractScreen bs in screenList)
+            foreach (AbstractScreen screen in screenList)
             {
                 ScreenState state = new ScreenState();
 
-                state.UniqueId = bs.UniqueId;
+                state.UniqueId = screen.UniqueId;
 
-                if (bs is PlayerScreen)
+                if (screen is PlayerScreen)
                 {
-                    state.Loaded = ((PlayerScreen)bs).m_bIsMovieLoaded;
-                    state.FilePath = ((PlayerScreen)bs).FilePath;
-                    if (((PlayerScreen)bs).m_bIsMovieLoaded)
+                    state.Loaded = screen.Full;
+                    state.FilePath = ((PlayerScreen)screen).FilePath;
+                    
+                    if (state.Loaded)
                     {
-                        state.MetadataString = ((PlayerScreen)bs).m_PlayerScreenUI.Metadata.ToXmlString();
+                        state.MetadataString = ((PlayerScreen)screen).m_PlayerScreenUI.Metadata.ToXmlString();
                     }
                     else
                     {
@@ -3261,7 +3247,6 @@ namespace Kinovea.ScreenManager
         {
         	if(File.Exists(_OldScreen.FilePath))
             {
-            
         		// We instantiate and launch it like a simple command (not undoable).
 	            ICommand clmis = new CommandLoadMovieInScreen(this, _OldScreen.FilePath, _iNewPosition, false);
 	            CommandManager.LaunchCommand(clmis);
@@ -3269,10 +3254,14 @@ namespace Kinovea.ScreenManager
 	            // Check that everything went well 
 	            // Potential problem : the video was deleted between do and undo.
 	            // _iNewPosition should always point to a valid position here.
-	            if (((PlayerScreen)screenList[_iNewPosition-1]).m_bIsMovieLoaded)
+	            if (screenList[_iNewPosition-1].Full)
 	            {
-	                ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.LoadFromString(_OldScreen.MetadataString);
-	                ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportAnalysis();
+	            	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+	            	if(ps != null)
+	            	{
+	                	ps.m_PlayerScreenUI.Metadata.LoadFromString(_OldScreen.MetadataString);
+	                	ps.m_PlayerScreenUI.PostImportAnalysis();
+	            	}
 	            }
         	}
         }

@@ -18,12 +18,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -34,8 +34,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("mnuDeleteEndOfTrajectory", Thread.CurrentThread.CurrentUICulture);
+                return ScreenManagerLang.mnuDeleteEndOfTrajectory;
             }
         }
 
@@ -65,7 +64,7 @@ namespace Kinovea.ScreenManager
             // the redo and we'll want to keep teir values.
             m_Positions = m_Metadata.Tracks[m_iTrackIndex].GetEndOfTrack(m_iTimeStamp);
             m_Metadata.Tracks[m_iTrackIndex].ChopTrajectory(m_iTimeStamp);
-            m_psui._surfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();
         }
         public void Unexecute()
         {
@@ -74,7 +73,7 @@ namespace Kinovea.ScreenManager
             {
             	m_Metadata.Tracks[m_iTrackIndex].AppendPoints(m_iTimeStamp, m_Positions);
             }
-            m_psui._surfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();
         }
     }
 }

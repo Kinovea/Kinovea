@@ -129,12 +129,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private int m_iMinimum = 0;
-        private int m_iValue = 0;
-        private int m_iMaximum = 0;
+        private int m_iMinimum = 1;
+        private int m_iValue = 100;
+        private int m_iMaximum = 200;
         private int m_iSmallChange = 1;
         private int m_iLargeChange = 5;
-        private int m_iStickyValue = 0;
+        private int m_iStickyValue = 100;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 

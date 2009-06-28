@@ -126,6 +126,7 @@
     <Compile Include="PlayerScreen\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
+    <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
     <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingAngle2D.cs" />
