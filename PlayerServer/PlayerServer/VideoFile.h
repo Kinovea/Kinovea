@@ -136,6 +136,10 @@ namespace VideoFiles
 		{
 			List <DecompressedFrame ^>^	get(){ return m_FrameList;}
 		}
+		property String^ FilePath
+		{
+			String^ get(){ return m_FilePath;}
+		}
 		property InfosVideo^ Infos
 		{
 			InfosVideo^ get(){ return m_InfosVideo;}
@@ -160,6 +164,7 @@ namespace VideoFiles
 		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 		
 		bool m_bIsLoaded;
+		String^ m_FilePath;
 		List <DecompressedFrame ^>^	m_FrameList;
 		InfosVideo^ m_InfosVideo;
 		PrimarySelection^ m_PrimarySelection;
