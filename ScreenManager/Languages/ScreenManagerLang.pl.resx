@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz pokaz slajdów z kluczowych obrazów</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Dokument PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Eksportuj kluczowe Obrazy do PDF'a</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentarze...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiza wideo Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Wczytaj kluczowe Obrazy</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - nie można utworzyć pliku PDF.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Błąd podczas próby zapisu pliku : plik jest otwarty w innym oknie.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Plik PDF zostanie stworzony z kluczowych obrazów.\n Dodaj proszę kilka kluczowych obrazów przed generacją dokumentu.</value></data>
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Postęp :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Zapisywanie pliku wideo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Wyskeportowane obrazy :</value></data>
@@ -234,6 +239,10 @@
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dwa ekrany odtwarzania</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Tylko krawędzie...</value></data>
+   
+   
+   
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Eksportuj do PDF'a</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Płynność</value></data>
    

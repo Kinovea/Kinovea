@@ -18,7 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.Services;
+using ICSharpCode.SharpZipLib.Checksums;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,6 +27,8 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Xsl;
+using ICSharpCode.SharpZipLib.Zip;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -177,6 +179,9 @@ namespace Kinovea.ScreenManager
         private Int64 m_iInputFirstTimeStamp;
         private Int64 m_iInputSelectionStart;
         private string m_InputFileName;
+        
+        // Export to spreadsheet
+        IEntryFactory m_EntryFactory = new ZipEntryFactory();
 
         // Clean hash
         private int m_iLastCleanHash;
@@ -1176,5 +1181,253 @@ namespace Kinovea.ScreenManager
             dlip.Parse(_xmlReader, this);
         }
         #endregion
+    
+    	#region Export
+    	public void Export(string _filePath, MetadataExportFormat _format)
+    	{
+    		// Get current data as kva XML.
+    		string kvaString = ToXmlString();
+			
+    		// Export the current meta data to spreadsheet doc through XSLT transform.
+    		switch(_format)
+    		{
+    			case MetadataExportFormat.ODF:
+    			{
+    				ExportODF(_filePath, kvaString);
+    				break;
+    			}
+    			case MetadataExportFormat.MSXML:
+				{
+    					ExportMSXML(_filePath, kvaString);
+					break;
+				}
+    			case MetadataExportFormat.XHTML:
+				{
+    				ExportXHTML(_filePath, kvaString);
+					break;
+				}
+    			default:
+    				break;
+    		}
+    	}
+    	private void ExportODF(string _filePath, string _kva)
+    	{
+    		// Transform kva to ODF's content.xml 
+    		// and packs it into a proper .ods using zip compression.
+			
+    		// fonctionel:
+    		/*FastZip fz = new FastZip();
+			fz.CreateEmptyDirectories = true;
+			fz.CreateZip(_filePath, "template2", true, "");
+			fz = null;*/
+			
+    		
+			// KO:
+    		
+    		string stylesheet = @"xslt\kva2odf-en.xsl";
+			
+			if(File.Exists(stylesheet))
+			{
+	            // Create archive.
+	            using (ZipOutputStream zos = new ZipOutputStream(File.Create(_filePath)))
+	            {
+					//zos.SetLevel(0); // 0: store only; 9: best compression.
+					
+					zos.UseZip64 = UseZip64.Dynamic;
+					
+					// Content.xml (where the actual content is.)
+					XslCompiledTransform xslt = new XslCompiledTransform();
+		    		xslt.Load(stylesheet);
+	
+	    			XmlDocument mdDoc = new XmlDocument();
+					mdDoc.LoadXml(_kva);
+					
+					MemoryStream ms = new MemoryStream();
+					XmlWriterSettings xws = new XmlWriterSettings();
+					xws.Indent = true;
+					using (XmlWriter xw = XmlWriter.Create(ms, xws))
+					{
+		   				xslt.Transform(mdDoc, null, xw);
+					}	
+					
+					AddODFZipFile(zos, "content.xml", ms.ToArray());
+					
+					AddODFZipFile(zos, "meta.xml", GetODFMeta());
+					AddODFZipFile(zos, "settings.xml", GetODFSettings());
+					AddODFZipFile(zos, "styles.xml", GetODFStyles());
+					
+					
+					//AddODFZipDirectory(zos, "META-INF");
+					AddODFZipFile(zos, "META-INF/manifest.xml", GetODFManifest());
+					
+	            }
+			}
+    	}
+    	private byte[] GetODFMeta()
+    	{
+    		// Return the minimal xml file in a byte array so in can be written to zip.
+    		return GetMinimalODF("office:document-meta");
+    	}
+    	private byte[] GetODFStyles()
+    	{
+    		// Return the minimal xml file in a byte array so in can be written to zip.
+    		return GetMinimalODF("office:document-styles");
+    	}
+    	private byte[] GetODFSettings()
+    	{
+    		// Return the minimal xml file in a byte array so in can be written to zip.
+    		return GetMinimalODF("office:document-settings");
+    	}
+    	private byte[] GetMinimalODF(string _element)
+    	{
+    		// Return the minimal xml data for required files 
+    		// in a byte array so in can be written to zip.
+    		// A bit trickier than necessary because .NET StringWriter is UTF-16 and we want UTF-8.
+    		
+    		MemoryStream ms = new MemoryStream();
+			XmlTextWriter xmlw = new XmlTextWriter(ms, new System.Text.UTF8Encoding());
+			xmlw.Formatting = Formatting.Indented; 
+	            
+			xmlw.WriteStartDocument();
+			xmlw.WriteStartElement(_element);
+			xmlw.WriteAttributeString("xmlns", "office", null, "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+			
+			xmlw.WriteStartAttribute("office:version");
+            xmlw.WriteString("1.1"); 
+            xmlw.WriteEndAttribute();
+				 
+			xmlw.WriteEndElement();
+        	xmlw.Flush();
+        	xmlw.Close();
+        	
+        	return ms.ToArray();
+    	}
+    	private byte[] GetODFManifest()
+    	{
+    		// Return the minimal manifest.xml in a byte array so in can be written to zip.
+    			
+    		MemoryStream ms = new MemoryStream();
+			XmlTextWriter xmlw = new XmlTextWriter(ms, new System.Text.UTF8Encoding());
+			xmlw.Formatting = Formatting.Indented; 
+	            
+			xmlw.WriteStartDocument();
+			xmlw.WriteStartElement("manifest:manifest");
+			xmlw.WriteAttributeString("xmlns", "manifest", null, "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
+			
+			// Manifest itself
+			xmlw.WriteStartElement("manifest:file-entry");
+			xmlw.WriteStartAttribute("manifest:media-type");
+			xmlw.WriteString("application/vnd.oasis.opendocument.spreadsheet");
+			xmlw.WriteEndAttribute();
+			xmlw.WriteStartAttribute("manifest:full-path");
+			xmlw.WriteString("/");
+			xmlw.WriteEndAttribute();
+			xmlw.WriteEndElement();
+			
+			// Minimal set of files.
+			OutputODFManifestEntry(xmlw, "content.xml");
+			OutputODFManifestEntry(xmlw, "styles.xml");
+			OutputODFManifestEntry(xmlw, "meta.xml");
+			OutputODFManifestEntry(xmlw, "settings.xml");
+			
+			xmlw.WriteEndElement();
+        	xmlw.Flush();
+        	xmlw.Close();
+        	
+        	return ms.ToArray();	
+    	}
+    	private void OutputODFManifestEntry(XmlTextWriter _xmlw, string _file)
+    	{
+    		_xmlw.WriteStartElement("manifest:file-entry");
+			_xmlw.WriteStartAttribute("manifest:media-type");
+			_xmlw.WriteString("text/xml");
+			_xmlw.WriteEndAttribute();
+			_xmlw.WriteStartAttribute("manifest:full-path");
+			_xmlw.WriteString(_file);
+			_xmlw.WriteEndAttribute();
+			_xmlw.WriteEndElement();
+    	}
+    	private void AddODFZipFile(ZipOutputStream _zos, string _file, byte[] _data)
+    	{
+    		// Creates an entry in the ODF zip for a specific file, using the specific data.
+			ZipEntry entry = new ZipEntry(_file);
+			
+			//entry.IsUnicodeText = false;
+			entry.DateTime = DateTime.Now;
+			entry.Size = _data.Length; 
+			
+			//Crc32 crc = new Crc32();
+			//crc.Update(_data);
+			//entry.Crc = crc.Value;
+			
+			_zos.PutNextEntry(entry);
+			_zos.Write(_data, 0, _data.Length);
+    	}
+    	private void AddODFZipDirectory(ZipOutputStream _zos, string _dir)
+    	{
+    		// Creates an entry in the ODF zip for a specific directory.
+    		ZipEntry entry = new ZipEntry(_dir);
+    		entry.Size = 0;
+    		entry.DateTime = DateTime.Now;
+			entry.ExternalFileAttributes = 16;
+			
+			_zos.PutNextEntry(entry);
+    	}
+    	private void ExportMSXML(string _filePath, string _kva)
+    	{
+    		// Export a file to MS-XML.
+			
+    		string stylesheet = @"xslt\kva2msxml-en.xsl";
+			
+			if(File.Exists(stylesheet))
+			{
+				XmlWriterSettings settings = new XmlWriterSettings();
+				settings.Indent = true;
+	            
+				using (XmlWriter xw = XmlWriter.Create(_filePath, settings))
+				{
+					XslCompiledTransform xslt = new XslCompiledTransform();
+	    			xslt.Load(stylesheet);
+	    		
+	    			XmlDocument mdDoc = new XmlDocument();
+					mdDoc.LoadXml(_kva);
+				
+					// 
+	   				xslt.Transform(mdDoc, null, xw);
+				}	
+			}
+    	}
+    	private void ExportXHTML(string _filePath, string _kva)
+    	{
+    		// Transform kva to XHTML.
+    		
+			string stylesheet = @"xslt\kva2xhtml-en.xsl";
+			
+			if(File.Exists(stylesheet))
+			{
+	    		XmlWriterSettings settings = new XmlWriterSettings();
+				settings.Indent = true;
+				settings.OmitXmlDeclaration = true;
+				
+	            using (XmlWriter xw = XmlWriter.Create(_filePath, settings))
+				{
+	            	XslCompiledTransform xslt = new XslCompiledTransform();
+	    			xslt.Load(stylesheet);
+	   				
+					XmlDocument mdDoc = new XmlDocument();
+					mdDoc.LoadXml(_kva);
+
+	    			xslt.Transform(mdDoc, null, xw);
+				}
+			}
+    	}
+    	#endregion
     }
+
+	public enum MetadataExportFormat
+	{
+		ODF,
+		MSXML,
+		XHTML
+	}
 }

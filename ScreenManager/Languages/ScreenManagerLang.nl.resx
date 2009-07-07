@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Bewaar een diashow van de kernafbeeldingen</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Exporteer de beeldanalyse naar PDF</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaar…</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle bestanden (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Laad de kernbeeldgegevens</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Kan geen Pdf-bestand maken.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Fout bij opslag van bestand : het bestand is in ander scherm geopend.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Het Pdf-bestand wordt gemaakt uit de kernbeelden. \n Voer a.u.b. enkele kernbeelden in, voordat u het document gaat maken.</value></data>
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Voortgang :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Bewaar video…</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Geëxporteerd afbeeldingen:</value></data>
@@ -234,6 +239,10 @@
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Twee afspeel schermen</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Randen alleen…</value></data>
+   
+   
+   
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export naar PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Vloeiend</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ga naar Kernbeeld</value></data>

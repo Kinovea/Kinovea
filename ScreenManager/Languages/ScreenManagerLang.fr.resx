@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Enregistrer un Diaporama des Images Clés</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Document PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Enregistrer un Document PDF des Images Clés</value></data>
+   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Enregistrer les Données pour un Tableur</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaires...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analyse Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Tous les Fichiers (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Charger des Données d'Images Clés</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Création du document Pdf Impossible</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Enregistrement du fichier impossible : Le fichier est ouvert dans une autre fenêtre.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Le document Pdf sera créé à partir d'Images Clés. \nVeuillez ajouter quelques Images Clés avant de générer le document.</value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Le fichier n'a pu être écrit.\nAssurez vous d'avoir les droits suffisants pour écrire dans le dossier et que le fichier n'est pas en cours d'utilisation.</value></data>
+   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Sauvegarde de la vidéo Impossible.</value></data>
+   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>La vidéo n'a pu être enregistrée.\nRéessayez en utilisant un format différent. </value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progression :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Enregistrement de la Vidéo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Images Exportées :</value></data>
@@ -234,6 +239,10 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>Un écran de capture et un écran de lecture</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Deux Écrans de Lecture</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Contours Seulement...</value></data>
+   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export Tableur</value></data>
+   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
+   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
+   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Exporter au Format PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidifier</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Aller à l'Image Clé</value></data>
@@ -252,7 +261,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>Un Écran de Lecture</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Lire | Pauser</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'édition de la Trajectoire</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Enregistrer la Vidéo ou les Données des Images Clés...</value></data>
+   <data name="mnuSave" xml:space="preserve"><value>Enregistrer...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Enregistrer l'Image en Cours dans un Fichier</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Écrans</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>

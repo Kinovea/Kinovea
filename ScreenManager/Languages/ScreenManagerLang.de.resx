@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Speichere eine Slideshow aus den Schlüsselbildern</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF-Dokument (*.pdf)|*.pdf</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Speichere ein PDF-Dokument aus den Schlüsselbildern</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Anmerkungen...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Lade Kinovea Video-Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle Dateien (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Lade Daten der Schlüsselbilder</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea – kann kein PDF erstellen.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Speicherfehler – Datei ist in einem anderen Fenster noch geöffnet.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Das PDF-Dokument wird aus Schlüsselbildern erstellt. \n Bitte erst Schlüsselbilder auswählen und dann das Dokument erstellen.</value></data>
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Fortschritt :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Speichere Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exportierte Bilder :</value></data>
@@ -234,6 +239,10 @@
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Zwei Wiedergabefenster</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Nur Videoränder...</value></data>
+   
+   
+   
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Exprotiere als PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Verflüssigen...</value></data>
    
