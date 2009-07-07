@@ -32,7 +32,8 @@ namespace Kinovea.ScreenManager
     public partial class formFileSave : Form
     {
         #region Members
-        private VideoFile m_VideoFile = null;
+        private VideoFile m_VideoFile;
+        private SaveResult m_Result;
         private Int64 m_iSelStart;
         private Int64 m_iSelEnd;
         private String m_FilePath;
@@ -108,13 +109,20 @@ namespace Kinovea.ScreenManager
             // TODO: report on save errors !
             
             m_VideoFile.BgWorker = bgWorker;
-            if (m_Metadata == null)
+            try
             {
-                m_VideoFile.Save(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, "", m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
+	            if (m_Metadata == null)
+	            {
+	                m_Result = m_VideoFile.Save(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, "", m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
+	            }
+	            else
+	            {
+	                m_Result = m_VideoFile.Save(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, m_Metadata.ToXmlString(), m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
+	            }
             }
-            else
+            catch(Exception)
             {
-                m_VideoFile.Save(m_FilePath, m_iFramesInterval, m_iSelStart, m_iSelEnd, m_Metadata.ToXmlString(), m_bFlushDrawings, m_bKeyframesOnly, m_DelegateOutputBitmap);
+            	m_Result = SaveResult.UnknownError;
             }
             e.Result = 0;
         }
@@ -155,7 +163,48 @@ namespace Kinovea.ScreenManager
             Application.Idle -= new EventHandler(this.IdleDetector);
 
             Hide();
+            
+            if(m_Result != SaveResult.Success)
+            {
+            	ReportError(m_Result);
+            }
             // Le Close(); sera fait par le dispose() de l'appelant.
+        }
+        private void ReportError(SaveResult _err)
+        {
+        	switch(_err)
+        	{
+        		case SaveResult.Cancelled:
+        			// No error message if the user cancelled herself.
+                    break;
+                
+                case SaveResult.FileHeaderNotWritten:
+                case SaveResult.FileNotOpened:
+                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_FileError);
+                    break;
+                
+                case SaveResult.EncoderNotFound:
+                case SaveResult.EncoderNotOpened:
+                case SaveResult.EncoderParametersNotAllocated:
+                case SaveResult.EncoderParametersNotSet:
+                case SaveResult.InputFrameNotAllocated:
+                case SaveResult.MuxerNotFound:
+                case SaveResult.MuxerParametersNotAllocated:
+                case SaveResult.MuxerParametersNotSet:
+                case SaveResult.VideoStreamNotCreated:
+                case SaveResult.UnknownError:
+                default:
+                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_LowLevelError);
+                    break;
+        	}
+        }
+        private void DisplayErrorMessage(string _err)
+        {
+        	MessageBox.Show(
+        		_err.Replace("\\n", "\n"),
+               	Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_Title,
+               	MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
         }
     }
 }
