@@ -29,7 +29,6 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// This form lets the user choose how many images will be visible when in the mosaic.
-	/// The user can also choose to view only keyframes (temporary disabled).
 	/// </summary>
     public partial class formConfigureMosaic : Form
     {
@@ -45,7 +44,6 @@ namespace Kinovea.ScreenManager
     	#endregion
     	
         #region Members
-        //private double m_fDurationInSeconds;
         private int m_iDurationinFrames;
         private static readonly int m_iDefaultFramesToExtract = 25;
         private int m_iFramesToExtract = m_iDefaultFramesToExtract;
@@ -68,8 +66,6 @@ namespace Kinovea.ScreenManager
             
             // Group Config
             grpboxConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            rbKeyframes.Text = m_ResourceManager.GetString("dlgConfigureMosaic_radioKeyframes", Thread.CurrentThread.CurrentUICulture);
-            rbFrequency.Text = m_ResourceManager.GetString("dlgConfigureMosaic_radioFrequency", Thread.CurrentThread.CurrentUICulture);
             cbRTL.Text = m_ResourceManager.GetString("dlgConfigureMosaic_cbRightToLeft", Thread.CurrentThread.CurrentUICulture);
             
             // Buttons
@@ -78,12 +74,9 @@ namespace Kinovea.ScreenManager
         }
         private void SetupData()
         {
-        	rbKeyframes.Checked = false;
-        	rbFrequency.Checked = true;
-        	rbKeyframes.Enabled = false;
         	cbRTL.Checked = false;
         	
-        	// Default slider.
+        	// Default slider (in number of frames).
         	trkInterval.Minimum = 4;
         	trkInterval.Maximum = 100;
         	
@@ -102,12 +95,6 @@ namespace Kinovea.ScreenManager
         		trkInterval.Value = trkInterval.Maximum;
         	}
         }
-        private void RbFrequencyCheckedChanged(object sender, EventArgs e)
-        {
-        	trkInterval.Enabled = rbFrequency.Checked;
-        	lblInfosTotalFrames.Enabled = rbFrequency.Checked;
-        	lblInfosFrequency.Enabled = rbFrequency.Checked;
-        }
         private void trkInterval_ValueChanged(object sender, EventArgs e)
         {
         	int iRoot = (int)(Math.Sqrt((double)trkInterval.Value));
@@ -118,19 +105,6 @@ namespace Kinovea.ScreenManager
         {
         	// Number of frames
             lblInfosTotalFrames.Text = String.Format(m_ResourceManager.GetString("dlgConfigureMosaic_LabelImages", Thread.CurrentThread.CurrentUICulture), " " + m_iFramesToExtract);            
-        	
-            // Frequency
-            /*double fInterval = m_fDurationInSeconds / (double)m_iFramesToExtract;
-            lblInfosFrequency.Text = m_ResourceManager.GetString("dlgConfigureMosaic_LabelFrequencyRoot", Thread.CurrentThread.CurrentUICulture) + " ";
-            if (fInterval < 1)
-            {
-                int iHundredth = (int)(fInterval * 100);
-                lblInfosFrequency.Text += String.Format(m_ResourceManager.GetString("dlgRafaleExport_LabelFrequencyHundredth", Thread.CurrentThread.CurrentUICulture), iHundredth);
-            }
-            else
-            {
-                lblInfosFrequency.Text += String.Format(m_ResourceManager.GetString("dlgRafaleExport_LabelFrequencySeconds", Thread.CurrentThread.CurrentUICulture), fInterval);
-            }*/
         }
     }
 }
