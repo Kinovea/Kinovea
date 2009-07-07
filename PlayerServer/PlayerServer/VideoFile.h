@@ -116,6 +116,9 @@ namespace VideoFiles
 		FileNotOpened,
 		FileHeaderNotWritten,
 		InputFrameNotAllocated,
+		MetadataStreamNotCreated,
+		MetadataNotWritten,
+		UnknownError,
 
 		MovieNotLoaded,
 		TranscodeNotFinished,
