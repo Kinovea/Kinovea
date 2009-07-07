@@ -5,20 +5,32 @@
 	
 	This stylesheet formats a .kva file to MS-EXCEL XML spreadsheet.
 	You can use it to view the content of the .kva  in MS-EXCEL.
-	
-	Usage:
-	1. Rename the .kva to .xml
-	2. Add <?xml-stylesheet type="text/xsl" href="kva2msxml-en.xsl"?> in the .kva (now .xml) file
-	    at second line, just before <KinoveaVideoAnalysis>.
-      (The href part must point to the actual location of the file, relative or absolute. Here it would be in the same directory.)
-	3. Open the modified file in Microsoft Excel. It will ask if you want to use a stylesheet, choose yes and click the first.
 -->
+
   <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
   <xsl:template match="/">
+    
     <xsl:text disable-output-escaping="yes">&lt;?mso-application progid="Excel.Sheet"?&gt;</xsl:text>
-    <Workbook>
+    
+    <Workbook>      
+      
+      <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+        <Title>
+          <xsl:value-of select="KinoveaVideoAnalysis/OriginalFilename"/>  
+        </Title>
+      </DocumentProperties>      
+      
+      <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+        <WindowHeight>12270</WindowHeight>
+        <WindowWidth>14955</WindowWidth>
+        <WindowTopX>720</WindowTopX>
+        <WindowTopY>315</WindowTopY>
+        <ProtectStructure>False</ProtectStructure>
+        <ProtectWindows>False</ProtectWindows>
+      </ExcelWorkbook>      
+      
       <Styles>
-<!-- Style for Keyframes header -->
+        <!-- Style for Keyframes header -->
         <Style ss:ID="s21">
           <Borders>
             <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -28,7 +40,7 @@
           </Borders>
           <Interior ss:Color="#ccffcc" ss:Pattern="Solid"/>
         </Style>
-<!-- Style for Tracks header -->
+        <!-- Style for Tracks header -->
         <Style ss:ID="s22">
           <Borders>
             <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -38,7 +50,7 @@
           </Borders>
           <Interior ss:Color="#99ccff" ss:Pattern="Solid"/>
         </Style>
-<!-- Style for Chronos header -->
+        <!-- Style for Chronos header -->
         <Style ss:ID="s23">
           <Borders>
             <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -48,7 +60,7 @@
           </Borders>
           <Interior ss:Color="#cc99ff" ss:Pattern="Solid"/>
         </Style>
-<!-- Style for data values -->
+        <!-- Style for data values -->
         <Style ss:ID="s24">
           <Borders>
             <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -58,7 +70,7 @@
           </Borders>
           <Interior ss:Color="#ffffff" ss:Pattern="Solid"/>
         </Style>
-<!-- Style for x,y headers -->
+        <!-- Style for x,y headers -->
         <Style ss:ID="s25">
           <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
           <Borders>
@@ -70,6 +82,7 @@
           <Interior ss:Color="#ffffff" ss:Pattern="Solid"/>
         </Style>
       </Styles>
+      
       <Worksheet>
         <xsl:attribute name="ss:Name">
           <xsl:value-of select="KinoveaVideoAnalysis/OriginalFilename"/>
@@ -80,8 +93,11 @@
           <xsl:apply-templates select="//Chronos"/>
         </Table>
       </Worksheet>
+      
     </Workbook>
+    
   </xsl:template>
+  
   <xsl:template match="Keyframes">
     <Row>
       <Cell ss:StyleID="s21">
