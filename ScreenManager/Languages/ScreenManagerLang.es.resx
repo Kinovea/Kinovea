@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Guardar una presentación de diapositivas de las imágenes claves</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Document PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Guardar un documento PDF de imágenes claves</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentarios...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Análisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Todos los archivos (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Cargar datos de las imagenes clave</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Creaciòn deldocumento Pdf imposible.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Impossible guardar el archivo : El archivo està abierto en otra ventana</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>El documento Pdf será creado a partir de las imágenes claves. \n Por favor, añadir algunas imágenes clave antes de generar el documento.</value></data>
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progresiòn :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Guardar el Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Imagenes Exportadas :</value></data>
@@ -234,6 +239,10 @@
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Dos pantallas de Lectura</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Contornos Solamente...</value></data>
+   
+   
+   
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Exportar en PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificar</value></data>
    

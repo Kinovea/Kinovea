@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Save a Slideshow from Key Images</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Save a PDF Document from Key Images</value></data>
+   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Save Data as a Spreadsheet Document</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comments...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Load Key Images Data</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Cannot Create Pdf Document. </value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Failure trying to save file : the file is open in another window.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>The Pdf document will be created out of Key Images.\n Please add some Key Images before generating the document. </value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>The file couldn't be written.\nMake sure you have the rights to write in the target folder and that the file is not currently used.</value></data>
+   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Cannot Save Video. </value></data>
+   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>The video couldn't be saved.\nTry again with a different format.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progress :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Saving Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exported Images :</value></data>
@@ -234,6 +239,10 @@
    <data name="mnuTwoMixed" xml:space="preserve"><value>One Capture screen and one Playback screen</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Two Playback Screens</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Edges Only...</value></data>
+   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Export to Spreadsheet</value></data>
+   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
+   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
+   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export to PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidify</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Go to Key Image</value></data>
@@ -252,7 +261,7 @@
    <data name="mnuOnePlayer" xml:space="preserve"><value>One Playback Screen</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Play | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restart Trajectory Edition</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Save Video or Key Images Data...</value></data>
+   <data name="mnuSave" xml:space="preserve"><value>Save...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Save the Current Image to File</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Screens</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Seal measure...</value></data>

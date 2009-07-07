@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salva una presentazione diapositive dalle Immagini Chiavi</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Documento PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Salva un documento PDF dalle Immagini Chiavi</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commenti...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analisi (*.kva)|*.kva|XML (*.xml)|*.xml|Tutti I Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carica le Immagini Chiave</value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Non riesce a creare il Documento Pdf. </value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Errore nel salvataggio File : il File e' aperto in un'altra finestra.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Il documento Pdf verra' creato dalle Immagini Chiave.\n Aggiungi qualche Immagine Chiave PRIMA di generare il documento. </value></data>
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>In esecuzione :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Salvataggio Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Immagini esportate :</value></data>
@@ -234,6 +239,10 @@
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Due schermi di Riproduzione</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Solo Contorni...</value></data>
+   
+   
+   
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Esportazione in PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificare</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Vai al Fotogramma dell'Immagine Chiave</value></data>

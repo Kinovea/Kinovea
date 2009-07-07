@@ -133,6 +133,8 @@
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvează o succesiune de imagini din cadrele cheie</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Document PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Salvează un document PDF din cadrele cheie</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentarii...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Toate fişierele (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Încarcă datele cadrelor cheie </value></data>
@@ -169,6 +171,9 @@
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea – Crearea documentului Pdf este imposibilă.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Eroare întâmpinată la salvarea fişierului : fişierul este deschis în altă fereastră .</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Documentul Pdf va fi creat din cadre cheie.\n Vă rugăm să adăugaţi câteva cadre cheie înainte de a genera documentul. </value></data>
+   
+   
+   
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progres :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Salvez Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Imagini exportate :</value></data>
@@ -234,6 +239,10 @@
    
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Două ferestre de Rulare</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Doar marginile...</value></data>
+   
+   
+   
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export în format PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificator</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Mergi la cadrul cheie </value></data>

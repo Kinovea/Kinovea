@@ -952,6 +952,33 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à The file couldn&apos;t be written.\nMake sure you have the rights to write in the target folder and that the file is not currently used..
+        /// </summary>
+        internal static string Error_SaveMovie_FileError {
+            get {
+                return ResourceManager.GetString("Error_SaveMovie_FileError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The video couldn&apos;t be saved.\nTry again with a different format..
+        /// </summary>
+        internal static string Error_SaveMovie_LowLevelError {
+            get {
+                return ResourceManager.GetString("Error_SaveMovie_LowLevelError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Kinovea - Cannot Save Video. .
+        /// </summary>
+        internal static string Error_SaveMovie_Title {
+            get {
+                return ResourceManager.GetString("Error_SaveMovie_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Kinovea - Cannot Create Pdf Document. .
         /// </summary>
         internal static string Error_SavePdf {
