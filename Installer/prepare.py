@@ -11,7 +11,7 @@ import os, glob, shutil
 
 bindir = '..\\Root\\bin\\x86\\Release'
 refdir = '..\\Refs'
-xsltdir = '..\\Tools\\xsl transforms\\Kva to Kva'
+xsltdir = '..\\Tools\\xsl transforms'
 otherdir = 'OtherFiles'
 destdir = 'Kinovea.Files\current'
 
@@ -46,6 +46,8 @@ shutil.copy(os.path.join(refdir, "msvcr80.dll"), destdir)
 shutil.copy(os.path.join(refdir, "log4net.dll"), destdir)
 shutil.copy(os.path.join(refdir, "pthreadGC2.dll"), destdir)
 shutil.copy(os.path.join(refdir, "ExpTreeLib.dll"), destdir)
+shutil.copy(os.path.join(refdir, "ICSharpCode.SharpZipLib.dll"), destdir)
+
 
 # Licenses
 shutil.copy(os.path.join(otherdir, "License.txt"), destdir)
@@ -63,7 +65,12 @@ shutil.copy(os.path.join(otherdir, "LogConf.xml"), destdir)
 #XSLT stylesheets
 if not os.path.exists(os.path.join(destdir, "xslt")):
     os.makedirs(os.path.join(destdir, "xslt"))
-shutil.copy2(os.path.join(xsltdir, "kva-1.2to1.3.xsl"), os.path.join(destdir, "xslt\\kva-1.2to1.3.xsl"))
+
+shutil.copy2(os.path.join(xsltdir, "Kva to Kva\\kva-1.2to1.3.xsl"), os.path.join(destdir, "xslt\\kva-1.2to1.3.xsl"))
+shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2msxml-en.xsl"), os.path.join(destdir, "xslt\\kva2msxml-en.xsl"))
+shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2odf-en.xsl"), os.path.join(destdir, "xslt\\kva2odf-en.xsl"))
+shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2xhtml-en.xsl"), os.path.join(destdir, "xslt\\kva2xhtml-en.xsl"))
+
 
 #Help files
 if os.path.exists(os.path.join(destdir, "Manuals")) : 
