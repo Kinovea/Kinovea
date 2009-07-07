@@ -1215,15 +1215,6 @@ namespace Kinovea.ScreenManager
     		// Transform kva to ODF's content.xml 
     		// and packs it into a proper .ods using zip compression.
 			
-    		// fonctionel:
-    		/*FastZip fz = new FastZip();
-			fz.CreateEmptyDirectories = true;
-			fz.CreateZip(_filePath, "template2", true, "");
-			fz = null;*/
-			
-    		
-			// KO:
-    		
     		string stylesheet = @"xslt\kva2odf-en.xsl";
 			
 			if(File.Exists(stylesheet))
@@ -1231,8 +1222,6 @@ namespace Kinovea.ScreenManager
 	            // Create archive.
 	            using (ZipOutputStream zos = new ZipOutputStream(File.Create(_filePath)))
 	            {
-					//zos.SetLevel(0); // 0: store only; 9: best compression.
-					
 					zos.UseZip64 = UseZip64.Dynamic;
 					
 					// Content.xml (where the actual content is.)
@@ -1256,10 +1245,7 @@ namespace Kinovea.ScreenManager
 					AddODFZipFile(zos, "settings.xml", GetODFSettings());
 					AddODFZipFile(zos, "styles.xml", GetODFStyles());
 					
-					
-					//AddODFZipDirectory(zos, "META-INF");
 					AddODFZipFile(zos, "META-INF/manifest.xml", GetODFManifest());
-					
 	            }
 			}
     	}
