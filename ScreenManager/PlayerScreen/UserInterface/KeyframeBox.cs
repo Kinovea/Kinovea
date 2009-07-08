@@ -49,7 +49,6 @@ namespace Kinovea.ScreenManager
         
 		#region Members
 		private Keyframe m_Keyframe;
-		private string m_Title;
 		private bool m_bAutoUpdatingTitle;
 		#endregion
 		

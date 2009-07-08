@@ -117,7 +117,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libavcodec\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libavformat\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libswscale\&quot;;&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\include\libavutil\&quot;"
+				AdditionalIncludeDirectories="..\..\Refs\FFMpeg\include;..\..\Refs\FFMpeg\include\libavcodec\;..\..\Refs\FFMpeg\include\libavformat\;..\..\Refs\FFMpeg\include\libswscale\;..\..\Refs\FFMpeg\include\libavutil\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -136,9 +136,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="true"
-				AdditionalDependencies="avformat-52.lib avcodec-51.lib avutil-49.lib swscale-0.lib $(NOINHERIT)"
+				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\Refs\FFMpeg\ffmpeg-r13712-gpl-lshared-win32\lib&quot;"
+				AdditionalLibraryDirectories="..\..\Refs\FFMpeg\lib"
 				GenerateDebugInformation="false"
 				TargetMachine="1"
 			/>
