@@ -51,13 +51,27 @@ def ValidateResx(file):
 	f.close()
 
 #------------------------------------------------------------------------------------------
+# Function that call the resgen executable to create a strongly typed ressource accessor
+#------------------------------------------------------------------------------------------
+def ResGen(module):
+	print "Generating " + module + " ressources accessor."
+	# Sample command : "ScreenManagerLang.resx" /str:cs,Kinovea.ScreenManager.Languages,ScreenManagerLang,ScreenManagerLang.Designer.cs
+	
+	moduleLang = module + "Lang"
+		
+	os.chdir(devDir + "\\" + module + "\\Languages")
+	os.system(resgenDir + " " + moduleLang + ".resx /str:cs,Kinovea." + module + ".Languages," + moduleLang + "," + moduleLang + ".Designer.cs") 
+
+#------------------------------------------------------------------------------------------
 # Program Entry point.
 #------------------------------------------------------------------------------------------
 
-# saxonDir : The directory of saxon binaries.
+# saxonDir : the saxon executable.
 # devDir : the directory where you checked out Kinovea trunk svn.
+# resgenDir : the resgen executable.
 saxonDir = '"C:\\Program Files\\saxonb9-1-0-6n\\bin\\Transform"'		 
 devDir = "C:\\Documents and Settings\\Administrateur\\Mes documents\\Dev  Prog\\Videa\\Sources\\trunk"
+resgenDir = '"C:\\Program Files\\Microsoft Visual Studio 8\\SDK\\v2.0\\Bin\\resgen.exe"'
 
 print "Cleanup"
 if (os.path.isfile('content.xml')):
@@ -89,4 +103,15 @@ MoveToDestination("Root")
 MoveToDestination("Updater")
 MoveToDestination("FileBrowser")
 MoveToDestination("ScreenManager")
+
+#4. Regenerate the strongly typed ressource accessors
+print "\nRegenerating the strongly typed ressources accessors"
+ResGen("Root")
+ResGen("Updater")
+ResGen("FileBrowser")
+ResGen("ScreenManager")
+
 print "Done."
+
+
+
