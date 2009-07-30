@@ -149,13 +149,12 @@
    <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Abspieldauer der exportierten Bildersequenz : {0:0.00} Sekunden</value></data>
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Speichere eine Bildsequenz.</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
-   <data name="dlgSaveAnalysisOrVideo_CheckBlend" xml:space="preserve"><value>Überblende Einzelbilder mit Zeichnungen</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Berücksichtige Slow-Motion (Aktuell =</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Optionen</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Speichermethode</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Speichere nur Schlüsselbilddaten</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioBoth" xml:space="preserve"><value>Speichere Video und Schlüsselbilddaten in verschiedenen Dateien</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Speichere Video und Schlüsselbilddaten in einer gemeinsamen Datei</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Speichere nur das Video</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Speichere Video oder Schlüsselbilddaten...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Speichere Schlüsselbilddaten</value></data>
