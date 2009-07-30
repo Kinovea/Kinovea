@@ -4597,11 +4597,10 @@ namespace Kinovea.ScreenManager
 					
 					if (dlgSave.ShowDialog() == DialogResult.OK)
 					{
-
-						// Reconstruct the extension.
+						
+						// 1. Reconstruct the extension.
 						// If the user let "file.00.00" as a filename, the extension is not appended automatically.
 						string strImgNameLower = dlgSave.FileName.ToLower();
-						string extension;
 						string strImgName;
 						if (strImgNameLower.EndsWith("jpg") || strImgNameLower.EndsWith("jpeg") || strImgNameLower.EndsWith("bmp") || strImgNameLower.EndsWith("png"))
 						{
@@ -4611,6 +4610,7 @@ namespace Kinovea.ScreenManager
 						else
 						{
 							// Get the extension
+							string extension;
 							switch (dlgSave.FilterIndex)
 							{
 								case 1:
@@ -4629,9 +4629,10 @@ namespace Kinovea.ScreenManager
 							strImgName = dlgSave.FileName + extension;
 						}
 
-
+						//2. Get image.
 						Bitmap outputImage = GetFlushedImage();
 						
+						//3. Save the file.
 						if (strImgName.ToLower().EndsWith("jpg"))
 						{
 							Bitmap OutputJpg = ConvertToJPG(outputImage);
@@ -4645,10 +4646,6 @@ namespace Kinovea.ScreenManager
 						else if (strImgName.ToLower().EndsWith("png"))
 						{
 							outputImage.Save(strImgName, ImageFormat.Png);
-						}
-						else
-						{
-							// hum ?
 						}
 
 						outputImage.Dispose();
@@ -4882,46 +4879,23 @@ namespace Kinovea.ScreenManager
 				OutputJpg.Dispose();
 			}
 		}
-		public void SaveMovie(String _filePath, bool _bVideoAlone, bool _bChangeFramerate, bool _bFlushDrawings)
+		public void Save()
 		{
-			// Called from the dialog box "FormVideoExport".
-
-			formFileSave ffs;
-
-			// framerate
-			int iFrameInterval;
-			if(_bChangeFramerate)
-			{
-				iFrameInterval = PlaybackFrameInterval;
-			}
-			else
-			{
-				iFrameInterval = m_FrameServer.VideoFile.Infos.iFrameInterval;
-			}
-
-			// On lui passe un pointeur de fonction
-			// variable sur delegate dont le type est déclaré dans m_FrameServer.VideoFile
-			DelegateGetOutputBitmap dgob = GetOutputBitmap;
+            // Todo:
+            // Eventually, this call should be done directly by PlayerScreen, without passing through the UI.
+			// This will be possible when m_Metadata, m_iSelStart, m_iSelEnd are encapsulated in m_FrameServer
+			// and when PlaybackFrameInterval, m_iSlowmotionPercentage, GetOutputBitmap are available publically.
 			
-			// video alone or metadata muxed along
-			if (_bVideoAlone)
-			{
-				ffs = new formFileSave(m_FrameServer.VideoFile, _filePath, iFrameInterval, m_iSelStart, m_iSelEnd, null, _bFlushDrawings, false, dgob);
-			}
-			else
-			{
-				ffs = new formFileSave(m_FrameServer.VideoFile, _filePath, iFrameInterval, m_iSelStart, m_iSelEnd, m_Metadata, _bFlushDrawings, false, dgob);
-			}
-
-			// Launch transcoding by showing the progress bar dialog.
-			ffs.ShowDialog();
-			ffs.Dispose();
+			m_FrameServer.Save(	m_Metadata, 
+			                   		PlaybackFrameInterval, 
+			                   		m_iSlowmotionPercentage, 
+			                   		m_iSelStart, 
+			                       	m_iSelEnd,
+			                       	new DelegateGetOutputBitmap(GetOutputBitmap));
 		}
 		public void SaveDiaporama(String _filePath, int _iFrameInterval)
 		{
 			// Called from the dialog box "FormDiapoExport".
-			
-			//DelegateFlushDrawings dfd = FlushDrawings;
 			DelegateGetOutputBitmap dgob = GetOutputBitmap;
 			
 			formFileSave ffs = new formFileSave(m_FrameServer.VideoFile, _filePath, _iFrameInterval, m_iSelStart, m_iSelEnd, null, true, true, dgob);
@@ -4930,9 +4904,11 @@ namespace Kinovea.ScreenManager
 		}
 		private bool GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
-			// Used by the PlayerServer for SaveMovie.
+			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
 			// This image is already drawn on _canvas.
+			// Here we decide if this particular frame should be encoded to the output 
+			// and we flush the drawings on it if needed.
 
 			bool bShouldEncode = false;
 

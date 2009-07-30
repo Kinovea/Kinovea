@@ -100,8 +100,13 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
+    <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FrameServerCapture.cs" />
+    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs" />
+    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.Designer.cs">
+      <DependentUpon>CapturedVideoBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>

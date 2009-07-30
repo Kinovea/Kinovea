@@ -28,37 +28,82 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+	/// <summary>
+	/// A class to help the user on what to save and how.
+	/// </summary>
     public partial class formVideoExport : Form
     {
-        private PlayerScreen m_PlayerScreen;
-        private int m_iSlowmotionPercentage;
-
-        public formVideoExport(PlayerScreen _ActiveScreen)
+    	#region Properties
+		public bool SaveAnalysis
+		{
+			get { return m_bSaveAnalysis; }
+		}
+		public bool BlendDrawings
+		{
+			get { return m_bBlendDrawings; }
+		}
+		public bool MuxDrawings
+		{
+			get { return m_bMuxDrawings; }
+		}
+		public string Filename
+		{
+			get { return m_Filename; }
+		}    	
+		public bool UseSlowMotion
+		{
+			get { return m_bUseSlowMotion; }
+		}
+		#endregion
+    	    	
+    	#region Members
+    	//private PlayerScreen m_PlayerScreen;
+        
+    	private string m_OriginalFilename;
+    	private int m_iSlowmotionPercentage;
+		private Metadata m_Metadata;
+    	
+        private bool m_bSaveAnalysis;
+		private bool m_bBlendDrawings;
+		private bool m_bMuxDrawings;
+		private bool m_bUseSlowMotion;
+		private string m_Filename;
+        #endregion
+        
+		#region constructor and initialisation
+		public formVideoExport(string _OriginalFilename, Metadata _Metadata, int _iSlowmotionPercentage)
         {
-        	m_iSlowmotionPercentage = ((PlayerScreenUserInterface)_ActiveScreen.UI).SlowmotionPercentage;
-        	m_PlayerScreen = _ActiveScreen;
+        	m_iSlowmotionPercentage = _iSlowmotionPercentage;
+        	m_Metadata = _Metadata;
+        	m_OriginalFilename = _OriginalFilename;
         	
             InitializeComponent();
+            if(m_iSlowmotionPercentage != 100)
+            {
+            	groupOptions.Visible = true;
+            	this.Height = 370;
+            }
+            else
+            {
+            	groupOptions.Visible = false;
+            	this.Height = 280;
+            }
+            
+            
             InitCulture();
         }
-
-        private void InitCulture()
+		private void InitCulture()
         {
             this.Text = "   " + ScreenManagerLang.dlgSaveAnalysisOrVideo_Title;
-            groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;
-            
+            groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;            
             radioSaveVideo.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioVideo;
-            radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
             radioSaveMuxed.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioMuxed;
-            radioSaveBoth.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBoth;
-
-
+            radioSaveBlended.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBlended;
+			radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
+            
             groupOptions.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupOptions;
-
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
             checkSlowMotion.Text = checkSlowMotion.Text + m_iSlowmotionPercentage.ToString() + "%).";
-
-            checkBlendDrawings.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckBlend;
 
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
@@ -66,53 +111,139 @@ namespace Kinovea.ScreenManager
             EnableDisableOptions();
 
             // default option
-            // Dépend si on a une analyse ou pas.
-            radioSaveVideo.Checked = true;
+            if(m_Metadata.HasData)
+            {
+            	radioSaveMuxed.Checked = true;
+            }
+            else
+            {
+            	radioSaveVideo.Checked = true;
+            }
         }
+		#endregion
+        
+		#region Public methods
+		public DialogResult Spawn()
+		{
+			// We use this method instead of directly calling ShowDialog()
+			// in order to catch for the special case where the user has no choice.
+			
+			if(!m_Metadata.HasData && m_iSlowmotionPercentage == 100)
+			{
+				// User has no other choice than saving the video only.
+				// Directly ask for a filename.
+				return DoSaveVideo();
+			}
+			else
+			{
+				return ShowDialog();
+			}
+		}
+		#endregion
+		
+		#region event handlers
         private void btnOK_Click(object sender, EventArgs e)
         {
             // Hide/Close logic:
             // We start by hiding the current dialog.
-            // If the user cancels on the video dialog, we show back ourselves.
-            // When user cancels at Analysis Dialog, we show back from there. 
+            // If the user cancels on the file choosing dialog, we show back ourselves.
 
             Hide();
-
-            if(!radioSaveAnalysis.Checked)
+			DialogResult dr;
+            
+            if(radioSaveAnalysis.Checked)
             {
-                // Either save Both or Video alone (including muxed).
-                string filePath = DoSaveVideo();
-                if (filePath != null)
-                {
-                    if (radioSaveBoth.Checked)
-                    {
-                        // If both, reuse the path we just choose.
-                        // If canceled, will do a Show(), If not, will Close();
-                        DoSaveAnalysis(filePath);
-                    }
-                    else
-                    {
-                        // Work over.
-                        Close();
-                    }
-                }
-                else
-                {
-                    Show();
-                }
+            	dr = DoSaveAnalysis();	
             }
             else
             {
-                // If canceled, will do a Show(), If not, will Close();
-                DoSaveAnalysis(null);
+            	dr = DoSaveVideo();	
+            }
+            
+            if(dr == DialogResult.OK)
+            {
+            	Close();
+            }
+            else 
+            {
+            	//If cancelled, we display the wizard again.
+                Show();	
             }
         }
-        private string DoSaveVideo()
+        private void BtnSaveVideoClick(object sender, EventArgs e)
+        {
+        	UncheckAllOptions();
+        	radioSaveVideo.Checked = true;
+        }
+        private void BtnSaveAnalysisClick(object sender, EventArgs e)
+        {
+        	UncheckAllOptions();
+        	radioSaveAnalysis.Checked = true;	
+        }
+        private void BtnSaveMuxedClick(object sender, EventArgs e)
+        {
+        	UncheckAllOptions();
+        	radioSaveMuxed.Checked = true;
+        }
+        private void BtnSaveBothClick(object sender, EventArgs e)
+        {
+        	UncheckAllOptions();
+        	radioSaveBlended.Checked = true;
+        }
+        private void radio_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableDisableOptions();
+        }
+        #endregion
+        
+        #region lower levels helpers
+        private void EnableDisableOptions()
+        {
+            if (!m_Metadata.HasData)
+            {
+                // Can only save the video alone.
+
+                radioSaveVideo.Enabled = true;
+                radioSaveMuxed.Enabled = false;
+                radioSaveBlended.Enabled = false;
+                radioSaveAnalysis.Enabled = false;
+                checkSlowMotion.Enabled = (m_iSlowmotionPercentage != 100);
+            }
+            else
+            {
+                // Can save video and/or data
+
+                radioSaveVideo.Enabled = true;
+                radioSaveMuxed.Enabled = true;
+                radioSaveBlended.Enabled = true;
+				radioSaveAnalysis.Enabled = true;
+                
+                if (radioSaveAnalysis.Checked)
+                {
+                    // Only save analysis, slowmotion disabled.
+                    checkSlowMotion.Enabled = false;
+                }
+                else
+                {
+                    // Save video and or analysis, slowmotion enabled
+                    checkSlowMotion.Enabled = (m_iSlowmotionPercentage != 100);
+                }
+            }
+        }
+        private void UncheckAllOptions()
+        {
+        	radioSaveVideo.Checked = false;
+            radioSaveAnalysis.Checked = false;
+            radioSaveMuxed.Checked = false;
+            radioSaveBlended.Checked = false;	
+        }
+    
+        private DialogResult DoSaveVideo()
         {
             //--------------------------------------------------------------------------
             // Save Video file. (Either Alone or along with the Analysis muxed into it.)
             //--------------------------------------------------------------------------
-
+			DialogResult result = DialogResult.Cancel;
             string filePath = null;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -120,17 +251,13 @@ namespace Kinovea.ScreenManager
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.FilterIndex = 1;
 
-            // File filter & type of mux.
-            bool bVideoAlone;
             if (radioSaveMuxed.Checked)
             {
                 saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterMuxed;
-                bVideoAlone = false;
             }
             else
             {
                 saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
-                bVideoAlone = true;
             }
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -138,35 +265,29 @@ namespace Kinovea.ScreenManager
                 filePath = saveFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                    m_PlayerScreen.m_PlayerScreenUI.SaveMovie(filePath, bVideoAlone, checkSlowMotion.Checked, checkBlendDrawings.Checked);
+                	// Commit to output props.
+                	m_bSaveAnalysis = false;
+                	m_Filename = filePath;                	
+                	m_bBlendDrawings = radioSaveBlended.Checked;
+					m_bMuxDrawings = radioSaveMuxed.Checked;             	
+             		m_bUseSlowMotion = checkSlowMotion.Checked;
+             		
+					DialogResult = DialogResult.OK;
+					result = DialogResult.OK;
                 }
-                else
-                {
-                    filePath = null;
-                }
-            }
-            
-            return filePath;
+        	}
+            return result;
         }
-        private void DoSaveAnalysis(string _filePath)
+        private DialogResult DoSaveAnalysis()
         {
             // Analysis only.
+            DialogResult result = DialogResult.Cancel;
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = ScreenManagerLang.dlgSaveAnalysisTitle;
 
-
-            if (_filePath == null)
-            {
-                // Goto this video directory and suggest filename for saving.
-                saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_PlayerScreen.FilePath);
-                saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_PlayerScreen.FilePath);
-            }
-            else
-            {
-                // Reuse the infos from the new video we just saved.
-                saveFileDialog.InitialDirectory = Path.GetDirectoryName(_filePath);
-                saveFileDialog.FileName = Path.GetFileNameWithoutExtension(_filePath);
-            }
+            // Goto this video directory and suggest filename for saving.
+            saveFileDialog.InitialDirectory = Path.GetDirectoryName(m_OriginalFilename);
+            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_OriginalFilename);
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.Filter = ScreenManagerLang.dlgSaveAnalysisFilter;
 
@@ -179,59 +300,17 @@ namespace Kinovea.ScreenManager
                     {
                         filePath = filePath + ".kva";
                     }
-                    m_PlayerScreen.m_PlayerScreenUI.Metadata.ToXmlFile(filePath);
-                }
-
-                // Work is always over when we come here.
-                Close();
-            }
-            else
-            {
-                Show();
-            }
-        }
-
-        private void radioSaveAnalysis_CheckedChanged(object sender, EventArgs e)
-        {
-            EnableDisableOptions();
-        }
-        private void EnableDisableOptions()
-        {
-            if (!m_PlayerScreen.m_PlayerScreenUI.Metadata.HasData)
-            {
-                // Can only save the video.
-
-                radioSaveVideo.Enabled = true;
-                radioSaveAnalysis.Enabled = false;
-                radioSaveMuxed.Enabled = false;
-                radioSaveBoth.Enabled = false;
-                checkBlendDrawings.Enabled = false;
-                checkSlowMotion.Enabled = (m_PlayerScreen.m_PlayerScreenUI.SlowmotionPercentage != 100);
-            }
-            else
-            {
-                // Can save video and/or data
-
-                radioSaveVideo.Enabled = true;
-                radioSaveAnalysis.Enabled = true;
-                radioSaveMuxed.Enabled = true;
-                radioSaveBoth.Enabled = true;
-
-                if (radioSaveAnalysis.Checked)
-                {
-                    // Only save analysis, blending drawings and slowmotion disabled.
-
-                    checkSlowMotion.Enabled = false;
-                    checkBlendDrawings.Enabled = false;
-                }
-                else
-                {
-                    // Save video and or analysis, blending and slowmotion enabled
-
-                    checkBlendDrawings.Enabled = true;
-                    checkSlowMotion.Enabled = (m_PlayerScreen.m_PlayerScreenUI.SlowmotionPercentage != 100);
+                    
+                    // Commit output props
+                    m_Filename = filePath;
+                    m_bSaveAnalysis = true;
+                    DialogResult = DialogResult.OK;
+                    result = DialogResult.OK;
                 }
             }
+            
+            return result;
         }
+    	#endregion
     }
 }

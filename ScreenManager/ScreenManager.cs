@@ -318,7 +318,7 @@ namespace Kinovea.ScreenManager
             mnuOneCapture.Text = ((ItemResourceInfo)mnuOneCapture.Tag).resManager.GetString(((ItemResourceInfo)mnuOneCapture.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
             mnuOneCapture.MergeAction = MergeAction.Append;
-            mnuOneCapture.Enabled = false;
+            //mnuOneCapture.Enabled = false;
             
 
             // Two captures
@@ -327,7 +327,7 @@ namespace Kinovea.ScreenManager
             mnuTwoCaptures.Text = ((ItemResourceInfo)mnuTwoCaptures.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoCaptures.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
             mnuTwoCaptures.MergeAction = MergeAction.Append;
-			mnuTwoCaptures.Enabled = false;
+			//mnuTwoCaptures.Enabled = false;
             
             // Two mixed
             ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
@@ -335,7 +335,7 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.Text = ((ItemResourceInfo)mnuTwoMixed.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoMixed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
-            mnuTwoMixed.Enabled = false;
+            //mnuTwoMixed.Enabled = false;
             
             //Swap - activé seulement si DualFull ?
             mnuSwapScreens.Tag = new ItemResourceInfo(resManager, "mnuSwapScreens");
@@ -995,7 +995,7 @@ namespace Kinovea.ScreenManager
         }
         public void mnuSaveOnClick(object sender, EventArgs e)
         {
-            //---------------------------------------------------------------------------
+        	//---------------------------------------------------------------------------
             // Launch the dialog box where the user can choose to save the video,
             // the metadata or both.
             // Public because accessed from the closing command when we realize there are 
@@ -1005,14 +1005,12 @@ namespace Kinovea.ScreenManager
             PlayerScreen ps = m_ActiveScreen as PlayerScreen;
             if (ps != null)
             {
-                    DoStopPlaying();
-                    DoDeactivateKeyboardHandler();
-                    
-                    formVideoExport fve = new formVideoExport(ps);
-                    fve.ShowDialog();
-                    fve.Dispose();
-
-                    DoActivateKeyboardHandler();
+            	DoStopPlaying();
+                DoDeactivateKeyboardHandler();
+            	
+                ps.Save();
+                
+                DoActivateKeyboardHandler();
             }
         }
         private void mnuExportToPDFOnClick(object sender, EventArgs e)

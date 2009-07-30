@@ -45,6 +45,7 @@
     <DocumentationFile>bin\x86\Debug\Kinovea.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartArguments>-file "c:\\hello world\file.avi" -noexp -stretch -speed 80 -file2 "c:\\hello world\file2.avi"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +78,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <Optimize>true</Optimize>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <RegisterForComInterop>False</RegisterForComInterop>

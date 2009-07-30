@@ -254,6 +254,35 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Other public methods called from the ScreenManager
+        public void StopPlaying()
+        {
+            m_PlayerScreenUI.StopPlaying();
+        }
+        public void GotoNextFrame()
+        {
+            m_PlayerScreenUI.SetCurrentFrame(-1);
+        }
+        public void ResetSelectionImages(MemoPlayerScreen _memo)
+        {
+            m_PlayerScreenUI.ResetSelectionImages(_memo);
+        }
+        public MemoPlayerScreen GetMemo()
+        {
+            return m_PlayerScreenUI.GetMemo();
+        }
+        public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
+        {
+        	// A video filter just finished and is passing us its output object.
+        	// It is used as a communication channel between the filter and the player.
+        	m_PlayerScreenUI.SetDrawingtimeFilterOutput(_dfo);
+        }
+        public void Save()
+        {
+        	m_PlayerScreenUI.Save();
+        }
+        #endregion
+        
         #region Délégués appelées depuis l'UI
         private void ScreenUI_CloseAsked()
         {
@@ -283,31 +312,10 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public void StopPlaying()
-        {
-            // fonction appelée depuis le Superviseur, via le ScreenManager
-            // Lorsque l'utilisateur lance la boîte de dialogue ouvrir.
-            m_PlayerScreenUI.StopPlaying();
-        }
+        
 
-        public void GotoNextFrame()
-        {
-            m_PlayerScreenUI.SetCurrentFrame(-1);
-        }
-
-        public MemoPlayerScreen GetMemo()
-        {
-            return m_PlayerScreenUI.GetMemo();
-        }
-        public void ResetSelectionImages(MemoPlayerScreen _memo)
-        {
-            m_PlayerScreenUI.ResetSelectionImages(_memo);
-        }
-        public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
-        {
-        	// A video filter just finished and is passing us its output object.
-        	// It is used as a communication channel between the filter and the player.
-        	m_PlayerScreenUI.SetDrawingtimeFilterOutput(_dfo);
-        }
+        
+        
+        
     }
 }

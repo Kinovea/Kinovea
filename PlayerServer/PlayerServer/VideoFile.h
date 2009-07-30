@@ -217,7 +217,7 @@ namespace VideoFiles
 		int64_t GetFrameNumber(int64_t _iPosition);
 		
 		// New save methods, to be exported later in a new VideoFileWriter object.
-		SaveResult OpenSavingContext(String^ _FilePath);
+		SaveResult OpenSavingContext(String^ _FilePath, Size _size);
 		SaveResult CloseSavingContext(bool _bEncodingSuccess);
 		SaveResult SaveFrame(Bitmap^ _image);
 		
@@ -249,7 +249,7 @@ namespace VideoFiles
 
 		// Other utilities
 		void	MoveToTimestamp(int64_t _iPosition);
-		void	RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
+		bool	RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		int		GreatestCommonDenominator(int a, int b);
 		void	ResetPrimarySelection(void);
 		void	ResetInfosVideo(void);
