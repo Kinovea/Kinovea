@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         	this.btnClose = new System.Windows.Forms.Button();
         	this.lblSelDuration = new System.Windows.Forms.Label();
         	this.panelVideoControls = new System.Windows.Forms.Panel();
+        	this.buttonRecord = new System.Windows.Forms.Button();
         	this.btnRafale = new System.Windows.Forms.Button();
         	this.lblWorkingZone = new System.Windows.Forms.Label();
         	this.btnSnapShot = new System.Windows.Forms.Button();
@@ -84,7 +85,6 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails = new System.Windows.Forms.Panel();
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.btnAddKeyframe = new System.Windows.Forms.Button();
-        	this.buttonRecord = new System.Windows.Forms.Button();
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
         	this.groupBoxSpeedTuner.SuspendLayout();
@@ -114,9 +114,8 @@ namespace Kinovea.ScreenManager
         	this.lblFileName.AutoSize = true;
         	this.lblFileName.Location = new System.Drawing.Point(3, 4);
         	this.lblFileName.Name = "lblFileName";
-        	this.lblFileName.Size = new System.Drawing.Size(67, 13);
+        	this.lblFileName.Size = new System.Drawing.Size(0, 13);
         	this.lblFileName.TabIndex = 3;
-        	this.lblFileName.Text = "";
         	// 
         	// btnClose
         	// 
@@ -170,6 +169,24 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.TabIndex = 2;
         	this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
+        	// 
+        	// buttonRecord
+        	// 
+        	this.buttonRecord.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.record;
+        	this.buttonRecord.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonRecord.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.buttonRecord.FlatAppearance.BorderSize = 0;
+        	this.buttonRecord.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+        	this.buttonRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+        	this.buttonRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.buttonRecord.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonRecord.Location = new System.Drawing.Point(58, 65);
+        	this.buttonRecord.MinimumSize = new System.Drawing.Size(30, 25);
+        	this.buttonRecord.Name = "buttonRecord";
+        	this.buttonRecord.Size = new System.Drawing.Size(40, 30);
+        	this.buttonRecord.TabIndex = 24;
+        	this.buttonRecord.UseVisualStyleBackColor = true;
+        	this.buttonRecord.Click += new System.EventHandler(this.buttonRecord_Click);
         	// 
         	// btnRafale
         	// 
@@ -929,24 +946,6 @@ namespace Kinovea.ScreenManager
         	this.btnAddKeyframe.TabIndex = 0;
         	this.btnAddKeyframe.UseVisualStyleBackColor = false;
         	this.btnAddKeyframe.Click += new System.EventHandler(this.btnAddKeyframe_Click);
-        	// 
-        	// buttonRecord
-        	// 
-        	this.buttonRecord.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
-        	this.buttonRecord.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        	this.buttonRecord.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.buttonRecord.FlatAppearance.BorderSize = 0;
-        	this.buttonRecord.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-        	this.buttonRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-        	this.buttonRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonRecord.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonRecord.Location = new System.Drawing.Point(58, 65);
-        	this.buttonRecord.MinimumSize = new System.Drawing.Size(30, 25);
-        	this.buttonRecord.Name = "buttonRecord";
-        	this.buttonRecord.Size = new System.Drawing.Size(40, 30);
-        	this.buttonRecord.TabIndex = 24;
-        	this.buttonRecord.UseVisualStyleBackColor = true;
-        	this.buttonRecord.Click += new System.EventHandler(this.buttonRecord_Click);
         	// 
         	// CaptureScreenUserInterface
         	// 

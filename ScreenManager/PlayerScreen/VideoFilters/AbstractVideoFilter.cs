@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
 
             if (iValue > iMaximum) { iValue = iMaximum; }
         	
-            m_FormProgressBar.Update(iValue, iMaximum);
+            m_FormProgressBar.Update(iValue, iMaximum, false);
         }
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

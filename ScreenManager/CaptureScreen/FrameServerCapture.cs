@@ -23,17 +23,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Windows.Forms;
 
 using AForge.Video;
 using AForge.Video.DirectShow;
+using Kinovea.Services;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// FrameServerCapture encapsulate all the metadata and configuration for managing frames in a capture screen.
-	/// This is the object that maintain the interface with file level operations done by VideoFile class.
+	/// This is the object that maintains the interface with file level operations done by VideoFile class.
 	/// </summary>
 	public class FrameServerCapture : AbstractFrameServer
 	{
@@ -50,11 +52,14 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_DecodingSize; }
 		}
+		public List<CapturedVideo> RecentlyCapturedVideos
+		{
+			get { return m_RecentlyCapturedVideos; }	
+		}
 		#endregion
 		
 		#region Members
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private DelegateInvalidate m_DoInvalidate;					// To request a paint from screen.
 		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
 		private List<Bitmap> m_FrameBuffer = new List<Bitmap>();	// Input buffer.
 		private int m_iMaxSizeBufferFrames = 125;					// Input buffer size.
@@ -63,16 +68,26 @@ namespace Kinovea.ScreenManager
 		private bool m_bPainting;									// 'true' between paint requests.
 		private Stopwatch m_BufferWatch = new Stopwatch();		// For instrumentation only.
 		private bool m_bIsRecording;
+		
+		private Bitmap m_CurrentCaptureBitmap;						// Used to create the thumbnail.
+		private string m_CurrentCaptureFilePath;					// Used to create the thumbnail.
+		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
+		
 		private VideoFile m_VideoFile = new VideoFile();
+
+		private DelegateInvalidate m_DoInvalidate;							// To request a paint from screen.
+		private DelegateUpdateCapturedVideos m_DoUpdateCapturedVideos;		// To request an update from screen.
+		
+		
 		//private bool m_bSavingContextEncodingSuccess;
-		//m_Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));
-			
+		//m_Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));	
 		#endregion
 		
 		#region Constructor
-		public FrameServerCapture(DelegateInvalidate _delegate)
+		public FrameServerCapture(DelegateInvalidate _invalidate, DelegateUpdateCapturedVideos _update)
 		{
-			m_DoInvalidate = _delegate;	
+			m_DoInvalidate = _invalidate;	
+			m_DoUpdateCapturedVideos = _update;
 		}
 		#endregion
 		
@@ -156,6 +171,20 @@ namespace Kinovea.ScreenManager
 				
 				// Close the recording context.
 				m_VideoFile.CloseSavingContext(true);
+				
+				// Move to new name
+				
+				// Add a VideofileBox (in the Keyframes panel) with a thumbnail of this video.
+				// As for KeyframeBox, you'd be able to edit the filename.
+				// double click = open it in a Playback screen.
+				// time label would be the duration.
+				// using the close button do not delete the file, it just hides it.
+				
+				CapturedVideo cv = new CapturedVideo(m_CurrentCaptureFilePath, m_CurrentCaptureBitmap);
+				m_RecentlyCapturedVideos.Add(cv);
+				m_CurrentCaptureBitmap = null;
+				
+				m_DoUpdateCapturedVideos();
 			}
 			else
 			{
@@ -165,9 +194,12 @@ namespace Kinovea.ScreenManager
 					SignalToStart();
 				}
 				
-				// Open a recording context.
-				// (on which file name ?)
-				SaveResult result = m_VideoFile.OpenSavingContext("test.avi");
+				// Open a recording context. (on which file name ?)
+				// Create filename from current date time.
+				string timecode = DateTime.Now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
+				m_CurrentCaptureFilePath = PreferencesManager.SettingsFolder + "\\" + timecode + ".avi";
+				
+				SaveResult result = m_VideoFile.OpenSavingContext(m_CurrentCaptureFilePath, m_DecodingSize);
 				
 				if(result == SaveResult.Success)
 				{
@@ -200,7 +232,7 @@ namespace Kinovea.ScreenManager
 			// Store the new frame in the buffer.
 			m_FrameBuffer.Add((Bitmap)eventArgs.Frame.Clone());
 			
-			// Rotate the buffer, removing the oldest image.
+			// Roll the buffer, removing the oldest image.
 			if(m_FrameBuffer.Count > m_iMaxSizeBufferFrames)
 			{
 				m_FrameBuffer.RemoveAt(0);
@@ -216,6 +248,10 @@ namespace Kinovea.ScreenManager
 			if(m_bIsRecording)
 			{
 				m_VideoFile.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
+				if(m_CurrentCaptureBitmap == null)
+				{
+					m_CurrentCaptureBitmap = m_FrameBuffer[m_FrameBuffer.Count-1];
+				}
 			}
 			
 			#region Instrumentation
@@ -243,52 +279,34 @@ namespace Kinovea.ScreenManager
 		}
 		private void DisplayError(SaveResult _result)
 		{
-			// Display error message.
 			switch(_result)
-			{
-				case SaveResult.MuxerNotFound:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.MuxerParametersNotAllocated:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.MuxerParametersNotSet:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.VideoStreamNotCreated:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.EncoderNotFound:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.EncoderParametersNotAllocated:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.EncoderParametersNotSet:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.EncoderNotOpened:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.FileNotOpened:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;
-				case SaveResult.FileHeaderNotWritten:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;	
-				case SaveResult.InputFrameNotAllocated:
-					DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error);
-					break;	
-				default:
-					break;
-			}
+        	{
+                case SaveResult.FileHeaderNotWritten:
+                case SaveResult.FileNotOpened:
+                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_FileError);
+                    break;
+                
+                case SaveResult.EncoderNotFound:
+                case SaveResult.EncoderNotOpened:
+                case SaveResult.EncoderParametersNotAllocated:
+                case SaveResult.EncoderParametersNotSet:
+                case SaveResult.InputFrameNotAllocated:
+                case SaveResult.MuxerNotFound:
+                case SaveResult.MuxerParametersNotAllocated:
+                case SaveResult.MuxerParametersNotSet:
+                case SaveResult.VideoStreamNotCreated:
+                case SaveResult.UnknownError:
+                default:
+                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_LowLevelError);
+                    break;
+        	}
 		}
-		private void DisplayErrorMessage(string error)
-        {			
+		private void DisplayErrorMessage(string _err)
+        {
         	MessageBox.Show(
-				error,
-				Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error,
-                MessageBoxButtons.OK,
+        		_err.Replace("\\n", "\n"),
+               	Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_Title,
+               	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
 		#endregion

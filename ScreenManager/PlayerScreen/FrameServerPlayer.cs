@@ -19,8 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using Kinovea.VideoFiles;
+using System.ComponentModel;
 using System.Drawing;
+
+using Kinovea.ScreenManager.Languages;
+using Kinovea.VideoFiles;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -46,6 +50,17 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private VideoFile m_VideoFile = new VideoFile();
 		//private Metadata m_Metadata = new Metadata();
+		
+		// Saving process (globals because the bgWorker is split in several methods)
+		private formProgressBar m_FormProgressBar;
+		private long m_iSaveStart;
+		private long m_iSaveEnd;
+        private string m_SaveFile;
+        private Metadata m_SaveMetadata;
+        private int m_iSaveFramesInterval;
+        private bool m_bSaveFlushDrawings;
+        private DelegateGetOutputBitmap m_SaveDelegateOutputBitmap;
+        private SaveResult m_SaveResult;
 		#endregion
 
 		#region Constructor
@@ -70,6 +85,147 @@ namespace Kinovea.ScreenManager
 			// Draw the current image on canvas according to conf.
 			// This is called back from screen paint method.
 		}
+		public void Save(Metadata _Metadata, int _iPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
+		{
+			
+			// Let the user select what he wants to save exactly.
+			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
+			
+			formVideoExport fve = new formVideoExport(m_VideoFile.FilePath, _Metadata, _iSlowmotionPercentage);
+            
+			if(fve.Spawn() == DialogResult.OK)
+            {
+            	if(fve.SaveAnalysis)
+            	{
+            		// Save analysis.
+            		_Metadata.ToXmlFile(fve.Filename);
+            		fve.Dispose();
+            	}
+            	else
+            	{
+            		// Save video.
+            		// In this case will use a bgWorker and a Progress Bar.
+            		
+					// Memorize the parameters, they will be used later in bgWorkerSave_DoWork.
+					// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from the local members.
+					m_iSaveStart = _iSelStart;
+		            m_iSaveEnd = _iSelEnd;
+		            m_SaveMetadata = fve.MuxDrawings ? _Metadata : null;
+		            
+		            m_SaveFile = fve.Filename;
+		            m_iSaveFramesInterval = fve.UseSlowMotion ? _iPlaybackFrameInterval : m_VideoFile.Infos.iFrameInterval;
+		            m_bSaveFlushDrawings = fve.BlendDrawings;
+		            m_SaveDelegateOutputBitmap = _DelegateOutputBitmap;
+		            
+		            // Release configuration form.
+		            fve.Dispose();
+		            
+		            // Instanciate and configure the bgWorker.
+		            BackgroundWorker bgWorkerSave = new BackgroundWorker();
+		            bgWorkerSave.WorkerReportsProgress = true;
+		        	bgWorkerSave.DoWork += new DoWorkEventHandler(bgWorkerSave_DoWork);
+		        	bgWorkerSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerSave_ProgressChanged);
+		            bgWorkerSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerSave_RunWorkerCompleted);
+		            
+		            // Attach the bgWorker to the VideoFile object so it can report progress.
+		            m_VideoFile.BgWorker = bgWorkerSave;
+		            
+		            // Create the progress bar and launch the worker.
+		            m_FormProgressBar = new formProgressBar();
+		        	bgWorkerSave.RunWorkerAsync();
+		        	m_FormProgressBar.ShowDialog();
+            	}
+            }
+			else
+			{
+				fve.Dispose();
+			}
+            
+            
+			
+		}
+		#endregion
+		
+		#region Saving processing
+		private void bgWorkerSave_DoWork(object sender, DoWorkEventArgs e)
+        {
+        	// This is executed in Worker Thread space. (Do not call any UI methods)
+        	
+        	string metadata = "";
+        	if(m_SaveMetadata != null)
+        	{
+        		metadata = m_SaveMetadata.ToXmlString();
+        	}
+        	
+        	m_SaveResult = m_VideoFile.Save(	m_SaveFile, 
+        	                                	m_iSaveFramesInterval, 
+        	                                	m_iSaveStart, 
+        	                                	m_iSaveEnd, 
+        	                                	metadata, 
+        	                                	m_bSaveFlushDrawings, 
+        	                                	false, 
+        	                                	m_SaveDelegateOutputBitmap);
+	        
+        	e.Result = 0;
+        }
+		private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+        	// This method should be called back from the VideoFile when a frame has been processed.
+        	// call snippet : m_BackgroundWorker.ReportProgress(iCurrentValue, iMaximum);
+        	
+        	int iValue = (int)e.ProgressPercentage;
+        	int iMaximum = (int)e.UserState;
+            
+            if (iValue > iMaximum) { iValue = iMaximum; }
+        	
+            m_FormProgressBar.Update(iValue, iMaximum, true);
+        }
+		private void bgWorkerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+        	m_FormProgressBar.Close();
+        	m_FormProgressBar.Dispose();
+        	
+        	if(m_SaveResult != SaveResult.Success)
+            {
+            	ReportError(m_SaveResult);
+            }
+        }
+		private void ReportError(SaveResult _err)
+        {
+        	switch(_err)
+        	{
+        		case SaveResult.Cancelled:
+        			// No error message if the user cancelled herself.
+                    break;
+                
+                case SaveResult.FileHeaderNotWritten:
+                case SaveResult.FileNotOpened:
+                    DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_FileError);
+                    break;
+                
+                case SaveResult.EncoderNotFound:
+                case SaveResult.EncoderNotOpened:
+                case SaveResult.EncoderParametersNotAllocated:
+                case SaveResult.EncoderParametersNotSet:
+                case SaveResult.InputFrameNotAllocated:
+                case SaveResult.MuxerNotFound:
+                case SaveResult.MuxerParametersNotAllocated:
+                case SaveResult.MuxerParametersNotSet:
+                case SaveResult.VideoStreamNotCreated:
+                case SaveResult.UnknownError:
+                default:
+                    DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_LowLevelError);
+                    break;
+        	}
+        }
+		private void DisplayErrorMessage(string _err)
+        {
+        	MessageBox.Show(
+        		_err.Replace("\\n", "\n"),
+               	ScreenManagerLang.Error_SaveMovie_Title,
+               	MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
+        }
 		#endregion
 	}
 }

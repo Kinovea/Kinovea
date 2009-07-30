@@ -37,10 +37,20 @@ using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 { 
-	public delegate void DelegateInvalidate();	
+	public delegate void DelegateInvalidate();
+	public delegate void DelegateUpdateCapturedVideos();
+	
 
 	public partial class CaptureScreenUserInterface : UserControl
 	{
+		//-------------------------------------------------------------------------
+		// DO NOT REFACTOR THIS FILE YET.
+		// This is just a temporary copy of the PlayerScreenUserInterface,
+		// which itself is undergoing refactoring.
+		// When the refactoring in PlayerScreenUserInterface is done, this one will 
+		// be re created.
+		//-------------------------------------------------------------------------
+		
 		#region Imports Win32
 		[DllImport("winmm.dll", SetLastError = true)]
 		private static extern uint timeSetEvent(int msDelay, int msResolution, TimerEventHandler handler, ref int userCtx, int eventType);
@@ -63,19 +73,19 @@ namespace Kinovea.ScreenManager
 
 		public delegate void ReportReady(bool _bIntervalOnly);
 		
-		public DelegateCloseMeUI				m_CloseMeUI;
-		public DelegateSetMeAsActiveScreenUI 	m_SetMeAsActiveScreenUI;
+        public Kinovea.ScreenManager.CaptureScreenUserInterface.DelegateCloseMeUI m_CloseMeUI;
+        public Kinovea.ScreenManager.CaptureScreenUserInterface.DelegateSetMeAsActiveScreenUI m_SetMeAsActiveScreenUI;
 		
-		public ReportReady                 	m_ReportReady;
+        public Kinovea.ScreenManager.CaptureScreenUserInterface.ReportReady m_ReportReady;
 		
 		// 2. Internes
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
 		private delegate void CallbackPlayLoop();
 		private delegate void ProxySetAsActiveScreen();
 		
-		private TimerEventHandler m_CallbackTimerEventHandler;
-		private CallbackPlayLoop m_CallbackPlayLoop;
-		private ProxySetAsActiveScreen m_ProxySetAsActiveScreen;
+        private Kinovea.ScreenManager.CaptureScreenUserInterface.TimerEventHandler m_CallbackTimerEventHandler;
+        private Kinovea.ScreenManager.CaptureScreenUserInterface.CallbackPlayLoop m_CallbackPlayLoop;
+        private Kinovea.ScreenManager.CaptureScreenUserInterface.ProxySetAsActiveScreen m_ProxySetAsActiveScreen;
 		
 		#endregion
 
@@ -221,7 +231,7 @@ namespace Kinovea.ScreenManager
 		{
 			log.Debug("Constructing the CaptureScreen user interface.");
 		
-			m_FrameServer = new FrameServerCapture(DoInvalidate);
+			m_FrameServer = new FrameServerCapture(DoInvalidate, DoUpdateCapturedVideos);
 			
 			// Initialize UI.
 			InitializeComponent();
@@ -1313,11 +1323,12 @@ namespace Kinovea.ScreenManager
         {
         	if(m_FrameServer.IsRecording)
         	{
-        		// Change btn image.
+        		// We will now be paused.
+        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.record;	
         	}
         	else
         	{
-        		
+        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.stop;	
         	}
         	
         	m_FrameServer.ToggleRecord();
@@ -3339,6 +3350,46 @@ namespace Kinovea.ScreenManager
 		}
 		
 		#region Keyframes Panel
+		private void DoUpdateCapturedVideos()
+		{
+			// Update the list of Captured Videos.
+			// Similar to OrganizeKeyframe in PlayerScreen.
+			
+			pnlThumbnails.Controls.Clear();
+			
+			if(m_FrameServer.RecentlyCapturedVideos.Count > 0)
+			{
+				int iBoxIndex = 0;
+				int iPixelsOffset = 0;
+				int iPixelsSpacing = 20;
+				
+				foreach (CapturedVideo cv in m_FrameServer.RecentlyCapturedVideos)
+				{
+					CapturedVideoBox box = new CapturedVideoBox(cv);
+					SetupDefaultThumbBox(box);
+					
+					// Finish the setup
+					box.Left = iPixelsOffset + iPixelsSpacing;
+					box.pbThumbnail.Image = cv.Thumbnail;
+					//box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
+					//box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
+					
+					iPixelsOffset += (iPixelsSpacing + box.Width);
+
+					pnlThumbnails.Controls.Add(box);
+
+					iBoxIndex++;
+				}
+				
+				UndockKeyframePanel();
+				pnlThumbnails.Refresh();
+			}
+			else
+			{
+				DockKeyframePanel();
+			}
+
+		}
 		private void splitKeyframes_Resize(object sender, EventArgs e)
 		{
 			// Redo the dock/undock if needed to be at the right place.
@@ -3411,10 +3462,10 @@ namespace Kinovea.ScreenManager
 				
 			}
 		}
-		private void SetupDefaultThumbBox(KeyframeBox _ThumbBox)
+		private void SetupDefaultThumbBox(UserControl _box)
 		{
-			_ThumbBox.Top = 10;
-			_ThumbBox.Cursor = Cursors.Hand;
+			_box.Top = 10;
+			_box.Cursor = Cursors.Hand;
 		}
 		private void ActivateKeyframe(long _iPosition)
 		{

@@ -112,7 +112,7 @@ namespace Kinovea.Root
             
             log.Debug("Build the modules tree.");
             BuildSubTree();
-
+            
             log.Debug("Create main UI window.");
             MainWindow = new KinoveaMainWindow(this);
             
@@ -137,29 +137,15 @@ namespace Kinovea.Root
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(pm.UILanguage);
             RefreshUICulture();
             CheckLanguageMenu();
+            
+            // Parse command line arguments
+            //ArgumentsManager am = ArgumentsManager.Instance();
+            //am.InitializeComandLineParser();
+            //am.ParseArguments(args);
+            string[] args = Environment.GetCommandLineArgs();
         }
         public void Launch()
         {
-            #region command line file
-            /*if (m_SelectedFile != null)
-            {
-                if (m_SelectedFile != "")
-                {
-                    try
-                    {
-                        IUndoableCommand clmis = new CommandLoadMovieInScreen(ScreenManager, m_SelectedFile, -1, true);
-                        CommandManager cm = CommandManager.Instance();
-                        cm.LaunchUndoableCommand(clmis);
-                    }
-                    catch (Exception)
-                    {
-                        // Silent catch. 
-                        // Hopefully, this will load the blank UI as if no file were given.
-                    }
-                }
-            }*/
-            #endregion
-
             log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(MainWindow);
         }
@@ -169,8 +155,6 @@ namespace Kinovea.Root
         public void BuildSubTree()
         {        	
         	FileBrowser     = new FileBrowserKernel();
-            log.Debug("FileBrowser built.");
-            
         	Updater         = new UpdaterKernel();
             ScreenManager   = new ScreenManagerKernel();
             log.Debug("Modules tree built.");

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
@@ -55,7 +56,7 @@ namespace Kinovea.ScreenManager
         {
             m_IsIdle = true;
         }
-		public void Update(int _iValue, int _iMaximum)
+		public void Update(int _iValue, int _iMaximum, bool _bAsPercentage)
 		{
 			if (m_IsIdle)
             {
@@ -64,7 +65,14 @@ namespace Kinovea.ScreenManager
                 progressBar.Maximum = _iMaximum;
                 progressBar.Value = _iValue;
                 
-                labelInfos.Text = m_ResourceManager.GetString("FormFramesFilter_Infos", Thread.CurrentThread.CurrentUICulture) + " " + _iValue + " / ~" + _iMaximum;
+                if(_bAsPercentage)
+                {
+                	labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " " + (int)((_iValue * 100) / _iMaximum) + "%";
+                }
+				else
+				{
+					labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " " + _iValue + " / ~" + _iMaximum;
+				}
 			}
 		}
 		private void formProgressBar_FormClosing(object sender, FormClosingEventArgs e)
