@@ -637,6 +637,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;.
+        /// </summary>
+        internal static string dlgExportSpreadsheet_Filter {
+            get {
+                return ResourceManager.GetString("dlgExportSpreadsheet_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save Data as a Spreadsheet Document.
+        /// </summary>
+        internal static string dlgExportSpreadsheet_Title {
+            get {
+                return ResourceManager.GetString("dlgExportSpreadsheet_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à PDF document (*.pdf)|*.pdf;.
         /// </summary>
         internal static string dlgExportToPDF_Filter {
@@ -781,15 +799,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Blend drawings onto images..
-        /// </summary>
-        internal static string dlgSaveAnalysisOrVideo_CheckBlend {
-            get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_CheckBlend", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Take Slow Motion into account. (Current = .
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_CheckSlow {
@@ -826,16 +835,16 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save video and key images data in two distinct files..
+        ///   Recherche une chaîne localisée semblable à Permanently paint key images data on the video..
         /// </summary>
-        internal static string dlgSaveAnalysisOrVideo_RadioBoth {
+        internal static string dlgSaveAnalysisOrVideo_RadioBlended {
             get {
-                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioBoth", resourceCulture);
+                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_RadioBlended", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save video and key images data in a single file..
+        ///   Recherche une chaîne localisée semblable à Combine video and key images data in the file..
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_RadioMuxed {
             get {
@@ -1564,11 +1573,47 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Microsoft Excel (MS-XML).
+        /// </summary>
+        internal static string mnuExportMSXML {
+            get {
+                return ResourceManager.GetString("mnuExportMSXML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à OpenOffice Calc (ODF).
+        /// </summary>
+        internal static string mnuExportODF {
+            get {
+                return ResourceManager.GetString("mnuExportODF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export to Spreadsheet.
+        /// </summary>
+        internal static string mnuExportSpreadsheet {
+            get {
+                return ResourceManager.GetString("mnuExportSpreadsheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Export to PDF.
         /// </summary>
         internal static string mnuExportToPDF {
             get {
                 return ResourceManager.GetString("mnuExportToPDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à XHTML.
+        /// </summary>
+        internal static string mnuExportXHTML {
+            get {
+                return ResourceManager.GetString("mnuExportXHTML", resourceCulture);
             }
         }
         
@@ -1726,7 +1771,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save Video or Key Images Data....
+        ///   Recherche une chaîne localisée semblable à Save....
         /// </summary>
         internal static string mnuSave {
             get {

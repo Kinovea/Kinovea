@@ -149,13 +149,12 @@
    <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Duraciòn cubierta por la secuencia de las imágenes exportadas: {0:0.00} segundos.</value></data>
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Guardar una secuencia de imágenes</value></data>
    <data name="dlgSaveAnalysisFilter" xml:space="preserve"><value>Analisis Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml;</value></data>
-   <data name="dlgSaveAnalysisOrVideo_CheckBlend" xml:space="preserve"><value>Superponer dibujos en las imágenes.</value></data>
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Guardar con el ralentizado (Actual = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opciones</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Método para guardar</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Guardar sólo los datos de las imàgenes clave.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioBoth" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave en dos archivos separados.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave en un solo archivo.</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Guardar solo el video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave .</value></data>
