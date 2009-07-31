@@ -60,7 +60,6 @@ extern "C"
 #include <swscale.h> 
 }
 
-#define TRACE
 #include <stdio.h>
 #include "InfosVideo.h"
 #include "SavingContext.h"
@@ -216,11 +215,6 @@ namespace VideoFiles
 		int64_t GetTimeStamp(int64_t _iPosition);
 		int64_t GetFrameNumber(int64_t _iPosition);
 		
-		// New save methods, to be exported later in a new VideoFileWriter object.
-		SaveResult OpenSavingContext(String^ _FilePath, Size _size);
-		SaveResult CloseSavingContext(bool _bEncodingSuccess);
-		SaveResult SaveFrame(Bitmap^ _image);
-		
 #pragma endregion
 
 #pragma region Private Methods
@@ -254,9 +248,6 @@ namespace VideoFiles
 		void	ResetPrimarySelection(void);
 		void	ResetInfosVideo(void);
 
-#ifdef TRACE
-		float	TraceMemoryUsage(PerformanceCounter^ _ramCounter, float _fLastRamValue, String^ _comment, float* _fRamBalance);
-#endif
 #pragma endregion
 			
 	};

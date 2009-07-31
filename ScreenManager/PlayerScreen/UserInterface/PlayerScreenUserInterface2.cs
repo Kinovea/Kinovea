@@ -4690,14 +4690,6 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDiaporama_Click(object sender, EventArgs e)
 		{
-			//-----------------------------------------------------------
-			// Workflow:
-			// 1. formDiapoExport   : configure the export parameters (interval), calls:
-			// 2. FileSaveDialog    : chooses the filename, then
-			// 3. SaveDiaporama (below), calls:
-			// 4. formFileSave      : Progress bar and updater, calls:
-			// 5. SaveMovie (PlayerServer) to perform the real work.
-			//-----------------------------------------------------------
 			if(m_Metadata.Keyframes.Count < 1)
 			{
 				MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
@@ -4708,27 +4700,20 @@ namespace Kinovea.ScreenManager
 			else if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
-
+			
 				DelegatesPool dp = DelegatesPool.Instance();
 				if (dp.DeactivateKeyboardHandler != null)
 				{
 					dp.DeactivateKeyboardHandler();
 				}
 
-				// Launch sequence saving configuration dialog
-				formDiapoExport fde = new formDiapoExport(this, m_FrameServer.VideoFile.FilePath);
-				fde.ShowDialog();
-				fde.Dispose();
+				m_FrameServer.SaveDiaporama(m_iSelStart, m_iSelEnd, new DelegateGetOutputBitmap(GetOutputBitmap));
 
 				if (dp.ActivateKeyboardHandler != null)
 				{
 					dp.ActivateKeyboardHandler();
 				}
 			}
-		}
-		private void btnPdf_Click(object sender, EventArgs e)
-		{
-			// TODO: to be replaced by ODF export with templates support. (Impress)
 		}
 		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, Int64 _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
 		{
@@ -4893,22 +4878,13 @@ namespace Kinovea.ScreenManager
 			                       	m_iSelEnd,
 			                       	new DelegateGetOutputBitmap(GetOutputBitmap));
 		}
-		public void SaveDiaporama(String _filePath, int _iFrameInterval)
-		{
-			// Called from the dialog box "FormDiapoExport".
-			DelegateGetOutputBitmap dgob = GetOutputBitmap;
-			
-			formFileSave ffs = new formFileSave(m_FrameServer.VideoFile, _filePath, _iFrameInterval, m_iSelStart, m_iSelEnd, null, true, true, dgob);
-			ffs.ShowDialog();
-			ffs.Dispose();
-		}
 		private bool GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
 			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
 			// This image is already drawn on _canvas.
 			// Here we decide if this particular frame should be encoded to the output 
-			// and we flush the drawings on it if needed.
+			// and if needed we flush the drawings on it.
 
 			bool bShouldEncode = false;
 

@@ -73,7 +73,8 @@ namespace Kinovea.ScreenManager
 		private string m_CurrentCaptureFilePath;					// Used to create the thumbnail.
 		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
 		
-		private VideoFile m_VideoFile = new VideoFile();
+		//private VideoFile m_VideoFile = new VideoFile();
+		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
 
 		private DelegateInvalidate m_DoInvalidate;							// To request a paint from screen.
 		private DelegateUpdateCapturedVideos m_DoUpdateCapturedVideos;		// To request an update from screen.
@@ -170,7 +171,7 @@ namespace Kinovea.ScreenManager
 				m_bIsRecording = false;
 				
 				// Close the recording context.
-				m_VideoFile.CloseSavingContext(true);
+				m_VideoFileWriter.CloseSavingContext(true);
 				
 				// Move to new name
 				
@@ -199,7 +200,7 @@ namespace Kinovea.ScreenManager
 				string timecode = DateTime.Now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
 				m_CurrentCaptureFilePath = PreferencesManager.SettingsFolder + "\\" + timecode + ".avi";
 				
-				SaveResult result = m_VideoFile.OpenSavingContext(m_CurrentCaptureFilePath, m_DecodingSize);
+				SaveResult result = m_VideoFileWriter.OpenSavingContext(m_CurrentCaptureFilePath, m_DecodingSize);
 				
 				if(result == SaveResult.Success)
 				{
@@ -207,7 +208,7 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					m_VideoFile.CloseSavingContext(false);
+					m_VideoFileWriter.CloseSavingContext(false);
 					m_bIsRecording = false;	
 					DisplayError(result);
 				}
@@ -247,7 +248,7 @@ namespace Kinovea.ScreenManager
 			//If recording, append the new frame to file.
 			if(m_bIsRecording)
 			{
-				m_VideoFile.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
+				m_VideoFileWriter.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
 				if(m_CurrentCaptureBitmap == null)
 				{
 					m_CurrentCaptureBitmap = m_FrameBuffer[m_FrameBuffer.Count-1];

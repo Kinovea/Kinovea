@@ -220,12 +220,6 @@
     <Compile Include="PlayerScreen\UserInterface\FormDiapoExport.Designer.cs">
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFileSave.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFileSave.Designer.cs">
-      <DependentUpon>FormFileSave.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormFramesExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -596,10 +590,6 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormDiapoExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormDiapoExport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFileSave.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormFileSave.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesExport.resx">
       <SubType>Designer</SubType>

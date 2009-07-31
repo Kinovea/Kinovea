@@ -4971,7 +4971,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Called from the dialog box "FormVideoExport".
 
-			formFileSave ffs;
+			/*formFileSave ffs;
 
 			// framerate
 			int iFrameInterval;
@@ -5001,10 +5001,11 @@ namespace Kinovea.ScreenManager
 
 			// Launch transcoding by showing the progress bar dialog.
 			ffs.ShowDialog();
-			ffs.Dispose();
+			ffs.Dispose();*/
 		}
 		public void SaveDiaporama(String _filePath, int _iFrameInterval)
 		{
+			/*
 			// Called from the dialog box "FormDiapoExport".
 			
 			//DelegateFlushDrawings dfd = FlushDrawings;
@@ -5013,6 +5014,7 @@ namespace Kinovea.ScreenManager
 			formFileSave ffs = new formFileSave(m_VideoFile, _filePath, _iFrameInterval, m_iSelStart, m_iSelEnd, null, true, true, dgob);
 			ffs.ShowDialog();
 			ffs.Dispose();
+			*/
 		}
 		private bool GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{

@@ -535,7 +535,6 @@ namespace Kinovea.ScreenManager
         	this.btnPdf.Tag = "";
         	this.btnPdf.UseVisualStyleBackColor = true;
         	this.btnPdf.Visible = false;
-        	this.btnPdf.Click += new System.EventHandler(this.btnPdf_Click);
         	// 
         	// btnAnalysisMode
         	// 

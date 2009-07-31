@@ -117,10 +117,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\Refs\FFMpeg\include;..\..\Refs\FFMpeg\include\libavcodec\;..\..\Refs\FFMpeg\include\libavformat\;..\..\Refs\FFMpeg\include\libswscale\;..\..\Refs\FFMpeg\include\libavutil\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -212,27 +213,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Stdafx.cpp"
+				RelativePath=".\VideoFile.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\VideoFile.cpp"
+				RelativePath=".\VideoFileWriter.cpp"
 				>
 			</File>
 		</Filter>
@@ -246,19 +231,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SavingContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Stdafx.h"
+				RelativePath=".\VideoFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\VideoFile.h"
+				RelativePath=".\VideoFileWriter.h"
 				>
 			</File>
 			<Filter
@@ -281,20 +262,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-			<File
-				RelativePath=".\app.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\app.rc"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
