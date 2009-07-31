@@ -18,6 +18,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+#pragma once
+
 namespace Kinovea
 {
 	namespace VideoFiles

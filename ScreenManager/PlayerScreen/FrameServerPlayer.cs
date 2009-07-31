@@ -59,6 +59,7 @@ namespace Kinovea.ScreenManager
         private Metadata m_SaveMetadata;
         private int m_iSaveFramesInterval;
         private bool m_bSaveFlushDrawings;
+        private bool m_bSaveKeyframesOnly;
         private DelegateGetOutputBitmap m_SaveDelegateOutputBitmap;
         private SaveResult m_SaveResult;
 		#endregion
@@ -87,7 +88,6 @@ namespace Kinovea.ScreenManager
 		}
 		public void Save(Metadata _Metadata, int _iPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
 		{
-			
 			// Let the user select what he wants to save exactly.
 			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
 			
@@ -99,54 +99,77 @@ namespace Kinovea.ScreenManager
             	{
             		// Save analysis.
             		_Metadata.ToXmlFile(fve.Filename);
-            		fve.Dispose();
             	}
             	else
             	{
-            		// Save video.
-            		// In this case will use a bgWorker and a Progress Bar.
-            		
-					// Memorize the parameters, they will be used later in bgWorkerSave_DoWork.
-					// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from the local members.
-					m_iSaveStart = _iSelStart;
-		            m_iSaveEnd = _iSelEnd;
-		            m_SaveMetadata = fve.MuxDrawings ? _Metadata : null;
-		            
-		            m_SaveFile = fve.Filename;
-		            m_iSaveFramesInterval = fve.UseSlowMotion ? _iPlaybackFrameInterval : m_VideoFile.Infos.iFrameInterval;
-		            m_bSaveFlushDrawings = fve.BlendDrawings;
-		            m_SaveDelegateOutputBitmap = _DelegateOutputBitmap;
-		            
-		            // Release configuration form.
-		            fve.Dispose();
-		            
-		            // Instanciate and configure the bgWorker.
-		            BackgroundWorker bgWorkerSave = new BackgroundWorker();
-		            bgWorkerSave.WorkerReportsProgress = true;
-		        	bgWorkerSave.DoWork += new DoWorkEventHandler(bgWorkerSave_DoWork);
-		        	bgWorkerSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerSave_ProgressChanged);
-		            bgWorkerSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerSave_RunWorkerCompleted);
-		            
-		            // Attach the bgWorker to the VideoFile object so it can report progress.
-		            m_VideoFile.BgWorker = bgWorkerSave;
-		            
-		            // Create the progress bar and launch the worker.
-		            m_FormProgressBar = new formProgressBar();
-		        	bgWorkerSave.RunWorkerAsync();
-		        	m_FormProgressBar.ShowDialog();
+            		DoSave(fve.Filename, 
+    						fve.MuxDrawings ? _Metadata : null,
+    						fve.UseSlowMotion ? _iPlaybackFrameInterval : m_VideoFile.Infos.iFrameInterval,
+    						_iSelStart,
+    						_iSelEnd,
+    						fve.BlendDrawings,
+    						false,
+    						_DelegateOutputBitmap);
             	}
             }
-			else
-			{
-				fve.Dispose();
-			}
-            
-            
 			
+			// Release configuration form.
+            fve.Dispose();
+		}
+		public void SaveDiaporama(Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)
+		{
+			// Let the user configure the diaporama export.
+			
+			formDiapoExport fde = new formDiapoExport(m_VideoFile.FilePath);
+			if(fde.ShowDialog() == DialogResult.OK)
+			{
+				DoSave(fde.Filename, 
+				       	null, 
+				       	fde.FrameInterval, 
+				       	_iSelStart, 
+				       	_iSelEnd, 
+				       	true, 
+				       	true, 
+				       	_DelegateOutputBitmap);
+			}
+			
+			// Release configuration form.
+			fde.Dispose();
 		}
 		#endregion
 		
 		#region Saving processing
+		private void DoSave(String _FilePath, Metadata _Metadata, int _iPlaybackFrameInterval, Int64 _iSelStart, Int64 _iSelEnd, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap _DelegateOutputBitmap)
+        {
+			// Save video.
+    		// We use a bgWorker and a Progress Bar.
+    		
+			// Memorize the parameters, they will be used later in bgWorkerSave_DoWork.
+			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from the local members.
+			m_iSaveStart = _iSelStart;
+            m_iSaveEnd = _iSelEnd;
+            m_SaveMetadata = _Metadata;
+            m_SaveFile = _FilePath;
+            m_iSaveFramesInterval = _iPlaybackFrameInterval;
+            m_bSaveFlushDrawings = _bFlushDrawings;
+            m_bSaveKeyframesOnly = _bKeyframesOnly;
+            m_SaveDelegateOutputBitmap = _DelegateOutputBitmap;
+            
+            // Instanciate and configure the bgWorker.
+            BackgroundWorker bgWorkerSave = new BackgroundWorker();
+            bgWorkerSave.WorkerReportsProgress = true;
+        	bgWorkerSave.DoWork += new DoWorkEventHandler(bgWorkerSave_DoWork);
+        	bgWorkerSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerSave_ProgressChanged);
+            bgWorkerSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerSave_RunWorkerCompleted);
+            
+            // Attach the bgWorker to the VideoFile object so it can report progress.
+            m_VideoFile.BgWorker = bgWorkerSave;
+            
+            // Create the progress bar and launch the worker.
+            m_FormProgressBar = new formProgressBar();
+        	bgWorkerSave.RunWorkerAsync();
+        	m_FormProgressBar.ShowDialog();
+		}
 		private void bgWorkerSave_DoWork(object sender, DoWorkEventArgs e)
         {
         	// This is executed in Worker Thread space. (Do not call any UI methods)
@@ -163,7 +186,7 @@ namespace Kinovea.ScreenManager
         	                                	m_iSaveEnd, 
         	                                	metadata, 
         	                                	m_bSaveFlushDrawings, 
-        	                                	false, 
+        	                                	m_bSaveKeyframesOnly, 
         	                                	m_SaveDelegateOutputBitmap);
 	        
         	e.Result = 0;

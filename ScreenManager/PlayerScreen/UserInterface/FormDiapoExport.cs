@@ -25,31 +25,40 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// This dialog let the user save a diaporama of the key images.
-	/// This is a movie where each key image is seen for a lenghty period of time.
+	/// This dialog let the user configure a diaporama of the key images.
+	/// A diaporama here is a movie where each key image is seen for a lenghty period of time.
 	/// 
 	/// The dialog is only used to configure the interval time and file name.
-	/// When done, we give back control to SaveDiaporama in PlayerScreenUserInterface.
 	/// </summary>
     public partial class formDiapoExport : Form
     {
+    	#region Properties
+    	public string Filename
+		{
+			get { return m_OutputFileName; }
+		}   
+		public int FrameInterval
+		{
+			get { return m_iFrameInterval; }
+		}
+    	#endregion
+    	
         #region Members
-        private PlayerScreenUserInterface m_PlayerScreenUserInterface;      // parent
-        private string m_FullPath;
-        private ResourceManager m_ResourceManager;
+        private string m_InputFileName;
+        private string m_OutputFileName;
+        private int m_iFrameInterval;
         #endregion
 
         #region Construction and initialization
-        public formDiapoExport(PlayerScreenUserInterface _psui, string _FullPath)
+        public formDiapoExport(string _InputFileName)
         {
-            m_PlayerScreenUserInterface = _psui;
-            m_FullPath = _FullPath;
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-
+            m_InputFileName = _InputFileName;
+            
             InitializeComponent();
 
             SetupUICulture();
@@ -57,15 +66,10 @@ namespace Kinovea.ScreenManager
         }
         private void SetupUICulture()
         {
-            // Window
-            this.Text = "   " + m_ResourceManager.GetString("dlgDiapoExport_Title", Thread.CurrentThread.CurrentUICulture);
-
-            // Group Config
-            grpboxConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-
-            // Buttons
-            btnOK.Text = m_ResourceManager.GetString("Generic_Save", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgDiapoExport_Title;
+            grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
+            btnOK.Text = ScreenManagerLang.Generic_Save;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         private void SetupData()
         {
@@ -90,11 +94,11 @@ namespace Kinovea.ScreenManager
             if (fInterval < 1)
             {
                 int iHundredth = (int)(fInterval * 100);
-                lblInfosFrequency.Text = String.Format(m_ResourceManager.GetString("dlgDiapoExport_LabelFrequencyHundredth", Thread.CurrentThread.CurrentUICulture), iHundredth);
+                lblInfosFrequency.Text = String.Format(ScreenManagerLang.dlgDiapoExport_LabelFrequencyHundredth, iHundredth);
             }
             else
             {
-                lblInfosFrequency.Text = String.Format(m_ResourceManager.GetString("dlgDiapoExport_LabelFrequencySeconds", Thread.CurrentThread.CurrentUICulture), fInterval);
+                lblInfosFrequency.Text = String.Format(ScreenManagerLang.dlgDiapoExport_LabelFrequencySeconds, fInterval);
             }
         }
         #endregion
@@ -102,21 +106,37 @@ namespace Kinovea.ScreenManager
         #region OK / Cancel handler
         private void btnOK_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = m_ResourceManager.GetString("dlgSaveVideoTitle", Thread.CurrentThread.CurrentUICulture);
-            saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = m_ResourceManager.GetString("dlgSaveVideoFilterAlone", Thread.CurrentThread.CurrentUICulture);
-            saveFileDialog.FilterIndex = 1;
+        	// Hide/Close logic:
+            // We start by hiding the current dialog.
+            // If the user cancels on the file choosing dialog, we show back ourselves.
             
             Hide();
+            
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+            saveFileDialog.FilterIndex = 1;
+            
+            DialogResult result = DialogResult.Cancel;
+            
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string filePath = saveFileDialog.FileName;
+				string filePath = saveFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                    m_PlayerScreenUserInterface.SaveDiaporama(filePath, trkInterval.Value);
+            		// Commit output props.
+                	m_OutputFileName = filePath;
+                	m_iFrameInterval = trkInterval.Value;
+                	
+                	DialogResult = DialogResult.OK;
+                	result = DialogResult.OK;
                 }
-                Close();
+            }
+            
+            if (result == DialogResult.OK)
+            {
+            	Close();
             }
             else
             {
