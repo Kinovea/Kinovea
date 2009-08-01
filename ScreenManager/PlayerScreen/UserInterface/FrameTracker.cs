@@ -134,6 +134,18 @@ namespace Kinovea.ScreenManager
 
             UpdateAppearence();	
 		}
+		public void Remap(long _iMin, long _iMax)
+        {
+        	// This method is only a shortcut to updating min and max properties at once.
+        	// This method update the appearence of the control only, it doesn't raise the events back.
+        	m_iMinimum = _iMin;
+        	m_iMaximum = _iMax;
+        	
+        	if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
+        	if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
+        	
+        	UpdateAppearence();
+        }
 		#endregion
         
 		#region Event Handlers - User Manipulation

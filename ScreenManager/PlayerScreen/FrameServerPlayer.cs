@@ -40,7 +40,12 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_VideoFile; }
 			set { m_VideoFile = value; }
-		}		
+		}
+		public Metadata Metadata
+		{
+			get { return m_Metadata; }
+			set { m_Metadata = value; }
+		}
 		public bool Loaded
 		{
 			get { return m_VideoFile.Loaded;}
@@ -49,7 +54,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private VideoFile m_VideoFile = new VideoFile();
-		//private Metadata m_Metadata = new Metadata();
+		private Metadata m_Metadata;
 		
 		// Saving process (globals because the bgWorker is split in several methods)
 		private formProgressBar m_FormProgressBar;
@@ -79,31 +84,48 @@ namespace Kinovea.ScreenManager
 		{
 			// Prepare the FrameServer for a new video by resetting everything.
 			m_VideoFile.Unload();
-			//m_Metadata.Reset();
+			if(m_Metadata != null) m_Metadata.Reset();
+		}
+		public void SetupMetadata()
+		{
+			// Setup Metadata global infos in case we want to flush it to a file (or mux).
+			
+			if(m_Metadata != null)
+			{
+				Size imageSize = new Size(m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight);
+						
+				m_Metadata.ImageSize = imageSize;
+				m_Metadata.AverageTimeStampsPerFrame = m_VideoFile.Infos.iAverageTimeStampsPerFrame;
+				m_Metadata.FirstTimeStamp = m_VideoFile.Infos.iFirstTimeStamp;
+				m_Metadata.Plane.SetLocations(imageSize, 1.0, new Point(0,0));
+				m_Metadata.Grid.SetLocations(imageSize, 1.0, new Point(0,0));
+				
+				m_Metadata.CleanupHash();
+			}
 		}
 		public override void Draw(Graphics _canvas)
 		{
 			// Draw the current image on canvas according to conf.
 			// This is called back from screen paint method.
 		}
-		public void Save(Metadata _Metadata, int _iPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
+		public void Save(int _iPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
 		{
 			// Let the user select what he wants to save exactly.
 			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
 			
-			formVideoExport fve = new formVideoExport(m_VideoFile.FilePath, _Metadata, _iSlowmotionPercentage);
+			formVideoExport fve = new formVideoExport(m_VideoFile.FilePath, m_Metadata, _iSlowmotionPercentage);
             
 			if(fve.Spawn() == DialogResult.OK)
             {
             	if(fve.SaveAnalysis)
             	{
             		// Save analysis.
-            		_Metadata.ToXmlFile(fve.Filename);
+            		m_Metadata.ToXmlFile(fve.Filename);
             	}
             	else
             	{
             		DoSave(fve.Filename, 
-    						fve.MuxDrawings ? _Metadata : null,
+    						fve.MuxDrawings ? m_Metadata : null,
     						fve.UseSlowMotion ? _iPlaybackFrameInterval : m_VideoFile.Infos.iFrameInterval,
     						_iSelStart,
     						_iSelEnd,

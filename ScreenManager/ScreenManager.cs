@@ -1076,7 +1076,7 @@ namespace Kinovea.ScreenManager
                 if (filePath.Length > 0)
                 {
                     ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.LoadFromFile(filePath);
-                    ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportAnalysis();
+                    ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();
                 }
             }
         }
@@ -3297,7 +3297,7 @@ namespace Kinovea.ScreenManager
 	            	if(ps != null)
 	            	{
 	                	ps.m_PlayerScreenUI.Metadata.LoadFromString(_OldScreen.MetadataString);
-	                	ps.m_PlayerScreenUI.PostImportAnalysis();
+	                	ps.m_PlayerScreenUI.PostImportMetadata();
 	            	}
 	            }
         	}
