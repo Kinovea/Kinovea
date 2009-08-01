@@ -44,7 +44,7 @@
 				AdditionalIncludeDirectories="..\..\Refs\FFMpeg\include\;..\..\Refs\FFMpeg\include\libavcodec\;..\..\Refs\FFMpeg\include\libavformat\;..\..\Refs\FFMpeg\include\libswscale\;..\..\Refs\FFMpeg\include\libavutil\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>

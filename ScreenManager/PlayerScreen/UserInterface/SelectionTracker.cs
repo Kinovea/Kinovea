@@ -83,7 +83,7 @@ namespace Kinovea.ScreenManager
             }
         }
         [Category("Behavior"), Browsable(true)]
-        public long SelEnd
+        	public long SelEnd
         {
             get
             {
