@@ -111,73 +111,6 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_bIsCurrentlyPlaying; }
 		}
-		public int PlaybackFrameInterval
-		{
-			get 
-			{ 
-				// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
-				if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0)
-				{
-					return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_iSlowmotionPercentage / 100));
-				}
-				else
-				{
-					return 40;
-				}
-			}
-		}
-		public bool Synched
-		{
-			get { return m_bSynched; }
-			set { m_bSynched = value; }
-		}
-		public Int64 SyncPosition
-		{
-			get { return m_iSyncPosition; }
-			set { m_iSyncPosition = value; }
-		}
-		public Metadata Metadata
-		{
-			get { return m_FrameServer.Metadata; }
-		}
-		// Flags. Used by ScreenManager for menus. (Fix ?)
-		public bool Deinterlaced
-		{
-			get { return m_FrameServer.VideoFile.Infos.bDeinterlaced;}
-			set
-			{
-				m_FrameServer.VideoFile.Infos.bDeinterlaced = value;
-
-				// If there was a selection it must be imported again.
-				// (This means we'll loose color adjustments.)
-				if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-				{
-					ImportSelectionToMemory(true);
-				}
-			}
-		}
-		public bool Mirrored
-		{
-			get { return m_FrameServer.Metadata.Mirrored; }
-			set { m_FrameServer.Metadata.Mirrored = value; }
-		}
-		public bool ShowGrid
-		{
-			get { return m_FrameServer.Metadata.Grid.Visible; }
-			set { m_FrameServer.Metadata.Grid.Visible = value; }
-		}
-		public bool Show3DPlane
-		{
-			get { return m_FrameServer.Metadata.Plane.Visible; }
-			set { m_FrameServer.Metadata.Plane.Visible = value; }
-		}
-		
-		public double HighSpeedFactor
-		{
-			// For highspeed cameras.
-			get { return m_fHighSpeedFactor; }
-			set { m_fHighSpeedFactor = value; }
-		}
 		public int DrawtimeFilterType
 		{
 			get
@@ -195,6 +128,16 @@ namespace Kinovea.ScreenManager
 		public int SlowmotionPercentage
 		{
 			get { return m_iSlowmotionPercentage; }
+		}
+		public bool Synched
+		{
+			//get { return m_bSynched; }
+			set { m_bSynched = value; }
+		}
+		public Int64 SyncPosition
+		{
+			get { return m_iSyncPosition; }
+			set { m_iSyncPosition = value; }
 		}
 		#endregion
 
@@ -1444,7 +1387,7 @@ namespace Kinovea.ScreenManager
 					// Go into Play mode
 					buttonPlay.BackgroundImage = Resources.liqpause6;
 					Application.Idle += new EventHandler(this.IdleDetector);
-					StartMultimediaTimer(PlaybackFrameInterval);
+					StartMultimediaTimer(GetPlaybackFrameInterval());
 					m_bIsCurrentlyPlaying = true;
 				}
 			}
@@ -1778,7 +1721,7 @@ namespace Kinovea.ScreenManager
 				if (m_bIsCurrentlyPlaying)
 				{
 					StopMultimediaTimer();
-					StartMultimediaTimer(PlaybackFrameInterval);
+					StartMultimediaTimer(GetPlaybackFrameInterval());
 				}
 
 				// Impacts synchro.
@@ -2150,7 +2093,7 @@ namespace Kinovea.ScreenManager
 					// -> Back to playing loop.
 					if (ShowNextFrame(m_iSelStart, true) == 0)
 					{
-						StartMultimediaTimer(PlaybackFrameInterval);
+						StartMultimediaTimer(GetPlaybackFrameInterval());
 					}
 					else
 					{
@@ -2407,6 +2350,18 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 				UpdateCurrentPositionLabel();
 				pbSurfaceScreen.Invalidate();
+			}
+		}
+		private int GetPlaybackFrameInterval()
+		{
+			// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
+			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0)
+			{
+				return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_iSlowmotionPercentage / 100));
+			}
+			else
+			{
+				return 40;
 			}
 		}
 		#endregion
@@ -2849,7 +2804,7 @@ namespace Kinovea.ScreenManager
 									double fDeltaX = (double)((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).MouseDelta.X;
 									double fDeltaY = (double)((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).MouseDelta.Y;
 									
-									if(Mirrored)
+									if(m_FrameServer.Metadata.Mirrored)
 									{
 										fDeltaX = -fDeltaX;
 									}
@@ -4450,7 +4405,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Importing selection to memory
-		private void ImportSelectionToMemory(bool _bForceReload)
+		public void ImportSelectionToMemory(bool _bForceReload)
 		{
 			//-------------------------------------------------------------------------------------
 			// Switch the current selection to memory if possible.
@@ -4465,6 +4420,8 @@ namespace Kinovea.ScreenManager
 			// - the video ending timestamp may have been misadvertised in the file,
 			// - the timestamps may not be linear so the mapping with the trkSelection isn't perfect.
 			// We check and fix these discrepancies.
+			//
+			// Public because accessed from PlayerServer.Deinterlace property 
 			//-------------------------------------------------------------------------------------
 			if (m_FrameServer.VideoFile.Loaded)
 			{
@@ -4640,7 +4597,7 @@ namespace Kinovea.ScreenManager
 				}
 				
 				// Launch sequence saving configuration dialog
-				formRafaleExport fre = new formRafaleExport(this, m_FrameServer.VideoFile.FilePath, m_iSelDuration, m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds, m_FrameServer.VideoFile.Infos.fFps);
+				formRafaleExport fre = new formRafaleExport(this, m_FrameServer.Metadata, m_FrameServer.VideoFile.FilePath, m_iSelDuration, m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds, m_FrameServer.VideoFile.Infos.fFps);
 				fre.ShowDialog();
 				fre.Dispose();
 
@@ -4833,7 +4790,7 @@ namespace Kinovea.ScreenManager
 			// This will be possible when m_FrameServer.Metadata, m_iSelStart, m_iSelEnd are encapsulated in m_FrameServer
 			// and when PlaybackFrameInterval, m_iSlowmotionPercentage, GetOutputBitmap are available publically.
 			
-			m_FrameServer.Save(	PlaybackFrameInterval, 
+			m_FrameServer.Save(	GetPlaybackFrameInterval(), 
 			                   		m_iSlowmotionPercentage, 
 			                   		m_iSelStart, 
 			                       	m_iSelEnd,
