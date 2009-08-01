@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override bool Full
         {
-        	get { return FrameServer.VideoFile.Loaded; }	
+        	get { return m_FrameServer.VideoFile.Loaded; }	
         }
         public override UserControl UI
         {
@@ -61,23 +61,22 @@ namespace Kinovea.ScreenManager
         }
 		public override string FilePath
 		{
-			get { return FrameServer.VideoFile.FilePath; }
+			get { return m_FrameServer.VideoFile.FilePath; }
 		}
- 		
+		public string FileName
+		{
+			get { return Path.GetFileName(m_FrameServer.VideoFile.FilePath); }
+		}
         public FrameServerPlayer FrameServer
 		{
 			get { return m_FrameServer; }
 			set { m_FrameServer = value; }
-		}
-        public string FileName
-		{
-			get { return Path.GetFileName(FrameServer.VideoFile.FilePath); }
-		}
+		}        
         public bool IsPlaying
         {
             get
             {
-                if (!FrameServer.VideoFile.Loaded)
+                if (!m_FrameServer.VideoFile.Loaded)
                 {
                     return false;
                 }
@@ -91,13 +90,13 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                if (!FrameServer.VideoFile.Loaded)
+                if (!m_FrameServer.VideoFile.Loaded)
                 {
                     return false;
                 }
                 else
                 {
-                    return (FrameServer.VideoFile.Selection.iAnalysisMode == 1);
+                    return (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1);
                 }
             }
         }
@@ -107,10 +106,10 @@ namespace Kinovea.ScreenManager
             {
                 // Get the approximate frame we should be on.
                 // Only as accurate as the framerate is stable regarding to the timebase.
-                Int64 iCurrentTimestamp = FrameServer.VideoFile.Selection.iCurrentTimeStamp;
-                iCurrentTimestamp -= FrameServer.VideoFile.Infos.iFirstTimeStamp;
+                Int64 iCurrentTimestamp = m_FrameServer.VideoFile.Selection.iCurrentTimeStamp;
+                iCurrentTimestamp -= m_FrameServer.VideoFile.Infos.iFirstTimeStamp;
 
-                return (int)(iCurrentTimestamp / FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
+                return (int)(iCurrentTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
             }
             set
             {
@@ -120,26 +119,37 @@ namespace Kinovea.ScreenManager
         public Int64 Position
         {
             // Used to feed SyncPosition. 
-            get { return FrameServer.VideoFile.Selection.iCurrentTimeStamp - FrameServer.VideoFile.Infos.iFirstTimeStamp; }
+            get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
         }
         public int LastFrame
         {
             get 
             {
-                if (FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+                if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
                 {
-                    return FrameServer.VideoFile.Selection.iDurationFrame - 1;
+                    return m_FrameServer.VideoFile.Selection.iDurationFrame - 1;
                 }
                 else
                 {
-                    Int64 iDurationTimestamp = FrameServer.VideoFile.Infos.iDurationTimeStamps;
-                    return (int)(iDurationTimestamp / FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
+                    Int64 iDurationTimestamp = m_FrameServer.VideoFile.Infos.iDurationTimeStamps;
+                    return (int)(iDurationTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
                 }
             }
         }
         public int FrameInterval
         {
-            get { return m_PlayerScreenUI.PlaybackFrameInterval; }
+            get 
+            { 
+            	// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
+				if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0)
+				{
+					return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_PlayerScreenUI.SlowmotionPercentage / 100));
+				}
+				else
+				{
+					return 40;
+				}
+	        }
         }
         public bool Synched
         {
@@ -156,37 +166,45 @@ namespace Kinovea.ScreenManager
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
         {
-            get { return m_PlayerScreenUI.Deinterlaced; }
+            get { return m_FrameServer.VideoFile.Infos.bDeinterlaced; }
             set
             {
-                m_PlayerScreenUI.Deinterlaced = value;
-                RefreshImage();
+                m_FrameServer.VideoFile.Infos.bDeinterlaced = value;
+                
+                // If there was a selection it must be imported again.
+				// (This means we'll loose color adjustments.)
+				if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				{
+					m_PlayerScreenUI.ImportSelectionToMemory(true);
+				}
+                
+				RefreshImage();
             }
         }
         public bool Mirrored
         {
-            get { return m_PlayerScreenUI.Mirrored; }
+            get { return m_FrameServer.Metadata.Mirrored; }
             set
             {
-                m_PlayerScreenUI.Mirrored = value;
+                m_FrameServer.Metadata.Mirrored = value;
                 RefreshImage();
             }
         }
         public bool ShowGrid
         {
-            get { return m_PlayerScreenUI.ShowGrid; }
+            get { return m_FrameServer.Metadata.Grid.Visible; }
             set
             {
-                m_PlayerScreenUI.ShowGrid = value;
+                m_FrameServer.Metadata.Grid.Visible = value;
                 RefreshImage();
             }
         }
         public bool Show3DPlane
         {
-            get { return m_PlayerScreenUI.Show3DPlane; }
+            get { return m_FrameServer.Metadata.Plane.Visible; }
             set
             {
-                m_PlayerScreenUI.Show3DPlane = value;
+                m_FrameServer.Metadata.Plane.Visible = value;
                 RefreshImage();
             }
         }
@@ -215,7 +233,6 @@ namespace Kinovea.ScreenManager
             // UI Delegates. (Assigned and implemented here, called from UI)
             m_PlayerScreenUI.m_CloseMeUI += new PlayerScreenUserInterface.DelegateCloseMeUI(ScreenUI_CloseAsked);
             m_PlayerScreenUI.m_SetMeAsActiveScreenUI += new PlayerScreenUserInterface.DelegateSetMeAsActiveScreenUI(ScreenUI_SetAsActiveScreen);
-            
             m_PlayerScreenUI.m_ReportReady                  += new PlayerScreenUserInterface.ReportReady(PlayerScreenUI_IsReady);
             m_PlayerScreenUI.m_ReportSelectionChanged       += new PlayerScreenUserInterface.ReportSelectionChanged(PlayerScreenUI_SelectionChanged);
         }

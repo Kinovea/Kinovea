@@ -640,10 +640,10 @@ namespace Kinovea.ScreenManager
                     if (player.Full)
                     {
                         mnuSave.Enabled = true;
-                       	mnuExportSpreadsheet.Enabled = player.m_PlayerScreenUI.Metadata.HasData;
-                        mnuExportODF.Enabled = player.m_PlayerScreenUI.Metadata.HasData;
-                        mnuExportMSXML.Enabled = player.m_PlayerScreenUI.Metadata.HasData;
-                        mnuExportXHTML.Enabled = player.m_PlayerScreenUI.Metadata.HasData;
+                       	mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
+                        mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
+                        mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
+                        mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
                         mnuLoadAnalysis.Enabled = true;
                         mnuDeinterlace.Checked = player.Deinterlaced;
                         mnuMirror.Checked = player.Mirrored;
@@ -1049,7 +1049,7 @@ namespace Kinovea.ScreenManager
             {
                 if (m_ActiveScreen is PlayerScreen)
                 {
-                    if (((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.HasData)
+                    if (((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.HasData)
                     {
                         // TODO : Merge mechanics.
                         LoadAnalysis();
@@ -1075,7 +1075,7 @@ namespace Kinovea.ScreenManager
                 string filePath = openFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                    ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.LoadFromFile(filePath);
+                    ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.LoadFromFile(filePath);
                     ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();
                 }
             }
@@ -1097,7 +1097,7 @@ namespace Kinovea.ScreenManager
         	PlayerScreen player = m_ActiveScreen as PlayerScreen;
         	if (player != null)
             {
-	            if (player.m_PlayerScreenUI.Metadata.HasData)
+	            if (player.FrameServer.Metadata.HasData)
                 {
                     DoStopPlaying();    
 
@@ -1108,14 +1108,14 @@ namespace Kinovea.ScreenManager
                     
                     saveFileDialog.FilterIndex = ((int)_format) + 1;
                         
-                    saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.m_PlayerScreenUI.Metadata.FullPath);
+                    saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.FullPath);
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         string filePath = saveFileDialog.FileName;
                         if (filePath.Length > 0)
                         {
-                        	player.m_PlayerScreenUI.Metadata.Export(filePath, _format);  
+                        	player.FrameServer.Metadata.Export(filePath, _format);  
                         }
                     }
 	            }
@@ -2913,7 +2913,7 @@ namespace Kinovea.ScreenManager
                     
                     if (state.Loaded)
                     {
-                        state.MetadataString = ((PlayerScreen)screen).m_PlayerScreenUI.Metadata.ToXmlString();
+                        state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString();
                     }
                     else
                     {
@@ -3296,7 +3296,7 @@ namespace Kinovea.ScreenManager
 	            	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
 	            	if(ps != null)
 	            	{
-	                	ps.m_PlayerScreenUI.Metadata.LoadFromString(_OldScreen.MetadataString);
+	                	ps.FrameServer.Metadata.LoadFromString(_OldScreen.MetadataString);
 	                	ps.m_PlayerScreenUI.PostImportMetadata();
 	            	}
 	            }

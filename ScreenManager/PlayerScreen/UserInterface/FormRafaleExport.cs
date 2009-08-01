@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         //----------------------------------------------------------
         #region Members
         private PlayerScreenUserInterface m_PlayerScreenUserInterface;      // parent
+        private Metadata m_Metadata;
         private string m_FullPath;
         private Int64 m_iSelectionDuration;                                 // in timestamps.
         private double m_fTimestampsPerSeconds;                             // ratio
@@ -43,9 +44,10 @@ namespace Kinovea.ScreenManager
         private int m_iEstimatedTotal;
         #endregion
 
-        public formRafaleExport(PlayerScreenUserInterface _psui, string _FullPath, Int64 _iSelDuration, double _tsps, double _fps)
+        public formRafaleExport(PlayerScreenUserInterface _psui, Metadata _metadata, string _FullPath, Int64 _iSelDuration, double _tsps, double _fps)
         {
             m_PlayerScreenUserInterface = _psui;
+            m_Metadata = _metadata;
             m_FullPath = _FullPath;
             m_iSelectionDuration = _iSelDuration;
             m_fTimestampsPerSeconds = _tsps;
@@ -73,7 +75,7 @@ namespace Kinovea.ScreenManager
             //tooltip = m_ResourceManager.GetString("dlgRafaleExport_Tooltip_IntervalSlider", Thread.CurrentThread.CurrentUICulture);
             chkBlend.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelBlend", Thread.CurrentThread.CurrentUICulture);
             chkKeyframesOnly.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelKeyframesOnly", Thread.CurrentThread.CurrentUICulture);
-            if (m_PlayerScreenUserInterface.Metadata.Count > 0)
+            if (m_Metadata.Count > 0)
             {
                 chkKeyframesOnly.Enabled = true;
             }
@@ -138,7 +140,7 @@ namespace Kinovea.ScreenManager
             double fTotalFrames;
             if (chkKeyframesOnly.Checked)
             {
-                fTotalFrames = (double)m_PlayerScreenUserInterface.Metadata.Count;   
+                fTotalFrames = (double)m_Metadata.Count;   
             }
             else
             {
