@@ -85,21 +85,26 @@ namespace VideoFiles
 
 #pragma region Public Methods
 	public:
-
-		SaveResult OpenSavingContext(String^ _FilePath, Size _size);
+		
+		SaveResult OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, int _iFramesInterval, bool _bHasMetadata);
 		SaveResult CloseSavingContext(bool _bEncodingSuccess);
 		SaveResult SaveFrame(Bitmap^ _image);
+		SaveResult SaveMetadata(String^ _Metadata);
 		
 #pragma endregion
 
 #pragma region Private Methods
 	private:
 		static AVOutputFormat* GuessOutputFormat(String^ _FilePath, bool _bHasMetadata);
-		bool	SetupMuxer(AVFormatContext* _pOutputFormatContext, AVOutputFormat* _pOutputFormat, char* _pFilePath, int _iBitrate);
-		bool	SetupEncoder(AVCodecContext* _pOutputCodecContext,AVCodec* _pOutputCodec, Size _OutputSize, int _iFrameInterval, int _iBitrate);
-		bool	EncodeAndWriteVideoFrame(AVFormatContext* _pOutputFormatContext, AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream, int _iOutputWidth, int _iOutputHeight, SwsContext* _pScalingContext, Bitmap^ _InputBitmap);
-		bool	WriteFrame(int _iEncodedSize, AVFormatContext* _pOutputFormatContext, AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+		bool	SetupMuxer(SavingContext^ _SavingContext);
+		bool	SetupEncoder(SavingContext^ _SavingContext);
 		
+		bool    WriteMetadata(SavingContext^ _SavingContext, String^ _Metadata);
+		bool	EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap);
+		bool	WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+		
+		static int GreatestCommonDenominator(int a, int b);
+
 #pragma endregion
 	};
 }

@@ -53,6 +53,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private VideoFile m_VideoFile = new VideoFile();
 		private Metadata m_Metadata;
 		
@@ -202,15 +203,24 @@ namespace Kinovea.ScreenManager
         		metadata = m_SaveMetadata.ToXmlString();
         	}
         	
-        	m_SaveResult = m_VideoFile.Save(	m_SaveFile, 
-        	                                	m_iSaveFramesInterval, 
-        	                                	m_iSaveStart, 
-        	                                	m_iSaveEnd, 
-        	                                	metadata, 
-        	                                	m_bSaveFlushDrawings, 
-        	                                	m_bSaveKeyframesOnly, 
-        	                                	m_SaveDelegateOutputBitmap);
-	        
+        	try
+        	{
+        		m_SaveResult = m_VideoFile.Save(	m_SaveFile, 
+	        	                                	m_iSaveFramesInterval, 
+	        	                                	m_iSaveStart, 
+	        	                                	m_iSaveEnd, 
+	        	                                	metadata, 
+	        	                                	m_bSaveFlushDrawings, 
+	        	                                	m_bSaveKeyframesOnly, 
+	        	                                	m_SaveDelegateOutputBitmap);
+        	}
+        	catch (Exception exp)
+			{
+        		m_SaveResult = SaveResult.UnknownError;
+				log.Error("Unknown error while saving video.");
+				log.Error(exp.StackTrace);
+			}
+        	
         	e.Result = 0;
         }
 		private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -257,6 +267,7 @@ namespace Kinovea.ScreenManager
                 case SaveResult.MuxerParametersNotAllocated:
                 case SaveResult.MuxerParametersNotSet:
                 case SaveResult.VideoStreamNotCreated:
+                case SaveResult.ReadingError:
                 case SaveResult.UnknownError:
                 default:
                     DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_LowLevelError);

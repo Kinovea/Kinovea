@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
 				string timecode = DateTime.Now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
 				m_CurrentCaptureFilePath = PreferencesManager.SettingsFolder + "\\" + timecode + ".avi";
 				
-				SaveResult result = m_VideoFileWriter.OpenSavingContext(m_CurrentCaptureFilePath, m_DecodingSize);
+				SaveResult result = m_VideoFileWriter.OpenSavingContext(m_CurrentCaptureFilePath, null, -1, false);
 				
 				if(result == SaveResult.Success)
 				{

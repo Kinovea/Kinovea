@@ -42,13 +42,28 @@ namespace Kinovea
 			AVStream* pOutputDataStream;			// Output stream for meta data.
 			AVFrame* pInputFrame;					// The current incoming frame.
 			
+			double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
+			bool bInputWasMpeg2;					
+			int iSampleAspectRatioNumerator;
+			int iSampleAspectRatioDenominator;
+
 			// User parameters
 			char* pFilePath;
-			int iFramesInterval;
+			int iFramesInterval;				
+			int iBitrate;				
 			Size outputSize;
 
 			// Control
 			bool bEncoderOpened;
+
+			SavingContext::SavingContext()
+			{
+				bInputWasMpeg2 = false;
+				iFramesInterval = 40;			// Default speed : 25 fps.
+				iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
+				fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
+				outputSize = Size(720, 576);
+			}
 		};
 	}
 }
