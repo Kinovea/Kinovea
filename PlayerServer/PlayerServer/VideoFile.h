@@ -117,6 +117,7 @@ namespace VideoFiles
 		InputFrameNotAllocated,
 		MetadataStreamNotCreated,
 		MetadataNotWritten,
+		ReadingError,
 		UnknownError,
 
 		MovieNotLoaded,
@@ -200,7 +201,7 @@ namespace VideoFiles
 		
 		InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth);
 		
-		String^	GetMetadata();
+		String^	ReadMetadata();
 		
 		void	ExtractToMemory(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, bool _bForceReload);
 		
@@ -227,24 +228,9 @@ namespace VideoFiles
 		// Analysis mode
 		ImportStrategy	PrepareSelection(int64_t% _iStartTimeStamp, int64_t% _iEndTimeStamp, bool _bForceReload);
 		int		EstimateNumberOfFrames( int64_t _iStartTimeStamp, int64_t _iEndTimeStamp); 
-
-		// Saving
-		bool	SetupEncoder(AVCodecContext* _pOutputCodecContext,AVCodec* _pOutputCodec, Size _OutputSize, int _iFrameInterval, int _iBitrate);
-		bool	SetupEncoderForCopy(AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream);
-		bool	SetupMuxer(AVFormatContext* _pOutputFormatContext, AVOutputFormat* _pOutputFormat, char* _pFilePath, int _iBitrate);
-		int		GetInputBitrate(int _iOutputWidth, int _iOutputHeight);
-		bool	NeedEncoding(int _iFramesInterval, bool _bFlushDrawings, bool _bKeyframesOnly);
-		bool	EncodeAndWriteVideoFrame(AVFormatContext* _pOutputFormatContext, AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream, int _iOutputWidth, int _iOutputHeight, SwsContext* _pScalingContext, AVFrame* _pInputFrame);
-		bool	EncodeAndWriteVideoFrame(AVFormatContext* _pOutputFormatContext, AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream, int _iOutputWidth, int _iOutputHeight, SwsContext* _pScalingContext, Bitmap^ _InputBitmap);
-		bool	WriteFrame(int _iEncodedSize, AVFormatContext* _pOutputFormatContext, AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-		bool	WriteMetadata(AVFormatContext* _pOutputFormatContext, AVCodecContext* _pOutputCodecContext, AVStream* _pOutputVideoStream, AVStream* _pOutputDataStream, String^ _Metadata);
-		static AVOutputFormat* GuessOutputFormat(String^ _FilePath, bool _bHasMetadata);
-
-
+		
 		// Other utilities
-		void	MoveToTimestamp(int64_t _iPosition);
 		bool	RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
-		int		GreatestCommonDenominator(int a, int b);
 		void	ResetPrimarySelection(void);
 		void	ResetInfosVideo(void);
 

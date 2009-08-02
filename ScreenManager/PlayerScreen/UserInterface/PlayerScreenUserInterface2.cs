@@ -851,7 +851,7 @@ namespace Kinovea.ScreenManager
 		{	
 			// Try to find metadata muxed inside the file and load it.
 			
-			String metadata = m_FrameServer.VideoFile.GetMetadata();
+			String metadata = m_FrameServer.VideoFile.ReadMetadata();
 			
 			if (metadata != null)
 			{
@@ -1514,8 +1514,9 @@ namespace Kinovea.ScreenManager
 			// Set the left handler of the selection at the current frame.
 			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
 			{
-				m_iSelStart = m_iCurrentPosition;
 				trkSelection.SelStart = m_iCurrentPosition;
+				UpdateSelectionDataFromControl();
+				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
 			}
 		}
@@ -1524,8 +1525,9 @@ namespace Kinovea.ScreenManager
 			// Set the right handler of the selection at the current frame.
 			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
 			{
-				m_iSelEnd = m_iCurrentPosition;
 				trkSelection.SelEnd = m_iCurrentPosition;
+				UpdateSelectionDataFromControl();
+				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
 			}
 		}

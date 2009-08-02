@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
                 m_IsIdle = false;
                 
                 progressBar.Maximum = _iMaximum;
-                progressBar.Value = _iValue;
+                progressBar.Value = _iValue > 0 ? _iValue : 0;
                 
                 if(_bAsPercentage)
                 {

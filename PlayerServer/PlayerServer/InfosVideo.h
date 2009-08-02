@@ -33,7 +33,12 @@ namespace Kinovea
 				int64_t	iFileSize;
 				int		iWidth;
 				int		iHeight;
+				
 				double	fPixelAspectRatio;
+				int		iSampleAspectRatioNumerator;
+				int		iSampleAspectRatioDenominator;
+				bool	bIsCodecMpeg2;					// Used to adapt pixel ratio on output.
+				
 				double  fFps;
 				bool    bFpsIsReliable;					
 				int		iFrameInterval;					// in Milliseconds.
