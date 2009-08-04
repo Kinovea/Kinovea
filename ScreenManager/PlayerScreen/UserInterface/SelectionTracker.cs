@@ -206,6 +206,13 @@ namespace Kinovea.ScreenManager
         	
         	UpdateAppearence();
         }
+        public void UpdatePositionValueOnly(long _iPos)
+        {
+        	// This method does't refresh the control.
+        	// This is useful when dealing with manually modifiying the selection,
+        	// when we don't want the manipulation to cause another refresh.
+        	m_iSelPos = _iPos;
+        }
         public void Reset()
         {
         	UpdateInternalState(m_iMinimum, m_iMaximum, m_iMinimum, m_iMaximum, m_iMinimum);

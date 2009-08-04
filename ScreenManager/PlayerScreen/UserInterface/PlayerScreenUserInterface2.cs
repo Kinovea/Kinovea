@@ -1437,15 +1437,15 @@ namespace Kinovea.ScreenManager
 			{
 				StopPlaying();
 
-				// Modifs des timestamps
+				// Update selection timestamps and labels.
 				UpdateSelectionDataFromControl();
 				UpdateSelectionLabels();
 
+				// Update the frame tracker internal timestamps (including position if needed).
 				trkFrame.Remap(m_iSelStart, m_iSelEnd);
 				
-				// Ne pas mettre à jour le curseur de navigation ici.
-				// C'est le FrameTracker qui s'en est chargé quand on a modifié les bornes.
-				trkSelection.SelPos = trkFrame.Position;
+				// Update the position but don't trigger a refresh.
+				trkSelection.UpdatePositionValueOnly(trkFrame.Position);
 
 				if (m_bShowInfos) { UpdateDebugInfos(); }
 			}
@@ -1518,6 +1518,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionDataFromControl();
 				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
+				ImportSelectionToMemory(false);
 			}
 		}
 		private void btnSetHandlerRight_Click(object sender, EventArgs e)
@@ -1529,6 +1530,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionDataFromControl();
 				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
+				ImportSelectionToMemory(false);
 			}
 		}
 		private void btnHandlersReset_Click(object sender, EventArgs e)
@@ -4429,6 +4431,8 @@ namespace Kinovea.ScreenManager
 			{
 				if (m_FrameServer.VideoFile.CanExtractToMemory(m_iSelStart, m_iSelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory))
 				{
+					StopPlaying();
+					
 					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoFile, m_iSelStart, m_iSelEnd, _bForceReload);
 					ffi.ShowDialog();
 					ffi.Dispose();
