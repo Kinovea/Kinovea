@@ -1719,7 +1719,7 @@ namespace Kinovea.ScreenManager
 		{
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				m_iSlowmotionPercentage = sldrSpeed.Value;
+				m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
 
 				// Reset timer with new value.
 				if (m_bIsCurrentlyPlaying)
@@ -2359,9 +2359,10 @@ namespace Kinovea.ScreenManager
 		private int GetPlaybackFrameInterval()
 		{
 			// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
-			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0)
+			// m_iSlowmotionPercentage must be > 0.
+			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0 && m_iSlowmotionPercentage > 0)
 			{
-				return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_iSlowmotionPercentage / 100));
+				return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_iSlowmotionPercentage / 100.0));
 			}
 			else
 			{
