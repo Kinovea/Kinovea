@@ -209,7 +209,7 @@ namespace VideoFiles
 		
 		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode);
 		
-		SaveResult Save( String^ _FilePath, int FrameInterval, int64_t _iSelStart, int64_t _iSelEnd, String^ _Metadata, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap^ _delegateGetOutputBitmap);
+		SaveResult Save( String^ _FilePath, int FrameInterval, int64_t _iSelStart, int64_t _iSelEnd, String^ _Metadata, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap^ _delegateGetOutputBitmap);
 
 		void Unload();
 

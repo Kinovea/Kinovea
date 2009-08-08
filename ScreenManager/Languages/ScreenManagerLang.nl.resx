@@ -131,6 +131,9 @@
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duur van elke dia :{0} hondersten van seconden.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duur van elke dia :{0:0.00} seconden.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Bewaar een diashow van de kernafbeeldingen</value></data>
+   
+   
+   
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Exporteer de beeldanalyse naar PDF</value></data>
    

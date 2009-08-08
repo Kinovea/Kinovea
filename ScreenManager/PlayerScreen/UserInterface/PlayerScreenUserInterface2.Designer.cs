@@ -199,7 +199,7 @@ namespace Kinovea.ScreenManager
         	this.btnDiaporama.FlatAppearance.BorderSize = 0;
         	this.btnDiaporama.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDiaporama.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.diaporama;
+        	this.btnDiaporama.Image = global::Kinovea.ScreenManager.Properties.Resources.saveStaticDiaporama;
         	this.btnDiaporama.Location = new System.Drawing.Point(305, 87);
         	this.btnDiaporama.MinimumSize = new System.Drawing.Size(25, 25);
         	this.btnDiaporama.Name = "btnDiaporama";

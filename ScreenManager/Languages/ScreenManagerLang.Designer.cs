@@ -610,7 +610,16 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Duration of each diapositive : {0} hundredth of seconds..
+        ///   Recherche une chaîne localisée semblable à Type of video.
+        /// </summary>
+        internal static string dlgDiapoExport_GroupDiapoType {
+            get {
+                return ResourceManager.GetString("dlgDiapoExport_GroupDiapoType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Duration on each Key Image : {0} hundredth of seconds..
         /// </summary>
         internal static string dlgDiapoExport_LabelFrequencyHundredth {
             get {
@@ -619,11 +628,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Duration of each diapositive : {0:0.00} seconds..
+        ///   Recherche une chaîne localisée semblable à Duration of each Key Image : {0:0.00} seconds..
         /// </summary>
         internal static string dlgDiapoExport_LabelFrequencySeconds {
             get {
                 return ResourceManager.GetString("dlgDiapoExport_LabelFrequencySeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Original video with a pause on each Key Image.
+        /// </summary>
+        internal static string dlgDiapoExport_RadioPausedVideo {
+            get {
+                return ResourceManager.GetString("dlgDiapoExport_RadioPausedVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Video slideshow with only the Key Images..
+        /// </summary>
+        internal static string dlgDiapoExport_RadioSlideshow {
+            get {
+                return ResourceManager.GetString("dlgDiapoExport_RadioSlideshow", resourceCulture);
             }
         }
         

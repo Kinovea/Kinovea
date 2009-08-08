@@ -32,6 +32,8 @@ namespace Kinovea.ScreenManager
 	/// <summary>
 	/// This dialog let the user configure a diaporama of the key images.
 	/// A diaporama here is a movie where each key image is seen for a lenghty period of time.
+	/// An other option is provided, for the creation of a more classic movie where each
+	/// key image is paused for a lengthy period of time. (but non key images are included in the video)
 	/// 
 	/// The dialog is only used to configure the interval time and file name.
 	/// </summary>
@@ -46,6 +48,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_iFrameInterval; }
 		}
+		public bool PausedVideo
+		{
+			get { return radioSavePausedVideo.Checked; }
+		}			
     	#endregion
     	
         #region Members
@@ -67,6 +73,11 @@ namespace Kinovea.ScreenManager
         private void SetupUICulture()
         {
             this.Text = "   " + ScreenManagerLang.dlgDiapoExport_Title;
+            
+            groupSaveMethod.Text = ScreenManagerLang.dlgDiapoExport_GroupDiapoType;
+			radioSaveSlideshow.Text = ScreenManagerLang.dlgDiapoExport_RadioSlideshow;            
+            radioSavePausedVideo.Text = ScreenManagerLang.dlgDiapoExport_RadioPausedVideo;
+            
             grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
@@ -75,16 +86,18 @@ namespace Kinovea.ScreenManager
         {
             // trkInterval values are in milliseconds.
             trkInterval.Minimum = 40;
-            trkInterval.Maximum = 8000;
+            trkInterval.Maximum = 4000;
             trkInterval.Value = 2000;
             trkInterval.TickFrequency = 250;
+            
+            // default option
+            radioSaveSlideshow.Checked = true;
         }
         #endregion
         
         #region Choice handler
         private void trkInterval_ValueChanged(object sender, EventArgs e)
         {
-            freqViewer.Interval = trkInterval.Value;
             UpdateLabels();
         }
         private void UpdateLabels()

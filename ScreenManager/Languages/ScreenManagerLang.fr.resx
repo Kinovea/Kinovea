@@ -128,9 +128,12 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mode Mosaïque</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle du segment :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Étalonner la mesure</value></data>
-   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durée de chaque diapositive : {0} centièmes de secondes.</value></data>
-   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durée de chaque diapositive : {0:0.00} secondes.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durée de chaque Image Clé : {0} centièmes de secondes.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durée de chaque Image Clé : {0:0.00} secondes.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Enregistrer un Diaporama des Images Clés</value></data>
+   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>La vidéo initiale avec une pause sur chaque Image Clé</value></data>
+   <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Diaporama vidéo avec uniquement les Images Clés </value></data>
+   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type de vidéo</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Document PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Enregistrer un Document PDF des Images Clés</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Enregistrer les Données pour un Tableur</value></data>

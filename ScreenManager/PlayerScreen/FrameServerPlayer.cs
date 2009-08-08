@@ -66,6 +66,7 @@ namespace Kinovea.ScreenManager
         private int m_iSaveFramesInterval;
         private bool m_bSaveFlushDrawings;
         private bool m_bSaveKeyframesOnly;
+        private bool m_bSavePausedVideo;
         private DelegateGetOutputBitmap m_SaveDelegateOutputBitmap;
         private SaveResult m_SaveResult;
 		#endregion
@@ -132,6 +133,7 @@ namespace Kinovea.ScreenManager
     						_iSelEnd,
     						fve.BlendDrawings,
     						false,
+    						false,
     						_DelegateOutputBitmap);
             	}
             }
@@ -152,7 +154,8 @@ namespace Kinovea.ScreenManager
 				       	_iSelStart, 
 				       	_iSelEnd, 
 				       	true, 
-				       	true, 
+				       	fde.PausedVideo ? false : true,
+				       	fde.PausedVideo,
 				       	_DelegateOutputBitmap);
 			}
 			
@@ -162,7 +165,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Saving processing
-		private void DoSave(String _FilePath, Metadata _Metadata, int _iPlaybackFrameInterval, Int64 _iSelStart, Int64 _iSelEnd, bool _bFlushDrawings, bool _bKeyframesOnly, DelegateGetOutputBitmap _DelegateOutputBitmap)
+		private void DoSave(String _FilePath, Metadata _Metadata, int _iPlaybackFrameInterval, Int64 _iSelStart, Int64 _iSelEnd, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap _DelegateOutputBitmap)
         {
 			// Save video.
     		// We use a bgWorker and a Progress Bar.
@@ -176,6 +179,7 @@ namespace Kinovea.ScreenManager
             m_iSaveFramesInterval = _iPlaybackFrameInterval;
             m_bSaveFlushDrawings = _bFlushDrawings;
             m_bSaveKeyframesOnly = _bKeyframesOnly;
+            m_bSavePausedVideo = _bPausedVideo;
             m_SaveDelegateOutputBitmap = _DelegateOutputBitmap;
             
             // Instanciate and configure the bgWorker.
@@ -211,7 +215,8 @@ namespace Kinovea.ScreenManager
 	        	                                	m_iSaveEnd, 
 	        	                                	metadata, 
 	        	                                	m_bSaveFlushDrawings, 
-	        	                                	m_bSaveKeyframesOnly, 
+	        	                                	m_bSaveKeyframesOnly,
+	        	                                	m_bSavePausedVideo,
 	        	                                	m_SaveDelegateOutputBitmap);
         	}
         	catch (Exception exp)
