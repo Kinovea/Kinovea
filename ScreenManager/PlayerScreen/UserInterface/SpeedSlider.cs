@@ -58,6 +58,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
+            	if (m_iValue < m_iMinimum) m_iValue = m_iMinimum;
                 return m_iValue;
             }
             set
