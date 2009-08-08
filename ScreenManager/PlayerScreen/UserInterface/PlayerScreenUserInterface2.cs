@@ -4807,10 +4807,9 @@ namespace Kinovea.ScreenManager
 			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
 			// This image is already drawn on _canvas.
-			// Here we decide if this particular frame should be encoded to the output 
-			// and if needed we flush the drawings on it.
-
-			bool bShouldEncode = false;
+			// Here we we flush the drawings on it if needed.
+			// We return a boolean indicating if it's a key image or not.
+			// This can then be used by the caller.
 
 			int iKeyFrameIndex = -1;
 			int iCurrentKeyframe = 0;
@@ -4829,16 +4828,14 @@ namespace Kinovea.ScreenManager
 			}
 
 			if (!_bKeyframesOnly || iKeyFrameIndex >= 0)
-			{
-				bShouldEncode = true;
-				
+			{				
 				if (_bFlushDrawings)
 				{
 					FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
 				}
 			}
 
-			return bShouldEncode;
+			return (iKeyFrameIndex >= 0);
 		}
 		private Bitmap GetFlushedImage()
 		{

@@ -128,9 +128,12 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaic Mode</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Seal measure</value></data>
-   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration of each diapositive : {0} hundredth of seconds.</value></data>
-   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each diapositive : {0:0.00} seconds.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration on each Key Image : {0} hundredth of seconds.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each Key Image : {0:0.00} seconds.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Save a Slideshow from Key Images</value></data>
+   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Original video with a pause on each Key Image</value></data>
+   <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow with only the Key Images.</value></data>
+   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type of video</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Save a PDF Document from Key Images</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Save Data as a Spreadsheet Document</value></data>

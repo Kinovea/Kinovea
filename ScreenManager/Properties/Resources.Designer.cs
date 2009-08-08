@@ -502,6 +502,14 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap save_paused_video
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("save_paused_video", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap saveblended
 		{
 			get
@@ -518,11 +526,27 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap saveDynamicDiaporama
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("saveDynamicDiaporama", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap savemuxed
 		{
 			get
 			{
 				object obj = ResourceManager.GetObject("savemuxed", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap saveStaticDiaporama
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("saveStaticDiaporama", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
