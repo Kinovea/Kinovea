@@ -147,7 +147,7 @@
       </Row>
       <Row>
         <Cell ss:StyleID="s24">
-          <Data ss:Type="String">Coords (x,y:pixels; t:timestamps)</Data>
+          <Data ss:Type="String">Coords (x,y:<xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t:time)</Data>
         </Cell>
       </Row>
       <Row>
@@ -163,10 +163,10 @@
       </Row>
       <xsl:for-each select="TrackPositionList/TrackPosition">
         <Row>
-          <xsl:call-template name="tokenize">
-            <xsl:with-param name="inputString" select="."/>
-            <xsl:with-param name="separator" select="';'"/>
-          </xsl:call-template>
+          <!-- We need to replace the comma with dots. ie. Excel will only accept "-0.32", not "-0,32". -->
+          <Cell ss:StyleID="s24"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></Data></Cell>          
+          <Cell ss:StyleID="s24"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></Data></Cell>                    
+          <Cell ss:StyleID="s24"><Data ss:Type="String"><xsl:value-of select="@UserTime"/></Data></Cell>
         </Row>
       </xsl:for-each>
     </xsl:for-each>
@@ -201,11 +201,11 @@
       </Row>
       <Row>
         <Cell ss:StyleID="s24">
-          <Data ss:Type="String">Duration (ts)</Data>
+          <Data ss:Type="String">Duration</Data>
         </Cell>
         <Cell ss:StyleID="s24">
-          <Data ss:Type="Number">
-            <xsl:value-of select="Values/StopCounting - Values/StartCounting"/>
+          <Data ss:Type="String">
+            <xsl:value-of select="Values/UserDuration"/>
           </Data>
         </Cell>
       </Row>

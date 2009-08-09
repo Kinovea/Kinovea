@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public Methods
-		public static string GetAbbreviation(LengthUnits _unit)
+		public static string GetAbbreviationFromUnit(LengthUnits _unit)
 		{
 			string abbreviation = "";
 			switch(_unit)
@@ -90,6 +90,10 @@ namespace Kinovea.ScreenManager
 			
 			return abbreviation;
 		}
+		public string GetAbbreviation()
+		{
+			return GetAbbreviationFromUnit(m_CurrentUnit);
+		}
 		public string GetLengthText(Point p1, Point p2)
 		{
 			// Return the length in the user unit, with the abbreviation.
@@ -97,11 +101,11 @@ namespace Kinovea.ScreenManager
 			
 			if(p1.X == p2.X && p1.Y == p2.Y)
 			{
-				lengthText = "0" + " " + GetAbbreviation(m_CurrentUnit);
+				lengthText = "0" + " " + GetAbbreviationFromUnit(m_CurrentUnit);
 			}
 			else
 			{
-            	lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(p1, p2), GetAbbreviation(m_CurrentUnit));
+            	lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentUnit));
 			}
 			
 			return lengthText;
@@ -115,10 +119,15 @@ namespace Kinovea.ScreenManager
 			{
 				double fPixelLength = Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));	
 				
-				fUnitLength = fPixelLength * m_fPixelToUnit;
+				fUnitLength = GetLengthDouble(fPixelLength);
 			}
 			
 			return fUnitLength;
+		}
+		public double GetLengthDouble(double _fPixelLength )
+		{
+			// Return the length in the user unit.
+			return _fPixelLength  * m_fPixelToUnit;
 		}
 		
 		#endregion

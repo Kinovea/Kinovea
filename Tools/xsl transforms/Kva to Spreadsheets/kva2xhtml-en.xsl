@@ -62,7 +62,7 @@
 				<td><xsl:value-of select="Label/Text"/></td>
 			</tr>
 			<tr bgcolor="#e8e8e8">
-				<td colspan="3">Coordinates (x,y: pixels; t: timestamps)</td>
+				<td colspan="3">Coordinates (x,y: <xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t: time)</td>
 			</tr>
 			<tr>
 				<td bgcolor="#e8e8e8">x</td>
@@ -71,10 +71,9 @@
 			</tr>
 			<xsl:for-each select="TrackPositionList/TrackPosition">
 				<tr>
-					<xsl:call-template name="tokenize">
-						<xsl:with-param name="inputString" select="."/>
-            <xsl:with-param name="separator" select="';'"/>
-          </xsl:call-template>
+          <td bgcolor="#e8e8e8"><xsl:value-of select="@UserX"/></td>
+				  <td bgcolor="#e8e8e8"><xsl:value-of select="@UserY"/></td>
+          <td bgcolor="#e8e8e8"><xsl:value-of select="@UserTime"/></td>
 				</tr>
 			</xsl:for-each>
 		</table>
@@ -96,7 +95,7 @@
 				<td bgcolor="#e8e8e8">Label: "<xsl:value-of select="Label/Text"/>"</td>
 			</tr>
 			<tr>
-				<td bgcolor="#e8e8e8">Duration: <xsl:value-of select="Values/StopCounting - Values/StartCounting"/> (ts)</td>
+				<td bgcolor="#e8e8e8">Duration: <xsl:value-of select="Values/UserDuration"/></td>
 			</tr>
 		</table>
 	</xsl:for-each>

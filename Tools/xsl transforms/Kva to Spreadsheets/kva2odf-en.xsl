@@ -103,7 +103,7 @@
 			<table:table-cell table:style-name="ce4"><text:p><xsl:value-of select="Label/Text" /></text:p></table:table-cell>
 		</table:table-row>
 		<table:table-row>
-			<table:table-cell table:style-name="ce4"><text:p>Coordinates (x,y: pixels; t:timestamps)</text:p></table:table-cell>
+			<table:table-cell table:style-name="ce4"><text:p>Coordinates (x,y: <xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t:time)</text:p></table:table-cell>
       <table:table-cell table:style-name="ce4"><text:p></text:p></table:table-cell>		
 		</table:table-row>
 		<table:table-row>
@@ -113,10 +113,26 @@
 		</table:table-row>
 		<xsl:for-each select="TrackPositionList/TrackPosition">
 			<table:table-row>
-				<xsl:call-template name="tokenize">
-					<xsl:with-param name="inputString" select="."/>
-          <xsl:with-param name="separator" select="';'"/>
-        </xsl:call-template>
+			    
+			    <table:table-cell>
+            <xsl:attribute name="table:style-name"><xsl:value-of select="'ce4'"/></xsl:attribute>
+            <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
+            <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></xsl:attribute>			     
+			      <text:p><xsl:value-of select="@UserX"/></text:p>
+          </table:table-cell>
+          
+			    <table:table-cell>
+            <xsl:attribute name="table:style-name"><xsl:value-of select="'ce4'"/></xsl:attribute>
+            <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
+            <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></xsl:attribute>			     
+			      <text:p><xsl:value-of select="@UserY"/></text:p>
+          </table:table-cell>
+          
+          <table:table-cell>
+            <xsl:attribute name="table:style-name"><xsl:value-of select="'ce4'"/></xsl:attribute>
+            <text:p><xsl:value-of select="@UserTime"/></text:p>
+          </table:table-cell>                     
+          
 			</table:table-row>
 		</xsl:for-each>
 	</xsl:for-each>	
@@ -136,18 +152,11 @@
 			<table:table-cell table:style-name="ce4"><text:p><xsl:value-of select="Label/Text" /></text:p></table:table-cell>
 		</table:table-row>
 		<table:table-row>
-			<table:table-cell table:style-name="ce4"><text:p>Duration (ts)</text:p></table:table-cell>
+			<table:table-cell table:style-name="ce4"><text:p>Duration</text:p></table:table-cell>
 			<table:table-cell>
-			  <xsl:attribute name="table:style-name">
-          <xsl:value-of select="'ce4'"/>      
-        </xsl:attribute>
-			  <xsl:attribute name="office:value-type">
-          <xsl:value-of select="'float'"/>      
-        </xsl:attribute>
-			  <xsl:attribute name="office:value">
-          <xsl:value-of select="Values/StopCounting - Values/StartCounting"/>      
-        </xsl:attribute>
-			  <text:p><xsl:value-of select="Values/StopCounting - Values/StartCounting" /></text:p></table:table-cell>
+			  <xsl:attribute name="table:style-name"><xsl:value-of select="'ce4'"/></xsl:attribute>
+			  <text:p><xsl:value-of select="Values/UserDuration" /></text:p>
+      </table:table-cell>
 		</table:table-row>
 	</xsl:for-each>
 

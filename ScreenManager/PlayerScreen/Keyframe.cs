@@ -18,13 +18,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml;
-
 using AForge.Imaging.Filters;
 
 namespace Kinovea.ScreenManager
@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
         public Bitmap Thumbnail
         {
             get { return m_Thumbnail; }
-            set { m_Thumbnail = value; }
+            //set { m_Thumbnail = value; }
         }
         public Bitmap DisabledThumbnail
         {
@@ -98,35 +98,34 @@ namespace Kinovea.ScreenManager
             get { return m_bDisabled; }
             set { m_bDisabled = value; }
         }
+        public Metadata ParentMetadata
+        {
+            get { return m_ParentMetadata; }    // unused.
+            set { m_ParentMetadata = value; }
+        }
         #endregion
 
         #region Members
-        private long m_Position;            // Position is absolute in all timestamps.
-        private String m_Title;
-        private String m_Timecode;
-        private List<string> m_Comments;
+        private long m_Position = -1;            // Position is absolute in all timestamps.
+        private string  m_Title = "";
+        private string m_Timecode = "";
+        private List<string> m_Comments = new List<string>();
         private Bitmap m_Thumbnail;
         private Bitmap m_DisabledThumbnail;
-        private List<AbstractDrawing> m_Drawings;
+        private List<AbstractDrawing> m_Drawings = new List<AbstractDrawing>();
         private Bitmap m_FullFrame;
         private bool m_bDisabled;
+        private Metadata m_ParentMetadata;
         #endregion
 
         #region Constructor
-        public Keyframe()
+        public Keyframe(Metadata _ParentMetadata)
         {
             // Used only during parsing to hold dummy Keyframe while it is loaded.
-            // Must be followed by a call to FinishLoad()
-            m_Position = -1;
-            m_Title = "";
-            m_Timecode = "";
-            m_Comments = new List<string>();
-            m_Thumbnail = null;
-            m_Drawings = new List<AbstractDrawing>();
-            m_bDisabled = false;
-            m_FullFrame = null;
+            // Must be followed by a call to PostImportMetadata()
+            m_ParentMetadata = _ParentMetadata;
         }
-        public Keyframe(long _position, string _timecode, Bitmap _image)
+        public Keyframe(long _position, string _timecode, Bitmap _image, Metadata _ParentMetadata)
         {
         	// Title is a variable default.
         	// as long as it's null, it takes the value of timecode.
@@ -134,12 +133,9 @@ namespace Kinovea.ScreenManager
             // as soon as the user put value in title, we use it instead.
         	m_Position = _position;
         	m_Timecode = _timecode;
-            m_Comments = new List<string>();
             m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_Drawings = new List<AbstractDrawing>();
-            m_bDisabled = false;
-
             m_FullFrame = ConvertToJPG(_image);
+        	m_ParentMetadata = _ParentMetadata;
         }
         #endregion
 
@@ -158,47 +154,53 @@ namespace Kinovea.ScreenManager
             // insert to the top of z-order
             m_Drawings.Insert(0, obj);
         }
-        public void ToXmlString(XmlTextWriter _xmlXriter)
+        public void ToXmlString(XmlTextWriter _xmlWriter)
         {
-            _xmlXriter.WriteStartElement("Keyframe");
+            _xmlWriter.WriteStartElement("Keyframe");
 
             // Position
-            _xmlXriter.WriteStartElement("Position");
-            _xmlXriter.WriteString(m_Position.ToString());
-            _xmlXriter.WriteEndElement();
+            _xmlWriter.WriteStartElement("Position");
+            _xmlWriter.WriteString(m_Position.ToString());
+            _xmlWriter.WriteEndElement();
 
             // Title
-            _xmlXriter.WriteStartElement("Title");
-            _xmlXriter.WriteString(Title);
-            _xmlXriter.WriteEndElement();
+            _xmlWriter.WriteStartElement("Title");
+            _xmlWriter.WriteString(Title);
+            _xmlWriter.WriteEndElement();
 
+            // UserTime
+            _xmlWriter.WriteStartElement("UserTime");
+           	string userTime = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_Position, TimeCodeFormat.Unknown, false);
+            _xmlWriter.WriteString(userTime );
+            _xmlWriter.WriteEndElement();
+            
             // Comments
             if (m_Comments.Count > 0)
             {
-                _xmlXriter.WriteStartElement("CommentLines");
+                _xmlWriter.WriteStartElement("CommentLines");
                 foreach (string line in m_Comments)
                 {
-                    _xmlXriter.WriteStartElement("CommentLine");
-                    _xmlXriter.WriteString(line);
-                    _xmlXriter.WriteEndElement();
+                    _xmlWriter.WriteStartElement("CommentLine");
+                    _xmlWriter.WriteString(line);
+                    _xmlWriter.WriteEndElement();
                 }
-                _xmlXriter.WriteEndElement();
+                _xmlWriter.WriteEndElement();
             }
 
             // Drawings
             if (m_Drawings.Count > 0)
             {
-                _xmlXriter.WriteStartElement("Drawings");
+                _xmlWriter.WriteStartElement("Drawings");
                 foreach (AbstractDrawing drawing in m_Drawings)
                 {
-                    drawing.ToXmlString(_xmlXriter);
+                    drawing.ToXmlString(_xmlWriter);
                 }
-                _xmlXriter.WriteEndElement();
+                _xmlWriter.WriteEndElement();
             }
 
 
             // </Keyframe>
-            _xmlXriter.WriteEndElement();
+            _xmlWriter.WriteEndElement();
         }
         public override int GetHashCode()
         {

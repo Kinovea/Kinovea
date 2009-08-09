@@ -665,15 +665,20 @@ namespace Kinovea.ScreenManager
         }
         private void ToXml(XmlTextWriter _xmlWriter)
         {
+        	// Extract an Xml description of this Metadata.
+        	// Some infos are meant to be used by the import method to recreate the Metadata afterwards.
+        	// Some other infos are meant as helpers for XSLT exports (ODF, XHTML, etc.)
+        	// so these exports have more user friendly values. (timecode vs timestamps, cm vs pixels)
+        	
             try
             {
                 _xmlWriter.WriteStartDocument();
                 _xmlWriter.WriteStartElement("KinoveaVideoAnalysis");
 
-                // Infos générales
+                // Global infos.
                 WriteAnalysisInfos(_xmlWriter);
 
-                // Info de chaque Keyframe.
+                // Keyframes infos.
                 if (ActiveKeyframes() > 0)
                 {
                     _xmlWriter.WriteStartElement("Keyframes");
@@ -687,7 +692,7 @@ namespace Kinovea.ScreenManager
                     _xmlWriter.WriteEndElement();
                 }
 
-                // Infos des Tracks
+                // Tracks infos.
                 if (m_Tracks.Count > 0)
                 {
                     _xmlWriter.WriteStartElement("Tracks");
@@ -698,7 +703,7 @@ namespace Kinovea.ScreenManager
                     _xmlWriter.WriteEndElement();
                 }
 
-                // Infos des Chronos
+                // Chronos infos.
                 if (m_Chronos.Count > 0)
                 {
                     _xmlWriter.WriteStartElement("Chronos");
@@ -726,7 +731,7 @@ namespace Kinovea.ScreenManager
         {
             // Format version
             _xmlWriter.WriteStartElement("FormatVersion");
-            _xmlWriter.WriteString("1.3");
+            _xmlWriter.WriteString("1.4");
             _xmlWriter.WriteEndElement();
 
             // Application Version
@@ -975,7 +980,9 @@ namespace Kinovea.ScreenManager
         }
         private Keyframe ParseKeyframe(XmlTextReader _xmlReader)
         {
-            Keyframe kf = new Keyframe();
+        	// This will not create a fully functionnal Keyframe.
+        	// Must be followed by a call to PostImportMetadata()
+            Keyframe kf = new Keyframe(this);
 
             while (_xmlReader.Read())
             {

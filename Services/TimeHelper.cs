@@ -83,5 +83,32 @@ namespace Kinovea.Services
 
 			return timecode;
 		}
+	
+		public static TimeCodeType GetTimecodeType(TimeCodeFormat _tcf)
+		{
+			TimeCodeType tct = TimeCodeType.String;
+			
+			switch(_tcf)
+			{
+				case TimeCodeFormat.ClassicTime:
+					tct = TimeCodeType.String;
+					break;
+					
+				case TimeCodeFormat.Frames:
+				case TimeCodeFormat.HundredthOfMinutes:
+				case TimeCodeFormat.TenThousandthOfHours:
+				case TimeCodeFormat.Timestamps:
+					tct = TimeCodeType.Number;
+					break;
+					
+				case TimeCodeFormat.TimeAndFrames:
+				default:
+					tct = TimeCodeType.String;
+					break;
+			}
+			
+			return tct;
+		}
+	
 	}
 }

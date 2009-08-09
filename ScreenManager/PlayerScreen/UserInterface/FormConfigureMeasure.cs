@@ -69,11 +69,11 @@ namespace Kinovea.ScreenManager
             lblRealSize.Text = m_ResourceManager.GetString("dlgConfigureMeasure_lblRealSize", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n");
             
             // Combo Units (MUST be filled in the order of the enum)
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviation(LineLengthHelper.LengthUnits.Centimeters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviation(LineLengthHelper.LengthUnits.Meters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviation(LineLengthHelper.LengthUnits.Inches) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviation(LineLengthHelper.LengthUnits.Feet) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviation(LineLengthHelper.LengthUnits.Yards) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Centimeters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Meters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Inches) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Feet) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Yards) + ")");
             
             // Update with current values.
             if(m_Metadata.LineLengthHelper.CurrentUnit == LineLengthHelper.LengthUnits.Pixels)
