@@ -1271,9 +1271,16 @@ namespace Kinovea.ScreenManager
         {
             _xmlWriter.WriteStartElement("TrackPositionList");
             _xmlWriter.WriteAttributeString("Count", m_Positions.Count.ToString());
-            foreach (TrackPosition tp in m_Positions)
+            
+            _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.LineLengthHelper.GetAbbreviation());
+            // todo: user unit time.
+            
+            if(m_Positions.Count > 0)
             {
-                tp.ToXml(_xmlWriter);
+            	foreach (TrackPosition tp in m_Positions)
+            	{
+            		tp.ToXml(_xmlWriter, m_ParentMetadata, m_Positions[0]);
+            	}	
             }
             _xmlWriter.WriteEndElement();
         }

@@ -3477,7 +3477,7 @@ namespace Kinovea.ScreenManager
 			// Public because called from CommandAddKeyframe.Execute()
 			// Title becomes the current timecode. (relative to sel start or sel minimum ?)
 			
-			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.VideoFile.CurrentImage);
+			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.VideoFile.CurrentImage, m_FrameServer.Metadata);
 			
 			if (_iPosition != m_iCurrentPosition)
 			{

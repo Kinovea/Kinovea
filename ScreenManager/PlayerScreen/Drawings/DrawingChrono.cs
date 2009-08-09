@@ -307,8 +307,19 @@ namespace Kinovea.ScreenManager
                 _xmlWriter.WriteString(m_iInvisibleTimestamp.ToString());
             }
             _xmlWriter.WriteEndElement();
+            
             _xmlWriter.WriteStartElement("Countdown");
             _xmlWriter.WriteString(m_bCountdown.ToString());
+            _xmlWriter.WriteEndElement();
+            
+            // User duration is for XSLT export only.
+            _xmlWriter.WriteStartElement("UserDuration");
+            string userDuration = "0";
+            if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
+            {
+             	userDuration = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeCodeFormat.Unknown, false);
+            }
+            _xmlWriter.WriteString(userDuration);
             _xmlWriter.WriteEndElement();
             
             // </values>
