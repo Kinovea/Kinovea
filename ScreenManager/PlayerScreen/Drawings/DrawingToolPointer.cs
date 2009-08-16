@@ -27,23 +27,9 @@ namespace Kinovea.ScreenManager
     public class DrawingToolPointer : AbstractDrawingTool
     {
     	#region Properties
-        public Size ImgSize
-        {
-            get { return m_ImgSize; }
-            set 
-            { 
-                m_ImgSize.Width = value.Width;
-                m_ImgSize.Height = value.Height;
-            }
-        }
         public Point MouseDelta
         {
             get { return m_MouseDelta; }
-        }
-        public Point DirectZoomTopLeft
-        {
-            get { return new Point(m_DirectZoomTopLeft.X, m_DirectZoomTopLeft.Y); }
-            set { m_DirectZoomTopLeft = new Point(value.X, value.Y); }
         }
 		#endregion
         
@@ -296,7 +282,15 @@ namespace Kinovea.ScreenManager
 
             return bIsMovingAnObject;
         }
-		#endregion
+        public void SetImageSize(Size _size)
+        {
+        	m_ImgSize = new Size(_size.Width, _size.Height);	
+        }
+        public void SetZoomLocation(Point _point)
+        {
+        	m_DirectZoomTopLeft = new Point(_point.X, _point.Y);	
+        }
+        #endregion
         
 		#region Helpers
         private bool IsOnDrawing(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
