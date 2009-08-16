@@ -46,6 +46,10 @@ namespace Kinovea.ScreenManager
 			get { return m_Metadata; }
 			set { m_Metadata = value; }
 		}
+		public CoordinateSystem CoordinateSystem
+		{
+			get { return m_CoordinateSystem; }
+		}
 		public bool Loaded
 		{
 			get { return m_VideoFile.Loaded;}
@@ -69,6 +73,7 @@ namespace Kinovea.ScreenManager
         private bool m_bSavePausedVideo;
         private DelegateGetOutputBitmap m_SaveDelegateOutputBitmap;
         private SaveResult m_SaveResult;
+        private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		#endregion
 
 		#region Constructor
