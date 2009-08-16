@@ -33,6 +33,14 @@ using Kinovea.VideoFiles;
 namespace Kinovea.ScreenManager
 {
 	
+	#region Namespace wide delegates
+	// To call for a repaint of a screen. Used in various places.
+	public delegate void DelegateScreenInvalidate();
+	
+	// To execute a specific action when we 'undo' an 'add drawing' action. (change cursor, etc.)
+	public delegate void DelegateDrawingUndrawn();
+	#endregion
+	
     public class ScreenManagerKernel : IKernel , IMessageFilter
     {
         #region Imports Win32
@@ -318,7 +326,7 @@ namespace Kinovea.ScreenManager
             mnuOneCapture.Text = ((ItemResourceInfo)mnuOneCapture.Tag).resManager.GetString(((ItemResourceInfo)mnuOneCapture.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
             mnuOneCapture.MergeAction = MergeAction.Append;
-            mnuOneCapture.Enabled = false;
+            //mnuOneCapture.Enabled = false;
             
 
             // Two captures
@@ -327,7 +335,7 @@ namespace Kinovea.ScreenManager
             mnuTwoCaptures.Text = ((ItemResourceInfo)mnuTwoCaptures.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoCaptures.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
             mnuTwoCaptures.MergeAction = MergeAction.Append;
-			mnuTwoCaptures.Enabled = false;
+			//mnuTwoCaptures.Enabled = false;
             
             // Two mixed
             ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
@@ -335,8 +343,8 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.Text = ((ItemResourceInfo)mnuTwoMixed.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoMixed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
-            mnuTwoMixed.Enabled = false;
-            
+            //mnuTwoMixed.Enabled = false;
+ 
             //Swap - activé seulement si DualFull ?
             mnuSwapScreens.Tag = new ItemResourceInfo(resManager, "mnuSwapScreens");
             mnuSwapScreens.Text = ((ItemResourceInfo)mnuSwapScreens.Tag).resManager.GetString(((ItemResourceInfo)mnuSwapScreens.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -537,7 +545,7 @@ namespace Kinovea.ScreenManager
             // Close this module
             foreach (AbstractScreen screen in screenList)
             {
-                screen.CloseScreen();
+                screen.BeforeClose();
             }
         }
         #endregion
@@ -1662,7 +1670,7 @@ namespace Kinovea.ScreenManager
         private void mnuDeinterlaceOnClick(object sender, EventArgs e)
         {
         	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(m_ActiveScreen != null)
+        	if(player != null)
         	{
         		mnuDeinterlace.Checked = !mnuDeinterlace.Checked;
         		player.Deinterlaced = mnuDeinterlace.Checked;	
@@ -1671,7 +1679,7 @@ namespace Kinovea.ScreenManager
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
         	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(m_ActiveScreen != null)
+        	if(player != null)
         	{
         		mnuMirror.Checked = !mnuMirror.Checked;
         		player.Mirrored = mnuMirror.Checked;
@@ -1679,20 +1687,32 @@ namespace Kinovea.ScreenManager
         }
         private void mnuGridOnClick(object sender, EventArgs e)
         {
-        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(m_ActiveScreen != null)
+        	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
         	{
         		mnuGrid.Checked = !mnuGrid.Checked;
-        		player.ShowGrid = mnuGrid.Checked;
+        		if(m_ActiveScreen is PlayerScreen)
+        		{
+        			((PlayerScreen)m_ActiveScreen).ShowGrid = mnuGrid.Checked;
+        		}
+        		else if(m_ActiveScreen is CaptureScreen)
+        		{
+        			((CaptureScreen)m_ActiveScreen).ShowGrid = mnuGrid.Checked;
+        		}
         	}
         }
         private void mnu3DPlaneOnClick(object sender, EventArgs e)
         {
-        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(m_ActiveScreen != null)
+        	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
         	{
         		mnu3DPlane.Checked = !mnu3DPlane.Checked;
-        		player.Show3DPlane = mnu3DPlane.Checked;
+        		if(m_ActiveScreen is PlayerScreen)
+        		{
+        			((PlayerScreen)m_ActiveScreen).Show3DPlane = mnu3DPlane.Checked;
+        		}
+        		else if(m_ActiveScreen is CaptureScreen)
+        		{
+        			((CaptureScreen)m_ActiveScreen).Show3DPlane = mnu3DPlane.Checked;
+        		}
         	}
         }
         #endregion
@@ -1879,7 +1899,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Delguées appellées depuis les PlayerScreens
+        #region Delguées appellées depuis les Screens
         public void Screen_SetActiveScreen(AbstractScreen _ActiveScreen)
         {
             //---------------------------------------------------------------------------------
@@ -1916,7 +1936,9 @@ namespace Kinovea.ScreenManager
         }
         public void Screen_CloseAsked(AbstractScreen _SenderScreen)
         {
-            // Close the sender.
+            _SenderScreen.BeforeClose();
+            
+            // Reorganise screens.
             // We leverage the fact that screens are always weel ordered relative to menus.
             if (_SenderScreen == screenList[0])
             {

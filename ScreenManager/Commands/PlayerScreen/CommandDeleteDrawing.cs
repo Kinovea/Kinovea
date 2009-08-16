@@ -39,16 +39,16 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private PlayerScreenUserInterface m_psui;
+        private DelegateScreenInvalidate m_DoScreenInvalidate;
         private long m_iFramePosition;
         private Metadata m_Metadata;
         private AbstractDrawing m_Drawing;
         private int m_iDrawingIndex;
 
         #region constructor
-        public CommandDeleteDrawing(PlayerScreenUserInterface _psui, Metadata _Metadata, long _iFramePosition, int _iDrawingIndex)
+        public CommandDeleteDrawing(DelegateScreenInvalidate _invalidate, Metadata _Metadata, long _iFramePosition, int _iDrawingIndex)
         {
-            m_psui = _psui;
+            m_DoScreenInvalidate = _invalidate;
             m_iFramePosition = _iFramePosition;
             m_Metadata = _Metadata;
             m_iDrawingIndex = _iDrawingIndex;
@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
                 m_Metadata[iIndex].Drawings.RemoveAt(m_iDrawingIndex);
                 m_Metadata.SelectedDrawing = -1;
                 m_Metadata.SelectedDrawingFrame = -1;
-                m_psui.pbSurfaceScreen.Invalidate();
+                m_DoScreenInvalidate();
             }
         }
         public void Unexecute()
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
                 // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
                 // We must still be able to undo any Add action that where performed before.
                 m_Metadata[iIndex].Drawings.Insert(m_iDrawingIndex, m_Drawing);
-                m_psui.pbSurfaceScreen.Invalidate();
+                m_DoScreenInvalidate();
             }
             else
             {

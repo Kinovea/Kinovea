@@ -27,8 +27,8 @@ namespace Kinovea.ScreenManager
     public enum MagnifierMode
     {
         NotVisible,               
-        Direct,      
-        Indirect    
+        Direct, 		// When the mouse move makes the magnifier move.     
+        Indirect    	// When the user has to click to change the boundaries of the magnifier.
     }
         
     public class Magnifier
@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Interface
-        public void Draw(Bitmap _bitmap, Graphics _canvas, double _fStretchFactor, ColorProfile _colorProfile)
+        public void Draw(Bitmap _bitmap, Graphics _canvas, double _fStretchFactor)
         {
             m_iImageSize = new Size(_bitmap.Width, _bitmap.Height);
 

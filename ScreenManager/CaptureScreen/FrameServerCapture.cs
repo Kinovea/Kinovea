@@ -40,6 +40,11 @@ namespace Kinovea.ScreenManager
 	public class FrameServerCapture : AbstractFrameServer
 	{
 		#region Properties
+		public bool IsConnected
+		{
+			get { return m_bIsConnected; }
+			set { m_bIsConnected = value; }
+		}
 		public bool IsRunning
 		{
 			get {return m_VideoDevice.IsRunning;}
@@ -56,14 +61,29 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_RecentlyCapturedVideos; }	
 		}
+		public Magnifier Magnifier
+		{
+			get { return m_Magnifier; }
+			set { m_Magnifier = value; }
+		}
+		public Metadata Metadata
+		{
+			get { return m_Metadata; }
+			set { m_Metadata = value; }
+		}
+		public CoordinateSystem CoordinateSystem
+		{
+			get { return m_CoordinateSystem; }
+		}
 		#endregion
 		
 		#region Members
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private bool m_bIsConnected;
 		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
 		private List<Bitmap> m_FrameBuffer = new List<Bitmap>();	// Input buffer.
 		private int m_iMaxSizeBufferFrames = 125;					// Input buffer size.
-		private Size m_DecodingSize = new Size(720, 576);			// Default image size.
+		private Size m_DecodingSize = new Size(720, 576);			// Image size.
 		private VideoCaptureDevice m_VideoDevice;					// Gives access to the physical device.
 		private bool m_bPainting;									// 'true' between paint requests.
 		private Stopwatch m_BufferWatch = new Stopwatch();		// For instrumentation only.
@@ -76,23 +96,24 @@ namespace Kinovea.ScreenManager
 		//private VideoFile m_VideoFile = new VideoFile();
 		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
 
-		private DelegateInvalidate m_DoInvalidate;							// To request a paint from screen.
-		private DelegateUpdateCapturedVideos m_DoUpdateCapturedVideos;		// To request an update from screen.
-		
+		private Magnifier m_Magnifier = new Magnifier();
+		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		
 		//private bool m_bSavingContextEncodingSuccess;
-		//m_Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));	
-		#endregion
+		private Metadata m_Metadata;
 		
-		#region Constructor
-		public FrameServerCapture(DelegateInvalidate _invalidate, DelegateUpdateCapturedVideos _update)
-		{
-			m_DoInvalidate = _invalidate;	
-			m_DoUpdateCapturedVideos = _update;
-		}
+		private DelegateScreenInvalidate m_DoInvalidate;					// To request a paint from screen.
+		private DelegateUpdateCapturedVideos m_DoUpdateCapturedVideos;		// To request an update from screen.
+		private DelegateInitDecodingSize m_DoInitDecodingSize;
 		#endregion
 		
 		#region Public methods
+		public void SetDelegates(DelegateScreenInvalidate _invalidate, DelegateUpdateCapturedVideos _update, DelegateInitDecodingSize _initSize)
+		{
+			m_DoInvalidate = _invalidate;	
+			m_DoUpdateCapturedVideos = _update;
+			m_DoInitDecodingSize = _initSize;
+		}
 		public override void Draw(Graphics _canvas)
 		{
 			// Draw the current image on canvas according to conf.
@@ -114,15 +135,39 @@ namespace Kinovea.ScreenManager
 				
 				try
 				{
-					// Draw delayed image.
-					_canvas.DrawImage(m_FrameBuffer[iCurrentFrameIndex], _canvas.ClipBounds);
+					// Draw image.
 					
-					// Ask LivePreview to draw itself
-					if(m_iDelayFrames > 0)
+					
+					
+					Rectangle rDst;
+					/*if(m_FrameServer.Metadata.Mirrored)
 					{
-						Rectangle rSrc = new Rectangle(0, 0, m_FrameBuffer[m_FrameBuffer.Count-1].Width, m_FrameBuffer[m_FrameBuffer.Count-1].Height);
-						Rectangle rDst = new Rectangle((int)_canvas.ClipBounds.Width/2, 0, (int)_canvas.ClipBounds.Width/2, (int)_canvas.ClipBounds.Height/2);
-						_canvas.DrawImage(m_FrameBuffer[m_FrameBuffer.Count-1], rDst);
+						rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+					}
+					else
+					{
+						rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+					}*/
+					rDst = new Rectangle((int)_canvas.ClipBounds.Left, (int)_canvas.ClipBounds.Top, (int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
+					
+					RectangleF rSrc;
+					if (m_CoordinateSystem.Zooming)
+					{
+						rSrc = m_CoordinateSystem.ZoomWindow;
+					}
+					else
+					{
+						rSrc = new Rectangle(0, 0, m_DecodingSize.Width, m_DecodingSize.Height);
+					}
+					
+					_canvas.DrawImage(m_FrameBuffer[iCurrentFrameIndex], _canvas.ClipBounds, rSrc, GraphicsUnit.Pixel);
+					
+					FlushDrawingsOnGraphics(_canvas);
+					
+					// .Magnifier
+					if (m_Magnifier.Mode != MagnifierMode.NotVisible)
+					{
+						m_Magnifier.Draw(m_FrameBuffer[iCurrentFrameIndex], _canvas, 1.0);
 					}
 				}
 				catch (Exception exp)
@@ -138,6 +183,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_VideoDevice = new VideoCaptureDevice( _devices[_iSelected].MonikerString );
 			m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
+			m_bIsConnected = true;
 				
 			// use default frame rate from device.
 			m_VideoDevice.DesiredFrameRate = 0;
@@ -243,6 +289,8 @@ namespace Kinovea.ScreenManager
 			if(m_FrameBuffer.Count == 1)
     		{
 				m_DecodingSize = new Size(m_FrameBuffer[0].Width, m_FrameBuffer[0].Height);
+				m_CoordinateSystem.SetOriginalSize(m_DecodingSize);
+				m_DoInitDecodingSize();
     		}
 
 			//If recording, append the new frame to file.
@@ -277,6 +325,30 @@ namespace Kinovea.ScreenManager
 			m_FrameBuffer.Clear();
 			m_BufferWatch.Start();
 			m_VideoDevice.Start();
+		}
+		private void FlushDrawingsOnGraphics(Graphics _canvas)
+		{
+			// Prepare for drawings
+			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
+
+			// 1. 2D Grid
+			if (m_Metadata.Grid.Visible)
+			{
+				m_Metadata.Grid.Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, m_CoordinateSystem.Location);
+			}
+
+			// 2. 3D Plane
+			if (m_Metadata.Plane.Visible)
+			{
+				m_Metadata.Plane.Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, m_CoordinateSystem.Location);
+			}
+
+			// Draw all drawings in reverse order to get first object on the top of Z-order.
+			for (int i = m_Metadata[0].Drawings.Count - 1; i >= 0; i--)
+			{
+				bool bSelected = (i == m_Metadata.SelectedDrawing);
+				m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, bSelected, 0, m_CoordinateSystem.Location);
+			}
 		}
 		private void DisplayError(SaveResult _result)
 		{
