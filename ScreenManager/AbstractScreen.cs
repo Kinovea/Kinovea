@@ -48,11 +48,15 @@ namespace Kinovea.ScreenManager
         {
         	get;
         }
+        public abstract bool CapabilityDrawings
+        {
+        	get;
+        }
 
         public abstract void DisplayAsInactiveScreen();
         public abstract void DisplayAsActiveScreen();
         public abstract void refreshUICulture();
-        public abstract void CloseScreen();
+        public abstract void BeforeClose();
         public abstract bool OnKeyPress(Keys _key);
         public abstract void RefreshImage();
     }   

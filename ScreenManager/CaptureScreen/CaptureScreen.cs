@@ -46,10 +46,26 @@ namespace Kinovea.ScreenManager
 		{
 			get { return ""; }
 		}
+		public override bool CapabilityDrawings
+		{
+			get { return true;}
+		}
+		public bool ShowGrid
+        {
+            get { return m_FrameServer.Metadata.Grid.Visible; }
+            set { m_FrameServer.Metadata.Grid.Visible = value;}
+        }
+        public bool Show3DPlane
+        {
+            get { return m_FrameServer.Metadata.Plane.Visible; }
+            set { m_FrameServer.Metadata.Plane.Visible = value;}
+        }
         #endregion
 
         #region Members
-		public CaptureScreenUserInterface	m_CaptureScreenUI;
+        public CaptureScreenUserInterface	m_CaptureScreenUI;
+        
+		private FrameServerCapture m_FrameServer = new FrameServerCapture();
 		private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
         private Guid m_UniqueId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -65,7 +81,7 @@ namespace Kinovea.ScreenManager
             m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
 			// Create UI
-            m_CaptureScreenUI = new CaptureScreenUserInterface(m_ResourceManager);
+            m_CaptureScreenUI = new CaptureScreenUserInterface(m_FrameServer);
             
             // UI Delegates. (Assigned and implemented here, called from UI)
             m_CaptureScreenUI.m_CloseMeUI += new CaptureScreenUserInterface.DelegateCloseMeUI(ScreenUI_CloseAsked);
@@ -76,24 +92,23 @@ namespace Kinovea.ScreenManager
         #region AbstractScreen Implementation
         public override void DisplayAsInactiveScreen()
         {
-            m_CaptureScreenUI.DisplayAsInactiveScreen();
+            m_CaptureScreenUI.DisplayAsActiveScreen(false);
         }
         public override void DisplayAsActiveScreen()
         {
-        	m_CaptureScreenUI.DisplayAsActiveScreen();
+        	m_CaptureScreenUI.DisplayAsActiveScreen(true);
         }
         public override void refreshUICulture() 
         {
-        	m_CaptureScreenUI.RefreshUICulture(m_ResourceManager);
+        	m_CaptureScreenUI.RefreshUICulture();
         }
-        public override void CloseScreen()
+        public override void BeforeClose()
         {
         	m_CaptureScreenUI.UnloadMovie();
         }
         public override bool OnKeyPress(Keys _key)
         {
-            bool bWasHandled = false;
-            return bWasHandled;
+        	return m_CaptureScreenUI.OnKeyPress(_key);
         }
 		public override void RefreshImage()
 		{

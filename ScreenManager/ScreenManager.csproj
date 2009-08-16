@@ -131,6 +131,7 @@
     <Compile Include="Commands\ScreenManager\CommandShowScreens.cs" />
     <Compile Include="Commands\ScreenManager\CommandSwapScreens.cs" />
     <Compile Include="Commands\ScreenManager\CommandToggleCommonControls.cs" />
+    <Compile Include="CoordinateSystem.cs" />
     <Compile Include="PlayerScreen\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />

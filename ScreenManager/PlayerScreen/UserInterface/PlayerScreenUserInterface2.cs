@@ -525,20 +525,6 @@ namespace Kinovea.ScreenManager
 			// Actually called from ScreenManager.
 			ShowBorder(_bActive);
 		}
-		public void OnUndrawn()
-		{
-			//--------------------------------------------------------
-			// this function is called after we undo a drawing action.
-			// Called from CommandAddDrawing.Unexecute().
-			//--------------------------------------------------------
-
-			// Return to the pointer tool unless we were drawing.
-			if (m_ActiveTool != DrawingToolType.Pencil)
-			{
-				m_ActiveTool = DrawingToolType.Pointer;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
-			}
-		}
 		public void StopPlaying()
 		{
 			StopPlaying(true);
@@ -1154,6 +1140,20 @@ namespace Kinovea.ScreenManager
 		{
 			// Generic rescale.
 			return (int)((double)((double)_iValue * (double)_iNewMax) / (double)_iOldMax);
+		}
+		private void DoDrawingUndrawn()
+		{
+			//--------------------------------------------------------
+			// this function is called after we undo a drawing action.
+			// Called from CommandAddDrawing.Unexecute().
+			//--------------------------------------------------------
+
+			// Return to the pointer tool unless we were drawing.
+			if (m_ActiveTool != DrawingToolType.Pencil)
+			{
+				m_ActiveTool = DrawingToolType.Pointer;
+				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+			}
 		}
 		#endregion
 
@@ -2821,7 +2821,7 @@ namespace Kinovea.ScreenManager
 				// Memorize the action we just finished to enable undo.
 				if(m_ActiveTool == DrawingToolType.Chrono)
 				{
-					IUndoableCommand cac = new CommandAddChrono(this, m_FrameServer.Metadata);
+					IUndoableCommand cac = new CommandAddChrono(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
 					CommandManager cm = CommandManager.Instance();
 					cm.LaunchUndoableCommand(cac);
 				}
@@ -2830,7 +2830,7 @@ namespace Kinovea.ScreenManager
 					// Record the adding unless we are editing a text box.
 					if (!m_bTextEdit)
 					{
-						IUndoableCommand cad = new CommandAddDrawing(this, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
+						IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
 						CommandManager cm = CommandManager.Instance();
 						cm.LaunchUndoableCommand(cad);
 					}

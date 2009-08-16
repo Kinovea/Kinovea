@@ -38,19 +38,22 @@ namespace Kinovea.ScreenManager
                 return rm.GetString("CommandAddChrono_FriendlyName", Thread.CurrentThread.CurrentUICulture);
             }
         }
-
-        private PlayerScreenUserInterface m_psui;
+        
+        private DelegateScreenInvalidate m_DoInvalidate;
+        private DelegateDrawingUndrawn m_DoUndrawn;
         private Metadata m_Metadata;
         private DrawingChrono m_Chrono;
         private int m_iTotalChronos;
 
         #region constructor
-        public CommandAddChrono(PlayerScreenUserInterface _psui, Metadata _Metadata)
+        public CommandAddChrono(DelegateScreenInvalidate _invalidate, DelegateDrawingUndrawn _undrawn, Metadata _Metadata)
         {
-            // Chrono (as all Drawings) are added to the list in reverse order.
-            m_psui = _psui;
+            m_DoInvalidate = _invalidate;
+        	m_DoUndrawn = _undrawn;
             m_Metadata = _Metadata;
             m_iTotalChronos = m_Metadata.Chronos.Count;
+            
+            // Chrono (as all Drawings) are added to the list in reverse order.
             m_Chrono = m_Metadata.Chronos[0];
         }
         #endregion
@@ -73,7 +76,7 @@ namespace Kinovea.ScreenManager
             {
                 //Redo.
                 m_Metadata.Chronos.Insert(0, m_Chrono);
-                m_psui.pbSurfaceScreen.Invalidate();
+                m_DoInvalidate();
             }
         }
         public void Unexecute()
@@ -84,8 +87,8 @@ namespace Kinovea.ScreenManager
             if (m_Metadata.Chronos.Count > 0)
             {
                 m_Metadata.Chronos.RemoveAt(0);
-                m_psui.OnUndrawn();
-                m_psui.pbSurfaceScreen.Invalidate();
+                m_DoUndrawn();
+                m_DoInvalidate();
             }
         }
     }

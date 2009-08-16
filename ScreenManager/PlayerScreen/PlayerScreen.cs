@@ -63,6 +63,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_FrameServer.VideoFile.FilePath; }
 		}
+		public override bool CapabilityDrawings
+		{
+			get { return true;}
+		}
 		public string FileName
 		{
 			get { return Path.GetFileName(m_FrameServer.VideoFile.FilePath); }
@@ -251,9 +255,9 @@ namespace Kinovea.ScreenManager
         {
             m_PlayerScreenUI.DisplayAsActiveScreen(true);
         }
-        public override void CloseScreen()
+        public override void BeforeClose()
         {
-            // Fonction appelée lors de la fermeture complète de l'appli.
+            // Called by the ScreenManager when this screen is about to be closed.
             m_PlayerScreenUI.StopPlaying();
             m_PlayerScreenUI.ResetToEmptyState();
         }

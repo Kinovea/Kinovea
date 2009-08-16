@@ -39,16 +39,19 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private PlayerScreenUserInterface m_psui;
+        private DelegateScreenInvalidate m_DoInvalidate;
+        private DelegateDrawingUndrawn m_DoUndrawn;
         private long m_iFramePosition;
         private Metadata m_Metadata;
         private int m_iTotalDrawings;
         private AbstractDrawing m_Drawing;
 
         #region constructor
-        public CommandAddDrawing(PlayerScreenUserInterface _psui, Metadata _Metadata, long _iFramePosition)
+        public CommandAddDrawing(DelegateScreenInvalidate _invalidate, DelegateDrawingUndrawn _undrawn, Metadata _Metadata, long _iFramePosition)
         {
-            m_psui = _psui;
+        	m_DoInvalidate = _invalidate;
+        	m_DoUndrawn = _undrawn;
+        	
             m_iFramePosition = _iFramePosition;
             m_Metadata = _Metadata;
 
@@ -82,7 +85,8 @@ namespace Kinovea.ScreenManager
                 {
                     //Redo.
                     m_Metadata[iIndex].Drawings.Insert(0, m_Drawing);
-                    m_psui.pbSurfaceScreen.Invalidate();
+                    //m_psui.pbSurfaceScreen.Invalidate();
+                    m_DoInvalidate();
                 }
             }
         }
@@ -97,8 +101,8 @@ namespace Kinovea.ScreenManager
                 if (m_Metadata[iIndex].Drawings.Count > 0)
                 {
                     m_Metadata[iIndex].Drawings.RemoveAt(0);
-                    m_psui.OnUndrawn();
-                    m_psui.pbSurfaceScreen.Invalidate();
+                    m_DoUndrawn();
+                    m_DoInvalidate();
                 }
             }
             else
