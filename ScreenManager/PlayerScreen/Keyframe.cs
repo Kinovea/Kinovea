@@ -86,7 +86,11 @@ namespace Kinovea.ScreenManager
             		return m_Timecode;
             	}
             }
-            set { m_Title = value; }
+            set 
+            { 
+            	m_Title = value;
+            	m_ParentMetadata.UpdateTrajectoriesForKeyframes();
+            }
         }
 		public String TimeCode
         {
