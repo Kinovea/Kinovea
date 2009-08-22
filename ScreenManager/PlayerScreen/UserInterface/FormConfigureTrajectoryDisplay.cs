@@ -51,9 +51,7 @@ namespace Kinovea.ScreenManager
         public formConfigureTrajectoryDisplay(Track _track, PictureBox _SurfaceScreen)
         {
             InitializeComponent();
-            chkShowTrajectory.Location = chkShowTitles.Location;
             m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-
             m_SurfaceScreen = _SurfaceScreen;
             m_Track = _track;
             
@@ -89,43 +87,84 @@ namespace Kinovea.ScreenManager
         private void SetCurrentOptions()
         {
         	// Current configuration.
+        	
+        	// General
+        	switch(m_Track.View)
+        	{
+        		case Track.TrackView.Focus:
+        			radioFocus.Checked = true;
+        			break;
+        		case Track.TrackView.Label:
+        			radioLabel.Checked = true;
+        			break;
+        		case Track.TrackView.Complete:
+        		default:
+        			radioComplete.Checked = true;
+        			break;
+        	}
+        	tbLabel.Text = m_Track.Label;
+        	
+        	// Color & style
             btnTextColor.BackColor = m_Track.MainColor;
             FixColors();
             btnLineStyle.Invalidate();
-            chkShowTarget.Checked = m_Track.ShowTarget;
-            chkShowTitles.Checked = m_Track.ShowKeyframesTitles;
-            chkShowTrajectory.Checked = m_Track.ShowTrajectory;
-            tbLabel.Text = m_Track.Label;
+            
+            //chkShowTarget.Checked = m_Track.ShowTarget;
+            //chkShowTitles.Checked = m_Track.ShowKeyframesTitles;
+            //chkShowTrajectory.Checked = m_Track.ShowTrajectory;
         }
         private void InitCulture()
         {
-        	// Localize
             this.Text = "   " + m_ResourceManager.GetString("dlgConfigureTrajectory_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            lblMode.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_lblMode", Thread.CurrentThread.CurrentUICulture);
-            cmbTrackView.Items.Clear();
-            cmbTrackView.Items.Add(m_ResourceManager.GetString("dlgConfigureTrajectory_ModeTrajectory", Thread.CurrentThread.CurrentUICulture));
-            cmbTrackView.Items.Add(m_ResourceManager.GetString("dlgConfigureTrajectory_ModeLabelFollows", Thread.CurrentThread.CurrentUICulture));
-            cmbTrackView.Items.Add(m_ResourceManager.GetString("dlgConfigureTrajectory_ModeArrowFollows", Thread.CurrentThread.CurrentUICulture));
-            cmbTrackView.SelectedIndex = (int)m_Track.NormalModeView;
-
+            
             grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
+            radioComplete.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_RadioComplete", Thread.CurrentThread.CurrentUICulture);
+            radioFocus.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_RadioFocus", Thread.CurrentThread.CurrentUICulture);
+            radioLabel.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_RadioLabel", Thread.CurrentThread.CurrentUICulture);
+            lblLabel.Text = m_ResourceManager.GetString("dlgConfigureChrono_Label", Thread.CurrentThread.CurrentUICulture);
+            
+			grpAppearance.Text = m_ResourceManager.GetString("Generic_Appearance", Thread.CurrentThread.CurrentUICulture);
             lblColor.Text = m_ResourceManager.GetString("Generic_ColorPicker", Thread.CurrentThread.CurrentUICulture);
             lblStyle.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_Style", Thread.CurrentThread.CurrentUICulture);
-            chkShowTarget.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_chkShowTarget", Thread.CurrentThread.CurrentUICulture);
-            chkShowTitles.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_chkShowTitles", Thread.CurrentThread.CurrentUICulture);
-            chkShowTrajectory.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_chkShowTrajectory", Thread.CurrentThread.CurrentUICulture);
-            lblLabel.Text = m_ResourceManager.GetString("dlgConfigureChrono_Label", Thread.CurrentThread.CurrentUICulture);
+            
+            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
+            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
         }
         #endregion
+        
+        #region General
+        private void RadioViews_CheckedChanged(object sender, EventArgs e)
+        {
+        	if(radioComplete.Checked)
+        	{
+            	m_Track.View = Track.TrackView.Complete;
+        	}
+        	else if(radioFocus.Checked)
+        	{
+        		m_Track.View = Track.TrackView.Focus;
+        	}
+        	else
+        	{
+        		m_Track.View = Track.TrackView.Label;
+        	}
+        	
+        	m_SurfaceScreen.Invalidate();
+        }
+        private void tbLabel_TextChanged(object sender, EventArgs e)
+        {
+            m_Track.Label = tbLabel.Text;
+            m_SurfaceScreen.Invalidate();
+        }
+        #endregion
+        
+        #region Color and Style
         
         #region ColorPicker Handling
         private void btnTextColor_Click(object sender, EventArgs e)
         {
         	// Show the color picker
-            m_ColPicker.Top = grpConfig.Top + btnTextColor.Top;
-            m_ColPicker.Left = grpConfig.Left + btnTextColor.Left + btnTextColor.Width - m_ColPicker.Width;
+        	m_ColPicker.Top = grpAppearance.Top + btnTextColor.Top - (m_ColPicker.Height / 2);
+            m_ColPicker.Left = grpAppearance.Left + btnTextColor.Left;
             m_ColPicker.Visible = true;
         }
         private void ColorPicker_ColorPicked(object sender, EventArgs e)
@@ -163,8 +202,8 @@ namespace Kinovea.ScreenManager
         private void btnLineStyle_MouseClick(object sender, MouseEventArgs e)
         {
         	// Show the style picker
-        	m_StlPicker.Top = grpConfig.Top + btnLineStyle.Top;
-            m_StlPicker.Left = grpConfig.Left + btnLineStyle.Left + btnLineStyle.Width - m_StlPicker.Width;
+        	m_StlPicker.Top = grpAppearance.Top + btnLineStyle.Top - (m_StlPicker.Height / 2);
+            m_StlPicker.Left = grpAppearance.Left + btnLineStyle.Left;
             m_StlPicker.Visible = true;
         }
         private void StylePicker_StylePicked(object sender, EventArgs e)
@@ -187,62 +226,9 @@ namespace Kinovea.ScreenManager
         	m_Track.TrajectoryStyle.Draw(e.Graphics, false, Color.Black);
         }
         #endregion
-
-        #region Other Options Handlers
-        private void cmbTrackView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Update value.
-            m_Track.NormalModeView = (Track.TrackView)cmbTrackView.SelectedIndex;
-            
-            // Change the main config box content.
-            switch (m_Track.NormalModeView)
-            {
-                case Track.TrackView.Trajectory:
-                    {
-                        chkShowTitles.Visible = true;
-                        chkShowTarget.Visible = true;
-                        chkShowTrajectory.Visible = false;
-                        break;
-                    }
-                case Track.TrackView.ArrowFollows:
-                    {
-                        chkShowTitles.Visible = false;
-                        chkShowTarget.Visible = false;
-                        chkShowTrajectory.Visible = true;
-                        break;
-                    }
-                case Track.TrackView.LabelFollows:
-                    {
-                        chkShowTitles.Visible = false;
-                        chkShowTarget.Visible = false;
-                        chkShowTrajectory.Visible = true;
-                        break;
-                    }
-            }
-            m_SurfaceScreen.Invalidate();
-        }
-        private void chkShowTarget_CheckedChanged(object sender, EventArgs e)
-        {
-            m_Track.ShowTarget = chkShowTarget.Checked;
-            m_SurfaceScreen.Invalidate();
-        }
-        private void chkShowTitles_CheckedChanged(object sender, EventArgs e)
-        {
-            m_Track.ShowKeyframesTitles = chkShowTitles.Checked;
-            m_SurfaceScreen.Invalidate();
-        }
-        private void tbLabel_TextChanged(object sender, EventArgs e)
-        {
-            m_Track.Label = tbLabel.Text;
-            m_SurfaceScreen.Invalidate();
-        }
-        private void chkShowTrajectory_CheckedChanged(object sender, EventArgs e)
-        {
-            m_Track.ShowTrajectory = chkShowTrajectory.Checked;
-            m_SurfaceScreen.Invalidate();
-        }
+		
         #endregion
-
+        
         #region OK/Cancel/Closing
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -265,5 +251,7 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+        
+        
     }
 }

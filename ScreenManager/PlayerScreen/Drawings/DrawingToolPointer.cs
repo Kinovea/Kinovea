@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
                                 case SelectedObjectType.Track:
                                     if (_Metadata.SelectedTrack >= 0)
                                     {
-                                        if (_Metadata.Tracks[_Metadata.SelectedTrack].EditMode)
+                                        if (_Metadata.Tracks[_Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
                                         {
                                             _Metadata.Tracks[_Metadata.SelectedTrack].MoveCursor(deltaX, deltaY);
                                         }
@@ -390,7 +390,7 @@ namespace Kinovea.ScreenManager
                     m_SelectedObjectType = SelectedObjectType.Track;
                     _Metadata.SelectedTrack = i;
 
-                    if (_Metadata.Tracks[i].EditMode == false)
+                    if (_Metadata.Tracks[i].Status == Track.TrackStatus.Interactive)
                     {
                         // Trajectory is in interactive mode.
 

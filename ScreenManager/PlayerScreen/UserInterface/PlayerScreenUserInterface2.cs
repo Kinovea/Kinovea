@@ -2117,7 +2117,7 @@ namespace Kinovea.ScreenManager
 				if (m_FrameServer.Metadata.SelectedTrack >= 0)
 				{
 					Track trk = m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack];
-					if (trk.EditMode && m_iCurrentPosition >= trk.BeginTimeStamp && m_iCurrentPosition <= trk.EndTimeStamp )
+					if (trk.Status == Track.TrackStatus.Edit && m_iCurrentPosition >= trk.BeginTimeStamp && m_iCurrentPosition <= trk.EndTimeStamp )
 					{
 						bTracking = true;
 					}
@@ -2178,7 +2178,7 @@ namespace Kinovea.ScreenManager
 					{
 						foreach (Track t in m_FrameServer.Metadata.Tracks)
 						{
-							if (t.EditMode)
+							if (t.Status == Track.TrackStatus.Edit)
 							{
 								t.TrackCurrentPosition(m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage);
 							}
@@ -2677,7 +2677,7 @@ namespace Kinovea.ScreenManager
 							else if (m_FrameServer.Metadata.IsOnTrack(descaledMouse, m_iCurrentPosition))
 							{
 								// Configure the "Tracking" Pop Menu
-								if (m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].EditMode)
+								if (m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
 								{
 									mnuStopTracking.Visible = true;
 									mnuRestartTracking.Visible = false;
@@ -2810,7 +2810,7 @@ namespace Kinovea.ScreenManager
 					OnPoke();
 					
 					// Update tracks with current image and pos.
-					if (m_FrameServer.Metadata.SelectedTrack >= 0 && m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].EditMode)
+					if (m_FrameServer.Metadata.SelectedTrack >= 0 && m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
 					{
 						m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].UpdateCurrentPos(m_FrameServer.VideoFile.CurrentImage);
 					}
@@ -3882,7 +3882,7 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].ParentMetadata = m_FrameServer.Metadata;
 					m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].MainColor = dc.PenColor;
 
-					m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].EditMode = true;
+					m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].Status = Track.TrackStatus.Edit;
 					m_FrameServer.Metadata.SelectedTrack = m_FrameServer.Metadata.Tracks.Count - 1;
 
 					// Supprimer le point en tant que Drawing ?
@@ -4019,7 +4019,7 @@ namespace Kinovea.ScreenManager
 			}
 
 			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack], pbSurfaceScreen);
-			LocateForm(fctd);
+			fctd.StartPosition = FormStartPosition.CenterScreen;
 			fctd.ShowDialog();
 			fctd.Dispose();
 

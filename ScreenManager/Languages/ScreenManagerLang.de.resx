@@ -116,10 +116,11 @@
    
    
    
-   
-   
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil:</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Trajektion konfigurieren</value></data>
+   
+   
+   
    
    
    
@@ -183,6 +184,7 @@
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Entkomprimierte Bilder :</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Fortschritt</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Improtiere Bilder...</value></data>
+   
    <data name="Generic_Apply" xml:space="preserve"><value>Anwenden/Übernehmen</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Schließen</value></data>
