@@ -115,11 +115,12 @@
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Montrer les Titres des Images Clés</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Montrer la Trajectoire</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mode :</value></data>
-   <data name="dlgConfigureTrajectory_ModeArrowFollows" xml:space="preserve"><value>Flèche suiveuse</value></data>
-   <data name="dlgConfigureTrajectory_ModeLabelFollows" xml:space="preserve"><value>Label suiveur</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trajectoire</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Style :</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurer l'Affichage de la Trajectoire</value></data>
+   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Trajectoire complète</value></data>
+   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Section de trajectoire autour de l'image en cours</value></data>
+   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label suivant la trajectoire</value></data>
    <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaïque des images clés.</value></data>
    <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaïque de toutes les images.</value></data>
    <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Nombre d'images :{0:0}.</value></data>
@@ -183,6 +184,7 @@
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Images Décompressées : </value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Progression</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Import des images...</value></data>
+   <data name="Generic_Appearance" xml:space="preserve"><value>Apparence</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Appliquer</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuler</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Fermer</value></data>

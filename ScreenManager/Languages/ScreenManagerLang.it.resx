@@ -115,11 +115,12 @@
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostra Titoli delle Immagini Chiave</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostra la Traiettoria</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modalita' :</value></data>
-   <data name="dlgConfigureTrajectory_ModeArrowFollows" xml:space="preserve"><value>Freccia</value></data>
-   <data name="dlgConfigureTrajectory_ModeLabelFollows" xml:space="preserve"><value>Etichetta</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Traiettoria</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stile :</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configura la Traiettoria</value></data>
+   
+   
+   
    
    
    
@@ -183,6 +184,7 @@
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Fotogrammi decompressi : </value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>In esecuzione</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importazione Fotogrammi...</value></data>
+   
    <data name="Generic_Apply" xml:space="preserve"><value>Applica</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Chiudi</value></data>

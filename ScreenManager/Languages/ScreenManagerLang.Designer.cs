@@ -565,29 +565,38 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Arrow Follows.
-        /// </summary>
-        internal static string dlgConfigureTrajectory_ModeArrowFollows {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_ModeArrowFollows", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Label Follows.
-        /// </summary>
-        internal static string dlgConfigureTrajectory_ModeLabelFollows {
-            get {
-                return ResourceManager.GetString("dlgConfigureTrajectory_ModeLabelFollows", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Trajectory.
         /// </summary>
         internal static string dlgConfigureTrajectory_ModeTrajectory {
             get {
                 return ResourceManager.GetString("dlgConfigureTrajectory_ModeTrajectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Complete trajectory.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_RadioComplete {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_RadioComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Trajectory section around current image.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_RadioFocus {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_RadioFocus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Label following the trajectory.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_RadioLabel {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_RadioLabel", resourceCulture);
             }
         }
         
@@ -1101,6 +1110,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string FormProgressBar_Title {
             get {
                 return ResourceManager.GetString("FormProgressBar_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Appearance.
+        /// </summary>
+        internal static string Generic_Appearance {
+            get {
+                return ResourceManager.GetString("Generic_Appearance", resourceCulture);
             }
         }
         

@@ -678,6 +678,54 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap trajconfall
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconfall", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap trajconfall3
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconfall3", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap trajconffocus
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconffocus", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap trajconffocus3
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconffocus3", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap trajconflabel2
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconflabel2", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap trajconflabel3
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconflabel3", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap undock16x16
 		{
 			get

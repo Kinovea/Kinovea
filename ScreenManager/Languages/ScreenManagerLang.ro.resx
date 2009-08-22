@@ -115,11 +115,12 @@
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Arată numele cadrelor cheie </value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Arată traiectoria </value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mod :</value></data>
-   <data name="dlgConfigureTrajectory_ModeArrowFollows" xml:space="preserve"><value>Săgeata urmatoare</value></data>
-   <data name="dlgConfigureTrajectory_ModeLabelFollows" xml:space="preserve"><value>Eticheta urmatoare</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Traiectorie</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil :</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurează afişarea traiectoriei</value></data>
+   
+   
+   
    
    
    
@@ -183,6 +184,7 @@
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Imagini decompresate : </value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Progres</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Import imagini...</value></data>
+   
    <data name="Generic_Apply" xml:space="preserve"><value>Aplică</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Renunţă</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Închide</value></data>

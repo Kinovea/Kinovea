@@ -37,15 +37,25 @@ namespace Kinovea.ScreenManager
     /// A class to encapsulate tracks and tracking.
     /// Contains the list of points and the list of keyframes markers.
     /// Handles the user actions, patch matching through AForge, display modes and xml import/export.
+    /// 
+    /// The trajectory can be in one of 3 views (complete traj, focused on a section, label).
+    /// And in one of two status (edit or interactive).
+    /// Edit: dragging the target moves the point's coordinates.
+    /// Interactive: dragging the target moves to the next point (in time).
     /// </summary>
     public class Track
     {
         public enum TrackView
         {
-            Trajectory,
-            LabelFollows,
-            ArrowFollows
-        }  
+            Complete,
+            Focus,
+            Label
+        }
+        public enum TrackStatus
+        {
+        	Edit,
+        	Interactive
+        }
 
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
@@ -54,19 +64,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
-        public Metadata ParentMetadata
+        public TrackView View
         {
-            get { return m_ParentMetadata; }    // unused.
-            set 
-            { 
-            	m_ParentMetadata = value; 
-            	m_InfosFading.AverageTimeStampsPerFrame = m_ParentMetadata.AverageTimeStampsPerFrame;
-            }
+            get { return m_TrackView; }
+            set { m_TrackView = value; }
         }
-        public bool EditMode
+        public TrackStatus Status
         {
-            get { return m_bEditMode; }
-            set { m_bEditMode = value; }
+            get { return m_TrackStatus; }
+            set { m_TrackStatus = value; }
         }
         public long BeginTimeStamp
         {
@@ -76,8 +82,6 @@ namespace Kinovea.ScreenManager
         {
             get { return m_iEndTimeStamp; }
         }
-        
-        // The following properties are used from formConfigureTrajectory
         public Color MainColor
         {    
         	get { return m_LineStyle.Color; }
@@ -99,26 +103,6 @@ namespace Kinovea.ScreenManager
 				m_LineStyle.Update(value, false, true, true);
             }
         }
-        public TrackView NormalModeView
-        {
-            get { return m_TrackView; }
-            set { m_TrackView = value; }
-        }
-        public bool ShowTarget
-        {
-            get { return m_bShowTarget; }
-            set { m_bShowTarget = value; }
-        }
-        public bool ShowTrajectory
-        {
-            get { return m_bShowTrajectory; }
-            set { m_bShowTrajectory = value; }
-        }
-        public bool ShowKeyframesTitles
-        {
-            get { return m_bShowKeyframesTitles; }
-            set { m_bShowKeyframesTitles = value; }
-        }
         public string Label
         {
             get { return m_MainLabel.Text; }
@@ -128,18 +112,37 @@ namespace Kinovea.ScreenManager
                 m_MainLabel.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
             }
         }
+        public Metadata ParentMetadata
+        {
+            get { return m_ParentMetadata; }    // unused.
+            set 
+            { 
+            	m_ParentMetadata = value; 
+            	m_InfosFading.AverageTimeStampsPerFrame = m_ParentMetadata.AverageTimeStampsPerFrame;
+            }
+        }
         #endregion
 
         #region Members
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
         private static readonly int m_iDefaultCrossRadius = 4;
         private static readonly int m_iArrowWidth = 6;
         private static readonly int m_iArrowDistance = 10;
         private static readonly int m_iArrowLength = 25;
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly int m_iTemplateEdge = 20;
-        private static readonly int m_iSearchExpansionFactor = 5;
-        private static readonly float m_fSearchTreshold = 0.80f;
-        private static readonly int m_iAllowedFramesOver = 12;  // Length of fading in frames.
+        private static readonly int m_iTemplateEdge = 20;				// The size of the patch of frame we look for in other frames.
+        private static readonly int m_iSearchExpansionFactor = 5;		// The window we will look into.
+        private static readonly float m_fSearchTreshold = 0.80f;		// If the best match is less than this, we don't consider it's a match.
+        private static readonly int m_iAllowedFramesOver = 12;  		// Number of frames over which the global fading spans (after end point).
+        private static readonly int m_iFocusFadingFrames = 30;		// Number of frames of the focus section. 
+        private static readonly int m_iBaseAlpha = 224;				// alpha of track in most cases.
+        private static readonly int m_iAfterCurrentAlpha = 64;		// alpha of track after the current point when in normal mode.
+        private static readonly int m_iEditModeAlpha = 128;			// alpha of track when in Edit mode.
+        private static readonly int m_iLabelFollowsTrackAlpha = 80;	// alpha of track when in LabelFollows view.
+        
+        
+        private TrackView m_TrackView = TrackView.Complete;
+        private TrackStatus m_TrackStatus = TrackStatus.Edit;
         
         private double m_fStretchFactor = 1.0;
         private Point m_DirectZoomTopLeft = new Point(0, 0);
@@ -151,27 +154,19 @@ namespace Kinovea.ScreenManager
         private Size m_TemplateSize = new Size(m_iTemplateEdge, m_iTemplateEdge);
         private Size m_SearchSize = new Size(m_iTemplateEdge*m_iSearchExpansionFactor, m_iTemplateEdge*m_iSearchExpansionFactor);
 
-        private bool m_bEditMode = true;
         private long m_iBeginTimeStamp;     			// absolute.
         private long m_iEndTimeStamp = long.MaxValue; // absolute.
         private int m_iTotalDistance;       			// This is used to normalize timestamps to a par scale with distances.
         private int m_iCurrentPoint;
 
         // Decoration
-        private TrackView m_TrackView = TrackView.Trajectory;
         private LineStyle m_LineStyle = LineStyle.DefaultValue; 
-        private bool m_bShowTarget = true;
-        private bool m_bShowKeyframesTitles = true;
-        private bool m_bShowTrajectory;
         private KeyframeLabel m_MainLabel = new KeyframeLabel(true, Color.Black);
         private InfosFading m_InfosFading = new InfosFading(long.MaxValue, 1);
         
         // Memorization poul
         private TrackView m_MemoTrackView;
         private LineStyle m_MemoLineStyle;
-        private bool m_bMemoShowTarget;
-        private bool m_bMemoShowKeyframesTitles;
-        private bool m_bMemoShowTrajectory;
         private string m_MemoLabel;
         private Metadata m_ParentMetadata;
         #endregion
@@ -226,7 +221,7 @@ namespace Kinovea.ScreenManager
                 // 0. Compute the fading factor - (Special case from other drawings.)
                 // ref frame is last point, and we only fade after it, not before.
                 double fOpacityFactor = 1.0;
-                if (!m_bEditMode &&  _iCurrentTimestamp > m_iEndTimeStamp)
+                if (m_TrackStatus == TrackStatus.Interactive &&  _iCurrentTimestamp > m_iEndTimeStamp)
                 {
                 	m_InfosFading.ReferenceTimestamp = m_iEndTimeStamp;
                 	fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
@@ -243,78 +238,74 @@ namespace Kinovea.ScreenManager
                     RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
                 }
 
-                if (m_TrackView == TrackView.Trajectory || m_bEditMode)
-                {
-                    // 3. Draw Key Images titles.
-                    if (m_bShowKeyframesTitles && !m_bEditMode)
-                    {
-                        DrawKeyframesTitles(_canvas, fOpacityFactor);
-                    }
+                // Boundaries of visibility. 
+                // First and last if complete traj, bounded otherwise.
+                int iStart = 0;
+                if(m_TrackView != TrackView.Complete && m_iCurrentPoint - m_iFocusFadingFrames > 0)
+            	{
+            		iStart = m_iCurrentPoint - m_iFocusFadingFrames;
+            	}
                 
-                    // 4. Draw "before" Track
-                    if (m_RescaledPositions.Count > 1 && m_iCurrentPoint > 0)
+            	int iEnd = m_RescaledPositions.Count - 1;
+            	if(m_TrackView != TrackView.Complete && m_iCurrentPoint + m_iFocusFadingFrames < m_RescaledPositions.Count - 1)
+            	{
+            		iEnd = m_iCurrentPoint + m_iFocusFadingFrames;
+            	}
+        
+            	// 3. Draw various elements depending on combination of view and status.
+            	// The exact alpha at which the traj will be drawn will be decided in GetTrackPen().
+            	if(m_RescaledPositions.Count > 1)
+            	{
+	            	// Key Images titles.
+	            	if ((m_TrackStatus == TrackStatus.Interactive) &&	
+	            	    (m_TrackView != TrackView.Label) )
+	            	{
+	            		DrawKeyframesTitles(_canvas, fOpacityFactor);	
+	            	}
+	            	
+	            	// Track.
+	            	if ( (m_TrackStatus == TrackStatus.Interactive) && (m_TrackView == TrackView.Complete))
+	            	{
+	            		DrawTrajectory(_canvas, iStart, m_iCurrentPoint, true, fOpacityFactor);	
+	            		DrawTrajectory(_canvas, m_iCurrentPoint, iEnd, false, fOpacityFactor);
+	            	}
+	            	else
+	            	{
+	            		DrawTrajectory(_canvas, iStart, iEnd, false, fOpacityFactor);	
+	            	}
+	            	
+	            	// Target marker.
+	            	if (fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
                     {
-                        DrawTrajectory(_canvas, 0, m_iCurrentPoint, true, fOpacityFactor);
-                    }
-
-                    // 5. Draw "after" Track
-                    if (m_RescaledPositions.Count > 1 && m_iCurrentPoint < m_RescaledPositions.Count - 1)
+                    	DrawMarker(_canvas);
+	            	}
+                    
+	            	// Search and template Windows (blue squares).
+                    if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
                     {
-                        DrawTrajectory(_canvas, m_iCurrentPoint, m_RescaledPositions.Count - 1, false, fOpacityFactor);
-                    }
-
-                    // 6. Draw Current position marker.
-                    if ((m_bEditMode || m_bShowTarget) && (fOpacityFactor == 1.0))
-                    {
-                        DrawMarker(_canvas);
-                    }
-
-                    // 7. Search and template Windows
-                    if (m_bEditMode && (fOpacityFactor == 1.0))
-                    {
-                    	Color col = m_LineStyle.Color;
-                    	
+                        Color col = m_LineStyle.Color;
                         TrackPosition CurrentPos = m_RescaledPositions[m_iCurrentPoint];
+                        
+                        // Search window.
                         int iSrchLeft = CurrentPos.X - (int)(((double)m_SearchSize.Width * m_fStretchFactor) / 2);
                         int iSrchTop = CurrentPos.Y - (int)(((double)m_SearchSize.Height * m_fStretchFactor) / 2);
                         Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchSize.Width * m_fStretchFactor), (int)((double)m_SearchSize.Height * m_fStretchFactor));
                         _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(64.0f * fOpacityFactor), col)), SrchZone);
 
+                        // Template window.
                         int iTplLeft = CurrentPos.X - (int)(((double)m_TemplateSize.Width * m_fStretchFactor) / 2);
                         int iTplTop = CurrentPos.Y - (int)(((double)m_TemplateSize.Height * m_fStretchFactor) / 2);
                         Rectangle TplZone = new Rectangle(iTplLeft, iTplTop, (int)((double)m_TemplateSize.Width * m_fStretchFactor), (int)((double)m_TemplateSize.Height * m_fStretchFactor));
                         _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(128.0f * fOpacityFactor), col)), TplZone);
                     }
-                }
-                else if (m_TrackView == TrackView.LabelFollows)
-                {
-                    if (m_bShowTrajectory)
+                    
+                    // Main label.
+                    if ((m_TrackStatus == TrackStatus.Interactive) && 
+                        (m_TrackView == TrackView.Label))
                     {
-                        // We draw all the traj as an "after" traj. (faded).
-                        if (m_RescaledPositions.Count > 1 && m_iCurrentPoint < m_RescaledPositions.Count - 1)
-                        {
-                            DrawTrajectory(_canvas, 0, m_RescaledPositions.Count - 1, false, fOpacityFactor);
-                        }  
+                    	DrawMainLabel(_canvas, m_iCurrentPoint, fOpacityFactor);
                     }
-
-                    // Draw label.
-                    DrawMainLabel(_canvas, m_iCurrentPoint, fOpacityFactor);
-                }
-                else
-                {
-                    if (m_bShowTrajectory)
-                    {
-                        // We draw all the traj as an "after" traj. (faded).
-                        if (m_RescaledPositions.Count > 1 && m_iCurrentPoint < m_RescaledPositions.Count - 1)
-                        {
-                            DrawTrajectory(_canvas, 0, m_RescaledPositions.Count - 1, false, fOpacityFactor);
-                        }
-                    }
-
-                    // Draw arrow
-                    DrawArrow(_canvas, m_iCurrentPoint, fOpacityFactor);
-
-                }
+            	}
             }
         }
         public int HitTest(Point _point, long _iCurrentTimestamp)
@@ -330,67 +321,59 @@ namespace Kinovea.ScreenManager
                 // We give priority to labels in case a label is on the trajectory,
                 // we need to be able to move it around.
                 // If label attch mode, this will tell if we are on the label.
-                if (!m_bEditMode)
+                if (m_TrackStatus == TrackStatus.Interactive)
                 {
-                    if (m_TrackView == TrackView.ArrowFollows)
-                    {
-                        iHitResult = IsOnArrow(_point);
-                    }
-                    else
-                    {
-                        iHitResult = IsOnKeyframesLabels(_point);
-                    }
+                    iHitResult = IsOnKeyframesLabels(_point);
                 }
 
                 if (iHitResult == -1)
                 {
-                    if (m_bEditMode || m_TrackView == TrackView.Trajectory || m_bShowTrajectory)
+                    int widen = 3;
+                    Rectangle WideTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
+                    if (WideTarget.Contains(_point))
                     {
-                        // 2. On the cursor or Trajectory ?
-                        int widen = 3;
-                        Rectangle WideTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
-
-                        if (WideTarget.Contains(_point))
+                        iHitResult = 1;
+                    }
+                    else
+                    {
+                        // TODO: investigate why this might crash sometimes.
+                        try
                         {
-                            iHitResult = 1;
+                        	int iStart = GetFirstVisiblePoint();
+                        	int iEnd = GetLastVisiblePoint();
+			                
+                        	// Create path which contains wide line for easy mouse selection
+                            int iTotalVisiblePoints = iEnd - iStart;
+                        	Point[] points = new Point[iTotalVisiblePoints];
+                            for (int i = 0; i < iTotalVisiblePoints; i++)
+                            {
+                                points[i] = new Point(m_Positions[i+iStart].X, m_Positions[i+iStart].Y);
+                            }
+
+                            GraphicsPath areaPath = new GraphicsPath();
+                            areaPath.AddLines(points);
+                            areaPath.Widen(new Pen(Color.Black, 12));
+
+                            // Create region from the path
+                            Region areaRegion = new Region(areaPath);
+
+                            if (areaRegion.IsVisible(_point))
+                            {
+                                iHitResult = 0;
+                            }
                         }
-                        else
+                        catch (Exception exp)
                         {
-                            // TODO: investigate why this might crash sometimes.
-                            try
-                            {
-                                // Create path which contains wide line for easy mouse selection
-                                Point[] points = new Point[m_Positions.Count];
-                                for (int i = 0; i < m_Positions.Count; i++)
-                                {
-                                    points[i] = new Point(m_Positions[i].X, m_Positions[i].Y);
-                                }
-
-                                GraphicsPath areaPath = new GraphicsPath();
-                                areaPath.AddLines(points);
-                                areaPath.Widen(new Pen(Color.Black, 12));
-
-                                // Create region from the path
-                                Region areaRegion = new Region(areaPath);
-
-                                if (areaRegion.IsVisible(_point))
-                                {
-                                    iHitResult = 0;
-                                }
-                            }
-                            catch (Exception exp)
-                            {
-                                iHitResult = -1;
-                                log.Error("Error while hit testing track.");
-                                log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
-            					log.Error("Message : " + exp.Message.ToString());
-            					Exception inner = exp.InnerException;
-				     			while( inner != null )
-				     			{
-				          			log.Error("Inner exception : " + inner.Message.ToString());
-				          			inner = inner.InnerException;
-				     			}
-                            }
+                            iHitResult = -1;
+                            log.Error("Error while hit testing track.");
+                            log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
+        					log.Error("Message : " + exp.Message.ToString());
+        					Exception inner = exp.InnerException;
+			     			while( inner != null )
+			     			{
+			          			log.Error("Inner exception : " + inner.Message.ToString());
+			          			inner = inner.InnerException;
+			     			}
                         }
                     }
                 }
@@ -402,53 +385,40 @@ namespace Kinovea.ScreenManager
         {
             int iHitResult = -1;
 
-            if (m_TrackView == TrackView.Trajectory)
-            {
-                for (int i = 0; i < m_KeyframesLabels.Count; i++)
-                {
-                    if (m_KeyframesLabels[i].HitTest(_point))
-                    {
-                        iHitResult = i + 2;
-                        break;
-                    }
-                }
-            }
-            else if (m_TrackView == TrackView.LabelFollows)
+            if (m_TrackView == TrackView.Label)
             {
                 if (m_MainLabel.HitTest(_point))
                 {
                     iHitResult = 2;
                 }
             }
-
-            return iHitResult;
-        }
-        private int IsOnArrow(Point _point)
-        {
-            int iHitResult = -1;
-
-            // Create path which contains wide line for easy mouse selection
-            GraphicsPath areaPath = new GraphicsPath();
-            Pen areaPen = new Pen(Color.Black, (int)((double)(m_iArrowWidth + 2) * m_fStretchFactor));
-            
-            // Unlike in drawing, we extend the path down to the track point.
-            areaPath.AddLine(m_Positions[m_iCurrentPoint].X, m_Positions[m_iCurrentPoint].Y, m_Positions[m_iCurrentPoint].X, m_Positions[m_iCurrentPoint].Y - (int)((double)(m_iArrowDistance + m_iArrowLength) * m_fStretchFactor));
-            areaPath.Widen(areaPen);
-            Region areaRegion = new Region(areaPath);
-
-            if (areaRegion.IsVisible(_point))
+            else
             {
-                iHitResult = 2;
+                for (int i = 0; i < m_KeyframesLabels.Count; i++)
+                {
+                	if(m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, m_KeyframesLabels[i].iTimestamp, m_iFocusFadingFrames))
+                	{
+                		if (m_KeyframesLabels[i].HitTest(_point))
+	                    {
+	                        iHitResult = i + 2;
+	                        break;
+	                    }
+                	}
+                }
             }
 
             return iHitResult;
         }
         public void StopTracking()
         {
-            m_bEditMode = false;
+            m_TrackStatus = TrackStatus.Interactive;
             m_iEndTimeStamp = m_Positions[m_Positions.Count -1].T + m_iBeginTimeStamp;
         }
-		
+		public void RestartTracking()
+        {
+            m_iEndTimeStamp = long.MaxValue;
+            m_TrackStatus = TrackStatus.Edit;
+        }
         public List<TrackPosition> GetEndOfTrack(long _iTimestamp)
         {
         	// Called from CommandDeleteEndOfTrack,
@@ -508,14 +478,9 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        public void RestartTracking()
-        {
-            m_iEndTimeStamp = long.MaxValue; // ou celui du last ?
-            m_bEditMode = true;
-        }
         public void MoveCursor(int _X, int _Y)
         {
-            if (m_bEditMode)
+            if (m_TrackStatus == TrackStatus.Edit)
             {
                 //----------------------------------------
                 // Move cursor to new coords
@@ -540,7 +505,7 @@ namespace Kinovea.ScreenManager
         }
         public void MoveLabelTo(int _deltaX, int _deltaY, int _iLabelNumber)
         {
-            if (m_TrackView == TrackView.Trajectory || m_bEditMode)
+        	if (m_TrackStatus == TrackStatus.Edit || m_TrackView != TrackView.Label)
             {
                 // Move the specified label by specified amount.
                 int iLabel = _iLabelNumber - 2;
@@ -551,7 +516,7 @@ namespace Kinovea.ScreenManager
                 m_KeyframesLabels[iLabel].Background = new Rectangle(m_KeyframesLabels[iLabel].Background.X + _deltaX, m_KeyframesLabels[iLabel].Background.Y + _deltaY, m_KeyframesLabels[iLabel].Background.Width, m_KeyframesLabels[iLabel].Background.Height);
                 m_KeyframesLabels[iLabel].Rescale(m_fStretchFactor, m_DirectZoomTopLeft);
             }
-            else if (m_TrackView == TrackView.LabelFollows)
+            else if (m_TrackView == TrackView.Label)
             {
                 m_MainLabel.Background = new Rectangle(m_MainLabel.Background.X + _deltaX, m_MainLabel.Background.Y + _deltaY, m_MainLabel.Background.Width, m_MainLabel.Background.Height);
                 m_MainLabel.Rescale(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -632,7 +597,7 @@ namespace Kinovea.ScreenManager
             //if (_iCurrentTimestamp >= m_iBeginTimeStamp)
             if (_iCurrentTimestamp >= m_iBeginTimeStamp + m_Positions[m_Positions.Count - 1].T)
             {
-                // Est-ce qu'on l'a déjà ?
+                // Do we have it already ?
                 bool bAlreadyTracked = false;
                 for (int i = 0; i < m_Positions.Count; i++)
                 {
@@ -757,9 +722,9 @@ namespace Kinovea.ScreenManager
             TrackLineToXml(_xmlWriter);
             KeyframesLabelsToXml(_xmlWriter);
 
-            _xmlWriter.WriteStartElement("ShowKeyframesTitles");
-            _xmlWriter.WriteString(m_bShowKeyframesTitles.ToString());
-            _xmlWriter.WriteEndElement();
+            //_xmlWriter.WriteStartElement("ShowKeyframesTitles");
+            //_xmlWriter.WriteString(m_bShowKeyframesTitles.ToString());
+            //_xmlWriter.WriteEndElement();
 
             // Global Label
             _xmlWriter.WriteStartElement("Label");
@@ -781,12 +746,8 @@ namespace Kinovea.ScreenManager
                 iHash ^= p.GetHashCode();
             }
 
-            //iHash ^= m_CrossPenColor.GetHashCode();
             iHash ^= m_iDefaultCrossRadius.GetHashCode();
             iHash ^= m_LineStyle.GetHashCode();
-            iHash ^= m_bShowTarget.GetHashCode();
-            iHash ^= m_bShowKeyframesTitles.GetHashCode();
-            iHash ^= m_bShowTrajectory.GetHashCode();
             iHash ^= m_MainLabel.GetHashCode();
 
             foreach (KeyframeLabel kfl in m_KeyframesLabels)
@@ -802,10 +763,7 @@ namespace Kinovea.ScreenManager
         	// Used by formConfigureTrajectory to be able to modify the trajectory in real time.
         	m_MemoLineStyle = m_LineStyle.Clone();
         	m_MemoTrackView = m_TrackView;
-        	m_bMemoShowTarget = m_bShowTarget;
-        	m_bMemoShowKeyframesTitles = m_bShowKeyframesTitles;
         	m_MemoLabel = m_MainLabel.Text;
-        	m_bMemoShowTrajectory = m_bShowTrajectory;
         }
         public void RecallState()
         {
@@ -813,17 +771,14 @@ namespace Kinovea.ScreenManager
         	m_LineStyle = m_MemoLineStyle.Clone();
         	m_MainLabel.TextDecoration.Update(m_LineStyle.Color);
         	m_TrackView = m_MemoTrackView;
-        	m_bShowTarget = m_bMemoShowTarget;
-        	m_bShowKeyframesTitles = m_bMemoShowKeyframesTitles;
-        	m_bShowTrajectory = m_bMemoShowTrajectory;
         	m_MainLabel.Text = m_MemoLabel;
             m_MainLabel.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public static Track FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
             Track trk = new Track(0,0,0, null);
-            trk.m_bEditMode = false;
-
+            trk.m_TrackStatus = TrackStatus.Interactive;
+            
             if (_remapTimestampCallback != null)
             {
                 while (_xmlReader.Read())
@@ -932,11 +887,46 @@ namespace Kinovea.ScreenManager
 
             return iClosest;
         }
+        private int GetFirstVisiblePoint()
+        {
+        	// Boundaries of visibility.
+            // First and last if complete traj, bounded otherwise.
+            
+            int iStart = 0;
+            
+            if(m_TrackView != TrackView.Complete && m_iCurrentPoint - m_iFocusFadingFrames > 0)
+        	{
+        		iStart = m_iCurrentPoint - m_iFocusFadingFrames;
+        	}
+            
+            return iStart;
+        }
+        private int GetLastVisiblePoint()
+        {
+        	// Boundaries of visibility.
+            // First and last if complete traj, bounded otherwise.
+            int iEnd = m_RescaledPositions.Count - 1;
+        	if(m_TrackView != TrackView.Complete && m_iCurrentPoint + m_iFocusFadingFrames < m_RescaledPositions.Count - 1)
+        	{
+        		iEnd = m_iCurrentPoint + m_iFocusFadingFrames;
+        	}
+            
+            return iEnd;
+        }
         
         #region Drawing Helpers
         private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor)
         {
-            Point[] points = new Point[_end - _start + 1];
+        	// Points are drawn with various alpha values, possibly 0:
+        	// In edit mode, all segments are drawn at 64 alpha.
+        	// In normal mode, segments before the current point are drawn at 224, segments after at 64.
+        	// In focus mode, (edit or normal) only a subset of segments are drawn from each part.
+        	// It is not possible currently to make the curve vary smoothly in alpha.
+        	// Either we make it vary in alpha for each segment but draw as connected lines.
+        	// or draw as curve but at the same alpha for all.
+        	// All segments are drawn at 224, even the after section.
+        	
+        	Point[] points = new Point[_end - _start + 1];
             for (int i = 0; i <= _end - _start; i++)
             {
                 points[i] = new Point(m_RescaledPositions[_start + i].X, m_RescaledPositions[_start + i].Y);
@@ -944,78 +934,55 @@ namespace Kinovea.ScreenManager
             
             if (points.Length > 1)
             {
-            	_canvas.DrawCurve(GetTrackPen(m_LineStyle, m_bEditMode, _fFadingFactor, _before), points, 0.5f);	
+            	_canvas.DrawCurve(GetTrackPen(m_LineStyle, m_TrackStatus, _fFadingFactor, _before), points, 0.5f);	
             }
-
-            #region Velocity colorizing.
-            // TODO : Velocity Colorizing ?
-            /*
-            if (m_Positions.Count > 0 && !m_bEditMode)
-            {
-                // 1. Get gradient colors.
-                
-                // 2. Get max velocity (from all points, not only the before/after subset)
-                double fMaxVelocity = 0;
-                foreach (double v in m_Velocities)
-                {
-                    if (v > fMaxVelocity)
-                    {
-                        fMaxVelocity = v;
-                    }
-                }
-                
-                for (int i = 1; i < points.Length; i++)
-                {
-                    int iPreviousColorCoord = (int)(m_Velocities[_start + i-1]*100 / fMaxVelocity);
-                    int iCurrentColorCoord = (int)(m_Velocities[_start + i]*100 / fMaxVelocity);
-
-                    if (iPreviousColorCoord == 100)
-                        iPreviousColorCoord = 99;
-
-                    if (iCurrentColorCoord == 100)
-                        iCurrentColorCoord = 99;
-
-
-                    Color prevColor = bmpPrecomputed.GetPixel(iPreviousColorCoord, 0);
-                    Color currColor = bmpPrecomputed.GetPixel(iCurrentColorCoord, 0);
-
-                    LinearGradientBrush lgb = new LinearGradientBrush(points[i-1], points[i], prevColor, currColor);
-                    Pen penVelocity = new Pen(lgb, width);
-
-                    _canvas.DrawLine(penVelocity, points[i-1].X, points[i-1].Y, points[i].X, points[i].Y);
-                }*/
-            #endregion
         }
-        private Pen GetTrackPen(LineStyle _style, bool _bEdit, double _fFadingFactor, bool _before)
+        private Pen GetTrackPen(LineStyle _style, TrackStatus _status, double _fFadingFactor, bool _before)
         {
-            int alpha = 128;
-            if(!m_bEditMode)
+        	int iAlpha = 0;
+        	
+        	if(_status == TrackStatus.Edit)
+        	{
+        		iAlpha = m_iEditModeAlpha;
+        	}
+        	else 
             {
-            	if (_fFadingFactor < 1.0 || _before)
-            	{
-            		alpha = (int)((double)224 * _fFadingFactor);        
-            	}
-            	else
-            	{
-					alpha = 64;            	
-            	}
+        		if(m_TrackView == TrackView.Complete)
+        		{
+        			if(_before)
+        			{
+        				iAlpha = (int)((double)m_iBaseAlpha * _fFadingFactor);
+        			}
+        			else
+        			{
+        				iAlpha = m_iAfterCurrentAlpha;
+        			}
+        		}
+        		else if(m_TrackView == TrackView.Focus)
+        		{
+        			iAlpha = (int)((double)m_iBaseAlpha * _fFadingFactor);		
+        		}
+        		else if(m_TrackView == TrackView.Label)
+        		{
+        			iAlpha = (int)((double)m_iLabelFollowsTrackAlpha * _fFadingFactor);
+        		}
             }
         	
-            return _style.GetInternalPen(alpha);
+            return _style.GetInternalPen(iAlpha);
         }
         private void DrawMarker(Graphics _canvas)
         {
             // This draws the target marker (CrashTest Dummy style target)
             // If editmode, we draw the whole target, otherwise only the white sectors.
             
-            if (m_bEditMode)
+            //if (m_bEditMode)
             {
                 _canvas.FillPie(Brushes.Black, (float)m_RescaledPositions[m_iCurrentPoint].X - m_iDefaultCrossRadius, (float)m_RescaledPositions[m_iCurrentPoint].Y - m_iDefaultCrossRadius, (float)m_iDefaultCrossRadius * 2, (float)m_iDefaultCrossRadius * 2, 0, 90);
             }
             
             _canvas.FillPie(Brushes.White, (float)m_RescaledPositions[m_iCurrentPoint].X - m_iDefaultCrossRadius, (float)m_RescaledPositions[m_iCurrentPoint].Y - m_iDefaultCrossRadius, (float)m_iDefaultCrossRadius * 2, (float)m_iDefaultCrossRadius * 2, 90, 90);
             
-            if (m_bEditMode)
+            //if (m_bEditMode)
             {
                  _canvas.FillPie(Brushes.Black, (float)m_RescaledPositions[m_iCurrentPoint].X - m_iDefaultCrossRadius, (float)m_RescaledPositions[m_iCurrentPoint].Y - m_iDefaultCrossRadius, (float)m_iDefaultCrossRadius * 2, (float)m_iDefaultCrossRadius * 2, 180, 90);
             }
@@ -1039,9 +1006,13 @@ namespace Kinovea.ScreenManager
             {
                 foreach (KeyframeLabel kl in m_KeyframesLabels)
                 {
-                    // Shift/scale background, then draw.
-                    kl.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
-                    kl.Draw(_canvas, _fFadingFactor);
+					// Only show labels that are in focus section.
+                	if(m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, kl.iTimestamp, m_iFocusFadingFrames))
+                	{
+                    	// Shift/scale background, then draw.
+                    	kl.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
+                    	kl.Draw(_canvas, _fFadingFactor);
+                	}
                 }
             }
         }
@@ -1082,10 +1053,6 @@ namespace Kinovea.ScreenManager
                     if (_xmlReader.Name == "LineStyle")
                     {
                     	_track.m_LineStyle = LineStyle.FromXml(_xmlReader);
-                    }
-                    else if (_xmlReader.Name == "ShowTargetMarker")
-                    {
-                        _track.m_bShowTarget = bool.Parse(_xmlReader.ReadString());
                     }
                 }
                 else if (_xmlReader.Name == "TrackLine")
@@ -1259,10 +1226,6 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteStartElement("TrackLine");
            
             m_LineStyle.ToXml(_xmlWriter);
-
-            _xmlWriter.WriteStartElement("ShowTargetMarker");
-            _xmlWriter.WriteString(m_bShowTarget.ToString());
-            _xmlWriter.WriteEndElement();
 
             // </trackline>
             _xmlWriter.WriteEndElement();

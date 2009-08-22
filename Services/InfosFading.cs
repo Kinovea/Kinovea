@@ -205,7 +205,7 @@ namespace Kinovea.Services
             else if (m_bUseDefault)
             {
                 // Default value
-                fOpacityFactor = ComputeOpacityFactor(_iTimestamp, PreferencesManager.Instance().DefaultFading.FadingFrames);
+                fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, PreferencesManager.Instance().DefaultFading.FadingFrames);
             }
             else if (m_bAlwaysVisible)
             {
@@ -215,16 +215,23 @@ namespace Kinovea.Services
             else
             {
                 // Custom value.
-                fOpacityFactor = ComputeOpacityFactor(_iTimestamp, m_iFadingFrames);
+                fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, m_iFadingFrames);
             }
 
             return fOpacityFactor;
         }
-        private double ComputeOpacityFactor(long _iTimestamp, long iFadingFrames)
+        public bool IsVisible(long _iRefTimestamp, long _iTestTimestamp, int iVisibleFrames)
+        {
+        	// Is a given point visible at all ?
+        	// Currently used by trajectory in focus mode to enable kf labels visibility.
+        	
+        	return ComputeOpacityFactor(_iRefTimestamp, _iTestTimestamp, (long)iVisibleFrames) > 0;
+        }
+        private double ComputeOpacityFactor(long _iRefTimestamp, long _iTestTimestamp, long iFadingFrames)
         {
             double fOpacityFactor = 0.0f;
 
-            long iDistanceTimestamps = Math.Abs(_iTimestamp - m_iReferenceTimestamp);
+            long iDistanceTimestamps = Math.Abs(_iTestTimestamp - _iRefTimestamp);
             long iFadingTimestamps = iFadingFrames * m_iAverageTimeStampsPerFrame;
 
             if (iDistanceTimestamps > iFadingTimestamps)

@@ -116,10 +116,11 @@
    
    
    
-   
-   
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Estilo:</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar Trajetória</value></data>
+   
+   
+   
    
    
    
@@ -183,6 +184,7 @@
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Quadros descomprimidos:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Progresso</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importando Quadros...</value></data>
+   
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Fechar</value></data>
