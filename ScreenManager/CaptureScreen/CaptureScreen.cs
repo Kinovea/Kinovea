@@ -26,7 +26,7 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-    public class CaptureScreen : AbstractScreen
+    public class CaptureScreen : AbstractScreen, ICaptureScreenUIHandler
     {
         #region Properties
         public override Guid UniqueId
@@ -60,43 +60,52 @@ namespace Kinovea.ScreenManager
             get { return m_FrameServer.Metadata.Plane.Visible; }
             set { m_FrameServer.Metadata.Plane.Visible = value;}
         }
+        public FrameServerCapture FrameServer
+		{
+			get { return m_FrameServer; }
+			set { m_FrameServer = value; }
+		}    
         #endregion
 
         #region Members
         public CaptureScreenUserInterface	m_CaptureScreenUI;
         
+        private IScreenHandler m_ScreenHandler;
 		private FrameServerCapture m_FrameServer = new FrameServerCapture();
-		private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-        private Guid m_UniqueId;
+		private Guid m_UniqueId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public CaptureScreen()
+        public CaptureScreen(IScreenHandler _screenHandler)
         {
         	log.Debug("Constructing a CaptureScreen.");
-            m_UniqueId = System.Guid.NewGuid();
-            
-            //Gestion i18n
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
-			// Create UI
-            m_CaptureScreenUI = new CaptureScreenUserInterface(m_FrameServer);
-            
-            // UI Delegates. (Assigned and implemented here, called from UI)
-            m_CaptureScreenUI.m_CloseMeUI += new CaptureScreenUserInterface.DelegateCloseMeUI(ScreenUI_CloseAsked);
-            m_CaptureScreenUI.m_SetMeAsActiveScreenUI += new CaptureScreenUserInterface.DelegateSetMeAsActiveScreenUI(ScreenUI_SetAsActiveScreen);
+            m_ScreenHandler = _screenHandler;
+        	m_UniqueId = System.Guid.NewGuid();
+            m_CaptureScreenUI = new CaptureScreenUserInterface(m_FrameServer, this);
         }
         #endregion
 
-        #region AbstractScreen Implementation
-        public override void DisplayAsInactiveScreen()
+        #region ICaptureScreenUIHandler implementation
+        public void ScreenUI_CloseAsked()
         {
-            m_CaptureScreenUI.DisplayAsActiveScreen(false);
+        	m_ScreenHandler.Screen_CloseAsked(this);
         }
-        public override void DisplayAsActiveScreen()
+        public void ScreenUI_SetAsActiveScreen()
         {
-        	m_CaptureScreenUI.DisplayAsActiveScreen(true);
+        	m_ScreenHandler.Screen_SetActiveScreen(this);
+        }
+        public void CaptureScreenUI_TryDeviceConnection()
+        {
+        	// todo.
+        	m_ScreenHandler.Capture_TryDeviceConnection(this);
+        }
+        #endregion
+        
+        #region AbstractScreen Implementation
+        public override void DisplayAsActiveScreen(bool _bActive)
+        {
+        	m_CaptureScreenUI.DisplayAsActiveScreen(_bActive);
         }
         public override void refreshUICulture() 
         {
@@ -104,7 +113,9 @@ namespace Kinovea.ScreenManager
         }
         public override void BeforeClose()
         {
-        	m_CaptureScreenUI.UnloadMovie();
+        	// This screen is about to be closed.
+        	m_FrameServer.SignalToStop();
+        	m_CaptureScreenUI.BeforeClose();
         }
         public override bool OnKeyPress(Keys _key)
         {
@@ -115,30 +126,14 @@ namespace Kinovea.ScreenManager
 			// Not implemented.
 		}
         #endregion
-
-        #region Délégués appelées depuis l'UI
-        private void ScreenUI_CloseAsked()
-        {
-        	// Note: CloseMe variable is:
-        	// - defined in AbstractScreen 
-        	// - assigned in CommandAddCaptureScreen.
-        	// - implemented in ScreenManager. 
-            if (CloseMe != null) { CloseMe(this); }
-        }
-        private void ScreenUI_SetAsActiveScreen()
-        {
-            // Note: SetMeAsActiveScreen variable is:
-        	// - defined in AbstractScreen 
-        	// - assigned in CommandAddPlayerScreen.
-        	// - implemented in ScreenManager. 
-            if (SetMeAsActiveScreen != null) { SetMeAsActiveScreen(this); }
-        }
-        #endregion
     
-        public void Activate()
+        #region Other public methods
+        public void PostTryConnection()
         {
-        	m_CaptureScreenUI.PostCreation();
+        	// Called when a device is connected to this screen.
+        	m_CaptureScreenUI.PostTryConnection();
         }
-    
+    	#endregion
+    	
     }
 }

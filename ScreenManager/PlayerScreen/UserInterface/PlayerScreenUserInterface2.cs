@@ -71,30 +71,11 @@ namespace Kinovea.ScreenManager
 		static extern uint GetDoubleClickTime();
 		#endregion
 
-		#region Délégués
-
-		// 1. Affectées et accédées depuis PlayerScreen.cs
-		public delegate void DelegateCloseMeUI();
-		public delegate void DelegateSetMeAsActiveScreenUI();
-
-		public delegate void ReportReady(bool _bIntervalOnly);
-		public delegate void ReportSelectionChanged(bool _bInitialization);
-
-		public DelegateCloseMeUI				m_CloseMeUI;
-		public DelegateSetMeAsActiveScreenUI 	m_SetMeAsActiveScreenUI;
-		
-		public ReportReady                 	m_ReportReady;
-		public ReportSelectionChanged      	m_ReportSelectionChanged;
-
-		// 2. Internes
+		#region Internal delegates for async methods
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
 		private delegate void CallbackPlayLoop();
-		private delegate void ProxySetAsActiveScreen();
-		
 		private TimerEventHandler m_CallbackTimerEventHandler;
 		private CallbackPlayLoop m_CallbackPlayLoop;
-		private ProxySetAsActiveScreen m_ProxySetAsActiveScreen;
-		
 		#endregion
 
 		#region Enums
@@ -142,6 +123,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Members
+		private IPlayerScreenUIHandler m_PlayerScreenUIHandler;
 		private FrameServerPlayer m_FrameServer;
 		
 		// General
@@ -193,11 +175,6 @@ namespace Kinovea.ScreenManager
 		private Magnifier m_Magnifier = new Magnifier();
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
-		/*
-		private double m_FrameServer.CoordinateSystem.Stretch = 1.0f;
-		private double m_fDirectZoomFactor = 1.0f;       		// Direct zoom (CTRL+/-)
-		private Rectangle m_DirectZoomWindow = new Rectangle(0, 0, 0, 0);
-		*/
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -251,10 +228,11 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Constructor
-		public PlayerScreenUserInterface(FrameServerPlayer _FrameServer)
+		public PlayerScreenUserInterface(FrameServerPlayer _FrameServer, IPlayerScreenUIHandler _PlayerScreenUIHandler)
 		{
 			log.Debug("Constructing the PlayerScreen user interface.");
-			 
+			
+			m_PlayerScreenUIHandler = _PlayerScreenUIHandler;
 			m_FrameServer = _FrameServer;
 			m_FrameServer.Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));
 			
@@ -277,7 +255,6 @@ namespace Kinovea.ScreenManager
 			// Internal delegates
 			m_CallbackTimerEventHandler = new TimerEventHandler(MultimediaTimerTick);
 			m_CallbackPlayLoop = new CallbackPlayLoop(PlayLoop);
-			m_ProxySetAsActiveScreen = new ProxySetAsActiveScreen(OnPoke);
 
 			//SetupDebugPanel();
 		}
@@ -996,8 +973,8 @@ namespace Kinovea.ScreenManager
 		#region Misc Events
 		private void btnClose_Click(object sender, EventArgs e)
 		{
-			// Propagate to PlayerScreen which will report to ScreenManager.
-			if (m_CloseMeUI != null) { m_CloseMeUI(); }
+			// Propagate to PlayerScreen which will report to ScreenManager.			
+			m_PlayerScreenUIHandler.ScreenUI_CloseAsked();
 		}
 		private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
 		{
@@ -1014,10 +991,7 @@ namespace Kinovea.ScreenManager
 			// Signal itself as the active screen to the ScreenManager
 			//---------------------------------------------------------------------
 			
-			if (m_SetMeAsActiveScreenUI != null)
-			{ 
-				m_SetMeAsActiveScreenUI(); 
-			}
+			m_PlayerScreenUIHandler.ScreenUI_SetAsActiveScreen();
 			
 			// 1. Ensure no DrawingText is in edit mode.
 			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
@@ -1438,7 +1412,7 @@ namespace Kinovea.ScreenManager
 				UpdateKeyframesMarkers();
 
 				OnPoke();
-				if (m_ReportSelectionChanged != null) { m_ReportSelectionChanged(false); }
+				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
 
 				// Update the visible frame if needed.
 				UpdateFramePrimarySelection();
@@ -1524,7 +1498,7 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.Metadata.SelectionStart = m_iSelStart;
 				UpdateKeyframesMarkers();
 				OnPoke();
-				if (m_ReportSelectionChanged != null) { m_ReportSelectionChanged(false); }
+				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
 
 				// Update current image and keyframe  status.
 				UpdateFramePrimarySelection();
@@ -1705,7 +1679,7 @@ namespace Kinovea.ScreenManager
 				}
 
 				// Impacts synchro.
-				if (m_ReportReady != null) { m_ReportReady(true); }
+				m_PlayerScreenUIHandler.PlayerScreenUI_IsReady(true);
 			}
 
 			UpdateSpeedLabel();
@@ -4423,7 +4397,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 				OnPoke();
 
-				if (m_ReportSelectionChanged != null) { m_ReportSelectionChanged(true); }
+				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(true);
 				if (m_bShowInfos) { UpdateDebugInfos(); }
 			}
 		}

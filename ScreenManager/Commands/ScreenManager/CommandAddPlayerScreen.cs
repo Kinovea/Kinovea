@@ -45,13 +45,13 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        ScreenManagerKernel screenManagerKernel;
+        ScreenManagerKernel m_ScreenManagerKernel;
 
         #region constructor
         public CommandAddPlayerScreen(ScreenManagerKernel _smk, bool _bStoreState)
         {
-            screenManagerKernel = _smk;
-            if (_bStoreState) { screenManagerKernel.StoreCurrentState(); }
+            m_ScreenManagerKernel = _smk;
+            if (_bStoreState) { m_ScreenManagerKernel.StoreCurrentState(); }
         }
         #endregion
 
@@ -60,21 +60,13 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Execute()
         {
-            PlayerScreen screen = new PlayerScreen();
-            
-            // Delegates
-            screen.CloseMe += new AbstractScreen.DelegateCloseMe(screenManagerKernel.Screen_CloseAsked);
-            screen.SetMeAsActiveScreen += new AbstractScreen.DelegateSetMeAsActiveScreen(screenManagerKernel.Screen_SetActiveScreen);
-            screen.m_PlayerIsReady += new PlayerScreen.PlayerIsReady(screenManagerKernel.Player_IsReady);
-            screen.m_PlayerSelectionChanged  += new PlayerScreen.PlayerSelectionChanged(screenManagerKernel.Player_SelectionChanged);
-
-            screen.refreshUICulture(); 
-
-            screenManagerKernel.screenList.Add(screen);
+            PlayerScreen screen = new PlayerScreen(m_ScreenManagerKernel);
+            screen.refreshUICulture();
+            m_ScreenManagerKernel.screenList.Add(screen);
         }
         public void Unexecute()
         {
-            screenManagerKernel.RecallState();
+            m_ScreenManagerKernel.RecallState();
         }
     }
 }

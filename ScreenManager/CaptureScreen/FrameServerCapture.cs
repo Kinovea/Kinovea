@@ -102,17 +102,13 @@ namespace Kinovea.ScreenManager
 		//private bool m_bSavingContextEncodingSuccess;
 		private Metadata m_Metadata;
 		
-		private DelegateScreenInvalidate m_DoInvalidate;					// To request a paint from screen.
-		private DelegateUpdateCapturedVideos m_DoUpdateCapturedVideos;		// To request an update from screen.
-		private DelegateInitDecodingSize m_DoInitDecodingSize;
+		private IFrameServerContainer m_Container;
 		#endregion
 		
 		#region Public methods
-		public void SetDelegates(DelegateScreenInvalidate _invalidate, DelegateUpdateCapturedVideos _update, DelegateInitDecodingSize _initSize)
+		public void SetContainer(IFrameServerContainer _container)
 		{
-			m_DoInvalidate = _invalidate;	
-			m_DoUpdateCapturedVideos = _update;
-			m_DoInitDecodingSize = _initSize;
+			m_Container = _container;
 		}
 		public override void Draw(Graphics _canvas)
 		{
@@ -231,7 +227,7 @@ namespace Kinovea.ScreenManager
 				m_RecentlyCapturedVideos.Add(cv);
 				m_CurrentCaptureBitmap = null;
 				
-				m_DoUpdateCapturedVideos();
+				m_Container.DoUpdateCapturedVideos();
 			}
 			else
 			{
@@ -290,7 +286,7 @@ namespace Kinovea.ScreenManager
     		{
 				m_DecodingSize = new Size(m_FrameBuffer[0].Width, m_FrameBuffer[0].Height);
 				m_CoordinateSystem.SetOriginalSize(m_DecodingSize);
-				m_DoInitDecodingSize();
+				m_Container.DoInitDecodingSize();
     		}
 
 			//If recording, append the new frame to file.
@@ -313,7 +309,7 @@ namespace Kinovea.ScreenManager
 			if(!m_bPainting)
 			{
 				m_bPainting = true;
-	    		m_DoInvalidate();
+				m_Container.DoInvalidate();
 			}
 		}
 		private void SignalToStart()

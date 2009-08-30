@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
             // and we'll display the active screen look afterwards, only if needed.
             foreach (AbstractScreen screen in screenManagerKernel.screenList)
             {
-                screen.DisplayAsInactiveScreen();
+                screen.DisplayAsActiveScreen(false);
             }
 
         	// There are two types of closing demands: explicit and implicit.
