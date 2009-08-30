@@ -33,18 +33,8 @@ using Kinovea.VideoFiles;
 [assembly: CLSCompliant(false)]
 namespace Kinovea.ScreenManager
 {
-    public class PlayerScreen : AbstractScreen
+    public class PlayerScreen : AbstractScreen, IPlayerScreenUIHandler
     {
-        #region Delegates
-       	// Assigned and implemented in ScreenManager.
-       	// non visible here : (DelegateCloseMe) CloseMe, (DelegateSetMeAsActiveScreen) SetMeAsActiveScreen.
-       	public delegate void PlayerIsReady(PlayerScreen _screen, bool _bIntervalOnly);
-        public delegate void PlayerSelectionChanged(PlayerScreen _screen, bool _bInitialization);
-        
-        public PlayerIsReady           	m_PlayerIsReady;
-        public PlayerSelectionChanged  	m_PlayerSelectionChanged;
-        #endregion
-
         #region Properties
         public override bool Full
         {
@@ -220,40 +210,48 @@ namespace Kinovea.ScreenManager
 
         #region members
         public PlayerScreenUserInterface m_PlayerScreenUI;
-		private FrameServerPlayer m_FrameServer = new FrameServerPlayer();
+		
+        private IScreenHandler m_ScreenHandler;
+        private FrameServerPlayer m_FrameServer = new FrameServerPlayer();
         private Guid m_UniqueId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public PlayerScreen()
+        public PlayerScreen(IScreenHandler _screenHandler)
         {
             log.Debug("Constructing a PlayerScreen.");
+            m_ScreenHandler = _screenHandler;
             m_UniqueId = System.Guid.NewGuid();
-
-            // Create UI and PlayerServer.
-            m_PlayerScreenUI = new PlayerScreenUserInterface(m_FrameServer);
-            
-            // UI Delegates. (Assigned and implemented here, called from UI)
-            m_PlayerScreenUI.m_CloseMeUI += new PlayerScreenUserInterface.DelegateCloseMeUI(ScreenUI_CloseAsked);
-            m_PlayerScreenUI.m_SetMeAsActiveScreenUI += new PlayerScreenUserInterface.DelegateSetMeAsActiveScreenUI(ScreenUI_SetAsActiveScreen);
-            m_PlayerScreenUI.m_ReportReady                  += new PlayerScreenUserInterface.ReportReady(PlayerScreenUI_IsReady);
-            m_PlayerScreenUI.m_ReportSelectionChanged       += new PlayerScreenUserInterface.ReportSelectionChanged(PlayerScreenUI_SelectionChanged);
+            m_PlayerScreenUI = new PlayerScreenUserInterface(m_FrameServer, this);
         }
         #endregion
 
-        #region AbstractScreen Implementation
-        public override void DisplayAsInactiveScreen()
+        #region IPlayerScreenUIHandler implementation
+        public void ScreenUI_CloseAsked()
         {
-            //--------------------------------------------------------------------------------------------------------
-            // L'écran n'est plus l'écran actif.
-            // Fonction appelée depuis le ScreenManager, lorsqu'un autre écran vient de se signaler comme écran actif.
-            //--------------------------------------------------------------------------------------------------------
-            m_PlayerScreenUI.DisplayAsActiveScreen(false);
+        	m_ScreenHandler.Screen_CloseAsked(this);
         }
-        public override void DisplayAsActiveScreen()
+        public void ScreenUI_SetAsActiveScreen()
         {
-            m_PlayerScreenUI.DisplayAsActiveScreen(true);
+        	m_ScreenHandler.Screen_SetActiveScreen(this);
+        }
+        public void PlayerScreenUI_IsReady(bool _bIntervalOnly)
+        {
+            // Used for synchronisation handling.
+            m_ScreenHandler.Player_IsReady(this, _bIntervalOnly);
+        }
+        public void PlayerScreenUI_SelectionChanged(bool _bInitialization)
+        {
+            // Used for synchronisation handling.
+            m_ScreenHandler.Player_SelectionChanged(this, _bInitialization);
+        }
+        #endregion
+        
+        #region AbstractScreen Implementation
+        public override void DisplayAsActiveScreen(bool _bActive)
+        {
+            m_PlayerScreenUI.DisplayAsActiveScreen(_bActive);
         }
         public override void BeforeClose()
         {
@@ -274,7 +272,7 @@ namespace Kinovea.ScreenManager
             m_PlayerScreenUI.RefreshImage();
         }
         #endregion
-
+        
         #region Other public methods called from the ScreenManager
         public void StopPlaying()
         {
@@ -303,40 +301,5 @@ namespace Kinovea.ScreenManager
         	m_PlayerScreenUI.Save();
         }
         #endregion
-        
-        #region Délégués appelées depuis l'UI
-        private void ScreenUI_CloseAsked()
-        {
-        	// Note: CloseMe variable is:
-        	// - defined in AbstractScreen 
-        	// - assigned in CommandAddPlayerScreen.
-        	// - implemented in ScreenManager. 
-            if (CloseMe != null) { CloseMe(this); }
-        }
-        private void ScreenUI_SetAsActiveScreen()
-        {
-            // Note: SetMeAsActiveScreen variable is:
-        	// - defined in AbstractScreen 
-        	// - assigned in CommandAddPlayerScreen.
-        	// - implemented in ScreenManager. 
-            if (SetMeAsActiveScreen != null) { SetMeAsActiveScreen(this); }
-        }
-        private void PlayerScreenUI_IsReady(bool _bIntervalOnly)
-        {
-            // Utilisé dans le cadre de la synchro.
-            if (m_PlayerIsReady != null) { m_PlayerIsReady(this, _bIntervalOnly); }
-        }
-        private void PlayerScreenUI_SelectionChanged(bool _bInitialization)
-        {
-            // Utilisé dans le cadre de la synchro.
-            if (m_PlayerSelectionChanged != null) { m_PlayerSelectionChanged(this, _bInitialization); }
-        }
-        #endregion
-        
-        
-
-        
-        
-        
     }
 }

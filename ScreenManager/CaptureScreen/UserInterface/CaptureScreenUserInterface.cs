@@ -44,25 +44,8 @@ using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
-	public delegate void DelegateUpdateCapturedVideos();
-	public delegate void DelegateInitDecodingSize();
-	
-	public partial class CaptureScreenUserInterface : UserControl
+	public partial class CaptureScreenUserInterface : UserControl, IFrameServerContainer
 	{
-		#region Délégués
-		// 1. Affectées et accédées depuis PlayerScreen.cs
-		public delegate void DelegateCloseMeUI();
-		public delegate void DelegateSetMeAsActiveScreenUI();
-
-		public Kinovea.ScreenManager.CaptureScreenUserInterface.DelegateCloseMeUI m_CloseMeUI;
-        public Kinovea.ScreenManager.CaptureScreenUserInterface.DelegateSetMeAsActiveScreenUI m_SetMeAsActiveScreenUI;
-		
-		// 2. Internes
-		private delegate void ProxySetAsActiveScreen();		
-        private Kinovea.ScreenManager.CaptureScreenUserInterface.ProxySetAsActiveScreen m_ProxySetAsActiveScreen;
-		
-		#endregion
-
 		#region Properties
 		public int DrawtimeFilterType
 		{
@@ -81,11 +64,13 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Members
+		private ICaptureScreenUIHandler m_ScreenUIHandler;
 		private FrameServerCapture m_FrameServer;
 		
 		// General
 		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
 		private bool m_bIsIdle = true;
+		private bool m_bTryingToConnect;
 
 		// Image
 		private bool m_bStretchModeOn;			// This is just a toggle to know what to do on double click.
@@ -99,11 +84,12 @@ namespace Kinovea.ScreenManager
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
 		private bool m_bMeasuring;
+		//private Timer m_DeviceDetector = new Timer();
 
 		// Video Filters Management
 		private bool m_bDrawtimeFiltered;
 		private DrawtimeFilterOutput m_DrawingFilterOutput;
-				
+		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
 		private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
@@ -134,87 +120,96 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Constructor
-		public CaptureScreenUserInterface(FrameServerCapture _FrameServer)
+		public CaptureScreenUserInterface(FrameServerCapture _FrameServer, ICaptureScreenUIHandler _screenUIHandler)
 		{
 			log.Debug("Constructing the CaptureScreen user interface.");
-		
+			m_ScreenUIHandler = _screenUIHandler;
 			m_FrameServer = _FrameServer;
-			m_FrameServer.SetDelegates(DoInvalidate, DoUpdateCapturedVideos, DoInitDecodingSize);
+			m_FrameServer.SetContainer(this);
 			m_FrameServer.Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), null);
 			
 			// Initialize UI.
 			InitializeComponent();
 			this.Dock = DockStyle.Fill;
 			ShowHideResizers(false);
-			
 			InitializeDrawingTools();
 			InitializeMetadata();
 			BuildContextMenus();
-			m_ProxySetAsActiveScreen = new ProxySetAsActiveScreen(OnPoke);
+			m_bDocked = true;
+			
+			tmrCaptureDeviceDetector.Start();
+		}
+		#endregion
+		
+		#region IFrameServerContainer implementation
+		public void DoInvalidate()
+		{
+			pbSurfaceScreen.Invalidate();
+		}
+		public void DoInitDecodingSize()
+		{
+			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.DecodingSize);
+		}
+		public void DoUpdateCapturedVideos()
+		{
+			// Update the list of Captured Videos.
+			// Similar to OrganizeKeyframe in PlayerScreen.
+			
+			pnlThumbnails.Controls.Clear();
+			
+			if(m_FrameServer.RecentlyCapturedVideos.Count > 0)
+			{
+				int iBoxIndex = 0;
+				int iPixelsOffset = 0;
+				int iPixelsSpacing = 20;
+				
+				foreach (CapturedVideo cv in m_FrameServer.RecentlyCapturedVideos)
+				{
+					CapturedVideoBox box = new CapturedVideoBox(cv);
+					SetupDefaultThumbBox(box);
+					
+					// Finish the setup
+					box.Left = iPixelsOffset + iPixelsSpacing;
+					box.pbThumbnail.Image = cv.Thumbnail;
+					//box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
+					//box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
+					
+					iPixelsOffset += (iPixelsSpacing + box.Width);
+
+					pnlThumbnails.Controls.Add(box);
+
+					iBoxIndex++;
+				}
+				
+				UndockKeyframePanel();
+				pnlThumbnails.Refresh();
+			}
+			else
+			{
+				DockKeyframePanel();
+			}
+
 		}
 		#endregion
 		
 		#region Public Methods
-		public void ResetToEmptyState()
+		
+		public void PostTryConnection()
 		{
-			/*
-			// Called when we load a new video over an already loaded screen.
-			// also recalled if the video loaded but the first frame cannot be displayed.
-
-			// 1. Reset all data.
-			m_FrameServer.Unload();
-			ResetData();
-			
-			// 2. Reset all interface.
-			ShowHideResizers(false);
-			SetupPrimarySelectionPanel();
-			pnlThumbnails.Controls.Clear();
-			DockKeyframePanel();
-			UpdateKeyframesMarkers();
-			EnableDisableAllPlayingControls(true);
-			EnableDisableDrawingTools(true);
-			buttonPlay.BackgroundImage = Resources.liqplay17;
-			sldrSpeed.Value = 100;
-			sldrSpeed.Enabled = false;
-			lblFileName.Text = "";
-			m_KeyframeCommentsHub.Hide();
-			*/
-		}
-		public void PostCreation()
-		{
-			m_bDocked = true;
-			
-			// Associating a video device with this Capture Screen.
-			FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
-			if ( videoDevices.Count > 0 )
+			if(m_FrameServer.IsConnected)
 			{
-				// TODO: Ask user to choose video device.
-				int iSelectedDevice = 0;
-				m_FrameServer.SetDevice(videoDevices, iSelectedDevice);
 				buttonPlay_Click(null, EventArgs.Empty);
-			}
-			else
-			{
-				log.Debug(String.Format("Video Device : No video device found."));
 			}
 		}
 		public void DisplayAsActiveScreen(bool _bActive)
 		{
-			// Actually called from ScreenManager.
+			// Called from ScreenManager.
 			ShowBorder(_bActive);
 		}
 		public void RefreshUICulture()
 		{
-			// Labels
-			
 			ReloadTooltipsCulture();
 			ReloadMenusCulture();
-			
-			// Because this method is called when we change the general preferences,
-			// we can use it to update data too.
-			
-			// Keyframes positions.
-			
 			// Refresh image to update grids colors, etc.
 			pbSurfaceScreen.Invalidate();
 		}
@@ -303,10 +298,11 @@ namespace Kinovea.ScreenManager
 
 			return bWasHandled;
 		}
-		public void UnloadMovie()
+		public void BeforeClose()
 		{
-			//Only called when destroying the whole screen.
-			m_FrameServer.SignalToStop();
+			// This screen is about to be closed.
+			tmrCaptureDeviceDetector.Stop();
+			tmrCaptureDeviceDetector.Dispose();
 		}
 		#endregion
 		
@@ -350,17 +346,6 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.CoordinateSystem.Reset();
 			
 			m_FrameServer.Magnifier.ResetData();	
-		}
-		private void SetUpForNewMovie()
-		{
-			// Problem: The screensurface hasn't got its final size...
-			// So it doesn't make much sense to call it here...
-			ShowHideResizers(true);
-			StretchSqueezeSurface();
-			
-			// Since it hadn't its final size, we don't really know if the pic is too large...
-			m_bStretchModeOn = false;
-			OnPoke();
 		}
 		private void ShowHideResizers(bool _bShow)
 		{
@@ -413,7 +398,7 @@ namespace Kinovea.ScreenManager
 		private void btnClose_Click(object sender, EventArgs e)
 		{
 			// Propagate to PlayerScreen which will report to ScreenManager.
-			if (m_CloseMeUI != null) { m_CloseMeUI(); }
+			m_ScreenUIHandler.ScreenUI_CloseAsked();
 		}
 		private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
 		{
@@ -430,10 +415,7 @@ namespace Kinovea.ScreenManager
 			// Signal itself as the active screen to the ScreenManager
 			//---------------------------------------------------------------------
 			
-			if (m_SetMeAsActiveScreenUI != null)
-			{ 
-				m_SetMeAsActiveScreenUI(); 
-			}
+			m_ScreenUIHandler.ScreenUI_SetAsActiveScreen();
 			
 			// 1. Ensure no DrawingText is in edit mode.
 			//m_FrameServer.Metadata.AllDrawingTextToNormalMode();
@@ -1300,14 +1282,7 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Focus();
 			}
 		}
-		private void DoInvalidate()
-		{
-			pbSurfaceScreen.Invalidate();
-		}
-		private void DoInitDecodingSize()
-		{
-			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.DecodingSize);
-		}
+		
 		#endregion
 
 		#region PanelCenter Events
@@ -1328,46 +1303,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Keyframes Panel
-		private void DoUpdateCapturedVideos()
-		{
-			// Update the list of Captured Videos.
-			// Similar to OrganizeKeyframe in PlayerScreen.
-			
-			pnlThumbnails.Controls.Clear();
-			
-			if(m_FrameServer.RecentlyCapturedVideos.Count > 0)
-			{
-				int iBoxIndex = 0;
-				int iPixelsOffset = 0;
-				int iPixelsSpacing = 20;
-				
-				foreach (CapturedVideo cv in m_FrameServer.RecentlyCapturedVideos)
-				{
-					CapturedVideoBox box = new CapturedVideoBox(cv);
-					SetupDefaultThumbBox(box);
-					
-					// Finish the setup
-					box.Left = iPixelsOffset + iPixelsSpacing;
-					box.pbThumbnail.Image = cv.Thumbnail;
-					//box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
-					//box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
-					
-					iPixelsOffset += (iPixelsSpacing + box.Width);
-
-					pnlThumbnails.Controls.Add(box);
-
-					iBoxIndex++;
-				}
-				
-				UndockKeyframePanel();
-				pnlThumbnails.Refresh();
-			}
-			else
-			{
-				DockKeyframePanel();
-			}
-
-		}
 		private void SetupDefaultThumbBox(UserControl _box)
 		{
 			_box.Top = 10;
@@ -2229,5 +2164,23 @@ namespace Kinovea.ScreenManager
 			return new Bitmap(memStr);
 		}
 		#endregion
+        
+		#region Capture device
+        private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
+        {
+        	if(!m_FrameServer.IsConnected)
+        	{
+        		// Prevent reentry.
+        		if(!m_bTryingToConnect)
+        		{
+        			m_bTryingToConnect = true;
+        			
+        			m_ScreenUIHandler.CaptureScreenUI_TryDeviceConnection();
+        			
+        			m_bTryingToConnect = false;
+        		}
+        	}
+        }
+        #endregion
 	}
 }

@@ -25,12 +25,6 @@ namespace Kinovea.ScreenManager
 {
     public abstract class AbstractScreen
     {
-    	public delegate void DelegateCloseMe(AbstractScreen _screen);
-        public delegate void DelegateSetMeAsActiveScreen(AbstractScreen _screen);        
-    	
-        public	DelegateCloseMe				CloseMe;
-        public DelegateSetMeAsActiveScreen SetMeAsActiveScreen;
-        
         public abstract Guid UniqueId
         {
             get;
@@ -53,8 +47,7 @@ namespace Kinovea.ScreenManager
         	get;
         }
 
-        public abstract void DisplayAsInactiveScreen();
-        public abstract void DisplayAsActiveScreen();
+        public abstract void DisplayAsActiveScreen(bool _bActive);
         public abstract void refreshUICulture();
         public abstract void BeforeClose();
         public abstract bool OnKeyPress(Keys _key);

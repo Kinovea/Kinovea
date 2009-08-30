@@ -103,6 +103,8 @@
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FrameServerCapture.cs" />
+    <Compile Include="CaptureScreen\ICaptureScreenUIHandler.cs" />
+    <Compile Include="CaptureScreen\IFrameServerContainer.cs" />
     <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs" />
     <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.Designer.cs">
       <DependentUpon>CapturedVideoBox.cs</DependentUpon>
@@ -132,6 +134,8 @@
     <Compile Include="Commands\ScreenManager\CommandSwapScreens.cs" />
     <Compile Include="Commands\ScreenManager\CommandToggleCommonControls.cs" />
     <Compile Include="CoordinateSystem.cs" />
+    <Compile Include="IScreenHandler.cs" />
+    <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
@@ -152,6 +156,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
     <Compile Include="PlayerScreen\Import\IMetadataParser.cs" />
+    <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
     <Compile Include="PlayerScreen\LineLengthHelper.cs" />

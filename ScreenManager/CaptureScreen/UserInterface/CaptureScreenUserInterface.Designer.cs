@@ -62,6 +62,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPointer = new System.Windows.Forms.Button();
         	this.pnlThumbnails = new System.Windows.Forms.Panel();
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
+        	this.tmrCaptureDeviceDetector = new System.Windows.Forms.Timer(this.components);
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
         	this.panelCenter.SuspendLayout();
@@ -589,6 +590,11 @@ namespace Kinovea.ScreenManager
         	this.pictureBox1.TabStop = false;
         	this.pictureBox1.Visible = false;
         	// 
+        	// tmrCaptureDeviceDetector
+        	// 
+        	this.tmrCaptureDeviceDetector.Interval = 1000;
+        	this.tmrCaptureDeviceDetector.Tick += new System.EventHandler(this.tmrCaptureDeviceDetector_Tick);
+        	// 
         	// CaptureScreenUserInterface
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -613,6 +619,7 @@ namespace Kinovea.ScreenManager
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Timer tmrCaptureDeviceDetector;
         private System.Windows.Forms.Button buttonRecord;
 
         #endregion

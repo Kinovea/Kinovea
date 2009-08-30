@@ -25,11 +25,13 @@ using System.Resources;
 using System.Threading;
 
 using Kinovea.Services;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
     public class CommandAddCaptureScreen : IUndoableCommand
     {
+    	#region Properties
         public string FriendlyName
         {
             get 
@@ -38,32 +40,42 @@ namespace Kinovea.ScreenManager
                 return rm.GetString("CommandAddCaptureScreen_FriendlyName", Thread.CurrentThread.CurrentUICulture);
             }
         }
+        #endregion
         
-        ScreenManagerKernel screenManagerKernel;
-
-        #region constructor
+        #region Members
+        ScreenManagerKernel m_ScreenManagerKernel;
+		#endregion
+        
+		#region constructor
         public CommandAddCaptureScreen(ScreenManagerKernel _smk, bool _bStoreState)
         {
-            screenManagerKernel = _smk;
-            if (_bStoreState) { screenManagerKernel.StoreCurrentState(); }
+            m_ScreenManagerKernel = _smk;
+            if (_bStoreState) { m_ScreenManagerKernel.StoreCurrentState(); }
         }
         #endregion
 
         public void Execute()
         {
-            CaptureScreen screen = new CaptureScreen();
-            
-            screen.SetMeAsActiveScreen += new AbstractScreen.DelegateSetMeAsActiveScreen(screenManagerKernel.Screen_SetActiveScreen);
-            screen.CloseMe += new AbstractScreen.DelegateCloseMe(screenManagerKernel.Screen_CloseAsked);
-            
+            CaptureScreen screen = new CaptureScreen(m_ScreenManagerKernel);
             screen.refreshUICulture(); 
-            screenManagerKernel.screenList.Add(screen);
+            m_ScreenManagerKernel.screenList.Add(screen);
             
-            screen.Activate();
+            // Try to connect right away.
+            /*bool bAtLeastOneDevice = m_ScreenManagerKernel.Capture_TryDeviceConnection(screen);
+        	
+        	// if no device, alert user.
+        	if(!bAtLeastOneDevice)
+        	{
+        		MessageBox.Show(
+        			"zero capture device, pebkac",
+               		"debug",
+               		MessageBoxButtons.OK,
+                	MessageBoxIcon.Exclamation);	
+        	}*/
         }
         public void Unexecute()
         {
-            screenManagerKernel.RecallState();
+            m_ScreenManagerKernel.RecallState();
         }
     }
 }

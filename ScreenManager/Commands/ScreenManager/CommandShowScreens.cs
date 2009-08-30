@@ -27,6 +27,11 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+	/// <summary>
+	/// This command is used to translate the screen list in actual screen panels.
+	/// We generally land here after a command modified the screen list.
+	/// We parse the list and make sure the panels are conform, by adding or removing them.
+	/// </summary>
     public class CommandShowScreens : ICommand 
     {
         public string FriendlyName
@@ -46,10 +51,7 @@ namespace Kinovea.ScreenManager
             screenManagerKernel = _smk;
         }
         #endregion
-
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
+        
         public void Execute()
         {
         	// - parse the current screen list and fill panels with screens.
@@ -115,14 +117,6 @@ namespace Kinovea.ScreenManager
             	
             }
 
-            /*
-            // ancien code :     
-            psui1.Name = "psui1";
-            psui1.Dock = DockStyle.Fill;
-            psui1.TabIndex = 0;
-			*/
-
-            
             // Update status bar.
             screenManagerKernel.UpdateStatusBar();
         }

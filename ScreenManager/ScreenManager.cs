@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,6 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
 	public delegate void DelegateDrawingUndrawn();
 	#endregion
 	
-    public class ScreenManagerKernel : IKernel , IMessageFilter
+    public class ScreenManagerKernel : IKernel, IScreenHandler, IMessageFilter
     {
         #region Imports Win32
         
@@ -66,19 +66,8 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Delegates
-
-        public delegate void OrganizeMenuProxy(Delegate _method);
-        private OrganizeMenuProxy m_OrganizeMenuProxy;
-        private delegate void DelegateOrganizeMenu();
-        
-        //private delegate void DelegateUpdateTrakerFrame(int _iFrame);
-        //private DelegateUpdateTrakerFrame m_DelegateUpdateTrakerFrame;
-
-        // Internes
-        public delegate void MMTimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
-        private MMTimerEventHandler m_DelegateMMTimerEventHandler;
-        
+        #region Internal delegates
+        private delegate void MMTimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
         #endregion
 
         #region Properties
@@ -100,7 +89,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-
         private UserControl _UI;
         private ResourceManager m_resManager;
         private bool m_bCancelLastCommand = false;
@@ -135,6 +123,7 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnu3DPlane = new ToolStripMenuItem();
 
         #region Synchronization
+        private MMTimerEventHandler m_DelegateMMTimerEventHandler;
         
         private uint    m_IdMultimediaTimer = 0; // Timer servant à contrôler l'état d'avancement de chaque vidéo pour prise de décision d'arrêt/relance.          
         
@@ -194,9 +183,6 @@ namespace Kinovea.ScreenManager
         }
         private void PlugDelegates()
         {
-
-            m_OrganizeMenuProxy = new OrganizeMenuProxy(((ScreenManagerUserInterface)this.UI).OrganizeMenuProxy);
-
             ((ScreenManagerUserInterface)this.UI).m_CallbackDropLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
             ((ScreenManagerUserInterface)this.UI).GotoFirst += new ScreenManagerUserInterface.GotoFirstHandler(CommonCtrlsGotoFirst);
             ((ScreenManagerUserInterface)this.UI).GotoLast += new ScreenManagerUserInterface.GotoLastHandler(CommonCtrlsGotoLast);
@@ -359,13 +345,19 @@ namespace Kinovea.ScreenManager
             mnuToggleCommonCtrls.ShortcutKeys = Keys.F5;
             mnuToggleCommonCtrls.Click += new EventHandler(mnuToggleCommonCtrlsOnClick);
             mnuToggleCommonCtrls.MergeAction = MergeAction.Append;
-
-            ToolStripSeparator mnuSepView = new ToolStripSeparator();
             
             //---------------------------------
             //Organisation du sous menu Screens
             //---------------------------------
-            ToolStripItem[] subScreens = new ToolStripItem[] { mnuOnePlayer, mnuTwoPlayers, mnuOneCapture, mnuTwoCaptures, mnuTwoMixed, mnuSepView, mnuSwapScreens, mnuToggleCommonCtrls };
+            ToolStripItem[] subScreens = new ToolStripItem[] { 	mnuOnePlayer,
+            														mnuTwoPlayers,
+            														new ToolStripSeparator(),
+            														mnuOneCapture, 
+            														mnuTwoCaptures, 
+            														mnuTwoMixed, 
+            														new ToolStripSeparator(), 
+            														mnuSwapScreens, 
+            														mnuToggleCommonCtrls };
             mnuCatchScreens.DropDownItems.AddRange(subScreens);
             #endregion
 
@@ -547,6 +539,371 @@ namespace Kinovea.ScreenManager
             {
                 screen.BeforeClose();
             }
+        }
+        #endregion
+        
+        #region IScreenHandler Implementation
+        public void Screen_SetActiveScreen(AbstractScreen _ActiveScreen)
+        {
+            //---------------------------------------------------------------------------------
+            // Cette fonction doit pouvoir être accédée déclenchée depuis les Screens.
+            // Les screens contiennent un delegate avec ce prototype, on injecte cette fonction 
+            // dans le delegate.
+            //---------------------------------------------------------------------------------
+            
+            // /!\ Eviter d'appeller SetAsActiveScreen à tout bout de champ
+            // La fonction OrganizeMenu est assez lourde au niveau de l'UI et peut
+            // monopoliser la pile de messages windows.
+
+            if (m_ActiveScreen != _ActiveScreen )
+            {
+                m_ActiveScreen = _ActiveScreen;
+                
+                if (screenList.Count > 1)
+                {
+                    m_ActiveScreen.DisplayAsActiveScreen(true);
+
+                    // Désactiver les autres
+                    foreach (AbstractScreen screen in screenList)
+                    {
+                        if (screen != _ActiveScreen)
+                        {
+                            screen.DisplayAsActiveScreen(false);
+                        }
+                    }
+                }
+            }
+
+            OrganizeMenus();
+
+        }
+        public void Screen_CloseAsked(AbstractScreen _SenderScreen)
+        {
+            _SenderScreen.BeforeClose();
+            
+            // Reorganise screens.
+            // We leverage the fact that screens are always weel ordered relative to menus.
+            if (_SenderScreen == screenList[0])
+            {
+                mnuCloseFileOnClick(null, EventArgs.Empty);
+            }
+            else
+            {
+                mnuCloseFile2OnClick(null, EventArgs.Empty);
+            }
+        }
+        public void Player_IsReady(PlayerScreen _screen, bool _bInitialisation)
+        {
+            // Appelé lors de changement de framerate.
+            if (m_bSynching)
+            {
+                SetSyncPoint(true);
+            }
+        }
+        public void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization)
+        {
+            // We actually don't care which video was updated.
+            // Set sync mode and reset sync.
+			log.Debug("Player_SelectionChanged() called.");
+            m_bSynching = false;
+
+            if ( (screenList.Count == 2))
+            {
+                if ((screenList[0] is PlayerScreen) && (screenList[1] is PlayerScreen))
+                {
+                    if (((PlayerScreen)screenList[0]).Full && ((PlayerScreen)screenList[1]).Full)
+                    {
+                        m_bSynching = true;
+                        ((PlayerScreen)screenList[0]).Synched = true;
+                        ((PlayerScreen)screenList[1]).Synched = true;
+
+                        if (_bInitialization)
+                        {
+                            // Static Sync
+                            m_iRightSyncFrame = 0;
+                            m_iLeftSyncFrame = 0;
+                            m_iSyncLag = 0;
+                            m_iCurrentFrame = 0;
+
+                            // Dynamic Sync
+                            ResetDynamicSyncFlags();
+                        }
+
+                        // Mise à jour trkFrame
+                        SetSyncLimits();
+                        ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
+
+                        // Mise à jour Players
+                        OnCommonPositionChanged(m_iCurrentFrame);
+
+                        // debug
+                        ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
+                    }
+                    else
+                    {
+                        // Not all screens are loaded with videos.
+                        ((PlayerScreen)screenList[0]).Synched = false;
+                        ((PlayerScreen)screenList[1]).Synched = false;
+                    }
+                }
+            }
+            else
+            {
+                // Only one screen, or not all screens are PlayerScreens.
+                switch (screenList.Count)
+                {
+                    case 1:
+                        if (screenList[0] is PlayerScreen)
+                        {
+                            ((PlayerScreen)screenList[0]).Synched = false;
+                        }
+                        break;
+                    case 2:
+                        if (screenList[0] is PlayerScreen)
+                        {
+                            ((PlayerScreen)screenList[0]).Synched = false;
+                        }
+                        if (screenList[1] is PlayerScreen)
+                        {
+                            ((PlayerScreen)screenList[1]).Synched = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (!m_bSynching) 
+            { 
+                StopMultimediaTimer();
+                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+            }
+
+        }
+        public bool Capture_TryDeviceConnection(CaptureScreen _screen)
+        {
+        	bool bAtLeastOneDevice = false;
+        	
+        	// This function is called periodically by
+        	// an empty Capture screen waiting for a device.
+        	// We don't show an error if no free device is found.
+        	log.Debug("Try to connect to a Capture Device.");
+        	
+        	// Check if there one and exactly one non-taken device and connect it to the screen.
+        	FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
+        	if ( videoDevices.Count == 1 )
+			{
+        		// todo: check if not already taken.
+        		_screen.FrameServer.SetDevice(videoDevices, 0);
+        		bAtLeastOneDevice = true;
+        	}
+        	else if(videoDevices.Count > 1)
+        	{
+        		// More than one device available.
+        		// todo: check which are already taken.
+        		// if only one left, connect it.
+        		// if several left, we'll need to ask the user.
+        		
+        		MessageBox.Show(
+        			"more than one capture device",
+               		"debug",
+               		MessageBoxButtons.OK,
+                	MessageBoxIcon.Exclamation);
+        		
+        		bAtLeastOneDevice = true;
+			}
+        	
+        	_screen.PostTryConnection();
+        	
+        	return bAtLeastOneDevice;
+        }
+        #endregion
+        
+        #region IMessageFilter Implementation
+        public bool PreFilterMessage(ref Message m)
+        {
+            //----------------------------------------------------------------------------
+            // Attention au niveau des performances avec cette fonction
+            // car du coup tous les WM_XXX windows passent par là
+            // WM_PAINT, WM_MOUSELEAVE de tous les contrôles, etc...
+            // Plus on la place haut dans la hiérarchie, plus elle plombe les perfs.
+            //
+            // Les actions de ce KeyHandler n'affectent pour la plupart que l'ActiveScreen
+            // (sauf en mode DualScreen)
+            //
+            // Si cette fonction interfère avec d'autres parties 
+            // (car elle redéfinie return, space, etc.) utiliser le delegate pool avec 
+            // DeactivateKeyboardHandler et ActivateKeyboardHandler
+            //----------------------------------------------------------------------------
+
+            bool bWasHandled = false;
+			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
+            	
+			if (m_bAllowKeyboardHandler && smui != null)
+            {
+                m_bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
+                bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
+
+                if ( (m.Msg == WM_KEYDOWN)  && 
+                     (!m_bAdjustingImage)   &&
+                     ((screenList.Count > 0 && m_ActiveScreen != null) || (bThumbnailsViewerVisible)))
+                {
+                    Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
+
+                    switch (keyCode)
+                    {
+                    	case Keys.Delete:
+                    	case Keys.Add:
+                    	case Keys.Subtract:
+                    	case Keys.F2:
+                    	case Keys.F6:
+                    	case Keys.F7:
+                            {
+                    			//------------------------------------------------
+                    			// These keystrokes impact only the active screen.
+                    			//------------------------------------------------
+                    			if(!bThumbnailsViewerVisible)
+                    			{       
+									bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);
+                    			}
+								else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+                    			}
+                    			break;
+                            }
+                    	case Keys.Escape:
+                    	case Keys.F11:
+                    	case Keys.Down:
+                    	case Keys.Up:
+                            {
+                    			//---------------------------------------------------
+                    			// These keystrokes impact each screen independently.
+                    			//---------------------------------------------------
+                    			if(!bThumbnailsViewerVisible)
+                    			{
+	                                foreach (AbstractScreen abScreen in screenList)
+	                                {
+	                                    bWasHandled = abScreen.OnKeyPress(keyCode);
+	                                }
+                    			}
+                    			else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+                    			}
+                                break;
+                            }
+                        case Keys.Space:
+                    	case Keys.Return:
+                    	case Keys.Left:
+                    	case Keys.Right:
+                    	case Keys.End:
+                    	case Keys.Home:
+                            {
+                                //---------------------------------------------------
+                    			// These keystrokes impact both screens as a whole.
+                    			//---------------------------------------------------
+                               	if(!bThumbnailsViewerVisible)
+                    			{
+                               		if (screenList.Count == 2)
+	                                {
+                               			if(m_bCommonControlsVisible)
+                               			{
+                               				bWasHandled = OnKeyPress(keyCode);
+                               			}
+                               			else
+                               			{
+                               				bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
+                               			}
+	                                }
+	                                else if(screenList.Count == 1)
+	                                {
+	                                	bWasHandled = screenList[0].OnKeyPress(keyCode);
+	                                }	
+                               	}
+                    			else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                    			}
+                                break;
+                            }
+                    	//-------------------------------------------------
+                    	// All the remaining keystrokes impact both screen, 
+                    	// even if the common controls aren't visible.
+                    	//-------------------------------------------------
+                        case Keys.PageUp:
+                    	case Keys.PageDown:
+                            {
+                    			// Change active screen.
+                    			if(!bThumbnailsViewerVisible)
+                    			{
+                    				if(m_bSynching)
+                               		{
+                    					ActivateOtherScreen();
+                    					bWasHandled = true;
+                    				}
+                    			}
+                    			else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                    			}
+                    			break;
+                    		}
+                        case Keys.F8:
+                        	{
+	                            // Go to sync frame. 
+	                            if(!bThumbnailsViewerVisible)
+	                    		{
+	                            	if(m_bSynching)
+                               		{
+		                                if (m_iSyncLag > 0)
+		                                {
+		                                    m_iCurrentFrame = m_iRightSyncFrame;
+		                                }
+		                                else
+		                                {
+		                                    m_iCurrentFrame = m_iLeftSyncFrame;
+		                                }
+		
+		                                // Update
+		                                OnCommonPositionChanged(m_iCurrentFrame);
+		                                smui.UpdateTrkFrame(m_iCurrentFrame);
+		                                bWasHandled = true;
+	                            	}
+	                            }
+	                            else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                    			}
+	                            break;
+                        	}
+                        case Keys.F9:
+                            {
+                                //---------------------------------------
+                                // Fonctions associées : 
+                                // Resynchroniser après déplacement individuel
+                                //---------------------------------------
+                               	if(!bThumbnailsViewerVisible)
+                                {
+                               		if(m_bSynching)
+                               		{
+                               			SyncCatch();
+                               			bWasHandled = true;
+                               		}
+                                }
+                               	else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                    			}
+                                break;
+                            }
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            return bWasHandled;
         }
         #endregion
         
@@ -1900,143 +2257,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Delguées appellées depuis les Screens
-        public void Screen_SetActiveScreen(AbstractScreen _ActiveScreen)
-        {
-            //---------------------------------------------------------------------------------
-            // Cette fonction doit pouvoir être accédée déclenchée depuis les Screens.
-            // Les screens contiennent un delegate avec ce prototype, on injecte cette fonction 
-            // dans le delegate.
-            //---------------------------------------------------------------------------------
-            
-            // /!\ Eviter d'appeller SetAsActiveScreen à tout bout de champ
-            // La fonction OrganizeMenu est assez lourde au niveau de l'UI et peut
-            // monopoliser la pile de messages windows.
-
-            if (m_ActiveScreen != _ActiveScreen )
-            {
-                m_ActiveScreen = _ActiveScreen;
-                
-                if (screenList.Count > 1)
-                {
-                    m_ActiveScreen.DisplayAsActiveScreen();
-
-                    // Désactiver les autres
-                    foreach (AbstractScreen screen in screenList)
-                    {
-                        if (screen != _ActiveScreen)
-                        {
-                            screen.DisplayAsInactiveScreen();
-                        }
-                    }
-                }
-            }
-
-            OrganizeMenus();
-
-        }
-        public void Screen_CloseAsked(AbstractScreen _SenderScreen)
-        {
-            _SenderScreen.BeforeClose();
-            
-            // Reorganise screens.
-            // We leverage the fact that screens are always weel ordered relative to menus.
-            if (_SenderScreen == screenList[0])
-            {
-                mnuCloseFileOnClick(null, EventArgs.Empty);
-            }
-            else
-            {
-                mnuCloseFile2OnClick(null, EventArgs.Empty);
-            }
-        }
-        public void Player_IsReady(PlayerScreen _screen, bool _bInitialisation)
-        {
-            // Appelé lors de changement de framerate.
-            if (m_bSynching)
-            {
-                SetSyncPoint(true);
-            }
-        }
-        public void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization)
-        {
-            // We actually don't care which video was updated.
-            // Set sync mode and reset sync.
-			log.Debug("Player_SelectionChanged() called.");
-            m_bSynching = false;
-
-            if ( (screenList.Count == 2))
-            {
-                if ((screenList[0] is PlayerScreen) && (screenList[1] is PlayerScreen))
-                {
-                    if (((PlayerScreen)screenList[0]).Full && ((PlayerScreen)screenList[1]).Full)
-                    {
-                        m_bSynching = true;
-                        ((PlayerScreen)screenList[0]).Synched = true;
-                        ((PlayerScreen)screenList[1]).Synched = true;
-
-                        if (_bInitialization)
-                        {
-                            // Static Sync
-                            m_iRightSyncFrame = 0;
-                            m_iLeftSyncFrame = 0;
-                            m_iSyncLag = 0;
-                            m_iCurrentFrame = 0;
-
-                            // Dynamic Sync
-                            ResetDynamicSyncFlags();
-                        }
-
-                        // Mise à jour trkFrame
-                        SetSyncLimits();
-                        ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
-
-                        // Mise à jour Players
-                        OnCommonPositionChanged(m_iCurrentFrame);
-
-                        // debug
-                        ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
-                    }
-                    else
-                    {
-                        // Not all screens are loaded with videos.
-                        ((PlayerScreen)screenList[0]).Synched = false;
-                        ((PlayerScreen)screenList[1]).Synched = false;
-                    }
-                }
-            }
-            else
-            {
-                // Only one screen, or not all screens are PlayerScreens.
-                switch (screenList.Count)
-                {
-                    case 1:
-                        if (screenList[0] is PlayerScreen)
-                        {
-                            ((PlayerScreen)screenList[0]).Synched = false;
-                        }
-                        break;
-                    case 2:
-                        if (screenList[0] is PlayerScreen)
-                        {
-                            ((PlayerScreen)screenList[0]).Synched = false;
-                        }
-                        if (screenList[1] is PlayerScreen)
-                        {
-                            ((PlayerScreen)screenList[1]).Synched = false;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            if (!m_bSynching) 
-            { 
-                StopMultimediaTimer();
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
-            }
-
-        }
         #endregion
 
         #region Delegates called from anywhere, through Services
@@ -2106,191 +2326,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Keyboard Handling
-        public bool PreFilterMessage(ref Message m)
-        {
-            //----------------------------------------------------------------------------
-            // Attention au niveau des performances avec cette fonction
-            // car du coup tous les WM_XXX windows passent par là
-            // WM_PAINT, WM_MOUSELEAVE de tous les contrôles, etc...
-            // Plus on la place haut dans la hiérarchie, plus elle plombe les perfs.
-            //
-            // Les actions de ce KeyHandler n'affectent pour la plupart que l'ActiveScreen
-            // (sauf en mode DualScreen)
-            //
-            // Si cette fonction interfère avec d'autres parties 
-            // (car elle redéfinie return, space, etc.) utiliser le delegate pool avec 
-            // DeactivateKeyboardHandler et ActivateKeyboardHandler
-            //----------------------------------------------------------------------------
-
-            bool bWasHandled = false;
-			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
-            	
-			if (m_bAllowKeyboardHandler && smui != null)
-            {
-                m_bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
-                bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
-
-                if ( (m.Msg == WM_KEYDOWN)  && 
-                     (!m_bAdjustingImage)   &&
-                     ((screenList.Count > 0 && m_ActiveScreen != null) || (bThumbnailsViewerVisible)))
-                {
-                    Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
-
-                    switch (keyCode)
-                    {
-                    	case Keys.Delete:
-                    	case Keys.Add:
-                    	case Keys.Subtract:
-                    	case Keys.F2:
-                    	case Keys.F6:
-                    	case Keys.F7:
-                            {
-                    			//------------------------------------------------
-                    			// These keystrokes impact only the active screen.
-                    			//------------------------------------------------
-                    			if(!bThumbnailsViewerVisible)
-                    			{       
-									bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);
-                    			}
-								else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
-                    			}
-                    			break;
-                            }
-                    	case Keys.Escape:
-                    	case Keys.F11:
-                    	case Keys.Down:
-                    	case Keys.Up:
-                            {
-                    			//---------------------------------------------------
-                    			// These keystrokes impact each screen independently.
-                    			//---------------------------------------------------
-                    			if(!bThumbnailsViewerVisible)
-                    			{
-	                                foreach (AbstractScreen abScreen in screenList)
-	                                {
-	                                    bWasHandled = abScreen.OnKeyPress(keyCode);
-	                                }
-                    			}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
-                    			}
-                                break;
-                            }
-                        case Keys.Space:
-                    	case Keys.Return:
-                    	case Keys.Left:
-                    	case Keys.Right:
-                    	case Keys.End:
-                    	case Keys.Home:
-                            {
-                                //---------------------------------------------------
-                    			// These keystrokes impact both screens as a whole.
-                    			//---------------------------------------------------
-                               	if(!bThumbnailsViewerVisible)
-                    			{
-                               		if (screenList.Count == 2)
-	                                {
-                               			if(m_bCommonControlsVisible)
-                               			{
-                               				bWasHandled = OnKeyPress(keyCode);
-                               			}
-                               			else
-                               			{
-                               				bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
-                               			}
-	                                }
-	                                else if(screenList.Count == 1)
-	                                {
-	                                	bWasHandled = screenList[0].OnKeyPress(keyCode);
-	                                }	
-                               	}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-                                break;
-                            }
-                    	//-------------------------------------------------
-                    	// All the remaining keystrokes impact both screen, 
-                    	// even if the common controls aren't visible.
-                    	//-------------------------------------------------
-                        case Keys.PageUp:
-                    	case Keys.PageDown:
-                            {
-                    			// Change active screen.
-                    			if(!bThumbnailsViewerVisible)
-                    			{
-                    				if(m_bSynching)
-                               		{
-                    					ActivateOtherScreen();
-                    					bWasHandled = true;
-                    				}
-                    			}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-                    			break;
-                    		}
-                        case Keys.F8:
-                        	{
-	                            // Go to sync frame. 
-	                            if(!bThumbnailsViewerVisible)
-	                    		{
-	                            	if(m_bSynching)
-                               		{
-		                                if (m_iSyncLag > 0)
-		                                {
-		                                    m_iCurrentFrame = m_iRightSyncFrame;
-		                                }
-		                                else
-		                                {
-		                                    m_iCurrentFrame = m_iLeftSyncFrame;
-		                                }
-		
-		                                // Update
-		                                OnCommonPositionChanged(m_iCurrentFrame);
-		                                smui.UpdateTrkFrame(m_iCurrentFrame);
-		                                bWasHandled = true;
-	                            	}
-	                            }
-	                            else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-	                            break;
-                        	}
-                        case Keys.F9:
-                            {
-                                //---------------------------------------
-                                // Fonctions associées : 
-                                // Resynchroniser après déplacement individuel
-                                //---------------------------------------
-                               	if(!bThumbnailsViewerVisible)
-                                {
-                               		if(m_bSynching)
-                               		{
-                               			SyncCatch();
-                               			bWasHandled = true;
-                               		}
-                                }
-                               	else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-                                break;
-                            }
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            return bWasHandled;
-        }
         private bool OnKeyPress(Keys _keycode)
         {
         	//---------------------------------------------------------
