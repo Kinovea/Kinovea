@@ -249,6 +249,10 @@
    
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export naar PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Vloeiend</value></data>
+   
+   
+   
+   
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ga naar Kernbeeld</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Verberg</value></data>

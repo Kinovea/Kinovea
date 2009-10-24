@@ -1672,6 +1672,42 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Image Format.
+        /// </summary>
+        internal static string mnuFormat {
+            get {
+                return ResourceManager.GetString("mnuFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto Detection.
+        /// </summary>
+        internal static string mnuFormatAuto {
+            get {
+                return ResourceManager.GetString("mnuFormatAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Force 16:9.
+        /// </summary>
+        internal static string mnuFormatForce169 {
+            get {
+                return ResourceManager.GetString("mnuFormatForce169", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Force 4:3.
+        /// </summary>
+        internal static string mnuFormatForce43 {
+            get {
+                return ResourceManager.GetString("mnuFormatForce43", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Go to Key Image.
         /// </summary>
         internal static string mnuGotoKeyframe {

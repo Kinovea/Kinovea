@@ -291,7 +291,6 @@ namespace Kinovea.Root
             mnuHistoryVideo2.Visible = false;
             mnuHistoryVideo2.Click += new EventHandler(mnuHistoryVideo2OnClick);
 
-
             ToolStripMenuItem mnuHistoryVideo3 = new ToolStripMenuItem();
             mnuHistoryVideo3.MergeAction = MergeAction.Append;
             mnuHistoryVideo3.Visible = false;
