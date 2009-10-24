@@ -175,6 +175,22 @@ namespace Kinovea.ScreenManager
 				RefreshImage();
             }
         }
+        public VideoFiles.AspectRatio AspectRatio
+        {
+            get { return m_FrameServer.VideoFile.Infos.eAspectRatio; }
+            set
+            {
+                m_FrameServer.VideoFile.ChangeAspectRatio(value);
+                
+                if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				{
+					m_PlayerScreenUI.ImportSelectionToMemory(true);
+				}
+                
+                m_PlayerScreenUI.StretchSqueezeSurface();
+                RefreshImage();
+            }
+        }
         public bool Mirrored
         {
             get { return m_FrameServer.Metadata.Mirrored; }

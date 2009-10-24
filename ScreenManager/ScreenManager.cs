@@ -118,6 +118,10 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnuToggleCommonCtrls = new ToolStripMenuItem();
 
         public ToolStripMenuItem mnuDeinterlace = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFormat = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFormatAuto = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFormatForce43 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
         public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
         public ToolStripMenuItem mnu3DPlane = new ToolStripMenuItem();
@@ -365,7 +369,7 @@ namespace Kinovea.ScreenManager
             ToolStripMenuItem mnuCatchImage = new ToolStripMenuItem();
             mnuCatchImage.MergeIndex = 3; // (Image)
             mnuCatchImage.MergeAction = MergeAction.MatchOnly;
-
+            
             // Deinterlace
             mnuDeinterlace.Tag = new ItemResourceInfo(resManager, "mnuDeinterlace");
             mnuDeinterlace.Text = ((ItemResourceInfo)mnuDeinterlace.Tag).resManager.GetString(((ItemResourceInfo)mnuDeinterlace.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -373,7 +377,39 @@ namespace Kinovea.ScreenManager
             mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
             mnuDeinterlace.Click += new EventHandler(mnuDeinterlaceOnClick);
             mnuDeinterlace.MergeAction = MergeAction.Append;
+            
+            
+            #region Formats
+            
+            // Format Auto
+            mnuFormatAuto.Tag = new ItemResourceInfo(resManager, "mnuFormatAuto");
+            mnuFormatAuto.Text = ((ItemResourceInfo)mnuFormatAuto.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatAuto.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFormatAuto.Checked = true;
+            mnuFormatAuto.Click += new EventHandler(mnuFormatAutoOnClick);
+            mnuFormatAuto.MergeAction = MergeAction.Append;
 
+            // Format 4:3
+            mnuFormatForce43.Tag = new ItemResourceInfo(resManager, "mnuFormatForce43");
+            mnuFormatForce43.Text = ((ItemResourceInfo)mnuFormatForce43.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatForce43.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFormatForce43.Click += new EventHandler(mnuFormatForce43OnClick);
+            mnuFormatForce43.MergeAction = MergeAction.Append;
+
+            // Format 16:9
+            mnuFormatForce169.Tag = new ItemResourceInfo(resManager, "mnuFormatForce169");
+            mnuFormatForce169.Text = ((ItemResourceInfo)mnuFormatForce169.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatForce169.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFormatForce169.Click += new EventHandler(mnuFormatForce169OnClick);
+            mnuFormatForce169.MergeAction = MergeAction.Append;
+            
+            ToolStripSeparator mnuSepFormats = new ToolStripSeparator();
+            
+            // Image Format
+            mnuFormat.Tag = new ItemResourceInfo(resManager, "mnuFormat");
+            mnuFormat.Text = ((ItemResourceInfo)mnuFormat.Tag).resManager.GetString(((ItemResourceInfo)mnuFormat.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFormat.MergeAction = MergeAction.Append;
+            mnuFormat.DropDownItems.AddRange(new ToolStripItem[] { mnuFormatAuto, mnuSepFormats, mnuFormatForce43, mnuFormatForce169});
+            
+            #endregion
+                        
             // Mirror
             mnuMirror.Tag = new ItemResourceInfo(resManager, "mnuMirror");
             mnuMirror.Text = ((ItemResourceInfo)mnuMirror.Tag).resManager.GetString(((ItemResourceInfo)mnuMirror.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -409,7 +445,8 @@ namespace Kinovea.ScreenManager
             //---------------------------------
             mnuCatchImage.DropDownItems.AddRange(new ToolStripItem[] 
 													{ 
-                                                   		mnuDeinterlace, 
+                                                   		mnuDeinterlace,
+                                                   		mnuFormat,
                                                    		mnuSep, 
                                                    		m_VideoFilters[(int)VideoFilterType.AutoLevels].Menu,  
                                                    		m_VideoFilters[(int)VideoFilterType.AutoContrast].Menu,  
@@ -1011,6 +1048,7 @@ namespace Kinovea.ScreenManager
                         mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
                         mnuLoadAnalysis.Enabled = true;
                         mnuDeinterlace.Checked = player.Deinterlaced;
+                        ConfigureImageFormatMenus(player);
                         mnuMirror.Checked = player.Mirrored;
                         mnuGrid.Checked = player.ShowGrid;
                         mnu3DPlane.Checked = player.Show3DPlane;
@@ -1041,6 +1079,7 @@ namespace Kinovea.ScreenManager
                 mnuLoadAnalysis.Enabled = false;
                 mnuSave.Enabled = false;
 				mnuDeinterlace.Checked = false;
+				ConfigureImageFormatMenus(null);
 				mnuMirror.Checked = false;
                 mnuGrid.Checked = false;
                 mnu3DPlane.Checked = false;
@@ -1253,7 +1292,33 @@ namespace Kinovea.ScreenManager
         		}
         	}
         }
-
+        private void ConfigureImageFormatMenus(PlayerScreen _player)
+        {
+        	mnuFormatAuto.Checked = false;
+        	mnuFormatForce43.Checked = false;
+        	mnuFormatForce169.Checked = false;
+        	
+        	if(_player != null)
+        	{
+	        	switch(_player.AspectRatio)
+	        	{
+	        		case VideoFiles.AspectRatio.Force43:
+	        			mnuFormatForce43.Checked = true;
+	        			break;
+	        		case VideoFiles.AspectRatio.Force169:
+	        			mnuFormatForce169.Checked = true;
+	        			break;
+	        		case VideoFiles.AspectRatio.AutoDetect:
+	        		default:
+	        			mnuFormatAuto.Checked = true;
+	        			break;
+	        	}
+        	}
+        	else
+        	{
+        		mnuFormatAuto.Checked = true;
+        	}
+        }
         #region Menus events handlers
 
         #region File
@@ -2033,6 +2098,48 @@ namespace Kinovea.ScreenManager
         		player.Deinterlaced = mnuDeinterlace.Checked;	
         	}
         }
+        private void mnuFormatAutoOnClick(object sender, EventArgs e)
+        {
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(player != null)
+        	{
+        		if(player.AspectRatio != VideoFiles.AspectRatio.AutoDetect)
+        		{
+	        		mnuFormatForce43.Checked = false;
+	        		mnuFormatForce169.Checked = false;
+	        		mnuFormatAuto.Checked = true;
+	        		player.AspectRatio = VideoFiles.AspectRatio.AutoDetect;	
+        		}
+        	}
+        }
+        private void mnuFormatForce43OnClick(object sender, EventArgs e)
+        {
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(player != null)
+        	{
+        		if(player.AspectRatio != VideoFiles.AspectRatio.Force43)
+        		{
+	        		mnuFormatForce43.Checked = true;
+	        		mnuFormatForce169.Checked = false;
+	        		mnuFormatAuto.Checked = false;
+	        		player.AspectRatio = VideoFiles.AspectRatio.Force43;
+        		}
+        	}
+        }
+        private void mnuFormatForce169OnClick(object sender, EventArgs e)
+        {
+        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(player != null)
+        	{
+        		if(player.AspectRatio != VideoFiles.AspectRatio.Force169)
+        		{
+	        		mnuFormatForce43.Checked = false;
+	        		mnuFormatForce169.Checked = true;
+	        		mnuFormatAuto.Checked = false;
+	        		player.AspectRatio = VideoFiles.AspectRatio.Force169;
+        		}
+        	}
+        }        
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
         	PlayerScreen player = m_ActiveScreen as PlayerScreen;
@@ -3372,7 +3479,7 @@ namespace Kinovea.ScreenManager
 		Mosaic,
 		Reverse,
 		NumberOfVideoFilters
-	};
+	};	
     #endregion
 
 }

@@ -1774,7 +1774,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Auto Stretch & Manual Resize
-		private void StretchSqueezeSurface()
+		public void StretchSqueezeSurface()
 		{
 			
 			if (m_FrameServer.Loaded)

@@ -208,7 +208,9 @@ namespace VideoFiles
 		bool	CanExtractToMemory(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, int _maxSeconds, int _maxMemory);
 		
 		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode);
-		
+
+		void	ChangeAspectRatio(AspectRatio _aspectRatio);
+
 		SaveResult Save( String^ _FilePath, int FrameInterval, int64_t _iSelStart, int64_t _iSelEnd, String^ _Metadata, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap^ _delegateGetOutputBitmap);
 
 		void Unload();
@@ -233,6 +235,7 @@ namespace VideoFiles
 		bool	RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		void	ResetPrimarySelection(void);
 		void	ResetInfosVideo(void);
+		void	SetImageGeometry(void);
 
 #pragma endregion
 			

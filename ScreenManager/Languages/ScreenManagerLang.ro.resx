@@ -249,6 +249,10 @@
    
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export în format PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificator</value></data>
+   
+   
+   
+   
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Mergi la cadrul cheie </value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grilă</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Ascunde</value></data>

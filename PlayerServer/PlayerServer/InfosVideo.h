@@ -24,6 +24,14 @@ namespace Kinovea
 {
 	namespace VideoFiles
 	{
+
+		public enum class AspectRatio
+		{
+			AutoDetect,
+			Force43,
+			Force169
+		};
+
 		public ref class InfosVideo
 		{
 			// Info structure for a video.
@@ -38,7 +46,8 @@ namespace Kinovea
 				int		iSampleAspectRatioNumerator;
 				int		iSampleAspectRatioDenominator;
 				bool	bIsCodecMpeg2;					// Used to adapt pixel ratio on output.
-				
+				AspectRatio eAspectRatio;				// Image format the user forces (auto, 4:3, 16:9).
+
 				double  fFps;
 				bool    bFpsIsReliable;					
 				int		iFrameInterval;					// in Milliseconds.
