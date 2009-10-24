@@ -46,19 +46,22 @@ namespace Kinovea.Root
         [STAThread]
         static void Main()
         {
+        	AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+            	
             //--------------------------------------------------------
             // Each time the program runs, we try to register a mutex.
             // If it fails, we are already running. 
             //--------------------------------------------------------
             if (Program.FirstInstance)
             {
+            	
             	SanityCheckDirectories();
             	
                 log.Debug("Kinovea starting.");
                 log.Debug("Application level initialisations.");
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-
+                
                 log.Debug("Show SplashScreen.");
                 FormSplashScreen splashForm = new FormSplashScreen();
                 splashForm.Show();
@@ -90,5 +93,20 @@ namespace Kinovea.Root
         	   	Directory.CreateDirectory(colDir);
         	}
         }
+        private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
+		{
+			Exception ex = (Exception)args.ExceptionObject;
+			
+			//Dump Exception
+			string name = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
+		
+			using (StreamWriter sw = File.AppendText(name))
+			{
+				sw.WriteLine(ex.Message);
+				sw.Write(ex.Source);
+				sw.Write(ex.StackTrace);
+				sw.Close();
+			}
+		}
     }
 }
