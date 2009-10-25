@@ -47,14 +47,13 @@ namespace Kinovea.Root
         static void Main()
         {
         	AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
-            	
+            
             //--------------------------------------------------------
             // Each time the program runs, we try to register a mutex.
             // If it fails, we are already running. 
             //--------------------------------------------------------
             if (Program.FirstInstance)
             {
-            	
             	SanityCheckDirectories();
             	
                 log.Debug("Kinovea starting.");
@@ -66,7 +65,7 @@ namespace Kinovea.Root
                 FormSplashScreen splashForm = new FormSplashScreen();
                 splashForm.Show();
                 splashForm.Update();
-
+				
                 RootKernel kernel = new RootKernel();
                 kernel.Prepare();
 
@@ -98,9 +97,10 @@ namespace Kinovea.Root
 			Exception ex = (Exception)args.ExceptionObject;
 			
 			//Dump Exception
+			string prefDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
 			string name = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
 		
-			using (StreamWriter sw = File.AppendText(name))
+			using (StreamWriter sw = File.AppendText(prefDir + name))
 			{
 				sw.WriteLine(ex.Message);
 				sw.Write(ex.Source);
