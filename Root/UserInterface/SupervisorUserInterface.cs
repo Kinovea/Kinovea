@@ -59,14 +59,13 @@ namespace Kinovea.Root
         }
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
-        	// TODO: Check command line args in addition to prefs.
-            if (m_PrefManager.ExplorerVisible)
+        	if(CommandLineArgumentManager.Instance().HideExplorer || !m_PrefManager.ExplorerVisible)
+        	{
+        		CollapseExplorer();
+        	}
+        	else
             {
                 ExpandExplorer(true);
-            }
-            else
-            {
-                CollapseExplorer();
             }
             m_bInitialized = true;
         }

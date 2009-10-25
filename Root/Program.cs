@@ -65,7 +65,7 @@ namespace Kinovea.Root
                 FormSplashScreen splashForm = new FormSplashScreen();
                 splashForm.Show();
                 splashForm.Update();
-				
+                
                 RootKernel kernel = new RootKernel();
                 kernel.Prepare();
 
@@ -96,7 +96,7 @@ namespace Kinovea.Root
 		{
 			Exception ex = (Exception)args.ExceptionObject;
 			
-			//Dump Exception
+			//Dump Exception in a dedicated file.
 			string prefDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
 			string name = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
 		
@@ -107,6 +107,12 @@ namespace Kinovea.Root
 				sw.Write(ex.StackTrace);
 				sw.Close();
 			}
+			
+			// Dump again in the log.
+			log.Error("Unhandled Crash.");
+			log.Error(ex.Message);
+			log.Error(ex.Source);
+			log.Error(ex.StackTrace);
 		}
     }
 }

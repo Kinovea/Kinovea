@@ -125,27 +125,6 @@ namespace Kinovea.FileBrowser
 			Application.Idle -= new EventHandler(this.IdleDetector);
 			m_bInitializing = false;
 			
-			#region Disabled for eating too much time (2 sec...)
-			// Expand to the last directory browsed before app was closed.
-			/*log.Debug("Application is idle. Reload last browsed directory.");
-            string lastDirectory = m_PreferencesManager.LastBrowsedDirectory;
-            if (Directory.Exists(lastDirectory))
-            {
-            	m_bExpanding = true;
-            	log.Debug("Start - Expand a node");
-            	expTree1.ExpandANode(lastDirectory);
-            	log.Debug("End - Expand a node");
-            	if(expTree1.SelectedItem != null)
-            	{
-            		m_CurrentExptreeItem = expTree1.SelectedItem;
-            	}
-            	m_bExpanding = false;
-            }
-            
-            log.Debug("Last dir reloaded.");
-			 */
-			#endregion
-			
 			// Now that we are at full size, we can load splitters from prefs.
 			splitExplorerFiles.SplitterDistance = m_PreferencesManager.ExplorerFilesSplitterDistance;
 			splitShortcutsFiles.SplitterDistance = m_PreferencesManager.ShortcutsFilesSplitterDistance;

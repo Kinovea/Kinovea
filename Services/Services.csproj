@@ -74,6 +74,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineArgumentManager.cs" />
+    <Compile Include="CommandLineArgumentException.cs" />
+    <Compile Include="CommandLineArgumentParser.cs" />
     <Compile Include="DrawtimeFilterOutput.cs" />
     <Compile Include="InfosTextDecoration.cs" />
     <Compile Include="CommandManager.cs" />
