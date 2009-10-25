@@ -110,6 +110,12 @@ namespace Kinovea.Root
             // Get Manager for i18n
             RootResourceManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
             
+            // Initialise command line parser and get the arguments.
+            CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
+            am.InitializeComandLineParser();
+            string[] args = Environment.GetCommandLineArgs();
+            am.ParseArguments(args);
+            
             log.Debug("Build the modules tree.");
             BuildSubTree();
             
@@ -137,16 +143,15 @@ namespace Kinovea.Root
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(pm.UILanguage);
             RefreshUICulture();
             CheckLanguageMenu();
-            
-            // Parse command line arguments
-            //ArgumentsManager am = ArgumentsManager.Instance();
-            //am.InitializeComandLineParser();
-            //am.ParseArguments(args);
-            string[] args = Environment.GetCommandLineArgs();
         }
         public void Launch()
         {
             log.Debug("Calling Application.Run() to boot up the UI.");
+            PrintInitialConf();
+            if(CommandLineArgumentManager.Instance().InputFile != null)
+            {
+            	ScreenManager.PrepareScreen();
+            }
             Application.Run(MainWindow);
         }
         #endregion
@@ -925,7 +930,16 @@ namespace Kinovea.Root
             // Pour qu'elles ne soient pas modales, quand même globales, etc.
             _form.Owner = MainWindow;
         }
-        
+        private void PrintInitialConf()
+        {
+        	CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
+        	
+            log.Debug("Initial configuration:");
+            log.Debug("InputFile : " + am.InputFile);
+            log.Debug("SpeedPercentage : " + am.SpeedPercentage.ToString());
+            log.Debug("StretchImage : " + am.StretchImage.ToString());
+            log.Debug("HideExplorer : " + am.HideExplorer.ToString());
+        }
         #endregion
 
     }

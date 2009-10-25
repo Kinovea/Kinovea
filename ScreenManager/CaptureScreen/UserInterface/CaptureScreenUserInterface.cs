@@ -193,7 +193,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public Methods
-		
 		public void PostTryConnection()
 		{
 			if(m_FrameServer.IsConnected)

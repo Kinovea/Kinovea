@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
         private bool m_bCancelLastCommand = false;
 
         //List of screens ( 0..n )
-        public List<AbstractScreen> screenList;
+        public List<AbstractScreen> screenList = new List<AbstractScreen>();
         
         private bool m_bAdjustingImage = false;
         public AbstractScreen m_ActiveScreen = null;
@@ -151,7 +151,7 @@ namespace Kinovea.ScreenManager
 
         private bool m_bAllowKeyboardHandler;
 
-        private List<ScreenManagerState> mStoredStates;
+        private List<ScreenManagerState> m_StoredStates  = new List<ScreenManagerState>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -164,15 +164,13 @@ namespace Kinovea.ScreenManager
             
             //Gestion i18n
             resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            screenList = new List<AbstractScreen>();
-            mStoredStates = new List<ScreenManagerState>();
             
             // Callbacks du MultimediaTimer.
             m_DelegateMMTimerEventHandler = new MMTimerEventHandler(MultimediaTimer_Tick);
             m_bAllowKeyboardHandler = true;
 
             UI = new ScreenManagerUserInterface();
-
+            
             PlugDelegates();
             InitializeVideoFilters();
             
@@ -211,6 +209,19 @@ namespace Kinovea.ScreenManager
         	m_VideoFilters[(int)VideoFilterType.EdgesOnly] = new VideoFilterEdgesOnly();
 			m_VideoFilters[(int)VideoFilterType.Mosaic] = new VideoFilterMosaic();
         	m_VideoFilters[(int)VideoFilterType.Reverse] = new VideoFilterReverse();
+        }
+        public void PrepareScreen()
+        {
+        	// Prepare a screen to hold the command line argument file.
+        	
+        	IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
+            CommandManager.Instance().LaunchUndoableCommand(caps);
+            
+            ICommand css = new CommandShowScreens(this);
+            CommandManager.LaunchCommand(css);
+            
+            // Mettre à jour les menus
+            OrganizeMenus();
         }
         #endregion
 
@@ -1319,6 +1330,7 @@ namespace Kinovea.ScreenManager
         		mnuFormatAuto.Checked = true;
         	}
         }
+        
         #region Menus events handlers
 
         #region File
@@ -2186,16 +2198,8 @@ namespace Kinovea.ScreenManager
         #region Déléguées appellées depuis l'UI
         public void DropLoadMovie(string _FilePath, int _iScreen)
         {
-            //----------------------------------------------------------------
-            // Fin du glisser-déposer entre le FileManager et le ScreenManager
-            // Fonction appelée par déléguée depuis l'UI.
-            //----------------------------------------------------------------
-            if(File.Exists(_FilePath))
-            {
-            	CommandManager cm = CommandManager.Instance();
-            	IUndoableCommand clmis = new CommandLoadMovieInScreen(this, _FilePath, _iScreen, true);
-            	cm.LaunchUndoableCommand(clmis);
-            }
+            // End of drag and drop between FileManager and ScreenManager
+            DoLoadMovieInScreen(_FilePath, _iScreen, true);
         }
         public void CommonCtrlsGotoFirst(object sender, EventArgs e)
         {
@@ -2376,32 +2380,20 @@ namespace Kinovea.ScreenManager
             	cm.LaunchUndoableCommand(clmis);
         	}
         }
-        /*public void DoCompilePlayerScreen()
-        {
-            //----------------------------------------------------------------------------------------
-            // This function is just to enhance user experience, 
-            // It is called when the main window is idle just after first display
-            // and should fasten the first screen showing, since the framework will have it in memory.
-            //----------------------------------------------------------------------------------------
-            //log.Debug("Creating a PlayerScreen just to get the class compiled beforehand.");
-            //PlayerScreen ps = new PlayerScreen();
-            //ps = null;
-        }*/
         public void DoStopPlaying()
         {
-            // Fonction appelée depuis le Supervisor, lorsque l'utilisateur lance la
-            // boîte de dialogue Ouvrir.
-
-            // Stopper chaque écran
+            // Called from Supervisor, when user launch open dialog box.
+            
+            // 1. Stop each screen.
             foreach (AbstractScreen screen in screenList)
             {
-                if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
+                if (screen is PlayerScreen)
                 {
                     ((PlayerScreen)screen).StopPlaying();
                 }
             }
 
-            // stopper ici
+            // 2. Stop the common timer.
             StopMultimediaTimer();
             ((ScreenManagerUserInterface)UI).DisplayAsPaused();
         }
@@ -2415,8 +2407,7 @@ namespace Kinovea.ScreenManager
         }
         public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         {
-        	// Todo, désactiver les filtres drawtime dans le player s'il y en a.
-        	
+        	// Todo, disable draw time filter in player.
         	if(_dfo != null)
         	{
     			m_VideoFilters[_dfo.VideoFilterType].Menu.Checked = _dfo.Active;
@@ -3058,7 +3049,7 @@ namespace Kinovea.ScreenManager
             // Before we start anything messy, let's store the current state of the ViewPort
             // So we can reinstate it later in case the user change his mind.
             //-------------------------------------------------------------------------------
-            mStoredStates.Add(GetCurrentState());
+            m_StoredStates.Add(GetCurrentState());
         }
         public ScreenManagerState GetCurrentState()
         {
@@ -3102,9 +3093,9 @@ namespace Kinovea.ScreenManager
             // Reload the right movie with its meta data.
             //-------------------------------------------------
          
-            if (mStoredStates.Count > 0)
+            if (m_StoredStates.Count > 0)
             {
-                int iLastState = mStoredStates.Count -1;
+                int iLastState = m_StoredStates.Count -1;
                 CommandManager cm = CommandManager.Instance();
                 ICommand css = new CommandShowScreens(this);
 
@@ -3116,7 +3107,7 @@ namespace Kinovea.ScreenManager
                         //-----------------------------
                         // Il y a actuellement 0 écran.
                         //-----------------------------
-                        switch (mStoredStates[iLastState].ScreenList.Count)
+                        switch (m_StoredStates[iLastState].ScreenList.Count)
                         {
                             case 0:
                                 // Il n'y en avait aucun : Ne rien faire.
@@ -3124,15 +3115,15 @@ namespace Kinovea.ScreenManager
                             case 1:
                                 {
                                     // Il y en avait un : Ajouter l'écran.
-                                    ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState); 
+                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState); 
                                     CommandManager.LaunchCommand(css);
                                     break;
                                 }
                             case 2:
                                 {
                                     // Ajouter les deux écrans, on ne se préoccupe pas trop de l'ordre
-                                    ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                    ReinstateScreen(mStoredStates[iLastState].ScreenList[1], 1, CurrentState);
+                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
+                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
                                     CommandManager.LaunchCommand(css);
                                     break;
                                 }
@@ -3144,7 +3135,7 @@ namespace Kinovea.ScreenManager
                         //-----------------------------
                         // Il y a actuellement 1 écran.
                         //-----------------------------
-                        switch (mStoredStates[iLastState].ScreenList.Count)
+                        switch (m_StoredStates[iLastState].ScreenList.Count)
                         {
                             case 0:
                                 {
@@ -3156,7 +3147,7 @@ namespace Kinovea.ScreenManager
                             case 1:
                                 {
                                     // Il y en avait un : Remplacer si besoin.
-                                    ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState);
+                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
                                     CommandManager.LaunchCommand(css);
                                     break;
                                 }
@@ -3165,9 +3156,9 @@ namespace Kinovea.ScreenManager
                                     // Il y avait deux écran : Comparer chaque ancien écran avec le restant.
                                     int iMatchingScreen = -1;
                                     int i=0;
-                                    while ((iMatchingScreen == -1) && (i < mStoredStates[iLastState].ScreenList.Count))
+                                    while ((iMatchingScreen == -1) && (i < m_StoredStates[iLastState].ScreenList.Count))
                                     {
-                                        if (mStoredStates[iLastState].ScreenList[i].UniqueId == CurrentState.ScreenList[0].UniqueId)
+                                        if (m_StoredStates[iLastState].ScreenList[i].UniqueId == CurrentState.ScreenList[0].UniqueId)
                                         {
                                             iMatchingScreen = i;
                                         }
@@ -3182,20 +3173,20 @@ namespace Kinovea.ScreenManager
                                         case -1:
                                             {
                                                 // No matching screen found
-                                                ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                                ReinstateScreen(mStoredStates[iLastState].ScreenList[1], 1, CurrentState);
+                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
+                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
                                                 break;
                                             }
                                         case 0:
                                             {
                                                 // the old 0 is the new 0, the old 1 doesn't exist yet.
-                                                ReinstateScreen(mStoredStates[iLastState].ScreenList[1], 1, CurrentState);
+                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
                                                 break;
                                             }
                                         case 1:
                                             {
                                                 // the old 1 is the new 0, the old 0 doesn't exist yet.
-                                                ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 1, CurrentState);
+                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 1, CurrentState);
                                                 break;
                                             }
                                         default:
@@ -3210,7 +3201,7 @@ namespace Kinovea.ScreenManager
                         break;
                     case 2:
                         // Il y a actuellement deux écrans.
-                        switch (mStoredStates[iLastState].ScreenList.Count)
+                        switch (m_StoredStates[iLastState].ScreenList.Count)
                         {
                             case 0:
                                 {
@@ -3227,7 +3218,7 @@ namespace Kinovea.ScreenManager
                                     int i = 0;
                                     while ((iMatchingScreen == -1) && (i < CurrentState.ScreenList.Count))
                                     {
-                                        if (mStoredStates[iLastState].ScreenList[0].UniqueId == CurrentState.ScreenList[i].UniqueId)
+                                        if (m_StoredStates[iLastState].ScreenList[0].UniqueId == CurrentState.ScreenList[i].UniqueId)
                                         {
                                             iMatchingScreen = i;
                                         }
@@ -3241,7 +3232,7 @@ namespace Kinovea.ScreenManager
                                             // L'ancien écran n'a pas été retrouvé.
                                             // On supprime tout et on le rajoute.
                                             RemoveScreen(1);
-                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState);
+                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
                                             break;
                                         case 0:
                                             // L'ancien écran a été retrouvé dans l'écran [0]
@@ -3268,11 +3259,11 @@ namespace Kinovea.ScreenManager
                                     int i = 0;
                                     while (i < CurrentState.ScreenList.Count)
                                     {
-                                        if (mStoredStates[iLastState].ScreenList[0].UniqueId == CurrentState.ScreenList[i].UniqueId)
+                                        if (m_StoredStates[iLastState].ScreenList[0].UniqueId == CurrentState.ScreenList[i].UniqueId)
                                         {
                                             iMatchingScreen[0] = i;
                                         }
-                                        else if (mStoredStates[iLastState].ScreenList[1].UniqueId == CurrentState.ScreenList[i].UniqueId)
+                                        else if (m_StoredStates[iLastState].ScreenList[1].UniqueId == CurrentState.ScreenList[i].UniqueId)
                                         {
                                             iMatchingScreen[1] = i;
                                         }
@@ -3290,22 +3281,22 @@ namespace Kinovea.ScreenManager
                                                     case -1:
                                                         {
                                                             // Aucun écran n'a été retrouvé.
-                                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[1], 1, CurrentState);
+                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
+                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
                                                             break;
                                                         }
                                                     case 0:
                                                         {
                                                             // Ecran 0 non retrouvé, écran 1 retrouvé dans le 0.
                                                             // Remplacer l'écran 1 par l'ancien 0.
-                                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 1, CurrentState);
+                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 1, CurrentState);
                                                             break;
                                                         }
                                                     case 1:
                                                         {
                                                             // Ecran 0 non retrouvé, écran 1 retrouvé dans le 1.
                                                             // Remplacer l'écran 0.
-                                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[0], 0, CurrentState);
+                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
                                                             break;
                                                         }
                                                     default:
@@ -3321,7 +3312,7 @@ namespace Kinovea.ScreenManager
                                                     case -1:
                                                         {
                                                             // Ecran 0 retrouvé dans le [0], écran 1 non retrouvé. 
-                                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[1], 1, CurrentState);
+                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
                                                             break;
                                                         }
                                                     case 0:
@@ -3349,7 +3340,7 @@ namespace Kinovea.ScreenManager
                                                     case -1:
                                                         {
                                                             // Ecran 0 retrouvé dans le [1], écran 1 non retrouvé. 
-                                                            ReinstateScreen(mStoredStates[iLastState].ScreenList[1], 0, CurrentState);
+                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 0, CurrentState);
                                                             break;
                                                         }
                                                     case 0:
@@ -3390,7 +3381,7 @@ namespace Kinovea.ScreenManager
                 UpdateStatusBar();
                 OrganizeMenus();
 
-                mStoredStates.RemoveAt(iLastState);
+                m_StoredStates.RemoveAt(iLastState);
 
             }
         }

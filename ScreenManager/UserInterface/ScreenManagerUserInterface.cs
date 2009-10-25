@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
@@ -62,48 +63,61 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        public ThumbListView m_ThumbsViewer;
-        public List<String> m_FolderFileNames;
-        public bool m_bThumbnailsWereVisible;
+        public ThumbListView m_ThumbsViewer = new ThumbListView();
+        
+        #region Members
+        private List<String> m_FolderFileNames = new List<String>();
+        private bool m_bThumbnailsWereVisible;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public ScreenManagerUserInterface()
+		#endregion
+        
+		public ScreenManagerUserInterface()
         {
         	log.Debug("Constructing ScreenManagerUserInterface.");
         	 
             InitializeComponent();
+            BackColor = Color.White;
+            Dock = DockStyle.Fill;
             
-            m_FolderFileNames = new List<String>();
-
-            m_ThumbsViewer = new ThumbListView();
             m_ThumbsViewer.Top = 0;
             m_ThumbsViewer.Left = 0;
             m_ThumbsViewer.Width = Width;
             m_ThumbsViewer.Height = Height - pbLogo.Height - 10;
             m_ThumbsViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            // Thumbs are enabled by default.
-            m_ThumbsViewer.Visible = true;
-            m_bThumbnailsWereVisible = true;
-
-            m_ThumbsViewer.Closing += new ThumbListView.DelegateClosing(ThumbsViewer_Closing);
+			m_ThumbsViewer.Closing += new ThumbListView.DelegateClosing(ThumbsViewer_Closing);
             this.Controls.Add(m_ThumbsViewer);
-            
-            m_ThumbsViewer.BringToFront();
-            
-            pnlScreens.BringToFront();
-            pnlScreens.Dock     = DockStyle.Fill;            
-
-            BackColor = Color.White;
-            Dock = DockStyle.Fill;
 
             m_DelegateUpdateTrkFrame = new DelegateUpdateTrkFrame(UpdateTrkFrame);
 
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
             dp.DisplayThumbnails = DoDisplayThumbnails;
+                        
+            // Thumbs are enabled by default.
+            m_ThumbsViewer.Visible = true;
+            m_bThumbnailsWereVisible = true;
+            m_ThumbsViewer.BringToFront();
+            
+            pnlScreens.BringToFront();
+            pnlScreens.Dock     = DockStyle.Fill;
+             
+            Application.Idle += new EventHandler(this.IdleDetector);
         }
-
+		private void IdleDetector(object sender, EventArgs e)
+		{
+			log.Debug("Application is idle in ScreenManagerUserInterface.");
+			
+			// This is a one time only routine.
+			Application.Idle -= new EventHandler(this.IdleDetector);
+			
+			// Launch file.
+			string filePath = CommandLineArgumentManager.Instance().InputFile;
+			if(filePath != null && File.Exists(filePath))
+			{
+				m_CallbackDropLoadMovie(filePath, -1);
+			}
+		}
+        
         #region public, called from Kernel
         public void RefreshUICulture(ResourceManager _resManager)
         {
