@@ -667,6 +667,7 @@ namespace Kinovea.ScreenManager
 
                         if (_bInitialization)
                         {
+                        	log.Debug("Player_SelectionChanged() - Initialization (reset of sync point).");
                             // Static Sync
                             m_iRightSyncFrame = 0;
                             m_iLeftSyncFrame = 0;
@@ -2728,8 +2729,8 @@ namespace Kinovea.ScreenManager
             if (m_bSynching && screenList.Count == 2)
             {
                 //--------------------------------------------------------------
-                // Fonction appellée par l'eventhandler du timer, 
-                // à chaque tick, et de façon asynchrone.
+                // Function called by event handler timer,
+                // asynchronously on each tick.
                 // TODO : si synching, mettre à jour la position.
                 // de façon à ce que le prochain GotoNext soit à peu près bien géré.
                 //--------------------------------------------------------------
@@ -2799,7 +2800,7 @@ namespace Kinovea.ScreenManager
                         else if (iLeftMilliseconds > (-m_iSyncLagMilliseconds) - 24)
                         {
                             // La vidéo de gauche est sur le point de franchir le sync point.
-                            // les 10 ms supplémentaires sont pour tenir compte de l'inertie qu'à généralement
+                            // les 24 ms supplémentaires sont pour tenir compte de l'inertie qu'à généralement
                             // la vidéo qui est partie en premier...
                             EnsurePlay(1);
                             m_bRightIsStarting = true;
