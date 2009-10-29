@@ -117,9 +117,15 @@ namespace Kinovea.ScreenManager
 		}
 		public Int64 SyncPosition
 		{
+			// The absolute ts of the sync point for this video.
 			get { return m_iSyncPosition; }
 			set { m_iSyncPosition = value; }
 		}
+		public Int64 SyncCurrentPosition
+		{
+			// The current ts, relative to the selection.
+			get { return m_iCurrentPosition - m_iSelStart; }
+		}	
 		#endregion
 
 		#region Members
@@ -527,11 +533,10 @@ namespace Kinovea.ScreenManager
 				else
 				{
 					m_iCurrentPosition = _iFrame * m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame;
-					m_iCurrentPosition += m_FrameServer.VideoFile.Infos.iFirstTimeStamp;
-
+					m_iCurrentPosition += m_iSelStart;
+					
 					if (m_iCurrentPosition > m_iSelEnd) m_iCurrentPosition = m_iSelEnd;
-					if (m_iCurrentPosition < m_iSelStart) m_iCurrentPosition = m_iSelStart;
-
+					
 					ShowNextFrame(m_iCurrentPosition, true);
 				}
 

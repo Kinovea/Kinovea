@@ -45,7 +45,6 @@
     <DocumentationFile>bin\x86\Debug\Kinovea.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartArguments>-file "c:\\hello world\file.avi" -noexp -stretch -speed 80 -file2 "c:\\hello world\file2.avi"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -89,6 +88,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">

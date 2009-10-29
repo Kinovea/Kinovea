@@ -100,20 +100,15 @@ namespace Kinovea.ScreenManager
             {
                 // Get the approximate frame we should be on.
                 // Only as accurate as the framerate is stable regarding to the timebase.
-                Int64 iCurrentTimestamp = m_FrameServer.VideoFile.Selection.iCurrentTimeStamp;
-                iCurrentTimestamp -= m_FrameServer.VideoFile.Infos.iFirstTimeStamp;
-
+                
+                // Timestamp (relative to selection start).
+                Int64 iCurrentTimestamp = m_PlayerScreenUI.SyncCurrentPosition;
                 return (int)(iCurrentTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
             }
             set
             {
                 m_PlayerScreenUI.SetCurrentFrame(value);
             }
-        }
-        public Int64 Position
-        {
-            // Used to feed SyncPosition. 
-            get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
         }
         public int LastFrame
         {
@@ -149,6 +144,11 @@ namespace Kinovea.ScreenManager
         {
             //get { return m_PlayerScreenUI.m_bSynched; }
             set { m_PlayerScreenUI.Synched = value; }
+        }
+        public Int64 Position
+        {
+            // Used to feed SyncPosition. 
+            get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
         }
         public Int64 SyncPosition
         {
