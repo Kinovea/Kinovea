@@ -61,9 +61,11 @@ namespace Kinovea.ScreenManager
         	
             _xmlWriter.WriteStartElement("TrackPosition");
         	
-            // Data in user units. The origin of the coordinates system is the first point.
+            // Data in user units. 
+            // - The origin of the coordinates system is the first point.
+            // - X goes left (same than internal), Y goes up (opposite than internal).
             double userX = _ParentMetadata.LineLengthHelper.GetLengthDouble((double)X - (double)_origin.X);
-            double userY = _ParentMetadata.LineLengthHelper.GetLengthDouble((double)Y - (double)_origin.Y);
+            double userY = _ParentMetadata.LineLengthHelper.GetLengthDouble((double)_origin.Y - (double)Y);
             string userT = _ParentMetadata.m_TimeStampsToTimecodeCallback(T, TimeCodeFormat.Unknown, false);
 			//string userTType = TimeHelper.GetTimecodeType(TimeCodeFormat.Unknown);
             

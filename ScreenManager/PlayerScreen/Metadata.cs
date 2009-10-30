@@ -1205,7 +1205,7 @@ namespace Kinovea.ScreenManager
     			}
     			case MetadataExportFormat.MSXML:
 				{
-    					ExportMSXML(_filePath, kvaString);
+    				ExportMSXML(_filePath, kvaString);
 					break;
 				}
     			case MetadataExportFormat.XHTML:
