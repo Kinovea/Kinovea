@@ -187,7 +187,7 @@ namespace Kinovea.ScreenManager
 					m_PlayerScreenUI.ImportSelectionToMemory(true);
 				}
                 
-                m_PlayerScreenUI.StretchSqueezeSurface();
+                m_PlayerScreenUI.UpdateImageSize();
                 RefreshImage();
             }
         }

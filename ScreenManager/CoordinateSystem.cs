@@ -42,8 +42,6 @@ namespace Kinovea.ScreenManager
 	public class CoordinateSystem
 	{
 		#region Properties
-		
-		#endregion
 		public double Stretch
 		{
 			get { return m_fStretch; }
@@ -66,6 +64,8 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_DirectZoomWindow;}
 		}
+		#endregion
+		
 		#region Members
 		private Size m_OriginalSize;			// Decoding size of the image
 		
@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
 		private double m_fZoom = 1.0f;		
 		private Rectangle m_DirectZoomWindow = new Rectangle(0, 0, 0, 0);
 		//private bool m_bMirrored;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 				
 		#region Public methods
