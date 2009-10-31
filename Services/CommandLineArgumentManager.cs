@@ -51,6 +51,12 @@ namespace Kinovea.Services
     	{
     		get { return m_iSpeedPercentage;}
     	}
+    	public bool SpeedConsumed
+    	{
+    		// Indicates whether the SpeedPercentage argument has been used.
+    		get { return m_bSpeedConsumed;}
+    		set { m_bSpeedConsumed = value;}
+    	}
     	public bool StretchImage
     	{
     		get { return m_bStretchImage;}
@@ -59,6 +65,7 @@ namespace Kinovea.Services
     	{
     		get { return m_bHideExplorer;}
     	}
+    	
     	#endregion
     	
         #region Members
@@ -68,7 +75,7 @@ namespace Kinovea.Services
         private bool m_bStretchImage;
         private bool m_bHideExplorer;
 		private bool m_bParametersParsed;
-		
+		private bool m_bSpeedConsumed;
         private static CommandLineArgumentManager _instance = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion

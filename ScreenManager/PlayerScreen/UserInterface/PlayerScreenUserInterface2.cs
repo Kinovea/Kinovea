@@ -246,7 +246,15 @@ namespace Kinovea.ScreenManager
 			BuildContextMenus();
 			InitializeDrawingTools();
 			
+			// From prefs or command line.
 			m_ColorProfile.Load(PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder") + "\\current.xml");
+			
+			CommandLineArgumentManager clam = CommandLineArgumentManager.Instance();
+			if(!clam.SpeedConsumed)
+			{ 
+				sldrSpeed.Value = clam.SpeedPercentage;
+				clam.SpeedConsumed = true;
+			}
 			
 			// Most members and controls should be initialized with the right value.
 			// So we don't need to do an extra ResetData here.
@@ -1686,10 +1694,10 @@ namespace Kinovea.ScreenManager
 		#region Speed Slider
 		private void sldrSpeed_ValueChanged(object sender, EventArgs e)
 		{
+			m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
+			
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
-
 				// Reset timer with new value.
 				if (m_bIsCurrentlyPlaying)
 				{
