@@ -31,25 +31,36 @@ namespace Kinovea.ScreenManager
 {
     public partial class formFramesImport : Form
     {
-        private VideoFile    m_VideoFile      = null;
-        private long            m_iSelStart         = 0;
-        private long            m_iSelEnd = 0;
-        private bool            m_IsIdle = true;
-        private bool            m_bForceReload = false;
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    	#region Properties
+		public bool Canceled
+		{
+			get { return m_bCanceled; }
+		}    	
+    	#endregion
+    	
+    	#region Members
+        private VideoFile m_VideoFile      = null;
+        private long m_iSelStart;
+        private long m_iSelEnd;
+        private bool m_IsIdle = true;
+        private bool m_bForceReload;
+		private bool m_bCanceled;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
         
-        public formFramesImport(VideoFile _PlayerServer, long _iSelStart, long _iSelEnd, bool _bForceReload)
+        public formFramesImport(VideoFile _videoFile, long _iSelStart, long _iSelEnd, bool _bForceReload)
         {
             InitializeComponent();
 
-            m_VideoFile = _PlayerServer;
+            m_VideoFile = _videoFile;
             m_iSelStart = _iSelStart;
             m_iSelEnd = _iSelEnd;
             m_bForceReload = _bForceReload;
 
             this.Text       = "   " + ScreenManagerLang.FormFramesImport_Title;
             labelInfos.Text = ScreenManagerLang.FormFramesImport_Infos + " 0 / ~?";
-
+			buttonCancel.Text = ScreenManagerLang.Generic_Cancel;
+            
             progressBar.Minimum = 0;
             progressBar.Maximum = 100;
             progressBar.Step = 1;
@@ -141,15 +152,28 @@ namespace Kinovea.ScreenManager
 
             // Se décrocher de l'event Idle.
             Application.Idle -= new EventHandler(this.IdleDetector);
-
+			log.Debug("bgWorker_RunWorkerCompleted, hiding the dialog.");
             Hide();
             //Close();
         }
-
-        private void labelInfos_Click(object sender, EventArgs e)
+        
+        void ButtonCancelClick(object sender, EventArgs e)
         {
-                
+        	if(!m_bCanceled)
+        	{
+        		log.Debug("Cancel of extraction to memory asked.");
+	        	if (bgWorker.IsBusy)
+	            {
+	        		// This will set bgWorker.CancellationPending to true,
+	        		// which we check periodically in VideoFile.ExtractToMemory method.
+	        		// This will also end the bgWorker immediately,
+	        		// maybe before we check for the cancellation in the other thread. 
+	        		// The VideoFile will be notified after we return to psui.ImportSelectionToMemory.
+	        		bgWorker.CancelAsync();
+	        		m_bCanceled = true;
+	                buttonCancel.Enabled = false;
+	            }	
+        	}
         }
-
     }
 }

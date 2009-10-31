@@ -2918,13 +2918,18 @@ namespace Kinovea.ScreenManager
 					}
 					catch (Exception exp)
 					{
-						log.Error("Unknown error while painting image.");
+						log.Error("Error while painting image.");
+						log.Error(exp.Message);
 						log.Error(exp.StackTrace);
 					}
 					finally
 					{
 						// Nothing more to do.
 					}
+				}
+				else
+				{
+					log.Debug("Painting screen - no image to display.");
 				}
 				
 				// Draw Selection Border if needed.
@@ -4348,7 +4353,18 @@ namespace Kinovea.ScreenManager
 					
 					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoFile, m_iSelStart, m_iSelEnd, _bForceReload);
 					ffi.ShowDialog();
+					
+					if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 0)
+					{
+						// It didn't work. (Operation canceled, or failed).
+						log.Debug("Extract to memory canceled or failed, reload first frame.");
+						m_iFramesToDecode = 1;
+						ShowNextFrame(m_iSelStart, true);
+						UpdateNavigationCursor();
+					}
+					
 					ffi.Dispose();
+					
 				}
 				else if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
 				{

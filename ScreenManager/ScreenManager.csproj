@@ -91,6 +91,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PlayerServer">
       <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -311,12 +312,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ScreenManagerLang.resx</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFileLoader.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFileLoader.Designer.cs">
-      <DependentUpon>FormFileLoader.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormFramesImport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -420,10 +415,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ScreenManagerLang.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFileLoader.resx">
-      <DependentUpon>FormFileLoader.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesImport.resx">
       <DependentUpon>FormFramesImport.cs</DependentUpon>

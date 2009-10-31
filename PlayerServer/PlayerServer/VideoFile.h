@@ -230,7 +230,8 @@ namespace VideoFiles
 		// Analysis mode
 		ImportStrategy	PrepareSelection(int64_t% _iStartTimeStamp, int64_t% _iEndTimeStamp, bool _bForceReload);
 		int		EstimateNumberOfFrames( int64_t _iStartTimeStamp, int64_t _iEndTimeStamp); 
-		
+		void	DeleteFrameList(void);
+
 		// Other utilities
 		bool	RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		void	ResetPrimarySelection(void);
