@@ -171,6 +171,8 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Zapisz wideo</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nie można utworzyć pokazu slajdów.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
+   
+   
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - nie można utworzyć pliku PDF.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Błąd podczas próby zapisu pliku : plik jest otwarty w innym oknie.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Plik PDF zostanie stworzony z kluczowych obrazów.\n Dodaj proszę kilka kluczowych obrazów przed generacją dokumentu.</value></data>
@@ -322,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Wybierz tryb powtarzania (Pojedynczo | Pętla) - Aktualny tryb : Pojedynczo</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Zapisz sekwencję obrazów</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Zresetuj Obszar Roboczy</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Ustaw aktualną klatkę jako pierwszą klatkę Obszaru Roboczego</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę Obszaru Roboczego</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Pokaż komentarze</value></data>

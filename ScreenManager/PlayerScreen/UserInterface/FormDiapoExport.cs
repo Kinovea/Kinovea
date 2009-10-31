@@ -58,12 +58,14 @@ namespace Kinovea.ScreenManager
         private string m_InputFileName;
         private string m_OutputFileName;
         private int m_iFrameInterval;
+        private bool m_bDiaporama;
         #endregion
 
         #region Construction and initialization
-        public formDiapoExport(string _InputFileName)
+        public formDiapoExport(string _InputFileName, bool _diapo)
         {
             m_InputFileName = _InputFileName;
+            m_bDiaporama = _diapo;
             
             InitializeComponent();
 
@@ -72,7 +74,7 @@ namespace Kinovea.ScreenManager
         }
         private void SetupUICulture()
         {
-            this.Text = "   " + ScreenManagerLang.dlgDiapoExport_Title;
+            this.Text = "   " + ScreenManagerLang.CommandSaveMovie_FriendlyName;
             
             groupSaveMethod.Text = ScreenManagerLang.dlgDiapoExport_GroupDiapoType;
 			radioSaveSlideshow.Text = ScreenManagerLang.dlgDiapoExport_RadioSlideshow;            
@@ -91,7 +93,15 @@ namespace Kinovea.ScreenManager
             trkInterval.TickFrequency = 250;
             
             // default option
-            radioSaveSlideshow.Checked = true;
+            if(m_bDiaporama)
+            {
+            	radioSaveSlideshow.Checked = true;
+            }
+            else
+            {
+            	radioSavePausedVideo.Checked = true;
+            }
+            
         }
         #endregion
         

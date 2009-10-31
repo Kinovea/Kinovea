@@ -74,8 +74,8 @@ namespace Kinovea.ScreenManager
 		#region Internal delegates for async methods
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
 		private delegate void CallbackPlayLoop();
-		private TimerEventHandler m_CallbackTimerEventHandler;
-		private CallbackPlayLoop m_CallbackPlayLoop;
+        private Kinovea.ScreenManager.PlayerScreenUserInterface.TimerEventHandler m_CallbackTimerEventHandler;
+        private Kinovea.ScreenManager.PlayerScreenUserInterface.CallbackPlayLoop m_CallbackPlayLoop;
 		#endregion
 
 		#region Enums
@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
 		private bool m_bSynched;
 		private Int64 m_iSyncPosition;
 		private uint m_IdMultimediaTimer;
-		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
+        private Kinovea.ScreenManager.PlayerScreenUserInterface.PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private int m_iDroppedFrames;                  // For debug purposes only.
 		private int m_iDecodedFrames;
 		private int m_iSlowmotionPercentage = 100;
@@ -252,6 +252,7 @@ namespace Kinovea.ScreenManager
 			// So we don't need to do an extra ResetData here.
 			
 			// Controls that renders differently between run time and design time. 
+			this.Dock = DockStyle.Fill;
 			ShowHideResizers(false);
 			SetupPrimarySelectionPanel();
 			SetupKeyframeCommentsHub();
@@ -1761,14 +1762,14 @@ namespace Kinovea.ScreenManager
 				{
 					// Was in 'Once' mode, switch to 'Loop' mode.
 					m_ePlayingMode = PlayingMode.Loop;
-					buttonPlayingMode.Image = Resources.playmulti3;
+					buttonPlayingMode.Image = Resources.playmodeloop;
 					toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
 				}
 				else if (m_ePlayingMode == PlayingMode.Loop)
 				{
 					// Was in 'Loop' mode, switch to 'Once' mode.
 					m_ePlayingMode = PlayingMode.Once;
-					buttonPlayingMode.Image = Resources.playonce4;
+					buttonPlayingMode.Image = Resources.playmodeonce;
 					toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
 				}
 			}
@@ -2391,12 +2392,6 @@ namespace Kinovea.ScreenManager
 			toolTips.SetToolTip(buttonGotoNext, ScreenManagerLang.ToolTip_Next);
 			toolTips.SetToolTip(buttonGotoFirst, ScreenManagerLang.ToolTip_First);
 			toolTips.SetToolTip(buttonGotoLast, ScreenManagerLang.ToolTip_Last);
-			
-			// Export buttons
-			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
-			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
-			toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.dlgDiapoExport_Title);
-			toolTips.SetToolTip(btnPdf, ScreenManagerLang.dlgExportToPDF_Title);
 			if (m_ePlayingMode == PlayingMode.Once)
 			{
 				toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
@@ -2405,7 +2400,15 @@ namespace Kinovea.ScreenManager
 			{
 				toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
 			}
-
+			
+			// Export buttons
+			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
+			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
+			toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.dlgDiapoExport_Title);
+			toolTips.SetToolTip(btnPdf, ScreenManagerLang.dlgExportToPDF_Title);
+			toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.dlgSaveVideoTitle);
+			toolTips.SetToolTip(btnPausedVideo, ScreenManagerLang.ToolTip_SavePausedVideo);
+			
 			// Working zone and sliders.
 			if (m_bHandlersLocked)
 			{
@@ -4525,7 +4528,6 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnRafale_Click(object sender, EventArgs e)
 		{
-			
 			//---------------------------------------------------------------------------------
 			// Workflow:
 			// 1. formRafaleExport  : configure the export, calls:
@@ -4676,14 +4678,42 @@ namespace Kinovea.ScreenManager
 
 			pbSurfaceScreen.Invalidate();
 		}
+		private void btnVideo_Click(object sender, EventArgs e)
+		{
+			StopPlaying();
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DeactivateKeyboardHandler != null)
+			{
+				dp.DeactivateKeyboardHandler();
+			}	
+			
+			Save();
+				
+			if (dp.ActivateKeyboardHandler != null)
+			{
+				dp.ActivateKeyboardHandler();
+			}
+		}
 		private void btnDiaporama_Click(object sender, EventArgs e)
 		{
+			bool bDiapo = sender == btnDiaporama;
+			
 			if(m_FrameServer.Metadata.Keyframes.Count < 1)
 			{
-				MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
+				if(bDiapo)
+				{
+					MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
 				                ScreenManagerLang.Error_SaveDiaporama,
 				                MessageBoxButtons.OK,
 				                MessageBoxIcon.Exclamation);
+				}
+				else
+				{
+					MessageBox.Show(ScreenManagerLang.Error_SavePausedVideo_NoKeyframes.Replace("\\n", "\n"),
+				                ScreenManagerLang.Error_SavePausedVideo,
+				                MessageBoxButtons.OK,
+				                MessageBoxIcon.Exclamation);
+				}
 			}
 			else if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
 			{
@@ -4694,8 +4724,8 @@ namespace Kinovea.ScreenManager
 				{
 					dp.DeactivateKeyboardHandler();
 				}
-
-				m_FrameServer.SaveDiaporama(m_iSelStart, m_iSelEnd, new DelegateGetOutputBitmap(GetOutputBitmap));
+	
+				m_FrameServer.SaveDiaporama(m_iSelStart, m_iSelEnd, new DelegateGetOutputBitmap(GetOutputBitmap), bDiapo);
 
 				if (dp.ActivateKeyboardHandler != null)
 				{

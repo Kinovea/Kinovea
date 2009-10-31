@@ -91,7 +91,6 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PlayerServer">
       <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

@@ -171,6 +171,8 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salva il Video</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Non riesce a creare la Presentazione Diapositive.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una Presentazione Diapositive e' una sequenza di Immagini Chiave salvate in formato Video.\n Aggiungi qualche Immagine Chiave PRIMA di generare la Presentazione Diapositive.</value></data>
+   
+   
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Non riesce a creare il Documento Pdf. </value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Errore nel salvataggio File : il File e' aperto in un'altra finestra.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Il documento Pdf verra' creato dalle Immagini Chiave.\n Aggiungi qualche Immagine Chiave PRIMA di generare il documento. </value></data>
@@ -322,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : una volta </value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salva una sequenza di Immagini</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro a Video Intero</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Imposta il Fotogramma attuale come PRIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostra i Commenti</value></data>

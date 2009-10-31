@@ -146,11 +146,11 @@ namespace Kinovea.ScreenManager
 			// Release configuration form.
             fve.Dispose();
 		}
-		public void SaveDiaporama(Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)
+		public void SaveDiaporama(Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap, bool _diapo)
 		{
 			// Let the user configure the diaporama export.
 			
-			formDiapoExport fde = new formDiapoExport(m_VideoFile.FilePath);
+			formDiapoExport fde = new formDiapoExport(m_VideoFile.FilePath, _diapo);
 			if(fde.ShowDialog() == DialogResult.OK)
 			{
 				DoSave(fde.Filename, 
