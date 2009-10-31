@@ -756,6 +756,19 @@ namespace Kinovea.ScreenManager
 
 			return bWasHandled;
 		}
+		public void UpdateImageSize()
+		{
+			Size imageSize = new Size(m_FrameServer.VideoFile.Infos.iDecodingWidth, m_FrameServer.VideoFile.Infos.iDecodingHeight);
+			
+			m_FrameServer.Metadata.ImageSize = imageSize;
+			
+			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.Metadata.ImageSize);
+			
+			m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.Metadata.ImageSize);
+			m_FrameServer.CoordinateSystem.ReinitZoom();
+						
+			StretchSqueezeSurface();
+		}
 		#endregion
 		
 		#region Various Inits & Setups
@@ -1779,7 +1792,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Auto Stretch & Manual Resize
-		public void StretchSqueezeSurface()
+		private void StretchSqueezeSurface()
 		{
 			
 			if (m_FrameServer.Loaded)

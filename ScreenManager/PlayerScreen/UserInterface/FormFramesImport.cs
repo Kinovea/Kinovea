@@ -152,9 +152,7 @@ namespace Kinovea.ScreenManager
 
             // Se décrocher de l'event Idle.
             Application.Idle -= new EventHandler(this.IdleDetector);
-			log.Debug("bgWorker_RunWorkerCompleted, hiding the dialog.");
             Hide();
-            //Close();
         }
         
         void ButtonCancelClick(object sender, EventArgs e)
