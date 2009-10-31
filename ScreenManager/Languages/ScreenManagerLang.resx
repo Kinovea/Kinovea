@@ -69,7 +69,7 @@
    </resheader>
    <data name="btnHideThumbView" xml:space="preserve"><value>Hide Thumbnails</value></data>
    <data name="btnShowThumbView" xml:space="preserve"><value>Show Thumbnails</value></data>
-   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Invert Videos Positions</value></data>
+   <data name="btnSwap_ToolTip" xml:space="preserve"><value>Invert Video Positions</value></data>
    <data name="btnSync_ToolTip" xml:space="preserve"><value>Synchronize Videos on the Current Frames</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Go Back to Beginning for Both Videos</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Jump to End for Both Videos</value></data>
@@ -77,7 +77,7 @@
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Go to Previous Frame for Both Videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Play | Pause Both Videos</value></data>
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Add Screen for Capture</value></data>
-   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Add Chronometer</value></data>
+   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Add Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Add Drawing</value></data>
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Add Screen for Playback</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Delete Drawing</value></data>
@@ -97,7 +97,7 @@
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Save color Profile</value></data>
    <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Always Show Label</value></data>
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Label :</value></data>
-   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configure Chronometer</value></data>
+   <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configure Stopwatch</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configure Drawing</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Always Visible</value></data>
    <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Use default value ({0})</value></data>
@@ -113,14 +113,14 @@
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Reset</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Show the Target Marker</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Show Key Images Titles</value></data>
-   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Show Trajectory</value></data>
+   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Show Path</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mode :</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trajectory</value></data>
+   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Path</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Style :</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configure Trajectory</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Complete trajectory</value></data>
-   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Trajectory section around current image</value></data>
-   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label following the trajectory</value></data>
+   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configure Path</value></data>
+   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Complete Path</value></data>
+   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Path section around current image</value></data>
+   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label following the Path</value></data>
    <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaic of key images.</value></data>
    <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaic of all images.</value></data>
    <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Number of images : {0:0}.</value></data>
@@ -171,12 +171,14 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Save Video</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Cannot create Slideshow.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>A Slideshow is a sequence of Key Images saved in video format.\n Please add some Key Images before generating the Slideshow.</value></data>
+   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Cannot createpaused video</value></data>
+   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>You need to add some key images before using this function.</value></data>
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Cannot Create Pdf Document. </value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Failure trying to save file : the file is open in another window.</value></data>
+   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Failure: Unable to save file : the file is open in another window.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>The Pdf document will be created out of Key Images.\n Please add some Key Images before generating the document. </value></data>
-   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>The file couldn't be written.\nMake sure you have the rights to write in the target folder and that the file is not currently used.</value></data>
-   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Cannot Save Video. </value></data>
-   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>The video couldn't be saved.\nTry again with a different format.</value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Unable to write file.\nMake sure you have the rights to write in the target folder and that the file is not currently used.</value></data>
+   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Unable to Save Video. </value></data>
+   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Unable to save video.\nTry again with a different format.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progress :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Saving Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Exported Images :</value></data>
@@ -205,16 +207,16 @@
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Inches</value></data>
    <data name="LengthUnit_Feet" xml:space="preserve"><value>Feet</value></data>
    <data name="LengthUnit_Yards" xml:space="preserve"><value>Yards</value></data>
-   <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Failure trying to open the file : unsupported video stream.</value></data>
-   <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Failure trying to open the file : problem while initializing decoder.</value></data>
-   <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Failure trying to open the file : file type is not supported.</value></data>
+   <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Failure: Unable to open the file : unsupported video stream.</value></data>
+   <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Failure: Unable to open the file : problem while initializing decoder.</value></data>
+   <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Failure: Unable to open the file : file type is not supported.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Loading Error.</value></data>
-   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Failure trying to open the file : file not found or empty.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Failure trying to open the file : Images format is not supported.</value></data>
-   <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Failure trying to open the file : inconsistencies found. Please check encoding process.</value></data>
-   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Failure trying to open the file : stream informations not found.</value></data>
-   <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Failure trying to open the file : unknown error.</value></data>
-   <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Failure trying to open the file : no video stream found.</value></data>
+   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Failure: Unable to open the file : file not found or empty.</value></data>
+   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Failure: Unable to open the file : Image format is not supported.</value></data>
+   <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Failure: Unable to open the file : inconsistencies found. Please check encoding process.</value></data>
+   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Failure: Unable to open the file : stream information not found.</value></data>
+   <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Failure: Unable to open the file : unknown error.</value></data>
+   <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Failure: Unable to open the file : video stream not found.</value></data>
    <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Canceling...</value></data>
    <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Decoded frames :</value></data>
    <data name="LoadMovieProgress_Title" xml:space="preserve"><value>File Load Progress</value></data>
@@ -225,20 +227,20 @@
    <data name="mnuBrightness" xml:space="preserve"><value>Brightness...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configure</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Countdown Mode</value></data>
-   <data name="mnuChronoDelete" xml:space="preserve"><value>Delete Chronometer</value></data>
-   <data name="mnuChronoHide" xml:space="preserve"><value>Hide Chronometer</value></data>
-   <data name="mnuChronoStart" xml:space="preserve"><value>Start Chronometer</value></data>
-   <data name="mnuChronoStop" xml:space="preserve"><value>Stop Chronometer</value></data>
+   <data name="mnuChronoDelete" xml:space="preserve"><value>Delete Stopwatch</value></data>
+   <data name="mnuChronoHide" xml:space="preserve"><value>Hide Stopwatch</value></data>
+   <data name="mnuChronoStart" xml:space="preserve"><value>Start Stopwatch</value></data>
+   <data name="mnuChronoStop" xml:space="preserve"><value>Stop Stopwatch</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Close This Screen</value></data>
    <data name="mnuColors" xml:space="preserve"><value>Colors...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Color</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Color and Size...</value></data>
    <data name="mnuConfigureFading" xml:space="preserve"><value>Persistence...</value></data>
-   <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configure Trajectory Display</value></data>
+   <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configure Path Display</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Delete</value></data>
-   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Delete Trajectory after this Point</value></data>
-   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Delete all the Trajectory</value></data>
+   <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Delete Path after this Point</value></data>
+   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Delete all the Path's</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Two Capture Screens</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>One Capture screen and one Playback screen</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Two Playback Screens</value></data>
@@ -268,7 +270,7 @@
    <data name="mnuOneCapture" xml:space="preserve"><value>One Capture Screen</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>One Playback Screen</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Play | Pause</value></data>
-   <data name="mnuRestartTracking" xml:space="preserve"><value>Restart Trajectory Edition</value></data>
+   <data name="mnuRestartTracking" xml:space="preserve"><value>Restart Path Edition</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Save...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Save the Current Image to File</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Screens</value></data>
@@ -279,21 +281,21 @@
    <data name="mnuSharpen" xml:space="preserve"><value>Sharpen...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilize</value></data>
-   <data name="mnuStopTracking" xml:space="preserve"><value>End Trajectory Edition</value></data>
+   <data name="mnuStopTracking" xml:space="preserve"><value>End Path Edition </value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invert Videos Positions</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Delete file</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Rename file</value></data>
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Play video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Show/Hide Common Controls</value></data>
-   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Track Trajectory</value></data>
+   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Track Path</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>An Unknown Error Occurred.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Playing Error.</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Failure trying to save file : unsupported encoding.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Failure trying to save file : problem while initializing encoder.</value></data>
+   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Failure: Unable to save file : unsupported encoding.</value></data>
+   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Failure: Unable to save file : problem while initializing encoder.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Saving error.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Failure trying to save file : can't write to the file.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Failure trying to save file : some error happened during encoding process.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Failure trying to save file : unknown error.</value></data>
+   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Failure: Unable to save file : Unable to write to the file.</value></data>
+   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Failure: Unable to save file : some error happened during encoding process.</value></data>
+   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Failure: Unable to save file : unknown error.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Empty</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classic (h:mm:ss:hundredth)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames Numbers</value></data>
@@ -307,7 +309,7 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Color Profile</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copy Previous Key Image Drawings into the Current Image</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
-   <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Chronometer</value></data>
+   <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Cross Marker</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Line</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Pencil</value></data>
@@ -322,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Change Repeat Mode ( Once | Loop ) - Current Mode : Once</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Save a Sequence of Images</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reset the Working Zone to Full Video</value></data>
+   <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Save video with a pause on each key image</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Show Comments</value></data>

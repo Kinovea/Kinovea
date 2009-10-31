@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Invert Videos Positions.
+        ///   Recherche une chaîne localisée semblable à Invert Video Positions.
         /// </summary>
         internal static string btnSwap_ToolTip {
             get {
@@ -151,7 +151,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Add Chronometer.
+        ///   Recherche une chaîne localisée semblable à Add Stopwatch.
         /// </summary>
         internal static string CommandAddChrono_FriendlyName {
             get {
@@ -331,7 +331,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configure Chronometer.
+        ///   Recherche une chaîne localisée semblable à Configure Stopwatch.
         /// </summary>
         internal static string dlgConfigureChrono_Title {
             get {
@@ -547,7 +547,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Show Trajectory.
+        ///   Recherche une chaîne localisée semblable à Show Path.
         /// </summary>
         internal static string dlgConfigureTrajectory_chkShowTrajectory {
             get {
@@ -565,7 +565,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Trajectory.
+        ///   Recherche une chaîne localisée semblable à Path.
         /// </summary>
         internal static string dlgConfigureTrajectory_ModeTrajectory {
             get {
@@ -574,7 +574,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Complete trajectory.
+        ///   Recherche une chaîne localisée semblable à Complete Path.
         /// </summary>
         internal static string dlgConfigureTrajectory_RadioComplete {
             get {
@@ -583,7 +583,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Trajectory section around current image.
+        ///   Recherche une chaîne localisée semblable à Path section around current image.
         /// </summary>
         internal static string dlgConfigureTrajectory_RadioFocus {
             get {
@@ -592,7 +592,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Label following the trajectory.
+        ///   Recherche une chaîne localisée semblable à Label following the Path.
         /// </summary>
         internal static string dlgConfigureTrajectory_RadioLabel {
             get {
@@ -610,7 +610,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configure Trajectory.
+        ///   Recherche une chaîne localisée semblable à Configure Path.
         /// </summary>
         internal static string dlgConfigureTrajectory_Title {
             get {
@@ -997,7 +997,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à The file couldn&apos;t be written.\nMake sure you have the rights to write in the target folder and that the file is not currently used..
+        ///   Recherche une chaîne localisée semblable à Unable to write file.\nMake sure you have the rights to write in the target folder and that the file is not currently used..
         /// </summary>
         internal static string Error_SaveMovie_FileError {
             get {
@@ -1006,7 +1006,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à The video couldn&apos;t be saved.\nTry again with a different format..
+        ///   Recherche une chaîne localisée semblable à Unable to save video.\nTry again with a different format..
         /// </summary>
         internal static string Error_SaveMovie_LowLevelError {
             get {
@@ -1015,11 +1015,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea - Cannot Save Video. .
+        ///   Recherche une chaîne localisée semblable à Kinovea - Unable to Save Video. .
         /// </summary>
         internal static string Error_SaveMovie_Title {
             get {
                 return ResourceManager.GetString("Error_SaveMovie_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Kinovea – Cannot createpaused video.
+        /// </summary>
+        internal static string Error_SavePausedVideo {
+            get {
+                return ResourceManager.GetString("Error_SavePausedVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You need to add some key images before using this function..
+        /// </summary>
+        internal static string Error_SavePausedVideo_NoKeyframes {
+            get {
+                return ResourceManager.GetString("Error_SavePausedVideo_NoKeyframes", resourceCulture);
             }
         }
         
@@ -1033,7 +1051,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to save file : the file is open in another window..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : the file is open in another window..
         /// </summary>
         internal static string Error_SavePdf_IOException {
             get {
@@ -1303,7 +1321,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : unsupported video stream..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : unsupported video stream..
         /// </summary>
         internal static string LoadMovie_CodecNotFound {
             get {
@@ -1312,7 +1330,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : problem while initializing decoder..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : problem while initializing decoder..
         /// </summary>
         internal static string LoadMovie_CodecNotOpened {
             get {
@@ -1321,7 +1339,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : file type is not supported..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : file type is not supported..
         /// </summary>
         internal static string LoadMovie_CodecNotSupported {
             get {
@@ -1339,7 +1357,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : file not found or empty..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : file not found or empty..
         /// </summary>
         internal static string LoadMovie_FileNotOpened {
             get {
@@ -1348,7 +1366,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : Images format is not supported..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : Image format is not supported..
         /// </summary>
         internal static string LoadMovie_ImageFormatError {
             get {
@@ -1357,7 +1375,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : inconsistencies found. Please check encoding process..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : inconsistencies found. Please check encoding process..
         /// </summary>
         internal static string LoadMovie_InconsistantMovieError {
             get {
@@ -1366,7 +1384,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : stream informations not found..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : stream information not found..
         /// </summary>
         internal static string LoadMovie_StreamInfoNotFound {
             get {
@@ -1375,7 +1393,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : unknown error..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : unknown error..
         /// </summary>
         internal static string LoadMovie_UnkownError {
             get {
@@ -1384,7 +1402,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to open the file : no video stream found..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to open the file : video stream not found..
         /// </summary>
         internal static string LoadMovie_VideoStreamNotFound {
             get {
@@ -1483,7 +1501,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete Chronometer.
+        ///   Recherche une chaîne localisée semblable à Delete Stopwatch.
         /// </summary>
         internal static string mnuChronoDelete {
             get {
@@ -1492,7 +1510,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Hide Chronometer.
+        ///   Recherche une chaîne localisée semblable à Hide Stopwatch.
         /// </summary>
         internal static string mnuChronoHide {
             get {
@@ -1501,7 +1519,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Start Chronometer.
+        ///   Recherche une chaîne localisée semblable à Start Stopwatch.
         /// </summary>
         internal static string mnuChronoStart {
             get {
@@ -1510,7 +1528,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Stop Chronometer.
+        ///   Recherche une chaîne localisée semblable à Stop Stopwatch.
         /// </summary>
         internal static string mnuChronoStop {
             get {
@@ -1564,7 +1582,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configure Trajectory Display.
+        ///   Recherche une chaîne localisée semblable à Configure Path Display.
         /// </summary>
         internal static string mnuConfigureTrajectory {
             get {
@@ -1591,7 +1609,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete Trajectory after this Point.
+        ///   Recherche une chaîne localisée semblable à Delete Path after this Point.
         /// </summary>
         internal static string mnuDeleteEndOfTrajectory {
             get {
@@ -1600,7 +1618,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete all the Trajectory.
+        ///   Recherche une chaîne localisée semblable à Delete all the Path&apos;s.
         /// </summary>
         internal static string mnuDeleteTrajectory {
             get {
@@ -1843,7 +1861,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Restart Trajectory Edition.
+        ///   Recherche une chaîne localisée semblable à Restart Path Edition.
         /// </summary>
         internal static string mnuRestartTracking {
             get {
@@ -1942,7 +1960,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à End Trajectory Edition.
+        ///   Recherche une chaîne localisée semblable à End Path Edition .
         /// </summary>
         internal static string mnuStopTracking {
             get {
@@ -1996,7 +2014,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Track Trajectory.
+        ///   Recherche une chaîne localisée semblable à Track Path.
         /// </summary>
         internal static string mnuTrackTrajectory {
             get {
@@ -2050,7 +2068,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to save file : unsupported encoding..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : unsupported encoding..
         /// </summary>
         internal static string SaveMovie_CodecNotFound {
             get {
@@ -2059,7 +2077,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to save file : problem while initializing encoder..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : problem while initializing encoder..
         /// </summary>
         internal static string SaveMovie_CodecNotOpened {
             get {
@@ -2077,7 +2095,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to save file : can&apos;t write to the file..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : Unable to write to the file..
         /// </summary>
         internal static string SaveMovie_FileNotOpened {
             get {
@@ -2086,7 +2104,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to save file : some error happened during encoding process..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : some error happened during encoding process..
         /// </summary>
         internal static string SaveMovie_TranscodeNotFinished {
             get {
@@ -2095,7 +2113,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure trying to save file : unknown error..
+        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : unknown error..
         /// </summary>
         internal static string SaveMovie_UnknownError {
             get {
@@ -2221,7 +2239,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Chronometer.
+        ///   Recherche une chaîne localisée semblable à Stopwatch.
         /// </summary>
         internal static string ToolTip_DrawingToolChrono {
             get {
@@ -2352,6 +2370,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_ResetWorkingZone {
             get {
                 return ResourceManager.GetString("ToolTip_ResetWorkingZone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save video with a pause on each key image.
+        /// </summary>
+        internal static string ToolTip_SavePausedVideo {
+            get {
+                return ResourceManager.GetString("ToolTip_SavePausedVideo", resourceCulture);
             }
         }
         

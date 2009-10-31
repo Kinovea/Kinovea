@@ -171,6 +171,8 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Guardar el video.</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Creaciòn de la presentación de diapositivas imposible.</value></data>
    
+   
+   
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Creaciòn deldocumento Pdf imposible.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Impossible guardar el archivo : El archivo està abierto en otra ventana</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>El documento Pdf será creado a partir de las imágenes claves. \n Por favor, añadir algunas imágenes clave antes de generar el documento.</value></data>
@@ -322,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : Una vez</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Guardar una secuencia de imagen </value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reinicializar la zona de trabajo</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Posicionar la entrada de la zona de trabajo sobre la imagen actual</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Posicionar la salida de la zona de trabajo sobre la imagen actual</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostrar Comentarios</value></data>

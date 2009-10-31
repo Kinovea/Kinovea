@@ -171,6 +171,8 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvează Video</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Crearea secvenţelor de imagini este imposibilă.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>O Secvenţă de imagini reprezintă o serie de cadre cheie salvată în format video.\n Vă rugăm să adăugaţi câteva cadre cheie înainte de a genera Secvenţa de imagini.</value></data>
+   
+   
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea – Crearea documentului Pdf este imposibilă.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Eroare întâmpinată la salvarea fişierului : fişierul este deschis în altă fereastră .</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Documentul Pdf va fi creat din cadre cheie.\n Vă rugăm să adăugaţi câteva cadre cheie înainte de a genera documentul. </value></data>
@@ -322,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Schimbă modul de repetiţie ( O dată | Buclă ) - Mod curent : O dată</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salvează o secvenţa de imagini</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Resetează zona de lucru</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Setaţi începutul zonei de lucru pe cadrul curent</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent </value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Arată comentariile</value></data>

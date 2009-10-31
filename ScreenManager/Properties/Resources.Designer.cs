@@ -158,6 +158,22 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap ExportDock4
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("ExportDock4", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap ExportDock5
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("ExportDock5", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap filesave
 		{
 			get
@@ -446,6 +462,22 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap playmodeloop
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("playmodeloop", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap playmodeonce
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("playmodeonce", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap playmulti3
 		{
 			get
@@ -574,6 +606,14 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap snapmulti_1
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("snapmulti_1", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap snaprafale
 		{
 			get
@@ -587,6 +627,14 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("snapsingle", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap snapsingle_1
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("snapsingle_1", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}

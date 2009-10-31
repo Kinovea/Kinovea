@@ -124,7 +124,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à You can get more videos through the menu : Options &gt; Check For Available Updates....
+        ///   Recherche une chaîne localisée semblable à More videos are available through the menu : Options &gt; Check For Available Updates....
         /// </summary>
         internal static string dlgHelpVideos_GetMore {
             get {
@@ -151,7 +151,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Select which video you would like to watch :.
+        ///   Recherche une chaîne localisée semblable à Select which video you would like to view:.
         /// </summary>
         internal static string dlgHelpVideos_LblSelectVideos {
             get {

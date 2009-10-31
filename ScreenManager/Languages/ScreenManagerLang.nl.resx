@@ -171,6 +171,8 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan geen Diashow maken</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>In video format.\n Voer a.u.b. enkele kernbeelden in,voordat u de diashow maakt.</value></data>
+   
+   
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Kan geen Pdf-bestand maken.</value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Fout bij opslag van bestand : het bestand is in ander scherm geopend.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Het Pdf-bestand wordt gemaakt uit de kernbeelden. \n Voer a.u.b. enkele kernbeelden in, voordat u het document gaat maken.</value></data>
@@ -322,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Verander herhalingsweergave ( Enkel | Herhaal ) - Huidige weergave : Eenmaal</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Herstel het werkgebied naar volledige video</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Maak eerste frame van het werkgebied nu het huidige frame</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Toon commentaar</value></data>
