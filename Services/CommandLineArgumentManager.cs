@@ -53,7 +53,7 @@ namespace Kinovea.Services
     	}
     	public bool SpeedConsumed
     	{
-    		// Indicates whether the SpeedPercentage argument has been used.
+    		// Indicates whether the SpeedPercentage argument has been used by a PlayerScreen.
     		get { return m_bSpeedConsumed;}
     		set { m_bSpeedConsumed = value;}
     	}
@@ -80,7 +80,7 @@ namespace Kinovea.Services
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Instance et Ctor
+        #region Instance and Ctor
         public static CommandLineArgumentManager Instance()
         {
         	// get singleton instance.

@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -51,37 +52,37 @@ namespace Kinovea.Root
 
 
         // Menus
-        private ToolStripMenuItem mnuFile;
-        private ToolStripMenuItem mnuOpenFile;
-        private ToolStripMenuItem mnuHistory;
-        private ToolStripMenuItem mnuQuit;
-        private ToolStripMenuItem mnuEdit;
-        private ToolStripMenuItem mnuUndo;
-        private ToolStripMenuItem mnuRedo;
-        private ToolStripMenuItem mnuView;
-        public ToolStripMenuItem mnuToggleFileExplorer;
-        private ToolStripMenuItem mnuImage;
-        private ToolStripMenuItem mnuMotion;
-        //private ToolStripMenuItem mnuFluidify;
-        private ToolStripMenuItem mnuOptions;
-        private ToolStripMenuItem mnuLanguages;
-        private ToolStripMenuItem mnuSpanish;
-        private ToolStripMenuItem mnuEnglish;
-        private ToolStripMenuItem mnuFrench;
-        private ToolStripMenuItem mnuGerman;
-        private ToolStripMenuItem mnuPolish;
-        private ToolStripMenuItem mnuDutch;
-        private ToolStripMenuItem mnuItalian;
-        private ToolStripMenuItem mnuPortuguese;
-        private ToolStripMenuItem mnuRomanian;
-        private ToolStripMenuItem mnuPreferences;
-        private ToolStripMenuItem mnuHelp;
-        private ToolStripMenuItem mnuHelpContents;
-        private ToolStripMenuItem mnuTutorialVideos;
-        private ToolStripMenuItem mnuAbout;
+        private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenFile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHistory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuQuit = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuEdit = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuUndo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRedo = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuView = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuToggleFileExplorer = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSpanish = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuEnglish = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFrench = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuGerman = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPolish = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDutch = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuItalian = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPortuguese = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRomanian = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTutorialVideos = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
 
         // Status
-        private ToolStripStatusLabel stLabel;
+        private ToolStripStatusLabel stLabel = new ToolStripStatusLabel();
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -267,13 +268,11 @@ namespace Kinovea.Root
             #region File
 
             // 1.File Menu
-            mnuFile = new ToolStripMenuItem();
             mnuFile.Tag = new ItemResourceInfo(RootResourceManager, "mnuFile");
             mnuFile.Text = ((ItemResourceInfo)mnuFile.Tag).resManager.GetString(((ItemResourceInfo)mnuFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuFile.MergeAction = MergeAction.Append;
 
             // OpenFile
-            mnuOpenFile = new ToolStripMenuItem();
             mnuOpenFile.Tag = new ItemResourceInfo(RootResourceManager, "mnuOpenFile");
             mnuOpenFile.Text = ((ItemResourceInfo)mnuOpenFile.Tag).resManager.GetString(((ItemResourceInfo)mnuOpenFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOpenFile.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
@@ -281,8 +280,7 @@ namespace Kinovea.Root
 
             
             // History
-            mnuHistory = new ToolStripMenuItem();
-            mnuHistory.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistory");
+           mnuHistory.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistory");
             mnuHistory.Text = ((ItemResourceInfo)mnuHistory.Tag).resManager.GetString(((ItemResourceInfo)mnuHistory.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 
             #region History Items
@@ -361,7 +359,6 @@ namespace Kinovea.Root
             ToolStripSeparator mnuSepFile2 = new ToolStripSeparator();
 
             // Quit
-            mnuQuit = new ToolStripMenuItem();
             mnuQuit.Tag = new ItemResourceInfo(RootResourceManager, "Generic_Quit");
             mnuQuit.Text = ((ItemResourceInfo)mnuQuit.Tag).resManager.GetString(((ItemResourceInfo)mnuQuit.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
@@ -371,13 +368,11 @@ namespace Kinovea.Root
 
             #region Edit
             // 2.Edit Menu
-            mnuEdit = new ToolStripMenuItem();
             mnuEdit.Tag = new ItemResourceInfo(RootResourceManager, "mnuEdit");
             mnuEdit.Text = ((ItemResourceInfo)mnuEdit.Tag).resManager.GetString(((ItemResourceInfo)mnuEdit.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuEdit.MergeAction = MergeAction.Append;
 
             //Undo
-            mnuUndo = new ToolStripMenuItem();
             mnuUndo.Tag = new ItemResourceInfo(RootResourceManager, "mnuUndo");
             mnuUndo.Text = ((ItemResourceInfo)mnuUndo.Tag).resManager.GetString(((ItemResourceInfo)mnuUndo.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
@@ -388,7 +383,6 @@ namespace Kinovea.Root
             cm.RegisterUndoMenu(mnuUndo);
 
             //Redo
-            mnuRedo = new ToolStripMenuItem();
             mnuRedo.Tag = new ItemResourceInfo(RootResourceManager, "mnuRedo");
             mnuRedo.Text = ((ItemResourceInfo)mnuRedo.Tag).resManager.GetString(((ItemResourceInfo)mnuRedo.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
@@ -402,12 +396,10 @@ namespace Kinovea.Root
 
             #region View
             // 3.View
-            mnuView = new ToolStripMenuItem();
             mnuView.Tag = new ItemResourceInfo(RootResourceManager, "mnuScreens");
             mnuView.Text = ((ItemResourceInfo)mnuView.Tag).resManager.GetString(((ItemResourceInfo)mnuView.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             
             // Toggle File Explorer
-            mnuToggleFileExplorer = new ToolStripMenuItem();
             mnuToggleFileExplorer.Tag = new ItemResourceInfo(RootResourceManager, "mnuToggleFileExplorer");
             mnuToggleFileExplorer.Text = ((ItemResourceInfo)mnuToggleFileExplorer.Tag).resManager.GetString(((ItemResourceInfo)mnuToggleFileExplorer.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuToggleFileExplorer.Checked = true;
@@ -422,14 +414,12 @@ namespace Kinovea.Root
 
             #region Image
             // 4.Image
-            mnuImage = new ToolStripMenuItem();
             mnuImage.Tag = new ItemResourceInfo(RootResourceManager, "mnuImage");
             mnuImage.Text = ((ItemResourceInfo)mnuImage.Tag).resManager.GetString(((ItemResourceInfo)mnuImage.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             #endregion
 
             #region Motion
             // 5.Motion
-            mnuMotion = new ToolStripMenuItem();
             mnuMotion.Tag = new ItemResourceInfo(RootResourceManager, "mnuMotion");
             mnuMotion.Text = ((ItemResourceInfo)mnuMotion.Tag).resManager.GetString(((ItemResourceInfo)mnuMotion.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuMotion.Visible = PreferencesManager.ExperimentalRelease;
@@ -437,12 +427,10 @@ namespace Kinovea.Root
 
             #region Options
             // 6.Options
-            mnuOptions = new ToolStripMenuItem();
             mnuOptions.Tag = new ItemResourceInfo(RootResourceManager, "mnuOptions");
             mnuOptions.Text = ((ItemResourceInfo)mnuOptions.Tag).resManager.GetString(((ItemResourceInfo)mnuOptions.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 
             // Languages
-            mnuLanguages = new ToolStripMenuItem();
             mnuLanguages.Tag = new ItemResourceInfo(RootResourceManager, "mnuLanguages");
             mnuLanguages.Text = ((ItemResourceInfo)mnuLanguages.Tag).resManager.GetString(((ItemResourceInfo)mnuLanguages.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 
@@ -492,7 +480,6 @@ namespace Kinovea.Root
             #endregion
 
             // Preferences
-            mnuPreferences = new ToolStripMenuItem();
             mnuPreferences.Tag = new ItemResourceInfo(RootResourceManager, "mnuPreferences");
             mnuPreferences.Text = ((ItemResourceInfo)mnuPreferences.Tag).resManager.GetString(((ItemResourceInfo)mnuPreferences.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
@@ -502,32 +489,48 @@ namespace Kinovea.Root
 
             #region Help
             // 7.Help
-            mnuHelp = new ToolStripMenuItem();
             mnuHelp.Tag = new ItemResourceInfo(RootResourceManager, "mnuHelp");
             mnuHelp.Text = ((ItemResourceInfo)mnuHelp.Tag).resManager.GetString(((ItemResourceInfo)mnuHelp.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 
             // Manual
-            mnuHelpContents = new ToolStripMenuItem();
             mnuHelpContents.Tag = new ItemResourceInfo(RootResourceManager, "mnuHelpContents");
             mnuHelpContents.Text = ((ItemResourceInfo)mnuHelpContents.Tag).resManager.GetString(((ItemResourceInfo)mnuHelpContents.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuHelpContents.ShortcutKeys = System.Windows.Forms.Keys.F1;
             mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
 
             // Video Tutorial
-            mnuTutorialVideos = new ToolStripMenuItem();
             mnuTutorialVideos.Tag = new ItemResourceInfo(RootResourceManager, "mnuTutorialVideos");
             mnuTutorialVideos.Text = ((ItemResourceInfo)mnuTutorialVideos.Tag).resManager.GetString(((ItemResourceInfo)mnuTutorialVideos.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
 
-            ToolStripSeparator mnuSepHelp = new ToolStripSeparator();
+            // Logs Folder
+            mnuApplicationFolder.Tag = new ItemResourceInfo(RootResourceManager, "mnuApplicationFolder");
+            mnuApplicationFolder.Text = ((ItemResourceInfo)mnuApplicationFolder.Tag).resManager.GetString(((ItemResourceInfo)mnuApplicationFolder.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuApplicationFolder.Click += new EventHandler(mnuApplicationFolder_OnClick);
 
             // About
-            mnuAbout = new ToolStripMenuItem();
             mnuAbout.Tag = new ItemResourceInfo(RootResourceManager, "mnuAbout");
             mnuAbout.Text = ((ItemResourceInfo)mnuAbout.Tag).resManager.GetString(((ItemResourceInfo)mnuAbout.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
-            mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { mnuHelpContents, mnuTutorialVideos, mnuSepHelp, mnuAbout });
+            if(PreferencesManager.ExperimentalRelease)
+            {
+            	mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
+            	                               	mnuHelpContents, 
+            	                               	mnuTutorialVideos, 
+            	                               	new ToolStripSeparator(), 
+            	                               	mnuApplicationFolder, 
+            	                               	new ToolStripSeparator(),
+            	                               	mnuAbout });
+            }
+            else
+            {
+            	mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
+            	                               	mnuHelpContents, 
+            	                               	mnuTutorialVideos, 
+            	                               	new ToolStripSeparator(), 
+            	                               	mnuAbout });
+            }
 
             #endregion
 
@@ -861,6 +864,12 @@ namespace Kinovea.Root
                 log.Error("Cannot find the xml help index.");
             }
 
+        }
+        private void mnuApplicationFolder_OnClick(object sender, EventArgs e)
+        {
+            // Launch Windows Explorer on App folder.
+			Process.Start(  "explorer.exe", 
+                          	 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\");
         }
         private void mnuAbout_OnClick(object sender, EventArgs e)
         {

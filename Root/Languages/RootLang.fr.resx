@@ -75,7 +75,7 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>\n Traductions:\n</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Toutes les Langues</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Vous pouvez obtenir d'autres vidéos à l'aide du menu : Options &gt; Vérifier si des Mises à Jour sont Disponibles...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>A propos de cette Vidéo...</value></data>
+   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>À propos de cette Vidéo…</value></data>
    <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filtrer sur la langue :</value></data>
    <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Sélectionnez la vidéo que vous souhaitez visionner :</value></data>
    <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Pas de commentaire.</value></data>
@@ -105,23 +105,24 @@
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuler</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Quitter</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Enregistrer</value></data>
-   <data name="mnuAbout" xml:space="preserve"><value>A Propos de kinovea...</value></data>
+   <data name="mnuAbout" xml:space="preserve"><value>À Propos de kinovea…</value></data>
+   <data name="mnuApplicationFolder" xml:space="preserve"><value>Ouvrir le dossier des logs…</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Édition</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Fichier</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Aide</value></data>
-   <data name="mnuHelpContents" xml:space="preserve"><value>Aide de Kinovea...</value></data>
+   <data name="mnuHelpContents" xml:space="preserve"><value>Aide de Kinovea…</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Récents</value></data>
    <data name="mnuHistoryReset" xml:space="preserve"><value>Effacer l'Historique</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Image</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Langues</value></data>
    <data name="mnuMotion" xml:space="preserve"><value>Mouvement</value></data>
-   <data name="mnuOpenFile" xml:space="preserve"><value>Ouvrir un Fichier Video...</value></data>
+   <data name="mnuOpenFile" xml:space="preserve"><value>Ouvrir un Fichier Video…</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Options</value></data>
-   <data name="mnuPreferences" xml:space="preserve"><value>Préférences...</value></data>
+   <data name="mnuPreferences" xml:space="preserve"><value>Préférences…</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Refaire</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Affichage</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Explorateur de Fichiers</value></data>
-   <data name="mnuTutorialVideos" xml:space="preserve"><value>Tutoriels Vidéos...</value></data>
+   <data name="mnuTutorialVideos" xml:space="preserve"><value>Tutoriels Vidéos…</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Annuler</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classique (h:mm:ss:centièmes)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numéros des images</value></data>

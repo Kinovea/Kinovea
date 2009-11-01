@@ -133,7 +133,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à About this Video....
+        ///   Recherche une chaîne localisée semblable à About this Video….
         /// </summary>
         internal static string dlgHelpVideos_LblAboutThisVideo {
             get {
@@ -358,7 +358,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Preferences....
+        ///   Recherche une chaîne localisée semblable à Preferences….
         /// </summary>
         internal static string dlgPreferences_Title {
             get {
@@ -367,7 +367,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Loading User Interface... .
+        ///   Recherche une chaîne localisée semblable à Loading User Interface….
         /// </summary>
         internal static string dlgSplash_LoadInfos {
             get {
@@ -403,11 +403,20 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à About Kinovea....
+        ///   Recherche une chaîne localisée semblable à About Kinovea….
         /// </summary>
         internal static string mnuAbout {
             get {
                 return ResourceManager.GetString("mnuAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open log folder….
+        /// </summary>
+        internal static string mnuApplicationFolder {
+            get {
+                return ResourceManager.GetString("mnuApplicationFolder", resourceCulture);
             }
         }
         
@@ -493,7 +502,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Open Video File....
+        ///   Recherche une chaîne localisée semblable à Open Video File….
         /// </summary>
         internal static string mnuOpenFile {
             get {
@@ -511,7 +520,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Preferences....
+        ///   Recherche une chaîne localisée semblable à Preferences….
         /// </summary>
         internal static string mnuPreferences {
             get {
@@ -547,7 +556,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Video Tutorials....
+        ///   Recherche une chaîne localisée semblable à Video Tutorials….
         /// </summary>
         internal static string mnuTutorialVideos {
             get {

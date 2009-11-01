@@ -106,6 +106,7 @@
    <data name="Generic_Quit" xml:space="preserve"><value>Esci</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
    <data name="mnuAbout" xml:space="preserve"><value>Riguardo Kinovea...</value></data>
+   
    <data name="mnuEdit" xml:space="preserve"><value>Modifica</value></data>
    <data name="mnuFile" xml:space="preserve"><value>File</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Aiuto</value></data>

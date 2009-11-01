@@ -664,7 +664,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save a Slideshow from Key Images.
+        ///   Recherche une chaîne localisée semblable à Save a video.
         /// </summary>
         internal static string dlgDiapoExport_Title {
             get {
