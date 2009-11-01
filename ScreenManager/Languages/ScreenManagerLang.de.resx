@@ -131,7 +131,7 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Dauer jedes Einzelbildes : {0} Hundertstelsekunden</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Dauer jedes Einzelbildes : {0:0.00} Sekunden</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Speichere eine Diashow aus den Schlüsselbildern</value></data>
+   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Speichere Video</value></data>
    
    
    
@@ -324,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Ändere Abspielmodus (Einmal | Schleife) – Aktueller Modus : Einmal</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Speichere eine Bildsequenz</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Setze den Arbeitsbereich auf Vollbild</value></data>
+   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Speichere eine Diashow aus den Schlüsselbildern</value></data>
    
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Setze das erste Bild des Arbeitsbereichs auf das aktuelle</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Setze das letzte Bild des Arbeitsbereichs auf das aktuelle</value></data>

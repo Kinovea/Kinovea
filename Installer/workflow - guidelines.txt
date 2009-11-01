@@ -19,4 +19,6 @@
 5. Smoke tests sur la machine de dev et sur la machine virtuelle Win7.
 	N° version, désactivation des menus qui doivent l'être, enregistrement d'un fichier avec data et réouverture.
 	
-6. Une fois la livraison finalisée, copier l'ensemble du répertoire de travail (Kinovea.Files\current) dans un répertoire d'archive au numéro de version correspondant.
+6. Une fois tout vérifié, commiter l'état sous svn et tagguer la version.	
+	
+7. Une fois la livraison finalisée, copier l'ensemble du répertoire de travail (Kinovea.Files\current) dans un répertoire d'archive au numéro de version correspondant.

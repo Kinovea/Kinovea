@@ -327,24 +327,25 @@ namespace Kinovea.ScreenManager
             mnuOneCapture.Text = ((ItemResourceInfo)mnuOneCapture.Tag).resManager.GetString(((ItemResourceInfo)mnuOneCapture.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
             mnuOneCapture.MergeAction = MergeAction.Append;
-            //mnuOneCapture.Enabled = false;
             
-
             // Two captures
             ToolStripMenuItem mnuTwoCaptures = new ToolStripMenuItem();
             mnuTwoCaptures.Tag = new ItemResourceInfo(resManager, "mnuTwoCaptures");
             mnuTwoCaptures.Text = ((ItemResourceInfo)mnuTwoCaptures.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoCaptures.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
             mnuTwoCaptures.MergeAction = MergeAction.Append;
-			//mnuTwoCaptures.Enabled = false;
-            
+			            
             // Two mixed
             ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
             mnuTwoMixed.Tag = new ItemResourceInfo(resManager, "mnuTwoMixed");
             mnuTwoMixed.Text = ((ItemResourceInfo)mnuTwoMixed.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoMixed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
-            //mnuTwoMixed.Enabled = false;
+                        
+            // Disabling all capture menus during dev.
+			mnuOneCapture.Enabled = false;            
+            mnuTwoCaptures.Enabled = false;
+            mnuTwoMixed.Enabled = false;
  
             //Swap - activé seulement si DualFull ?
             mnuSwapScreens.Tag = new ItemResourceInfo(resManager, "mnuSwapScreens");

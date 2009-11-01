@@ -664,7 +664,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save a video.
+        ///   Recherche une chaîne localisée semblable à Save Video.
         /// </summary>
         internal static string dlgDiapoExport_Title {
             get {
@@ -2370,6 +2370,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_ResetWorkingZone {
             get {
                 return ResourceManager.GetString("ToolTip_ResetWorkingZone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save a slideshow from Key Images.
+        /// </summary>
+        internal static string ToolTip_SaveDiaporama {
+            get {
+                return ResourceManager.GetString("ToolTip_SaveDiaporama", resourceCulture);
             }
         }
         
