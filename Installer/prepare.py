@@ -16,51 +16,51 @@ otherdir = 'OtherFiles'
 destdir = 'Kinovea.Files\current'
 
 #Kinovea binaries
-shutil.copy(os.path.join(bindir, "Kinovea.exe"), destdir)
-shutil.copy(os.path.join(bindir, "Kinovea.FileBrowser.dll"), destdir)
-shutil.copy(os.path.join(bindir, "Kinovea.ScreenManager.dll"), destdir)
-shutil.copy(os.path.join(bindir, "Kinovea.Services.dll"), destdir)
-shutil.copy(os.path.join(bindir, "Kinovea.Updater.dll"), destdir)
-shutil.copy(os.path.join(bindir, "PlayerServer.dll"), destdir)
+shutil.copy2(os.path.join(bindir, "Kinovea.exe"), destdir)
+shutil.copy2(os.path.join(bindir, "Kinovea.FileBrowser.dll"), destdir)
+shutil.copy2(os.path.join(bindir, "Kinovea.ScreenManager.dll"), destdir)
+shutil.copy2(os.path.join(bindir, "Kinovea.Services.dll"), destdir)
+shutil.copy2(os.path.join(bindir, "Kinovea.Updater.dll"), destdir)
+shutil.copy2(os.path.join(bindir, "PlayerServer.dll"), destdir)
 
 #AForge
-shutil.copy(os.path.join(refdir, "AForge.dll"), destdir)
-shutil.copy(os.path.join(refdir, "AForge.Imaging.dll"), destdir)
-shutil.copy(os.path.join(refdir, "AForge.Math.dll"), destdir)
-shutil.copy(os.path.join(refdir, "AForge.Video.dll"), destdir)
-shutil.copy(os.path.join(refdir, "AForge.Video.DirectShow.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "AForge.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "AForge.Imaging.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "AForge.Math.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "AForge.Video.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "AForge.Video.DirectShow.dll"), destdir)
 
 #FFMpeg
-shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\avcodec-51.dll"), destdir)
-shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\avformat-52.dll"), destdir)
-shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\avutil-49.dll"), destdir)
-shutil.copy(os.path.join(refdir, "FFMpeg\\bin\\swscale-0.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avcodec-51.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avformat-52.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avutil-49.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\swscale-0.dll"), destdir)
 
 #Microsoft
-shutil.copy(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
-shutil.copy(os.path.join(refdir, "msvcm80.dll"), destdir)
-shutil.copy(os.path.join(refdir, "msvcp80.dll"), destdir)
-shutil.copy(os.path.join(refdir, "msvcr80.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcm80.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcp80.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcr80.dll"), destdir)
 
 #Others libraries
-shutil.copy(os.path.join(refdir, "log4net.dll"), destdir)
-shutil.copy(os.path.join(refdir, "pthreadGC2.dll"), destdir)
-shutil.copy(os.path.join(refdir, "ExpTreeLib.dll"), destdir)
-shutil.copy(os.path.join(refdir, "ICSharpCode.SharpZipLib.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "log4net.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "pthreadGC2.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "ExpTreeLib.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "ICSharpCode.SharpZipLib.dll"), destdir)
 
 
 # Licenses
-shutil.copy(os.path.join(otherdir, "License.txt"), destdir)
-shutil.copy(os.path.join(otherdir, "GFDL.txt"), destdir)
-shutil.copy(os.path.join(otherdir, "GPLv2.txt"), destdir)
-shutil.copy(os.path.join(otherdir, "LAL-english.htm"), destdir)
-shutil.copy(os.path.join(otherdir, "LAL-french.htm"), destdir)
+shutil.copy2(os.path.join(otherdir, "License.txt"), destdir)
+shutil.copy2(os.path.join(otherdir, "GFDL.txt"), destdir)
+shutil.copy2(os.path.join(otherdir, "GPLv2.txt"), destdir)
+shutil.copy2(os.path.join(otherdir, "LAL-english.htm"), destdir)
+shutil.copy2(os.path.join(otherdir, "LAL-french.htm"), destdir)
 
 #Other files
-shutil.copy(os.path.join(otherdir, "Readme.txt"), destdir)
-shutil.copy(os.path.join(otherdir, "kinoveabundle.ico"), destdir)
-shutil.copy(os.path.join(otherdir, "HelpIndex.xml"), destdir)
-shutil.copy(os.path.join(otherdir, "LogConf.xml"), destdir)
+shutil.copy2(os.path.join(otherdir, "Readme.txt"), destdir)
+shutil.copy2(os.path.join(otherdir, "kinoveabundle.ico"), destdir)
+shutil.copy2(os.path.join(otherdir, "HelpIndex.xml"), destdir)
+shutil.copy2(os.path.join(otherdir, "LogConf.xml"), destdir)
 
 #XSLT stylesheets
 if not os.path.exists(os.path.join(destdir, "xslt")):

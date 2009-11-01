@@ -2432,7 +2432,7 @@ namespace Kinovea.ScreenManager
 			// Export buttons
 			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
 			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
-			toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.dlgDiapoExport_Title);
+			toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.ToolTip_SaveDiaporama);
 			toolTips.SetToolTip(btnPdf, ScreenManagerLang.dlgExportToPDF_Title);
 			toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.dlgSaveVideoTitle);
 			toolTips.SetToolTip(btnPausedVideo, ScreenManagerLang.ToolTip_SavePausedVideo);

@@ -131,7 +131,7 @@
    
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata fiecărui diapozitiv: {0} sutimi de secundă.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata fiecărui diapozitiv : {0:0.00} secunde.</value></data>
-   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvează o succesiune de imagini din cadrele cheie</value></data>
+   <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvează fişier video</value></data>
    
    
    
@@ -324,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Schimbă modul de repetiţie ( O dată | Buclă ) - Mod curent : O dată</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salvează o secvenţa de imagini</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Resetează zona de lucru</value></data>
+   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salvează o succesiune de imagini din cadrele cheie</value></data>
    
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Setaţi începutul zonei de lucru pe cadrul curent</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent </value></data>

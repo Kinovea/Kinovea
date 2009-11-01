@@ -324,6 +324,7 @@
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Changer le Mode Répétition ( Une fois | En Boucle ) - Mode Actuel : Une Fois</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Enregistrer une Séquence d'Images</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Remise à zéro de la Zone de Travail</value></data>
+   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Enregistrer un diaporama des images clés</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Enregistrer la vidéo avec une pause sur chaque Image Clé</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Positionner l'Entrée de la Zone de Travail sur l'Image Courante</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Positionner la Sortie de la Zone de Travail sur l'Image Courante</value></data>
