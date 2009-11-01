@@ -78,7 +78,7 @@
    <data name="Updater_FilterAll" xml:space="preserve"><value>Toutes les Langues</value></data>
    <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Mise à jour disponible</value></data>
    <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Nouveau</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>A jour</value></data>
+   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>À jour</value></data>
    <data name="Updater_Instruction" xml:space="preserve"><value>Cliquez sur le bouton 'Télécharger' pour lancer le téléchargement.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Une erreur est survenue durant la vérification. Veuillez vous assurer que la connexion à Internet est opérationnelle.</value></data>
    <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Tous les guides d'utilisation sont à jour.</value></data>
