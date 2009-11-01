@@ -93,8 +93,11 @@ namespace Kinovea.ScreenManager
         private bool m_bReportOnMouseMove = false;
         private long[] m_KeyframesTimestamps;
         private int[] m_KeyframesMarks;
-       	private static readonly Pen m_PenKeyImageMark = new Pen(Color.FromArgb(128, Color.YellowGreen), 2);
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private long m_SyncPointTimestamp;
+        private int m_SyncPointMark;
+       	private static readonly Pen m_PenKeyImageMark = new Pen(Color.FromArgb(192, Color.YellowGreen), 2); // YellowGreen
+        private static readonly Pen m_PenSyncPointMark = new Pen(Color.FromArgb(192, Color.Firebrick), 2); // 
+       	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Events Delegates
@@ -132,7 +135,7 @@ namespace Kinovea.ScreenManager
                 m_KeyframesTimestamps[i] = _markers[i];
             }
 
-            UpdateAppearence();	
+            UpdateAppearence();
 		}
 		public void Remap(long _iMin, long _iMax)
         {
@@ -146,6 +149,11 @@ namespace Kinovea.ScreenManager
         	
         	UpdateAppearence();
         }
+		public void UpdateSyncPointMarker(long _marker)
+		{
+			m_SyncPointTimestamp = _marker;
+			UpdateAppearence();
+		}
 		#endregion
         
 		#region Event Handlers - User Manipulation
@@ -166,8 +174,12 @@ namespace Kinovea.ScreenManager
 
                     if (m_bReportOnMouseMove)
                     {
+                    	long iPosition = m_iPosition;
                         m_iPosition = m_iMinimum + Rescale(NavCursor.Left - BumperLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum);
-                        if (PositionChanging != null) { PositionChanging(this, m_iPosition); }
+                        if (PositionChanging != null && m_iPosition != iPosition) 
+                        { 
+                        	PositionChanging(this, m_iPosition); 
+                        }
                     }
                 }
             }
@@ -209,6 +221,11 @@ namespace Kinovea.ScreenManager
                     }
                 }
             }
+            
+            if(m_SyncPointMark > 0)
+            {
+            	e.Graphics.DrawLine(m_PenSyncPointMark, m_SyncPointMark, 2, m_SyncPointMark, this.Height - 4);
+            }
         }
         #endregion
         
@@ -220,8 +237,12 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateValuesAndReport()
         {
+        	long iPosition = m_iPosition;
             m_iPosition = m_iMinimum + Rescale(NavCursor.Left - BumperLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum);
-            if (PositionChanged != null) { PositionChanged(this, m_iPosition); }
+        	if (PositionChanged != null && m_iPosition != iPosition) 
+        	{ 
+        		PositionChanged(this, m_iPosition); 
+        	}
         }
         private void UpdateAppearence()
         {
@@ -238,6 +259,7 @@ namespace Kinovea.ScreenManager
         }
        	private void UpdateMarkers()
         {
+       		// Key frames
             if (m_KeyframesTimestamps != null)
             {
                 if (m_KeyframesMarks == null)
@@ -255,6 +277,16 @@ namespace Kinovea.ScreenManager
                 {
                     m_KeyframesMarks[i] = (NavCursor.Width / 2) + BumperLeft.Width + Rescale(m_KeyframesTimestamps[i] - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
                 }
+            }
+            
+            // Sync point
+            if(m_SyncPointTimestamp != 0)
+            {
+            	m_SyncPointMark = (NavCursor.Width / 2) + BumperLeft.Width + Rescale(m_SyncPointTimestamp - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);	
+            }
+            else
+            {
+            	m_SyncPointMark = 0;	
             }
         }
         #endregion

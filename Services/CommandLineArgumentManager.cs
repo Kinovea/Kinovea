@@ -114,6 +114,16 @@ namespace Kinovea.Services
         }
         public void ParseArguments(string[] _args)
         {
+        	// Log argumets.
+        	if(_args.Length > 1)
+        	{
+        		log.Debug("Command line arguments:");
+        		foreach(string arg in _args)
+	        	{
+	        		log.Debug(arg);	
+	        	}	
+        	}
+        	
         	// Remove first argument (name of the executable) before parsing.
         	string[] args = new string[_args.Length-1];        	
         	for (int i = 1; i < _args.Length; i++)
@@ -123,6 +133,9 @@ namespace Kinovea.Services
         	
         	try
         	{
+        		// TODO: also check for the special case where the only argument is a filename.
+        		// this happens when you drag a video on kinovea.exe
+        		
         		// Check for the special parameter -help or -h, 
         		// and then output info on supported params.
         		if (args.Length == 1 && (args[0].Trim() == "-help" || args[0].Trim() == "-h"))

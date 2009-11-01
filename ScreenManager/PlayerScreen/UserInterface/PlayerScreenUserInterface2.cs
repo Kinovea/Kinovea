@@ -113,13 +113,30 @@ namespace Kinovea.ScreenManager
 		public bool Synched
 		{
 			//get { return m_bSynched; }
-			set { m_bSynched = value; }
+			set 
+			{ 
+				m_bSynched = value;
+				
+				if(!m_bSynched)
+				{
+					m_iSyncPosition = 0;
+					trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+					trkFrame.Invalidate();
+					UpdateCurrentPositionLabel();
+				}
+			}
 		}
 		public Int64 SyncPosition
 		{
 			// The absolute ts of the sync point for this video.
 			get { return m_iSyncPosition; }
-			set { m_iSyncPosition = value; }
+			set 
+			{ 
+				m_iSyncPosition = value; 
+				trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+				trkFrame.Invalidate();
+				UpdateCurrentPositionLabel();
+			}
 		}
 		public Int64 SyncCurrentPosition
 		{
@@ -291,6 +308,8 @@ namespace Kinovea.ScreenManager
 			pnlThumbnails.Controls.Clear();
 			DockKeyframePanel();
 			UpdateKeyframesMarkers();
+			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+			trkFrame.Invalidate();
 			EnableDisableAllPlayingControls(true);
 			EnableDisableDrawingTools(true);
 			buttonPlay.BackgroundImage = Resources.liqplay17;
@@ -805,6 +824,7 @@ namespace Kinovea.ScreenManager
 			m_bIsCurrentlyPlaying = false;
 			m_bSeekToStart = false;
 			m_bSynched = false;
+			m_iSyncPosition = 0;
 			m_ePlayingMode = PlayingMode.Loop;
 			m_bStretchModeOn = false;
 			m_FrameServer.CoordinateSystem.Reset();
