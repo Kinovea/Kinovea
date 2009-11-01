@@ -143,12 +143,7 @@ namespace Kinovea.ScreenManager
         public bool Synched
         {
             //get { return m_PlayerScreenUI.m_bSynched; }
-            set { m_PlayerScreenUI.Synched = value; }
-        }
-        public Int64 Position
-        {
-            // Used to feed SyncPosition. 
-            get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
+            set { m_PlayerScreenUI.Synched = value;}
         }
         public Int64 SyncPosition
         {
@@ -156,7 +151,12 @@ namespace Kinovea.ScreenManager
             get { return m_PlayerScreenUI.SyncPosition; }
             set { m_PlayerScreenUI.SyncPosition = value; }
         }
-
+        public Int64 Position
+        {
+            // Used to feed SyncPosition. 
+            get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
+        }
+        
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
         {

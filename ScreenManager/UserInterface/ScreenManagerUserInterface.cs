@@ -129,6 +129,11 @@ namespace Kinovea.ScreenManager
         {
             ComCtrls.SyncOffset = _iOffset;
         }
+        public void UpdateSyncPosition(int _iPosition)
+        {
+        	ComCtrls.trkFrame.UpdateSyncPointMarker(_iPosition);
+        	ComCtrls.trkFrame.Invalidate();
+        }
         public void SetupTrkFrame(int _iMinimum, int _iMaximum, int _iPosition)
         {
             ComCtrls.trkFrame.Minimum = _iMinimum;
@@ -137,10 +142,7 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateTrkFrame(int _iPosition)
         {
-            // This shouldn't be visible outside debug mode.
-
-            //ComCtrls.trkFrame.Position = _iPosition;
-            //ComCtrls.UpdateDebug();
+            ComCtrls.trkFrame.Position = _iPosition;
         }
         public void OrganizeMenuProxy(Delegate _method)
         {
@@ -248,7 +250,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Delegates en provenance du ComCtrls
+        #region Delegates from ComCtrls
         private void ComCtrls_GotoFirst(object sender, EventArgs e)
         {
             if (GotoFirst != null) { GotoFirst(this, EventArgs.Empty); }
@@ -295,7 +297,6 @@ namespace Kinovea.ScreenManager
             m_ThumbsViewer.Visible = false;
             m_bThumbnailsWereVisible = false;
         }
-
         private void DoDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow)
         {
         	// Keep track of the files, in case we need to bring them back
@@ -358,7 +359,6 @@ namespace Kinovea.ScreenManager
                 this.Cursor = Cursors.Default;
             }
         }
-
         
     }
 }

@@ -144,8 +144,8 @@ namespace Kinovea.ScreenManager
         // Dynamic Sync Flags.
         private bool m_bRightIsStarting = false;    // true when the video is between [0] and [1] frames.
         private bool m_bLeftIsStarting = false;
-        private bool m_bLeftIsCatchingUp = false;   // true when the video is the only one left running, heading towards end.
-        private bool m_bRightIsCatchingUp = false;  // Or when the other video is waiting the lag.
+        private bool m_bLeftIsCatchingUp = false;   // CatchingUp is when the video is the only one left running,
+        private bool m_bRightIsCatchingUp = false;  // heading towards end, the other video is waiting the lag.
 
         #endregion
 
@@ -639,6 +639,8 @@ namespace Kinovea.ScreenManager
             {
                 mnuCloseFile2OnClick(null, EventArgs.Empty);
             }
+            
+            PrepareSync(false);
         }
         public void Player_IsReady(PlayerScreen _screen, bool _bInitialisation)
         {
@@ -650,84 +652,7 @@ namespace Kinovea.ScreenManager
         }
         public void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization)
         {
-            // We actually don't care which video was updated.
-            // Set sync mode and reset sync.
-			log.Debug("Player_SelectionChanged() called.");
-            m_bSynching = false;
-
-            if ( (screenList.Count == 2))
-            {
-                if ((screenList[0] is PlayerScreen) && (screenList[1] is PlayerScreen))
-                {
-                    if (((PlayerScreen)screenList[0]).Full && ((PlayerScreen)screenList[1]).Full)
-                    {
-                        m_bSynching = true;
-                        ((PlayerScreen)screenList[0]).Synched = true;
-                        ((PlayerScreen)screenList[1]).Synched = true;
-
-                        if (_bInitialization)
-                        {
-                        	log.Debug("Player_SelectionChanged() - Initialization (reset of sync point).");
-                            // Static Sync
-                            m_iRightSyncFrame = 0;
-                            m_iLeftSyncFrame = 0;
-                            m_iSyncLag = 0;
-                            m_iCurrentFrame = 0;
-
-                            // Dynamic Sync
-                            ResetDynamicSyncFlags();
-                        }
-
-                        // Mise à jour trkFrame
-                        SetSyncLimits();
-                        ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
-
-                        // Mise à jour Players
-                        OnCommonPositionChanged(m_iCurrentFrame);
-
-                        // debug
-                        ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
-                    }
-                    else
-                    {
-                        // Not all screens are loaded with videos.
-                        ((PlayerScreen)screenList[0]).Synched = false;
-                        ((PlayerScreen)screenList[1]).Synched = false;
-                    }
-                }
-            }
-            else
-            {
-                // Only one screen, or not all screens are PlayerScreens.
-                switch (screenList.Count)
-                {
-                    case 1:
-                        if (screenList[0] is PlayerScreen)
-                        {
-                            ((PlayerScreen)screenList[0]).Synched = false;
-                        }
-                        break;
-                    case 2:
-                        if (screenList[0] is PlayerScreen)
-                        {
-                            ((PlayerScreen)screenList[0]).Synched = false;
-                        }
-                        if (screenList[1] is PlayerScreen)
-                        {
-                            ((PlayerScreen)screenList[1]).Synched = false;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            if (!m_bSynching) 
-            { 
-                StopMultimediaTimer();
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
-            }
-
+        	PrepareSync(_bInitialization);
         }
         public bool Capture_TryDeviceConnection(CaptureScreen _screen)
         {
@@ -805,7 +730,6 @@ namespace Kinovea.ScreenManager
                     	case Keys.Add:
                     	case Keys.Subtract:
                     	case Keys.F2:
-                    	case Keys.F6:
                     	case Keys.F7:
                             {
                     			//------------------------------------------------
@@ -822,6 +746,7 @@ namespace Kinovea.ScreenManager
                     			break;
                             }
                     	case Keys.Escape:
+                    	case Keys.F6:
                     	case Keys.F11:
                     	case Keys.Down:
                     	case Keys.Up:
@@ -2368,9 +2293,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Delguées appellées depuis les Screens
-        #endregion
-
         #region Delegates called from anywhere, through Services
         public void DoLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState)
         {
@@ -2379,6 +2301,8 @@ namespace Kinovea.ScreenManager
             	IUndoableCommand clmis = new CommandLoadMovieInScreen(this, _filePath, _iForceScreen, _bStoreState);
             	CommandManager cm = CommandManager.Instance();
             	cm.LaunchUndoableCommand(clmis);
+            	
+            	// No need to call PrepareSync here because it will be called when the working zone is set anyway.
         	}
         }
         public void DoStopPlaying()
@@ -2429,7 +2353,7 @@ namespace Kinovea.ScreenManager
         {
         	//---------------------------------------------------------
         	// Here are grouped the handling of the keystrokes that are 
-        	// for of screen manager's responsibility.
+        	// screen manager's responsibility.
         	// And only when the common controls are actually visible.
         	//---------------------------------------------------------
         	bool bWasHandled = false;
@@ -2493,7 +2417,92 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Synchronisation
+        private void PrepareSync(bool _bInitialization)
+        {
+        	// Called each time the screen list change 
+        	// or when a screen changed selection.
+        	
+        	// We don't care which video was updated.
+            // Set sync mode and reset sync.
+            m_bSynching = false;
 
+            if ( (screenList.Count == 2))
+            {
+                if ((screenList[0] is PlayerScreen) && (screenList[1] is PlayerScreen))
+                {
+                    if (((PlayerScreen)screenList[0]).Full && ((PlayerScreen)screenList[1]).Full)
+                    {
+                        m_bSynching = true;
+                        ((PlayerScreen)screenList[0]).Synched = true;
+                        ((PlayerScreen)screenList[1]).Synched = true;
+
+                        if (_bInitialization)
+                        {
+                        	log.Debug("PrepareSync() - Initialization (reset of sync point).");
+                            // Static Sync
+                            m_iRightSyncFrame = 0;
+                            m_iLeftSyncFrame = 0;
+                            m_iSyncLag = 0;
+                            m_iCurrentFrame = 0;
+                            
+                            ((PlayerScreen)screenList[0]).SyncPosition = 0;
+	                		((PlayerScreen)screenList[1]).SyncPosition = 0;
+	                		((ScreenManagerUserInterface)UI).UpdateSyncPosition(m_iCurrentFrame);
+
+                            // Dynamic Sync
+                            ResetDynamicSyncFlags();
+                        }
+
+                        // Mise à jour trkFrame
+                        SetSyncLimits();
+                        ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
+
+                        // Mise à jour Players
+                        OnCommonPositionChanged(m_iCurrentFrame);
+
+                        // debug
+                        ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
+                    }
+                    else
+                    {
+                        // Not all screens are loaded with videos.
+                        ((PlayerScreen)screenList[0]).Synched = false;
+                        ((PlayerScreen)screenList[1]).Synched = false;
+                    }
+                }
+            }
+            else
+            {
+                // Only one screen, or not all screens are PlayerScreens.
+                switch (screenList.Count)
+                {
+                    case 1:
+                        if (screenList[0] is PlayerScreen)
+                        {
+                            ((PlayerScreen)screenList[0]).Synched = false;
+                        }
+                        break;
+                    case 2:
+                        if (screenList[0] is PlayerScreen)
+                        {
+                            ((PlayerScreen)screenList[0]).Synched = false;
+                        }
+                        if (screenList[1] is PlayerScreen)
+                        {
+                            ((PlayerScreen)screenList[1]).Synched = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (!m_bSynching) 
+            { 
+                StopMultimediaTimer();
+                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+            }
+        }
         public void SetSyncPoint(bool _bIntervalOnly)
         {
             //--------------------------------------------------------------------------------------------------
@@ -2553,7 +2562,7 @@ namespace Kinovea.ScreenManager
 	                m_iCurrentFrame = m_iLeftSyncFrame;
 	            }
 	
-	            // debug
+	            ((ScreenManagerUserInterface)UI).UpdateSyncPosition(m_iCurrentFrame);
 	            ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
             }
         }
@@ -2604,14 +2613,14 @@ namespace Kinovea.ScreenManager
         private void OnCommonPositionChanged(int _iFrame)
         {
             //------------------------------------------------------------------------------
+            // this is where the "static sync" is done.
             // Updates each video to reflect current common position.
             // Used to handle GotoNext, GotoPrev, trkFrame, etc.
-            // this is where the "static sync" is done.
             // 
             // note: m_iSyncLag and _iFrame are expressed in frames.
             //------------------------------------------------------------------------------
 
-            log.Debug("OnCommonPositionChanged() called. Static Sync.");
+            //log.Debug(String.Format("Static Sync, common position changed to {0}",_iFrame));
             
             // Get corresponding position in each video, in frames
             int iLeftFrame = 0;
@@ -2709,11 +2718,9 @@ namespace Kinovea.ScreenManager
         }
         private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
         {
+        	// This is where the dynamic sync is done.
             // Get each video positions in common timebase and milliseconds.
             // Figure if a restart or pause is needed, considering current positions.
-            // This is where the dynamic sync is done.
-            // 
-
 
             //-----------------------------------------------------------------------------
             // This function is executed in the WORKER THREAD.

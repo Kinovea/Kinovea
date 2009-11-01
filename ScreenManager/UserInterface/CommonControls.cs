@@ -83,6 +83,7 @@ namespace Kinovea.ScreenManager
      
         #region Members
         private bool m_bPlaying = false;
+		private long m_iOldPosition;
         #endregion
 
         public CommonControls()
@@ -108,13 +109,20 @@ namespace Kinovea.ScreenManager
 
         public void buttonGotoFirst_Click(object sender, EventArgs e)
         {
-            
-            if (GotoFirst != null) { GotoFirst(this, EventArgs.Empty); }
-            PlayStopped();
+            if (GotoFirst != null) 
+            { 
+            	GotoFirst(this, EventArgs.Empty); 
+            	trkFrame.Position = trkFrame.Minimum;
+            	PlayStopped();
+            }
         }
         public void buttonGotoPrevious_Click(object sender, EventArgs e)
         {
-            if (GotoPrev != null) { GotoPrev(this, EventArgs.Empty); }
+            if (GotoPrev != null) 
+            { 
+            	GotoPrev(this, EventArgs.Empty); 
+            	trkFrame.Position--;
+            }
         }
         public void buttonPlay_Click(object sender, EventArgs e)
         {
@@ -127,11 +135,19 @@ namespace Kinovea.ScreenManager
         }
         public void buttonGotoNext_Click(object sender, EventArgs e)
         {
-            if (GotoNext != null) { GotoNext(this, EventArgs.Empty); }
+            if (GotoNext != null) 
+            { 
+            	GotoNext(this, EventArgs.Empty); 
+            	trkFrame.Position++;
+            }
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
         {
-            if (GotoLast != null) { GotoLast(this, EventArgs.Empty); }
+            if (GotoLast != null) 
+            { 
+            	GotoLast(this, EventArgs.Empty); 
+            	trkFrame.Position = trkFrame.Maximum;
+            }
         }
         private void btnSwap_Click(object sender, EventArgs e)
         {
@@ -147,14 +163,19 @@ namespace Kinovea.ScreenManager
         }
         private void trkFrame_PositionChanging(object sender, long _iPosition)
         {
-            //UpdateDebug();
-            if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
+        	if(_iPosition != m_iOldPosition)
+        	{
+        		m_iOldPosition = _iPosition;
+            	if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
+        	}
         }
-
         private void trkFrame_PositionChanged(object sender, long _iPosition)
         {
-            //UpdateDebug();
-            if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
+            if(_iPosition != m_iOldPosition)
+        	{
+        		m_iOldPosition = _iPosition;
+            	if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
+        	}
         }
 
         public void UpdateDebug()
