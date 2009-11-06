@@ -547,8 +547,8 @@ namespace Kinovea.Updater
             lblFilterByLanguage.Text = m_ResourceManager.GetString("Updater_LblFilterByLang", Thread.CurrentThread.CurrentUICulture);
             PopulateFilterComboBox();
 
-            string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).szTwoLetterISOLanguageName;
-            PopulateCheckedListBox(chklstVideos, _hiRemoteList.HelpVideos, _hiLocalList.HelpVideos, szIsoLang);
+            string szCultureName = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
+            PopulateCheckedListBox(chklstVideos, _hiRemoteList.HelpVideos, _hiLocalList.HelpVideos, szCultureName);
             AutoCheckCulture(chklstVideos);
             RematchTotal(chklstVideos, lblTotalSelectedVideos);
 
@@ -557,7 +557,7 @@ namespace Kinovea.Updater
             // Alignement à droite avec la RichTextBox du changelog.
             lblNewVersionFileSize.Left = rtbxChangeLog.Left + rtbxChangeLog.Width - lblNewVersionFileSize.Width;
         }
-        private void PopulateCheckedListBox(CheckedListBox _chklstbox, List<HelpItem> _remoteItems, List<HelpItem> _localItems, string _szTwoLetterISOLanguageName)
+        private void PopulateCheckedListBox(CheckedListBox _chklstbox, List<HelpItem> _remoteItems, List<HelpItem> _localItems, string _CultureName)
         {
             _chklstbox.Items.Clear();
             foreach (HelpItem RemoteItem in _remoteItems)
@@ -609,7 +609,7 @@ namespace Kinovea.Updater
                 if (RemoteStatus != ItemStatus.Synched)
                 {
                     // Filtre langue
-                    if (_szTwoLetterISOLanguageName == "" || RemoteItem.Language == _szTwoLetterISOLanguageName)
+                    if (_CultureName == "" || RemoteItem.Language == _CultureName)
                     {
                         int row = _chklstbox.Items.Add(RemoteItem, false);
                     }
@@ -686,7 +686,7 @@ namespace Kinovea.Updater
         private void cmbLanguageFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Changement de langue.
-            string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).szTwoLetterISOLanguageName;
+            string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
             PopulateCheckedListBox(chklstVideos, m_hiRemote.HelpVideos, m_hiLocal.HelpVideos, szIsoLang);
             AutoCheckCulture(chklstVideos);
 
@@ -699,7 +699,7 @@ namespace Kinovea.Updater
         {
             for (int i = 0; i < _chklstbox.Items.Count; i++)
             {
-                if (((HelpItem)_chklstbox.Items[i]).Language == Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)
+            	if (((HelpItem)_chklstbox.Items[i]).Language == PreferencesManager.Instance().GetSupportedCulture().Name)
                 {
                     _chklstbox.SetItemChecked(i, true);
                 }
@@ -732,7 +732,7 @@ namespace Kinovea.Updater
                 chklstVideos.Visible = false;
                 lblTotalSelectedVideos.Visible = false;
                 lblAllVideosUpToDate.Visible = true;
-                if (((LanguageIdentifier)cmbLanguageFilter.SelectedItem).szTwoLetterISOLanguageName == "")
+                if (((LanguageIdentifier)cmbLanguageFilter.SelectedItem).CultureName == "")
                 {
                     lblAllVideosUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllVideosUpToDate", Thread.CurrentThread.CurrentUICulture);
                     //lblFilterByLanguage.Visible = false;

@@ -44,7 +44,7 @@ namespace Kinovea.Root
         #region Members
         // Prefs values
         private int m_iFilesToSave;
-        private string m_UILanguage;
+        private string m_UICultureName;
         private TimeCodeFormat m_TimeCodeFormat;
         private Color m_GridColor;
         private Color m_Plane3DColor;
@@ -80,7 +80,7 @@ namespace Kinovea.Root
             // They will then be used to fill the controls.
 
             m_iFilesToSave = m_prefManager.HistoryCount;
-            m_UILanguage = m_prefManager.UILanguage;
+            m_UICultureName = m_prefManager.GetSupportedCulture().Name;
             m_TimeCodeFormat = m_prefManager.TimeCodeFormat;
             m_GridColor = m_prefManager.GridColor;
             m_Plane3DColor = m_prefManager.Plane3DColor;
@@ -112,6 +112,7 @@ namespace Kinovea.Root
 
 
             // Order : Native Alphabetical.
+            // Deutsh, English, Español, Français, Italiano, Nederlands, Polski, Portuges, Romana.
             cmbLanguage.Items.Add(liGerman);
             cmbLanguage.Items.Add(liEnglish);
             cmbLanguage.Items.Add(liSpanish);
@@ -237,18 +238,18 @@ namespace Kinovea.Root
             for(int i=0;i<cmbLanguage.Items.Count;i++)
             {
                 LanguageIdentifier li = (LanguageIdentifier)cmbLanguage.Items[i];
+                
+                if (li.CultureName.Equals(m_UICultureName))
                 {
-                    if (li.szTwoLetterISOLanguageName.Equals(m_UILanguage))
-                    {
-                        // Matching string
-                        cmbLanguage.SelectedIndex = i;            
-                        found = true;
-                    }
+                    // Matching
+                    cmbLanguage.SelectedIndex = i;            
+                    found = true;
                 }
+                
             }
             if(!found)
             {
-                // the language in the pref file is not in the combo box.
+                // The supported language is not in the combo box. (error).
                 cmbLanguage.SelectedIndex = 0;   
             }
             
@@ -319,7 +320,7 @@ namespace Kinovea.Root
         }
         private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_UILanguage = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).szTwoLetterISOLanguageName;
+            m_UICultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).CultureName;
         }
         private void cmbHistoryCount_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -365,7 +366,7 @@ namespace Kinovea.Root
             // Save prefs.
             
             m_prefManager.HistoryCount = m_iFilesToSave;
-            m_prefManager.UILanguage = m_UILanguage;
+            m_prefManager.UICultureName = m_UICultureName;
             m_prefManager.TimeCodeFormat = m_TimeCodeFormat;
             m_prefManager.GridColor = m_GridColor;
             m_prefManager.Plane3DColor = m_Plane3DColor;

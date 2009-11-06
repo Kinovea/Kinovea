@@ -86,7 +86,7 @@ namespace Kinovea.Root
 
             if (cmbLanguageFilter.SelectedIndex >= 0)
             {
-                string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).szTwoLetterISOLanguageName;
+                string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
                 PopulateListBox(lstVideos, m_HelpIndex.HelpVideos, szIsoLang);
             }
             
@@ -105,7 +105,7 @@ namespace Kinovea.Root
 
             cmbLanguageFilter.SelectedIndex = 0;
         }
-        private void PopulateListBox(ListBox _lstbox, List<HelpItem> _Videos, string _szTwoLetterISOLanguageName)
+        private void PopulateListBox(ListBox _lstbox, List<HelpItem> _Videos, string _CultureName)
         {
             _lstbox.Items.Clear();
             foreach (HelpItem Item in _Videos)
@@ -117,7 +117,7 @@ namespace Kinovea.Root
                 Item.Description = Item.LocalizedTitle;
 
                 // Filtre langue
-                if (_szTwoLetterISOLanguageName.Length == 0 || Item.Language == _szTwoLetterISOLanguageName)
+                if (_CultureName.Length == 0 || Item.Language == _CultureName)
                 {
                     _lstbox.Items.Add(Item);
                 }
@@ -137,7 +137,7 @@ namespace Kinovea.Root
             // Changement de langue.
             if (cmbLanguageFilter.SelectedIndex >= 0)
             {
-                string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).szTwoLetterISOLanguageName;
+                string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
                 PopulateListBox(lstVideos, m_HelpIndex.HelpVideos, szIsoLang);
             }
         }

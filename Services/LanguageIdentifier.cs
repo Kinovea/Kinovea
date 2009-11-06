@@ -27,12 +27,12 @@ namespace Kinovea.Services
 {
     public class LanguageIdentifier
     {
-        public string szTwoLetterISOLanguageName;
+        public string CultureName;
         public string szLocalizedLanguageName;
 
-        public LanguageIdentifier(string _szIso, string _szLoc)
+        public LanguageIdentifier(string _CultureName, string _szLoc)
         {
-            szTwoLetterISOLanguageName = _szIso;
+            CultureName = _CultureName;
             szLocalizedLanguageName = _szLoc;
         }
         public override string ToString()
