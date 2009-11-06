@@ -140,8 +140,8 @@ namespace Kinovea.Root
         public void Prepare()
         {
             // Prepare the right strings before we open the curtains.
-            PreferencesManager pm = PreferencesManager.Instance();
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(pm.UILanguage);
+            log.Debug("Setting current ui culture.");
+            Thread.CurrentThread.CurrentUICulture = PreferencesManager.Instance().GetSupportedCulture();
             RefreshUICulture();
             CheckLanguageMenu();
         }
@@ -470,7 +470,7 @@ namespace Kinovea.Root
             mnuPortuguese = new ToolStripMenuItem(PreferencesManager.LanguagePortuguese);
             mnuPortuguese.Click += new EventHandler(menuPortugueseOnClick);
 
-            // Portuguese
+            // Romanian
             mnuRomanian = new ToolStripMenuItem(PreferencesManager.LanguageRomanian);
             mnuRomanian.Click += new EventHandler(menuRomanianOnClick);
 
@@ -560,7 +560,7 @@ namespace Kinovea.Root
             //---------------------------------------------------
 
             // Sub items
-            if (item.GetType().FullName == "System.Windows.Forms.ToolStripMenuItem")
+            if (item is ToolStripMenuItem)
             {
                 foreach (ToolStripItem subItem in ((ToolStripMenuItem)item).DropDownItems)
                 {
@@ -744,7 +744,9 @@ namespace Kinovea.Root
             mnuPortuguese.Checked = false;
             mnuRomanian.Checked = false;
 
-            switch (Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)
+            CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
+            
+            switch (ci.Name)
             {
                 case "es":
                     mnuSpanish.Checked = true;
@@ -790,8 +792,8 @@ namespace Kinovea.Root
 
             // Refresh Preferences
             PreferencesManager pm = PreferencesManager.Instance();
-
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(pm.UILanguage);
+            log.Debug("Setting current ui culture.");
+            Thread.CurrentThread.CurrentUICulture = pm.GetSupportedCulture();
             RefreshUICulture();
         }
         #endregion
@@ -815,7 +817,7 @@ namespace Kinovea.Root
                 // Look for a matching locale.
                 while (!bLocaleFound && i < hiLocal.UserGuides.Count)
                 {
-                    if (hiLocal.UserGuides[i].Language == Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName)
+                	if (hiLocal.UserGuides[i].Language == PreferencesManager.Instance().GetSupportedCulture().Name)
                     {
                         bLocaleFound = true;
                         LocaleHelpUri = hiLocal.UserGuides[i].FileLocation;

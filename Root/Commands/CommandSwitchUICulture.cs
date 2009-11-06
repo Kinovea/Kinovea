@@ -26,6 +26,7 @@ namespace Kinovea.Root
         private CultureInfo oldCi;
         private Thread thread;
         private RootKernel kernel;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
@@ -40,26 +41,22 @@ namespace Kinovea.Root
 
         public void Execute()
         {
-            thread.CurrentUICulture = ci;
-            kernel.RefreshUICulture();
-            PreferencesManager pm = PreferencesManager.Instance();
-            pm.UILanguage = ci.TwoLetterISOLanguageName;
-            pm.Export();
-
-            kernel.CheckLanguageMenu();
-            
+        	log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCi.Name, ci.Name));
+        	ChangeToCulture(ci);
         }
 
         public void Unexecute()
         {
-            thread.CurrentUICulture = oldCi;
-            kernel.RefreshUICulture();
-
+        	log.Debug(String.Format("Changing back culture from [{0}] to [{1}].", ci.Name, oldCi.Name));
+        	ChangeToCulture(oldCi);
+        }
+        private void ChangeToCulture(CultureInfo _newCulture)
+        {
             PreferencesManager pm = PreferencesManager.Instance();
-            pm.UILanguage = oldCi.TwoLetterISOLanguageName;
+            pm.UICultureName = _newCulture.Name;
+            thread.CurrentUICulture = pm.GetSupportedCulture();
+            kernel.RefreshUICulture();
             pm.Export();
-
-            kernel.CheckLanguageMenu();
         }
 
     }
