@@ -18,13 +18,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.Root.Languages;
 using System;
 using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 namespace Kinovea.Root
@@ -46,6 +46,8 @@ namespace Kinovea.Root
         private int m_iFilesToSave;
         private string m_UICultureName;
         private TimeCodeFormat m_TimeCodeFormat;
+        private ImageAspectRatio m_ImageAspectRatio;
+        private bool m_bDeinterlaceByDefault;
         private Color m_GridColor;
         private Color m_Plane3DColor;
         private int m_iWorkingZoneSeconds;
@@ -56,7 +58,6 @@ namespace Kinovea.Root
         // Helpers 
         private PreferencesManager m_prefManager;
         private int m_PickingColor; // 0: picking grid color, 1: picking plane3d color, -1 otherwise.
-        private ResourceManager m_ResourceManager;
         #endregion
 
         #region Constructor
@@ -65,8 +66,6 @@ namespace Kinovea.Root
             InitializeComponent();
             m_prefManager = PreferencesManager.Instance();
             ImportPreferences();
-            
-            m_ResourceManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
 
             m_PickingColor = -1;
             InitPages();
@@ -82,7 +81,9 @@ namespace Kinovea.Root
             m_iFilesToSave = m_prefManager.HistoryCount;
             m_UICultureName = m_prefManager.GetSupportedCulture().Name;
             m_TimeCodeFormat = m_prefManager.TimeCodeFormat;
-            m_GridColor = m_prefManager.GridColor;
+ 			m_ImageAspectRatio = m_prefManager.AspectRatio;       
+            m_bDeinterlaceByDefault = m_prefManager.DeinterlaceByDefault;
+ 			m_GridColor = m_prefManager.GridColor;
             m_Plane3DColor = m_prefManager.Plane3DColor;
             m_iWorkingZoneSeconds = m_prefManager.WorkingZoneSeconds;
             m_iWorkingZoneMemory = m_prefManager.WorkingZoneMemory;
@@ -94,11 +95,11 @@ namespace Kinovea.Root
             this.Size = new Size(608, 356);
 
             // Culture
-            this.Text = "   " + m_ResourceManager.GetString("dlgPreferences_Title", Thread.CurrentThread.CurrentUICulture);
-            btnGeneral.Text = m_ResourceManager.GetString("dlgPreferences_ButtonGeneral", Thread.CurrentThread.CurrentUICulture);
-            grpGeneral.Text = m_ResourceManager.GetString("dlgPreferences_ButtonGeneral", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + RootLang.dlgPreferences_Title;
+            btnGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
+            grpGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
             
-            lblLanguage.Text = m_ResourceManager.GetString("dlgPreferences_LabelLanguages", Thread.CurrentThread.CurrentUICulture);
+            lblLanguage.Text = RootLang.dlgPreferences_LabelLanguages;
             cmbLanguage.Items.Clear();
             LanguageIdentifier liEnglish = new LanguageIdentifier("en", PreferencesManager.LanguageEnglish);
             LanguageIdentifier liFrench = new LanguageIdentifier("fr", PreferencesManager.LanguageFrench);
@@ -122,47 +123,56 @@ namespace Kinovea.Root
             cmbLanguage.Items.Add(liPolish);
             cmbLanguage.Items.Add(liPortuguese);
             cmbLanguage.Items.Add(liRomanian);
-            
-            lblHistoryCount.Text = m_ResourceManager.GetString("dlgPreferences_LabelHistoryCount", Thread.CurrentThread.CurrentUICulture);
-            
-            lblTimeMarkersFormat.Text = m_ResourceManager.GetString("dlgPreferences_LabelTimeFormat", Thread.CurrentThread.CurrentUICulture);
+
+            lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
+
             // Combo TimeCodeFormats (MUST be filled in the order of the enum)
-            cmbTimeCodeFormat.Items.Add(m_ResourceManager.GetString("TimeCodeFormat_Classic", Thread.CurrentThread.CurrentUICulture));
-            cmbTimeCodeFormat.Items.Add(m_ResourceManager.GetString("TimeCodeFormat_Frames", Thread.CurrentThread.CurrentUICulture));
-            cmbTimeCodeFormat.Items.Add(m_ResourceManager.GetString("TimeCodeFormat_TenThousandthOfHours", Thread.CurrentThread.CurrentUICulture));
-            cmbTimeCodeFormat.Items.Add(m_ResourceManager.GetString("TimeCodeFormat_HundredthOfMinutes", Thread.CurrentThread.CurrentUICulture));
-            cmbTimeCodeFormat.Items.Add(m_ResourceManager.GetString("TimeCodeFormat_TimeAndFrames", Thread.CurrentThread.CurrentUICulture));
+            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat;
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);
+
+	        // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
+            lblImageFormat.Text = RootLang.dlgPreferences_LabelImageFormat;
+            cmbImageFormats.Items.Add(RootLang.dlgPreferences_FormatAuto);
+            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format43);
+            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format169);
+               
+            chkDeinterlace.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
             
-            // Uncomment for debug on timestamps.
-            //cmbTimeCodeFormat.Items.Add(m_ResourceManager.GetString("TimeCodeFormat_Timestamps", Thread.CurrentThread.CurrentUICulture));
-
-            btnPlayAnalyze.Text = m_ResourceManager.GetString("dlgPreferences_ButtonPlayAnalyze", Thread.CurrentThread.CurrentUICulture);
-            grpColors.Text = m_ResourceManager.GetString("dlgPreferences_GroupColors", Thread.CurrentThread.CurrentUICulture);
-            lblGrid.Text = m_ResourceManager.GetString("dlgPreferences_LabelGrid", Thread.CurrentThread.CurrentUICulture);
-            lblPlane3D.Text = m_ResourceManager.GetString("dlgPreferences_LabelPlane3D", Thread.CurrentThread.CurrentUICulture);
+            // Play/Analysis page.
+            btnPlayAnalyze.Text = RootLang.dlgPreferences_ButtonPlayAnalyze;
+            grpColors.Text = RootLang.dlgPreferences_GroupColors;
+            lblGrid.Text = RootLang.dlgPreferences_LabelGrid;
+            lblPlane3D.Text = RootLang.dlgPreferences_LabelPlane3D;
             
-            grpSwitchToAnalysis.Text = m_ResourceManager.GetString("dlgPreferences_GroupAnalysisMode", Thread.CurrentThread.CurrentUICulture);
-            lblWorkingZoneLogic.Text = m_ResourceManager.GetString("dlgPreferences_LabelLogic", Thread.CurrentThread.CurrentUICulture);
+            grpSwitchToAnalysis.Text = RootLang.dlgPreferences_GroupAnalysisMode;
+            lblWorkingZoneLogic.Text = RootLang.dlgPreferences_LabelLogic;
 
-            btnDrawings.Text = m_ResourceManager.GetString("dlgPreferences_btnDrawings", Thread.CurrentThread.CurrentUICulture);
-            grpDrawingsFading.Text = m_ResourceManager.GetString("dlgPreferences_grpPersistence", Thread.CurrentThread.CurrentUICulture);
-            chkEnablePersistence.Text = m_ResourceManager.GetString("dlgPreferences_chkEnablePersistence", Thread.CurrentThread.CurrentUICulture);
-            chkDrawOnPlay.Text = m_ResourceManager.GetString("dlgPreferences_chkDrawOnPlay", Thread.CurrentThread.CurrentUICulture);
+            btnDrawings.Text = RootLang.dlgPreferences_btnDrawings;
+            grpDrawingsFading.Text = RootLang.dlgPreferences_grpPersistence;
+            chkEnablePersistence.Text = RootLang.dlgPreferences_chkEnablePersistence;
+            chkDrawOnPlay.Text = RootLang.dlgPreferences_chkDrawOnPlay;
 
-            btnSave.Text = m_ResourceManager.GetString("Generic_Save", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            btnSave.Text = RootLang.Generic_Save;
+            btnCancel.Text = RootLang.Generic_Cancel;
 
             // Set up the controls with current prefs values.
             SelectCurrentLanguage();
             SelectCurrentTimecodeFormat();
+            SelectCurrentImageFormat();
+            chkDeinterlace.Checked = m_bDeinterlaceByDefault;
             cmbHistoryCount.SelectedIndex = m_iFilesToSave;
             btnGridColor.BackColor = m_GridColor;
             btn3DPlaneColor.BackColor = m_Plane3DColor;
             FixColors();
             trkWorkingZoneSeconds.Value = m_iWorkingZoneSeconds;
             trkWorkingZoneMemory.Value = m_iWorkingZoneMemory;
-            lblWorkingZoneSeconds.Text = String.Format(m_ResourceManager.GetString("dlgPreferences_LabelWorkingZoneSeconds", Thread.CurrentThread.CurrentUICulture), trkWorkingZoneSeconds.Value);
-            lblWorkingZoneMemory.Text = String.Format(m_ResourceManager.GetString("dlgPreferences_LabelWorkingZoneMemory", Thread.CurrentThread.CurrentUICulture), trkWorkingZoneMemory.Value);
+            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
+            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneMemory, trkWorkingZoneMemory.Value);
 
 
             chkEnablePersistence.Checked = m_DefaultFading.Enabled;
@@ -170,7 +180,7 @@ namespace Kinovea.Root
             chkDrawOnPlay.Checked = m_bDrawOnPlay;
             EnableDisableFadingOptions();
 
-            lblFading.Text = String.Format(m_ResourceManager.GetString("dlgPreferences_lblFading", Thread.CurrentThread.CurrentUICulture), trkFading.Value);
+            lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
 
             ShowPage(Pages.General);
             PositionAllPages();
@@ -245,14 +255,12 @@ namespace Kinovea.Root
                     cmbLanguage.SelectedIndex = i;            
                     found = true;
                 }
-                
             }
             if(!found)
             {
                 // The supported language is not in the combo box. (error).
                 cmbLanguage.SelectedIndex = 0;   
             }
-            
         }
         private void SelectCurrentTimecodeFormat()
         {
@@ -266,10 +274,48 @@ namespace Kinovea.Root
                 cmbTimeCodeFormat.SelectedIndex = 0;
             }
         }
-        
+        private void SelectCurrentImageFormat()
+        {
+        	// the combo box items have been filled in the order of the enum.
+            if ((int)m_ImageAspectRatio < cmbImageFormats.Items.Count)
+            {
+                cmbImageFormats.SelectedIndex = (int)m_ImageAspectRatio;
+            }
+            else
+            {
+                cmbImageFormats.SelectedIndex = 0;
+            }
+        }
         #endregion
 
         #region Handlers
+  
+        #region Page:General
+        private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_UICultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).CultureName;
+        }
+        private void cmbHistoryCount_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            m_iFilesToSave = cmbHistoryCount.SelectedIndex;
+        }
+        private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // the combo box items have been filled in the order of the enum.
+            m_TimeCodeFormat = (TimeCodeFormat)cmbTimeCodeFormat.SelectedIndex;
+        }
+        private void cmbImageAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // the combo box items have been filled in the order of the enum.
+            m_ImageAspectRatio = (ImageAspectRatio)cmbImageFormats.SelectedIndex;
+        }
+        private void ChkDeinterlaceCheckedChanged(object sender, EventArgs e)
+        {
+        	m_bDeinterlaceByDefault = chkDeinterlace.Checked;
+        }
+        #endregion
+      
+        #region Page:Play/Analysis
         private void btnGridColor_Click(object sender, EventArgs e)
         {
             m_PickingColor = 0;
@@ -310,27 +356,39 @@ namespace Kinovea.Root
         }
         private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
         {
-            lblWorkingZoneSeconds.Text = String.Format(m_ResourceManager.GetString("dlgPreferences_LabelWorkingZoneSeconds", Thread.CurrentThread.CurrentUICulture), trkWorkingZoneSeconds.Value);
+            lblWorkingZoneSeconds.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneSeconds, trkWorkingZoneSeconds.Value);
             m_iWorkingZoneSeconds = trkWorkingZoneSeconds.Value;
         }
         private void trkWorkingZoneMemory_ValueChanged(object sender, EventArgs e)
         {
-            lblWorkingZoneMemory.Text = String.Format(m_ResourceManager.GetString("dlgPreferences_LabelWorkingZoneMemory", Thread.CurrentThread.CurrentUICulture), trkWorkingZoneMemory.Value);
+            lblWorkingZoneMemory.Text = String.Format(RootLang.dlgPreferences_LabelWorkingZoneMemory, trkWorkingZoneMemory.Value);
             m_iWorkingZoneMemory = trkWorkingZoneMemory.Value;
         }
-        private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        #endregion
+        
+        #region Page:Drawings
+        private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
         {
-            m_UICultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).CultureName;
+            m_bDrawOnPlay = chkDrawOnPlay.Checked;
         }
-        private void cmbHistoryCount_SelectedIndexChanged(object sender, EventArgs e)
+        private void chkFading_CheckedChanged(object sender, EventArgs e)
         {
-            m_iFilesToSave = cmbHistoryCount.SelectedIndex;
+            m_DefaultFading.Enabled = chkEnablePersistence.Checked;
+            EnableDisableFadingOptions();
         }
-        private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
+        private void EnableDisableFadingOptions()
         {
-            // the combo box items have been filled in the order of the enum.
-            m_TimeCodeFormat = (TimeCodeFormat)cmbTimeCodeFormat.SelectedIndex;
+            trkFading.Enabled = chkEnablePersistence.Checked;
+            lblFading.Enabled = chkEnablePersistence.Checked;
+            chkDrawOnPlay.Enabled = chkEnablePersistence.Checked;
         }
+        private void trkFading_ValueChanged(object sender, EventArgs e)
+        {
+            lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
+            m_DefaultFading.FadingFrames = trkFading.Value;
+        }
+        #endregion
+        
         #endregion
 
         private void FixColors()
@@ -368,6 +426,8 @@ namespace Kinovea.Root
             m_prefManager.HistoryCount = m_iFilesToSave;
             m_prefManager.UICultureName = m_UICultureName;
             m_prefManager.TimeCodeFormat = m_TimeCodeFormat;
+            m_prefManager.AspectRatio = m_ImageAspectRatio;
+            m_prefManager.DeinterlaceByDefault = m_bDeinterlaceByDefault;
             m_prefManager.GridColor = m_GridColor;
             m_prefManager.Plane3DColor = m_Plane3DColor;
             m_prefManager.WorkingZoneSeconds = m_iWorkingZoneSeconds;
@@ -385,25 +445,9 @@ namespace Kinovea.Root
         }
         #endregion
 
-        private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
-        {
-            m_bDrawOnPlay = chkDrawOnPlay.Checked;
-        }
-        private void chkFading_CheckedChanged(object sender, EventArgs e)
-        {
-            m_DefaultFading.Enabled = chkEnablePersistence.Checked;
-            EnableDisableFadingOptions();
-        }
-        private void EnableDisableFadingOptions()
-        {
-            trkFading.Enabled = chkEnablePersistence.Checked;
-            lblFading.Enabled = chkEnablePersistence.Checked;
-            chkDrawOnPlay.Enabled = chkEnablePersistence.Checked;
-        }
-        private void trkFading_ValueChanged(object sender, EventArgs e)
-        {
-            lblFading.Text = String.Format(m_ResourceManager.GetString("dlgPreferences_lblFading", Thread.CurrentThread.CurrentUICulture), trkFading.Value);
-            m_DefaultFading.FadingFrames = trkFading.Value;
-        }
+        
+        
+        
+        
     }
 }

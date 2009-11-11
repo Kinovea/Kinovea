@@ -76,7 +76,7 @@
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>All Languages</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>More videos are available through the menu : Options &gt; Check For Available Updates...</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>About this Video…</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filter by language :</value></data>
+   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filter by language:</value></data>
    <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Select which video you would like to view:</value></data>
    <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>No Comment.</value></data>
    <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea - Watch a Video Tutorial.</value></data>
@@ -88,15 +88,20 @@
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Play / Analyze</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Show drawings when video is playing</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Enable persistence</value></data>
+   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Always deinterlace when opening a new video.</value></data>
+   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Force 16:9</value></data>
+   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Force 4:3</value></data>
+   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Auto Detection</value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Switch To Analysis Mode</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistence</value></data>
-   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Grid :</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Number of files in history :</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Language :</value></data>
+   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Grid:</value></data>
+   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Number of files in history:</value></data>
+   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Default image format:</value></data>
+   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Language:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>And</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspective Grid:</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Time markers format :</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Time markers format:</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Working Zone will take less than {0} MB of Memory.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Working Zone is less than {0} seconds.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>By default, drawings will stay visible for {0} images around the Key Image.</value></data>

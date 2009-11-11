@@ -144,15 +144,15 @@ namespace Kinovea.Root
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.Instance().GetSupportedCulture();
             RefreshUICulture();
             CheckLanguageMenu();
-        }
-        public void Launch()
-        {
-            log.Debug("Calling Application.Run() to boot up the UI.");
             PrintInitialConf();
             if(CommandLineArgumentManager.Instance().InputFile != null)
             {
             	ScreenManager.PrepareScreen();
             }
+        }
+        public void Launch()
+        {            
+            log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(MainWindow);
         }
         #endregion
@@ -218,10 +218,10 @@ namespace Kinovea.Root
             }
 
             CheckLanguageMenu();
-
+            
             PreferencesManager pm = PreferencesManager.Instance();
             pm.OrganizeHistoryMenu();
-
+                        
             CommandManager cm = CommandManager.Instance();
             cm.UpdateMenus();
 

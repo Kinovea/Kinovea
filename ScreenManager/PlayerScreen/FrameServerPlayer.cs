@@ -18,13 +18,13 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Services;
 using System;
 using System.ComponentModel;
 using System.Drawing;
-
+using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.VideoFiles;
-using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -85,6 +85,9 @@ namespace Kinovea.ScreenManager
 		#region Public
 		public LoadResult Load(string _FilePath)
 		{
+			// Set global settings.
+			PreferencesManager pm = PreferencesManager.Instance();
+			m_VideoFile.SetDefaultSettings((int)pm.AspectRatio, pm.DeinterlaceByDefault);
 			return m_VideoFile.Load(_FilePath);
 		}
 		public void Unload()
