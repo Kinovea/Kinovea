@@ -27,9 +27,10 @@ namespace Kinovea
 
 		public enum class AspectRatio
 		{
-			AutoDetect,
-			Force43,
-			Force169
+			AutoDetect,			// The program will detect square pixels or anamorphic and load it as such.
+			Force43,			// The user wants 4:3, used by user when Auto doesn't work as expected.
+			Force169,			// The user wants 16:9
+			ForceSquarePixels	// The program forces square pixels to overcome a video-specific bug.
 		};
 
 		public ref class InfosVideo
@@ -65,7 +66,12 @@ namespace Kinovea
 		
 		// Other helper classes.
 		// TODO: merge into VideoFile or extract to a special .h
-	
+		public ref class DefaultSettings
+		{
+			public:
+				AspectRatio eAspectRatio;				// Image format the user forces (auto, 4:3, 16:9).
+				bool		bDeinterlace;				// If frames should be deinterlaced.
+		};
 		public ref class InfosThumbnail
 		{
 			public:

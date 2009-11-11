@@ -88,11 +88,16 @@
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Spiel / Analyse</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Zeige Zeichenelemente bei Wiedergabe</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Nachleuchten aktivieren</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Wechseln zum Analyse-Modus</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Farben</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Nachleuchten</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Raster :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Anzahl Dateien im Verlauf :</value></data>
+   
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Sprache :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Und</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspektive Ansicht :</value></data>

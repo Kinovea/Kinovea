@@ -169,18 +169,29 @@ namespace VideoFiles
 		bool m_bIsLoaded;
 		String^ m_FilePath;
 		List <DecompressedFrame ^>^	m_FrameList;
+		
 		InfosVideo^ m_InfosVideo;
 		PrimarySelection^ m_PrimarySelection;
+		DefaultSettings^ m_DefaultSettings;
 		Bitmap^ m_BmpImage;
 		BackgroundWorker^ m_bgWorker;
 		
 		// Decoding. TODO: Turn into a ReadingContext object !
 		AVFormatContext*				m_pFormatCtx;
-		AVCodecContext*					m_pCodecCtx;
-		AVFrame*						m_pCurrentDecodedFrameBGR;		// Les données de la frame courante.
-		uint8_t*						m_Buffer;
+		
 		int								m_iVideoStream;
+		AVCodecContext*					m_pCodecCtx;
+		AVFrame*						m_pCurrentDecodedFrameBGR;		// Last decoded video frame as an AVFrame.
+		uint8_t*						m_Buffer;						// Last decoded video frame data.
+		
+		int								m_iAudioStream;
+		AVCodecContext*					m_pAudioCodecCtx;
+		
 		int								m_iMetadataStream;
+
+		uint8_t*						m_AudioBuffer;					// All the audio data of the primary selection.
+		int								m_AudioBufferUsedSize;
+
 
 		SavingContext^ m_SavingContext;
 
@@ -196,6 +207,8 @@ namespace VideoFiles
 
 #pragma region Public Methods
 	public:
+
+		void SetDefaultSettings(int _AspectRatio, bool _bDeinterlaceByDefault);
 
 		LoadResult Load(String^ _FilePath);
 		

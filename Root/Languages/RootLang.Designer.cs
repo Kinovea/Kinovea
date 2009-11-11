@@ -142,7 +142,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Filter by language :.
+        ///   Recherche une chaîne localisée semblable à Filter by language:.
         /// </summary>
         internal static string dlgHelpVideos_LblFilterByLang {
             get {
@@ -250,6 +250,42 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Always deinterlace when opening a new video..
+        /// </summary>
+        internal static string dlgPreferences_DeinterlaceByDefault {
+            get {
+                return ResourceManager.GetString("dlgPreferences_DeinterlaceByDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Force 16:9.
+        /// </summary>
+        internal static string dlgPreferences_Format169 {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Format169", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Force 4:3.
+        /// </summary>
+        internal static string dlgPreferences_Format43 {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Format43", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto Detection.
+        /// </summary>
+        internal static string dlgPreferences_FormatAuto {
+            get {
+                return ResourceManager.GetString("dlgPreferences_FormatAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Switch To Analysis Mode.
         /// </summary>
         internal static string dlgPreferences_GroupAnalysisMode {
@@ -277,7 +313,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Grid :.
+        ///   Recherche une chaîne localisée semblable à Grid:.
         /// </summary>
         internal static string dlgPreferences_LabelGrid {
             get {
@@ -286,7 +322,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Number of files in history :.
+        ///   Recherche une chaîne localisée semblable à Number of files in history:.
         /// </summary>
         internal static string dlgPreferences_LabelHistoryCount {
             get {
@@ -295,7 +331,16 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Language :.
+        ///   Recherche une chaîne localisée semblable à Default image format:.
+        /// </summary>
+        internal static string dlgPreferences_LabelImageFormat {
+            get {
+                return ResourceManager.GetString("dlgPreferences_LabelImageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language:.
         /// </summary>
         internal static string dlgPreferences_LabelLanguages {
             get {
@@ -322,7 +367,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Time markers format :.
+        ///   Recherche une chaîne localisée semblable à Time markers format:.
         /// </summary>
         internal static string dlgPreferences_LabelTimeFormat {
             get {

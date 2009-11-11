@@ -88,11 +88,16 @@
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Riproduci / Analizza</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostra disegni quando riproduce il video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Attiva la persistenza</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Passa a Modalita' Analisi </value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Colori</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistenza</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Griglia :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Numero di Files nella cronologia :</value></data>
+   
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Lingua :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>E</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Griglia in prospettiva</value></data>

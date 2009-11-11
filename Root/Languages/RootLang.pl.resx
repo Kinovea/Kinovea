@@ -88,11 +88,16 @@
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Odtwórz/Analizuj</value></data>
    
    
+   
+   
+   
+   
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Przejdź do trybu Analizy</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Kolory</value></data>
    
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Siatka :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Liczba plików w historii :</value></data>
+   
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Język :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>I</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Widok Perspektywa :</value></data>

@@ -88,11 +88,16 @@
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Rulează / Analizează</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activează persistenţa</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Schimbă in Modul Analiză</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Culori</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistenţă</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Grilă :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Număr de fişiere în istoric :</value></data>
+   
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Limba :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Şi</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Grilă de perspectivă:</value></data>
