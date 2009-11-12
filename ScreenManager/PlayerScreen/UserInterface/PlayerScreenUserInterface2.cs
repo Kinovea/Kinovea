@@ -4332,26 +4332,27 @@ namespace Kinovea.ScreenManager
 		}
 		private void EnableDisableAllPlayingControls(bool _bEnable)
 		{
-			buttonGotoFirst.Enabled = _bEnable;
-			buttonGotoLast.Enabled = _bEnable;
-			buttonGotoNext.Enabled = _bEnable;
-			buttonGotoPrevious.Enabled = _bEnable;
-			buttonPlay.Enabled = _bEnable;
-			
 			btnSetHandlerLeft.Enabled = _bEnable;
 			btnSetHandlerRight.Enabled = _bEnable;
 			btnHandlersReset.Enabled = _bEnable;
 			btn_HandlersLock.Enabled = _bEnable;
 			
-			btnPdf.Enabled = _bEnable;
-			btnRafale.Enabled = _bEnable;
+			buttonGotoFirst.Enabled = _bEnable;
+			buttonGotoLast.Enabled = _bEnable;
+			buttonGotoNext.Enabled = _bEnable;
+			buttonGotoPrevious.Enabled = _bEnable;
+			buttonPlay.Enabled = _bEnable;
+			buttonPlayingMode.Enabled = _bEnable;
 			
 			lblSpeedTuner.Enabled = _bEnable;
-			trkFrame.Enabled = _bEnable;
-			trkSelection.Enabled = _bEnable;
+			trkFrame.EnableDisable(_bEnable);
+			trkSelection.EnableDisable(_bEnable);
 			sldrSpeed.Enabled = _bEnable;
-			buttonPlayingMode.Enabled = _bEnable;
+			
+			btnRafale.Enabled = _bEnable;
+			btnSaveVideo.Enabled = _bEnable;
 			btnDiaporama.Enabled = _bEnable;
+			btnPausedVideo.Enabled = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
 		{

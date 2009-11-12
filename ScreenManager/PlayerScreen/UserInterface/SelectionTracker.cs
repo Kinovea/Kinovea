@@ -165,7 +165,7 @@ namespace Kinovea.ScreenManager
         private long m_iSelTarget = 0;
         
         private int m_iMaxWidth = 0;        // Max size of selection in pixels
-        
+        private bool m_bEnabled = true;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -217,12 +217,18 @@ namespace Kinovea.ScreenManager
         {
         	UpdateInternalState(m_iMinimum, m_iMaximum, m_iMinimum, m_iMaximum, m_iMinimum);
         }
+        public void EnableDisable(bool _bEnable)
+		{
+			m_bEnabled = _bEnable;
+			HandlerLeft.Enabled = _bEnable;
+			HandlerRight.Enabled = _bEnable;
+		}
         #endregion
         
         #region Event Handlers - Handlers
         private void HandlerLeft_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked))
+            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked) && m_bEnabled)
             {
                 int GlobalMouseX = e.X + HandlerLeft.Left;
                 int OldHandlerLeft = HandlerLeft.Left;
@@ -240,7 +246,7 @@ namespace Kinovea.ScreenManager
         }
         private void HandlerRight_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked))
+            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
             {
                 // Déplacer le handler
                 int GlobalMouseX = e.X + HandlerRight.Left;
@@ -260,14 +266,14 @@ namespace Kinovea.ScreenManager
         }
         private void HandlerLeft_MouseUp(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked))
+            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
             {
                 if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
             }
         }
         private void HandlerRight_MouseUp(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked))
+            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
             {
                 if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
             }
@@ -278,7 +284,7 @@ namespace Kinovea.ScreenManager
         private void BumperLeft_MouseDoubleClick(object sender, MouseEventArgs e)
         {
 			// Double click on bumper : make the handler to jump here.
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked))
+            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
             {
                 HandlerLeft.Left = BumperLeft.Left + BumperLeft.Width;
                 StretchSelection();
@@ -289,7 +295,7 @@ namespace Kinovea.ScreenManager
         }
         private void BumperRight_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked))
+            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
             {
                 // Ramener le handler de doite à la fin.
                 HandlerRight.Left = BumperRight.Left - HandlerRight.Width;
@@ -302,7 +308,7 @@ namespace Kinovea.ScreenManager
         private void EndOfTrackLeft_DoubleClick(object sender, EventArgs e)
         {
         	// End of track is same as bumper.
-            if (!m_bSelLocked)
+            if (!m_bSelLocked && m_bEnabled)
             {
                 HandlerLeft.Left = BumperLeft.Left + BumperLeft.Width;
                 StretchSelection();
@@ -314,7 +320,7 @@ namespace Kinovea.ScreenManager
         private void EndOfTrackRight_DoubleClick(object sender, EventArgs e)
         {
         	// End of track is same as bumper.
-            if (!m_bSelLocked)
+            if (!m_bSelLocked && m_bEnabled)
             {
                 HandlerRight.Left = BumperRight.Left - HandlerRight.Width;
                 StretchSelection();
@@ -326,7 +332,7 @@ namespace Kinovea.ScreenManager
         private void SelectionTracker_DoubleClick(object sender, EventArgs e)
         {
             // Double click in background : make the closest handler to jump here.
-            if (!m_bSelLocked)
+            if (!m_bSelLocked && m_bEnabled)
             {
                 Point MouseCoords = this.PointToClient(Cursor.Position);
 
@@ -355,7 +361,7 @@ namespace Kinovea.ScreenManager
         private void SelectedZone_MouseClick(object sender, MouseEventArgs e)
         {
             // Target selection.
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && m_bEnabled)
             {
                 m_iSelTarget = Rescale(SelectedZone.Left + e.X - BumperLeft.Width - HandlerLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum);
                 

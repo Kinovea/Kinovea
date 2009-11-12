@@ -615,7 +615,7 @@ namespace Kinovea.ScreenManager
             // Get size. Size is not rescaled.
             Button but = new Button(); // Hack to get a Graphics object.
             Graphics g = but.CreateGraphics();
-            m_BackgroundSize = g.MeasureString(m_Text + " ", m_TextStyle.GetInternalFont());
+            m_BackgroundSize = g.MeasureString(m_Text + " ", m_TextStyle.GetInternalFont((float)m_fStretchFactor));
             g.Dispose();
 
             Rectangle RescaledBackground = new Rectangle(m_RescaledTopLeft.X, m_RescaledTopLeft.Y, (int)m_BackgroundSize.Width + 11, (int)m_BackgroundSize.Height + 7);
