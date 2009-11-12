@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
             set { m_bReportOnMouseMove = value; }
         }
         #endregion
-
+			
         #region Members
         private long m_iMinimum = 0;
         private long m_iPosition = 0;
@@ -95,6 +95,7 @@ namespace Kinovea.ScreenManager
         private int[] m_KeyframesMarks;
         private long m_SyncPointTimestamp;
         private int m_SyncPointMark;
+        private bool m_bEnabled = true;
        	private static readonly Pen m_PenKeyImageMark = new Pen(Color.FromArgb(192, Color.YellowGreen), 2); // YellowGreen
         private static readonly Pen m_PenSyncPointMark = new Pen(Color.FromArgb(192, Color.Firebrick), 2); // 
        	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -154,12 +155,17 @@ namespace Kinovea.ScreenManager
 			m_SyncPointTimestamp = _marker;
 			UpdateAppearence();
 		}
+		public void EnableDisable(bool _bEnable)
+		{
+			m_bEnabled = _bEnable;
+			NavCursor.Enabled = _bEnable;
+		}
 		#endregion
         
 		#region Event Handlers - User Manipulation
         private void NavCursor_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && m_bEnabled)
             {
                 // Déplacer le curseur
                 // GlobalMouseX correspond à la coordonnée dans le panelNavigation.
@@ -186,7 +192,7 @@ namespace Kinovea.ScreenManager
         }
         private void FrameTracker_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && m_bEnabled)
             {
                 Point MouseCoords = this.PointToClient(Cursor.Position);
                 if ((MouseCoords.X > BumperLeft.Width + (NavCursor.Width / 2)) &&
@@ -199,7 +205,10 @@ namespace Kinovea.ScreenManager
         }
         private void NavCursor_MouseUp(object sender, MouseEventArgs e)
         {
-            UpdateValuesAndReport();
+        	if(m_bEnabled)
+        	{
+            	UpdateValuesAndReport();
+        	}
         }
         #endregion
 

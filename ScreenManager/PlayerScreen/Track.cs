@@ -273,7 +273,10 @@ namespace Kinovea.ScreenManager
 	            	{
 	            		DrawTrajectory(_canvas, iStart, iEnd, false, fOpacityFactor);	
 	            	}
-	            	
+            	}
+            	
+            	if(m_RescaledPositions.Count > 0)
+            	{
 	            	// Target marker.
 	            	if (fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
                     {
