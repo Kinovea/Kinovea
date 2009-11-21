@@ -254,6 +254,10 @@
     <Compile Include="PlayerScreen\UserInterface\FormEventList.Designer.cs">
       <DependentUpon>FormEventList.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.Designer.cs">
+      <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormVideoExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -378,6 +382,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
+      <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormConfigureMosaic.resx">
       <DependentUpon>FormConfigureMosaic.cs</DependentUpon>

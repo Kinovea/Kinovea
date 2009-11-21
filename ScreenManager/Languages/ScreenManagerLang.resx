@@ -121,6 +121,7 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Complete Path</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Path section around current image</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label following the Path</value></data>
+   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordinates system origin</value></data>
    <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaic of key images.</value></data>
    <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaic of all images.</value></data>
    <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Number of images : {0:0}.</value></data>
@@ -169,6 +170,8 @@
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Save Video</value></data>
+   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Apply to all paths.</value></data>
+   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Set coordinates system origin</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Cannot create Slideshow.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>A Slideshow is a sequence of Key Images saved in video format.\n Please add some Key Images before generating the Slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Cannot createpaused video</value></data>
@@ -240,7 +243,7 @@
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Delete</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Delete Path after this Point</value></data>
-   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Delete all the Path's</value></data>
+   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Delete all the Paths</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Two Capture Screens</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>One Capture screen and one Playback screen</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Two Playback Screens</value></data>

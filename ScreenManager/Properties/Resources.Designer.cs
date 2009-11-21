@@ -774,6 +774,14 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap trajconfsetorigin
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trajconfsetorigin", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap undock16x16
 		{
 			get

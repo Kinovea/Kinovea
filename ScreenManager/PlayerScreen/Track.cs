@@ -112,6 +112,11 @@ namespace Kinovea.ScreenManager
                 m_MainLabel.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
             }
         }
+        public Point CoordinatesOrigin
+		{
+			get { return m_CoordinatesOrigin; }
+			set { m_CoordinatesOrigin = value; }
+		}
         public Metadata ParentMetadata
         {
             get { return m_ParentMetadata; }    // unused.
@@ -159,6 +164,8 @@ namespace Kinovea.ScreenManager
         private int m_iTotalDistance;       			// This is used to normalize timestamps to a par scale with distances.
         private int m_iCurrentPoint;
 
+        private Point m_CoordinatesOrigin = new Point(-1,-1); // Used for spreadsheet export.
+        
         // Decoration
         private LineStyle m_LineStyle = LineStyle.DefaultValue; 
         private KeyframeLabel m_MainLabel = new KeyframeLabel(true, Color.Black);
@@ -500,7 +507,7 @@ namespace Kinovea.ScreenManager
                 // Move Playhead to closest frame (x,y,t).
                 //----------------------------------------
                 // In this case, _X and _Y are absolute values.
-                if (m_ShowClosestFrame != null)
+                if (m_ShowClosestFrame != null && m_Positions.Count > 1)
                 {
                     m_ShowClosestFrame(new Point(_X, _Y), m_iBeginTimeStamp, m_Positions, m_iTotalDistance, false);
                 }
@@ -593,11 +600,14 @@ namespace Kinovea.ScreenManager
         }
         public void TrackCurrentPosition(long _iCurrentTimestamp, Bitmap _bmpCurrent)
         {
-            // This is where the matching occurs.
-            // Match previous point in current image.
-
-            // TEMP: obligatoirement supérieur au dernier ajouté...
-            //if (_iCurrentTimestamp >= m_iBeginTimeStamp)
+        	//-----------------------------------------------------
+            // Matches previous point in current image.
+        	// This is where the automatic matching occurs.
+            // A new point is always created from here. 
+            // The user can only moves existing points.
+            //-----------------------------------------------------
+            
+            // The new point is always added after the last existing one.
             if (_iCurrentTimestamp >= m_iBeginTimeStamp + m_Positions[m_Positions.Count - 1].T)
             {
                 // Do we have it already ?
@@ -1241,11 +1251,23 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.LineLengthHelper.GetAbbreviation());
             // todo: user unit time.
             
+            // The coordinate system defaults to the first point,
+            // but can be specified by user.
+            Point coordOrigin;
+            if(m_CoordinatesOrigin.X >= 0 && m_CoordinatesOrigin.Y >= 0)
+            {
+            	coordOrigin = m_CoordinatesOrigin;
+            }
+			else 
+			{
+				coordOrigin = new Point(m_Positions[0].X, m_Positions[0].Y);
+			}
+            
             if(m_Positions.Count > 0)
             {
             	foreach (TrackPosition tp in m_Positions)
             	{
-            		tp.ToXml(_xmlWriter, m_ParentMetadata, m_Positions[0]);
+            		tp.ToXml(_xmlWriter, m_ParentMetadata, coordOrigin);
             	}	
             }
             _xmlWriter.WriteEndElement();

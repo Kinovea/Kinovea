@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -37,23 +38,25 @@ namespace Kinovea.ScreenManager
     {
     	#region Members
     	// Generic
-    	private ResourceManager m_ResourceManager;
-        private bool m_bManualClose = false;
+    	private bool m_bManualClose = false;
     	
     	// Specific to the configure page.
     	private PictureBox m_SurfaceScreen; 		// Used to update the image while configuring.
         private Track m_Track;
+        private Bitmap m_CurrentImage;
+        private Metadata m_ParentMetadata;
     	private StaticColorPicker m_ColPicker;
         private StaticStylePicker m_StlPicker;
         #endregion
         
         #region Construction & Initialization
-        public formConfigureTrajectoryDisplay(Track _track, PictureBox _SurfaceScreen)
+        public formConfigureTrajectoryDisplay(Track _track, PictureBox _SurfaceScreen, Bitmap _CurrentImage, Metadata _ParentMetadata)
         {
             InitializeComponent();
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_SurfaceScreen = _SurfaceScreen;
             m_Track = _track;
+            m_CurrentImage = _CurrentImage;
+            m_ParentMetadata = _ParentMetadata;
             
             // Save the current state in case we need to recall it later.
             m_Track.MemorizeState();
@@ -115,24 +118,37 @@ namespace Kinovea.ScreenManager
         }
         private void InitCulture()
         {
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureTrajectory_Title", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgConfigureTrajectory_Title;
             
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            radioComplete.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_RadioComplete", Thread.CurrentThread.CurrentUICulture);
-            radioFocus.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_RadioFocus", Thread.CurrentThread.CurrentUICulture);
-            radioLabel.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_RadioLabel", Thread.CurrentThread.CurrentUICulture);
-            lblLabel.Text = m_ResourceManager.GetString("dlgConfigureChrono_Label", Thread.CurrentThread.CurrentUICulture);
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            radioComplete.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioComplete;
+            radioFocus.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioFocus;
+            radioLabel.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioLabel;
+            lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
+            lblSetOrigin.Text = ScreenManagerLang.dlgConfigureTrajectory_SetOrigin;
             
-			grpAppearance.Text = m_ResourceManager.GetString("Generic_Appearance", Thread.CurrentThread.CurrentUICulture);
-            lblColor.Text = m_ResourceManager.GetString("Generic_ColorPicker", Thread.CurrentThread.CurrentUICulture);
-            lblStyle.Text = m_ResourceManager.GetString("dlgConfigureTrajectory_Style", Thread.CurrentThread.CurrentUICulture);
+			grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
+            lblColor.Text = ScreenManagerLang.Generic_ColorPicker;
+            lblStyle.Text = ScreenManagerLang.dlgConfigureTrajectory_Style;
             
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         #endregion
         
         #region General
+        private void btnComplete_Click(object sender, EventArgs e)
+        {
+        	radioComplete.Checked = true;	
+        }
+        private void btnFocus_Click(object sender, EventArgs e)
+        {
+        	radioFocus.Checked = true;
+        }
+        private void btnLabel_Click(object sender, EventArgs e)
+        {
+        	radioLabel.Checked = true;
+        }
         private void RadioViews_CheckedChanged(object sender, EventArgs e)
         {
         	if(radioComplete.Checked)
@@ -251,6 +267,26 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+        
+        private void btnSetOrigin_Click(object sender, EventArgs e)
+        {
+        	DisplaySetOriginDialog();
+        }
+        private void btnSetOriginText_Click(object sender, EventArgs e)
+        {
+        	DisplaySetOriginDialog();	
+        }
+        private void LblSetOriginClick(object sender, EventArgs e)
+        {
+        	DisplaySetOriginDialog();	
+        }
+        private void DisplaySetOriginDialog()
+        {
+        	formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(m_Track, m_CurrentImage, m_ParentMetadata);
+			fsto.StartPosition = FormStartPosition.CenterScreen;
+			fsto.ShowDialog();
+			fsto.Dispose();
+        }
         
         
     }

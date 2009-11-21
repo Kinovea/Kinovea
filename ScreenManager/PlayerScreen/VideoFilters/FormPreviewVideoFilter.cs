@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -46,11 +47,9 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
 
             // Culture
-            ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
 			this.Text = "   " + _windowTitle;
-            btnOK.Text = resManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = resManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         private void formFilterTuner_Load(object sender, EventArgs e)
         {

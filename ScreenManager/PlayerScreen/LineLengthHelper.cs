@@ -105,7 +105,42 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-            	lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentUnit));
+				if(m_CurrentUnit == LengthUnits.Pixels)
+				{
+					lengthText = String.Format("{0:0} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentUnit));
+				}
+				else
+				{
+					lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentUnit));
+				}
+			}
+			
+			return lengthText;
+		}
+		public string GetLengthText(double _fPixelLength, bool _bAbbreviation, bool _bPrecise)
+		{
+			string lengthText = "";
+			if(_bAbbreviation)
+			{
+				if(m_CurrentUnit == LengthUnits.Pixels || !_bPrecise)
+				{
+					lengthText = String.Format("{0:0} {1}", GetLengthDouble(_fPixelLength), GetAbbreviationFromUnit(m_CurrentUnit));
+				}
+				else
+				{
+					lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(_fPixelLength), GetAbbreviationFromUnit(m_CurrentUnit));
+				}
+			}
+			else 
+			{
+				if(m_CurrentUnit == LengthUnits.Pixels || !_bPrecise)
+				{
+					lengthText = String.Format("{0:0}", GetLengthDouble(_fPixelLength));
+				}
+				else
+				{
+					lengthText = String.Format("{0:0.00}", GetLengthDouble(_fPixelLength));
+				}
 			}
 			
 			return lengthText;
