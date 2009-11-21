@@ -54,26 +54,25 @@ namespace Kinovea.ScreenManager
         {
             return X.GetHashCode() ^ Y.GetHashCode() ^ T.GetHashCode();
         }
-        public void ToXml(XmlTextWriter _xmlWriter, Metadata _ParentMetadata, TrackPosition _origin)
+        public void ToXml(XmlTextWriter _xmlWriter, Metadata _ParentMetadata, Point _origin)
         {
         	// In addition to the actual data (the one that will be used when reading back the trajectory.)
         	// we also add the data in user units as attributes.
+        	// This will be used when exporting to spreadsheet.
         	
             _xmlWriter.WriteStartElement("TrackPosition");
         	
             // Data in user units. 
-            // - The origin of the coordinates system is the first point.
+            // - The origin of the coordinates system is given as parameter.
             // - X goes left (same than internal), Y goes up (opposite than internal).
             double userX = _ParentMetadata.LineLengthHelper.GetLengthDouble((double)X - (double)_origin.X);
             double userY = _ParentMetadata.LineLengthHelper.GetLengthDouble((double)_origin.Y - (double)Y);
             string userT = _ParentMetadata.m_TimeStampsToTimecodeCallback(T, TimeCodeFormat.Unknown, false);
-			//string userTType = TimeHelper.GetTimecodeType(TimeCodeFormat.Unknown);
-            
+			
             _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
             _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", userY));
             _xmlWriter.WriteAttributeString("UserTime", userT);
-            //_xmlWriter.WriteAttributeString("UserTimeType", userT);    
-        	
+            
 			// Actual data.
 			_xmlWriter.WriteString(X.ToString() + ";" + Y.ToString() + ";" + T.ToString());
             _xmlWriter.WriteEndElement();

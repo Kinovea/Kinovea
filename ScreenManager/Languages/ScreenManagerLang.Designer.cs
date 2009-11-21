@@ -601,6 +601,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Coordinates system origin.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_SetOrigin {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_SetOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Style :.
         /// </summary>
         internal static string dlgConfigureTrajectory_Style {
@@ -975,6 +984,24 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgSaveVideoTitle {
             get {
                 return ResourceManager.GetString("dlgSaveVideoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Apply to all paths..
+        /// </summary>
+        internal static string dlgSetTrajectoryOrigin_ApplyToAll {
+            get {
+                return ResourceManager.GetString("dlgSetTrajectoryOrigin_ApplyToAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Set coordinates system origin.
+        /// </summary>
+        internal static string dlgSetTrajectoryOrigin_Title {
+            get {
+                return ResourceManager.GetString("dlgSetTrajectoryOrigin_Title", resourceCulture);
             }
         }
         
@@ -1618,7 +1645,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete all the Path&apos;s.
+        ///   Recherche une chaîne localisée semblable à Delete all the Paths.
         /// </summary>
         internal static string mnuDeleteTrajectory {
             get {

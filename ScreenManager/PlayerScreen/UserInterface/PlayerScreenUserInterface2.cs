@@ -222,7 +222,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuDeleteTrajectory = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuDeleteEndOfTrajectory = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuConfigureTrajectory = new ToolStripMenuItem();
-
+		
 		private ContextMenuStrip popMenuChrono = new ContextMenuStrip();
 		private ToolStripMenuItem mnuChronoStart = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuChronoStop = new ToolStripMenuItem();
@@ -4046,7 +4046,7 @@ namespace Kinovea.ScreenManager
 				dp.DeactivateKeyboardHandler();
 			}
 
-			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack], pbSurfaceScreen);
+			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack], pbSurfaceScreen, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.Metadata);
 			fctd.StartPosition = FormStartPosition.CenterScreen;
 			fctd.ShowDialog();
 			fctd.Dispose();

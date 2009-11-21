@@ -121,6 +121,7 @@
    <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Trajectoire complète</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Section de trajectoire autour de l'image en cours</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label suivant la trajectoire</value></data>
+   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Origine du repère de coordonnées</value></data>
    <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaïque des images clés.</value></data>
    <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaïque de toutes les images.</value></data>
    <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Nombre d'images :{0:0}.</value></data>
@@ -169,6 +170,8 @@
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Enregistrer la Vidéo</value></data>
+   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Appliquer à toutes les trajectoires.</value></data>
+   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Spécifier l'origine du repère de coordonnées</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Création du Diaporama Impossible.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un Diaporama est une succession d'Images Clés enregistrées sous forme de vidéo.\nVeuillez ajouter quelques Images Clés avant de générer le Diaporama.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Création de la vidéo impossible.</value></data>
