@@ -12,7 +12,7 @@
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <DocumentationFile>bin\x86\Debug\Kinovea.ScreenManager.xml</DocumentationFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -166,6 +166,14 @@
     <Compile Include="PlayerScreen\Metadata.cs" />
     <Compile Include="PlayerScreen\Mosaic.cs" />
     <Compile Include="PlayerScreen\Plane3D.cs" />
+    <Compile Include="PlayerScreen\SURF\CDVMatrix.cs" />
+    <Compile Include="PlayerScreen\SURF\CFastHessian.cs" />
+    <Compile Include="PlayerScreen\SURF\COpenSURF.cs" />
+    <Compile Include="PlayerScreen\SURF\IplImage.cs" />
+    <Compile Include="PlayerScreen\SURF\IPoint.cs" />
+    <Compile Include="PlayerScreen\SURF\KDTree.cs" />
+    <Compile Include="PlayerScreen\SURF\Match.cs" />
+    <Compile Include="PlayerScreen\SURF\Surf.cs" />
     <Compile Include="PlayerScreen\Track.cs" />
     <Compile Include="PlayerScreen\TrackPosition.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
@@ -400,6 +408,7 @@
     </ProjectReference>
     <Folder Include="CaptureScreen\UserInterface" />
     <Folder Include="Commands\CaptureScreen" />
+    <Folder Include="PlayerScreen\SURF" />
     <Folder Include="PlayerScreen\VideoFilters" />
   </ItemGroup>
   <ItemGroup>
