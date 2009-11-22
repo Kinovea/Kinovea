@@ -197,6 +197,7 @@
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuration</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Taille de la Police :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Enregistrer</value></data>
+   <data name="Generic_Image" xml:space="preserve"><value>Image</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Les images clés ont été modifiées.\nVoulez-vous sauvegarder les données des images clés avant de fermer ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Images clés non sauvées</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Contrôles Communs :</value></data>
@@ -310,7 +311,8 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Basculer vers le Mode Analyse</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Aller à l'Image Précédente</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil Couleur</value></data>
-   <data name="ToolTip_CommonCtrl_Merge" xml:space="preserve"><value>Superposer les vidéos</value></data>
+   <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Désactiver la superposition des images</value></data>
+   <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Activer la superposition des images</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copier les Dessins de l'Image Clé Précédente dans l'Image Courante</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Chronomètre</value></data>

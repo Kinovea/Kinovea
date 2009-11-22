@@ -197,6 +197,7 @@
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguration</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Schriftgröße:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Speichern</value></data>
+   <data name="Generic_Image" xml:space="preserve"><value>Bild</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Schlüsselbilder wurden geändert.\nWollen Sie die Änderungen speichern?</value></data>
    
    <data name="lblInfo_Text" xml:space="preserve"><value>Standardauswahl:</value></data>
@@ -310,6 +311,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Wechsel in den Analysemodus</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Geh zum vorherigen Bild</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Farbprofil</value></data>
+   
    
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopiere die Zeichnungen des letzten Schlüsselbilds in das aktuelle Bild</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Winkel</value></data>

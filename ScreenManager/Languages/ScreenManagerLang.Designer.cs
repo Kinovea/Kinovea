@@ -1222,6 +1222,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Image.
+        /// </summary>
+        internal static string Generic_Image {
+            get {
+                return ResourceManager.GetString("Generic_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Save.
         /// </summary>
         internal static string Generic_Save {
@@ -2248,11 +2257,20 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Superpose videos.
+        ///   Recherche une chaîne localisée semblable à Disable superposition of images.
         /// </summary>
-        internal static string ToolTip_CommonCtrl_Merge {
+        internal static string ToolTip_CommonCtrl_DisableMerge {
             get {
-                return ResourceManager.GetString("ToolTip_CommonCtrl_Merge", resourceCulture);
+                return ResourceManager.GetString("ToolTip_CommonCtrl_DisableMerge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enable superposition of images.
+        /// </summary>
+        internal static string ToolTip_CommonCtrl_EnableMerge {
+            get {
+                return ResourceManager.GetString("ToolTip_CommonCtrl_EnableMerge", resourceCulture);
             }
         }
         

@@ -1,3 +1,24 @@
+/*
+Copyright © Joan Charmant 2008.
+joan.charmant@gmail.com 
+ 
+This file is part of Kinovea.
+
+Kinovea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 
+as published by the Free Software Foundation.
+
+Kinovea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kinovea. If not, see http://www.gnu.org/licenses/.
+
+*/
+
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +29,6 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 using Microsoft.VisualBasic.FileIO;
 
@@ -90,6 +110,11 @@ namespace Kinovea.ScreenManager
 			get { return m_DurationText;}	// unused.
 			set { m_DurationText = value;}
 		}
+		public bool IsImage
+		{
+			get { return m_bIsImage; }
+			set { m_bIsImage = value; }
+		}
 		#endregion
 		
 		#region Members
@@ -100,6 +125,8 @@ namespace Kinovea.ScreenManager
 		private List<Bitmap> m_Bitmaps;
 		private Bitmap m_CurrentThumbnail;
 		private string m_DurationText = "0:00:00";
+		private bool m_bIsImage;
+		private string m_ImageText;
 		private int m_iCurrentThumbnailIndex;
 		private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
 		private ResourceManager m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
@@ -151,6 +178,7 @@ namespace Kinovea.ScreenManager
 			tbFileName.Anchor = lblFileName.Anchor;
 			
 			BuildContextMenus();
+			RefreshUICulture();
 		}
 		private void BuildContextMenus()
 		{
@@ -259,6 +287,15 @@ namespace Kinovea.ScreenManager
 				ToggleEditMode();	
 			}
 		}
+		public void RefreshUICulture()
+		{
+			// The # char is just a placeholder for a space,
+		    // Because MeasureString doesn't support trailing spaces. 
+		    // (see PicBoxPaint)
+			m_ImageText = String.Format("{0}#", ScreenManagerLang.Generic_Image);	
+			
+			picBox.Invalidate();
+		}
 		#endregion
 		
 		#region UI Event Handlers
@@ -325,9 +362,20 @@ namespace Kinovea.ScreenManager
 				
 				// Draw duration text in the corner + background.
 				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-				SizeF bgSize = e.Graphics.MeasureString(m_DurationText, m_FontDuration);
-				e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
-				e.Graphics.DrawString(m_DurationText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
+				if(m_bIsImage)
+				{
+					// MeasureString doesn't support trailing spaces.
+					// We used # as placeholders, remove them just before drawing.
+					SizeF bgSize = e.Graphics.MeasureString(m_ImageText, m_FontDuration);
+					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
+					e.Graphics.DrawString(m_ImageText.Replace('#', ' '), m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
+				}
+				else
+				{
+					SizeF bgSize = e.Graphics.MeasureString(m_DurationText, m_FontDuration);
+					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
+					e.Graphics.DrawString(m_DurationText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
+				}
 			}
 		}
 		private void ThumbListViewItemPaint(object sender, PaintEventArgs e)
