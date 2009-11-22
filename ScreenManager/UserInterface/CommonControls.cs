@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -29,38 +30,11 @@ namespace Kinovea.ScreenManager
 {
     public partial class CommonControls : UserControl
     {
-
-        #region EventDelegates
-        // Déclarations de Types
-        public delegate void GotoFirstHandler(object sender, EventArgs e);
-        public delegate void GotoLastHandler(object sender, EventArgs e);
-        public delegate void GotoPrevHandler(object sender, EventArgs e);
-        public delegate void GotoNextHandler(object sender, EventArgs e);
-        public delegate void PlayHandler(object sender, EventArgs e);
-        public delegate void SwapHandler(object sender, EventArgs e);
-        public delegate void SyncHandler(object sender, EventArgs e);
-        public delegate void PositionChangedHandler(object sender, long _iPosition);
-          
-        // Déclarations des évènements
-        [Category("Action"), Browsable(true)]
-        public event GotoFirstHandler GotoFirst;
-        [Category("Action"), Browsable(true)]
-        public event GotoLastHandler GotoLast;
-        [Category("Action"), Browsable(true)]
-        public event GotoPrevHandler GotoPrev;
-        [Category("Action"), Browsable(true)]
-        public event GotoNextHandler GotoNext;
-        [Category("Action"), Browsable(true)]
-        public event PlayHandler Play;
-        [Category("Action"), Browsable(true)]
-        public event SwapHandler Swap;
-        [Category("Action"), Browsable(true)]
-        public event SyncHandler Sync;
-        [Category("Action"), Browsable(true)]
-        public event PositionChangedHandler PositionChanged;
-        #endregion
-
         #region Properties
+        public ICommonControlsHandler CommonControlsHandler
+		{
+			set { m_CommonControlsHandler = value; }
+		}
         public bool Playing
         {
             get { return m_bPlaying;  }
@@ -70,6 +44,12 @@ namespace Kinovea.ScreenManager
                 RefreshPlayButton();
             }
         }
+        public bool SyncMerging
+		{
+			get { return m_bSyncMerging; }
+			set { m_bSyncMerging = value; }
+		}
+
         public int SyncOffset
         {
             set 
@@ -80,105 +60,120 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-     
+
         #region Members
-        private bool m_bPlaying = false;
+        private bool m_bPlaying;
+        private bool m_bSyncMerging;
 		private long m_iOldPosition;
+		private ICommonControlsHandler m_CommonControlsHandler;
         #endregion
 
+        #region Construction & Culture
         public CommonControls()
         {
             InitializeComponent();
             BackColor = Color.White;
         }
-
-        public void RefreshUICulture(ResourceManager _resManager)
+        public void RefreshUICulture()
         {
             // Labels
-            lblInfo.Text = _resManager.GetString("lblInfo_Text", Thread.CurrentThread.CurrentUICulture);
+            lblInfo.Text = ScreenManagerLang.lblInfo_Text;
 
             // ToolTips
-            toolTips.SetToolTip(buttonGotoFirst, _resManager.GetString("buttonGotoFirst_ToolTip", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(buttonGotoLast, _resManager.GetString("buttonGotoLast_ToolTip", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(buttonGotoNext, _resManager.GetString("buttonGotoNext_ToolTip", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(buttonGotoPrevious, _resManager.GetString("buttonGotoPrevious_ToolTip", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(buttonPlay, _resManager.GetString("buttonPlay_ToolTip", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnSwap, _resManager.GetString("mnuSwapScreens", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnSync, _resManager.GetString("btnSync_ToolTip", Thread.CurrentThread.CurrentUICulture));
-        }
-
+            toolTips.SetToolTip(buttonGotoFirst, ScreenManagerLang.buttonGotoFirst_ToolTip);
+            toolTips.SetToolTip(buttonGotoLast, ScreenManagerLang.buttonGotoLast_ToolTip);
+            toolTips.SetToolTip(buttonGotoNext, ScreenManagerLang.buttonGotoNext_ToolTip);
+            toolTips.SetToolTip(buttonGotoPrevious, ScreenManagerLang.buttonGotoPrevious_ToolTip);
+            toolTips.SetToolTip(buttonPlay, ScreenManagerLang.buttonPlay_ToolTip);
+            toolTips.SetToolTip(btnSwap, ScreenManagerLang.mnuSwapScreens);
+            toolTips.SetToolTip(btnSync, ScreenManagerLang.btnSync_ToolTip);
+            toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_Merge);
+		}
+		#endregion
+        
+        #region Buttons Handlers
         public void buttonGotoFirst_Click(object sender, EventArgs e)
         {
-            if (GotoFirst != null) 
-            { 
-            	GotoFirst(this, EventArgs.Empty); 
-            	trkFrame.Position = trkFrame.Minimum;
+        	if(m_CommonControlsHandler != null)
+        	{
+        		m_CommonControlsHandler.CommonCtrl_GotoFirst();
+        		trkFrame.Position = trkFrame.Minimum;
             	PlayStopped();
-            }
+        	}
         }
         public void buttonGotoPrevious_Click(object sender, EventArgs e)
         {
-            if (GotoPrev != null) 
+            if(m_CommonControlsHandler != null)
             { 
-            	GotoPrev(this, EventArgs.Empty); 
+            	m_CommonControlsHandler.CommonCtrl_GotoPrev(); 
             	trkFrame.Position--;
             }
         }
         public void buttonPlay_Click(object sender, EventArgs e)
         {
-            if (Play != null) 
-            {
+            if(m_CommonControlsHandler != null)
+        	{
                 m_bPlaying = !m_bPlaying;
                 RefreshPlayButton();
-                Play(this, EventArgs.Empty); 
+                m_CommonControlsHandler.CommonCtrl_Play(); 
             }
         }
         public void buttonGotoNext_Click(object sender, EventArgs e)
         {
-            if (GotoNext != null) 
-            { 
-            	GotoNext(this, EventArgs.Empty); 
+            if(m_CommonControlsHandler != null)
+        	{ 
+            	m_CommonControlsHandler.CommonCtrl_GotoNext(); 
             	trkFrame.Position++;
             }
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
         {
-            if (GotoLast != null) 
-            { 
-            	GotoLast(this, EventArgs.Empty); 
+            if(m_CommonControlsHandler != null)
+        	{
+            	m_CommonControlsHandler.CommonCtrl_GotoLast(); 
             	trkFrame.Position = trkFrame.Maximum;
             }
         }
         private void btnSwap_Click(object sender, EventArgs e)
         {
-            if (Swap != null) { Swap(this, EventArgs.Empty); }
+            if(m_CommonControlsHandler != null)
+        	{ 
+            	m_CommonControlsHandler.CommonCtrl_Swap(); 
+            }
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
-            if (Sync != null) { Sync(this, EventArgs.Empty); }
+            if(m_CommonControlsHandler != null)
+        	{ 
+            	m_CommonControlsHandler.CommonCtrl_Sync(); 
+            }
         }
-        private void PlayStopped()
+        private void btnMerge_Click(object sender, EventArgs e)
         {
-            buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+       		if(m_CommonControlsHandler != null)
+        	{ 
+       			m_bSyncMerging = !m_bSyncMerging;
+       			m_CommonControlsHandler.CommonCtrl_Merge(); 
+       		}
         }
-        private void trkFrame_PositionChanging(object sender, long _iPosition)
-        {
-        	if(_iPosition != m_iOldPosition)
-        	{
-        		m_iOldPosition = _iPosition;
-            	if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
-        	}
-        }
+        #endregion
+        
+        #region TrkFrame Handlers
         private void trkFrame_PositionChanged(object sender, long _iPosition)
         {
             if(_iPosition != m_iOldPosition)
         	{
         		m_iOldPosition = _iPosition;
-            	if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
+            	if(m_CommonControlsHandler != null)
+        		{ 
+            		m_CommonControlsHandler.CommonCtrl_PositionChanged(_iPosition); 
+            	}
         	}
         }
-
-        public void UpdateDebug()
+        #endregion
+        
+        #region Lower level helpers
+        private void UpdateDebug()
         {
             lblTrkFrameInfos.Text = "Min : " + trkFrame.Minimum + ", Max : " + trkFrame.Maximum + ", Pos : " + trkFrame.Position;
             lblTrkFrameInfos.Invalidate();
@@ -194,7 +189,10 @@ namespace Kinovea.ScreenManager
                 buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
             }
         }
-
-            
+        private void PlayStopped()
+        {
+            buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+        }
+		#endregion
     }
 }

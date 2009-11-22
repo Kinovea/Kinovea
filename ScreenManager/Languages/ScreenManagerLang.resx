@@ -310,6 +310,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Switch to Analysis Mode</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Go to Previous Frame</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Color Profile</value></data>
+   <data name="ToolTip_CommonCtrl_Merge" xml:space="preserve"><value>Superpose videos</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copy Previous Key Image Drawings into the Current Image</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch</value></data>

@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -107,7 +108,7 @@ namespace Kinovea.ScreenManager
             }
             set
             {
-                m_PlayerScreenUI.SetCurrentFrame(value);
+                m_PlayerScreenUI.SyncSetCurrentFrame(value);
             }
         }
         public int LastFrame
@@ -156,6 +157,21 @@ namespace Kinovea.ScreenManager
             // Used to feed SyncPosition. 
             get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
         }
+        public bool SyncMerge
+        {
+        	set 
+        	{
+        		m_PlayerScreenUI.SyncMerge = value;
+        		RefreshImage();
+        	}
+        }
+        public Bitmap SyncMergeImage
+		{
+			set 
+			{
+				m_PlayerScreenUI.SyncMergeImage = value;
+			}
+		}
         
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
@@ -243,7 +259,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region IPlayerScreenUIHandler implementation
+        #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
         public void ScreenUI_CloseAsked()
         {
         	m_ScreenHandler.Screen_CloseAsked(this);
@@ -261,6 +277,14 @@ namespace Kinovea.ScreenManager
         {
             // Used for synchronisation handling.
             m_ScreenHandler.Player_SelectionChanged(this, _bInitialization);
+        }
+        public void PlayerScreenUI_ImageChanged(Bitmap _image)
+        {
+        	m_ScreenHandler.Player_ImageChanged(this, _image);
+        }
+        public void PlayerScreenUI_Reset()
+        {
+        	m_ScreenHandler.Player_Reset(this);
         }
         #endregion
         
@@ -296,7 +320,7 @@ namespace Kinovea.ScreenManager
         }
         public void GotoNextFrame()
         {
-            m_PlayerScreenUI.SetCurrentFrame(-1);
+            m_PlayerScreenUI.SyncSetCurrentFrame(-1);
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {

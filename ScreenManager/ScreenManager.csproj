@@ -134,6 +134,7 @@
     <Compile Include="Commands\ScreenManager\CommandSwapScreens.cs" />
     <Compile Include="Commands\ScreenManager\CommandToggleCommonControls.cs" />
     <Compile Include="CoordinateSystem.cs" />
+    <Compile Include="ICommonControlsHandler.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\ColorProfile.cs" />

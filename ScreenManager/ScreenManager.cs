@@ -18,15 +18,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+
+using AForge.Video.DirectShow;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -41,7 +43,7 @@ namespace Kinovea.ScreenManager
 	public delegate void DelegateDrawingUndrawn();
 	#endregion
 	
-    public class ScreenManagerKernel : IKernel, IScreenHandler, IMessageFilter
+    public class ScreenManagerKernel : IKernel, IScreenHandler, ICommonControlsHandler, IMessageFilter
     {
         #region Imports Win32
         
@@ -169,7 +171,7 @@ namespace Kinovea.ScreenManager
             m_DelegateMMTimerEventHandler = new MMTimerEventHandler(MultimediaTimer_Tick);
             m_bAllowKeyboardHandler = true;
 
-            UI = new ScreenManagerUserInterface();
+            UI = new ScreenManagerUserInterface(this);
             
             PlugDelegates();
             InitializeVideoFilters();
@@ -186,17 +188,7 @@ namespace Kinovea.ScreenManager
         private void PlugDelegates()
         {
             ((ScreenManagerUserInterface)this.UI).m_CallbackDropLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
-            ((ScreenManagerUserInterface)this.UI).GotoFirst += new ScreenManagerUserInterface.GotoFirstHandler(CommonCtrlsGotoFirst);
-            ((ScreenManagerUserInterface)this.UI).GotoLast += new ScreenManagerUserInterface.GotoLastHandler(CommonCtrlsGotoLast);
-            ((ScreenManagerUserInterface)this.UI).GotoPrev += new ScreenManagerUserInterface.GotoPrevHandler(CommonCtrlsGotoPrev);
-            ((ScreenManagerUserInterface)this.UI).GotoNext += new ScreenManagerUserInterface.GotoNextHandler(CommonCtrlsGotoNext);
-            ((ScreenManagerUserInterface)this.UI).Play += new ScreenManagerUserInterface.PlayHandler(CommonCtrlsPlay);
-            ((ScreenManagerUserInterface)this.UI).Swap += new ScreenManagerUserInterface.SwapHandler(CommonCtrlsSwap);
-            ((ScreenManagerUserInterface)this.UI).Sync += new ScreenManagerUserInterface.SyncHandler(CommonCtrlsSync);
-            ((ScreenManagerUserInterface)this.UI).PositionChanged += new ScreenManagerUserInterface.PositionChangedHandler(CommonCtrlsPositionChanged);
-
             ((ScreenManagerUserInterface)this.UI).m_ThumbsViewer.m_CallBackLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
-
         }
         private void InitializeVideoFilters()
         {
@@ -568,7 +560,7 @@ namespace Kinovea.ScreenManager
             OrganizeMenus();
             UpdateStatusBar();
 
-            ((ScreenManagerUserInterface)this.UI).RefreshUICulture(resManager);
+            ((ScreenManagerUserInterface)this.UI).RefreshUICulture();
 
             // Screens.
             foreach (AbstractScreen screen in screenList)
@@ -655,6 +647,31 @@ namespace Kinovea.ScreenManager
         {
         	PrepareSync(_bInitialization);
         }
+        public void Player_ImageChanged(PlayerScreen _screen, Bitmap _image)
+        {
+        	// Transfer the image to the other screen.
+        	if (m_bSynching)
+            {
+        		foreach (AbstractScreen screen in screenList)
+                {
+                    if (screen != _screen)
+                    {
+                    	if(screen == screenList[0])
+                    		log.Debug("sending new image to screen[0]");
+                    	else 
+                    		log.Debug("sending new image to screen[1]");
+                    	
+                    	((PlayerScreen)screen).SyncMergeImage = AForge.Imaging.Image.Clone(_image);
+                    }
+                }
+        	}
+        }
+        public void Player_Reset(PlayerScreen _screen)
+        {
+        	// A screen was reset. (ex: a video was reloded in place).
+        	// We need to also reset all the sync states.
+        	PrepareSync(true);        	
+        }
         public bool Capture_TryDeviceConnection(CaptureScreen _screen)
         {
         	bool bAtLeastOneDevice = false;
@@ -693,6 +710,184 @@ namespace Kinovea.ScreenManager
         	return bAtLeastOneDevice;
         }
         #endregion
+        
+        #region ICommonControlsHandler Implementation
+        public void CommonCtrl_GotoFirst()
+        {
+        	if (m_bSynching)
+            {
+                m_iCurrentFrame = 0;
+                OnCommonPositionChanged(m_iCurrentFrame);
+                ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                DoStopPlaying();
+            }
+            else
+            {
+                // Demander un GotoFirst à tout le monde
+                foreach (AbstractScreen screen in screenList)
+                {
+                    if (screen is PlayerScreen)
+                    {
+                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoFirst_Click(null, EventArgs.Empty);
+                    }
+                }
+            }	
+        }
+        public void CommonCtrl_GotoPrev()
+        {
+        	if (m_bSynching)
+            {
+                if (m_iCurrentFrame > 0)
+                {
+                    m_iCurrentFrame--;
+                    OnCommonPositionChanged(m_iCurrentFrame);
+                    ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                }
+            }
+            else
+            {
+                // Demander un GotoPrev à tout le monde
+                foreach (AbstractScreen screen in screenList)
+                {
+                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
+                    {
+                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    }
+                }
+            }	
+        }
+		public void CommonCtrl_GotoNext()
+        {
+        	if (m_bSynching)
+            {
+                if (m_iCurrentFrame < m_iMaxFrame)
+                {
+                    m_iCurrentFrame++;
+                    OnCommonPositionChanged(-1);
+                    ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                }
+            }
+            else
+            {
+                // Demander un GotoNext à tout le monde
+                foreach (AbstractScreen screen in screenList)
+                {
+                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
+                    {
+                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoNext_Click(null, EventArgs.Empty);
+                    }
+                }
+            }	
+        }
+		public void CommonCtrl_GotoLast()
+        {
+        	if (m_bSynching)
+            {
+                m_iCurrentFrame = m_iMaxFrame;
+                OnCommonPositionChanged(m_iCurrentFrame);
+                ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                DoStopPlaying();
+            }
+            else
+            {
+                // Demander un GotoLast à tout le monde
+                foreach (AbstractScreen screen in screenList)
+                {
+                    if (screen is PlayerScreen)
+                    {
+                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoLast_Click(null, EventArgs.Empty);
+                    }
+                }
+            }	
+        }
+		public void CommonCtrl_Play()
+        {
+        	if (m_bSynching)
+            {
+                if (((ScreenManagerUserInterface)UI).ComCtrls.Playing)
+                {
+                    //--------------------------------------------------------
+                    // On lance le timer local avec un intervalle deux fois plus précis que le plus précis des deux vidéos.
+                    // Ce timer ne sert pas à demander chaque frame mais juste à 
+                    // contrôler l'état lancé/arrêté de chaque vidéo en fonction du décalage requis.
+                    //--------------------------------------------------------
+                
+                    // Les vidéos ont pu être déplacées indépendamment pendant la pause...
+
+                    
+                    StartMultimediaTimer(Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2));
+                }
+                else
+                {
+                    StopMultimediaTimer();
+                }
+            }
+
+            //-------------------------------------------------------------
+            // Propager la demande
+            // Si un écran est déjà dans l'état demandé, ne pas le toucher.
+            //-------------------------------------------------------------
+            foreach (AbstractScreen screen in screenList)
+            {
+                if (screen is PlayerScreen)
+                {
+                    // lancer la vidéo si besoin.
+                    if (((PlayerScreen)screen).IsPlaying != ((ScreenManagerUserInterface)this.UI).ComCtrls.Playing)
+                    {
+                        ((PlayerScreen)screen).m_PlayerScreenUI.OnButtonPlay();
+                    }
+                }
+            }	
+        }
+		public void CommonCtrl_Swap()
+        {
+        	mnuSwapScreensOnClick(null, EventArgs.Empty);	
+        }
+		public void CommonCtrl_Sync()
+        {
+        	if (m_bSynching && screenList.Count == 2)
+            {
+                // Mise à jour : m_iLeftSyncFrame, m_iRightSyncFrame, m_iSyncLag, m_iCurrentFrame. m_iMaxFrame.
+                SetSyncPoint(false);
+                SetSyncLimits();
+
+                // Mise à jour du trkFrame.
+                ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
+
+                // Mise à jour des Players.
+                OnCommonPositionChanged(m_iCurrentFrame);
+
+                // debug
+                ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
+            }
+        }
+		public void CommonCtrl_Merge()
+        {
+        	if (m_bSynching && screenList.Count == 2)
+            {
+        		bool syncMerging = ((ScreenManagerUserInterface)UI).ComCtrls.SyncMerging;
+        		
+        		// This will also do a full refresh, and triggers Player_ImageChanged().
+        		((PlayerScreen)screenList[0]).SyncMerge = syncMerging;
+        		((PlayerScreen)screenList[1]).SyncMerge = syncMerging;
+        	}
+        }
+       	public void CommonCtrl_PositionChanged(long _iPosition)
+       	{
+       		if (m_bSynching)
+            {
+                StopMultimediaTimer();
+                
+                EnsurePause(0);
+                EnsurePause(1);
+
+                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+
+                m_iCurrentFrame = (int)_iPosition;
+                OnCommonPositionChanged(m_iCurrentFrame);
+            }	
+       	}
+		#endregion
         
         #region IMessageFilter Implementation
         public bool PreFilterMessage(ref Message m)
@@ -2130,167 +2325,35 @@ namespace Kinovea.ScreenManager
         }
         public void CommonCtrlsGotoFirst(object sender, EventArgs e)
         {
-            if (m_bSynching)
-            {
-                m_iCurrentFrame = 0;
-                OnCommonPositionChanged(m_iCurrentFrame);
-                ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
-                DoStopPlaying();
-            }
-            else
-            {
-                // Demander un GotoFirst à tout le monde
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen is PlayerScreen)
-                    {
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoFirst_Click(sender, e);
-                    }
-                }
-            }
+            
         }
         public void CommonCtrlsGotoLast(object sender, EventArgs e)
         {
-            if (m_bSynching)
-            {
-                m_iCurrentFrame = m_iMaxFrame;
-                OnCommonPositionChanged(m_iCurrentFrame);
-                ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
-                DoStopPlaying();
-            }
-            else
-            {
-                // Demander un GotoLast à tout le monde
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen is PlayerScreen)
-                    {
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoLast_Click(sender, e);
-                    }
-                }
-            }
+           
         }
         public void CommonCtrlsGotoPrev(object sender, EventArgs e)
         {
-            if (m_bSynching)
-            {
-                if (m_iCurrentFrame > 0)
-                {
-                    m_iCurrentFrame--;
-                    OnCommonPositionChanged(m_iCurrentFrame);
-                    ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
-                }
-            }
-            else
-            {
-                // Demander un GotoPrev à tout le monde
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                    {
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoPrevious_Click(sender, e);
-                    }
-                }
-            }
+            
         }
         public void CommonCtrlsGotoNext(object sender, EventArgs e)
         {
-            if (m_bSynching)
-            {
-                if (m_iCurrentFrame < m_iMaxFrame)
-                {
-                    m_iCurrentFrame++;
-                    OnCommonPositionChanged(-1);
-                    ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
-                }
-            }
-            else
-            {
-                // Demander un GotoNext à tout le monde
-                foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                    {
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoNext_Click(sender, e);
-                    }
-                }
-            }
+            
         }
         public void CommonCtrlsPlay(object sender, EventArgs e)
         {
-            if (m_bSynching)
-            {
-                if (((ScreenManagerUserInterface)UI).ComCtrls.Playing)
-                {
-                    //--------------------------------------------------------
-                    // On lance le timer local avec un intervalle deux fois plus précis que le plus précis des deux vidéos.
-                    // Ce timer ne sert pas à demander chaque frame mais juste à 
-                    // contrôler l'état lancé/arrêté de chaque vidéo en fonction du décalage requis.
-                    //--------------------------------------------------------
-                
-                    // Les vidéos ont pu être déplacées indépendamment pendant la pause...
-
-                    
-                    StartMultimediaTimer(Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2));
-                }
-                else
-                {
-                    StopMultimediaTimer();
-                }
-            }
-
-            //-------------------------------------------------------------
-            // Propager la demande
-            // Si un écran est déjà dans l'état demandé, ne pas le toucher.
-            //-------------------------------------------------------------
-            foreach (AbstractScreen screen in screenList)
-            {
-                if (screen is PlayerScreen)
-                {
-                    // lancer la vidéo si besoin.
-                    if (((PlayerScreen)screen).IsPlaying != ((ScreenManagerUserInterface)this.UI).ComCtrls.Playing)
-                    {
-                        ((PlayerScreen)screen).m_PlayerScreenUI.OnButtonPlay();
-                    }
-                }
-            }
+            
         }
         public void CommonCtrlsSwap(object sender, EventArgs e)
         {
-            mnuSwapScreensOnClick(sender, e);
+            
         }
         public void CommonCtrlsSync(object sender, EventArgs e)
         {
-            if (m_bSynching && screenList.Count == 2)
-            {
-                // Mise à jour : m_iLeftSyncFrame, m_iRightSyncFrame, m_iSyncLag, m_iCurrentFrame. m_iMaxFrame.
-                SetSyncPoint(false);
-                SetSyncLimits();
-
-                // Mise à jour du trkFrame.
-                ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
-
-                // Mise à jour des Players.
-                OnCommonPositionChanged(m_iCurrentFrame);
-
-                // debug
-                ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
-            }
+            
         }
         public void CommonCtrlsPositionChanged(object sender, long _iPosition)
         {
-            if (m_bSynching)
-            {
-                StopMultimediaTimer();
-                
-                EnsurePause(0);
-                EnsurePause(1);
-
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
-
-                m_iCurrentFrame = (int)_iPosition;
-                OnCommonPositionChanged(m_iCurrentFrame);
-            }
+            
         }
         #endregion
 
@@ -2452,6 +2515,11 @@ namespace Kinovea.ScreenManager
 
                             // Dynamic Sync
                             ResetDynamicSyncFlags();
+                            
+                            // Sync Merging
+                            ((PlayerScreen)screenList[0]).SyncMerge = false;
+	                		((PlayerScreen)screenList[1]).SyncMerge = false;
+	                		((ScreenManagerUserInterface)UI).ComCtrls.SyncMerging = false;
                         }
 
                         // Mise à jour trkFrame

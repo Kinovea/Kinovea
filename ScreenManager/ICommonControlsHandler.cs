@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2008-2009.
+Copyright © Joan Charmant 2009.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,20 +19,25 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// IPlayerScreenUIHandler.
-	/// Methods implemented by IPlayerScreenUIHandler can be accessed by the UI without knowing 
-	/// about the rest of the PlayerScreen. 
+	/// ICommonControlsHandler.
+	/// Groups the methods of ScreenManager that must be reached from the 
+	/// CommonControls UI.
+	/// This avoid a tunnel of several delegates, without the need to expose all the SM to the UI.
 	/// </summary>
-	public interface IPlayerScreenUIHandler : IScreenUIHandler
+	public interface ICommonControlsHandler
 	{
-		void PlayerScreenUI_IsReady(bool _bIntervalOnly);
-		void PlayerScreenUI_SelectionChanged(bool _bInitialization);
-		void PlayerScreenUI_ImageChanged(Bitmap _image);
-		void PlayerScreenUI_Reset();
+		void CommonCtrl_GotoFirst();
+		void CommonCtrl_GotoPrev();
+		void CommonCtrl_GotoNext();
+		void CommonCtrl_GotoLast();
+		void CommonCtrl_Play();
+		void CommonCtrl_Swap();
+		void CommonCtrl_Sync();
+		void CommonCtrl_Merge();
+		void CommonCtrl_PositionChanged(long _iPosition);
 	}
 }

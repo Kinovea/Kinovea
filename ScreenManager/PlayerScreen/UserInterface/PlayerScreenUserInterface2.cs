@@ -110,6 +110,7 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_iSlowmotionPercentage; }
 		}
+		
 		public bool Synched
 		{
 			//get { return m_bSynched; }
@@ -123,6 +124,10 @@ namespace Kinovea.ScreenManager
 					trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
 					trkFrame.Invalidate();
 					UpdateCurrentPositionLabel();
+					
+					m_bSyncMerge = false;
+					if(m_SyncMergeImage != null)
+						m_SyncMergeImage.Dispose();
 				}
 			}
 		}
@@ -143,6 +148,33 @@ namespace Kinovea.ScreenManager
 			// The current ts, relative to the selection.
 			get { return m_iCurrentPosition - m_iSelStart; }
 		}	
+		public bool SyncMerge
+		{
+			// Idicates whether we should draw the other screen image on top of this one.
+			get { return m_bSyncMerge; }
+			set 
+			{ 
+				m_bSyncMerge = value; 
+				
+				if(!m_bSyncMerge && m_SyncMergeImage != null)
+				{
+					m_SyncMergeImage.Dispose();
+				}
+				
+				pbSurfaceScreen.Invalidate();
+			}
+		}
+		public Bitmap SyncMergeImage
+		{
+			set 
+			{
+				//if(m_SyncMergeImage != null)
+				//	m_SyncMergeImage.Dispose();
+				
+				m_SyncMergeImage = value; 
+				pbSurfaceScreen.Invalidate();
+			}
+		}
 		#endregion
 
 		#region Members
@@ -156,15 +188,21 @@ namespace Kinovea.ScreenManager
 		private bool m_bIsCurrentlyPlaying;
 		private int m_iFramesToDecode = 1;
 		private bool m_bSeekToStart;
-		private bool m_bSynched;
-		private Int64 m_iSyncPosition;
 		private uint m_IdMultimediaTimer;
-        private Kinovea.ScreenManager.PlayerScreenUserInterface.PlayingMode m_ePlayingMode = PlayingMode.Loop;
+        private PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private int m_iDroppedFrames;                  // For debug purposes only.
 		private int m_iDecodedFrames;
 		private int m_iSlowmotionPercentage = 100;
 		private bool m_bIsIdle = true;
-
+		
+		// Synchronisation
+		private bool m_bSynched;
+		private Int64 m_iSyncPosition;
+		private bool m_bSyncMerge;
+		private Bitmap m_SyncMergeImage;
+		private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
+		private ImageAttributes m_SyncMergeImgAttr = new ImageAttributes();
+		
 		// Image
 		private bool m_bStretchModeOn;
 		private bool m_bShowImageBorder;
@@ -262,6 +300,7 @@ namespace Kinovea.ScreenManager
 			InitializeComponent();
 			BuildContextMenus();
 			InitializeDrawingTools();
+			SyncSetAlpha(0.5f);
 			
 			// From prefs or command line.
 			m_ColorProfile.Load(PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder") + "\\current.xml");
@@ -317,6 +356,8 @@ namespace Kinovea.ScreenManager
 			sldrSpeed.Enabled = false;
 			lblFileName.Text = "";
 			m_KeyframeCommentsHub.Hide();
+			
+			m_PlayerScreenUIHandler.PlayerScreenUI_Reset();
 		}
 		public int PostLoadProcess()
 		{
@@ -540,7 +581,7 @@ namespace Kinovea.ScreenManager
 		{
 			StopPlaying(true);
 		}
-		public void SetCurrentFrame(Int64 _iFrame)
+		public void SyncSetCurrentFrame(Int64 _iFrame)
 		{
 			// Called during static sync.
 			// Common position changed, we get a new frame to jump to.
@@ -823,13 +864,17 @@ namespace Kinovea.ScreenManager
 			m_bDrawtimeFiltered = false;
 			m_bIsCurrentlyPlaying = false;
 			m_bSeekToStart = false;
-			m_bSynched = false;
-			m_iSyncPosition = 0;
 			m_ePlayingMode = PlayingMode.Loop;
 			m_bStretchModeOn = false;
 			m_FrameServer.CoordinateSystem.Reset();
 			
-		
+			// Sync
+			m_bSynched = false;
+			m_iSyncPosition = 0;
+			m_bSyncMerge = false;
+			if(m_SyncMergeImage != null)
+				m_SyncMergeImage.Dispose();
+			
 			m_bShowImageBorder = false;
 		
 			SetupPrimarySelectionData(); 	// Should not be necessary when every data is coming from m_FrameServer.
@@ -2206,9 +2251,15 @@ namespace Kinovea.ScreenManager
 						}
 					}
 				}
-
+				
 				// Display image
 				if(_bAllowUIUpdate) pbSurfaceScreen.Invalidate();
+				
+				// Update sync merge image in the other screen.
+				if(m_bSynched && m_bSyncMerge && m_FrameServer.VideoFile.CurrentImage != null)
+				{
+					m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(m_FrameServer.VideoFile.CurrentImage);
+				}
 			}
 			else
 			{
@@ -3037,7 +3088,6 @@ namespace Kinovea.ScreenManager
 			g.SmoothingMode = SmoothingMode.None;
 			
 			// TODO - matrix transform.
-			// - Focus region
 			// - Rotate 90°/-90°
 			// - Mirror
 			
@@ -3117,6 +3167,12 @@ namespace Kinovea.ScreenManager
 				// Mirrored ?
 
 				m_Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch);
+			}
+			
+			// .Sync superposition.
+			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
+			{
+				g.DrawImage(m_SyncMergeImage, rDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);	
 			}
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
@@ -4321,6 +4377,18 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 
+		#region Synchronisation specifics
+		private void SyncSetAlpha(float _alpha)
+		{
+			m_SyncMergeMatrix.Matrix00 = 1.0f;
+			m_SyncMergeMatrix.Matrix11 = 1.0f;
+			m_SyncMergeMatrix.Matrix22 = 1.0f;
+			m_SyncMergeMatrix.Matrix33 = _alpha;
+			m_SyncMergeMatrix.Matrix44 = 1.0f;
+			m_SyncMergeImgAttr.SetColorMatrix(m_SyncMergeMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+		}
+		#endregion
+		
 		#region VideoFilters Management
 		private void DisablePlayAndDraw()
 		{

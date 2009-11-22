@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
@@ -29,6 +30,8 @@ namespace Kinovea.ScreenManager
 	/// without passing the complete ScreenManager object, and thus without 
 	/// exposing all public methods of ScreenManager.
 	/// Previously, these method were injected one by one as delegates.
+	/// 
+	/// These methods are implemented in ScreenManager.
 	/// </summary>
 	public interface IScreenHandler
 	{
@@ -37,6 +40,8 @@ namespace Kinovea.ScreenManager
 		
 		void Player_IsReady(PlayerScreen _screen, bool _bInitialisation);
 		void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization);
+		void Player_ImageChanged(PlayerScreen _screen, Bitmap _image);
+		void Player_Reset(PlayerScreen _screen);
 		
 		bool Capture_TryDeviceConnection(CaptureScreen _screen);
 	}
