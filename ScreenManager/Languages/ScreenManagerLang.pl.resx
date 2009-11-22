@@ -199,6 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Zapisz</value></data>
    
    
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Wspólne sterowanie :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Długość</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -310,6 +311,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Przełącz do Trybu Analizy</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Idź do poprzedniej klatki</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil koloru</value></data>
+   
    
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopiuj rysunki z poprzedniego kluczowego obrazu do bieżącego obrazu</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kąt</value></data>

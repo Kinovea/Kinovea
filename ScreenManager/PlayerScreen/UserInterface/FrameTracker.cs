@@ -242,7 +242,14 @@ namespace Kinovea.ScreenManager
         private int Rescale(long _iOldValue, long _iOldMax, long _iNewMax)
         {
             // Rescale : Pixels -> Values
-            return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
+            if(_iOldMax > 0)
+            {
+            	return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
+            }
+            else
+            {
+            	return 0;
+            }
         }
         private void UpdateValuesAndReport()
         {

@@ -47,7 +47,11 @@ namespace Kinovea.ScreenManager
         public bool SyncMerging
 		{
 			get { return m_bSyncMerging; }
-			set { m_bSyncMerging = value; }
+			set 
+			{ 
+				m_bSyncMerging = value; 
+				RefreshMergeTooltip();
+			}
 		}
 
         public int SyncOffset
@@ -87,7 +91,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(buttonPlay, ScreenManagerLang.buttonPlay_ToolTip);
             toolTips.SetToolTip(btnSwap, ScreenManagerLang.mnuSwapScreens);
             toolTips.SetToolTip(btnSync, ScreenManagerLang.btnSync_ToolTip);
-            toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_Merge);
+            RefreshMergeTooltip();
 		}
 		#endregion
         
@@ -153,7 +157,8 @@ namespace Kinovea.ScreenManager
        		if(m_CommonControlsHandler != null)
         	{ 
        			m_bSyncMerging = !m_bSyncMerging;
-       			m_CommonControlsHandler.CommonCtrl_Merge(); 
+       			m_CommonControlsHandler.CommonCtrl_Merge();
+       			RefreshMergeTooltip();
        		}
         }
         #endregion
@@ -192,6 +197,17 @@ namespace Kinovea.ScreenManager
         private void PlayStopped()
         {
             buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+        }
+        private void RefreshMergeTooltip()
+        {
+        	if(m_bSyncMerging)
+            {
+            	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge);
+            }
+            else
+            {
+            	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge);	
+            }
         }
 		#endregion
     }

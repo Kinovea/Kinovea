@@ -197,6 +197,7 @@
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuratie</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
+   <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Kernbeelden zijn veranderd. \nWilt u de veranderde kernbeelden opslaan voor afsluiten ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Standaard bediening:</value></data>
@@ -310,6 +311,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Schakel naar analyse weergave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ga naar vorige frame</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Kleurprofiel</value></data>
+   
    
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopieer de vorige tekenvormen in huidige beeld.</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Hoek</value></data>
