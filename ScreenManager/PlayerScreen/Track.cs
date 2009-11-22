@@ -18,16 +18,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using OpenSURF;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Kinovea.Services;
 using AForge.Imaging;
-using System.Drawing.Imaging;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -145,6 +146,11 @@ namespace Kinovea.ScreenManager
         private static readonly int m_iEditModeAlpha = 128;			// alpha of track when in Edit mode.
         private static readonly int m_iLabelFollowsTrackAlpha = 80;	// alpha of track when in LabelFollows view.
         
+        private bool m_bUseSURF = false;
+        private static readonly int m_iSurfScale = 2;				// size of the SURF point (arbitrary).
+        private static readonly int m_iSurfTemplateEdge = 100;		// Edge of the candidate window.
+        private static readonly int m_iSurfDecimateInput = 2;		// Only consider one candidate position out of x.
+        private static readonly bool m_bSurfUprightDescriptors = false; // Disable rotation invariance if true (?).
         
         private TrackView m_TrackView = TrackView.Complete;
         private TrackStatus m_TrackStatus = TrackStatus.Edit;
@@ -191,12 +197,7 @@ namespace Kinovea.ScreenManager
             if (_bmp != null)
             {
                 // copy template zone from source image.
-                Bitmap tpl = new Bitmap(m_TemplateSize.Width, m_TemplateSize.Height, PixelFormat.Format24bppRgb);
-                Graphics g = Graphics.FromImage(tpl);
-                Rectangle rDst = new Rectangle(0, 0, m_TemplateSize.Width, m_TemplateSize.Height);
-                Rectangle rSrc = new Rectangle(_x - (m_TemplateSize.Width / 2), _y - (m_TemplateSize.Height / 2), m_TemplateSize.Width, m_TemplateSize.Height);
-                g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);
-                m_Positions.Add(new TrackPosition(_x, _y, 0, tpl));
+                m_Positions.Add(GetTrackPosition(_x, _y, 0, _bmp));
             }
             else
             {
@@ -454,6 +455,8 @@ namespace Kinovea.ScreenManager
             }
 
             m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
+            
+            // Todo: we must now refill the last point with a patch image.
         }
         public void AppendPoints(long _iCurrentTimestamp, List<TrackPosition> _ChoppedPoints)
         {
@@ -631,31 +634,122 @@ namespace Kinovea.ScreenManager
                     bool bMatched = false;
                     if (PreviousPos.Image != null && _bmpCurrent != null)
                     {
-                        Rectangle searchZone = new Rectangle(PreviousPos.X - (m_SearchSize.Width/2), PreviousPos.Y - (m_SearchSize.Height/2), m_SearchSize.Width, m_SearchSize.Height);
-                        TemplateMatch[] matchings = m_TemplateMatcher.ProcessImage(_bmpCurrent, searchZone, PreviousPos.Image);
-
-                        if (matchings.Length > 0)
+                        
+                        if(m_bUseSURF)
                         {
-                            // Get new center.
-                            iNewX = matchings[0].Rectangle.Left + (matchings[0].Rectangle.Width / 2);
-                            iNewY = matchings[0].Rectangle.Top + (matchings[0].Rectangle.Height / 2);
-                            bMatched = true;
-                            //log.Debug(String.Format("Tracking similarity result:{0}", matchings[0].Similarity));
+                        	//------------------------------------------------------
+                        	// Use SURF descriptors.
+                        	// For each candidate in the search window:
+                        	// compute SURF descriptor,
+                        	// The nearest (in 64-dimensions space) from the current one wins.
+                        	// Needs K-D Tree for nearest neighbour : slow.
+                        	//------------------------------------------------------
+			
+                        	Rectangle searchZone = new Rectangle(PreviousPos.X - (m_iSurfTemplateEdge/2), PreviousPos.Y - (m_iSurfTemplateEdge/2), m_iSurfTemplateEdge, m_iSurfTemplateEdge);
+                        	
+                        	log.Debug("starting SURF algo");
+                        	
+                        	// 1. Current image point.
+				    		Ipoint iptSource = new Ipoint();
+				      		iptSource.x = PreviousPos.X;
+				      		iptSource.y = PreviousPos.Y;
+				      		iptSource.scale = m_iSurfScale;
+				      		iptSource.laplacian = -1;
+				      		
+				      		List<Ipoint> ipts1 = new List<Ipoint>();
+				      		ipts1.Add(iptSource);
+    		
+      						// Get SURF descriptor for this point. (May add a second point if more than one orientation).
+        					IplImage pIplImage1 = IplImage.LoadImage(PreviousPos.Image);
+        					//IplImage pIplImage1 = IplImage.LoadImage(_bmpCurrent);
+        					IplImage pint_img1 = pIplImage1.BuildIntegral(null);
+				      		Surf pSurf1 = new Surf(pint_img1, ipts1);
+				            pSurf1.getDescriptors(m_bSurfUprightDescriptors);
+			
+				            // Remove additional point.
+				            if(ipts1.Count > 1)
+				            {
+				            	ipts1.RemoveAt(1);
+				            }
+				            
+				            //log.Debug(String.Format("Current point SURF-described. {{{0};{1}}}", PreviousPos.X, PreviousPos.Y));
+				            
+				            /*string descriptor = "Descriptor: ";
+				            foreach(float f in ipts1[0].descriptor)
+				            {
+				            	descriptor += f.ToString();
+				            	descriptor += " ";
+				            }
+				            log.Debug(descriptor);*/
+				                        	
+                        	// 2. Candidates points.
+				    		List<Ipoint> ipts2 = new List<Ipoint>();
+				    		for(int iRow=0;iRow<searchZone.Height;iRow+=m_iSurfDecimateInput)
+				    		{
+				    			if(searchZone.Top + iRow >= _bmpCurrent.Height)
+				    				continue;
+				    			
+				    			for(int iCol=0;iCol<searchZone.Width;iCol+=m_iSurfDecimateInput)
+				    			{
+				    				if(searchZone.Left + iCol >= _bmpCurrent.Width)
+				    					continue;
+				    			
+				    				Ipoint ipt = new Ipoint();
+				    				ipt.x = searchZone.Left + iCol;
+						      		ipt.y = searchZone.Top + iRow;
+						      		ipt.scale = m_iSurfScale;
+						      		ipt.laplacian = -1;
+						    
+						      		ipts2.Add(ipt);
+				    			}
+				    		}
+				    		
+				      		// Get SURF descriptors.
+				        	IplImage pIplImage2 = IplImage.LoadImage(_bmpCurrent);
+				        	IplImage pint_img2 = pIplImage2.BuildIntegral(null);
+				      		Surf pSurf2 = new Surf(pint_img2, ipts2);
+				            pSurf2.getDescriptors(m_bSurfUprightDescriptors);
+				                      
+				            log.Debug(String.Format("Candidate points SURF-described. Points:{0}", ipts2.Count));
+				            
+                        	// 3. Compare lists.
+            				List<Match> matches = null;
+            				COpenSURF.MatchPoints(ipts1, ipts2, out matches);
+            
+            				log.Debug("Matching done.");
+            				
+            				if (matches != null && matches.Count > 0)
+	                        {
+            					iNewX = (int)matches[0].Ipt2.x;
+            					iNewY = (int)matches[0].Ipt2.y;
+	                            bMatched = true;
+            				}
+                        }
+                        else
+                        {
+                        	// Use AForge Exhaustive Template Matching.
+                        	// For each candidate in the search window:
+                        	// will add the pixel to pixel errors for a zone of template size.
+                        	// the zone with the lower difference wins.
+                        	Rectangle searchZone = new Rectangle(PreviousPos.X - (m_SearchSize.Width/2), PreviousPos.Y - (m_SearchSize.Height/2), m_SearchSize.Width, m_SearchSize.Height);
+                        	TemplateMatch[] matchings = m_TemplateMatcher.ProcessImage(_bmpCurrent, searchZone, PreviousPos.Image);
+	                        if (matchings.Length > 0)
+	                        {
+	                            // Get new center.
+	                            iNewX = matchings[0].Rectangle.Left + (matchings[0].Rectangle.Width / 2);
+	                            iNewY = matchings[0].Rectangle.Top + (matchings[0].Rectangle.Height / 2);
+	                            bMatched = true;
+	                            //log.Debug(String.Format("Tracking similarity result:{0}", matchings[0].Similarity));
+	                        }
                         }
                     }
 
                 
-                    // Copy matched zone. If no match found, copy same place.
+                    // Copy matched zone patch. If no match found, copy same place.
                     // We still add the point even if we did not matched it because we will stop tracking at this point.
                     // If we don't add the point here it wouldn't be possible to move forward after an unmatch.
-                    Bitmap bmpMatched = new Bitmap(m_TemplateSize.Width, m_TemplateSize.Height, PixelFormat.Format24bppRgb);
-                    Graphics g = Graphics.FromImage(bmpMatched);
-                    Rectangle rDst = new Rectangle(0, 0, m_TemplateSize.Width, m_TemplateSize.Height);
-                    Rectangle rSrc = new Rectangle(iNewX - (m_TemplateSize.Width / 2), iNewY - (m_TemplateSize.Height / 2), m_TemplateSize.Width, m_TemplateSize.Height);
-                    g.DrawImage(_bmpCurrent, rDst, rSrc, GraphicsUnit.Pixel);
-
-                    TrackPosition TrackedPos = new TrackPosition(iNewX, iNewY, _iCurrentTimestamp - m_iBeginTimeStamp, bmpMatched);
-
+					TrackPosition TrackedPos = GetTrackPosition(iNewX, iNewY, _iCurrentTimestamp - m_iBeginTimeStamp, _bmpCurrent);
+                    
                     // Add the position
                     m_Positions.Add(TrackedPos);
                     m_RescaledPositions.Add(RescalePosition(TrackedPos, m_fStretchFactor, m_DirectZoomTopLeft));
@@ -672,6 +766,12 @@ namespace Kinovea.ScreenManager
                     {
                         // Couldn't find the template => stop tracking.
                         StopTracking();
+                    }
+                    else
+                    {
+                    	// Release previous image patch.
+                    	if(m_bUseSURF)
+	                    	PreviousPos.Image.Dispose();
                     }
                 }
             }
@@ -711,12 +811,33 @@ namespace Kinovea.ScreenManager
                 {
                     CurrentPos.Image.Dispose();
                 }
-
-                CurrentPos.Image = new Bitmap(m_TemplateSize.Width, m_TemplateSize.Height, PixelFormat.Format24bppRgb);
-                Graphics g = Graphics.FromImage(CurrentPos.Image);
-                Rectangle rDst = new Rectangle(0, 0, m_TemplateSize.Width, m_TemplateSize.Height);
-                Rectangle rSrc = new Rectangle(CurrentPos.X - (m_TemplateSize.Width / 2), CurrentPos.Y - (m_TemplateSize.Height / 2), m_TemplateSize.Width, m_TemplateSize.Height);
-                g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);
+	
+                if(m_bUseSURF)
+                {
+                	// Update image, only if we will need it later.
+                	// This should be generalized to template matching too.
+	                if(m_iCurrentPoint == m_Positions.Count - 1)
+                	{
+	                	/*CurrentPos.Image = new Bitmap(_bmp.Width, _bmp.Height, PixelFormat.Format24bppRgb);
+		                Graphics g = Graphics.FromImage(CurrentPos.Image);
+		                Rectangle rDst = new Rectangle(0, 0, _bmp.Width, _bmp.Height);
+		                Rectangle rSrc = new Rectangle(CurrentPos.X - (_bmp.Width / 2), CurrentPos.Y - (_bmp.Height / 2), _bmp.Width, _bmp.Height);
+		                g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);*/
+	                
+	                	// Whole image.
+	                	CurrentPos.Image = new Bitmap(_bmp.Width, _bmp.Height, PixelFormat.Format24bppRgb);
+        				Graphics g = Graphics.FromImage(CurrentPos.Image);
+	            		g.DrawImage(_bmp, 0, 0);
+	                }
+                }
+                else
+                {
+                	CurrentPos.Image = new Bitmap(m_TemplateSize.Width, m_TemplateSize.Height, PixelFormat.Format24bppRgb);
+	                Graphics g = Graphics.FromImage(CurrentPos.Image);
+	                Rectangle rDst = new Rectangle(0, 0, m_TemplateSize.Width, m_TemplateSize.Height);
+	                Rectangle rSrc = new Rectangle(CurrentPos.X - (m_TemplateSize.Width / 2), CurrentPos.Y - (m_TemplateSize.Height / 2), m_TemplateSize.Width, m_TemplateSize.Height);
+	                g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);
+                }
             }
         }
         public void ToXmlString(XmlTextWriter _xmlWriter)
@@ -925,6 +1046,44 @@ namespace Kinovea.ScreenManager
         	}
             
             return iEnd;
+        }
+        
+        private TrackPosition GetTrackPosition(int _x, int _y, long _t, Bitmap _bmp)
+        {
+        	// Create a new TrackPosition and copy the patch from image in the TP.
+        	// The patch will later be used to be matched in the next frame to 
+        	// find the new coordinate of the tracked object.
+        	
+        	Bitmap tpl;
+        		
+        	if(m_bUseSURF)
+        	{
+        		// For SURF, the patch of image that is carried in the TrackPoint is bigger.
+        		// We use the search window size for now.
+        	
+        		/*Size patchSize = new Size(384, 384);
+        		tpl = new Bitmap(patchSize.Width, patchSize.Height, PixelFormat.Format24bppRgb);
+        		Graphics g = Graphics.FromImage(tpl);
+	            Rectangle rDst = new Rectangle(0, 0, patchSize.Width, patchSize.Height);
+	            Rectangle rSrc = new Rectangle(_x - (patchSize.Width / 2), _y - (patchSize.Height / 2), patchSize.Width, patchSize.Height);
+        		g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);*/
+        		
+        		tpl = new Bitmap(_bmp.Width, _bmp.Height, PixelFormat.Format24bppRgb);
+        		Graphics g = Graphics.FromImage(tpl);
+	            g.DrawImage(_bmp, 0, 0);
+        		
+        		//tpl.Save("test1.bmp");
+        	}
+        	else
+        	{
+        		tpl = new Bitmap(m_TemplateSize.Width, m_TemplateSize.Height, PixelFormat.Format24bppRgb);
+	            Graphics g = Graphics.FromImage(tpl);
+	            Rectangle rDst = new Rectangle(0, 0, m_TemplateSize.Width, m_TemplateSize.Height);
+	            Rectangle rSrc = new Rectangle(_x - (m_TemplateSize.Width / 2), _y - (m_TemplateSize.Height / 2), m_TemplateSize.Width, m_TemplateSize.Height);
+        		g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);
+        	}
+        	
+        	return new TrackPosition(_x, _y, _t, tpl);
         }
         
         #region Drawing Helpers
