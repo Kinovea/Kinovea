@@ -718,6 +718,14 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap syncmerge
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("syncmerge", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap TextToolIcon
 		{
 			get

@@ -310,6 +310,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Cambiar a modo de análisis </value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ir a la imagen anterior</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil Color</value></data>
+   
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copiar los dibujos de la Imagen clave Anterior en la imagen actual</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angulo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronómetro</value></data>

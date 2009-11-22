@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,7 +26,6 @@ using System.IO;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -35,27 +35,9 @@ namespace Kinovea.ScreenManager
         #region Delegates
 
         // Déclarations de Types
-        public delegate void GotoFirstHandler(object sender, EventArgs e);
-        public delegate void GotoLastHandler(object sender, EventArgs e);
-        public delegate void GotoPrevHandler(object sender, EventArgs e);
-        public delegate void GotoNextHandler(object sender, EventArgs e);
-        public delegate void PlayHandler(object sender, EventArgs e);
-        public delegate void SwapHandler(object sender, EventArgs e);
-        public delegate void SyncHandler(object sender, EventArgs e);
-        public delegate void PositionChangedHandler(object sender, long _iPosition);
         public delegate void CallbackDropLoadMovie(string _FilePath, int _iScreen);
 
-
         // Déclarations des variables
-        public GotoFirstHandler         GotoFirst;
-        public GotoLastHandler          GotoLast;
-        public GotoPrevHandler          GotoPrev;
-        public GotoNextHandler          GotoNext;
-        public PlayHandler              Play;
-        public SwapHandler              Swap;
-        public SyncHandler              Sync;
-        public PositionChangedHandler   PositionChanged;
-        
         public CallbackDropLoadMovie    m_CallbackDropLoadMovie;
 
         public delegate void DelegateUpdateTrkFrame(int _iFrame);
@@ -68,14 +50,19 @@ namespace Kinovea.ScreenManager
         #region Members
         private List<String> m_FolderFileNames = new List<String>();
         private bool m_bThumbnailsWereVisible;
+        private ICommonControlsHandler m_CommonControlsHandler;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
-		public ScreenManagerUserInterface()
+		public ScreenManagerUserInterface(ICommonControlsHandler _CommonControlsHandler)
         {
         	log.Debug("Constructing ScreenManagerUserInterface.");
-        	 
+
+        	m_CommonControlsHandler = _CommonControlsHandler;
+        	
             InitializeComponent();
+            ComCtrls.CommonControlsHandler = m_CommonControlsHandler;
+            
             BackColor = Color.White;
             Dock = DockStyle.Fill;
             
@@ -119,11 +106,11 @@ namespace Kinovea.ScreenManager
 		}
         
         #region public, called from Kernel
-        public void RefreshUICulture(ResourceManager _resManager)
+        public void RefreshUICulture()
         {
-            ComCtrls.RefreshUICulture(_resManager);
-            btnShowThumbView.Text = _resManager.GetString("btnShowThumbView", Thread.CurrentThread.CurrentUICulture);
-            m_ThumbsViewer.RefreshUICulture(_resManager);
+            ComCtrls.RefreshUICulture();
+            btnShowThumbView.Text = ScreenManagerLang.btnShowThumbView;
+            m_ThumbsViewer.RefreshUICulture();
         }
         public void DisplaySyncLag(int _iOffset)
         {
@@ -247,41 +234,6 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-        }
-        #endregion
-
-        #region Delegates from ComCtrls
-        private void ComCtrls_GotoFirst(object sender, EventArgs e)
-        {
-            if (GotoFirst != null) { GotoFirst(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_GotoLast(object sender, EventArgs e)
-        {
-            if (GotoLast != null) { GotoLast(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_GotoNext(object sender, EventArgs e)
-        {
-            if (GotoNext != null) { GotoNext(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_GotoPrev(object sender, EventArgs e)
-        {
-            if (GotoPrev != null) { GotoPrev(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_Play(object sender, EventArgs e)
-        {
-            if (Play != null) { Play(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_Swap(object sender, EventArgs e)
-        {
-            if (Swap != null) { Swap(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_Sync(object sender, EventArgs e)
-        {
-            if (Sync != null) { Sync(this, EventArgs.Empty); }
-        }
-        private void ComCtrls_PositionChanged(object sender, long _iPosition)
-        {
-            if (PositionChanged != null) { PositionChanged(sender, _iPosition); }
         }
         #endregion
 

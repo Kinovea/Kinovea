@@ -184,14 +184,6 @@ namespace Kinovea.ScreenManager
             this.ComCtrls.Playing = false;
             this.ComCtrls.Size = new System.Drawing.Size(545, 45);
             this.ComCtrls.TabIndex = 4;
-            this.ComCtrls.GotoLast += new Kinovea.ScreenManager.CommonControls.GotoLastHandler(this.ComCtrls_GotoLast);
-            this.ComCtrls.GotoPrev += new Kinovea.ScreenManager.CommonControls.GotoPrevHandler(this.ComCtrls_GotoPrev);
-            this.ComCtrls.GotoFirst += new Kinovea.ScreenManager.CommonControls.GotoFirstHandler(this.ComCtrls_GotoFirst);
-            this.ComCtrls.PositionChanged += new Kinovea.ScreenManager.CommonControls.PositionChangedHandler(this.ComCtrls_PositionChanged);
-            this.ComCtrls.Play += new Kinovea.ScreenManager.CommonControls.PlayHandler(this.ComCtrls_Play);
-            this.ComCtrls.Swap += new Kinovea.ScreenManager.CommonControls.SwapHandler(this.ComCtrls_Swap);
-            this.ComCtrls.Sync += new Kinovea.ScreenManager.CommonControls.SyncHandler(this.ComCtrls_Sync);
-            this.ComCtrls.GotoNext += new Kinovea.ScreenManager.CommonControls.GotoNextHandler(this.ComCtrls_GotoNext);
             // 
             // ScreenManagerUserInterface
             // 

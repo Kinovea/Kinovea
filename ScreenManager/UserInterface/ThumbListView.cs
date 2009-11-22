@@ -1,3 +1,4 @@
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,6 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -72,8 +72,7 @@ namespace Kinovea.ScreenManager
 			
 			InitializeComponent();
 
-			ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-			RefreshUICulture(rm);
+			RefreshUICulture();
 
 			m_iCurrentSize = (int)m_PreferencesManager.ExplorerThumbsSize;
 			DeselectAllSizingButtons();
@@ -81,9 +80,9 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		public void RefreshUICulture(ResourceManager _resManager)
+		public void RefreshUICulture()
 		{
-			btnHideThumbView.Text = _resManager.GetString("btnHideThumbView", Thread.CurrentThread.CurrentUICulture);
+			btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
 		}
 		
 		#region RAM Monitoring

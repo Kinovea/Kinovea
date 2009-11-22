@@ -310,6 +310,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Schakel naar analyse weergave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ga naar vorige frame</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Kleurprofiel</value></data>
+   
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopieer de vorige tekenvormen in huidige beeld.</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Hoek</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch/tijdas</value></data>

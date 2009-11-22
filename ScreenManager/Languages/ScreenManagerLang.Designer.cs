@@ -2248,6 +2248,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Superpose videos.
+        /// </summary>
+        internal static string ToolTip_CommonCtrl_Merge {
+            get {
+                return ResourceManager.GetString("ToolTip_CommonCtrl_Merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Copy Previous Key Image Drawings into the Current Image.
         /// </summary>
         internal static string ToolTip_CopyDrawings {

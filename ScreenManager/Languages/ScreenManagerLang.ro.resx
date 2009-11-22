@@ -310,6 +310,7 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Treci în modul Analiză</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Mergi către cadrul precedent</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil Culoare</value></data>
+   
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copiază desenele de pe cadrul cheie anterior către cadrul curent</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Unghi</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometru</value></data>
