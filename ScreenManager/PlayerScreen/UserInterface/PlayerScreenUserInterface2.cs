@@ -337,6 +337,8 @@ namespace Kinovea.ScreenManager
 			// Called when we load a new video over an already loaded screen.
 			// also recalled if the video loaded but the first frame cannot be displayed.
 
+			log.Debug("Reset screen to empty state.");
+			
 			// 1. Reset all data.
 			m_FrameServer.Unload();
 			ResetData();

@@ -279,7 +279,8 @@
     <Compile Include="PlayerScreen\UserInterface\FrequencyViewer.Designer.cs">
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\Magnifier.cs" />
+    <Compile Include="PlayerScreen\Magnifier.cs">
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\StaticColorPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>

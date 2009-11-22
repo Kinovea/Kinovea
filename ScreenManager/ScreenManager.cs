@@ -656,11 +656,6 @@ namespace Kinovea.ScreenManager
                 {
                     if (screen != _screen)
                     {
-                    	if(screen == screenList[0])
-                    		log.Debug("sending new image to screen[0]");
-                    	else 
-                    		log.Debug("sending new image to screen[1]");
-                    	
                     	((PlayerScreen)screen).SyncMergeImage = AForge.Imaging.Image.Clone(_image);
                     }
                 }
