@@ -110,6 +110,7 @@ namespace Kinovea.ScreenManager
 				m_Metadata.Plane.SetLocations(imageSize, 1.0, new Point(0,0));
 				m_Metadata.Grid.SetLocations(imageSize, 1.0, new Point(0,0));
 				
+				log.Debug("Setup metadata.");
 				m_Metadata.CleanupHash();
 			}
 		}
@@ -226,6 +227,7 @@ namespace Kinovea.ScreenManager
 	        	                                	m_bSaveKeyframesOnly,
 	        	                                	m_bSavePausedVideo,
 	        	                                	m_SaveDelegateOutputBitmap);
+        		m_SaveMetadata.CleanupHash();
         	}
         	catch (Exception exp)
 			{

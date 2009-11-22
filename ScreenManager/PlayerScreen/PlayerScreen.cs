@@ -296,8 +296,10 @@ namespace Kinovea.ScreenManager
         public override void BeforeClose()
         {
             // Called by the ScreenManager when this screen is about to be closed.
+            // Note: We shouldn't call ResetToEmptyState here because we will want
+            // the close screen routine to detect if there is something left in the 
+            // metadata and alerts the user.
             m_PlayerScreenUI.StopPlaying();
-            m_PlayerScreenUI.ResetToEmptyState();
         }
         public override void refreshUICulture()
         {

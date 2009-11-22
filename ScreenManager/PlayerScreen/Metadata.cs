@@ -39,9 +39,14 @@ namespace Kinovea.ScreenManager
     public class Metadata
     {
         #region Properties
-        public bool Dirty
+        public bool IsDirty
         {
-            get { return m_iLastCleanHash != GetHashCode();}
+            get 
+            {
+            	int iCurrentHash = GetHashCode();
+				log.Debug(String.Format("Reading hash for Metadata.IsDirty, Ref Hash:{0}, Current Hash:{1}",m_iLastCleanHash, iCurrentHash));
+            	return m_iLastCleanHash != iCurrentHash;
+            }
         }
         public string GlobalTitle
         {
@@ -195,6 +200,7 @@ namespace Kinovea.ScreenManager
             m_TimeStampsToTimecodeCallback = _TimeStampsToTimecodeCallback;
             m_ShowClosestFrameCallback = _ShowClosestFrameCallback;
            
+            log.Debug("Constructing new Metadata object.");
             CleanupHash();
         }
         #endregion
@@ -262,6 +268,7 @@ namespace Kinovea.ScreenManager
             XmlTextWriter xmlWriter = new XmlTextWriter(_file, Encoding.UTF8);
             xmlWriter.Formatting = Formatting.Indented;
             ToXml(xmlWriter);
+            CleanupHash();
         }
         public void LoadFromFile(string _file)
         {
@@ -302,7 +309,8 @@ namespace Kinovea.ScreenManager
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
-
+			log.Debug("Metadata Reset.");
+			
             m_GlobalTitle = "";
             m_ImageSize = new Size(0, 0);
             m_InputImageSize = new Size(0, 0);
@@ -353,7 +361,7 @@ namespace Kinovea.ScreenManager
         public void CleanupHash()
         {
             m_iLastCleanHash = GetHashCode();
-            log.Debug(String.Format("Hash cleaned up. Metadata hash is: {0}", m_iLastCleanHash));
+            log.Debug(String.Format("Metadata hash reset. New reference hash is: {0}", m_iLastCleanHash));
         }
         public override int GetHashCode()
         {
@@ -670,6 +678,8 @@ namespace Kinovea.ScreenManager
         	// Some other infos are meant as helpers for XSLT exports (ODF, XHTML, etc.)
         	// so these exports have more user friendly values. (timecode vs timestamps, cm vs pixels)
         	
+        	log.Debug("Extracting XML description of Metadata.");
+        	
             try
             {
                 _xmlWriter.WriteStartDocument();
@@ -723,9 +733,6 @@ namespace Kinovea.ScreenManager
             {
                 // Possible cause:doesn't have rights to write.
             }
-
-            // Now that we will save those data, keep a trace of what state we were in.
-            CleanupHash();
         }
         private void WriteAnalysisInfos(XmlTextWriter _xmlWriter)
         {
@@ -776,6 +783,8 @@ namespace Kinovea.ScreenManager
         	// 1. Have a function to discover the file format.
         	// 2. Have a common interface for all parsers.
         	// 3. Instanciate this file format parser, and parse the data.
+        	
+        	log.Debug("Importing Metadata from XML description.");
         	
             if (_xmlReader != null)
             {

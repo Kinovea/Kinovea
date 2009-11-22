@@ -91,7 +91,7 @@ namespace Kinovea.ScreenManager
 
                 PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[ForceScreen-1];
                 bool bLoad = true;
-                if (ps.FrameServer.Metadata.Dirty)
+                if (ps.FrameServer.Metadata.IsDirty)
                 {
                     DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
                                                       m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
                 			if(ps!=null)
                 			{
 	                            bool bLoad = true;
-	                            if (ps.FrameServer.Metadata.Dirty)
+	                            if (ps.FrameServer.Metadata.IsDirty)
 	                            {
 	                                DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
 	                                                                  m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
@@ -243,7 +243,7 @@ namespace Kinovea.ScreenManager
                                 if(ps != null)
                                 {
 	                                bool bLoad = true;
-	                                if (ps.FrameServer.Metadata.Dirty)
+	                                if (ps.FrameServer.Metadata.IsDirty)
 	                                {
 	                                    DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
 	                                                                      m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),

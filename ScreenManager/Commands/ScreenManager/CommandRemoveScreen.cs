@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
             		
                     PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[iScreenToRemove];
                     bool bRemove = true;
-                    if (ps.FrameServer.Metadata.Dirty)
+                    if (ps.FrameServer.Metadata.IsDirty)
                     {
                         DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
                                                           m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
@@ -108,7 +108,6 @@ namespace Kinovea.ScreenManager
                             bRemove = false;
                             screenManagerKernel.CancelLastCommand = true;
                         }
-                        // else (DialogResult.No) => Do nothing.
                     }
 
                     if (bRemove)
