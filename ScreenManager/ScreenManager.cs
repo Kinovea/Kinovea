@@ -131,11 +131,13 @@ namespace Kinovea.ScreenManager
         #region Synchronization
         private MMTimerEventHandler m_DelegateMMTimerEventHandler;
         
-        private uint    m_IdMultimediaTimer = 0; // Timer servant à contrôler l'état d'avancement de chaque vidéo pour prise de décision d'arrêt/relance.          
+        //private uint    m_IdMultimediaTimer = 0; // Timer servant à contrôler l'état d'avancement de chaque vidéo pour prise de décision d'arrêt/relance.          
         
-        private bool    m_bSynching = false;
-        private int     m_iSyncLag = 0;              // Sync Lag in Frames, for static sync.
-        private int     m_iSyncLagMilliseconds = 0;  // Sync lag in Milliseconds, for dynamic sync.
+        private bool    m_bSynching;
+        private bool 	m_bSyncMerging;				// true if blending each other videos. 
+        private int     m_iSyncLag; 	            // Sync Lag in Frames, for static sync.
+        private int     m_iSyncLagMilliseconds;		// Sync lag in Milliseconds, for dynamic sync.
+        private bool 	m_bDynamicSynching;			// replace the common timer.
         
         // Static Sync Positions
         private int m_iCurrentFrame = 0;            // Current frame in trkFrame...
@@ -640,6 +642,7 @@ namespace Kinovea.ScreenManager
             // Appelé lors de changement de framerate.
             if (m_bSynching)
             {
+            	log.Debug("Framerate of one screen changed, reset sync point.");
                 SetSyncPoint(true);
             }
         }
@@ -649,16 +652,28 @@ namespace Kinovea.ScreenManager
         }
         public void Player_ImageChanged(PlayerScreen _screen, Bitmap _image)
         {
-        	// Transfer the image to the other screen.
         	if (m_bSynching)
             {
-        		foreach (AbstractScreen screen in screenList)
-                {
-                    if (screen != _screen)
-                    {
-                    	((PlayerScreen)screen).SyncMergeImage = AForge.Imaging.Image.Clone(_image);
-                    }
-                }
+				// Transfer the image to the other screen.
+        		if(m_bSyncMerging)
+        		{
+	        		foreach (AbstractScreen screen in screenList)
+	                {
+	                    if (screen != _screen)
+	                    {
+	                    	((PlayerScreen)screen).SyncMergeImage = AForge.Imaging.Image.Clone(_image);
+	                    }
+	                }	
+        		}
+
+        		// Dynamic sync.
+        		if(m_bDynamicSynching)
+        		{
+        			DynamicSync();
+        		}
+        		
+        		
+        		
         	}
         }
         public void Player_Reset(PlayerScreen _screen)
@@ -709,12 +724,14 @@ namespace Kinovea.ScreenManager
         #region ICommonControlsHandler Implementation
         public void CommonCtrl_GotoFirst()
         {
+        	DoStopPlaying();
+        	
         	if (m_bSynching)
             {
                 m_iCurrentFrame = 0;
                 OnCommonPositionChanged(m_iCurrentFrame);
                 ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
-                DoStopPlaying();
+                
             }
             else
             {
@@ -730,6 +747,8 @@ namespace Kinovea.ScreenManager
         }
         public void CommonCtrl_GotoPrev()
         {
+        	DoStopPlaying();
+        	
         	if (m_bSynching)
             {
                 if (m_iCurrentFrame > 0)
@@ -753,6 +772,8 @@ namespace Kinovea.ScreenManager
         }
 		public void CommonCtrl_GotoNext()
         {
+			DoStopPlaying();
+			
         	if (m_bSynching)
             {
                 if (m_iCurrentFrame < m_iMaxFrame)
@@ -776,12 +797,14 @@ namespace Kinovea.ScreenManager
         }
 		public void CommonCtrl_GotoLast()
         {
-        	if (m_bSynching)
+			DoStopPlaying();
+        	
+			if (m_bSynching)
             {
                 m_iCurrentFrame = m_iMaxFrame;
                 OnCommonPositionChanged(m_iCurrentFrame);
                 ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
-                DoStopPlaying();
+                
             }
             else
             {
@@ -797,42 +820,34 @@ namespace Kinovea.ScreenManager
         }
 		public void CommonCtrl_Play()
         {
+			bool bPlaying = ((ScreenManagerUserInterface)UI).ComCtrls.Playing;
         	if (m_bSynching)
             {
-                if (((ScreenManagerUserInterface)UI).ComCtrls.Playing)
+                if (bPlaying)
                 {
-                    //--------------------------------------------------------
-                    // On lance le timer local avec un intervalle deux fois plus précis que le plus précis des deux vidéos.
-                    // Ce timer ne sert pas à demander chaque frame mais juste à 
-                    // contrôler l'état lancé/arrêté de chaque vidéo en fonction du décalage requis.
-                    //--------------------------------------------------------
-                
-                    // Les vidéos ont pu être déplacées indépendamment pendant la pause...
-
-                    
-                    StartMultimediaTimer(Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2));
+                    int frameInterval = Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2);
+										
+					// On play, simply launch the dynamic sync.
+					// It will handle which video can start right away.
+					StartDynamicSync(frameInterval);
                 }
                 else
                 {
-                    StopMultimediaTimer();
+                    StopDynamicSync();
+                    m_bLeftIsStarting = false;
+                    m_bRightIsStarting = false;
                 }
             }
 
-            //-------------------------------------------------------------
-            // Propager la demande
-            // Si un écran est déjà dans l'état demandé, ne pas le toucher.
-            //-------------------------------------------------------------
-            foreach (AbstractScreen screen in screenList)
-            {
-                if (screen is PlayerScreen)
-                {
-                    // lancer la vidéo si besoin.
-                    if (((PlayerScreen)screen).IsPlaying != ((ScreenManagerUserInterface)this.UI).ComCtrls.Playing)
-                    {
-                        ((PlayerScreen)screen).m_PlayerScreenUI.OnButtonPlay();
-                    }
-                }
-            }	
+        	// On stop, propagate the call to screens.
+        	if(!bPlaying)
+        	{	
+        		if(screenList[0] is PlayerScreen)
+	        		EnsurePause(0);
+        		
+        		if(screenList[1] is PlayerScreen)
+        			EnsurePause(1);
+        	}
         }
 		public void CommonCtrl_Swap()
         {
@@ -843,6 +858,7 @@ namespace Kinovea.ScreenManager
         	if (m_bSynching && screenList.Count == 2)
             {
                 // Mise à jour : m_iLeftSyncFrame, m_iRightSyncFrame, m_iSyncLag, m_iCurrentFrame. m_iMaxFrame.
+                log.Debug("Sync point change.");
                 SetSyncPoint(false);
                 SetSyncLimits();
 
@@ -860,18 +876,20 @@ namespace Kinovea.ScreenManager
         {
         	if (m_bSynching && screenList.Count == 2)
             {
-        		bool syncMerging = ((ScreenManagerUserInterface)UI).ComCtrls.SyncMerging;
+        		m_bSyncMerging = ((ScreenManagerUserInterface)UI).ComCtrls.SyncMerging;
+        		log.Debug(String.Format("SyncMerge videos is now {0}", m_bSyncMerging.ToString()));
         		
         		// This will also do a full refresh, and triggers Player_ImageChanged().
-        		((PlayerScreen)screenList[0]).SyncMerge = syncMerging;
-        		((PlayerScreen)screenList[1]).SyncMerge = syncMerging;
+        		((PlayerScreen)screenList[0]).SyncMerge = m_bSyncMerging;
+        		((PlayerScreen)screenList[1]).SyncMerge = m_bSyncMerging;
         	}
         }
        	public void CommonCtrl_PositionChanged(long _iPosition)
        	{
+       		// Manual static sync.
        		if (m_bSynching)
             {
-                StopMultimediaTimer();
+                StopDynamicSync();
                 
                 EnsurePause(0);
                 EnsurePause(1);
@@ -2378,7 +2396,7 @@ namespace Kinovea.ScreenManager
             }
 
             // 2. Stop the common timer.
-            StopMultimediaTimer();
+            StopDynamicSync();
             ((ScreenManagerUserInterface)UI).DisplayAsPaused();
         }
         public void DoDeactivateKeyboardHandler()
@@ -2563,7 +2581,7 @@ namespace Kinovea.ScreenManager
 
             if (!m_bSynching) 
             { 
-                StopMultimediaTimer();
+                StopDynamicSync();
                 ((ScreenManagerUserInterface)UI).DisplayAsPaused();
             }
         }
@@ -2590,9 +2608,6 @@ namespace Kinovea.ScreenManager
             // Si _bIntervalOnly == true, on ne veut pas changer les frames de référence
             // (Généralement après une modification du framerate de l'une des vidéos ou swap)
             //----------------------------------------------------------------------------
-
-            log.Debug("SetSyncPoint() called.");
-
             if (m_bSynching && screenList.Count == 2)
             {
 	            // Registers current positions.
@@ -2604,6 +2619,8 @@ namespace Kinovea.ScreenManager
 	
 	                m_iLeftSyncFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
 	                m_iRightSyncFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
+	                
+	                log.Debug(String.Format("New Sync Points:[{0}][{1}], Sync lag:{2}",m_iLeftSyncFrame, m_iRightSyncFrame, m_iRightSyncFrame - m_iLeftSyncFrame));
 	            }
 	
 	
@@ -2677,7 +2694,7 @@ namespace Kinovea.ScreenManager
         private void OnCommonPositionChanged(int _iFrame)
         {
             //------------------------------------------------------------------------------
-            // this is where the "static sync" is done.
+            // This is where the "static sync" is done.
             // Updates each video to reflect current common position.
             // Used to handle GotoNext, GotoPrev, trkFrame, etc.
             // 
@@ -2741,8 +2758,6 @@ namespace Kinovea.ScreenManager
                     {
                         ((PlayerScreen)screenList[1]).GotoNextFrame();
                     }
-                
-
                 }
             }
         }
@@ -2758,9 +2773,11 @@ namespace Kinovea.ScreenManager
 	            ResetDynamicSyncFlags();
         	}
         }
-        private void StartMultimediaTimer(int _interval)
+        private void StartDynamicSync(int _interval)
         {
-            
+        	m_bDynamicSynching = true;
+        	DynamicSync();
+        	/*
             if (m_DelegateMMTimerEventHandler != null)
             {
                 int myData = 0;	// dummy data
@@ -2770,23 +2787,36 @@ namespace Kinovea.ScreenManager
                                                     ref myData,                             // ?
                                                     TIME_PERIODIC | TIME_KILL_SYNCHRONOUS); // Type d'event.
                 log.Debug("Common multimedia timer started");
-            }
+            }*/
         }
-        private void StopMultimediaTimer()
+        private void StopDynamicSync()
         {
+        	m_bDynamicSynching = false;
+        	/*
             if (m_IdMultimediaTimer != 0)
             {
                 timeKillEvent(m_IdMultimediaTimer);
                 log.Debug("Common multimedia timer stopped");
-            }
+            }*/
         }
         private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
+        {
+        	DynamicSync();
+        }
+        private void DynamicSync()
         {
         	// This is where the dynamic sync is done.
             // Get each video positions in common timebase and milliseconds.
             // Figure if a restart or pause is needed, considering current positions.
+            
+            // When the user press the common play button, we just propagate the play to the screens.
+            // The common timer is just set to try to be notified of each frame change.
+            // It is not used to provoke frame change itself.
+            // We just start and stop the players timers when we detect one of the video has reached the end,
+            // to prevent it from auto restarting.
 
             //-----------------------------------------------------------------------------
+            // /!\ Following paragraph is obsolete when using Direct call to dynamic sync.
             // This function is executed in the WORKER THREAD.
             // nothing called from here should ultimately call in the UI thread.
             //
@@ -2797,14 +2827,14 @@ namespace Kinovea.ScreenManager
             // 
             //-----------------------------------------------------------------------------
 
+            // Glossary:
+            // XIsStarting 		: currently on [0] but a Play was asked.
+            // XIsCatchingUp 	: video is between [0] and the point where both video will be running. 
+            
+            
             if (m_bSynching && screenList.Count == 2)
             {
-                //--------------------------------------------------------------
-                // Function called by event handler timer,
-                // asynchronously on each tick.
-                // TODO : si synching, mettre à jour la position.
-                // de façon à ce que le prochain GotoNext soit à peu près bien géré.
-                //--------------------------------------------------------------
+                // Function called by timer event handler, asynchronously on each tick.
 
                 // L'ensemble de la supervision est réalisée en TimeStamps.
                 // Seul les décision de lancer / arrêter sont établies par rapport
@@ -2824,6 +2854,8 @@ namespace Kinovea.ScreenManager
                 #region [i][0]
                 if (iLeftPosition > 0 && iRightPosition == 0)
                 {
+                	EnsurePlay(0);
+                	
                     // Etat 4. [i][0]
                     m_bLeftIsStarting = false;
 
@@ -2935,7 +2967,8 @@ namespace Kinovea.ScreenManager
                 else if (iLeftPosition == 0 && iRightPosition > 0)
                 {
                     // Etat [0][i]
-
+                    EnsurePlay(1);
+                    
                     m_bRightIsStarting = false;
 
                     if (m_iSyncLag == 0)
@@ -3003,6 +3036,9 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // Etat [i][i]
+                 	EnsurePlay(0);
+                 	EnsurePlay(1);
+                    
                     m_bLeftIsStarting = false;
                     m_bRightIsStarting = false;
 
@@ -3014,18 +3050,19 @@ namespace Kinovea.ScreenManager
                 object[] parameters = new object[] { m_iCurrentFrame };
                 ((ScreenManagerUserInterface)UI).BeginInvoke(((ScreenManagerUserInterface)UI).m_DelegateUpdateTrkFrame, parameters);
 
-                //Console.WriteLine("Tick:[{0}][{1}], Starting:[{2}][{3}]", iLeftPosition, iRightPosition, m_bLeftIsStarting, m_bRightIsStarting);
+                //log.Debug(String.Format("Tick:[{0}][{1}], Starting:[{2}][{3}], Catching up:[{4}][{5}]", iLeftPosition, iRightPosition, m_bLeftIsStarting, m_bRightIsStarting, m_bLeftIsCatchingUp, m_bRightIsCatchingUp));
             }
             else
             {
                 // This can happen when a screen is closed on the fly while synching.
-                StopMultimediaTimer();
+                StopDynamicSync();
                 m_bSynching = false;
                 ((ScreenManagerUserInterface)UI).DisplayAsPaused();
             }
         }
         private void EnsurePause(int _iScreen)
         {
+        	//log.Debug(String.Format("Ensuring pause of screen [{0}]", _iScreen));
             if (_iScreen < screenList.Count)
             {
                 if (((PlayerScreen)screenList[_iScreen]).IsPlaying)
@@ -3041,6 +3078,7 @@ namespace Kinovea.ScreenManager
         }
         private void EnsurePlay(int _iScreen)
         {
+        	//log.Debug(String.Format("Ensuring play of screen [{0}]", _iScreen));
             if (_iScreen < screenList.Count)
             {
                 if (!((PlayerScreen)screenList[_iScreen]).IsPlaying)
