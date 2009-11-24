@@ -172,6 +172,9 @@ namespace Kinovea.ScreenManager
 				//	m_SyncMergeImage.Dispose();
 				
 				m_SyncMergeImage = value; 
+				
+				// Ask for a repaint. We don't wait for the next frame to be drawn 
+				// because the user may be manually moving the other video.
 				pbSurfaceScreen.Invalidate();
 			}
 		}
@@ -2047,7 +2050,6 @@ namespace Kinovea.ScreenManager
 		#region Timers & Playloop
 		private void StartMultimediaTimer(int _interval)
 		{
-
 			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 
 			int myData = 0;	// dummy data
@@ -2057,7 +2059,7 @@ namespace Kinovea.ScreenManager
 			                                   ref myData,                             // ?
 			                                   TIME_PERIODIC | TIME_KILL_SYNCHRONOUS); // Type d'event (1=periodic)
 			
-			log.Debug("Multimedia timer started.");
+			log.Debug("PlayerScreen multimedia timer started.");
 			
 			// Deactivate all keyframes during playing.
 			ActivateKeyframe(-1);
@@ -2068,7 +2070,7 @@ namespace Kinovea.ScreenManager
 			{
 				timeKillEvent(m_IdMultimediaTimer);
 				Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
-				log.Debug("Multimedia timer stopped.");
+				log.Debug("PlayerScreen multimedia timer stopped.");
 			}
 		}
 		private void MultimediaTimerTick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
@@ -2097,17 +2099,17 @@ namespace Kinovea.ScreenManager
 			//-----------------------------------------------------------------------------
 
 			bool bStopAtEnd = false;
-
 			//----------------------------------------------------------------------------
 			// En prévision de l'appel à ShowNextFrame, on vérifie qu'on ne va pas sortir.
 			// Si c'est le cas, on stoppe la lecture pour rewind.
 			// m_iFramesToDecode est toujours strictement positif. (Car on est en Play)
 			//----------------------------------------------------------------------------
-			long    TargetPosition = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
+			long iTargetPosition = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
 
-			if ((TargetPosition > m_iSelEnd) || (TargetPosition >= (m_iStartingPosition + m_iTotalDuration)))
+			if ((iTargetPosition > m_iSelEnd) || (iTargetPosition >= (m_iStartingPosition + m_iTotalDuration)))
 			{
-				// Si mode Play Once, On stoppe la lecture.
+				log.Debug("End of video reached");
+				// We have reached the end of the video.
 				if (m_ePlayingMode == PlayingMode.Once)
 				{
 					StopPlaying();
@@ -2115,10 +2117,19 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					// On ne stoppe que le timer,
-					// on reprendra directement la lecture si tout est ok.
-					StopMultimediaTimer();
+					if(m_bSynched)
+					{
+						// Go into Pause mode.					
+						StopPlaying();		
+					}
+					else
+					{
+						// If auto rewind, only stops timer, 
+						// playback will restart automatically if everything is ok.
+						StopMultimediaTimer();
+					}
 					m_bSeekToStart = true;
+					
 				}
 
 				//Close Tracks
@@ -2132,34 +2143,35 @@ namespace Kinovea.ScreenManager
 			{
 				if (m_bSeekToStart)
 				{
-					// Play loop was stopped while moving back to begining.
-					// -> Back to playing loop.
+					// Rewind to begining.
 					if (ShowNextFrame(m_iSelStart, true) == 0)
 					{
-						StartMultimediaTimer(GetPlaybackFrameInterval());
+						if(m_bSynched)
+						{
+							//log.Debug("Stopping on frame [0] after auto rewind.");
+							// Stop on frame [0]. Will be restarted by the dynamic sync when needed.
+						}
+						else
+						{
+							// Auto restart timer if everything went fine.
+							StartMultimediaTimer(GetPlaybackFrameInterval());
+						}	
 					}
 					else
 					{
-						// Error on first frame.
+						log.Debug("Error while decoding first frame after auto rewind.");
 						StopPlaying();
 					}
 					m_bSeekToStart = false;
 				}
 				else if (bStopAtEnd)
 				{
-					//--------------------------------------------------------------------------
-					// Ne rien faire, la lecture à été stoppée suite à l'arrivée sur la dernière
-					// frame (ou presque) et la lecture est en mode 'Once'
-					//--------------------------------------------------------------------------
+					// Nothing to do. Playback was stopped on last frame.
 				}
 				else
 				{
-					//-------------------------------------------------------------
-					// Lancer la demande de la prochaine frame.
-					// (éventuellement plusieurs si accumulation.
-					// Nb de frames à décoder : a été placé dans m_iFramesToDecode,
-					// lors des passages succéssifs dans le Timer_Tick.
-					//-------------------------------------------------------------
+					// Not rewinding and not stopped on last frame.
+					// display next frame(s) in queue.
 					ShowNextFrame(-1, true);
 				}
 
@@ -2179,7 +2191,6 @@ namespace Kinovea.ScreenManager
 				//
 				// Side effect: queue will always stabilize right under the treshold.
 				//-------------------------------------------------------------------------------
-				
 				// If we a re currently tracking a point, do not try to keep with the framerate.
 				bool bTracking = false;
 				if (m_FrameServer.Metadata.SelectedTrack >= 0)
@@ -2208,7 +2219,10 @@ namespace Kinovea.ScreenManager
 				if (m_iFramesToDecode > 6)
 				{
 					m_iFramesToDecode = 0;
-					if (sldrSpeed.Value >= sldrSpeed.Minimum + sldrSpeed.LargeChange) { sldrSpeed.Value -= sldrSpeed.LargeChange; }
+					if (sldrSpeed.Value >= sldrSpeed.Minimum + sldrSpeed.LargeChange) 
+					{ 
+						sldrSpeed.Value -= sldrSpeed.LargeChange; 
+					}
 				}
 			}
 		}
@@ -2257,8 +2271,8 @@ namespace Kinovea.ScreenManager
 				// Display image
 				if(_bAllowUIUpdate) pbSurfaceScreen.Invalidate();
 				
-				// Update sync merge image in the other screen.
-				if(m_bSynched && m_bSyncMerge && m_FrameServer.VideoFile.CurrentImage != null)
+				// Report image for synchro and merge.
+				if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
 				{
 					m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(m_FrameServer.VideoFile.CurrentImage);
 				}
@@ -3161,21 +3175,22 @@ namespace Kinovea.ScreenManager
             g.ReleaseHdc(pTarget);*/
 			#endregion
 
+			// .Sync superposition.
+			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
+			{
+				g.DrawImage(m_SyncMergeImage, rDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);	
+			}
+			
 			FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
 
 			// .Magnifier
 			if (m_Magnifier.Mode != MagnifierMode.NotVisible)
 			{
 				// Mirrored ?
-
 				m_Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch);
 			}
 			
-			// .Sync superposition.
-			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
-			{
-				g.DrawImage(m_SyncMergeImage, rDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);	
-			}
+			
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
 		{
