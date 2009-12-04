@@ -78,6 +78,7 @@ namespace Kinovea.ScreenManager
 		#region AbstractVideoFilter Implementation
 		public override void Menu_OnClick(object sender, EventArgs e)
         {
+			// Direct call to Process because we don't need progress bar support.
 			Process();
         }
 		protected override void Process()
