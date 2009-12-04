@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kinovea")]
 [assembly: AssemblyProduct("Kinovea")]
-[assembly: AssemblyCopyright("Copyright © 2006-2009 Joan Charmant")]
+[assembly: AssemblyCopyright("Copyright © 2006-2010 Joan Charmant")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -30,6 +30,6 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.8.4.*")]
-[assembly: AssemblyFileVersion("0.8.4.0")]
+[assembly: AssemblyVersion("0.8.5.*")]
+[assembly: AssemblyFileVersion("0.8.5.0")]
 [assembly: NeutralResourcesLanguageAttribute("en")]

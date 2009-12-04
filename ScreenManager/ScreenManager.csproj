@@ -310,6 +310,7 @@
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterAutoLevels.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterContrast.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterDebugSURF.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterEdgesOnly.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
