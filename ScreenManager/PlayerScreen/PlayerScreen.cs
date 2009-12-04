@@ -167,10 +167,7 @@ namespace Kinovea.ScreenManager
         }
         public Bitmap SyncMergeImage
 		{
-			set 
-			{
-				m_PlayerScreenUI.SyncMergeImage = value;
-			}
+			set { m_PlayerScreenUI.SyncMergeImage = value;}
 		}
         
         // Pseudo Filters (Impacts rendering)

@@ -3178,7 +3178,10 @@ namespace Kinovea.ScreenManager
 			// .Sync superposition.
 			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
 			{
-				g.DrawImage(m_SyncMergeImage, rDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);	
+				// The mirroring, if any, will have been done already and applied to the sync image.
+				// (because we take account of the mirroring option of the other video, not this one)
+				Rectangle rSyncDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+				g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);	
 			}
 			
 			FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);

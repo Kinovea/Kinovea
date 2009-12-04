@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using AForge.Imaging.Filters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,7 +28,6 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-
 using AForge.Video.DirectShow;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
@@ -661,9 +661,19 @@ namespace Kinovea.ScreenManager
         		{
 	        		foreach (AbstractScreen screen in screenList)
 	                {
-	                    if (screen != _screen)
+	                    if (screen != _screen && screen is PlayerScreen)
 	                    {
-	                    	((PlayerScreen)screen).SyncMergeImage = AForge.Imaging.Image.Clone(_image);
+	                    	Bitmap img = AForge.Imaging.Image.Clone(_image);
+	                    	
+	                    	// Mirroring is the only modification to the image we handle for now,
+	                    	// no drawings, no magnifier, no zoom, etc.
+	                    	if(((PlayerScreen)_screen).Mirrored)
+	                    	{
+	                    		Mirror mirrorFilter = new Mirror(false, true);
+								mirrorFilter.ApplyInPlace( img );
+	                    	}
+	                    	
+	                    	((PlayerScreen)screen).SyncMergeImage = img;
 	                    }
 	                }	
         		}
