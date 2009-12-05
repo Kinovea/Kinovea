@@ -20,8 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+
 using Bsc;
 
 namespace Kinovea.Services
@@ -133,13 +135,19 @@ namespace Kinovea.Services
         	
         	try
         	{
-        		// TODO: also check for the special case where the only argument is a filename.
+        		// Check for the special case where the only argument is a filename.
         		// this happens when you drag a video on kinovea.exe
-        		
-        		// Check for the special parameter -help or -h, 
-        		// and then output info on supported params.
-        		if (args.Length == 1 && (args[0].Trim() == "-help" || args[0].Trim() == "-h"))
+        		if(args.Length == 1)
+        		{
+        			if(File.Exists(args[0]))
+        			{
+        				m_InputFile = args[0];
+        			}
+        		}
+        		else if (args.Length == 1 && (args[0].Trim() == "-help" || args[0].Trim() == "-h"))
 		        {
+        			// Check for the special parameter -help or -h, 
+        			// and then output info on supported params.
 		            PrintUsage();
 		        }
 		        else
@@ -154,7 +162,6 @@ namespace Kinovea.Services
 		            m_bStretchImage = CommandLineArgumentParser.IsSwitchOn("-stretch");
 		            m_bHideExplorer = CommandLineArgumentParser.IsSwitchOn("-noexp");
 		        }
-        		
         	}
         	catch (CommandLineArgumentException e)
 	        {
