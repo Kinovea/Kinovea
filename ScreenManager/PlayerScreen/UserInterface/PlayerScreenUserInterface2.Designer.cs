@@ -1213,7 +1213,7 @@ namespace Kinovea.ScreenManager
         	this.Controls.Add(this.splitKeyframes);
         	this.Controls.Add(this.panelVideoControls);
         	this.Controls.Add(this.panelTop);
-        	this.MinimumSize = new System.Drawing.Size(350, 510);
+        	this.MinimumSize = new System.Drawing.Size(350, 310);
         	this.Name = "PlayerScreenUserInterface";
         	this.Size = new System.Drawing.Size(420, 510);
         	this.panelTop.ResumeLayout(false);

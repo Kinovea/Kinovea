@@ -30,46 +30,45 @@ namespace Kinovea.Root
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KinoveaMainWindow));
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.SuspendLayout();
-            // 
-            // menuStrip
-            // 
-            resources.ApplyResources(this.menuStrip, "menuStrip");
-            this.menuStrip.Name = "menuStrip";
-            // 
-            // statusStrip
-            // 
-            resources.ApplyResources(this.statusStrip, "statusStrip");
-            this.statusStrip.Name = "statusStrip";
-            // 
-            // toolStrip
-            // 
-            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
-            resources.ApplyResources(this.toolStrip, "toolStrip");
-            this.toolStrip.Name = "toolStrip";
-            this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            // 
-            // KinoveaMainWindow
-            // 
-            resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.toolStrip);
-            this.Controls.Add(this.menuStrip);
-            this.Controls.Add(this.statusStrip);
-            this.IsMdiContainer = true;
-            this.KeyPreview = true;
-            this.MainMenuStrip = this.menuStrip;
-            this.Name = "KinoveaMainWindow";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserInterface_FormClosing);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KinoveaMainWindow));
+        	this.menuStrip = new System.Windows.Forms.MenuStrip();
+        	this.statusStrip = new System.Windows.Forms.StatusStrip();
+        	this.toolStrip = new System.Windows.Forms.ToolStrip();
+        	this.SuspendLayout();
+        	// 
+        	// menuStrip
+        	// 
+        	resources.ApplyResources(this.menuStrip, "menuStrip");
+        	this.menuStrip.Name = "menuStrip";
+        	// 
+        	// statusStrip
+        	// 
+        	resources.ApplyResources(this.statusStrip, "statusStrip");
+        	this.statusStrip.Name = "statusStrip";
+        	// 
+        	// toolStrip
+        	// 
+        	this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+        	this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+        	resources.ApplyResources(this.toolStrip, "toolStrip");
+        	this.toolStrip.Name = "toolStrip";
+        	this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+        	// 
+        	// KinoveaMainWindow
+        	// 
+        	resources.ApplyResources(this, "$this");
+        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        	this.Controls.Add(this.toolStrip);
+        	this.Controls.Add(this.menuStrip);
+        	this.Controls.Add(this.statusStrip);
+        	this.IsMdiContainer = true;
+        	this.KeyPreview = true;
+        	this.MainMenuStrip = this.menuStrip;
+        	this.Name = "KinoveaMainWindow";
+        	this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+        	this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserInterface_FormClosing);
+        	this.ResumeLayout(false);
+        	this.PerformLayout();
         }
 
         #endregion

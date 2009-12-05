@@ -79,7 +79,7 @@ namespace Kinovea.Root
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Controls.Add(this.splitWorkSpace);
             this.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.MinimumSize = new System.Drawing.Size(960, 560);
+            this.MinimumSize = new System.Drawing.Size(960, 360);
             this.Name = "SupervisorUserInterface";
             this.Size = new System.Drawing.Size(960, 560);
             this.Load += new System.EventHandler(this.SupervisorUserInterface_Load);
