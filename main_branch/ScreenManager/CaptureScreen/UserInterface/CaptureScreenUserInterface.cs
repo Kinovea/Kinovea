@@ -132,7 +132,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.SetContainer(this);
 			m_FrameServer.Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), null);
 
-			// Initialize UI.
+            // Initialize UI.
 			InitializeComponent();
 			this.Dock = DockStyle.Fill;
 			ShowHideResizers(false);
@@ -345,7 +345,12 @@ namespace Kinovea.ScreenManager
         {
             foreach(String dev in dev_list)
             {
-                cmbDeviceList.Items.Add(dev);
+                int index = cmbDeviceList.Items.Add(dev);
+
+                if (dev == PreferencesManager.Instance().CaptureDevice)
+                {
+                    cmbDeviceList.SelectedIndex = index;
+                }
             }
         }
 		private void ResetData()
@@ -2223,9 +2228,9 @@ namespace Kinovea.ScreenManager
             // Todo: Add possibility to reconnect with another camera without closing the screen
             //       Now the Combo control is just disabled to prevent users from chainging
 
-
             if(cmbDeviceList.SelectedIndex >= 0)
             {
+                PreferencesManager.Instance().CaptureDevice = (String)cmbDeviceList.Items[cmbDeviceList.SelectedIndex];
                 m_CurrentCaptureDevice = (String)cmbDeviceList.Items[cmbDeviceList.SelectedIndex];
             } else {
                 m_CurrentCaptureDevice = "";

@@ -99,7 +99,10 @@ namespace Kinovea.ScreenManager
         public void CaptureScreenUI_TryDeviceConnection(String capture_device_name)
         {
         	// todo.
-            m_ScreenHandler.Capture_TryDeviceConnection(this, capture_device_name);
+            if (m_CaptureScreenUI != null)
+            {
+                m_ScreenHandler.Capture_TryDeviceConnection(this, capture_device_name);
+            }
         }
 
         public List<String> CaptureScreenUI_CaptureDevices()
