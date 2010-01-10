@@ -1,0 +1,24 @@
+
+/!\ Utiliser NSIS Unicode. Sinon les messages d'erreurs custom pour le framework 2.0 ne s'affichent pas bien.
+/!\ Tous les binaires doivent être en mode en mode Release, PlayerServer.dll a des dépendances sur les libs C Microsoft de Debug si compilée en mode Debug.
+
+1. Ne pas copier les fichiers manuellement, utiliser systématiquement le prepare.py. (le modifier quand il y a de nouveaux fichiers)
+2. Ne pas modifier les fichiers dans le dossier de travail (Kinovea.Files\current) => modifier les fichiers à la source et relancer prepare.py.
+
+3. A changer/vérifier à chaque release:
+- Positionner le mode expérimental / production.
+- Masquer les fonctions en cours de développement qui ne sont pas terminées.
+- Mettre à jour le readme.txt
+- Mettre à jour le script NSI pour le n° de version.
+	- @9 : le nom du fichier de sortie (contient le n° version).
+	- @160 : les properties du fichier d'installation (n° version).
+	- @162 : le product version (n° version).
+	- Nouvelles dépendances / nouveaux fichiers (+ désinstallation)
+
+4. Click droit sur kinovea.nsi + Compile unicode script.
+5. Smoke tests sur la machine de dev et sur la machine virtuelle Win7.
+	N° version, désactivation des menus qui doivent l'être, enregistrement d'un fichier avec data et réouverture.
+	
+6. Une fois tout vérifié, commiter l'état sous svn et tagguer la version.	
+	
+7. Une fois la livraison finalisée, copier l'ensemble du répertoire de travail (Kinovea.Files\current) dans un répertoire d'archive au numéro de version correspondant.

@@ -1,0 +1,26 @@
+--- ExpTreeLib/CShItem.vb	Fri Mar 10 17:05:54 2006
++++ ExpTreeLib/CShItem.vb	Thu Jun 25 21:03:00 2009
+@@ -1400,7 +1400,11 @@
+                         If compList.Count > 0 Then
+                             RefreshDirectories = True
+                             For Each iptr In compList   'these are relative PIDLs
++                            	Try
+                                 m_Directories.Add(New CShItem(m_Folder, iptr, Me))
++                            	Catch ex As Exception
++        							Debug.WriteLine("Cannot convert the item to folder.")
++    							End Try
+                             Next
+                         End If
+                         If RefreshDirectories Then 'something added or removed, resort
+@@ -1527,7 +1531,11 @@
+                     If IntPtrOnly Then   'just relative pidls for fast look, no CShITem overhead
+                         rVal.Add(PIDLClone(item))   'caller must free
+                     Else
++                    	Try
+                         rVal.Add(New CShItem(m_Folder, item, Me))
++                    	Catch ex As Exception
++        					Debug.WriteLine("Cannot convert the item to folder.")
++    					End Try
+                     End If
+ SKIPONE:            Marshal.FreeCoTaskMem(item) 'if New kept it, it kept a copy
+                     item = IntPtr.Zero
