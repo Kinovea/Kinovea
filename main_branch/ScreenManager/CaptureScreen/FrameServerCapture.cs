@@ -103,6 +103,9 @@ namespace Kinovea.ScreenManager
 		private Metadata m_Metadata;
 		
 		private IFrameServerContainer m_Container;
+
+        private string m_FilePrefix = "";
+        private string m_FolderPath = "";
 		#endregion
 		
 		#region Public methods
@@ -175,17 +178,34 @@ namespace Kinovea.ScreenManager
 			
 			m_bPainting = false;
 		}
-		public void SetDevice(FilterInfoCollection _devices, int _iSelected)
+		public void SetDevice(FilterInfo _device)
 		{
-			m_VideoDevice = new VideoCaptureDevice( _devices[_iSelected].MonikerString );
-			m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
+            //TODO: Don't add an FilterInfoCollection use just FilterInfo
+
+			m_VideoDevice = new VideoCaptureDevice( _device.MonikerString );
+            m_VideoDevice.NewFrame += new NewFrameEventHandler(VideoDevice_NewFrame);
+           
 			m_bIsConnected = true;
-				
+
+
+            int frame = m_VideoDevice.DesiredFrameRate;
+
 			// use default frame rate from device.
 			m_VideoDevice.DesiredFrameRate = 0;
 				
-			log.Debug(String.Format("Video Device : MonikerString:{0}, Name:{1}",_devices[_iSelected].MonikerString, _devices[_iSelected].Name));
+			log.Debug(String.Format("Video Device : MonikerString:{0}, Name:{1}",_device.MonikerString, _device.Name));
 		}
+
+        public void SetFilePrefix(string _prefix)
+        {
+            m_FilePrefix = _prefix;
+        }
+
+        public void SetFolderPath(string _path)
+        {
+            m_FolderPath = _path;
+        }
+
 		public void TogglePlay()
 		{
 			if(m_VideoDevice.IsRunning)
@@ -214,7 +234,7 @@ namespace Kinovea.ScreenManager
 				
 				// Close the recording context.
 				m_VideoFileWriter.CloseSavingContext(true);
-				
+
 				// Move to new name
 				
 				// Add a VideofileBox (in the Keyframes panel) with a thumbnail of this video.
@@ -239,8 +259,20 @@ namespace Kinovea.ScreenManager
 				
 				// Open a recording context. (on which file name ?)
 				// Create filename from current date time.
-				string timecode = DateTime.Now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
-				m_CurrentCaptureFilePath = PreferencesManager.SettingsFolder + "\\" + timecode + ".avi";
+				string file_name = DateTime.Now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
+                string folder_name = PreferencesManager.SettingsFolder;
+
+                if (m_FolderPath.Length > 0)
+                {
+                    folder_name = m_FolderPath;
+                }
+
+                if (m_FilePrefix.Length > 0)
+                {
+                    file_name = m_FilePrefix + "(" + file_name + ")";
+                }
+
+                m_CurrentCaptureFilePath = folder_name + "\\" + file_name + ".avi";
 				
 				SaveResult result = m_VideoFileWriter.OpenSavingContext(m_CurrentCaptureFilePath, null, -1, false);
 				

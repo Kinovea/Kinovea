@@ -39,6 +39,8 @@ using AForge.Video.DirectShow;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
+using System.Globalization;
+
 
 #endregion
 
@@ -89,6 +91,8 @@ namespace Kinovea.ScreenManager
 		// Video Filters Management
 		private bool m_bDrawtimeFiltered;
 		private DrawtimeFilterOutput m_DrawingFilterOutput;
+        private String m_CurrentCaptureDevice = "";
+        private DateTime m_CaptureDuration;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -127,13 +131,14 @@ namespace Kinovea.ScreenManager
 			m_FrameServer = _FrameServer;
 			m_FrameServer.SetContainer(this);
 			m_FrameServer.Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), null);
-			
+
 			// Initialize UI.
 			InitializeComponent();
 			this.Dock = DockStyle.Fill;
 			ShowHideResizers(false);
 			InitializeDrawingTools();
 			InitializeMetadata();
+            InitializeDeviceList(m_ScreenUIHandler.CaptureScreenUI_CaptureDevices());
 			BuildContextMenus();
 			m_bDocked = true;
 			
@@ -255,6 +260,12 @@ namespace Kinovea.ScreenManager
 			// Method called from the Screen Manager's PreFilterMessage.
 			switch (_keycode)
 			{
+                case Keys.Space:
+                    {
+                        OnRecord();
+                        bWasHandled = true;
+                        break;
+                    }
 				case Keys.Escape:
 					{
 						DisablePlayAndDraw();
@@ -330,6 +341,13 @@ namespace Kinovea.ScreenManager
 			
 			m_FrameServer.Metadata.Add(kf);
 		}
+        private void InitializeDeviceList(List<String> dev_list)
+        {
+            foreach(String dev in dev_list)
+            {
+                cmbDeviceList.Items.Add(dev);
+            }
+        }
 		private void ResetData()
 		{
 			m_bStretchModeOn = false;
@@ -563,19 +581,27 @@ namespace Kinovea.ScreenManager
 		#region Video Controls
 
 		#region Playback Controls
+        private void OnRecord()
+        {
+            if (m_FrameServer.IsRecording)
+            {
+                // We will now be paused.
+                buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.record;
+                tmrCaptureDuration.Stop();
+            }
+            else
+            {
+                buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.stop;
+                m_FrameServer.SetFilePrefix(txtRecordingName.Text);
+                m_CaptureDuration = new DateTime();
+
+                tmrCaptureDuration.Start();
+            }
+            m_FrameServer.ToggleRecord();
+        }
 		private void buttonRecord_Click(object sender, EventArgs e)
         {
-        	if(m_FrameServer.IsRecording)
-        	{
-        		// We will now be paused.
-        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.record;	
-        	}
-        	else
-        	{
-        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.stop;	
-        	}
-        	
-        	m_FrameServer.ToggleRecord();
+            OnRecord();                
         }
 		private void buttonPlay_Click(object sender, EventArgs e)
 		{
@@ -2174,12 +2200,46 @@ namespace Kinovea.ScreenManager
         		{
         			m_bTryingToConnect = true;
         			
-        			m_ScreenUIHandler.CaptureScreenUI_TryDeviceConnection();
+        			m_ScreenUIHandler.CaptureScreenUI_TryDeviceConnection(m_CurrentCaptureDevice);
         			
         			m_bTryingToConnect = false;
         		}
         	}
         }
         #endregion
+
+        private void btnBrowserRecFolder_Click(object sender, EventArgs e)
+        {
+            // TODO: Set default path or some old path.
+            FolderBrowserDialog folderDld = new FolderBrowserDialog();
+            if (folderDld.ShowDialog() == DialogResult.OK)
+            {
+                m_FrameServer.SetFolderPath(folderDld.SelectedPath);
+            }
+        }
+
+        private void cmbDeviceList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Todo: Add possibility to reconnect with another camera without closing the screen
+            //       Now the Combo control is just disabled to prevent users from chainging
+
+
+            if(cmbDeviceList.SelectedIndex >= 0)
+            {
+                m_CurrentCaptureDevice = (String)cmbDeviceList.Items[cmbDeviceList.SelectedIndex];
+            } else {
+                m_CurrentCaptureDevice = "";
+            }
+            cmbDeviceList.Enabled = false;
+            tmrCaptureDeviceDetector_Tick(null, null);
+
+        }
+
+        private void tmrCaptureDuration_Tick(object sender, EventArgs e)
+        {
+            m_CaptureDuration =  m_CaptureDuration.AddMilliseconds((double)tmrCaptureDuration.Interval);
+
+            lblSelDuration.Text = "Duration : " + m_CaptureDuration.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        }
 	}
 }

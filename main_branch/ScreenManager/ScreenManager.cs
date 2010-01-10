@@ -338,10 +338,10 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.MergeAction = MergeAction.Append;
                         
             // Disabling all capture menus during dev.
-			mnuOneCapture.Enabled = false;            
+			/*mnuOneCapture.Enabled = false;            
             mnuTwoCaptures.Enabled = false;
             mnuTwoMixed.Enabled = false;
- 
+ */
             //Swap - activé seulement si DualFull ?
             mnuSwapScreens.Tag = new ItemResourceInfo(resManager, "mnuSwapScreens");
             mnuSwapScreens.Text = ((ItemResourceInfo)mnuSwapScreens.Tag).resManager.GetString(((ItemResourceInfo)mnuSwapScreens.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -694,7 +694,21 @@ namespace Kinovea.ScreenManager
         	// We need to also reset all the sync states.
         	PrepareSync(true);        	
         }
-        public bool Capture_TryDeviceConnection(CaptureScreen _screen)
+
+        public List<String> Capture_DeviceList()
+        {
+            List<String> result_list = new List<string>();
+
+            FilterInfoCollection videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo dev in videoDevices)
+            {
+                result_list.Add(dev.Name);
+            }
+
+            return result_list;
+        }
+
+        public bool Capture_TryDeviceConnection(CaptureScreen _screen, String _capture_device_name)
         {
         	bool bAtLeastOneDevice = false;
         	
@@ -705,27 +719,38 @@ namespace Kinovea.ScreenManager
         	
         	// Check if there one and exactly one non-taken device and connect it to the screen.
         	FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
-        	if ( videoDevices.Count == 1 )
+
+            if ( videoDevices.Count == 1 )
 			{
         		// todo: check if not already taken.
-        		_screen.FrameServer.SetDevice(videoDevices, 0);
+        		_screen.FrameServer.SetDevice(videoDevices[0]);
         		bAtLeastOneDevice = true;
         	}
-        	else if(videoDevices.Count > 1)
-        	{
-        		// More than one device available.
-        		// todo: check which are already taken.
-        		// if only one left, connect it.
-        		// if several left, we'll need to ask the user.
-        		
-        		MessageBox.Show(
-        			"more than one capture device",
-               		"debug",
-               		MessageBoxButtons.OK,
-                	MessageBoxIcon.Exclamation);
-        		
-        		bAtLeastOneDevice = true;
-			}
+            else if (videoDevices.Count > 1 && _capture_device_name.Length > 0)
+            {
+                foreach (FilterInfo dev in videoDevices)
+                {
+                    if (dev.Name == _capture_device_name)
+                    {
+                        _screen.FrameServer.SetDevice(dev);
+                    }
+                }
+                bAtLeastOneDevice = true;
+            }
+            else if (videoDevices.Count > 1)
+            {
+                // More than one device available.
+                // todo: check which are already taken.
+                // if only one left, connect it.
+                // if several left, we'll need to ask the user.
+                /*
+                                MessageBox.Show(
+                                    "more than one capture device",
+                                    "debug",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Exclamation);
+                bAtLeastOneDevice = true;*/
+            }
         	
         	_screen.PostTryConnection();
         	

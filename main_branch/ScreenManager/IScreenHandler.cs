@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
@@ -43,6 +44,7 @@ namespace Kinovea.ScreenManager
 		void Player_ImageChanged(PlayerScreen _screen, Bitmap _image);
 		void Player_Reset(PlayerScreen _screen);
 		
-		bool Capture_TryDeviceConnection(CaptureScreen _screen);
+		bool Capture_TryDeviceConnection(CaptureScreen _screen, String _capture_device_name);
+        List<String> Capture_DeviceList();
 	}
 }

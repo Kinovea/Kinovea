@@ -23,6 +23,7 @@ using System;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
@@ -95,11 +96,17 @@ namespace Kinovea.ScreenManager
         {
         	m_ScreenHandler.Screen_SetActiveScreen(this);
         }
-        public void CaptureScreenUI_TryDeviceConnection()
+        public void CaptureScreenUI_TryDeviceConnection(String capture_device_name)
         {
         	// todo.
-        	m_ScreenHandler.Capture_TryDeviceConnection(this);
+            m_ScreenHandler.Capture_TryDeviceConnection(this, capture_device_name);
         }
+
+        public List<String> CaptureScreenUI_CaptureDevices()
+        {
+            return m_ScreenHandler.Capture_DeviceList();
+        }
+
         #endregion
         
         #region AbstractScreen Implementation
