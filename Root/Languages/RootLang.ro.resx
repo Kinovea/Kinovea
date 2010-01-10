@@ -134,7 +134,7 @@
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>
-   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"/>
+   
    
    
    

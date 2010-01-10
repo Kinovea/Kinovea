@@ -129,7 +129,7 @@
    <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frequency :</value></data>
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaic Mode</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Real size of the segment :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Seal measure</value></data>
+   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Calibrate measure</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration on each Key Image : {0} hundredth of seconds.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each Key Image : {0:0.00} seconds.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Save Video</value></data>
@@ -174,7 +174,7 @@
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Set coordinates system origin</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Cannot create Slideshow.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>A Slideshow is a sequence of Key Images saved in video format.\n Please add some Key Images before generating the Slideshow.</value></data>
-   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Cannot createpaused video</value></data>
+   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Cannot create paused video</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>You need to add some key images before using this function.</value></data>
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Cannot Create Pdf Document. </value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Failure: Unable to save file : the file is open in another window.</value></data>
@@ -278,7 +278,7 @@
    <data name="mnuSave" xml:space="preserve"><value>Save...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Save the Current Image to File</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Screens</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Seal measure...</value></data>
+   <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrate measure...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Set Original Speed...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>

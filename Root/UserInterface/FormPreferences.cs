@@ -110,10 +110,10 @@ namespace Kinovea.Root
             LanguageIdentifier liPortuguese = new LanguageIdentifier("pt", PreferencesManager.LanguagePortuguese);
             LanguageIdentifier liPolish = new LanguageIdentifier("pl", PreferencesManager.LanguagePolish);
             LanguageIdentifier liRomanian = new LanguageIdentifier("ro", PreferencesManager.LanguageRomanian);
-
+			LanguageIdentifier liFinnish = new LanguageIdentifier("fi", PreferencesManager.LanguageFinnish);
 
             // Order : Native Alphabetical.
-            // Deutsh, English, Español, Français, Italiano, Nederlands, Polski, Portuges, Romana.
+            // Deutsh, English, Español, Français, Italiano, Nederlands, Polski, Portuges, Romana, Suomi.
             cmbLanguage.Items.Add(liGerman);
             cmbLanguage.Items.Add(liEnglish);
             cmbLanguage.Items.Add(liSpanish);
@@ -123,6 +123,7 @@ namespace Kinovea.Root
             cmbLanguage.Items.Add(liPolish);
             cmbLanguage.Items.Add(liPortuguese);
             cmbLanguage.Items.Add(liRomanian);
+            cmbLanguage.Items.Add(liFinnish);
 
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
 

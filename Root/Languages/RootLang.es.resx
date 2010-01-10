@@ -83,35 +83,35 @@
    <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Ver</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir un Video</value></data>
-   
+   <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dibujos</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Lectura/Analisis</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
+   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activar persistencia</value></data>
+   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
+   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forzar 16:9</value></data>
+   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forzar 4:3</value></data>
+   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Detección automática</value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Cambiar A Modo Análisis</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Colores</value></data>
-   
+   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistencia</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Cuadrícula :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Número de archivos en historial:</value></data>
-   
+   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Formato de imagen por defecto</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Idioma:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Y</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Cuadrícula de Perspectiva :</value></data>
    <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato de marcas de tiempo:</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
-   
+   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferencias…</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Cargando la Interfaz Gráfica ...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Salir</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Guardar</value></data>
    <data name="mnuAbout" xml:space="preserve"><value>Acerca de Kinovea…</value></data>
-   
+   <data name="mnuApplicationFolder" xml:space="preserve"><value>Abrir el archivo de logs</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Editar</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Archivo</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Ayuda</value></data>
@@ -134,7 +134,7 @@
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimas de un minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Diez milésimas de una hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
-   
+   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clásico + Número de imágenes</value></data>
    
    
    

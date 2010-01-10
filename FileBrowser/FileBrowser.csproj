@@ -93,6 +93,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Languages\FileBrowserLang.fi.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.nl.resx" />
   </ItemGroup>
   <ItemGroup>
