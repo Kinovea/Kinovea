@@ -730,6 +730,13 @@ namespace Kinovea.ScreenManager
             {
                 foreach (FilterInfo dev in videoDevices)
                 {
+                    if (dev.Name == PreferencesManager.Instance().CaptureDevice)
+                    {
+                        _screen.FrameServer.SetDevice(dev);
+                    }
+                }
+                foreach (FilterInfo dev in videoDevices)
+                {
                     if (dev.Name == _capture_device_name)
                     {
                         _screen.FrameServer.SetDevice(dev);
