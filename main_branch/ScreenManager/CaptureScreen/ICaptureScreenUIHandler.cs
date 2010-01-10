@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
@@ -27,7 +28,8 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public interface ICaptureScreenUIHandler : IScreenUIHandler
 	{
-		void CaptureScreenUI_TryDeviceConnection();
+		void CaptureScreenUI_TryDeviceConnection(String capture_device_name);
+        List<String> CaptureScreenUI_CaptureDevices();
 		
 	}
 }

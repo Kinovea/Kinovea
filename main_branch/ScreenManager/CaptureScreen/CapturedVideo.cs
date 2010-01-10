@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
 		public Bitmap Thumbnail
         {
             get { return m_Thumbnail; }
+
         }
 		public string Filepath
 		{
@@ -49,7 +50,8 @@ namespace Kinovea.ScreenManager
 		public CapturedVideo(string _Filepath, Bitmap _image)
 		{
 			m_Filepath = _Filepath;
-			m_Thumbnail = new Bitmap(_image, 100, 75);
+            //m_Thumbnail = new Bitmap(Kinovea.ScreenManager.Properties.Resources.stop, 100, 75);
+            m_Thumbnail = new Bitmap(_image, 100, 75);
 		}
 	}
 }
