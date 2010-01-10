@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -105,7 +105,9 @@
     <Compile Include="CaptureScreen\FrameServerCapture.cs" />
     <Compile Include="CaptureScreen\ICaptureScreenUIHandler.cs" />
     <Compile Include="CaptureScreen\IFrameServerContainer.cs" />
-    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs" />
+    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.Designer.cs">
       <DependentUpon>CapturedVideoBox.cs</DependentUpon>
     </Compile>
@@ -139,7 +141,11 @@
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingCircle2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingSilhouette2D.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolCircle2D.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolSilhouette2D.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
     <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />
@@ -177,7 +183,9 @@
     <Compile Include="PlayerScreen\SURF\Surf.cs" />
     <Compile Include="PlayerScreen\Track.cs" />
     <Compile Include="PlayerScreen\TrackPosition.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
     </Compile>
@@ -247,7 +255,9 @@
     <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.Designer.cs">
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </Compile>
@@ -263,7 +273,9 @@
     <Compile Include="PlayerScreen\UserInterface\FormEventList.Designer.cs">
       <DependentUpon>FormEventList.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.Designer.cs">
       <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
     </Compile>
@@ -300,11 +312,15 @@
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.Designer.cs">
       <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.Designer.cs">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </Compile>
@@ -394,9 +410,6 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
-      <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormConfigureMosaic.resx">
       <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
     </EmbeddedResource>
@@ -409,10 +422,6 @@
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Services</Name>
     </ProjectReference>
-    <Folder Include="CaptureScreen\UserInterface" />
-    <Folder Include="Commands\CaptureScreen" />
-    <Folder Include="PlayerScreen\SURF" />
-    <Folder Include="PlayerScreen\VideoFilters" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlayerScreen\UserInterface\KeyframeBox.resx">
@@ -754,6 +763,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\resettimescale.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\circle2d.png" />
+    <Content Include="Resources\silhouette2d.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\CaptureScreen\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
