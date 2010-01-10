@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\UpdaterLang.de.resx">

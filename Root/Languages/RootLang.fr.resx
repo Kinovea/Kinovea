@@ -119,7 +119,7 @@
    <data name="mnuHistory" xml:space="preserve"><value>Récents</value></data>
    <data name="mnuHistoryReset" xml:space="preserve"><value>Effacer l'Historique</value></data>
    <data name="mnuImage" xml:space="preserve"><value>Image</value></data>
-   <data name="mnuLanguages" xml:space="preserve"><value>Langues</value></data>
+   <data name="mnuLanguages" xml:space="preserve"><value>Langue</value></data>
    <data name="mnuMotion" xml:space="preserve"><value>Mouvement</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Ouvrir un Fichier Video…</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Options</value></data>

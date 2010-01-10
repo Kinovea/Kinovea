@@ -69,7 +69,7 @@
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Verifica disponibilita' aggiornamenti...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>E' disponibile una nuova versione !</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Scegli la Directory per il File di installazione.</value></data>
+   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Scegli la Directory di destinazione per il File di installazione.</value></data>
    <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Scegli la Cartella di destinazione</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versione Attuale :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Scarico (Download)</value></data>

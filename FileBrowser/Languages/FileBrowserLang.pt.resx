@@ -69,10 +69,10 @@
    </resheader>
    <data name="lblFolders" xml:space="preserve"><value>Pastas:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Arquivos de Vídeo:</value></data>
-   <data name="mnuAddShortcut" xml:space="preserve"/>
-   <data name="mnuAddToShortcuts" xml:space="preserve"/>
-   <data name="mnuDeleteShortcut" xml:space="preserve"/>
-   <data name="mnuEditShortcut" xml:space="preserve"/>
+   
+   
+   
+   
    <data name="tabExplorer" xml:space="preserve"><value>Gerenciador</value></data>
    <data name="tabFavorites" xml:space="preserve"><value>Favoritos</value></data>
 </root>

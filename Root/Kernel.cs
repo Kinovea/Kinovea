@@ -74,6 +74,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuItalian = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPortuguese = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRomanian = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFinnish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
@@ -474,9 +475,13 @@ namespace Kinovea.Root
             mnuRomanian = new ToolStripMenuItem(PreferencesManager.LanguageRomanian);
             mnuRomanian.Click += new EventHandler(menuRomanianOnClick);
 
+            // Finnish
+            mnuFinnish = new ToolStripMenuItem(PreferencesManager.LanguageFinnish);
+            mnuFinnish.Click += new EventHandler(menuFinnishOnClick);
+            
             // Re-Order alphabetically by localized name.
             // Deutsh, English, Español, Français, Italiano, Nederlands, Polski, Portuguese 
-            mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { mnuGerman, mnuEnglish, mnuSpanish, mnuFrench, mnuItalian, mnuDutch, mnuPolish, mnuPortuguese, mnuRomanian });
+            mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { mnuGerman, mnuEnglish, mnuSpanish, mnuFrench, mnuItalian, mnuDutch, mnuPolish, mnuPortuguese, mnuRomanian, mnuFinnish });
             #endregion
 
             // Preferences
@@ -726,6 +731,10 @@ namespace Kinovea.Root
         {
             SwitchCulture("pl");
         }
+        private void menuFinnishOnClick(object sender, EventArgs e)
+        {
+            SwitchCulture("fi");
+        }
         private void SwitchCulture(string name)
         {
             IUndoableCommand command = new CommandSwitchUICulture(this, Thread.CurrentThread, new CultureInfo(name), Thread.CurrentThread.CurrentUICulture);
@@ -743,6 +752,7 @@ namespace Kinovea.Root
             mnuSpanish.Checked = false;
             mnuPortuguese.Checked = false;
             mnuRomanian.Checked = false;
+            mnuFinnish.Checked = false;
 
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
             
@@ -771,6 +781,9 @@ namespace Kinovea.Root
                     break;
                 case "ro":
                     mnuRomanian.Checked = true;
+                    break;
+                case "fi":
+                    mnuFinnish.Checked = true;
                     break;
                 case "en":
                 default:

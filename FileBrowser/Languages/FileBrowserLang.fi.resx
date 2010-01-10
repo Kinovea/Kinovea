@@ -67,12 +67,12 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="lblFolders" xml:space="preserve"><value>Cartelle:</value></data>
-   <data name="lblVideoFiles" xml:space="preserve"><value>Files Video:</value></data>
-   <data name="mnuAddShortcut" xml:space="preserve"><value>Aggiungi collegamento</value></data>
-   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Aggiungi ai collegamenti</value></data>
-   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Cancella collegamento</value></data>
-   <data name="mnuEditShortcut" xml:space="preserve"><value>Modifica collegamento</value></data>
-   <data name="tabExplorer" xml:space="preserve"><value>Esplora</value></data>
-   <data name="tabFavorites" xml:space="preserve"><value>Favoriti</value></data>
+   <data name="lblFolders" xml:space="preserve"><value>Hakemistot:</value></data>
+   <data name="lblVideoFiles" xml:space="preserve"><value>Videotiedostot:</value></data>
+   <data name="mnuAddShortcut" xml:space="preserve"><value>Lisää oikopolku</value></data>
+   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Lisää oikopolkuihin</value></data>
+   <data name="mnuDeleteShortcut" xml:space="preserve"><value>Poista oikopolku</value></data>
+   <data name="mnuEditShortcut" xml:space="preserve"><value>Editoi oikopolkua</value></data>
+   <data name="tabExplorer" xml:space="preserve"><value>Explorer</value></data>
+   <data name="tabFavorites" xml:space="preserve"><value>Suosikit</value></data>
 </root>

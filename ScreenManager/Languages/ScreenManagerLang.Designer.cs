@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Seal measure.
+        ///   Recherche une chaîne localisée semblable à Calibrate measure.
         /// </summary>
         internal static string dlgConfigureMeasure_Title {
             get {
@@ -1051,7 +1051,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea – Cannot createpaused video.
+        ///   Recherche une chaîne localisée semblable à Kinovea – Cannot create paused video.
         /// </summary>
         internal static string Error_SavePausedVideo {
             get {
@@ -1933,7 +1933,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Seal measure....
+        ///   Recherche une chaîne localisée semblable à Calibrate measure....
         /// </summary>
         internal static string mnuSealMeasure {
             get {
