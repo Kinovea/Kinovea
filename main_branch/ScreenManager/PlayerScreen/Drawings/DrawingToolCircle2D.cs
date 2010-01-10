@@ -24,17 +24,18 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingToolAngle2D : AbstractDrawingTool
+    public class DrawingToolCircle2D : AbstractDrawingTool
     {
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
-            return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X - 70, _Origin.Y - 35, _Origin.X - 70, _Origin.Y + 35, _iTimestamp, _AverageTimeStampsPerFrame);
+            return new DrawingCircle2D(_Origin.X, _Origin.Y, _Origin.X + 70, _Origin.Y - 35, _iTimestamp, _AverageTimeStampsPerFrame);
         }
         public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
         {
-            _Keyframe.Drawings[0].MoveHandleTo(_MouseCoordinates, 2);
+            _Keyframe.Drawings[0].MoveHandleTo(_MouseCoordinates, 1);
         }
         public override DrawingToolType OnMouseUp()
+
         {
             return DrawingToolType.Pointer; // Instantly fall back to Pointer Tool after setup.
         }

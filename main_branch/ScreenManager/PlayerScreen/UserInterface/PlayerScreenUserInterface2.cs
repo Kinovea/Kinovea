@@ -52,6 +52,8 @@ namespace Kinovea.ScreenManager
 		Pencil,
 		Text,
 		Chrono,
+        Circle2D,
+        Silhouette2D,
 		NumberOfDrawingTools
 	};
 	
@@ -858,6 +860,8 @@ namespace Kinovea.ScreenManager
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Chrono] = new DrawingToolChrono();
+            m_DrawingTools[(int)DrawingToolType.Circle2D] = new DrawingToolCircle2D();
+            m_DrawingTools[(int)DrawingToolType.Silhouette2D] = new DrawingToolSilhouette2D();
 			
 			m_ActiveTool = DrawingToolType.Pointer;
         }
@@ -3773,6 +3777,26 @@ namespace Kinovea.ScreenManager
 				PrepareKeyframesDock();
 			}
 		}
+        private void btnDrawingToolCircle2D_Click(object sender, EventArgs e)
+        {
+            if (m_Magnifier.Mode != MagnifierMode.Direct)
+            {
+                OnPoke();
+                m_ActiveTool = DrawingToolType.Circle2D;
+                SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorAngle2D, 0));
+                PrepareKeyframesDock();
+            }
+        }
+        private void btnDrawingToolSilhouette2D_Click(object sender, EventArgs e)
+        {
+            if (m_Magnifier.Mode != MagnifierMode.Direct)
+            {
+                OnPoke();
+                m_ActiveTool = DrawingToolType.Silhouette2D;
+                SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorAngle2D, 0));
+                PrepareKeyframesDock();
+            }
+        }
 		private void btnDrawingToolAngle2D_Click(object sender, EventArgs e)
 		{
 			if (m_Magnifier.Mode != MagnifierMode.Direct)
