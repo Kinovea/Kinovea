@@ -1,0 +1,214 @@
+/*
+Copyright © Joan Charmant 2008.
+joan.charmant@gmail.com 
+ 
+This file is part of Kinovea.
+
+Kinovea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 
+as published by the Free Software Foundation.
+
+Kinovea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Kinovea. If not, see http://www.gnu.org/licenses/.
+
+*/
+
+using Kinovea.ScreenManager.Languages;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Resources;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace Kinovea.ScreenManager
+{
+    public partial class CommonControls : UserControl
+    {
+        #region Properties
+        public ICommonControlsHandler CommonControlsHandler
+		{
+			set { m_CommonControlsHandler = value; }
+		}
+        public bool Playing
+        {
+            get { return m_bPlaying;  }
+            set 
+            { 
+                m_bPlaying = value;
+                RefreshPlayButton();
+            }
+        }
+        public bool SyncMerging
+		{
+			get { return m_bSyncMerging; }
+			set 
+			{ 
+				m_bSyncMerging = value; 
+				RefreshMergeTooltip();
+			}
+		}
+
+        public int SyncOffset
+        {
+            set 
+            {
+                int iValue = value;
+                lblSyncOffset.Text = "SyncOffset : " + iValue;
+                lblSyncOffset.Invalidate();
+            }
+        }
+        #endregion
+
+        #region Members
+        private bool m_bPlaying;
+        private bool m_bSyncMerging;
+		private long m_iOldPosition;
+		private ICommonControlsHandler m_CommonControlsHandler;
+        #endregion
+
+        #region Construction & Culture
+        public CommonControls()
+        {
+            InitializeComponent();
+            BackColor = Color.White;
+        }
+        public void RefreshUICulture()
+        {
+            // Labels
+            lblInfo.Text = ScreenManagerLang.lblInfo_Text;
+
+            // ToolTips
+            toolTips.SetToolTip(buttonGotoFirst, ScreenManagerLang.buttonGotoFirst_ToolTip);
+            toolTips.SetToolTip(buttonGotoLast, ScreenManagerLang.buttonGotoLast_ToolTip);
+            toolTips.SetToolTip(buttonGotoNext, ScreenManagerLang.buttonGotoNext_ToolTip);
+            toolTips.SetToolTip(buttonGotoPrevious, ScreenManagerLang.buttonGotoPrevious_ToolTip);
+            toolTips.SetToolTip(buttonPlay, ScreenManagerLang.buttonPlay_ToolTip);
+            toolTips.SetToolTip(btnSwap, ScreenManagerLang.mnuSwapScreens);
+            toolTips.SetToolTip(btnSync, ScreenManagerLang.btnSync_ToolTip);
+            RefreshMergeTooltip();
+		}
+		#endregion
+        
+        #region Buttons Handlers
+        public void buttonGotoFirst_Click(object sender, EventArgs e)
+        {
+        	if(m_CommonControlsHandler != null)
+        	{
+        		m_CommonControlsHandler.CommonCtrl_GotoFirst();
+        		trkFrame.Position = trkFrame.Minimum;
+            	PlayStopped();
+        	}
+        }
+        public void buttonGotoPrevious_Click(object sender, EventArgs e)
+        {
+            if(m_CommonControlsHandler != null)
+            { 
+            	m_CommonControlsHandler.CommonCtrl_GotoPrev(); 
+            	trkFrame.Position--;
+            }
+        }
+        public void buttonPlay_Click(object sender, EventArgs e)
+        {
+            if(m_CommonControlsHandler != null)
+        	{
+                m_bPlaying = !m_bPlaying;
+                RefreshPlayButton();
+                m_CommonControlsHandler.CommonCtrl_Play(); 
+            }
+        }
+        public void buttonGotoNext_Click(object sender, EventArgs e)
+        {
+            if(m_CommonControlsHandler != null)
+        	{ 
+            	m_CommonControlsHandler.CommonCtrl_GotoNext(); 
+            	trkFrame.Position++;
+            }
+        }
+        public void buttonGotoLast_Click(object sender, EventArgs e)
+        {
+            if(m_CommonControlsHandler != null)
+        	{
+            	m_CommonControlsHandler.CommonCtrl_GotoLast(); 
+            	trkFrame.Position = trkFrame.Maximum;
+            }
+        }
+        private void btnSwap_Click(object sender, EventArgs e)
+        {
+            if(m_CommonControlsHandler != null)
+        	{ 
+            	m_CommonControlsHandler.CommonCtrl_Swap(); 
+            }
+        }
+        private void btnSync_Click(object sender, EventArgs e)
+        {
+            if(m_CommonControlsHandler != null)
+        	{ 
+            	m_CommonControlsHandler.CommonCtrl_Sync(); 
+            }
+        }
+        private void btnMerge_Click(object sender, EventArgs e)
+        {
+       		if(m_CommonControlsHandler != null)
+        	{ 
+       			m_bSyncMerging = !m_bSyncMerging;
+       			m_CommonControlsHandler.CommonCtrl_Merge();
+       			RefreshMergeTooltip();
+       		}
+        }
+        #endregion
+        
+        #region TrkFrame Handlers
+        private void trkFrame_PositionChanged(object sender, long _iPosition)
+        {
+            if(_iPosition != m_iOldPosition)
+        	{
+        		m_iOldPosition = _iPosition;
+            	if(m_CommonControlsHandler != null)
+        		{ 
+            		m_CommonControlsHandler.CommonCtrl_PositionChanged(_iPosition); 
+            	}
+        	}
+        }
+        #endregion
+        
+        #region Lower level helpers
+        private void UpdateDebug()
+        {
+            lblTrkFrameInfos.Text = "Min : " + trkFrame.Minimum + ", Max : " + trkFrame.Maximum + ", Pos : " + trkFrame.Position;
+            lblTrkFrameInfos.Invalidate();
+        }
+        private void RefreshPlayButton()
+        {
+            if (m_bPlaying)
+            {
+                buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
+            }
+            else
+            {
+                buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+            }
+        }
+        private void PlayStopped()
+        {
+            buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;
+        }
+        private void RefreshMergeTooltip()
+        {
+        	if(m_bSyncMerging)
+            {
+            	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge);
+            }
+            else
+            {
+            	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge);	
+            }
+        }
+		#endregion
+    }
+}
