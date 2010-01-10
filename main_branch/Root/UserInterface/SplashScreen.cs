@@ -31,7 +31,7 @@ namespace Kinovea.Root
             InitializeComponent();
             lblInfo.Text = RootLang.dlgSplash_LoadInfos;
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            lblVersion.Text = "Kinovea - " + v.Major + "." + v.Minor + "." + v.Build;
+            lblVersion.Text = "Kinovea - " + v.Major + "." + v.Minor + "." + v.Build + " Ortogonal branch";
         }
     }
 }
