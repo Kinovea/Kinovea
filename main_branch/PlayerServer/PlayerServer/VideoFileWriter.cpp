@@ -276,7 +276,7 @@ SaveResult VideoFileWriter::CloseSavingContext(bool _bEncodingSuccess)
 	// release pOutputFormat ?
 
 	log->Debug("Saving video completed.");
-
+	
 	return result;
 }
 
@@ -640,11 +640,19 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 		SwsContext* scalingContext = sws_getContext(_InputBitmap->Width, _InputBitmap->Height, PIX_FMT_BGR24, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height, _SavingContext->pOutputCodecContext->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL); 
 
 		// k. Convertir l'image de son format de pixels d'origine vers le format de pixels de sortie.
+		try
+		{
 		if (sws_scale(scalingContext, pInputFrame->data, pInputFrame->linesize, 0, _InputBitmap->Height, pOutputFrame->data, pOutputFrame->linesize) < 0) 
 		{
 			log->Error("scaling failed");
 			sws_freeContext(scalingContext);
 			break;
+		}
+		}
+	    catch(...)
+		{
+			log->Error("scaling failed");
+			
 		}
 
 		sws_freeContext(scalingContext);
