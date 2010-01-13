@@ -4444,6 +4444,8 @@ namespace Kinovea.ScreenManager
 			btnSaveVideo.Enabled = _bEnable;
 			btnDiaporama.Enabled = _bEnable;
 			btnPausedVideo.Enabled = _bEnable;
+			
+			mnuPlayPause.Enabled = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
 		{
