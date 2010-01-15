@@ -2680,7 +2680,6 @@ namespace Kinovea.ScreenManager
 										line.ParentMetadata = m_FrameServer.Metadata;
 										line.ShowMeasure = m_bMeasuring;
 									}
-
 								}
 								else
 								{
@@ -3369,7 +3368,11 @@ namespace Kinovea.ScreenManager
 				}
 				EnableDisableKeyframes();
 				pnlThumbnails.Refresh();
-				pbSurfaceScreen.Invalidate(); // Because of trajectories.
+				
+				UpdateKeyframesMarkers();
+				trkFrame.Invalidate();
+				
+				pbSurfaceScreen.Invalidate(); // Because of trajectories with keyframes labels.
 			}
 			else
 			{
@@ -3571,9 +3574,7 @@ namespace Kinovea.ScreenManager
 
 			// Keep the list sorted
 			m_FrameServer.Metadata.Sort();
-
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-			UpdateKeyframesMarkers();
 
 			// Refresh Keyframes preview.
 			OrganizeKeyframes();
@@ -3613,7 +3614,6 @@ namespace Kinovea.ScreenManager
 
 			m_FrameServer.Metadata.RemoveAt(_iKeyframeIndex);
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-			UpdateKeyframesMarkers();
 			OrganizeKeyframes();
 			pbSurfaceScreen.Invalidate();
 		}
