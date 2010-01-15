@@ -491,10 +491,15 @@ namespace Kinovea.ScreenManager
         }
         private void SetupHandCursors()
         {
-            Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Resources.handopen24b;
-            m_curHandOpen = new Cursor(bmpOpen.GetHicon());
-
-            Bitmap bmpClose = Kinovea.ScreenManager.Properties.Resources.handclose24c;
+        	// Hand cursor.
+        	// In the end the hand cursor is not really appropriate because it's not accurate enough.
+			// So we use the Cross cursor for general use, and the hand only when actually dragging.
+			
+            //Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Resources.handopen24b;
+            //m_curHandOpen = new Cursor(bmpOpen.GetHicon());
+			m_curHandOpen = Cursors.Cross;
+            
+            Bitmap bmpClose = Kinovea.ScreenManager.Properties.Resources.handclose24b;
             m_curHandClose = new Cursor(bmpClose.GetHicon());
 
             m_iLastCursorType = 0;
