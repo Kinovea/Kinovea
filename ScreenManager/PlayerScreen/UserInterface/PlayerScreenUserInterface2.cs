@@ -703,131 +703,135 @@ namespace Kinovea.ScreenManager
 		{
 			bool bWasHandled = false;
 			
-			// Method called from the Screen Manager's PreFilterMessage.
-			switch (_keycode)
+			// Disabled completely if no video.
+			if (m_FrameServer.VideoFile.Loaded)
 			{
-				case Keys.Space:
-				case Keys.Return:
-					{
-						OnButtonPlay();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Escape:
-					{
-						DisablePlayAndDraw();
-						pbSurfaceScreen.Invalidate();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Left:
-					{
-						if ((ModifierKeys & Keys.Control) == Keys.Control)
+				// Method called from the Screen Manager's PreFilterMessage.
+				switch (_keycode)
+				{
+					case Keys.Space:
+					case Keys.Return:
 						{
-							// Previous keyframe
-							GotoPreviousKeyframe();
+							OnButtonPlay();
+							bWasHandled = true;
+							break;
 						}
-						else
+					case Keys.Escape:
 						{
-							if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
+							DisablePlayAndDraw();
+							pbSurfaceScreen.Invalidate();
+							bWasHandled = true;
+							break;
+						}
+					case Keys.Left:
+						{
+							if ((ModifierKeys & Keys.Control) == Keys.Control)
 							{
-								// Shift + Left on first = loop backward.
-								buttonGotoLast_Click(null, EventArgs.Empty);
+								// Previous keyframe
+								GotoPreviousKeyframe();
 							}
 							else
 							{
-								// Previous frame
-								buttonGotoPrevious_Click(null, EventArgs.Empty);
+								if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
+								{
+									// Shift + Left on first = loop backward.
+									buttonGotoLast_Click(null, EventArgs.Empty);
+								}
+								else
+								{
+									// Previous frame
+									buttonGotoPrevious_Click(null, EventArgs.Empty);
+								}
 							}
+							bWasHandled = true;
+							break;
 						}
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Right:
-					{
-						if ((ModifierKeys & Keys.Control) == Keys.Control)
+					case Keys.Right:
 						{
-							// Next keyframe
-							GotoNextKeyframe();
-						}
-						else
-						{
-							// Next frame
-							buttonGotoNext_Click(null, EventArgs.Empty);
-						}
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Add:
-					{
-						IncreaseDirectZoom();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Subtract:
-					{
-						// Decrease Zoom.
-						DecreaseDirectZoom();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.F6:
-					{
-						AddKeyframe();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.F7:
-					{
-						// Unused.
-						break;
-					}
-				case Keys.F11:
-					{
-						ToggleStretchMode();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Delete:
-					{
-						if ((ModifierKeys & Keys.Control) == Keys.Control)
-						{
-							// Remove Keyframe
-							if (m_iActiveKeyFrameIndex >= 0)
+							if ((ModifierKeys & Keys.Control) == Keys.Control)
 							{
-								RemoveKeyframe(m_iActiveKeyFrameIndex);
+								// Next keyframe
+								GotoNextKeyframe();
 							}
+							else
+							{
+								// Next frame
+								buttonGotoNext_Click(null, EventArgs.Empty);
+							}
+							bWasHandled = true;
+							break;
 						}
-						else
+					case Keys.Add:
 						{
-							// Remove selected Drawing
-							// Note: Should only work if the Drawing is currently being moved...
-							DeleteSelectedDrawing();
+							IncreaseDirectZoom();
+							bWasHandled = true;
+							break;
 						}
-						bWasHandled = true;
+					case Keys.Subtract:
+						{
+							// Decrease Zoom.
+							DecreaseDirectZoom();
+							bWasHandled = true;
+							break;
+						}
+					case Keys.F6:
+						{
+							AddKeyframe();
+							bWasHandled = true;
+							break;
+						}
+					case Keys.F7:
+						{
+							// Unused.
+							break;
+						}
+					case Keys.F11:
+						{
+							ToggleStretchMode();
+							bWasHandled = true;
+							break;
+						}
+					case Keys.Delete:
+						{
+							if ((ModifierKeys & Keys.Control) == Keys.Control)
+							{
+								// Remove Keyframe
+								if (m_iActiveKeyFrameIndex >= 0)
+								{
+									RemoveKeyframe(m_iActiveKeyFrameIndex);
+								}
+							}
+							else
+							{
+								// Remove selected Drawing
+								// Note: Should only work if the Drawing is currently being moved...
+								DeleteSelectedDrawing();
+							}
+							bWasHandled = true;
+							break;
+						}
+					case Keys.End:
+						{
+							buttonGotoLast_Click(null, EventArgs.Empty);
+							bWasHandled = true;
+							break;
+						}
+					case Keys.Home:
+						{
+							buttonGotoFirst_Click(null, EventArgs.Empty);
+							bWasHandled = true;
+							break;
+						}
+					case Keys.Down:
+					case Keys.Up:
+						{
+							sldrSpeed_KeyDown(null, new KeyEventArgs(_keycode));
+							bWasHandled = true;
+							break;
+						}
+					default:
 						break;
-					}
-				case Keys.End:
-					{
-						buttonGotoLast_Click(null, EventArgs.Empty);
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Home:
-					{
-						buttonGotoFirst_Click(null, EventArgs.Empty);
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Down:
-				case Keys.Up:
-					{
-						sldrSpeed_KeyDown(null, new KeyEventArgs(_keycode));
-						bWasHandled = true;
-						break;
-					}
-				default:
-					break;
+				}
 			}
 
 			return bWasHandled;
