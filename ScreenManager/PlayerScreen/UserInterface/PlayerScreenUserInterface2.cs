@@ -230,6 +230,7 @@ namespace Kinovea.ScreenManager
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
 		private bool m_bMeasuring;
+		private Point m_DescaledMouse;
 
 		// Video Filters Management
 		private bool m_bDrawtimeFiltered;
@@ -242,6 +243,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
+		private ToolStripMenuItem mnuDirectTrack = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSetCaptureSpeed = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
@@ -998,11 +1000,12 @@ namespace Kinovea.ScreenManager
 			// Attach the event handlers and build the menus.
 			
 			// 1. Default context menu.
+			mnuDirectTrack.Click += new EventHandler(mnuDirectTrack_Click); 
 			mnuPlayPause.Click += new EventHandler(buttonPlay_Click);
 			mnuSetCaptureSpeed.Click += new EventHandler(mnuSetCaptureSpeed_Click);
 			mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
-			popMenu.Items.AddRange(new ToolStripItem[] { mnuPlayPause, mnuSetCaptureSpeed, mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuPlayPause, mnuSetCaptureSpeed, mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -2437,6 +2440,7 @@ namespace Kinovea.ScreenManager
 			// this is done at construction time and at RefreshUICulture time.
 			
 			// 1. Default context menu.
+			mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
 			mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
 			mnuSetCaptureSpeed.Text = ScreenManagerLang.mnuSetCaptureSpeed;
 			mnuSavePic.Text = ScreenManagerLang.mnuSavePic;
@@ -2598,7 +2602,7 @@ namespace Kinovea.ScreenManager
 							// Move Grids
 							//-------------------------------------
 							
-							Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+							m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 							
 							// 1. Pass all DrawingText to normal mode
 							m_FrameServer.Metadata.AllDrawingTextToNormalMode();
@@ -2621,7 +2625,7 @@ namespace Kinovea.ScreenManager
 								{
 									// Magnifier wasn't hit or is not in use,
 									// try drawings (including chronos, grids, etc.)
-									bDrawingHit = ((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, descaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
+									bDrawingHit = ((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
 								}
 								
 								if (!bDrawingHit && !bWasPlaying)
@@ -2639,7 +2643,7 @@ namespace Kinovea.ScreenManager
 								
 								// Add a Chrono.
 								DrawingToolChrono dtc = (DrawingToolChrono)m_DrawingTools[(int)m_ActiveTool];
-								m_FrameServer.Metadata.Chronos.Insert(0, (DrawingChrono)dtc.GetNewDrawing(descaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
+								m_FrameServer.Metadata.Chronos.Insert(0, (DrawingChrono)dtc.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
 								m_FrameServer.Metadata.SelectedChrono = 0;
 								
 								// Complete Setup
@@ -2661,7 +2665,7 @@ namespace Kinovea.ScreenManager
 								{
 									// Add an instance of a drawing from the active tool to the current keyframe.
 									// The drawing is initialized with the current mouse coordinates.
-									AbstractDrawing ad = m_DrawingTools[(int)m_ActiveTool].GetNewDrawing(descaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+									AbstractDrawing ad = m_DrawingTools[(int)m_ActiveTool].GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
 									
 									m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(ad);
 									m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
@@ -2688,7 +2692,7 @@ namespace Kinovea.ScreenManager
 									{
 										if (ad is DrawingText)
 										{
-											int hitRes = ad.HitTest(descaledMouse, m_iCurrentPosition);
+											int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition);
 											if (hitRes >= 0)
 											{
 												bEdit = true;
@@ -2700,7 +2704,7 @@ namespace Kinovea.ScreenManager
 									// If we are not on an existing textbox : create new DrawingText.
 									if (!bEdit)
 									{
-										m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(m_DrawingTools[(int)m_ActiveTool].GetNewDrawing(descaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
+										m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(m_DrawingTools[(int)m_ActiveTool].GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
 										m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
 										m_FrameServer.Metadata.SelectedDrawing = 0;
 										
@@ -2724,7 +2728,7 @@ namespace Kinovea.ScreenManager
 						// Show the right Pop Menu depending on context.
 						// (Drawing, Trajectory, Chronometer, Grids, Magnifier, Nothing)
 						
-						Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+						m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 						
 						if (!m_bIsCurrentlyPlaying)
 						{
@@ -2732,7 +2736,7 @@ namespace Kinovea.ScreenManager
 							
 							//m_bWasRightClicking = true;
 							
-							if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, descaledMouse, m_iCurrentPosition))
+							if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 							{
 								// If we are on a Cross2D, we activate the menu to let the user Track it.
 								AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
@@ -2757,14 +2761,14 @@ namespace Kinovea.ScreenManager
 								
 								this.ContextMenuStrip = popMenuDrawings;
 							}
-							else if (m_FrameServer.Metadata.IsOnChronometer(descaledMouse, m_iCurrentPosition))
+							else if (m_FrameServer.Metadata.IsOnChronometer(m_DescaledMouse, m_iCurrentPosition))
 							{
 								// We can only toggle to countdown if we already have a stop.
 								mnuChronoCountdown.Enabled = m_FrameServer.Metadata.Chronos[m_FrameServer.Metadata.SelectedChrono].HasTimeStop;
 								mnuChronoCountdown.Checked = m_FrameServer.Metadata.Chronos[m_FrameServer.Metadata.SelectedChrono].CountDown;
 								this.ContextMenuStrip = popMenuChrono;
 							}
-							else if (m_FrameServer.Metadata.IsOnTrack(descaledMouse, m_iCurrentPosition))
+							else if (m_FrameServer.Metadata.IsOnTrack(m_DescaledMouse, m_iCurrentPosition))
 							{
 								// Configure the "Tracking" Pop Menu
 								if (m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
@@ -2780,7 +2784,7 @@ namespace Kinovea.ScreenManager
 								
 								this.ContextMenuStrip = popMenuTrack;
 							}
-							else if (m_FrameServer.Metadata.IsOnGrid(descaledMouse))
+							else if (m_FrameServer.Metadata.IsOnGrid(m_DescaledMouse))
 							{
 								this.ContextMenuStrip = popMenuGrids;
 							}
@@ -2801,12 +2805,15 @@ namespace Kinovea.ScreenManager
 							}
 							else
 							{
-								// No drawing touched and no tool selected
+								// No drawing touched and no tool selected, but not currently playing.
+								mnuDirectTrack.Visible = true;
 								this.ContextMenuStrip = popMenu;
 							}
 						}
 						else
 						{
+							// Currently playing.
+							mnuDirectTrack.Visible = false;
 							this.ContextMenuStrip = popMenu;
 						}
 					}
@@ -2856,11 +2863,11 @@ namespace Kinovea.ScreenManager
 						{
 							if (!m_bIsCurrentlyPlaying)
 							{
-								Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+								m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 								
 								// Magnifier is not being moved or is invisible, try drawings through pointer tool.
 								// (including chronos, tracks and grids)
-								bool bMovingObject = ((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).OnMouseMove(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, descaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
+								bool bMovingObject = ((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).OnMouseMove(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
 								
 								if (!bMovingObject && m_FrameServer.CoordinateSystem.Zooming)
 								{
@@ -2957,7 +2964,7 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				
-				Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+				m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 				m_FrameServer.Metadata.UnselectAll();
 				
@@ -2966,7 +2973,7 @@ namespace Kinovea.ScreenManager
 				// - If on other drawing, launch the configuration dialog.
 				// - Otherwise -> Maximize/Reduce image.
 				//------------------------------------------------------------------------------------
-				if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, descaledMouse, m_iCurrentPosition))
+				if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 				{
 					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
 					if (ad is DrawingText)
@@ -2980,15 +2987,15 @@ namespace Kinovea.ScreenManager
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
 				}
-				else if (m_FrameServer.Metadata.IsOnChronometer(descaledMouse, m_iCurrentPosition))
+				else if (m_FrameServer.Metadata.IsOnChronometer(m_DescaledMouse, m_iCurrentPosition))
 				{
 					mnuChronoConfigure_Click(null, EventArgs.Empty);
 				}
-				else if (m_FrameServer.Metadata.IsOnTrack(descaledMouse, m_iCurrentPosition))
+				else if (m_FrameServer.Metadata.IsOnTrack(m_DescaledMouse, m_iCurrentPosition))
 				{
 					mnuConfigureTrajectory_Click(null, EventArgs.Empty);
 				}
-				else if (m_FrameServer.Metadata.IsOnGrid(descaledMouse))
+				else if (m_FrameServer.Metadata.IsOnGrid(m_DescaledMouse))
 				{
 					mnuGridsConfigure_Click(null, EventArgs.Empty);
 				}
@@ -3963,6 +3970,26 @@ namespace Kinovea.ScreenManager
 				this.ContextMenuStrip = popMenu;
 			}
 		}
+		private void mnuDirectTrack_Click(object sender, EventArgs e)
+		{
+			// Track the point. No Cross2D was selected.
+			// m_DescaledMouse would have been set during the MouseDown event.
+			
+			m_FrameServer.Metadata.Tracks.Add(new Track(m_DescaledMouse.X, m_DescaledMouse.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage));
+
+			// Complete Setup. The color is set to the one of the Cross2D drawing.
+			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].m_ShowClosestFrame = new ShowClosestFrame(OnShowClosestFrame);
+			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].ParentMetadata = m_FrameServer.Metadata;
+			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].MainColor = m_ColorProfile.ColorCross2D;
+			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].Status = Track.TrackStatus.Edit;
+			m_FrameServer.Metadata.SelectedTrack = m_FrameServer.Metadata.Tracks.Count - 1;
+			
+			// Return to the pointer tool.
+			m_ActiveTool = DrawingToolType.Pointer;
+			SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
+			
+			pbSurfaceScreen.Invalidate();
+		}
 		private void mnuTrackTrajectory_Click(object sender, EventArgs e)
 		{
 			//---------------------------------------
@@ -3980,7 +4007,7 @@ namespace Kinovea.ScreenManager
 					// TODO - link to CommandAddTrajectory.
 					// TODO - always insert at 0.
 
-					// Ajouter un Track sur ce point.
+					// Add track on this point.
 					DrawingCross2D dc = (DrawingCross2D)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing];
 					m_FrameServer.Metadata.Tracks.Add(new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage));
 
@@ -3992,7 +4019,7 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].Status = Track.TrackStatus.Edit;
 					m_FrameServer.Metadata.SelectedTrack = m_FrameServer.Metadata.Tracks.Count - 1;
 
-					// Supprimer le point en tant que Drawing ?
+					// Suppress the point as a Drawing (?)
 					m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.RemoveAt(iSelectedDrawing);
 					
 					m_FrameServer.Metadata.SelectedDrawingFrame = -1;
@@ -4144,8 +4171,8 @@ namespace Kinovea.ScreenManager
 			//--------------------------------------------------------------------------
 
 
-			// Calcul de la distance 3D (x,y,t) de chaque point du track.
-			// coordonnées descalées.
+			// Compute the 3D distance (x,y,t) of each point in the path.
+			// unscaled coordinates.
 
 			double minDistance = double.MaxValue;
 			int iClosestPoint = 0;
@@ -4446,6 +4473,7 @@ namespace Kinovea.ScreenManager
 			btnPausedVideo.Enabled = _bEnable;
 			
 			mnuPlayPause.Enabled = _bEnable;
+			mnuDirectTrack.Enabled = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
 		{
