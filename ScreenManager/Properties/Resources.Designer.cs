@@ -190,11 +190,11 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap handclose24c
+		internal static System.Drawing.Bitmap handclose24b
 		{
 			get
 			{
-				object obj = ResourceManager.GetObject("handclose24c", resourceCulture);
+				object obj = ResourceManager.GetObject("handclose24b", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
