@@ -24,12 +24,15 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// Helper class to encapsulate calculations about the coordinate system for drawings.
-	/// this includes : 
+	/// Helper class to encapsulate calculations about the coordinate system for drawings,
+	/// to compensate the differences between the original image and the displayed one.
+	/// Note : This is not the coordinate system that the user can adjust for distance calculations.
+	/// 
+	/// Includes : 
 	/// - scaling, image may be stretched or squeezed relative to the original.
 	/// - zooming, the actual view may be a sub window of the original image.
-	/// - rotating.
-	/// - mirroring.
+	/// - rotating. (todo).
+	/// - mirroring. (todo, currently handled elsewhere).
 	/// 
 	/// The class will keep track of the current changes in the coordinate system relatively to the 
 	/// original image size and provide conversion routines.

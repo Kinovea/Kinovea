@@ -223,7 +223,7 @@ namespace Kinovea.Services
         public bool IsVisible(long _iRefTimestamp, long _iTestTimestamp, int iVisibleFrames)
         {
         	// Is a given point visible at all ?
-        	// Currently used by trajectory in focus mode to enable kf labels visibility.
+        	// Currently used by trajectory in focus mode to check for kf labels visibility.
         	
         	return ComputeOpacityFactor(_iRefTimestamp, _iTestTimestamp, (long)iVisibleFrames) > 0;
         }

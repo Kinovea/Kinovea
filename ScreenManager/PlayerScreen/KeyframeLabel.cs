@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        public long iTimestamp;                 // Absolute.
+        public long iTimestamp;                 // Absolute time (Different than m_TrackPos.T).
         public TrackPosition RescaledTrackPos = new TrackPosition(0, 0, 0);
         public Rectangle Background;            // Absolute positionning (as original image size)
         public Rectangle RescaledBackground;    // Relative positionning (as current image size)
@@ -171,6 +171,7 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteEndElement();
 
             _xmlWriter.WriteStartElement("TimePosition");
+			// For regular Keyframes labels, the time position saved in the xml is absolute.
             long ts = 0;
             if (!m_bBackgroundIsRelative)
             {

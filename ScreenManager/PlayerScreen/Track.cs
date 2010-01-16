@@ -281,6 +281,9 @@ namespace Kinovea.ScreenManager
 	            	{
 	            		DrawTrajectory(_canvas, iStart, iEnd, false, fOpacityFactor);	
 	            	}
+	            	
+	            	// Images circles:
+	            	//DrawImagesMarks(_canvas, iStart, iEnd, false, fOpacityFactor);	
             	}
             	
             	if(m_RescaledPositions.Count > 0)
@@ -407,7 +410,7 @@ namespace Kinovea.ScreenManager
             {
                 for (int i = 0; i < m_KeyframesLabels.Count; i++)
                 {
-                	if(m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, m_KeyframesLabels[i].iTimestamp, m_iFocusFadingFrames))
+                	if(m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, m_KeyframesLabels[i].TrackPos.T, m_iFocusFadingFrames))
                 	{
                 		if (m_KeyframesLabels[i].HitTest(_point))
 	                    {
@@ -551,16 +554,17 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < m_ParentMetadata.Count; i++)
             {
-                // strictly superior : we never show the origin key frame.
+                // strictly superior : we don't show the keyframe that was created when the
+                // user added the CrossMarker drawing to make the Track out of it.
                 if (m_ParentMetadata[i].Position > m_iBeginTimeStamp && m_ParentMetadata[i].Position <= (m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp))
                 {
                     // The Keyframe is within the Trajectory interval.
 
-                    // 1. Do we know it already ?
+                    // Do we know it already ?
                     int iKnown = - 1;
                     for(int j=0;j<m_KeyframesLabels.Count;j++)
                     {
-                        if (m_KeyframesLabels[j].TrackPos.T + m_iBeginTimeStamp == m_ParentMetadata[i].Position)
+                    	if (m_KeyframesLabels[j].TrackPos.T + m_iBeginTimeStamp == m_ParentMetadata[i].Position)
                         {
                             iKnown = j;
                             matched[j] = true;
@@ -584,6 +588,7 @@ namespace Kinovea.ScreenManager
                         kfl.Text = m_ParentMetadata[i].Title;
                         kfl.TrackPos = m_Positions[FindClosestPoint(m_ParentMetadata[i].Position)];
                         kfl.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
+                        kfl.iTimestamp = kfl.TrackPos.T + m_iBeginTimeStamp;                        
                         m_KeyframesLabels.Add(kfl);
                     }
                 }
@@ -1106,6 +1111,7 @@ namespace Kinovea.ScreenManager
             
             if (points.Length > 1)
             {
+            	// Tension parameter is at 0.5f for bezier effect (smooth curve).
             	_canvas.DrawCurve(GetTrackPen(m_LineStyle, m_TrackStatus, _fFadingFactor, _before), points, 0.5f);	
             }
         }
@@ -1144,7 +1150,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawMarker(Graphics _canvas)
         {
-            // This draws the target marker (CrashTest Dummy style target)
+            // Draws the target marker (CrashTest Dummy style target)
             // If editmode, we draw the whole target, otherwise only the white sectors.
             
             //if (m_bEditMode)
@@ -1178,10 +1184,12 @@ namespace Kinovea.ScreenManager
             {
                 foreach (KeyframeLabel kl in m_KeyframesLabels)
                 {
-					// Only show labels that are in focus section.
-                	if(m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, kl.iTimestamp, m_iFocusFadingFrames))
+                	// In focus mode, only show labels that are in focus section.
+                	if(m_TrackView == TrackView.Complete ||
+                	   m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, kl.TrackPos.T, m_iFocusFadingFrames)
+                	  )
                 	{
-                    	// Shift/scale background, then draw.
+                		// Shift/scale background, then draw.
                     	kl.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
                     	kl.Draw(_canvas, _fFadingFactor);
                 	}
@@ -1190,7 +1198,8 @@ namespace Kinovea.ScreenManager
         }
         private void DrawMainLabel(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor)
         {
-            // This should only be called when in Label Follows mode.
+            // Draw the main label and its connector to the current point.
+            
             if (_fFadingFactor == 1.0f)
             {
                 m_MainLabel.TrackPos = m_Positions[_iCurrentPoint];
@@ -1203,7 +1212,10 @@ namespace Kinovea.ScreenManager
         }
         private void DrawArrow(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor)
         {
-            // This should only be called when in Arrow Follows mode.
+            // Draw an arrow that points back to the current point tracked.
+            
+            // UNUSED.
+            
             if (_fFadingFactor == 1.0f)
             {
                 Pen p = new Pen(Color.FromArgb((int)(160.0f * _fFadingFactor), m_LineStyle.Color), (int)((double)m_iArrowWidth * m_fStretchFactor));
@@ -1212,6 +1224,21 @@ namespace Kinovea.ScreenManager
                 _canvas.DrawLine(p, m_RescaledPositions[_iCurrentPoint].X, m_RescaledPositions[_iCurrentPoint].Y - (int)((double)m_iArrowDistance * m_fStretchFactor), m_RescaledPositions[_iCurrentPoint].X, m_RescaledPositions[_iCurrentPoint].Y - (int)((double)(m_iArrowDistance + m_iArrowLength) * m_fStretchFactor));
                 p.Dispose();
             }
+        }
+        private void DrawImagesMarks(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor)
+        {
+        	// Draw little circles on each frame, to get a sense of speed.
+        	// (the closer the circles, the slower the motion).
+        	
+        	// UNUSED.
+        	
+        	if (_fFadingFactor == 1.0f)
+            {
+        		for (int i = _start; i <= _end; i++)
+            	{
+        			_canvas.DrawEllipse(m_LineStyle.GetInternalPen(255, 2), m_RescaledPositions[i].X - m_LineStyle.Size/2, m_RescaledPositions[i].Y - m_LineStyle.Size/2, m_LineStyle.Size, m_LineStyle.Size);
+        		}
+        	}
         }
         #endregion
         
@@ -1332,44 +1359,6 @@ namespace Kinovea.ScreenManager
                     // Fermeture d'un tag interne.
                 }
             }  
-        }
-        private KeyframeLabel ParseKeyframeLabel(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
-        {
-            KeyframeLabel kfl = new KeyframeLabel(false, Color.Black);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "KeyframeLabelSpacePosition")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-
-                        Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-
-                        kfl.Background = new Rectangle(adapted,new Size(10, 10));
-                        kfl.RescaledBackground = new Rectangle(adapted, new Size(10, 10));
-                    }
-                    else if (_xmlReader.Name == "KeyframeLabelTimePosition")
-                    {
-                        kfl.iTimestamp = long.Parse(_xmlReader.ReadString());
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "KeyframeLabel")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }  
-
-            return kfl;
         }
         private void ParseLabel(XmlTextReader _xmlReader, Track _track)
         {
