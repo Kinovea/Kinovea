@@ -353,7 +353,7 @@ namespace Kinovea.ScreenManager
 			SetupPrimarySelectionPanel();
 			pnlThumbnails.Controls.Clear();
 			DockKeyframePanel();
-			UpdateKeyframesMarkers();
+			UpdateFramesMarkers();
 			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
 			trkFrame.Invalidate();
 			EnableDisableAllPlayingControls(true);
@@ -492,7 +492,7 @@ namespace Kinovea.ScreenManager
 						PostImportMetadata();
 					}
 
-					UpdateKeyframesMarkers();
+					UpdateFramesMarkers();
 
 					// Debug
 					if (m_bShowInfos) { UpdateDebugInfos(); }
@@ -923,7 +923,7 @@ namespace Kinovea.ScreenManager
 				                                                	m_FrameServer.VideoFile.FilePath, 
 				                                                	new GetTimeCode(TimeStampsToTimecode), 
 				                                                	new ShowClosestFrame(OnShowClosestFrame));
-				UpdateKeyframesMarkers();
+				UpdateFramesMarkers();
 				OrganizeKeyframes();
 			}
 		}
@@ -1513,7 +1513,7 @@ namespace Kinovea.ScreenManager
 				ImportSelectionToMemory(false);
 
 				m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-				UpdateKeyframesMarkers();
+				UpdateFramesMarkers();
 
 				OnPoke();
 				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
@@ -1600,7 +1600,7 @@ namespace Kinovea.ScreenManager
 				
 				// Update everything as if we moved the handlers manually.
 				m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-				UpdateKeyframesMarkers();
+				UpdateFramesMarkers();
 				OnPoke();
 				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
 
@@ -1756,15 +1756,11 @@ namespace Kinovea.ScreenManager
 			trkSelection.SelPos = trkFrame.Position;
 			UpdateCurrentPositionLabel();
 		}
-		private void UpdateKeyframesMarkers()
+		private void UpdateFramesMarkers()
 		{
-			long[] ts = new long[m_FrameServer.Metadata.Keyframes.Count];
-			for (int i = 0; i < ts.Length; i++)
-			{
-				// Selection Start will be taken care of directly in the FrameTracker.
-				ts[i] = m_FrameServer.Metadata.Keyframes[i].Position;
-			}
-			trkFrame.UpdateKeyframesMarkers(ts);
+			// This just updates the markers coordinates.
+			// The caller should also call trkFrame.Invalidate() when the refresh is needed.
+			trkFrame.UpdateMarkers(m_FrameServer.Metadata);
 		}
 		#endregion
 
@@ -3370,19 +3366,19 @@ namespace Kinovea.ScreenManager
 
 					iKeyframeIndex++;
 				}
+				
 				EnableDisableKeyframes();
 				pnlThumbnails.Refresh();
-				
-				UpdateKeyframesMarkers();
-				trkFrame.Invalidate();
-				
-				pbSurfaceScreen.Invalidate(); // Because of trajectories with keyframes labels.
 			}
 			else
 			{
 				DockKeyframePanel();
 				m_iActiveKeyFrameIndex = -1;
 			}
+			
+			UpdateFramesMarkers();
+			trkFrame.Invalidate();
+			pbSurfaceScreen.Invalidate(); // Because of trajectories with keyframes labels.
 		}
 		private void SetupDefaultThumbBox(KeyframeBox _ThumbBox)
 		{
@@ -4133,7 +4129,6 @@ namespace Kinovea.ScreenManager
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cdeot);
 
-			//m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].ChopTrajectory(m_iCurrentPosition);
 			pbSurfaceScreen.Invalidate();
 		}
 		private void mnuRestartTracking_Click(object sender, EventArgs e)
@@ -4146,6 +4141,9 @@ namespace Kinovea.ScreenManager
 			IUndoableCommand cdc = new CommandDeleteTrack(this, m_FrameServer.Metadata);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cdc);
+			
+			UpdateFramesMarkers();
+			trkFrame.Invalidate();
 		}
 		private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
 		{
@@ -4248,6 +4246,8 @@ namespace Kinovea.ScreenManager
 			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, DrawingChrono.ChronoModificationType.TimeStop, m_iCurrentPosition);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
+			UpdateFramesMarkers();
+			trkFrame.Invalidate();
 		}
 		private void mnuChronoHide_Click(object sender, EventArgs e)
 		{
@@ -4271,6 +4271,9 @@ namespace Kinovea.ScreenManager
 			IUndoableCommand cdc = new CommandDeleteChrono(this, m_FrameServer.Metadata);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cdc);
+			
+			UpdateFramesMarkers();
+			trkFrame.Invalidate();
 		}
 		private void mnuChronoConfigure_Click(object sender, EventArgs e)
 		{
