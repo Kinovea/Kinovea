@@ -672,6 +672,7 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.Size = new System.Drawing.Size(420, 235);
         	this.panelCenter.TabIndex = 2;
         	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
+        	this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
         	this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
         	this.panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
         	// 

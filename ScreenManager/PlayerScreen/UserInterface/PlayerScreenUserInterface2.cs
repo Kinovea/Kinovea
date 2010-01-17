@@ -1009,7 +1009,7 @@ namespace Kinovea.ScreenManager
 			mnuSetCaptureSpeed.Click += new EventHandler(mnuSetCaptureSpeed_Click);
 			mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
-			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuPlayPause, mnuSetCaptureSpeed, mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSetCaptureSpeed, mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -1058,8 +1058,8 @@ namespace Kinovea.ScreenManager
 			mnuGridsHide.Click += new EventHandler(mnuGridsHide_Click);
 			popMenuGrids.Items.AddRange(new ToolStripItem[] { mnuGridsConfigure, mnuGridsHide });
 			
-			// Default :
-			this.ContextMenuStrip = popMenu;
+			// The right context menu and its content will be choosen upon MouseDown.
+			panelCenter.ContextMenuStrip = popMenu;
 			
 			// Load texts
 			ReloadMenusCulture();
@@ -1496,7 +1496,9 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 
 				// Update the frame tracker internal timestamps (including position if needed).
+				UpdateFramesMarkers();
 				trkFrame.Remap(m_iSelStart, m_iSelEnd);
+				trkFrame.Invalidate();
 				
 				// Update the position but don't trigger a refresh.
 				trkSelection.UpdatePositionValueOnly(trkFrame.Position);
@@ -1513,8 +1515,7 @@ namespace Kinovea.ScreenManager
 				ImportSelectionToMemory(false);
 
 				m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-				UpdateFramesMarkers();
-
+				
 				OnPoke();
 				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
 
@@ -2733,8 +2734,6 @@ namespace Kinovea.ScreenManager
 						{
 							m_FrameServer.Metadata.UnselectAll();
 							
-							//m_bWasRightClicking = true;
-							
 							if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 							{
 								// If we are on a Cross2D, we activate the menu to let the user Track it.
@@ -2758,14 +2757,14 @@ namespace Kinovea.ScreenManager
 								// "Color & Size" or "Color" depending on drawing type.
 								SetPopupConfigureParams(ad);
 								
-								this.ContextMenuStrip = popMenuDrawings;
+								panelCenter.ContextMenuStrip = popMenuDrawings;
 							}
 							else if (m_FrameServer.Metadata.IsOnChronometer(m_DescaledMouse, m_iCurrentPosition))
 							{
 								// We can only toggle to countdown if we already have a stop.
 								mnuChronoCountdown.Enabled = m_FrameServer.Metadata.Chronos[m_FrameServer.Metadata.SelectedChrono].HasTimeStop;
 								mnuChronoCountdown.Checked = m_FrameServer.Metadata.Chronos[m_FrameServer.Metadata.SelectedChrono].CountDown;
-								this.ContextMenuStrip = popMenuChrono;
+								panelCenter.ContextMenuStrip = popMenuChrono;
 							}
 							else if (m_FrameServer.Metadata.IsOnTrack(m_DescaledMouse, m_iCurrentPosition))
 							{
@@ -2781,15 +2780,15 @@ namespace Kinovea.ScreenManager
 									mnuRestartTracking.Visible = true;
 								}
 								
-								this.ContextMenuStrip = popMenuTrack;
+								panelCenter.ContextMenuStrip = popMenuTrack;
 							}
 							else if (m_FrameServer.Metadata.IsOnGrid(m_DescaledMouse))
 							{
-								this.ContextMenuStrip = popMenuGrids;
+								panelCenter.ContextMenuStrip = popMenuGrids;
 							}
 							else if (m_Magnifier.Mode == MagnifierMode.Indirect && m_Magnifier.IsOnObject(e))
 							{
-								this.ContextMenuStrip = popMenuMagnifier;
+								panelCenter.ContextMenuStrip = popMenuMagnifier;
 							}
 							else if(m_ActiveTool != DrawingToolType.Pointer)
 							{
@@ -2805,15 +2804,15 @@ namespace Kinovea.ScreenManager
 							else
 							{
 								// No drawing touched and no tool selected, but not currently playing.
-								mnuDirectTrack.Visible = true;
-								this.ContextMenuStrip = popMenu;
+								mnuDirectTrack.Visible = !m_bDrawtimeFiltered;
+								panelCenter.ContextMenuStrip = popMenu;
 							}
 						}
 						else
 						{
 							// Currently playing.
 							mnuDirectTrack.Visible = false;
-							this.ContextMenuStrip = popMenu;
+							panelCenter.ContextMenuStrip = popMenu;
 						}
 					}
 					
@@ -3298,6 +3297,11 @@ namespace Kinovea.ScreenManager
 			StretchSqueezeSurface();
 			pbSurfaceScreen.Invalidate();
 		}
+		private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
+        {
+        	mnuDirectTrack.Visible = false;
+        	panelCenter.ContextMenuStrip = popMenu;
+        }
 		#endregion
 		
 		#region Keyframes Panel
@@ -3955,7 +3959,6 @@ namespace Kinovea.ScreenManager
 				fcd.ShowDialog();
 				fcd.Dispose();
 				pbSurfaceScreen.Invalidate();
-				this.ContextMenuStrip = popMenu;
 			}
 		}
 		private void mnuConfigureFading_Click(object sender, EventArgs e)
@@ -3967,7 +3970,6 @@ namespace Kinovea.ScreenManager
 				fcf.ShowDialog();
 				fcf.Dispose();
 				pbSurfaceScreen.Invalidate();
-				this.ContextMenuStrip = popMenu;
 			}
 		}
 		private void mnuDirectTrack_Click(object sender, EventArgs e)
@@ -4089,7 +4091,6 @@ namespace Kinovea.ScreenManager
 						fcm.Dispose();
 						
 						pbSurfaceScreen.Invalidate();
-						this.ContextMenuStrip = popMenu;
 						
 						if (dp.ActivateKeyboardHandler != null)
 						{
@@ -4102,7 +4103,6 @@ namespace Kinovea.ScreenManager
 		private void mnuDeleteDrawing_Click(object sender, EventArgs e)
 		{
 			DeleteSelectedDrawing();
-			this.ContextMenuStrip = popMenu;
 		}
 		private void DeleteSelectedDrawing()
 		{
@@ -4112,7 +4112,6 @@ namespace Kinovea.ScreenManager
 				CommandManager cm = CommandManager.Instance();
 				cm.LaunchUndoableCommand(cdd);
 				pbSurfaceScreen.Invalidate();
-				this.ContextMenuStrip = popMenu;
 			}
 		}
 		#endregion
@@ -4298,7 +4297,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Magnifier Menus
-
 		private void mnuMagnifierQuit_Click(object sender, EventArgs e)
 		{
 			DisableMagnifier();
@@ -4373,7 +4371,6 @@ namespace Kinovea.ScreenManager
 			}
 
 			pbSurfaceScreen.Invalidate();
-			
 		}
 		private void mnuGridsHide_Click(object sender, EventArgs e)
 		{
@@ -4390,7 +4387,7 @@ namespace Kinovea.ScreenManager
 
 			pbSurfaceScreen.Invalidate();
 
-			// Triggers an update to the menu.
+			// Triggers an update to the main menu.
 			OnPoke();
 		}
 		#endregion
@@ -4479,8 +4476,8 @@ namespace Kinovea.ScreenManager
 			btnDiaporama.Enabled = _bEnable;
 			btnPausedVideo.Enabled = _bEnable;
 			
-			mnuPlayPause.Enabled = _bEnable;
-			mnuDirectTrack.Enabled = _bEnable;
+			mnuPlayPause.Visible = _bEnable;
+			mnuDirectTrack.Visible = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
 		{
