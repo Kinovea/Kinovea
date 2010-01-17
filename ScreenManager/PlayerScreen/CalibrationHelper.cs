@@ -24,14 +24,14 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// LineLengthHelper encapsulate the conversion between pixels and 
-	/// the current real world unit specified by the user.
-	/// It also holds the current ratio for the unit and the choosen unit itself.
+	/// CalibrationHelper encapsulates informations used for pixels to real world calculations.
+	/// The user can specify the real distance of a Line drawing and a coordinate system.
+	/// We also keep the length units and the preferred unit for speeds.
 	/// </summary>
-	public class LineLengthHelper
+	public class CalibrationHelper
 	{
 		/// <summary>
-		/// A set of units. We do not propose microscopic units here.
+		/// Standards units for distance, restricted to sports range. (No microscopic or macroscopic).
 		/// </summary>
 		public enum LengthUnits
 		{
@@ -40,25 +40,49 @@ namespace Kinovea.ScreenManager
 			Inches,
 			Feet,
 			Yards,
-			Pixels
+			Pixels					// Native unit.
+		}
+		
+		/// <summary>
+		/// Standards speed units.
+		/// </summary>
+		public enum SpeedUnits
+		{
+			MetersPerSecond,
+			KilometersPerHour,
+			MilesPerHour,
+			Knots,
+			PixelsPerFrame,			// Native unit. (might be useful for animation too).
 		}
 		
 		#region Properties		
-		public LengthUnits CurrentUnit 
+		public LengthUnits CurrentLengthUnit 
 		{
-			get { return m_CurrentUnit; }
-			set { m_CurrentUnit = value; }
+			get { return m_CurrentLengthUnit; }
+			set { m_CurrentLengthUnit = value; }
 		}		
 		public double PixelToUnit 
 		{
 			get { return m_fPixelToUnit; }
 			set { m_fPixelToUnit = value; }
-		}		
+		}
+		public SpeedUnits CurrentSpeedUnit 
+		{
+			get { return m_CurrentSpeedUnit; }
+			set { m_CurrentSpeedUnit = value; }
+		}	
+		public Point CoordinatesOrigin
+		{
+			get { return m_CoordinatesOrigin; }
+			set { m_CoordinatesOrigin = value; }
+		}
 		#endregion
 		
 		#region Members
-		private LengthUnits m_CurrentUnit = LengthUnits.Pixels;
+		private LengthUnits m_CurrentLengthUnit = LengthUnits.Pixels;
+		private SpeedUnits m_CurrentSpeedUnit = SpeedUnits.PixelsPerFrame;
 		private double m_fPixelToUnit = 1.0;
+		private Point m_CoordinatesOrigin = new Point(-1,-1);
 		#endregion
 		
 		#region Public Methods
@@ -92,7 +116,7 @@ namespace Kinovea.ScreenManager
 		}
 		public string GetAbbreviation()
 		{
-			return GetAbbreviationFromUnit(m_CurrentUnit);
+			return GetAbbreviationFromUnit(m_CurrentLengthUnit);
 		}
 		public string GetLengthText(Point p1, Point p2)
 		{
@@ -101,17 +125,17 @@ namespace Kinovea.ScreenManager
 			
 			if(p1.X == p2.X && p1.Y == p2.Y)
 			{
-				lengthText = "0" + " " + GetAbbreviationFromUnit(m_CurrentUnit);
+				lengthText = "0" + " " + GetAbbreviationFromUnit(m_CurrentLengthUnit);
 			}
 			else
 			{
-				if(m_CurrentUnit == LengthUnits.Pixels)
+				if(m_CurrentLengthUnit == LengthUnits.Pixels)
 				{
-					lengthText = String.Format("{0:0} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentUnit));
+					lengthText = String.Format("{0:0} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentLengthUnit));
 				}
 				else
 				{
-					lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentUnit));
+					lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(p1, p2), GetAbbreviationFromUnit(m_CurrentLengthUnit));
 				}
 			}
 			
@@ -122,18 +146,18 @@ namespace Kinovea.ScreenManager
 			string lengthText = "";
 			if(_bAbbreviation)
 			{
-				if(m_CurrentUnit == LengthUnits.Pixels || !_bPrecise)
+				if(m_CurrentLengthUnit == LengthUnits.Pixels || !_bPrecise)
 				{
-					lengthText = String.Format("{0:0} {1}", GetLengthDouble(_fPixelLength), GetAbbreviationFromUnit(m_CurrentUnit));
+					lengthText = String.Format("{0:0} {1}", GetLengthDouble(_fPixelLength), GetAbbreviationFromUnit(m_CurrentLengthUnit));
 				}
 				else
 				{
-					lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(_fPixelLength), GetAbbreviationFromUnit(m_CurrentUnit));
+					lengthText = String.Format("{0:0.00} {1}", GetLengthDouble(_fPixelLength), GetAbbreviationFromUnit(m_CurrentLengthUnit));
 				}
 			}
 			else 
 			{
-				if(m_CurrentUnit == LengthUnits.Pixels || !_bPrecise)
+				if(m_CurrentLengthUnit == LengthUnits.Pixels || !_bPrecise)
 				{
 					lengthText = String.Format("{0:0}", GetLengthDouble(_fPixelLength));
 				}

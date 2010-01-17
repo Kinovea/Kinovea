@@ -4153,7 +4153,7 @@ namespace Kinovea.ScreenManager
 				dp.DeactivateKeyboardHandler();
 			}
 
-			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack], pbSurfaceScreen, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.Metadata);
+			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack], pbSurfaceScreen);
 			fctd.StartPosition = FormStartPosition.CenterScreen;
 			fctd.ShowDialog();
 			fctd.Dispose();

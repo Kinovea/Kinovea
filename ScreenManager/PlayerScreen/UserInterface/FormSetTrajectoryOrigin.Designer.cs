@@ -52,7 +52,6 @@ namespace Kinovea.ScreenManager
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.pnlPreview = new System.Windows.Forms.Panel();
 			this.picPreview = new System.Windows.Forms.PictureBox();
-			this.chkApplyToAll = new System.Windows.Forms.CheckBox();
 			this.pnlPreview.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
 			this.SuspendLayout();
@@ -107,16 +106,6 @@ namespace Kinovea.ScreenManager
 			this.picPreview.MouseClick += new System.Windows.Forms.MouseEventHandler(this.picPreview_MouseClick);
 			this.picPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.picPreview_Paint);
 			// 
-			// chkApplyToAll
-			// 
-			this.chkApplyToAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.chkApplyToAll.Location = new System.Drawing.Point(13, 473);
-			this.chkApplyToAll.Name = "chkApplyToAll";
-			this.chkApplyToAll.Size = new System.Drawing.Size(255, 20);
-			this.chkApplyToAll.TabIndex = 20;
-			this.chkApplyToAll.Text = "dlgSetTrajectoryOrigin_ApplyToAll";
-			this.chkApplyToAll.UseVisualStyleBackColor = true;
-			// 
 			// formSetTrajectoryOrigin
 			// 
 			this.AcceptButton = this.btnOK;
@@ -124,7 +113,6 @@ namespace Kinovea.ScreenManager
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(630, 506);
-			this.Controls.Add(this.chkApplyToAll);
 			this.Controls.Add(this.btnOK);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.pnlPreview);
@@ -142,7 +130,6 @@ namespace Kinovea.ScreenManager
 			((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.CheckBox chkApplyToAll;
 		private System.Windows.Forms.PictureBox picPreview;
 		private System.Windows.Forms.Panel pnlPreview;
 		private System.Windows.Forms.Button btnCancel;

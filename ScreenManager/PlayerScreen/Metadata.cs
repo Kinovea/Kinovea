@@ -148,10 +148,10 @@ namespace Kinovea.ScreenManager
             //get { return m_iSelectionStart; }
             set { m_iSelectionStart = value; }
         }         
-		public LineLengthHelper LineLengthHelper 
+		public CalibrationHelper CalibrationHelper 
 		{
-			get { return m_LineLengthHelper; }
-			set { m_LineLengthHelper = value; }
+			get { return m_CalibrationHelper; }
+			set { m_CalibrationHelper = value; }
 		}
         #endregion
 
@@ -176,7 +176,7 @@ namespace Kinovea.ScreenManager
         private Int64 m_iAverageTimeStampsPerFrame = 1;
         private Int64 m_iFirstTimeStamp;
         private Int64 m_iSelectionStart;
-        private LineLengthHelper m_LineLengthHelper = new LineLengthHelper();
+        private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
 
         // Read from XML, used for adapting the data to the current video
         private Size m_InputImageSize = new Size(0, 0);

@@ -113,11 +113,6 @@ namespace Kinovea.ScreenManager
                 m_MainLabel.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
             }
         }
-        public Point CoordinatesOrigin
-		{
-			get { return m_CoordinatesOrigin; }
-			set { m_CoordinatesOrigin = value; }
-		}
         public Metadata ParentMetadata
         {
             get { return m_ParentMetadata; }    // unused.
@@ -170,8 +165,6 @@ namespace Kinovea.ScreenManager
         private int m_iTotalDistance;       			// This is used to normalize timestamps to a par scale with distances.
         private int m_iCurrentPoint;
 
-        private Point m_CoordinatesOrigin = new Point(-1,-1); // Used for spreadsheet export.
-        
         // Decoration
         private LineStyle m_LineStyle = LineStyle.DefaultValue; 
         private KeyframeLabel m_MainLabel = new KeyframeLabel(true, Color.Black);
@@ -1396,15 +1389,15 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteStartElement("TrackPositionList");
             _xmlWriter.WriteAttributeString("Count", m_Positions.Count.ToString());
             
-            _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.LineLengthHelper.GetAbbreviation());
+            _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetAbbreviation());
             // todo: user unit time.
             
             // The coordinate system defaults to the first point,
             // but can be specified by user.
             Point coordOrigin;
-            if(m_CoordinatesOrigin.X >= 0 && m_CoordinatesOrigin.Y >= 0)
+            if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 && m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
             {
-            	coordOrigin = m_CoordinatesOrigin;
+            	coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
             }
 			else 
 			{
