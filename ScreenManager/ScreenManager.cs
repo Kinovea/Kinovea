@@ -127,6 +127,7 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
         public ToolStripMenuItem mnu3DPlane = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
 
         #region Synchronization
         private MMTimerEventHandler m_DelegateMMTimerEventHandler;
@@ -434,7 +435,7 @@ namespace Kinovea.ScreenManager
             mnuGrid.Text = ((ItemResourceInfo)mnuGrid.Tag).resManager.GetString(((ItemResourceInfo)mnuGrid.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuGrid.Checked = false;
             mnuGrid.ShortcutKeys = Keys.Control | Keys.G;
-            mnuGrid.Click += new EventHandler(mnuGridOnClick);
+            mnuGrid.Click += new EventHandler(mnuGrid_OnClick);
             mnuGrid.MergeAction = MergeAction.Append;
 
             // 3D Plane
@@ -442,8 +443,15 @@ namespace Kinovea.ScreenManager
             mnu3DPlane.Text = ((ItemResourceInfo)mnu3DPlane.Tag).resManager.GetString(((ItemResourceInfo)mnu3DPlane.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnu3DPlane.Checked = false;
             mnu3DPlane.ShortcutKeys = Keys.Control | Keys.P;
-            mnu3DPlane.Click += new EventHandler(mnu3DPlaneOnClick);
+            mnu3DPlane.Click += new EventHandler(mnu3DPlane_OnClick);
             mnu3DPlane.MergeAction = MergeAction.Append;
+            
+             // Coordinate Axis
+            mnuCoordinateAxis.Tag = new ItemResourceInfo(resManager, "dlgConfigureTrajectory_SetOrigin");
+            mnuCoordinateAxis.Text = ((ItemResourceInfo)mnuCoordinateAxis.Tag).resManager.GetString(((ItemResourceInfo)mnuCoordinateAxis.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuCoordinateAxis.Checked = false;
+            mnuCoordinateAxis.Click += new EventHandler(mnuCoordinateAxis_OnClick);
+            mnuCoordinateAxis.MergeAction = MergeAction.Append;
 
             ConfigureVideoFilterMenus(null, true);
 
@@ -463,7 +471,8 @@ namespace Kinovea.ScreenManager
                                                    		m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
                                                    		mnuSep3, 
                                                    		mnuGrid, 
-                                                   		mnu3DPlane});
+                                                   		mnu3DPlane,
+                                                 		mnuCoordinateAxis});
             #endregion
 
             #region Motion
@@ -1186,7 +1195,7 @@ namespace Kinovea.ScreenManager
         }
         private void DoOrganizeMenu()
         {
-        	// Show / hide menus depending on state of active screen
+        	// Enable / disable menus depending on state of active screen
         	// and global screen configuration.
         	
             #region Menus depending only on the state of the active screen
@@ -1199,19 +1208,27 @@ namespace Kinovea.ScreenManager
                     // 1. Video is loaded : save-able and analysis is loadable.
                     if (player.Full)
                     {
+                    	// File
                         mnuSave.Enabled = true;
                        	mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
                         mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
                         mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
                         mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
                         mnuLoadAnalysis.Enabled = true;
+                        
+                        // Image
+                        mnuDeinterlace.Enabled = true;
+                        mnuMirror.Enabled = true;
+                        mnuGrid.Enabled = true;
+                        mnu3DPlane.Enabled = true;
+                        mnuCoordinateAxis.Enabled = true;
+
                         mnuDeinterlace.Checked = player.Deinterlaced;
-                        ConfigureImageFormatMenus(player);
                         mnuMirror.Checked = player.Mirrored;
                         mnuGrid.Checked = player.ShowGrid;
                         mnu3DPlane.Checked = player.Show3DPlane;
-
-                        // Video Filters menus
+                        
+                        ConfigureImageFormatMenus(player);
                         ConfigureVideoFilterMenus(player, false);
                     }
                     else
@@ -1234,20 +1251,27 @@ namespace Kinovea.ScreenManager
 
             if (bActiveScreenIsEmpty)
             {
-                mnuLoadAnalysis.Enabled = false;
+            	// File
                 mnuSave.Enabled = false;
-				mnuDeinterlace.Checked = false;
-				ConfigureImageFormatMenus(null);
-				mnuMirror.Checked = false;
-                mnuGrid.Checked = false;
-                mnu3DPlane.Checked = false;
-                
-                mnuExportSpreadsheet.Enabled = false;
+            	mnuLoadAnalysis.Enabled = false;
+				mnuExportSpreadsheet.Enabled = false;
                 mnuExportODF.Enabled = false;
                 mnuExportMSXML.Enabled = false;
                 mnuExportXHTML.Enabled = false;
+
+                // Image
+                mnuDeinterlace.Enabled = false;
+				mnuMirror.Enabled = false;
+				mnuGrid.Enabled = false;
+				mnu3DPlane.Enabled = false;
+				mnuCoordinateAxis.Enabled = false;
+                
+				mnuDeinterlace.Checked = false;
+				mnuMirror.Checked = false;
+                mnuGrid.Checked = false;
+                mnu3DPlane.Checked = false;
 				
-                // Video Filters menus
+				ConfigureImageFormatMenus(null);
 				ConfigureVideoFilterMenus(null, true);
             }
             #endregion
@@ -1388,37 +1412,9 @@ namespace Kinovea.ScreenManager
         {
 			// determines if any given video filter menu should be
 			// visible, enabled, checked...
-        	
-        	//----------------------------------------------------------
-        	// 1. Is a given menu enabled ? (analysis mode/regular mode)
-        	//----------------------------------------------------------
-        	bool bEnable = false;
-        	
-        	if(!_bDisableAll && _player != null)
-        	{
-        		bEnable = _player.IsInAnalysisMode;
-        	}
-        	        	
-    		foreach(AbstractVideoFilter vf in m_VideoFilters)
-        	{
-        		vf.Menu.Enabled = bEnable;
-        	}
-            
-            // Associate the input frames
-            if(bEnable)
-            {
-            	List<DecompressedFrame> frameList = _player.FrameServer.VideoFile.FrameList;
-	            
-            	foreach(AbstractVideoFilter vf in m_VideoFilters)
-            	{
-            		vf.FrameList = frameList;
-            	}
-            }
-
-            //----------------------------------------------------------
-            // 2. Is a given menu visible ?
-            //----------------------------------------------------------
-            foreach(AbstractVideoFilter vf in m_VideoFilters)
+			
+			// 1. Visibility
+			foreach(AbstractVideoFilter vf in m_VideoFilters)
         	{
             	if(vf.Experimental)
             	{
@@ -1431,33 +1427,64 @@ namespace Kinovea.ScreenManager
             		vf.Menu.Visible = true;
             	}
         	}
-                      
-            //----------------------------------------------------------
-            // 3. Is a given boolean menu checked ?
-        	//----------------------------------------------------------
-            
-        	// Uncheck all togglable menus
-        	foreach(AbstractVideoFilter vf in m_VideoFilters)
-        	{
-        		vf.Menu.Checked = false;
-        	}
+			
+			// 2. Enabled, checked
+			if(_player != null)
+			{
+				// Video filters can only be enabled when Analysis mode.
+				foreach(AbstractVideoFilter vf in m_VideoFilters)
+	        	{
+	        		vf.Menu.Enabled = _player.IsInAnalysisMode;
+	        	}		
+				
+				if(_player.IsInAnalysisMode)
+	            {
+					// Fixme: Why is this here ?
+	            	List<DecompressedFrame> frameList = _player.FrameServer.VideoFile.FrameList;
+	            	foreach(AbstractVideoFilter vf in m_VideoFilters)
+	            	{
+	            		vf.FrameList = frameList;
+	            	}
+	            }
+				
+				// Checked ?
+				
+				// Reset to all unchecked.
+	        	foreach(AbstractVideoFilter vf in m_VideoFilters)
+	        	{
+	        		vf.Menu.Checked = false;
+	        	}
         	
-        	if(_player != null)
-        	{
         		if(_player.DrawtimeFilterType > -1)
         		{
         			m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;
         		}
-        	}
+			}
+			else
+			{
+				foreach(AbstractVideoFilter vf in m_VideoFilters)
+	        	{
+	        		vf.Menu.Enabled = false;
+					vf.Menu.Checked = false;
+	        	}
+			}
         }
         private void ConfigureImageFormatMenus(PlayerScreen _player)
         {
-        	mnuFormatAuto.Checked = false;
-        	mnuFormatForce43.Checked = false;
-        	mnuFormatForce169.Checked = false;
-        	
+			// Set the enable and check prop of the image formats menu according of current screen state.
+			
         	if(_player != null)
         	{
+        		mnuFormat.Enabled = true;
+				mnuFormatAuto.Enabled = true;
+				mnuFormatForce43.Enabled = true;
+				mnuFormatForce169.Enabled = true;
+				
+				// Reset all checks before setting the right one.
+        		mnuFormatAuto.Checked = false;
+	        	mnuFormatForce43.Checked = false;
+	        	mnuFormatForce169.Checked = false;
+        	
 	        	switch(_player.AspectRatio)
 	        	{
 	        		case VideoFiles.AspectRatio.Force43:
@@ -1474,7 +1501,13 @@ namespace Kinovea.ScreenManager
         	}
         	else
         	{
-        		mnuFormatAuto.Checked = true;
+        		mnuFormat.Enabled = false;
+        		mnuFormatAuto.Enabled = false;
+				mnuFormatForce43.Enabled = false;
+				mnuFormatForce169.Enabled = false;
+        		mnuFormatAuto.Checked = false;
+	        	mnuFormatForce43.Checked = false;
+	        	mnuFormatForce169.Checked = false;
         	}
         }
         
@@ -2308,7 +2341,7 @@ namespace Kinovea.ScreenManager
         		player.Mirrored = mnuMirror.Checked;
         	}
         }
-        private void mnuGridOnClick(object sender, EventArgs e)
+        private void mnuGrid_OnClick(object sender, EventArgs e)
         {
         	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
         	{
@@ -2323,7 +2356,7 @@ namespace Kinovea.ScreenManager
         		}
         	}
         }
-        private void mnu3DPlaneOnClick(object sender, EventArgs e)
+        private void mnu3DPlane_OnClick(object sender, EventArgs e)
         {
         	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
         	{
@@ -2336,6 +2369,17 @@ namespace Kinovea.ScreenManager
         		{
         			((CaptureScreen)m_ActiveScreen).Show3DPlane = mnu3DPlane.Checked;
         		}
+        	}
+        }
+        private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
+        {
+        	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+        	if (ps != null)
+        	{
+        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.VideoFile.CurrentImage, ps.FrameServer.Metadata);
+				fsto.StartPosition = FormStartPosition.CenterScreen;
+				fsto.ShowDialog();
+				fsto.Dispose();
         	}
         }
         #endregion

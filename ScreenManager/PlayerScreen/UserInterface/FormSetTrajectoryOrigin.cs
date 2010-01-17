@@ -31,14 +31,12 @@ namespace Kinovea.ScreenManager
 	/// FormSetTrajectoryOrigin is a dialog that let the user specify the 
 	/// trajectory's coordinate system origin.
 	/// This is then used in spreadsheet export.
-	/// 
-	/// Dialog is very much copy pasted from FormPreviewVideoFilter.
 	/// </summary>
 	public partial class formSetTrajectoryOrigin : Form
 	{
 		#region Members
         private Bitmap m_bmpPreview;
-        private Track m_Track;
+        //private Track m_Track;
         private Point m_ScaledOrigin = new Point(-1,-1);	// Selected point in display size coordinates.
         private Point m_RealOrigin = new Point(-1,-1);		// Selected point in image size coordinates.
         private float m_fRatio = 1.0f;
@@ -50,28 +48,24 @@ namespace Kinovea.ScreenManager
         #endregion
 		
         #region Constructor
-		public formSetTrajectoryOrigin(Track _Track, Bitmap _bmpPreview, Metadata _ParentMetadata)
+		public formSetTrajectoryOrigin(Bitmap _bmpPreview, Metadata _ParentMetadata)
 		{
 			// Init data.
 			m_ParentMetadata = _ParentMetadata;
-			m_Track = _Track;
 			m_bmpPreview = _bmpPreview;
-			m_PenSelected = new Pen(m_Track.MainColor);
-			m_PenCurrent = new Pen(m_Track.MainColor);
+			m_PenSelected = new Pen(Color.Red);
+			m_PenCurrent = new Pen(Color.Red);
 			m_PenCurrent.DashStyle = DashStyle.Dot;
 			 
-			if(m_Track.CoordinatesOrigin.X >= 0 && m_Track.CoordinatesOrigin.Y >= 0)
+			if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 && m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
             {
-            	m_RealOrigin = m_Track.CoordinatesOrigin;
+            	m_RealOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
             }
 			
 			InitializeComponent();
 			
-			chkApplyToAll.Visible = (m_ParentMetadata.Tracks.Count > 1);
-						
 			// Culture
             this.Text = "   " + ScreenManagerLang.dlgSetTrajectoryOrigin_Title;
-            chkApplyToAll.Text = ScreenManagerLang.dlgSetTrajectoryOrigin_ApplyToAll;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
 		}
@@ -91,9 +85,9 @@ namespace Kinovea.ScreenManager
 			
 			int iCoordX = (int)((float)e.X * m_fRatio) - m_RealOrigin.X;
 			int iCoordY = m_RealOrigin.Y - (int)((float)e.Y * m_fRatio);
-			string textX = m_ParentMetadata.LineLengthHelper.GetLengthText((double)iCoordX, false, false);
-			string textY = m_ParentMetadata.LineLengthHelper.GetLengthText((double)iCoordY, false, false);
-			m_Text = String.Format("{{{0};{1}}} {2}", textX, textY, m_ParentMetadata.LineLengthHelper.GetAbbreviation());
+			string textX = m_ParentMetadata.CalibrationHelper.GetLengthText((double)iCoordX, false, false);
+			string textY = m_ParentMetadata.CalibrationHelper.GetLengthText((double)iCoordY, false, false);
+			m_Text = String.Format("{{{0};{1}}} {2}", textX, textY, m_ParentMetadata.CalibrationHelper.GetAbbreviation());
 			
 			picPreview.Invalidate();
 		}
@@ -132,7 +126,7 @@ namespace Kinovea.ScreenManager
 		#region User triggered events
 		private void picPreview_MouseClick(object sender, MouseEventArgs e)
 		{
-			// user selected an origin point.
+			// User selected an origin point.
 			m_ScaledOrigin = new Point(e.X, e.Y);
 
 			int iLeft = (int)((float)e.X * m_fRatio);
@@ -143,27 +137,18 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-			if(chkApplyToAll.Checked)
-			{
-				foreach(Track trk in m_ParentMetadata.Tracks)
-				{
-					trk.CoordinatesOrigin = m_RealOrigin;
-				}
-			}
-			else
-			{
-				m_Track.CoordinatesOrigin = m_RealOrigin;
-			}
+			m_ParentMetadata.CalibrationHelper.CoordinatesOrigin = m_RealOrigin;
 		}
 		#endregion
 		
 		#region low level
 		private void RatioStretch()
         {
+			// Resizes the picture box to maximize the image in the panel.
+			
 			// This method directly pasted from FormPreviewVideoFilter.
 			// Todo: avoid duplication and factorize the two dialogs ?
 			
-            // Agrandi la picturebox pour maximisation dans le panel.
             if (m_bmpPreview != null)
             {
                 float WidthRatio = (float)m_bmpPreview.Width / pnlPreview.Width;
@@ -183,7 +168,7 @@ namespace Kinovea.ScreenManager
                     m_fRatio = HeightRatio;
                 }
 
-                //recentrer
+                // Centering.
                 picPreview.Left = (pnlPreview.Width / 2) - (picPreview.Width / 2);
                 picPreview.Top = (pnlPreview.Height / 2) - (picPreview.Height / 2);
             }

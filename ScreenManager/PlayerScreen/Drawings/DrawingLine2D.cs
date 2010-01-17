@@ -132,7 +132,7 @@ namespace Kinovea.ScreenManager
                 if(m_bShowMeasure)
                 {
                 	// Text of the measure. (The helpers knows the unit)
-	                string text = m_ParentMetadata.LineLengthHelper.GetLengthText(m_StartPoint, m_EndPoint);
+	                string text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);
 	                m_LabelMeasure.Text = text;
 	                
 	                SetMeasureLabelPosition();

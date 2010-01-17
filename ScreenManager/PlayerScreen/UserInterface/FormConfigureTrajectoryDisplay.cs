@@ -43,20 +43,16 @@ namespace Kinovea.ScreenManager
     	// Specific to the configure page.
     	private PictureBox m_SurfaceScreen; 		// Used to update the image while configuring.
         private Track m_Track;
-        private Bitmap m_CurrentImage;
-        private Metadata m_ParentMetadata;
-    	private StaticColorPicker m_ColPicker;
+        private StaticColorPicker m_ColPicker;
         private StaticStylePicker m_StlPicker;
         #endregion
         
         #region Construction & Initialization
-        public formConfigureTrajectoryDisplay(Track _track, PictureBox _SurfaceScreen, Bitmap _CurrentImage, Metadata _ParentMetadata)
+        public formConfigureTrajectoryDisplay(Track _track, PictureBox _SurfaceScreen)
         {
             InitializeComponent();
             m_SurfaceScreen = _SurfaceScreen;
             m_Track = _track;
-            m_CurrentImage = _CurrentImage;
-            m_ParentMetadata = _ParentMetadata;
             
             // Save the current state in case we need to recall it later.
             m_Track.MemorizeState();
@@ -125,7 +121,6 @@ namespace Kinovea.ScreenManager
             radioFocus.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioFocus;
             radioLabel.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioLabel;
             lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
-            lblSetOrigin.Text = ScreenManagerLang.dlgConfigureTrajectory_SetOrigin;
             
 			grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
             lblColor.Text = ScreenManagerLang.Generic_ColorPicker;
@@ -267,27 +262,6 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
-        private void btnSetOrigin_Click(object sender, EventArgs e)
-        {
-        	DisplaySetOriginDialog();
-        }
-        private void btnSetOriginText_Click(object sender, EventArgs e)
-        {
-        	DisplaySetOriginDialog();	
-        }
-        private void LblSetOriginClick(object sender, EventArgs e)
-        {
-        	DisplaySetOriginDialog();	
-        }
-        private void DisplaySetOriginDialog()
-        {
-        	formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(m_Track, m_CurrentImage, m_ParentMetadata);
-			fsto.StartPosition = FormStartPosition.CenterScreen;
-			fsto.ShowDialog();
-			fsto.Dispose();
-        }
-        
         
     }
 }

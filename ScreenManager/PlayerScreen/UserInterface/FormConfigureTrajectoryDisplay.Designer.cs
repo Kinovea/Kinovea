@@ -38,14 +38,12 @@ namespace Kinovea.ScreenManager
         	this.tbLabel = new System.Windows.Forms.TextBox();
         	this.lblLabel = new System.Windows.Forms.Label();
         	this.grpConfig = new System.Windows.Forms.GroupBox();
-        	this.btnSetOrigin = new System.Windows.Forms.Button();
         	this.btnLabel = new System.Windows.Forms.Button();
         	this.btnFocus = new System.Windows.Forms.Button();
         	this.btnComplete = new System.Windows.Forms.Button();
         	this.radioLabel = new System.Windows.Forms.RadioButton();
         	this.radioFocus = new System.Windows.Forms.RadioButton();
         	this.radioComplete = new System.Windows.Forms.RadioButton();
-        	this.lblSetOrigin = new System.Windows.Forms.Label();
         	this.grpAppearance.SuspendLayout();
         	this.grpConfig.SuspendLayout();
         	this.SuspendLayout();
@@ -54,7 +52,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-        	this.btnOK.Location = new System.Drawing.Point(170, 384);
+        	this.btnOK.Location = new System.Drawing.Point(170, 341);
         	this.btnOK.Name = "btnOK";
         	this.btnOK.Size = new System.Drawing.Size(99, 24);
         	this.btnOK.TabIndex = 45;
@@ -66,7 +64,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        	this.btnCancel.Location = new System.Drawing.Point(275, 384);
+        	this.btnCancel.Location = new System.Drawing.Point(275, 341);
         	this.btnCancel.Name = "btnCancel";
         	this.btnCancel.Size = new System.Drawing.Size(99, 24);
         	this.btnCancel.TabIndex = 50;
@@ -82,7 +80,7 @@ namespace Kinovea.ScreenManager
         	this.grpAppearance.Controls.Add(this.lblStyle);
         	this.grpAppearance.Controls.Add(this.lblColor);
         	this.grpAppearance.Controls.Add(this.btnTextColor);
-        	this.grpAppearance.Location = new System.Drawing.Point(12, 268);
+        	this.grpAppearance.Location = new System.Drawing.Point(12, 220);
         	this.grpAppearance.Name = "grpAppearance";
         	this.grpAppearance.Size = new System.Drawing.Size(362, 110);
         	this.grpAppearance.TabIndex = 29;
@@ -157,8 +155,6 @@ namespace Kinovea.ScreenManager
         	// 
         	this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.grpConfig.Controls.Add(this.lblSetOrigin);
-        	this.grpConfig.Controls.Add(this.btnSetOrigin);
         	this.grpConfig.Controls.Add(this.btnLabel);
         	this.grpConfig.Controls.Add(this.btnFocus);
         	this.grpConfig.Controls.Add(this.btnComplete);
@@ -169,24 +165,10 @@ namespace Kinovea.ScreenManager
         	this.grpConfig.Controls.Add(this.lblLabel);
         	this.grpConfig.Location = new System.Drawing.Point(12, 12);
         	this.grpConfig.Name = "grpConfig";
-        	this.grpConfig.Size = new System.Drawing.Size(362, 250);
+        	this.grpConfig.Size = new System.Drawing.Size(362, 202);
         	this.grpConfig.TabIndex = 51;
         	this.grpConfig.TabStop = false;
         	this.grpConfig.Text = "Generic_Configuration";
-        	// 
-        	// btnSetOrigin
-        	// 
-        	this.btnSetOrigin.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnSetOrigin.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.trajconfsetorigin;
-        	this.btnSetOrigin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        	this.btnSetOrigin.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-        	this.btnSetOrigin.FlatAppearance.BorderSize = 0;
-        	this.btnSetOrigin.Location = new System.Drawing.Point(21, 200);
-        	this.btnSetOrigin.Name = "btnSetOrigin";
-        	this.btnSetOrigin.Size = new System.Drawing.Size(48, 32);
-        	this.btnSetOrigin.TabIndex = 50;
-        	this.btnSetOrigin.UseVisualStyleBackColor = false;
-        	this.btnSetOrigin.Click += new System.EventHandler(this.btnSetOrigin_Click);
         	// 
         	// btnLabel
         	// 
@@ -268,22 +250,12 @@ namespace Kinovea.ScreenManager
         	this.radioComplete.UseVisualStyleBackColor = true;
         	this.radioComplete.CheckedChanged += new System.EventHandler(this.RadioViews_CheckedChanged);
         	// 
-        	// lblSetOrigin
-        	// 
-        	this.lblSetOrigin.AutoSize = true;
-        	this.lblSetOrigin.Location = new System.Drawing.Point(81, 210);
-        	this.lblSetOrigin.Name = "lblSetOrigin";
-        	this.lblSetOrigin.Size = new System.Drawing.Size(162, 13);
-        	this.lblSetOrigin.TabIndex = 53;
-        	this.lblSetOrigin.Text = "dlgConfigureTrajectory_SetOrigin";
-        	this.lblSetOrigin.Click += new System.EventHandler(this.LblSetOriginClick);
-        	// 
         	// formConfigureTrajectoryDisplay
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackColor = System.Drawing.Color.White;
-        	this.ClientSize = new System.Drawing.Size(386, 420);
+        	this.ClientSize = new System.Drawing.Size(386, 377);
         	this.Controls.Add(this.grpConfig);
         	this.Controls.Add(this.grpAppearance);
         	this.Controls.Add(this.btnOK);
@@ -303,8 +275,6 @@ namespace Kinovea.ScreenManager
         	this.grpConfig.PerformLayout();
         	this.ResumeLayout(false);
         }
-        private System.Windows.Forms.Label lblSetOrigin;
-        private System.Windows.Forms.Button btnSetOrigin;
         private System.Windows.Forms.Button btnLabel;
         private System.Windows.Forms.Button btnFocus;
         private System.Windows.Forms.Button btnComplete;

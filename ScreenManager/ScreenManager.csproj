@@ -160,7 +160,7 @@
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
-    <Compile Include="PlayerScreen\LineLengthHelper.cs" />
+    <Compile Include="PlayerScreen\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\LineStyle.cs">
     </Compile>
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />

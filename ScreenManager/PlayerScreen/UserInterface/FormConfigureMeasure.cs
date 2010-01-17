@@ -51,9 +51,9 @@ namespace Kinovea.ScreenManager
         	m_Line =_line;
         	
         	m_fCurrentLengthPixels = Math.Sqrt(((m_Line.m_StartPoint.X - m_Line.m_EndPoint.X) * (m_Line.m_StartPoint.X - m_Line.m_EndPoint.X)) + ((m_Line.m_StartPoint.Y - m_Line.m_EndPoint.Y) * (m_Line.m_StartPoint.Y - m_Line.m_EndPoint.Y)));
-        	m_fCurrentLengthReal = m_Metadata.LineLengthHelper.GetLengthDouble(m_Line.m_StartPoint, m_Line.m_EndPoint);
+        	m_fCurrentLengthReal = m_Metadata.CalibrationHelper.GetLengthDouble(m_Line.m_StartPoint, m_Line.m_EndPoint);
             	
-        	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.LineLengthHelper.CurrentUnit.ToString()));
+        	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
         	
             InitializeComponent();
             m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
@@ -69,23 +69,23 @@ namespace Kinovea.ScreenManager
             lblRealSize.Text = m_ResourceManager.GetString("dlgConfigureMeasure_lblRealSize", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n");
             
             // Combo Units (MUST be filled in the order of the enum)
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Centimeters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Meters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Inches) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Feet) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + LineLengthHelper.GetAbbreviationFromUnit(LineLengthHelper.LengthUnits.Yards) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Centimeters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Meters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Inches) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Feet) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Yards) + ")");
             
             // Update with current values.
-            if(m_Metadata.LineLengthHelper.CurrentUnit == LineLengthHelper.LengthUnits.Pixels)
+            if(m_Metadata.CalibrationHelper.CurrentLengthUnit == CalibrationHelper.LengthUnits.Pixels)
             {
             	// Default to 50 cm if no unit selected yet.
             	tbMeasure.Text = "50";
-            	cbUnit.SelectedIndex = (int)LineLengthHelper.LengthUnits.Centimeters;
+            	cbUnit.SelectedIndex = (int)CalibrationHelper.LengthUnits.Centimeters;
             }
             else
             {
             	tbMeasure.Text = String.Format("{0:0.00}",m_fCurrentLengthReal);
-            	cbUnit.SelectedIndex = (int)m_Metadata.LineLengthHelper.CurrentUnit;
+            	cbUnit.SelectedIndex = (int)m_Metadata.CalibrationHelper.CurrentLengthUnit;
             }
             
         }
@@ -115,10 +115,10 @@ namespace Kinovea.ScreenManager
 	            
 	            	if(fRealWorldMeasure > 0 && m_fCurrentLengthReal > 0)
 	            	{
-	                	m_Metadata.LineLengthHelper.PixelToUnit = fRealWorldMeasure / m_fCurrentLengthPixels;
-	                	m_Metadata.LineLengthHelper.CurrentUnit = (LineLengthHelper.LengthUnits)cbUnit.SelectedIndex;
+	                	m_Metadata.CalibrationHelper.PixelToUnit = fRealWorldMeasure / m_fCurrentLengthPixels;
+	                	m_Metadata.CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)cbUnit.SelectedIndex;
 	            	
-	                	log.Debug(String.Format("Selected length:{0:0.00} {1}", fRealWorldMeasure, m_Metadata.LineLengthHelper.CurrentUnit.ToString()));
+	                	log.Debug(String.Format("Selected length:{0:0.00} {1}", fRealWorldMeasure, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
 	            	}
 	            }
 	            catch
