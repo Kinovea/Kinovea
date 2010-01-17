@@ -227,7 +227,10 @@ namespace Kinovea.ScreenManager
 	        	                                	m_bSaveKeyframesOnly,
 	        	                                	m_bSavePausedVideo,
 	        	                                	m_SaveDelegateOutputBitmap);
-        		m_SaveMetadata.CleanupHash();
+        		if(m_SaveMetadata != null)
+        		{
+        			m_SaveMetadata.CleanupHash();
+        		}
         	}
         	catch (Exception exp)
 			{
