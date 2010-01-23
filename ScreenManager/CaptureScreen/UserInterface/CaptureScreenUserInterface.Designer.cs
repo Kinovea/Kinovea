@@ -552,7 +552,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolPointer
         	// 
         	this.btnDrawingToolPointer.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPointer.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.move;
+        	this.btnDrawingToolPointer.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.handtool;
         	this.btnDrawingToolPointer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPointer.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPointer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
