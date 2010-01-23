@@ -122,7 +122,6 @@ namespace Kinovea.ScreenManager
 				{
 					m_iSyncPosition = 0;
 					trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
-					trkFrame.Invalidate();
 					UpdateCurrentPositionLabel();
 					
 					m_bSyncMerge = false;
@@ -139,7 +138,6 @@ namespace Kinovea.ScreenManager
 			{ 
 				m_iSyncPosition = value; 
 				trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
-				trkFrame.Invalidate();
 				UpdateCurrentPositionLabel();
 			}
 		}
@@ -355,7 +353,6 @@ namespace Kinovea.ScreenManager
 			DockKeyframePanel();
 			UpdateFramesMarkers();
 			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
-			trkFrame.Invalidate();
 			EnableDisableAllPlayingControls(true);
 			EnableDisableDrawingTools(true);
 			buttonPlay.BackgroundImage = Resources.liqplay17;
@@ -1233,6 +1230,11 @@ namespace Kinovea.ScreenManager
 				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
 			}
 		}
+		private void UpdateFramesMarkers()
+		{
+			// Updates the markers coordinates and redraw the trkFrame.
+			trkFrame.UpdateMarkers(m_FrameServer.Metadata);
+		}
 		#endregion
 
 		#region Debug Helpers
@@ -1496,9 +1498,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 
 				// Update the frame tracker internal timestamps (including position if needed).
-				UpdateFramesMarkers();
 				trkFrame.Remap(m_iSelStart, m_iSelEnd);
-				trkFrame.Invalidate();
 				
 				// Update the position but don't trigger a refresh.
 				trkSelection.UpdatePositionValueOnly(trkFrame.Position);
@@ -1673,23 +1673,17 @@ namespace Kinovea.ScreenManager
 		#region Frame Tracker
 		private void trkFrame_PositionChanging(object sender, long _iPosition)
 		{
-			//---------------------------------------------------
-			// Appelée lors de déplacement de type MouseMove
-			// UNIQUEMENT si mode Analyse.
-			//---------------------------------------------------
+			// Called on user mouse move on frame tracker, if on analysis mode.
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				//SetAsActiveScreen();
-				//StopPlaying();
-
-				// Mettre à jour l'image, mais ne pas toucher au curseur.
+				// Update image but do not touch cursor, as the user is manipulating it.
+				// If the position needs to be adjusted to an actual timestamp, it'll be done later.
 				UpdateFrameCurrentPosition(false);
 				UpdateCurrentPositionLabel();
-
-				// May be expensive ?
+				
 				ActivateKeyframe(m_iCurrentPosition);
 
-				// Mise à jour de l'indicateur sur le frame
+				// Update the selection hairline (?)
 				//trkSelection.SelPos = trkFrame.Position;
 			}
 		}
@@ -1704,7 +1698,7 @@ namespace Kinovea.ScreenManager
 				OnPoke();
 				StopPlaying();
 
-				// Mettre à jour l'image, ET le CURSEUR.
+				// Update image and cursor.
 				UpdateFrameCurrentPosition(true);
 				UpdateCurrentPositionLabel();
 				ActivateKeyframe(m_iCurrentPosition);
@@ -1715,14 +1709,11 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
 		{
-			//--------------------------------------------------------------
-			// Affiche l'image correspondant à la position courante dans la selection primaire
-			// Sur intervention manuelle de l'utilisateur ou au chargement.
-			// ( = Le curseur a bougé, afficher l'image)
-			//--------------------------------------------------------------
-
+			// Displays the image corresponding to the current position within working zone.
+			// Trigerred by user (or first load). i.e: cursor moved, show frame.
 			if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 0)
 			{
+				// We may have to decode a few images so show hourglass.
 				this.Cursor = Cursors.WaitCursor;
 			}
 
@@ -1730,22 +1721,21 @@ namespace Kinovea.ScreenManager
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iCurrentPosition, true);
 
-			if (_bUpdateNavCursor) { UpdateNavigationCursor();}
+			if (_bUpdateNavCursor) 
+			{
+				// This may readjust the cursor in case the mouse wasn't on a valid timestamp value.
+				UpdateNavigationCursor();
+			}
 			if (m_bShowInfos) { UpdateDebugInfos(); }
 
 			if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 0)
 			{
 				this.Cursor = Cursors.Default;
 			}
-			
 		}
 		private void UpdateCurrentPositionLabel()
 		{
-			//-----------------------------------------------------------------
-			// Format d'affichage : Standard TimeCode.
-			// Heures:Minutes:Secondes.Frames
-			// Position relative à la Selection Primaire / Zone de travail
-			//-----------------------------------------------------------------
+			// Position is relative to working zone.
 			string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched);
 			lblTimeCode.Text = ScreenManagerLang.lblTimeCode_Text + " : " + timecode;
 			lblTimeCode.Invalidate();
@@ -1756,12 +1746,6 @@ namespace Kinovea.ScreenManager
 			trkFrame.Position = m_iCurrentPosition;
 			trkSelection.SelPos = trkFrame.Position;
 			UpdateCurrentPositionLabel();
-		}
-		private void UpdateFramesMarkers()
-		{
-			// This just updates the markers coordinates.
-			// The caller should also call trkFrame.Invalidate() when the refresh is needed.
-			trkFrame.UpdateMarkers(m_FrameServer.Metadata);
 		}
 		#endregion
 
@@ -2245,14 +2229,13 @@ namespace Kinovea.ScreenManager
 			// m_iFramesToDecode peut être négatif quand on recule.
 			//---------------------------------------------------------------------------
 			m_bIsIdle = false;
-
 			ReadResult res = m_FrameServer.VideoFile.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
-
+			
 			if (res == ReadResult.Success)
 			{
 				m_iDecodedFrames++;
 				m_iCurrentPosition = m_FrameServer.VideoFile.Selection.iCurrentTimeStamp;
-
+				
 				// Compute or stop tracking
 				if (m_FrameServer.Metadata.Tracks.Count > 0)
 				{
@@ -2270,6 +2253,7 @@ namespace Kinovea.ScreenManager
 							}
 						}
 					}
+					UpdateFramesMarkers();
 				}
 				
 				// Display image
@@ -3182,12 +3166,13 @@ namespace Kinovea.ScreenManager
             
             g.ReleaseHdc(pTarget);*/
 			#endregion
-
+			
 			// .Sync superposition.
 			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
 			{
 				// The mirroring, if any, will have been done already and applied to the sync image.
-				// (because we take account of the mirroring option of the other video, not this one)
+				// (because to draw the other image, we take account its own mirroring option, 
+				// not the option of the original video in this screen.)
 				Rectangle rSyncDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
 				g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);	
 			}
@@ -3381,7 +3366,6 @@ namespace Kinovea.ScreenManager
 			}
 			
 			UpdateFramesMarkers();
-			trkFrame.Invalidate();
 			pbSurfaceScreen.Invalidate(); // Because of trajectories with keyframes labels.
 		}
 		private void SetupDefaultThumbBox(KeyframeBox _ThumbBox)
@@ -3567,7 +3551,6 @@ namespace Kinovea.ScreenManager
 				m_iFramesToDecode = 1;
 				ShowNextFrame(_iPosition, true);
 				UpdateNavigationCursor();
-				UpdateCurrentPositionLabel();
 				trkSelection.SelPos = trkFrame.Position;
 
 				// Readjust and complete the Keyframe
@@ -4043,7 +4026,6 @@ namespace Kinovea.ScreenManager
 				m_iFramesToDecode = 1;
 				ShowNextFrame(iPosition, true);
 				UpdateNavigationCursor();
-				UpdateCurrentPositionLabel();
 				trkSelection.SelPos = trkFrame.Position;
 				ActivateKeyframe(m_iCurrentPosition);
 			}
@@ -4129,6 +4111,7 @@ namespace Kinovea.ScreenManager
 			cm.LaunchUndoableCommand(cdeot);
 
 			pbSurfaceScreen.Invalidate();
+			UpdateFramesMarkers();
 		}
 		private void mnuRestartTracking_Click(object sender, EventArgs e)
 		{
@@ -4142,7 +4125,6 @@ namespace Kinovea.ScreenManager
 			cm.LaunchUndoableCommand(cdc);
 			
 			UpdateFramesMarkers();
-			trkFrame.Invalidate();
 		}
 		private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
 		{
@@ -4228,7 +4210,6 @@ namespace Kinovea.ScreenManager
 			m_iFramesToDecode = 1;
 			ShowNextFrame(_positions[iClosestPoint].T + _iBeginTimestamp, true);
 			UpdateNavigationCursor();
-			UpdateCurrentPositionLabel();
 			trkSelection.SelPos = trkFrame.Position;
 		}
 		#endregion
@@ -4246,7 +4227,6 @@ namespace Kinovea.ScreenManager
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
 			UpdateFramesMarkers();
-			trkFrame.Invalidate();
 		}
 		private void mnuChronoHide_Click(object sender, EventArgs e)
 		{
@@ -4272,7 +4252,6 @@ namespace Kinovea.ScreenManager
 			cm.LaunchUndoableCommand(cdc);
 			
 			UpdateFramesMarkers();
-			trkFrame.Invalidate();
 		}
 		private void mnuChronoConfigure_Click(object sender, EventArgs e)
 		{

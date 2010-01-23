@@ -427,7 +427,7 @@ namespace Kinovea.ScreenManager
         {
         	// Internal state of data has been modified programmatically.
         	// (for example, at initialization or reset.)
-        	// This method update the appearence of the control only, it doesn't raise the events back.
+        	// This method updates the appearence of the control only, it doesn't raise the events back.
     	
             if (m_iMaximum - m_iMinimum > 0)
             {
