@@ -386,7 +386,6 @@ namespace Kinovea.ScreenManager
         	// 
         	this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.trkFrame.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqbackdock;
         	this.trkFrame.Location = new System.Drawing.Point(5, 45);
         	this.trkFrame.Maximum = ((long)(100));
         	this.trkFrame.Minimum = ((long)(0));
@@ -1148,7 +1147,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolPointer
         	// 
         	this.btnDrawingToolPointer.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPointer.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.move;
+        	this.btnDrawingToolPointer.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.handtool;
         	this.btnDrawingToolPointer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPointer.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPointer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
