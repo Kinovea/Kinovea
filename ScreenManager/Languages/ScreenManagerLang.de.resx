@@ -114,6 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Zielmarkierungswerzeug anzeigen</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Zeige Schlüsselbild Titel</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Zeige Trajektorie</value></data>
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Messung :</value></data>
+   
+   
+   
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modus</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trajektorie</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil:</value></data>

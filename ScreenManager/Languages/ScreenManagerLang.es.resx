@@ -114,6 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostrar el marcador de diana</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostrar títulos de las imàgenes clave</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostrar la trayectoria</value></data>
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Medición :</value></data>
+   
+   
+   
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modo :</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trayectoria</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stilo :</value></data>

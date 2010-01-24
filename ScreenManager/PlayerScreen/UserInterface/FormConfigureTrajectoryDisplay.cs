@@ -57,6 +57,7 @@ namespace Kinovea.ScreenManager
             // Save the current state in case we need to recall it later.
             m_Track.MemorizeState();
             
+            InitExtraDataCombo();
             InitColorPickerControl();
             InitStylePickerControl();
             SetCurrentOptions();
@@ -83,7 +84,14 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(m_StlPicker);
             m_StlPicker.BringToFront();
         }
-        private void SetCurrentOptions()
+ 		private void InitExtraDataCombo()
+ 		{
+ 			// Combo must be filled in the order of the enum.
+ 			cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None);
+            cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
+            cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
+ 		}
+ 		private void SetCurrentOptions()
         {
         	// Current configuration.
         	
@@ -102,15 +110,12 @@ namespace Kinovea.ScreenManager
         			break;
         	}
         	tbLabel.Text = m_Track.Label;
+        	cmbExtraData.SelectedIndex = (int)m_Track.ExtraData;
         	
         	// Color & style
             btnTextColor.BackColor = m_Track.MainColor;
             FixColors();
             btnLineStyle.Invalidate();
-            
-            //chkShowTarget.Checked = m_Track.ShowTarget;
-            //chkShowTitles.Checked = m_Track.ShowKeyframesTitles;
-            //chkShowTrajectory.Checked = m_Track.ShowTrajectory;
         }
         private void InitCulture()
         {
@@ -121,7 +126,7 @@ namespace Kinovea.ScreenManager
             radioFocus.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioFocus;
             radioLabel.Text = ScreenManagerLang.dlgConfigureTrajectory_RadioLabel;
             lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
-            
+            lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
 			grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
             lblColor.Text = ScreenManagerLang.Generic_ColorPicker;
             lblStyle.Text = ScreenManagerLang.dlgConfigureTrajectory_Style;
@@ -165,6 +170,11 @@ namespace Kinovea.ScreenManager
         {
             m_Track.Label = tbLabel.Text;
             m_SurfaceScreen.Invalidate();
+        }
+        private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+        	m_Track.ExtraData = (Track.TrackExtraData)cmbExtraData.SelectedIndex;
+        	m_SurfaceScreen.Invalidate();
         }
         #endregion
         
@@ -214,7 +224,7 @@ namespace Kinovea.ScreenManager
         {
         	// Show the style picker
         	m_StlPicker.Top = grpAppearance.Top + btnLineStyle.Top - (m_StlPicker.Height / 2);
-            m_StlPicker.Left = grpAppearance.Left + btnLineStyle.Left;
+            m_StlPicker.Left = grpAppearance.Left + btnLineStyle.Left  - (m_StlPicker.Width);
             m_StlPicker.Visible = true;
         }
         private void StylePicker_StylePicked(object sender, EventArgs e)
@@ -262,6 +272,5 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
     }
 }

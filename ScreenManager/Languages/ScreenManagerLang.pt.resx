@@ -70,14 +70,14 @@
    <data name="btnHideThumbView" xml:space="preserve"><value>Esconder Miniaturas</value></data>
    <data name="btnShowThumbView" xml:space="preserve"><value>Mostrar Miniaturas</value></data>
    <data name="btnSwap_ToolTip" xml:space="preserve"><value>Inverter Posição dos Vídeos</value></data>
-   <data name="btnSync_ToolTip" xml:space="preserve"><value>Inverter Posição dos Vídeos</value></data>
+   <data name="btnSync_ToolTip" xml:space="preserve"><value>Sincronizar Vídeos no Quadro atual.</value></data>
    <data name="buttonGotoFirst_ToolTip" xml:space="preserve"><value>Voltar ao Início de Ambos os Vídeos.</value></data>
    <data name="buttonGotoLast_ToolTip" xml:space="preserve"><value>Pular para o Fim de Ambos os Vídeos.</value></data>
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ir para o Próximo Quadro de Ambos os Vídeos.</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Voltar ao Quadro Anterior de Ambos os Vídeos.</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduzir | Pausar Ambos os Videos</value></data>
-   
-   
+   <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Adicionar Tela para Captura</value></data>
+   <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Adicionar Cronômetro</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Adicionar Desenho</value></data>
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Adicionar Tela para Reproduzir/Analisar</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Apagar Desenho</value></data>
@@ -99,52 +99,56 @@
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Identificador :</value></data>
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurar Cronômetro</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar Desenho</value></data>
-   
-   
-   
-   
-   
+   <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visível</value></data>
+   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Usar valor padrão ({0})</value></data>
+   <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Habilitar persistência</value></data>
+   <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} imagens.</value></data>
+   <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurar Persistência</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Número de Divisões:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurar Grade</value></data>
-   
-   
-   
-   
-   
+   <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Número de quadros por segundo no tempo de captura :\n(ex: 300)</value></data>
+   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Número de quadros por segundo no tempo de exibição: {0:0.00} fps.</value></data>
+   <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>O vídeo é {0:0} vezes menor que o original.</value></data>
+   <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Configurar velocidade original</value></data>
+   <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Resetar</value></data>
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostrar Marcador Alvo</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostrar Título dos Quadros de Imagens</value></data>
+   <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostrar Caminho</value></data>
    
    
    
+   
+   <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modo:</value></data>
+   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Caminho</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Estilo:</value></data>
-   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar Trajetória</value></data>
+   <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configurar Caminho</value></data>
+   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Caminho completo ?????</value></data>
+   <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Seleção de caminho ao redor da imagem atual</value></data>
+   <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Informação seguindo o Caminho</value></data>
+   <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordenadas de origem sistema</value></data>
+   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaico dos quadros de imagens.</value></data>
+   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaico de todas as imagens.</value></data>
+   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Número de imagens: {0:0}.</value></data>
+   <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Movimento da Direita para esquerda</value></data>
+   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frequência:</value></data>
+   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Modo Mosaico</value></data>
+   <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tamanho real do segmento:</value></data>
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duração de cada diapositivo: {0} centésimos de segundos.</value></data>
-   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duração de cada diapositivo: {0:0.00} segundos.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duração de cada Quadro de Imagem: {0} centésimos de segundos.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duração de cada Quadro de Imagem: {0:0.00} segundos.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvar o Vídeo</value></data>
-   
-   
-   
+   <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video original com pausa em cada Quadro de Imagem.</value></data>
+   <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Apresentação em slides apenas com os Quadros de Imagem.</value></data>
+   <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de video</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Documento PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Salvar Documento PDF com os Quadros de Imagem</value></data>
-   
-   
+   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salvar dados como uma Planilha</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentários...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|Todos os Arquivos (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carregar Dados dos Quadros de Imagem</value></data>
    <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informações</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Aplicar os Desenhos às Imagens</value></data>
+   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Juntar Desenhos às Imagens</value></data>
    <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>um quadro a cada {0} centésimo de segundos.</value></data>
    <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frequência de exportação de imagens:</value></data>
    <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>um quadro a cada {0:0.00} segundos.</value></data>
@@ -158,8 +162,8 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opções</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Salvar Método</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Salvar apenas os dados dos quadros de imagens.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Salvar vídeo e dados dos quadros de imagens em um único arquivo.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Combinar vídeo e dados dos quadros de imagens em um único arquivo.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Pintar dados dos quadros de imagens no vídeo permanentemente.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Salvar apenas o vídeo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salvar Dados dos Quadros de Imagens</value></data>
@@ -170,18 +174,18 @@
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvar Vídeo</value></data>
-   
-   
-   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Não pode criar Slideshow.</value></data>
-   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Um Slideshow é uma sequência de Quadros de Imagens salvos num formato de vídeo.\n Por favor, adicione alguns Quadros antes de gerar o Slideshow.</value></data>
-   
-   
+   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Aplicar a todos os caminhos.</value></data>
+   <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Definir a origem do sistema de coordenadas </value></data>
+   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Não pode criar Apresentação de Slides.</value></data>
+   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Uma Apresentação de Slides é uma sequência de Quadros de Imagens salvos num formato de vídeo.\n Por favor, adicione alguns Quadros antes de gerar o Slideshow.</value></data>
+   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Nao pode criar video pausado.</value></data>
+   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Você precisa adicionar alguns Quadros de Imagens antes de usar esta função.</value></data>
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Não pode criar o documento PDF. </value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Falha ao tentar salvar: o arquivo está aberto em outra janela.</value></data>
+   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Falha: Sem conseguir salvar o arquivo: o mesmo está aberto em outra janela.</value></data>
    <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>O documento PDF será criado a partir de Quadros de Imagens.\n Por favor, adicione alguns Quadros antes de gerar o documento. </value></data>
-   
-   
-   
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Sem poder salvar o arquivo. \nVerifique se você tem autorização para salvar arquivos na pasta escolhida e se o mesmo nao está em uso.</value></data>
+   <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Sem poder salvar o vídeo.</value></data>
+   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Sem poder salvar o vídeo. \nTente denovo com um formato diferente.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Progresso:</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Salvando o Vídeo...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Imagens exportadas:</value></data>
@@ -189,7 +193,7 @@
    <data name="FormFramesImport_Infos" xml:space="preserve"><value>Quadros descomprimidos:</value></data>
    <data name="FormProgressBar_Title" xml:space="preserve"><value>Progresso</value></data>
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importando Quadros...</value></data>
-   
+   <data name="Generic_Appearance" xml:space="preserve"><value>Aparência</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Fechar</value></data>
@@ -197,30 +201,30 @@
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuração</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Tamanho da Fonte:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salvar</value></data>
-   
-   
-   
+   <data name="Generic_Image" xml:space="preserve"><value>Imagem</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Quadros de imagens foram modificados.\nVocê deseja salvá-los antes de sair?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Dados dos quadros de imagens não foram salvos.</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comuns:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duração</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Início</value></data>
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Velocidade:</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Posição</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Zona de Trabalho:</value></data>
-   
-   
-   
-   
-   
-   <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: formato de vídeo não suportado.</value></data>
-   <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: problema durante a inicialização do decodificador.</value></data>
-   <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: tipo de arquivo não suportado.</value></data>
+   <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimetro</value></data>
+   <data name="LengthUnit_Meters" xml:space="preserve"><value>Metros</value></data>
+   <data name="LengthUnit_Inches" xml:space="preserve"><value>Polegadas</value></data>
+   <data name="LengthUnit_Feet" xml:space="preserve"><value>Pés</value></data>
+   <data name="LengthUnit_Yards" xml:space="preserve"><value>Jardas</value></data>
+   <data name="LoadMovie_CodecNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: formato de vídeo não suportado.</value></data>
+   <data name="LoadMovie_CodecNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: problema durante a inicialização do decodificador.</value></data>
+   <data name="LoadMovie_CodecNotSupported" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: tipo de arquivo não suportado.</value></data>
    <data name="LoadMovie_Error" xml:space="preserve"><value>Kinovea - Erro ao carregar.</value></data>
-   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: arquivo não encontrado.</value></data>
-   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: formato de imagem não suportado.</value></data>
-   <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: encontradas inconsistências. Por favor, verifique o processo de codificação.</value></data>
-   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: informações do vídeo não encontradas.</value></data>
-   <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: erro desconhecido.</value></data>
-   <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Falha ao tentar abrir o arquivo: vídeo não encontrado.</value></data>
+   <data name="LoadMovie_FileNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: arquivo não encontrado.</value></data>
+   <data name="LoadMovie_ImageFormatError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: formato de imagem não suportado.</value></data>
+   <data name="LoadMovie_InconsistantMovieError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: encontradas inconsistências. Por favor, verifique o processo de codificação.</value></data>
+   <data name="LoadMovie_StreamInfoNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: informações do vídeo não encontradas.</value></data>
+   <data name="LoadMovie_UnkownError" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: erro desconhecido.</value></data>
+   <data name="LoadMovie_VideoStreamNotFound" xml:space="preserve"><value>Falha: Erro ao tentar abrir o arquivo: vídeo não encontrado.</value></data>
    <data name="LoadMovieProgress_Cancellation" xml:space="preserve"><value>Cancelando...</value></data>
    <data name="LoadMovieProgress_Infos" xml:space="preserve"><value>Quadros decodificados:</value></data>
    <data name="LoadMovieProgress_Title" xml:space="preserve"><value>Progresso de Carregamento dos Arquivos</value></data>
@@ -237,29 +241,29 @@
    <data name="mnuChronoStop" xml:space="preserve"><value>Parar Cronômetro</value></data>
    <data name="mnuCloseScreen" xml:space="preserve"><value>Fechar esta tela</value></data>
    <data name="mnuColors" xml:space="preserve"><value>Cores...</value></data>
-   
-   
-   
+   <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Cor</value></data>
+   <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Cor e Tamanho...</value></data>
+   <data name="mnuConfigureFading" xml:space="preserve"><value>Persistência</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Configurar Exibição da Trajetória</value></data>
-   
+   <data name="mnuDeinterlace" xml:space="preserve"><value>Desentrelaçar</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Apagar</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Apagar a trajetória a partir deste ponto</value></data>
    <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Apagar todas as trajetórias</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Duas Telas de Captura</value></data>
-   
-   <data name="mnuTwoPlayers" xml:space="preserve"><value>Duas Telas de Reproduzir</value></data>
+   <data name="mnuTwoMixed" xml:space="preserve"><value>Uma Tela de Captura e uma de Reprodução</value></data>
+   <data name="mnuTwoPlayers" xml:space="preserve"><value>Duas Telas de Reprodução</value></data>
    <data name="mnuEdges" xml:space="preserve"><value>Apenas Bordas...</value></data>
-   
-   
-   
-   
+   <data name="mnuExportSpreadsheet" xml:space="preserve"><value>Exportar para Planilha</value></data>
+   <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
+   <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
+   <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Exportar para PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificar</value></data>
-   
-   
-   
-   
-   
+   <data name="mnuFormat" xml:space="preserve"><value>Formato da Imagem</value></data>
+   <data name="mnuFormatAuto" xml:space="preserve"><value>Auto Detecção</value></data>
+   <data name="mnuFormatForce43" xml:space="preserve"><value>Forçar 4:3</value></data>
+   <data name="mnuFormatForce169" xml:space="preserve"><value>Forçar 16:9</value></data>
+   <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ir para o Quadro de Imagem</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grade</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Esconder</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carregar Dados de Quadros de Imagens...</value></data>
@@ -268,38 +272,38 @@
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
    <data name="mnuMagnifier225" xml:space="preserve"><value>Zoom x2.25</value></data>
    <data name="mnuMagnifier250" xml:space="preserve"><value>Zoom x2.5</value></data>
-   
+   <data name="mnuMagnifierDirect" xml:space="preserve"><value>Mudar para Zoom Direto</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Fechar Lupa</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Espelhar</value></data>
    <data name="mnuOneCapture" xml:space="preserve"><value>Uma Tela de Captura</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Uma Tela de Reproduzir</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Reproduzir | Pausar</value></data>
-   <data name="mnuRestartTracking" xml:space="preserve"><value>Reiniciar Edição da Trajetória</value></data>
+   <data name="mnuRestartTracking" xml:space="preserve"><value>Reiniciar Edição do Caminho</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Salvar a Imagem Atual em Arquivo</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Telas</value></data>
-   
-   
+   <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar a medida...</value></data>
+   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Ajustar Velocidade Original...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ajustar o Último Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Ajustar o Primeiro Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Nitidez...</value></data>
-   
+   <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar Medida</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Estabilizar</value></data>
-   <data name="mnuStopTracking" xml:space="preserve"><value>Fim da Edição da Trajetória</value></data>
+   <data name="mnuStopTracking" xml:space="preserve"><value>Fim da Edição do Caminho</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverter a Posição dos Vídeos</value></data>
-   
-   
-   
+   <data name="mnuThumbnailDelete" xml:space="preserve"><value>Apagar arquivo</value></data>
+   <data name="mnuThumbnailRename" xml:space="preserve"><value>Renomear arquivo</value></data>
+   <data name="mnuThumbnailPlay" xml:space="preserve"><value>Reproduzir vídeo</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar/Esconder Controles em Comum</value></data>
-   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Desenhar Trajetória</value></data>
+   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Desenhar Caminho</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Ocorreu um Erro Desconhecido.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Erro ao Reproduzir.</value></data>
-   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Falha ao tentar salvar o arquivo: condificação não suportada.</value></data>
-   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Falha ao tentar salvar o arquivo: problema durante a inicialização do condificador.</value></data>
+   <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: condificação não suportada.</value></data>
+   <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: problema durante a inicialização do condificador.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Erro ao Salvar.</value></data>
-   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Falha ao tentar salvar o arquivo: não é possível escrever no arquivo.</value></data>
-   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Falha ao tentar salvar o arquivo: alguns erros ocorreram durante o processo de codificação.</value></data>
-   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Falha ao tentar salvar o arquivo: erro desconhecido.</value></data>
+   <data name="SaveMovie_FileNotOpened" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: não é possível salvá-lo.</value></data>
+   <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: alguns erros ocorreram durante o processo de codificação.</value></data>
+   <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: erro desconhecido.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Vazio</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clássico (h:mm:ss:centésimos)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de Quadros</value></data>
@@ -311,8 +315,8 @@
    <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Mudar para o Módulo de Análises</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Voltar ao Quadro Anterior</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil de Cores</value></data>
-   
-   
+   <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Desabilitar sobreposição de imagens.</value></data>
+   <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Habilitar sobreposição de imagens.</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copiar o Desenho do Quadro de Imagens anterior para o Quadro Atual.</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Ângulo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronômetro</value></data>
@@ -331,7 +335,7 @@
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salvar uma Sequência de Imagens</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Resetar a Zona de Trabalho ao comprimento do Vídeo</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salvar Slideshow a partir dos Quadros de Imagens</value></data>
-   
+   <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salvar vídeo com uma pausa em cada Quadro de Imagem.</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Ajustar o Primeiro Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Ajustar o Último Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostrar Comentários</value></data>
@@ -339,11 +343,11 @@
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Salvar a Imagem Atual em Arquivo</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ajustar a Zona de Trabalho</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Apenas Bordas...</value></data>
-   
+   <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveis automáticos...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Nitidez...</value></data>
-   
-   
-   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaico...</value></data>
+   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverso...</value></data>
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contraste Automático...</value></data>
    
    
 </root>

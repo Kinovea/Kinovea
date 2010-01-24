@@ -114,6 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Show the Target Marker</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Show Key Images Titles</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Show Path</value></data>
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Measurement:</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>None</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distance</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Speed</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mode :</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Path</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Style :</value></data>

@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         	m_Line =_line;
         	
         	m_fCurrentLengthPixels = Math.Sqrt(((m_Line.m_StartPoint.X - m_Line.m_EndPoint.X) * (m_Line.m_StartPoint.X - m_Line.m_EndPoint.X)) + ((m_Line.m_StartPoint.Y - m_Line.m_EndPoint.Y) * (m_Line.m_StartPoint.Y - m_Line.m_EndPoint.Y)));
-        	m_fCurrentLengthReal = m_Metadata.CalibrationHelper.GetLengthDouble(m_Line.m_StartPoint, m_Line.m_EndPoint);
+        	m_fCurrentLengthReal = m_Metadata.CalibrationHelper.GetLengthInUserUnit(m_Line.m_StartPoint, m_Line.m_EndPoint);
             	
         	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
         	
@@ -69,11 +69,11 @@ namespace Kinovea.ScreenManager
             lblRealSize.Text = m_ResourceManager.GetString("dlgConfigureMeasure_lblRealSize", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n");
             
             // Combo Units (MUST be filled in the order of the enum)
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Centimeters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Meters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Inches) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Feet) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetAbbreviationFromUnit(CalibrationHelper.LengthUnits.Yards) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Centimeters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Meters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Inches) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Feet) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Yards) + ")");
             
             // Update with current values.
             if(m_Metadata.CalibrationHelper.CurrentLengthUnit == CalibrationHelper.LengthUnits.Pixels)

@@ -114,6 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Arată markerul ţintă</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Arată numele cadrelor cheie </value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Arată traiectoria </value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mod :</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Traiectorie</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil :</value></data>

@@ -18,13 +18,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.Root.Languages;
+using Kinovea.ScreenManager;
 using System;
 using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using Kinovea.Root.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.Root
@@ -46,6 +47,7 @@ namespace Kinovea.Root
         private int m_iFilesToSave;
         private string m_UICultureName;
         private TimeCodeFormat m_TimeCodeFormat;
+        private SpeedUnits m_SpeedUnit;
         private ImageAspectRatio m_ImageAspectRatio;
         private bool m_bDeinterlaceByDefault;
         private Color m_GridColor;
@@ -81,6 +83,7 @@ namespace Kinovea.Root
             m_iFilesToSave = m_prefManager.HistoryCount;
             m_UICultureName = m_prefManager.GetSupportedCulture().Name;
             m_TimeCodeFormat = m_prefManager.TimeCodeFormat;
+            m_SpeedUnit = m_prefManager.SpeedUnit;
  			m_ImageAspectRatio = m_prefManager.AspectRatio;       
             m_bDeinterlaceByDefault = m_prefManager.DeinterlaceByDefault;
  			m_GridColor = m_prefManager.GridColor;
@@ -111,15 +114,17 @@ namespace Kinovea.Root
             LanguageIdentifier liPolish = new LanguageIdentifier("pl", PreferencesManager.LanguagePolish);
             LanguageIdentifier liRomanian = new LanguageIdentifier("ro", PreferencesManager.LanguageRomanian);
 			LanguageIdentifier liFinnish = new LanguageIdentifier("fi", PreferencesManager.LanguageFinnish);
-
+			LanguageIdentifier liNorwegian = new LanguageIdentifier("no", PreferencesManager.LanguageNorwegian);
+			
             // Order : Native Alphabetical.
-            // Deutsh, English, Español, Français, Italiano, Nederlands, Polski, Portuges, Romana, Suomi.
+            // Deutsh, English, Español, Français, Italiano, Nederlands, Norsk, Polski, Portuges, Romana, Suomi.
             cmbLanguage.Items.Add(liGerman);
             cmbLanguage.Items.Add(liEnglish);
             cmbLanguage.Items.Add(liSpanish);
             cmbLanguage.Items.Add(liFrench);
-            cmbLanguage.Items.Add(liDutch);
             cmbLanguage.Items.Add(liItalian);
+            cmbLanguage.Items.Add(liDutch);
+            cmbLanguage.Items.Add(liNorwegian);
             cmbLanguage.Items.Add(liPolish);
             cmbLanguage.Items.Add(liPortuguese);
             cmbLanguage.Items.Add(liRomanian);
@@ -134,8 +139,16 @@ namespace Kinovea.Root
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);
+            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);	// Debug purposes.
 
+            // Combo Speed units (MUST be filled in the order of the enum)
+            lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.MetersPerSecond)));
+			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.KilometersPerHour)));
+			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.FeetPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.MilesPerHour)));
+            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
+            	
 	        // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
             lblImageFormat.Text = RootLang.dlgPreferences_LabelImageFormat;
             cmbImageFormats.Items.Add(RootLang.dlgPreferences_FormatAuto);
@@ -164,6 +177,7 @@ namespace Kinovea.Root
             // Set up the controls with current prefs values.
             SelectCurrentLanguage();
             SelectCurrentTimecodeFormat();
+            SelectCurrentSpeedUnit();
             SelectCurrentImageFormat();
             chkDeinterlace.Checked = m_bDeinterlaceByDefault;
             cmbHistoryCount.SelectedIndex = m_iFilesToSave;
@@ -275,6 +289,18 @@ namespace Kinovea.Root
                 cmbTimeCodeFormat.SelectedIndex = 0;
             }
         }
+        private void SelectCurrentSpeedUnit()
+        {
+            // the combo box items have been filled in the order of the enum.
+            if ((int)m_SpeedUnit < cmbSpeedUnit.Items.Count)
+            {
+                cmbSpeedUnit.SelectedIndex = (int)m_SpeedUnit;
+            }
+            else
+            {
+                cmbSpeedUnit.SelectedIndex = 0;
+            }
+        }
         private void SelectCurrentImageFormat()
         {
         	// the combo box items have been filled in the order of the enum.
@@ -304,6 +330,11 @@ namespace Kinovea.Root
         {
             // the combo box items have been filled in the order of the enum.
             m_TimeCodeFormat = (TimeCodeFormat)cmbTimeCodeFormat.SelectedIndex;
+        }
+        private void cmbSpeedUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // the combo box items have been filled in the order of the enum.
+            m_SpeedUnit = (SpeedUnits)cmbSpeedUnit.SelectedIndex;
         }
         private void cmbImageAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -427,6 +458,7 @@ namespace Kinovea.Root
             m_prefManager.HistoryCount = m_iFilesToSave;
             m_prefManager.UICultureName = m_UICultureName;
             m_prefManager.TimeCodeFormat = m_TimeCodeFormat;
+            m_prefManager.SpeedUnit = m_SpeedUnit;
             m_prefManager.AspectRatio = m_ImageAspectRatio;
             m_prefManager.DeinterlaceByDefault = m_bDeinterlaceByDefault;
             m_prefManager.GridColor = m_GridColor;

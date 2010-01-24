@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
                 {
                 	// Text of the measure. (The helpers knows the unit)
 	                string text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);
-	                m_LabelMeasure.Text = text;
+	                m_LabelMeasure.TextInfos[0] = text;
 	                
 	                SetMeasureLabelPosition();
 	                m_LabelMeasure.ResetBackground(_fStretchFactor, _DirectZoomTopLeft);

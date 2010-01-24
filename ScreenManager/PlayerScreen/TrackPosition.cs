@@ -65,8 +65,8 @@ namespace Kinovea.ScreenManager
             // Data in user units.
             // - The origin of the coordinates system is given as parameter.
             // - X goes left (same than internal), Y goes up (opposite than internal).
-            double userX = _ParentMetadata.CalibrationHelper.GetLengthDouble((double)X - (double)_origin.X);
-            double userY = _ParentMetadata.CalibrationHelper.GetLengthDouble((double)_origin.Y - (double)Y);
+            double userX = _ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)X - (double)_origin.X);
+            double userY = _ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)_origin.Y - (double)Y);
             string userT = _ParentMetadata.m_TimeStampsToTimecodeCallback(T, TimeCodeFormat.Unknown, false);
 			
             _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
@@ -94,6 +94,10 @@ namespace Kinovea.ScreenManager
                 // will be : (0, 0, 0).
             }
         }
-        
+        public Point ToPoint()
+        {
+        	// Extract a simple Point.
+        	return new Point(X, Y);
+        }
     }
 }
