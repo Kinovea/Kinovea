@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
         public Int64 AverageTimeStampsPerFrame
         {
             get { return m_iAverageTimeStampsPerFrame; }
-            set { m_iAverageTimeStampsPerFrame = value; }
+            set { m_iAverageTimeStampsPerFrame = value;}
         }
         public Int64 FirstTimeStamp
         {

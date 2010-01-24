@@ -38,7 +38,9 @@ namespace Kinovea.ScreenManager
         	this.tbLabel = new System.Windows.Forms.TextBox();
         	this.lblLabel = new System.Windows.Forms.Label();
         	this.grpConfig = new System.Windows.Forms.GroupBox();
+        	this.cmbExtraData = new System.Windows.Forms.ComboBox();
         	this.btnLabel = new System.Windows.Forms.Button();
+        	this.lblExtra = new System.Windows.Forms.Label();
         	this.btnFocus = new System.Windows.Forms.Button();
         	this.btnComplete = new System.Windows.Forms.Button();
         	this.radioLabel = new System.Windows.Forms.RadioButton();
@@ -80,9 +82,9 @@ namespace Kinovea.ScreenManager
         	this.grpAppearance.Controls.Add(this.lblStyle);
         	this.grpAppearance.Controls.Add(this.lblColor);
         	this.grpAppearance.Controls.Add(this.btnTextColor);
-        	this.grpAppearance.Location = new System.Drawing.Point(12, 220);
+        	this.grpAppearance.Location = new System.Drawing.Point(12, 255);
         	this.grpAppearance.Name = "grpAppearance";
-        	this.grpAppearance.Size = new System.Drawing.Size(362, 110);
+        	this.grpAppearance.Size = new System.Drawing.Size(362, 72);
         	this.grpAppearance.TabIndex = 29;
         	this.grpAppearance.TabStop = false;
         	this.grpAppearance.Text = "Generic_Appearance";
@@ -95,7 +97,7 @@ namespace Kinovea.ScreenManager
         	this.btnLineStyle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnLineStyle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnLineStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnLineStyle.Location = new System.Drawing.Point(79, 63);
+        	this.btnLineStyle.Location = new System.Drawing.Point(253, 24);
         	this.btnLineStyle.Name = "btnLineStyle";
         	this.btnLineStyle.Size = new System.Drawing.Size(84, 25);
         	this.btnLineStyle.TabIndex = 44;
@@ -106,7 +108,7 @@ namespace Kinovea.ScreenManager
         	// lblStyle
         	// 
         	this.lblStyle.AutoSize = true;
-        	this.lblStyle.Location = new System.Drawing.Point(14, 69);
+        	this.lblStyle.Location = new System.Drawing.Point(191, 30);
         	this.lblStyle.Name = "lblStyle";
         	this.lblStyle.Size = new System.Drawing.Size(36, 13);
         	this.lblStyle.TabIndex = 37;
@@ -115,7 +117,7 @@ namespace Kinovea.ScreenManager
         	// lblColor
         	// 
         	this.lblColor.AutoSize = true;
-        	this.lblColor.Location = new System.Drawing.Point(14, 30);
+        	this.lblColor.Location = new System.Drawing.Point(21, 30);
         	this.lblColor.Name = "lblColor";
         	this.lblColor.Size = new System.Drawing.Size(37, 13);
         	this.lblColor.TabIndex = 36;
@@ -136,9 +138,9 @@ namespace Kinovea.ScreenManager
         	// 
         	// tbLabel
         	// 
-        	this.tbLabel.Location = new System.Drawing.Point(80, 158);
+        	this.tbLabel.Location = new System.Drawing.Point(146, 158);
         	this.tbLabel.Name = "tbLabel";
-        	this.tbLabel.Size = new System.Drawing.Size(181, 20);
+        	this.tbLabel.Size = new System.Drawing.Size(167, 20);
         	this.tbLabel.TabIndex = 30;
         	this.tbLabel.TextChanged += new System.EventHandler(this.tbLabel_TextChanged);
         	// 
@@ -155,7 +157,9 @@ namespace Kinovea.ScreenManager
         	// 
         	this.grpConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.grpConfig.Controls.Add(this.cmbExtraData);
         	this.grpConfig.Controls.Add(this.btnLabel);
+        	this.grpConfig.Controls.Add(this.lblExtra);
         	this.grpConfig.Controls.Add(this.btnFocus);
         	this.grpConfig.Controls.Add(this.btnComplete);
         	this.grpConfig.Controls.Add(this.radioLabel);
@@ -165,10 +169,19 @@ namespace Kinovea.ScreenManager
         	this.grpConfig.Controls.Add(this.lblLabel);
         	this.grpConfig.Location = new System.Drawing.Point(12, 12);
         	this.grpConfig.Name = "grpConfig";
-        	this.grpConfig.Size = new System.Drawing.Size(362, 202);
+        	this.grpConfig.Size = new System.Drawing.Size(362, 237);
         	this.grpConfig.TabIndex = 51;
         	this.grpConfig.TabStop = false;
         	this.grpConfig.Text = "Generic_Configuration";
+        	// 
+        	// cmbExtraData
+        	// 
+        	this.cmbExtraData.FormattingEnabled = true;
+        	this.cmbExtraData.Location = new System.Drawing.Point(146, 195);
+        	this.cmbExtraData.Name = "cmbExtraData";
+        	this.cmbExtraData.Size = new System.Drawing.Size(167, 21);
+        	this.cmbExtraData.TabIndex = 46;
+        	this.cmbExtraData.SelectedIndexChanged += new System.EventHandler(this.CmbExtraData_SelectedIndexChanged);
         	// 
         	// btnLabel
         	// 
@@ -184,6 +197,15 @@ namespace Kinovea.ScreenManager
         	this.btnLabel.TabIndex = 49;
         	this.btnLabel.UseVisualStyleBackColor = false;
         	this.btnLabel.Click += new System.EventHandler(this.btnLabel_Click);
+        	// 
+        	// lblExtra
+        	// 
+        	this.lblExtra.AutoSize = true;
+        	this.lblExtra.Location = new System.Drawing.Point(21, 200);
+        	this.lblExtra.Name = "lblExtra";
+        	this.lblExtra.Size = new System.Drawing.Size(97, 13);
+        	this.lblExtra.TabIndex = 45;
+        	this.lblExtra.Text = "Distance / Speed :";
         	// 
         	// btnFocus
         	// 
@@ -275,6 +297,8 @@ namespace Kinovea.ScreenManager
         	this.grpConfig.PerformLayout();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Label lblExtra;
+        private System.Windows.Forms.ComboBox cmbExtraData;
         private System.Windows.Forms.Button btnLabel;
         private System.Windows.Forms.Button btnFocus;
         private System.Windows.Forms.Button btnComplete;

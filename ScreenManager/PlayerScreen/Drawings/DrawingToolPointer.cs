@@ -381,7 +381,9 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < _Metadata.Tracks.Count; i++)
             {
-
+				// Result: 
+            	// -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
+            
                 int handle = _Metadata.Tracks[i].HitTest(_MouseCoordinates, _iCurrentTimeStamp);
 
                 if (handle >= 0)
@@ -492,12 +494,8 @@ namespace Kinovea.ScreenManager
         private void SetupHandCursors()
         {
         	// Hand cursor.
-        	// In the end the hand cursor is not really appropriate because it's not accurate enough.
-			// So we use the Cross cursor for general use, and the hand only when actually dragging.
-			
-            //Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Resources.handopen24b;
-            //m_curHandOpen = new Cursor(bmpOpen.GetHicon());
-			m_curHandOpen = Cursors.Cross;
+        	Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Resources.handopen24c;
+            m_curHandOpen = new Cursor(bmpOpen.GetHicon());
             
             Bitmap bmpClose = Kinovea.ScreenManager.Properties.Resources.handclose24b;
             m_curHandClose = new Cursor(bmpClose.GetHicon());

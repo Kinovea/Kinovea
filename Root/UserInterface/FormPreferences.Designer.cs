@@ -34,6 +34,8 @@ namespace Kinovea.Root
         	this.btnGeneral = new System.Windows.Forms.Button();
         	this.pageGeneral = new System.Windows.Forms.Panel();
         	this.grpGeneral = new System.Windows.Forms.GroupBox();
+        	this.cmbSpeedUnit = new System.Windows.Forms.ComboBox();
+        	this.lblSpeedUnit = new System.Windows.Forms.Label();
         	this.chkDeinterlace = new System.Windows.Forms.CheckBox();
         	this.cmbImageFormats = new System.Windows.Forms.ComboBox();
         	this.lblImageFormat = new System.Windows.Forms.Label();
@@ -162,6 +164,8 @@ namespace Kinovea.Root
         	// 
         	// grpGeneral
         	// 
+        	this.grpGeneral.Controls.Add(this.cmbSpeedUnit);
+        	this.grpGeneral.Controls.Add(this.lblSpeedUnit);
         	this.grpGeneral.Controls.Add(this.chkDeinterlace);
         	this.grpGeneral.Controls.Add(this.cmbImageFormats);
         	this.grpGeneral.Controls.Add(this.lblImageFormat);
@@ -178,9 +182,27 @@ namespace Kinovea.Root
         	this.grpGeneral.TabStop = false;
         	this.grpGeneral.Text = "General";
         	// 
+        	// cmbSpeedUnit
+        	// 
+        	this.cmbSpeedUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        	this.cmbSpeedUnit.Location = new System.Drawing.Point(199, 149);
+        	this.cmbSpeedUnit.Name = "cmbSpeedUnit";
+        	this.cmbSpeedUnit.Size = new System.Drawing.Size(184, 21);
+        	this.cmbSpeedUnit.TabIndex = 20;
+        	this.cmbSpeedUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSpeedUnit_SelectedIndexChanged);
+        	// 
+        	// lblSpeedUnit
+        	// 
+        	this.lblSpeedUnit.AutoSize = true;
+        	this.lblSpeedUnit.Location = new System.Drawing.Point(6, 152);
+        	this.lblSpeedUnit.Name = "lblSpeedUnit";
+        	this.lblSpeedUnit.Size = new System.Drawing.Size(123, 13);
+        	this.lblSpeedUnit.TabIndex = 19;
+        	this.lblSpeedUnit.Text = "Preferred unit for speed :";
+        	// 
         	// chkDeinterlace
         	// 
-        	this.chkDeinterlace.Location = new System.Drawing.Point(13, 193);
+        	this.chkDeinterlace.Location = new System.Drawing.Point(13, 223);
         	this.chkDeinterlace.Name = "chkDeinterlace";
         	this.chkDeinterlace.Size = new System.Drawing.Size(369, 20);
         	this.chkDeinterlace.TabIndex = 18;
@@ -191,7 +213,7 @@ namespace Kinovea.Root
         	// cmbImageFormats
         	// 
         	this.cmbImageFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-        	this.cmbImageFormats.Location = new System.Drawing.Point(199, 157);
+        	this.cmbImageFormats.Location = new System.Drawing.Point(199, 187);
         	this.cmbImageFormats.Name = "cmbImageFormats";
         	this.cmbImageFormats.Size = new System.Drawing.Size(183, 21);
         	this.cmbImageFormats.TabIndex = 17;
@@ -200,7 +222,7 @@ namespace Kinovea.Root
         	// lblImageFormat
         	// 
         	this.lblImageFormat.AutoSize = true;
-        	this.lblImageFormat.Location = new System.Drawing.Point(6, 160);
+        	this.lblImageFormat.Location = new System.Drawing.Point(6, 190);
         	this.lblImageFormat.Name = "lblImageFormat";
         	this.lblImageFormat.Size = new System.Drawing.Size(110, 13);
         	this.lblImageFormat.TabIndex = 16;
@@ -550,6 +572,8 @@ namespace Kinovea.Root
         	((System.ComponentModel.ISupportInitialize)(this.trkFading)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Label lblSpeedUnit;
+        private System.Windows.Forms.ComboBox cmbSpeedUnit;
         private System.Windows.Forms.CheckBox chkDeinterlace;
         private System.Windows.Forms.Label lblImageFormat;
         private System.Windows.Forms.ComboBox cmbImageFormats;

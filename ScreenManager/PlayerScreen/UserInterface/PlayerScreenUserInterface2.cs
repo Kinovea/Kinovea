@@ -656,6 +656,9 @@ namespace Kinovea.ScreenManager
 			{
 				EnableDisableKeyframes();
 			}
+			
+			m_FrameServer.Metadata.CalibrationHelper.CurrentSpeedUnit = m_PrefManager.SpeedUnit;
+			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
 			// Refresh image to update timecode in chronos, grids colors, default fading, etc.
 			pbSurfaceScreen.Invalidate();
@@ -4072,6 +4075,7 @@ namespace Kinovea.ScreenManager
 						fcm.ShowDialog();
 						fcm.Dispose();
 						
+						m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 						pbSurfaceScreen.Invalidate();
 						
 						if (dp.ActivateKeyboardHandler != null)

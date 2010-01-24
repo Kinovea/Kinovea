@@ -105,6 +105,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferencias…</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Cargando la Interfaz Gráfica ...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value></data>

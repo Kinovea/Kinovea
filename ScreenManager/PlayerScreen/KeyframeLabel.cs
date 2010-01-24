@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -36,15 +37,20 @@ namespace Kinovea.ScreenManager
 	/// The background position can be absolute or relative to the ref point.
 	/// The ref point is stored in TrackPos.
 	/// Background shift is directly stored in Background.Location. 
+	/// 
+	/// The text to display is actually reset just before we need to draw it.
+	/// The TextInfos list is currently not used as a list, and only its first element
+	/// is ever filled.
 	/// </summary>
     public class KeyframeLabel
     {
         #region Properties
-        public string Text
-        {
-            get { return m_Text; }
-            set { m_Text = value; }
-        }
+		public List<string> TextInfos
+		{
+			// List of strings to display (label, KF title, speed, distance).
+			get { return m_TextInfos; }
+			set { m_TextInfos = value; }
+		}
         public InfosTextDecoration TextDecoration
         {
         	get { return m_TextDecoration;}
@@ -61,8 +67,13 @@ namespace Kinovea.ScreenManager
         			Background.Location = new Point(m_TrackPos.X + 25, m_TrackPos.Y);
         		}
         	}
-        	
         }
+        public int ClosestPoint
+		{
+			get { return m_iClosestPoint; }
+			set { m_iClosestPoint = value; }
+		}
+
         #endregion
 
         public long iTimestamp;                 // Absolute time (Different than m_TrackPos.T).
@@ -72,10 +83,12 @@ namespace Kinovea.ScreenManager
         public bool m_bBackgroundIsRelative;
 
         #region Members
-        private string m_Text;
+        private List<string> m_TextInfos = new List<string>();
+        //private int m_TitleText = -1; 			// If set, corresponds to the title index in m_TextInfos.
         private InfosTextDecoration m_TextDecoration;
         private double m_fRescaledFontSize;
         private TrackPosition m_TrackPos = new TrackPosition(0, 0, 0);
+        private int m_iClosestPoint;				// The index of the point in the track points list.
         #endregion
 
         #region Construction
@@ -87,7 +100,7 @@ namespace Kinovea.ScreenManager
         {
         	m_bBackgroundIsRelative = _bIsBackgroundRelative;
             Background = new Rectangle(-20, -50, 1, 1);
-            m_Text = "Label";
+            m_TextInfos.Add("Label");
             m_TextDecoration = new InfosTextDecoration("Arial", 8, FontStyle.Bold, Color.White, Color.FromArgb(160, _color));
 			m_fRescaledFontSize = (double)m_TextDecoration.FontSize;
         }
@@ -118,7 +131,7 @@ namespace Kinovea.ScreenManager
             // 1. Unscaled values
             Button but = new Button();
             Graphics g = but.CreateGraphics();
-            SizeF bgSize = g.MeasureString( " " + m_Text + " ", m_TextDecoration.GetInternalFont() );
+            SizeF bgSize = g.MeasureString( " " + m_TextInfos[0] + " ", m_TextDecoration.GetInternalFont() );
             g.Dispose();
             Background.Width = (int)bgSize.Width + 8;
             Background.Height = (int)bgSize.Height + 4;
@@ -151,9 +164,9 @@ namespace Kinovea.ScreenManager
         {
             int iHash = 0;
             
-            if (m_bBackgroundIsRelative)
+            if (m_bBackgroundIsRelative && m_TextInfos.Count > 0 && m_TextInfos[0] != null)
             {
-                iHash ^= m_Text.GetHashCode(); 
+            	iHash ^= m_TextInfos[0].GetHashCode();
             }
             iHash ^= m_TextDecoration.GetHashCode();
             iHash ^= Background.Location.GetHashCode();
@@ -309,7 +322,7 @@ namespace Kinovea.ScreenManager
             Font f = m_TextDecoration.GetInternalFont();
             Font fontText = new Font(f.FontFamily, (float)m_fRescaledFontSize, f.Style);
             
-            _canvas.DrawString(" " + m_Text, fontText, new SolidBrush(m_TextDecoration.GetFadingForeColor(_fFadingFactor)), new Point(RescaledBackground.X + iOffsetX + 5, RescaledBackground.Y + iOffsetY + 3));
+            _canvas.DrawString(" " + m_TextInfos[0], fontText, new SolidBrush(m_TextDecoration.GetFadingForeColor(_fFadingFactor)), new Point(RescaledBackground.X + iOffsetX + 5, RescaledBackground.Y + iOffsetY + 3));
         }
         #endregion
     }

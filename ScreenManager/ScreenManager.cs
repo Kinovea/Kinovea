@@ -583,7 +583,7 @@ namespace Kinovea.ScreenManager
 
             ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
 
-            // No submodules.
+            // No submodules.            
         }
         public void CloseSubModules()
         {

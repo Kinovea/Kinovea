@@ -114,6 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostra riquadro marcatore bersaglio</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostra Titoli delle Immagini Chiave</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostra la Traiettoria</value></data>
+   
+   
+   
+   
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modalita' :</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Traiettoria</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stile :</value></data>

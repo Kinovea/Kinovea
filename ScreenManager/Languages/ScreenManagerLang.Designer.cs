@@ -556,6 +556,42 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à None.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_None {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Speed.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_Speed {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Distance.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_ExtraData_TotalDistance {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_ExtraData_TotalDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Measurement:.
+        /// </summary>
+        internal static string dlgConfigureTrajectory_LabelExtraData {
+            get {
+                return ResourceManager.GetString("dlgConfigureTrajectory_LabelExtraData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Mode :.
         /// </summary>
         internal static string dlgConfigureTrajectory_lblMode {

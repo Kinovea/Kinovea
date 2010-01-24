@@ -367,6 +367,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Speed unit:.
+        /// </summary>
+        internal static string dlgPreferences_LabelSpeedUnit {
+            get {
+                return ResourceManager.GetString("dlgPreferences_LabelSpeedUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Time markers format:.
         /// </summary>
         internal static string dlgPreferences_LabelTimeFormat {
@@ -399,6 +408,51 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_lblFading {
             get {
                 return ResourceManager.GetString("dlgPreferences_lblFading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Feet per second ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Speed_FeetPerSecond {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Speed_FeetPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Kilometers per hour ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Speed_KilometersPerHour {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Speed_KilometersPerHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Knots ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Speed_Knots {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Speed_Knots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Meters per second ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Speed_MetersPerSecond {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Speed_MetersPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Miles per hour ({0}).
+        /// </summary>
+        internal static string dlgPreferences_Speed_MilesPerHour {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Speed_MilesPerHour", resourceCulture);
             }
         }
         

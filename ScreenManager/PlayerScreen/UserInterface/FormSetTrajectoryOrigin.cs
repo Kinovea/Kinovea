@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
 			int iCoordY = m_RealOrigin.Y - (int)((float)e.Y * m_fRatio);
 			string textX = m_ParentMetadata.CalibrationHelper.GetLengthText((double)iCoordX, false, false);
 			string textY = m_ParentMetadata.CalibrationHelper.GetLengthText((double)iCoordY, false, false);
-			m_Text = String.Format("{{{0};{1}}} {2}", textX, textY, m_ParentMetadata.CalibrationHelper.GetAbbreviation());
+			m_Text = String.Format("{{{0};{1}}} {2}", textX, textY, m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
 			
 			picPreview.Invalidate();
 		}

@@ -105,6 +105,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Working Zone will take less than {0} MB of Memory.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Working Zone is less than {0} seconds.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>By default, drawings will stay visible for {0} images around the Key Image.</value></data>
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Speed unit:</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meters per second ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometers per hour ({0})</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Feet per second ({0})</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles per hour ({0})</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knots ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferences…</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Loading User Interface…</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancel</value></data>
