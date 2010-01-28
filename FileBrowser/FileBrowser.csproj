@@ -95,6 +95,7 @@
     </Compile>
     <EmbeddedResource Include="Languages\FileBrowserLang.fi.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.nl.resx" />
+    <EmbeddedResource Include="Languages\FileBrowserLang.zh-CHS.resx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Services\Services.csproj">

@@ -67,7 +67,7 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Überprüfen Sie, ob Updates erhältlich sind ... </value></data>
+   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Auf Updates prüfen...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Eine neue Version ist verfügbar ! </value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Bitte wählen Sie den Ordner, in dem das Programm installiert wird. </value></data>
    <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Wählen Sie das Zielverzeichnis. </value></data>
@@ -79,7 +79,7 @@
    <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Update verfügbar </value></data>
    <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Neu </value></data>
    <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Aktualisiert </value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Klicken Sie auf die Schaltfläche 'Herunterladen' um das Herunterladen zu starten.</value></data>
+   <data name="Updater_Instruction" xml:space="preserve"><value>Klicken Sie auf die Schaltfläche 'Herunterladen' um den Download zu starten.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Ein Fehler ist aufgetreten, während der Prüfung. Bitte stellen Sie sicher, dass die Internet-Verbindung betriebsbereit ist. </value></data>
    <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Alle Anleitungen sind aktuell </value></data>
    <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Alle Videos sind aktualisiert</value></data>
