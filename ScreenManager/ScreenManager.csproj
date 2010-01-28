@@ -390,6 +390,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.fi.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
     </EmbeddedResource>

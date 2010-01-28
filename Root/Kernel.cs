@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
  */
 
 
+using Kinovea.Root.Languages;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -27,7 +28,6 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.FileBrowser;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
@@ -76,6 +76,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuRomanian = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFinnish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuNorwegian = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
@@ -212,7 +213,7 @@ namespace Kinovea.Root
         public void RefreshUICulture()
         {
             log.Debug("RefreshUICulture - Reload localized strings for the whole tree.");
-            
+         
             // Menu
             foreach (ToolStripItem item in MainWindow.menuStrip.Items)
             {
@@ -484,6 +485,10 @@ namespace Kinovea.Root
             mnuNorwegian = new ToolStripMenuItem(PreferencesManager.LanguageNorwegian);
             mnuNorwegian.Click += new EventHandler(menuNorwegianOnClick);
             
+            // Chinese
+            mnuChinese = new ToolStripMenuItem(PreferencesManager.LanguageChinese);
+            mnuChinese.Click += new EventHandler(menuChineseOnClick);
+            
             // Re-Order alphabetically by localized name.
             // Deutsh, English, Español, Français, Italiano, Nederlands, Norsk, Polski, Portuges, Romana, Suomi.
             mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { 
@@ -497,7 +502,8 @@ namespace Kinovea.Root
                                                 						mnuPolish, 
                                                 						mnuPortuguese, 
                                                 						mnuRomanian, 
-                                                						mnuFinnish });
+                                                						mnuFinnish,
+                                                						mnuChinese });
             #endregion
 
             // Preferences
@@ -588,7 +594,7 @@ namespace Kinovea.Root
                     RefreshSubMenu(subItem);
                 }
             }
-
+            
             // This item
             if (item.Tag != null)
             {
@@ -755,6 +761,10 @@ namespace Kinovea.Root
         {
             SwitchCulture("no");
         }
+        private void menuChineseOnClick(object sender, EventArgs e)
+        {
+            SwitchCulture("zh-CHS");
+        }
         private void SwitchCulture(string name)
         {
             IUndoableCommand command = new CommandSwitchUICulture(this, Thread.CurrentThread, new CultureInfo(name), Thread.CurrentThread.CurrentUICulture);
@@ -774,7 +784,8 @@ namespace Kinovea.Root
             mnuRomanian.Checked = false;
             mnuFinnish.Checked = false;
             mnuNorwegian.Checked = false;
-
+			mnuChinese.Checked = false;
+			
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
             
             switch (ci.Name)
@@ -808,6 +819,9 @@ namespace Kinovea.Root
                     break;
                 case "no":
                     mnuNorwegian.Checked = true;
+                    break;
+                case "zh-CHS":
+                    mnuChinese.Checked = true;
                     break;
                 case "en":
                 default:
