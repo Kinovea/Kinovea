@@ -1,5 +1,6 @@
+﻿#region License
 /*
-Copyright � Joan Charmant 2008.
+Copyright © Joan Charmant 2010.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,9 +16,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
-
+#endregion
 using Kinovea.Services;
 using System;
 using System.Drawing;
@@ -26,35 +26,39 @@ using System.Xml;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// A class to represent a 3D (x, y, time) point for trajectories.
-	/// It also embed an image patch for comparisons.
+	/// AbstractTrackPoint defines the common interface of a track position, 
+	/// and implements the common utility methods.
+	/// This class is not intended to be instanciated directly, 
+	/// use one of the derivative class instead, like TrackPointSURF or TrackPointBlock.
+	/// 
+	/// TrackPoints are always instanciated by Tracker concrete implementations.
+	/// At this abstract level, the TrackPoint is basically a 3D (x, y, timestamp) point.
 	/// </summary>
-    public class TrackPosition
-    {
-        public int X;
+	public abstract class AbstractTrackPoint
+	{
+		#region Members
+		public int X;
         public int Y;
         public long T;          // timestamp relative to the first time stamp of the track
-        public Bitmap Image;    // Template zone to be matched.
-
-        public TrackPosition(int _x, int _y, long _t)
+        #endregion
+		
+        #region Abstract Methods
+		/// <summary>
+		/// Reset data. This is used when the user manually moves a point.
+		/// Dispose any unmanaged resource.
+		/// </summary>
+        public abstract void ResetTrackData();
+        #endregion
+        
+        #region Concrete Constructor
+        public AbstractTrackPoint()
         {
-            X = _x;
-            Y = _y;
-            T = _t;
-            Image = null;
+        	//not implemented.
         }
-        public TrackPosition(int _x, int _y, long _t, Bitmap _img)
-        {
-            X = _x;
-            Y = _y;
-            T = _t;
-            Image = _img;
-        }
-        public override int GetHashCode()
-        {
-            return X.GetHashCode() ^ Y.GetHashCode() ^ T.GetHashCode();
-        }
-        public void ToXml(XmlTextWriter _xmlWriter, Metadata _ParentMetadata, Point _origin)
+        #endregion
+        
+		#region Concrete Public Methods
+		public void ToXml(XmlTextWriter _xmlWriter, Metadata _ParentMetadata, Point _origin)
         {
         	// In addition to the native data (the one that will be used when reading back the trajectory.)
         	// we also add the data in user units as attributes.
@@ -77,7 +81,7 @@ namespace Kinovea.ScreenManager
 			_xmlWriter.WriteString(X.ToString() + ";" + Y.ToString() + ";" + T.ToString());
             _xmlWriter.WriteEndElement();
         }
-        public void FromXml(XmlReader _xmlReader)
+		public void FromXml(XmlReader _xmlReader)
         {
             string xmlString = _xmlReader.ReadString();
 
@@ -94,10 +98,15 @@ namespace Kinovea.ScreenManager
                 // will be : (0, 0, 0).
             }
         }
-        public Point ToPoint()
+		public Point ToPoint()
         {
-        	// Extract a simple Point.
+        	// Extract to a simple Point.
         	return new Point(X, Y);
         }
-    }
+		public override int GetHashCode()
+        {
+            return X.GetHashCode() ^ Y.GetHashCode() ^ T.GetHashCode();
+        }
+		#endregion
+	}
 }

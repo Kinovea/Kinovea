@@ -248,7 +248,7 @@
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Delete</value></data>
    <data name="mnuDeleteEndOfTrajectory" xml:space="preserve"><value>Delete Path after this Point</value></data>
-   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Delete all the Paths</value></data>
+   <data name="mnuDeleteTrajectory" xml:space="preserve"><value>Delete all the Path</value></data>
    <data name="mnuTwoCaptures" xml:space="preserve"><value>Two Capture Screens</value></data>
    <data name="mnuTwoMixed" xml:space="preserve"><value>One Capture screen and one Playback screen</value></data>
    <data name="mnuTwoPlayers" xml:space="preserve"><value>Two Playback Screens</value></data>

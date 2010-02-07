@@ -55,18 +55,23 @@ namespace Kinovea.ScreenManager
         {
         	get { return m_TextDecoration;}
         }
-        public TrackPosition TrackPos
+        public Point Location
         {
-        	get { return m_TrackPos;}
+        	get { return m_Location;}
         	set 
         	{
-        		m_TrackPos = value;
+        		m_Location = value;
         		if(!m_bBackgroundIsRelative)
         		{
         			// We must reset the background position.
-        			Background.Location = new Point(m_TrackPos.X + 25, m_TrackPos.Y);
+        			Background.Location = new Point(m_Location.X + 25, m_Location.Y);
         		}
         	}
+        }
+        public long Timestamp
+        {
+        	get { return m_iTimestamp; }
+			set { m_iTimestamp = value; }	
         }
         public int ClosestPoint
 		{
@@ -75,19 +80,22 @@ namespace Kinovea.ScreenManager
 		}
 
         #endregion
-
-        public long iTimestamp;                 // Absolute time (Different than m_TrackPos.T).
-        public TrackPosition RescaledTrackPos = new TrackPosition(0, 0, 0);
+        private long m_iTimestamp;                 // Absolute time.
+        
+        //public TrackPosition RescaledTrackPos = new TrackPosition(0, 0, 0);
+        //public AbstractTrackPoint RescaledTrackPos = new AbstractTrackPoint();
         public Rectangle Background;            // Absolute positionning (as original image size)
         public Rectangle RescaledBackground;    // Relative positionning (as current image size)
         public bool m_bBackgroundIsRelative;
 
         #region Members
         private List<string> m_TextInfos = new List<string>();
-        //private int m_TitleText = -1; 			// If set, corresponds to the title index in m_TextInfos.
+        
+        private Point m_RescaledLocation = new Point(0,0);
+        private Point m_Location = new Point(0,0);
+        
         private InfosTextDecoration m_TextDecoration;
         private double m_fRescaledFontSize;
-        private TrackPosition m_TrackPos = new TrackPosition(0, 0, 0);
         private int m_iClosestPoint;				// The index of the point in the track points list.
         #endregion
 
@@ -113,8 +121,8 @@ namespace Kinovea.ScreenManager
             int iOffsetY = 0;
             if (m_bBackgroundIsRelative)
             {
-                iOffsetX = m_TrackPos.X;
-                iOffsetY = m_TrackPos.Y;
+                iOffsetX = m_Location.X;
+                iOffsetY = m_Location.Y;
             }
 
             Rectangle hitRect = new Rectangle(Background.X + iOffsetX, Background.Y + iOffsetY, Background.Width, Background.Height);
@@ -155,9 +163,14 @@ namespace Kinovea.ScreenManager
 
             RescaledBackground.Size = new Size((int)((double)Background.Width * _fStretchFactor), (int)((double)Background.Height * _fStretchFactor));
             
-            if(m_TrackPos != null)
+            if(m_Location != null)
             {
-            	RescaledTrackPos = new TrackPosition((int)((double)(m_TrackPos.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TrackPos.Y - _DirectZoomTopLeft.Y) * _fStretchFactor), m_TrackPos.T);
+            	//RescaledTrackPos = new TrackPosition((int)((double)(m_TrackPos.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TrackPos.Y - _DirectZoomTopLeft.Y) * _fStretchFactor), m_TrackPos.T);
+            	
+            	// Todo: use CoordinateSystem?
+            	m_RescaledLocation = new Point(	(int)((double)(m_Location.X - _DirectZoomTopLeft.X) * _fStretchFactor),
+            	                             	(int)((double)(m_Location.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
+            	                             
             }
         }
         public override int GetHashCode()
@@ -184,11 +197,13 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteEndElement();
 
             _xmlWriter.WriteStartElement("TimePosition");
-			// For regular Keyframes labels, the time position saved in the xml is absolute.
+			
+            // For regular Keyframes labels, the time position saved in the xml is absolute.
             long ts = 0;
             if (!m_bBackgroundIsRelative)
             {
-                ts = m_TrackPos.T + _iBeginTimeStamp;
+                //ts = m_Location.T + _iBeginTimeStamp;
+                ts = m_iTimestamp;
             }
             _xmlWriter.WriteString(ts.ToString());
             _xmlWriter.WriteEndElement();
@@ -219,7 +234,7 @@ namespace Kinovea.ScreenManager
                     else if (_xmlReader.Name == "TimePosition")
                     {
                         // Time was stored absolute.
-                        kfl.iTimestamp = long.Parse(_xmlReader.ReadString());
+                        kfl.m_iTimestamp = long.Parse(_xmlReader.ReadString());
                     }
                     else if (_xmlReader.Name == "TextDecoration")
                     {
@@ -276,8 +291,8 @@ namespace Kinovea.ScreenManager
                 // (i.e: can be negative.)
                 // Hence we need add to it the current track position.
 
-                iOffsetX = RescaledTrackPos.X;
-                iOffsetY = RescaledTrackPos.Y;
+                iOffsetX = m_RescaledLocation.X;
+                iOffsetY = m_RescaledLocation.Y;
             }
 
             gp.AddArc(RescaledBackground.X + iOffsetX, RescaledBackground.Y + iOffsetY, diameter, diameter, 180, 90);
@@ -298,10 +313,10 @@ namespace Kinovea.ScreenManager
             Color moreFadingColor = m_TextDecoration.GetFadingBackColor(_fFadingFactor/4);
             
             // Small dot
-            _canvas.FillEllipse(new SolidBrush(fadingColor), RescaledTrackPos.X - 2, RescaledTrackPos.Y - 2, 4, 4);
+            _canvas.FillEllipse(new SolidBrush(fadingColor), m_RescaledLocation.X - 2, m_RescaledLocation.Y - 2, 4, 4);
             
             // Connector
-            _canvas.DrawLine(new Pen(moreFadingColor), RescaledTrackPos.X, RescaledTrackPos.Y, RescaledBackground.X + iOffsetX + RescaledBackground.Width / 2, RescaledBackground.Y + iOffsetY + RescaledBackground.Height / 2);
+            _canvas.DrawLine(new Pen(moreFadingColor), m_RescaledLocation.X, m_RescaledLocation.Y, RescaledBackground.X + iOffsetX + RescaledBackground.Width / 2, RescaledBackground.Y + iOffsetY + RescaledBackground.Height / 2);
 
             // Rounded rectangle
             _canvas.FillPath(new SolidBrush(fadingColor), gp);
@@ -313,8 +328,8 @@ namespace Kinovea.ScreenManager
             if (m_bBackgroundIsRelative)
             {
                 // see comment in DrawBackground
-                iOffsetX = RescaledTrackPos.X;
-                iOffsetY = RescaledTrackPos.Y;
+                iOffsetX = m_RescaledLocation.X;
+                iOffsetY = m_RescaledLocation.Y;
             }
 
             // TODO: we should be able to get a font at the right size given a multiplicator somehow.

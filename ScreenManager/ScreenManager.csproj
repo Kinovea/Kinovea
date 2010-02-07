@@ -175,8 +175,13 @@
     <Compile Include="PlayerScreen\SURF\KDTree.cs" />
     <Compile Include="PlayerScreen\SURF\Match.cs" />
     <Compile Include="PlayerScreen\SURF\Surf.cs" />
-    <Compile Include="PlayerScreen\Track.cs" />
-    <Compile Include="PlayerScreen\TrackPosition.cs" />
+    <Compile Include="PlayerScreen\Tracking\AbstractTracker.cs" />
+    <Compile Include="PlayerScreen\Tracking\AbstractTrackPoint.cs" />
+    <Compile Include="PlayerScreen\Tracking\Track.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackerBlock.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
@@ -414,6 +419,7 @@
     </ProjectReference>
     <Folder Include="CaptureScreen\UserInterface" />
     <Folder Include="Commands\CaptureScreen" />
+    <Folder Include="PlayerScreen\Tracking" />
     <Folder Include="PlayerScreen\SURF" />
     <Folder Include="PlayerScreen\VideoFilters" />
   </ItemGroup>

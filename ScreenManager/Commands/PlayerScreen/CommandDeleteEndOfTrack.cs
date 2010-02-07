@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
         private Metadata m_Metadata;
         private int m_iTrackIndex;
         private long m_iTimeStamp;
-        public List<TrackPosition> m_Positions;
+        public List<AbstractTrackPoint> m_Positions;
 
         #region constructor
         public CommandDeleteEndOfTrack(PlayerScreenUserInterface _psui, Metadata _Metadata, long _iTimeStamp)

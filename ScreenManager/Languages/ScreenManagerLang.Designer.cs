@@ -1699,7 +1699,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete all the Paths.
+        ///   Recherche une chaîne localisée semblable à Delete all the Path.
         /// </summary>
         internal static string mnuDeleteTrajectory {
             get {

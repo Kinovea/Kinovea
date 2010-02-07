@@ -62,6 +62,10 @@ namespace Kinovea.ScreenManager
                 m_ImageSize.Height  = value.Height; 
             }
         }
+        public CoordinateSystem CoordinateSystem
+		{
+			get { return m_CoordinateSystem; }
+		}
         public string FullPath
         {
             get { return m_FullPath; }
@@ -177,7 +181,8 @@ namespace Kinovea.ScreenManager
         private Int64 m_iFirstTimeStamp;
         private Int64 m_iSelectionStart;
         private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
-
+		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
+        
         // Read from XML, used for adapting the data to the current video
         private Size m_InputImageSize = new Size(0, 0);
         private Int64 m_iInputAverageTimeStampsPerFrame;    // The one read from the XML
@@ -1264,6 +1269,10 @@ namespace Kinovea.ScreenManager
 					AddODFZipFile(zos, "META-INF/manifest.xml", GetODFManifest());
 	            }
 			}
+			else
+			{
+				log.Error("Export not possible, xslt file not found.");				
+			}
     	}
     	private byte[] GetODFMeta()
     	{
@@ -1398,6 +1407,10 @@ namespace Kinovea.ScreenManager
 	   				xslt.Transform(mdDoc, null, xw);
 				}	
 			}
+			else
+			{
+				log.Error("Export not possible, xslt file not found.");
+			}
     	}
     	private void ExportXHTML(string _filePath, string _kva)
     	{
@@ -1421,6 +1434,10 @@ namespace Kinovea.ScreenManager
 
 	    			xslt.Transform(mdDoc, null, xw);
 				}
+			}
+			else
+			{
+				log.Error("Export not possible, xslt file not found.");				
 			}
     	}
     	#endregion

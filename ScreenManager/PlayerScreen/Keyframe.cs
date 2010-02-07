@@ -151,7 +151,7 @@ namespace Kinovea.ScreenManager
         }
         public void GenerateDisabledThumbnail()
         {
-            m_DisabledThumbnail = ConvertToGrayscale(m_Thumbnail);
+            m_DisabledThumbnail = Grayscale.CommonAlgorithms.BT709.Apply(m_Thumbnail);
         }
         public void AddDrawing(AbstractDrawing obj)
         {
@@ -247,16 +247,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region LowerLevel Helpers
-        private Bitmap ConvertToGrayscale(Bitmap _source)
-        {
-            Bitmap bm;
-            
-            // AForge filter = fast.
-            GrayscaleBT709 filter = new GrayscaleBT709();
-            bm = filter.Apply(_source);
-            
-            return bm;
-        }
         public Bitmap ConvertToJPG(Bitmap _image)
         {
             // Intermediate MemoryStream for the conversion.

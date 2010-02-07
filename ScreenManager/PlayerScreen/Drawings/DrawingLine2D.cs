@@ -377,7 +377,7 @@ namespace Kinovea.ScreenManager
             int ix = m_StartPoint.X + ((m_EndPoint.X - m_StartPoint.X)/2);
             int iy = m_StartPoint.Y + ((m_EndPoint.Y - m_StartPoint.Y)/2);
             
-            m_LabelMeasure.TrackPos = new TrackPosition(ix, iy, 0);
+            m_LabelMeasure.Location = new Point(ix, iy);
             m_LabelMeasure.Background = new Rectangle(10,-20, m_LabelMeasure.Background.Width, m_LabelMeasure.Background.Height);
 	                
         }

@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using OpenSURF;
+using AForge.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,8 +26,10 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using AForge.Imaging.Filters;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
+using OpenSURF;
 
 namespace Kinovea.ScreenManager
 {
@@ -56,12 +58,12 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		#region Membersç
+		#region Members
 		private int m_iOctaves = 1;
         private int m_iIntervals = 3;
-        private int m_iInitSample = 10;
-        private float m_fThreshold = 0.001f;
-        private int m_iInterpolationSteps = 5;
+        private int m_iInitSample = 1;
+        private float m_fThreshold = 0.0001f;
+        private int m_iInterpolationSteps = 10;
 		private bool m_bUpright = false;
 			
 		private ToolStripMenuItem m_Menu;
@@ -122,27 +124,21 @@ namespace Kinovea.ScreenManager
 		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			// Intermediate image.
+			// Scale-space image of the search window.
 			IplImage pIplImage = IplImage.LoadImage(_src);
-			
-            // Point detection.
-            List<Ipoint> ipts = null;
-            COpenSURF.surfDetDes(	null,
-	                                pIplImage,
-	                                out ipts,
-	                                m_bUpright,
-	                                m_iOctaves,
-	                                m_iIntervals,
-	                                m_iInitSample,
-	                                m_fThreshold,
-	                                m_iInterpolationSteps);
-			
-			// Get SURF descriptors of detected points.
-			IplImage pint_img = pIplImage.BuildIntegral(null);
-			Surf pSurf = new Surf(pint_img, ipts);
-           	pSurf.getDescriptors(m_bUpright);
-            	
-           	log.Debug(String.Format("SURF, number of points found:{0}", ipts.Count));
+            pIplImage = pIplImage.BuildIntegral(null);
+
+            List<Ipoint> ipts = new List<Ipoint>();
+            CFastHessian pCFastHessian = new CFastHessian(pIplImage, ref ipts, m_iOctaves, m_iIntervals, m_iInitSample, m_fThreshold, m_iInterpolationSteps);
+            
+            // Fill the scale-space image with actual data and finds the local extrema.
+            pCFastHessian.getIpoints();
+            
+            // Fill the descriptor field, orientation and laplacian of the feature.
+            Surf pSurf = new Surf(pIplImage, ipts);
+            pSurf.getDescriptors(m_bUpright);
+            
+            log.Debug(String.Format("SURF, number of points found:{0}", ipts.Count));
            	
            	// Paint described points on image.
            	PaintSURFPoints(_src, ipts);

@@ -1,5 +1,5 @@
 /* 
- * Comment:
+ * Note:
  * This is the K-D Tree implementation from Sebastian Nowozin,
  * Taken from Autopano-sift, and adapted to work with OpenSurf classes.
  * I just made the class use floats instead of int for descriptors data.
