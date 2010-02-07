@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 				
-		#region Public methods
+		#region System manipulation
 		public void SetOriginalSize(Size _size)
 		{
 			m_OriginalSize = new Size(_size.Width, _size.Height);
@@ -120,24 +120,6 @@ namespace Kinovea.ScreenManager
 
 			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, iNewWidth, iNewHeight);	
 		}
-		public Point Untransform(Point _point)
-		{
-			// in: screen coordinates
-			// out: image coordinates.
-			// Image may have been stretched, zoomed and moved.
-
-			// 1. Unstretch coords -> As if stretch factor was 1.0f.
-			double fUnstretchedX = (double)_point.X / m_fStretch;
-			double fUnstretchedY = (double)_point.Y / m_fStretch;
-
-			// 2. Unzoom coords -> As if zoom factor was 1.0f.
-			// Unmoved is m_DirectZoomWindow.Left * m_fDirectZoomFactor.
-			// Unzoomed is Unmoved / m_fDirectZoomFactor.
-			double fUnzoomedX = (double)m_DirectZoomWindow.Left + (fUnstretchedX / m_fZoom);
-			double fUnzoomedY = (double)m_DirectZoomWindow.Top + (fUnstretchedY / m_fZoom);
-
-			return new Point((int)fUnzoomedX, (int)fUnzoomedY);	
-		}
 		public void MoveZoomWindow(double _fDeltaX, double _fDeltaY)
 		{
 			// Move the zoom window keeping the same zoom factor.
@@ -159,6 +141,44 @@ namespace Kinovea.ScreenManager
 			// Reposition.
 			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
 		}
+		#endregion
+		
+		#region Point to Point transformations
+		public Point Untransform(Point _point)
+		{
+			// in: screen coordinates
+			// out: image coordinates.
+			// Image may have been stretched, zoomed and moved.
+
+			// 1. Unstretch coords -> As if stretch factor was 1.0f.
+			double fUnstretchedX = (double)_point.X / m_fStretch;
+			double fUnstretchedY = (double)_point.Y / m_fStretch;
+
+			// 2. Unzoom coords -> As if zoom factor was 1.0f.
+			// Unmoved is m_DirectZoomWindow.Left * m_fDirectZoomFactor.
+			// Unzoomed is Unmoved / m_fDirectZoomFactor.
+			double fUnzoomedX = (double)m_DirectZoomWindow.Left + (fUnstretchedX / m_fZoom);
+			double fUnzoomedY = (double)m_DirectZoomWindow.Top + (fUnstretchedY / m_fZoom);
+
+			return new Point((int)fUnzoomedX, (int)fUnzoomedY);	
+		}
+		public Point Transform(Point _point)
+		{
+			// in: image coordinates.
+			// out: screen coordinates.
+			// Image may have been stretched, zoomed and moved.	
+			
+			// Zoom coords.
+			double fZoomedX = (double)(_point.X - m_DirectZoomWindow.Left) * m_fZoom;
+			double fZoomedY = (double)(_point.Y - m_DirectZoomWindow.Top) * m_fZoom;
+
+			// Stretch coords.
+			double fStretchedX = fZoomedX * m_fStretch;
+			double fStretchedY = fZoomedY * m_fStretch;
+
+			return new Point((int)fStretchedX, (int)fStretchedY);
+		}
+
 		#endregion
 	}
 }

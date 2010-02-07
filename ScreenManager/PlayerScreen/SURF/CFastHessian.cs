@@ -51,6 +51,7 @@ namespace OpenSURF
             this.thres = thres;
             this.interp_steps = interp_steps;
 
+            // Initialize the integral image (scale-space image).
             setIntImage(img);
         }
 
@@ -59,7 +60,7 @@ namespace OpenSURF
             FileStream pfd = null;
             try
             {
-                pfd = new FileStream(Path+".DET", FileMode.Create, FileAccess.Write);
+                pfd = new FileStream(Path+".hex", FileMode.Create, FileAccess.Write);
                 BinaryWriter pbw = new BinaryWriter(pfd);
                 pbw.Write(octaves);
                 pbw.Write(intervals);
@@ -76,8 +77,40 @@ namespace OpenSURF
             }
         }
 
-        #region --- private
+        public void getIpoints()
+        {
+        	//! Find the image features and write into vector of features
+        
+            int extremum_count = 0;
+			// Clear the vector of exisiting ipts
+			ipts.Clear();
+			
+			// Calculate approximated determinant of hessian values
+			// = Compute value for each position in the scale-space image.
+			buildDet();
+			
+			for(int o=0; o < octaves; o++) 
+			{
+				// for each octave double the sampling step of the previous
+				int step = init_sample * COpenSURF.cvRound(COpenSURF.pow(2.0f,o));
+				
+				// determine border width for the largest filter for each ocave
+				int border = (3 * COpenSURF.cvRound(COpenSURF.pow(2.0f,o+1)*(intervals)+1) + 1)/2;
+				
+				// check for maxima across the scale space
+				for(int i = 1; i < intervals-1; ++i) 
+				  for(int r = border; r < i_height - border; r += step)
+				    for(int c = border; c < i_width - border; c += step)
+				        if (isExtremum(o, i, c, r) != 0)
+				        {
+				            extremum_count += 1;
+				            interp_extremum(o, i, r, c);
+				        }
+			} 
 
+        }
+        
+        #region Private helpers
         void setIntImage(IplImage img)
         {
             this.img = img;
@@ -85,9 +118,10 @@ namespace OpenSURF
             this.i_height = img.height;
             this.m_det = new float[octaves * intervals * i_width * i_height];
         }
-
         void buildDet()
         {
+        	// Compute value for each position in the scale-space image. 
+        	
             int lobe, border, step;
             float Dxx=0, Dyy=0, Dxy=0, scale;
             int ixdet = 0;
@@ -163,33 +197,25 @@ namespace OpenSURF
                             if (res > 0)
                             {
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
-
-        //! Return the value of the approximated determinant of hessian
         float getVal(int o, int i, int c, int r)
         {
+        	//! Return the value of the approximated determinant of hessian
             return COpenSURF.fabs(m_det[(o * intervals + i) * (i_width * i_height) + (r * i_width + c)]);
         }
-
-        //! Return the sign of the laplacian (trace of the hessian)
         float getLaplacian(int o, int i, int c, int r)
         {
-          float res = (m_det[(o*intervals+i)*(i_width*i_height) + (r*i_width+c)]);
-          return (res >= 0 ? 1 : -1);
+        	//! Return the sign of the laplacian (trace of the hessian)
+          	float res = (m_det[(o*intervals+i)*(i_width*i_height) + (r*i_width+c)]);
+          	return (res >= 0 ? 1 : -1);
         }
-
-        //! Perform a step of interpolation (fitting 3D quadratic)
         void stepInterp(int o, int i, int c, int r, float[] x)
         {
+        	//! Perform a step of interpolation (fitting 3D quadratic)
           float v, dx, dy, ds, dxx, dyy, dss, dxy, dxs, dys, det;
           int step = init_sample * COpenSURF.cvRound(COpenSURF.pow(2.0f,o));
 
@@ -226,10 +252,9 @@ namespace OpenSURF
           x[1] = -1.0f/det * ( dx * ( dys*dxs-dss*dxy ) + dy * ( dxx*dss-dxs*dxs ) + ds * ( dxs*dxy-dys*dxx ) );
           x[2] = -1.0f/det * ( dx * ( dxy*dys-dxs*dyy ) + dy * ( dxy*dxs-dxx*dys ) + ds * ( dxx*dyy-dxy*dxy ) );
         }
-
-        //! Interpolate feature to sub pixel accuracy
         void getIpoint(int o, int i, int c, int r)
         {
+        	//! Interpolate feature to sub pixel accuracy
           bool converged=false;
           float[] x=new float[3];
 
@@ -272,10 +297,9 @@ namespace OpenSURF
           if (ipts == null) ipts = new List<Ipoint>();
           ipts.Add(ipt);
         }
-
-        //! Non Maximal Suppression function
         int isExtremum(int octave, int interval, int c, int r)
         {
+        	//! Non Maximal Suppression function
           float val = getVal(octave, interval, c, r);
           int step = init_sample * COpenSURF.cvRound(COpenSURF.pow(2.0f,octave));
 
@@ -302,38 +326,6 @@ namespace OpenSURF
 
           return 1;
         }
-
-        //! Find the image features and write into vector of features
-        public void getIpoints()
-        {
-            int extremum_count = 0;
-          // Clear the vector of exisiting ipts
-          //!!!!ipts = null;
-
-          // Calculate approximated determinant of hessian values
-          buildDet();
-
-          for(int o=0; o < octaves; o++) 
-          {
-            // for each octave double the sampling step of the previous
-            int step = init_sample * COpenSURF.cvRound(COpenSURF.pow(2.0f,o));
-
-            // determine border width for the largest filter for each ocave
-            int border = (3 * COpenSURF.cvRound(COpenSURF.pow(2.0f,o+1)*(intervals)+1) + 1)/2;
-
-            // check for maxima across the scale space
-            for(int i = 1; i < intervals-1; ++i) 
-              for(int r = border; r < i_height - border; r += step)
-                for(int c = border; c < i_width - border; c += step)
-                    if (isExtremum(o, i, c, r) != 0)
-                    {
-                        extremum_count += 1;
-                        interp_extremum(o, i, r, c);
-                    }
-          } 
-
-        }
-
         float getValLowe(int o, int i, int r, int c)
         {
             int index=(o*intervals+i)*(i_width*i_height) + (r*i_width+c);
@@ -341,9 +333,7 @@ namespace OpenSURF
             if (index < 0 || index >= m_det.Length) return 0;
             return COpenSURF.fabs(m_det[index]);
         }
-
-        void deriv_3D(int octv, int intvl, int r, int c,
-                            out double dx, out double dy, out double ds)
+        void deriv_3D(int octv, int intvl, int r, int c, out double dx, out double dy, out double ds)
         {
             dx = dy = ds = 0;
 
@@ -357,7 +347,6 @@ namespace OpenSURF
                 getValLowe(octv, intvl - 1, r, c)) / 2.0;
 
         }
-
         CDVMatrix hessian_3D(int octv, int intvl, int r, int c)
         {
             CDVMatrix vret = new CDVMatrix();
@@ -413,7 +402,6 @@ namespace OpenSURF
 
             return vret;
         }
-
         bool interp_step( int octv, int intvl, int r, int c, out double xi, out double xr, out double xc )
         {
             xi = xr = xc = 0;
@@ -433,7 +421,6 @@ namespace OpenSURF
 
             return true;
         }
-
         void interp_extremum(int octv, int intvl, int r, int c)
         {
             double xi = 0, xr = 0, xc = 0;
@@ -456,7 +443,6 @@ namespace OpenSURF
             }
 
         }
-
         #endregion
 
     }

@@ -633,10 +633,23 @@ namespace Kinovea.ScreenManager
         }
         public void Screen_CloseAsked(AbstractScreen _SenderScreen)
         {
+        	// If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
+        	if(_SenderScreen is PlayerScreen)
+        	{
+        		int iDrawtimeFilterType = ((PlayerScreen)_SenderScreen).DrawtimeFilterType;
+        		if(iDrawtimeFilterType > -1)
+        		{
+        			// We need to make sure this is the active screen for the DrawingFilter menu action to be properly routed.
+        			Screen_SetActiveScreen(_SenderScreen);
+        			m_VideoFilters[iDrawtimeFilterType].Menu_OnClick(this, EventArgs.Empty);
+        			return;
+        		}
+        	}
+        	
             _SenderScreen.BeforeClose();
             
             // Reorganise screens.
-            // We leverage the fact that screens are always weel ordered relative to menus.
+            // We leverage the fact that screens are always well ordered relative to menus.
             if (_SenderScreen == screenList[0])
             {
                 mnuCloseFileOnClick(null, EventArgs.Empty);
@@ -2386,43 +2399,11 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        #region Déléguées appellées depuis l'UI
+        #region Delegates called from UI.
         public void DropLoadMovie(string _FilePath, int _iScreen)
         {
             // End of drag and drop between FileManager and ScreenManager
             DoLoadMovieInScreen(_FilePath, _iScreen, true);
-        }
-        public void CommonCtrlsGotoFirst(object sender, EventArgs e)
-        {
-            
-        }
-        public void CommonCtrlsGotoLast(object sender, EventArgs e)
-        {
-           
-        }
-        public void CommonCtrlsGotoPrev(object sender, EventArgs e)
-        {
-            
-        }
-        public void CommonCtrlsGotoNext(object sender, EventArgs e)
-        {
-            
-        }
-        public void CommonCtrlsPlay(object sender, EventArgs e)
-        {
-            
-        }
-        public void CommonCtrlsSwap(object sender, EventArgs e)
-        {
-            
-        }
-        public void CommonCtrlsSync(object sender, EventArgs e)
-        {
-            
-        }
-        public void CommonCtrlsPositionChanged(object sender, long _iPosition)
-        {
-            
         }
         #endregion
 
@@ -2465,7 +2446,7 @@ namespace Kinovea.ScreenManager
         }
         public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         {
-        	// Todo, disable draw time filter in player.
+        	// Disable draw time filter in player.
         	if(_dfo != null)
         	{
     			m_VideoFilters[_dfo.VideoFilterType].Menu.Checked = _dfo.Active;

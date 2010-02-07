@@ -117,26 +117,12 @@ namespace Kinovea.ScreenManager
 		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			/*ImageStatistics stats = new ImageStatistics(_src);
-        	
-			LevelsLinear levelsLinear = new LevelsLinear();
-        	levelsLinear.InRed   = stats.Red.GetRange( 0.90 );
-            levelsLinear.InGreen = stats.Green.GetRange( 0.90 );
-            levelsLinear.InBlue  = stats.Blue.GetRange( 0.90 );
-            
-            levelsLinear.ApplyInPlace(_src);
-			
-			return _src;*/
-			
-			
 			// Apply filter.
-			DifferenceEdgeDetector filter = new DifferenceEdgeDetector();
-			Bitmap tmp = filter.Apply(_src);
+			Bitmap tmp = new DifferenceEdgeDetector().Apply(Grayscale.CommonAlgorithms.BT709.Apply(_src));
 			_src.Dispose();
 			
-			// Back to RGB.
-			GrayscaleToRGB toRGBFilter = new GrayscaleToRGB();
-			Bitmap tmp2 = toRGBFilter.Apply(tmp);
+			// Back to 24bpp.
+			Bitmap tmp2 = new GrayscaleToRGB().Apply(tmp);
 			tmp.Dispose();
 
 			return tmp2;

@@ -110,8 +110,7 @@ namespace OpenSURF
             return vret;
         }
 
-        public static float Area(float[] imageData, int Width, int Height, int RowByteSize,
-                                    int X, int Y, int W, int H)
+        public static float Area(float[] imageData, int Width, int Height, int RowByteSize, int X, int Y, int W, int H)
         {
             float vret = 0;
 
@@ -140,17 +139,9 @@ namespace OpenSURF
                             X,Y,W,H);
         }
 
-        public static void surfDetDes(string Path,
-                                            IplImage pIplImage,
-                                            out List<Ipoint> ipts,
-                                            bool upright,
-                                            int octaves,
-                                            int intervals,
-                                            int init_sample,
-                                            float thres,
-                                            int interp_steps)
+        public static void surfDetDes(	string Path, IplImage pIplImage, out List<Ipoint> ipts, bool upright, int octaves, 
+                                      	int intervals, int init_sample, float thres, int interp_steps)
         {
-        	
         	// Detects interest points.
         	// Describe them in SURF.
         	// Fill ipts array with them.
@@ -570,6 +561,19 @@ namespace OpenSURF
         		Match m = new Match(p, best);
         		matches.Add(m);
         	}
+        }
+        public static void MatchPoint(Ipoint ipt, List<Ipoint> ipts, out Match m)
+        {
+        	// Find the nearest neighbour of ipt point, in ipts set.
+        	// K-D tree implementation from Sebastian Nowozin's Autopano-sift.
+
+        	ArrayList aTreePoints = new ArrayList(ipts);
+        	KDTree kdt2 = KDTree.CreateKDTree(aTreePoints);
+        	
+        	int searchDepth = (int)Math.Max(130.0, (Math.Log (aTreePoints.Count) / Math.Log (1000.0)) * 130.0);
+    		
+    		Ipoint best = (Ipoint)kdt2.NearestNeighbourListBBF(ipt, searchDepth);
+    		m = new Match(ipt, best);
         }
     }
 }

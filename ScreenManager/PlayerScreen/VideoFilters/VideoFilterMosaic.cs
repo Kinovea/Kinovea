@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
 					DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
 					
 					// Set up the output object so it becomes independant from this filter instance.
-					// (otherwise another use of this filter on a video in the second video will interfere)
+					// (otherwise another use of this filter on a video in the second screen will interfere)
 					dfo.InputFrames = GetInputFrames(fcm.FramesToExtract);
 					dfo.PrivateData = fcm.IsRightToLeft;
 					dfo.Draw = new DelegateDraw(Draw);
