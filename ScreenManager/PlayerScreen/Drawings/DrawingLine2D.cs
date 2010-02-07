@@ -89,7 +89,8 @@ namespace Kinovea.ScreenManager
 
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            SetMeasureLabelPosition();
+            SetMeasureLabelConnector();
+            m_LabelMeasure.Background = new Rectangle(10,-20, m_LabelMeasure.Background.Width, m_LabelMeasure.Background.Height);
             m_LabelMeasure.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
             
             // Fading
@@ -135,7 +136,7 @@ namespace Kinovea.ScreenManager
 	                string text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);
 	                m_LabelMeasure.TextInfos[0] = text;
 	                
-	                SetMeasureLabelPosition();
+	                SetMeasureLabelConnector();
 	                m_LabelMeasure.ResetBackground(_fStretchFactor, _DirectZoomTopLeft);
 	                
 	                // Draw.
@@ -149,10 +150,26 @@ namespace Kinovea.ScreenManager
             // In Line2D, handles are directly mapped to the endpoints of the line.
 
             // _point is mouse coordinates already descaled.
-            if (handleNumber == 1)
-                m_StartPoint = point;
-            else
-                m_EndPoint = point;
+            switch(handleNumber)
+            {
+            	case 1:
+            		m_StartPoint = point;
+            		break;
+            	case 2:
+            		m_EndPoint = point;
+            		break;
+            	case 3:
+            		{
+            			// absolute coords.
+            			// Small defect: the label will jump to align with the mouse. 
+            			// We should pass the delta coords in this case.
+            			m_LabelMeasure.Background = new Rectangle(point.X - m_LabelMeasure.Location.X - (m_LabelMeasure.Background.Width/2),
+            			                                          point.Y - m_LabelMeasure.Location.Y - (m_LabelMeasure.Background.Height/2),
+            			                                          m_LabelMeasure.Background.Width, 
+            			                                          m_LabelMeasure.Background.Height);
+	                }
+            		break;
+            }
 
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -180,8 +197,7 @@ namespace Kinovea.ScreenManager
             {
             	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
             	{
-            		// Hitting the label is like hitting the main line.
-            		iHitResult = 0;
+            		iHitResult = 3;
             	}
             	else if (GetHandleRectangle(1).Contains(_point))
                 {
@@ -371,15 +387,15 @@ namespace Kinovea.ScreenManager
 
             return areaRegion.IsVisible(_point);
         }
-        private void SetMeasureLabelPosition()
+        private void SetMeasureLabelConnector()
         {
-        	// Label coordinates
-            int ix = m_StartPoint.X + ((m_EndPoint.X - m_StartPoint.X)/2);
+        	// This set the connector point of the label to the middle of the line.
+			// The relative position of the label to the line is set at construction 
+			// and by the user in MoveHandleTo().
+        	int ix = m_StartPoint.X + ((m_EndPoint.X - m_StartPoint.X)/2);
             int iy = m_StartPoint.Y + ((m_EndPoint.Y - m_StartPoint.Y)/2);
             
             m_LabelMeasure.Location = new Point(ix, iy);
-            m_LabelMeasure.Background = new Rectangle(10,-20, m_LabelMeasure.Background.Width, m_LabelMeasure.Background.Height);
-	                
         }
         #endregion
     }
