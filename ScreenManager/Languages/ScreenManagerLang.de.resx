@@ -143,7 +143,7 @@
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF-Dokument (*.pdf)|*.pdf</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Speichere ein PDF-Dokument aus den Schlüsselbildern</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Daten als Tabellendokument speichern</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Anmerkungen...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Lade Kinovea Video-Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle Dateien (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Schlüsselbilddatei laden</value></data>
@@ -257,6 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Exportiere als PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Verflüssigen...</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Bildformat</value></data>

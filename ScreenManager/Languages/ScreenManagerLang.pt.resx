@@ -143,7 +143,7 @@
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Documento PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Salvar Documento PDF com os Quadros de Imagem</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salvar dados como uma Planilha</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentários...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|Todos os Arquivos (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carregar Dados dos Quadros de Imagem</value></data>
@@ -257,6 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Exportar para PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificar</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Formato da Imagem</value></data>

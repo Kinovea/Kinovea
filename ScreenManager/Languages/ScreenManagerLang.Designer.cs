@@ -727,7 +727,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;.
+        ///   Recherche une chaîne localisée semblable à OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;.
         /// </summary>
         internal static string dlgExportSpreadsheet_Filter {
             get {
@@ -1740,6 +1740,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuExportSpreadsheet {
             get {
                 return ResourceManager.GetString("mnuExportSpreadsheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Trajectories to simple text.
+        /// </summary>
+        internal static string mnuExportTEXT {
+            get {
+                return ResourceManager.GetString("mnuExportTEXT", resourceCulture);
             }
         }
         

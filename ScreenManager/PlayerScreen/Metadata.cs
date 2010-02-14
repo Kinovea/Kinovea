@@ -1227,6 +1227,11 @@ namespace Kinovea.ScreenManager
     				ExportXHTML(_filePath, kvaString);
 					break;
 				}
+    			case MetadataExportFormat.TEXT:
+				{
+    				ExportTEXT(_filePath, kvaString);
+					break;
+				}
     			default:
     				break;
     		}
@@ -1440,6 +1445,30 @@ namespace Kinovea.ScreenManager
 				log.Error("Export not possible, xslt file not found.");				
 			}
     	}
+    	private void ExportTEXT(string _filePath, string _kva)
+    	{
+    		// Transform kva to TEXT.
+    		
+			string stylesheet = @"xslt\kva2txt-en.xsl";
+			
+			if(File.Exists(stylesheet))
+			{
+        		using(TextWriter tw = new StreamWriter(_filePath))
+        		{
+		           	XslCompiledTransform xslt = new XslCompiledTransform();
+		   			xslt.Load(stylesheet);
+	  				
+					XmlDocument mdDoc = new XmlDocument();
+					mdDoc.LoadXml(_kva);
+
+	   				xslt.Transform(mdDoc, null, tw);
+				}
+			}
+			else
+			{
+				log.Error("Export not possible, xslt file not found.");				
+			}
+    	}
     	#endregion
     }
 
@@ -1447,6 +1476,7 @@ namespace Kinovea.ScreenManager
 	{
 		ODF,
 		MSXML,
-		XHTML
+		XHTML,
+		TEXT
 	}
 }

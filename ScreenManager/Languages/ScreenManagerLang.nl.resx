@@ -143,7 +143,7 @@
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Exporteer de beeldanalyse naar PDF</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Bewaar de gegevens als een tabel document</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaar…</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle bestanden (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Laad de kernbeeldgegevens</value></data>
@@ -257,6 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
+   
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export naar PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Vloeiend</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Beeldtype</value></data>
