@@ -70,27 +70,65 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		
-		// Options
-		private static readonly float m_fSimilarityTreshold = 0.85f;			// Discard candidate block with lower similarity.
-		private static readonly float m_fScoreTreshold = 0.85f;
-		private static readonly float m_fOriginalSimilarityThreshold = 0.97f; 	// used in UpdateStrategy.Both.
-		private static readonly double m_fForecastDistanceWeight = 0.25f;
-		private static readonly bool m_bWorkOnGrayscale = true;
+		// Options - initialize in the constructor.
+		private bool m_bCorrelationMatching;
+		private float m_fSimilarityTreshold = 0.0f;					// Discard candidate block with lower similarity.
+		private float m_fScoreTreshold = 0.0f;
+		private float m_fOriginalSimilarityThreshold = 0.0f; 	// used in UpdateStrategy.Both.
+		private double m_fForecastDistanceWeight = 0.0f;
+		private bool m_bWorkOnGrayscale = false;
 		
 		// Update strategy.
-		//private static readonly UpdateStrategy m_UpdateStrategy = UpdateStrategy.Current;
-		private static readonly UpdateStrategy m_UpdateStrategy = UpdateStrategy.Both;
-		//private static readonly UpdateStrategy m_UpdateStrategy = UpdateStrategy.Original;
-		//private static readonly UpdateStrategy m_UpdateStrategy = UpdateStrategy.Mixed;
+		private UpdateStrategy m_UpdateStrategy;
 		
 		private Size m_BlockSize = new Size(20, 20);						// Size of block to be matched.
 		private Size m_SearchWindowSize = new Size(100, 100);				// Size of window of candidates.
 		private double m_fMaxDistance = CalibrationHelper.PixelDistance(new Point(0,0), new Point(40, 40));
 		
 		// Monitoring, debugging.
-		private static readonly bool m_bMonitoring = true;
+		private static readonly bool m_bMonitoring = false;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion		
+		
+		#region Constructor
+		public TrackerBlock()
+		{
+			// Preset parameters depending on algorithm used.
+			
+			// 0.8.4 Parameters:
+			/*m_UpdateStrategy = UpdateStrategy.Current;
+			m_bWorkOnGrayscale = false;
+			m_bCorrelationMatching = false;
+			m_fSimilarityTreshold = 0.80f;
+			m_fScoreTreshold = 0.80f;*/
+			
+			// 0.8.5, Profile A Parameters:
+			// Note: The "Both" strategy will make annoying traj shift.
+			/*m_UpdateStrategy = UpdateStrategy.Both;
+			m_bWorkOnGrayscale = false;
+			m_bCorrelationMatching = false;
+			m_fSimilarityTreshold = 0.80f;
+			m_fScoreTreshold = 0.80f;
+			m_fOriginalSimilarityThreshold = 0.90f;
+			m_fForecastDistanceWeight = 0.0f;*/
+			
+			// 0.8.5, Profile B Parameters:
+			// Putting weight on the forecast may loose the tracker altogether when object change direction radically. (basket ball).
+			/*m_UpdateStrategy = UpdateStrategy.Current;
+			m_bCorrelationMatching = false;
+			m_bWorkOnGrayscale = false;
+			m_fSimilarityTreshold = 0.80f;
+			m_fScoreTreshold = 0.70f;
+			m_fForecastDistanceWeight = 0.25f;*/
+			
+			// 0.8.5, Profile C Parameters:
+			m_UpdateStrategy = UpdateStrategy.Current;
+			m_bCorrelationMatching = true;
+			m_fSimilarityTreshold = 0.50f;
+			m_fScoreTreshold = 0.50f;
+			m_bWorkOnGrayscale = false;
+		}
+		#endregion
 		
 		#region AbstractTracker Implementation
 		public override bool Track(List<AbstractTrackPoint> _previousPoints, Bitmap _CurrentImage, long _t, out AbstractTrackPoint _currentPoint)
@@ -160,8 +198,17 @@ namespace Kinovea.ScreenManager
         			Bitmap originalTemplate = ((TrackPointBlock)_previousPoints[iLastReferenceBlock]).Template;
         			Bitmap workingOriginalTemplate = m_bWorkOnGrayscale ? Grayscale.CommonAlgorithms.BT709.Apply(originalTemplate) : originalTemplate; 
         			
-        			ExhaustiveTemplateMatching originalMatcher = new ExhaustiveTemplateMatching(m_fOriginalSimilarityThreshold);
-					TemplateMatch[] matchingsOriginal = originalMatcher.ProcessImage(workingImage, workingOriginalTemplate, searchZone);
+        			ITemplateMatching originalMatcher;
+        			if(m_bCorrelationMatching)
+        			{
+        				originalMatcher = new CorrelationTemplateMatching(m_fOriginalSimilarityThreshold);
+        			}
+        			else
+        			{
+        				originalMatcher = new ExhaustiveTemplateMatching(m_fOriginalSimilarityThreshold);
+        			}
+        			
+        			TemplateMatch[] matchingsOriginal = originalMatcher.ProcessImage(workingImage, workingOriginalTemplate, searchZone);
 				
 					if (matchingsOriginal.Length > 0)
 		            {
@@ -174,13 +221,26 @@ namespace Kinovea.ScreenManager
                 		if(m_bMonitoring)
 	                		log.Debug(String.Format("Original template found with good similarity ({0:0.000}), {1} candidates.", tm.Similarity, matchingsOriginal.Length));
 		        	}
+					else
+					{
+						log.Debug(String.Format("Original template not found"));
+					}
         		}
 				
 				if(bestCandidate.X == -1 || bestCandidate.Y == 1)
 				{
 					Bitmap workingTemplate = m_bWorkOnGrayscale ? Grayscale.CommonAlgorithms.BT709.Apply(lastTrackPoint.Template) : lastTrackPoint.Template; 
         			
-					ExhaustiveTemplateMatching templateMatcher = new ExhaustiveTemplateMatching(m_fSimilarityTreshold);
+					ITemplateMatching templateMatcher;
+        			if(m_bCorrelationMatching)
+        			{
+        				templateMatcher = new CorrelationTemplateMatching(m_fSimilarityTreshold);
+        			}
+        			else
+        			{
+        				templateMatcher = new ExhaustiveTemplateMatching(m_fSimilarityTreshold);
+        			}
+        			
 					TemplateMatch[] matchings = templateMatcher.ProcessImage(workingImage, workingTemplate, searchZone);
 					
 					if (matchings.Length > 0)
@@ -217,6 +277,10 @@ namespace Kinovea.ScreenManager
 	        		                        		fWinnerDistance));	
 	            		}
 		        	}
+					else
+					{
+						log.Debug(String.Format("Last template not found, or score too low."));
+					}
 				}
 				
             	// Result of the matching.	
@@ -224,7 +288,8 @@ namespace Kinovea.ScreenManager
         		{
             		// Save template in the point.
             		_currentPoint = CreateTrackPoint(false, bestCandidate.X, bestCandidate.Y, _t, _CurrentImage, _previousPoints);
-	                
+            		((TrackPointBlock)_currentPoint).Similarity = fBestScore;
+            		
             		// Finally, it is only considered a match if the score is over the threshold.	
             		if(fBestScore >= m_fScoreTreshold || _previousPoints.Count == 1)
             		{
@@ -331,6 +396,7 @@ namespace Kinovea.ScreenManager
 			
 			TrackPointBlock tpb = new TrackPointBlock(_x, _y, _t, tpl);
 			tpb.IsReferenceBlock = _bManual;
+			tpb.Similarity = _bManual ? 1.0f : 0;
 			
 			return tpb;
 		}
@@ -356,13 +422,24 @@ namespace Kinovea.ScreenManager
 			int iSrchTop = (int) (fY - (((double)m_SearchWindowSize.Height * _fStretchFactor) / 2));
             Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchWindowSize.Width * _fStretchFactor), (int)((double)m_SearchWindowSize.Height * _fStretchFactor));
             //_canvas.DrawRectangle(new Pen(Color.FromArgb((int)(64.0f * _fOpacityFactor), _color)), SrchZone);
-			_canvas.FillRectangle(new SolidBrush(Color.FromArgb((int)(48.0f * _fOpacityFactor), _color)), SrchZone);
+            _canvas.FillRectangle(new SolidBrush(Color.FromArgb((int)(48.0f * _fOpacityFactor), _color)), SrchZone);
             
             // Current Block.
             int iTplLeft = (int) (fX - (((double)m_BlockSize.Width * _fStretchFactor) / 2));
             int iTplTop = (int) (fY - (((double)m_BlockSize.Height * _fStretchFactor) / 2));
             Rectangle TplZone = new Rectangle(iTplLeft, iTplTop, (int)((double)m_BlockSize.Width * _fStretchFactor), (int)((double)m_BlockSize.Height * _fStretchFactor));
-            _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(128.0f * _fOpacityFactor), _color)), TplZone);	
+            Pen p = new Pen(Color.FromArgb((int)(128.0f * _fOpacityFactor), _color));
+            _canvas.DrawRectangle(p, TplZone);
+		
+			// Current Block's similarity.
+			Font f = new Font("Arial", 8, FontStyle.Regular);
+			String s = String.Format("{0:0.000}",((TrackPointBlock)_currentPoint).Similarity);
+			Brush b = new SolidBrush(Color.FromArgb((int)(255.0f * _fOpacityFactor), _color));
+			_canvas.DrawString(s, f, b, new PointF((float)iSrchLeft, (float)iSrchTop));
+            
+			b.Dispose();
+			p.Dispose();
+			f.Dispose();
 		}
 		#endregion
 		

@@ -29,11 +29,9 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public class TrackPointBlock : AbstractTrackPoint
 	{
-		// Updated template.
-		// This cause the Template Update paradox, the tracking slowly drifts away.
-		public Bitmap Template;    
-		
+		public Bitmap Template;
 		public bool IsReferenceBlock;
+		public double Similarity;
 		
 		public TrackPointBlock(int _x, int _y, long _t)
 			: this(_x, _y, _t, null)
@@ -50,6 +48,7 @@ namespace Kinovea.ScreenManager
 		public override void ResetTrackData()
 		{
 			IsReferenceBlock = false;
+			Similarity = 1.0;
 			
 			if(Template != null)
 			{
