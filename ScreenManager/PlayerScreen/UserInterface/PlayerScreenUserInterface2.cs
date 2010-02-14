@@ -4146,6 +4146,10 @@ namespace Kinovea.ScreenManager
 			cm.LaunchUndoableCommand(cdc);
 			
 			UpdateFramesMarkers();
+			
+			// Trigger a refresh of the export to spreadsheet menu, 
+			// in case we don't have any more trajectory left to export.
+			OnPoke();
 		}
 		private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
 		{

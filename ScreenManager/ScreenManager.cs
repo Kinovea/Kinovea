@@ -114,6 +114,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportODF = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportMSXML = new ToolStripMenuItem();
         private ToolStripMenuItem mnuExportXHTML = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuExportTEXT = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
 
         public ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
@@ -282,7 +283,12 @@ namespace Kinovea.ScreenManager
             mnuExportXHTML.Text = ((ItemResourceInfo)mnuExportXHTML.Tag).resManager.GetString(((ItemResourceInfo)mnuExportXHTML.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuExportXHTML.Click += new EventHandler(mnuExportXHTML_OnClick);
             
-            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { mnuExportODF, mnuExportMSXML, mnuExportXHTML });
+            // - TEXT
+            mnuExportTEXT.Tag = new ItemResourceInfo(resManager, "mnuExportTEXT");
+            mnuExportTEXT.Text = ((ItemResourceInfo)mnuExportTEXT.Tag).resManager.GetString(((ItemResourceInfo)mnuExportTEXT.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuExportTEXT.Click += new EventHandler(mnuExportTEXT_OnClick);            
+            
+            mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { mnuExportODF, mnuExportMSXML, mnuExportXHTML, mnuExportTEXT });
             
             // Load Analysis
             mnuLoadAnalysis.Tag = new ItemResourceInfo(resManager, "mnuLoadAnalysis");
@@ -1227,6 +1233,7 @@ namespace Kinovea.ScreenManager
                         mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
                         mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
                         mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
+                        mnuExportTEXT.Enabled = player.FrameServer.Metadata.Tracks.Count > 0;
                         mnuLoadAnalysis.Enabled = true;
                         
                         // Image
@@ -1271,6 +1278,7 @@ namespace Kinovea.ScreenManager
                 mnuExportODF.Enabled = false;
                 mnuExportMSXML.Enabled = false;
                 mnuExportXHTML.Enabled = false;
+                mnuExportTEXT.Enabled = false;
 
                 // Image
                 mnuDeinterlace.Enabled = false;
@@ -1726,6 +1734,10 @@ namespace Kinovea.ScreenManager
         private void mnuExportXHTML_OnClick(object sender, EventArgs e)
         {
         	ExportSpreadsheet(MetadataExportFormat.XHTML);
+        }
+        private void mnuExportTEXT_OnClick(object sender, EventArgs e)
+        {
+        	ExportSpreadsheet(MetadataExportFormat.TEXT);
         }
         private void ExportSpreadsheet(MetadataExportFormat _format)
         {
