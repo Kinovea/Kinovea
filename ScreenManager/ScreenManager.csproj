@@ -177,7 +177,7 @@
     <Compile Include="PlayerScreen\SURF\Surf.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTracker.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTrackPoint.cs" />
-    <Compile Include="PlayerScreen\Tracking\NormCorrelationTemplateMatching.cs" />
+    <Compile Include="PlayerScreen\Tracking\CorrelationTemplateMatching.cs" />
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />

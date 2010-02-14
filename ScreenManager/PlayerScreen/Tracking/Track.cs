@@ -324,7 +324,7 @@ namespace Kinovea.ScreenManager
 	            	}
                     
 	            	// Tracking algorithm visualization.
-                    if (/*(m_TrackStatus == TrackStatus.Edit) && */(fOpacityFactor == 1.0))
+                    if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
                     {
                         m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint], _DirectZoomTopLeft, m_fStretchFactor, m_LineStyle.Color, fOpacityFactor);
 					}
