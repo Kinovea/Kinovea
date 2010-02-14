@@ -204,7 +204,7 @@ namespace Kinovea.ScreenManager
         	m_VideoFilters[(int)VideoFilterType.EdgesOnly] = new VideoFilterEdgesOnly();
 			m_VideoFilters[(int)VideoFilterType.Mosaic] = new VideoFilterMosaic();
         	m_VideoFilters[(int)VideoFilterType.Reverse] = new VideoFilterReverse();
-        	m_VideoFilters[(int)VideoFilterType.DebugSURF] = new VideoFilterDebugSURF();
+        	m_VideoFilters[(int)VideoFilterType.Sandbox] = new VideoFilterSandbox();
         }
         public void PrepareScreen()
         {
@@ -484,7 +484,7 @@ namespace Kinovea.ScreenManager
                                                   {  
                                                   		m_VideoFilters[(int)VideoFilterType.Mosaic].Menu,
                                                   		m_VideoFilters[(int)VideoFilterType.Reverse].Menu,
-                                                  		m_VideoFilters[(int)VideoFilterType.DebugSURF].Menu});
+                                                  		m_VideoFilters[(int)VideoFilterType.Sandbox].Menu});
             
             #endregion
             
@@ -3616,7 +3616,7 @@ namespace Kinovea.ScreenManager
 		EdgesOnly,
 		Mosaic,
 		Reverse,
-		DebugSURF,
+		Sandbox,
 		NumberOfVideoFilters
 	};	
     #endregion
