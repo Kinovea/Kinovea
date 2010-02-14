@@ -177,6 +177,7 @@
     <Compile Include="PlayerScreen\SURF\Surf.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTracker.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTrackPoint.cs" />
+    <Compile Include="PlayerScreen\Tracking\NormCorrelationTemplateMatching.cs" />
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
@@ -315,7 +316,7 @@
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterAutoLevels.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterContrast.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\VideoFilterDebugSURF.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\VideoFilterSandbox.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterEdgesOnly.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
