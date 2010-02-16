@@ -78,6 +78,12 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuNorwegian = new ToolStripMenuItem();
         private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeFrames = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeHoM = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeTToH = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTutorialVideos = new ToolStripMenuItem();
@@ -147,6 +153,7 @@ namespace Kinovea.Root
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.Instance().GetSupportedCulture();
             RefreshUICulture();
             CheckLanguageMenu();
+            CheckTimecodeMenu();
             PrintInitialConf();
             if(CommandLineArgumentManager.Instance().InputFile != null)
             {
@@ -221,6 +228,7 @@ namespace Kinovea.Root
             }
 
             CheckLanguageMenu();
+            CheckTimecodeMenu();
             
             PreferencesManager pm = PreferencesManager.Instance();
             pm.OrganizeHistoryMenu();
@@ -283,7 +291,7 @@ namespace Kinovea.Root
 
             
             // History
-           mnuHistory.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistory");
+           	mnuHistory.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistory");
             mnuHistory.Text = ((ItemResourceInfo)mnuHistory.Tag).resManager.GetString(((ItemResourceInfo)mnuHistory.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 
             #region History Items
@@ -354,19 +362,18 @@ namespace Kinovea.Root
             PreferencesManager pm = PreferencesManager.Instance();
             pm.RegisterHistoryMenu(mnuHistory);
 
-            // Separator
-            ToolStripSeparator mnuSepFile = new ToolStripSeparator();
-
-            // -> Here will be plugged the other file menus (save, export)
-
-            ToolStripSeparator mnuSepFile2 = new ToolStripSeparator();
-
             // Quit
             mnuQuit.Tag = new ItemResourceInfo(RootResourceManager, "Generic_Quit");
             mnuQuit.Text = ((ItemResourceInfo)mnuQuit.Tag).resManager.GetString(((ItemResourceInfo)mnuQuit.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
-            mnuFile.DropDownItems.AddRange(new ToolStripItem[] { mnuOpenFile, mnuHistory, mnuSepFile, mnuSepFile2, mnuQuit });
+            mnuFile.DropDownItems.AddRange(new ToolStripItem[] { 	mnuOpenFile, 
+                                           							mnuHistory, 
+                                           							new ToolStripSeparator(),
+                                           							// -> Here will be plugged the other file menus (save, export)
+                                           							new ToolStripSeparator(), 
+                                           							mnuQuit });
+            
             #endregion
 
             #region Edit
@@ -511,7 +518,41 @@ namespace Kinovea.Root
             mnuPreferences.Text = ((ItemResourceInfo)mnuPreferences.Tag).resManager.GetString(((ItemResourceInfo)mnuPreferences.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
 
-            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuLanguages, mnuPreferences});
+            // Time codes.
+            mnuTimecode.Tag = new ItemResourceInfo(RootResourceManager, "dlgPreferences_LabelTimeFormat");
+            mnuTimecode.Text = ((ItemResourceInfo)mnuTimecode.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecode.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            
+            #region Timecode menus.
+            mnuTimecodeClassic.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Classic");
+            mnuTimecodeClassic.Text = ((ItemResourceInfo)mnuTimecodeClassic.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeClassic.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecodeClassic.Click += new EventHandler(mnuTimecodeClassic_OnClick);
+            
+            mnuTimecodeFrames.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Frames");
+            mnuTimecodeFrames.Text = ((ItemResourceInfo)mnuTimecodeFrames.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeFrames.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
+            
+            mnuTimecodeHoM.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_HundredthOfMinutes");
+            mnuTimecodeHoM.Text = ((ItemResourceInfo)mnuTimecodeHoM.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeHoM.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecodeHoM.Click += new EventHandler(mnuTimecodeHoM_OnClick);
+            mnuTimecodeHoM.Visible = false;
+            
+            mnuTimecodeTToH.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_TenThousandthOfHours");
+            mnuTimecodeTToH.Text = ((ItemResourceInfo)mnuTimecodeTToH.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeTToH.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecodeTToH.Click += new EventHandler(mnuTimecodeTToH_OnClick);
+            mnuTimecodeTToH.Visible = false;
+            
+            mnuTimecodeTimeAndFrames.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_TimeAndFrames");
+            mnuTimecodeTimeAndFrames.Text = ((ItemResourceInfo)mnuTimecodeTimeAndFrames.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeTimeAndFrames.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
+            
+            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeHoM, mnuTimecodeTToH, mnuTimecodeTimeAndFrames});
+            #endregion
+            
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuLanguages, 
+                                              						mnuTimecode, 
+                                              						new ToolStripSeparator(), 
+                                              						mnuPreferences});
+                                              						
             #endregion
 
             #region Help
@@ -771,7 +812,7 @@ namespace Kinovea.Root
             CommandManager cm = CommandManager.Instance();
             cm.LaunchUndoableCommand(command);
         }
-        public void CheckLanguageMenu()
+        private void CheckLanguageMenu()
         {
             mnuDutch.Checked = false;
             mnuEnglish.Checked = false;
@@ -846,6 +887,64 @@ namespace Kinovea.Root
             log.Debug("Setting current ui culture.");
             Thread.CurrentThread.CurrentUICulture = pm.GetSupportedCulture();
             RefreshUICulture();
+        }
+        private void CheckTimecodeMenu()
+        {
+        	mnuTimecodeClassic.Checked = false;
+        	mnuTimecodeFrames.Checked = false;
+        	mnuTimecodeHoM.Checked = false;
+        	mnuTimecodeTToH.Checked = false;
+        	mnuTimecodeTimeAndFrames.Checked = false;
+        	
+            TimeCodeFormat tf = PreferencesManager.Instance().TimeCodeFormat;
+            
+            switch (tf)
+            {
+                case TimeCodeFormat.Frames:
+                    mnuTimecodeFrames.Checked = true;
+                    break;
+                case TimeCodeFormat.HundredthOfMinutes:
+                    mnuTimecodeHoM.Checked = true;
+                    break;
+                case TimeCodeFormat.TenThousandthOfHours:
+                    mnuTimecodeTToH.Checked = true;
+                    break;
+                case TimeCodeFormat.TimeAndFrames:
+                    mnuTimecodeTimeAndFrames.Checked = true;
+                    break; 
+                case TimeCodeFormat.ClassicTime:
+                default:
+                    mnuTimecodeClassic.Checked = true;
+                    break;
+            }
+        }
+        private void mnuTimecodeClassic_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimeCodeFormat.ClassicTime);
+        }
+        private void mnuTimecodeFrames_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimeCodeFormat.Frames);
+        }
+        private void mnuTimecodeHoM_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimeCodeFormat.HundredthOfMinutes);
+        }
+        private void mnuTimecodeTToH_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimeCodeFormat.TenThousandthOfHours);
+        }
+        private void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimeCodeFormat.TimeAndFrames);
+        }
+        private void SwitchTimecode(TimeCodeFormat _timecode)
+        {
+        	// Todo: turn this into a command ?
+        	PreferencesManager pm = PreferencesManager.Instance();
+            pm.TimeCodeFormat = _timecode;
+            RefreshUICulture();
+            pm.Export();	
         }
         #endregion
 

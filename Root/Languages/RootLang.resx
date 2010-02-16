@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Language:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>And</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspective Grid:</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Time markers format:</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Time markers format</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Working Zone will take less than {0} MB of Memory.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Working Zone is less than {0} seconds.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>By default, drawings will stay visible for {0} images around the Key Image.</value></data>

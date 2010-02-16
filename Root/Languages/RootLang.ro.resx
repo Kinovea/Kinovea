@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Limba :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Şi</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Grilă de perspectivă:</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formatul markerilor temporari :</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formatul markerilor temporari</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Zona de lucru va accesa mai puţin de {0} MB de memorie.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Zona de lucru este mai mică de {0} seconds.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Implicit, desenele vor sta vizibile pentru {0} imagini în jurul Imaginii Principale.</value></data>

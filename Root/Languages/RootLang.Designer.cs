@@ -376,7 +376,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Time markers format:.
+        ///   Recherche une chaîne localisée semblable à Time markers format.
         /// </summary>
         internal static string dlgPreferences_LabelTimeFormat {
             get {

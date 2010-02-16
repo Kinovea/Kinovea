@@ -135,7 +135,7 @@ namespace Kinovea.Root
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
 
             // Combo TimeCodeFormats (MUST be filled in the order of the enum)
-            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat;
+            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat + " :";
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
