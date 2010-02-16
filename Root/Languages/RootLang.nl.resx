@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Taal :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>En</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspectief Vlak :</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Tijdmarkeringsvorm :</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Tijdmarkeringsvorm</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Werkgebied zal minder dan {0} Mb van het geheugen nemen.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Werkgebied is minder dan {0} seconden.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Standaard zullen tekeningen zichtbaar zijn gedurende {0} beelden vanaf het Kernbeeld.</value></data>

@@ -67,7 +67,7 @@ namespace Kinovea.Updater
 
             // sep    
             ToolStripSeparator mnuSep = new ToolStripSeparator();
-            mnuSep.MergeIndex = 1;
+            mnuSep.MergeIndex = 2;
             mnuSep.MergeAction = MergeAction.Insert;
 
             //Update
@@ -76,9 +76,8 @@ namespace Kinovea.Updater
             mnuCheckForUpdates.Text = ((ItemResourceInfo)mnuCheckForUpdates.Tag).resManager.GetString(((ItemResourceInfo)mnuCheckForUpdates.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuCheckForUpdates.Click += new EventHandler(mnuCheckForUpdatesOnClick);
 
-            mnuCheckForUpdates.MergeIndex = 2;
+            mnuCheckForUpdates.MergeIndex = 3;
             mnuCheckForUpdates.MergeAction = MergeAction.Insert;
-
 
             mnuCatchOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuSep, mnuCheckForUpdates });
 

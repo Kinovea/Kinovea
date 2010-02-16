@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Lingua :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>E</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Griglia in prospettiva</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato dei contatori di tempo :</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato dei contatori di tempo</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona Lavoro occupa meno di {0} MB di Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona Lavoro e' minore di {0} secondi.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno restera' visibile per {0} immagini intorno all'Immagine Chiave.</value></data>

@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Kieli:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Ja</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspektiiviruudukko:</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Ajan oletusmuotoilu:</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Ajan oletusmuotoilu</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Työstettävä jakso käyttää alle {0} MB muistia.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Työstettävä jakso on kestoltaan alle {0} sekuntia.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Oletuksena piirrokset pysyvät näkyvissä {0} kuvaa ennen ja jälkeen avainkuvan.</value></data>

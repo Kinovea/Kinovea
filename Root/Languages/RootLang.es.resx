@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Idioma:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Y</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Cuadrícula de Perspectiva :</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato de marcas de tiempo:</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Formato de marcas de tiempo</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>

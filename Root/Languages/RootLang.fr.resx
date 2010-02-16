@@ -101,7 +101,7 @@
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Langue :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Et</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Grille de Perspective:</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Format des marqueurs temporels :</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Format des marqueurs temporels</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zone de Travail prend moins de {0} Mo de mémoire.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zone de Travail fait moins de {0} secondes.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Par défaut, les dessins resteront visibles pendant {0} images autour de leur Image Clé.</value></data>
@@ -137,7 +137,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Annuler</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classique (h:mm:ss:centièmes)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numéros des images</value></data>
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centièmes de minutes</value></data>
+   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centièmes de minute</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dix millièmes d'heure</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Classique + Numéros des images</value></data>
