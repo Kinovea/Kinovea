@@ -79,9 +79,9 @@ namespace Kinovea.Root
         	this.labelCopyright.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
         	this.labelCopyright.MaximumSize = new System.Drawing.Size(0, 17);
         	this.labelCopyright.Name = "labelCopyright";
-        	this.labelCopyright.Size = new System.Drawing.Size(169, 12);
+        	this.labelCopyright.Size = new System.Drawing.Size(12, 12);
         	this.labelCopyright.TabIndex = 21;
-        	this.labelCopyright.Text = "Copyright © 2006-2009 - Joan Charmant";
+        	this.labelCopyright.Text = "©";
         	this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         	// 
         	// lnkKinovea

@@ -130,6 +130,7 @@ namespace Kinovea.Root
             cmbLanguage.Items.Add(liPortuguese);
             cmbLanguage.Items.Add(liRomanian);
             cmbLanguage.Items.Add(liFinnish);
+            cmbLanguage.Items.Add(new LanguageIdentifier("tr", PreferencesManager.LanguageTurkish));
             cmbLanguage.Items.Add(liChinese);
 
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;

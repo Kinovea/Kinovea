@@ -69,10 +69,10 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>改变语言</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>显示/隐藏 文件浏览器</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>\n Kinovea 遵守 Gnu General Public License version 2 开源标准.\n</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>\n Kinovea 包含以下几个功能模块:\n\n</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>\n 非常欢迎帮助我们翻译, 测试, 调试, 改进 或者支持我们.\n</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>\n 本地化语言:\n</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea 遵守 Gnu General Public License version 2 开源标准.</value></data>
+   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea 包含以下几个功能模块:</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>非常欢迎帮助我们翻译, 测试, 调试, 改进 或者支持我们.</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>本地化语言:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>所有语言</value></data>
    
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>关于这个视频…</value></data>
