@@ -29,7 +29,6 @@ namespace Kinovea.ScreenManager
         private void InitializeComponent()
         {
         	this.components = new System.ComponentModel.Container();
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommonControls));
         	this.lblInfo = new System.Windows.Forms.Label();
         	this.toolTips = new System.Windows.Forms.ToolTip(this.components);
         	this.lblSyncOffset = new System.Windows.Forms.Label();
@@ -194,7 +193,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.trkFrame.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("trkFrame.BackgroundImage")));
+        	this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.trkFrame.Location = new System.Drawing.Point(383, 13);
         	this.trkFrame.Maximum = ((long)(0));
         	this.trkFrame.Minimum = ((long)(0));
