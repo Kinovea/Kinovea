@@ -79,7 +79,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à \n Kinovea is subject to the terms of the Gnu General Public License version 2.\n.
+        ///   Recherche une chaîne localisée semblable à Kinovea is subject to the terms of the Gnu General Public License version 2..
         /// </summary>
         internal static string dlgAbout_Info1 {
             get {
@@ -88,7 +88,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à \n Kinovea works in co-operation with the following software components:\n\n.
+        ///   Recherche une chaîne localisée semblable à Kinovea uses the following software components:.
         /// </summary>
         internal static string dlgAbout_Info2 {
             get {
@@ -97,7 +97,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à \n You are welcome to help translate, test, debug, improve or otherwise support Kinovea.\n.
+        ///   Recherche une chaîne localisée semblable à You are welcome to help translate, test, debug, improve or otherwise support Kinovea..
         /// </summary>
         internal static string dlgAbout_Info3 {
             get {
@@ -106,7 +106,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à \n Localisations:\n.
+        ///   Recherche une chaîne localisée semblable à Localisations:.
         /// </summary>
         internal static string dlgAbout_Info4 {
             get {

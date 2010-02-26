@@ -76,6 +76,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuRomanian = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFinnish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuNorwegian = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTurkish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
@@ -492,12 +493,15 @@ namespace Kinovea.Root
             mnuNorwegian = new ToolStripMenuItem(PreferencesManager.LanguageNorwegian);
             mnuNorwegian.Click += new EventHandler(menuNorwegianOnClick);
             
+            // Turkish
+            mnuTurkish = new ToolStripMenuItem(PreferencesManager.LanguageTurkish);
+            mnuTurkish.Click += new EventHandler(menuTurkishOnClick);
+            
             // Chinese
             mnuChinese = new ToolStripMenuItem(PreferencesManager.LanguageChinese);
             mnuChinese.Click += new EventHandler(menuChineseOnClick);
             
             // Re-Order alphabetically by localized name.
-            // Deutsh, English, Español, Français, Italiano, Nederlands, Norsk, Polski, Portuges, Romana, Suomi.
             mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { 
                                                 						mnuGerman, 	
                                                 						mnuEnglish, 
@@ -510,6 +514,7 @@ namespace Kinovea.Root
                                                 						mnuPortuguese, 
                                                 						mnuRomanian, 
                                                 						mnuFinnish,
+                                                						mnuTurkish,
                                                 						mnuChinese });
             #endregion
 
@@ -802,6 +807,10 @@ namespace Kinovea.Root
         {
             SwitchCulture("no");
         }
+        private void menuTurkishOnClick(object sender, EventArgs e)
+        {
+            SwitchCulture("tr");
+        }
         private void menuChineseOnClick(object sender, EventArgs e)
         {
             SwitchCulture("zh-CHS");
@@ -825,7 +834,8 @@ namespace Kinovea.Root
             mnuRomanian.Checked = false;
             mnuFinnish.Checked = false;
             mnuNorwegian.Checked = false;
-			mnuChinese.Checked = false;
+			mnuTurkish.Checked = false;
+            mnuChinese.Checked = false;
 			
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
             
@@ -860,6 +870,9 @@ namespace Kinovea.Root
                     break;
                 case "no":
                     mnuNorwegian.Checked = true;
+                    break;
+				case "tr":
+                    mnuTurkish.Checked = true;
                     break;
                 case "zh-CHS":
                     mnuChinese.Checked = true;

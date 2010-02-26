@@ -69,10 +69,10 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Zmień język</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Pokaż/Ukryj przeglądarkę plików</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>\n Kinovea jest oparta na licencji Gnu General Public License version 2.\n</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>\n Kinovea wykorzystuje następujące komponenty:\n\n</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>\n Jeśli chcesz pomóc tworzyć, tłumaczyć lub w inny sposób przyczynić się do rozwoje aplikacji Kinovea - zapraszamy.\n</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>\n Lokalizacja:\n</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea jest oparta na licencji Gnu General Public License version 2.</value></data>
+   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea wykorzystuje następujące komponenty:</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>Jeśli chcesz pomóc tworzyć, tłumaczyć lub w inny sposób przyczynić się do rozwoje aplikacji Kinovea - zapraszamy.</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>Lokalizacja:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Wszystkie języki</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Aby uzyskać dostęp do innych plików wideo użyj menu : Opcje &gt; Szukaj dostępnych aktualizacji...</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>O tym pliku wideo...</value></data>

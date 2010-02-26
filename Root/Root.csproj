@@ -162,6 +162,7 @@
       <LastGenOutput>RootLang.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.tr.resx" />
     <EmbeddedResource Include="Languages\RootLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

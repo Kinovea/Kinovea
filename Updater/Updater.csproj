@@ -98,6 +98,7 @@
     <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.Zh-CHS.resx" />
   </ItemGroup>
   <ItemGroup>
