@@ -38,10 +38,10 @@ namespace Kinovea.ScreenManager
         public delegate void CallbackDropLoadMovie(string _FilePath, int _iScreen);
 
         // Déclarations des variables
-        public CallbackDropLoadMovie    m_CallbackDropLoadMovie;
+        public Kinovea.ScreenManager.ScreenManagerUserInterface.CallbackDropLoadMovie m_CallbackDropLoadMovie;
 
         public delegate void DelegateUpdateTrkFrame(int _iFrame);
-        public DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
+        public Kinovea.ScreenManager.ScreenManagerUserInterface.DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
 
         #endregion
 
