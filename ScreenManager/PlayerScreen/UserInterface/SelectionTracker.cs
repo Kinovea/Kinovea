@@ -19,10 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
+using Kinovea.ScreenManager.Properties;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using AForge.Imaging.Filters;
 
 namespace Kinovea.ScreenManager
 {
@@ -166,6 +168,7 @@ namespace Kinovea.ScreenManager
         
         private int m_iMaxWidth = 0;        // Max size of selection in pixels
         private bool m_bEnabled = true;
+        private Bitmap m_MiddleBarDisabled;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -187,6 +190,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             m_iMaxWidth = this.Width - BumperLeft.Width - BumperRight.Width - HandlerLeft.Width - HandlerRight.Width; 
+            m_MiddleBarDisabled = Grayscale.CommonAlgorithms.Y.Apply(Resources.liqmiddlebar);
         }
         #endregion
 
@@ -222,6 +226,14 @@ namespace Kinovea.ScreenManager
 			m_bEnabled = _bEnable;
 			HandlerLeft.Enabled = _bEnable;
 			HandlerRight.Enabled = _bEnable;
+			if(_bEnable)
+			{
+				SelectedZone.BackgroundImage = Resources.liqmiddlebar;
+			}
+			else
+			{
+				SelectedZone.BackgroundImage = m_MiddleBarDisabled;
+			}
 		}
         #endregion
         

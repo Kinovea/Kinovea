@@ -58,7 +58,6 @@ namespace Kinovea.ScreenManager
         	this.buttonGotoLast = new System.Windows.Forms.Button();
         	this.buttonPlayingMode = new System.Windows.Forms.Button();
         	this.btnPdf = new System.Windows.Forms.Button();
-        	this.btnAnalysisMode = new System.Windows.Forms.Button();
         	this.groupBoxSpeedTuner = new System.Windows.Forms.GroupBox();
         	this.markerSpeedTuner = new System.Windows.Forms.Button();
         	this.PrimarySelection = new System.Windows.Forms.Button();
@@ -386,6 +385,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.trkFrame.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.trkFrame.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.trkFrame.Location = new System.Drawing.Point(5, 45);
         	this.trkFrame.Maximum = ((long)(100));
         	this.trkFrame.Minimum = ((long)(0));
@@ -440,15 +440,13 @@ namespace Kinovea.ScreenManager
         	// 
         	// buttonGotoFirst
         	// 
-        	this.buttonGotoFirst.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqfirst7;
-        	this.buttonGotoFirst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoFirst.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoFirst.FlatAppearance.BorderColor = System.Drawing.Color.White;
         	this.buttonGotoFirst.FlatAppearance.BorderSize = 0;
         	this.buttonGotoFirst.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.buttonGotoFirst.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoFirst.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonGotoFirst.Image = global::Kinovea.ScreenManager.Properties.Resources.liqfirst7;
         	this.buttonGotoFirst.Location = new System.Drawing.Point(25, 87);
         	this.buttonGotoFirst.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoFirst.Name = "buttonGotoFirst";
@@ -459,14 +457,12 @@ namespace Kinovea.ScreenManager
         	// 
         	// buttonGotoPrevious
         	// 
-        	this.buttonGotoPrevious.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqprev5;
-        	this.buttonGotoPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoPrevious.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoPrevious.FlatAppearance.BorderSize = 0;
         	this.buttonGotoPrevious.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.buttonGotoPrevious.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoPrevious.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoPrevious.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonGotoPrevious.Image = global::Kinovea.ScreenManager.Properties.Resources.liqprev5;
         	this.buttonGotoPrevious.Location = new System.Drawing.Point(60, 87);
         	this.buttonGotoPrevious.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoPrevious.Name = "buttonGotoPrevious";
@@ -478,14 +474,12 @@ namespace Kinovea.ScreenManager
         	// buttonGotoNext
         	// 
         	this.buttonGotoNext.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonGotoNext.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqnext6;
-        	this.buttonGotoNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoNext.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoNext.FlatAppearance.BorderSize = 0;
         	this.buttonGotoNext.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.buttonGotoNext.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoNext.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonGotoNext.Image = global::Kinovea.ScreenManager.Properties.Resources.liqnext6;
         	this.buttonGotoNext.Location = new System.Drawing.Point(140, 87);
         	this.buttonGotoNext.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoNext.Name = "buttonGotoNext";
@@ -496,14 +490,12 @@ namespace Kinovea.ScreenManager
         	// 
         	// buttonPlay
         	// 
-        	this.buttonPlay.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
-        	this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonPlay.FlatAppearance.BorderSize = 0;
         	this.buttonPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonPlay.Image = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
         	this.buttonPlay.Location = new System.Drawing.Point(95, 84);
         	this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
         	this.buttonPlay.Name = "buttonPlay";
@@ -547,14 +539,12 @@ namespace Kinovea.ScreenManager
         	// 
         	// buttonGotoLast
         	// 
-        	this.buttonGotoLast.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqlast5;
-        	this.buttonGotoLast.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoLast.FlatAppearance.BorderSize = 0;
         	this.buttonGotoLast.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.buttonGotoLast.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.buttonGotoLast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoLast.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+        	this.buttonGotoLast.Image = global::Kinovea.ScreenManager.Properties.Resources.liqlast5;
         	this.buttonGotoLast.Location = new System.Drawing.Point(175, 87);
         	this.buttonGotoLast.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoLast.Name = "buttonGotoLast";
@@ -597,24 +587,6 @@ namespace Kinovea.ScreenManager
         	this.btnPdf.Tag = "";
         	this.btnPdf.UseVisualStyleBackColor = true;
         	this.btnPdf.Visible = false;
-        	// 
-        	// btnAnalysisMode
-        	// 
-        	this.btnAnalysisMode.BackColor = System.Drawing.Color.DarkOliveGreen;
-        	this.btnAnalysisMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnAnalysisMode.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnAnalysisMode.Enabled = false;
-        	this.btnAnalysisMode.FlatAppearance.BorderSize = 0;
-        	this.btnAnalysisMode.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnAnalysisMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnAnalysisMode.Location = new System.Drawing.Point(320, 27);
-        	this.btnAnalysisMode.MinimumSize = new System.Drawing.Size(25, 25);
-        	this.btnAnalysisMode.Name = "btnAnalysisMode";
-        	this.btnAnalysisMode.Size = new System.Drawing.Size(25, 25);
-        	this.btnAnalysisMode.TabIndex = 20;
-        	this.btnAnalysisMode.Tag = "multi";
-        	this.btnAnalysisMode.UseVisualStyleBackColor = false;
-        	this.btnAnalysisMode.Visible = false;
         	// 
         	// groupBoxSpeedTuner
         	// 
@@ -958,13 +930,13 @@ namespace Kinovea.ScreenManager
         	// btn3dplane
         	// 
         	this.btn3dplane.BackColor = System.Drawing.Color.Transparent;
-        	this.btn3dplane.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.plane4;
         	this.btn3dplane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btn3dplane.FlatAppearance.BorderSize = 0;
         	this.btn3dplane.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btn3dplane.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btn3dplane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btn3dplane.ForeColor = System.Drawing.Color.Black;
+        	this.btn3dplane.Image = global::Kinovea.ScreenManager.Properties.Resources.plane4;
         	this.btn3dplane.Location = new System.Drawing.Point(250, 2);
         	this.btn3dplane.Name = "btn3dplane";
         	this.btn3dplane.Size = new System.Drawing.Size(25, 25);
@@ -975,13 +947,13 @@ namespace Kinovea.ScreenManager
         	// btnMagnifier
         	// 
         	this.btnMagnifier.BackColor = System.Drawing.Color.Transparent;
-        	this.btnMagnifier.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.magnifier2;
         	this.btnMagnifier.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnMagnifier.FlatAppearance.BorderSize = 0;
         	this.btnMagnifier.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnMagnifier.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnMagnifier.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnMagnifier.ForeColor = System.Drawing.Color.Black;
+        	this.btnMagnifier.Image = global::Kinovea.ScreenManager.Properties.Resources.magnifier2;
         	this.btnMagnifier.Location = new System.Drawing.Point(275, 2);
         	this.btnMagnifier.Name = "btnMagnifier";
         	this.btnMagnifier.Size = new System.Drawing.Size(25, 25);
@@ -992,13 +964,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolChrono
         	// 
         	this.btnDrawingToolChrono.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolChrono.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.chrono5;
         	this.btnDrawingToolChrono.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolChrono.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolChrono.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolChrono.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolChrono.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolChrono.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolChrono.Image = global::Kinovea.ScreenManager.Properties.Resources.chrono5;
         	this.btnDrawingToolChrono.Location = new System.Drawing.Point(220, 2);
         	this.btnDrawingToolChrono.Name = "btnDrawingToolChrono";
         	this.btnDrawingToolChrono.Size = new System.Drawing.Size(25, 25);
@@ -1028,13 +1000,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolCross2D
         	// 
         	this.btnDrawingToolCross2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolCross2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.cross5;
         	this.btnDrawingToolCross2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolCross2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolCross2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolCross2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolCross2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolCross2D.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolCross2D.Image = global::Kinovea.ScreenManager.Properties.Resources.cross5;
         	this.btnDrawingToolCross2D.Location = new System.Drawing.Point(170, 2);
         	this.btnDrawingToolCross2D.Name = "btnDrawingToolCross2D";
         	this.btnDrawingToolCross2D.Size = new System.Drawing.Size(25, 25);
@@ -1045,14 +1017,15 @@ namespace Kinovea.ScreenManager
         	// btnShowComments
         	// 
         	this.btnShowComments.BackColor = System.Drawing.Color.Transparent;
-        	this.btnShowComments.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.comments2;
         	this.btnShowComments.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnShowComments.FlatAppearance.BorderSize = 0;
         	this.btnShowComments.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnShowComments.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnShowComments.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnShowComments.ForeColor = System.Drawing.Color.Black;
+        	this.btnShowComments.Image = global::Kinovea.ScreenManager.Properties.Resources.comments2;
         	this.btnShowComments.Location = new System.Drawing.Point(70, 2);
+        	this.btnShowComments.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
         	this.btnShowComments.Name = "btnShowComments";
         	this.btnShowComments.Size = new System.Drawing.Size(25, 25);
         	this.btnShowComments.TabIndex = 14;
@@ -1062,13 +1035,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolLine2D
         	// 
         	this.btnDrawingToolLine2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolLine2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.line6;
         	this.btnDrawingToolLine2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolLine2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolLine2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolLine2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolLine2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolLine2D.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolLine2D.Image = global::Kinovea.ScreenManager.Properties.Resources.line6;
         	this.btnDrawingToolLine2D.Location = new System.Drawing.Point(145, 2);
         	this.btnDrawingToolLine2D.Name = "btnDrawingToolLine2D";
         	this.btnDrawingToolLine2D.Size = new System.Drawing.Size(25, 25);
@@ -1079,13 +1052,13 @@ namespace Kinovea.ScreenManager
         	// btnColorProfile
         	// 
         	this.btnColorProfile.BackColor = System.Drawing.Color.Transparent;
-        	this.btnColorProfile.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.SwatchIcon3;
         	this.btnColorProfile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnColorProfile.FlatAppearance.BorderSize = 0;
         	this.btnColorProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnColorProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnColorProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnColorProfile.ForeColor = System.Drawing.Color.Black;
+        	this.btnColorProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.SwatchIcon3;
         	this.btnColorProfile.Location = new System.Drawing.Point(300, 2);
         	this.btnColorProfile.Name = "btnColorProfile";
         	this.btnColorProfile.Size = new System.Drawing.Size(25, 25);
@@ -1096,13 +1069,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolText
         	// 
         	this.btnDrawingToolText.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolText.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.TextToolIcon;
         	this.btnDrawingToolText.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolText.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolText.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolText.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolText.Image = global::Kinovea.ScreenManager.Properties.Resources.TextToolIcon;
         	this.btnDrawingToolText.Location = new System.Drawing.Point(95, 2);
         	this.btnDrawingToolText.Name = "btnDrawingToolText";
         	this.btnDrawingToolText.Size = new System.Drawing.Size(25, 25);
@@ -1113,13 +1086,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolPencil
         	// 
         	this.btnDrawingToolPencil.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPencil.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
         	this.btnDrawingToolPencil.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPencil.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPencil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolPencil.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolPencil.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolPencil.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolPencil.Image = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
         	this.btnDrawingToolPencil.Location = new System.Drawing.Point(120, 2);
         	this.btnDrawingToolPencil.Name = "btnDrawingToolPencil";
         	this.btnDrawingToolPencil.Size = new System.Drawing.Size(25, 25);
@@ -1130,13 +1103,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolAngle2D
         	// 
         	this.btnDrawingToolAngle2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolAngle2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.angle5;
         	this.btnDrawingToolAngle2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnDrawingToolAngle2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolAngle2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolAngle2D.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolAngle2D.Image = global::Kinovea.ScreenManager.Properties.Resources.angle5;
         	this.btnDrawingToolAngle2D.Location = new System.Drawing.Point(195, 2);
         	this.btnDrawingToolAngle2D.Name = "btnDrawingToolAngle2D";
         	this.btnDrawingToolAngle2D.Size = new System.Drawing.Size(25, 25);
@@ -1147,13 +1120,13 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolPointer
         	// 
         	this.btnDrawingToolPointer.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPointer.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.handtool;
         	this.btnDrawingToolPointer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPointer.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPointer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDrawingToolPointer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolPointer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolPointer.ForeColor = System.Drawing.Color.White;
+        	this.btnDrawingToolPointer.Image = global::Kinovea.ScreenManager.Properties.Resources.handtool;
         	this.btnDrawingToolPointer.Location = new System.Drawing.Point(30, 2);
         	this.btnDrawingToolPointer.Name = "btnDrawingToolPointer";
         	this.btnDrawingToolPointer.Size = new System.Drawing.Size(25, 25);
@@ -1170,7 +1143,6 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.BackColor = System.Drawing.Color.Black;
         	this.pnlThumbnails.Controls.Add(this.btnPdf);
         	this.pnlThumbnails.Controls.Add(this.pictureBox1);
-        	this.pnlThumbnails.Controls.Add(this.btnAnalysisMode);
         	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
         	this.pnlThumbnails.Name = "pnlThumbnails";
         	this.pnlThumbnails.Size = new System.Drawing.Size(420, 102);
@@ -1191,13 +1163,12 @@ namespace Kinovea.ScreenManager
         	// btnAddKeyframe
         	// 
         	this.btnAddKeyframe.BackColor = System.Drawing.Color.Transparent;
-        	this.btnAddKeyframe.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.MenuFileNewIcon;
-        	this.btnAddKeyframe.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnAddKeyframe.FlatAppearance.BorderSize = 0;
         	this.btnAddKeyframe.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnAddKeyframe.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnAddKeyframe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnAddKeyframe.ForeColor = System.Drawing.Color.White;
+        	this.btnAddKeyframe.Image = global::Kinovea.ScreenManager.Properties.Resources.MenuFileNewIcon;
         	this.btnAddKeyframe.Location = new System.Drawing.Point(5, 2);
         	this.btnAddKeyframe.Name = "btnAddKeyframe";
         	this.btnAddKeyframe.Size = new System.Drawing.Size(25, 25);
@@ -1284,7 +1255,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnSetHandlerRight;
         private System.Windows.Forms.Button btnSetHandlerLeft;
         private System.Windows.Forms.Label dbgAvailableRam;
-        private System.Windows.Forms.Button btnAnalysisMode;
         private System.Windows.Forms.SplitContainer splitKeyframes;
         private System.Windows.Forms.Button btnAddKeyframe;
         private System.Windows.Forms.PictureBox pictureBox1;
