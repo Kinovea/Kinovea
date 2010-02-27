@@ -4957,40 +4957,59 @@ namespace Kinovea.ScreenManager
 			                   m_iSelEnd,
 			                   new DelegateGetOutputBitmap(GetOutputBitmap));
 		}
-		private bool GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
+		private long GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
 			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
 			// This image is already drawn on _canvas.
 			// Here we we flush the drawings on it if needed.
-			// We return a boolean indicating if it's a key image or not.
+			// We return the distance to the closest key image.
 			// This can then be used by the caller.
 
+			// 1. Look for the closest key image.
+			long iClosestKeyImageDistance = long.MaxValue;	
 			int iKeyFrameIndex = -1;
-			int iCurrentKeyframe = 0;
-			bool bFound = false;
-			while (!bFound && iCurrentKeyframe < m_FrameServer.Metadata.Count)
+			for(int i=0; i<m_FrameServer.Metadata.Keyframes.Count;i++)
 			{
-				if (m_FrameServer.Metadata[iCurrentKeyframe].Position == _iTimestamp)
+				long iDistance = Math.Abs(_iTimestamp - m_FrameServer.Metadata.Keyframes[i].Position);
+				if(iDistance < iClosestKeyImageDistance)
 				{
-					bFound = true;
-					iKeyFrameIndex = iCurrentKeyframe;
+					iClosestKeyImageDistance = iDistance;
+					iKeyFrameIndex = i;
+				}
+			}
+
+			// 2. Invalidate the distance if we wanted only key images, and we are not on one.
+			// Or if there is no key image at all.
+			if ( (_bKeyframesOnly && iClosestKeyImageDistance != 0) || (iClosestKeyImageDistance == long.MaxValue))
+			{
+				iClosestKeyImageDistance = -1;
+			}
+			
+			// 3. Flush drawings if needed.
+			if(_bFlushDrawings)
+			{
+				if (_bKeyframesOnly)
+				{
+					if(iClosestKeyImageDistance == 0)
+					{
+						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+					}
 				}
 				else
 				{
-					iCurrentKeyframe++;
-				}
+					if(iClosestKeyImageDistance == 0)
+					{
+						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+					}
+					else
+					{
+						FlushDrawingsOnGraphics(_canvas, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+					}
+				}	
 			}
 
-			if (!_bKeyframesOnly || iKeyFrameIndex >= 0)
-			{
-				if (_bFlushDrawings)
-				{
-					FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
-				}
-			}
-
-			return (iKeyFrameIndex >= 0);
+			return iClosestKeyImageDistance;
 		}
 		private Bitmap GetFlushedImage()
 		{
