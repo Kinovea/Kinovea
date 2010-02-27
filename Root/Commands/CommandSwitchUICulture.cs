@@ -1,24 +1,18 @@
+using Kinovea.Root.Languages;
 using System;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
 using Kinovea.Services;
 
 namespace Kinovea.Root
 {
     class CommandSwitchUICulture : IUndoableCommand
     {
-        // Le nom de la commande pourrait apparaitre dans la langue dans laquelle on était avant...
-
-        public string FriendlyName
+		public string FriendlyName
         {
-            get
-            {
-                ResourceManager rm = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("CommandSwitchUICulture_FriendlyName", Thread.CurrentThread.CurrentUICulture);
-            }
+        	get { return RootLang.CommandSwitchUICulture_FriendlyName; }
         }
 
         #region Members

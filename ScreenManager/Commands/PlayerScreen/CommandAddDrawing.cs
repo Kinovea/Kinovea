@@ -18,11 +18,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -34,8 +34,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("CommandAddDrawing_FriendlyName", Thread.CurrentThread.CurrentUICulture) + " (" + m_Drawing.ToString() + ")";
+            	return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + m_Drawing.ToString() + ")";
             }
         }
 
@@ -65,7 +64,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         /// <summary>
-        /// Execution de la commande
+        /// Command execution.
         /// </summary>
         public void Execute()
         {
@@ -85,7 +84,6 @@ namespace Kinovea.ScreenManager
                 {
                     //Redo.
                     m_Metadata[iIndex].Drawings.Insert(0, m_Drawing);
-                    //m_psui.pbSurfaceScreen.Invalidate();
                     m_DoInvalidate();
                 }
             }
