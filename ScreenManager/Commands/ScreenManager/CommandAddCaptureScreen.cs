@@ -19,13 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
-using Kinovea.Services;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -34,11 +34,7 @@ namespace Kinovea.ScreenManager
     	#region Properties
         public string FriendlyName
         {
-            get 
-            {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("CommandAddCaptureScreen_FriendlyName", Thread.CurrentThread.CurrentUICulture);
-            }
+        	get { return ScreenManagerLang.CommandAddCaptureScreen_FriendlyName; }
         }
         #endregion
         

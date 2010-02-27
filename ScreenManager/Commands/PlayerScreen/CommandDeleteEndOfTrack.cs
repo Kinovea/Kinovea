@@ -32,10 +32,7 @@ namespace Kinovea.ScreenManager
     {
         public string FriendlyName
         {
-            get
-            {
-                return ScreenManagerLang.mnuDeleteEndOfTrajectory;
-            }
+            get { return ScreenManagerLang.mnuDeleteEndOfTrajectory; }
         }
 
         private PlayerScreenUserInterface m_psui;

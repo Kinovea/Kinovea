@@ -18,11 +18,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -38,11 +38,7 @@ namespace Kinovea.ScreenManager
     {
         public string FriendlyName
         {
-            get
-            {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("CommandPlayMovie_FriendlyName", Thread.CurrentThread.CurrentUICulture);
-            }
+        	get { return ScreenManagerLang.CommandPlayMovie_FriendlyName; }
         }
 
 
