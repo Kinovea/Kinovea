@@ -23,7 +23,7 @@ done - Import SVG into Dom on initialisation of the drawing.
 done - Rendering of the SVG upon Draw method call.  (Includes support for scale and zoom window.)
 done - Implement the hit test method.
 done - Implement the move method.
-- Implement fading method.
+done - Implement fading method.
 - Implement a handle mechanism.
 - Shape modification (dimensions changes, rotations). 
 - Test with other SVG files.
