@@ -147,6 +147,7 @@
     <Compile Include="Kernel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Languages\RootLang.el.resx" />
     <EmbeddedResource Include="Languages\RootLang.es.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

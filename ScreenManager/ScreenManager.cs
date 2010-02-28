@@ -1447,6 +1447,9 @@ namespace Kinovea.ScreenManager
             		// Production filters = always visible.
             		vf.Menu.Visible = true;
             	}
+            	
+            	// Dev
+            	m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
         	}
 			
 			// 2. Enabled, checked

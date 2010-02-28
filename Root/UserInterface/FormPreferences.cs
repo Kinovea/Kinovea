@@ -104,34 +104,23 @@ namespace Kinovea.Root
             
             lblLanguage.Text = RootLang.dlgPreferences_LabelLanguages;
             cmbLanguage.Items.Clear();
-            LanguageIdentifier liEnglish = new LanguageIdentifier("en", PreferencesManager.LanguageEnglish);
-            LanguageIdentifier liFrench = new LanguageIdentifier("fr", PreferencesManager.LanguageFrench);
-            LanguageIdentifier liDutch = new LanguageIdentifier("nl", PreferencesManager.LanguageDutch);
-            LanguageIdentifier liGerman = new LanguageIdentifier("de", PreferencesManager.LanguageGerman);
-            LanguageIdentifier liSpanish = new LanguageIdentifier("es", PreferencesManager.LanguageSpanish);
-            LanguageIdentifier liItalian = new LanguageIdentifier("it", PreferencesManager.LanguageItalian);
-            LanguageIdentifier liPortuguese = new LanguageIdentifier("pt", PreferencesManager.LanguagePortuguese);
-            LanguageIdentifier liPolish = new LanguageIdentifier("pl", PreferencesManager.LanguagePolish);
-            LanguageIdentifier liRomanian = new LanguageIdentifier("ro", PreferencesManager.LanguageRomanian);
-			LanguageIdentifier liFinnish = new LanguageIdentifier("fi", PreferencesManager.LanguageFinnish);
-			LanguageIdentifier liNorwegian = new LanguageIdentifier("no", PreferencesManager.LanguageNorwegian);
-			LanguageIdentifier liChinese = new LanguageIdentifier("zh-CHS", PreferencesManager.LanguageChinese);
-			
+            
             // Order : Native Alphabetical.
-            // Deutsh, English, Español, Français, Italiano, Nederlands, Norsk, Polski, Portuges, Romana, Suomi, chinese.
-            cmbLanguage.Items.Add(liGerman);
-            cmbLanguage.Items.Add(liEnglish);
-            cmbLanguage.Items.Add(liSpanish);
-            cmbLanguage.Items.Add(liFrench);
-            cmbLanguage.Items.Add(liItalian);
-            cmbLanguage.Items.Add(liDutch);
-            cmbLanguage.Items.Add(liNorwegian);
-            cmbLanguage.Items.Add(liPolish);
-            cmbLanguage.Items.Add(liPortuguese);
-            cmbLanguage.Items.Add(liRomanian);
-            cmbLanguage.Items.Add(liFinnish);
+            // Deutsh, Greek, English, Español, Français, Italiano, Nederlands, Norsk, Polski, Portuges, Romana, Suomi, chinese.
+            cmbLanguage.Items.Add(new LanguageIdentifier("de", PreferencesManager.LanguageGerman));
+            cmbLanguage.Items.Add(new LanguageIdentifier("el", PreferencesManager.LanguageGreek));
+            cmbLanguage.Items.Add(new LanguageIdentifier("en", PreferencesManager.LanguageEnglish));
+            cmbLanguage.Items.Add(new LanguageIdentifier("es", PreferencesManager.LanguageSpanish));
+            cmbLanguage.Items.Add(new LanguageIdentifier("fr", PreferencesManager.LanguageFrench));
+            cmbLanguage.Items.Add(new LanguageIdentifier("it", PreferencesManager.LanguageItalian));
+            cmbLanguage.Items.Add(new LanguageIdentifier("nl", PreferencesManager.LanguageDutch));
+            cmbLanguage.Items.Add(new LanguageIdentifier("no", PreferencesManager.LanguageNorwegian));
+            cmbLanguage.Items.Add(new LanguageIdentifier("pl", PreferencesManager.LanguagePolish));
+            cmbLanguage.Items.Add(new LanguageIdentifier("pt", PreferencesManager.LanguagePortuguese));
+            cmbLanguage.Items.Add(new LanguageIdentifier("ro", PreferencesManager.LanguageRomanian));
+            cmbLanguage.Items.Add(new LanguageIdentifier("fi", PreferencesManager.LanguageFinnish));
             cmbLanguage.Items.Add(new LanguageIdentifier("tr", PreferencesManager.LanguageTurkish));
-            cmbLanguage.Items.Add(liChinese);
+            cmbLanguage.Items.Add(new LanguageIdentifier("zh-CHS", PreferencesManager.LanguageChinese));
 
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
 
