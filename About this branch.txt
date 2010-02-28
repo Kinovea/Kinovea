@@ -1,0 +1,33 @@
+This branch is to work on the SVG Drawing sub-project.
+SVG Drawing is the code name of a generic drawing tool that will allow the user to add drawing that have arbitrary complex shapes.
+This will use SVG format and the SVG# open source library for reading SVG to DOM and rendering to GDI+.
+
+SVG# has almost all we need to create a full blown SVG Drawing type.
+
+Some infos on workflow:
+- The SVG# dll are compiled in release mode and copied to the ref directory.
+- The files on the SVG# site are from 2005, so we recompile from the source forge svn (2009).
+- The five main assemblies are : Bindings, Util, Dom, Css and ObjectModel. (by order of dependencies).
+- These allows us to load an SVG file into Dom.
+- The sixth assembly we use from the SVG# project is RenderingEngine.
+- It allows us to render the SVG we have in Dom onto GDI+ surfaces.
+- The RenderingEngine will need some modifications at source code level, so the project is directly integrated into the source tree.
+- The other referenced assemblies shouldn't require modifications.
+
+In a first effort, we will focus on reading and rendering the SVG file, not on how the shapes selection will be made by the user.
+
+TODO:
+done - Add DrawingTool, copy from Cross.
+done - Add Drawing, copy from Cross.
+done - Import SVG into Dom on initialisation of the drawing.
+done - Rendering of the SVG upon Draw method call.  (Includes support for scale and zoom window.)
+done - Implement the hit test method.
+done - Implement the move method.
+- Implement fading method.
+- Implement a handle mechanism.
+- Shape modification (dimensions changes, rotations). 
+- Test with other SVG files.
+- Implement export / import to .Kva xml, outside of a particular shape file context.
+- work on the UI for the shape selection.
+
+

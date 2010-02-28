@@ -69,10 +69,10 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Modifică limba</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Arată/Ascunde Exploratorul de fişiere</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>\n Kinovea se supune termenilor Licenţei Publice Gnu versiunea 2.\n</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>\n Kinovea funcţionează în cooperare cu urmatoarele componente software:\n\n</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>\n Sunteţi invitaţii noştri dacă doriţi sa traduceţi, testaţi, corectaţi sau să îmbunătăţiţi în vreun fel Kinovea.\n</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>\n Localizări:\n</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea se supune termenilor Licenţei Publice Gnu versiunea 2.</value></data>
+   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea funcţionează în cooperare cu urmatoarele componente software:</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>Sunteţi invitaţii noştri dacă doriţi sa traduceţi, testaţi, corectaţi sau să îmbunătăţiţi în vreun fel Kinovea.</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>Localizări:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Toate limbile</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Puteţi vedea mai multe fişiere video accesând din meniu: Opţiuni &gt; Verifică actualizările disponibile...</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Despre acest fişier video...</value></data>
@@ -88,16 +88,16 @@
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Rulează / Analizează</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activează persistenţa</value></data>
-   
-   
-   
-   
+   <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Ruleaza intotdeauna filtrul deintretesere cand este deschis un nou fisier video</value></data>
+   <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forteaza format 16:9</value></data>
+   <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forteaza format 4:3</value></data>
+   <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Detectie automata</value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Schimbă in Modul Analiză</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Culori</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistenţă</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Grilă :</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Număr de fişiere în istoric :</value></data>
-   
+   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Formatul de imagine implicit</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Limba :</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Şi</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Grilă de perspectivă:</value></data>
@@ -117,7 +117,7 @@
    <data name="Generic_Quit" xml:space="preserve"><value>Renunţ</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salvează</value></data>
    <data name="mnuAbout" xml:space="preserve"><value>Despre Kinovea...</value></data>
-   
+   <data name="mnuApplicationFolder" xml:space="preserve"><value>Deschide folderul de loguri...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Editează</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Fişier</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Ajutor</value></data>
@@ -140,7 +140,7 @@
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>
-   
+   <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clasic+Numarul cadrelor</value></data>
    
    
    

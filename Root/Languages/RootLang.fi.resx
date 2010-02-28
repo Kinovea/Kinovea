@@ -69,10 +69,10 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Vaihda kieli</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Näytä/piilota Explorer</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>\n Kinovea on Gnu General Public License versio 2:n alainen\n</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>\n Kinovea on yhteensopiva seuraavien ohjelmistojen kanssa:\n\n</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>\n Tervetuloa osallistumaan Kinovean kehittämiseen kielikäännösten, testaamisen, virheraportoinnin ja muun tuen kautta\n </value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>\n Käännökset:\n</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea on Gnu General Public License versio 2:n alainen</value></data>
+   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea on yhteensopiva seuraavien ohjelmistojen kanssa:</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>Tervetuloa osallistumaan Kinovean kehittämiseen kielikäännösten, testaamisen, virheraportoinnin ja muun tuen kautta</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>Käännökset:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Kaikki kielet</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Voit hankkia lisää videoita valikon kautta: Optiot-&gt;Tarkista saatavilla olevat päivitykset</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Tästä videosta...</value></data>

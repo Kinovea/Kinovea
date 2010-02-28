@@ -19,10 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
+using Kinovea.ScreenManager.Properties;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using AForge.Imaging.Filters;
 
 namespace Kinovea.ScreenManager
 {
@@ -136,6 +138,7 @@ namespace Kinovea.ScreenManager
         private int m_iSmallChange = 1;
         private int m_iLargeChange = 5;
         private int m_iStickyValue = 100;
+        private Bitmap m_CursorDisabled;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -154,6 +157,7 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.BackColor = Color.White;
+            m_CursorDisabled = Grayscale.CommonAlgorithms.Y.Apply(Resources.SpeedTrkCursor7);
         }
         #endregion
 
@@ -221,6 +225,14 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        public void EnableDisable(bool _bEnable)
+        {
+        	btnIncrease.Enabled = _bEnable;
+        	btnDecrease.Enabled = _bEnable;
+        	btnCursor.Enabled = _bEnable;
+        	btnCursor.BackgroundImage = _bEnable ? Resources.SpeedTrkCursor7 : m_CursorDisabled;
+        }
+        
         private void SetNewValue()
         {
             m_iValue = Rescale(btnCursor.Left + (btnCursor.Width / 2) - btnRail.Left, btnRail.Width, (m_iMaximum - m_iMinimum));
@@ -245,10 +257,6 @@ namespace Kinovea.ScreenManager
         {
             // Rescale : Pixels -> Values
             return (int)(Math.Round((double)((double)_iValue * (double)_iNewMax) / (double)_iOldMax));
-        }
-
-        
-
-        
+        }  
     }
 }

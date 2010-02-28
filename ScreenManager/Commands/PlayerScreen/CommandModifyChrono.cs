@@ -18,11 +18,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -33,19 +33,17 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-
                 string friendlyName = "";
                 switch (m_ModifType)
                 {
                     case DrawingChrono.ChronoModificationType.TimeStart:
-                        friendlyName = rm.GetString("mnuChronoStart", Thread.CurrentThread.CurrentUICulture);
+                        friendlyName = ScreenManagerLang.mnuChronoStart;
                         break;
                     case DrawingChrono.ChronoModificationType.TimeStop:
-                        friendlyName = rm.GetString("mnuChronoStop", Thread.CurrentThread.CurrentUICulture);
+                        friendlyName = ScreenManagerLang.mnuChronoStop;
                         break;
                     case DrawingChrono.ChronoModificationType.TimeHide:
-                        friendlyName = rm.GetString("mnuChronoHide", Thread.CurrentThread.CurrentUICulture);
+                        friendlyName = ScreenManagerLang.mnuChronoHide;
                         break;
                     default:
                         break;
