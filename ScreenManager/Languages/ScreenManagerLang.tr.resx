@@ -243,7 +243,7 @@
    <data name="mnuColors" xml:space="preserve"><value>Renkler...</value></data>
    <data name="mnuConfigureDrawing_Color" xml:space="preserve"><value>Renk</value></data>
    <data name="mnuConfigureDrawing_ColorSize" xml:space="preserve"><value>Renk ve Büyüklük...</value></data>
-   <data name="mnuConfigureFading" xml:space="preserve"><value>Süreklilik</value></data>
+   <data name="mnuConfigureFading" xml:space="preserve"><value>Süreklilik...</value></data>
    <data name="mnuConfigureTrajectory" xml:space="preserve"><value>Yol Görünümünü Ayarla</value></data>
    <data name="mnuDeinterlace" xml:space="preserve"><value>Deinterlace</value></data>
    <data name="mnuDeleteDrawing" xml:space="preserve"><value>Sil</value></data>

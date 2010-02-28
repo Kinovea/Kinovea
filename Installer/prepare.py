@@ -70,7 +70,7 @@ shutil.copy2(os.path.join(xsltdir, "Kva to Kva\\kva-1.2to1.3.xsl"), os.path.join
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2msxml-en.xsl"), os.path.join(destdir, "xslt\\kva2msxml-en.xsl"))
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2odf-en.xsl"), os.path.join(destdir, "xslt\\kva2odf-en.xsl"))
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2xhtml-en.xsl"), os.path.join(destdir, "xslt\\kva2xhtml-en.xsl"))
-
+shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2txt-en.xsl"), os.path.join(destdir, "xslt\\kva2txt-en.xsl"))
 
 #Help files
 if os.path.exists(os.path.join(destdir, "Manuals")) : 
@@ -98,6 +98,16 @@ if os.path.exists(os.path.join(destdir, "it")) :
 	shutil.rmtree(os.path.join(destdir, "it"))
 if os.path.exists(os.path.join(destdir, "ro")) : 
 	shutil.rmtree(os.path.join(destdir, "ro"))
+if os.path.exists(os.path.join(destdir, "fi")) : 
+	shutil.rmtree(os.path.join(destdir, "fi"))
+if os.path.exists(os.path.join(destdir, "no")) : 
+	shutil.rmtree(os.path.join(destdir, "no"))
+if os.path.exists(os.path.join(destdir, "tr")) : 
+	shutil.rmtree(os.path.join(destdir, "tr"))
+if os.path.exists(os.path.join(destdir, "Zh-CHS")) : 
+	shutil.rmtree(os.path.join(destdir, "Zh-CHS"))
+if os.path.exists(os.path.join(destdir, "el")) : 
+	shutil.rmtree(os.path.join(destdir, "el"))
 
 shutil.copytree(os.path.join(bindir, "de"), os.path.join(destdir, "de"))
 shutil.copytree(os.path.join(bindir, "es"), os.path.join(destdir, "es"))
@@ -107,6 +117,11 @@ shutil.copytree(os.path.join(bindir, "pl"), os.path.join(destdir, "pl"))
 shutil.copytree(os.path.join(bindir, "pt"), os.path.join(destdir, "pt"))
 shutil.copytree(os.path.join(bindir, "it"), os.path.join(destdir, "it"))
 shutil.copytree(os.path.join(bindir, "ro"), os.path.join(destdir, "ro"))
+shutil.copytree(os.path.join(bindir, "fi"), os.path.join(destdir, "fi"))
+shutil.copytree(os.path.join(bindir, "no"), os.path.join(destdir, "no"))
+shutil.copytree(os.path.join(bindir, "tr"), os.path.join(destdir, "tr"))
+shutil.copytree(os.path.join(bindir, "Zh-CHS"), os.path.join(destdir, "Zh-CHS"))
+shutil.copytree(os.path.join(bindir, "el"), os.path.join(destdir, "el"))
 
 
 

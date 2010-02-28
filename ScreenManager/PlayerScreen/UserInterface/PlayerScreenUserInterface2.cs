@@ -70,6 +70,40 @@ namespace Kinovea.ScreenManager
 
 		[DllImport("user32.dll")]
 		static extern uint GetDoubleClickTime();
+		
+		[DllImport("gdi32.dll")]
+		public static extern bool BitBlt(IntPtr hObject, int nXDest, int nYDest, int nWidth,
+   										int nHeight, IntPtr hObjSource, int nXSrc, int nYSrc,  TernaryRasterOperations dwRop);    
+
+		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
+		static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+		
+		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
+		static extern bool DeleteDC(IntPtr hdc);
+
+		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
+		static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+		
+		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
+		static extern bool DeleteObject(IntPtr hObject);
+
+		public enum TernaryRasterOperations : uint {
+		    SRCCOPY     = 0x00CC0020,
+		    SRCPAINT    = 0x00EE0086,
+		    SRCAND      = 0x008800C6,
+		    SRCINVERT   = 0x00660046,
+		    SRCERASE    = 0x00440328,
+		    NOTSRCCOPY  = 0x00330008,
+		    NOTSRCERASE = 0x001100A6,
+		    MERGECOPY   = 0x00C000CA,
+		    MERGEPAINT  = 0x00BB0226,
+		    PATCOPY     = 0x00F00021,
+		    PATPAINT    = 0x00FB0A09,
+		    PATINVERT   = 0x005A0049,
+		    DSTINVERT   = 0x00550009,
+		    BLACKNESS   = 0x00000042,
+		    WHITENESS   = 0x00FF0062
+		}
 		#endregion
 
 		#region Internal delegates for async methods
@@ -289,6 +323,7 @@ namespace Kinovea.ScreenManager
 
 		// Debug
 		private bool m_bShowInfos;
+		private Stopwatch m_Stopwatch = new Stopwatch();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -2084,8 +2119,8 @@ namespace Kinovea.ScreenManager
 		private void PlayLoop()
 		{
 			//--------------------------------------------------------------
-			// Fonction appellée par l'eventhandler du timer, à chaque tick.
-			// de façon asynchrone si besoin.
+			// Function called by main timer event handler, on each tick.
+			// Asynchronously if needed.
 			//--------------------------------------------------------------
 			
 			//-----------------------------------------------------------------------------
@@ -2109,6 +2144,7 @@ namespace Kinovea.ScreenManager
 			if ((iTargetPosition > m_iSelEnd) || (iTargetPosition >= (m_iStartingPosition + m_iTotalDuration)))
 			{
 				log.Debug("End of video reached");
+				
 				// We have reached the end of the video.
 				if (m_ePlayingMode == PlayingMode.Once)
 				{
@@ -2206,6 +2242,7 @@ namespace Kinovea.ScreenManager
 				{
 					m_iFramesToDecode++;
 					m_iDroppedFrames++;
+					//log.Debug(String.Format("Dropping. Total :{0} frames.", m_iDroppedFrames));
 				}
 				
 				//-------------------------------------------------------------------------------
@@ -2241,6 +2278,10 @@ namespace Kinovea.ScreenManager
 			// m_iFramesToDecode peut être négatif quand on recule.
 			//---------------------------------------------------------------------------
 			m_bIsIdle = false;
+			
+			//m_Stopwatch.Reset();
+			//m_Stopwatch.Start();
+			
 			ReadResult res = m_FrameServer.VideoFile.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
 			
 			if (res == ReadResult.Success)
@@ -2343,7 +2384,10 @@ namespace Kinovea.ScreenManager
 				}
 				
 			}
-
+			
+			//m_Stopwatch.Stop();
+			//log.Debug(String.Format("ShowNextFrame: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
+			
 			return res;
 		}
 		private void StopPlaying(bool _bAllowUIUpdate)
@@ -3028,6 +3072,9 @@ namespace Kinovea.ScreenManager
 				{
 					try
 					{
+						//m_Stopwatch.Reset();
+						//m_Stopwatch.Start();
+			
 						// If we are on a keyframe, see if it has any drawing.
 						int iKeyFrameIndex = -1;
 						if (m_iActiveKeyFrameIndex >= 0)
@@ -3039,6 +3086,10 @@ namespace Kinovea.ScreenManager
 						}
 						
 						FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
+						
+						//m_Stopwatch.Stop();
+            			//log.Debug(String.Format("Total Paint: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
+            
 					}
 					catch (System.InvalidOperationException)
 					{
@@ -3108,11 +3159,6 @@ namespace Kinovea.ScreenManager
 			// - Using unmanaged BitBlt or StretchBlt doesn't seem to do much... (!?)
 			// - the scaling and interpolation better be done directly from ffmpeg. (cut on memory usage too)
 			// - furthermore ffmpeg has a mode called 'FastBilinear' that seems more promising.
-
-			#if TRACE
-			//m_RenderingWatch.Reset();
-			//m_RenderingWatch.Start();
-			#endif
 			
 			// 1. Image
 			g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
@@ -3144,53 +3190,19 @@ namespace Kinovea.ScreenManager
 				rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
 			}
 			
+			// DrawImage is slow.
 			g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
 			
-
-			#region other perf tests
-			// 1.b. Testing Crop - Does not impact performances.
-			//Rectangle destRect = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
-			//g.DrawImage(_sourceImage, destRect, m_CropRectangle, GraphicsUnit.Pixel);
-
-			// 1.c. Testing Matrix transform to improve perfs.
-			//Matrix mx = new Matrix((float)m_FrameServer.CoordinateSystem.Stretch, 0, 0, (float)m_FrameServer.CoordinateSystem.Stretch, 0, 0);
-			//Matrix mx = new Matrix((float)10, 0, 0, (float)10, 0, 0);
-			//g.Transform = mx;
-			//g.DrawImageUnscaled(_sourceImage, 0, 0);
-
-
-			// 1.e. Through unmanaged code.
-			/*Graphics imgGraphics = Graphics.FromImage(_sourceImage);
-            
-            IntPtr hdc_screen = g.GetHdc();
-            IntPtr hdc_image = imgGraphics.GetHdc();
-
-            BitBlt(hdc_screen, 100, 0, 100, 100, hdc_image, 0, 0, 0xCC0020);
-
-            g.ReleaseHdc(hdc_screen);
-            imgGraphics.ReleaseHdc(hdc_image);
-            imgGraphics.Dispose();*/
-
-			//--------------------------------------------------------------
-			/*IntPtr hbmp = _sourceImage.GetHbitmap();
-
-            IntPtr pTarget = g.GetHdc();
-            IntPtr pSource = CreateCompatibleDC(pTarget);
-            IntPtr pOrig = SelectObject(pSource, hbmp);
-
-            //StretchBlt(pTarget, 0, 0, _iNewSize.Width, _iNewSize.Height,
-            //           pSource, 0, 0, _sourceImage.Width, _sourceImage.Height,
-             //          TernaryRasterOperations.SRCCOPY);
-
-            BitBlt( pTarget, 0, 0, _sourceImage.Width, _sourceImage.Height,
-                    pSource, 0, 0, TernaryRasterOperations.SRCCOPY);
-
-            IntPtr pNew = SelectObject(pSource, pOrig);
-            DeleteObject(pNew);
-            DeleteDC(pSource);
-            
-            g.ReleaseHdc(pTarget);*/
-			#endregion
+			// Using BitBlt forces to use GetHBitmap, which is as slow as DrawImage.
+			/*if(m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+			{
+				IntPtr pTarget = g.GetHdc();
+				m_FrameServer.VideoFile.RenderToGraphics(g, pTarget);
+			}
+			else
+			{
+				g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
+			}*/
 			
 			// .Sync superposition.
 			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
@@ -3223,8 +3235,6 @@ namespace Kinovea.ScreenManager
 				// Mirrored ?
 				m_Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch);
 			}
-			
-			
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
 		{
