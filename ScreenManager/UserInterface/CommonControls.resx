@@ -120,13 +120,4 @@
   <metadata name="toolTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="trkFrame.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAAwAAAAUCAIAAAA2kktGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAGhJREFUKFOt0r0K
-        gDAMRtHr+z+Xk0466uTmJKiI+EPVFgqRYDN4tjQfKYRkzjmS7lASuQGFV0rhMaL6VHu0UqOhM6A3YDBg
-        kmYNqwG7AYfBO3RKYQKbF/9USxYDRk1cS2iSPKbnKn8LXf13gKwspjsvAAAAAElFTkSuQmCC
-</value>
-  </data>
 </root>

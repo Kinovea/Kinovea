@@ -69,10 +69,10 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Wijzig de taal</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Toon/Verberg bestand verkenner</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>\n Kinovea is onderworpen aan de afspraken van de Gnu General Public Licence version 2.\n</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>\n Kinovea werkt samen met de volgende software onderdelen:\n\n</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>\n U bent welkom om mee te werken aan vertalingen, testen, debugging, verbeteringen of anderszins te helpen bij Kinovea.\n</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>\n Vertalingen:\n</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea is onderworpen aan de afspraken van de Gnu General Public Licence version 2.</value></data>
+   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea werkt samen met de volgende software onderdelen:</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>U bent welkom om mee te werken aan vertalingen, testen, debugging, verbeteringen of anderszins te helpen bij Kinovea.</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>Vertalingen:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Alle talen</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>U kunt meer videos verkrijgen door het menu : Opties &gt; Controleer op beschikbare Updates…</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Over deze video...</value></data>

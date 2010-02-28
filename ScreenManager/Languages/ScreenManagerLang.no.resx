@@ -208,7 +208,7 @@
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Varighet</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hastighet:</value></data>
-   <data name="lblTimeCode_Text" xml:space="preserve"><value>Posisjon: </value></data>
+   <data name="lblTimeCode_Text" xml:space="preserve"><value>Posisjon</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Arbeidsfelt:</value></data>
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimetere</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Metre</value></data>

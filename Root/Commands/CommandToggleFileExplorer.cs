@@ -1,9 +1,9 @@
+using Kinovea.Root.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 namespace Kinovea.Root
@@ -12,11 +12,7 @@ namespace Kinovea.Root
     {
         public string FriendlyName
         {
-            get
-            {
-                ResourceManager rm = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("CommandToggleFileExplorer_FriendlyName", Thread.CurrentThread.CurrentUICulture);
-            }
+        	get { return RootLang.CommandToggleFileExplorer_FriendlyName; }
         }
 
         #region Members

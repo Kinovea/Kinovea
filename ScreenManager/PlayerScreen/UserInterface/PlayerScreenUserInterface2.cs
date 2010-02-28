@@ -53,6 +53,7 @@ namespace Kinovea.ScreenManager
 		Pencil,
 		Text,
 		Chrono,
+		SVG,
 		NumberOfDrawingTools
 	};
 	
@@ -75,8 +76,8 @@ namespace Kinovea.ScreenManager
 		#region Internal delegates for async methods
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
 		private delegate void CallbackPlayLoop();
-		private Kinovea.ScreenManager.PlayerScreenUserInterface.TimerEventHandler m_CallbackTimerEventHandler;
-		private Kinovea.ScreenManager.PlayerScreenUserInterface.CallbackPlayLoop m_CallbackPlayLoop;
+        private Kinovea.ScreenManager.PlayerScreenUserInterface.TimerEventHandler m_CallbackTimerEventHandler;
+        private Kinovea.ScreenManager.PlayerScreenUserInterface.CallbackPlayLoop m_CallbackPlayLoop;
 		#endregion
 
 		#region Enums
@@ -356,7 +357,7 @@ namespace Kinovea.ScreenManager
 			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
 			EnableDisableAllPlayingControls(true);
 			EnableDisableDrawingTools(true);
-			buttonPlay.BackgroundImage = Resources.liqplay17;
+			buttonPlay.Image = Resources.liqplay17;
 			sldrSpeed.Value = 100;
 			sldrSpeed.Enabled = false;
 			lblFileName.Text = "";
@@ -492,6 +493,13 @@ namespace Kinovea.ScreenManager
 
 					UpdateFramesMarkers();
 
+					// If we are in the special case of a one-frame video, disable playback controls.
+					if (m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1)
+					{
+						EnableDisableAllPlayingControls(false);
+					}
+					
+					
 					// Debug
 					if (m_bShowInfos) { UpdateDebugInfos(); }
 				}
@@ -865,6 +873,7 @@ namespace Kinovea.ScreenManager
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Chrono] = new DrawingToolChrono();
+			m_DrawingTools[(int)DrawingToolType.SVG] = new DrawingToolSVG();
 			
 			m_ActiveTool = DrawingToolType.Pointer;
 		}
@@ -1439,14 +1448,14 @@ namespace Kinovea.ScreenManager
 				{
 					// Go into Pause mode.
 					StopPlaying();
-					buttonPlay.BackgroundImage = Resources.liqplay17;
+					buttonPlay.Image = Resources.liqplay17;
 					m_bIsCurrentlyPlaying = false;
 					ActivateKeyframe(m_iCurrentPosition);
 				}
 				else
 				{
 					// Go into Play mode
-					buttonPlay.BackgroundImage = Resources.liqpause6;
+					buttonPlay.Image = Resources.liqpause6;
 					Application.Idle += new EventHandler(this.IdleDetector);
 					StartMultimediaTimer(GetPlaybackFrameInterval());
 					m_bIsCurrentlyPlaying = true;
@@ -2304,8 +2313,10 @@ namespace Kinovea.ScreenManager
 							//------------------------------------------------------------------------------------
 							m_iCurrentPosition = m_iSelEnd;
 							if(_bAllowUIUpdate)
+							{
 								trkSelection.SelPos = m_iCurrentPosition;
-							
+								pbSurfaceScreen.Invalidate();
+							}
 							//Close Tracks
 							m_FrameServer.Metadata.StopAllTracking();
 							
@@ -2350,7 +2361,7 @@ namespace Kinovea.ScreenManager
 
 					if (_bAllowUIUpdate)
 					{
-						buttonPlay.BackgroundImage = Resources.liqplay17;
+						buttonPlay.Image = Resources.liqplay17;
 						pbSurfaceScreen.Invalidate();
 					}
 				}
@@ -2584,7 +2595,7 @@ namespace Kinovea.ScreenManager
 						}
 						
 						
-						if (!m_bIsCurrentlyPlaying)
+						if (!m_bIsCurrentlyPlaying && !m_bDrawtimeFiltered)
 						{
 							//-------------------------------------
 							// Action begins:
@@ -2725,7 +2736,12 @@ namespace Kinovea.ScreenManager
 						{
 							m_FrameServer.Metadata.UnselectAll();
 							
-							if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+							if(m_bDrawtimeFiltered)
+							{
+								mnuDirectTrack.Visible = false;
+								panelCenter.ContextMenuStrip = popMenu;
+							}
+							else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 							{
 								// If we are on a Cross2D, we activate the menu to let the user Track it.
 								AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
@@ -2795,7 +2811,7 @@ namespace Kinovea.ScreenManager
 							else
 							{
 								// No drawing touched and no tool selected, but not currently playing.
-								mnuDirectTrack.Visible = !m_bDrawtimeFiltered;
+								mnuDirectTrack.Visible = true;
 								panelCenter.ContextMenuStrip = popMenu;
 							}
 						}
@@ -2962,7 +2978,11 @@ namespace Kinovea.ScreenManager
 				// - If on other drawing, launch the configuration dialog.
 				// - Otherwise -> Maximize/Reduce image.
 				//------------------------------------------------------------------------------------
-				if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+				if(m_bDrawtimeFiltered)
+				{
+					ToggleStretchMode();	
+				}
+				else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 				{
 					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
 					if (ad is DrawingText)
@@ -3802,7 +3822,8 @@ namespace Kinovea.ScreenManager
 			if (m_Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
-				m_ActiveTool = DrawingToolType.Pencil;
+				//m_ActiveTool = DrawingToolType.Pencil;
+				m_ActiveTool = DrawingToolType.SVG;
 				UpdateCursor();
 				PrepareKeyframesDock();
 			}
@@ -3828,7 +3849,7 @@ namespace Kinovea.ScreenManager
 				{
 					UnzoomDirectZoom();
 					m_Magnifier.Mode = MagnifierMode.Direct;
-					btnMagnifier.BackgroundImage = Resources.magnifierActive2;
+					btnMagnifier.Image = Resources.magnifierActive2;
 					SetCursor(Cursors.Cross);
 				}
 				else if (m_Magnifier.Mode == MagnifierMode.Direct)
@@ -3836,7 +3857,7 @@ namespace Kinovea.ScreenManager
 					// Revert to no magnification.
 					UnzoomDirectZoom();
 					m_Magnifier.Mode = MagnifierMode.NotVisible;
-					btnMagnifier.BackgroundImage = Resources.magnifier2;
+					btnMagnifier.Image = Resources.magnifier2;
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					pbSurfaceScreen.Invalidate();
 				}
@@ -3851,7 +3872,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Revert to no magnification.
 			m_Magnifier.Mode = MagnifierMode.NotVisible;
-			btnMagnifier.BackgroundImage = Resources.magnifier2;
+			btnMagnifier.Image = Resources.magnifier2;
 			SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 		}
 		private void btn3dplane_Click(object sender, EventArgs e)
@@ -4459,6 +4480,9 @@ namespace Kinovea.ScreenManager
 		}
 		private void EnableDisableAllPlayingControls(bool _bEnable)
 		{
+			// Disable playback controls and some other controls for the case
+			// of a one-frame rendering. (mosaic, single image)
+			
 			btnSetHandlerLeft.Enabled = _bEnable;
 			btnSetHandlerRight.Enabled = _bEnable;
 			btnHandlersReset.Enabled = _bEnable;
@@ -4474,6 +4498,9 @@ namespace Kinovea.ScreenManager
 			lblSpeedTuner.Enabled = _bEnable;
 			trkFrame.EnableDisable(_bEnable);
 			trkSelection.EnableDisable(_bEnable);
+			sldrSpeed.EnableDisable(_bEnable);
+			trkFrame.Enabled = _bEnable;
+			trkSelection.Enabled = _bEnable;
 			sldrSpeed.Enabled = _bEnable;
 			
 			btnRafale.Enabled = _bEnable;
@@ -4933,40 +4960,59 @@ namespace Kinovea.ScreenManager
 			                   m_iSelEnd,
 			                   new DelegateGetOutputBitmap(GetOutputBitmap));
 		}
-		private bool GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
+		private long GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
 			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
 			// This image is already drawn on _canvas.
 			// Here we we flush the drawings on it if needed.
-			// We return a boolean indicating if it's a key image or not.
+			// We return the distance to the closest key image.
 			// This can then be used by the caller.
 
+			// 1. Look for the closest key image.
+			long iClosestKeyImageDistance = long.MaxValue;	
 			int iKeyFrameIndex = -1;
-			int iCurrentKeyframe = 0;
-			bool bFound = false;
-			while (!bFound && iCurrentKeyframe < m_FrameServer.Metadata.Count)
+			for(int i=0; i<m_FrameServer.Metadata.Keyframes.Count;i++)
 			{
-				if (m_FrameServer.Metadata[iCurrentKeyframe].Position == _iTimestamp)
+				long iDistance = Math.Abs(_iTimestamp - m_FrameServer.Metadata.Keyframes[i].Position);
+				if(iDistance < iClosestKeyImageDistance)
 				{
-					bFound = true;
-					iKeyFrameIndex = iCurrentKeyframe;
+					iClosestKeyImageDistance = iDistance;
+					iKeyFrameIndex = i;
+				}
+			}
+
+			// 2. Invalidate the distance if we wanted only key images, and we are not on one.
+			// Or if there is no key image at all.
+			if ( (_bKeyframesOnly && iClosestKeyImageDistance != 0) || (iClosestKeyImageDistance == long.MaxValue))
+			{
+				iClosestKeyImageDistance = -1;
+			}
+			
+			// 3. Flush drawings if needed.
+			if(_bFlushDrawings)
+			{
+				if (_bKeyframesOnly)
+				{
+					if(iClosestKeyImageDistance == 0)
+					{
+						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+					}
 				}
 				else
 				{
-					iCurrentKeyframe++;
-				}
+					if(iClosestKeyImageDistance == 0)
+					{
+						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+					}
+					else
+					{
+						FlushDrawingsOnGraphics(_canvas, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+					}
+				}	
 			}
 
-			if (!_bKeyframesOnly || iKeyFrameIndex >= 0)
-			{
-				if (_bFlushDrawings)
-				{
-					FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
-				}
-			}
-
-			return (iKeyFrameIndex >= 0);
+			return iClosestKeyImageDistance;
 		}
 		private Bitmap GetFlushedImage()
 		{

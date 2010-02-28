@@ -55,7 +55,7 @@ namespace Kinovea.FileBrowser
 		#endregion
 		
 		private static readonly string[] m_KnownFileTypes = { ".3gp", ".asf", ".avi", ".dv", ".flv", ".m1v", ".m2p", ".m2t",
-			".m2ts", ".m2v", ".m4v", ".mkv", ".mod", ".mov", ".moov", ".mpg", ".mpeg",
+			".m2ts", ".m2v", ".m4v", ".mkv", ".mod", ".mov", ".moov", ".mpg", ".mpeg", ".tod",
 			".mp4", ".mpv", ".ogg", ".ogm", ".ogv", ".qt", ".rm", ".swf", ".vob",
 			".wmv", ".dpa", 
 			".jpg", ".jpeg", ".png", ".bmp"	};

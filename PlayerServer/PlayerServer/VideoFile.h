@@ -70,7 +70,7 @@ namespace VideoFiles
 {
 
 #pragma region Namespace wide delegates
-	public delegate bool DelegateGetOutputBitmap(Graphics^ _canvas, int64_t _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly);
+	public delegate int64_t DelegateGetOutputBitmap(Graphics^ _canvas, int64_t _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly);
 #pragma endregion
 
 #pragma region Namespace wide enums

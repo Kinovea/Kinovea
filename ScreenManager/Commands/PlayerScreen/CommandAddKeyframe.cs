@@ -18,11 +18,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -38,27 +38,17 @@ namespace Kinovea.ScreenManager
 
         public string FriendlyName
         {
-            get
-            {
-                ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                return rm.GetString("ToolTip_AddKeyframe", Thread.CurrentThread.CurrentUICulture);
-            }
+        	get { return ScreenManagerLang.ToolTip_AddKeyframe; }
         }
-        /*public Guid PlayerScreenUid
-        {
-            get { return m_PsUid; }
-        }*/
 
         private PlayerScreenUserInterface m_psui;
         private long m_iFramePosition;
         private Metadata m_Metadata;
-        //private Guid m_PsUid;
-
+        
         #region constructor
         public CommandAddKeyframe(PlayerScreenUserInterface _psui, Metadata _Metadata, long _iFramePosition)
         {
             m_psui = _psui;
-            //m_PsUid = 
             m_iFramePosition = _iFramePosition;
             m_Metadata = _Metadata;
         }

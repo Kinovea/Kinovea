@@ -69,10 +69,10 @@
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Endre språk</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Vis/Skjul</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>\n Kinovea er underlagt bestemmelsene for Gnu General Public License version 2.\n</value></data>
-   <data name="dlgAbout_Info2" xml:space="preserve"><value>\n Kinovea benytter seg av følgende programvarekomponenter :\n\n</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>\n Du er velkommen til å oversette, teste, debugge, forbedre eller på andre måter hjelpe Kinovea. \n</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>\n Lokalisering :\n</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea er underlagt bestemmelsene for Gnu General Public License version 2.</value></data>
+   <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea benytter seg av følgende programvarekomponenter :</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>Du er velkommen til å oversette, teste, debugge, forbedre eller på andre måter hjelpe Kinovea.</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>Lokalisering :</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Alle språk</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Flere videoer er tilgjengelige via menyen: Valg &gt; Se etter oppdateringer...</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Om denne videoen...</value></data>
@@ -95,12 +95,12 @@
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Bytt til Analyse modus</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Farger</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Likevekt</value></data>
-   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Rutenett</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Antall filer i historielisten</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Standard bildeformat</value></data>
+   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Rutenett:</value></data>
+   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Antall filer i historielisten:</value></data>
+   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Standard bildeformat:</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Språk:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Og</value></data>
-   <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspektiv Rutenett</value></data>
+   <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspektiv Rutenett:</value></data>
    <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Tidsmarkør format</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Arbeidsfelt vil benytte seg av mindre enn {0} MB minne.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Arbeidsfelt er mindre enn {0} sekunder.</value></data>

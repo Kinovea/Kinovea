@@ -19,12 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
-using Kinovea.ScreenManager.Properties;
+using AForge.Imaging.Filters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Properties;
 
 namespace Kinovea.ScreenManager
 {
@@ -112,6 +113,7 @@ namespace Kinovea.ScreenManager
         private Bitmap bmpBumperLeft = Resources.liqbumperleft;
        	private Bitmap bmpBumperRight = Resources.liqbumperright;
        	private Bitmap bmpBackground = Resources.liqbackdock;
+       	private Bitmap bmpNavCursorDisabled;
        	
         #region Markers handling
         private Metadata m_Metadata;
@@ -160,6 +162,8 @@ namespace Kinovea.ScreenManager
             m_iMinimumPixel = m_iSpacers + (m_iCursorWidth/2);
             m_iMaximumPixel = this.Width - m_iSpacers - (m_iCursorWidth/2);
             m_iMaxWidth = m_iMaximumPixel - m_iMinimumPixel;
+            
+            bmpNavCursorDisabled = Grayscale.CommonAlgorithms.Y.Apply(bmpNavCursor);
         }
 		#endregion
 		
@@ -323,7 +327,7 @@ namespace Kinovea.ScreenManager
         	{
         		// If not enabled (draw-time filter like mosaic displayed ?), 
         		// we move the cursor to the left and do not draw the markers.
-        		e.Graphics.DrawImage(bmpNavCursor, m_iMinimumPixel-bmpNavCursor.Width/2, 0);
+        		e.Graphics.DrawImage(bmpNavCursorDisabled, m_iMinimumPixel-bmpNavCursor.Width/2, 0);
         	}
         	
         	m_bInvalidateAsked = false;
