@@ -24,9 +24,11 @@ done - Rendering of the SVG upon Draw method call.  (Includes support for scale 
 done - Implement the hit test method.
 done - Implement the move method.
 done - Implement fading method.
-- Implement a handle mechanism.
-- Shape modification (dimensions changes, rotations). 
+done - Implement a handle mechanism.
+done - Shape modification (dimensions changes, rotations). 
+- Ensure that export to single image also works at the right scale.
 - Test with other SVG files.
+- Remove access to color & style configuration.
 - Implement export / import to .Kva xml, outside of a particular shape file context.
 - work on the UI for the shape selection.
 
