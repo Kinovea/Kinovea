@@ -240,6 +240,7 @@ namespace Kinovea.ScreenManager
 		private Magnifier m_Magnifier = new Magnifier();
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
+		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -332,6 +333,10 @@ namespace Kinovea.ScreenManager
 			m_CallbackTimerEventHandler = new TimerEventHandler(MultimediaTimerTick);
 			m_CallbackPlayLoop = new CallbackPlayLoop(PlayLoop);
 
+			m_DeselectionTimer.Interval = 3000;
+			m_DeselectionTimer.Tick += new EventHandler(DeselectionTimer_OnTick);
+
+			
 			//SetupDebugPanel();
 		}
 		#endregion
@@ -1974,6 +1979,7 @@ namespace Kinovea.ScreenManager
 				}
 			}
 			StretchSqueezeSurface();
+			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
 		private void ImageResizerSE_MouseMove(object sender, MouseEventArgs e)
@@ -2034,17 +2040,11 @@ namespace Kinovea.ScreenManager
 		}
 		private void Resizers_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			// Maximiser l'écran ou repasser à la taille originale.
-			if (!m_bStretchModeOn)
-			{
-				m_bStretchModeOn = true;
-			}
-			else
-			{
-				m_FrameServer.CoordinateSystem.Stretch = 1;
-				m_bStretchModeOn = false;
-			}
-			StretchSqueezeSurface();
+			ToggleStretchMode();
+		}
+		private void Resizers_MouseUp(object sender, MouseEventArgs e)
+		{
+			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
 		#endregion
@@ -2434,6 +2434,20 @@ namespace Kinovea.ScreenManager
 				return 40;
 			}
 		}
+		
+		private void DeselectionTimer_OnTick(object sender, EventArgs e) 
+		{
+			// Deselect the currently selected drawing.
+			// This is used for drawings that must show extra stuff for being transformed, but we 
+			// don't want to show the extra stuff all the time for clarity.
+			
+			m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+			m_FrameServer.Metadata.SelectedDrawing = -1;
+			log.Debug("Deselection timer fired.");
+			m_DeselectionTimer.Stop();
+			pbSurfaceScreen.Invalidate();
+		}
+
 		#endregion
 		
 		#region Culture
@@ -2569,6 +2583,8 @@ namespace Kinovea.ScreenManager
 			{
 				if (m_FrameServer.VideoFile.Loaded)
 				{
+					m_DeselectionTimer.Stop();
+					
 					if (e.Button == MouseButtons.Left)
 					{
 						// Magnifier can be moved even when the video is playing.
@@ -2935,6 +2951,10 @@ namespace Kinovea.ScreenManager
 						IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
 						CommandManager cm = CommandManager.Instance();
 						cm.LaunchUndoableCommand(cad);
+						
+						// Deselect the drawing we just added.
+						m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+						m_FrameServer.Metadata.SelectedDrawing = -1;
 					}
 					else
 					{
@@ -2949,12 +2969,25 @@ namespace Kinovea.ScreenManager
 				{
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).OnMouseUp();
+					
+					// If we were resizing an SVG drawing, trigger a render.
+					// TODO: this is currently triggered on every mouse up, not only on resize !
+					int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
+					int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
+					if(selectedFrame != -1 && selectedDrawing  != -1)
+					{
+						DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
+						if(d != null)
+						{
+							d.ResizeFinished();
+						}
+					}
 				}
 				
-				if (m_iActiveKeyFrameIndex >= 0)
+				// TODO: start deselection timer.
+				if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
 				{
-					m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-					m_FrameServer.Metadata.SelectedDrawing = -1;
+					m_DeselectionTimer.Start();					
 				}
 				
 				pbSurfaceScreen.Invalidate();

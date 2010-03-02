@@ -660,6 +660,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.TabIndex = 9;
         	this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
         	this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerNE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerNW
         	// 
@@ -674,6 +675,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.TabIndex = 8;
         	this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
         	this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerNW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerSW
         	// 
@@ -688,6 +690,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.TabIndex = 7;
         	this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
         	this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerSW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerSE
         	// 
@@ -703,6 +706,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.TabIndex = 6;
         	this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
         	this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerSE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// panelDebug
         	// 
