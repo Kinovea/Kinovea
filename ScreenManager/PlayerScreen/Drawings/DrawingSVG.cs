@@ -100,23 +100,24 @@ namespace Kinovea.ScreenManager
 			m_Renderer.BackColor = Color.Transparent;
 			
 			// The rendering will only be done on svgWindow.innerWidth, innerHeight.
-			m_iOriginalWidth = 532;
-			m_iOriginalHeight = 532;
-			m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
+			m_SvgWindow = new SvgWindow(100, 100, m_Renderer);
+			
+			string folder = @"..\..\..\Tools\svg\";
+         	string filename = folder + @"protractor256.svg";
+	        //string filename = folder + @"shapes.svg";
+         	m_SvgWindow.Src = filename;
+	        m_bLoaded = true;
+	        
+	        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
+	        m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;
+	        
+	        m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
 			
 			m_UnscaledRenderingWindow = new Rectangle(x - m_iOriginalWidth/2, y - m_iOriginalHeight/2, m_iOriginalWidth, m_iOriginalHeight);
 			
 			// Everything start unscaled.
 			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
-			m_SvgWindow = new SvgWindow(m_RescaledRectangle.Width, m_RescaledRectangle.Height, m_Renderer);
-			
-			// Load the file and make the initial render.
-			string folder = @"..\..\..\Tools\svg\";
-         	string filename = folder + @"protractor.svg";
-	        m_SvgWindow.Src = filename;
-	        m_bLoaded = true;
-	        
 	        // Render on first draw call.
 	        m_bFinishedResizing = true;
 	        
