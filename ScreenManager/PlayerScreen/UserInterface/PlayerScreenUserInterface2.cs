@@ -778,6 +778,7 @@ namespace Kinovea.ScreenManager
 					case Keys.Add:
 						{
 							IncreaseDirectZoom();
+							m_FrameServer.Metadata.ResizeFinished();
 							bWasHandled = true;
 							break;
 						}
@@ -785,6 +786,7 @@ namespace Kinovea.ScreenManager
 						{
 							// Decrease Zoom.
 							DecreaseDirectZoom();
+							m_FrameServer.Metadata.ResizeFinished();
 							bWasHandled = true;
 							break;
 						}
@@ -4457,6 +4459,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+			m_FrameServer.Metadata.ResizeFinished();
 		}
 		private void IncreaseDirectZoom()
 		{
@@ -4470,6 +4473,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom += 0.20f;
 				RelocateDirectZoom();
+				m_FrameServer.Metadata.ResizeFinished();
 				pbSurfaceScreen.Invalidate();
 			}
 		}
@@ -4479,6 +4483,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
 				RelocateDirectZoom();
+				m_FrameServer.Metadata.ResizeFinished();
 				pbSurfaceScreen.Invalidate();
 			}
 		}
