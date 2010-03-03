@@ -2954,7 +2954,7 @@ namespace Kinovea.ScreenManager
 					OnPoke();
 					
 					// Update tracks with current image and pos.
-					if (m_FrameServer.Metadata.SelectedTrack >= 0 && m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
+					if (m_FrameServer.Metadata.SelectedTrack >= 0 && m_FrameServer.Metadata.Tracks.Count > 0 && m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
 					{
 						m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].UpdateTrackPoint(m_FrameServer.VideoFile.CurrentImage);
 					}
@@ -3202,6 +3202,30 @@ namespace Kinovea.ScreenManager
 			else
 			{
 				g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
+			}*/
+			
+			// Testing Key images overlay.
+			// Creates a ghost image of the last keyframe superposed with the current image.
+			// We can only do it in analysis mode to get the key image bitmap.
+			/*if(m_FrameServer.VideoFile.Selection.iAnalysisMode == 1 && m_FrameServer.Metadata.Keyframes.Count > 0)
+			{
+				// Look for the closest key image before.
+				int iImageMerge = -1 ;
+				long iBestDistance = long.MaxValue;	
+				for(int i=0; i<m_FrameServer.Metadata.Keyframes.Count;i++)
+				{
+					long iDistance = _iPosition - m_FrameServer.Metadata.Keyframes[i].Position;
+					if(iDistance >=0 && iDistance < iBestDistance)
+					{
+						iBestDistance = iDistance;
+						iImageMerge = i;
+					}
+				}
+				
+				// Merge images.
+				int iFrameIndex = (int)m_FrameServer.VideoFile.GetFrameNumber(m_FrameServer.Metadata.Keyframes[iImageMerge].Position);
+				Bitmap mergeImage = m_FrameServer.VideoFile.FrameList[iFrameIndex].BmpImage;
+				g.DrawImage(mergeImage, rDst, 0, 0, _sourceImage.Width, _sourceImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
 			}*/
 			
 			// .Sync superposition.

@@ -635,6 +635,7 @@ namespace Kinovea.ScreenManager
             m_Grid.Reset();
             m_Plane.Reset();
             m_Mirrored = false;
+            UnselectAll();
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
         {
