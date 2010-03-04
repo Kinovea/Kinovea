@@ -81,6 +81,12 @@
     <Reference Include="AForge.Video.DirectShow">
       <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV">
+      <HintPath>..\Refs\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.Util">
+      <HintPath>..\Refs\Emgu.Util.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Refs\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -165,7 +171,6 @@
     </Compile>
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
-    <Compile Include="PlayerScreen\Mosaic.cs" />
     <Compile Include="PlayerScreen\Plane3D.cs" />
     <Compile Include="PlayerScreen\SURF\CDVMatrix.cs" />
     <Compile Include="PlayerScreen\SURF\CFastHessian.cs" />
@@ -180,6 +185,7 @@
     <Compile Include="PlayerScreen\Tracking\CorrelationTemplateMatching.cs" />
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />

@@ -152,7 +152,7 @@ namespace Kinovea.ScreenManager
         private TrackExtraData m_TrackExtraData = TrackExtraData.None;
         
         // Tracker tool.
-        private AbstractTracker m_Tracker = /*new TrackerSURF(); //*/new TrackerBlock();
+        private AbstractTracker m_Tracker = new TrackerBlock2();
         private bool m_bUntrackable;
         
         // Rendering coordinates
@@ -320,7 +320,10 @@ namespace Kinovea.ScreenManager
 	            	// Target marker.
 	            	if( fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
                     {
-	            		DrawMarker(_canvas, _bCurrentlyPlaying);
+	            		if(m_TrackStatus != TrackStatus.Edit || !_bCurrentlyPlaying)
+	        			{
+	            			DrawMarker(_canvas, _bCurrentlyPlaying);
+	            		}
 	            	}
                     
 	            	// Tracking algorithm visualization.
@@ -364,12 +367,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawMarker(Graphics _canvas, bool _bCurrentlyPlaying)
         { 
-        	// If we are currently playing, we display the target marker slightly smaller.
         	int radius = m_iDefaultCrossRadius;
-        	if(_bCurrentlyPlaying)
-        	{	
-        		radius = 2;            
-        	}
         	
     		// Draws the target marker (CrashTest Dummy style target)
             _canvas.FillPie(Brushes.Black, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 0, 90);
