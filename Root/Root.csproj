@@ -188,6 +188,18 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="..\Refs\cv200.dll">
+      <Link>cv200.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\cvaux200.dll">
+      <Link>cvaux200.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\cxcore200.dll">
+      <Link>cxcore200.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\Refs\FFMpeg\bin\avcodec-51.dll">
       <Link>avcodec-51.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
