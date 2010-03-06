@@ -47,6 +47,7 @@ namespace Kinovea.ScreenManager
 		private float m_fSimilarityTreshold = 0.0f;					// Discard candidate block with lower similarity.
 		private Size m_BlockSize = new Size(20, 20);						// Size of block to be matched.
 		private Size m_SearchWindowSize = new Size(100, 100);				// Size of window of candidates.
+		private float m_fTemplateUpdateSimilarityThreshold = 1.0f;	// Only update the template if that dissimilar.
 		
 		// Monitoring, debugging.
 		private static readonly bool m_bMonitoring = false;
@@ -54,9 +55,30 @@ namespace Kinovea.ScreenManager
 		#endregion		
 		
 		#region Constructor
-		public TrackerBlock2()
+		public TrackerBlock2(int _imgWidth, int _imgHeight)
 		{
 			m_fSimilarityTreshold = 0.50f;
+			
+			// If simi is better than this, we keep the same template, to avoid the template update drift.
+			m_fTemplateUpdateSimilarityThreshold = 0.95f; 
+			
+			
+			int blockFactor = 15;
+			int blockWidth = _imgWidth / blockFactor;
+			int blockHeight = _imgHeight / blockFactor;
+			
+			if(blockWidth < 20) 
+			{
+				blockWidth = 20;
+			}
+			
+			if(blockHeight < 20) 
+			{
+				blockHeight = 20;
+			}
+			
+			m_BlockSize = new Size(blockWidth, blockHeight);
+			m_SearchWindowSize = new Size((int)(blockWidth * 4.0), (int)(blockHeight * 4.0));
 		}
 		#endregion
 		
@@ -134,7 +156,7 @@ namespace Kinovea.ScreenManager
         		if(bestCandidate.X != -1 && bestCandidate.Y != -1)
         		{
             		// Save template in the point.
-            		_currentPoint = CreateTrackPoint(false, bestCandidate.X, bestCandidate.Y, _t, img, _previousPoints);
+            		_currentPoint = CreateTrackPoint(false, bestCandidate.X, bestCandidate.Y, fBestScore, _t, img, _previousPoints);
             		((TrackPointBlock)_currentPoint).Similarity = fBestScore;
             		
             		bMatched = true;
@@ -142,7 +164,7 @@ namespace Kinovea.ScreenManager
         		else
         		{
         			// No match. Create the point at the center of the search window (whatever that might be).
-	        		_currentPoint = CreateTrackPoint(false, searchCenter.X, searchCenter.Y, _t, img, _previousPoints);
+	        		_currentPoint = CreateTrackPoint(false, searchCenter.X, searchCenter.Y, 0.0f, _t, img, _previousPoints);
 	        		log.Debug("Track failed. No block over the similarity treshold in the search window.");	
         		}
         		
@@ -169,13 +191,13 @@ namespace Kinovea.ScreenManager
 			{
 				// No image. (error case ?)
 				// Create the point at the last point location.
-				_currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, _t, _CurrentImage, _previousPoints);
+				_currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, 0.0f, _t, _CurrentImage, _previousPoints);
 				log.Debug("Track failed. No input image, or last point doesn't have any cached block image.");
 			}
 			
 			return bMatched;
 		}
-		public override AbstractTrackPoint CreateTrackPoint(bool _bManual, int _x, int _y, long _t, Bitmap _CurrentImage, List<AbstractTrackPoint> _previousPoints)
+		public override AbstractTrackPoint CreateTrackPoint(bool _bManual, int _x, int _y, double _fSimilarity, long _t, Bitmap _CurrentImage, List<AbstractTrackPoint> _previousPoints)
 		{
 			// Creates a TrackPoint from the input image at the given coordinates.
 			// Stores algorithm internal data in the point, to help next match.
@@ -185,60 +207,77 @@ namespace Kinovea.ScreenManager
 			
 			Bitmap tpl = new Bitmap(m_BlockSize.Width, m_BlockSize.Height, PixelFormat.Format24bppRgb);
 			
-			BitmapData imageData = _CurrentImage.LockBits( new Rectangle( 0, 0, _CurrentImage.Width, _CurrentImage.Height ), ImageLockMode.ReadOnly, _CurrentImage.PixelFormat );
-			BitmapData templateData = tpl.LockBits(new Rectangle( 0, 0, tpl.Width, tpl.Height ), ImageLockMode.ReadWrite, tpl.PixelFormat );
+			bool bUpdateWithCurrentImage = true;
 			
-			int pixelSize = 3;
-            
-            int tplStride = templateData.Stride;
-            int templateWidthInBytes = m_BlockSize.Width * pixelSize;
-            int tplOffset = tplStride - templateWidthInBytes;
-            
-            int imgStride = imageData.Stride;
-            int imageWidthInBytes = _CurrentImage.Width * pixelSize;
-            int imgOffset = imgStride - (_CurrentImage.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
-            
-            int startY = _y - (m_BlockSize.Height / 2);
-            int startX = _x - (m_BlockSize.Width / 2);
-            
-            if(startX < 0) 
-            	startX = 0;
-            
-            if(startY < 0)
-            	startY = 0;
-            
-			unsafe
+			if(!_bManual && _previousPoints.Count > 0 && _fSimilarity > m_fTemplateUpdateSimilarityThreshold)
 			{
-				byte* pTpl = (byte*) templateData.Scan0.ToPointer();
-				byte* pImg = (byte*) imageData.Scan0.ToPointer()  + (imgStride * startY) + (pixelSize * startX);
-				
-				for ( int row = 0; row < m_BlockSize.Height; row++ )
-                {
-					if(startY + row > imageData.Height - 1)
-					{
-						break;
-					}
-                    
-					for ( int col = 0; col < templateWidthInBytes; col++, pTpl++, pImg++ )
-                    {
-						if(startX * pixelSize + col < imageWidthInBytes)
-						{
-							*pTpl = *pImg;	
-						}
-                    }
-                    
-                    pTpl += tplOffset;
-                    pImg += imgOffset;
+				// Do not update the template if it's not that different.
+				TrackPointBlock prevBlock = _previousPoints[_previousPoints.Count - 1] as TrackPointBlock;
+				if(prevBlock != null && prevBlock.Template != null)
+				{		
+					tpl = AForge.Imaging.Image.Clone(prevBlock.Template);
+					bUpdateWithCurrentImage = false;
 				}
 			}
 			
-			_CurrentImage.UnlockBits( imageData );
-            tpl.UnlockBits( templateData );
+			
+			if(bUpdateWithCurrentImage)
+			{
+				BitmapData imageData = _CurrentImage.LockBits( new Rectangle( 0, 0, _CurrentImage.Width, _CurrentImage.Height ), ImageLockMode.ReadOnly, _CurrentImage.PixelFormat );
+				BitmapData templateData = tpl.LockBits(new Rectangle( 0, 0, tpl.Width, tpl.Height ), ImageLockMode.ReadWrite, tpl.PixelFormat );
+				
+				int pixelSize = 3;
+	            
+	            int tplStride = templateData.Stride;
+	            int templateWidthInBytes = m_BlockSize.Width * pixelSize;
+	            int tplOffset = tplStride - templateWidthInBytes;
+	            
+	            int imgStride = imageData.Stride;
+	            int imageWidthInBytes = _CurrentImage.Width * pixelSize;
+	            int imgOffset = imgStride - (_CurrentImage.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
+	            
+	            int startY = _y - (m_BlockSize.Height / 2);
+	            int startX = _x - (m_BlockSize.Width / 2);
+	            
+	            if(startX < 0) 
+	            	startX = 0;
+	            
+	            if(startY < 0)
+	            	startY = 0;
+	            
+				unsafe
+				{
+					byte* pTpl = (byte*) templateData.Scan0.ToPointer();
+					byte* pImg = (byte*) imageData.Scan0.ToPointer()  + (imgStride * startY) + (pixelSize * startX);
+					
+					for ( int row = 0; row < m_BlockSize.Height; row++ )
+	                {
+						if(startY + row > imageData.Height - 1)
+						{
+							break;
+						}
+	                    
+						for ( int col = 0; col < templateWidthInBytes; col++, pTpl++, pImg++ )
+	                    {
+							if(startX * pixelSize + col < imageWidthInBytes)
+							{
+								*pTpl = *pImg;	
+							}
+	                    }
+	                    
+	                    pTpl += tplOffset;
+	                    pImg += imgOffset;
+					}
+				}
+				
+				_CurrentImage.UnlockBits( imageData );
+	            tpl.UnlockBits( templateData );
+			}
 			
 			TrackPointBlock tpb = new TrackPointBlock(_x, _y, _t, tpl);
 			tpb.IsReferenceBlock = _bManual;
-			tpb.Similarity = _bManual ? 1.0f : 0;
-			
+			tpb.Similarity = _bManual ? 1.0f : _fSimilarity;
+		
 			return tpb;
 		}
 		public override AbstractTrackPoint CreateOrphanTrackPoint(int _x, int _y, long _t)
@@ -262,8 +301,8 @@ namespace Kinovea.ScreenManager
 			int iSrchLeft = (int) (fX - (((double)m_SearchWindowSize.Width * _fStretchFactor) / 2));
 			int iSrchTop = (int) (fY - (((double)m_SearchWindowSize.Height * _fStretchFactor) / 2));
             Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchWindowSize.Width * _fStretchFactor), (int)((double)m_SearchWindowSize.Height * _fStretchFactor));
-            //_canvas.DrawRectangle(new Pen(Color.FromArgb((int)(64.0f * _fOpacityFactor), _color)), SrchZone);
-            _canvas.FillRectangle(new SolidBrush(Color.FromArgb((int)(48.0f * _fOpacityFactor), _color)), SrchZone);
+            _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(64.0f * _fOpacityFactor), _color)), SrchZone);
+            //_canvas.FillRectangle(new SolidBrush(Color.FromArgb((int)(48.0f * _fOpacityFactor), _color)), SrchZone);
             
             // Current Block.
             int iTplLeft = (int) (fX - (((double)m_BlockSize.Width * _fStretchFactor) / 2));
