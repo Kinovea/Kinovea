@@ -287,7 +287,7 @@ namespace Kinovea.ScreenManager
         		if(bestCandidate.X != -1 && bestCandidate.Y != -1)
         		{
             		// Save template in the point.
-            		_currentPoint = CreateTrackPoint(false, bestCandidate.X, bestCandidate.Y, _t, _CurrentImage, _previousPoints);
+            		_currentPoint = CreateTrackPoint(false, bestCandidate.X, bestCandidate.Y, fBestScore, _t, _CurrentImage, _previousPoints);
             		((TrackPointBlock)_currentPoint).Similarity = fBestScore;
             		
             		// Finally, it is only considered a match if the score is over the threshold.	
@@ -299,7 +299,7 @@ namespace Kinovea.ScreenManager
         		else
         		{
         			// No match. Create the point at the center of the search window (whatever that might be).
-	        		_currentPoint = CreateTrackPoint(false, searchCenter.X, searchCenter.Y, _t, _CurrentImage, _previousPoints);
+	        		_currentPoint = CreateTrackPoint(false, searchCenter.X, searchCenter.Y, fBestScore, _t, _CurrentImage, _previousPoints);
 	        		log.Debug("Track failed. No block over the similarity treshold in the search window.");	
         		}
         		
@@ -326,13 +326,13 @@ namespace Kinovea.ScreenManager
 			{
 				// No image. (error case ?)
 				// Create the point at the last point location.
-				_currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, _t, _CurrentImage, _previousPoints);
+				_currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, 0.0f, _t, _CurrentImage, _previousPoints);
 				log.Debug("Track failed. No input image, or last point doesn't have any cached block image.");
 			}
 			
 			return bMatched;
 		}
-		public override AbstractTrackPoint CreateTrackPoint(bool _bManual, int _x, int _y, long _t, Bitmap _CurrentImage, List<AbstractTrackPoint> _previousPoints)
+		public override AbstractTrackPoint CreateTrackPoint(bool _bManual, int _x, int _y, double _fSimilarity, long _t, Bitmap _CurrentImage, List<AbstractTrackPoint> _previousPoints)
 		{
 			// Creates a TrackPoint from the input image at the given coordinates.
 			// Stores algorithm internal data in the point, to help next match.

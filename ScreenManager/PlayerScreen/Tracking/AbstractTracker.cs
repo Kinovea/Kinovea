@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
 		/// This function should store algorithm related infos in the created track point,
 		/// to be used later for tracking the next point.
 		/// </summary>
-		public abstract AbstractTrackPoint CreateTrackPoint(bool _manual, int _x, int _y, long _t, Bitmap _bmp, List<AbstractTrackPoint> _previousPoints);
+		public abstract AbstractTrackPoint CreateTrackPoint(bool _manual, int _x, int _y, double _fSimilarity, long _t, Bitmap _bmp, List<AbstractTrackPoint> _previousPoints);
 		
 		/// <summary>
 		/// Creates a bare bone TrackPoint.
