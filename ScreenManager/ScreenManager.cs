@@ -676,6 +676,15 @@ namespace Kinovea.ScreenManager
                 SetSyncPoint(true);
             }
         }
+        public void Player_PauseAsked(PlayerScreen _screen)
+        {
+        	// An individual player asks for a common pause.
+        	if (m_bSynching && ((ScreenManagerUserInterface)UI).ComCtrls.Playing)
+            {
+        		((ScreenManagerUserInterface)UI).ComCtrls.Playing = false;
+        		CommonCtrl_Play();
+        	}
+        }
         public void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization)
         {
         	PrepareSync(_bInitialization);
