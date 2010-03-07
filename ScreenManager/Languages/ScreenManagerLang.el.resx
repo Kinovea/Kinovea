@@ -104,7 +104,7 @@
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>
    <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} εικόνες.</value></data>
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Διευθέτηση Επιμονής</value></data>
-   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Αριθμός Διαιρέσεων</value></data>
+   <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Αριθμός Διαιρέσεων:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Διευθέτηση Πλέγματος</value></data>
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Αριθμός πλαισίων ανά δευτερόλεπτο στον χρόνο αποτύπωσης :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Αριθμός πλαισίων ανά δευτερόλεπτο στον χρόνο απεικόνισης : {0:0.00} fps.</value></data>
@@ -143,7 +143,7 @@
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Αρχείο PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Αποθήκευση αρχείου PDF από τις Βασικές Εικόνες</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Αποθήκευση Δεδομένων ως αρχείο Λογιστικού Φύλλου</value></data>
-   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html;</value></data>
+   <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Σχόλια</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|Όλα τα αρχεία (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Φόρτωση Δεδομένων Βασικών Εικόνων</value></data>
