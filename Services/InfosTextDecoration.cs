@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -30,6 +31,10 @@ namespace Kinovea.Services
 	// fixme: maybe we could turn this into a value type and an immutable type.
 	public class InfosTextDecoration
 	{
+		public static readonly int[] AllowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
+		public static readonly int MinFontSize = AllowedFontSizes[0];
+		public static readonly int MaxFontSize = AllowedFontSizes[AllowedFontSizes.Length - 1];
+      	
 		#region Properties
 		public static InfosTextDecoration DefaultValue
 		{
@@ -77,7 +82,7 @@ namespace Kinovea.Services
 		}
 		public void Update(int _iFontSize)
 		{
-			// Update the TextDecoration for color only.
+			// Update the TextDecoration for font size only.
 			m_Font = new Font(m_Font.Name, _iFontSize, m_Font.Style);
 		}
 		
@@ -223,16 +228,59 @@ namespace Kinovea.Services
 		{
 			// Returns the internal font with a different size.
 			// used for labels on chrono for exemple or to get the strecthed font.
+			// The final font size returned here may not be part of the allowed font sizes
+			// and may exeed the max allowed font size, because it's just for rendering purposes.
+			Font f;
+			if(_fStretchFactor == 1.0f)
+			{
+				f = m_Font;
+			}
+			else
+			{
+				float fFontSize = m_Font.Size * _fStretchFactor;
+				if(fFontSize < 8) fFontSize = 8;
 			
-			float fFontSize = m_Font.Size * _fStretchFactor;
-			if(fFontSize < 8) fFontSize = 8;
+				f = new Font(m_Font.Name, fFontSize, m_Font.Style);
+			}
 			
-			return new Font(m_Font.Name, fFontSize, m_Font.Style);
+			return f;
 		}
 		public Font GetInternalFont()
 		{
-			return GetInternalFont(1f);
+			return GetInternalFont(1.0f);
 		}
+		public int ReverseFontSize(int _wantedHeight, String _text)
+        {
+        	// Compute the optimal font size from a given background rectangle.
+        	// This is used when the user drag the bottom right corner to resize the text.
+        	// _wantedHeight is unscaled.
+        	Button but = new Button();
+            Graphics g = but.CreateGraphics();
+
+            // We must loop through all allowed font size and compute the output rectangle to find the best match.
+            // We only compare with wanted height for simplicity.
+            int iSmallestDiff = int.MaxValue;
+            int iBestCandidate = MinFontSize;
+            
+            foreach(int size in AllowedFontSizes)
+            {
+            	Font testFont = new Font(m_Font.Name, size, m_Font.Style);
+            	SizeF bgSize = g.MeasureString(_text + " ", testFont);
+            	testFont.Dispose();
+            	
+            	int diff = (int)Math.Abs(_wantedHeight - (int)bgSize.Height);
+            	
+            	if(diff < iSmallestDiff)
+            	{
+            		iSmallestDiff = diff;
+            		iBestCandidate = size;
+            	}	
+            }
+            
+            g.Dispose();
+            return iBestCandidate;
+        }
+		
 		#region Utilities
 		private void FixForeColor()
         {
