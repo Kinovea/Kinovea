@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
       	
       	private static readonly int m_iDefaultBackgroundAlpha = 128;
       	private static readonly int m_iDefaultFontSize = 16;    		// will also be used for the text box.
-        
+		
         private double m_fStretchFactor;
         private Point m_DirectZoomTopLeft;
         private Rectangle m_RescaledBackground;
@@ -180,7 +180,11 @@ namespace Kinovea.ScreenManager
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (fOpacityFactor > 0)
             {
-                if (IsPointInObject(_point))
+            	if(GetHandleRectangle().Contains(_point))
+            	{
+            		iHitResult = 1;	
+            	}
+                else if (IsPointInObject(_point))
                 {
                     iHitResult = 0;
                 }
@@ -190,7 +194,11 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveHandleTo(Point point, int handleNumber)
         {
-            // Not implemented (No handlers)
+            // Invisible handler to change font size.
+            // Compare wanted mouse position with current bottom right.
+            int wantedHeight = point.Y - m_BackgroundRectangle.Top;
+            int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
+            UpdateDecoration(newFontSize);
         }
         public override void MoveDrawing(int _deltaX, int _deltaY)
         {
@@ -416,6 +424,11 @@ namespace Kinovea.ScreenManager
             m_RescaledBackground = new Rectangle();
             m_RescaledBackground.Location = new Point((int)((double)m_BackgroundRectangle.X * _fStretchFactor) + _iShiftHorz, (int)((double)m_BackgroundRectangle.Y * _fStretchFactor) + _iShiftVert);
             m_RescaledBackground.Size = new Size(m_BackgroundRectangle.Width, m_BackgroundRectangle.Height);
+        }
+        private Rectangle GetHandleRectangle()
+        {
+            // This function is only used for Hit Testing.
+            return new Rectangle(m_BackgroundRectangle.Right - 10, m_BackgroundRectangle.Bottom - 10, 20, 20);
         }
         #endregion
 

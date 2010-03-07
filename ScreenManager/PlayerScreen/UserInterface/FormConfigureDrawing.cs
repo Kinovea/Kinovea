@@ -129,7 +129,15 @@ namespace Kinovea.ScreenManager
                     cmbFontSize.Visible = true;
                     Height = 280;
                     
+                    // Initialize font size combo.
+                    cmbFontSize.Items.Clear();
+                    foreach(int size in InfosTextDecoration.AllowedFontSizes)
+                    {
+                    	cmbFontSize.Items.Add(size.ToString());
+                    }
+                    
                     // For text, we need to display the current value.
+                    // This value should be one of the AllowedFontSizes.
                     if(m_bPreConfigure)
                     {
                     	cmbFontSize.Text = m_TempColorProfile.FontSizeText.ToString();

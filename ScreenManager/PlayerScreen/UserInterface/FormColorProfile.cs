@@ -62,6 +62,15 @@ namespace Kinovea.ScreenManager
         }
         private void SetupForm()
         {
+        	// Initialize font size combo.
+        	cmbTextSize.Items.Clear();
+        	cmbChronoSize.Items.Clear();
+            foreach(int size in InfosTextDecoration.AllowedFontSizes)
+            {
+            	cmbTextSize.Items.Add(size.ToString());
+				cmbChronoSize.Items.Add(size.ToString());
+            }
+        	
         	UpdateColorsAndStyles();
 
             // Color Picker Control
