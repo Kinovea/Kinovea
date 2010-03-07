@@ -236,7 +236,10 @@ namespace Kinovea.ScreenManager
             
             DrawFeature(_canvas, _color, 2, ((TrackPointSURF)_currentPoint).MatchedFeature, ((TrackPointSURF)_currentPoint).SearchWindow);
 		}
-		
+		public override Rectangle GetEditRectangle(Point _position)
+		{
+			return new Rectangle(_position.X - 10, _position.Y - 10, 20, 20);
+		}
 		#endregion
 		
 		#region Private helpers

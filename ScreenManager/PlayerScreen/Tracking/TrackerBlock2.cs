@@ -60,10 +60,14 @@ namespace Kinovea.ScreenManager
 			m_fSimilarityTreshold = 0.50f;
 			
 			// If simi is better than this, we keep the same template, to avoid the template update drift.
-			m_fTemplateUpdateSimilarityThreshold = 0.95f; 
+			
+			// When using CCORR : 0.90 or 0.95.
+			// When using CCOEFF : 0.80
+			m_fTemplateUpdateSimilarityThreshold = 0.80f;
 			
 			
-			int blockFactor = 15;
+			//int blockFactor = 15;	// Bigger template.
+			int blockFactor = 20;	// Smaller template can improve tracking by focusing on the object instead of Bg.
 			int blockWidth = _imgWidth / blockFactor;
 			int blockHeight = _imgHeight / blockFactor;
 			
@@ -78,7 +82,14 @@ namespace Kinovea.ScreenManager
 			}
 			
 			m_BlockSize = new Size(blockWidth, blockHeight);
-			m_SearchWindowSize = new Size((int)(blockWidth * 4.0), (int)(blockHeight * 4.0));
+			
+			
+			float searchFactor = 4.0f;
+			m_SearchWindowSize = new Size((int)(blockWidth * searchFactor), (int)(blockHeight * searchFactor));
+			
+			log.Debug(String.Format("Template matching: Image:{0}x{1}, Template:{2}, Search Window:{3}, Similarity thr.:{4}, Tpl update thr.:{5}",
+			                        _imgWidth, _imgHeight, m_BlockSize.ToString(), m_SearchWindowSize.ToString(), m_fSimilarityTreshold, m_fTemplateUpdateSimilarityThreshold));
+			
 		}
 		#endregion
 		
@@ -132,8 +143,8 @@ namespace Kinovea.ScreenManager
 				Image<Gray, Single> similarityMap = new Image<Gray, Single>(resWidth, resHeight);
 				
 				//CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_SQDIFF_NORMED);
-				CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCORR_NORMED);
-				//CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCOEFF_NORMED);
+				//CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCORR_NORMED);
+				CvInvoke.cvMatchTemplate(cvImage.Ptr, cvTemplate.Ptr, similarityMap.Ptr, TM_TYPE.CV_TM_CCOEFF_NORMED);
 				
 				img.UnlockBits(imageData);
 				tpl.UnlockBits(templateData);
@@ -152,6 +163,20 @@ namespace Kinovea.ScreenManager
 					fBestScore = fMax;
 				}
 			
+				#region Monitoring
+				if(m_bMonitoring)
+				{
+					// Save the similarity map to file.
+					Image<Gray, Byte> mapNormalized = new Image<Gray, Byte>(similarityMap.Width, similarityMap.Height);
+					CvInvoke.cvNormalize(similarityMap.Ptr, mapNormalized.Ptr, 0, 255, NORM_TYPE.CV_MINMAX, IntPtr.Zero);
+			
+					Bitmap bmpMap = mapNormalized.ToBitmap();
+					
+					string tplDirectory = @"C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Video Testing\Tracking\Template Update";
+					bmpMap.Save(tplDirectory + String.Format(@"\simiMap-{0:000}-{1:0.00}.bmp", _previousPoints.Count, fBestScore));
+				}
+				#endregion
+				
 				// Result of the matching.
         		if(bestCandidate.X != -1 && bestCandidate.Y != -1)
         		{
@@ -167,25 +192,6 @@ namespace Kinovea.ScreenManager
 	        		_currentPoint = CreateTrackPoint(false, searchCenter.X, searchCenter.Y, 0.0f, _t, img, _previousPoints);
 	        		log.Debug("Track failed. No block over the similarity treshold in the search window.");	
         		}
-        		
-                #region Monitoring
-                if(m_bMonitoring)
-				{
-                	// Save current template to file, to visually monitor the drift.
-                	string tplDirectory = @"C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Video Testing\Tracking\Template Update";
-                	if(_previousPoints.Count == 1)
-                	{
-                		// Clean up folder.
-                		string[] tplFiles = Directory.GetFiles(tplDirectory, "*.bmp");
-                		foreach (string f in tplFiles)
-					    {
-					        File.Delete(f);
-					    }
-                	}
-                	String iFileName = String.Format("{0}\\tpl-{1:000}.bmp", tplDirectory, _previousPoints.Count);
-					((TrackPointBlock)_currentPoint).Template.Save(iFileName);
-				}
-                #endregion
             }
 			else
 			{
@@ -274,6 +280,25 @@ namespace Kinovea.ScreenManager
 	            tpl.UnlockBits( templateData );
 			}
 			
+			#region Monitoring
+            if(m_bMonitoring && bUpdateWithCurrentImage)
+			{
+            	// Save current template to file, to visually monitor the drift.
+            	string tplDirectory = @"C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Video Testing\Tracking\Template Update";
+            	if(_previousPoints.Count <= 1)
+            	{
+            		// Clean up folder.
+            		string[] tplFiles = Directory.GetFiles(tplDirectory, "*.bmp");
+            		foreach (string f in tplFiles)
+				    {
+				        File.Delete(f);
+				    }
+            	}
+            	String iFileName = String.Format("{0}\\tpl-{1:000}.bmp", tplDirectory, _previousPoints.Count);
+				tpl.Save(iFileName);
+			}
+            #endregion
+			
 			TrackPointBlock tpb = new TrackPointBlock(_x, _y, _t, tpl);
 			tpb.IsReferenceBlock = _bManual;
 			tpb.Similarity = _bManual ? 1.0f : _fSimilarity;
@@ -301,14 +326,14 @@ namespace Kinovea.ScreenManager
 			int iSrchLeft = (int) (fX - (((double)m_SearchWindowSize.Width * _fStretchFactor) / 2));
 			int iSrchTop = (int) (fY - (((double)m_SearchWindowSize.Height * _fStretchFactor) / 2));
             Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchWindowSize.Width * _fStretchFactor), (int)((double)m_SearchWindowSize.Height * _fStretchFactor));
-            _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(64.0f * _fOpacityFactor), _color)), SrchZone);
+            _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color)), SrchZone);
             //_canvas.FillRectangle(new SolidBrush(Color.FromArgb((int)(48.0f * _fOpacityFactor), _color)), SrchZone);
             
             // Current Block.
             int iTplLeft = (int) (fX - (((double)m_BlockSize.Width * _fStretchFactor) / 2));
             int iTplTop = (int) (fY - (((double)m_BlockSize.Height * _fStretchFactor) / 2));
             Rectangle TplZone = new Rectangle(iTplLeft, iTplTop, (int)((double)m_BlockSize.Width * _fStretchFactor), (int)((double)m_BlockSize.Height * _fStretchFactor));
-            Pen p = new Pen(Color.FromArgb((int)(128.0f * _fOpacityFactor), _color));
+            Pen p = new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color));
             _canvas.DrawRectangle(p, TplZone);
 		
 			// Current Block's similarity.
@@ -320,6 +345,12 @@ namespace Kinovea.ScreenManager
 			b.Dispose();
 			p.Dispose();
 			f.Dispose();
+		}
+		public override Rectangle GetEditRectangle(Point _position)
+		{
+			// This is used to get a hit zone for the user to move the template around.
+			return new Rectangle(_position.X - m_SearchWindowSize.Width / 2, _position.Y - m_SearchWindowSize.Height / 2,
+			                     m_SearchWindowSize.Width, m_SearchWindowSize.Height);
 		}
 		#endregion
 	}
