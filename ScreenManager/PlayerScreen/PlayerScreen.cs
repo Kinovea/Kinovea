@@ -270,6 +270,10 @@ namespace Kinovea.ScreenManager
             // Used for synchronisation handling.
             m_ScreenHandler.Player_IsReady(this, _bIntervalOnly);
         }
+        public void PlayerScreenUI_PauseAsked()
+        {
+        	m_ScreenHandler.Player_PauseAsked(this);
+        }
         public void PlayerScreenUI_SelectionChanged(bool _bInitialization)
         {
             // Used for synchronisation handling.

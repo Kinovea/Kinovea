@@ -1343,6 +1343,7 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				
 				m_iFramesToDecode = 1;
 				ShowNextFrame(m_iSelStart, true);
@@ -1359,7 +1360,8 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				StopPlaying();
-
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+				
 				//---------------------------------------------------------------------------
 				// Si on est en dehors de la zone primaire, ou qu'on va en sortir,
 				// se replacer au début de celle-ci.
@@ -1433,6 +1435,7 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				m_iFramesToDecode = 1;
 
 				//---------------------------------------------------------------------------
@@ -1460,6 +1463,7 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
 				m_iFramesToDecode = 1;
 				ShowNextFrame(m_iSelEnd, true);
@@ -1481,6 +1485,7 @@ namespace Kinovea.ScreenManager
 				{
 					// Go into Pause mode.
 					StopPlaying();
+					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 					buttonPlay.Image = Resources.liqplay17;
 					m_bIsCurrentlyPlaying = false;
 					ActivateKeyframe(m_iCurrentPosition);
@@ -1539,6 +1544,7 @@ namespace Kinovea.ScreenManager
 			if (m_FrameServer.VideoFile.Loaded)
 			{
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
 				// Update selection timestamps and labels.
 				UpdateSelectionDataFromControl();
@@ -1579,6 +1585,7 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				m_iFramesToDecode = 1;
 
 				ShowNextFrame(trkSelection.SelTarget, true);
@@ -1744,6 +1751,7 @@ namespace Kinovea.ScreenManager
 			{
 				OnPoke();
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
 				// Update image and cursor.
 				UpdateFrameCurrentPosition(true);
@@ -2400,7 +2408,7 @@ namespace Kinovea.ScreenManager
 					m_bIsCurrentlyPlaying = false;
 					Application.Idle -= new EventHandler(this.IdleDetector);
 					m_iFramesToDecode = 0;
-
+					
 					if (_bAllowUIUpdate)
 					{
 						buttonPlay.Image = Resources.liqplay17;
@@ -2631,6 +2639,7 @@ namespace Kinovea.ScreenManager
 							{
 								// MouseDown while playing: Halt the video.
 								StopPlaying();
+								m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 								ActivateKeyframe(m_iCurrentPosition);
 								bWasPlaying = true;
 							}
@@ -3721,6 +3730,7 @@ namespace Kinovea.ScreenManager
 			// Move to the right spot.
 			OnPoke();
 			StopPlaying();
+			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
 			long iTargetPosition = m_FrameServer.Metadata[(int)((KeyframeBox)sender).Tag].Position;
 
@@ -4583,6 +4593,7 @@ namespace Kinovea.ScreenManager
 				if (m_FrameServer.VideoFile.CanExtractToMemory(m_iSelStart, m_iSelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory))
 				{
 					StopPlaying();
+					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 					
 					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoFile, m_iSelStart, m_iSelEnd, _bForceReload);
 					ffi.ShowDialog();
@@ -4664,6 +4675,7 @@ namespace Kinovea.ScreenManager
 			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				try
 				{
 					SaveFileDialog dlgSave = new SaveFileDialog();
@@ -4756,6 +4768,7 @@ namespace Kinovea.ScreenManager
 			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 
 				DelegatesPool dp = DelegatesPool.Instance();
 				if (dp.DeactivateKeyboardHandler != null)
@@ -4898,6 +4911,7 @@ namespace Kinovea.ScreenManager
 		private void btnVideo_Click(object sender, EventArgs e)
 		{
 			StopPlaying();
+			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 			DelegatesPool dp = DelegatesPool.Instance();
 			if (dp.DeactivateKeyboardHandler != null)
 			{
@@ -4935,6 +4949,7 @@ namespace Kinovea.ScreenManager
 			else if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
 			{
 				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				
 				DelegatesPool dp = DelegatesPool.Instance();
 				if (dp.DeactivateKeyboardHandler != null)
