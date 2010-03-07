@@ -64,6 +64,12 @@ namespace Kinovea.ScreenManager
 		/// This may only make sense for users having an idea of how the tracking works.
 		/// </summary>
 		public abstract void Draw(Graphics _canvas, AbstractTrackPoint _currentPoint, Point _directZoomTopLeft, double _fStretchFactor, Color _color, double _fOpacityFactor);
+		
+		/// <summary>
+		/// Retrieve the target rectangle for easy mouse manipulation.
+		/// </summary>
+		public abstract Rectangle GetEditRectangle(Point _position);
+		
 		#endregion
 	}
 }

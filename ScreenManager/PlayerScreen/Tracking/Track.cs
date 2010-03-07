@@ -328,7 +328,7 @@ namespace Kinovea.ScreenManager
 	            	}
 	            	
 	            	// Tracking algorithm visualization.
-                    //if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
+                    if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
                     {
                         m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint], _DirectZoomTopLeft, m_fStretchFactor, m_LineStyle.Color, fOpacityFactor);
 					}
@@ -369,7 +369,7 @@ namespace Kinovea.ScreenManager
         { 
         	int radius = m_iDefaultCrossRadius;
         	
-        	if(true || m_TrackStatus == TrackStatus.Edit)
+        	if(m_TrackStatus == TrackStatus.Edit)
         	{
         		// Just a little cross.
         		Pen p = new Pen(Color.FromArgb((int)(255.0f * _fFadingFactor), m_LineStyle.Color));
@@ -384,9 +384,9 @@ namespace Kinovea.ScreenManager
         	else
         	{
 	    		// Draws the target marker (CrashTest Dummy style target)
-	    		
-	    		Brush brushBlack = new SolidBrush(Color.FromArgb(128, 0,0,0));
-	    		Brush brushWhite = new SolidBrush(Color.FromArgb(128, 255, 255, 255));                              
+	    		int markerAlpha = 255;
+	    		Brush brushBlack = new SolidBrush(Color.FromArgb(markerAlpha, 0,0,0));
+	    		Brush brushWhite = new SolidBrush(Color.FromArgb(markerAlpha, 255, 255, 255));                              
 	    		
 	            _canvas.FillPie(brushBlack, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 0, 90);
 	            _canvas.FillPie(brushWhite, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 90, 90);
@@ -585,9 +585,18 @@ namespace Kinovea.ScreenManager
 
                 if (iHitResult == -1)
                 {
-                    int widen = 3;
-                    Rectangle WideTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
-                    if (WideTarget.Contains(_point))
+                	Rectangle rectangleTarget;
+                	if(m_TrackStatus == TrackStatus.Edit)
+                	{
+                		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].ToPoint());
+                	}
+                	else
+                	{
+                		int widen = 3;
+                    	rectangleTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
+                	}
+                    
+                    if (rectangleTarget.Contains(_point))
                     {
                         iHitResult = 1;
                     }

@@ -441,6 +441,12 @@ namespace Kinovea.ScreenManager
 			p.Dispose();
 			f.Dispose();
 		}
+		public override Rectangle GetEditRectangle(Point _position)
+		{
+			// This is used to get a hit zone for the user to move the template around.
+			return new Rectangle(_position.X - m_SearchWindowSize.Width / 2, _position.Y - m_SearchWindowSize.Height / 2,
+			                     m_SearchWindowSize.Width, m_SearchWindowSize.Height);
+		}
 		#endregion
 		
 		#region Private Helpers
