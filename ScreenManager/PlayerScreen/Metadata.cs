@@ -1191,19 +1191,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Dartfish files Parsers
-        private void ParseDartfishStoryboard(XmlTextReader _xmlReader)
-        {
-        	DartfishStoryboardParser dsp = new DartfishStoryboardParser();
-        	dsp.Parse(_xmlReader, this);
-        }
-        private void ParseDartfishLibraryItem(XmlTextReader _xmlReader)
-        {
-            DartfishLibraryItemParser dlip = new DartfishLibraryItemParser();
-            dlip.Parse(_xmlReader, this);
-        }
-        #endregion
-    
     	#region Export
     	public void Export(string _filePath, MetadataExportFormat _format)
     	{
@@ -1244,7 +1231,7 @@ namespace Kinovea.ScreenManager
 			
     		string stylesheet = @"xslt\kva2odf-en.xsl";
 			
-			if(File.Exists(stylesheet))
+			try
 			{
 	            // Create archive.
 	            using (ZipOutputStream zos = new ZipOutputStream(File.Create(_filePath)))
@@ -1275,9 +1262,10 @@ namespace Kinovea.ScreenManager
 					AddODFZipFile(zos, "META-INF/manifest.xml", GetODFManifest());
 	            }
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");				
+				log.Error("Exception thrown during export to ODF.");
+				ReportError(ex);
 			}
     	}
     	private byte[] GetODFMeta()
@@ -1396,7 +1384,7 @@ namespace Kinovea.ScreenManager
 			
     		string stylesheet = @"xslt\kva2msxml-en.xsl";
 			
-			if(File.Exists(stylesheet))
+    		try
 			{
 				XmlWriterSettings settings = new XmlWriterSettings();
 				settings.Indent = true;
@@ -1413,9 +1401,10 @@ namespace Kinovea.ScreenManager
 	   				xslt.Transform(mdDoc, null, xw);
 				}	
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");
+				log.Error("Exception thrown during export to MS-XML.");
+				ReportError(ex);
 			}
     	}
     	private void ExportXHTML(string _filePath, string _kva)
@@ -1424,7 +1413,7 @@ namespace Kinovea.ScreenManager
     		
 			string stylesheet = @"xslt\kva2xhtml-en.xsl";
 			
-			if(File.Exists(stylesheet))
+			try
 			{
 	    		XmlWriterSettings settings = new XmlWriterSettings();
 				settings.Indent = true;
@@ -1441,9 +1430,10 @@ namespace Kinovea.ScreenManager
 	    			xslt.Transform(mdDoc, null, xw);
 				}
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");				
+				log.Error("Exception thrown during export to XHTML.");
+				ReportError(ex);
 			}
     	}
     	private void ExportTEXT(string _filePath, string _kva)
@@ -1452,7 +1442,7 @@ namespace Kinovea.ScreenManager
     		
 			string stylesheet = @"xslt\kva2txt-en.xsl";
 			
-			if(File.Exists(stylesheet))
+			try
 			{
         		using(TextWriter tw = new StreamWriter(_filePath))
         		{
@@ -1465,10 +1455,18 @@ namespace Kinovea.ScreenManager
 	   				xslt.Transform(mdDoc, null, tw);
 				}
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");				
+				log.Error("Exception thrown during export to TEXT.");
+				ReportError(ex);
 			}
+    	}
+    	private void ReportError(Exception ex)
+    	{
+    		// TODO: Error message the user, so at least he knows something went wrong !
+    		log.Error(ex.Message);
+			log.Error(ex.Source);
+			log.Error(ex.StackTrace);
     	}
     	#endregion
     }

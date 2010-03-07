@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
         public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
-        public ToolStripMenuItem mnu3DPlane = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuGridPerspective = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
 
         #region Synchronization
@@ -367,13 +367,13 @@ namespace Kinovea.ScreenManager
             //---------------------------------
             //Organisation du sous menu Screens
             //---------------------------------
-            ToolStripItem[] subScreens = new ToolStripItem[] { 	mnuOnePlayer,
+            ToolStripItem[] subScreens = new ToolStripItem[] { 		mnuOnePlayer,
             														mnuTwoPlayers,
             														new ToolStripSeparator(),
-            														mnuOneCapture, 
-            														mnuTwoCaptures, 
-            														mnuTwoMixed, 
-            														new ToolStripSeparator(), 
+            														//mnuOneCapture, 
+            														//mnuTwoCaptures, 
+            														//mnuTwoMixed, 
+            														//new ToolStripSeparator(), 
             														mnuSwapScreens, 
             														mnuToggleCommonCtrls };
             mnuCatchScreens.DropDownItems.AddRange(subScreens);
@@ -391,7 +391,6 @@ namespace Kinovea.ScreenManager
             mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
             mnuDeinterlace.Click += new EventHandler(mnuDeinterlaceOnClick);
             mnuDeinterlace.MergeAction = MergeAction.Append;
-            
             
             #region Formats
             
@@ -432,10 +431,6 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             mnuMirror.MergeAction = MergeAction.Append;
 
-            ToolStripSeparator mnuSep = new ToolStripSeparator();
-            ToolStripSeparator mnuSep2 = new ToolStripSeparator();
-            ToolStripSeparator mnuSep3 = new ToolStripSeparator();
-
             // Grid
             mnuGrid.Tag = new ItemResourceInfo(resManager, "mnuGrid");
             mnuGrid.Text = ((ItemResourceInfo)mnuGrid.Tag).resManager.GetString(((ItemResourceInfo)mnuGrid.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -445,12 +440,12 @@ namespace Kinovea.ScreenManager
             mnuGrid.MergeAction = MergeAction.Append;
 
             // 3D Plane
-            mnu3DPlane.Tag = new ItemResourceInfo(resManager, "mnu3DPlane");
-            mnu3DPlane.Text = ((ItemResourceInfo)mnu3DPlane.Tag).resManager.GetString(((ItemResourceInfo)mnu3DPlane.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnu3DPlane.Checked = false;
-            mnu3DPlane.ShortcutKeys = Keys.Control | Keys.P;
-            mnu3DPlane.Click += new EventHandler(mnu3DPlane_OnClick);
-            mnu3DPlane.MergeAction = MergeAction.Append;
+            mnuGridPerspective.Tag = new ItemResourceInfo(resManager, "mnu3DPlane");
+            mnuGridPerspective.Text = ((ItemResourceInfo)mnuGridPerspective.Tag).resManager.GetString(((ItemResourceInfo)mnuGridPerspective.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuGridPerspective.Checked = false;
+            mnuGridPerspective.ShortcutKeys = Keys.Control | Keys.P;
+            mnuGridPerspective.Click += new EventHandler(mnu3DPlane_OnClick);
+            mnuGridPerspective.MergeAction = MergeAction.Append;
             
              // Coordinate Axis
             mnuCoordinateAxis.Tag = new ItemResourceInfo(resManager, "dlgConfigureTrajectory_SetOrigin");
@@ -468,17 +463,18 @@ namespace Kinovea.ScreenManager
 													{ 
                                                    		mnuDeinterlace,
                                                    		mnuFormat,
-                                                   		mnuSep, 
+                                                   		mnuMirror,
+                                                   		new ToolStripSeparator(), 
                                                    		m_VideoFilters[(int)VideoFilterType.AutoLevels].Menu,  
                                                    		m_VideoFilters[(int)VideoFilterType.AutoContrast].Menu,  
                                                    		m_VideoFilters[(int)VideoFilterType.Sharpen].Menu, 
-                                                   		mnuSep2, 
-                                                   		mnuMirror, 
-                                                   		m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
-                                                   		mnuSep3, 
-                                                   		mnuGrid, 
-                                                   		mnu3DPlane,
-                                                 		mnuCoordinateAxis});
+                                                   		new ToolStripSeparator(), 
+                                                   		//m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
+                                                   		//new ToolStripSeparator(), 
+                                                   		mnuCoordinateAxis,
+                                                   		mnuGrid,
+                                                   		mnuGridPerspective
+                                                 		});
             #endregion
 
             #region Motion
@@ -967,7 +963,7 @@ namespace Kinovea.ScreenManager
             // (car elle redéfinie return, space, etc.) utiliser le delegate pool avec 
             // DeactivateKeyboardHandler et ActivateKeyboardHandler
             //----------------------------------------------------------------------------
-
+			
             bool bWasHandled = false;
 			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
             	
@@ -1249,13 +1245,13 @@ namespace Kinovea.ScreenManager
                         mnuDeinterlace.Enabled = true;
                         mnuMirror.Enabled = true;
                         mnuGrid.Enabled = true;
-                        mnu3DPlane.Enabled = true;
+                        mnuGridPerspective.Enabled = true;
                         mnuCoordinateAxis.Enabled = true;
 
                         mnuDeinterlace.Checked = player.Deinterlaced;
                         mnuMirror.Checked = player.Mirrored;
                         mnuGrid.Checked = player.ShowGrid;
-                        mnu3DPlane.Checked = player.Show3DPlane;
+                        mnuGridPerspective.Checked = player.Show3DPlane;
                         
                         ConfigureImageFormatMenus(player);
                         ConfigureVideoFilterMenus(player, false);
@@ -1293,13 +1289,13 @@ namespace Kinovea.ScreenManager
                 mnuDeinterlace.Enabled = false;
 				mnuMirror.Enabled = false;
 				mnuGrid.Enabled = false;
-				mnu3DPlane.Enabled = false;
+				mnuGridPerspective.Enabled = false;
 				mnuCoordinateAxis.Enabled = false;
                 
 				mnuDeinterlace.Checked = false;
 				mnuMirror.Checked = false;
                 mnuGrid.Checked = false;
-                mnu3DPlane.Checked = false;
+                mnuGridPerspective.Checked = false;
 				
 				ConfigureImageFormatMenus(null);
 				ConfigureVideoFilterMenus(null, true);
@@ -2397,14 +2393,14 @@ namespace Kinovea.ScreenManager
         {
         	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
         	{
-        		mnu3DPlane.Checked = !mnu3DPlane.Checked;
+        		mnuGridPerspective.Checked = !mnuGridPerspective.Checked;
         		if(m_ActiveScreen is PlayerScreen)
         		{
-        			((PlayerScreen)m_ActiveScreen).Show3DPlane = mnu3DPlane.Checked;
+        			((PlayerScreen)m_ActiveScreen).Show3DPlane = mnuGridPerspective.Checked;
         		}
         		else if(m_ActiveScreen is CaptureScreen)
         		{
-        			((CaptureScreen)m_ActiveScreen).Show3DPlane = mnu3DPlane.Checked;
+        			((CaptureScreen)m_ActiveScreen).Show3DPlane = mnuGridPerspective.Checked;
         		}
         	}
         }

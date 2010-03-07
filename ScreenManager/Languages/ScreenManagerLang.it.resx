@@ -283,7 +283,7 @@
    <data name="mnuSave" xml:space="preserve"><value>Salva il Video o le Immagini Chiave...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Salva su File l'immagine attuale</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Schermi</value></data>
-   <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita</value></data>
+   <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Imposta la velocita' originale</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro </value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Imposta il Fotogramma attuale come PRIMO fotogramma della Zona Lavoro </value></data>
