@@ -194,7 +194,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Track(int _x, int _y, long _t, Bitmap _CurrentImage)
+        public Track(int _x, int _y, long _t, Bitmap _CurrentImage, Size _imageSize)
         {
             //-----------------------------------------------------------------------------------------
             // t is absolute time.
@@ -203,12 +203,12 @@ namespace Kinovea.ScreenManager
             // In this case we'll only need the last frame to reconstruct the last point.)
 			//-----------------------------------------------------------------------------------------
             
-			// Init tracker.
-			m_Tracker = new TrackerBlock2(_CurrentImage.Width, _CurrentImage.Height);
-			
             // Create the first point
             if (_CurrentImage != null)
             {
+            	// Init tracker.
+            	m_Tracker = new TrackerBlock2(_CurrentImage.Width, _CurrentImage.Height);
+            	
            		AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _x, _y, 1.0f, 0, _CurrentImage, m_Positions);
            		if(atp != null)
            		{
@@ -223,6 +223,8 @@ namespace Kinovea.ScreenManager
             }
             else
             {
+            	// Happens when loading Metadata from file or demuxing.
+            	m_Tracker = new TrackerBlock2(_imageSize.Width, _imageSize.Height);
             	m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_x, _y, 0));
             }
 
@@ -952,10 +954,10 @@ namespace Kinovea.ScreenManager
             TrackLineToXml(_xmlWriter);
             KeyframesLabelsToXml(_xmlWriter);
 
-            //_xmlWriter.WriteStartElement("ShowKeyframesTitles");
-            //_xmlWriter.WriteString(m_bShowKeyframesTitles.ToString());
-            //_xmlWriter.WriteEndElement();
-
+            _xmlWriter.WriteStartElement("ExtraData");
+            _xmlWriter.WriteString(((int)m_TrackExtraData).ToString());
+            _xmlWriter.WriteEndElement();
+            
             // Global Label
             _xmlWriter.WriteStartElement("Label");
             _xmlWriter.WriteStartElement("Text");
@@ -966,9 +968,9 @@ namespace Kinovea.ScreenManager
             // </Track>
             _xmlWriter.WriteEndElement();
         }
-        public static Track FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        public static Track FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback, Size _imageSize)
         {
-            Track trk = new Track(0,0,0, null);
+            Track trk = new Track(0,0,0, null, _imageSize);
             trk.m_TrackStatus = TrackStatus.Interactive;
             
             if (_remapTimestampCallback != null)
@@ -1001,6 +1003,10 @@ namespace Kinovea.ScreenManager
                         {
                             trk.ParseKeyframeLabelList(_xmlReader, trk, _scale, _remapTimestampCallback);
                         }
+                        else if (_xmlReader.Name == "ExtraData")
+                        {
+                            trk.m_TrackExtraData = (TrackExtraData)int.Parse(_xmlReader.ReadString());
+                        }
                         else if (_xmlReader.Name == "Label")
                         {
                             trk.ParseLabel(_xmlReader, trk);
@@ -1024,7 +1030,6 @@ namespace Kinovea.ScreenManager
                 {
                     trk.m_iEndTimeStamp = trk.m_Positions[trk.m_Positions.Count - 1].T + trk.m_iBeginTimeStamp;
                     trk.m_MainLabel.Location = trk.m_Positions[0].ToPoint();
-                    //trk.m_MainLabel.m_RescaledTrackPos = trk.m_RescaledPositions[0];
                     trk.m_MainLabel.TextInfos[0] = trk.Label;
                     trk.m_MainLabel.ResetBackground(1.0, new Point(0, 0));
                 }

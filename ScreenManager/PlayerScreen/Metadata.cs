@@ -18,15 +18,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using ICSharpCode.SharpZipLib.Checksums;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Xsl;
+
+using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip;
 using Kinovea.Services;
 
@@ -781,6 +783,19 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteStartElement("SelectionStart");
             _xmlWriter.WriteString(m_iSelectionStart.ToString());
             _xmlWriter.WriteEndElement();
+            
+            // Calibration
+            _xmlWriter.WriteStartElement("CalibrationHelp");
+            
+            _xmlWriter.WriteStartElement("PixelToUnit");
+            _xmlWriter.WriteString(m_CalibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteStartElement("LengthUnit");
+            _xmlWriter.WriteString(((int)m_CalibrationHelper.CurrentLengthUnit).ToString());
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteEndElement();
         }
         private void FromXml(XmlTextReader _xmlReader)
         {
@@ -824,7 +839,8 @@ namespace Kinovea.ScreenManager
                 }
                 catch (Exception)
                 {
-                    // Une erreur est survenue pendant le parsing.
+                    // An error happened during parsing.
+                    log.Error("An error happened during parsing Metadata.");
                 }
                 finally
                 {
@@ -943,6 +959,10 @@ namespace Kinovea.ScreenManager
                     {
                         m_iInputSelectionStart = Int64.Parse(_xmlReader.ReadString());
                     }
+                    else if (_xmlReader.Name == "CalibrationHelp")
+                    {
+                    	ParseCalibrationHelp(_xmlReader);
+                    }
                     else if (_xmlReader.Name == "Keyframes")
                     {
                         ParseKeyframes(_xmlReader);
@@ -969,6 +989,33 @@ namespace Kinovea.ScreenManager
                     // Fermeture d'un tag interne.
                 }
             }
+        }
+        private void ParseCalibrationHelp(XmlTextReader _xmlReader)
+        {       
+        	while (_xmlReader.Read())
+            {
+                if (_xmlReader.IsStartElement())
+                {
+                    if (_xmlReader.Name == "PixelToUnit")
+                    {
+                    	double fPixelToUnit = double.Parse(_xmlReader.ReadString(), CultureInfo.InvariantCulture);
+                  		m_CalibrationHelper.PixelToUnit = fPixelToUnit;
+                  		
+                    }
+                    else if(_xmlReader.Name == "LengthUnit")
+                    {
+                    	m_CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)int.Parse(_xmlReader.ReadString());
+                    }
+                }
+                else if (_xmlReader.Name == "CalibrationHelp")
+                {
+                    break;
+                }
+                else
+                {
+                    // Fermeture d'un tag interne.
+                }
+            }	
         }
         private void ParseKeyframes(XmlTextReader _xmlReader)
         {
@@ -1167,7 +1214,7 @@ namespace Kinovea.ScreenManager
                         scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
                         scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
 
-                        Track trk = Track.FromXml(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp));
+                        Track trk = Track.FromXml(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp), m_ImageSize);
                         if (trk != null)
                         {
                             // Finish setup
