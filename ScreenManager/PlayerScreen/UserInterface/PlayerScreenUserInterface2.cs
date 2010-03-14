@@ -2141,6 +2141,12 @@ namespace Kinovea.ScreenManager
 			// Par contre on doit quand même mettre à jour NextFrame.
 			//-----------------------------------------------------------------------------
 
+			/*m_Stopwatch.Stop();
+			log.Debug(String.Format("Back in Playloop. Elapsed: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
+			
+			m_Stopwatch.Reset();
+			m_Stopwatch.Start();*/
+			
 			bool bStopAtEnd = false;
 			//----------------------------------------------------------------------------
 			// En prévision de l'appel à ShowNextFrame, on vérifie qu'on ne va pas sortir.
@@ -2219,6 +2225,8 @@ namespace Kinovea.ScreenManager
 					ShowNextFrame(-1, true);
 				}
 
+				
+				
 				UpdateNavigationCursor();
 				
 				if (m_bShowInfos) { UpdateDebugInfos(); }
@@ -2235,7 +2243,9 @@ namespace Kinovea.ScreenManager
 				//
 				// Side effect: queue will always stabilize right under the treshold.
 				//-------------------------------------------------------------------------------
+				
 				// If we a re currently tracking a point, do not try to keep with the framerate.
+				
 				bool bTracking = false;
 				foreach (Track t in m_FrameServer.Metadata.Tracks)
 				{
@@ -2270,9 +2280,13 @@ namespace Kinovea.ScreenManager
 					}
 				}
 			}
+			
+			//m_Stopwatch.Stop();
+			//log.Debug(String.Format("Exiting Playloop. Took: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
 		}
 		private void IdleDetector(object sender, EventArgs e)
 		{
+			//log.Debug("back to idle");
 			m_bIsIdle = true;
 		}
 		private ReadResult ShowNextFrame(Int64 _iSeekTarget, bool _bAllowUIUpdate)
@@ -2289,7 +2303,7 @@ namespace Kinovea.ScreenManager
 			
 			//m_Stopwatch.Reset();
 			//m_Stopwatch.Start();
-			
+				
 			ReadResult res = m_FrameServer.VideoFile.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
 			
 			if (res == ReadResult.Success)
@@ -3083,7 +3097,7 @@ namespace Kinovea.ScreenManager
 					{
 						//m_Stopwatch.Reset();
 						//m_Stopwatch.Start();
-			
+						
 						// If we are on a keyframe, see if it has any drawing.
 						int iKeyFrameIndex = -1;
 						if (m_iActiveKeyFrameIndex >= 0)
@@ -3097,8 +3111,7 @@ namespace Kinovea.ScreenManager
 						FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
 						
 						//m_Stopwatch.Stop();
-            			//log.Debug(String.Format("Total Paint: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
-            
+            			//log.Debug(String.Format("Paint: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
 					}
 					catch (System.InvalidOperationException)
 					{
@@ -4042,7 +4055,7 @@ namespace Kinovea.ScreenManager
 			// Track the point. No Cross2D was selected.
 			// m_DescaledMouse would have been set during the MouseDown event.
 			
-			m_FrameServer.Metadata.Tracks.Add(new Track(m_DescaledMouse.X, m_DescaledMouse.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage));
+			m_FrameServer.Metadata.Tracks.Add(new Track(m_DescaledMouse.X, m_DescaledMouse.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size));
 
 			// Complete Setup. The color is set to the one of the Cross2D drawing.
 			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].m_ShowClosestFrame = new ShowClosestFrame(OnShowClosestFrame);
@@ -4076,7 +4089,7 @@ namespace Kinovea.ScreenManager
 
 					// Add track on this point.
 					DrawingCross2D dc = (DrawingCross2D)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing];
-					m_FrameServer.Metadata.Tracks.Add(new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage));
+					m_FrameServer.Metadata.Tracks.Add(new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size));
 
 					// Complete Setup
 					m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.Tracks.Count - 1].m_ShowClosestFrame = new ShowClosestFrame(OnShowClosestFrame);

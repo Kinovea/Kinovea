@@ -235,6 +235,11 @@ namespace Kinovea.ScreenManager
             // Color, Style, Fading.
             m_PenStyle.ToXml(_xmlWriter);
             m_InfosFading.ToXml(_xmlWriter, false);
+            
+            // Show measure.
+            _xmlWriter.WriteStartElement("MeasureIsVisible");
+            _xmlWriter.WriteString(m_bShowMeasure.ToString());
+            _xmlWriter.WriteEndElement();
 
             _xmlWriter.WriteEndElement();// </Drawing>
         }
@@ -263,6 +268,10 @@ namespace Kinovea.ScreenManager
                     else if (_xmlReader.Name == "InfosFading")
                     {
                         dl.m_InfosFading.FromXml(_xmlReader);
+                    }
+                    else if(_xmlReader.Name == "MeasureIsVisible")
+                    {
+                    	dl.m_bShowMeasure = bool.Parse(_xmlReader.ReadString());
                     }
                     else
                     {
