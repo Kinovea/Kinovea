@@ -114,10 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostra riquadro marcatore bersaglio</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostra Titoli delle Immagini Chiave</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostra la Traiettoria</value></data>
-   
-   
-   
-   
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Misura:</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Nessuna</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distanza</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocita'</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modalita' :</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Traiettoria</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stile :</value></data>
@@ -162,7 +162,7 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opzioni</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Modalita' di salvataggio</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Salva solo le Immagini Chiave.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Salva il video e le Immagini Chiave in un solo File.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Unisci video e Immagini Chiave nel File.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Includi definitivamente le Immagini Chiave nel video</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Salva solo il Video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salva il Video o le Immagini Chiave...</value></data>
@@ -257,7 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   
+   <data name="mnuExportTEXT" xml:space="preserve"><value>Traiettorie in formato testo</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Esportazione in PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificare</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Formato immagine</value></data>

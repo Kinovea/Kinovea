@@ -67,8 +67,6 @@ namespace Kinovea.ScreenManager
 		public VideoFilterEdgesOnly()
 		{
 			// l14n : VideoFilterEdgesOnly_FriendlyName remplace mnuEdges
-			log.Debug("Constructing VideoFilterEdgesOnly.");
-			
 			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
 			// Menu
