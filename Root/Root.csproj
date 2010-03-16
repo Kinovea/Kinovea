@@ -229,8 +229,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Content Include="ProfilingSessions\Session20090622_230152.sdps" />
-    <Content Include="ProfilingSessions\Session20090622_232209.sdps" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileBrowser\FileBrowser.csproj">
