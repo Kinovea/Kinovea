@@ -396,6 +396,7 @@ namespace Kinovea.ScreenManager
 			sldrSpeed.Enabled = false;
 			lblFileName.Text = "";
 			m_KeyframeCommentsHub.Hide();
+			UpdatePlayingModeButton();
 			
 			m_PlayerScreenUIHandler.PlayerScreenUI_Reset();
 		}
@@ -1567,15 +1568,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionDataFromControl();
 				ImportSelectionToMemory(false);
 
-				m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-				
-				OnPoke();
-				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
-
-				// Update the visible frame if needed.
-				UpdateFramePrimarySelection();
-				EnableDisableKeyframes();
-				ActivateKeyframe(m_iCurrentPosition);
+				AfterSelectionChanged();
 			}
 		}
 		private void trkSelection_TargetAcquired(object sender, EventArgs e)
@@ -1628,6 +1621,8 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
 				ImportSelectionToMemory(false);
+				
+				AfterSelectionChanged();
 			}
 		}
 		private void btnSetHandlerRight_Click(object sender, EventArgs e)
@@ -1640,6 +1635,8 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
 				ImportSelectionToMemory(false);
+				
+				AfterSelectionChanged();
 			}
 		}
 		private void btnHandlersReset_Click(object sender, EventArgs e)
@@ -1653,16 +1650,7 @@ namespace Kinovea.ScreenManager
 				// We need to force the reloading of all frames.
 				ImportSelectionToMemory(true);
 				
-				// Update everything as if we moved the handlers manually.
-				m_FrameServer.Metadata.SelectionStart = m_iSelStart;
-				UpdateFramesMarkers();
-				OnPoke();
-				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
-
-				// Update current image and keyframe  status.
-				UpdateFramePrimarySelection();
-				EnableDisableKeyframes();
-				ActivateKeyframe(m_iCurrentPosition);
+				AfterSelectionChanged();
 			}
 		}
 		
@@ -1721,6 +1709,21 @@ namespace Kinovea.ScreenManager
 				double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
 				m_iSelDuration = m_iSelEnd - m_iSelStart + (long)fAverageTimeStampsPerFrame;
 			}
+		}
+		private void AfterSelectionChanged()
+		{
+			// Update everything as if we moved the handlers manually.
+			m_FrameServer.Metadata.SelectionStart = m_iSelStart;
+			
+			UpdateFramesMarkers();
+			
+			OnPoke();
+			m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(false);
+
+			// Update current image and keyframe  status.
+			UpdateFramePrimarySelection();
+			EnableDisableKeyframes();
+			ActivateKeyframe(m_iCurrentPosition);	
 		}
 		#endregion
 		
@@ -1881,18 +1884,27 @@ namespace Kinovea.ScreenManager
 
 				if (m_ePlayingMode == PlayingMode.Once)
 				{
-					// Was in 'Once' mode, switch to 'Loop' mode.
 					m_ePlayingMode = PlayingMode.Loop;
-					buttonPlayingMode.Image = Resources.playmodeloop;
-					toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);
 				}
 				else if (m_ePlayingMode == PlayingMode.Loop)
 				{
-					// Was in 'Loop' mode, switch to 'Once' mode.
 					m_ePlayingMode = PlayingMode.Once;
-					buttonPlayingMode.Image = Resources.playmodeonce;
-					toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);
 				}
+				
+				UpdatePlayingModeButton();
+			}
+		}
+		private void UpdatePlayingModeButton()
+		{
+			if (m_ePlayingMode == PlayingMode.Once)
+			{
+				buttonPlayingMode.Image = Resources.playmodeonce;
+				toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Once);		
+			}
+			else if(m_ePlayingMode == PlayingMode.Loop)
+			{
+				buttonPlayingMode.Image = Resources.playmodeloop;
+				toolTips.SetToolTip(buttonPlayingMode, ScreenManagerLang.ToolTip_PlayingMode_Loop);	
 			}
 		}
 		#endregion
