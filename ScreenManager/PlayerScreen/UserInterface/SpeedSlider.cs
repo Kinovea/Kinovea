@@ -70,18 +70,12 @@ namespace Kinovea.ScreenManager
 
                 m_iValue = value;
 
-                // -> Déplacer le curseur.
-                if (m_iMaximum - m_iMinimum > 0)
-                {
-                    SuspendLayout();
-                    btnCursor.Left = btnRail.Left + Rescale(m_iValue - m_iMinimum, m_iMaximum - m_iMinimum, btnRail.Width);
-                    ResumeLayout();
-                }
-
-                if (ValueChanged != null)
-                {
-                    ValueChanged(this, EventArgs.Empty);
-                }
+                UpdateAppearance();
+                
+                if (ValueChanged != null) 
+	            { 
+	                ValueChanged(this, EventArgs.Empty);
+	            }
             }
         }
         [Category("Misc"), Browsable(true)]
@@ -206,7 +200,6 @@ namespace Kinovea.ScreenManager
                     ValueChanged(this, EventArgs.Empty);
                 }
             }
-
         }
         private void btnIncrease_MouseClick(object sender, MouseEventArgs e)
         {
@@ -232,9 +225,21 @@ namespace Kinovea.ScreenManager
         	btnCursor.Enabled = _bEnable;
         	btnCursor.BackgroundImage = _bEnable ? Resources.SpeedTrkCursor7 : m_CursorDisabled;
         }
-        
+        public void UpdateSpeedValue(int _value)
+        {	
+        	// This method is called when programmatically changing speed value,
+        	// and we don't want to raise the event back.
+        	
+			if (_value < m_iMinimum) _value = m_iMinimum;
+            if (_value > m_iMaximum) _value = m_iMaximum;
+
+            m_iValue = _value;
+            
+            UpdateAppearance();
+        }
         private void SetNewValue()
         {
+        	// This method is called when the user changes the speed from the control.
             m_iValue = Rescale(btnCursor.Left + (btnCursor.Width / 2) - btnRail.Left, btnRail.Width, (m_iMaximum - m_iMinimum));
 
             m_iValue += m_iMinimum;
@@ -252,6 +257,16 @@ namespace Kinovea.ScreenManager
             { 
                 ValueChanged(this, EventArgs.Empty);
             }
+        }
+        private void UpdateAppearance()
+        {
+        	// This method is called when programmatically changing the speed.
+            if (m_iMaximum - m_iMinimum > 0)
+            {
+                SuspendLayout();
+                btnCursor.Left = btnRail.Left + Rescale(m_iValue - m_iMinimum, m_iMaximum - m_iMinimum, btnRail.Width);
+                ResumeLayout();
+            }            
         }
         private int Rescale(long _iValue, long _iOldMax, long _iNewMax)
         {
