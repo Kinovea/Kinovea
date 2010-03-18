@@ -663,13 +663,24 @@ namespace Kinovea.ScreenManager
             
             PrepareSync(false);
         }
-        public void Player_IsReady(PlayerScreen _screen, bool _bInitialisation)
+        public void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation)
         {
             // Appelé lors de changement de framerate.
             if (m_bSynching)
             {
-            	log.Debug("Framerate of one screen changed, reset sync point.");
-                SetSyncPoint(true);
+            	log.Debug("Speed percentage of one video changed. Force same percentage on the other.");
+            	if(screenList.Count == 2)
+            	{
+            		int otherScreen = 1;
+            		if(_screen == screenList[1])
+            		{
+            			otherScreen = 0;
+            		}
+            		
+            		((PlayerScreen)screenList[otherScreen]).SlowmotionPercentage = ((PlayerScreen)_screen).SlowmotionPercentage;
+            	
+            		SetSyncPoint(true);
+            	}
             }
         }
         public void Player_PauseAsked(PlayerScreen _screen)

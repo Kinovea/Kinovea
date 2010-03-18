@@ -144,6 +144,22 @@ namespace Kinovea.ScreenManager
 		public int SlowmotionPercentage
 		{
 			get { return m_iSlowmotionPercentage; }
+			set
+			{
+				// This happens only in the context of synching 
+				// when the other video changed its speed percentage (user or forced).
+				sldrSpeed.UpdateSpeedValue(value);
+				m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
+				
+				// Reset timer with new value.
+				if (m_bIsCurrentlyPlaying)
+				{
+					StopMultimediaTimer();
+					StartMultimediaTimer(GetPlaybackFrameInterval());
+				}
+
+				UpdateSpeedLabel();
+			}
 		}
 		
 		public bool Synched
@@ -163,6 +179,8 @@ namespace Kinovea.ScreenManager
 					if(m_SyncMergeImage != null)
 						m_SyncMergeImage.Dispose();
 				}
+				
+				buttonPlayingMode.Enabled = !m_bSynched;
 			}
 		}
 		public Int64 SyncPosition
@@ -1822,7 +1840,7 @@ namespace Kinovea.ScreenManager
 				}
 
 				// Impacts synchro.
-				m_PlayerScreenUIHandler.PlayerScreenUI_IsReady(true);
+				m_PlayerScreenUIHandler.PlayerScreenUI_SpeedChanged(true);
 			}
 
 			UpdateSpeedLabel();
