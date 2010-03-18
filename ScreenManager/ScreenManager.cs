@@ -166,8 +166,6 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Module Construction : ScreenManager.");
 
-            Application.AddMessageFilter(this);
-            
             //Gestion i18n
             resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
@@ -210,15 +208,17 @@ namespace Kinovea.ScreenManager
         public void PrepareScreen()
         {
         	// Prepare a screen to hold the command line argument file.
-        	
         	IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
             CommandManager.Instance().LaunchUndoableCommand(caps);
             
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
-            // Mettre à jour les menus
             OrganizeMenus();
+        }
+        public void Prepare()
+        {
+        	Application.AddMessageFilter(this);
         }
         #endregion
 

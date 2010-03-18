@@ -156,6 +156,8 @@ namespace Kinovea.Root
             RefreshUICulture();
             CheckLanguageMenu();
             CheckTimecodeMenu();
+            
+            ScreenManager.Prepare();
             PrintInitialConf();
             if(CommandLineArgumentManager.Instance().InputFile != null)
             {
@@ -216,8 +218,8 @@ namespace Kinovea.Root
             // Integrate the sub modules UI into the main kernel UI.
             MainWindow.SupervisorControl.splitWorkSpace.Panel1.Controls.Add(FileBrowser.UI);
             MainWindow.SupervisorControl.splitWorkSpace.Panel2.Controls.Add(ScreenManager.UI);
-
-            MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+            
+			MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
