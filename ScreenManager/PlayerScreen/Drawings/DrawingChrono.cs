@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
         // the update is done through the UpdateDecoration methods. 
         public Color BackgroundColor
         {
-            get { return Color.Black;}
+            get { return m_TextStyle.BackColor;}
         }
         public int FontSize
         {
