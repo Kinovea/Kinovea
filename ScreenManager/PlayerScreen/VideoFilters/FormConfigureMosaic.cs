@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
@@ -47,7 +48,6 @@ namespace Kinovea.ScreenManager
         private int m_iDurationinFrames;
         private static readonly int m_iDefaultFramesToExtract = 25;
         private int m_iFramesToExtract = m_iDefaultFramesToExtract;
-        private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
         #endregion
 
         public formConfigureMosaic(int _iTotalImages)
@@ -62,15 +62,15 @@ namespace Kinovea.ScreenManager
         private void SetupUICulture()
         {
             // Window
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureMosaic_Title", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.VideoFilterMosaic_FriendlyName;
             
             // Group Config
-            grpboxConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            cbRTL.Text = m_ResourceManager.GetString("dlgConfigureMosaic_cbRightToLeft", Thread.CurrentThread.CurrentUICulture);
+            grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
+            cbRTL.Text = ScreenManagerLang.dlgConfigureMosaic_cbRightToLeft;
             
             // Buttons
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         private void SetupData()
         {
@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
         private void UpdateLabels()
         {
         	// Number of frames
-            lblInfosTotalFrames.Text = String.Format(m_ResourceManager.GetString("dlgConfigureMosaic_LabelImages", Thread.CurrentThread.CurrentUICulture), " " + m_iFramesToExtract);            
+            lblInfosTotalFrames.Text = String.Format(ScreenManagerLang.dlgConfigureMosaic_LabelImages, " " + m_iFramesToExtract);            
         }
     }
 }
