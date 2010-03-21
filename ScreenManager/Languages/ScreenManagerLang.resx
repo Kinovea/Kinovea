@@ -346,7 +346,7 @@
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Edges Only...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Auto Levels...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Sharpen...</value></data>
-   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaic...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overview...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Reverse...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto Contrast...</value></data>
    <data name="" xml:space="preserve"><value/></data>
