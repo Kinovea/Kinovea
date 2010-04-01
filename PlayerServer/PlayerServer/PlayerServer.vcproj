@@ -137,7 +137,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="true"
-				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib Gdi32.lib $(NOINHERIT)"
+				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib $(NOINHERIT)"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Refs\FFMpeg\lib"
 				GenerateDebugInformation="false"
