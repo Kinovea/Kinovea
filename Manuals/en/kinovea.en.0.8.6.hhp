@@ -1,0 +1,61 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=kinovea.en.chm
+Contents file=toc.en.0.8.6.hhc
+Default Window=definitions
+Default topic=src\001.html
+Display compile progress=Yes
+Enhanced decompilation=Yes
+Full-text search=Yes
+Language=0x409 Anglais (États-Unis)
+Title=Kinovea Help
+
+[WINDOWS]
+definitions="Kinovea","toc.en.0.8.6.hhc",,"src\001.html","src\001.html",,,,,0x63520,,0x304e,,0x1000000,,,,,,0
+
+
+[FILES]
+src\001.html
+src\002.html
+src\003.html
+src\004.html
+src\100.html
+src\103.html
+src\101.html
+src\102.html
+src\104.html
+src\105.html
+src\106.html
+src\107.html
+src\108.html
+src\109.html
+src\110.html
+src\111.html
+src\112.html
+src\113.html
+src\114.html
+src\115.html
+src\116.html
+src\117.html
+src\118.html
+src\119.html
+src\120.html
+src\121.html
+src\122.html
+src\123.html
+src\124.html
+src\125.html
+src\300.html
+src\301.html
+src\302.html
+src\303.html
+src\304.html
+src\305.html
+src\306.html
+src\400.html
+src\401.html
+src\402.html
+src\403.html
+
+[INFOTYPES]
+
