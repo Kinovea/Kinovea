@@ -30,6 +30,13 @@ shutil.copy2(os.path.join(refdir, "AForge.Math.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "AForge.Video.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "AForge.Video.DirectShow.dll"), destdir)
 
+#Emgu / OpenCV
+shutil.copy2(os.path.join(refdir, "Emgu.CV.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Emgu.Util.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "cvaux200.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "cv200.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "cxcore200.dll"), destdir)
+
 #FFMpeg
 shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avcodec-51.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avformat-52.dll"), destdir)
@@ -37,10 +44,17 @@ shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avutil-49.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\swscale-0.dll"), destdir)
 
 #Microsoft
-shutil.copy2(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
-shutil.copy2(os.path.join(refdir, "msvcm80.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "msvcp80.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "msvcr80.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Microsoft.VC90.CRT.manifest"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcm90.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcp90.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcr90.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Microsoft.VC90.OpenMP.manifest"), destdir)
+shutil.copy2(os.path.join(refdir, "vcomp90.dll"), destdir)
+
+#shutil.copy2(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
+#shutil.copy2(os.path.join(refdir, "msvcm80.dll"), destdir)
+#shutil.copy2(os.path.join(refdir, "msvcp80.dll"), destdir)
+#shutil.copy2(os.path.join(refdir, "msvcr80.dll"), destdir)
 
 #Others libraries
 shutil.copy2(os.path.join(refdir, "log4net.dll"), destdir)
@@ -51,10 +65,7 @@ shutil.copy2(os.path.join(refdir, "ICSharpCode.SharpZipLib.dll"), destdir)
 
 # Licenses
 shutil.copy2(os.path.join(otherdir, "License.txt"), destdir)
-shutil.copy2(os.path.join(otherdir, "GFDL.txt"), destdir)
 shutil.copy2(os.path.join(otherdir, "GPLv2.txt"), destdir)
-shutil.copy2(os.path.join(otherdir, "LAL-english.htm"), destdir)
-shutil.copy2(os.path.join(otherdir, "LAL-french.htm"), destdir)
 
 #Other files
 shutil.copy2(os.path.join(otherdir, "Readme.txt"), destdir)
