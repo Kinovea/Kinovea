@@ -852,7 +852,13 @@ namespace Kinovea.Root
 			
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
             
-            switch (ci.Name)
+            string cultureName = ci.Name;
+            if(!ci.IsNeutralCulture)
+        	{
+        		cultureName = ci.Parent.Name;
+        	}
+            
+            switch (cultureName)
             {
                 case "es":
                     mnuSpanish.Checked = true;
