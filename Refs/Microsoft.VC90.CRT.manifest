@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+    <noInheritable/>
+    <assemblyIdentity
+        type="win32" 
+        name="Microsoft.VC90.CRT" 
+        version="9.0.21022.8"
+        processorArchitecture="x86"
+        publicKeyToken="1fc8b3b9a1e18e3b"
+    />
+    <!--
+        Don't use the version of the current binary, instead use the one that the programm was linked with.
+        The Programm is linked with the RTM version by default.
+        For more information read: http://blogs.msdn.com/vcblog/archive/2008/05/15/vc-runtime-binding.aspx .
+
+        Note that the version of the binary is version="9.0.30729.1", however the loader will actually load
+        it as the loader mechanism would usually look up the the policies in \WinSxS\Policies\x86_policy.9.0.Microsoft.VC90.CRT for redirects.
+        This mechanism is used to deploy updates more easily.
+        Now one might ask why does this still work if the VCRedist is not installed on the target machine, and there
+        is no policy file? My guesses are that while linking the programm gets a policy build in, that
+        resembles the policy on the host that compiles the programm, or the loader is granted to load
+        binaries that have the same major.minor version but differ in the build.revision versions because
+        they are asserted to be compatible.
+        http://msdn.microsoft.com/en-us/library/aa374234(VS.85).aspx
+    -->
+    <file name="msvcr90.dll" /> <file name="msvcp90.dll" /> <file name="msvcm90.dll" />
+</assembly>
