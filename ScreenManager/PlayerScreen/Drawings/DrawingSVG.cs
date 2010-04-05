@@ -39,7 +39,11 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override DrawingToolType ToolType
         {
-        	get { return DrawingToolType.SVG; }
+        	get
+        	{ 
+        		// invalid, this drawing is not created by a drawing tool.
+        		return DrawingToolType.Pointer;
+        	}
         }
         public override InfosFading infosFading
         {
@@ -88,7 +92,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingSVG(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingSVG(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
         {
         	m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
@@ -102,10 +106,9 @@ namespace Kinovea.ScreenManager
 			// Rendering window. The width and height will be updated later.
 			m_SvgWindow = new SvgWindow(100, 100, m_Renderer);
 			
-			string folder = @"..\..\..\Tools\svg\";
-         	string filename = folder + @"protractor256.svg";
-	        //string filename = folder + @"shapes.svg";
-         	m_SvgWindow.Src = filename;
+			// FIXME: some files have external DTD that will be attempted to be loaded.
+			// See files created from Amaya for example.
+         	m_SvgWindow.Src = _filename;
 	        m_bLoaded = true;
 	        
 	        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
@@ -346,7 +349,7 @@ namespace Kinovea.ScreenManager
         	// TODO: implement me.
         	
         	
-            DrawingSVG dsvg = new DrawingSVG(0,0,0,0);
+            DrawingSVG dsvg = new DrawingSVG(0,0,0,0, null);
 
             /*while (_xmlReader.Read())
             {

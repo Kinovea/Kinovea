@@ -650,13 +650,10 @@ namespace Kinovea.Root
             }
             
             // This item
-            if (item.Tag != null)
+            ItemResourceInfo info = item.Tag as ItemResourceInfo;
+            if (info != null)
             {
-                item.Text = ((ItemResourceInfo)item.Tag).resManager.GetString(((ItemResourceInfo)item.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            }
-            else
-            {
-                // If tag is null, it's a non translatable text.
+                item.Text = info.resManager.GetString(info.strText, Thread.CurrentThread.CurrentUICulture);
             }
         }
         #endregion

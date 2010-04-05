@@ -53,7 +53,6 @@ namespace Kinovea.ScreenManager
 		Pencil,
 		Text,
 		Chrono,
-		SVG,
 		NumberOfDrawingTools
 	};
 	
@@ -920,6 +919,58 @@ namespace Kinovea.ScreenManager
 			
 			StretchSqueezeSurface();
 		}
+		public void AddSVGDrawing(string _filename)
+		{
+			// Add an SVG drawing from the file.
+			
+			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
+			
+			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded && File.Exists(_filename))
+			{
+				if(m_bIsCurrentlyPlaying)
+				{
+					StopPlaying();
+					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+					ActivateKeyframe(m_iCurrentPosition);	
+				}
+						
+				PrepareKeyframesDock();
+				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+				m_FrameServer.Metadata.SelectedTrack = -1;
+				m_FrameServer.Metadata.SelectedChrono = -1;
+				
+				try
+				{
+					// Add a KeyFrame here if it doesn't exist.
+					AddKeyframe();
+										
+					// The drawing is initialized at the center of the image.
+					Point imageCenter = new Point(m_FrameServer.Metadata.ImageSize.Width / 2, m_FrameServer.Metadata.ImageSize.Height / 2);
+					
+					DrawingSVG dsvg = new DrawingSVG(imageCenter.X,
+					                                 imageCenter.Y, 
+					                                 m_iCurrentPosition, 
+					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+					                                 _filename);
+					
+					m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
+				}
+				catch
+				{
+					// An error occurred during the creation.
+					// example : external DTD an no network or invalid svg file.
+					// TODO: inform the user.
+				}
+				
+				m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+				m_FrameServer.Metadata.SelectedDrawing = -1;
+				
+				m_ActiveTool = DrawingToolType.Pointer;
+				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+				
+				pbSurfaceScreen.Invalidate();
+			}		
+		}
 		#endregion
 		
 		#region Various Inits & Setups
@@ -935,7 +986,6 @@ namespace Kinovea.ScreenManager
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Chrono] = new DrawingToolChrono();
-			m_DrawingTools[(int)DrawingToolType.SVG] = new DrawingToolSVG();
 			
 			m_ActiveTool = DrawingToolType.Pointer;
 		}
@@ -3948,8 +3998,7 @@ namespace Kinovea.ScreenManager
 			if (m_Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
-				//m_ActiveTool = DrawingToolType.Pencil;
-				m_ActiveTool = DrawingToolType.SVG;
+				m_ActiveTool = DrawingToolType.Pencil;
 				UpdateCursor();
 				PrepareKeyframesDock();
 			}
@@ -4070,7 +4119,7 @@ namespace Kinovea.ScreenManager
 
 			UpdateCursor();
 		}
-		private void SetCursor(Cursor _cur)
+		public void SetCursor(Cursor _cur)
 		{
 			if (m_ActiveTool != DrawingToolType.Pointer)
 			{

@@ -105,6 +105,9 @@ namespace Kinovea.ScreenManager
         // Video Filters
         private AbstractVideoFilter[] m_VideoFilters;
         
+        // SVG files
+        private List<string> m_svgFiles = new List<string>();
+        
         //Menus
         public ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
@@ -126,6 +129,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuFormatForce43 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
         public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGridPerspective = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
@@ -177,6 +181,7 @@ namespace Kinovea.ScreenManager
             
             PlugDelegates();
             InitializeVideoFilters();
+            InitializeSVGDrawings();
             
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
@@ -204,6 +209,25 @@ namespace Kinovea.ScreenManager
 			m_VideoFilters[(int)VideoFilterType.Mosaic] = new VideoFilterMosaic();
         	m_VideoFilters[(int)VideoFilterType.Reverse] = new VideoFilterReverse();
         	m_VideoFilters[(int)VideoFilterType.Sandbox] = new VideoFilterSandbox();
+        }
+        private void InitializeSVGDrawings()
+        {
+        	// Gather the list of SVG files in the guides directory.
+        	
+        	// Look for palettes files in a specific directory.
+            String svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
+
+            if(Directory.Exists(svgPath))
+            {
+	            // Loop each file in the directory looking for .svg files.
+	            foreach (string file in Directory.GetFiles(svgPath))
+	            {
+	                if (Path.GetExtension(file).Equals(".svg"))
+	                {
+	                	m_svgFiles.Add(file);    
+	                }
+	            }
+            }
         }
         public void PrepareScreen()
         {
@@ -431,6 +455,26 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             mnuMirror.MergeAction = MergeAction.Append;
 
+            #region SVG drawings 
+            ToolStripItem[] svgMenus = new ToolStripItem[m_svgFiles.Count];
+            for(int i = 0; i<m_svgFiles.Count; i++)
+            {
+            	ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
+            	mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(m_svgFiles[i]);
+            	mnuSVGDrawing.Tag = m_svgFiles[i];
+	            mnuSVGDrawing.Checked = false;
+	            mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
+	            mnuSVGDrawing.MergeAction = MergeAction.Append;
+				
+	            svgMenus[i] = mnuSVGDrawing;
+            }
+            
+            mnuSVGTools = new ToolStripMenuItem();
+            mnuSVGTools.Text = "Observational Reference";
+            mnuSVGTools.MergeAction = MergeAction.Append;
+            mnuSVGTools.DropDownItems.AddRange( svgMenus );
+            #endregion
+            
             // Grid
             mnuGrid.Tag = new ItemResourceInfo(resManager, "mnuGrid");
             mnuGrid.Text = ((ItemResourceInfo)mnuGrid.Tag).resManager.GetString(((ItemResourceInfo)mnuGrid.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -471,9 +515,10 @@ namespace Kinovea.ScreenManager
                                                    		new ToolStripSeparator(), 
                                                    		//m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
                                                    		//new ToolStripSeparator(), 
-                                                   		mnuCoordinateAxis,
+                                                   		mnuSVGTools,
                                                    		mnuGrid,
-                                                   		mnuGridPerspective
+                                                   		mnuGridPerspective,
+                                                   		mnuCoordinateAxis
                                                  		});
             #endregion
 
@@ -1255,10 +1300,12 @@ namespace Kinovea.ScreenManager
                         // Image
                         mnuDeinterlace.Enabled = true;
                         mnuMirror.Enabled = true;
+                        mnuSVGTools.Enabled = true;
                         mnuGrid.Enabled = true;
                         mnuGridPerspective.Enabled = true;
                         mnuCoordinateAxis.Enabled = true;
 
+                      	
                         mnuDeinterlace.Checked = player.Deinterlaced;
                         mnuMirror.Checked = player.Mirrored;
                         mnuGrid.Checked = player.ShowGrid;
@@ -1299,6 +1346,7 @@ namespace Kinovea.ScreenManager
                 // Image
                 mnuDeinterlace.Enabled = false;
 				mnuMirror.Enabled = false;
+				mnuSVGTools.Enabled = false;
 				mnuGrid.Enabled = false;
 				mnuGridPerspective.Enabled = false;
 				mnuCoordinateAxis.Enabled = false;
@@ -1550,7 +1598,6 @@ namespace Kinovea.ScreenManager
 	        	mnuFormatForce169.Checked = false;
         	}
         }
-        
         #region Menus events handlers
 
         #region File
@@ -2384,6 +2431,29 @@ namespace Kinovea.ScreenManager
         		mnuMirror.Checked = !mnuMirror.Checked;
         		player.Mirrored = mnuMirror.Checked;
         	}
+        }
+        private void mnuSVGDrawing_OnClick(object sender, EventArgs e)
+        {
+        	// One of the dynamically added SVG tools menu has been clicked.
+
+        	// Add a drawing of the right type to the active screen.
+        	ToolStripMenuItem menu = sender as ToolStripMenuItem;
+        	if(menu != null && m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
+        	{
+        		string svgFile = menu.Tag as string;
+        		if(svgFile != null)
+        		{
+        			// check / uncheck the menu.
+        			// menu.Checked = !menu.Checked;
+        			
+        			// Add the corresponding svg drawing in the active screen.
+        			if(m_ActiveScreen is PlayerScreen)
+	        		{
+        				((PlayerScreen)m_ActiveScreen).AddSVGDrawing(svgFile);
+	        		}
+        		}
+        	}
+        	
         }
         private void mnuGrid_OnClick(object sender, EventArgs e)
         {
