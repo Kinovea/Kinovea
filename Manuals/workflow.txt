@@ -1,0 +1,26 @@
+
+---------------------------------------
+This is for release management.
+(Needs admin rights on the web server.)
+---------------------------------------
+
+0. Backup the whole wiki. (wiki/data)
+1. SiteExport an help files collection from the language namespace. See http://www.kinovea.org/wiki/doku.php/helpfilesworkshop
+2. Extract zip in /tmp. Should contain HTML files but probably not images.
+3. Copy "export-cleanup.py" into tmp and run it from command line. This will post-process HTML files.
+4. Copy cleaned-up files into /src, copy images into /src, copy the 001.html topic into /src.
+5. Check kinovea.xx.hhp : raw list of files (no sorting needed.) - Modify in case of add/delete of a topic.
+6. Check toc.xx.hhc : table of contents. Needs proper hierarchy. Modify in case of add/delete/move of a topic.
+7. Launch the hhp in HTML Help Workshop and generate CHM.
+
+Things to check:
+- Page titles in TOC. (Needs to be manually copied for now so prone to errors).
+- Order of the pages in TOC.
+- Images present and properly aligned.
+- Internal and external links work and go where they say.
+
+Tree:
+/tmp : HTML files from DokuWiki export.
+/src : HTML files cleanedup + images + welcome page.
+
+

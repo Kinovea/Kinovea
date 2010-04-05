@@ -74,11 +74,11 @@
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Kinovea'nın çeviri, test, hatalardan arındırma, geliştirme süreçlerine yardımınızdan ya da desteğinizden memnuniyet duyarız.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Yerelleştirmeler:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Tüm Diller</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Bu menü üzerinden daha çok video'ya ulaşılabilir: Seçenekler&gt; Mevcut Güncellemeleri Tara...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Bu Video hakkında...</value></data>
+   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Bu menü üzerinden daha çok videoya ulaşılabilir: Seçenekler&gt; Mevcut Güncellemeleri Tara...</value></data>
+   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Bu Video Hakkında...</value></data>
    <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Dile göre filtrele:</value></data>
    <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Hangi videoyu izlemek istediğinizi seçin:</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Yorum yok.</value></data>
+   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Yorum Yok.</value></data>
    <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea - Bir Video Eğitseli izleyin.</value></data>
    <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>İzle</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
@@ -86,25 +86,25 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Çizimler</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Genel</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>İzle / Analiz Et</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynarken çizimleri göster</value></data>
-   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sürekliliği aktive et</value></data>
+   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
+   <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Yeni bir video açarken her zaman deinterlace et</value></data>
-   <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9'u zorla</value></data>
-   <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3'ü zorla</value></data>
+   <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9'u Zorla</value></data>
+   <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Renkler</value></data>
-   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Süreklilik</value></data>
+   <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Kalıcılık</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Izgara:</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Geçmişteki dosya sayısı:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Varsayılan İmaj formatı:</value></data>
+   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Öntanımlı imaj formatı:</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Dil:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>Ve</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspektif Izgarası:</value></data>
-   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Zaman işareti formatı</value></data>
+   <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Zaman işaretleyicisi formatı</value></data>
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Çalışma Alanı Hafızanın {0} MB'ından daha azını kullanacaktır.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Çalışma Alanı {0} saniyeden daha az.</value></data>
-   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Varsayılan olarak, çizimler Anahtar İmajın etrafındaki {0} imaj boyunca görülebilir kalacaktır.</value></data>
+   <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Öntanımlı değer olarak, çizimler Anahtar İmajın etrafındaki {0} imaj boyunca görülebilir kalacaktır.</value></data>
    
    
    
@@ -123,14 +123,14 @@
    <data name="mnuHelp" xml:space="preserve"><value>Yardım</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea Yardımı...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Son Kullanılan</value></data>
-   <data name="mnuHistoryReset" xml:space="preserve"><value>Geçmişi Baştaki Haline Ayarla</value></data>
+   <data name="mnuHistoryReset" xml:space="preserve"><value>Geçmişi Sıfırla</value></data>
    <data name="mnuImage" xml:space="preserve"><value>İmaj</value></data>
    <data name="mnuLanguages" xml:space="preserve"><value>Dil</value></data>
    <data name="mnuMotion" xml:space="preserve"><value>Hareket</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Video Dosyasını Aç...</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Seçenekler</value></data>
    <data name="mnuPreferences" xml:space="preserve"><value>Tercihler...</value></data>
-   <data name="mnuRedo" xml:space="preserve"><value>Tekrar Yap</value></data>
+   <data name="mnuRedo" xml:space="preserve"><value>Yinele</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Görünüm</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Dosya Gezgini</value></data>
    <data name="mnuTutorialVideos" xml:space="preserve"><value>Video Eğitselleri...</value></data>
@@ -139,7 +139,7 @@
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
-   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Damgası:</value></data>
+   <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Klasik + Kare sayıları</value></data>
    
    

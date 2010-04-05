@@ -27,8 +27,8 @@ done - Implement fading method.
 done - Implement a handle mechanism.
 done - Shape modification (dimensions changes, rotations). 
 done - Ensure that export to single image and video also works at the right scale.
+done - Remove access to color & style configuration.
 - Test with other SVG files.
-- Remove access to color & style configuration.
 - Implement export / import to .Kva xml, outside of a particular shape file context.
 - work on the UI for the shape selection.
 

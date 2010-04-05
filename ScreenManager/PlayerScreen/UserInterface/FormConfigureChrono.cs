@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Services;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -58,6 +59,13 @@ namespace Kinovea.ScreenManager
             // Save the current state in case we need to recall it later.
             m_Chrono.MemorizeDecoration();
 
+            // Initialize font size combo.
+            cmbFontSize.Items.Clear();
+            foreach(int size in InfosTextDecoration.AllowedFontSizes)
+            {
+            	cmbFontSize.Items.Add(size.ToString());
+            }
+            
             // Show current values:
             cmbFontSize.Text = m_Chrono.FontSize.ToString();
             btnChronoColor.BackColor = m_Chrono.BackgroundColor;

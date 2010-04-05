@@ -81,6 +81,12 @@
     <Reference Include="AForge.Video.DirectShow">
       <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV">
+      <HintPath>..\Refs\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.Util">
+      <HintPath>..\Refs\Emgu.Util.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Refs\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -90,7 +96,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PlayerServer">
-      <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
+      <HintPath>..\..\..\trunk\PlayerServer\bin\PlayerServer.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorBindings">
       <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
@@ -182,7 +188,6 @@
     </Compile>
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
-    <Compile Include="PlayerScreen\Mosaic.cs" />
     <Compile Include="PlayerScreen\Plane3D.cs" />
     <Compile Include="PlayerScreen\SURF\CDVMatrix.cs" />
     <Compile Include="PlayerScreen\SURF\CFastHessian.cs" />
@@ -197,6 +202,7 @@
     <Compile Include="PlayerScreen\Tracking\CorrelationTemplateMatching.cs" />
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock.cs" />
+    <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
@@ -411,6 +417,7 @@
       <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.el.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.fi.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />

@@ -38,7 +38,8 @@ namespace Kinovea.ScreenManager
 		void Screen_SetActiveScreen(AbstractScreen _ActiveScreen);
 		void Screen_CloseAsked(AbstractScreen _SenderScreen);
 		
-		void Player_IsReady(PlayerScreen _screen, bool _bInitialisation);
+		void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation);
+		void Player_PauseAsked(PlayerScreen _screen);
 		void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization);
 		void Player_ImageChanged(PlayerScreen _screen, Bitmap _image);
 		void Player_Reset(PlayerScreen _screen);

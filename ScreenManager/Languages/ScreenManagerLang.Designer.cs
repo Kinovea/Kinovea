@@ -2581,7 +2581,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mosaic....
+        ///   Recherche une chaîne localisée semblable à Overview....
         /// </summary>
         internal static string VideoFilterMosaic_FriendlyName {
             get {

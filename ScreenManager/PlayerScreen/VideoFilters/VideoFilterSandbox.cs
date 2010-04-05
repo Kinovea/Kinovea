@@ -79,8 +79,6 @@ namespace Kinovea.ScreenManager
             
 			// Menu
             m_Menu = new ToolStripMenuItem();
-            //m_Menu.Tag = new ItemResourceInfo(resManager, "VideoFilterReverse_FriendlyName");
-            //m_Menu.Text = ((ItemResourceInfo)m_Menu.Tag).resManager.GetString(((ItemResourceInfo)m_Menu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             m_Menu.Text = "Sandbox";
             m_Menu.Click += new EventHandler(Menu_OnClick);
             m_Menu.MergeAction = MergeAction.Append;
@@ -96,8 +94,8 @@ namespace Kinovea.ScreenManager
 		{
 			// Method called back from AbstractVideoFilter after a call to StartProcessing().
 
-			TestFindSurfFeatures();
-			//TestCreateYTSlices();
+			//TestFindSurfFeatures();
+			TestCreateYTSlices();
 			//TestFrameInterpolation();
 		}
 		#endregion
@@ -196,7 +194,7 @@ namespace Kinovea.ScreenManager
 			// A bit like a finish-line image, we get to see what happened at this X during the video.
 			// Currently used in experimentations on frame interpolation for slow motion.
 			
-			string testDirectory = @"";
+			string testDirectory = @"C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Video Testing\YT images\test output\";
 			
 			// Clean up output folder.
     		string[] outFiles = Directory.GetFiles(testDirectory, "*.bmp");
@@ -209,7 +207,7 @@ namespace Kinovea.ScreenManager
 			int imgHeight = m_FrameList[0].BmpImage.Height;
 			int imgWidth = m_FrameList[0].BmpImage.Width;
 			int iTotalImages = m_FrameList.Count;
-			iTotalImages = 100;
+			iTotalImages = Math.Min(100, m_FrameList.Count);
 			for(int iCurrentX=0;iCurrentX<imgWidth;iCurrentX++)
 			{
 				CreateYTSlice(iCurrentX, iTotalImages, imgHeight, imgWidth, testDirectory);

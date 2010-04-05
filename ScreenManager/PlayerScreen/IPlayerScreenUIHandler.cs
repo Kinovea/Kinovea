@@ -30,7 +30,8 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public interface IPlayerScreenUIHandler : IScreenUIHandler
 	{
-		void PlayerScreenUI_IsReady(bool _bIntervalOnly);
+		void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly);
+		void PlayerScreenUI_PauseAsked();
 		void PlayerScreenUI_SelectionChanged(bool _bInitialization);
 		void PlayerScreenUI_ImageChanged(Bitmap _image);
 		void PlayerScreenUI_Reset();

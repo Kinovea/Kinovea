@@ -30,6 +30,13 @@ shutil.copy2(os.path.join(refdir, "AForge.Math.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "AForge.Video.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "AForge.Video.DirectShow.dll"), destdir)
 
+#Emgu / OpenCV
+shutil.copy2(os.path.join(refdir, "Emgu.CV.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Emgu.Util.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "cvaux200.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "cv200.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "cxcore200.dll"), destdir)
+
 #FFMpeg
 shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avcodec-51.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avformat-52.dll"), destdir)
@@ -37,10 +44,17 @@ shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avutil-49.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\swscale-0.dll"), destdir)
 
 #Microsoft
-shutil.copy2(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
-shutil.copy2(os.path.join(refdir, "msvcm80.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "msvcp80.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "msvcr80.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Microsoft.VC90.CRT.manifest"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcm90.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcp90.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "msvcr90.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "Microsoft.VC90.OpenMP.manifest"), destdir)
+shutil.copy2(os.path.join(refdir, "vcomp90.dll"), destdir)
+
+#shutil.copy2(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
+#shutil.copy2(os.path.join(refdir, "msvcm80.dll"), destdir)
+#shutil.copy2(os.path.join(refdir, "msvcp80.dll"), destdir)
+#shutil.copy2(os.path.join(refdir, "msvcr80.dll"), destdir)
 
 #Others libraries
 shutil.copy2(os.path.join(refdir, "log4net.dll"), destdir)
@@ -51,10 +65,7 @@ shutil.copy2(os.path.join(refdir, "ICSharpCode.SharpZipLib.dll"), destdir)
 
 # Licenses
 shutil.copy2(os.path.join(otherdir, "License.txt"), destdir)
-shutil.copy2(os.path.join(otherdir, "GFDL.txt"), destdir)
 shutil.copy2(os.path.join(otherdir, "GPLv2.txt"), destdir)
-shutil.copy2(os.path.join(otherdir, "LAL-english.htm"), destdir)
-shutil.copy2(os.path.join(otherdir, "LAL-french.htm"), destdir)
 
 #Other files
 shutil.copy2(os.path.join(otherdir, "Readme.txt"), destdir)
@@ -70,7 +81,7 @@ shutil.copy2(os.path.join(xsltdir, "Kva to Kva\\kva-1.2to1.3.xsl"), os.path.join
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2msxml-en.xsl"), os.path.join(destdir, "xslt\\kva2msxml-en.xsl"))
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2odf-en.xsl"), os.path.join(destdir, "xslt\\kva2odf-en.xsl"))
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2xhtml-en.xsl"), os.path.join(destdir, "xslt\\kva2xhtml-en.xsl"))
-
+shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2txt-en.xsl"), os.path.join(destdir, "xslt\\kva2txt-en.xsl"))
 
 #Help files
 if os.path.exists(os.path.join(destdir, "Manuals")) : 
@@ -98,6 +109,16 @@ if os.path.exists(os.path.join(destdir, "it")) :
 	shutil.rmtree(os.path.join(destdir, "it"))
 if os.path.exists(os.path.join(destdir, "ro")) : 
 	shutil.rmtree(os.path.join(destdir, "ro"))
+if os.path.exists(os.path.join(destdir, "fi")) : 
+	shutil.rmtree(os.path.join(destdir, "fi"))
+if os.path.exists(os.path.join(destdir, "no")) : 
+	shutil.rmtree(os.path.join(destdir, "no"))
+if os.path.exists(os.path.join(destdir, "tr")) : 
+	shutil.rmtree(os.path.join(destdir, "tr"))
+if os.path.exists(os.path.join(destdir, "Zh-CHS")) : 
+	shutil.rmtree(os.path.join(destdir, "Zh-CHS"))
+if os.path.exists(os.path.join(destdir, "el")) : 
+	shutil.rmtree(os.path.join(destdir, "el"))
 
 shutil.copytree(os.path.join(bindir, "de"), os.path.join(destdir, "de"))
 shutil.copytree(os.path.join(bindir, "es"), os.path.join(destdir, "es"))
@@ -107,6 +128,11 @@ shutil.copytree(os.path.join(bindir, "pl"), os.path.join(destdir, "pl"))
 shutil.copytree(os.path.join(bindir, "pt"), os.path.join(destdir, "pt"))
 shutil.copytree(os.path.join(bindir, "it"), os.path.join(destdir, "it"))
 shutil.copytree(os.path.join(bindir, "ro"), os.path.join(destdir, "ro"))
+shutil.copytree(os.path.join(bindir, "fi"), os.path.join(destdir, "fi"))
+shutil.copytree(os.path.join(bindir, "no"), os.path.join(destdir, "no"))
+shutil.copytree(os.path.join(bindir, "tr"), os.path.join(destdir, "tr"))
+shutil.copytree(os.path.join(bindir, "Zh-CHS"), os.path.join(destdir, "Zh-CHS"))
+shutil.copytree(os.path.join(bindir, "el"), os.path.join(destdir, "el"))
 
 
 

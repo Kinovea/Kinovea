@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
         // the update is done through the UpdateDecoration methods. 
         public Color BackgroundColor
         {
-            get { return Color.Black;}
+            get { return m_TextStyle.BackColor;}
         }
         public int FontSize
         {
@@ -221,7 +221,11 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveHandleTo(Point point, int handleNumber)
         {
-            // Not implemented (No handlers)
+            // Invisible handler to change font size.
+            // Compare wanted mouse position with current bottom right.
+            int wantedHeight = point.Y - m_TopLeft.Y;
+            int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
+            UpdateDecoration(newFontSize);
         }
         public override void MoveDrawing(int _deltaX, int _deltaY)
         {
@@ -235,7 +239,7 @@ namespace Kinovea.ScreenManager
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
             // Note: Coordinates are already descaled.
-            // Hit Result: -1: miss, 0: on object.
+            // Hit Result: -1: miss, 0: on object, 1 on handle.
 
             int iHitResult = -1;
             
@@ -247,7 +251,11 @@ namespace Kinovea.ScreenManager
 
             if (_iCurrentTimestamp >= m_iVisibleTimestamp && _iCurrentTimestamp <= iMaxHitTimeStamps)
             {
-                if (IsPointInObject(_point))
+            	if(GetHandleRectangle().Contains(_point))
+            	{
+            		iHitResult = 1;	
+            	}
+                else if (IsPointInObject(_point))
                 {
                     iHitResult = 0;
                 }
@@ -779,6 +787,13 @@ namespace Kinovea.ScreenManager
 
             return m_ParentMetadata.m_TimeStampsToTimecodeCallback(timestamps, TimeCodeFormat.Unknown, false);
         }
-    	#endregion
+    	private Rectangle GetHandleRectangle()
+        {
+            // This function is only used for Hit Testing.
+            Size descaledSize = new Size((int)((m_BackgroundSize.Width + 11) / m_fStretchFactor), (int)((m_BackgroundSize.Height + 7) / m_fStretchFactor));
+
+            return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
+        }
+        #endregion
     }
 }

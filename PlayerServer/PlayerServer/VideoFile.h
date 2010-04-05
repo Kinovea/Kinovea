@@ -191,7 +191,8 @@ namespace VideoFiles
 
 		uint8_t*						m_AudioBuffer;					// All the audio data of the primary selection.
 		int								m_AudioBufferUsedSize;
-
+		
+		IntPtr							m_Hbmp;
 
 		SavingContext^ m_SavingContext;
 
@@ -230,6 +231,8 @@ namespace VideoFiles
 
 		int64_t GetTimeStamp(int64_t _iPosition);
 		int64_t GetFrameNumber(int64_t _iPosition);
+
+		void RenderToGraphics(Graphics^ _canvas, IntPtr _targetHDC);
 		
 #pragma endregion
 

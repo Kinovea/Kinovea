@@ -42,7 +42,6 @@
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DocumentationFile>bin\x86\Debug\Kinovea.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
@@ -147,6 +146,7 @@
     <Compile Include="Kernel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Languages\RootLang.el.resx" />
     <EmbeddedResource Include="Languages\RootLang.es.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -187,6 +187,18 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="..\Refs\cv200.dll">
+      <Link>cv200.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\cvaux200.dll">
+      <Link>cvaux200.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\cxcore200.dll">
+      <Link>cxcore200.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\Refs\FFMpeg\bin\avcodec-51.dll">
       <Link>avcodec-51.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -216,8 +228,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Content Include="ProfilingSessions\Session20090622_230152.sdps" />
-    <Content Include="ProfilingSessions\Session20090622_232209.sdps" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileBrowser\FileBrowser.csproj">

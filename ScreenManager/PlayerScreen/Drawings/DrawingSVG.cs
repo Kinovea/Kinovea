@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
 			//----------------------------
 			m_Renderer.BackColor = Color.Transparent;
 			
-			// The rendering will only be done on svgWindow.innerWidth, innerHeight.
+			// Rendering window. The width and height will be updated later.
 			m_SvgWindow = new SvgWindow(100, 100, m_Renderer);
 			
 			string folder = @"..\..\..\Tools\svg\";
@@ -110,9 +110,7 @@ namespace Kinovea.ScreenManager
 	        
 	        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
 	        m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;
-	        
 	        m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
-			
 			m_UnscaledRenderingWindow = new Rectangle(x - m_iOriginalWidth/2, y - m_iOriginalHeight/2, m_iOriginalWidth, m_iOriginalHeight);
 			
 			// Everything start unscaled.
@@ -123,15 +121,18 @@ namespace Kinovea.ScreenManager
 	        
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            m_InfosFading.UseDefault = false;
+            m_InfosFading.AlwaysVisible = true;            
+            // This is kept in place but in the current implementation the drawing never fade. (motion guide).
             m_FadingColorMatrix.Matrix00 = 1.0f;
 			m_FadingColorMatrix.Matrix11 = 1.0f;
 			m_FadingColorMatrix.Matrix22 = 1.0f;
 			m_FadingColorMatrix.Matrix33 = 1.0f;	// alpha value.
 			m_FadingColorMatrix.Matrix44 = 1.0f;
 			m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-			
+            
 			PreferencesManager pm = PreferencesManager.Instance();
-			m_PenBoundingBox = new Pen(Color.FromArgb(128, pm.GridColor.R, pm.GridColor.G, pm.GridColor.B), 1);
+			m_PenBoundingBox = new Pen(Color.FromArgb(255, pm.GridColor.R, pm.GridColor.G, pm.GridColor.B), 1);
 		 	m_PenBoundingBox.DashStyle = DashStyle.Dash;
 		 	m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);
         }
@@ -191,10 +192,15 @@ namespace Kinovea.ScreenManager
             // None of the computations below should involve the image stretch factor.
             // We just compute the drawing bounding box as if it drew on the unscaled image.
             
+            // We do not call the SVG rendering engine at this point, and 
+	        // will use the .NET interpolation until the user is done resizing.
+	        // Later on, ResizeFinished() should be called to trigger the full rendering.
+	            		
             switch (handleNumber)
             {
                 case 1:
             	{
+            		// Top left handler.
             	 	// Compute the new rendering window as if in original image coordinate system.
             		int dx = point.X - m_UnscaledRenderingWindow.Left;
             		int newWidth = m_UnscaledRenderingWindow.Width - dx;
@@ -207,43 +213,70 @@ namespace Kinovea.ScreenManager
 	            		int newY = m_UnscaledRenderingWindow.Top + m_UnscaledRenderingWindow.Height - newHeight;
 	            		
 	            		m_UnscaledRenderingWindow = new Rectangle(point.X, newY, newWidth, newHeight);
-		        		
-	            		// Update scaled coordinates accordingly (we must do this before the RenderAtNewScale happen).
-	            		RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-	            		
-	            		// We do not call the SVG rendering engine at this point, and 
-	            		// will use the .NET interpolation until the user is done resizing.
-	            		// Later on, ResizeFinished() should be called to trigger the full rendering.
             		}
             		break;
             	}
-                /*case 2:
+                case 2:
             	{
         			
-        			int iLeft = m_UnscaledRectangle.Left;
-        			int iTop = m_UnscaledRectangle.Top;
-        			int iWidth = point.X - (m_UnscaledRectangle.Left + m_UnscaledRectangle.Width);
-            		int iHeight = point.Y - (m_UnscaledRectangle.Top + m_UnscaledRectangle.Height);
-                    m_UnscaledRectangle = new Rectangle(iLeft, iTop, iWidth, iHeight);
-                    break;
+        			// Top right handler.
+            	 	int dx = m_UnscaledRenderingWindow.Right - point.X;
+            		int newWidth = m_UnscaledRenderingWindow.Width - dx;
+	            	
+            		if(newWidth > 50)
+            		{
+	            		double qRatio = (double)newWidth / (double)m_iOriginalWidth;
+	            		int newHeight = (int)((double)m_iOriginalHeight * qRatio); 	// Only if square.
+	            		
+	            		int newY = m_UnscaledRenderingWindow.Top + m_UnscaledRenderingWindow.Height - newHeight;
+	            		int newX = point.X - newWidth;
+	            		
+	            		m_UnscaledRenderingWindow = new Rectangle(newX, newY, newWidth, newHeight);
+            		}
+            		break;
             	}
                 case 3:
             	{
-            		/*int newWidth = m_UnscaledRectangle.Width + (m_UnscaledRectangle.Left - point.X);
-            		int newHeight = m_UnscaledRectangle.Height + (m_UnscaledRectangle.Top - point.Y);
-            		m_UnscaledRectangle = new Rectangle(point.X, point.Y, newWidth, newHeight);
-                    break;
+            		// Bottom right handler.
+            	 	int dx = m_UnscaledRenderingWindow.Right - point.X;
+            		int newWidth = m_UnscaledRenderingWindow.Width - dx;
+	            	
+            		if(newWidth > 50)
+            		{
+	            		double qRatio = (double)newWidth / (double)m_iOriginalWidth;
+	            		int newHeight = (int)((double)m_iOriginalHeight * qRatio); 	// Only if square.
+	            		
+	            		int newY = m_UnscaledRenderingWindow.Y;
+	            		int newX = point.X - newWidth;
+	            		
+	            		m_UnscaledRenderingWindow = new Rectangle(newX, newY, newWidth, newHeight);
+            		}
+            		break;
             	}
                 case 4:
             	{
-            		/*int newWidth = m_UnscaledRectangle.Width + (m_UnscaledRectangle.Left - point.X);
-            		int newHeight = m_UnscaledRectangle.Height + (m_UnscaledRectangle.Top - point.Y);
-            		m_UnscaledRectangle = new Rectangle(point.X, point.Y, newWidth, newHeight);
-                    break;
-            	}*/
+            		// Bottom left handler.
+            	 	int dx = point.X - m_UnscaledRenderingWindow.Left;
+            		int newWidth = m_UnscaledRenderingWindow.Width - dx;
+	            	
+            		if(newWidth > 50)
+            		{
+	            		double qRatio = (double)newWidth / (double)m_iOriginalWidth;
+	            		int newHeight = (int)((double)m_iOriginalHeight * qRatio); 	// Only if square.
+	            		
+	            		int newY = m_UnscaledRenderingWindow.Y;
+	            		
+	            		m_UnscaledRenderingWindow = new Rectangle(point.X, newY, newWidth, newHeight);
+		        	}
+            		break;
+            	}
                 default:
                     break;
             }
+            
+            // Update scaled coordinates accordingly (we must do this before the RenderAtNewScale happen).
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            
         }
         public override void MoveDrawing(int _deltaX, int _deltaY)
         {
@@ -403,6 +436,9 @@ namespace Kinovea.ScreenManager
         	// Depending on the complexity of the SVG, this can be a costly operation.
         	// We should only do that when mouse move is over,
         	// and use the interpolated version during the change.
+        	
+        	//m_SvgWindow.Document.RootElement.
+        	
         	
         	// Compute the final drawing sizes,
         	// taking both the drawing transformation and the image scaling into account.

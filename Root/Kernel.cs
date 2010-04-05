@@ -78,6 +78,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuNorwegian = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTurkish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuGreek = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
@@ -155,6 +156,8 @@ namespace Kinovea.Root
             RefreshUICulture();
             CheckLanguageMenu();
             CheckTimecodeMenu();
+            
+            ScreenManager.Prepare();
             PrintInitialConf();
             if(CommandLineArgumentManager.Instance().InputFile != null)
             {
@@ -215,8 +218,8 @@ namespace Kinovea.Root
             // Integrate the sub modules UI into the main kernel UI.
             MainWindow.SupervisorControl.splitWorkSpace.Panel1.Controls.Add(FileBrowser.UI);
             MainWindow.SupervisorControl.splitWorkSpace.Panel2.Controls.Add(ScreenManager.UI);
-
-            MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+            
+			MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
@@ -501,9 +504,14 @@ namespace Kinovea.Root
             mnuChinese = new ToolStripMenuItem(PreferencesManager.LanguageChinese);
             mnuChinese.Click += new EventHandler(menuChineseOnClick);
             
+            // Greek
+            mnuGreek = new ToolStripMenuItem(PreferencesManager.LanguageGreek);
+            mnuGreek.Click += new EventHandler(menuGreekOnClick);
+            
             // Re-Order alphabetically by localized name.
             mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { 
-                                                						mnuGerman, 	
+                                                						mnuGerman,
+                                                						mnuGreek,
                                                 						mnuEnglish, 
                                                 						mnuSpanish, 
                                                 						mnuFrench, 
@@ -815,6 +823,10 @@ namespace Kinovea.Root
         {
             SwitchCulture("zh-CHS");
         }
+        private void menuGreekOnClick(object sender, EventArgs e)
+        {
+            SwitchCulture("el");
+        }
         private void SwitchCulture(string name)
         {
             IUndoableCommand command = new CommandSwitchUICulture(this, Thread.CurrentThread, new CultureInfo(name), Thread.CurrentThread.CurrentUICulture);
@@ -824,6 +836,7 @@ namespace Kinovea.Root
         private void CheckLanguageMenu()
         {
             mnuDutch.Checked = false;
+            mnuGreek.Checked = false;
             mnuEnglish.Checked = false;
             mnuFrench.Checked = false;
             mnuGerman.Checked = false;
@@ -839,7 +852,13 @@ namespace Kinovea.Root
 			
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
             
-            switch (ci.Name)
+            string cultureName = ci.Name;
+            if(!ci.IsNeutralCulture)
+        	{
+        		cultureName = ci.Parent.Name;
+        	}
+            
+            switch (cultureName)
             {
                 case "es":
                     mnuSpanish.Checked = true;
@@ -876,6 +895,9 @@ namespace Kinovea.Root
                     break;
                 case "zh-CHS":
                     mnuChinese.Checked = true;
+                    break;
+                case "el":
+                    mnuGreek.Checked = true;
                     break;
                 case "en":
                 default:
@@ -1038,7 +1060,7 @@ namespace Kinovea.Root
         }
         private void mnuAbout_OnClick(object sender, EventArgs e)
         {
-            FormAbout fa = new FormAbout(RootResourceManager);
+            FormAbout fa = new FormAbout();
             fa.ShowDialog();
             fa.Dispose();
         }

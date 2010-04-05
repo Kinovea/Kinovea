@@ -86,7 +86,7 @@
    <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Alle videoer på dette språket er oppdatert.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Endre logg:</value></data>
    <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Filtrer på språk:</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>Manual:</value></data>
+   <data name="Updater_LblManuals" xml:space="preserve"><value>Manual</value></data>
    <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Velg ønsket manual:</value></data>
    <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Velg ønskede videoer:</value></data>
    <data name="Updater_LblSoftware" xml:space="preserve"><value>Programvare</value></data>
