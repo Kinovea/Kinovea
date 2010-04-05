@@ -141,6 +141,11 @@ namespace Kinovea.ScreenManager
 				}
 	        }
         }
+        public int SlowmotionPercentage
+        {
+        	get { return m_PlayerScreenUI.SlowmotionPercentage; }
+        	set { m_PlayerScreenUI.SlowmotionPercentage = value;}
+        }
         public bool Synched
         {
             //get { return m_PlayerScreenUI.m_bSynched; }
@@ -265,10 +270,14 @@ namespace Kinovea.ScreenManager
         {
         	m_ScreenHandler.Screen_SetActiveScreen(this);
         }
-        public void PlayerScreenUI_IsReady(bool _bIntervalOnly)
+        public void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly)
         {
             // Used for synchronisation handling.
-            m_ScreenHandler.Player_IsReady(this, _bIntervalOnly);
+            m_ScreenHandler.Player_SpeedChanged(this, _bIntervalOnly);
+        }
+        public void PlayerScreenUI_PauseAsked()
+        {
+        	m_ScreenHandler.Player_PauseAsked(this);
         }
         public void PlayerScreenUI_SelectionChanged(bool _bInitialization)
         {

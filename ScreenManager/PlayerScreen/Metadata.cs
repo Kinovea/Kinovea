@@ -18,15 +18,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using ICSharpCode.SharpZipLib.Checksums;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Xsl;
+
+using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip;
 using Kinovea.Services;
 
@@ -657,6 +659,7 @@ namespace Kinovea.ScreenManager
             m_Grid.Reset();
             m_Plane.Reset();
             m_Mirrored = false;
+            UnselectAll();
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
         {
@@ -802,6 +805,19 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteStartElement("SelectionStart");
             _xmlWriter.WriteString(m_iSelectionStart.ToString());
             _xmlWriter.WriteEndElement();
+            
+            // Calibration
+            _xmlWriter.WriteStartElement("CalibrationHelp");
+            
+            _xmlWriter.WriteStartElement("PixelToUnit");
+            _xmlWriter.WriteString(m_CalibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteStartElement("LengthUnit");
+            _xmlWriter.WriteString(((int)m_CalibrationHelper.CurrentLengthUnit).ToString());
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteEndElement();
         }
         private void FromXml(XmlTextReader _xmlReader)
         {
@@ -845,7 +861,8 @@ namespace Kinovea.ScreenManager
                 }
                 catch (Exception)
                 {
-                    // Une erreur est survenue pendant le parsing.
+                    // An error happened during parsing.
+                    log.Error("An error happened during parsing Metadata.");
                 }
                 finally
                 {
@@ -964,6 +981,10 @@ namespace Kinovea.ScreenManager
                     {
                         m_iInputSelectionStart = Int64.Parse(_xmlReader.ReadString());
                     }
+                    else if (_xmlReader.Name == "CalibrationHelp")
+                    {
+                    	ParseCalibrationHelp(_xmlReader);
+                    }
                     else if (_xmlReader.Name == "Keyframes")
                     {
                         ParseKeyframes(_xmlReader);
@@ -990,6 +1011,33 @@ namespace Kinovea.ScreenManager
                     // Fermeture d'un tag interne.
                 }
             }
+        }
+        private void ParseCalibrationHelp(XmlTextReader _xmlReader)
+        {       
+        	while (_xmlReader.Read())
+            {
+                if (_xmlReader.IsStartElement())
+                {
+                    if (_xmlReader.Name == "PixelToUnit")
+                    {
+                    	double fPixelToUnit = double.Parse(_xmlReader.ReadString(), CultureInfo.InvariantCulture);
+                  		m_CalibrationHelper.PixelToUnit = fPixelToUnit;
+                  		
+                    }
+                    else if(_xmlReader.Name == "LengthUnit")
+                    {
+                    	m_CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)int.Parse(_xmlReader.ReadString());
+                    }
+                }
+                else if (_xmlReader.Name == "CalibrationHelp")
+                {
+                    break;
+                }
+                else
+                {
+                    // Fermeture d'un tag interne.
+                }
+            }	
         }
         private void ParseKeyframes(XmlTextReader _xmlReader)
         {
@@ -1188,7 +1236,7 @@ namespace Kinovea.ScreenManager
                         scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
                         scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
 
-                        Track trk = Track.FromXml(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp));
+                        Track trk = Track.FromXml(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp), m_ImageSize);
                         if (trk != null)
                         {
                             // Finish setup
@@ -1212,19 +1260,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Dartfish files Parsers
-        private void ParseDartfishStoryboard(XmlTextReader _xmlReader)
-        {
-        	DartfishStoryboardParser dsp = new DartfishStoryboardParser();
-        	dsp.Parse(_xmlReader, this);
-        }
-        private void ParseDartfishLibraryItem(XmlTextReader _xmlReader)
-        {
-            DartfishLibraryItemParser dlip = new DartfishLibraryItemParser();
-            dlip.Parse(_xmlReader, this);
-        }
-        #endregion
-    
     	#region Export
     	public void Export(string _filePath, MetadataExportFormat _format)
     	{
@@ -1265,7 +1300,7 @@ namespace Kinovea.ScreenManager
 			
     		string stylesheet = @"xslt\kva2odf-en.xsl";
 			
-			if(File.Exists(stylesheet))
+			try
 			{
 	            // Create archive.
 	            using (ZipOutputStream zos = new ZipOutputStream(File.Create(_filePath)))
@@ -1296,9 +1331,10 @@ namespace Kinovea.ScreenManager
 					AddODFZipFile(zos, "META-INF/manifest.xml", GetODFManifest());
 	            }
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");				
+				log.Error("Exception thrown during export to ODF.");
+				ReportError(ex);
 			}
     	}
     	private byte[] GetODFMeta()
@@ -1417,7 +1453,7 @@ namespace Kinovea.ScreenManager
 			
     		string stylesheet = @"xslt\kva2msxml-en.xsl";
 			
-			if(File.Exists(stylesheet))
+    		try
 			{
 				XmlWriterSettings settings = new XmlWriterSettings();
 				settings.Indent = true;
@@ -1434,9 +1470,10 @@ namespace Kinovea.ScreenManager
 	   				xslt.Transform(mdDoc, null, xw);
 				}	
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");
+				log.Error("Exception thrown during export to MS-XML.");
+				ReportError(ex);
 			}
     	}
     	private void ExportXHTML(string _filePath, string _kva)
@@ -1445,7 +1482,7 @@ namespace Kinovea.ScreenManager
     		
 			string stylesheet = @"xslt\kva2xhtml-en.xsl";
 			
-			if(File.Exists(stylesheet))
+			try
 			{
 	    		XmlWriterSettings settings = new XmlWriterSettings();
 				settings.Indent = true;
@@ -1462,9 +1499,10 @@ namespace Kinovea.ScreenManager
 	    			xslt.Transform(mdDoc, null, xw);
 				}
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");				
+				log.Error("Exception thrown during export to XHTML.");
+				ReportError(ex);
 			}
     	}
     	private void ExportTEXT(string _filePath, string _kva)
@@ -1473,7 +1511,7 @@ namespace Kinovea.ScreenManager
     		
 			string stylesheet = @"xslt\kva2txt-en.xsl";
 			
-			if(File.Exists(stylesheet))
+			try
 			{
         		using(TextWriter tw = new StreamWriter(_filePath))
         		{
@@ -1486,10 +1524,18 @@ namespace Kinovea.ScreenManager
 	   				xslt.Transform(mdDoc, null, tw);
 				}
 			}
-			else
+			catch(Exception ex)
 			{
-				log.Error("Export not possible, xslt file not found.");				
+				log.Error("Exception thrown during export to TEXT.");
+				ReportError(ex);
 			}
+    	}
+    	private void ReportError(Exception ex)
+    	{
+    		// TODO: Error message the user, so at least he knows something went wrong !
+    		log.Error(ex.Message);
+			log.Error(ex.Source);
+			log.Error(ex.StackTrace);
     	}
     	#endregion
     }

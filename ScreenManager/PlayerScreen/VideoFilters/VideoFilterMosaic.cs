@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
@@ -92,6 +93,7 @@ namespace Kinovea.ScreenManager
 				formConfigureMosaic fcm = new formConfigureMosaic(m_FrameList.Count);
 				if (fcm.ShowDialog() == DialogResult.OK)
 				{
+					
 					DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
 					
 					// Set up the output object so it becomes independant from this filter instance.
@@ -102,6 +104,7 @@ namespace Kinovea.ScreenManager
 					
 					// Notify the ScreenManager that we are done.
 					ProcessingOver(dfo);
+					
 				}
 				fcm.Dispose();
 			}
@@ -119,6 +122,9 @@ namespace Kinovea.ScreenManager
 			// This method will be called by a player screen at draw time.
 			// static: the DrawingtimeFilterObject contains all that is needed to use the method.
 			
+			Stopwatch sw = new Stopwatch();
+			sw.Start();
+			
 			if(_inputFrames != null && _inputFrames.Count > 0 && _privateData is bool )
 			{
 				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
@@ -134,6 +140,11 @@ namespace Kinovea.ScreenManager
 				// - This will be 6x6 images (with the last 4 not filled)
 				// - Each image must be scaled down by a factor of 1/6.
 				//---------------------------------------------------------------------------
+				
+				// Todo:
+				// 1. Lock all images and get all BitmapData in an array.
+				// 2. Loop on final image row and cols, and fill pixels by interpolating from the source images.
+				// This should get down to a few ms instead of more than 500 ms for HD vids.
 				
 				int iSide = (int)Math.Ceiling(Math.Sqrt((double)_inputFrames.Count));
 				int iThumbWidth = _iNewSize.Width / iSide;
@@ -165,6 +176,9 @@ namespace Kinovea.ScreenManager
 					}
 				}
 			}
+			
+			sw.Stop();
+			log.Debug(String.Format("Mosaic Draw : {0} ms.", sw.ElapsedMilliseconds));
 		}
 		#endregion
 		

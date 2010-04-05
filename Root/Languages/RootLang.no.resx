@@ -129,7 +129,7 @@
    <data name="mnuMotion" xml:space="preserve"><value>Bevegelse</value></data>
    <data name="mnuOpenFile" xml:space="preserve"><value>Åpne videofil...</value></data>
    <data name="mnuOptions" xml:space="preserve"><value>Alternativer</value></data>
-   <data name="mnuPreferences" xml:space="preserve"><value>Instillinger</value></data>
+   <data name="mnuPreferences" xml:space="preserve"><value>Instillinger...</value></data>
    <data name="mnuRedo" xml:space="preserve"><value>Gjør om</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Se</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Utforsk fil</value></data>

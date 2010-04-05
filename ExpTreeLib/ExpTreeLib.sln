@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+# SharpDevelop 3.1.0.4077
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ExpTreeLib", "ExpTreeLib.vbproj", "{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22D53870-1B39-4FA2-92D7-1F4B7D3DF0C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+EndGlobal

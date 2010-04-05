@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
 			// Test with grayscale image.
 			Bitmap grayCurrentImage =  Grayscale.CommonAlgorithms.BT709.Apply(_CurrentImage);
 					
-			_currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, _t, grayCurrentImage, _previousPoints);
+			_currentPoint = CreateTrackPoint(false, lastTrackPoint.X, lastTrackPoint.Y, 1.0f, _t, grayCurrentImage, _previousPoints);
 			
 			if(_currentPoint == null)
 			{
@@ -140,7 +140,7 @@ namespace Kinovea.ScreenManager
 			}
 			return bMatched;
 		}
-		public override AbstractTrackPoint CreateTrackPoint(bool _manual, int _x, int _y, long _t, Bitmap _CurrentImage, List<AbstractTrackPoint> _previousPoints)
+		public override AbstractTrackPoint CreateTrackPoint(bool _manual, int _x, int _y, double _fSimilarity, long _t, Bitmap _CurrentImage, List<AbstractTrackPoint> _previousPoints)
 		{
 			// Creates a TrackPoint from the input image at the given coordinates.
     		// Find features in the search window.
@@ -236,7 +236,10 @@ namespace Kinovea.ScreenManager
             
             DrawFeature(_canvas, _color, 2, ((TrackPointSURF)_currentPoint).MatchedFeature, ((TrackPointSURF)_currentPoint).SearchWindow);
 		}
-		
+		public override Rectangle GetEditRectangle(Point _position)
+		{
+			return new Rectangle(_position.X - 10, _position.Y - 10, 20, 20);
+		}
 		#endregion
 		
 		#region Private helpers

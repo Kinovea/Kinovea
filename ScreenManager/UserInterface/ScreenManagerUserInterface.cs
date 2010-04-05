@@ -295,11 +295,13 @@ namespace Kinovea.ScreenManager
         {
             // This happens when the Thumbnail view is closed by another component
             // (e.g: When we need to show screens)
+            log.Debug("Closing thumbnails to display screen.");
             if (m_ThumbsViewer.Visible)
             {
                 m_bThumbnailsWereVisible = true;
-                m_ThumbsViewer.Visible = false;
             }
+            
+            m_ThumbsViewer.Visible = false;
         }
         public void BringBackThumbnails()
         {

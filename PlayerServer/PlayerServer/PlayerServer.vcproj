@@ -59,7 +59,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib $(NOINHERIT)"
+				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib Gdi32.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Refs\FFMpeg\lib"
 				GenerateDebugInformation="true"
@@ -195,7 +195,7 @@
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Refs\AForge.Imaging.dll"
-			AssemblyName="AForge.Imaging, Version=1.7.0.0, PublicKeyToken=38eb47741dd0492e, processorArchitecture=IA64"
+			AssemblyName="AForge.Imaging, Version=2.1.1.0, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL"
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Refs\log4net.dll"

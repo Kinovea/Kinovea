@@ -100,6 +100,7 @@ namespace Kinovea
 			public:
 				int64_t iTimeStamp;
 				Bitmap^	BmpImage;
+				IntPtr	Hbmp;
 		};
 	}
 }

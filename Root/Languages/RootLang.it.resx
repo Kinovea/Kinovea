@@ -75,7 +75,7 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Riferimenti:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Tutte le Lingue</value></data>
    <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Potete ottenere altri Video tramite il Menu' : Opzioni &gt; Verifica disponibilita' aggiornamenti...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Riguardo a questo Video...</value></data>
+   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Riguardo questo Video...</value></data>
    <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Scegli la Lingua</value></data>
    <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Scegli quale Video desideri vedere :</value></data>
    <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Nessun Commento.</value></data>
@@ -105,12 +105,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona Lavoro occupa meno di {0} MB di Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona Lavoro e' minore di {0} secondi.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno restera' visibile per {0} immagini intorno all'Immagine Chiave.</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unita' di misura velocita'</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metri al secondo ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Chilometri all'ora ({0})</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Piedi al secondo ({0})</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miglia all'ora ({0})</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nodi ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferenze...</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Sta caricando l'Interfaccia Utente... </value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value></data>

@@ -258,6 +258,12 @@ namespace Kinovea.ScreenManager
                                         _Metadata.Tracks[_Metadata.SelectedTrack].MoveLabelTo(deltaX, deltaY, m_iResizingHandle);
                                     }
                                     break;
+                                case SelectedObjectType.Chrono:
+                                    if (_Metadata.SelectedChrono >= 0)
+                                    {
+                                        _Metadata.Chronos[_Metadata.SelectedChrono].MoveHandleTo(_MouseLocation, m_iResizingHandle);
+                                    }
+                                    break;
                                 case SelectedObjectType.Drawing:
                                     if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
                                     {
@@ -367,7 +373,16 @@ namespace Kinovea.ScreenManager
                     m_SelectedObjectType = SelectedObjectType.Chrono;
                     _Metadata.SelectedChrono = i;
 
-                    m_UserAction = UserAction.Move;
+                    if (handle > 0)
+                    {
+                    	m_UserAction = UserAction.Resize;
+                    	m_iResizingHandle = handle;
+                    }
+                    else
+                    {
+                    	m_UserAction = UserAction.Move;
+                    }
+                
                     
                     break;
                 }

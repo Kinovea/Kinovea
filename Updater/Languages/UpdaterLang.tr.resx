@@ -71,13 +71,13 @@
    <data name="Updater_Behind" xml:space="preserve"><value>Yeni bir sürüm mevcut !</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Lütfen yükleyici dosya için gerekli hedef klasörünü seçin.</value></data>
    <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Yükleme Klasörünü Seçin</value></data>
-   <data name="Updater_CurrentVersion" xml:space="preserve"><value>Şu anki Sürüm :</value></data>
+   <data name="Updater_CurrentVersion" xml:space="preserve"><value>Geçerli Sürüm :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>İndir</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Yeni Sürümü İndiriyor...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Dosya Büyüklüğü :</value></data>
    <data name="Updater_FilterAll" xml:space="preserve"><value>Tüm Diller</value></data>
    <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Güncelleme mevcut</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Yeni parça</value></data>
+   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Yeni nesne</value></data>
    <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Güncel</value></data>
    <data name="Updater_Instruction" xml:space="preserve"><value>İndirmeye başlamak için 'İndir' düğmesine tıklayın. </value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Güncellemeleri tararken bir hata meydana geldi. İnternet bağlantınızın olduğundan emin olun.</value></data>

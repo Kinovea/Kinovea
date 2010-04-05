@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
         	this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
         	this.panelTop.Location = new System.Drawing.Point(0, 0);
         	this.panelTop.Name = "panelTop";
-        	this.panelTop.Size = new System.Drawing.Size(420, 19);
+        	this.panelTop.Size = new System.Drawing.Size(350, 19);
         	this.panelTop.TabIndex = 0;
         	// 
         	// lblFileName
@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
         	this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnClose.Location = new System.Drawing.Point(398, -1);
+        	this.btnClose.Location = new System.Drawing.Point(328, -1);
         	this.btnClose.Name = "btnClose";
         	this.btnClose.Size = new System.Drawing.Size(20, 20);
         	this.btnClose.TabIndex = 2;
@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.Location = new System.Drawing.Point(0, 386);
         	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 100);
         	this.panelVideoControls.Name = "panelVideoControls";
-        	this.panelVideoControls.Size = new System.Drawing.Size(420, 124);
+        	this.panelVideoControls.Size = new System.Drawing.Size(350, 124);
         	this.panelVideoControls.TabIndex = 2;
         	this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
         	this.panel1.Controls.Add(this.btnSaveVideo);
         	this.panel1.Controls.Add(this.btnDiaporama);
         	this.panel1.Controls.Add(this.btnRafale);
-        	this.panel1.Location = new System.Drawing.Point(240, 78);
+        	this.panel1.Location = new System.Drawing.Point(170, 78);
         	this.panel1.Name = "panel1";
         	this.panel1.Size = new System.Drawing.Size(185, 46);
         	this.panel1.TabIndex = 26;
@@ -374,7 +374,7 @@ namespace Kinovea.ScreenManager
         	this.trkSelection.SelLocked = false;
         	this.trkSelection.SelPos = ((long)(0));
         	this.trkSelection.SelStart = ((long)(0));
-        	this.trkSelection.Size = new System.Drawing.Size(329, 20);
+        	this.trkSelection.Size = new System.Drawing.Size(259, 20);
         	this.trkSelection.TabIndex = 17;
         	this.trkSelection.ToolTip = "";
         	this.trkSelection.SelectionChanged += new Kinovea.ScreenManager.SelectionTracker.SelectionChangedHandler(this.trkSelection_SelectionChanged);
@@ -393,7 +393,7 @@ namespace Kinovea.ScreenManager
         	this.trkFrame.Name = "trkFrame";
         	this.trkFrame.Position = ((long)(0));
         	this.trkFrame.ReportOnMouseMove = false;
-        	this.trkFrame.Size = new System.Drawing.Size(410, 20);
+        	this.trkFrame.Size = new System.Drawing.Size(340, 20);
         	this.trkFrame.TabIndex = 16;
         	this.trkFrame.PositionChanging += new Kinovea.ScreenManager.FrameTracker.PositionChangingHandler(this.trkFrame_PositionChanging);
         	this.trkFrame.PositionChanged += new Kinovea.ScreenManager.FrameTracker.PositionChangedHandler(this.trkFrame_PositionChanged);
@@ -579,7 +579,7 @@ namespace Kinovea.ScreenManager
         	this.btnPdf.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnPdf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnPdf.Image = global::Kinovea.ScreenManager.Properties.Resources.pdfexport;
-        	this.btnPdf.Location = new System.Drawing.Point(356, 27);
+        	this.btnPdf.Location = new System.Drawing.Point(286, 27);
         	this.btnPdf.MinimumSize = new System.Drawing.Size(25, 25);
         	this.btnPdf.Name = "btnPdf";
         	this.btnPdf.Size = new System.Drawing.Size(30, 25);
@@ -640,7 +640,7 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.Location = new System.Drawing.Point(0, 0);
         	this.panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
         	this.panelCenter.Name = "panelCenter";
-        	this.panelCenter.Size = new System.Drawing.Size(420, 235);
+        	this.panelCenter.Size = new System.Drawing.Size(350, 235);
         	this.panelCenter.TabIndex = 2;
         	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
         	this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
@@ -654,7 +654,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNE.Location = new System.Drawing.Point(127, 70);
+        	this.ImageResizerNE.Location = new System.Drawing.Point(92, 70);
         	this.ImageResizerNE.Name = "ImageResizerNE";
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNE.TabIndex = 9;
@@ -669,7 +669,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
         	this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNW.Location = new System.Drawing.Point(92, 70);
+        	this.ImageResizerNW.Location = new System.Drawing.Point(57, 70);
         	this.ImageResizerNW.Name = "ImageResizerNW";
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNW.TabIndex = 8;
@@ -684,7 +684,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSW.Location = new System.Drawing.Point(92, 95);
+        	this.ImageResizerSW.Location = new System.Drawing.Point(57, 95);
         	this.ImageResizerSW.Name = "ImageResizerSW";
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSW.TabIndex = 7;
@@ -700,7 +700,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
         	this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSE.Location = new System.Drawing.Point(127, 95);
+        	this.ImageResizerSE.Location = new System.Drawing.Point(92, 95);
         	this.ImageResizerSE.Name = "ImageResizerSE";
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSE.TabIndex = 6;
@@ -925,7 +925,7 @@ namespace Kinovea.ScreenManager
         	this.splitKeyframes.Panel2.Controls.Add(this.btnAddKeyframe);
         	this.splitKeyframes.Panel2.DoubleClick += new System.EventHandler(this.splitKeyframes_Panel2_DoubleClick);
         	this.splitKeyframes.Panel2MinSize = 30;
-        	this.splitKeyframes.Size = new System.Drawing.Size(420, 367);
+        	this.splitKeyframes.Size = new System.Drawing.Size(350, 367);
         	this.splitKeyframes.SplitterDistance = 235;
         	this.splitKeyframes.SplitterWidth = 2;
         	this.splitKeyframes.TabIndex = 10;
@@ -993,7 +993,7 @@ namespace Kinovea.ScreenManager
         	this.btnDockBottom.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnDockBottom.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.btnDockBottom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnDockBottom.Location = new System.Drawing.Point(398, 4);
+        	this.btnDockBottom.Location = new System.Drawing.Point(328, 4);
         	this.btnDockBottom.Name = "btnDockBottom";
         	this.btnDockBottom.Size = new System.Drawing.Size(20, 20);
         	this.btnDockBottom.TabIndex = 16;
@@ -1029,7 +1029,7 @@ namespace Kinovea.ScreenManager
         	this.btnShowComments.ForeColor = System.Drawing.Color.Black;
         	this.btnShowComments.Image = global::Kinovea.ScreenManager.Properties.Resources.comments2;
         	this.btnShowComments.Location = new System.Drawing.Point(70, 2);
-        	this.btnShowComments.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+        	this.btnShowComments.Margin = new System.Windows.Forms.Padding(0);
         	this.btnShowComments.Name = "btnShowComments";
         	this.btnShowComments.Size = new System.Drawing.Size(25, 25);
         	this.btnShowComments.TabIndex = 14;
@@ -1149,7 +1149,7 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.Controls.Add(this.pictureBox1);
         	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
         	this.pnlThumbnails.Name = "pnlThumbnails";
-        	this.pnlThumbnails.Size = new System.Drawing.Size(420, 102);
+        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 102);
         	this.pnlThumbnails.TabIndex = 3;
         	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
         	this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
@@ -1190,7 +1190,7 @@ namespace Kinovea.ScreenManager
         	this.Controls.Add(this.panelTop);
         	this.MinimumSize = new System.Drawing.Size(350, 310);
         	this.Name = "PlayerScreenUserInterface";
-        	this.Size = new System.Drawing.Size(420, 510);
+        	this.Size = new System.Drawing.Size(350, 510);
         	this.panelTop.ResumeLayout(false);
         	this.panelTop.PerformLayout();
         	this.panelVideoControls.ResumeLayout(false);

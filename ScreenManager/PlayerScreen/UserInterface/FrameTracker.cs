@@ -178,7 +178,7 @@ namespace Kinovea.ScreenManager
         	if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
         	if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
         	
-        	log.Debug(String.Format("Remap - [{0} - {1} - {2}], m_iPixelPosition:{3}", m_iMinimum, m_iPosition, m_iMaximum, m_iPixelPosition));
+        	//log.Debug(String.Format("Remap - [{0} - {1} - {2}], m_iPixelPosition:{3}", m_iMinimum, m_iPosition, m_iMaximum, m_iPixelPosition));
         	
         	UpdateMarkersPositions();
         	UpdateCursorPosition();
