@@ -27,10 +27,10 @@ done - Implement fading method.
 done - Implement a handle mechanism.
 done - Shape modification (dimensions changes, rotations). 
 done - Ensure that export to single image and video also works at the right scale.
-done - Remove access to color & style configuration.
 done - Test with other SVG files.
 done - Protect against files that won't load for any reason.
 done - dynamically load shapes from a folder and display corresponding menus.
+done - Remove access to color & style configuration. (including double click)
 - Implement export / import to .Kva xml, outside of a particular shape file context.
 - display buttons in the drawings toolbar.
 
