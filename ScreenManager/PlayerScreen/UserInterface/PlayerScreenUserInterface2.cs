@@ -3170,6 +3170,8 @@ namespace Kinovea.ScreenManager
 				}
 				else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 				{
+					// Double click on a drawing:
+					// turn text tool into edit mode, launch config for others, SVG don't have a config.
 					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
 					if (ad is DrawingText)
 					{
@@ -3177,7 +3179,7 @@ namespace Kinovea.ScreenManager
 						m_ActiveTool = DrawingToolType.Text;
 						m_bTextEdit = true;
 					}
-					else
+					else if(!(ad is DrawingSVG))
 					{
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
