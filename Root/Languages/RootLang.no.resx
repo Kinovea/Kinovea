@@ -105,12 +105,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Arbeidsfelt vil benytte seg av mindre enn {0} MB minne.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Arbeidsfelt er mindre enn {0} sekunder.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Tegninger vil være synlige I {0} enkeltbilder rundt nøkkelbildet.</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Hastighet</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter per sekund</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer per sekund</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fot per sekund</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles per sekund</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knop</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Instillinger</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Laster brukerinstillinger</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Avbryt</value></data>
