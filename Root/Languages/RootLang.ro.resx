@@ -105,12 +105,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Zona de lucru va accesa mai puţin de {0} MB de memorie.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Zona de lucru este mai mică de {0} seconds.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Implicit, desenele vor sta vizibile pentru {0} imagini în jurul Imaginii Principale.</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unitatea de măsurare a vitezei:</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metri pe secondă ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometri pe oră ({0})</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Picioare (30.5 cm) pe secundă ({0})</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mile (1609 m) pe oră ({0})</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Noduri (milă pe oră) ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferinţe...</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Încarc Interfaţa Grafica... </value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Anulează</value></data>
