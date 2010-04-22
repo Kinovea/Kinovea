@@ -114,10 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Toon Doel Markeerder</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Toon Kernbeeld Titel</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Toon Trajectpad</value></data>
-   
-   
-   
-   
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Meting:</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Geen Meting</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Afstand</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Snelheid</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mode:</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trajectory</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stijl:</value></data>
@@ -257,7 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   
+   <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectory naar simpele tekst</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Export naar PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Vloeiend</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Beeldtype</value></data>
@@ -346,9 +346,9 @@
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Randen alleen…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Automatische niveaubepaling</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Verscherp…</value></data>
-   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaiek</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overzicht…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Keer om….</value></data>
-   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast…</value></data>
+   <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisch contrast…</value></data>
    <data name="" xml:space="preserve"><value/></data>
    
    
