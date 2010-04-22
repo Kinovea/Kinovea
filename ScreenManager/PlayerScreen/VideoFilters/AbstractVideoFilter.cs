@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager
         {
         	// This method is called by concrete filters to start applying the filter.
         	// It should be called whenever the filter takes time to process.
-        	m_FormProgressBar = new formProgressBar();
+        	m_FormProgressBar = new formProgressBar(false);
         	m_BackgroundWorker.RunWorkerAsync();
         	m_FormProgressBar.ShowDialog();
         }
