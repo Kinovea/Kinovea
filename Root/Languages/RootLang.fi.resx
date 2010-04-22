@@ -105,12 +105,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Työstettävä jakso käyttää alle {0} MB muistia.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Työstettävä jakso on kestoltaan alle {0} sekuntia.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Oletuksena piirrokset pysyvät näkyvissä {0} kuvaa ennen ja jälkeen avainkuvan.</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Nopeuden yksikkö:</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metriä sekunnissa ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometriä tunnissa ({0})</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Jalkaa sekunnissa ({0})</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mailia tunnissa ({0})</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Solmua ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Asetukset...</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Ladataan käyttäjäliittymää...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Peruuta</value></data>
