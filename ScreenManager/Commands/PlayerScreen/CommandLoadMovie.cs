@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
                         switch (iPostLoadProcess)
                         {
                             case 0:
-                                // Loading OK.
+                                // Loading succeeded.
                                 // We already switched to analysis mode if possible.
                                 m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(true);
                                 break;
