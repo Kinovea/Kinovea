@@ -71,21 +71,21 @@
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostra / Nascondi Esplora File</value></data>
    <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea e' soggetto ai termini della Gnu Licenza Pubblica Generale versione 2.</value></data>
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea funziona in cooperazione con i seguenti componenti software:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>Siete invitati a contribuire alla traduzione, alle prove, all'individuazione degli errori, ai miglioramenti o a supportare Kinovea.</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>E' possibile contribuire alla traduzione, alle prove, all'individuazione degli errori, ai miglioramenti o a supportare Kinovea.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Riferimenti:</value></data>
    <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Tutte le Lingue</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Potete ottenere altri Video tramite il Menu' : Opzioni &gt; Verifica disponibilita' aggiornamenti...</value></data>
+   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>E' possibile ottenere altri Video tramite il Menu' : Opzioni &gt; Verifica disponibilita' aggiornamenti...</value></data>
    <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Riguardo questo Video...</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Scegli la Lingua</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Scegli quale Video desideri vedere :</value></data>
+   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Scegliere la Lingua</value></data>
+   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Scegliere quale Video si desidera vedere :</value></data>
    <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Nessun Commento.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea – Guarda un Video esplicativo.</value></data>
+   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea – Guardare un Video dimostrativo.</value></data>
    <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Guarda</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tutti I files (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Apri File Video</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Disegni</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Generale</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Riproduci / Analizza</value></data>
+   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Riproduzione / Analisi</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostra disegni quando riproduce il video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Attiva la persistenza</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Attiva sempre funzione Deinterlaccia quando apre un nuovo video</value></data>
@@ -105,14 +105,14 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona Lavoro occupa meno di {0} MB di Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona Lavoro e' minore di {0} secondi.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Come preimpostazione, il disegno restera' visibile per {0} immagini intorno all'Immagine Chiave.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unita' di misura velocita':</value></data>
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unita' di misura velocita'</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metri al secondo ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Chilometri all'ora ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Piedi al secondo ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miglia all'ora ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nodi ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferenze...</value></data>
-   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Sta caricando l'Interfaccia Utente... </value></data>
+   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Caricamento Interfaccia Utente... </value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annulla</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Esci</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
@@ -133,7 +133,7 @@
    <data name="mnuRedo" xml:space="preserve"><value>Riesegui</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Visualizza</value></data>
    <data name="mnuToggleFileExplorer" xml:space="preserve"><value>Esplora File </value></data>
-   <data name="mnuTutorialVideos" xml:space="preserve"><value>Video esplicativo...</value></data>
+   <data name="mnuTutorialVideos" xml:space="preserve"><value>Video dimostrativo...</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Annulla </value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classico (h:mm:ss:centesimi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numero di fotogrammi</value></data>
