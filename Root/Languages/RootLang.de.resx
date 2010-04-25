@@ -105,7 +105,7 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Der Arbeitsbereich nimmt weniger als {0} MB Speicher in Anspruch.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Der Arbeitsbereich ist kürzer als {0} Sekunden.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Standardmäßig bleiben Zeichenelemente für {0} Einzelbilder um ein Schlüsselbild sichtbar.</value></data>
-   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Geschwindigkeitseinheit</value></data>
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Geschwindigkeitseinheit:</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter pro Sekunde ({0})</value></data>
    <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer pro Stunde ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Fuß pro Sekunde ({0})</value></data>
