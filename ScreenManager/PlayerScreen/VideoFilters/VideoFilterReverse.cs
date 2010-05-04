@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         }
 		public override bool Experimental 
 		{
-			get { return true; }
+			get { return false; }
 		}
 		#endregion
 		
