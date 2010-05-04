@@ -106,7 +106,7 @@ namespace Kinovea.Root
             PreferencesManager.ReleaseVersion = String.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build);
             
             // Set type of release (Experimental vs Production) 
-            PreferencesManager.ExperimentalRelease = true; 
+            PreferencesManager.ExperimentalRelease = false; 
             
             // Display some system infos in the log.
             log.Info(String.Format("Kinovea version : {0}, ({1})", PreferencesManager.ReleaseVersion, PreferencesManager.ExperimentalRelease?"Experimental":"Production"));
@@ -436,7 +436,6 @@ namespace Kinovea.Root
             // 5.Motion
             mnuMotion.Tag = new ItemResourceInfo(RootResourceManager, "mnuMotion");
             mnuMotion.Text = ((ItemResourceInfo)mnuMotion.Tag).resManager.GetString(((ItemResourceInfo)mnuMotion.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuMotion.Visible = PreferencesManager.ExperimentalRelease;
             #endregion
 
             #region Options
@@ -594,25 +593,13 @@ namespace Kinovea.Root
             mnuAbout.Text = ((ItemResourceInfo)mnuAbout.Tag).resManager.GetString(((ItemResourceInfo)mnuAbout.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
-            if(PreferencesManager.ExperimentalRelease)
-            {
-            	mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
-            	                               	mnuHelpContents, 
-            	                               	mnuTutorialVideos, 
-            	                               	new ToolStripSeparator(), 
-            	                               	mnuApplicationFolder, 
-            	                               	new ToolStripSeparator(),
-            	                               	mnuAbout });
-            }
-            else
-            {
-            	mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
-            	                               	mnuHelpContents, 
-            	                               	mnuTutorialVideos, 
-            	                               	new ToolStripSeparator(), 
-            	                               	mnuAbout });
-            }
-
+            mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
+												mnuHelpContents, 
+												mnuTutorialVideos, 
+												new ToolStripSeparator(), 
+												mnuApplicationFolder, 
+												new ToolStripSeparator(),
+												mnuAbout });
             #endregion
 
             // Top level merge.
