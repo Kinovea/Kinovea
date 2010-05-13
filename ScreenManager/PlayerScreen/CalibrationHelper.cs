@@ -84,6 +84,14 @@ namespace Kinovea.ScreenManager
 		private double m_fFramesPerSeconds = 25;
 		#endregion
 		
+		#region Constructor
+		public CalibrationHelper()
+		{
+			PreferencesManager prefManager = PreferencesManager.Instance();
+			m_CurrentSpeedUnit = prefManager.SpeedUnit;
+		}
+		#endregion
+		
 		#region Public Methods
 		public static string GetLengthAbbreviationFromUnit(LengthUnits _unit)
 		{

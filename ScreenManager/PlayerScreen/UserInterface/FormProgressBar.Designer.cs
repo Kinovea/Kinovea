@@ -50,33 +50,45 @@ namespace Kinovea.ScreenManager
 		{
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.labelInfos = new System.Windows.Forms.Label();
+			this.btnCancel = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// progressBar
 			// 
 			this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.progressBar.Location = new System.Drawing.Point(12, 15);
+			this.progressBar.Location = new System.Drawing.Point(20, 12);
 			this.progressBar.Name = "progressBar";
-			this.progressBar.Size = new System.Drawing.Size(374, 22);
+			this.progressBar.Size = new System.Drawing.Size(335, 22);
 			this.progressBar.Step = 1;
 			this.progressBar.TabIndex = 4;
 			// 
 			// labelInfos
 			// 
 			this.labelInfos.AutoSize = true;
-			this.labelInfos.Location = new System.Drawing.Point(11, 48);
+			this.labelInfos.Location = new System.Drawing.Point(17, 47);
 			this.labelInfos.Name = "labelInfos";
 			this.labelInfos.Size = new System.Drawing.Size(36, 13);
 			this.labelInfos.TabIndex = 5;
 			this.labelInfos.Text = "[Infos]";
 			// 
+			// btnCancel
+			// 
+			this.btnCancel.Location = new System.Drawing.Point(270, 42);
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.Size = new System.Drawing.Size(85, 22);
+			this.btnCancel.TabIndex = 7;
+			this.btnCancel.Text = "Cancel";
+			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
+			// 
 			// formProgressBar
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(398, 79);
+			this.ClientSize = new System.Drawing.Size(369, 76);
 			this.ControlBox = false;
+			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.labelInfos);
 			this.Controls.Add(this.progressBar);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -92,6 +104,7 @@ namespace Kinovea.ScreenManager
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button btnCancel;
 		public System.Windows.Forms.Label labelInfos;
 		public System.Windows.Forms.ProgressBar progressBar;
 	}

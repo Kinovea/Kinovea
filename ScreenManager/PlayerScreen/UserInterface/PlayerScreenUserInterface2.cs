@@ -415,6 +415,7 @@ namespace Kinovea.ScreenManager
 			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
 			EnableDisableAllPlayingControls(true);
 			EnableDisableDrawingTools(true);
+			EnableDisableSnapshot(true);
 			buttonPlay.Image = Resources.liqplay17;
 			sldrSpeed.Value = 100;
 			sldrSpeed.Enabled = false;
@@ -423,6 +424,26 @@ namespace Kinovea.ScreenManager
 			UpdatePlayingModeButton();
 			
 			m_PlayerScreenUIHandler.PlayerScreenUI_Reset();
+		}
+		public void EnableDisableActions(bool _bEnable)
+		{
+			// Called back after a load error.
+			// Prevent any actions.
+			if(!_bEnable)
+				DisablePlayAndDraw();
+			
+			EnableDisableSnapshot(_bEnable);
+			EnableDisableDrawingTools(_bEnable);
+			
+			if(_bEnable && m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1)
+			{
+				// If we are in the special case of a one-frame video, disable playback controls.
+				EnableDisableAllPlayingControls(false);
+			}
+			else
+			{
+				EnableDisableAllPlayingControls(_bEnable);				
+			}
 		}
 		public int PostLoadProcess()
 		{
@@ -551,13 +572,6 @@ namespace Kinovea.ScreenManager
 					}
 
 					UpdateFramesMarkers();
-
-					// If we are in the special case of a one-frame video, disable playback controls.
-					if (m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1)
-					{
-						EnableDisableAllPlayingControls(false);
-					}
-					
 					
 					// Debug
 					if (m_bShowInfos) { UpdateDebugInfos(); }
@@ -4691,6 +4705,10 @@ namespace Kinovea.ScreenManager
 			
 			mnuPlayPause.Visible = _bEnable;
 			mnuDirectTrack.Visible = _bEnable;
+		}
+		private void EnableDisableSnapshot(bool _bEnable)
+		{
+			btnSnapShot.Enabled = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
 		{

@@ -95,7 +95,7 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Last inn fargeprofil</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Lagre fargeprofil</value></data>
-   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Alltid vis</value></data>
+   <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Alltid vis beskrivelse</value></data>
    <data name="dlgConfigureChrono_Label" xml:space="preserve"><value>Beskrivelse: </value></data>
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Konfigurer stoppeklokke</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Konfigurer tegning</value></data>
@@ -114,10 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Vis markør</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Vis nøkkelbilde titler</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Vis bane</value></data>
-   
-   
-   
-   
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Måling:</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Ingen måling</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distanse</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Fart</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Modus:</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Bane</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil: </value></data>
@@ -133,7 +133,7 @@
    <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frekvens:</value></data>
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaikk modus</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
-   
+   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Varighet av hvert Nøkkelbilde : {0} hundredels sekund</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Varighet av hvert Nøkkelbilde : {0:0.00} sekunder</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Lagre video</value></data>
@@ -257,7 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   
+   <data name="mnuExportTEXT" xml:space="preserve"><value>Overføring til enkel tekst</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Eksporter til Pdf</value></data>
    
    <data name="mnuFormat" xml:space="preserve"><value>Bildeformat</value></data>
@@ -283,7 +283,7 @@
    <data name="mnuSave" xml:space="preserve"><value>Lagre...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Lagre det aktuelle bilde</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Vindu</value></data>
-   
+   <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrere måling</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Sett original fart</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>La siste arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>La første arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
@@ -291,12 +291,12 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End bane Editor</value></data>
-   <data name="mnuSwapScreens" xml:space="preserve"><value>Iverter videoposisjoner</value></data>
+   <data name="mnuSwapScreens" xml:space="preserve"><value>Inverter videoposisjoner</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Slett fil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Endre filnavn</value></data>
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Spill av video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/Skjul Standardverktøy</value></data>
-   
+   <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg banen</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Det oppstod en ukjent feil.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – avspillingsfeil</value></data>
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : koding ikke støttet</value></data>
@@ -346,7 +346,7 @@
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Kun kanter...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Auto levels...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Skarp opp</value></data>
-   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaikk...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Oversikt…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inverter</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast...</value></data>
    
