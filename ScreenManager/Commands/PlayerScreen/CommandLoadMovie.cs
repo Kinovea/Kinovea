@@ -87,28 +87,28 @@ namespace Kinovea.ScreenManager
             {
                 case LoadResult.Success:
                     {
-                        // Essayer de charger la première frame et autres initialisations.
+                        // Try to load first frame and other inits.
                         int iPostLoadProcess = m_PlayerScreen.m_PlayerScreenUI.PostLoadProcess();
 
                         switch (iPostLoadProcess)
                         {
                             case 0:
-                                // Chargment OK.
-                                // On est déjà passé en mode analyse si c'était possible.
+                                // Loading succeeded.
+                                // We already switched to analysis mode if possible.
+                                m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(true);
                                 break;
                             case -1:
                                 {
-                                    // Le chargement de la première frame à complètement échoué.
-                                    // Cause la plus probable, taille image non standard.
+                                    // Loading the first frame failed.
                                    	m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
-                                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_ImageFormatError);
+                                    DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_ImageFormatError);
                                     break;
                                 }
                             case -2:
                                 {
-                                    // Chargement de la première frame à montré que le fichier était problématique.
+                                    // Loading first frame showed that the file is, in the end, not supported.
                                     m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
-                                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_InconsistantMovieError);
+                                    DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_InconsistantMovieError);
                                     break;
                                 }
                             default:
@@ -118,32 +118,32 @@ namespace Kinovea.ScreenManager
                     }
                 case LoadResult.FileNotOpenned:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_FileNotOpened);
+        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_FileNotOpened);
                         break;
                     }
                 case LoadResult.StreamInfoNotFound:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_StreamInfoNotFound);
+        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_StreamInfoNotFound);
                         break;
                     }
                 case LoadResult.VideoStreamNotFound:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_VideoStreamNotFound);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_VideoStreamNotFound);
                         break;
                     }
                 case LoadResult.CodecNotFound:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
+        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
                         break;
                     }
                 case LoadResult.CodecNotOpened:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotOpened);
+        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotOpened);
                         break;
                     }
                 case LoadResult.CodecNotSupported:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotSupported);
+        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotSupported);
                         break;
                     }
                 case LoadResult.Cancelled:
@@ -152,13 +152,13 @@ namespace Kinovea.ScreenManager
                     }
                 case LoadResult.FrameCountError:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
                         break;
                     }
 
                 default:
                     {
-                        DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_UnkownError);
+        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_UnkownError);
                         break;
                     }
             }
@@ -166,8 +166,10 @@ namespace Kinovea.ScreenManager
             m_PlayerScreen.UniqueId = System.Guid.NewGuid();
           
         }
-        private void DisplayErrorMessage(string error)
+        private void DisplayErrorAndDisable(string error)
         {
+        	m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(false);
+        	
         	MessageBox.Show(
         		error,
                	Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error,

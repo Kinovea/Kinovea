@@ -697,7 +697,7 @@ namespace Kinovea.ScreenManager
             
             // Reorganise screens.
             // We leverage the fact that screens are always well ordered relative to menus.
-            if (_SenderScreen == screenList[0])
+            if (screenList.Count > 0 && _SenderScreen == screenList[0])
             {
                 mnuCloseFileOnClick(null, EventArgs.Empty);
             }

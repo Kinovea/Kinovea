@@ -114,10 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Hedef İşaretleyicisini Göster</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Anahtar İmaj Başlıklarını Göster</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Yolu Göster</value></data>
-   
-   
-   
-   
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Ölçüm:</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Hiçbiri</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Mesafe</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Hız </value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mod:</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Yol</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stil:</value></data>
@@ -257,7 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   
+   <data name="mnuExportTEXT" xml:space="preserve"><value>İzleme yollarından basit metine</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>PDF'ye aktar</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Sıvılaştır</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>İmaj Formatı</value></data>
@@ -346,7 +346,7 @@
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Sadece Kenarlar...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Oto Seviye...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Keskinleştir...</value></data>
-   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mozaik...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Göz Atma...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Geri...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Oto Kontrast...</value></data>
    

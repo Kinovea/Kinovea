@@ -67,28 +67,28 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Verifica disponibilita' aggiornamenti...</value></data>
+   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Aggiornamento software...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>E' disponibile una nuova versione !</value></data>
-   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Scegli la Directory di destinazione per il File di installazione.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Scegli la Cartella di destinazione</value></data>
+   <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Scegliere la Directory di destinazione per il File di installazione.</value></data>
+   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Scegliere la Cartella di destinazione</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Versione Attuale :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Scarico (Download)</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Sta scaricando una Nuova Versione...</value></data>
+   <data name="Updater_Downloading" xml:space="preserve"><value>Scarico Nuova Versione in corso...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Dimensione File :</value></data>
    <data name="Updater_FilterAll" xml:space="preserve"><value>Tutte le Lingue</value></data>
    <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Aggiornamento disponibile</value></data>
    <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Nuovo</value></data>
    <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Aggiornato</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Premi il bottone 'Scarico' (Download) per iniziare a scaricare.</value></data>
+   <data name="Updater_Instruction" xml:space="preserve"><value>Premere il pulsante 'Scarico' (Download) per iniziare a scaricare.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>E' avvenuto un errore durante la ricerca di Aggiornamenti. Assicurarsi che sia attiva la connessione Internet. </value></data>
    <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Tutte le Guide Utente sono aggiornate.</value></data>
    <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Tutti i video sono aggiornati.</value></data>
    <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Tutti i video in questa Lingua sono aggiornati.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lista Variazioni :</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Scegli la Lingua :</value></data>
+   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Scegliere la Lingua :</value></data>
    <data name="Updater_LblManuals" xml:space="preserve"><value>Manuali</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Scegli il Manuale che desideri scaricare :</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Scegli il Video che desideri scaricare :</value></data>
+   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Scegliere il Manuale che si desidera scaricare :</value></data>
+   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Scegliere il Video che si desidera scaricare :</value></data>
    <data name="Updater_LblSoftware" xml:space="preserve"><value>Software</value></data>
    <data name="Updater_LblTotalSelected" xml:space="preserve"><value>Totale scelti :</value></data>
    <data name="Updater_LblVideos" xml:space="preserve"><value>Video d'aiuto</value></data>

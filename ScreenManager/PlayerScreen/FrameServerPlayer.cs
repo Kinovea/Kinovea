@@ -194,15 +194,17 @@ namespace Kinovea.ScreenManager
             // Instanciate and configure the bgWorker.
             BackgroundWorker bgWorkerSave = new BackgroundWorker();
             bgWorkerSave.WorkerReportsProgress = true;
-        	bgWorkerSave.DoWork += new DoWorkEventHandler(bgWorkerSave_DoWork);
+        	bgWorkerSave.WorkerSupportsCancellation = true;
+            bgWorkerSave.DoWork += new DoWorkEventHandler(bgWorkerSave_DoWork);
         	bgWorkerSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerSave_ProgressChanged);
             bgWorkerSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerSave_RunWorkerCompleted);
-            
+
             // Attach the bgWorker to the VideoFile object so it can report progress.
             m_VideoFile.BgWorker = bgWorkerSave;
             
             // Create the progress bar and launch the worker.
-            m_FormProgressBar = new formProgressBar();
+            m_FormProgressBar = new formProgressBar(true);
+            m_FormProgressBar.Cancel = Cancel_Asked;
         	bgWorkerSave.RunWorkerAsync();
         	m_FormProgressBar.ShowDialog();
 		}
@@ -300,6 +302,16 @@ namespace Kinovea.ScreenManager
                	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
+		private void Cancel_Asked(object sender)
+		{
+			// This will simply set BgWorker.CancellationPending to true,
+			// which we check periodically in VideoFile.ExtractToMemory method.
+	        // This will also end the bgWorker immediately,
+	        // maybe before we check for the cancellation in the other thread. 
+	        m_VideoFile.BgWorker.CancelAsync();
+	        
+	        // m_FormProgressBar.Dispose();
+		}
 		#endregion
 	}
 }

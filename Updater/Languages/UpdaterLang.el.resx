@@ -67,7 +67,7 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Έλεγχος για εύκαιρες Αναβαθμίσεις…</value></data>
+   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Εύκαιρες Αναβαθμίσεις…</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Μια νέα έκδοση είναι διαθέσιμη !</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Παρακαλώ επιλέξτε τον κατάλογο προορισμού του αρχείου εγκατάστασης.</value></data>
    <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Επιλογή Φακέλου Προορισμού</value></data>

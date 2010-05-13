@@ -114,7 +114,7 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Mostra riquadro marcatore bersaglio</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Mostra Titoli delle Immagini Chiave</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Mostra la Traiettoria</value></data>
-   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Misura:</value></data>
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Misurazione:</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Nessuna</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Distanza</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Velocita'</value></data>
@@ -134,25 +134,25 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Modalita' Mosaico</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Dimensione reale del segmento :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Misura stabilita</value></data>
-   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata di ogni diapositiva : {0} centesimi di secondo.</value></data>
-   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata di ogni diapositiva : {0:0.00} secondi.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0} centesimi di secondo.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0:0.00} secondi.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salva il Video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video originale con una pausa su ogni Immagine Chiave</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video composto solo dalle Immagini Chiave</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo di video</value></data>
    <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Documento PDF (*.pdf)|*.pdf;</value></data>
    <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Salva un documento PDF dalle Immagini Chiavi</value></data>
-   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salva dati in formato foglio di calcolo</value></data>
+   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salva i Dati in formato foglio di calcolo</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commenti...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analisi (*.kva)|*.kva|XML (*.xml)|*.xml|Tutti I Files (*.*)|*.*;</value></data>
-   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carica le Immagini Chiave</value></data>
+   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carica le Immagini Chiave e loro Dati</value></data>
    <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informazioni</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Apponi i disegni sulle immagini.</value></data>
+   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Apponi i Disegni sulle immagini.</value></data>
    <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Un fotogramma ogni {0} centesimi di secondo.</value></data>
    <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frequenza di registrazione immagini :</value></data>
    <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>un fotogramma ogni {0:0.00} secondi.</value></data>
-   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>L'estensione sara' automaticam. aggiunta al Nome del file Immagine. ("file" =&gt; "file-00.00.jpg")</value></data>
+   <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>L'estensione sara' automaticam. aggiunta al nome del File Immagini. ("file" =&gt; "file-00.00.jpg")</value></data>
    <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Esporta solo le Immagini Chiave.</value></data>
    <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Totale delle immagini da esportare : {0:0} immagini.</value></data>
    <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Durata della sequenza di Immagini esportata : {0:0.00} secondi.</value></data>
@@ -161,12 +161,12 @@
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Nel salvataggio tieni conto del Rallentatore. (Attuale = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opzioni</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Modalita' di salvataggio</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Salva solo le Immagini Chiave.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Unisci video e Immagini Chiave nel File.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Includi definitivamente le Immagini Chiave nel video</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Salva solo le Immagini Chiave ed i loro Dati.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Unisci nel file il Video + le Immagini Chiave con i loro Dati.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Includi definitivamente nel Video i Dati delle immagini chiave. </value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Salva solo il Video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salva il Video o le Immagini Chiave...</value></data>
-   <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salva le Immagini Chiave</value></data>
+   <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salva i Dati delle immagini chiave</value></data>
    <data name="dlgSaveFileFilter" xml:space="preserve"><value>Tutti I Files (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salva la Sequenza di Immagini</value></data>
@@ -176,16 +176,16 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salva il Video</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Applica a tutte le traiettorie</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Imposta le coordinate di origine</value></data>
-   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Impossibile creare la Presentazione Diapositive.</value></data>
-   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una Presentazione Diapositive e' una sequenza di Immagini Chiave salvate in formato Video.\n Aggiungi qualche Immagine Chiave PRIMA di generare la Presentazione Diapositive.</value></data>
-   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Non riesce a creare il video richiesto</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Aggiungi qualche Immagine Chiave PRIMA di utilizzare questa funzione.</value></data>
+   <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Impossibile creare la videopresentazione.</value></data>
+   <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una videopresentazione e' una sequenza di Immagini Chiave salvate in formato Video.\n Occorre aggiungere qualche Immagine Chiave PRIMA di generare la videopresentazione.</value></data>
+   <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Impossibile creare il video richiesto</value></data>
+   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Occorre aggiungere qualche Immagine Chiave PRIMA di utilizzare questa funzione.</value></data>
    <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea – Impossibile creare il Documento Pdf. </value></data>
    <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Errore: Impossibile salvare il File : il File e' aperto in un'altra finestra.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Il documento Pdf verra' creato dalle Immagini Chiave.\n Aggiungi qualche Immagine Chiave PRIMA di generare il documento. </value></data>
-   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Impossibile scrivere il file.\nAssicurati di avere I diritti per scrivere nella cartella di destinazione e che il file non sia al momento gia' in uso.</value></data>
+   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Il documento Pdf verra' creato dalle Immagini Chiave.\n Occorre aggiungere qualche Immagine Chiave PRIMA di generare il documento. </value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Impossibile scrivere il file.\nOccorre assicurarsi di avere i diritti per scrivere nella cartella di destinazione e che il file non sia al momento gia' in uso.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Impossibile salvare il Video. </value></data>
-   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Impossibile salvare il video.\nRiprova con formato diverso.</value></data>
+   <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Impossibile salvare il video.\nRiprovare con formato diverso.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>In esecuzione :</value></data>
    <data name="FormFileSave_Title" xml:space="preserve"><value>Salvataggio Video...</value></data>
    <data name="FormFramesExport_Infos" xml:space="preserve"><value>Immagini esportate :</value></data>
@@ -202,7 +202,7 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensione del Font</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Immagine</value></data>
-   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Le Immagini Chiave sono state modificate.\nVuoi salvare le Immagini Chiave prima di chiudere ?</value></data>
+   <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Le Immagini Chiave sono state modificate.\nSalvare le Immagini Chiave ed i loro Dati prima di chiudere ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Immagini Chiave non salvate</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controlli Comuni :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Durata</value></data>
@@ -267,7 +267,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Vai al Fotogramma dell'Immagine Chiave</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Griglia</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Nascondi</value></data>
-   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Caricamento delle Immagini Chiave...</value></data>
+   <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carica Immagini Chiave e loro Dati...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
@@ -279,18 +279,18 @@
    <data name="mnuOneCapture" xml:space="preserve"><value>Un schermo di Cattura Video</value></data>
    <data name="mnuOnePlayer" xml:space="preserve"><value>Un schermo di Riproduzione</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Riproduzione | Pausa</value></data>
-   <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi modifica Traiettoria</value></data>
-   <data name="mnuSave" xml:space="preserve"><value>Salva il Video o le Immagini Chiave...</value></data>
+   <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value></data>
+   <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
    <data name="mnuSavePic" xml:space="preserve"><value>Salva su File l'immagine attuale</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Schermi</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Imposta la velocita' originale</value></data>
-   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro </value></data>
-   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Imposta il Fotogramma attuale come PRIMO fotogramma della Zona Lavoro </value></data>
+   <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come FINE (ULTIMO fotogramma) della Zona Lavoro </value></data>
+   <data name="mnuSetSelectionStart" xml:space="preserve"><value>Imposta il Fotogramma attuale come INIZIO (PRIMO fotogramma) della Zona Lavoro </value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Nitidezza...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizza</value></data>
-   <data name="mnuStopTracking" xml:space="preserve"><value>Fine modificaTraiettoria</value></data>
+   <data name="mnuStopTracking" xml:space="preserve"><value>Fine tracciatura Traiettoria</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverti le posizioni dei Video</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Cancella il file</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Rinomina il file</value></data>
@@ -334,8 +334,8 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : una volta </value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salva una sequenza di Immagini</value></data>
-   <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro a Video Intero</value></data>
-   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salva una presentazione diapositive dalle Immagini Chiavi</value></data>
+   <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro pari al Video Intero</value></data>
+   <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salva una videopresentazione delle Immagini Chiave</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salva il video con una pausa per ogni Immagine Chiave</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Imposta il Fotogramma attuale come PRIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro </value></data>
@@ -346,7 +346,7 @@
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo Contorni...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Livelli automatici...</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Nitidezza...</value></data>
-   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Mosaico...</value></data>
+   <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Panoramica...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>A ritroso...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrasto automatico...</value></data>
    <data name="" xml:space="preserve"><value/></data>

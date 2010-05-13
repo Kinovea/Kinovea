@@ -114,10 +114,10 @@
    <data name="dlgConfigureTrajectory_chkShowTarget" xml:space="preserve"><value>Näytä kohdemerkki</value></data>
    <data name="dlgConfigureTrajectory_chkShowTitles" xml:space="preserve"><value>Näytä avainkuvien nimet</value></data>
    <data name="dlgConfigureTrajectory_chkShowTrajectory" xml:space="preserve"><value>Näytä liikerata</value></data>
-   
-   
-   
-   
+   <data name="dlgConfigureTrajectory_LabelExtraData" xml:space="preserve"><value>Mitta:</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_None" xml:space="preserve"><value>Puuttuu</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Matka</value></data>
+   <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Nopeus</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Tila:</value></data>
    <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Liikerata</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Tyyli:</value></data>
@@ -257,7 +257,7 @@
    <data name="mnuExportODF" xml:space="preserve"><value>OpenOffice Calc (ODF)</value></data>
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
-   
+   <data name="mnuExportTEXT" xml:space="preserve"><value>Radatiedot tekstitiedostoon</value></data>
    <data name="mnuExportToPDF" xml:space="preserve"><value>Vie PDF-muotoon</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Nesteytä...</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Kuvaformaatti</value></data>

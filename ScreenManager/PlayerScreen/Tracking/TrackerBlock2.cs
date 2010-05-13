@@ -335,16 +335,15 @@ namespace Kinovea.ScreenManager
             Rectangle TplZone = new Rectangle(iTplLeft, iTplTop, (int)((double)m_BlockSize.Width * _fStretchFactor), (int)((double)m_BlockSize.Height * _fStretchFactor));
             Pen p = new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color));
             _canvas.DrawRectangle(p, TplZone);
-		
+			p.Dispose();
+			
 			// Current Block's similarity.
-			Font f = new Font("Arial", 8, FontStyle.Regular);
+			/*Font f = new Font("Arial", 8, FontStyle.Regular);
 			String s = String.Format("{0:0.000}",((TrackPointBlock)_currentPoint).Similarity);
 			Brush b = new SolidBrush(Color.FromArgb((int)(255.0f * _fOpacityFactor), _color));
 			_canvas.DrawString(s, f, b, new PointF((float)iSrchLeft, (float)iSrchTop));
-            
 			b.Dispose();
-			p.Dispose();
-			f.Dispose();
+			f.Dispose();*/
 		}
 		public override Rectangle GetEditRectangle(Point _position)
 		{

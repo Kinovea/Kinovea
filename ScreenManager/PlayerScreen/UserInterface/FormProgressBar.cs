@@ -34,20 +34,26 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public partial class formProgressBar : Form
 	{
+		#region Callbacks
+		public delegate void CancelHandler(object sender);
+		public Kinovea.ScreenManager.formProgressBar.CancelHandler Cancel;
+		#endregion
+		
 		#region Members
 		private bool m_IsIdle;
-		private ResourceManager m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 		#endregion
 		
 		#region Constructor
-		public formProgressBar()
+		public formProgressBar(bool _IsCancellable)
 		{
 			InitializeComponent();
 			Application.Idle += new EventHandler(IdleDetector);
+			btnCancel.Visible = _IsCancellable;
 			
             // Culture
-            this.Text = "   " + m_ResourceManager.GetString("FormProgressBar_Title", Thread.CurrentThread.CurrentUICulture);;
-			labelInfos.Text = m_ResourceManager.GetString("FormFramesFilter_Infos", Thread.CurrentThread.CurrentUICulture) + " 0 / ~?";
+            this.Text = "   " + ScreenManagerLang.FormProgressBar_Title;
+			labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " 0 / ~?";
+			btnCancel.Text = ScreenManagerLang.Generic_Cancel;
 		}
 		#endregion	
 		
@@ -75,10 +81,22 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
+		#endregion
+		
+		#region Events
 		private void formProgressBar_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Application.Idle -= new EventHandler(IdleDetector);	
 		}
+		private void ButtonCancel_Click(object sender, EventArgs e)
+		{
+			// User clicked on cancel, trigger the callback that will cancel the ongoing operation.
+			if(Cancel != null) 
+				Cancel(this);
+			
+			btnCancel.Enabled = false;
+		}
 		#endregion
+		
 	}
 }
