@@ -350,7 +350,10 @@ namespace Kinovea.ScreenManager
 		}
 		private void splitResizeBar_Panel2_Resize(object sender, EventArgs e)
 		{
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
+			if(this.Visible)
+			{
+				OrganizeThumbnailsByColumns(m_iCurrentSize);
+			}
 		}
 		private bool IsLoading()
 		{

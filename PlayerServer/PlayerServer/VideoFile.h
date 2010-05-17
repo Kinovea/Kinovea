@@ -241,7 +241,11 @@ namespace VideoFiles
 
 		// Loading
 		int		GetFirstStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
+		int		CountFrames(AVFormatContext*	_pFormatCtx, int _iVideoStream);
+		int64_t GetLastTimestamp(AVFormatContext* _pFormatCtx, int _iVideoStream);
+		void	SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
 		void	DumpStreamsInfos(AVFormatContext* _pFormatCtx);
+		void	DumpFrameType(int _type);
 
 		// Analysis mode
 		ImportStrategy	PrepareSelection(int64_t% _iStartTimeStamp, int64_t% _iEndTimeStamp, bool _bForceReload);

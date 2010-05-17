@@ -199,19 +199,19 @@
       <Link>cxcore200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg\bin\avcodec-51.dll">
-      <Link>avcodec-51.dll</Link>
+    <None Include="..\Refs\FFMpeg-r23012\bin\avcodec-52.dll">
+      <Link>avcodec-52.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg\bin\avformat-52.dll">
+    <None Include="..\Refs\FFMpeg-r23012\bin\avformat-52.dll">
       <Link>avformat-52.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg\bin\avutil-49.dll">
-      <Link>avutil-49.dll</Link>
+    <None Include="..\Refs\FFMpeg-r23012\bin\avutil-50.dll">
+      <Link>avutil-50.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg\bin\swscale-0.dll">
+    <None Include="..\Refs\FFMpeg-r23012\bin\swscale-0.dll">
       <Link>swscale-0.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

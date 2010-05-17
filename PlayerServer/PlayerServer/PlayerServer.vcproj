@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Refs\FFMpeg\include\;..\..\Refs\FFMpeg\include\libavcodec\;..\..\Refs\FFMpeg\include\libavformat\;..\..\Refs\FFMpeg\include\libswscale\;..\..\Refs\FFMpeg\include\libavutil\"
+				AdditionalIncludeDirectories="&quot;..\..\Refs\FFMpeg-r23012\include\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavcodec\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavformat\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libswscale\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavutil\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -61,7 +61,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib Gdi32.lib $(NOINHERIT)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Refs\FFMpeg\lib"
+				AdditionalLibraryDirectories="..\..\Refs\FFMpeg-r23012\lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\Refs\FFMpeg\include;..\..\Refs\FFMpeg\include\libavcodec\;..\..\Refs\FFMpeg\include\libavformat\;..\..\Refs\FFMpeg\include\libswscale\;..\..\Refs\FFMpeg\include\libavutil\"
+				AdditionalIncludeDirectories="&quot;..\..\Refs\FFMpeg-r23012\include&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavcodec\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavformat\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libswscale\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavutil\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -139,7 +139,7 @@
 				UseLibraryDependencyInputs="true"
 				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Refs\FFMpeg\lib"
+				AdditionalLibraryDirectories="&quot;..\..\Refs\FFMpeg-r23012\lib&quot;"
 				GenerateDebugInformation="false"
 				TargetMachine="1"
 			/>
@@ -246,19 +246,19 @@
 				Name="FFMpeg"
 				>
 				<File
-					RelativePath="..\..\Refs\FFMpeg\include\libavcodec\avcodec.h"
+					RelativePath="..\..\Refs\FFMpeg-r23012\include\libavcodec\avcodec.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Refs\FFMpeg\include\libavformat\avformat.h"
+					RelativePath="..\..\Refs\FFMpeg-r23012\include\libavformat\avformat.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Refs\FFMpeg\include\libavutil\avstring.h"
+					RelativePath="..\..\Refs\FFMpeg-r23012\include\libavutil\avstring.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Refs\FFMpeg\include\libswscale\swscale.h"
+					RelativePath="..\..\Refs\FFMpeg-r23012\include\libswscale\swscale.h"
 					>
 				</File>
 			</Filter>

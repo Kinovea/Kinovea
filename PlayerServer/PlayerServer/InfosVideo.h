@@ -61,7 +61,7 @@ namespace Kinovea
 				int		iDecodingHeight;
 				double	fDecodingStretchFactor;			// Used to set the output size of image.
 				int		iDecodingFlag;					// Quality of scaling during format conversion.
-				bool	bDeinterlaced;					// If frames should be deinterlaced.
+				bool	bDeinterlaced;					// If frames should be deinterlaced, this is the setting as set by the user.
 		};
 		
 		// Other helper classes.
@@ -91,6 +91,8 @@ namespace Kinovea
 				// Position
 				int64_t iCurrentTimeStamp;	// Absolu									(Pour mode Selection)
 				int		iCurrentFrame;		// Relatif, entre 0 et iDurationFrame - 1	(Pour mode Analyse)
+				int64_t iBufferedPTS;		// timestamp of a frame that was read but not decoded by libav.
+				int64_t iLastDecodedPTS;	// timestamp of the last decoded frame.
 
 				// Selection
 				int		iDurationFrame;		// (Pour mode Analyse).
