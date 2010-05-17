@@ -455,24 +455,28 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             mnuMirror.MergeAction = MergeAction.Append;
 
-            #region SVG drawings 
-            ToolStripItem[] svgMenus = new ToolStripItem[m_svgFiles.Count];
-            for(int i = 0; i<m_svgFiles.Count; i++)
-            {
-            	ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
-            	mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(m_svgFiles[i]);
-            	mnuSVGDrawing.Tag = m_svgFiles[i];
-	            mnuSVGDrawing.Checked = false;
-	            mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
-	            mnuSVGDrawing.MergeAction = MergeAction.Append;
-				
-	            svgMenus[i] = mnuSVGDrawing;
-            }
-            
+            #region SVG drawings
             mnuSVGTools = new ToolStripMenuItem();
             mnuSVGTools.Text = "Observational Reference";
             mnuSVGTools.MergeAction = MergeAction.Append;
-            mnuSVGTools.DropDownItems.AddRange( svgMenus );
+            
+            if(m_svgFiles.Count > 0)
+            {
+	            ToolStripItem[] svgMenus = new ToolStripItem[m_svgFiles.Count];
+	            for(int i = 0; i<m_svgFiles.Count; i++)
+	            {
+	            	ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
+	            	mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(m_svgFiles[i]);
+	            	mnuSVGDrawing.Tag = m_svgFiles[i];
+		            mnuSVGDrawing.Checked = false;
+		            mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
+		            mnuSVGDrawing.MergeAction = MergeAction.Append;
+					
+		            svgMenus[i] = mnuSVGDrawing;
+	            }
+	            
+	            mnuSVGTools.DropDownItems.AddRange( svgMenus );
+            }
             #endregion
             
             // Grid
@@ -1300,11 +1304,10 @@ namespace Kinovea.ScreenManager
                         // Image
                         mnuDeinterlace.Enabled = true;
                         mnuMirror.Enabled = true;
-                        mnuSVGTools.Enabled = true;
+                        mnuSVGTools.Enabled = m_svgFiles.Count > 0;
                         mnuGrid.Enabled = true;
                         mnuGridPerspective.Enabled = true;
                         mnuCoordinateAxis.Enabled = true;
-
                       	
                         mnuDeinterlace.Checked = player.Deinterlaced;
                         mnuMirror.Checked = player.Mirrored;
