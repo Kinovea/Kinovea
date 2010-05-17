@@ -54,11 +54,11 @@ namespace Kinovea.FileBrowser
 		private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
 		#endregion
 		
-		private static readonly string[] m_KnownFileTypes = { ".3gp", ".asf", ".avi", ".dv", ".flv", ".m1v", ".m2p", ".m2t",
+		private static readonly string[] m_KnownFileTypes = { ".3gp", ".asf", ".avi", ".dv", ".flv", ".f4v", ".m1v", ".m2p", ".m2t",
 			".m2ts", ".m2v", ".m4v", ".mkv", ".mod", ".mov", ".moov", ".mpg", ".mpeg", ".tod", ".mxf",
 			".mp4", ".mpv", ".ogg", ".ogm", ".ogv", ".qt", ".rm", ".swf", ".vob",
 			".wmv", ".dpa", 
-			".jpg", ".jpeg", ".png", ".bmp"	};
+			".jpg", ".jpeg", ".png", ".bmp", ".gif"	};
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
