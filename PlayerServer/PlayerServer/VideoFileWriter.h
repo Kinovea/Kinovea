@@ -102,7 +102,7 @@ namespace VideoFiles
 		bool    WriteMetadata(SavingContext^ _SavingContext, String^ _Metadata);
 		bool	EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap);
 		bool	WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-		
+		void	SanityCheck(AVFormatContext* s);
 		static int GreatestCommonDenominator(int a, int b);
 
 #pragma endregion

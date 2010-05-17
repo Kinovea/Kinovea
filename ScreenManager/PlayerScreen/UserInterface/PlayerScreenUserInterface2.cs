@@ -466,6 +466,8 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
+				log.Debug(String.Format("Timestamp after loading first frame : {0}", m_iCurrentPosition));
+				
 				if (m_iCurrentPosition < 0)
 				{
 					// First frame loaded but inconsistency. (Seen with some AVCHD)
@@ -1406,36 +1408,6 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					//--------------------------------------------------------------------------------------
-					// Il est possible que la frame sur laquelle on est positionné possède un décalage en TimeStamps
-					// avec la précédente qui soit supérieur à la moyenne.
-					//
-					// Dans un tel cas, on va demander un timestamp entre les deux frames.
-					// Après seek+decode, en arrivant sur la vraie frame précédente,
-					// on ne sera toujours pas rendu et on va faire un nouveau décode,
-					// qui va nous ramener sur la frame courante.
-					// -> On ne pourra pas reculer de la frame courante.
-					//
-					// -> Detecter un tel cas, et forcer un jump arrière plus grand.
-					// Peut-être long si le seek nous fait tomber très loin en arrière ET
-					// que l'intervalle entre les deux frames est très supérieur à la normale.(necessite plusieurs tentatives)
-					// (Devrait rester rare).
-					//--------------------------------------------------------------------------------------
-
-					//double  fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
-					//Int64   iAverageTimeStampsPerFrame = (Int64)Math.Round(fAverageTimeStampsPerFrame);
-
-					/*Int64 iOldCurrentPosition = m_iCurrentPosition;
-                    int iBackJump = 1;
-
-
-                    //problème sur certains fichiers.
-                    //while (m_iCurrentPosition >= iOldCurrentPosition)
-                    {
-                        ShowNextFrame(m_iCurrentPosition - (iBackJump * iAverageTimeStampsPerFrame), true);
-                        iBackJump++;
-                    }*/
-
 					m_iFramesToDecode = -1;
 					ShowNextFrame(-1, true);
 					m_iFramesToDecode = 1;
@@ -1471,11 +1443,12 @@ namespace Kinovea.ScreenManager
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				m_iFramesToDecode = 1;
 
-				//---------------------------------------------------------------------------
-				// Si on est en dehors de la zone primaire, ou qu'on va en sortir,
-				// se replacer au début de celle-ci.
-				//---------------------------------------------------------------------------
-				if ((m_iCurrentPosition < m_iSelStart) || (m_iCurrentPosition >= m_iSelEnd))
+				// If we are outside the primary zone or going to get out, seek to start.
+				// We also only do the seek if we are after the m_iStartingPosition,
+				// Sometimes, the second frame will have a time stamp inferior to the first,
+				// which sort of breaks our sentinels.
+				if (((m_iCurrentPosition < m_iSelStart) || (m_iCurrentPosition >= m_iSelEnd)) &&
+				    (m_iCurrentPosition >= m_iStartingPosition))
 				{
 					ShowNextFrame(m_iSelStart, true);
 				}

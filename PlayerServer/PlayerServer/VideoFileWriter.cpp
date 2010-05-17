@@ -178,7 +178,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 		// 9. Associate encoder to stream.
 		m_SavingContext->pOutputVideoStream->codec = m_SavingContext->pOutputCodecContext;
 
-
+		
 		if(_bHasMetadata)
 		{
 			log->Debug("Muxing metadata into a subtitle stream.");
@@ -214,6 +214,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 		}
 
 		// 11. Write file header.
+		SanityCheck(m_SavingContext->pOutputFormatContext);
 		if((iFFMpegResult = av_write_header(m_SavingContext->pOutputFormatContext)) < 0)
 		{
 			result = SaveResult::FileHeaderNotWritten;
@@ -232,6 +233,46 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 	while(false);
 
 	return result;
+}
+void VideoFileWriter::SanityCheck(AVFormatContext* s)
+{
+	// Taken/Adapted from the real sanity check from utils.c av_write_header.
+
+	if (s->nb_streams == 0) 
+	{
+		log->Error("VideoFileWriter sanity check failed: no streams.");
+    }
+
+	AVStream *st;
+    for(unsigned int i=0;i < s->nb_streams;i++) 
+	{
+        st = s->streams[i];
+
+        switch (st->codec->codec_type) 
+		{
+			case AVMEDIA_TYPE_VIDEO:
+				if(st->codec->time_base.num <= 0 || st->codec->time_base.den <= 0)
+				{ 
+					log->Error("VideoFileWriter sanity check failed: time base not set.");
+				}
+				if(st->codec->width <= 0 || st->codec->height <= 0)
+				{
+					log->Error("VideoFileWriter sanity check failed: dimensions not set.");
+				}
+				if(av_cmp_q(st->sample_aspect_ratio, st->codec->sample_aspect_ratio))
+				{
+					log->Error("VideoFileWriter sanity check failed: Aspect ratio mismatch between encoder and muxer layer.");
+					log->Debug(String::Format("stream SAR={0}:{1}, codec SAR:{2}:{3}", 
+						st->sample_aspect_ratio.num, st->sample_aspect_ratio.den, st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den));
+				}
+				break;
+		}
+
+        if(s->oformat->flags & AVFMT_GLOBALHEADER && !(st->codec->flags & CODEC_FLAG_GLOBAL_HEADER))
+		{
+			log->Debug("VideoFileWriter sanity check warning: Codec does not use global headers but container format requires global headers");
+		}
+    }
 }
 
 ///<summary>
@@ -508,6 +549,10 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 			_SavingContext->pOutputCodecContext->sample_aspect_ratio.den = m_SavingContext->iSampleAspectRatioDenominator;
 		}
 	}
+
+	// Ensure the container stream uses the same aspect ratio.
+	_SavingContext->pOutputVideoStream->sample_aspect_ratio.num = _SavingContext->pOutputCodecContext->sample_aspect_ratio.num;
+	_SavingContext->pOutputVideoStream->sample_aspect_ratio.den = _SavingContext->pOutputCodecContext->sample_aspect_ratio.den;
 
 	
 	//-----------------------------------
