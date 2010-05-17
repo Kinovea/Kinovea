@@ -11,7 +11,6 @@
     <AssemblyName>Kinovea.ScreenManager</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <DocumentationFile>bin\x86\Debug\Kinovea.ScreenManager.xml</DocumentationFile>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -96,7 +95,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PlayerServer">
-      <HintPath>..\..\..\trunk\PlayerServer\bin\PlayerServer.dll</HintPath>
+      <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
     </Reference>
     <Reference Include="SharpVectorBindings">
       <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
