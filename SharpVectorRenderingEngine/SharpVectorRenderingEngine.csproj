@@ -1,0 +1,191 @@
+﻿<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0AD99D97-24ED-484D-9430-9905811F8A4F}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>SharpVectorRenderingEngine</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SharpVectorRenderingEngine</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>0.0</OldToolsVersion>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <DebugType>None</DebugType>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug + xmldoc|AnyCPU' ">
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release + xmldoc|AnyCPU' ">
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|AnyCPU' ">
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <BaseAddress>285212672</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug + xmldoc' ">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release + xmldoc' ">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Test' ">
+    <DefineConstants>TEST</DefineConstants>
+    <Optimize>false</Optimize>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+    <FileAlignment>1024</FileAlignment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpVectorBindings">
+      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorCss">
+      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorDom">
+      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorObjectModel">
+      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorUtil">
+      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Drawing.Design">
+      <Name>System.Drawing.Design</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\GdiRenderer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\GraphicsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\GraphicsPathGraphicsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\GraphicsWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\Paint\GdiSvgColor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\Paint\GdiSvgPaint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\Paint\GradientPaintServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\Paint\PaintServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\Paint\PatternPaintServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\SvgElementGraphicsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\SvgImageElementGraphicsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SharpVectors\Renderer\Gdi\SvgMarkerGraphicsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

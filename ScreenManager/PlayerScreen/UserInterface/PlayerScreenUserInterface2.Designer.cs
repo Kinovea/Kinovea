@@ -654,12 +654,13 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNE.Location = new System.Drawing.Point(127, 70);
+        	this.ImageResizerNE.Location = new System.Drawing.Point(92, 70);
         	this.ImageResizerNE.Name = "ImageResizerNE";
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNE.TabIndex = 9;
         	this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
         	this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerNE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerNW
         	// 
@@ -668,12 +669,13 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
         	this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNW.Location = new System.Drawing.Point(92, 70);
+        	this.ImageResizerNW.Location = new System.Drawing.Point(57, 70);
         	this.ImageResizerNW.Name = "ImageResizerNW";
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNW.TabIndex = 8;
         	this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
         	this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerNW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerSW
         	// 
@@ -682,12 +684,13 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSW.Location = new System.Drawing.Point(92, 95);
+        	this.ImageResizerSW.Location = new System.Drawing.Point(57, 95);
         	this.ImageResizerSW.Name = "ImageResizerSW";
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSW.TabIndex = 7;
         	this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
         	this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerSW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerSE
         	// 
@@ -697,12 +700,13 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
         	this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSE.Location = new System.Drawing.Point(127, 95);
+        	this.ImageResizerSE.Location = new System.Drawing.Point(92, 95);
         	this.ImageResizerSE.Name = "ImageResizerSE";
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSE.TabIndex = 6;
         	this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
         	this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerSE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// panelDebug
         	// 
