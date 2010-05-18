@@ -97,11 +97,18 @@
     </Compile>
     <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInterface\UpdateDialog2.cs" />
+    <Compile Include="UserInterface\UpdateDialog2.Designer.cs">
+      <DependentUpon>UpdateDialog2.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Languages\UpdaterLang.el.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.Zh-CHS.resx" />
+    <EmbeddedResource Include="UserInterface\UpdateDialog2.resx">
+      <DependentUpon>UpdateDialog2.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\UpdaterLang.de.resx">

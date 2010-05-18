@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilize</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End Path Edition </value></data>
+   <data name="mnuSVGTools" xml:space="preserve"><value>Observational reference</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invert Videos Positions</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Delete file</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Rename file</value></data>

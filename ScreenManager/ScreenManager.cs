@@ -456,8 +456,8 @@ namespace Kinovea.ScreenManager
             mnuMirror.MergeAction = MergeAction.Append;
 
             #region SVG drawings
-            mnuSVGTools = new ToolStripMenuItem();
-            mnuSVGTools.Text = "Observational Reference";
+            mnuSVGTools.Tag = new ItemResourceInfo(resManager, "mnuSVGTools");
+            mnuSVGTools.Text = ((ItemResourceInfo)mnuSVGTools.Tag).resManager.GetString(((ItemResourceInfo)mnuSVGTools.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuSVGTools.MergeAction = MergeAction.Append;
             
             if(m_svgFiles.Count > 0)

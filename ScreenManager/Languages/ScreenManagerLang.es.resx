@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizar</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminar la ediciòn de la Trayectoria</value></data>
+   
    <data name="mnuSwapScreens" xml:space="preserve"><value>Invertir los vídeos</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Borrar el fichero</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Renombrar el fichero</value></data>

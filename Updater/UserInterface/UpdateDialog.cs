@@ -18,6 +18,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.Updater.Languages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,12 +27,21 @@ using System.Net;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using CodeProject.Downloader;
 using Kinovea.Services;
 
 namespace Kinovea.Updater
 {
+	
+	
+	
+	/// <summary>
+	/// Update dialog. This dialog is DEPRECATED as of 2010-05-18. Use UpdateDialog2.
+	/// This dialog was richer than the new one, you could download example videos, 
+	/// user guides, select the language, etc.
+	/// However, this feature is not really needed. The updates to videos and user guides 
+	/// are only done when a new software release is made, hence the simplification.
+	/// </summary>
     public partial class UpdateDialog : Form
     {
         #region Enums
@@ -54,12 +64,10 @@ namespace Kinovea.Updater
         #endregion
        
         #region Members
-        ResourceManager     m_ResourceManager;
         FileDownloader      m_Downloader                = null;
         bool                m_bDownloadStarted          = false;
         bool                m_bSoftwareUpToDate         = true; // Default to true to avoid downloading when there's nothing.
         
-        private HelpIndex m_hiLocal;
         private HelpIndex m_hiRemote;
 
         private List<HelpItem> m_SourceItemList;            // List of HelpItems to download.
@@ -69,11 +77,11 @@ namespace Kinovea.Updater
         #endregion
 
         #region Constructors
-        public UpdateDialog(ResourceManager _resManager, HelpIndex _hiLocal, HelpIndex _hiRemote)
+        public UpdateDialog(HelpIndex _hiRemote)
         {
+        	m_hiRemote = _hiRemote;
+        	            
             InitializeComponent();
-
-            m_ResourceManager = _resManager;
 
             m_SourceItemList = new List<HelpItem>();
             m_CurrentSourceItemIndex = 0;
@@ -84,21 +92,11 @@ namespace Kinovea.Updater
             m_CallbackDownloadComplete  = new CallbackDownloadComplete(DownloadComplete);
             m_CallbackMultipleDownloadComplete = new CallbackMultipleDownloadComplete(MultipleDownloadComplete);
 
-            m_hiLocal = _hiLocal;
-            m_hiRemote = _hiRemote;
-
-            // Lien internet
-            lnkKinovea.Links.Clear();
-            string lnkTarget = "http://www.kinovea.org";
-            lnkKinovea.Links.Add(0, lnkKinovea.Text.Length, lnkTarget);
-            toolTip1.SetToolTip(lnkKinovea, lnkTarget);
-
             // Chaînes statiques et dynamiques
-            SetupPages(_hiLocal, _hiRemote);
+            SetupPages(_hiRemote);
 
             // Organisation des panels
             InitPages();
-
         }
         #endregion
 
@@ -136,7 +134,7 @@ namespace Kinovea.Updater
 
                     // Dossier cible, défaut = desktop.
                     string szTargetFolder = "";
-                    folderBrowserDialog.Description = m_ResourceManager.GetString("Updater_BrowseFolderDescription", Thread.CurrentThread.CurrentUICulture);
+                    folderBrowserDialog.Description = UpdaterLang.Updater_BrowseFolderDescription;
                     folderBrowserDialog.ShowNewFolderButton = true;
                     folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
 
@@ -226,10 +224,8 @@ namespace Kinovea.Updater
             m_Downloader.DownloadComplete -= new EventHandler(downloader_DownloadedComplete);
 
             // Message de confirmation de réussite.
-            MessageBox.Show(m_ResourceManager.GetString("Updater_mboxDownloadSuccess_Description", Thread.CurrentThread.CurrentUICulture).Replace("\\n","\n"),
-                            m_ResourceManager.GetString("Updater_Title", Thread.CurrentThread.CurrentUICulture),
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+            MessageBox.Show(UpdaterLang.Updater_mboxDownloadSuccess_Description.Replace("\\n","\n"), UpdaterLang.Updater_Title,
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void MultipleDownloadComplete(int result)
         {
@@ -243,7 +239,7 @@ namespace Kinovea.Updater
             // Ecriture sur le disque au cas où l'utilisateur 
             // annule avant la fin du téléchargement de la liste entière.
             //------------------------------------------------------------
-            m_hiLocal.UpdateIndex(m_SourceItemList[m_CurrentSourceItemIndex], m_HelpItemListId);
+            /*m_hiLocal.UpdateIndex(m_SourceItemList[m_CurrentSourceItemIndex], m_HelpItemListId);
             m_hiLocal.WriteToDisk();
 
             //--------------------------------------------------------------------------------------------
@@ -300,6 +296,7 @@ namespace Kinovea.Updater
                 m_CurrentSourceItemIndex++;
                 m_Downloader.AsyncDownload(m_SourceItemList[m_CurrentSourceItemIndex].FileLocation, m_TargetFolder);
             }
+            */
         }
         private void downloader_ProgressChanged(object sender, DownloadEventArgs e)
         {
@@ -430,22 +427,25 @@ namespace Kinovea.Updater
         #endregion
 
         #region Setup Pages & ListBox Handling
-        public void SetupPages(HelpIndex _hiLocalList, HelpIndex _hiRemoteList)
+        public void SetupPages(HelpIndex _hiRemoteList)
         {
-            // Titre Fenetre principale.
-            this.Text                = "   " + m_ResourceManager.GetString("Updater_Title", Thread.CurrentThread.CurrentUICulture);
+            this.Text                = "   " + UpdaterLang.Updater_Title;
             
-            //----------------------------
-            // Labels Statiques Communs
-            //----------------------------
-            btnCancel.Text      = m_ResourceManager.GetString("Updater_Quit", Thread.CurrentThread.CurrentUICulture);
-            btnDownload.Text    = m_ResourceManager.GetString("Updater_Download", Thread.CurrentThread.CurrentUICulture);
-            lblInstruction.Text = m_ResourceManager.GetString("Updater_Instruction", Thread.CurrentThread.CurrentUICulture);
-            lblSoftware.Text    = m_ResourceManager.GetString("Updater_LblSoftware", Thread.CurrentThread.CurrentUICulture);
-            lblManuals.Text     = m_ResourceManager.GetString("Updater_LblManuals", Thread.CurrentThread.CurrentUICulture);
-            lblVideos.Text      = m_ResourceManager.GetString("Updater_LblVideos", Thread.CurrentThread.CurrentUICulture);
-            lblAllManualsUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllManualsUpToDate", Thread.CurrentThread.CurrentUICulture);
-            lblAllVideosUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllVideosUpToDate", Thread.CurrentThread.CurrentUICulture);
+            // website link.
+            lnkKinovea.Links.Clear();
+            string lnkTarget = "http://www.kinovea.org";
+            lnkKinovea.Links.Add(0, lnkKinovea.Text.Length, lnkTarget);
+            toolTip1.SetToolTip(lnkKinovea, lnkTarget);
+            
+            // Other controls.
+            btnCancel.Text      = UpdaterLang.Updater_Quit;
+            btnDownload.Text    = UpdaterLang.Updater_Download;
+            lblInstruction.Text = UpdaterLang.Updater_Instruction;
+            //lblSoftware.Text    = m_ResourceManager.GetString("Updater_LblSoftware", Thread.CurrentThread.CurrentUICulture);
+            //lblManuals.Text     = m_ResourceManager.GetString("Updater_LblManuals", Thread.CurrentThread.CurrentUICulture);
+            //lblVideos.Text      = m_ResourceManager.GetString("Updater_LblVideos", Thread.CurrentThread.CurrentUICulture);
+            //lblAllManualsUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllManualsUpToDate", Thread.CurrentThread.CurrentUICulture);
+            //lblAllVideosUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllVideosUpToDate", Thread.CurrentThread.CurrentUICulture);
 
             lblAllManualsUpToDate.Top = chklstManuals.Top;
             lblAllManualsUpToDate.Left = chklstManuals.Left;
@@ -461,20 +461,20 @@ namespace Kinovea.Updater
 
             if (currentVersion < _hiRemoteList.AppInfos.Version)
             {
-                labelInfos.Text = m_ResourceManager.GetString("Updater_Behind", Thread.CurrentThread.CurrentUICulture);
+                //labelInfos.Text = m_ResourceManager.GetString("Updater_Behind", Thread.CurrentThread.CurrentUICulture);
 
-                String szNewVersion = m_ResourceManager.GetString("Updater_NewVersion", Thread.CurrentThread.CurrentUICulture);
+                String szNewVersion = UpdaterLang.Updater_NewVersion;
                 szNewVersion += " : " + _hiRemoteList.AppInfos.Version.ToString() + " - ( ";
-                szNewVersion += m_ResourceManager.GetString("Updater_CurrentVersion", Thread.CurrentThread.CurrentUICulture);
-                szNewVersion += " " + _hiLocalList.AppInfos.Version.ToString() + ")";
+                szNewVersion += UpdaterLang.Updater_CurrentVersion;
+                szNewVersion += " " + currentVersion.ToString() + ")";
                 lblNewVersion.Text = szNewVersion;
 
-                String szNewVersionFileSize = m_ResourceManager.GetString("Updater_FileSize", Thread.CurrentThread.CurrentUICulture);
+                String szNewVersionFileSize = UpdaterLang.Updater_FileSize;
                 szNewVersionFileSize += " " + String.Format("{0:0.00}",((double)_hiRemoteList.AppInfos.FileSizeInBytes / (1024*1024))) + " ";
-                szNewVersionFileSize += m_ResourceManager.GetString("Updater_MegaBytes", Thread.CurrentThread.CurrentUICulture);
+                szNewVersionFileSize += UpdaterLang.Updater_MegaBytes;
                 lblNewVersionFileSize.Text = szNewVersionFileSize;
 
-                lblChangeLog.Text = m_ResourceManager.GetString("Updater_LblChangeLog", Thread.CurrentThread.CurrentUICulture);
+                lblChangeLog.Text = UpdaterLang.Updater_LblChangeLog;
                 lblChangeLog.Visible = true;
                 
                 // Load Changelog
@@ -518,7 +518,7 @@ namespace Kinovea.Updater
             else
             {
                 // OK à jour.
-                labelInfos.Text = m_ResourceManager.GetString("Updater_UpToDate", Thread.CurrentThread.CurrentUICulture);
+                labelInfos.Text = UpdaterLang.Updater_UpToDate;
                 lblNewVersion.Visible = false;
                 lblNewVersionFileSize.Visible = false;
                 lblChangeLog.Visible = false;
@@ -530,29 +530,29 @@ namespace Kinovea.Updater
             //--------------------------------
             // Page Manuals
             //--------------------------------
-            lblSelectManual.Text = m_ResourceManager.GetString("Updater_LblSelectManuals", Thread.CurrentThread.CurrentUICulture);
+            /*lblSelectManual.Text = UpdaterLang.Updater_LblSelectManuals;
 
             PopulateCheckedListBox(chklstManuals, _hiRemoteList.UserGuides, _hiLocalList.UserGuides, "");
             AutoCheckCulture(chklstManuals);
 
-            String szTotalSelected = m_ResourceManager.GetString("Updater_LblTotalSelected", Thread.CurrentThread.CurrentUICulture);
+            String szTotalSelected = UpdaterLang.Updater_LblTotalSelected;
             szTotalSelected += " " + String.Format("{0:0.0}", (double)ComputeTotalBytes(chklstManuals) / (1024 * 1024)) + " ";
-            szTotalSelected += m_ResourceManager.GetString("Updater_MegaBytes", Thread.CurrentThread.CurrentUICulture);
+            szTotalSelected += UpdaterLang.Updater_MegaBytes;
             lblTotalSelectedManuals.Text = szTotalSelected;
 
             //---------------------------------------------------------------------------------------------------------
             // Page Videos
             //---------------------------------------------------------------------------------------------------------
-            lblSelectVideos.Text = m_ResourceManager.GetString("Updater_LblSelectVideos", Thread.CurrentThread.CurrentUICulture);
-            lblFilterByLanguage.Text = m_ResourceManager.GetString("Updater_LblFilterByLang", Thread.CurrentThread.CurrentUICulture);
+            //lblSelectVideos.Text = m_ResourceManager.GetString("Updater_LblSelectVideos", Thread.CurrentThread.CurrentUICulture);
+            //lblFilterByLanguage.Text = m_ResourceManager.GetString("Updater_LblFilterByLang", Thread.CurrentThread.CurrentUICulture);
             PopulateFilterComboBox();
 
             string szCultureName = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
             PopulateCheckedListBox(chklstVideos, _hiRemoteList.HelpVideos, _hiLocalList.HelpVideos, szCultureName);
             AutoCheckCulture(chklstVideos);
             RematchTotal(chklstVideos, lblTotalSelectedVideos);
-
-            CheckIfListsEmpty();
+			
+            CheckIfListsEmpty();*/
 
             // Alignement à droite avec la RichTextBox du changelog.
             lblNewVersionFileSize.Left = rtbxChangeLog.Left + rtbxChangeLog.Width - lblNewVersionFileSize.Width;
@@ -580,12 +580,12 @@ namespace Kinovea.Updater
                         if (RemoteItem.Revision > _localItems[i].Revision)
                         {
                             RemoteStatus = ItemStatus.NeedUpdate;
-                            szDescription += m_ResourceManager.GetString("Updater_HelpItem_NeedUpdate", Thread.CurrentThread.CurrentUICulture);
+                            szDescription += UpdaterLang.Updater_HelpItem_NeedUpdate;
                         }
                         else
                         {
                             RemoteStatus = ItemStatus.Synched;
-                            szDescription += m_ResourceManager.GetString("Updater_HelpItem_UpToDate", Thread.CurrentThread.CurrentUICulture);
+                            szDescription += UpdaterLang.Updater_HelpItem_UpToDate;
                         }
                     }
                     else
@@ -597,11 +597,11 @@ namespace Kinovea.Updater
                 if (!found)
                 {
                     RemoteStatus = ItemStatus.NewItem;
-                    szDescription += m_ResourceManager.GetString("Updater_HelpItem_NewItem", Thread.CurrentThread.CurrentUICulture);
+                    szDescription += UpdaterLang.Updater_HelpItem_NewItem;
                 }
 
                 szDescription += ", " + String.Format("{0:0.0}", ((double)RemoteItem.FileSizeInBytes / (1024 * 1024)));
-                szDescription += " " + m_ResourceManager.GetString("Updater_MegaBytes", Thread.CurrentThread.CurrentUICulture);
+                szDescription += " " + UpdaterLang.Updater_MegaBytes;
                 szDescription += " )";
 
                 RemoteItem.Description = szDescription;
@@ -631,9 +631,9 @@ namespace Kinovea.Updater
                 iTotal -= ((HelpItem)chklstManuals.Items[e.Index]).FileSizeInBytes;
             }
 
-            String szTotalSelected = m_ResourceManager.GetString("Updater_LblTotalSelected", Thread.CurrentThread.CurrentUICulture);
+            String szTotalSelected = UpdaterLang.Updater_LblTotalSelected;
             szTotalSelected += " " + String.Format("{0:0.0}", (double)iTotal / (1024 * 1024)) + " ";
-            szTotalSelected += m_ResourceManager.GetString("Updater_MegaBytes", Thread.CurrentThread.CurrentUICulture);
+            szTotalSelected += UpdaterLang.Updater_MegaBytes;
             lblTotalSelectedManuals.Text = szTotalSelected;
 
         }
@@ -650,9 +650,9 @@ namespace Kinovea.Updater
                 iTotal -= ((HelpItem)chklstVideos.Items[e.Index]).FileSizeInBytes;
             }
             
-            String szTotalSelected = m_ResourceManager.GetString("Updater_LblTotalSelected", Thread.CurrentThread.CurrentUICulture);
+            String szTotalSelected = UpdaterLang.Updater_LblTotalSelected;
             szTotalSelected += " " + String.Format("{0:0.0}", (double)iTotal / (1024 * 1024)) + " ";
-            szTotalSelected += m_ResourceManager.GetString("Updater_MegaBytes", Thread.CurrentThread.CurrentUICulture);
+            szTotalSelected += UpdaterLang.Updater_MegaBytes;
             lblTotalSelectedVideos.Text = szTotalSelected;
         }
         private int ComputeTotalBytes(CheckedListBox _chklstbox)
@@ -673,7 +673,7 @@ namespace Kinovea.Updater
         {
             cmbLanguageFilter.Items.Clear();
 
-            LanguageIdentifier liAll = new LanguageIdentifier("", m_ResourceManager.GetString("Updater_FilterAll", Thread.CurrentThread.CurrentUICulture));
+            LanguageIdentifier liAll = new LanguageIdentifier("", UpdaterLang.Updater_FilterAll);
             LanguageIdentifier liEnglish = new LanguageIdentifier("en", PreferencesManager.LanguageEnglish);
             LanguageIdentifier liFrench = new LanguageIdentifier("fr", PreferencesManager.LanguageFrench);
 
@@ -686,14 +686,14 @@ namespace Kinovea.Updater
         private void cmbLanguageFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Changement de langue.
-            string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
+            /*string szIsoLang = ((LanguageIdentifier)cmbLanguageFilter.Items[cmbLanguageFilter.SelectedIndex]).CultureName;
             PopulateCheckedListBox(chklstVideos, m_hiRemote.HelpVideos, m_hiLocal.HelpVideos, szIsoLang);
             AutoCheckCulture(chklstVideos);
 
             // On doit s'assurer que le total a été mis à jour, même si aucune action de check a été faite.
             RematchTotal(chklstVideos, lblTotalSelectedVideos);
 
-            CheckIfListsEmpty();
+            CheckIfListsEmpty();*/
         }
         private void AutoCheckCulture(CheckedListBox _chklstbox)
         {
@@ -707,9 +707,9 @@ namespace Kinovea.Updater
         }
         private void RematchTotal(CheckedListBox _chklstbox, Label _lblTotalSelected)
         {
-            string szTotalSelected = m_ResourceManager.GetString("Updater_LblTotalSelected", Thread.CurrentThread.CurrentUICulture);
+            string szTotalSelected = UpdaterLang.Updater_LblTotalSelected;
             szTotalSelected += " " + String.Format("{0:0.0}", (double)ComputeTotalBytes(_chklstbox) / (1024 * 1024)) + " ";
-            szTotalSelected += m_ResourceManager.GetString("Updater_MegaBytes", Thread.CurrentThread.CurrentUICulture);
+            szTotalSelected += UpdaterLang.Updater_MegaBytes;
             _lblTotalSelected.Text = szTotalSelected;
         }
         private void CheckIfListsEmpty()
@@ -734,13 +734,13 @@ namespace Kinovea.Updater
                 lblAllVideosUpToDate.Visible = true;
                 if (((LanguageIdentifier)cmbLanguageFilter.SelectedItem).CultureName == "")
                 {
-                    lblAllVideosUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllVideosUpToDate", Thread.CurrentThread.CurrentUICulture);
+                    lblAllVideosUpToDate.Text = UpdaterLang.Updater_LblAllVideosUpToDate;
                     //lblFilterByLanguage.Visible = false;
                     //cmbLanguageFilter.Visible = false;
                 }
                 else
                 {
-                    lblAllVideosUpToDate.Text = m_ResourceManager.GetString("Updater_LblAllVideosUpToDateCategory", Thread.CurrentThread.CurrentUICulture);
+                    lblAllVideosUpToDate.Text = UpdaterLang.Updater_LblAllVideosUpToDateCategory;
                     //lblFilterByLanguage.Visible = true;
                     //cmbLanguageFilter.Visible = true;
                 }

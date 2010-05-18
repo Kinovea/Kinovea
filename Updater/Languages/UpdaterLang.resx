@@ -68,7 +68,7 @@
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
    <data name="mnuCheckForUpdates" xml:space="preserve"><value>Software Update…</value></data>
-   <data name="Updater_Behind" xml:space="preserve"><value>A new version is available !</value></data>
+   <data name="Updater_Behind" xml:space="preserve"><value>A new version is available!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Please choose the target directory for the installer file.</value></data>
    <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Choose Destination Folder</value></data>
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Current Version :</value></data>

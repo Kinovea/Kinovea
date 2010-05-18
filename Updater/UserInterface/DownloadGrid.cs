@@ -23,6 +23,10 @@ using System.Windows.Forms;
 
 namespace Kinovea.Updater
 {
+	/// <summary>
+	/// todo: remove.
+	/// This control was only used in the more complex update dialog.
+	/// </summary>
     public partial class DownloadGrid : UserControl
     {
         public DownloadGrid()

@@ -18,12 +18,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
+using Kinovea.Updater.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 [assembly: CLSCompliant(true)]
@@ -118,66 +118,61 @@ namespace Kinovea.Updater
         #region Menu Event Handlers
         private void mnuCheckForUpdatesOnClick(object sender, EventArgs e)
         {
+        	// Stop playing if needed.
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.StopPlaying != null)
             {
                 dp.StopPlaying();
             }
 
-            // Force update channel to standard.
-            // There is also an update channel for experimental builds, but it is not used for now.
-            int iUpdateChannel = 0;
-
-            //------------------------------------------------
-            // Lecture des configuration locales et distantes.
-            //------------------------------------------------
-            PreferencesManager pm = PreferencesManager.Instance();
-            ResourceManager SharedResources = PreferencesManager.ResourceManager;
-
-            HelpIndex hiLocal = new HelpIndex(Application.StartupPath + "\\" + SharedResources.GetString("URILocalHelpIndex"));
-            HelpIndex hiRemote;
-            switch (iUpdateChannel)
+            // Download the update configuration file from the webserver.
+			HelpIndex hiRemote;
+            if(PreferencesManager.ExperimentalRelease)
             {
-                case 0:
-                    hiRemote = new HelpIndex(SharedResources.GetString("URIRemoteHelpIndex"));
-                    break;
-                case 1:
-                    hiRemote = new HelpIndex(SharedResources.GetString("URIRemoteHelpIndexBeta"));
-                    break;
-                default:
-                    hiRemote = new HelpIndex(SharedResources.GetString("URIRemoteHelpIndex"));
-                    break;
+            	hiRemote = new HelpIndex("http://www.kinovea.org/setup/updatebeta.xml");
+            }
+            else
+            {
+            	hiRemote = new HelpIndex("http://www.kinovea.org/setup/update.xml");
             }
             
-            if (hiRemote.LoadSuccess && hiLocal.LoadSuccess)
+            if (hiRemote.LoadSuccess)
             {
                 if (dp.DeactivateKeyboardHandler != null)
                 {
                     dp.DeactivateKeyboardHandler();
                 }
 
-                UpdateDialog ud = new UpdateDialog(resManager, hiLocal, hiRemote);
-                ud.ShowDialog();
-                ud.Dispose();
-
+                // Check if we are up to date.
+                ThreePartsVersion currentVersion = new ThreePartsVersion(PreferencesManager.ReleaseVersion);
+                if (hiRemote.AppInfos.Version > currentVersion)
+            	{
+                	// We are not up to date, display the full dialog.
+                	// The dialog is responsible for displaying the download success msg box.
+	                UpdateDialog2 ud = new UpdateDialog2(hiRemote);
+	                ud.ShowDialog();
+	               	ud.Dispose();
+                }
+                else
+                {
+                	// We are up to date, display a simple confirmation box.
+                	MessageBox.Show(UpdaterLang.Updater_UpToDate, UpdaterLang.Updater_Title, 
+                	                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+	            }
+                
                 if (dp.ActivateKeyboardHandler != null)
                 {
                     dp.ActivateKeyboardHandler();
                 }
             }
-            else if (!hiRemote.LoadSuccess)
+            else
             {
-                // MessageBox demandant de vérifier la connexion à internet.
-                // Cause possible : FIREWALL.
+                // Remote connection failed, we are probably firewalled.
                 MessageBox.Show(resManager.GetString("Updater_InternetError", Thread.CurrentThread.CurrentUICulture),
                                 resManager.GetString("Updater_Title", Thread.CurrentThread.CurrentUICulture),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Exclamation);
-            }
-            else
-            {
-                // TODO: Local file is missing, rebuild it ?
-                log.Error("Cannot load local help index.");
             }
         }
         #endregion

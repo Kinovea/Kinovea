@@ -70,7 +70,7 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à A new version is available !.
+        ///   Recherche une chaîne localisée semblable à A new version is available!.
         /// </summary>
         internal static string Updater_Behind {
             get {

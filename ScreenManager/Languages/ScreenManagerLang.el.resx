@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Σταθεροποίηση</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Τερματισμός Έκδοσης Διαδρομής</value></data>
+   
    <data name="mnuSwapScreens" xml:space="preserve"><value>Εισαγωγή Θέσεων Video</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Διαγραφή αρχείων</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Μετονομασία αρχείου</value></data>

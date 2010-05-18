@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilize Et</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Yol Düzenlemesini Sonlandır</value></data>
+   
    <data name="mnuSwapScreens" xml:space="preserve"><value>Video Konumlarını Tersine Çevir</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Dosyayı sil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Dosya ismini değiştir</value></data>
