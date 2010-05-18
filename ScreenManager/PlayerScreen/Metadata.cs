@@ -385,6 +385,27 @@ namespace Kinovea.ScreenManager
         	}
         	return images;
         }
+        
+        public void ResizeFinished()
+        {
+        	// This function is used to trigger an update to drawings and guides that do not 
+        	// render in the same way when the user is resizing the window or not.
+        	// This is typically used for SVG Drawing, which take a long time to render themselves.
+        	foreach(Keyframe kf in m_Keyframes)
+        	{
+        		foreach(AbstractDrawing d in kf.Drawings)
+        		{
+        			DrawingSVG svg = d as DrawingSVG;
+        			if(svg != null)
+        			{
+        				svg.ResizeFinished();
+        			}
+        		}
+        	}
+        	
+        	
+        }
+        
         #region Objects Hit Tests
         public void UnselectAll()
         {
@@ -548,6 +569,7 @@ namespace Kinovea.ScreenManager
             return bGridHit;
         }
         #endregion
+        
         #endregion
 
         #region Lower level Helpers

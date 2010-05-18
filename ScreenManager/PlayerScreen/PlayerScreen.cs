@@ -348,6 +348,11 @@ namespace Kinovea.ScreenManager
         {
         	m_PlayerScreenUI.Save();
         }
+        public void AddSVGDrawing(string filename)
+        {
+        	// todo, move up in Abstract screen ?
+        	m_PlayerScreenUI.AddSVGDrawing(filename);
+        }
         #endregion
     }
 }

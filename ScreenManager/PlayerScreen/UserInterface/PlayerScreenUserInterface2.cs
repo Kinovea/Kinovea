@@ -291,6 +291,7 @@ namespace Kinovea.ScreenManager
 		private Magnifier m_Magnifier = new Magnifier();
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
+		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -306,6 +307,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuTrackTrajectory = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
+		private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
@@ -384,6 +386,10 @@ namespace Kinovea.ScreenManager
 			m_CallbackTimerEventHandler = new TimerEventHandler(MultimediaTimerTick);
 			m_CallbackPlayLoop = new CallbackPlayLoop(PlayLoop);
 
+			m_DeselectionTimer.Interval = 3000;
+			m_DeselectionTimer.Tick += new EventHandler(DeselectionTimer_OnTick);
+
+			
 			//SetupDebugPanel();
 		}
 		#endregion
@@ -842,6 +848,7 @@ namespace Kinovea.ScreenManager
 					case Keys.Add:
 						{
 							IncreaseDirectZoom();
+							m_FrameServer.Metadata.ResizeFinished();
 							bWasHandled = true;
 							break;
 						}
@@ -849,6 +856,7 @@ namespace Kinovea.ScreenManager
 						{
 							// Decrease Zoom.
 							DecreaseDirectZoom();
+							m_FrameServer.Metadata.ResizeFinished();
 							bWasHandled = true;
 							break;
 						}
@@ -926,6 +934,58 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			
 			StretchSqueezeSurface();
+		}
+		public void AddSVGDrawing(string _filename)
+		{
+			// Add an SVG drawing from the file.
+			
+			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
+			
+			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded && File.Exists(_filename))
+			{
+				if(m_bIsCurrentlyPlaying)
+				{
+					StopPlaying();
+					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+					ActivateKeyframe(m_iCurrentPosition);	
+				}
+						
+				PrepareKeyframesDock();
+				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+				m_FrameServer.Metadata.SelectedTrack = -1;
+				m_FrameServer.Metadata.SelectedChrono = -1;
+				
+				try
+				{
+					// Add a KeyFrame here if it doesn't exist.
+					AddKeyframe();
+										
+					// The drawing is initialized at the center of the image.
+					Point imageCenter = new Point(m_FrameServer.Metadata.ImageSize.Width / 2, m_FrameServer.Metadata.ImageSize.Height / 2);
+					
+					DrawingSVG dsvg = new DrawingSVG(imageCenter.X,
+					                                 imageCenter.Y, 
+					                                 m_iCurrentPosition, 
+					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+					                                 _filename);
+					
+					m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
+				}
+				catch
+				{
+					// An error occurred during the creation.
+					// example : external DTD an no network or invalid svg file.
+					// TODO: inform the user.
+				}
+				
+				m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+				m_FrameServer.Metadata.SelectedDrawing = -1;
+				
+				m_ActiveTool = DrawingToolType.Pointer;
+				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+				
+				pbSurfaceScreen.Invalidate();
+			}		
 		}
 		#endregion
 		
@@ -1097,7 +1157,7 @@ namespace Kinovea.ScreenManager
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
 			mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, new ToolStripSeparator(), mnuTrackTrajectory, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing, mnuDeleteDrawing });
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuSepDrawing, mnuTrackTrajectory, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
@@ -2032,6 +2092,7 @@ namespace Kinovea.ScreenManager
 				}
 			}
 			StretchSqueezeSurface();
+			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
 		private void ImageResizerSE_MouseMove(object sender, MouseEventArgs e)
@@ -2092,17 +2153,11 @@ namespace Kinovea.ScreenManager
 		}
 		private void Resizers_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			// Maximiser l'écran ou repasser à la taille originale.
-			if (!m_bStretchModeOn)
-			{
-				m_bStretchModeOn = true;
-			}
-			else
-			{
-				m_FrameServer.CoordinateSystem.Stretch = 1;
-				m_bStretchModeOn = false;
-			}
-			StretchSqueezeSurface();
+			ToggleStretchMode();
+		}
+		private void Resizers_MouseUp(object sender, MouseEventArgs e)
+		{
+			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
 		#endregion
@@ -2515,6 +2570,20 @@ namespace Kinovea.ScreenManager
 				return 40;
 			}
 		}
+		
+		private void DeselectionTimer_OnTick(object sender, EventArgs e) 
+		{
+			// Deselect the currently selected drawing.
+			// This is used for drawings that must show extra stuff for being transformed, but we 
+			// don't want to show the extra stuff all the time for clarity.
+			
+			m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+			m_FrameServer.Metadata.SelectedDrawing = -1;
+			log.Debug("Deselection timer fired.");
+			m_DeselectionTimer.Stop();
+			pbSurfaceScreen.Invalidate();
+		}
+
 		#endregion
 		
 		#region Culture
@@ -2650,6 +2719,8 @@ namespace Kinovea.ScreenManager
 			{
 				if (m_FrameServer.VideoFile.Loaded)
 				{
+					m_DeselectionTimer.Stop();
+					
 					if (e.Button == MouseButtons.Left)
 					{
 						// Magnifier can be moved even when the video is playing.
@@ -2831,17 +2902,20 @@ namespace Kinovea.ScreenManager
 								// We use temp variables because ToolStripMenuItem.Visible always returns false...
 								bool isCross = (ad is DrawingCross2D);
 								bool isLine = (ad is DrawingLine2D);
-								bool fadingVisible = m_PrefManager.DefaultFading.Enabled;
-								bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
+								bool fadingVisible = m_PrefManager.DefaultFading.Enabled && !(ad is DrawingSVG);
+								bool gotoVisible = (fadingVisible && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
+								bool configVisible = !(ad is DrawingSVG);
 								
 								mnuTrackTrajectory.Visible = isCross;
 								mnuTrackTrajectory.Enabled = (ad.infosFading.ReferenceTimestamp == m_iCurrentPosition);
 								mnuConfigureFading.Visible = fadingVisible;
+								mnuConfigureDrawing.Visible = configVisible; 
 								mnuGotoKeyframe.Visible = gotoVisible;
 								mnuShowMeasure.Visible = isLine;
 								mnuSealMeasure.Visible = isLine;
 								
-								mnuSepDrawing.Visible = isCross || gotoVisible || isLine;
+								mnuSepDrawing.Visible = !(ad is DrawingSVG);
+								mnuSepDrawing2.Visible = isCross || gotoVisible || isLine;
 								
 								// "Color & Size" or "Color" depending on drawing type.
 								SetPopupConfigureParams(ad);
@@ -3017,6 +3091,10 @@ namespace Kinovea.ScreenManager
 						IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
 						CommandManager cm = CommandManager.Instance();
 						cm.LaunchUndoableCommand(cad);
+						
+						// Deselect the drawing we just added.
+						m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+						m_FrameServer.Metadata.SelectedDrawing = -1;
 					}
 					else
 					{
@@ -3031,12 +3109,25 @@ namespace Kinovea.ScreenManager
 				{
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).OnMouseUp();
+					
+					// If we were resizing an SVG drawing, trigger a render.
+					// TODO: this is currently triggered on every mouse up, not only on resize !
+					int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
+					int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
+					if(selectedFrame != -1 && selectedDrawing  != -1)
+					{
+						DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
+						if(d != null)
+						{
+							d.ResizeFinished();
+						}
+					}
 				}
 				
-				if (m_iActiveKeyFrameIndex >= 0)
+				// TODO: start deselection timer.
+				if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
 				{
-					m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-					m_FrameServer.Metadata.SelectedDrawing = -1;
+					m_DeselectionTimer.Start();					
 				}
 				
 				pbSurfaceScreen.Invalidate();
@@ -3066,6 +3157,8 @@ namespace Kinovea.ScreenManager
 				}
 				else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 				{
+					// Double click on a drawing:
+					// turn text tool into edit mode, launch config for others, SVG don't have a config.
 					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
 					if (ad is DrawingText)
 					{
@@ -3073,7 +3166,7 @@ namespace Kinovea.ScreenManager
 						m_ActiveTool = DrawingToolType.Text;
 						m_bTextEdit = true;
 					}
-					else
+					else if(!(ad is DrawingSVG))
 					{
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
@@ -4015,7 +4108,7 @@ namespace Kinovea.ScreenManager
 
 			UpdateCursor();
 		}
-		private void SetCursor(Cursor _cur)
+		public void SetCursor(Cursor _cur)
 		{
 			if (m_ActiveTool != DrawingToolType.Pointer)
 			{
@@ -4405,6 +4498,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.CoordinateSystem.Zoom = m_Magnifier.ZoomFactor;
 			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_Magnifier.MagnifiedCenter);
 			DisableMagnifier();
+			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
 		private void mnuMagnifier150_Click(object sender, EventArgs e)
@@ -4495,6 +4589,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+			m_FrameServer.Metadata.ResizeFinished();
 		}
 		private void IncreaseDirectZoom()
 		{
@@ -4508,6 +4603,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom += 0.20f;
 				RelocateDirectZoom();
+				m_FrameServer.Metadata.ResizeFinished();
 				pbSurfaceScreen.Invalidate();
 			}
 		}
@@ -4517,6 +4613,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
 				RelocateDirectZoom();
+				m_FrameServer.Metadata.ResizeFinished();
 				pbSurfaceScreen.Invalidate();
 			}
 		}

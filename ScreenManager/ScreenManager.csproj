@@ -11,7 +11,6 @@
     <AssemblyName>Kinovea.ScreenManager</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <DocumentationFile>bin\x86\Debug\Kinovea.ScreenManager.xml</DocumentationFile>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -98,6 +97,21 @@
     <Reference Include="PlayerServer">
       <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
     </Reference>
+    <Reference Include="SharpVectorBindings">
+      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorCss">
+      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorDom">
+      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorObjectModel">
+      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorUtil">
+      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -145,6 +159,7 @@
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
@@ -425,6 +440,10 @@
     <ProjectReference Include="..\Services\Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpVectorRenderingEngine\SharpVectorRenderingEngine.csproj">
+      <Project>{0AD99D97-24ED-484D-9430-9905811F8A4F}</Project>
+      <Name>SharpVectorRenderingEngine</Name>
     </ProjectReference>
     <Folder Include="CaptureScreen\UserInterface" />
     <Folder Include="Commands\CaptureScreen" />
