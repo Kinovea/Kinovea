@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiloi</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Lopeta liikeradan editointi</value></data>
+   
    <data name="mnuSwapScreens" xml:space="preserve"><value>Vaihda videoiden järjestys</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Poista tiedosto</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Uudelleennimeä tiedosto</value></data>

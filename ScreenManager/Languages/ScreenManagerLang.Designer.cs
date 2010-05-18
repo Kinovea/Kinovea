@@ -2059,6 +2059,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Observational reference.
+        /// </summary>
+        internal static string mnuSVGTools {
+            get {
+                return ResourceManager.GetString("mnuSVGTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Invert Videos Positions.
         /// </summary>
         internal static string mnuSwapScreens {

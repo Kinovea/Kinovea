@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliseer…</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beëindig Trajectory bewerking</value></data>
+   
    <data name="mnuSwapScreens" xml:space="preserve"><value>Draai Video posities om</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Verwijder bestand</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Hernoem bestand</value></data>

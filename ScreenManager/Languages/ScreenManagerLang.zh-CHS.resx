@@ -291,6 +291,7 @@
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>固定</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>结束路径 </value></data>
+   
    <data name="mnuSwapScreens" xml:space="preserve"><value>反转视频位置</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>删除文件</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>更名文件</value></data>
