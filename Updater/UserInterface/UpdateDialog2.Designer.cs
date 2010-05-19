@@ -194,6 +194,7 @@ namespace Kinovea.Updater
 			this.Controls.Add(this.btnSoftware);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "UpdateDialog2";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "UpdateDialog2";
 			this.ResumeLayout(false);
 			this.PerformLayout();

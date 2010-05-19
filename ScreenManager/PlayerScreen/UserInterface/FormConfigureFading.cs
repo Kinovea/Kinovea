@@ -18,12 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -36,8 +36,7 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureFading : Form
     {
     	#region Members
-        private ResourceManager m_ResourceManager;
-    	private bool m_bManualClose = false;
+       private bool m_bManualClose = false;
         
     	private PictureBox m_SurfaceScreen;        // Used to update the image while configuring.
         private AbstractDrawing m_Drawing;			// Instance of the drawing we are modifying.
@@ -47,12 +46,11 @@ namespace Kinovea.ScreenManager
         #region Construction & Initialization
         public formConfigureFading(AbstractDrawing _drawing, PictureBox _SurfaceScreen)
         {
-            InitializeComponent();
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-
-            m_SurfaceScreen = _SurfaceScreen;
+        	m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
             m_MemoInfosFading = _drawing.infosFading.Clone();
+            
+            InitializeComponent();
             ConfigureForm();
             LocalizeForm();
         }
@@ -66,15 +64,25 @@ namespace Kinovea.ScreenManager
         }
         private void LocalizeForm()
         {
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureFading_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgConfigureFading_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
 
-            chkEnable.Text = m_ResourceManager.GetString("dlgConfigureFading_chkEnable", Thread.CurrentThread.CurrentUICulture);
-            chkDefault.Text = String.Format(m_ResourceManager.GetString("dlgConfigureFading_chkDefault", Thread.CurrentThread.CurrentUICulture), PreferencesManager.Instance().DefaultFading.FadingFrames);
+            chkEnable.Text = ScreenManagerLang.dlgConfigureFading_chkEnable;
+            
+            InfosFading info = PreferencesManager.Instance().DefaultFading;
+            if(info.AlwaysVisible)
+            {
+            	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault;
+            }
+            else
+            {
+            	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault + String.Format("({0})", info.FadingFrames);
+            }
+            
             UpdateValueLabel();
-            chkAlwaysVisible.Text = m_ResourceManager.GetString("dlgConfigureFading_chkAlwaysVisible", Thread.CurrentThread.CurrentUICulture);
+            chkAlwaysVisible.Text = ScreenManagerLang.dlgConfigureFading_chkAlwaysVisible;
         }
         #endregion
 
@@ -106,7 +114,7 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateValueLabel()
         {
-            lblValue.Text = String.Format(m_ResourceManager.GetString("dlgConfigureFading_lblValue", Thread.CurrentThread.CurrentUICulture), m_Drawing.infosFading.FadingFrames.ToString());
+            lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureFading_lblValue, m_Drawing.infosFading.FadingFrames.ToString());
         }
         private void EnableDisable()
         {

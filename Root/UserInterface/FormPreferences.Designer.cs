@@ -60,12 +60,12 @@ namespace Kinovea.Root
         	this.btnSave = new System.Windows.Forms.Button();
         	this.btnCancel = new System.Windows.Forms.Button();
         	this.pageDrawings = new System.Windows.Forms.Panel();
-        	this.grpDrawingsFading = new System.Windows.Forms.GroupBox();
         	this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
+        	this.grpDrawingsFading = new System.Windows.Forms.GroupBox();
+        	this.chkAlwaysVisible = new System.Windows.Forms.CheckBox();
         	this.lblFading = new System.Windows.Forms.Label();
         	this.trkFading = new System.Windows.Forms.TrackBar();
         	this.chkEnablePersistence = new System.Windows.Forms.CheckBox();
-        	this.colPicker = new Kinovea.ScreenManager.StaticColorPicker();
         	this.panel1.SuspendLayout();
         	this.pageGeneral.SuspendLayout();
         	this.grpGeneral.SuspendLayout();
@@ -462,29 +462,17 @@ namespace Kinovea.Root
         	// 
         	this.pageDrawings.BackColor = System.Drawing.Color.White;
         	this.pageDrawings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+        	this.pageDrawings.Controls.Add(this.chkDrawOnPlay);
         	this.pageDrawings.Controls.Add(this.grpDrawingsFading);
         	this.pageDrawings.Location = new System.Drawing.Point(155, 628);
         	this.pageDrawings.Name = "pageDrawings";
         	this.pageDrawings.Size = new System.Drawing.Size(434, 290);
         	this.pageDrawings.TabIndex = 11;
         	// 
-        	// grpDrawingsFading
-        	// 
-        	this.grpDrawingsFading.Controls.Add(this.chkDrawOnPlay);
-        	this.grpDrawingsFading.Controls.Add(this.lblFading);
-        	this.grpDrawingsFading.Controls.Add(this.trkFading);
-        	this.grpDrawingsFading.Controls.Add(this.chkEnablePersistence);
-        	this.grpDrawingsFading.Location = new System.Drawing.Point(13, 15);
-        	this.grpDrawingsFading.Name = "grpDrawingsFading";
-        	this.grpDrawingsFading.Size = new System.Drawing.Size(405, 256);
-        	this.grpDrawingsFading.TabIndex = 19;
-        	this.grpDrawingsFading.TabStop = false;
-        	this.grpDrawingsFading.Text = "Persistence";
-        	// 
         	// chkDrawOnPlay
         	// 
         	this.chkDrawOnPlay.AutoSize = true;
-        	this.chkDrawOnPlay.Location = new System.Drawing.Point(23, 170);
+        	this.chkDrawOnPlay.Location = new System.Drawing.Point(26, 248);
         	this.chkDrawOnPlay.Name = "chkDrawOnPlay";
         	this.chkDrawOnPlay.Size = new System.Drawing.Size(202, 17);
         	this.chkDrawOnPlay.TabIndex = 50;
@@ -492,9 +480,33 @@ namespace Kinovea.Root
         	this.chkDrawOnPlay.UseVisualStyleBackColor = true;
         	this.chkDrawOnPlay.CheckedChanged += new System.EventHandler(this.chkDrawOnPlay_CheckedChanged);
         	// 
+        	// grpDrawingsFading
+        	// 
+        	this.grpDrawingsFading.Controls.Add(this.chkAlwaysVisible);
+        	this.grpDrawingsFading.Controls.Add(this.lblFading);
+        	this.grpDrawingsFading.Controls.Add(this.trkFading);
+        	this.grpDrawingsFading.Controls.Add(this.chkEnablePersistence);
+        	this.grpDrawingsFading.Location = new System.Drawing.Point(13, 18);
+        	this.grpDrawingsFading.Name = "grpDrawingsFading";
+        	this.grpDrawingsFading.Size = new System.Drawing.Size(405, 204);
+        	this.grpDrawingsFading.TabIndex = 19;
+        	this.grpDrawingsFading.TabStop = false;
+        	this.grpDrawingsFading.Text = "Persistence";
+        	// 
+        	// chkAlwaysVisible
+        	// 
+        	this.chkAlwaysVisible.AutoSize = true;
+        	this.chkAlwaysVisible.Location = new System.Drawing.Point(14, 167);
+        	this.chkAlwaysVisible.Name = "chkAlwaysVisible";
+        	this.chkAlwaysVisible.Size = new System.Drawing.Size(91, 17);
+        	this.chkAlwaysVisible.TabIndex = 51;
+        	this.chkAlwaysVisible.Text = "Always visible";
+        	this.chkAlwaysVisible.UseVisualStyleBackColor = true;
+        	this.chkAlwaysVisible.CheckedChanged += new System.EventHandler(this.chkAlwaysVisible_CheckedChanged);
+        	// 
         	// lblFading
         	// 
-        	this.lblFading.Location = new System.Drawing.Point(20, 68);
+        	this.lblFading.Location = new System.Drawing.Point(10, 69);
         	this.lblFading.Name = "lblFading";
         	this.lblFading.Size = new System.Drawing.Size(362, 32);
         	this.lblFading.TabIndex = 20;
@@ -504,9 +516,9 @@ namespace Kinovea.Root
         	// 
         	// trkFading
         	// 
-        	this.trkFading.Location = new System.Drawing.Point(24, 106);
+        	this.trkFading.Location = new System.Drawing.Point(14, 107);
         	this.trkFading.Maximum = 60;
-        	this.trkFading.Minimum = 2;
+        	this.trkFading.Minimum = 1;
         	this.trkFading.Name = "trkFading";
         	this.trkFading.Size = new System.Drawing.Size(359, 45);
         	this.trkFading.TabIndex = 45;
@@ -516,24 +528,13 @@ namespace Kinovea.Root
         	// chkEnablePersistence
         	// 
         	this.chkEnablePersistence.AutoSize = true;
-        	this.chkEnablePersistence.Location = new System.Drawing.Point(23, 33);
+        	this.chkEnablePersistence.Location = new System.Drawing.Point(13, 34);
         	this.chkEnablePersistence.Name = "chkEnablePersistence";
         	this.chkEnablePersistence.Size = new System.Drawing.Size(116, 17);
         	this.chkEnablePersistence.TabIndex = 40;
         	this.chkEnablePersistence.Text = "Enable persistence";
         	this.chkEnablePersistence.UseVisualStyleBackColor = true;
         	this.chkEnablePersistence.CheckedChanged += new System.EventHandler(this.chkFading_CheckedChanged);
-        	// 
-        	// colPicker
-        	// 
-        	this.colPicker.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.colPicker.Location = new System.Drawing.Point(-12, 332);
-        	this.colPicker.Name = "colPicker";
-        	this.colPicker.Size = new System.Drawing.Size(160, 120);
-        	this.colPicker.TabIndex = 10;
-        	this.colPicker.Visible = false;
-        	this.colPicker.MouseLeft += new Kinovea.ScreenManager.StaticColorPicker.DelegateMouseLeft(this.colPicker_MouseLeft);
-        	this.colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
         	// 
         	// formPreferences
         	// 
@@ -542,7 +543,6 @@ namespace Kinovea.Root
         	this.BackColor = System.Drawing.Color.White;
         	this.ClientSize = new System.Drawing.Size(602, 926);
         	this.Controls.Add(this.pageDrawings);
-        	this.Controls.Add(this.colPicker);
         	this.Controls.Add(this.btnSave);
         	this.Controls.Add(this.btnCancel);
         	this.Controls.Add(this.pagePlayAnalyze);
@@ -567,11 +567,13 @@ namespace Kinovea.Root
         	((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneSeconds)).EndInit();
         	((System.ComponentModel.ISupportInitialize)(this.trkWorkingZoneMemory)).EndInit();
         	this.pageDrawings.ResumeLayout(false);
+        	this.pageDrawings.PerformLayout();
         	this.grpDrawingsFading.ResumeLayout(false);
         	this.grpDrawingsFading.PerformLayout();
         	((System.ComponentModel.ISupportInitialize)(this.trkFading)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.CheckBox chkAlwaysVisible;
         private System.Windows.Forms.Label lblSpeedUnit;
         private System.Windows.Forms.ComboBox cmbSpeedUnit;
         private System.Windows.Forms.CheckBox chkDeinterlace;
@@ -602,7 +604,7 @@ namespace Kinovea.Root
         private System.Windows.Forms.GroupBox grpColors;
         private System.Windows.Forms.GroupBox grpSwitchToAnalysis;
         private System.Windows.Forms.GroupBox grpGeneral;
-        private Kinovea.ScreenManager.StaticColorPicker colPicker;
+        
         private System.Windows.Forms.Label lblTimeMarkersFormat;
         private System.Windows.Forms.Label lblWorkingZoneLogic;
         private System.Windows.Forms.ComboBox cmbTimeCodeFormat;

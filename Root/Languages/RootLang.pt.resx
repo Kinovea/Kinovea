@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Desenhos</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Geral</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Reproduzir / Analisar</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visível</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar desenhos quando o vídeo estiver reproduzindo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Habilitar persistência</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo.</value></data>

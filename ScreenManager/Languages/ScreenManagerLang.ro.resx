@@ -100,7 +100,7 @@
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurează Cronometru</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurează desen</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Întotdeauna vizibil</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Utilizează valoarea implicită ({0})</value></data>
+   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Utilizează valoarea implicită</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Activează persistenţa</value></data>
    <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} cadre.</value></data>
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurează Persistenţa</value></data>

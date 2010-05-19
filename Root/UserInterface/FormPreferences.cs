@@ -57,6 +57,8 @@ namespace Kinovea.Root
         private InfosFading m_DefaultFading;
         private bool m_bDrawOnPlay;
         
+        private StaticColorPicker colPicker;
+        
         // Helpers 
         private PreferencesManager m_prefManager;
         private int m_PickingColor; // 0: picking grid color, 1: picking plane3d color, -1 otherwise.
@@ -65,7 +67,22 @@ namespace Kinovea.Root
         #region Constructor
         public formPreferences()
         {
+        	// For some reason the design page of this class crashes in SharpDevelop due to the colPicker.
+        	// Configuring it here works.
+        	this.colPicker = new StaticColorPicker();
+        	this.colPicker.BackColor = Color.WhiteSmoke;
+        	this.colPicker.Location = new Point(-12, 332);
+        	this.colPicker.Name = "colPicker";
+        	this.colPicker.Size = new Size(160, 120);
+        	this.colPicker.TabIndex = 10;
+        	this.colPicker.Visible = false;
+        	this.colPicker.MouseLeft += new Kinovea.ScreenManager.StaticColorPicker.DelegateMouseLeft(colPicker_MouseLeft);
+        	this.colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(colPicker_ColorPicked);
+        	
             InitializeComponent();
+            
+            this.Controls.Add(this.colPicker);
+            
             m_prefManager = PreferencesManager.Instance();
             ImportPreferences();
 
@@ -149,7 +166,7 @@ namespace Kinovea.Root
                
             chkDeinterlace.Text = RootLang.dlgPreferences_DeinterlaceByDefault;
             
-            // Play/Analysis page.
+            // Playback page.
             btnPlayAnalyze.Text = RootLang.dlgPreferences_ButtonPlayAnalyze;
             grpColors.Text = RootLang.dlgPreferences_GroupColors;
             lblGrid.Text = RootLang.dlgPreferences_LabelGrid;
@@ -158,11 +175,13 @@ namespace Kinovea.Root
             grpSwitchToAnalysis.Text = RootLang.dlgPreferences_GroupAnalysisMode;
             lblWorkingZoneLogic.Text = RootLang.dlgPreferences_LabelLogic;
 
+            // Drawings page.
             btnDrawings.Text = RootLang.dlgPreferences_btnDrawings;
             grpDrawingsFading.Text = RootLang.dlgPreferences_grpPersistence;
             chkEnablePersistence.Text = RootLang.dlgPreferences_chkEnablePersistence;
             chkDrawOnPlay.Text = RootLang.dlgPreferences_chkDrawOnPlay;
-
+			chkAlwaysVisible.Text = RootLang.dlgPreferences_chkAlwaysVisible;
+            
             btnSave.Text = RootLang.Generic_Save;
             btnCancel.Text = RootLang.Generic_Cancel;
 
@@ -184,9 +203,9 @@ namespace Kinovea.Root
 
             chkEnablePersistence.Checked = m_DefaultFading.Enabled;
             trkFading.Value = m_DefaultFading.FadingFrames;
-            chkDrawOnPlay.Checked = m_bDrawOnPlay;
+            chkAlwaysVisible.Checked = m_DefaultFading.AlwaysVisible;
             EnableDisableFadingOptions();
-
+            chkDrawOnPlay.Checked = m_bDrawOnPlay;
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
 
             ShowPage(Pages.General);
@@ -391,10 +410,6 @@ namespace Kinovea.Root
         #endregion
         
         #region Page:Drawings
-        private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
-        {
-            m_bDrawOnPlay = chkDrawOnPlay.Checked;
-        }
         private void chkFading_CheckedChanged(object sender, EventArgs e)
         {
             m_DefaultFading.Enabled = chkEnablePersistence.Checked;
@@ -404,12 +419,21 @@ namespace Kinovea.Root
         {
             trkFading.Enabled = chkEnablePersistence.Checked;
             lblFading.Enabled = chkEnablePersistence.Checked;
-            chkDrawOnPlay.Enabled = chkEnablePersistence.Checked;
+            chkAlwaysVisible.Enabled = chkEnablePersistence.Checked;
         }
         private void trkFading_ValueChanged(object sender, EventArgs e)
         {
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
             m_DefaultFading.FadingFrames = trkFading.Value;
+            chkAlwaysVisible.Checked = false;
+        }
+        private void chkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
+        {
+        	m_DefaultFading.AlwaysVisible = chkAlwaysVisible.Checked;	
+        }
+        private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
+        {
+            m_bDrawOnPlay = chkDrawOnPlay.Checked;
         }
         #endregion
         
@@ -470,6 +494,8 @@ namespace Kinovea.Root
         }
         #endregion
 
+        
+        
         
         
         

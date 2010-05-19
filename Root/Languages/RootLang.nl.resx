@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Algemeen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Speel / Analyseer</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sta Persistentie toe</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Altijd deinterlace toepassen bij het openen van nieuwe video</value></data>

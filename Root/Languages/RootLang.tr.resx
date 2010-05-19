@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Çizimler</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Genel</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>İzle / Analiz Et</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Yeni bir video açarken her zaman deinterlace et</value></data>

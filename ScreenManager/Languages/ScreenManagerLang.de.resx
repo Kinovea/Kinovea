@@ -100,7 +100,7 @@
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Stoppuhr einstellen</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Zeichnung konfigurieren</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>immer sichtbar</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Standardwerte verwenden ({0})</value></data>
+   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Standardwerte verwenden</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Nachleuchten aktivieren</value></data>
    <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} Bilder.</value></data>
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Nachleuchten konfigurieren</value></data>

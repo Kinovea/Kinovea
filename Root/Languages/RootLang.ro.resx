@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Desene</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Rulează / Analizează</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Întotdeauna vizibil</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activează persistenţa</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Ruleaza intotdeauna filtrul deintretesere cand este deschis un nou fisier video</value></data>
