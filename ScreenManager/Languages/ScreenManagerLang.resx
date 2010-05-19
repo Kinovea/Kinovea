@@ -100,7 +100,7 @@
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configure Stopwatch</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configure Drawing</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Always Visible</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Use default value ({0})</value></data>
+   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Use default value</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Enable persistence</value></data>
    <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} images.</value></data>
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configure Persistence</value></data>

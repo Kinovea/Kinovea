@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Σχέδια</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Γενικά</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Αναπαραγωγή / Ανάλυση</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Απεικόνηση σχεδίων κατά την αναπαραγωγή</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Απόπλεξη πάντα όταν ανοίγει ένα νέο video</value></data>

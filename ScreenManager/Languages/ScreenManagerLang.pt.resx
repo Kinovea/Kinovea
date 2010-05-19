@@ -100,7 +100,7 @@
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>Configurar Cronômetro</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>Configurar Desenho</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visível</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Usar valor padrão ({0})</value></data>
+   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>Usar valor padrão</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>Habilitar persistência</value></data>
    <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} imagens.</value></data>
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurar Persistência</value></data>

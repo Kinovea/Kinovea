@@ -367,7 +367,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Use default value ({0}).
+        ///   Recherche une chaîne localisée semblable à Use default value.
         /// </summary>
         internal static string dlgConfigureFading_chkDefault {
             get {

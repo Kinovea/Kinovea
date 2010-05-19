@@ -100,7 +100,7 @@
    <data name="dlgConfigureChrono_Title" xml:space="preserve"><value>配置秒表</value></data>
    <data name="dlgConfigureDrawing_Title" xml:space="preserve"><value>配置绘图</value></data>
    <data name="dlgConfigureFading_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
-   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>使用默认值({0})</value></data>
+   <data name="dlgConfigureFading_chkDefault" xml:space="preserve"><value>使用默认值</value></data>
    <data name="dlgConfigureFading_chkEnable" xml:space="preserve"><value>启用持久度</value></data>
    <data name="dlgConfigureFading_lblValue" xml:space="preserve"><value>{0} 图像.</value></data>
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>配置持久度</value></data>

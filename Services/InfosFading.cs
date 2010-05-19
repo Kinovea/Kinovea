@@ -128,16 +128,15 @@ namespace Kinovea.Services
             _xmlWriter.WriteString(m_iFadingFrames.ToString());
             _xmlWriter.WriteEndElement();
 
+            _xmlWriter.WriteStartElement("AlwaysVisible");
+            _xmlWriter.WriteString(m_bAlwaysVisible.ToString());
+            _xmlWriter.WriteEndElement();
+            
             if (!_bMainDefault)
             {
                 _xmlWriter.WriteStartElement("UseDefault");
                 _xmlWriter.WriteString(m_bUseDefault.ToString());
                 _xmlWriter.WriteEndElement();
-
-                _xmlWriter.WriteStartElement("AlwaysVisible");
-                _xmlWriter.WriteString(m_bAlwaysVisible.ToString());
-                _xmlWriter.WriteEndElement();
-
                 // We shouldn't have to write the reference timestamp and avg fpts...
             }
 
@@ -205,7 +204,15 @@ namespace Kinovea.Services
             else if (m_bUseDefault)
             {
                 // Default value
-                fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, PreferencesManager.Instance().DefaultFading.FadingFrames);
+                InfosFading info = PreferencesManager.Instance().DefaultFading;
+                if(info.AlwaysVisible)
+                {
+                	fOpacityFactor = 1.0f;
+                }
+                else
+                {
+                	fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, info.FadingFrames);
+                }
             }
             else if (m_bAlwaysVisible)
             {

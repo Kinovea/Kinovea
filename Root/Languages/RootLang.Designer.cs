@@ -232,6 +232,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Always Visible.
+        /// </summary>
+        internal static string dlgPreferences_chkAlwaysVisible {
+            get {
+                return ResourceManager.GetString("dlgPreferences_chkAlwaysVisible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Show drawings when video is playing.
         /// </summary>
         internal static string dlgPreferences_chkDrawOnPlay {

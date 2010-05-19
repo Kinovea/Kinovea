@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piirrokset</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Yleinen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Näytä/Analysoi</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Aina näkyvillä</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Näytä piirrustukset videon aikana</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Aktivoi pysyvyys</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Poista aina kuvien limitykset avattaessa uusi video.</value></data>

@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>绘制</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>常规</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>播放/分析</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>一直可见</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>允许持久性</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>当打开一个新视频的时候使用反交错.</value></data>

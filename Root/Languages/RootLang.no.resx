@@ -86,6 +86,7 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tegninger</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Generelt</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Spill av / Analyser</value></data>
+   <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Start likevekt</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Alltid deinterlace ved åpning av ny video</value></data>
