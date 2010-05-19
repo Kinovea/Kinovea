@@ -69,6 +69,8 @@ namespace Kinovea.ScreenManager
 		}
 		public double FramesPerSeconds
 		{
+			// This is the frames per second as in real action reference. 
+			// It takes high-speed camera into account, may be different than the video framerate.
 			get { return m_fFramesPerSeconds; }
 			set { m_fFramesPerSeconds = value; }
 		}
@@ -529,9 +531,6 @@ namespace Kinovea.ScreenManager
 			// We now have the right length unit, but for the total time between the frames. (e.g: km/x frames).
 			// Convert this to real world speed.
 			// (depends on video frame rate).
-			
-			// Fixme: This currently only works for non-slow motion movies.
-			// If the capture framerate is not the same as the rendering framerate, the speed is not right. 
 			
 			double fPerUserUnit = 0;
 			
