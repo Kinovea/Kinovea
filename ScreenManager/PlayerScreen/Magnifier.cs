@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public Interface
-        public void Draw(Bitmap _bitmap, Graphics _canvas, double _fStretchFactor)
+        public void Draw(Bitmap _bitmap, Graphics _canvas, double _fStretchFactor, bool _bMirrored)
         {
             m_iImageSize = new Size(_bitmap.Width, _bitmap.Height);
 
@@ -142,23 +142,22 @@ namespace Kinovea.ScreenManager
                 m_fStretchFactor = _fStretchFactor;
             }
 
+            int iImgLeft = 0;
+            int iImgTop = 0;
+            
             if (Mode == MagnifierMode.Direct)
             {
-                int iImgLeft = (int)((double)MouseX / _fStretchFactor) - (m_iImgWidth / 2);
-                int iImgTop = (int)((double)MouseY / _fStretchFactor) - (m_iImgHeight / 2);
-                m_ImgTopLeft = new Point(iImgLeft, iImgTop);
-
+                iImgLeft = (int)((double)MouseX / _fStretchFactor) - (m_iImgWidth / 2);
+                iImgTop = (int)((double)MouseY / _fStretchFactor) - (m_iImgHeight / 2);
+				m_ImgTopLeft = new Point(iImgLeft, iImgTop);
+				
                 _canvas.DrawRectangle(Pens.White, MouseX - m_iSrcWidth / 2, MouseY - m_iSrcHeight/2, m_iSrcWidth, m_iSrcHeight);
-                
-                // Image Window
-                _canvas.DrawImage(_bitmap, new Rectangle(m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight), new Rectangle(iImgLeft, iImgTop, m_iImgWidth, m_iImgHeight), GraphicsUnit.Pixel);
-                _canvas.DrawRectangle(Pens.White, m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
             }
             else if (Mode == MagnifierMode.Indirect)
             {
-                int iImgLeft = (int)((double)m_iSrcCustomLeft / _fStretchFactor);
-                int iImgTop = (int)((double)m_iSrcCustomTop / _fStretchFactor);
-                m_ImgTopLeft = new Point(iImgLeft, iImgTop);
+                iImgLeft = (int)((double)m_iSrcCustomLeft / _fStretchFactor);
+                iImgTop = (int)((double)m_iSrcCustomTop / _fStretchFactor);
+                
 
                 _canvas.DrawRectangle(Pens.LightGray, m_iSrcCustomLeft, m_iSrcCustomTop, m_iSrcCustomWidth, m_iSrcCustomHeight);
 
@@ -174,12 +173,27 @@ namespace Kinovea.ScreenManager
 
                 _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2, m_iSrcCustomLeft + m_iSrcCustomWidth - 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2);
                 _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + m_iSrcCustomHeight - 2);
-                
-    
-                // Image Window
-                _canvas.DrawImage(_bitmap, new Rectangle(m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight), new Rectangle(iImgLeft, iImgTop, m_iImgWidth, m_iImgHeight), GraphicsUnit.Pixel);
-                _canvas.DrawRectangle(Pens.White, m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
             }
+            
+            // Image Window.
+            m_ImgTopLeft = new Point(iImgLeft, iImgTop);
+            Rectangle rDst;
+            Rectangle rSrc;
+            if(_bMirrored)
+            {
+            	// If mirrored, the destination spot is reversed (negative width),
+            	// and the source spot is reversed relatively to the edge of the image.
+            	rDst = new Rectangle(m_iMagLeft + m_iMagWidth, m_iMagTop, - m_iMagWidth, m_iMagHeight);
+            	rSrc = new Rectangle(m_iImageSize.Width - (iImgLeft + m_iImgWidth), iImgTop, m_iImgWidth, m_iImgHeight);
+            }
+            else
+            {
+            	rDst = new Rectangle(m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
+            	rSrc = new Rectangle(iImgLeft, iImgTop, m_iImgWidth, m_iImgHeight);
+            }
+            
+            _canvas.DrawImage(_bitmap, rDst, rSrc, GraphicsUnit.Pixel);
+			_canvas.DrawRectangle(Pens.White, m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
         }
         public void OnMouseUp(MouseEventArgs e)
         {

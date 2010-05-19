@@ -3400,7 +3400,7 @@ namespace Kinovea.ScreenManager
 			if (m_Magnifier.Mode != MagnifierMode.NotVisible)
 			{
 				// Mirrored ?
-				m_Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch);
+				m_Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.Metadata.Mirrored);
 			}
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
