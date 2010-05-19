@@ -2547,7 +2547,6 @@ namespace Kinovea.ScreenManager
 				{
 					fcs.StartPosition = FormStartPosition.Manual;
 					LocateForm(fcs);
-					//fcs.Location = new Point(Cursor.Position.X - fcs.Width / 2, Cursor.Position.Y - 50);
 				}
 				
 				if (fcs.ShowDialog() == DialogResult.OK)
@@ -2565,6 +2564,7 @@ namespace Kinovea.ScreenManager
 				// Update times.
 				UpdateSelectionLabels();
 				UpdateCurrentPositionLabel();
+				m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoFile.Infos.fFps * m_fHighSpeedFactor;
 				pbSurfaceScreen.Invalidate();
 			}
 		}
