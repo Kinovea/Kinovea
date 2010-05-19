@@ -1586,11 +1586,22 @@ namespace Kinovea.ScreenManager
 			{
 				if (iScrollOffset > 0)
 				{
-					buttonGotoNext_Click(null, EventArgs.Empty);
+					if(m_bDrawtimeFiltered)
+					{
+						IncreaseDirectZoom();
+					}
+					else
+					{
+						buttonGotoNext_Click(null, EventArgs.Empty);
+					}
 				}
 				else
 				{
-					if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
+					if(m_bDrawtimeFiltered)
+					{
+						DecreaseDirectZoom();
+					}
+					else if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
 					{
 						// Shift + Left on first = loop backward.
 						buttonGotoLast_Click(null, EventArgs.Empty);
@@ -3199,7 +3210,7 @@ namespace Kinovea.ScreenManager
 			{
 				if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 				{
-					m_DrawingFilterOutput.Draw(e.Graphics, pbSurfaceScreen.Size, m_DrawingFilterOutput.InputFrames, m_DrawingFilterOutput.PrivateData);
+					m_DrawingFilterOutput.Draw(e.Graphics, pbSurfaceScreen.Size, m_DrawingFilterOutput.PrivateData);
 				}
 				else if(m_FrameServer.VideoFile.CurrentImage != null)
 				{
@@ -4598,24 +4609,38 @@ namespace Kinovea.ScreenManager
 				DisableMagnifier();
 			}
 
-			// Max zoom : 600%
-			if (m_FrameServer.CoordinateSystem.Zoom < 6.0f)
+			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.IncreaseZoom != null)
 			{
-				m_FrameServer.CoordinateSystem.Zoom += 0.20f;
-				RelocateDirectZoom();
-				m_FrameServer.Metadata.ResizeFinished();
-				pbSurfaceScreen.Invalidate();
+				m_DrawingFilterOutput.IncreaseZoom(m_DrawingFilterOutput.PrivateData);
 			}
+			else
+			{
+				// Max zoom : 600%
+				if (m_FrameServer.CoordinateSystem.Zoom < 6.0f)
+				{
+					m_FrameServer.CoordinateSystem.Zoom += 0.20f;
+					RelocateDirectZoom();
+					m_FrameServer.Metadata.ResizeFinished();
+				}	
+			}
+			
+			pbSurfaceScreen.Invalidate();
+			
 		}
 		private void DecreaseDirectZoom()
 		{
-			if (m_FrameServer.CoordinateSystem.Zooming)
+			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.DecreaseZoom != null)
+			{
+				m_DrawingFilterOutput.DecreaseZoom(m_DrawingFilterOutput.PrivateData);
+			}
+			else if (m_FrameServer.CoordinateSystem.Zooming)
 			{
 				m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
 				RelocateDirectZoom();
 				m_FrameServer.Metadata.ResizeFinished();
-				pbSurfaceScreen.Invalidate();
 			}
+			
+			pbSurfaceScreen.Invalidate();
 		}
 		private void RelocateDirectZoom()
 		{
@@ -5203,7 +5228,7 @@ namespace Kinovea.ScreenManager
 
 			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 			{
-				m_DrawingFilterOutput.Draw(Graphics.FromImage(output), iNewSize, m_DrawingFilterOutput.InputFrames, m_DrawingFilterOutput.PrivateData);
+				m_DrawingFilterOutput.Draw(Graphics.FromImage(output), iNewSize, m_DrawingFilterOutput.PrivateData);
 			}
 			else
 			{

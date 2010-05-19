@@ -25,9 +25,10 @@ using System.Drawing;
 namespace Kinovea.Services
 {
 	
-	public delegate void DelegateDraw(Graphics _canvas, Size _newSize, List<Bitmap> _inputFrames, object _privateData);
+	public delegate void DelegateDraw(Graphics _canvas, Size _newSize, object _privateData);
+	public delegate void DelegateIncreaseZoom(object _privateData);
+    public delegate void DelegateDecreaseZoom(object _privateData);
     
-	
 	/// <summary>
 	/// DrawtimeFilterOutput is a communication object between some filters and the player.
 	/// 
@@ -41,6 +42,8 @@ namespace Kinovea.Services
 	{
 		#region Delegates
 		public DelegateDraw Draw;
+		public DelegateIncreaseZoom IncreaseZoom;
+		public DelegateDecreaseZoom DecreaseZoom;
 		#endregion
 
 		#region Properties
@@ -52,11 +55,6 @@ namespace Kinovea.Services
 		{
 			get { return m_bActive; }
 		}
-		public List<Bitmap> InputFrames
-		{
-			get { return m_InputFrames; }
-			set { m_InputFrames = value; }
-		}
 		public object PrivateData
 		{
 			get { return m_PrivateData; }
@@ -67,7 +65,6 @@ namespace Kinovea.Services
 		#region Propertie/members
 		private int m_iVideoFilterType;
 		private bool m_bActive;
-		private List<Bitmap> m_InputFrames;
 		private object m_PrivateData;
 		#endregion
 		
