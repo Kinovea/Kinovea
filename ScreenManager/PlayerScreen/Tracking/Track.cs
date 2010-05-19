@@ -961,7 +961,7 @@ namespace Kinovea.ScreenManager
             // Global Label
             _xmlWriter.WriteStartElement("Label");
             _xmlWriter.WriteStartElement("Text");
-            _xmlWriter.WriteString(m_MainLabel.TextInfos[0]);
+            _xmlWriter.WriteString(m_MainLabelText);
             _xmlWriter.WriteEndElement();
             _xmlWriter.WriteEndElement();
 
@@ -1167,7 +1167,7 @@ namespace Kinovea.ScreenManager
                 {
                     if (_xmlReader.Name == "Text")
                     {
-                        _track.m_MainLabel.TextInfos[0] = _xmlReader.ReadString();
+                        _track.m_MainLabelText = _xmlReader.ReadString();
                     }
                 }
                 else if (_xmlReader.Name == "Label")
