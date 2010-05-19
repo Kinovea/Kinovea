@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
 					// .Magnifier
 					if (m_Magnifier.Mode != MagnifierMode.NotVisible)
 					{
-						m_Magnifier.Draw(m_FrameBuffer[iCurrentFrameIndex], _canvas, 1.0);
+						m_Magnifier.Draw(m_FrameBuffer[iCurrentFrameIndex], _canvas, 1.0, false);
 					}
 				}
 				catch (Exception exp)
