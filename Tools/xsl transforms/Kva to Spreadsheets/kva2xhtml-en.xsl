@@ -40,8 +40,9 @@
 		</tr>
 		<xsl:for-each select="Keyframe">
 			<tr>
-				<td bgcolor="#e8e8e8">Title: <xsl:value-of select="Title"/></td>
-			</tr>			
+				<td bgcolor="#e8e8e8">Title:</td>
+				<td bgcolor="#e8e8e8"><xsl:value-of select="Title"/></td>
+			</tr>
 		</xsl:for-each>
 	</table>
 
