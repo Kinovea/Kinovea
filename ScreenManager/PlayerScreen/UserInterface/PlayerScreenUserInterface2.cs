@@ -1946,7 +1946,15 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateSpeedLabel()
 		{
-			lblSpeedTuner.Text = ScreenManagerLang.lblSpeedTuner_Text + " " + m_iSlowmotionPercentage + "%";
+			if(m_fHighSpeedFactor != 1.0)
+			{
+				double fPercentage = (double)m_iSlowmotionPercentage / m_fHighSpeedFactor;
+				lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, fPercentage);
+			}
+			else
+			{
+				lblSpeedTuner.Text = ScreenManagerLang.lblSpeedTuner_Text + " " + m_iSlowmotionPercentage + "%";
+			}			
 		}
 		#endregion
 
@@ -2564,6 +2572,7 @@ namespace Kinovea.ScreenManager
 				// Update times.
 				UpdateSelectionLabels();
 				UpdateCurrentPositionLabel();
+				UpdateSpeedLabel();
 				m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoFile.Infos.fFps * m_fHighSpeedFactor;
 				pbSurfaceScreen.Invalidate();
 			}
