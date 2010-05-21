@@ -94,14 +94,12 @@ namespace Kinovea.ScreenManager
 		{
 			if(m_bIsConnected && m_VideoDevice != null)
 			{
-				if(m_bIsGrabbing)
+				if(!m_bIsGrabbing)
 				{
-					m_VideoDevice.SignalToStop();
+					m_VideoDevice.Start();
 				}
 				
 				m_bIsGrabbing = true;
-				m_VideoDevice.Start();
-				
 				log.Debug("Starting to grab frames from the capture device.");
 			}
 		}
@@ -112,7 +110,7 @@ namespace Kinovea.ScreenManager
 				log.Debug("Pausing frame grabbing.");
 				if(m_bIsGrabbing)
 				{
-					m_VideoDevice.SignalToStop();
+					m_VideoDevice.Stop();
 				}
 				m_bIsGrabbing = false;
 			}
@@ -146,7 +144,6 @@ namespace Kinovea.ScreenManager
 		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
 		{
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
-			
 			if(!m_bSizeKnown)
 			{
 				m_bSizeKnown = true;

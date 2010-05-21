@@ -137,6 +137,7 @@ namespace Kinovea.ScreenManager
 			BuildContextMenus();
 			m_bDocked = true;
 			
+			TryToConnect();
 			tmrCaptureDeviceDetector.Start();
 		}
 		#endregion
@@ -149,6 +150,10 @@ namespace Kinovea.ScreenManager
 		public void DoInitDecodingSize()
 		{
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.ImageSize);
+			
+			// As a matter of fact we pass here at the first received frame.
+			// We can stop trying to connect now.
+			tmrCaptureDeviceDetector.Stop();
 		}
 		public void DoUpdateCapturedVideos()
 		{
@@ -190,6 +195,21 @@ namespace Kinovea.ScreenManager
 			}
 
 		}
+		public void DisplayAsGrabbing(bool _bIsGrabbing)
+		{
+			if(_bIsGrabbing)
+			{
+				pbSurfaceScreen.Visible = _bIsGrabbing;
+	   			ShowHideResizers(_bIsGrabbing);
+    			
+	   			StretchSqueezeSurface();
+				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;	
+			}
+			else
+			{
+				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturegrab5;	
+			}
+		}
 		#endregion
 		
 		#region Public Methods
@@ -197,7 +217,7 @@ namespace Kinovea.ScreenManager
 		{
 			if(m_FrameServer.IsConnected)
 			{
-				buttonPlay_Click(null, EventArgs.Empty);
+				btnGrab_Click(null, EventArgs.Empty);
 			}
 		}
 		public void DisplayAsActiveScreen(bool _bActive)
@@ -568,37 +588,26 @@ namespace Kinovea.ScreenManager
         	/*if(m_FrameServer.IsRecording)
         	{
         		// We will now be paused.
-        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.record;	
+        		buttonRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;	
         	}
         	else
         	{
-        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.stop;	
+        		buttonRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
         	}
         	
         	m_FrameServer.ToggleRecord();*/
         }
-		private void buttonPlay_Click(object sender, EventArgs e)
+		private void btnGrab_Click(object sender, EventArgs e)
 		{
-			// Toggle play / pause frame grabbing.
-			
-			// Prepare the interface for after the change.
-			/*if(m_FrameServer.IsGrabbing)
+			if(m_FrameServer.IsGrabbing)
 			{
-				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;	
+				m_FrameServer.PauseGrabbing();
 			}
 		   	else
 		   	{
-		   		// We are paused, we'll be running.		   		
-		   		pbSurfaceScreen.Visible = true;				
-		   		m_FrameServer.CoordinateSystem.Stretch = 1.0f;
-		   		ShowHideResizers(true);
-	    		StretchSqueezeSurface();								
-				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
-		   	}*/
+				m_FrameServer.StartGrabbing();
+		   	}
 
-		   	// Actually do the toggle.
-		   	//m_FrameServer.TogglePlay();
-		   	
 			OnPoke();	
 		}
 		public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -882,11 +891,11 @@ namespace Kinovea.ScreenManager
 		private void ReloadTooltipsCulture()
 		{
 			// Video controls
-			toolTips.SetToolTip(buttonPlay, ScreenManagerLang.ToolTip_Play);
+			toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_Play);
 			
 			// Export buttons
-			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
-			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
+			//toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
+			//toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
 
 			// Drawing tools
 			toolTips.SetToolTip(btnDrawingToolPointer, ScreenManagerLang.ToolTip_DrawingToolPointer);
@@ -1799,8 +1808,8 @@ namespace Kinovea.ScreenManager
 		}
 		private void EnableDisableAllPlayingControls(bool _bEnable)
 		{
-			buttonPlay.Enabled = _bEnable;
-			btnRafale.Enabled = _bEnable;
+			btnGrab.Enabled = _bEnable;
+			//btnRafale.Enabled = _bEnable;
 			//trkFrame.Enabled = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
@@ -2166,11 +2175,14 @@ namespace Kinovea.ScreenManager
 		#region Capture device
         private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
         {
+        	TryToConnect();
+        }
+        private void TryToConnect()
+        {
         	// Try to connect to a device.
         	if(!m_FrameServer.IsConnected)
         	{
         		// Prevent reentry.
-        		//tmrCaptureDeviceDetector.Stop();
         		if(!m_bTryingToConnect)
         		{
         			m_bTryingToConnect = true;        			

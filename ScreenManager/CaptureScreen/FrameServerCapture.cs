@@ -113,7 +113,6 @@ namespace Kinovea.ScreenManager
 		public FrameServerCapture()
 		{
 			m_FrameGrabber = new FrameGrabberAForge(this, m_FrameBuffer);
-			m_FrameGrabber.NegociateDevice();
 		}
 		#endregion
 		
@@ -122,7 +121,6 @@ namespace Kinovea.ScreenManager
 		{
 			log.Debug("Screen connected.");
 			StartGrabbing();
-			// FIXME: notify the UI to change its display.
 		}
 		public void SetImageSize(Size _size)
 		{
@@ -179,10 +177,12 @@ namespace Kinovea.ScreenManager
 		{
 			//m_FrameBuffer.Clear();
 			m_FrameGrabber.StartGrabbing();
+			m_Container.DisplayAsGrabbing(true);
 		}
 		public void PauseGrabbing()
 		{
 			m_FrameGrabber.PauseGrabbing();
+			m_Container.DisplayAsGrabbing(false);
 		}
 		public void BeforeClose()
 		{
