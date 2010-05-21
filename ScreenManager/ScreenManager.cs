@@ -28,7 +28,6 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using AForge.Video.DirectShow;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -368,11 +367,6 @@ namespace Kinovea.ScreenManager
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
                         
-            // Disabling all capture menus during dev.
-			mnuOneCapture.Enabled = false;            
-            mnuTwoCaptures.Enabled = false;
-            mnuTwoMixed.Enabled = false;
- 
             //Swap - activé seulement si DualFull ?
             mnuSwapScreens.Tag = new ItemResourceInfo(resManager, "mnuSwapScreens");
             mnuSwapScreens.Text = ((ItemResourceInfo)mnuSwapScreens.Tag).resManager.GetString(((ItemResourceInfo)mnuSwapScreens.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -394,10 +388,10 @@ namespace Kinovea.ScreenManager
             ToolStripItem[] subScreens = new ToolStripItem[] { 		mnuOnePlayer,
             														mnuTwoPlayers,
             														new ToolStripSeparator(),
-            														//mnuOneCapture, 
-            														//mnuTwoCaptures, 
-            														//mnuTwoMixed, 
-            														//new ToolStripSeparator(), 
+            														mnuOneCapture, 
+            														mnuTwoCaptures, 
+            														mnuTwoMixed, 
+            														new ToolStripSeparator(), 
             														mnuSwapScreens, 
             														mnuToggleCommonCtrls };
             mnuCatchScreens.DropDownItems.AddRange(subScreens);
@@ -786,43 +780,6 @@ namespace Kinovea.ScreenManager
         	// A screen was reset. (ex: a video was reloded in place).
         	// We need to also reset all the sync states.
         	PrepareSync(true);        	
-        }
-        public bool Capture_TryDeviceConnection(CaptureScreen _screen)
-        {
-        	bool bAtLeastOneDevice = false;
-        	
-        	// This function is called periodically by
-        	// an empty Capture screen waiting for a device.
-        	// We don't show an error if no free device is found.
-        	log.Debug("Try to connect to a Capture Device.");
-        	
-        	// Check if there one and exactly one non-taken device and connect it to the screen.
-        	FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
-        	if ( videoDevices.Count == 1 )
-			{
-        		// todo: check if not already taken.
-        		_screen.FrameServer.SetDevice(videoDevices, 0);
-        		bAtLeastOneDevice = true;
-        	}
-        	else if(videoDevices.Count > 1)
-        	{
-        		// More than one device available.
-        		// todo: check which are already taken.
-        		// if only one left, connect it.
-        		// if several left, we'll need to ask the user.
-        		
-        		MessageBox.Show(
-        			"more than one capture device",
-               		"debug",
-               		MessageBoxButtons.OK,
-                	MessageBoxIcon.Exclamation);
-        		
-        		bAtLeastOneDevice = true;
-			}
-        	
-        	_screen.PostTryConnection();
-        	
-        	return bAtLeastOneDevice;
         }
         #endregion
         

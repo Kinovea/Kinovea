@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,84 +26,144 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Windows.Forms;
-
-using AForge.Video;
-using AForge.Video.DirectShow;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// FrameServerCapture encapsulate all the metadata and configuration for managing frames in a capture screen.
+	/// FrameServerCapture encapsulates all the metadata and configuration for managing frames in a capture screen.
 	/// This is the object that maintains the interface with file level operations done by VideoFile class.
 	/// </summary>
-	public class FrameServerCapture : AbstractFrameServer
+	public class FrameServerCapture : AbstractFrameServer, IFrameGrabberContainer
 	{
 		#region Properties
+		
+		// Capture device.
 		public bool IsConnected
 		{
-			get { return m_bIsConnected; }
-			set { m_bIsConnected = value; }
+			get { return m_FrameGrabber.IsConnected; }
 		}
-		public bool IsRunning
+		public bool IsGrabbing
 		{
-			get {return m_VideoDevice.IsRunning;}
+			get {return m_FrameGrabber.IsGrabbing;}
 		}
-		public bool IsRecording
+		public Size ImageSize
 		{
-			get {return m_bIsRecording;}
+			get { return m_ImageSize; }
 		}
-		public Size DecodingSize
+		
+		// Drawings and other screens overlays.
+		public Metadata Metadata
 		{
-			get { return m_DecodingSize; }
-		}
-		public List<CapturedVideo> RecentlyCapturedVideos
-		{
-			get { return m_RecentlyCapturedVideos; }	
+			get { return m_Metadata; }
+			set { m_Metadata = value; }
 		}
 		public Magnifier Magnifier
 		{
 			get { return m_Magnifier; }
 			set { m_Magnifier = value; }
 		}
-		public Metadata Metadata
-		{
-			get { return m_Metadata; }
-			set { m_Metadata = value; }
-		}
 		public CoordinateSystem CoordinateSystem
 		{
 			get { return m_CoordinateSystem; }
 		}
+		
+		// Saving to disk.
+		public List<CapturedVideo> RecentlyCapturedVideos
+		{
+			get { return m_RecentlyCapturedVideos; }	
+		}
 		#endregion
 		
 		#region Members
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private bool m_bIsConnected;
-		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
-		private List<Bitmap> m_FrameBuffer = new List<Bitmap>();	// Input buffer.
-		private int m_iMaxSizeBufferFrames = 125;					// Input buffer size.
-		private Size m_DecodingSize = new Size(720, 576);			// Image size.
-		private VideoCaptureDevice m_VideoDevice;					// Gives access to the physical device.
+		private IFrameServerContainer m_Container;	// CaptureScreenUserInterface seen through a limited interface.
+		
+		// Grabbing frames
+		//private FrameGrabberAForge m_FrameGrabber;
+		private AbstractFrameGrabber m_FrameGrabber;
+		private FrameBuffer m_FrameBuffer = new FrameBuffer();
+		private Bitmap m_MostRecentImage;
+		private Size m_ImageSize = new Size(720, 576);
+		
+		// Drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
-		private Stopwatch m_BufferWatch = new Stopwatch();		// For instrumentation only.
-		private bool m_bIsRecording;
-		
-		private Bitmap m_CurrentCaptureBitmap;						// Used to create the thumbnail.
-		private string m_CurrentCaptureFilePath;					// Used to create the thumbnail.
-		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
-		
-		//private VideoFile m_VideoFile = new VideoFile();
-		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
-
+		private Metadata m_Metadata;
 		private Magnifier m_Magnifier = new Magnifier();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		
-		//private bool m_bSavingContextEncodingSuccess;
-		private Metadata m_Metadata;
+		// Saving to disk
+		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
+
+		// todo: evaluate after end of refactoring.
+		/*
+		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
+		private bool m_bIsRecording;
+		private Bitmap m_CurrentCaptureBitmap;						// Used to create the thumbnail.
+		private string m_CurrentCaptureFilePath;					// Used to create the thumbnail.
+		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
+		*/
+
 		
-		private IFrameServerContainer m_Container;
+		// General
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		#endregion
+		
+		#region Constructor
+		public FrameServerCapture()
+		{
+			m_FrameGrabber = new FrameGrabberAForge(this, m_FrameBuffer);
+			m_FrameGrabber.NegociateDevice();
+		}
+		#endregion
+		
+		#region Implementation of IFrameGrabberContainer
+		public void Connected()
+		{
+			log.Debug("Screen connected.");
+			StartGrabbing();
+			// FIXME: notify the UI to change its display.
+		}
+		public void SetImageSize(Size _size)
+		{
+			m_ImageSize = _size;
+			m_CoordinateSystem.SetOriginalSize(m_ImageSize);
+			m_Container.DoInitDecodingSize();
+		}
+		public void FrameGrabbed()
+		{
+			// The frame grabber has just pushed a new frame to the buffer.
+			
+			// Consolidate this real-time frame locally.
+			m_MostRecentImage = m_FrameBuffer.ReadFrameAt(0);
+			
+			// Ask a refresh. This could also be done with a timer,
+			// but using the frame grabber event is convenient.
+			if(!m_bPainting)
+			{
+				m_bPainting = true;
+				m_Container.DoInvalidate();
+			}
+			
+			//If recording, append the new frame to file.
+			/*if(m_bIsRecording)
+			{
+				m_VideoFileWriter.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
+				if(m_CurrentCaptureBitmap == null)
+				{
+					m_CurrentCaptureBitmap = m_FrameBuffer[m_FrameBuffer.Count-1];
+				}
+			}*/
+		}
+		public void AlertCannotConnect()
+		{
+			// Couldn't find device. Signal to user.
+			MessageBox.Show(
+        		"Couldn't find any device to connect to.\nPlease make sure the device is properly connected.",
+               	"Cannot connect to video device",
+               	MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
+		}
 		#endregion
 		
 		#region Public methods
@@ -110,104 +171,97 @@ namespace Kinovea.ScreenManager
 		{
 			m_Container = _container;
 		}
+		public void NegociateDevice()
+		{
+			m_FrameGrabber.NegociateDevice();
+		}
+		public void StartGrabbing()
+		{
+			//m_FrameBuffer.Clear();
+			m_FrameGrabber.StartGrabbing();
+		}
+		public void PauseGrabbing()
+		{
+			m_FrameGrabber.PauseGrabbing();
+		}
+		public void BeforeClose()
+		{
+			m_FrameGrabber.BeforeClose();
+		}
 		public override void Draw(Graphics _canvas)
 		{
 			// Draw the current image on canvas according to conf.
-			// This is called back from screen paint method.
+			// This is called back from UI paint method.
 
-			if(m_FrameBuffer != null && m_FrameBuffer.Count > 0)
+			// Todo: maybe the drawings should be added directly inside GetImageToDisplay().
+			// This way we would call it directly when saving to disk.
+			
+			if(m_FrameGrabber.IsConnected)
 			{
-				int iCurrentFrameIndex = (m_FrameBuffer.Count - 1) - m_iDelayFrames;
-				if (iCurrentFrameIndex < 0)
-				{
-					iCurrentFrameIndex = 0;
-				}
+				Bitmap image = GetImageToDisplay();
 				
-				// Configure canvas.
-				_canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-				_canvas.CompositingQuality = CompositingQuality.HighSpeed;
-				_canvas.InterpolationMode = InterpolationMode.Bilinear;
-				_canvas.SmoothingMode = SmoothingMode.None;
-				
-				try
+				if(image != null)
 				{
-					// Draw image.
+					// Configure canvas.
+					_canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+					_canvas.CompositingQuality = CompositingQuality.HighSpeed;
+					_canvas.InterpolationMode = InterpolationMode.Bilinear;
+					_canvas.SmoothingMode = SmoothingMode.None;	
 					
-					
-					
-					Rectangle rDst;
-					/*if(m_FrameServer.Metadata.Mirrored)
+					try
 					{
-						rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+						// Draw image.
+						Rectangle rDst;
+						/*if(m_FrameServer.Metadata.Mirrored)
+						{
+							rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+						}
+						else
+						{
+							rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+						}*/
+						
+						rDst = new Rectangle((int)_canvas.ClipBounds.Left, (int)_canvas.ClipBounds.Top, (int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
+						
+						RectangleF rSrc;
+						if (m_CoordinateSystem.Zooming)
+						{
+							rSrc = m_CoordinateSystem.ZoomWindow;
+						}
+						else
+						{
+							rSrc = new Rectangle(0, 0, m_ImageSize.Width, m_ImageSize.Height);
+						}
+						
+						_canvas.DrawImage(image, _canvas.ClipBounds, rSrc, GraphicsUnit.Pixel);
+						
+						FlushDrawingsOnGraphics(_canvas);
+						
+						// .Magnifier
+						// TODO: handle miroring.
+						if (m_Magnifier.Mode != MagnifierMode.NotVisible)
+						{
+							m_Magnifier.Draw(image, _canvas, 1.0, false);
+						}
 					}
-					else
+					catch (Exception exp)
 					{
-						rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
-					}*/
-					rDst = new Rectangle((int)_canvas.ClipBounds.Left, (int)_canvas.ClipBounds.Top, (int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
-					
-					RectangleF rSrc;
-					if (m_CoordinateSystem.Zooming)
-					{
-						rSrc = m_CoordinateSystem.ZoomWindow;
-					}
-					else
-					{
-						rSrc = new Rectangle(0, 0, m_DecodingSize.Width, m_DecodingSize.Height);
-					}
-					
-					_canvas.DrawImage(m_FrameBuffer[iCurrentFrameIndex], _canvas.ClipBounds, rSrc, GraphicsUnit.Pixel);
-					
-					FlushDrawingsOnGraphics(_canvas);
-					
-					// .Magnifier
-					if (m_Magnifier.Mode != MagnifierMode.NotVisible)
-					{
-						m_Magnifier.Draw(m_FrameBuffer[iCurrentFrameIndex], _canvas, 1.0, false);
-					}
-				}
-				catch (Exception exp)
-				{
-					log.Error("Unknown error while painting image.");
-					log.Error(exp.StackTrace);
-				}				
+						log.Error("Error while painting image.");
+						log.Error(exp.Message);
+						log.Error(exp.StackTrace);
+					}		
+				}	
 			}
 			
 			m_bPainting = false;
 		}
-		public void SetDevice(FilterInfoCollection _devices, int _iSelected)
-		{
-			m_VideoDevice = new VideoCaptureDevice( _devices[_iSelected].MonikerString );
-			m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
-			m_bIsConnected = true;
-				
-			// use default frame rate from device.
-			m_VideoDevice.DesiredFrameRate = 0;
-				
-			log.Debug(String.Format("Video Device : MonikerString:{0}, Name:{1}",_devices[_iSelected].MonikerString, _devices[_iSelected].Name));
-		}
-		public void TogglePlay()
-		{
-			if(m_VideoDevice.IsRunning)
-			{
-				SignalToStop();
-			}
-			else
-			{
-				SignalToStart();
-			}
-		}
-		public void SignalToStop()
-		{
-			log.Debug("Stopping capture.");
-			if(m_VideoDevice != null && m_VideoDevice.IsRunning)
-			{
-				m_VideoDevice.SignalToStop();	
-			}
-		}
 		public void ToggleRecord()
 		{
-			if(m_bIsRecording)
+			// Start recording.
+			// We always record what is displayed on screen, not what is grabbed by the device.
+			
+			
+			/*if(m_bIsRecording)
 			{
 				// Stop recording
 				m_bIsRecording = false;
@@ -257,74 +311,22 @@ namespace Kinovea.ScreenManager
 				
 				// If preroll is enabled, flush buffer to file now.
 				
-			}
+			}*/
 		}
 		#endregion
 		
-		#region Private Methods
-		/// <summary>
-		/// VideoDevice_NewFrame. Callback method of the Video Device. 
-		/// Called when a new frame is made available by the driver.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="eventArgs"></param>
-		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
+		#region Final image creation
+		private Bitmap GetImageToDisplay()
 		{
-			// Note: We are still in the worker thread. Don't touch UI directly.
+			// Get the final image to display, according to delay, compositing, etc.
 			
-			// Store the new frame in the buffer.
-			m_FrameBuffer.Add((Bitmap)eventArgs.Frame.Clone());
-			
-			// Roll the buffer, removing the oldest image.
-			if(m_FrameBuffer.Count > m_iMaxSizeBufferFrames)
-			{
-				m_FrameBuffer.RemoveAt(0);
-			}
-		
-			// If first frame, set up the size of video.
-			if(m_FrameBuffer.Count == 1)
-    		{
-				m_DecodingSize = new Size(m_FrameBuffer[0].Width, m_FrameBuffer[0].Height);
-				m_CoordinateSystem.SetOriginalSize(m_DecodingSize);
-				m_Container.DoInitDecodingSize();
-    		}
-
-			//If recording, append the new frame to file.
-			if(m_bIsRecording)
-			{
-				m_VideoFileWriter.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
-				if(m_CurrentCaptureBitmap == null)
-				{
-					m_CurrentCaptureBitmap = m_FrameBuffer[m_FrameBuffer.Count-1];
-				}
-			}
-			
-			#region Instrumentation
-			//log.Debug(String.Format("Bufferization:{0} FPS", 1000/m_BufferWatch.ElapsedMilliseconds));
-	    	//m_BufferWatch.Reset();
-	    	//m_BufferWatch.Start();
-			#endregion
-	    	
-			// Display the frame if possible.
-			if(!m_bPainting)
-			{
-				m_bPainting = true;
-				m_Container.DoInvalidate();
-			}
-		}
-		private void SignalToStart()
-		{
-			if(m_VideoDevice.IsRunning)
-			{
-				SignalToStop();
-			}
-			m_FrameBuffer.Clear();
-			m_BufferWatch.Start();
-			m_VideoDevice.Start();
+			return m_MostRecentImage;
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas)
 		{
-			// Prepare for drawings
+			// Commit drawings on image.
+			// In capture mode, all drawings are gathered in a virtual key image at m_Metadata[0].
+			
 			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
 
 			// 1. 2D Grid
@@ -346,13 +348,16 @@ namespace Kinovea.ScreenManager
 				m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, bSelected, 0, m_CoordinateSystem.Location);
 			}
 		}
+		#endregion
+		
+		#region Saving to disk
 		private void DisplayError(SaveResult _result)
 		{
 			switch(_result)
         	{
                 case SaveResult.FileHeaderNotWritten:
                 case SaveResult.FileNotOpened:
-                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_FileError);
+                    DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_FileError);
                     break;
                 
                 case SaveResult.EncoderNotFound:
@@ -366,7 +371,7 @@ namespace Kinovea.ScreenManager
                 case SaveResult.VideoStreamNotCreated:
                 case SaveResult.UnknownError:
                 default:
-                    DisplayErrorMessage(Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_LowLevelError);
+                    DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_LowLevelError);
                     break;
         	}
 		}
@@ -374,7 +379,7 @@ namespace Kinovea.ScreenManager
         {
         	MessageBox.Show(
         		_err.Replace("\\n", "\n"),
-               	Kinovea.ScreenManager.Languages.ScreenManagerLang.Error_SaveMovie_Title,
+               	ScreenManagerLang.Error_SaveMovie_Title,
                	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }

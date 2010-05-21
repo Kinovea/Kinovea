@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Members
-		private ICaptureScreenUIHandler m_ScreenUIHandler;
+		private ICaptureScreenUIHandler m_ScreenUIHandler;	// CaptureScreen seen trough a limited interface.
 		private FrameServerCapture m_FrameServer;
 		
 		// General
@@ -148,7 +148,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void DoInitDecodingSize()
 		{
-			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.DecodingSize);
+			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.ImageSize);
 		}
 		public void DoUpdateCapturedVideos()
 		{
@@ -565,7 +565,7 @@ namespace Kinovea.ScreenManager
 		#region Playback Controls
 		private void buttonRecord_Click(object sender, EventArgs e)
         {
-        	if(m_FrameServer.IsRecording)
+        	/*if(m_FrameServer.IsRecording)
         	{
         		// We will now be paused.
         		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.record;	
@@ -575,16 +575,15 @@ namespace Kinovea.ScreenManager
         		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.stop;	
         	}
         	
-        	m_FrameServer.ToggleRecord();
+        	m_FrameServer.ToggleRecord();*/
         }
 		private void buttonPlay_Click(object sender, EventArgs e)
 		{
-			// Toggle play / pause capture.
+			// Toggle play / pause frame grabbing.
 			
 			// Prepare the interface for after the change.
-			if(m_FrameServer.IsRunning)
+			/*if(m_FrameServer.IsGrabbing)
 			{
-				// We are running, we'll be paused.		   		
 				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;	
 			}
 		   	else
@@ -595,10 +594,10 @@ namespace Kinovea.ScreenManager
 		   		ShowHideResizers(true);
 	    		StretchSqueezeSurface();								
 				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
-		   	}
+		   	}*/
 
 		   	// Actually do the toggle.
-		   	m_FrameServer.TogglePlay();
+		   	//m_FrameServer.TogglePlay();
 		   	
 			OnPoke();	
 		}
@@ -687,8 +686,8 @@ namespace Kinovea.ScreenManager
 			// Check if the stretch factor is not going to outsize the panel.
 			// If so, force maximized, unless screen is smaller than video.
 			//---------------------------------------------------------------
-			int iTargetHeight = (int)((double)m_FrameServer.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
-			int iTargetWidth = (int)((double)m_FrameServer.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+			int iTargetHeight = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+			int iTargetWidth = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
 			
 			if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
 			{
@@ -698,25 +697,25 @@ namespace Kinovea.ScreenManager
 				}
 			}
 			
-			if ((m_bStretchModeOn) || (m_FrameServer.DecodingSize.Width > panelCenter.Width) || (m_FrameServer.DecodingSize.Height > panelCenter.Height))
+			if ((m_bStretchModeOn) || (m_FrameServer.ImageSize.Width > panelCenter.Width) || (m_FrameServer.ImageSize.Height > panelCenter.Height))
 			{
 				//-------------------------------------------------------------------------------
 				// Maximiser :
 				//Redimensionner l'image selon la dimension la plus proche de la taille du panel.
 				//-------------------------------------------------------------------------------
-				float WidthRatio = (float)m_FrameServer.DecodingSize.Width / panelCenter.Width;
-				float HeightRatio = (float)m_FrameServer.DecodingSize.Height / panelCenter.Height;
+				float WidthRatio = (float)m_FrameServer.ImageSize.Width / panelCenter.Width;
+				float HeightRatio = (float)m_FrameServer.ImageSize.Height / panelCenter.Height;
 				
 				if (WidthRatio > HeightRatio)
 				{
 					pbSurfaceScreen.Width = panelCenter.Width;
-					pbSurfaceScreen.Height = (int)((float)m_FrameServer.DecodingSize.Height / WidthRatio);
+					pbSurfaceScreen.Height = (int)((float)m_FrameServer.ImageSize.Height / WidthRatio);
 					
 					m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
 				}
 				else
 				{
-					pbSurfaceScreen.Width = (int)((float)m_FrameServer.DecodingSize.Width / HeightRatio);
+					pbSurfaceScreen.Width = (int)((float)m_FrameServer.ImageSize.Width / HeightRatio);
 					pbSurfaceScreen.Height = panelCenter.Height;
 					
 					m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
@@ -725,8 +724,8 @@ namespace Kinovea.ScreenManager
 			else
 			{
 				
-				pbSurfaceScreen.Width = (int)((double)m_FrameServer.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-				pbSurfaceScreen.Height = (int)((double)m_FrameServer.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				pbSurfaceScreen.Width = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+				pbSurfaceScreen.Height = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
 			}
 			
 			//recentrer
@@ -735,7 +734,7 @@ namespace Kinovea.ScreenManager
 			ReplaceResizers();
 			
 			// Redéfinir les plans & grilles 3D
-			Size imageSize = new Size(m_FrameServer.DecodingSize.Width, m_FrameServer.DecodingSize.Height);
+			Size imageSize = new Size(m_FrameServer.ImageSize.Width, m_FrameServer.ImageSize.Height);
 			m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 			m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 		}
@@ -813,13 +812,13 @@ namespace Kinovea.ScreenManager
 			// Resize at the following condition:
 			// Bigger than original image size, smaller than panel size.
 			//-------------------------------------------------------------------
-			if (_iTargetHeight > m_FrameServer.DecodingSize.Height &&
+			if (_iTargetHeight > m_FrameServer.ImageSize.Height &&
 			    _iTargetHeight < panelCenter.Height &&
-			    _iTargetWidth > m_FrameServer.DecodingSize.Width &&
+			    _iTargetWidth > m_FrameServer.ImageSize.Width &&
 			    _iTargetWidth < panelCenter.Width)
 			{
-				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.DecodingSize.Height);
-				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.DecodingSize.Width);
+				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.ImageSize.Height);
+				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.ImageSize.Width);
 
 				m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
 				m_bStretchModeOn = false;
@@ -2167,15 +2166,15 @@ namespace Kinovea.ScreenManager
 		#region Capture device
         private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
         {
+        	// Try to connect to a device.
         	if(!m_FrameServer.IsConnected)
         	{
         		// Prevent reentry.
+        		//tmrCaptureDeviceDetector.Stop();
         		if(!m_bTryingToConnect)
         		{
-        			m_bTryingToConnect = true;
-        			
-        			m_ScreenUIHandler.CaptureScreenUI_TryDeviceConnection();
-        			
+        			m_bTryingToConnect = true;        			
+        			m_FrameServer.NegociateDevice();       			
         			m_bTryingToConnect = false;
         		}
         	}

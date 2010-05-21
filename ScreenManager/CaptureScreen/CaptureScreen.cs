@@ -68,11 +68,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        public CaptureScreenUserInterface	m_CaptureScreenUI;
+        private IScreenHandler m_ScreenHandler; // ScreenManager seen through a limited interface.
         
-        private IScreenHandler m_ScreenHandler;
+        private CaptureScreenUserInterface	m_CaptureScreenUI;
 		private FrameServerCapture m_FrameServer = new FrameServerCapture();
-		private Guid m_UniqueId;
+		private Guid m_UniqueId = System.Guid.NewGuid();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -81,7 +81,6 @@ namespace Kinovea.ScreenManager
         {
         	log.Debug("Constructing a CaptureScreen.");
             m_ScreenHandler = _screenHandler;
-        	m_UniqueId = System.Guid.NewGuid();
             m_CaptureScreenUI = new CaptureScreenUserInterface(m_FrameServer, this);
         }
         #endregion
@@ -94,11 +93,6 @@ namespace Kinovea.ScreenManager
         public void ScreenUI_SetAsActiveScreen()
         {
         	m_ScreenHandler.Screen_SetActiveScreen(this);
-        }
-        public void CaptureScreenUI_TryDeviceConnection()
-        {
-        	// todo.
-        	m_ScreenHandler.Capture_TryDeviceConnection(this);
         }
         #endregion
         
@@ -114,7 +108,7 @@ namespace Kinovea.ScreenManager
         public override void BeforeClose()
         {
         	// This screen is about to be closed.
-        	m_FrameServer.SignalToStop();
+        	m_FrameServer.BeforeClose();
         	m_CaptureScreenUI.BeforeClose();
         }
         public override bool OnKeyPress(Keys _key)
