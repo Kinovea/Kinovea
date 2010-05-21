@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2008-2009.
+Copyright © Joan Charmant 2010.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -23,14 +23,25 @@ using System;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// IFrameServerContainer.
-	/// This is basically the list of methods of the CaptureScreenUserInterface that are relevant for
-	/// the frameServerCapture.
+	/// AbstractFrameGrabber.
+	/// Class to encapsulate all the functionnality of providing access to the actual grabbing library.
+	/// This is intended to decorrelate the capture code from the underlying lib that will 
+	/// provide the images and the access to the camera.
 	/// </summary>
-	public interface IFrameServerContainer
+	public abstract class AbstractFrameGrabber
 	{
-		void DoInvalidate();
-		void DoInitDecodingSize();
-		void DoUpdateCapturedVideos();
+		public abstract bool IsConnected
+		{
+			get;
+		}
+		public abstract bool IsGrabbing
+		{
+			get;
+		}
+		
+		public abstract void NegociateDevice();
+		public abstract void StartGrabbing();
+		public abstract void PauseGrabbing();
+		public abstract void BeforeClose();
 	}
 }

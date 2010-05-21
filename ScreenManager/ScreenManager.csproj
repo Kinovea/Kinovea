@@ -122,6 +122,10 @@
     <Compile Include="AbstractScreen.cs" />
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
+    <Compile Include="CaptureScreen\FrameBuffer.cs" />
+    <Compile Include="CaptureScreen\FrameGrabbers\AbstractFrameGrabber.cs" />
+    <Compile Include="CaptureScreen\FrameGrabbers\FrameGrabberAForge.cs" />
+    <Compile Include="CaptureScreen\FrameGrabbers\IFrameGrabberContainer.cs" />
     <Compile Include="CaptureScreen\FrameServerCapture.cs" />
     <Compile Include="CaptureScreen\ICaptureScreenUIHandler.cs" />
     <Compile Include="CaptureScreen\IFrameServerContainer.cs" />
@@ -445,6 +449,7 @@
       <Project>{0AD99D97-24ED-484D-9430-9905811F8A4F}</Project>
       <Name>SharpVectorRenderingEngine</Name>
     </ProjectReference>
+    <Folder Include="CaptureScreen\FrameGrabbers" />
     <Folder Include="CaptureScreen\UserInterface" />
     <Folder Include="Commands\CaptureScreen" />
     <Folder Include="PlayerScreen\Tracking" />

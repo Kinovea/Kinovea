@@ -1,0 +1,18 @@
+
+This branch is to work on the Capture screen sub-project.
+
+Refs:
+http://www.kinovea.org/en/forum/viewtopic.php?id=185
+http://www.kinovea.org/wiki/doku.php/codecapturearchitecture
+
+TODO:
+done - Refactoring of the existing Capture screen to a more modular architecture. 
+- Integration of the new UI with fields for video file name and image file name.
+- Adaptation of the current features to the new architecture and UI.
+	- basic streaming and pause.
+	- saving a snapshot to a file.
+	- saving video to a file.
+	- drawings overlay.
+- Implement delayed live.
+- Implement device selection.
+- Implement browse recent history.
