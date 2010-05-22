@@ -18,14 +18,16 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -53,7 +55,7 @@ namespace Kinovea.ScreenManager
 			get { return m_ImageSize; }
 		}
 		
-		// Drawings and other screens overlays.
+		// Image, Drawings and other screens overlays.
 		public Metadata Metadata
 		{
 			get { return m_Metadata; }
@@ -86,7 +88,7 @@ namespace Kinovea.ScreenManager
 		private Bitmap m_MostRecentImage;
 		private Size m_ImageSize = new Size(720, 576);
 		
-		// Drawings and other screens overlays.
+		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
 		private Metadata m_Metadata;
 		private Magnifier m_Magnifier = new Magnifier();
@@ -192,57 +194,16 @@ namespace Kinovea.ScreenManager
 		{
 			// Draw the current image on canvas according to conf.
 			// This is called back from UI paint method.
-
-			// Todo: maybe the drawings should be added directly inside GetImageToDisplay().
-			// This way we would call it directly when saving to disk.
-			
 			if(m_FrameGrabber.IsConnected)
 			{
 				Bitmap image = GetImageToDisplay();
 				
 				if(image != null)
 				{
-					// Configure canvas.
-					_canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-					_canvas.CompositingQuality = CompositingQuality.HighSpeed;
-					_canvas.InterpolationMode = InterpolationMode.Bilinear;
-					_canvas.SmoothingMode = SmoothingMode.None;	
-					
 					try
 					{
-						// Draw image.
-						Rectangle rDst;
-						/*if(m_FrameServer.Metadata.Mirrored)
-						{
-							rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
-						}
-						else
-						{
-							rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
-						}*/
-						
-						rDst = new Rectangle((int)_canvas.ClipBounds.Left, (int)_canvas.ClipBounds.Top, (int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
-						
-						RectangleF rSrc;
-						if (m_CoordinateSystem.Zooming)
-						{
-							rSrc = m_CoordinateSystem.ZoomWindow;
-						}
-						else
-						{
-							rSrc = new Rectangle(0, 0, m_ImageSize.Width, m_ImageSize.Height);
-						}
-						
-						_canvas.DrawImage(image, _canvas.ClipBounds, rSrc, GraphicsUnit.Pixel);
-						
-						FlushDrawingsOnGraphics(_canvas);
-						
-						// .Magnifier
-						// TODO: handle miroring.
-						if (m_Magnifier.Mode != MagnifierMode.NotVisible)
-						{
-							m_Magnifier.Draw(image, _canvas, 1.0, false);
-						}
+						Size outputSize = new Size((int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
+						FlushOnGraphics(image, _canvas, outputSize);
 					}
 					catch (Exception exp)
 					{
@@ -254,6 +215,17 @@ namespace Kinovea.ScreenManager
 			}
 			
 			m_bPainting = false;
+		}
+		public Bitmap GetFlushedImage()
+		{
+			// Returns a standalone image with all drawings flushed.
+			// This can be used by snapshot or movie saving.
+			// We don't use the screen size, but the original video size (differs from PlayerScreen.)
+			Bitmap source = GetImageToDisplay();	
+			Bitmap output = new Bitmap(m_ImageSize.Width, m_ImageSize.Height, PixelFormat.Format24bppRgb);
+			output.SetResolution(source.HorizontalResolution, source.VerticalResolution);
+			FlushOnGraphics(source, Graphics.FromImage(output), output.Size);
+			return output;
 		}
 		public void ToggleRecord()
 		{
@@ -318,9 +290,51 @@ namespace Kinovea.ScreenManager
 		#region Final image creation
 		private Bitmap GetImageToDisplay()
 		{
-			// Get the final image to display, according to delay, compositing, etc.
-			
+			// Get the right image to display, according to delay.
+			// Drawings will then be drawn as overlays on this image.
 			return m_MostRecentImage;
+		}
+		private void FlushOnGraphics(Bitmap _image, Graphics _canvas, Size _outputSize)
+		{
+			// Configure canvas.
+			_canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+			_canvas.CompositingQuality = CompositingQuality.HighSpeed;
+			_canvas.InterpolationMode = InterpolationMode.Bilinear;
+			_canvas.SmoothingMode = SmoothingMode.None;
+			
+			// Draw image.
+			Rectangle rDst;
+			/*if(m_FrameServer.Metadata.Mirrored)
+			{
+				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+			}
+			else
+			{
+				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+			}*/
+			
+			rDst = new Rectangle(0, 0, _outputSize.Width, _outputSize.Height);
+			
+			RectangleF rSrc;
+			if (m_CoordinateSystem.Zooming)
+			{
+				rSrc = m_CoordinateSystem.ZoomWindow;
+			}
+			else
+			{
+				rSrc = new Rectangle(0, 0, m_ImageSize.Width, m_ImageSize.Height);
+			}
+			
+			_canvas.DrawImage(_image, rDst, rSrc, GraphicsUnit.Pixel);
+			
+			FlushDrawingsOnGraphics(_canvas);	
+			
+			// .Magnifier
+			// TODO: handle miroring.
+			if (m_Magnifier.Mode != MagnifierMode.NotVisible)
+			{
+				m_Magnifier.Draw(_image, _canvas, 1.0, false);
+			}
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas)
 		{
@@ -348,6 +362,7 @@ namespace Kinovea.ScreenManager
 				m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, bSelected, 0, m_CoordinateSystem.Location);
 			}
 		}
+		
 		#endregion
 		
 		#region Saving to disk

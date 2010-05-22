@@ -21,7 +21,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 #region Using directives
-using Kinovea.ScreenManager.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,10 +32,13 @@ using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+
 using AForge.Video.DirectShow;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -136,6 +138,8 @@ namespace Kinovea.ScreenManager
 			InitializeMetadata();
 			BuildContextMenus();
 			m_bDocked = true;
+			
+			InitializeCaptureFiles();
 			
 			TryToConnect();
 			tmrCaptureDeviceDetector.Start();
@@ -322,6 +326,7 @@ namespace Kinovea.ScreenManager
 			// This screen is about to be closed.
 			tmrCaptureDeviceDetector.Stop();
 			tmrCaptureDeviceDetector.Dispose();
+			PreferencesManager.Instance().Export();
 		}
 		#endregion
 		
@@ -410,6 +415,15 @@ namespace Kinovea.ScreenManager
 			
 			// Load texts
 			ReloadMenusCulture();
+		}
+		private void InitializeCaptureFiles()
+		{
+			tbImageFilename.Text = CreateNewFilename(null);
+			tbVideoFilename.Text = tbImageFilename.Text;
+			
+			PreferencesManager pm = PreferencesManager.Instance();
+			tbImageDirectory.Text = pm.CaptureImageDirectory;
+			tbVideoDirectory.Text = pm.CaptureVideoDirectory;
 		}
 		#endregion
 		
@@ -1827,91 +1841,94 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Export video and frames
+		private void btnBrowseImageLocation_Click(object sender, EventArgs e)
+        {
+        	// Select the image snapshot folder.	
+        	SelectSavingDirectory(tbImageDirectory);
+        }
+		private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
+        {
+        	// Select the video capture folder.	
+			SelectSavingDirectory(tbVideoDirectory);
+        }
+		private void SelectSavingDirectory(TextBox _tb)
+		{
+			folderBrowserDialog.Description = "todo";
+            folderBrowserDialog.ShowNewFolderButton = true;
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            if(Directory.Exists(_tb.Text))
+            {
+               	folderBrowserDialog.SelectedPath = _tb.Text;
+            }
+            
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                _tb.Text = folderBrowserDialog.SelectedPath;
+            }			
+		}
+		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
+        {
+        	PreferencesManager.Instance().CaptureImageDirectory = tbImageDirectory.Text;
+        }
+        private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
+        {
+        	PreferencesManager.Instance().CaptureVideoDirectory = tbVideoDirectory.Text;
+        }
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
-			/*
 			// Export the current frame.
-			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
+			
+			// Check that the destination folder exists.
+			if(Directory.Exists(tbImageDirectory.Text))
 			{
-				StopPlaying();
+				// no extension : jpg.
+				// extension specified by user : honor it if supported, jpg otherwise.				
+				string filename = tbImageFilename.Text;
+				string filenameToLower = filename.ToLower();
+				string filepath = tbImageDirectory.Text + "\\" + filename;
 				try
 				{
-					SaveFileDialog dlgSave = new SaveFileDialog();
-					dlgSave.Title = ScreenManagerLang.dlgSaveTitle;
-					dlgSave.RestoreDirectory = true;
-					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-					dlgSave.FilterIndex = 1;
+					Bitmap bmp = m_FrameServer.GetFlushedImage();
 					
-					if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
+					if (filenameToLower.EndsWith("jpg") || filenameToLower.EndsWith("jpg"))
 					{
-						dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoFile.FilePath);
+						Bitmap OutputJpg = ConvertToJPG(bmp);
+						OutputJpg.Save(filepath, ImageFormat.Jpeg);
+						OutputJpg.Dispose();
 					}
-					else
+					else if (filenameToLower.EndsWith("bmp"))
 					{
-						dlgSave.FileName = BuildFilename(m_FrameServer.VideoFile.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+						bmp.Save(filepath, ImageFormat.Bmp);
+					}
+					else if (filenameToLower.EndsWith("png"))
+					{
+						bmp.Save(filepath, ImageFormat.Png);
+					}
+					else if(filename != "")
+					{
+						// no extension.
+						filepath = filepath + ".jpg";
+						
+						Bitmap OutputJpg = ConvertToJPG(bmp);
+						OutputJpg.Save(filepath, ImageFormat.Jpeg);
+						OutputJpg.Dispose();
 					}
 					
-					if (dlgSave.ShowDialog() == DialogResult.OK)
-					{
-						
-						// 1. Reconstruct the extension.
-						// If the user let "file.00.00" as a filename, the extension is not appended automatically.
-						string strImgNameLower = dlgSave.FileName.ToLower();
-						string strImgName;
-						if (strImgNameLower.EndsWith("jpg") || strImgNameLower.EndsWith("jpeg") || strImgNameLower.EndsWith("bmp") || strImgNameLower.EndsWith("png"))
-						{
-							// Ok, the user added the extension himself or he did not use the preformatting.
-							strImgName = dlgSave.FileName;
-						}
-						else
-						{
-							// Get the extension
-							string extension;
-							switch (dlgSave.FilterIndex)
-							{
-								case 1:
-									extension = ".jpg";
-									break;
-								case 2:
-									extension = ".png";
-									break;
-								case 3:
-									extension = ".bmp";
-									break;
-								default:
-									extension = ".jpg";
-									break;
-							}
-							strImgName = dlgSave.FileName + extension;
-						}
-
-						//2. Get image.
-						Bitmap outputImage = GetFlushedImage();
-						
-						//3. Save the file.
-						if (strImgName.ToLower().EndsWith("jpg"))
-						{
-							Bitmap OutputJpg = ConvertToJPG(outputImage);
-							OutputJpg.Save(strImgName, ImageFormat.Jpeg);
-							OutputJpg.Dispose();
-						}
-						else if (strImgName.ToLower().EndsWith("bmp"))
-						{
-							outputImage.Save(strImgName, ImageFormat.Bmp);
-						}
-						else if (strImgName.ToLower().EndsWith("png"))
-						{
-							outputImage.Save(strImgName, ImageFormat.Png);
-						}
-
-						outputImage.Dispose();
-					}
+					// Update the filename for the next snapshot.
+					// If the filename was empty, we'll create it without saving.
+					tbImageFilename.Text = CreateNewFilename(filename);
 				}
 				catch (Exception exp)
 				{
+					log.Error(exp.Message);
 					log.Error(exp.StackTrace);
 				}
-			}*/
+			}
+			else
+			{
+				btnBrowseImageLocation_Click(null, EventArgs.Empty);
+			}
 		}
 		private void btnRafale_Click(object sender, EventArgs e)
 		{
@@ -2191,6 +2208,52 @@ namespace Kinovea.ScreenManager
         		}
         	}
         }
+        private string CreateNewFilename(string filename)
+        {
+        	//-------------------------------------------------------------------
+        	// Create the next file name from the existing one.
+        	// if the existing name has a number in it, we increment this number.
+        	// if not, we create a suffix.
+			//-------------------------------------------------------------------
+        	
+			string newFilename = "";
+			
+			if(filename == null || filename == "")
+			{
+				// Create the name from the current date.
+				DateTime now = DateTime.Now;
+				newFilename = String.Format("{0}-{1:00}-{2:00} - 1", now.Year, now.Month, now.Day);
+			}
+			else
+			{
+				// Find all numbers in the name, if any.
+				Regex r = new Regex(@"\d+");
+	        	MatchCollection mc = r.Matches(filename);
+	        	if(mc.Count > 0)
+	        	{
+	        		// Increment the last one.
+	        		Match m = mc[mc.Count - 1];
+	        		int number = int.Parse(m.Value);
+	        		number++;
+	        	
+	        		// Todo: handle leading zeroes in the original.
+	        		// (LastIndexOf("0") ?
+	        		
+	        		// Replace the number in the original.
+	        		newFilename = r.Replace(filename, number.ToString(), 1, m.Index );
+	        	}
+	        	else
+	        	{
+	        		// No number found, add suffix between text and extension (works if no extension).
+	        		newFilename = String.Format("{0} - 2{1}", 
+	        		                            Path.GetFileNameWithoutExtension(filename), 
+	        		                            Path.GetExtension(filename));
+	        	}
+			}
+			
+        	return newFilename;
+        }
         #endregion
+        
 	}
 }

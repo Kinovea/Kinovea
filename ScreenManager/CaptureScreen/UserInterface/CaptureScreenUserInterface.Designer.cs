@@ -73,6 +73,7 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails = new System.Windows.Forms.Panel();
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.tmrCaptureDeviceDetector = new System.Windows.Forms.Timer(this.components);
+        	this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
         	this.pnlCaptureDock.SuspendLayout();
@@ -232,6 +233,7 @@ namespace Kinovea.ScreenManager
         	this.btnCamSnap.TabIndex = 30;
         	this.btnCamSnap.Tag = "";
         	this.btnCamSnap.UseVisualStyleBackColor = false;
+        	this.btnCamSnap.Click += new System.EventHandler(this.btnSnapShot_Click);
         	// 
         	// lblTimeCode
         	// 
@@ -293,6 +295,7 @@ namespace Kinovea.ScreenManager
         	this.btnSaveImageLocation.TabIndex = 36;
         	this.btnSaveImageLocation.Tag = "";
         	this.btnSaveImageLocation.UseVisualStyleBackColor = true;
+        	this.btnSaveImageLocation.Click += new System.EventHandler(this.btnBrowseImageLocation_Click);
         	// 
         	// btnBrowseImageLocation
         	// 
@@ -310,6 +313,7 @@ namespace Kinovea.ScreenManager
         	this.btnBrowseImageLocation.TabIndex = 35;
         	this.btnBrowseImageLocation.Tag = "";
         	this.btnBrowseImageLocation.UseVisualStyleBackColor = true;
+        	this.btnBrowseImageLocation.Click += new System.EventHandler(this.btnBrowseImageLocation_Click);
         	// 
         	// tbImageDirectory
         	// 
@@ -320,6 +324,7 @@ namespace Kinovea.ScreenManager
         	this.tbImageDirectory.Size = new System.Drawing.Size(51, 20);
         	this.tbImageDirectory.TabIndex = 34;
         	this.tbImageDirectory.Text = "C:\\Docu...Images";
+        	this.tbImageDirectory.TextChanged += new System.EventHandler(this.tbImageDirectory_TextChanged);
         	// 
         	// tbImageFilename
         	// 
@@ -358,6 +363,7 @@ namespace Kinovea.ScreenManager
         	this.btnSaveVideoLocation.TabIndex = 31;
         	this.btnSaveVideoLocation.Tag = "";
         	this.btnSaveVideoLocation.UseVisualStyleBackColor = true;
+        	this.btnSaveVideoLocation.Click += new System.EventHandler(this.btnBrowseVideoLocation_Click);
         	// 
         	// btnBrowseVideoLocation
         	// 
@@ -375,6 +381,7 @@ namespace Kinovea.ScreenManager
         	this.btnBrowseVideoLocation.TabIndex = 28;
         	this.btnBrowseVideoLocation.Tag = "";
         	this.btnBrowseVideoLocation.UseVisualStyleBackColor = true;
+        	this.btnBrowseVideoLocation.Click += new System.EventHandler(this.btnBrowseVideoLocation_Click);
         	// 
         	// tbVideoDirectory
         	// 
@@ -385,6 +392,7 @@ namespace Kinovea.ScreenManager
         	this.tbVideoDirectory.Size = new System.Drawing.Size(52, 20);
         	this.tbVideoDirectory.TabIndex = 27;
         	this.tbVideoDirectory.Text = "C:\\Docu...Videos";
+        	this.tbVideoDirectory.TextChanged += new System.EventHandler(this.tbVideoDirectory_TextChanged);
         	// 
         	// tbVideoFilename
         	// 
@@ -775,6 +783,7 @@ namespace Kinovea.ScreenManager
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button btnGrab;
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.Button btnSaveImageLocation;
