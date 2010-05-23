@@ -82,6 +82,7 @@
         	this.tbTitle.Location = new System.Drawing.Point(1, 65);
         	this.tbTitle.MaxLength = 16;
         	this.tbTitle.Name = "tbTitle";
+        	this.tbTitle.ReadOnly = true;
         	this.tbTitle.Size = new System.Drawing.Size(100, 11);
         	this.tbTitle.TabIndex = 4;
         	this.tbTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;

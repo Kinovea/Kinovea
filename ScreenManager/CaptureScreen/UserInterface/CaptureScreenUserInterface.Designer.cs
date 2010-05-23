@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
         	this.btnRecord.Size = new System.Drawing.Size(25, 25);
         	this.btnRecord.TabIndex = 24;
         	this.btnRecord.UseVisualStyleBackColor = false;
-        	this.btnRecord.Click += new System.EventHandler(this.buttonRecord_Click);
+        	this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
         	// 
         	// btnCamSnap
         	// 
@@ -333,6 +333,7 @@ namespace Kinovea.ScreenManager
         	this.tbImageFilename.Size = new System.Drawing.Size(157, 20);
         	this.tbImageFilename.TabIndex = 33;
         	this.tbImageFilename.Text = "2010-04-18 - 4.jpg";
+        	this.tbImageFilename.TextChanged += new System.EventHandler(this.tbImageFilename_TextChanged);
         	// 
         	// label1
         	// 
@@ -401,6 +402,7 @@ namespace Kinovea.ScreenManager
         	this.tbVideoFilename.Size = new System.Drawing.Size(156, 20);
         	this.tbVideoFilename.TabIndex = 26;
         	this.tbVideoFilename.Text = "2010-04-18 - 1.avi";
+        	this.tbVideoFilename.TextChanged += new System.EventHandler(this.tbVideoFilename_TextChanged);
         	// 
         	// lblSpeedTuner
         	// 

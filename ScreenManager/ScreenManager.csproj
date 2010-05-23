@@ -415,6 +415,9 @@
     <Compile Include="UserInterface\ThumbListViewItem.Designer.cs">
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CaptureScreen\UserInterface\CapturedVideoBox.resx">
+      <DependentUpon>CapturedVideoBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.resx">
       <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
       <SubType>Designer</SubType>

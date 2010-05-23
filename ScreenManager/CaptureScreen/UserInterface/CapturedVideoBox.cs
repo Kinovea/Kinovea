@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
         	ShowButtons();
-        	this.Focus();
+        	//this.Focus();
         }
         private void Controls_MouseLeave(object sender, EventArgs e)
         {
@@ -107,14 +107,14 @@ namespace Kinovea.ScreenManager
         }
         private void TbTitleEnter(object sender, EventArgs e)
         {
-        	DeactivateKeyboardHandler();
+        	//DeactivateKeyboardHandler();
         }
         #endregion
         
         #region Private helpers
         private void ShowButtons()
         {
-            btnClose.Visible = true;
+            //btnClose.Visible = true;
         }
         private void HideButtons()
         {

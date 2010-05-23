@@ -107,7 +107,6 @@ namespace Kinovea.ScreenManager
         }
         public override void BeforeClose()
         {
-        	// This screen is about to be closed.
         	m_FrameServer.BeforeClose();
         	m_CaptureScreenUI.BeforeClose();
         }
@@ -120,14 +119,5 @@ namespace Kinovea.ScreenManager
 			// Not implemented.
 		}
         #endregion
-    
-        #region Other public methods
-        public void PostTryConnection()
-        {
-        	// Called when a device is connected to this screen.
-        	m_CaptureScreenUI.PostTryConnection();
-        }
-    	#endregion
-    	
     }
 }
