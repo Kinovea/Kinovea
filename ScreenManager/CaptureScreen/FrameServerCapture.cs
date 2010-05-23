@@ -54,6 +54,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_ImageSize; }
 		}
+		public bool IsRecording
+		{
+			get {return m_bIsRecording;}
+		}
 		
 		// Image, Drawings and other screens overlays.
 		public Metadata Metadata
@@ -76,6 +80,12 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_RecentlyCapturedVideos; }	
 		}
+		public string CurrentCaptureFilePath
+		{
+			get { return m_CurrentCaptureFilePath; }
+			set { m_CurrentCaptureFilePath = value; }
+		}
+
 		#endregion
 		
 		#region Members
@@ -95,15 +105,17 @@ namespace Kinovea.ScreenManager
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		
 		// Saving to disk
+		private bool m_bIsRecording;
+		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
+		
+		// Captured video thumbnails.
+		private string m_CurrentCaptureFilePath;
 		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
-
-		// todo: evaluate after end of refactoring.
+		private bool m_bCaptureThumbSet;
+		private Bitmap m_CurrentCaptureBitmap;
+		
 		/*
 		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
-		private bool m_bIsRecording;
-		private Bitmap m_CurrentCaptureBitmap;						// Used to create the thumbnail.
-		private string m_CurrentCaptureFilePath;					// Used to create the thumbnail.
-		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
 		*/
 
 		
@@ -145,15 +157,25 @@ namespace Kinovea.ScreenManager
 				m_Container.DoInvalidate();
 			}
 			
-			//If recording, append the new frame to file.
-			/*if(m_bIsRecording)
+			// We also use this event to commit frame to disk during saving.
+			// However, it is what is drawn on screen that will be pushed to the file,
+			// not the frame the device just grabbed.
+			if(m_bIsRecording)
 			{
-				m_VideoFileWriter.SaveFrame(m_FrameBuffer[m_FrameBuffer.Count-1]);
-				if(m_CurrentCaptureBitmap == null)
+				// Is it necessary to make another copy of the frame ?
+				Bitmap bmp = GetFlushedImage();
+				m_VideoFileWriter.SaveFrame(bmp);
+				
+				if(!m_bCaptureThumbSet)
 				{
-					m_CurrentCaptureBitmap = m_FrameBuffer[m_FrameBuffer.Count-1];
+					m_CurrentCaptureBitmap = bmp;
+					m_bCaptureThumbSet = true;
 				}
-			}*/
+				else
+				{
+					bmp.Dispose();
+				}
+			}
 		}
 		public void AlertCannotConnect()
 		{
@@ -221,69 +243,59 @@ namespace Kinovea.ScreenManager
 			// Returns a standalone image with all drawings flushed.
 			// This can be used by snapshot or movie saving.
 			// We don't use the screen size, but the original video size (differs from PlayerScreen.)
+			// This always represents the image that is drawn on screen, not the last image grabbed by the device.
 			Bitmap source = GetImageToDisplay();	
 			Bitmap output = new Bitmap(m_ImageSize.Width, m_ImageSize.Height, PixelFormat.Format24bppRgb);
 			output.SetResolution(source.HorizontalResolution, source.VerticalResolution);
 			FlushOnGraphics(source, Graphics.FromImage(output), output.Size);
 			return output;
 		}
-		public void ToggleRecord()
+		public void StartRecording(string filepath)
 		{
 			// Start recording.
 			// We always record what is displayed on screen, not what is grabbed by the device.
 			
-			
-			/*if(m_bIsRecording)
+			// Restart capturing if needed.
+			if(!m_FrameGrabber.IsGrabbing)
 			{
-				// Stop recording
-				m_bIsRecording = false;
-				
-				// Close the recording context.
-				m_VideoFileWriter.CloseSavingContext(true);
-				
-				// Move to new name
-				
-				// Add a VideofileBox (in the Keyframes panel) with a thumbnail of this video.
-				// As for KeyframeBox, you'd be able to edit the filename.
-				// double click = open it in a Playback screen.
-				// time label would be the duration.
-				// using the close button do not delete the file, it just hides it.
-				
-				CapturedVideo cv = new CapturedVideo(m_CurrentCaptureFilePath, m_CurrentCaptureBitmap);
-				m_RecentlyCapturedVideos.Add(cv);
-				m_CurrentCaptureBitmap = null;
-				
-				m_Container.DoUpdateCapturedVideos();
+				m_FrameGrabber.StartGrabbing();
+			}
+			
+			// Open a recording context.
+			SaveResult result = m_VideoFileWriter.OpenSavingContext(filepath, null, -1, false);
+			
+			if(result == SaveResult.Success)
+			{
+				// The frames will be pushed to the file upon receiving the FrameGrabbed event.
+				m_bCaptureThumbSet = false;
+				m_bIsRecording = true;
 			}
 			else
 			{
-				// Restart capturing if needed.
-				if(!m_VideoDevice.IsRunning)
-				{
-					SignalToStart();
-				}
-				
-				// Open a recording context. (on which file name ?)
-				// Create filename from current date time.
-				string timecode = DateTime.Now.ToString("yyyy-MM-dd HHmmss", CultureInfo.InvariantCulture);
-				m_CurrentCaptureFilePath = PreferencesManager.SettingsFolder + "\\" + timecode + ".avi";
-				
-				SaveResult result = m_VideoFileWriter.OpenSavingContext(m_CurrentCaptureFilePath, null, -1, false);
-				
-				if(result == SaveResult.Success)
-				{
-					m_bIsRecording = true;
-				}
-				else
-				{
-					m_VideoFileWriter.CloseSavingContext(false);
-					m_bIsRecording = false;	
-					DisplayError(result);
-				}
-				
-				// If preroll is enabled, flush buffer to file now.
-				
-			}*/
+				m_VideoFileWriter.CloseSavingContext(false);
+				m_bIsRecording = false;	
+				DisplayError(result);
+			}
+		}
+		public void StopRecording()
+		{
+			// Stop recording
+			m_bIsRecording = false;
+			
+			// Close the recording context.
+			m_VideoFileWriter.CloseSavingContext(true);
+						
+			//----------------------------------------------------------------------------
+			// Add a VideofileBox (in the Keyframes panel) with a thumbnail of this video.
+			// As for KeyframeBox, you'd be able to edit the filename.
+			// double click = open it in a Playback screen.
+			// time label would be the duration.
+			// using the close button do not delete the file, it just hides it.
+			//----------------------------------------------------------------------------
+			CapturedVideo cv = new CapturedVideo(m_CurrentCaptureFilePath, m_CurrentCaptureBitmap);
+			m_RecentlyCapturedVideos.Add(cv);
+			m_CurrentCaptureBitmap.Dispose();
+			m_Container.DoUpdateCapturedVideos();
 		}
 		#endregion
 		
@@ -362,7 +374,6 @@ namespace Kinovea.ScreenManager
 				m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, bSelected, 0, m_CoordinateSystem.Location);
 			}
 		}
-		
 		#endregion
 		
 		#region Saving to disk
