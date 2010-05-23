@@ -1996,7 +1996,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Set Original Speed....
+        ///   Recherche une chaîne localisée semblable à High-speed camera....
         /// </summary>
         internal static string mnuSetCaptureSpeed {
             get {

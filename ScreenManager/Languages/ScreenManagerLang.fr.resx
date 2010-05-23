@@ -284,7 +284,7 @@
    <data name="mnuSavePic" xml:space="preserve"><value>Enregistrer l'Image en Cours dans un Fichier</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Écrans</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Spécifier la vitesse d'origine...</value></data>
+   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Caméra haute-vitesse...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Positionner la Sortie de la Zone de Travail sur l'Image Courante</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Positionner l'Entrée de la Zone de Travail sur l'Image Courante</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Renforcement des Contours...</value></data>

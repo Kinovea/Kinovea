@@ -353,6 +353,10 @@ namespace Kinovea.ScreenManager
         	// todo, move up in Abstract screen ?
         	m_PlayerScreenUI.AddSVGDrawing(filename);
         }
+        public void ConfigureHighSpeedCamera()
+        {
+        	m_PlayerScreenUI.DisplayConfigureSpeedBox(true);
+        }
         #endregion
     }
 }
