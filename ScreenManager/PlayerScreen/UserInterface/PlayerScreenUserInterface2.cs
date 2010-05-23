@@ -1468,8 +1468,20 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
+					long oldPos = m_iCurrentPosition;
 					m_iFramesToDecode = -1;
 					ShowNextFrame(-1, true);
+					
+					// If it didn't work, try going back two frames to unstuck the situation.
+					// Todo: check if we're going to endup outside the working zone ?
+					if(m_iCurrentPosition == oldPos)
+					{
+						log.Debug("Seeking to previous frame did not work. Moving backward 2 frames.");
+						m_iFramesToDecode = -2;
+						ShowNextFrame(-1, true);
+					}
+						
+					// Reset to normal.
 					m_iFramesToDecode = 1;
 				}
 				
