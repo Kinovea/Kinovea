@@ -2532,7 +2532,7 @@ namespace Kinovea.ScreenManager
 			// Same as mnuSetCaptureSpeed_Click but different location.
 			DisplayConfigureSpeedBox(true);
 		}
-		private void DisplayConfigureSpeedBox(bool _center)
+		public void DisplayConfigureSpeedBox(bool _center)
 		{
 			//--------------------------------------------------------------------
 			// Display the dialog box that let the user specify the capture speed.

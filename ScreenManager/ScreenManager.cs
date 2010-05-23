@@ -133,6 +133,8 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGridPerspective = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
+        
+        public ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
 
         #region Synchronization
         private MMTimerEventHandler m_DelegateMMTimerEventHandler;
@@ -498,7 +500,6 @@ namespace Kinovea.ScreenManager
              // Coordinate Axis
             mnuCoordinateAxis.Tag = new ItemResourceInfo(resManager, "dlgConfigureTrajectory_SetOrigin");
             mnuCoordinateAxis.Text = ((ItemResourceInfo)mnuCoordinateAxis.Tag).resManager.GetString(((ItemResourceInfo)mnuCoordinateAxis.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuCoordinateAxis.Checked = false;
             mnuCoordinateAxis.Click += new EventHandler(mnuCoordinateAxis_OnClick);
             mnuCoordinateAxis.MergeAction = MergeAction.Append;
 
@@ -531,8 +532,17 @@ namespace Kinovea.ScreenManager
             mnuCatchMotion.MergeIndex = 4;
             mnuCatchMotion.MergeAction = MergeAction.MatchOnly;
 
+            
+            // High-speed camera
+            mnuHighspeedCamera.Tag = new ItemResourceInfo(resManager, "mnuSetCaptureSpeed");
+            mnuHighspeedCamera.Text = ((ItemResourceInfo)mnuHighspeedCamera.Tag).resManager.GetString(((ItemResourceInfo)mnuHighspeedCamera.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuHighspeedCamera.Click += new EventHandler(mnuHighspeedCamera_OnClick);
+            mnuHighspeedCamera.MergeAction = MergeAction.Append;
+            
             mnuCatchMotion.DropDownItems.AddRange(new ToolStripItem[] 
                                                   {  
+                                                  		mnuHighspeedCamera,
+                                                  		new ToolStripSeparator(),
                                                   		m_VideoFilters[(int)VideoFilterType.Mosaic].Menu,
                                                   		m_VideoFilters[(int)VideoFilterType.Reverse].Menu,
                                                   		m_VideoFilters[(int)VideoFilterType.Sandbox].Menu});
@@ -1315,6 +1325,9 @@ namespace Kinovea.ScreenManager
                         mnuGridPerspective.Checked = player.Show3DPlane;
                         
                         ConfigureImageFormatMenus(player);
+                        
+                        // Motion
+                        mnuHighspeedCamera.Enabled = true;
                         ConfigureVideoFilterMenus(player, false);
                     }
                     else
@@ -1360,6 +1373,9 @@ namespace Kinovea.ScreenManager
                 mnuGridPerspective.Checked = false;
 				
 				ConfigureImageFormatMenus(null);
+				
+				// Motion
+				mnuHighspeedCamera.Enabled = false;
 				ConfigureVideoFilterMenus(null, true);
             }
             #endregion
@@ -1601,6 +1617,7 @@ namespace Kinovea.ScreenManager
 	        	mnuFormatForce169.Checked = false;
         	}
         }
+        
         #region Menus events handlers
 
         #region File
@@ -2501,6 +2518,16 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Motion
+        private void mnuHighspeedCamera_OnClick(object sender, EventArgs e)
+        {
+        	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+        	if (ps != null)
+        	{
+        		ps.ConfigureHighSpeedCamera();
+        	}
+        }
+        #endregion
         #endregion
 
         #region Delegates called from UI.

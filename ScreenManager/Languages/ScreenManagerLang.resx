@@ -284,7 +284,7 @@
    <data name="mnuSavePic" xml:space="preserve"><value>Save the Current Image to File</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Screens</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrate measure...</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Set Original Speed...</value></data>
+   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High-speed camera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Sharpen...</value></data>
