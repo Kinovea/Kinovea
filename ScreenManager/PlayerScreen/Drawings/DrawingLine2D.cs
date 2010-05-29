@@ -241,6 +241,20 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(m_bShowMeasure.ToString());
             _xmlWriter.WriteEndElement();
 
+            if(m_bShowMeasure)
+            {
+            	// This is only for spreadsheet export support. These values are not read at import.
+            	_xmlWriter.WriteStartElement("Measure");
+            	
+            	double len = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit(m_StartPoint, m_EndPoint);
+	            string value = String.Format("{0:0.00}", len);
+	                
+            	_xmlWriter.WriteAttributeString("UserLength", value);
+            	_xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
+            	
+            	_xmlWriter.WriteEndElement();
+            }
+            
             _xmlWriter.WriteEndElement();// </Drawing>
         }
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)

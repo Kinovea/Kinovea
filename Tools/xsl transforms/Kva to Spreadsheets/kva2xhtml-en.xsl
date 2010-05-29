@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-
 <!-- 
 	www.kinovea.org
 	
 	This stylesheet formats a .kva file to XHTML.
-	You can use it to view the content of the .kva  in your browser,
+	You can use it to view the content of the .kva  in your browser.
 -->
 
 <xsl:output method="html" encoding="ISO-8859-1"/>
@@ -15,134 +14,196 @@
   <html>
     <head>
       <title><xsl:value-of select="KinoveaVideoAnalysis/OriginalFilename"/></title>
+      <xsl:call-template name="style"/>
     </head>
     <body>
-      <h3>Data file: <xsl:value-of select="KinoveaVideoAnalysis/OriginalFilename"/></h3>
-      <xsl:apply-templates select="//Keyframes"/>
-      <xsl:apply-templates select="//Tracks"/>
-      <xsl:apply-templates select="//Chronos"/>
-      <br/>
-      <br/>
-      <br/>
-      <small style="color: silver;">www.kinovea.org</small>
+      <h2><xsl:value-of select="/KinoveaVideoAnalysis/OriginalFilename"/></h2>
+      <xsl:apply-templates select="/KinoveaVideoAnalysis/Keyframes"/>
+      <xsl:apply-templates select="/KinoveaVideoAnalysis/Chronos"/>
+      <xsl:apply-templates select="/KinoveaVideoAnalysis/Tracks"/>
     </body>
-  </html>		
-
+  </html>
+  
 </xsl:template>
 
 <xsl:template match="Keyframes">
 
 	<br/>
-	<!-- Keyframes table -->
-	<table border="0" cellpadding="0" cellspacing="1">
-		<tr bgcolor="#d2f5b0">
-			<td>Key Images</td>
+
+  <xsl:call-template name="keyframes-table"/>
+    
+  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure) &gt; 0">
+    <xsl:call-template name="lines-table"/>
+  </xsl:if>
+
+  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingAngle2D']/Measure) &gt; 0">
+    <xsl:call-template name="angles-table"/>
+  </xsl:if>
+
+</xsl:template>
+<xsl:template match="Chronos">
+  <br/>
+	<!-- Stopwatches table -->
+	<table>
+		<tr>
+			<td class="chronos-title" colspan="2">Stopwatches</td>
 		</tr>
-		<xsl:for-each select="Keyframe">
+		<tr>
+				<td class="header">Label</td>
+				<td class="header">Duration</td>
+    </tr>
+		<xsl:for-each select="Chrono">
 			<tr>
-				<td bgcolor="#e8e8e8">Title:</td>
-				<td bgcolor="#e8e8e8"><xsl:value-of select="Title"/></td>
+				<td class="data left"><xsl:value-of select="Label/Text"/></td>
+				<td class="data right"><xsl:value-of select="Values/UserDuration"/></td>
 			</tr>
 		</xsl:for-each>
 	</table>
-
+	
 </xsl:template>
-
 <xsl:template match="Tracks">
 
-	<br/>
 	<xsl:for-each select="Track">
 		<br/>
 		<!-- Track table -->
-		<table border="0" cellpadding="0" cellspacing="1">
-			<tr bgcolor="#c2dfff">
-				<td colspan="2">Track</td>
-			</tr>
-			<tr bgcolor="#e8e8e8">
-				<td>Label:</td>
-				<td><xsl:value-of select="Label/Text"/></td>
-			</tr>
-			<tr bgcolor="#e8e8e8">
-				<td colspan="3">Coordinates (x,y: <xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t: time)</td>
+		<table>
+			<tr>
+				<td class="track-title" colspan="3">Track</td>
 			</tr>
 			<tr>
-				<td bgcolor="#e8e8e8">x</td>
-				<td bgcolor="#e8e8e8">y</td>
-        <td bgcolor="#e8e8e8">t</td>
+				<td class="header">Label:</td>
+				<td class="data left" colspan="2"><xsl:value-of select="Label/Text"/></td>
+			</tr>
+			<tr>
+				<td class="header" colspan="3">Coordinates (x,y: <xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t: time)</td>
+			</tr>
+			<tr>
+				<td class="header">x</td>
+				<td class="header">y</td>
+        <td class="header">t</td>
 			</tr>
 			<xsl:for-each select="TrackPositionList/TrackPosition">
 				<tr>
-          <td bgcolor="#e8e8e8"><xsl:value-of select="@UserX"/></td>
-				  <td bgcolor="#e8e8e8"><xsl:value-of select="@UserY"/></td>
-          <td bgcolor="#e8e8e8"><xsl:value-of select="@UserTime"/></td>
+          <td class="data right"><xsl:value-of select="@UserX"/></td>
+				  <td class="data right"><xsl:value-of select="@UserY"/></td>
+          <td class="data right"><xsl:value-of select="@UserTime"/></td>
 				</tr>
 			</xsl:for-each>
 		</table>
 	</xsl:for-each>
-	
 </xsl:template>
 
-<xsl:template match="Chronos">
 
+<!-- Named templates -->
+<xsl:template name="style">
+<style type="text/css">
+body { 
+  font-family: Courier New,Courier,monospace; 
+}
+
+table {
+  border-collapse:collapse;
+}
+
+td {
+  padding:5px;  
+  border-width:1px;  
+  border-color:#000000;
+  border-style:solid;
+}
+
+.keyimages-title {
+  text-align:center;   
+  background-color:#d2f5b0;
+}
+
+.chronos-title {
+  text-align:center;   
+  background-color:#c2dfff;
+}
+
+.track-title {
+  text-align:center;
+  background-color:#e3b7eb;
+}
+
+.header {
+  text-align:center;
+  background-color:#e8e8e8;
+}
+
+.data {
+  background-color:#FFFFFF;
+}
+
+.left {
+  text-align:left;
+}
+
+.right {
+  text-align:right;
+}
+</style>
+</xsl:template>
+<xsl:template name="keyframes-table">
+  <!-- Context node: Keyframes -->  
+  <table>
+		<tr>
+			<td class="keyimages-title" colspan="2">Key Images</td>
+		</tr>
+		<tr>
+				<td class="header">Title</td>
+				<td class="header">Time</td>
+    </tr>
+		<xsl:for-each select="Keyframe">
+			<tr>
+				<td class="data left"><xsl:value-of select="Title"/></td>
+				<td class="data right"><xsl:value-of select="Position/@UserTime"/></td>
+			</tr>
+		</xsl:for-each>
+	</table>
+</xsl:template>
+
+<xsl:template name="lines-table">
+  <!-- Context node: Keyframes -->
 	<br/>
-	<xsl:for-each select="Chrono">
-		<br/>
-		<!-- Chrono table -->
-		<table border="0" cellpadding="0" cellspacing="1">
-			<tr bgcolor="#e3b7eb">
-				<td>Chrono</td>
-			</tr>
-			<tr>
-				<td bgcolor="#e8e8e8">Label: "<xsl:value-of select="Label/Text"/>"</td>
-			</tr>
-			<tr>
-				<td bgcolor="#e8e8e8">Duration: <xsl:value-of select="Values/UserDuration"/></td>
-			</tr>
-		</table>
-	</xsl:for-each>
-
+	<table>
+	  <tr>
+			<td class="keyimages-title" colspan="3">Lines</td>
+		</tr>
+		<tr>
+				<td class="header">Length (<xsl:value-of select="../CalibrationHelp/LengthUnit/@UserUnitLength"/>)</td>
+				<td class="header">Time</td>
+				<td class="header">Key Image</td>
+    </tr>
+		<xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure">
+      <tr>
+        <td class="data right"><xsl:value-of select="@UserLength"/></td>
+        <td class="data right"><xsl:value-of select="../../../Position/@UserTime"/></td>
+        <td class="data left"><xsl:value-of select="../../../Title"/></td>
+      </tr>
+		</xsl:for-each>
+	</table>
 </xsl:template>
-
-<xsl:template name="tokenize">
-	<xsl:param name="inputString"/>
-	<xsl:param name="separator" select="';'"/>
-	<!-- Split next value from the rest -->
-	<xsl:variable name="token" select="substring-before($inputString, $separator)"/>
-	<xsl:variable name="nextToken" select="substring-after($inputString, $separator)"/>
-	<!-- a;b;c : 
-	  1. (a)(-> b;c) 
-	  2. (b)(-> c) 
-	  3. () 
-  -->
-	<xsl:choose>
-    <xsl:when test="$token">
-      <!-- output first value -->      
-      <td>
-        <xsl:attribute name="bgcolor">
-				  <xsl:value-of select="'#e8e8e8'"/>
-        </xsl:attribute>				  
-        <xsl:value-of select="$token"/>
-      </td>
-				  
-      <!-- recursive call to tokenize for the rest -->
-      <xsl:if test="$nextToken">
-        <xsl:call-template name="tokenize">
-          <xsl:with-param name="inputString" select="$nextToken"/>
-          <xsl:with-param name="separator" select="$separator"/>
-        </xsl:call-template>
-      </xsl:if>
-    </xsl:when>
-      
-    <xsl:otherwise>
-      <!-- last value -->    
-      <td>
-        <xsl:attribute name="bgcolor">
-          <xsl:value-of select="'#e8e8e8'"/>
-        </xsl:attribute>				  
-        <xsl:value-of select="$inputString"/>
-      </td>
-    </xsl:otherwise>
-  </xsl:choose>
+<xsl:template name="angles-table">
+  <!-- Context node: Keyframes -->
+	<br/>
+	<table>
+	  <tr>
+			<td class="keyimages-title" colspan="3">Angles</td>
+		</tr>
+		<tr>
+				<td class="header">Value</td>
+				<td class="header">Time</td>
+				<td class="header">Key Image</td>
+    </tr>
+		<xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingAngle2D']/Measure">
+      <tr>
+        <td class="data right"><xsl:value-of select="@UserAngle"/></td>
+        <td class="data right"><xsl:value-of select="../../../Position/@UserTime"/></td>
+        <td class="data left"><xsl:value-of select="../../../Title"/></td>
+      </tr>
+		</xsl:for-each>
+	</table>
 </xsl:template>
-
 </xsl:stylesheet>
