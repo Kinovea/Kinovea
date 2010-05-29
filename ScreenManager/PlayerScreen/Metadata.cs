@@ -814,7 +814,9 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("LengthUnit");
+            _xmlWriter.WriteAttributeString("UserUnitLength", m_CalibrationHelper.GetLengthAbbreviation());
             _xmlWriter.WriteString(((int)m_CalibrationHelper.CurrentLengthUnit).ToString());
+            
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteEndElement();

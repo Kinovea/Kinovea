@@ -164,6 +164,8 @@ namespace Kinovea.ScreenManager
 
             // Position
             _xmlWriter.WriteStartElement("Position");
+            string userTime = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_Position, TimeCodeFormat.Unknown, false);
+            _xmlWriter.WriteAttributeString("UserTime", userTime);
             _xmlWriter.WriteString(m_Position.ToString());
             _xmlWriter.WriteEndElement();
 
@@ -172,12 +174,6 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(Title);
             _xmlWriter.WriteEndElement();
 
-            // UserTime
-            _xmlWriter.WriteStartElement("UserTime");
-           	string userTime = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_Position, TimeCodeFormat.Unknown, false);
-            _xmlWriter.WriteString(userTime );
-            _xmlWriter.WriteEndElement();
-            
             // Comments
             if (m_Comments.Count > 0)
             {
