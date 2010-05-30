@@ -288,7 +288,6 @@ namespace Kinovea.ScreenManager
 		private DrawtimeFilterOutput m_DrawingFilterOutput;
 		
 		// Others
-		private Magnifier m_Magnifier = new Magnifier();
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
@@ -1039,9 +1038,7 @@ namespace Kinovea.ScreenManager
 			m_bTextEdit = false;
 			m_bMeasuring = false;
 			
-			m_bDrawtimeFiltered = false;;
-			
-			m_Magnifier.ResetData();
+			m_bDrawtimeFiltered = false;
 			
 			m_fHighSpeedFactor = 1.0f;
 		}
@@ -2764,10 +2761,10 @@ namespace Kinovea.ScreenManager
 						if (m_bIsCurrentlyPlaying)
 						{
 							if ( (m_ActiveTool == DrawingToolType.Pointer)      &&
-							    (m_Magnifier.Mode != MagnifierMode.NotVisible) &&
-							    (m_Magnifier.IsOnObject(e)))
+							    (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible) &&
+							    (m_FrameServer.Metadata.Magnifier.IsOnObject(e)))
 							{
-								m_Magnifier.OnMouseDown(e);
+								m_FrameServer.Metadata.Magnifier.OnMouseDown(e);
 							}
 							else
 							{
@@ -2804,9 +2801,9 @@ namespace Kinovea.ScreenManager
 								// Show the grabbing hand cursor.
 								SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 1));
 								
-								if (m_Magnifier.Mode == MagnifierMode.Indirect)
+								if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
 								{
-									bMovingMagnifier = m_Magnifier.OnMouseDown(e);
+									bMovingMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(e);
 								}
 								
 								if (!bMovingMagnifier)
@@ -2981,7 +2978,7 @@ namespace Kinovea.ScreenManager
 							{
 								panelCenter.ContextMenuStrip = popMenuGrids;
 							}
-							else if (m_Magnifier.Mode == MagnifierMode.Indirect && m_Magnifier.IsOnObject(e))
+							else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(e))
 							{
 								panelCenter.ContextMenuStrip = popMenuMagnifier;
 							}
@@ -3024,10 +3021,10 @@ namespace Kinovea.ScreenManager
 
 			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
 			{
-				if (e.Button == MouseButtons.None && m_Magnifier.Mode == MagnifierMode.Direct)
+				if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
 				{
-					m_Magnifier.MouseX = e.X;
-					m_Magnifier.MouseY = e.Y;
+					m_FrameServer.Metadata.Magnifier.MouseX = e.X;
+					m_FrameServer.Metadata.Magnifier.MouseY = e.Y;
 					
 					if (!m_bIsCurrentlyPlaying)
 					{
@@ -3047,9 +3044,9 @@ namespace Kinovea.ScreenManager
 					else
 					{
 						bool bMovingMagnifier = false;
-						if (m_Magnifier.Mode == MagnifierMode.Indirect)
+						if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
 						{
-							bMovingMagnifier = m_Magnifier.OnMouseMove(e);
+							bMovingMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseMove(e);
 						}
 						
 						if (!bMovingMagnifier && m_ActiveTool == DrawingToolType.Pointer)
@@ -3106,7 +3103,7 @@ namespace Kinovea.ScreenManager
 					}
 				}
 				
-				m_Magnifier.OnMouseUp(e);
+				m_FrameServer.Metadata.Magnifier.OnMouseUp(e);
 				
 				// Memorize the action we just finished to enable undo.
 				if(m_ActiveTool == DrawingToolType.Chrono)
@@ -3416,13 +3413,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
-
-			// .Magnifier
-			if (m_Magnifier.Mode != MagnifierMode.NotVisible)
-			{
-				// Mirrored ?
-				m_Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.Metadata.Mirrored);
-			}
+			FlushMagnifierOnGraphics(_sourceImage, g);			
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
 		{
@@ -3495,6 +3486,15 @@ namespace Kinovea.ScreenManager
 				{
 					m_FrameServer.Metadata.Chronos[i].Draw(_canvas, _fStretchFactor * _fDirectZoomFactor, (i == m_FrameServer.Metadata.SelectedChrono), _iPosition, _DirectZoomTopLeft);
 				}
+			}
+		}
+		private void FlushMagnifierOnGraphics(Bitmap _sourceImage, Graphics g)
+		{
+			// Note: the Graphics object must not be the one extracted from the image itself.
+			// If needed, clone the image.
+			if (_sourceImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
+			{
+				m_FrameServer.Metadata.Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.Metadata.Mirrored);
 			}
 		}
 		private void DoInvalidate()
@@ -3976,7 +3976,7 @@ namespace Kinovea.ScreenManager
 		#region Drawings Toolbar Events
 		private void btnDrawingToolLine2D_Click(object sender, EventArgs e)
 		{
-			if (m_Magnifier.Mode != MagnifierMode.Direct)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Line2D;
@@ -3996,7 +3996,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDrawingToolCross2D_Click(object sender, EventArgs e)
 		{
-			if (m_Magnifier.Mode != MagnifierMode.Direct)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Cross2D;
@@ -4006,7 +4006,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDrawingToolAngle2D_Click(object sender, EventArgs e)
 		{
-			if (m_Magnifier.Mode != MagnifierMode.Direct)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Angle2D;
@@ -4016,7 +4016,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDrawingToolPencil_Click(object sender, EventArgs e)
 		{
-			if (m_Magnifier.Mode != MagnifierMode.Direct)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Pencil;
@@ -4026,7 +4026,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDrawingToolChrono_Click(object sender, EventArgs e)
 		{
-			if (m_Magnifier.Mode != MagnifierMode.Direct)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Chrono;
@@ -4041,18 +4041,18 @@ namespace Kinovea.ScreenManager
 
 				// Magnifier is half way between a persisting tool (like trackers and chronometers).
 				// and a mode like grid and 3dplane.
-				if (m_Magnifier.Mode == MagnifierMode.NotVisible)
+				if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.NotVisible)
 				{
 					UnzoomDirectZoom();
-					m_Magnifier.Mode = MagnifierMode.Direct;
+					m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
 					btnMagnifier.Image = Resources.magnifierActive2;
 					SetCursor(Cursors.Cross);
 				}
-				else if (m_Magnifier.Mode == MagnifierMode.Direct)
+				else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
 				{
 					// Revert to no magnification.
 					UnzoomDirectZoom();
-					m_Magnifier.Mode = MagnifierMode.NotVisible;
+					m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
 					btnMagnifier.Image = Resources.magnifier2;
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					pbSurfaceScreen.Invalidate();
@@ -4067,7 +4067,7 @@ namespace Kinovea.ScreenManager
 		private void DisableMagnifier()
 		{
 			// Revert to no magnification.
-			m_Magnifier.Mode = MagnifierMode.NotVisible;
+			m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
 			btnMagnifier.Image = Resources.magnifier2;
 			SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 		}
@@ -4097,7 +4097,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDrawingToolText_Click(object sender, EventArgs e)
 		{
-			if (m_Magnifier.Mode != MagnifierMode.Direct)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Text;
@@ -4527,8 +4527,8 @@ namespace Kinovea.ScreenManager
 		{
 			// Use position and magnification to Direct Zoom.
 			// Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
-			m_FrameServer.CoordinateSystem.Zoom = m_Magnifier.ZoomFactor;
-			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_Magnifier.MagnifiedCenter);
+			m_FrameServer.CoordinateSystem.Zoom = m_FrameServer.Metadata.Magnifier.ZoomFactor;
+			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Metadata.Magnifier.MagnifiedCenter);
 			DisableMagnifier();
 			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
@@ -4555,7 +4555,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SetMagnifier(ToolStripMenuItem _menu, double _fValue)
 		{
-			m_Magnifier.ZoomFactor = _fValue;
+			m_FrameServer.Metadata.Magnifier.ZoomFactor = _fValue;
 			UncheckMagnifierMenus();
 			_menu.Checked = true;
 			pbSurfaceScreen.Invalidate();
@@ -4625,7 +4625,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void IncreaseDirectZoom()
 		{
-			if (m_Magnifier.Mode != MagnifierMode.NotVisible)
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
 			{
 				DisableMagnifier();
 			}
@@ -5183,7 +5183,7 @@ namespace Kinovea.ScreenManager
 			                   m_iSelEnd,
 			                   new DelegateGetOutputBitmap(GetOutputBitmap));
 		}
-		private long GetOutputBitmap(Graphics _canvas, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
+		private long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
 			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
@@ -5215,11 +5215,22 @@ namespace Kinovea.ScreenManager
 			// 3. Flush drawings if needed.
 			if(_bFlushDrawings)
 			{
+				Bitmap rawImage = null;
+				
+				if(m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
+				{
+					// For the magnifier, we must clone the image since the graphics object has been 
+					// extracted from the image itself (painting fails if we reuse the uncloned image).
+					// And we must clone it before the drawings are flushed on it.
+					rawImage = AForge.Imaging.Image.Clone(_sourceImage);
+				}
+				
 				if (_bKeyframesOnly)
 				{
 					if(iClosestKeyImageDistance == 0)
 					{
-						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
+						FlushMagnifierOnGraphics(rawImage, _canvas);
 					}
 				}
 				else
@@ -5230,8 +5241,10 @@ namespace Kinovea.ScreenManager
 					}
 					else
 					{
-						FlushDrawingsOnGraphics(_canvas, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+						FlushDrawingsOnGraphics(_canvas, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
 					}
+					
+					FlushMagnifierOnGraphics(rawImage, _canvas);
 				}	
 			}
 

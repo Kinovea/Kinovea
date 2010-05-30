@@ -92,7 +92,13 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                return ((Count != 0) || (m_Tracks.Count > 0) || (m_Chronos.Count > 0) );
+            	// All kind of objects should be taken into account here, even those
+            	// that we currently don't save to the .kva but only draw on the image.
+            	// (grids, magnifier).
+            	bool hasData = (Count != 0) || (m_Tracks.Count > 0) || (m_Chronos.Count > 0) ||
+            		(m_Magnifier.Mode != MagnifierMode.NotVisible) || m_Plane.Visible || m_Grid.Visible;
+            		
+            	return hasData;
             }
         }
         public int SelectedDrawingFrame
@@ -137,6 +143,11 @@ namespace Kinovea.ScreenManager
             get { return m_Mirrored; }
             set { m_Mirrored = value; }
         }
+        public Magnifier Magnifier
+        {
+        	get { return m_Magnifier;}
+        	set { m_Magnifier = value;}
+        }
 
         // General infos
         public Int64 AverageTimeStampsPerFrame
@@ -177,6 +188,7 @@ namespace Kinovea.ScreenManager
         private Plane3D m_Plane = new Plane3D(500, 8, true);
         private Plane3D m_Grid = new Plane3D(500, 8, false);
         private bool m_Mirrored;
+        private Magnifier m_Magnifier = new Magnifier();
         private string m_GlobalTitle = " ";
         private Size m_ImageSize = new Size(0,0);
         private Int64 m_iAverageTimeStampsPerFrame = 1;
@@ -659,6 +671,7 @@ namespace Kinovea.ScreenManager
             m_Grid.Reset();
             m_Plane.Reset();
             m_Mirrored = false;
+            m_Magnifier.ResetData();
             UnselectAll();
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
