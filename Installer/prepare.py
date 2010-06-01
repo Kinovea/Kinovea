@@ -12,6 +12,7 @@ import os, glob, shutil
 bindir = '..\\Root\\bin\\x86\\Release'
 refdir = '..\\Refs'
 xsltdir = '..\\Tools\\xsl transforms'
+svgdir = '..\\Tools\\svg'
 otherdir = 'OtherFiles'
 destdir = 'Kinovea.Files\current'
 
@@ -22,6 +23,7 @@ shutil.copy2(os.path.join(bindir, "Kinovea.ScreenManager.dll"), destdir)
 shutil.copy2(os.path.join(bindir, "Kinovea.Services.dll"), destdir)
 shutil.copy2(os.path.join(bindir, "Kinovea.Updater.dll"), destdir)
 shutil.copy2(os.path.join(bindir, "PlayerServer.dll"), destdir)
+shutil.copy2(os.path.join(bindir, "SharpVectorRenderingEngine.dll"), destdir)
 
 #AForge
 shutil.copy2(os.path.join(refdir, "AForge.dll"), destdir)
@@ -38,10 +40,17 @@ shutil.copy2(os.path.join(refdir, "cv200.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "cxcore200.dll"), destdir)
 
 #FFMpeg
-shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avcodec-51.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avformat-52.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\avutil-49.dll"), destdir)
-shutil.copy2(os.path.join(refdir, "FFMpeg\\bin\\swscale-0.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg-r23012\\bin\\avcodec-52.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg-r23012\\bin\\avformat-52.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg-r23012\\bin\\avutil-50.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "FFMpeg-r23012\\bin\\swscale-0.dll"), destdir)
+
+#SVG
+shutil.copy2(os.path.join(refdir, "SharpVectorBindings.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "SharpVectorCss.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "SharpVectorDom.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "SharpVectorObjectModel.dll"), destdir)
+shutil.copy2(os.path.join(refdir, "SharpVectorUtil.dll"), destdir)
 
 #Microsoft
 shutil.copy2(os.path.join(refdir, "Microsoft.VC90.CRT.manifest"), destdir)
@@ -50,11 +59,6 @@ shutil.copy2(os.path.join(refdir, "msvcp90.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "msvcr90.dll"), destdir)
 shutil.copy2(os.path.join(refdir, "Microsoft.VC90.OpenMP.manifest"), destdir)
 shutil.copy2(os.path.join(refdir, "vcomp90.dll"), destdir)
-
-#shutil.copy2(os.path.join(refdir, "Microsoft.VC80.CRT.manifest"), destdir)
-#shutil.copy2(os.path.join(refdir, "msvcm80.dll"), destdir)
-#shutil.copy2(os.path.join(refdir, "msvcp80.dll"), destdir)
-#shutil.copy2(os.path.join(refdir, "msvcr80.dll"), destdir)
 
 #Others libraries
 shutil.copy2(os.path.join(refdir, "log4net.dll"), destdir)
@@ -82,6 +86,16 @@ shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2msxml-en.xsl"), os.
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2odf-en.xsl"), os.path.join(destdir, "xslt\\kva2odf-en.xsl"))
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2xhtml-en.xsl"), os.path.join(destdir, "xslt\\kva2xhtml-en.xsl"))
 shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2txt-en.xsl"), os.path.join(destdir, "xslt\\kva2txt-en.xsl"))
+
+#SVG guides
+if not os.path.exists(os.path.join(destdir, "guides")):
+    os.makedirs(os.path.join(destdir, "guides"))
+
+shutil.copy2(os.path.join(svgdir, "footbones.svg"), os.path.join(destdir, "guides\\footbones.svg"))
+shutil.copy2(os.path.join(svgdir, "hexaxial.svg"), os.path.join(destdir, "guides\\hexaxial.svg"))
+shutil.copy2(os.path.join(svgdir, "Human_skeleton.svg"), os.path.join(destdir, "guides\\Human_skeleton.svg"))
+shutil.copy2(os.path.join(svgdir, "protractor.svg"), os.path.join(destdir, "guides\\protractor.svg"))
+shutil.copy2(os.path.join(svgdir, "ring.svg"), os.path.join(destdir, "guides\\ring.svg"))
 
 #Help files
 if os.path.exists(os.path.join(destdir, "Manuals")) : 
