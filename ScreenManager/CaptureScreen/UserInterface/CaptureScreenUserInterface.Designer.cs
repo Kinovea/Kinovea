@@ -142,9 +142,9 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
         	this.panelVideoControls.Dock = System.Windows.Forms.DockStyle.Bottom;
         	this.panelVideoControls.Location = new System.Drawing.Point(0, 364);
-        	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 100);
+        	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 70);
         	this.panelVideoControls.Name = "panelVideoControls";
-        	this.panelVideoControls.Size = new System.Drawing.Size(350, 146);
+        	this.panelVideoControls.Size = new System.Drawing.Size(350, 142);
         	this.panelVideoControls.TabIndex = 2;
         	this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
@@ -255,7 +255,7 @@ namespace Kinovea.ScreenManager
         	this.btnFoldSettings.BackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnFoldSettings.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.dock16x16;
         	this.btnFoldSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-        	this.btnFoldSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnFoldSettings.Cursor = System.Windows.Forms.Cursors.Default;
         	this.btnFoldSettings.FlatAppearance.BorderSize = 0;
         	this.btnFoldSettings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gainsboro;
         	this.btnFoldSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gainsboro;
@@ -265,13 +265,14 @@ namespace Kinovea.ScreenManager
         	this.btnFoldSettings.Size = new System.Drawing.Size(20, 20);
         	this.btnFoldSettings.TabIndex = 37;
         	this.btnFoldSettings.UseVisualStyleBackColor = false;
+        	this.btnFoldSettings.Click += new System.EventHandler(this.FoldSettings);
         	// 
         	// lblSettings
         	// 
         	this.lblSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
         	this.lblSettings.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.lblSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.lblSettings.Cursor = System.Windows.Forms.Cursors.Default;
         	this.lblSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
         	this.lblSettings.ForeColor = System.Drawing.Color.SteelBlue;
         	this.lblSettings.Location = new System.Drawing.Point(0, 45);
@@ -280,6 +281,7 @@ namespace Kinovea.ScreenManager
         	this.lblSettings.TabIndex = 38;
         	this.lblSettings.Text = "   Settings";
         	this.lblSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+        	this.lblSettings.Click += new System.EventHandler(this.FoldSettings);
         	// 
         	// btnSaveImageLocation
         	// 
@@ -809,7 +811,7 @@ namespace Kinovea.ScreenManager
 
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelCenter;
-        private System.Windows.Forms.Panel panelVideoControls;
+        public System.Windows.Forms.Panel panelVideoControls;
         private System.Windows.Forms.Label ActiveScreenIndicator;
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Label lblTimeCode;
