@@ -155,6 +155,13 @@ namespace Kinovea.ScreenManager
 		{
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.ImageSize);
 			
+			m_FrameServer.CoordinateSystem.Stretch = 1;
+			m_bStretchModeOn = false;
+			
+			// silent crash when trying to change size...
+			StretchSqueezeSurface();
+			pbSurfaceScreen.Invalidate();
+			
 			// As a matter of fact we pass here at the first received frame.
 			// We can stop trying to connect now.
 			tmrCaptureDeviceDetector.Stop();
@@ -167,6 +174,7 @@ namespace Kinovea.ScreenManager
 	   			ShowHideResizers(_bIsGrabbing);
     			
 	   			StretchSqueezeSurface();
+	   			pbSurfaceScreen.Invalidate();
 				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;	
 			}
 			else
@@ -744,68 +752,71 @@ namespace Kinovea.ScreenManager
 		#region Auto Stretch & Manual Resize
 		private void StretchSqueezeSurface()
 		{
-			// Check if the image was loaded squeezed.
-			// (happen when screen control isn't being fully expanded at video load time.)
-			if(pbSurfaceScreen.Height < panelCenter.Height && m_FrameServer.CoordinateSystem.Stretch < 1.0)
+			if (m_FrameServer.IsGrabbing)
 			{
-				m_FrameServer.CoordinateSystem.Stretch = 1.0;
-			}
-			
-			//---------------------------------------------------------------
-			// Check if the stretch factor is not going to outsize the panel.
-			// If so, force maximized, unless screen is smaller than video.
-			//---------------------------------------------------------------
-			int iTargetHeight = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
-			int iTargetWidth = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-			
-			if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
-			{
-				if (m_FrameServer.CoordinateSystem.Stretch > 1.0)
+				// Check if the image was loaded squeezed.
+				// (happen when screen control isn't being fully expanded at video load time.)
+				if(pbSurfaceScreen.Height < panelCenter.Height && m_FrameServer.CoordinateSystem.Stretch < 1.0)
 				{
-					m_bStretchModeOn = true;
+					m_FrameServer.CoordinateSystem.Stretch = 1.0;
 				}
-			}
-			
-			if ((m_bStretchModeOn) || (m_FrameServer.ImageSize.Width > panelCenter.Width) || (m_FrameServer.ImageSize.Height > panelCenter.Height))
-			{
-				//-------------------------------------------------------------------------------
-				// Maximiser :
-				//Redimensionner l'image selon la dimension la plus proche de la taille du panel.
-				//-------------------------------------------------------------------------------
-				float WidthRatio = (float)m_FrameServer.ImageSize.Width / panelCenter.Width;
-				float HeightRatio = (float)m_FrameServer.ImageSize.Height / panelCenter.Height;
 				
-				if (WidthRatio > HeightRatio)
+				//---------------------------------------------------------------
+				// Check if the stretch factor is not going to outsize the panel.
+				// If so, force maximized, unless screen is smaller than video.
+				//---------------------------------------------------------------
+				int iTargetHeight = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				int iTargetWidth = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+				
+				if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
 				{
-					pbSurfaceScreen.Width = panelCenter.Width;
-					pbSurfaceScreen.Height = (int)((float)m_FrameServer.ImageSize.Height / WidthRatio);
+					if (m_FrameServer.CoordinateSystem.Stretch > 1.0)
+					{
+						m_bStretchModeOn = true;
+					}
+				}
+				
+				if ((m_bStretchModeOn) || (m_FrameServer.ImageSize.Width > panelCenter.Width) || (m_FrameServer.ImageSize.Height > panelCenter.Height))
+				{
+					//-------------------------------------------------------------------------------
+					// Maximiser :
+					// Redimensionner l'image selon la dimension la plus proche de la taille du panel.
+					//-------------------------------------------------------------------------------
+					float WidthRatio = (float)m_FrameServer.ImageSize.Width / panelCenter.Width;
+					float HeightRatio = (float)m_FrameServer.ImageSize.Height / panelCenter.Height;
 					
-					m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
+					if (WidthRatio > HeightRatio)
+					{
+						pbSurfaceScreen.Width = panelCenter.Width;
+						pbSurfaceScreen.Height = (int)((float)m_FrameServer.ImageSize.Height / WidthRatio);
+						
+						m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
+					}
+					else
+					{
+						pbSurfaceScreen.Width = (int)((float)m_FrameServer.ImageSize.Width / HeightRatio);
+						pbSurfaceScreen.Height = panelCenter.Height;
+						
+						m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
+					}
 				}
 				else
 				{
-					pbSurfaceScreen.Width = (int)((float)m_FrameServer.ImageSize.Width / HeightRatio);
-					pbSurfaceScreen.Height = panelCenter.Height;
-					
-					m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
+					// Issue here, the width cannot be changed after grabbing started.
+					pbSurfaceScreen.Width = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+					pbSurfaceScreen.Height = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
 				}
-			}
-			else
-			{
 				
-				pbSurfaceScreen.Width = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-				pbSurfaceScreen.Height = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				//recentrer
+				pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
+				pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
+				ReplaceResizers();
+				
+				// Redéfinir les plans & grilles 3D
+				Size imageSize = new Size(m_FrameServer.ImageSize.Width, m_FrameServer.ImageSize.Height);
+				m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
+				m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);	
 			}
-			
-			//recentrer
-			pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
-			pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
-			ReplaceResizers();
-			
-			// Redéfinir les plans & grilles 3D
-			Size imageSize = new Size(m_FrameServer.ImageSize.Width, m_FrameServer.ImageSize.Height);
-			m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
-			m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 		}
 		private void ReplaceResizers()
 		{
@@ -2050,6 +2061,10 @@ namespace Kinovea.ScreenManager
 		#endregion
         
 		#region Capture specifics
+		private void btnCamSettings_Click(object sender, EventArgs e)
+        {
+			m_FrameServer.PromptDeviceSelector();
+        }
         private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
         {
         	TryToConnect();
@@ -2065,6 +2080,11 @@ namespace Kinovea.ScreenManager
         			m_bTryingToConnect = true;        			
         			m_FrameServer.NegociateDevice();       			
         			m_bTryingToConnect = false;
+        			
+        			if(m_FrameServer.IsConnected)
+        			{
+        				btnCamSettings.Enabled = true;
+        			}
         		}
         	}
         }
@@ -2147,6 +2167,8 @@ namespace Kinovea.ScreenManager
                 MessageBoxIcon.Exclamation);
         }
         #endregion
+        
+        
         
 	}
 }

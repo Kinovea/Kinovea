@@ -12,7 +12,7 @@ done - Refactoring of the existing Capture screen to a more modular architecture
 	done - basic streaming and pause.
 	done - saving a snapshot to a file.
 	done - drawings overlay.
-	- saving video to a file.
+	done - saving video to a file.
+    done - Implement device selection.
 - Implement delayed live.
-- Implement device selection.
 - Implement browse recent history.

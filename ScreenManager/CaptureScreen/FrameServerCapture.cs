@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_MostRecentImage;
-		private Size m_ImageSize = new Size(720, 576);
+		private Size m_ImageSize = new Size(720, 576);		
 		
 		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
@@ -117,7 +117,6 @@ namespace Kinovea.ScreenManager
 		/*
 		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
 		*/
-
 		
 		// General
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -138,9 +137,17 @@ namespace Kinovea.ScreenManager
 		}
 		public void SetImageSize(Size _size)
 		{
-			m_ImageSize = _size;
-			m_CoordinateSystem.SetOriginalSize(m_ImageSize);
-			m_Container.DoInitDecodingSize();
+			if(_size != Size.Empty)
+			{
+				log.Debug(String.Format("Image size specified. ({0})", _size.ToString()));
+				m_ImageSize = new Size(_size.Width, _size.Height);
+				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
+				m_Container.DoInitDecodingSize();
+			}
+			else
+			{
+				m_ImageSize = new Size(720, 576);	
+			}
 		}
 		public void FrameGrabbed()
 		{
@@ -193,6 +200,10 @@ namespace Kinovea.ScreenManager
 		{
 			m_Container = _container;
 		}
+		public void PromptDeviceSelector()
+		{
+			m_FrameGrabber.PromptDeviceSelector();
+		}
 		public void NegociateDevice()
 		{
 			m_FrameGrabber.NegociateDevice();
@@ -210,6 +221,10 @@ namespace Kinovea.ScreenManager
 		}
 		public void BeforeClose()
 		{
+			if(m_bIsRecording)
+			{
+				StopRecording();
+			}
 			m_FrameGrabber.BeforeClose();
 		}
 		public override void Draw(Graphics _canvas)

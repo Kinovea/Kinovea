@@ -19,9 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+
 using AForge.Video;
 using AForge.Video.DirectShow;
-using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -39,10 +42,12 @@ namespace Kinovea.ScreenManager
 		{
 			get {return m_bIsGrabbing;}
 		}
+
 		#endregion
 		
 		#region Members
 		private VideoCaptureDevice m_VideoDevice;
+		private DeviceIdentifier m_CurrentVideoDevice;
 		private IFrameGrabberContainer m_Container;	// FrameServerCapture seen through a limited interface.
 		private FrameBuffer m_FrameBuffer;
 		private bool m_bIsConnected;
@@ -61,6 +66,22 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractFrameGrabber implementation
+		public override void PromptDeviceSelector()
+		{
+			// Ask the user which device he wants to use.
+			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice);
+			if(fdp.ShowDialog() == DialogResult.OK)
+			{
+				DeviceIdentifier selected = fdp.SelectedDevice;
+				if(selected != null)
+				{
+					m_CurrentVideoDevice = selected;
+					ConnectToDevice(m_CurrentVideoDevice);
+					m_Container.Connected();
+				}
+			}
+			fdp.Dispose();
+		}
 		public override void NegociateDevice()
 		{
 			if(!m_bIsConnected)
@@ -117,29 +138,67 @@ namespace Kinovea.ScreenManager
 		}
 		public override void BeforeClose()
 		{
-			if(m_bIsConnected && m_VideoDevice != null)
-			{
-				// The screen is about to be closed, release resources.
-				m_VideoDevice.Stop();
-				m_VideoDevice.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
-				m_FrameBuffer.Dispose();
-			}
+			Disconnect();
 		}
 		#endregion
 		
 		#region Private methods
+		private List<DeviceIdentifier> ListDevices()
+		{
+			// List all the devices currently connected.
+			FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
+			
+			List<DeviceIdentifier> devices = new List<DeviceIdentifier>();
+			
+			foreach(FilterInfo fi in videoDevices)
+			{
+				devices.Add(new DeviceIdentifier(fi.Name, fi.MonikerString));				
+			}
+
+			return devices;
+		}
 		private void ConnectToDevice(FilterInfoCollection _devices, int _iSelected)
 		{
-			log.Debug(String.Format("Connecting to device: index: {0}, name: {1}, moniker string:{2}", 
-			                        _iSelected, _devices[_iSelected].Name, _devices[_iSelected].MonikerString));
+			m_CurrentVideoDevice = new DeviceIdentifier(_devices[_iSelected].Name, _devices[_iSelected].MonikerString);
 			
-			m_VideoDevice = new VideoCaptureDevice(_devices[_iSelected].MonikerString);
+			log.Debug(String.Format("Connecting to device: index: {0}, name: {1}, moniker string:{2}", 
+			                        _iSelected, m_CurrentVideoDevice.Name, m_CurrentVideoDevice.Identification));
+			
+			ConnectToDevice(m_CurrentVideoDevice);
+			m_Container.Connected();
+		}
+		private void ConnectToDevice(DeviceIdentifier _device)
+		{
+			Disconnect();
+			
+			log.Debug(String.Format("Connecting to device. {0}", _device.Name));
+				
+			m_VideoDevice = new VideoCaptureDevice(_device.Identification);
 			m_VideoDevice.DesiredFrameRate = 0;
 			m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
-				
 			m_bIsConnected = true;
+		}
+		private void Disconnect()
+		{
+			// The screen is about to be closed, release resources.
 			
-			m_Container.Connected();
+			if(m_bIsConnected && m_VideoDevice != null)
+			{
+				log.Debug(String.Format("disconnecting from device. {0}", m_CurrentVideoDevice.Name));
+				
+				// Reset
+				m_bIsGrabbing = false;
+				m_bSizeKnown = false;
+				m_iConnectionsAttempts = 0;
+				m_Container.SetImageSize(Size.Empty);
+				
+				
+				m_VideoDevice.Stop();
+				m_VideoDevice.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
+				m_FrameBuffer.Dispose();
+				
+				m_bIsConnected = false;
+			}
 		}
 		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
 		{

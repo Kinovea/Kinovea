@@ -197,6 +197,7 @@ namespace Kinovea.ScreenManager
         	this.btnCamSettings.Size = new System.Drawing.Size(35, 25);
         	this.btnCamSettings.TabIndex = 39;
         	this.btnCamSettings.UseVisualStyleBackColor = false;
+        	this.btnCamSettings.Click += new System.EventHandler(this.btnCamSettings_Click);
         	// 
         	// btnRecord
         	// 

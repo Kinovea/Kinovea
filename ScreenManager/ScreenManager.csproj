@@ -123,6 +123,7 @@
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FrameBuffer.cs" />
+    <Compile Include="CaptureScreen\FrameGrabbers\DeviceIdentifier.cs" />
     <Compile Include="CaptureScreen\FrameGrabbers\AbstractFrameGrabber.cs" />
     <Compile Include="CaptureScreen\FrameGrabbers\FrameGrabberAForge.cs" />
     <Compile Include="CaptureScreen\FrameGrabbers\IFrameGrabberContainer.cs" />
@@ -138,6 +139,10 @@
     </Compile>
     <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.Designer.cs">
       <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.cs" />
+    <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.Designer.cs">
+      <DependentUpon>FormDevicePicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
@@ -421,6 +426,9 @@
     <EmbeddedResource Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.resx">
       <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\UserInterface\FormDevicePicker.resx">
+      <DependentUpon>FormDevicePicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.el.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.fi.resx" />

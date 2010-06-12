@@ -23,26 +23,38 @@ using System;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// AbstractFrameGrabber.
-	/// Class to encapsulate all the functionnality of providing access to the actual grabbing library.
-	/// This is intended to decorrelate the capture code from the underlying lib that will 
-	/// provide the images and the access to the camera.
+	/// AbstractDevice, a class to represent a device identification.
 	/// </summary>
-	public abstract class AbstractFrameGrabber
+	public class DeviceIdentifier
 	{
-		public abstract bool IsConnected
+		#region Properties
+		public string Name
 		{
-			get;
+			get { return m_Name; }
 		}
-		public abstract bool IsGrabbing
+		public string Identification
 		{
-			get;
+			get { return m_Identification; }
 		}
+		#endregion
 		
-		public abstract void PromptDeviceSelector();
-		public abstract void NegociateDevice();
-		public abstract void StartGrabbing();
-		public abstract void PauseGrabbing();
-		public abstract void BeforeClose();
+		#region Members
+		private string m_Identification;
+		private string m_Name;
+		#endregion
+		
+		#region Constructor
+		public DeviceIdentifier(string _name, string _identification)
+		{
+			m_Name = _name;
+			m_Identification = _identification;
+		}
+		#endregion
+	
+		public override string ToString()
+		{
+			return m_Name;
+		}
+	
 	}
 }
