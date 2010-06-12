@@ -92,6 +92,9 @@ namespace Kinovea.ScreenManager
 		private bool m_bDrawtimeFiltered;
 		private DrawtimeFilterOutput m_DrawingFilterOutput;
 		
+		// Other
+		private bool m_bSettingsFold;
+		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
 		private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
@@ -2166,8 +2169,22 @@ namespace Kinovea.ScreenManager
                	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
+        private void FoldSettings(object sender, EventArgs e)
+        {
+        	if(m_bSettingsFold)
+        	{
+        		panelVideoControls.Height = 142;
+        		btnFoldSettings.BackgroundImage = Resources.dock16x16;
+        	}
+        	else
+        	{
+        		panelVideoControls.Height = lblSettings.Top + lblSettings.Height;
+        		btnFoldSettings.BackgroundImage = Resources.undock16x16;
+        	}
+        	
+        	m_bSettingsFold = !m_bSettingsFold;	
+        }
         #endregion
-        
         
         
 	}
