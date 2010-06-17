@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
         private AbstractVideoFilter[] m_VideoFilters;
         
         // SVG files
-        private List<string> m_svgFiles = new List<string>();
+        private bool m_bHasSvgFiles;
         
         //Menus
         public ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
@@ -183,7 +183,6 @@ namespace Kinovea.ScreenManager
             
             PlugDelegates();
             InitializeVideoFilters();
-            InitializeSVGDrawings();
             
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
@@ -211,25 +210,6 @@ namespace Kinovea.ScreenManager
 			m_VideoFilters[(int)VideoFilterType.Mosaic] = new VideoFilterMosaic();
         	m_VideoFilters[(int)VideoFilterType.Reverse] = new VideoFilterReverse();
         	m_VideoFilters[(int)VideoFilterType.Sandbox] = new VideoFilterSandbox();
-        }
-        private void InitializeSVGDrawings()
-        {
-        	// Gather the list of SVG files in the guides directory.
-        	
-        	// Look for palettes files in a specific directory.
-            String svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
-
-            if(Directory.Exists(svgPath))
-            {
-	            // Loop each file in the directory looking for .svg files.
-	            foreach (string file in Directory.GetFiles(svgPath))
-	            {
-	                if (Path.GetExtension(file).Equals(".svg"))
-	                {
-	                	m_svgFiles.Add(file);    
-	                }
-	            }
-            }
         }
         public void PrepareScreen()
         {
@@ -457,29 +437,7 @@ namespace Kinovea.ScreenManager
             mnuMirror.Click += new EventHandler(mnuMirrorOnClick);
             mnuMirror.MergeAction = MergeAction.Append;
 
-            #region SVG drawings
-            mnuSVGTools.Tag = new ItemResourceInfo(resManager, "mnuSVGTools");
-            mnuSVGTools.Text = ((ItemResourceInfo)mnuSVGTools.Tag).resManager.GetString(((ItemResourceInfo)mnuSVGTools.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuSVGTools.MergeAction = MergeAction.Append;
-            
-            if(m_svgFiles.Count > 0)
-            {
-	            ToolStripItem[] svgMenus = new ToolStripItem[m_svgFiles.Count];
-	            for(int i = 0; i<m_svgFiles.Count; i++)
-	            {
-	            	ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
-	            	mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(m_svgFiles[i]);
-	            	mnuSVGDrawing.Tag = m_svgFiles[i];
-		            mnuSVGDrawing.Checked = false;
-		            mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
-		            mnuSVGDrawing.MergeAction = MergeAction.Append;
-					
-		            svgMenus[i] = mnuSVGDrawing;
-	            }
-	            
-	            mnuSVGTools.DropDownItems.AddRange( svgMenus );
-            }
-            #endregion
+            BuildSvgMenu();
             
             // Grid
             mnuGrid.Tag = new ItemResourceInfo(resManager, "mnuGrid");
@@ -1287,6 +1245,68 @@ namespace Kinovea.ScreenManager
         {
             DoOrganizeMenu();
         }
+        
+        private void BuildSvgMenu()
+        {
+        	// Look for all files and folders in the guides directory
+        	// And build menus and submenus with svg files found.
+        	// The menu is built on the fly.
+        	
+        	// Top level menu.
+        	mnuSVGTools.Tag = new ItemResourceInfo(resManager, "mnuSVGTools");
+            mnuSVGTools.Text = ((ItemResourceInfo)mnuSVGTools.Tag).resManager.GetString(((ItemResourceInfo)mnuSVGTools.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuSVGTools.MergeAction = MergeAction.Append;
+            
+        	String svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
+
+        	AddSvgSubMenus(svgPath, mnuSVGTools);
+        }
+        private void AddSvgSubMenus(string _dir, ToolStripMenuItem _menu)
+        {
+        	// This is a recursive function that browses a directory and its sub directories,
+        	// each directory is made into a menu tree, each svg file is added as a menu leaf.
+        	
+        	if(Directory.Exists(_dir))
+            {
+            	// Loop sub directories.
+            	string[] subDirs = Directory.GetDirectories (_dir);
+				foreach (string subDir in subDirs)
+				{
+					// Create a menu
+					ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
+					mnuSubDir.Text = Path.GetFileName(subDir);
+					mnuSubDir.MergeAction = MergeAction.Append;
+					
+					// Build sub tree.
+					AddSvgSubMenus(subDir, mnuSubDir);
+					
+					// Add to parent if non-empty.
+					if(mnuSubDir.HasDropDownItems)
+					{
+						_menu.DropDownItems.Add(mnuSubDir);
+					}
+				}
+
+            	// Then loop files within the sub directory.
+	            foreach (string file in Directory.GetFiles(_dir))
+	            {
+	                if (Path.GetExtension(file).Equals(".svg"))
+	                {
+	                	m_bHasSvgFiles = true;
+	                	
+	                	// Create a menu. 
+	                	ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
+		            	mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(file);
+		            	mnuSVGDrawing.Tag = file;
+			            mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
+			            mnuSVGDrawing.MergeAction = MergeAction.Append;
+			            
+			            // Add to parent.
+			            _menu.DropDownItems.Add(mnuSVGDrawing);
+	                }
+	            }
+            }
+        }
         private void DoOrganizeMenu()
         {
         	// Enable / disable menus depending on state of active screen
@@ -1314,7 +1334,7 @@ namespace Kinovea.ScreenManager
                         // Image
                         mnuDeinterlace.Enabled = true;
                         mnuMirror.Enabled = true;
-                        mnuSVGTools.Enabled = m_svgFiles.Count > 0;
+                        mnuSVGTools.Enabled = m_bHasSvgFiles;
                         mnuGrid.Enabled = true;
                         mnuGridPerspective.Enabled = true;
                         mnuCoordinateAxis.Enabled = true;
