@@ -2536,6 +2536,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save both images to a composite image.
+        /// </summary>
+        internal static string ToolTip_SideBySideSnapshot {
+            get {
+                return ResourceManager.GetString("ToolTip_SideBySideSnapshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Vary Playback Speed.
         /// </summary>
         internal static string ToolTip_sldrSpeed {

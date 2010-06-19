@@ -342,6 +342,7 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Show Comments</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Vary Playback Speed</value></data>
+   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Save both images to a composite image</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Save the Current Image to File</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Set the Working Zone</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Edges Only...</value></data>

@@ -18,17 +18,20 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using AForge.Imaging.Filters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+
+using AForge.Imaging.Filters;
 using AForge.Video.DirectShow;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -476,8 +479,8 @@ namespace Kinovea.ScreenManager
                                                    		m_VideoFilters[(int)VideoFilterType.AutoContrast].Menu,  
                                                    		m_VideoFilters[(int)VideoFilterType.Sharpen].Menu, 
                                                    		new ToolStripSeparator(), 
-                                                   		//m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
-                                                   		//new ToolStripSeparator(), 
+                                                   		m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
+                                                   		new ToolStripSeparator(), 
                                                    		mnuSVGTools,
                                                    		mnuGrid,
                                                    		mnuGridPerspective,
@@ -928,7 +931,7 @@ namespace Kinovea.ScreenManager
         }
 		public void CommonCtrl_Sync()
         {
-        	if (m_bSynching && screenList.Count == 2)
+			if (m_bSynching && screenList.Count == 2)
             {
                 // Mise à jour : m_iLeftSyncFrame, m_iRightSyncFrame, m_iSyncLag, m_iCurrentFrame. m_iMaxFrame.
                 log.Debug("Sync point change.");
@@ -973,7 +976,63 @@ namespace Kinovea.ScreenManager
                 OnCommonPositionChanged(m_iCurrentFrame);
             }	
        	}
-		#endregion
+       	public void CommonCtrl_Snapshot()
+       	{
+       		// Retrieve current images and create a composite out of them.
+       		if (m_bSynching && screenList.Count == 2)
+            {
+       			PlayerScreen ps1 = screenList[0] as PlayerScreen;
+       			PlayerScreen ps2 = screenList[1] as PlayerScreen;
+       			if(ps1 != null && ps2 != null)
+       			{
+       				DoStopPlaying();
+       				
+       				// get a copy of the images with drawings flushed on.
+       				Bitmap leftImage = ps1.GetFlushedImage();
+       				Bitmap rightImage = ps2.GetFlushedImage();
+       				
+       				// Create the output image.
+       				int maxHeight = Math.Max(leftImage.Height, rightImage.Height);
+       				Bitmap composite = new Bitmap(leftImage.Width + rightImage.Width, maxHeight, leftImage.PixelFormat);
+       				
+       				// Vertically center the shortest image.
+       				int leftTop = 0;
+       				if(leftImage.Height < maxHeight)
+       				{
+       					leftTop = (maxHeight - leftImage.Height) / 2;
+       				}
+       				int rightTop = 0;
+       				if(rightImage.Height < maxHeight)
+       				{
+       					rightTop = (maxHeight - rightImage.Height) / 2;
+       				}
+       				
+       				// Draw the images on the output.
+       				Graphics g = Graphics.FromImage(composite);
+       				g.DrawImage(leftImage, 0, leftTop);
+       				g.DrawImage(rightImage, leftImage.Width, rightTop);
+       				
+       				// Configure Save dialog.
+       				SaveFileDialog dlgSave = new SaveFileDialog();
+					dlgSave.Title = ScreenManagerLang.dlgSaveTitle;
+					dlgSave.RestoreDirectory = true;
+					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
+					dlgSave.FilterIndex = 1;
+					// TODO: suggest file name.
+					
+					// Launch the dialog and save image.
+					if (dlgSave.ShowDialog() == DialogResult.OK)
+					{
+						ImageHelper.Save(dlgSave.FileName, composite);
+					}
+
+					composite.Dispose();
+					leftImage.Dispose();
+					rightImage.Dispose();
+       			}
+       		}
+       	}
+       	#endregion
         
         #region IMessageFilter Implementation
         public bool PreFilterMessage(ref Message m)
@@ -1550,11 +1609,12 @@ namespace Kinovea.ScreenManager
             		// Production filters = always visible.
             		vf.Menu.Visible = true;
             	}
-            	
-            	// Dev
-            	m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
         	}
 			
+			// Dev
+            m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
+			
+            
 			// 2. Enabled, checked
 			if(_player != null)
 			{

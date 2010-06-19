@@ -39,5 +39,6 @@ namespace Kinovea.ScreenManager
 		void CommonCtrl_Sync();
 		void CommonCtrl_Merge();
 		void CommonCtrl_PositionChanged(long _iPosition);
+		void CommonCtrl_Snapshot();
 	}
 }

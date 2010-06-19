@@ -4904,25 +4904,9 @@ namespace Kinovea.ScreenManager
 							strImgName = dlgSave.FileName + extension;
 						}
 
-						//2. Get image.
+						//2. Get image and save it to the file.
 						Bitmap outputImage = GetFlushedImage();
-						
-						//3. Save the file.
-						if (strImgName.ToLower().EndsWith("jpg"))
-						{
-							Bitmap OutputJpg = ConvertToJPG(outputImage);
-							OutputJpg.Save(strImgName, ImageFormat.Jpeg);
-							OutputJpg.Dispose();
-						}
-						else if (strImgName.ToLower().EndsWith("bmp"))
-						{
-							outputImage.Save(strImgName, ImageFormat.Bmp);
-						}
-						else if (strImgName.ToLower().EndsWith("png"))
-						{
-							outputImage.Save(strImgName, ImageFormat.Png);
-						}
-
+						ImageHelper.Save(strImgName, outputImage);						
 						outputImage.Dispose();
 					}
 				}
@@ -5008,7 +4992,7 @@ namespace Kinovea.ScreenManager
 						}
 
 						// Save the file
-						SaveImageFile(fileName, outputImage);
+						ImageHelper.Save(fileName, outputImage);
 						outputImage.Dispose();
 					}
 					
@@ -5056,7 +5040,7 @@ namespace Kinovea.ScreenManager
 					}
 
 					// Save the file
-					SaveImageFile(fileName, outputImage);
+					ImageHelper.Save(fileName, outputImage);
 					outputImage.Dispose();
 
 					// Report to Progress Bar
@@ -5142,34 +5126,6 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
-		private void SaveImageFile(string _fileName, Bitmap _OutputImage)
-		{
-			if (_fileName.ToLower().EndsWith("jpg"))
-			{
-				Bitmap OutputJpg = ConvertToJPG(_OutputImage);
-				OutputJpg.Save(_fileName, ImageFormat.Jpeg);
-				OutputJpg.Dispose();
-			}
-			else if (_fileName.ToLower().EndsWith("bmp"))
-			{
-				_OutputImage.Save(_fileName, ImageFormat.Bmp);
-			}
-			else if (_fileName.ToLower().EndsWith("png"))
-			{
-				_OutputImage.Save(_fileName, ImageFormat.Png);
-			}
-			else
-			{
-				// the user may have put a filename in the form : "filename.ext"
-				// where ext is unsupported. Or he misunderstood and put ".00.00"
-				// We force format to jpg and we change back the extension to ".jpg".
-				string fileName = Path.GetDirectoryName(_fileName) + "\\" + Path.GetFileNameWithoutExtension(_fileName) + ".jpg";
-
-				Bitmap OutputJpg = ConvertToJPG(_OutputImage);
-				OutputJpg.Save(fileName, ImageFormat.Jpeg);
-				OutputJpg.Dispose();
-			}
-		}
 		public void Save()
 		{
 			// Todo:
@@ -5183,7 +5139,7 @@ namespace Kinovea.ScreenManager
 			                   m_iSelEnd,
 			                   new DelegateGetOutputBitmap(GetOutputBitmap));
 		}
-		private long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
+		public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
 			// Used by the VideoFile for SaveMovie.
 			// The image to save was already retrieved (from stream or analysis array)
@@ -5250,7 +5206,7 @@ namespace Kinovea.ScreenManager
 
 			return iClosestKeyImageDistance;
 		}
-		private Bitmap GetFlushedImage()
+		public Bitmap GetFlushedImage()
 		{
 			// Returns an image with all drawings flushed, including
 			// grids, chronos, magnifier, etc.
@@ -5313,40 +5269,6 @@ namespace Kinovea.ScreenManager
 
 			// Reconstruct filename
 			return Path.GetFileNameWithoutExtension(_FilePath) + "-" + suffix.Replace(':', '.');
-		}
-		private Bitmap ConvertToJPG(Bitmap _image)
-		{
-			// Intermediate MemoryStream for the conversion.
-			MemoryStream memStr = new MemoryStream();
-
-			//Get the list of available encoders
-			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-
-			//find the encoder with the image/jpeg mime-type
-			ImageCodecInfo ici = null;
-			foreach (ImageCodecInfo codec in codecs)
-			{
-				if (codec.MimeType == "image/jpeg")
-				{
-					ici = codec;
-				}
-			}
-
-			if (ici != null)
-			{
-				//Create a collection of encoder parameters (we only need one in the collection)
-				EncoderParameters ep = new EncoderParameters();
-				ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)100);
-
-				_image.Save(memStr, ici, ep);
-			}
-			else
-			{
-				// No JPG encoder found (is that common ?) Use default system.
-				_image.Save(memStr, ImageFormat.Jpeg);
-			}
-
-			return new Bitmap(memStr);
 		}
 		#endregion
 

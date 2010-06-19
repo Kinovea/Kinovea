@@ -342,6 +342,7 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>设置工作区的最后一帧为当前帧</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>显示注释</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>变换播放速度</value></data>
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>保存当前图像至文件...</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>设置工作区</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>只显示边缘...</value></data>

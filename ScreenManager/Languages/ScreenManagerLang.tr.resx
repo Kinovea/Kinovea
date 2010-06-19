@@ -342,6 +342,7 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Çalışma Alanının Son Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Yorumları Göster</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Oynatma Hızını Değiştir</value></data>
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Geçerli İmajı Dosyaya Kaydet</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Çalışma Alanını Ayarla</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Sadece Kenarlar...</value></data>

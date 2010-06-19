@@ -70,13 +70,33 @@ namespace Kinovea.ScreenManager
         private bool m_bSyncMerging;
 		private long m_iOldPosition;
 		private ICommonControlsHandler m_CommonControlsHandler;
+		private Button btnSnapShot = new Button();
         #endregion
 
         #region Construction & Culture
         public CommonControls()
         {
             InitializeComponent();
+            
+			// PostInit
             BackColor = Color.White;
+            
+        	btnSnapShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	btnSnapShot.BackColor = System.Drawing.Color.Transparent;
+        	btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
+        	btnSnapShot.FlatAppearance.BorderSize = 0;
+        	btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+        	btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	btnSnapShot.Image = ScreenManager.Properties.Resources.snapsingle_1;
+        	btnSnapShot.Location = new System.Drawing.Point(trkFrame.Left + trkFrame.Width + 10, btnMerge.Top);
+        	btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
+        	btnSnapShot.Name = "btnSnapShot";
+        	btnSnapShot.Size = new System.Drawing.Size(30, 25);
+        	btnSnapShot.UseVisualStyleBackColor = false;
+        	btnSnapShot.Click += new System.EventHandler(btnSnapshot_Click);
+            
+        	this.Controls.Add(btnSnapShot);
         }
         public void RefreshUICulture()
         {
@@ -91,6 +111,8 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(buttonPlay, ScreenManagerLang.buttonPlay_ToolTip);
             toolTips.SetToolTip(btnSwap, ScreenManagerLang.mnuSwapScreens);
             toolTips.SetToolTip(btnSync, ScreenManagerLang.btnSync_ToolTip);
+            toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_SideBySideSnapshot);
+            
             RefreshMergeTooltip();
 		}
 		#endregion
@@ -161,6 +183,14 @@ namespace Kinovea.ScreenManager
        			RefreshMergeTooltip();
        		}
         }
+        private void btnSnapshot_Click(object sender, EventArgs e)
+        {
+       		if(m_CommonControlsHandler != null)
+        	{ 
+       			m_CommonControlsHandler.CommonCtrl_Snapshot();
+       		}
+        }
+        
         #endregion
         
         #region TrkFrame Handlers
