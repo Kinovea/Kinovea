@@ -343,6 +343,7 @@
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Εμφάνιση Σχολίων</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Μεταβαλλόμενη Ταχύτητα Αναπαραγωγής</value></data>
    
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Αποθήκευση της Παρούσας Εικόνας σε Αρχείο</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Καθορισμός της Ζώνης Εργασίας</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Μόνο οι Άκρες…</value></data>

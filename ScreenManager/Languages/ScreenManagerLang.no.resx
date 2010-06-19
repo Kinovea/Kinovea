@@ -343,6 +343,7 @@
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Vis kommentarer</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Endre avspillingshastighet</value></data>
    
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Lagre det aktuelle bilde til fil</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Marker arbeidsfeltet</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Kun kanter...</value></data>

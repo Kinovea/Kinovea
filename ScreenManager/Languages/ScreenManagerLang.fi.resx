@@ -343,6 +343,7 @@
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Näytä kommentit</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Muuntele videon nopeutta</value></data>
    
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Tallenna nykyinen kuva tiedostoon</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Aseta työstöjakso</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Vain rajat...</value></data>

@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -104,11 +105,16 @@ namespace Kinovea.ScreenManager
         private bool m_bAdjustingImage = false;
         public AbstractScreen m_ActiveScreen = null;
         private bool m_bCommonControlsVisible = false;
+        
+        // Dual saving
+        private string m_DualSaveFileName;
+        private bool m_bDualSaveCancelled;
+        private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
+        private BackgroundWorker m_bgWorkerDualSave;
+        private formProgressBar m_DualSaveProgressBar;
 
         // Video Filters
         private AbstractVideoFilter[] m_VideoFilters;
-        
-        // SVG files
         private bool m_bHasSvgFiles;
         
         //Menus
@@ -805,7 +811,7 @@ namespace Kinovea.ScreenManager
         	if (m_bSynching)
             {
                 m_iCurrentFrame = 0;
-                OnCommonPositionChanged(m_iCurrentFrame);
+                OnCommonPositionChanged(m_iCurrentFrame, true);
                 ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
                 
             }
@@ -830,7 +836,7 @@ namespace Kinovea.ScreenManager
                 if (m_iCurrentFrame > 0)
                 {
                     m_iCurrentFrame--;
-                    OnCommonPositionChanged(m_iCurrentFrame);
+                    OnCommonPositionChanged(m_iCurrentFrame, true);
                     ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
                 }
             }
@@ -855,7 +861,7 @@ namespace Kinovea.ScreenManager
                 if (m_iCurrentFrame < m_iMaxFrame)
                 {
                     m_iCurrentFrame++;
-                    OnCommonPositionChanged(-1);
+                    OnCommonPositionChanged(-1, true);
                     ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
                 }
             }
@@ -878,7 +884,7 @@ namespace Kinovea.ScreenManager
 			if (m_bSynching)
             {
                 m_iCurrentFrame = m_iMaxFrame;
-                OnCommonPositionChanged(m_iCurrentFrame);
+                OnCommonPositionChanged(m_iCurrentFrame, true);
                 ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
                 
             }
@@ -942,7 +948,7 @@ namespace Kinovea.ScreenManager
                 ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
 
                 // Mise à jour des Players.
-                OnCommonPositionChanged(m_iCurrentFrame);
+                OnCommonPositionChanged(m_iCurrentFrame, true);
 
                 // debug
                 ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
@@ -973,7 +979,7 @@ namespace Kinovea.ScreenManager
                 ((ScreenManagerUserInterface)UI).DisplayAsPaused();
 
                 m_iCurrentFrame = (int)_iPosition;
-                OnCommonPositionChanged(m_iCurrentFrame);
+                OnCommonPositionChanged(m_iCurrentFrame, true);
             }	
        	}
        	public void CommonCtrl_Snapshot()
@@ -990,27 +996,7 @@ namespace Kinovea.ScreenManager
        				// get a copy of the images with drawings flushed on.
        				Bitmap leftImage = ps1.GetFlushedImage();
        				Bitmap rightImage = ps2.GetFlushedImage();
-       				
-       				// Create the output image.
-       				int maxHeight = Math.Max(leftImage.Height, rightImage.Height);
-       				Bitmap composite = new Bitmap(leftImage.Width + rightImage.Width, maxHeight, leftImage.PixelFormat);
-       				
-       				// Vertically center the shortest image.
-       				int leftTop = 0;
-       				if(leftImage.Height < maxHeight)
-       				{
-       					leftTop = (maxHeight - leftImage.Height) / 2;
-       				}
-       				int rightTop = 0;
-       				if(rightImage.Height < maxHeight)
-       				{
-       					rightTop = (maxHeight - rightImage.Height) / 2;
-       				}
-       				
-       				// Draw the images on the output.
-       				Graphics g = Graphics.FromImage(composite);
-       				g.DrawImage(leftImage, 0, leftTop);
-       				g.DrawImage(rightImage, leftImage.Width, rightTop);
+       				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage);
        				
        				// Configure Save dialog.
        				SaveFileDialog dlgSave = new SaveFileDialog();
@@ -1029,6 +1015,57 @@ namespace Kinovea.ScreenManager
 					composite.Dispose();
 					leftImage.Dispose();
 					rightImage.Dispose();
+       			}
+       		}
+       	}
+       	public void CommonCtrl_DualVideo()
+       	{
+       		// Create and save a composite video with side by side synchronized images.
+       		
+       		if (m_bSynching && screenList.Count == 2)
+            {
+       			PlayerScreen ps1 = screenList[0] as PlayerScreen;
+       			PlayerScreen ps2 = screenList[1] as PlayerScreen;
+       			if(ps1 != null && ps2 != null)
+       			{
+       				DoStopPlaying();
+       				
+       				// Get file name from user.
+       				SaveFileDialog dlgSave = new SaveFileDialog();
+		            dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
+		            dlgSave.RestoreDirectory = true;
+		            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+		            dlgSave.FilterIndex = 1;
+       				if (dlgSave.ShowDialog() == DialogResult.OK)
+		            {
+	                	int iCurrentFrame = m_iCurrentFrame;
+   						m_bDualSaveCancelled = false;
+   						m_DualSaveFileName = dlgSave.FileName;
+   				
+	                	// Instanciate and configure the bgWorker.
+			            m_bgWorkerDualSave = new BackgroundWorker();
+			            m_bgWorkerDualSave.WorkerReportsProgress = true;
+			        	m_bgWorkerDualSave.WorkerSupportsCancellation = true;
+			            m_bgWorkerDualSave.DoWork += new DoWorkEventHandler(bgWorkerDualSave_DoWork);
+			        	m_bgWorkerDualSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerDualSave_ProgressChanged);
+			            m_bgWorkerDualSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerDualSave_RunWorkerCompleted);
+			
+			            // Create the progress bar and launch the worker.
+			            m_DualSaveProgressBar = new formProgressBar(true);
+			            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
+			            m_bgWorkerDualSave.RunWorkerAsync();
+			            m_DualSaveProgressBar.ShowDialog();
+			        	
+			            // If cancelled, delete temporary file.
+			            if(m_bDualSaveCancelled)
+	    				{
+			            	DeleteTemporaryFile(m_DualSaveFileName);
+	    				}
+	    				
+	       				// Reset to where we were.
+	       				m_iCurrentFrame = iCurrentFrame;
+	       				OnCommonPositionChanged(m_iCurrentFrame, true);
+		        	}       				
        			}
        		}
        	}
@@ -1181,7 +1218,7 @@ namespace Kinovea.ScreenManager
 		                                }
 		
 		                                // Update
-		                                OnCommonPositionChanged(m_iCurrentFrame);
+		                                OnCommonPositionChanged(m_iCurrentFrame, true);
 		                                smui.UpdateTrkFrame(m_iCurrentFrame);
 		                                bWasHandled = true;
 	                            	}
@@ -1697,6 +1734,147 @@ namespace Kinovea.ScreenManager
 	        	mnuFormatForce169.Checked = false;
         	}
         }
+        
+        #region Side by side saving
+        private void bgWorkerDualSave_DoWork(object sender, DoWorkEventArgs e)
+        {
+        	// This is executed in Worker Thread space. (Do not call any UI methods)
+        	
+        	// For each position: get both images, compute the composite, save it to the file.
+        	log.Debug("Saving side by side video.");
+        	
+        	if (m_bSynching && screenList.Count == 2)
+            {
+       			PlayerScreen ps1 = screenList[0] as PlayerScreen;
+       			PlayerScreen ps2 = screenList[1] as PlayerScreen;
+       			if(ps1 != null && ps2 != null)
+       			{
+       				// Todo: get frame interval from one of the videos.
+       				
+       				// Get first frame outside the loop, to be able to set video size.
+       				m_iCurrentFrame = 0;
+       				OnCommonPositionChanged(m_iCurrentFrame, false);
+       				
+       				Bitmap img1 = ps1.GetFlushedImage();
+				    Bitmap img2 = ps2.GetFlushedImage();
+				    Bitmap composite = ImageHelper.GetSideBySideComposite(img1, img2);
+       				
+       				// Configure a fake InfoVideo to setup image size.
+       				InfosVideo iv = new InfosVideo();
+       				iv.iWidth = composite.Width;
+       				iv.iHeight = composite.Height;
+       	
+					SaveResult result = m_VideoFileWriter.OpenSavingContext(m_DualSaveFileName, iv, -1, false);
+			
+					if(result == SaveResult.Success)
+					{
+						m_VideoFileWriter.SaveFrame(composite);
+						
+						img1.Dispose();
+				       	img2.Dispose();
+				       	composite.Dispose();
+				       	
+				       	m_bgWorkerDualSave.ReportProgress(1, m_iMaxFrame);
+						
+						// Loop all remaining frames in static sync mode, but without refreshing the UI.
+	       				while(m_iCurrentFrame < m_iMaxFrame && !m_bDualSaveCancelled)
+	       				{
+	       					m_iCurrentFrame++;
+	       					
+	       					if(m_bgWorkerDualSave.CancellationPending)
+	       					{
+	       						e.Result = 1;
+								m_bDualSaveCancelled = true;
+	       						break;
+	       					}
+	       					else
+	       					{
+	       						// Move both playheads and get the composite image.
+	       						OnCommonPositionChanged(-1, false);
+				       			img1 = ps1.GetFlushedImage();
+				       			img2 = ps2.GetFlushedImage();
+				       			composite = ImageHelper.GetSideBySideComposite(img1, img2);
+				       			
+				       			// Save to file.
+				       			m_VideoFileWriter.SaveFrame(composite);
+				       			
+				       			// Clean up and report progress.
+				       			img1.Dispose();
+				       			img2.Dispose();
+				       			composite.Dispose();
+				       			m_bgWorkerDualSave.ReportProgress(m_iCurrentFrame+1, m_iMaxFrame);
+	       					}
+	       				}
+	       				
+	       				if(!m_bDualSaveCancelled)
+	       				{
+	       					e.Result = 0;
+	       				}
+					}
+					else
+					{
+						// Saving context couldn't be opened.
+						e.Result = 2;
+					}
+       			}
+        	}
+        	
+        	
+        }
+        private void bgWorkerDualSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+        	// call snippet : m_BackgroundWorker.ReportProgress(iCurrentValue, iMaximum);
+        	if(!m_bgWorkerDualSave.CancellationPending)
+        	{
+        		int iValue = (int)e.ProgressPercentage;
+        		int iMaximum = (int)e.UserState;            
+            	if (iValue > iMaximum) 
+            	{ 
+            		iValue = iMaximum; 
+            	}
+            	
+            	m_DualSaveProgressBar.Update(iValue, iMaximum, true);
+        	}
+        }
+        private void bgWorkerDualSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+        	m_DualSaveProgressBar.Close();
+    		m_DualSaveProgressBar.Dispose();
+    		
+    		if(!m_bDualSaveCancelled && (int)e.Result != 1)
+    		{
+    			m_VideoFileWriter.CloseSavingContext((int)e.Result == 0);
+    		}
+        }
+        private void dualSave_CancelAsked(object sender)
+		{
+			// This will simply set BgWorker.CancellationPending to true,
+			// which we check periodically in the saving loop.
+	        // This will also end the bgWorker immediately,
+	        // maybe before we check for the cancellation in the other thread. 
+	        m_VideoFileWriter.CloseSavingContext(false);
+	        m_bDualSaveCancelled = true;
+	        m_bgWorkerDualSave.CancelAsync();
+		}
+        private void DeleteTemporaryFile(string _filename)
+        {
+        	log.Debug("Side by side video saving cancelled. Deleting temporary file.");
+			if(File.Exists(_filename))
+			{
+				try
+				{
+					File.Delete(_filename);
+				}
+				catch (Exception exp)
+				{
+					log.Error("Error while deleting temporary file.");
+					log.Error(exp.Message);
+					log.Error(exp.StackTrace);
+				}
+			}
+        }
+        #endregion
+        
         
         #region Menus events handlers
 
@@ -2788,7 +2966,7 @@ namespace Kinovea.ScreenManager
                         ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
 
                         // Mise à jour Players
-                        OnCommonPositionChanged(m_iCurrentFrame);
+                        OnCommonPositionChanged(m_iCurrentFrame, true);
 
                         // debug
                         ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
@@ -2939,7 +3117,7 @@ namespace Kinovea.ScreenManager
 
             //Console.WriteLine("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", m_iSyncLag, m_iSyncLagMilliseconds, m_iMaxFrame);
         }
-        private void OnCommonPositionChanged(int _iFrame)
+        private void OnCommonPositionChanged(int _iFrame, bool _bAllowUIUpdate)
         {
             //------------------------------------------------------------------------------
             // This is where the "static sync" is done.
@@ -2981,8 +3159,8 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Force positions.
-                ((PlayerScreen)screenList[0]).CurrentFrame = iLeftFrame;
-                ((PlayerScreen)screenList[1]).CurrentFrame = iRightFrame;
+                ((PlayerScreen)screenList[0]).GotoFrame(iLeftFrame, _bAllowUIUpdate);
+                ((PlayerScreen)screenList[1]).GotoFrame(iRightFrame, _bAllowUIUpdate);
             }
             else
             {
@@ -2990,21 +3168,21 @@ namespace Kinovea.ScreenManager
                 if (m_iSyncLag > 0)
                 {
                     // Right video must go ahead.
-                    ((PlayerScreen)screenList[1]).GotoNextFrame();
+                    ((PlayerScreen)screenList[1]).GotoNextFrame(_bAllowUIUpdate);
 
                     if (m_iCurrentFrame > m_iSyncLag)
                     {
-                        ((PlayerScreen)screenList[0]).GotoNextFrame();
+                        ((PlayerScreen)screenList[0]).GotoNextFrame(_bAllowUIUpdate);
                     }
                 }
                 else
                 {
                     // Left video must go ahead.
-                    ((PlayerScreen)screenList[0]).GotoNextFrame();
+                    ((PlayerScreen)screenList[0]).GotoNextFrame(_bAllowUIUpdate);
 
                     if (m_iCurrentFrame > -m_iSyncLag)
                     {
-                        ((PlayerScreen)screenList[1]).GotoNextFrame();
+                        ((PlayerScreen)screenList[1]).GotoNextFrame(_bAllowUIUpdate);
                     }
                 }
             }
@@ -3394,7 +3572,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            OnCommonPositionChanged(m_iCurrentFrame);
+            OnCommonPositionChanged(m_iCurrentFrame, true);
             ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
 
         }
