@@ -343,6 +343,7 @@
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostrar Comentarios</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Variar la velocidad de lectura</value></data>
    
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Guardar la imagen actual en un archivo</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Especificar el área de trabajo</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contornos Solamente...</value></data>

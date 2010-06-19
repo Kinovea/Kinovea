@@ -2545,6 +2545,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save both videos into a composite video.
+        /// </summary>
+        internal static string ToolTip_SideBySideVideo {
+            get {
+                return ResourceManager.GetString("ToolTip_SideBySideVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Vary Playback Speed.
         /// </summary>
         internal static string ToolTip_sldrSpeed {

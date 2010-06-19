@@ -343,6 +343,7 @@
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Montrer les Commentaires</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varier la Vitesse de Lecture</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Enregistrer les deux images dans une image composée</value></data>
+   <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Enregistrer les deux vidéos dans une vidéo composée</value></data>
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Enregistrer l'Image en Cours dans un Fichier</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Spécifier la Zone de Travail</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contours Seulement...</value></data>

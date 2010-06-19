@@ -668,7 +668,7 @@ namespace Kinovea.ScreenManager
 		{
 			StopPlaying(true);
 		}
-		public void SyncSetCurrentFrame(Int64 _iFrame)
+		public void SyncSetCurrentFrame(Int64 _iFrame, bool _bAllowUIUpdate)
 		{
 			// Called during static sync.
 			// Common position changed, we get a new frame to jump to.
@@ -683,7 +683,7 @@ namespace Kinovea.ScreenManager
 					// Special case for +1 frame.
 					if (m_iCurrentPosition < m_iSelEnd)
 					{
-						ShowNextFrame(-1, true);
+						ShowNextFrame(-1, _bAllowUIUpdate);
 					}
 				}
 				else
@@ -693,16 +693,18 @@ namespace Kinovea.ScreenManager
 					
 					if (m_iCurrentPosition > m_iSelEnd) m_iCurrentPosition = m_iSelEnd;
 					
-					ShowNextFrame(m_iCurrentPosition, true);
+					ShowNextFrame(m_iCurrentPosition, _bAllowUIUpdate);
 				}
 
-				UpdateNavigationCursor();
-				UpdateCurrentPositionLabel();
-				ActivateKeyframe(m_iCurrentPosition);
-
-				trkSelection.SelPos = trkFrame.Position;
-
-				if (m_bShowInfos) { UpdateDebugInfos(); }
+				if(_bAllowUIUpdate)
+				{
+					UpdateNavigationCursor();
+					UpdateCurrentPositionLabel();
+					ActivateKeyframe(m_iCurrentPosition);
+					trkSelection.SelPos = trkFrame.Position;
+					
+					if (m_bShowInfos) { UpdateDebugInfos(); }
+				}
 			}
 		}
 		public void RefreshImage()

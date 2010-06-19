@@ -41,6 +41,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private bool m_IsIdle;
+		private bool m_bIsCancelling;
 		#endregion
 		
 		#region Constructor
@@ -64,7 +65,7 @@ namespace Kinovea.ScreenManager
         }
 		public void Update(int _iValue, int _iMaximum, bool _bAsPercentage)
 		{
-			if (m_IsIdle)
+			if (m_IsIdle && !m_bIsCancelling)
             {
                 m_IsIdle = false;
                 
@@ -91,10 +92,13 @@ namespace Kinovea.ScreenManager
 		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
 			// User clicked on cancel, trigger the callback that will cancel the ongoing operation.
-			if(Cancel != null) 
-				Cancel(this);
-			
 			btnCancel.Enabled = false;
+			m_bIsCancelling = true;
+			if(Cancel != null)
+			{
+				Cancel(this);
+			}
+				
 		}
 		#endregion
 		

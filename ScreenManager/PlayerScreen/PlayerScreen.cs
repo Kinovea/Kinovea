@@ -106,10 +106,6 @@ namespace Kinovea.ScreenManager
                 Int64 iCurrentTimestamp = m_PlayerScreenUI.SyncCurrentPosition;
                 return (int)(iCurrentTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
             }
-            set
-            {
-                m_PlayerScreenUI.SyncSetCurrentFrame(value);
-            }
         }
         public int LastFrame
         {
@@ -326,9 +322,13 @@ namespace Kinovea.ScreenManager
         {
             m_PlayerScreenUI.StopPlaying();
         }
-        public void GotoNextFrame()
+        public void GotoNextFrame(bool _bAllowUIUpdate)
         {
-            m_PlayerScreenUI.SyncSetCurrentFrame(-1);
+            m_PlayerScreenUI.SyncSetCurrentFrame(-1, _bAllowUIUpdate);
+        }
+        public void GotoFrame(int _frame, bool _bAllowUIUpdate)
+        {
+        	m_PlayerScreenUI.SyncSetCurrentFrame(_frame, _bAllowUIUpdate);
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {

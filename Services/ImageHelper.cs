@@ -94,5 +94,30 @@ namespace Kinovea.Services
 
 			return new Bitmap(memStr);
 		}
+		public static Bitmap GetSideBySideComposite(Bitmap _leftImage, Bitmap _rightImage)
+		{
+			// Create the output image.
+			int maxHeight = Math.Max(_leftImage.Height, _rightImage.Height);
+			Bitmap composite = new Bitmap(_leftImage.Width + _rightImage.Width, maxHeight, _leftImage.PixelFormat);
+			
+			// Vertically center the shortest image.
+			int leftTop = 0;
+			if(_leftImage.Height < maxHeight)
+			{
+				leftTop = (maxHeight - _leftImage.Height) / 2;
+			}
+			int rightTop = 0;
+			if(_rightImage.Height < maxHeight)
+			{
+				rightTop = (maxHeight - _rightImage.Height) / 2;
+			}
+			
+			// Draw the images on the output.
+			Graphics g = Graphics.FromImage(composite);
+			g.DrawImage(_leftImage, 0, leftTop);
+			g.DrawImage(_rightImage, _leftImage.Width, rightTop);
+			
+			return composite;
+		}
 	}
 }
