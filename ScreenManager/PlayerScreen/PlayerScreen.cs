@@ -357,6 +357,14 @@ namespace Kinovea.ScreenManager
         {
         	m_PlayerScreenUI.DisplayConfigureSpeedBox(true);
         }
+        public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
+        {
+        	return m_PlayerScreenUI.GetOutputBitmap(_canvas, _sourceImage, _iTimestamp, _bFlushDrawings, _bKeyframesOnly);
+        }
+        public Bitmap GetFlushedImage()
+        {
+        	return m_PlayerScreenUI.GetFlushedImage();
+        }
         #endregion
     }
 }

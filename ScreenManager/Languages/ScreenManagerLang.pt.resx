@@ -342,6 +342,7 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Ajustar o Último Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostrar Comentários</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Variar a Velocidade de Reprodução</value></data>
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Salvar a Imagem Atual em Arquivo</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ajustar a Zona de Trabalho</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Apenas Bordas...</value></data>

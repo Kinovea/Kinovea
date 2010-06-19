@@ -342,6 +342,7 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę Obszaru Roboczego</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Pokaż komentarze</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Różna prędkość odtwarzania</value></data>
+   
    <data name="ToolTip_Snapshot" xml:space="preserve"><value>Zapisz aktualny obraz do pliku</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ustaw Obszar Roboczy</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Tylko krawędzie...</value></data>
