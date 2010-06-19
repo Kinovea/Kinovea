@@ -168,7 +168,7 @@ namespace Kinovea.ScreenManager
         	this.btnRafale.FlatAppearance.BorderSize = 0;
         	this.btnRafale.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnRafale.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnRafale.Image = global::Kinovea.ScreenManager.Properties.Resources.snaprafale;
+        	this.btnRafale.Image = global::Kinovea.ScreenManager.Properties.Resources.snapmulti_1;
         	this.btnRafale.Location = new System.Drawing.Point(310, 68);
         	this.btnRafale.MinimumSize = new System.Drawing.Size(25, 25);
         	this.btnRafale.Name = "btnRafale";
@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
         	this.btnSnapShot.FlatAppearance.BorderSize = 0;
         	this.btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSnapShot.Image = global::Kinovea.ScreenManager.Properties.Resources.screencap5;
+        	this.btnSnapShot.Image = global::Kinovea.ScreenManager.Properties.Resources.snapsingle_1;
         	this.btnSnapShot.Location = new System.Drawing.Point(280, 68);
         	this.btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
         	this.btnSnapShot.Name = "btnSnapShot";

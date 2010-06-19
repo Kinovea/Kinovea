@@ -78,14 +78,6 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap cameramulti
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("cameramulti", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap camerasingle
 		{
 			get
@@ -158,14 +150,6 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap ExportDock4
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("ExportDock4", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap ExportDock5
 		{
 			get
@@ -214,14 +198,6 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap handopen24b
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("handopen24b", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap handopen24c
 		{
 			get
@@ -235,14 +211,6 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("handtool", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap import6
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("import6", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -486,22 +454,6 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap playmulti3
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("playmulti3", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap playonce4
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("playonce4", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap primselec_locked3
 		{
 			get
@@ -598,22 +550,6 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap screencap5
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("screencap5", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap snapmulti
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("snapmulti", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap snapmulti_1
 		{
 			get
@@ -622,43 +558,11 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap snaprafale
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("snaprafale", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap snapsingle
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("snapsingle", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap snapsingle_1
 		{
 			get
 			{
 				object obj = ResourceManager.GetObject("snapsingle_1", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap Spectrum
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("Spectrum", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap Spectrum2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("Spectrum2", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -742,14 +646,6 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap trajconfall
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconfall", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap trajconfall3
 		{
 			get
@@ -758,27 +654,11 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
-		internal static System.Drawing.Bitmap trajconffocus
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconffocus", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
 		internal static System.Drawing.Bitmap trajconffocus3
 		{
 			get
 			{
 				object obj = ResourceManager.GetObject("trajconffocus3", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap trajconflabel2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconflabel2", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
