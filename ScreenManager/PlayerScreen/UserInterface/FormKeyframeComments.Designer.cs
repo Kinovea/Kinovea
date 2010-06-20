@@ -204,7 +204,6 @@ namespace Kinovea.ScreenManager
         	this.pnlColors.Name = "pnlColors";
         	this.pnlColors.Size = new System.Drawing.Size(53, 24);
         	this.pnlColors.TabIndex = 23;
-        	this.pnlColors.Visible = false;
         	// 
         	// pnlFontStyle
         	// 
