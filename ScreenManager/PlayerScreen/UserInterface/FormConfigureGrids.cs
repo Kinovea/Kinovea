@@ -90,6 +90,7 @@ namespace Kinovea.ScreenManager
             {
                 pm.GridColor = m_ColorPicker.PickedColor;
             }
+            PreferencesManager.Instance().AddRecentColor(m_ColorPicker.PickedColor);
             m_SurfaceScreen.Invalidate();
         }
         private void cmbDivisions_SelectedValueChanged(object sender, EventArgs e)

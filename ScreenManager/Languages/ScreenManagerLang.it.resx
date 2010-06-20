@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Mostra gli schermi</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Scambia gli schermi </value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Mostra / Nascondi i Controlli Comuni</value></data>
+   
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Impostazioni Colore...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Preimpostazioni standard del Colore</value></data>
@@ -300,6 +301,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Traccia la Traiettoria</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>E' avvenuto un errore sconosciuto.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – Errore durante la riproduzione.</value></data>
+   
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Errore : Impossibile salvare il File : codifica non supportata.</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Errore : Impossibile salvare il File : problemi nell'inizializzazione codificatore.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Errore nel salvataggio.</value></data>

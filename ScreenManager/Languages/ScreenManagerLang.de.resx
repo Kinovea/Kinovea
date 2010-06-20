@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Zeige Bildschirme</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Tausche Bildschirme</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Öffne Standardwerkzeuge</value></data>
+   
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Farbprofil...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard Farbprofil</value></data>
@@ -300,6 +301,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Verfolge Trajektorien</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Ein unbekannter Fehler ist aufgetreten.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – Wiedergabefehler</value></data>
+   
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Fehler beim Speichern der Datei : Kodierung nicht unterstützt.</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Fehler beim Speichern der Datei : Problem bei der Initialisierung der Kodierung.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Speicherfehler</value></data>

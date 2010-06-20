@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Näytä katselunäytöt</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Vaihda katselunäytöt</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Avaa yleiset työkalut</value></data>
+   
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Väriprofiili...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Vakio väriprofiili</value></data>
@@ -300,6 +301,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seuraa liikerataa</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Tapahtui tuntematon virhe</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – esitysvirhe</value></data>
+   
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Tiedoston tallennus epäonnistui: ti-tuettu koodaus.iedosto on avoinna toisessa ikkunassa.e</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Tiedoston avaus epäonnistui: ongelma dekooderin käynnistyksessä.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Tallennusvirhe</value></data>

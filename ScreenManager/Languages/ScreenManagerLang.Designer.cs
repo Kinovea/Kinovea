@@ -277,6 +277,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Colors.
+        /// </summary>
+        internal static string dlgColorPicker_Title {
+            get {
+                return ResourceManager.GetString("dlgColorPicker_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à XML (*.xml)|*.xml;.
         /// </summary>
         internal static string dlgColorProfile_FileFilter {
@@ -2163,6 +2172,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string PlayMovie_Error {
             get {
                 return ResourceManager.GetString("PlayMovie_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Recently used colors:.
+        /// </summary>
+        internal static string RecentlyUsedColors {
+            get {
+                return ResourceManager.GetString("RecentlyUsedColors", resourceCulture);
             }
         }
         

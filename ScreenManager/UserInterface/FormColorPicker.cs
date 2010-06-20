@@ -18,10 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -41,6 +43,7 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private ColorPicker m_ColorPicker = new ColorPicker();
 		private Color m_PickedColor;
+		private List<Color> m_RecentColors;
 		#endregion
 		
 		#region Construction and Initialization
@@ -53,9 +56,14 @@ namespace Kinovea.ScreenManager
 			m_ColorPicker.ColorPicked += new ColorPickedHandler(colorPicker_ColorPicked);
 			
 			Controls.Add(m_ColorPicker);
+			this.Text = "   " + ScreenManagerLang.dlgColorPicker_Title;
 			this.ResumeLayout();
 			
-			//createLastUsedColorButtonRow(5,190,15,15);
+			// Recent colors.
+			m_RecentColors = PreferencesManager.Instance().RecentColors;
+			
+			m_ColorPicker.DisplayRecentColors(m_RecentColors);
+			this.Height = m_ColorPicker.Height + 35;
 		}
 		#endregion
 		
@@ -63,6 +71,7 @@ namespace Kinovea.ScreenManager
 		private void colorPicker_ColorPicked(object sender, System.EventArgs e)
 		{
 			m_PickedColor = m_ColorPicker.PickedColor;
+			PreferencesManager.Instance().AddRecentColor(m_ColorPicker.PickedColor);
 			DialogResult = DialogResult.OK;
 			Close();
 		}

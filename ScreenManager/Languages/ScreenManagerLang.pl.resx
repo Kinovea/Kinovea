@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Pokaż ekrany</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Zamień ekrany</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Przełącz Wspólne Sterowanie</value></data>
+   
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil koloru,,,</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Domyślny profil kolorów</value></data>
@@ -300,6 +301,7 @@
    
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Wystąpił nieznany błąd</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - błąd odtwarzania</value></data>
+   
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : nieobsługiwany koder</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Błąd podczas próby zapisania pliku : problem podczas inicjalizacji kodera</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - błąd zapisu</value></data>

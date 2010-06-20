@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Show Screens</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Swap Screens</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Toggle Common Controls</value></data>
+   <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colors</value></data>
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Color Profile...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Default Color Profile</value></data>
@@ -300,6 +301,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Track Path</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>An Unknown Error Occurred.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Playing Error.</value></data>
+   <data name="RecentlyUsedColors" xml:space="preserve"><value>Recently used colors:</value></data>
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Failure: Unable to save file : unsupported encoding.</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Failure: Unable to save file : problem while initializing encoder.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Saving error.</value></data>
