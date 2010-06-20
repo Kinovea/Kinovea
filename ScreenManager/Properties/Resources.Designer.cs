@@ -638,6 +638,54 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap text_backcolor
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("text_backcolor", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap text_bold
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("text_bold", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap text_forecolor
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("text_forecolor", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap text_italic
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("text_italic", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap text_strikethrough
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("text_strikethrough", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap text_underline
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("text_underline", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap TextToolIcon
 		{
 			get

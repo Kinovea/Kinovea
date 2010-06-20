@@ -57,11 +57,11 @@ namespace Kinovea.ScreenManager
             get { return m_FullFrame; }
             set { m_FullFrame = value; }
         }
-        public List<String> Comments
-        {
-            get { return m_Comments; }
-            set { m_Comments = value; }  
-        }
+        public string CommentRtf
+		{
+			get { return m_CommentRtf; }
+			set { m_CommentRtf = value; }
+		}
         /// <summary>
     	/// The title of a keyframe is dynamic.
     	/// It is the timecode until the user actually manually changes it.
@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
         private long m_Position = -1;            // Position is absolute in all timestamps.
         private string  m_Title = "";
         private string m_Timecode = "";
-        private List<string> m_Comments = new List<string>();
+        private string m_CommentRtf;
         private Bitmap m_Thumbnail;
         private Bitmap m_DisabledThumbnail;
         private List<AbstractDrawing> m_Drawings = new List<AbstractDrawing>();
@@ -174,18 +174,9 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(Title);
             _xmlWriter.WriteEndElement();
 
-            // Comments
-            if (m_Comments.Count > 0)
-            {
-                _xmlWriter.WriteStartElement("CommentLines");
-                foreach (string line in m_Comments)
-                {
-                    _xmlWriter.WriteStartElement("CommentLine");
-                    _xmlWriter.WriteString(line);
-                    _xmlWriter.WriteEndElement();
-                }
-                _xmlWriter.WriteEndElement();
-            }
+            _xmlWriter.WriteStartElement("Comment");
+            _xmlWriter.WriteString(m_CommentRtf);
+            _xmlWriter.WriteEndElement();
 
             // Drawings
             if (m_Drawings.Count > 0)
@@ -212,11 +203,11 @@ namespace Kinovea.ScreenManager
                 iHashCode ^= drawing.GetHashCode();
             }
 
-            foreach (String comment in m_Comments)
+            if(m_CommentRtf != null)
             {
-                iHashCode ^= comment.GetHashCode();
+            	iHashCode ^= m_CommentRtf.GetHashCode();
             }
-
+            
             if(m_Title != null)
             {
             	iHashCode ^= m_Title.GetHashCode();

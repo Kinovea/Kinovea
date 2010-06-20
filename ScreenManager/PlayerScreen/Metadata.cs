@@ -1099,6 +1099,10 @@ namespace Kinovea.ScreenManager
                     {
                         ParseComments(_xmlReader, kf);
                     }
+                    if (_xmlReader.Name == "Comment")
+                    {
+                        kf.CommentRtf = _xmlReader.ReadString();
+                    }
                     if (_xmlReader.Name == "Drawings")
                     {
                         ParseDrawings(_xmlReader, kf);  
@@ -1125,13 +1129,21 @@ namespace Kinovea.ScreenManager
         }
         private void ParseComments(XmlTextReader _xmlReader, Keyframe _keyframe)
         {
-            while (_xmlReader.Read())
+        	// TO BE REMOVED AT SOME POINT.
+        	// This is just to keep compatibility with the old format where comments were stored as a series of lines.
+            // This will turn the old raw text into RTF.
+        	
+        	_keyframe.CommentRtf = @"{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Arial;}}\viewkind4\uc1\pard\fs23 ";
+            
+        	while (_xmlReader.Read())
             {
                 if (_xmlReader.IsStartElement())
                 {
                     if (_xmlReader.Name == "CommentLine")
                     {
-                        _keyframe.Comments.Add(_xmlReader.ReadString());
+                    	_keyframe.CommentRtf += _xmlReader.ReadString();
+                    	_keyframe.CommentRtf += @"\par";
+                    	_keyframe.CommentRtf += "\n";
                     }
                 }
                 else if (_xmlReader.Name == "CommentLines")
@@ -1143,6 +1155,8 @@ namespace Kinovea.ScreenManager
                     // Fermeture d'un tag interne.
                 }
             }
+        	
+        	_keyframe.CommentRtf += "}";
         }
         private void ParseDrawings(XmlTextReader _xmlReader, Keyframe _keyframe)
         {
