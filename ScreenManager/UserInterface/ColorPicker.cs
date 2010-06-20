@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -143,6 +144,35 @@ namespace Kinovea.ScreenManager
 			return b;
 		}
 		#endregion
+		
+		public void DisplayRecentColors(List<Color> _recentColors)
+		{
+			if(_recentColors.Count > 0)
+			{
+				Label lblRecent = new Label();
+				lblRecent.AutoSize = true;
+				
+				lblRecent.Text = ScreenManagerLang.RecentlyUsedColors;
+				lblRecent.Top = 175;
+				Controls.Add(lblRecent);
+				
+				List<Button> recentButtons = new List<Button>();
+				int x = 0;
+				int y = lblRecent.Top + lblRecent.Height + 5;
+				int side = 15;
+				for(int i=0; i<_recentColors.Count;i++)
+				{
+					Button b = createColorButton(_recentColors[i], x, y, side, side);
+					recentButtons.Add(b);
+					x += side;
+				}
+				
+				Controls.AddRange(recentButtons.ToArray());
+				
+				this.Height = this.Height + 5 + lblRecent.Height + 5 + side + 5;
+			}
+			
+		}
 		
 		#region event handlers
 		private void colorButton_Click(object sender, System.EventArgs e) 

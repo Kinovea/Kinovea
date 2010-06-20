@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Vis vindu</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Bytt vindu</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Åpne standardverktøy</value></data>
+   
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Fargeprofil...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Standard fargeprofil</value></data>
@@ -300,6 +301,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg banen</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Det oppstod en ukjent feil.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – avspillingsfeil</value></data>
+   
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : koding ikke støttet</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : Problemer med å starte koding</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Lagringsfeil</value></data>

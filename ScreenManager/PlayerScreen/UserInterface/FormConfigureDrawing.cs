@@ -189,6 +189,8 @@ namespace Kinovea.ScreenManager
             	m_Drawing.UpdateDecoration(m_ColorPicker.PickedColor);
             	m_SurfaceScreen.Invalidate();
             }
+            
+            PreferencesManager.Instance().AddRecentColor(m_ColorPicker.PickedColor);
         }
         private void stlPicker_StylePicked(object sender, EventArgs e)
         {

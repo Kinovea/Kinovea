@@ -90,6 +90,7 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Afficher les Écrans</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Inverser les Emplacements des Vidéos</value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Montrer/Cacher les Contrôles Communs</value></data>
+   <data name="dlgColorPicker_Title" xml:space="preserve"><value>Couleurs</value></data>
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Profil Couleurs...</value></data>
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Profil Couleurs par Défaut</value></data>
@@ -300,6 +301,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Suivre la Trajectoire</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Une Erreur Inconnue Est Survenue.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Erreur de Lecture.</value></data>
+   <data name="RecentlyUsedColors" xml:space="preserve"><value>Couleurs utilisées récemment :</value></data>
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Enregistrement du Fichier Impossible : Type d'encodage non supporté.</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Enregistrement du Fichier Impossible : Problème lors l'initialisation de l'encodeur.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea - Erreur d'Enregistrement.</value></data>
