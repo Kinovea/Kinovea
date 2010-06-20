@@ -44,7 +44,6 @@ namespace Kinovea.ScreenManager
     	// Specific to the configure page.
     	private PictureBox m_SurfaceScreen; 	// Used to update the image while configuring.
     	private DrawingChrono m_Chrono;
-    	private StaticColorPicker m_ColPicker;
         #endregion
         
         #region Construction & Initialization
@@ -73,14 +72,6 @@ namespace Kinovea.ScreenManager
             tbLabel.Text = m_Chrono.Label;
             chkShowLabel.Checked = m_Chrono.ShowLabel;
 
-            // Configure color picker
-            m_ColPicker = new StaticColorPicker();
-            m_ColPicker.MouseLeft += new StaticColorPicker.DelegateMouseLeft(ColorPicker_MouseLeft);
-            m_ColPicker.ColorPicked += new StaticColorPicker.DelegateColorPicked(ColorPicker_ColorPicked);
-            m_ColPicker.Visible = false;
-            this.Controls.Add(m_ColPicker);
-            m_ColPicker.BringToFront();
-
             // Localize
             this.Text = "   " + m_ResourceManager.GetString("dlgConfigureChrono_Title", Thread.CurrentThread.CurrentUICulture);
             btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
@@ -97,22 +88,15 @@ namespace Kinovea.ScreenManager
         #region ColorPicker Handling
         private void btnChronoColor_Click(object sender, EventArgs e)
         {
-            m_ColPicker.Top = grpConfig.Top + btnChronoColor.Top;
-            m_ColPicker.Left = grpConfig.Left + btnChronoColor.Left + btnChronoColor.Width - m_ColPicker.Width;
-            m_ColPicker.Visible = true;
-        }
-        private void ColorPicker_ColorPicked(object sender, EventArgs e)
-        {
-            btnChronoColor.BackColor = m_ColPicker.PickedColor;
-            m_Chrono.UpdateDecoration(m_ColPicker.PickedColor);
-            FixColors();
-            m_ColPicker.Visible = false;
-
-            m_SurfaceScreen.Invalidate();
-        }
-        private void ColorPicker_MouseLeft(object sender, EventArgs e)
-        {
-            m_ColPicker.Visible = false;
+        	FormColorPicker picker = new FormColorPicker();
+        	if(picker.ShowDialog() == DialogResult.OK)
+        	{
+        		btnChronoColor.BackColor = picker.PickedColor;
+            	m_Chrono.UpdateDecoration(picker.PickedColor);
+            	FixColors();
+            	m_SurfaceScreen.Invalidate();
+        	}
+        	picker.Dispose();
         }
         private void FixColors()
         {

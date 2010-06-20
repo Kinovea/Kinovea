@@ -308,12 +308,6 @@
     </Compile>
     <Compile Include="PlayerScreen\Magnifier.cs">
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\StaticColorPicker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\StaticColorPicker.Designer.cs">
-      <DependentUpon>StaticColorPicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -342,6 +336,14 @@
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
+    <Compile Include="UserInterface\ColorPicker.cs" />
+    <Compile Include="UserInterface\ColorPicker.Designer.cs">
+      <DependentUpon>ColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\FormColorPicker.cs" />
+    <Compile Include="UserInterface\FormColorPicker.Designer.cs">
+      <DependentUpon>FormColorPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\CommonControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -666,10 +668,6 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FrequencyViewer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\StaticColorPicker.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>StaticColorPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\StaticStylePicker.resx">
       <SubType>Designer</SubType>

@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-        	this.btnApply.Location = new System.Drawing.Point(48, 292);
+        	this.btnApply.Location = new System.Drawing.Point(23, 292);
         	this.btnApply.Name = "btnApply";
         	this.btnApply.Size = new System.Drawing.Size(99, 24);
         	this.btnApply.TabIndex = 70;
@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        	this.btnCancel.Location = new System.Drawing.Point(153, 292);
+        	this.btnCancel.Location = new System.Drawing.Point(128, 292);
         	this.btnCancel.Name = "btnCancel";
         	this.btnCancel.Size = new System.Drawing.Size(99, 24);
         	this.btnCancel.TabIndex = 75;
@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         	this.grpColors.Controls.Add(this.btnDrawingToolText);
         	this.grpColors.Location = new System.Drawing.Point(12, 36);
         	this.grpColors.Name = "grpColors";
-        	this.grpColors.Size = new System.Drawing.Size(239, 243);
+        	this.grpColors.Size = new System.Drawing.Size(215, 243);
         	this.grpColors.TabIndex = 31;
         	this.grpColors.TabStop = false;
         	// 
@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
         	        	        	"28",
         	        	        	"32",
         	        	        	"36"});
-        	this.cmbTextSize.Location = new System.Drawing.Point(187, 27);
+        	this.cmbTextSize.Location = new System.Drawing.Point(161, 27);
         	this.cmbTextSize.Name = "cmbTextSize";
         	this.cmbTextSize.Size = new System.Drawing.Size(40, 21);
         	this.cmbTextSize.TabIndex = 25;
@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
         	        	        	"28",
         	        	        	"32",
         	        	        	"36"});
-        	this.cmbChronoSize.Location = new System.Drawing.Point(187, 202);
+        	this.cmbChronoSize.Location = new System.Drawing.Point(161, 202);
         	this.cmbChronoSize.Name = "cmbChronoSize";
         	this.cmbChronoSize.Size = new System.Drawing.Size(40, 21);
         	this.cmbChronoSize.TabIndex = 65;
@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
         	this.btnChronoColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnChronoColor.FlatAppearance.BorderSize = 0;
         	this.btnChronoColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnChronoColor.Location = new System.Drawing.Point(85, 200);
+        	this.btnChronoColor.Location = new System.Drawing.Point(59, 200);
         	this.btnChronoColor.Name = "btnChronoColor";
         	this.btnChronoColor.Size = new System.Drawing.Size(85, 25);
         	this.btnChronoColor.TabIndex = 60;
@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
         	this.btnLineStyle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnLineStyle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnLineStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnLineStyle.Location = new System.Drawing.Point(187, 95);
+        	this.btnLineStyle.Location = new System.Drawing.Point(161, 95);
         	this.btnLineStyle.Name = "btnLineStyle";
         	this.btnLineStyle.Size = new System.Drawing.Size(40, 25);
         	this.btnLineStyle.TabIndex = 45;
@@ -208,7 +208,7 @@ namespace Kinovea.ScreenManager
         	this.btnPencilStyle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnPencilStyle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnPencilStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnPencilStyle.Location = new System.Drawing.Point(187, 60);
+        	this.btnPencilStyle.Location = new System.Drawing.Point(161, 60);
         	this.btnPencilStyle.Name = "btnPencilStyle";
         	this.btnPencilStyle.Size = new System.Drawing.Size(40, 25);
         	this.btnPencilStyle.TabIndex = 35;
@@ -223,7 +223,7 @@ namespace Kinovea.ScreenManager
         	this.btnAngleColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnAngleColor.FlatAppearance.BorderSize = 0;
         	this.btnAngleColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnAngleColor.Location = new System.Drawing.Point(85, 165);
+        	this.btnAngleColor.Location = new System.Drawing.Point(59, 165);
         	this.btnAngleColor.Name = "btnAngleColor";
         	this.btnAngleColor.Size = new System.Drawing.Size(85, 25);
         	this.btnAngleColor.TabIndex = 55;
@@ -254,7 +254,7 @@ namespace Kinovea.ScreenManager
         	this.btnCrossColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnCrossColor.FlatAppearance.BorderSize = 0;
         	this.btnCrossColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnCrossColor.Location = new System.Drawing.Point(85, 130);
+        	this.btnCrossColor.Location = new System.Drawing.Point(59, 130);
         	this.btnCrossColor.Name = "btnCrossColor";
         	this.btnCrossColor.Size = new System.Drawing.Size(85, 25);
         	this.btnCrossColor.TabIndex = 50;
@@ -285,7 +285,7 @@ namespace Kinovea.ScreenManager
         	this.btnLineColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnLineColor.FlatAppearance.BorderSize = 0;
         	this.btnLineColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnLineColor.Location = new System.Drawing.Point(85, 95);
+        	this.btnLineColor.Location = new System.Drawing.Point(59, 95);
         	this.btnLineColor.Name = "btnLineColor";
         	this.btnLineColor.Size = new System.Drawing.Size(85, 25);
         	this.btnLineColor.TabIndex = 40;
@@ -316,7 +316,7 @@ namespace Kinovea.ScreenManager
         	this.btnPencilColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnPencilColor.FlatAppearance.BorderSize = 0;
         	this.btnPencilColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnPencilColor.Location = new System.Drawing.Point(85, 60);
+        	this.btnPencilColor.Location = new System.Drawing.Point(59, 60);
         	this.btnPencilColor.Name = "btnPencilColor";
         	this.btnPencilColor.Size = new System.Drawing.Size(85, 25);
         	this.btnPencilColor.TabIndex = 30;
@@ -347,7 +347,7 @@ namespace Kinovea.ScreenManager
         	this.btnTextColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnTextColor.FlatAppearance.BorderSize = 0;
         	this.btnTextColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnTextColor.Location = new System.Drawing.Point(85, 25);
+        	this.btnTextColor.Location = new System.Drawing.Point(59, 25);
         	this.btnTextColor.Name = "btnTextColor";
         	this.btnTextColor.Size = new System.Drawing.Size(85, 25);
         	this.btnTextColor.TabIndex = 20;
@@ -408,7 +408,7 @@ namespace Kinovea.ScreenManager
         	this.btnDefaultProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnDefaultProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDefaultProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.SwatchIcon3;
-        	this.btnDefaultProfile.Location = new System.Drawing.Point(214, 5);
+        	this.btnDefaultProfile.Location = new System.Drawing.Point(202, 5);
         	this.btnDefaultProfile.Name = "btnDefaultProfile";
         	this.btnDefaultProfile.Size = new System.Drawing.Size(25, 25);
         	this.btnDefaultProfile.TabIndex = 15;
@@ -421,7 +421,7 @@ namespace Kinovea.ScreenManager
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackColor = System.Drawing.Color.White;
-        	this.ClientSize = new System.Drawing.Size(264, 328);
+        	this.ClientSize = new System.Drawing.Size(240, 328);
         	this.Controls.Add(this.btnDefaultProfile);
         	this.Controls.Add(this.grpColors);
         	this.Controls.Add(this.btnSaveProfile);

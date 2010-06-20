@@ -43,7 +43,6 @@ namespace Kinovea.ScreenManager
     	// Specific to the configure page.
     	private PictureBox m_SurfaceScreen; 		// Used to update the image while configuring.
         private Track m_Track;
-        private StaticColorPicker m_ColPicker;
         private StaticStylePicker m_StlPicker;
         #endregion
         
@@ -58,20 +57,9 @@ namespace Kinovea.ScreenManager
             m_Track.MemorizeState();
             
             InitExtraDataCombo();
-            InitColorPickerControl();
             InitStylePickerControl();
             SetCurrentOptions();
             InitCulture();
-        }
- 		private void InitColorPickerControl()
-        {
-        	// Color Picker Control
-            m_ColPicker = new StaticColorPicker();
-            m_ColPicker.MouseLeft += new StaticColorPicker.DelegateMouseLeft(ColorPicker_MouseLeft);
-            m_ColPicker.ColorPicked += new StaticColorPicker.DelegateColorPicked(ColorPicker_ColorPicked);
-            m_ColPicker.Visible = false;
-            this.Controls.Add(m_ColPicker);
-            m_ColPicker.BringToFront();
         }
  		private void InitStylePickerControl()
         {
@@ -183,24 +171,15 @@ namespace Kinovea.ScreenManager
         #region ColorPicker Handling
         private void btnTextColor_Click(object sender, EventArgs e)
         {
-        	// Show the color picker
-        	m_ColPicker.Top = grpAppearance.Top + btnTextColor.Top - (m_ColPicker.Height / 2);
-            m_ColPicker.Left = grpAppearance.Left + btnTextColor.Left;
-            m_ColPicker.Visible = true;
-        }
-        private void ColorPicker_ColorPicked(object sender, EventArgs e)
-        {
-        	// The user clicked on a color from the color picker
-            btnTextColor.BackColor = m_ColPicker.PickedColor;
-            m_Track.MainColor = m_ColPicker.PickedColor;
-            FixColors();
-            m_ColPicker.Visible = false;
-            m_SurfaceScreen.Invalidate();
-        }
-        private void ColorPicker_MouseLeft(object sender, EventArgs e)
-        {
-        	// The user left the area of the control without clicking on a color.
-            m_ColPicker.Visible = false;
+        	FormColorPicker picker = new FormColorPicker();
+        	if(picker.ShowDialog() == DialogResult.OK)
+        	{
+        		btnTextColor.BackColor = picker.PickedColor;
+            	m_Track.MainColor = picker.PickedColor;
+            	FixColors();
+            	m_SurfaceScreen.Invalidate();
+        	}
+        	picker.Dispose();
         }
         private void FixColors()
         {

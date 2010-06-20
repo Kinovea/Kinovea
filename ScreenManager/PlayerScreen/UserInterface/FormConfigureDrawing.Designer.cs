@@ -34,7 +34,6 @@ namespace Kinovea.ScreenManager
             this.cmbFontSize = new System.Windows.Forms.ComboBox();
             this.lblFontSize = new System.Windows.Forms.Label();
             this.stlPicker = new Kinovea.ScreenManager.StaticStylePicker();
-            this.colPicker = new Kinovea.ScreenManager.StaticColorPicker();
             this.grpConfig.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,10 +69,9 @@ namespace Kinovea.ScreenManager
             this.grpConfig.Controls.Add(this.cmbFontSize);
             this.grpConfig.Controls.Add(this.lblFontSize);
             this.grpConfig.Controls.Add(this.stlPicker);
-            this.grpConfig.Controls.Add(this.colPicker);
             this.grpConfig.Location = new System.Drawing.Point(12, 12);
             this.grpConfig.Name = "grpConfig";
-            this.grpConfig.Size = new System.Drawing.Size(205, 250);
+            this.grpConfig.Size = new System.Drawing.Size(218, 252);
             this.grpConfig.TabIndex = 29;
             this.grpConfig.TabStop = false;
             this.grpConfig.Text = "Configuration";
@@ -121,21 +119,12 @@ namespace Kinovea.ScreenManager
             this.stlPicker.ToolType = Kinovea.ScreenManager.DrawingToolType.Line2D;
             this.stlPicker.StylePicked += new Kinovea.ScreenManager.StaticStylePicker.DelegateStylePicked(this.stlPicker_StylePicked);
             // 
-            // colPicker
-            // 
-            this.colPicker.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.colPicker.Location = new System.Drawing.Point(22, 23);
-            this.colPicker.Name = "colPicker";
-            this.colPicker.Size = new System.Drawing.Size(160, 120);
-            this.colPicker.TabIndex = 5;
-            this.colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
-            // 
             // formConfigureDrawing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(227, 306);
+            this.ClientSize = new System.Drawing.Size(237, 306);
             this.Controls.Add(this.grpConfig);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
@@ -159,7 +148,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox grpConfig;
-        private StaticColorPicker colPicker;
         private StaticStylePicker stlPicker;
         private System.Windows.Forms.ComboBox cmbFontSize;
         private System.Windows.Forms.Label lblFontSize;
