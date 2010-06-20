@@ -18,12 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -39,32 +39,25 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureGrids : Form
     {
     	#region Members
-    	private ResourceManager m_ResourceManager;
-        private bool m_bManualClose = false;
+    	private bool m_bManualClose = false;
         
         private PictureBox m_SurfaceScreen; // Used to update the image while configuring.
         private Plane3D m_Grid;
         private Plane3D m_MemoGrid;
-        private StaticColorPicker colPicker;
+        private ColorPicker m_ColorPicker = new ColorPicker();
 		#endregion
         
 		#region Construction and Initialization
         public formConfigureGrids(Plane3D _grid, PictureBox _SurfaceScreen)
         {
             InitializeComponent();
-            
-            // Custom Controls - moved here for #Develop designer.
-            colPicker = new StaticColorPicker();
-            grpConfig.Controls.Add(this.colPicker);
-            colPicker.BackColor = System.Drawing.Color.WhiteSmoke;
-            colPicker.Location = new System.Drawing.Point(22, 23);
-            colPicker.Name = "colPicker";
-            colPicker.Size = new System.Drawing.Size(160, 120);
-            colPicker.TabIndex = 5;
-            colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(this.colPicker_ColorPicked);
-            
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-			m_SurfaceScreen = _SurfaceScreen;
+         	
+            m_ColorPicker.Top = 18;
+			m_ColorPicker.Left = 9;
+			m_ColorPicker.ColorPicked += new ColorPickedHandler(colorPicker_ColorPicked);
+			grpConfig.Controls.Add(m_ColorPicker);
+			
+            m_SurfaceScreen = _SurfaceScreen;
             
             m_Grid = _grid;
             m_MemoGrid = new Plane3D(0, m_Grid.Divisions, m_Grid.Support3D);
@@ -74,28 +67,28 @@ namespace Kinovea.ScreenManager
             cmbDivisions.Text = m_Grid.Divisions.ToString();
 
             // Localize
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureGrids_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            lblDivisions.Text = m_ResourceManager.GetString("dlgConfigureGrids_Divisions", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgConfigureGrids_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            lblDivisions.Text = ScreenManagerLang.dlgConfigureGrids_Divisions;
         }
         #endregion
         
         #region User choice handlers
-        private void colPicker_ColorPicked(object sender, EventArgs e)
+        private void colorPicker_ColorPicked(object sender, EventArgs e)
         {
-            m_Grid.GridColor = colPicker.PickedColor;
+            m_Grid.GridColor = m_ColorPicker.PickedColor;
 
             // We must change the color in the preferences aswell.
             PreferencesManager pm = PreferencesManager.Instance();
             if (m_Grid.Support3D)
             {
-                pm.Plane3DColor = colPicker.PickedColor;
+                pm.Plane3DColor = m_ColorPicker.PickedColor;
             }
             else
             {
-                pm.GridColor = colPicker.PickedColor;
+                pm.GridColor = m_ColorPicker.PickedColor;
             }
             m_SurfaceScreen.Invalidate();
         }

@@ -57,36 +57,16 @@ namespace Kinovea.Root
         private InfosFading m_DefaultFading;
         private bool m_bDrawOnPlay;
         
-        private StaticColorPicker colPicker;
-        
         // Helpers 
         private PreferencesManager m_prefManager;
-        private int m_PickingColor; // 0: picking grid color, 1: picking plane3d color, -1 otherwise.
         #endregion
 
         #region Constructor
         public formPreferences()
         {
-        	// For some reason the design page of this class crashes in SharpDevelop due to the colPicker.
-        	// Configuring it here works.
-        	this.colPicker = new StaticColorPicker();
-        	this.colPicker.BackColor = Color.WhiteSmoke;
-        	this.colPicker.Location = new Point(-12, 332);
-        	this.colPicker.Name = "colPicker";
-        	this.colPicker.Size = new Size(160, 120);
-        	this.colPicker.TabIndex = 10;
-        	this.colPicker.Visible = false;
-        	this.colPicker.MouseLeft += new Kinovea.ScreenManager.StaticColorPicker.DelegateMouseLeft(colPicker_MouseLeft);
-        	this.colPicker.ColorPicked += new Kinovea.ScreenManager.StaticColorPicker.DelegateColorPicked(colPicker_ColorPicked);
-        	
             InitializeComponent();
-            
-            this.Controls.Add(this.colPicker);
-            
             m_prefManager = PreferencesManager.Instance();
             ImportPreferences();
-
-            m_PickingColor = -1;
             InitPages();
         }
         #endregion
@@ -361,41 +341,26 @@ namespace Kinovea.Root
         #region Page:Play/Analysis
         private void btnGridColor_Click(object sender, EventArgs e)
         {
-            m_PickingColor = 0;
-            colPicker.Top   = pagePlayAnalyze.Top + grpColors.Top + btnGridColor.Top + 1;
-            colPicker.Left  = pagePlayAnalyze.Left + grpColors.Left + btnGridColor.Left + btnGridColor.Width - colPicker.Width + 1;
-            colPicker.Visible = true;
+        	FormColorPicker picker = new FormColorPicker();
+        	if(picker.ShowDialog() == DialogResult.OK)
+        	{
+        		btnGridColor.BackColor = picker.PickedColor;
+                m_GridColor = picker.PickedColor;
+                FixColors();
+        	}
+        	picker.Dispose();
         }
         private void btn3DPlaneColor_Click(object sender, EventArgs e)
         {
-            m_PickingColor = 1;
-            colPicker.Top = pagePlayAnalyze.Top + grpColors.Top + btn3DPlaneColor.Top + 1;
-            colPicker.Left = pagePlayAnalyze.Left + grpColors.Left + btn3DPlaneColor.Left + btn3DPlaneColor.Width - colPicker.Width + 1;
-            colPicker.Visible = true;
-        }
-        private void colPicker_ColorPicked(object sender, EventArgs e)
-        {
-            switch (m_PickingColor)
-            {
-                case 0:
-                    btnGridColor.BackColor = colPicker.PickedColor;
-                    m_GridColor = btnGridColor.BackColor;
-                    break;
-                case 1:
-                    btn3DPlaneColor.BackColor = colPicker.PickedColor;
-                    m_Plane3DColor = btn3DPlaneColor.BackColor;
-                    break;
-                default:
-                    break;
-            }
-            m_PickingColor = -1;
-            FixColors();
-            colPicker.Visible = false;
-        }
-        private void colPicker_MouseLeft(object sender, EventArgs e)
-        {
-            m_PickingColor = -1;
-            colPicker.Visible = false;
+        	FormColorPicker picker = new FormColorPicker();
+        	if(picker.ShowDialog() == DialogResult.OK)
+        	{
+        		btn3DPlaneColor.BackColor = picker.PickedColor;
+                m_Plane3DColor = picker.PickedColor;
+                FixColors();
+        	}
+        	picker.Dispose();
+            
         }
         private void trkWorkingZoneSeconds_ValueChanged(object sender, EventArgs e)
         {

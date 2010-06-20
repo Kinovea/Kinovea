@@ -39,7 +39,6 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private ResourceManager m_ResourceManager;
-        private StaticColorPicker m_ColPicker;
         private StaticStylePicker m_StylePicker;
 		private DrawingToolType m_DrawingToolPick;	// Used to identify the tool being modified 
 													// when we are in the commons events handlers.
@@ -72,14 +71,6 @@ namespace Kinovea.ScreenManager
             }
         	
         	UpdateColorsAndStyles();
-
-            // Color Picker Control
-            m_ColPicker = new StaticColorPicker();
-            m_ColPicker.MouseLeft += new StaticColorPicker.DelegateMouseLeft(ColorPicker_MouseLeft);
-            m_ColPicker.ColorPicked += new StaticColorPicker.DelegateColorPicked(ColorPicker_ColorPicked);
-            m_ColPicker.Visible = false;
-            this.Controls.Add(m_ColPicker);
-            m_ColPicker.BringToFront();
 
             // Size Picker Control
             m_StylePicker = new StaticStylePicker(DrawingToolType.Line2D);
@@ -127,48 +118,23 @@ namespace Kinovea.ScreenManager
         #region Color & Style Buttons Handlers
         private void btnTextColor_Click(object sender, EventArgs e)
         {
-            m_DrawingToolPick = DrawingToolType.Text;
-
-            m_ColPicker.Top = grpColors.Top + btnTextColor.Top;
-            m_ColPicker.Left = grpColors.Left + btnTextColor.Left + btnTextColor.Width - m_ColPicker.Width;
-         
-            m_ColPicker.Visible = true;
+        	PickColor(DrawingToolType.Text);
         }
         private void btnPencilColor_Click(object sender, EventArgs e)
         {
-            m_DrawingToolPick = DrawingToolType.Pencil;
-
-            m_ColPicker.Top = grpColors.Top + btnPencilColor.Top;
-            m_ColPicker.Left = grpColors.Left + btnPencilColor.Left + btnPencilColor.Width - m_ColPicker.Width;
-
-            m_ColPicker.Visible = true;
+        	PickColor(DrawingToolType.Pencil);
         }
         private void btnLineColor_Click(object sender, EventArgs e)
         {
-            m_DrawingToolPick = DrawingToolType.Line2D;
-
-            m_ColPicker.Top = grpColors.Top + btnLineColor.Top + (btnLineColor.Height/2) - (m_ColPicker.Height/2);
-            m_ColPicker.Left = grpColors.Left + btnLineColor.Left + btnLineColor.Width - m_ColPicker.Width;
-
-            m_ColPicker.Visible = true;
+        	PickColor(DrawingToolType.Line2D);
         }
         private void btnCrossColor_Click(object sender, EventArgs e)
         {
-            m_DrawingToolPick = DrawingToolType.Cross2D;
-
-            m_ColPicker.Top = grpColors.Top + btnCrossColor.Top + btnAngleColor.Height - m_ColPicker.Height;
-            m_ColPicker.Left = grpColors.Left + btnCrossColor.Left + btnCrossColor.Width - m_ColPicker.Width;
-
-            m_ColPicker.Visible = true;
+        	PickColor(DrawingToolType.Cross2D);
         }
         private void btnAngleColor_Click(object sender, EventArgs e)
         {
-            m_DrawingToolPick = DrawingToolType.Angle2D;
-
-            m_ColPicker.Top = grpColors.Top + btnAngleColor.Top + btnAngleColor.Height - m_ColPicker.Height;
-            m_ColPicker.Left = grpColors.Left + btnAngleColor.Left + btnAngleColor.Width - m_ColPicker.Width;
-
-            m_ColPicker.Visible = true;
+        	PickColor(DrawingToolType.Angle2D);
         }
         private void btnLineStyle_Click(object sender, EventArgs e)
         {
@@ -188,12 +154,7 @@ namespace Kinovea.ScreenManager
         }
         private void btnChronoColor_Click(object sender, EventArgs e)
         {
-            m_DrawingToolPick = DrawingToolType.Chrono;
-
-            m_ColPicker.Top = grpColors.Top + btnChronoColor.Top + btnChronoColor.Height - m_ColPicker.Height;
-            m_ColPicker.Left = grpColors.Left + btnChronoColor.Left + btnChronoColor.Width - m_ColPicker.Width;
-
-            m_ColPicker.Visible = true;
+        	PickColor(DrawingToolType.Chrono);
         }
         private void btnLineStyle_Paint(object sender, PaintEventArgs e)
         {
@@ -214,17 +175,15 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Decoration Update Handlers
-        private void ColorPicker_ColorPicked(object sender, EventArgs e)
+        private void PickColor(DrawingToolType _drawingTool)
         {
-        	m_TempColorProfile.UpdateData(m_DrawingToolPick, m_ColPicker.PickedColor);
-        	UpdateColorsAndStyles();
-            m_DrawingToolPick = DrawingToolType.Pointer;
-            m_ColPicker.Visible = false;
-        }
-        private void ColorPicker_MouseLeft(object sender, EventArgs e)
-        {
-            m_DrawingToolPick = DrawingToolType.Pointer;
-            m_ColPicker.Visible = false;
+        	FormColorPicker picker = new FormColorPicker();
+        	if(picker.ShowDialog() == DialogResult.OK)
+        	{
+        		m_TempColorProfile.UpdateData(_drawingTool, picker.PickedColor);
+        		UpdateColorsAndStyles();
+        	}
+        	picker.Dispose();
         }
         private void StylePicker_StylePicked(object sender, EventArgs e)
         {

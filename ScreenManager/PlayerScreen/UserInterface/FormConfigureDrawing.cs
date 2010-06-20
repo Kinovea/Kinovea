@@ -19,11 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -45,10 +47,10 @@ namespace Kinovea.ScreenManager
     {
     	#region members
     	// Common
-        private ResourceManager m_ResourceManager;
-    	private bool m_bPreConfigure;				// true if we are updating the ColorProfile.
+        private bool m_bPreConfigure;				// true if we are updating the ColorProfile.
     	private DrawingToolType m_ToolType;		// Needed for controls organisation and visibility.
     	private bool m_bManualClose = false;		// Needed to handle cancel button.
+    	private ColorPicker m_ColorPicker = new ColorPicker();
     	
     	// For color profile configuration only.
         private ColorProfile m_ColorProfile;        // Direct ref to the original color profile.
@@ -67,7 +69,6 @@ namespace Kinovea.ScreenManager
             // This constructor is called when we will be updating 
             // the DrawingTool entry in the main ColorProfile.
             
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_bPreConfigure = true;
 
             // We will make the updates on a copy of the color profile
@@ -83,7 +84,6 @@ namespace Kinovea.ScreenManager
         public formConfigureDrawing(AbstractDrawing _drawing, PictureBox _SurfaceScreen)
         {
             // This constructor is called when we will be updating a specific drawing.
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_bPreConfigure = false;
             m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
@@ -94,40 +94,51 @@ namespace Kinovea.ScreenManager
         }
         private void SetupForm()
         {
+        	
         	InitializeComponent();
         	ConfigureForm(m_ToolType);
             LocalizeForm();
+            
         }
         private void ConfigureForm(DrawingToolType _ToolType)
         {
         	// Configure the controls depending on the tool updated.
-        	// Note: Color Picker is always visible.
-        	// TODO: Height should be computed.
+        	
+        	// Color Picker (always visible).
+        	m_ColorPicker.Top = 18;
+			m_ColorPicker.Left = 9;
+			
+			m_ColorPicker.ColorPicked += new ColorPickedHandler(colorPicker_ColorPicked);
+			grpConfig.Controls.Add(m_ColorPicker);
+        	
+			// TODO: Height should be computed.
             switch (_ToolType)
             {
                 case DrawingToolType.Pencil:
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
                     stlPicker.ToolType = DrawingToolType.Pencil;
-                    stlPicker.Top = 158;
+                    stlPicker.Top = 187;
                     stlPicker.Left = (grpConfig.Width - stlPicker.Width) / 2;
                     stlPicker.Visible = true;
-                    Height = 348;
+                    Height = 375;
                     break;
                 case DrawingToolType.Line2D:
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
                     stlPicker.ToolType = DrawingToolType.Line2D;
-                    stlPicker.Top = 158;
+                    stlPicker.Top = 187;
                     stlPicker.Left = (grpConfig.Width - stlPicker.Width) / 2;
                     stlPicker.Visible = true;
-                    Height = 332;
+                    Height = 362;
                     break;
                 case DrawingToolType.Text:
                     stlPicker.Visible = false;
                     lblFontSize.Visible = true;
+                    lblFontSize.Top = 187;
+                    cmbFontSize.Top = 187;
                     cmbFontSize.Visible = true;
-                    Height = 280;
+                    Height = 310;
                     
                     // Initialize font size combo.
                     cmbFontSize.Items.Clear();
@@ -152,29 +163,30 @@ namespace Kinovea.ScreenManager
                     stlPicker.Visible = false;
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
-                    Height = 238;
+                    Height = 268;
                     break;
             }
+            
         }
         private void LocalizeForm()
         {
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureDrawing_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgConfigureDrawing_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
         }
         #endregion
 
         #region User choices handlers
-        private void colPicker_ColorPicked(object sender, EventArgs e)
+        private void colorPicker_ColorPicked(object sender, EventArgs e)
         {
             if (m_bPreConfigure)
             {
-                m_TempColorProfile.UpdateData(m_ToolType, colPicker.PickedColor); 
+                m_TempColorProfile.UpdateData(m_ToolType, m_ColorPicker.PickedColor); 
             }
             else
             {
-            	m_Drawing.UpdateDecoration(colPicker.PickedColor);
+            	m_Drawing.UpdateDecoration(m_ColorPicker.PickedColor);
             	m_SurfaceScreen.Invalidate();
             }
         }
