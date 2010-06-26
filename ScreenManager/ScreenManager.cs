@@ -1379,7 +1379,7 @@ namespace Kinovea.ScreenManager
                     // Image
                     mnuDeinterlace.Enabled = false;
                     mnuMirror.Enabled = false;
-                    mnuSVGTools.Enabled = false; //m_bHasSvgFiles;
+                    mnuSVGTools.Enabled = m_bHasSvgFiles;
                     mnuGrid.Enabled = true;
                     mnuGridPerspective.Enabled = true;
                     mnuCoordinateAxis.Enabled = false;
