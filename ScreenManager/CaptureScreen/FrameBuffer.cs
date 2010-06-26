@@ -46,7 +46,8 @@ namespace Kinovea.ScreenManager
 				
 		#region Members
 		private List<Bitmap> m_Bitmaps = new List<Bitmap>();
-		private int m_iBufferCapacity = 125;
+		private int m_iBufferCapacity = 25;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
 		#region Public methods
@@ -67,8 +68,7 @@ namespace Kinovea.ScreenManager
 		public Bitmap ReadFrameAt(int _iIndex)
 		{
 			// A frame from the buffer is asked. The caller needs a stable image, 
-			// not just a reference to something that might be written at any time.
-			
+			// not just a reference to something that might be written over at any time.
 			Bitmap frame = null;
 			if(_iIndex >= 0 && _iIndex < m_Bitmaps.Count)
 			{

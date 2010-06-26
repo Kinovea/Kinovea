@@ -92,7 +92,6 @@ namespace Kinovea.ScreenManager
 		private IFrameServerContainer m_Container;	// CaptureScreenUserInterface seen through a limited interface.
 		
 		// Grabbing frames
-		//private FrameGrabberAForge m_FrameGrabber;
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_MostRecentImage;
