@@ -95,14 +95,12 @@ namespace Kinovea.ScreenManager
         #region Members
         private UserControl _UI;
         private ResourceManager m_resManager;
-        private bool m_bCancelLastCommand = false;
+        private bool m_bCancelLastCommand;
 
         //List of screens ( 0..n )
         public List<AbstractScreen> screenList = new List<AbstractScreen>();
-        
-        private bool m_bAdjustingImage = false;
         public AbstractScreen m_ActiveScreen = null;
-        private bool m_bCommonControlsVisible = false;
+        private bool m_bCanShowCommonControls;
         
         // Dual saving
         private string m_DualSaveFileName;
@@ -227,6 +225,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            OrganizeCommonControls();
             OrganizeMenus();
         }
         public void Prepare()
@@ -620,17 +619,12 @@ namespace Kinovea.ScreenManager
         #region IScreenHandler Implementation
         public void Screen_SetActiveScreen(AbstractScreen _ActiveScreen)
         {
-            //---------------------------------------------------------------------------------
-            // Cette fonction doit pouvoir être accédée déclenchée depuis les Screens.
-            // Les screens contiennent un delegate avec ce prototype, on injecte cette fonction 
-            // dans le delegate.
-            //---------------------------------------------------------------------------------
+            //-------------------------------------------------------------
+        	// /!\ Calls in OrganizeMenu which is a bit heavy on the UI.
+            // Screen_SetActiveScreen should only be called when necessary.
+			//-------------------------------------------------------------
             
-            // /!\ Eviter d'appeller SetAsActiveScreen à tout bout de champ
-            // La fonction OrganizeMenu est assez lourde au niveau de l'UI et peut
-            // monopoliser la pile de messages windows.
-
-            if (m_ActiveScreen != _ActiveScreen )
+			if (m_ActiveScreen != _ActiveScreen )
             {
                 m_ActiveScreen = _ActiveScreen;
                 
@@ -638,7 +632,7 @@ namespace Kinovea.ScreenManager
                 {
                     m_ActiveScreen.DisplayAsActiveScreen(true);
 
-                    // Désactiver les autres
+                    // Make other screens inactive.
                     foreach (AbstractScreen screen in screenList)
                     {
                         if (screen != _ActiveScreen)
@@ -650,7 +644,6 @@ namespace Kinovea.ScreenManager
             }
 
             OrganizeMenus();
-
         }
         public void Screen_CloseAsked(AbstractScreen _SenderScreen)
         {
@@ -1049,11 +1042,10 @@ namespace Kinovea.ScreenManager
             	
 			if (m_bAllowKeyboardHandler && smui != null)
             {
-                m_bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
+                bool bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
                 bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
 
-                if ( (m.Msg == WM_KEYDOWN)  && 
-                     (!m_bAdjustingImage)   &&
+                if ( (m.Msg == WM_KEYDOWN)  &&
                      ((screenList.Count > 0 && m_ActiveScreen != null) || (bThumbnailsViewerVisible)))
                 {
                     Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
@@ -1115,7 +1107,7 @@ namespace Kinovea.ScreenManager
                     			{
                                		if (screenList.Count == 2)
 	                                {
-                               			if(m_bCommonControlsVisible)
+                               			if(bCommonControlsVisible)
                                			{
                                				bWasHandled = OnKeyPress(keyCode);
                                			}
@@ -1218,12 +1210,8 @@ namespace Kinovea.ScreenManager
         public void UpdateStatusBar()
         {
             //------------------------------------------------------------------
-            // Fonction appellée sur RefreshUiCulture, CommandShowScreen (dans le ScreenManager)
-            // 
-            // et appelant le module supérieur (Supervisor)  
-            //
-            // Mettre à jour les infos de la status bar.
-            // Fabriquer la chaîne qui ira dans l'espace dédié au ScreenManager.
+            // Function called on RefreshUiCulture, CommandShowScreen...
+            // and calling upper module (supervisor).
             //------------------------------------------------------------------
 
             String StatusString = "";
@@ -1231,60 +1219,13 @@ namespace Kinovea.ScreenManager
             switch(screenList.Count)
             {
                 case 1:
-                    {
-            			PlayerScreen ps = screenList[0] as PlayerScreen;
-            			if(ps != null)
-            			{
-            				if(ps.Full)
-                            {
-                                StatusString += ps.FileName;
-                            }
-                            else
-                            {
-                                // Un seul écran de lecture, avec rien dedans.
-                                StatusString += StatusString += resManager.GetString("statusEmptyScreen", Thread.CurrentThread.CurrentUICulture); 
-                            }            				
-            			}
-
-                        break;
-                    }
-                
+            		StatusString = screenList[0].FileName;
+                    break;
                 case 2:
-                    {
-                        PlayerScreen ps0 = screenList[0] as PlayerScreen;
-            			if(ps0 != null)
-            			{
-            				if(ps0.Full)
-                            {
-                                StatusString += ps0.FileName;
-                            }
-                            else
-                            {
-                                // Ecran de gauche en lecture, avec rien dedans.
-                                StatusString += StatusString += resManager.GetString("statusEmptyScreen", Thread.CurrentThread.CurrentUICulture); ;
-                            }	
-            			}
-
-            			PlayerScreen ps1 = screenList[1] as PlayerScreen;
-            			if(ps1 != null)
-            			{
-            				StatusString += " | ";
-                            
-                            if (ps1.Full)
-                            {
-                                StatusString += ps1.FileName;
-                            }
-                            else
-                            {
-                                // Ecran de droite en lecture, avec rien dedans.
-                                StatusString += resManager.GetString("statusEmptyScreen", Thread.CurrentThread.CurrentUICulture);
-                            }	
-            			}
-                        break;
-                    }
+            		StatusString = screenList[0].FileName + " | " + screenList[1].FileName;
+                    break;
                 default:
                     break;
-
             }
 
             DelegatesPool dp = DelegatesPool.Instance();
@@ -1297,7 +1238,30 @@ namespace Kinovea.ScreenManager
         {
             DoOrganizeMenu();
         }
-        
+        private void OrganizeCommonControls()
+        {
+        	m_bCanShowCommonControls = false;
+        	
+        	switch (screenList.Count)
+            {
+                case 0:
+        		case 1:
+        		default:
+        			((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = true;
+        			break;
+        		case 2:
+        			if (screenList[0] is PlayerScreen && screenList[1] is PlayerScreen)
+        			{
+        				((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = false;	
+        				m_bCanShowCommonControls = true;
+        			}
+        			else
+        			{
+        				((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = true;	
+        			}
+        			break;
+        	}
+        }
         private void BuildSvgMenu()
         {
         	// Look for all files and folders in the guides directory
@@ -1368,50 +1332,80 @@ namespace Kinovea.ScreenManager
             bool bActiveScreenIsEmpty = false;
             if (m_ActiveScreen != null && screenList.Count > 0)
             {
-            	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-                if (player != null)
+            	if(!m_ActiveScreen.Full)
+            	{
+            		bActiveScreenIsEmpty = true;	
+            	}
+            	else if (m_ActiveScreen is PlayerScreen)
                 {
+                	PlayerScreen player = m_ActiveScreen as PlayerScreen;
+                	
                     // 1. Video is loaded : save-able and analysis is loadable.
-                    if (player.Full)
-                    {
-                    	// File
-                        mnuSave.Enabled = true;
-                       	mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
-                        mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
-                        mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
-                        mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
-                        mnuExportTEXT.Enabled = player.FrameServer.Metadata.Tracks.Count > 0;
-                        mnuLoadAnalysis.Enabled = true;
-                        
-                        // Image
-                        mnuDeinterlace.Enabled = true;
-                        mnuMirror.Enabled = true;
-                        mnuSVGTools.Enabled = m_bHasSvgFiles;
-                        mnuGrid.Enabled = true;
-                        mnuGridPerspective.Enabled = true;
-                        mnuCoordinateAxis.Enabled = true;
-                      	
-                        mnuDeinterlace.Checked = player.Deinterlaced;
-                        mnuMirror.Checked = player.Mirrored;
-                        mnuGrid.Checked = player.ShowGrid;
-                        mnuGridPerspective.Checked = player.Show3DPlane;
-                        
-                        ConfigureImageFormatMenus(player);
-                        
-                        // Motion
-                        mnuHighspeedCamera.Enabled = true;
-                        ConfigureVideoFilterMenus(player, false);
-                    }
-                    else
-                    {
-                        // Active screen is an empty player screen.
-                        bActiveScreenIsEmpty = true;
-                    }
+                    
+                	// File
+                    mnuSave.Enabled = true;
+                   	mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportTEXT.Enabled = player.FrameServer.Metadata.Tracks.Count > 0;
+                    mnuLoadAnalysis.Enabled = true;
+                    
+                    // Image
+                    mnuDeinterlace.Enabled = true;
+                    mnuMirror.Enabled = true;
+                    mnuSVGTools.Enabled = m_bHasSvgFiles;
+                    mnuGrid.Enabled = true;
+                    mnuGridPerspective.Enabled = true;
+                    mnuCoordinateAxis.Enabled = true;
+                  	
+                    mnuDeinterlace.Checked = player.Deinterlaced;
+                    mnuMirror.Checked = player.Mirrored;
+                    mnuGrid.Checked = player.ShowGrid;
+                    mnuGridPerspective.Checked = player.Show3DPlane;
+                    
+                    ConfigureImageFormatMenus(player);
+                    
+                    // Motion
+                    mnuHighspeedCamera.Enabled = true;
+                    ConfigureVideoFilterMenus(player, false);
+                }
+                else if(m_ActiveScreen is CaptureScreen)
+                {
+                 	CaptureScreen cs = m_ActiveScreen as CaptureScreen;   
+                    
+             		// File
+                    mnuSave.Enabled = false;
+                   	mnuExportSpreadsheet.Enabled = false;
+                    mnuExportODF.Enabled = false;
+                    mnuExportMSXML.Enabled = false;
+                    mnuExportXHTML.Enabled = false;
+                    mnuExportTEXT.Enabled = false;
+                    mnuLoadAnalysis.Enabled = false;
+                    
+                    // Image
+                    mnuDeinterlace.Enabled = false;
+                    mnuMirror.Enabled = false;
+                    mnuSVGTools.Enabled = false; //m_bHasSvgFiles;
+                    mnuGrid.Enabled = true;
+                    mnuGridPerspective.Enabled = true;
+                    mnuCoordinateAxis.Enabled = false;
+                  	
+                    mnuDeinterlace.Checked = false;
+                    mnuMirror.Checked = false;
+                    mnuGrid.Checked = cs.ShowGrid;
+                    mnuGridPerspective.Checked = cs.Show3DPlane;
+                    
+                    ConfigureImageFormatMenus(null);
+                    
+                    // Motion
+                    mnuHighspeedCamera.Enabled = false;
+                    ConfigureVideoFilterMenus(null, false);
                 }
                 else
                 {
-                    // Active screen is not a PlayerScreen.
-                    bActiveScreenIsEmpty = true;
+                	// KO ?
+                	bActiveScreenIsEmpty = true;
                 }
             }
             else
@@ -1438,7 +1432,6 @@ namespace Kinovea.ScreenManager
 				mnuGrid.Enabled = false;
 				mnuGridPerspective.Enabled = false;
 				mnuCoordinateAxis.Enabled = false;
-                
 				mnuDeinterlace.Checked = false;
 				mnuMirror.Checked = false;
                 mnuGrid.Checked = false;
@@ -1466,21 +1459,17 @@ namespace Kinovea.ScreenManager
                 case 0:
 
                     // No screens at all.
-
                     mnuSwapScreens.Enabled        = false;
                     mnuToggleCommonCtrls.Enabled  = false;
-
                     bAllScreensEmpty = true;
                     break;
 
                 case 1:
                     
                     // Only one screen
-
                     mnuSwapScreens.Enabled        = false;
                     mnuToggleCommonCtrls.Enabled  = false;
 
-                    
                     if(!screenList[0].Full)
                     {
                     	bAllScreensEmpty = true;	
@@ -1505,12 +1494,9 @@ namespace Kinovea.ScreenManager
                 case 2:
 
                     // Two screens
-
                     mnuSwapScreens.Enabled = true;
-                    mnuToggleCommonCtrls.Enabled = true;
+                    mnuToggleCommonCtrls.Enabled = m_bCanShowCommonControls;
                     
-                    m_bCommonControlsVisible = !((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed; 
-
                     // Left Screen
                     if (screenList[0] is PlayerScreen)
                     {
@@ -1830,8 +1816,7 @@ namespace Kinovea.ScreenManager
 			}
         }
         #endregion
-        
-        
+             
         #region Menus events handlers
 
         #region File
@@ -1890,6 +1875,7 @@ namespace Kinovea.ScreenManager
                 ICommand css = new CommandShowScreens(this);
                 CommandManager.LaunchCommand(css);
 
+                OrganizeCommonControls();
                 OrganizeMenus();
             }
             else
@@ -1926,7 +1912,7 @@ namespace Kinovea.ScreenManager
                 CommandManager.LaunchCommand(css);
 
                 // TODO : The other screen becomes the active screen.
-
+                OrganizeCommonControls();
                 OrganizeMenus();
             }
             else
@@ -2132,16 +2118,12 @@ namespace Kinovea.ScreenManager
 							// [capture][player] -> remove capture.	
 							IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs);
-							IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-	                    	cm.LaunchUndoableCommand(caps);
 						}
 						else if(screenList[0] is PlayerScreen && screenList[1] is CaptureScreen)
 						{
 							// [player][capture] -> remove capture.	
 							IUndoableCommand crs = new CommandRemoveScreen(this, 1, true);
 							cm.LaunchUndoableCommand(crs);
-							IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
-	                    	cm.LaunchUndoableCommand(caps);
 						}
 						else
 						{
@@ -2196,7 +2178,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
-            // Mettre à jour les menus
+            OrganizeCommonControls();
             OrganizeMenus();
         }
         private void mnuTwoPlayersOnClick(object sender, EventArgs e)
@@ -2294,6 +2276,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            OrganizeCommonControls();
             OrganizeMenus();
         }
         private void mnuOneCaptureOnClick(object sender, EventArgs e)
@@ -2408,6 +2391,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            OrganizeCommonControls();
             OrganizeMenus();
         }
         private void mnuTwoCapturesOnClick(object sender, EventArgs e)
@@ -2505,6 +2489,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            OrganizeCommonControls();
             OrganizeMenus();
         }
         private void mnuTwoMixedOnClick(object sender, EventArgs e)
@@ -2584,6 +2569,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            OrganizeCommonControls();
             OrganizeMenus();
         }
         private void mnuSwapScreensOnClick(object sender, EventArgs e)
@@ -2600,8 +2586,6 @@ namespace Kinovea.ScreenManager
             IUndoableCommand ctcc = new CommandToggleCommonControls(((ScreenManagerUserInterface)UI).splitScreensPanel);
             CommandManager cm = CommandManager.Instance();
             cm.LaunchUndoableCommand(ctcc);
-            
-            m_bCommonControlsVisible = !((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed;
         }
         #endregion
 
@@ -2677,14 +2661,15 @@ namespace Kinovea.ScreenManager
         		string svgFile = menu.Tag as string;
         		if(svgFile != null)
         		{
-        			// check / uncheck the menu.
-        			// menu.Checked = !menu.Checked;
-        			
         			// Add the corresponding svg drawing in the active screen.
         			if(m_ActiveScreen is PlayerScreen)
 	        		{
         				((PlayerScreen)m_ActiveScreen).AddSVGDrawing(svgFile);
 	        		}
+        			else if(m_ActiveScreen is CaptureScreen)
+        			{
+        				((CaptureScreen)m_ActiveScreen).AddSVGDrawing(svgFile);
+        			}
         		}
         	}
         	
@@ -3871,6 +3856,7 @@ namespace Kinovea.ScreenManager
 
                 // Mettre à jour menus et Status bar
                 UpdateStatusBar();
+                OrganizeCommonControls();
                 OrganizeMenus();
 
                 m_StoredStates.RemoveAt(iLastState);

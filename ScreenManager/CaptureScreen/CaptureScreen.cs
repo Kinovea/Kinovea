@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Reflection;
 using System.Resources;
@@ -36,8 +37,22 @@ namespace Kinovea.ScreenManager
         }
         public override bool Full
         {
-        	get { return false; }	
+        	get { return m_FrameServer.IsConnected; }	
         }
+        public override string FileName
+		{
+			get 
+			{ 
+				if(m_FrameServer.IsConnected)
+				{
+					return m_FrameServer.DeviceName;		
+				}
+				else
+				{
+					return ScreenManagerLang.statusEmptyScreen;	
+				}
+			}
+		}
         public override UserControl UI
         {
         	get { return m_CaptureScreenUI; }	
@@ -119,5 +134,10 @@ namespace Kinovea.ScreenManager
 			// Not implemented.
 		}
         #endregion
+    
+    	public void AddSVGDrawing(string filename)
+        {
+        	m_CaptureScreenUI.AddSVGDrawing(filename);
+        }
     }
 }

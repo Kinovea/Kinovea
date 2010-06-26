@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -27,7 +28,6 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -50,6 +50,20 @@ namespace Kinovea.ScreenManager
             get { return m_UniqueId; }
             set { m_UniqueId = value; }
         }
+		public override string FileName
+		{
+			get 
+			{ 
+				if(m_FrameServer.VideoFile.Loaded)
+				{
+					return Path.GetFileName(m_FrameServer.VideoFile.FilePath);		
+				}
+				else
+				{
+					return ScreenManagerLang.statusEmptyScreen;	
+				}
+			}
+		}
 		public override string FilePath
 		{
 			get { return m_FrameServer.VideoFile.FilePath; }
@@ -57,10 +71,6 @@ namespace Kinovea.ScreenManager
 		public override bool CapabilityDrawings
 		{
 			get { return true;}
-		}
-		public string FileName
-		{
-			get { return Path.GetFileName(m_FrameServer.VideoFile.FilePath); }
 		}
         public FrameServerPlayer FrameServer
 		{

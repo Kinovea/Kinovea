@@ -38,6 +38,10 @@ namespace Kinovea.ScreenManager
 		{
 			get;
 		}
+		public abstract string DeviceName
+		{
+			get;
+		}
 		
 		public abstract void PromptDeviceSelector();
 		public abstract void NegociateDevice();

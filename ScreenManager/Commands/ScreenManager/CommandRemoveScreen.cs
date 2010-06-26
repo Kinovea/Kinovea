@@ -110,7 +110,11 @@ namespace Kinovea.ScreenManager
                     {
                         // We store the current state now.
                         // (We don't store it at construction time to handle the redo case better)
-                        if (m_bStoreState) { screenManagerKernel.StoreCurrentState(); }
+                        if (m_bStoreState) 
+                        { 
+                        	screenManagerKernel.StoreCurrentState(); 
+                        }
+                        
                         ps.m_PlayerScreenUI.ResetToEmptyState();
                         screenManagerKernel.screenList.RemoveAt(iScreenToRemove);
 
@@ -123,7 +127,12 @@ namespace Kinovea.ScreenManager
             		// Capture.
             		// We store the current state now.
                     // (We don't store it at construction time to handle the redo case better)
-                    if (m_bStoreState) { screenManagerKernel.StoreCurrentState(); }
+                    if (m_bStoreState) 
+                    { 
+                    	screenManagerKernel.StoreCurrentState(); 
+                    }
+                    
+                    screenManagerKernel.screenList[iScreenToRemove].BeforeClose();
                     screenManagerKernel.screenList.RemoveAt(iScreenToRemove);
 
 	                // TODO: Remove all commands that were executed during this screen life from the command history.

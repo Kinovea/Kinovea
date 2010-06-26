@@ -47,7 +47,7 @@ using Kinovea.VideoFiles;
 namespace Kinovea.ScreenManager
 {
 	public partial class CaptureScreenUserInterface : UserControl, IFrameServerContainer
-	{
+	{		
 		#region Properties
 		public int DrawtimeFilterType
 		{
@@ -94,6 +94,10 @@ namespace Kinovea.ScreenManager
 		
 		// Other
 		private bool m_bSettingsFold;
+		
+		// Asynchronous delegates.
+		private delegate void InitDecodingSize();
+		private InitDecodingSize m_InitDecodingSize;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -144,6 +148,9 @@ namespace Kinovea.ScreenManager
 			
 			InitializeCaptureFiles();
 			
+			// Delegates
+			m_InitDecodingSize = new InitDecodingSize(InitDecodingSize_Invoked);
+			
 			TryToConnect();
 			tmrCaptureDeviceDetector.Start();
 		}
@@ -156,17 +163,22 @@ namespace Kinovea.ScreenManager
 		}
 		public void DoInitDecodingSize()
 		{
+			BeginInvoke(m_InitDecodingSize);
+		}
+		private void InitDecodingSize_Invoked()
+		{			
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.ImageSize);
 			
 			m_FrameServer.CoordinateSystem.Stretch = 1;
 			m_bStretchModeOn = false;
 			
-			// silent crash when trying to change size... Todo: investigate.
 			PanelCenter_Resize(null, EventArgs.Empty);
 			
 			// As a matter of fact we pass here at the first received frame.
 			// We can stop trying to connect now.
 			tmrCaptureDeviceDetector.Stop();
+			UpdateFilenameLabel();
+			OnPoke();
 		}
 		public void DisplayAsGrabbing(bool _bIsGrabbing)
 		{
@@ -332,6 +344,42 @@ namespace Kinovea.ScreenManager
 
 			return bWasHandled;
 		}
+		public void AddSVGDrawing(string _filename)
+		{
+			// Add an SVG drawing from the file.
+			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
+			
+			// TODO.
+			
+			/*if(m_FrameServer.Connected != null && File.Exists(_filename))
+			{		
+				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+				
+				try
+				{
+					
+					Point imageCenter = new Point(m_FrameServer.Metadata.ImageSize.Width / 2, m_FrameServer.Metadata.ImageSize.Height / 2);
+				
+					DrawingSVG dsvg = new DrawingSVG(imageCenter.X,
+					                                 imageCenter.Y, 
+					                                 0, 
+					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+					                                 _filename);
+									
+					m_FrameServer.Metadata[0].AddDrawing(dsvg);
+					m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+					m_FrameServer.Metadata.SelectedDrawing = 0;
+				}
+				catch
+				{
+					// An error occurred during the creation.
+					// example : external DTD an no network or invalid svg file.
+					// TODO: inform the user.
+				}
+				
+				pbSurfaceScreen.Invalidate();
+			}*/	
+		}
 		public void BeforeClose()
 		{
 			// This screen is about to be closed.
@@ -436,6 +484,10 @@ namespace Kinovea.ScreenManager
 			tbImageDirectory.Text = pm.CaptureImageDirectory;
 			tbVideoDirectory.Text = pm.CaptureVideoDirectory;
 		}
+		private void UpdateFilenameLabel()
+		{
+			lblFileName.Text = m_FrameServer.DeviceName;
+		}
 		#endregion
 		
 		#region Misc Events
@@ -462,15 +514,16 @@ namespace Kinovea.ScreenManager
 			m_ScreenUIHandler.ScreenUI_SetAsActiveScreen();
 			
 			// 1. Ensure no DrawingText is in edit mode.
-			//m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 
 			// 2. Return to the pointer tool, except if Pencil
-			/*if (m_ActiveTool != DrawingToolType.Pencil)
+			if (m_ActiveTool != DrawingToolType.Pencil)
 			{
 				m_ActiveTool = DrawingToolType.Pointer;
 				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, -1));
 			}
 
+			/*
 			// 3. Dock Keyf panel if nothing to see.
 			//if (m_FrameServer.Metadata.Count < 1)
 			//TODO other test.
@@ -614,6 +667,8 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.StopRecording();
 				
+				EnableVideoFileEdit(true);
+				
 				// update file name.
 				tbVideoFilename.Text = CreateNewFilename(Path.GetFileName(m_FrameServer.CurrentCaptureFilePath));
 				
@@ -626,12 +681,14 @@ namespace Kinovea.ScreenManager
 				// Start exporting frames to a video.
 			
 				// Check that the destination folder exists.
-				if(!ValidateFilename(tbVideoFilename.Text))
+				if(!ValidateFilename(tbVideoFilename.Text, false))
 				{
 					AlertInvalidFilename();	
 				}
 				else if(Directory.Exists(tbVideoDirectory.Text))
 				{
+					EnableVideoFileEdit(false);
+					
 					// no extension : mkv.
 					// extension specified by user : honor it if supported, mkv otherwise.
 					string filename = tbVideoFilename.Text;
@@ -1925,7 +1982,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
         {
-			if(!ValidateFilename(tbImageDirectory.Text))
+			if(!ValidateFilename(tbImageDirectory.Text, true))
         	{
         		AlertInvalidFilename();
         	}
@@ -1936,7 +1993,7 @@ namespace Kinovea.ScreenManager
         }
         private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
         {
-        	if(!ValidateFilename(tbVideoDirectory.Text))
+        	if(!ValidateFilename(tbVideoDirectory.Text, true))
         	{
         		AlertInvalidFilename();
         	}
@@ -1947,115 +2004,42 @@ namespace Kinovea.ScreenManager
         }
         private void tbImageFilename_TextChanged(object sender, EventArgs e)
         {
-			if(!ValidateFilename(tbImageFilename.Text))
+			if(!ValidateFilename(tbImageFilename.Text, true))
         	{
         		AlertInvalidFilename();
         	}
         }
         private void tbVideoFilename_TextChanged(object sender, EventArgs e)
         {
-        	if(!ValidateFilename(tbVideoFilename.Text))
+        	if(!ValidateFilename(tbVideoFilename.Text, true))
         	{
         		AlertInvalidFilename();
         	}
         }
-        
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Export the current frame.
 			
-			if(!ValidateFilename(tbImageFilename.Text))
+			if(!ValidateFilename(tbImageFilename.Text, false))
 			{
 				AlertInvalidFilename();	
 			}
 			else if(Directory.Exists(tbImageDirectory.Text))
 			{
+				string filepath = tbImageDirectory.Text + "\\" + tbImageFilename.Text;
+				Bitmap outputImage = m_FrameServer.GetFlushedImage();
 				
-				// no extension : jpg.
-				// extension specified by user : honor it if supported, jpg otherwise.				
-				string filename = tbImageFilename.Text;
-				string filenameToLower = filename.ToLower();
-				string filepath = tbImageDirectory.Text + "\\" + filename;
+				ImageHelper.Save(filepath, outputImage);
+				outputImage.Dispose();
 				
-				try
-				{
-					Bitmap bmp = m_FrameServer.GetFlushedImage();
-					
-					if (filenameToLower.EndsWith("jpg") || filenameToLower.EndsWith("jpeg"))
-					{
-						Bitmap OutputJpg = ConvertToJPG(bmp);
-						OutputJpg.Save(filepath, ImageFormat.Jpeg);
-						OutputJpg.Dispose();
-					}
-					else if (filenameToLower.EndsWith("bmp"))
-					{
-						bmp.Save(filepath, ImageFormat.Bmp);
-					}
-					else if (filenameToLower.EndsWith("png"))
-					{
-						bmp.Save(filepath, ImageFormat.Png);
-					}
-					else if(filename != "")
-					{
-						// no extension.
-						filepath = filepath + ".jpg";
-						
-						Bitmap OutputJpg = ConvertToJPG(bmp);
-						OutputJpg.Save(filepath, ImageFormat.Jpeg);
-						OutputJpg.Dispose();
-					}
-					
-					bmp.Dispose();
-					
-					// Update the filename for the next snapshot.
-					// If the filename was empty, we'll create it without saving.
-					tbImageFilename.Text = CreateNewFilename(filename);
-				}
-				catch (Exception exp)
-				{
-					log.Error(exp.Message);
-					log.Error(exp.StackTrace);
-				}					
+				// Update the filename for the next snapshot.
+				// If the filename was empty, we'll create it without saving.
+				tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
 			}
 			else
 			{
 				btnBrowseImageLocation_Click(null, EventArgs.Empty);
 			}
-		}
-		
-		private Bitmap ConvertToJPG(Bitmap _image)
-		{
-			// Intermediate MemoryStream for the conversion.
-			MemoryStream memStr = new MemoryStream();
-
-			//Get the list of available encoders
-			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-
-			//find the encoder with the image/jpeg mime-type
-			ImageCodecInfo ici = null;
-			foreach (ImageCodecInfo codec in codecs)
-			{
-				if (codec.MimeType == "image/jpeg")
-				{
-					ici = codec;
-				}
-			}
-
-			if (ici != null)
-			{
-				//Create a collection of encoder parameters (we only need one in the collection)
-				EncoderParameters ep = new EncoderParameters();
-				ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)100);
-
-				_image.Save(memStr, ici, ep);
-			}
-			else
-			{
-				// No JPG encoder found (is that common ?) Use default system.
-				_image.Save(memStr, ImageFormat.Jpeg);
-			}
-
-			return new Bitmap(memStr);
 		}
 		#endregion
         
@@ -2134,26 +2118,34 @@ namespace Kinovea.ScreenManager
 			
         	return newFilename;
         }
-        private bool ValidateFilename(string filename)
+        private bool ValidateFilename(string _filename, bool _allowEmpty)
         {
         	// Validate filename chars.
-			bool bIsValid = false;
-			
-			try
-			{
-			  	new System.IO.FileInfo(filename);
-			  	bIsValid = true;
-			}
-			catch (ArgumentException)
-			{
-				// filename is empty, only white spaces or contains invalid chars.
-				log.Error(String.Format("Capture filename has invalid characters. Proposed file was: {0}", filename));
-			}
-			catch (NotSupportedException)
-			{
-				// filename contains a colon in the middle of the string.
-				log.Error(String.Format("Capture filename has a colon in the middle. Proposed file was: {0}", filename));
-			}
+        	bool bIsValid = false;
+        	
+        	if(_filename.Length == 0 && _allowEmpty)
+        	{
+        		// special case for when the user is currently typing.
+        		bIsValid = true;
+        	}
+        	else
+        	{
+				try
+				{
+				  	new System.IO.FileInfo(_filename);
+				  	bIsValid = true;
+				}
+				catch (ArgumentException)
+				{
+					// filename is empty, only white spaces or contains invalid chars.
+					log.Error(String.Format("Capture filename has invalid characters. Proposed file was: {0}", _filename));
+				}
+				catch (NotSupportedException)
+				{
+					// filename contains a colon in the middle of the string.
+					log.Error(String.Format("Capture filename has a colon in the middle. Proposed file was: {0}", _filename));
+				}
+        	}
 			
 			return bIsValid;
         }
@@ -2180,8 +2172,14 @@ namespace Kinovea.ScreenManager
         	
         	m_bSettingsFold = !m_bSettingsFold;	
         }
+        private void EnableVideoFileEdit(bool _bEnable)
+        {
+        	tbVideoFilename.Enabled = _bEnable;
+        	tbVideoDirectory.Enabled = _bEnable;
+        	btnBrowseVideoLocation.Enabled = _bEnable;
+			btnSaveVideoLocation.Enabled = _bEnable;        	
+        }
         #endregion
-        
         
 	}
 }
