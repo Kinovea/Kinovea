@@ -161,9 +161,8 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.CoordinateSystem.Stretch = 1;
 			m_bStretchModeOn = false;
 			
-			// silent crash when trying to change size...
-			StretchSqueezeSurface();
-			pbSurfaceScreen.Invalidate();
+			// silent crash when trying to change size... Todo: investigate.
+			PanelCenter_Resize(null, EventArgs.Empty);
 			
 			// As a matter of fact we pass here at the first received frame.
 			// We can stop trying to connect now.
@@ -175,9 +174,6 @@ namespace Kinovea.ScreenManager
 			{
 				pbSurfaceScreen.Visible = _bIsGrabbing;
 	   			ShowHideResizers(_bIsGrabbing);
-    			
-	   			StretchSqueezeSurface();
-	   			pbSurfaceScreen.Invalidate();
 				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;	
 			}
 			else
