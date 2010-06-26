@@ -135,6 +135,8 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Modul Mozaic</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Marimea reala a segmentului :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Calibrare</value></data>
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata fiecărui diapozitiv: {0} sutimi de secundă.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata fiecărui diapozitiv : {0:0.00} secunde.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salvează fişier video</value></data>
@@ -203,6 +205,8 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensiune font :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salvează</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imagine</value></data>
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Salvează cadrul curent într-un fişier</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Cadrele cheie au fost modificate.\n Doriţi să salvaţi datele cadrelor cheie înainte de a inchide ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Cadrele cheie nu au fost salvate</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controale comune :</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Rulează | Pauză</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restartează ediţia traiectoriei</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salvează fişierul video sau datele cadrelor cheie...</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Salvează cadrul curent într-un fişier</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Ferestre</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibreaza...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Specificaţi viteza originală...</value></data>
@@ -322,6 +325,7 @@
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Dezactiveaza superpozitia cadrelor</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Activeaza superpozitia cadrelor</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copiază desenele de pe cadrul cheie anterior către cadrul curent</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Unghi</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometru</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker cruce</value></data>
@@ -337,16 +341,18 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Schimbă modul de repetiţie ( O dată | Buclă ) - Mod curent : Buclă</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Schimbă modul de repetiţie ( O dată | Buclă ) - Mod curent : O dată</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salvează o secvenţa de cadre</value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Resetează zona de lucru</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salvează o succesiune de imagini din cadrele cheie</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salveaza fisierul video cu o pauza in fiecare cadru cheie</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Setaţi începutul zonei de lucru pe cadrul curent</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent </value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Arată comentariile</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Modifică viteza de rulare</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Salvează cadrul curent intr-un fişier</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Specificaţi zona de lucru</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Doar marginile...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Nivele Automate...</value></data>

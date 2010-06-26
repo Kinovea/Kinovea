@@ -135,6 +135,8 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Μωσαϊκό</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Μέτρηση σφραγίδας</value></data>
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0} εκατοστά του δευτερολέπτου.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Διάρκεια κάθε Βασικής εικόνας : {0:0.00} δευτερόλεπτα.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Αποθήκευση Video</value></data>
@@ -203,6 +205,8 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Μέγεθος Γραμματοσειράς :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Εικόνα</value></data>
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Αποθήκευση την Παρούσας Εικόνας σε Αρχείο</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Οι Βασικές Εικόνες έχουν τροποποιηθεί.\n Επιθυμείτε να αποθηκεύσετε τα δεδομένα των εικόνων κλειδιά πριν διακόψετε?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Τα δεδομένα των Βασικών Εικόνων δεν έχουν αποθηκευτεί</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Κοινές Λειτουργίες :</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Αναπαραγωγή | Παύση</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Επανεκκίνηση Έκδοσης Διαδρομής</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Αποθήκευση…</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Αποθήκευση την Παρούσας Εικόνας σε Αρχείο</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Οθόνες</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Μέτρηση σφραγίδας…</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Καθορισμός Αρχικής Ταχύτητας…</value></data>
@@ -322,6 +325,7 @@
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Απενεργοποίηση επαλληλίας εικόνων</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Ενεργοποίηση επαλληλίας εικόνων</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Αντιγραφή Σχεδίων προηγούμενης Βασικής Εικόνας στην παρούσα.</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Γωνία</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Χρονόμετρο</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Σταυρός Σημάδι</value></data>
@@ -337,16 +341,18 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Αλλαγή Τρόπου Επανάληψης (Μια Φορά | Κύκλος) - Παρόν τρόπος : Κύκλος</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Αλλαγή Τρόπου Επανάληψης (Μια Φορά | Κύκλος) - Παρόν τρόπος : Μια Φορά</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Αποθήκευση Ακολουθίας Εικόνων</value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Επαναφορά της Ζώνης Εργασίας σε Πλήρες Video</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Αποθήκευση προβολής-διαφανειών από τις Βασικές Εικόνες</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Αποθήκευση video με παύση σε κάθε βασική εικόνα</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Τοποθέτηση του Πρώτου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Τοποθέτηση του Τελευταίου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Εμφάνιση Σχολίων</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Μεταβαλλόμενη Ταχύτητα Αναπαραγωγής</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Αποθήκευση της Παρούσας Εικόνας σε Αρχείο</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Καθορισμός της Ζώνης Εργασίας</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Μόνο οι Άκρες…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Αυτόματα Επίπεδα…</value></data>

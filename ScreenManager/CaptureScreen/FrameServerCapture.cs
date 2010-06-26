@@ -93,7 +93,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private IFrameServerContainer m_Container;	// CaptureScreenUserInterface seen through a limited interface.
+		private IFrameServerCaptureContainer m_Container;	// CaptureScreenUserInterface seen through a limited interface.
 		
 		// Grabbing frames
 		private AbstractFrameGrabber m_FrameGrabber;
@@ -208,7 +208,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public methods
-		public void SetContainer(IFrameServerContainer _container)
+		public void SetContainer(IFrameServerCaptureContainer _container)
 		{
 			m_Container = _container;
 		}

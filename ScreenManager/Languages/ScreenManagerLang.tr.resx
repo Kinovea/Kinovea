@@ -135,6 +135,8 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mozaik Modu</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin gerçek büyüklüğü :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Ölçümü Kalibre Et</value></data>
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde geçen süre: saniyenin yüzde {0} sı.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde geçen süre : {0:0.00} saniye.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Videoyu Kaydet</value></data>
@@ -203,6 +205,8 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Yazıtipi Büyüklüğü :</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Kaydet</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>İmaj</value></data>
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Geçerli İmajı Dosyaya Kaydet</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Anahtar İmajlar değiştirildi.\n Kapatmadan önce anahtar imaj verisini kaydetmek istiyor musunuz?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Anahtar imaj verisi kaydedilmedi</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Ortak Kontroller :</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Oynat | Duraklat</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Yol Düzenlemesini Baştan Başlat</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Kaydet...</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Geçerli İmajı Dosyaya Kaydet</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Ekranlar</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Orijinal Hızı Ayarla</value></data>
@@ -322,6 +325,7 @@
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>İmajların süperkonumlandırmasını İptal Et</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>İmajların süperkonumlandırmasını Aktive Et</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Önceki Anahtar İmaj Çizimlerini Geçerli İmajın üzerine Kopyala</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Açı</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Kronometre</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Kesişme İşaretleyicisi</value></data>
@@ -337,16 +341,18 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Tekrarlama Modunu Değiştir ( Tek Sefer | Döngü ) - Geçerli Mod : Döngü</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Tekrarlama Modunu Değiştir ( Tek Sefer | Döngü ) - Geçerli Mod : Tek Sefer</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Bir İmaj Sekansı Kaydet</value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Çalışma Alanını Tam Videoya Geri Ayarla</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Anahtar İmajlardan bir slayt gösterimi kaydet</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Videoyu her bir anahtar imaj üzerinde duraklama ile kaydet</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Çalışma Alanının İlk Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Çalışma Alanının Son Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Yorumları Göster</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Oynatma Hızını Değiştir</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Geçerli İmajı Dosyaya Kaydet</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Çalışma Alanını Ayarla</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Sadece Kenarlar...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Oto Seviye...</value></data>

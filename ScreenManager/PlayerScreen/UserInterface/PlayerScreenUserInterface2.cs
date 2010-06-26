@@ -44,18 +44,6 @@ using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
-	public enum DrawingToolType
-	{
-		Pointer,
-		Line2D,
-		Cross2D,
-		Angle2D,
-		Pencil,
-		Text,
-		Chrono,
-		NumberOfDrawingTools
-	};
-	
 	public partial class PlayerScreenUserInterface : UserControl
 	{
 		#region Imports Win32
@@ -108,9 +96,9 @@ namespace Kinovea.ScreenManager
 
 		#region Internal delegates for async methods
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
-		private delegate void CallbackPlayLoop();
-        private Kinovea.ScreenManager.PlayerScreenUserInterface.TimerEventHandler m_CallbackTimerEventHandler;
-        private Kinovea.ScreenManager.PlayerScreenUserInterface.CallbackPlayLoop m_CallbackPlayLoop;
+		private delegate void PlayLoop();
+        private TimerEventHandler m_TimerEventHandler;
+        private PlayLoop m_PlayLoop;
 		#endregion
 
 		#region Enums
@@ -161,7 +149,6 @@ namespace Kinovea.ScreenManager
 				UpdateSpeedLabel();
 			}
 		}
-		
 		public bool Synched
 		{
 			//get { return m_bSynched; }
@@ -379,11 +366,11 @@ namespace Kinovea.ScreenManager
 			SetupPrimarySelectionPanel();
 			SetupKeyframeCommentsHub();
 			pnlThumbnails.Controls.Clear();
-			DockKeyframePanel();
+			DockKeyframePanel(true);
 
 			// Internal delegates
-			m_CallbackTimerEventHandler = new TimerEventHandler(MultimediaTimerTick);
-			m_CallbackPlayLoop = new CallbackPlayLoop(PlayLoop);
+			m_TimerEventHandler = new TimerEventHandler(MultimediaTimer_Tick);
+			m_PlayLoop = new PlayLoop(PlayLoop_Invoked);
 
 			m_DeselectionTimer.Interval = 3000;
 			m_DeselectionTimer.Tick += new EventHandler(DeselectionTimer_OnTick);
@@ -409,7 +396,7 @@ namespace Kinovea.ScreenManager
 			ShowHideResizers(false);
 			SetupPrimarySelectionPanel();
 			pnlThumbnails.Controls.Clear();
-			DockKeyframePanel();
+			DockKeyframePanel(true);
 			UpdateFramesMarkers();
 			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
 			EnableDisableAllPlayingControls(true);
@@ -645,7 +632,7 @@ namespace Kinovea.ScreenManager
 			OrganizeKeyframes();
 			if(m_FrameServer.Metadata.Count > 0)
 			{
-				UndockKeyframePanel();
+				DockKeyframePanel(false);
 			}
 			
 			// Goto selection start and refresh.
@@ -661,7 +648,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void DisplayAsActiveScreen(bool _bActive)
 		{
-			// Actually called from ScreenManager.
+			// Called from ScreenManager.
 			ShowBorder(_bActive);
 		}
 		public void StopPlaying()
@@ -769,7 +756,7 @@ namespace Kinovea.ScreenManager
 				EnableDisableDrawingTools(false);
 				
 				// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
-				DockKeyframePanel();
+				DockKeyframePanel(true);
 				m_bStretchModeOn = true;
 				StretchSqueezeSurface();
 			}
@@ -1248,7 +1235,7 @@ namespace Kinovea.ScreenManager
 			// 3. Dock Keyf panel if nothing to see.
 			if (m_FrameServer.Metadata.Count < 1)
 			{
-				DockKeyframePanel();
+				DockKeyframePanel(true);
 			}
 		}
 		private string TimeStampsToTimecode(long _iTimeStamp, TimeCodeFormat _timeCodeFormat, bool _bSynched)
@@ -1352,11 +1339,6 @@ namespace Kinovea.ScreenManager
 		{
 			return (int)(Math.Round((double)((double)_iValue * (double)_iNewMax) / (double)_iOldMax));
 		}
-		private int Rescale(long _iValue, long _iOldMax, long _iNewMax)
-		{
-			// Generic rescale.
-			return (int)((double)((double)_iValue * (double)_iNewMax) / (double)_iOldMax);
-		}
 		private void DoDrawingUndrawn()
 		{
 			//--------------------------------------------------------
@@ -1375,6 +1357,26 @@ namespace Kinovea.ScreenManager
 		{
 			// Updates the markers coordinates and redraw the trkFrame.
 			trkFrame.UpdateMarkers(m_FrameServer.Metadata);
+		}
+		private void ShowBorder(bool _bShow)
+		{
+			m_bShowImageBorder = _bShow;
+			pbSurfaceScreen.Invalidate();
+		}
+		private void DrawImageBorder(Graphics _canvas)
+		{
+			// Draw the border around the screen to mark it as selected.
+			// Called back from main drawing routine.
+			_canvas.DrawRectangle(m_PenImageBorder, 0, 0, pbSurfaceScreen.Width - m_PenImageBorder.Width, pbSurfaceScreen.Height - m_PenImageBorder.Width);
+		}
+		private void DisablePlayAndDraw()
+		{
+			StopPlaying();
+			m_ActiveTool = DrawingToolType.Pointer;
+			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+			DisableMagnifier();
+			UnzoomDirectZoom();
+			m_FrameServer.Metadata.StopAllTracking();
 		}
 		#endregion
 
@@ -2006,24 +2008,9 @@ namespace Kinovea.ScreenManager
 
 		#endregion
 
-		#region Image Border
-		private void ShowBorder(bool _bShow)
-		{
-			m_bShowImageBorder = _bShow;
-			pbSurfaceScreen.Invalidate();
-		}
-		private void DrawImageBorder(Graphics _canvas)
-		{
-			// Draw the border around the screen to mark it as selected.
-			// Called back from main drawing routine.
-			_canvas.DrawRectangle(m_PenImageBorder, 0, 0, pbSurfaceScreen.Width - m_PenImageBorder.Width, pbSurfaceScreen.Height - m_PenImageBorder.Width);
-		}
-		#endregion
-
 		#region Auto Stretch & Manual Resize
 		private void StretchSqueezeSurface()
 		{
-			
 			if (m_FrameServer.Loaded)
 			{
 				// Check if the image was loaded squeezed.
@@ -2079,14 +2066,12 @@ namespace Kinovea.ScreenManager
 					pbSurfaceScreen.Height = (int)((double)m_FrameServer.VideoFile.Infos.iDecodingHeight * m_FrameServer.CoordinateSystem.Stretch);
 				}
 				
-				//recentrer
+				// Center
 				pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
 				pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
-				
-				// Repositionement des Resizers.
 				ReplaceResizers();
 				
-				// Redéfinir les plans & grilles 3D
+				// Redefine grids.
 				Size imageSize = new Size(m_FrameServer.VideoFile.Infos.iDecodingWidth, m_FrameServer.VideoFile.Infos.iDecodingHeight);
 				m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 				m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
@@ -2200,7 +2185,7 @@ namespace Kinovea.ScreenManager
 			int myData = 0;	// dummy data
 			m_IdMultimediaTimer = timeSetEvent( _interval,                              // Délai en ms.
 			                                   _interval,                              // Resolution en ms.
-			                                   m_CallbackTimerEventHandler,            // event handler du tick.
+			                                   m_TimerEventHandler,            // event handler du tick.
 			                                   ref myData,                             // ?
 			                                   TIME_PERIODIC | TIME_KILL_SYNCHRONOUS); // Type d'event (1=periodic)
 			
@@ -2218,15 +2203,15 @@ namespace Kinovea.ScreenManager
 				log.Debug("PlayerScreen multimedia timer stopped.");
 			}
 		}
-		private void MultimediaTimerTick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
+		private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
 		{
 			// We comes here more often than we should, by bunches.
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				BeginInvoke(m_CallbackPlayLoop);
+				BeginInvoke(m_PlayLoop);
 			}
 		}
-		private void PlayLoop()
+		private void PlayLoop_Invoked()
 		{
 			//--------------------------------------------------------------
 			// Function called by main timer event handler, on each tick.
@@ -2627,10 +2612,10 @@ namespace Kinovea.ScreenManager
 			mnuDirectTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
 			mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
 			mnuSetCaptureSpeed.Text = ScreenManagerLang.mnuSetCaptureSpeed;
-			mnuSavePic.Text = ScreenManagerLang.mnuSavePic;
+			mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
 			mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
 			
-			// 2. Drawings context menu (Configure, Delete, Track this)
+			// 2. Drawings context menu.
 			mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 			mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
 			mnuTrackTrajectory.Text = ScreenManagerLang.mnuTrackTrajectory;
@@ -2685,7 +2670,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// Export buttons
-			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
+			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.Generic_SaveImage);
 			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
 			toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.ToolTip_SaveDiaporama);
 			toolTips.SetToolTip(btnPdf, ScreenManagerLang.dlgExportToPDF_Title);
@@ -3537,14 +3522,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Redo the dock/undock if needed to be at the right place.
 			// (Could be handled by layout ?)
-			if(m_bDocked)
-			{
-				DockKeyframePanel();
-			}
-			else
-			{
-				UndockKeyframePanel();
-			}
+			DockKeyframePanel(m_bDocked);
 		}
 		private void btnAddKeyframe_Click(object sender, EventArgs e)
 		{
@@ -3599,17 +3577,17 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				DockKeyframePanel();
+				DockKeyframePanel(true);
 				m_iActiveKeyFrameIndex = -1;
 			}
 			
 			UpdateFramesMarkers();
 			pbSurfaceScreen.Invalidate(); // Because of trajectories with keyframes labels.
 		}
-		private void SetupDefaultThumbBox(KeyframeBox _ThumbBox)
+		private void SetupDefaultThumbBox(UserControl _box)
 		{
-			_ThumbBox.Top = 10;
-			_ThumbBox.Cursor = Cursors.Hand;
+			_box.Top = 10;
+			_box.Cursor = Cursors.Hand;
 		}
 		private void ActivateKeyframe(long _iPosition)
 		{
@@ -3771,7 +3749,7 @@ namespace Kinovea.ScreenManager
 				// Otherwise we keep whatever choice the user made.
 				if(m_FrameServer.Metadata.Count == 1)
 				{
-					UndockKeyframePanel();
+					DockKeyframePanel(false);
 				}
 			}
 		}
@@ -3916,47 +3894,30 @@ namespace Kinovea.ScreenManager
 		#region Docking Undocking
 		private void btnDockBottom_Click(object sender, EventArgs e)
 		{
-			if (m_bDocked)
-			{
-				UndockKeyframePanel();
-			}
-			else
-			{
-				DockKeyframePanel();
-			}
+			DockKeyframePanel(!m_bDocked);
 		}
 		private void splitKeyframes_Panel2_DoubleClick(object sender, EventArgs e)
 		{
-			// double click on the DrawingTools bar => expand/retract Keyframes panel
-			btnDockBottom_Click(null, EventArgs.Empty);
+			DockKeyframePanel(!m_bDocked);
 		}
-		private void DockKeyframePanel()
+		private void DockKeyframePanel(bool _bDock)
 		{
-			// hide the keyframes
-			splitKeyframes.SplitterDistance = splitKeyframes.Height - 25;
-
-			// change image
-			btnDockBottom.BackgroundImage = Resources.undock16x16;
-
-			// If there is 0 images, the arrow isn't visible.
-			if (m_FrameServer.Metadata.Count == 0)
-				btnDockBottom.Visible = false;
-
-			// change status
-			m_bDocked = true;
+			if(_bDock)
+			{
+				// hide the keyframes, change image.
+				splitKeyframes.SplitterDistance = splitKeyframes.Height - 25;
+				btnDockBottom.BackgroundImage = Resources.undock16x16;
+				btnDockBottom.Visible = m_FrameServer.Metadata.Count > 0;
+			}
+			else
+			{
+				// show the keyframes, change image.
+				splitKeyframes.SplitterDistance = splitKeyframes.Height - 140;
+				btnDockBottom.BackgroundImage = Resources.dock16x16;
+				btnDockBottom.Visible = true;
+			}
 			
-		}
-		private void UndockKeyframePanel()
-		{
-			// show the keyframes
-			splitKeyframes.SplitterDistance = splitKeyframes.Height - 140;
-
-			// change image
-			btnDockBottom.BackgroundImage = Resources.dock16x16;
-			btnDockBottom.Visible = true;
-
-			// change status
-			m_bDocked = false;
+			m_bDocked = _bDock;
 		}
 		private void PrepareKeyframesDock()
 		{
@@ -3968,7 +3929,7 @@ namespace Kinovea.ScreenManager
 			// this is only done for the very first keyframe.
 			if (m_FrameServer.Metadata.Count < 1)
 			{
-				UndockKeyframePanel();
+				DockKeyframePanel(false);
 			}
 		}
 		#endregion
@@ -3993,7 +3954,7 @@ namespace Kinovea.ScreenManager
 			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
 			if (m_FrameServer.Metadata.Count < 1)
 			{
-				DockKeyframePanel();
+				DockKeyframePanel(true);
 			}
 		}
 		private void btnDrawingToolCross2D_Click(object sender, EventArgs e)
@@ -4685,15 +4646,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region VideoFilters Management
-		private void DisablePlayAndDraw()
-		{
-			StopPlaying();
-			m_ActiveTool = DrawingToolType.Pointer;
-			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
-			DisableMagnifier();
-			UnzoomDirectZoom();
-			m_FrameServer.Metadata.StopAllTracking();
-		}
 		private void EnableDisableAllPlayingControls(bool _bEnable)
 		{
 			// Disable playback controls and some other controls for the case

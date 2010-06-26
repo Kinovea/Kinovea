@@ -135,6 +135,8 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Modalita' Mosaico</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Dimensione reale del segmento :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Misura stabilita</value></data>
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0} centesimi di secondo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0:0.00} secondi.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salva il Video</value></data>
@@ -203,6 +205,8 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensione del Font</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Immagine</value></data>
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Salva su File l'immagine attuale</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Le Immagini Chiave sono state modificate.\nSalvare le Immagini Chiave ed i loro Dati prima di chiudere ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Immagini Chiave non salvate</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controlli Comuni :</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Riproduzione | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Salva su File l'immagine attuale</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Schermi</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Imposta la velocita' originale</value></data>
@@ -322,6 +325,7 @@
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Disabilita la sovrapposizione di immagini</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Abilita la sovrapposizione di immagini</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copia i disegni dell'immagine Chiave Precedente sull'Immagine Attuale</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angolo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometro</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marcatori a croce</value></data>
@@ -337,16 +341,18 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : una volta </value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salva una sequenza di Immagini</value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro pari al Video Intero</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salva una videopresentazione delle Immagini Chiave</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salva il video con una pausa per ogni Immagine Chiave</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Imposta il Fotogramma attuale come PRIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostra i Commenti</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varia la velocita' di riproduzione</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Salva su File l'immagine attuale</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Imposta la Zona Lavoro</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo Contorni...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Livelli automatici...</value></data>

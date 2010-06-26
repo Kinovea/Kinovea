@@ -52,7 +52,7 @@ namespace Kinovea.ScreenManager
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.lstOtherDevices = new System.Windows.Forms.ListBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.lblSelectAnother = new System.Windows.Forms.Label();
 			this.lblCurrentlySelected = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.lstOtherDevices);
-			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.lblSelectAnother);
 			this.groupBox1.Controls.Add(this.lblCurrentlySelected);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
@@ -105,19 +105,19 @@ namespace Kinovea.ScreenManager
 			this.lstOtherDevices.TabIndex = 2;
 			this.lstOtherDevices.SelectedIndexChanged += new System.EventHandler(this.lstOtherDevices_SelectedIndexChanged);
 			// 
-			// label2
+			// lblSelectAnother
 			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.lblSelectAnother.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.ForeColor = System.Drawing.Color.SteelBlue;
-			this.label2.Location = new System.Drawing.Point(20, 60);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(259, 23);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "Select another device :";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.lblSelectAnother.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblSelectAnother.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblSelectAnother.ForeColor = System.Drawing.Color.SteelBlue;
+			this.lblSelectAnother.Location = new System.Drawing.Point(20, 60);
+			this.lblSelectAnother.Name = "lblSelectAnother";
+			this.lblSelectAnother.Size = new System.Drawing.Size(259, 23);
+			this.lblSelectAnother.TabIndex = 1;
+			this.lblSelectAnother.Text = "Select another device :";
+			this.lblSelectAnother.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblCurrentlySelected
 			// 
@@ -138,14 +138,15 @@ namespace Kinovea.ScreenManager
 			this.Controls.Add(this.btnCancel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "formDevicePicker";
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "FormDevicePicker";
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblSelectAnother;
 		private System.Windows.Forms.ListBox lstOtherDevices;
 		private System.Windows.Forms.Label lblCurrentlySelected;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnApply;

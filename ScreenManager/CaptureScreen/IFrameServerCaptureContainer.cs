@@ -23,11 +23,12 @@ using System;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// IFrameServerContainer.
+	/// IFrameServerCaptureContainer.
 	/// This is basically the list of methods of the CaptureScreenUserInterface that are relevant for
 	/// the frameServerCapture.
+	/// frameServerCapture does not need to (and shouldn't) see anything else from its container.
 	/// </summary>
-	public interface IFrameServerContainer
+	public interface IFrameServerCaptureContainer
 	{
 		void DoInvalidate();
 		void DoInitDecodingSize();
