@@ -836,7 +836,6 @@ namespace Kinovea.ScreenManager
 					case Keys.Add:
 						{
 							IncreaseDirectZoom();
-							m_FrameServer.Metadata.ResizeFinished();
 							bWasHandled = true;
 							break;
 						}
@@ -844,7 +843,6 @@ namespace Kinovea.ScreenManager
 						{
 							// Decrease Zoom.
 							DecreaseDirectZoom();
-							m_FrameServer.Metadata.ResizeFinished();
 							bWasHandled = true;
 							break;
 						}
@@ -3140,7 +3138,6 @@ namespace Kinovea.ScreenManager
 					}
 				}
 				
-				// TODO: start deselection timer.
 				if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
 				{
 					m_DeselectionTimer.Start();					

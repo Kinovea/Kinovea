@@ -79,6 +79,8 @@ namespace Kinovea.ScreenManager
 		
 		// Other
 		private bool m_bSettingsFold;
+		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
+		
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -88,6 +90,7 @@ namespace Kinovea.ScreenManager
 		private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
 		private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
+		private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
@@ -132,6 +135,9 @@ namespace Kinovea.ScreenManager
 			// Delegates
 			m_InitDecodingSize = new InitDecodingSize(InitDecodingSize_Invoked);
 			
+			m_DeselectionTimer.Interval = 3000;
+			m_DeselectionTimer.Tick += new EventHandler(DeselectionTimer_OnTick);
+
 			TryToConnect();
 			tmrCaptureDeviceDetector.Start();
 		}
@@ -302,17 +308,13 @@ namespace Kinovea.ScreenManager
 			// Add an SVG drawing from the file.
 			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
 			
-			// TODO.
-			
-			/*if(m_FrameServer.Connected != null && File.Exists(_filename))
+			if(m_FrameServer.IsConnected && File.Exists(_filename))
 			{		
 				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 				
 				try
 				{
-					
 					Point imageCenter = new Point(m_FrameServer.Metadata.ImageSize.Width / 2, m_FrameServer.Metadata.ImageSize.Height / 2);
-				
 					DrawingSVG dsvg = new DrawingSVG(imageCenter.X,
 					                                 imageCenter.Y, 
 					                                 0, 
@@ -327,11 +329,11 @@ namespace Kinovea.ScreenManager
 				{
 					// An error occurred during the creation.
 					// example : external DTD an no network or invalid svg file.
-					// TODO: inform the user.
+					log.Error("An error occurred during the creation of an SVG drawing.");
 				}
 				
 				pbSurfaceScreen.Invalidate();
-			}*/	
+			}
 		}
 		public void BeforeClose()
 		{
@@ -387,7 +389,7 @@ namespace Kinovea.ScreenManager
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
 			mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, new ToolStripSeparator(), mnuShowMeasure, mnuSealMeasure, mnuSepDrawing, mnuDeleteDrawing });
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuSepDrawing, mnuShowMeasure, mnuSealMeasure, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 5. Magnifier
 			mnuMagnifier150.Click += new EventHandler(mnuMagnifier150_Click);
@@ -439,6 +441,18 @@ namespace Kinovea.ScreenManager
 		{
 			// Set focus to enable mouse scroll
 			panelVideoControls.Focus();
+		}
+		private void DeselectionTimer_OnTick(object sender, EventArgs e) 
+		{
+			// Deselect the currently selected drawing.
+			// This is used for drawings that must show extra stuff for being transformed, but we 
+			// don't want to show the extra stuff all the time for clarity.
+			
+			m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+			m_FrameServer.Metadata.SelectedDrawing = -1;
+			log.Debug("Deselection timer fired.");
+			m_DeselectionTimer.Stop();
+			pbSurfaceScreen.Invalidate();
 		}
 		#endregion
 		
@@ -844,7 +858,8 @@ namespace Kinovea.ScreenManager
 		{
 			if(m_FrameServer.IsConnected)
 			{
-			
+				m_DeselectionTimer.Stop();
+				
 				if (e.Button == MouseButtons.Left)
 				{
 					if (m_FrameServer.IsConnected)
@@ -976,9 +991,15 @@ namespace Kinovea.ScreenManager
 							
 							// We use temp variables because ToolStripMenuItem.Visible always returns false...
 							bool isLine = (ad is DrawingLine2D);
+							bool configVisible = !(ad is DrawingSVG);
+							
+							mnuConfigureDrawing.Visible = configVisible;
 							mnuShowMeasure.Visible = isLine;
 							mnuSealMeasure.Visible = isLine;
-							mnuSepDrawing.Visible = isLine;
+							
+							mnuSepDrawing.Visible = !(ad is DrawingSVG);
+							mnuSepDrawing2.Visible = isLine;
+							
 							
 							// "Color & Size" or "Color" depending on drawing type.
 							SetPopupConfigureParams(ad);
@@ -1112,12 +1133,31 @@ namespace Kinovea.ScreenManager
 				{
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 					((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).OnMouseUp();
+				
+					// If we were resizing an SVG drawing, trigger a render.
+					// TODO: this is currently triggered on every mouse up, not only on resize !
+					int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
+					int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
+					if(selectedFrame != -1 && selectedDrawing  != -1)
+					{
+						DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
+						if(d != null)
+						{
+							d.ResizeFinished();
+						}
+					}
+				
 				}
 				
 				// Unselect drawings.
-				m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-				m_FrameServer.Metadata.SelectedDrawing = -1;
-								
+				//m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+				//m_FrameServer.Metadata.SelectedDrawing = -1;
+							
+				if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
+				{
+					m_DeselectionTimer.Start();					
+				}
+				
 				pbSurfaceScreen.Invalidate();
 			}
 		}
@@ -1145,7 +1185,7 @@ namespace Kinovea.ScreenManager
 						m_ActiveTool = DrawingToolType.Text;
 						m_bTextEdit = true;
 					}
-					else
+					else if(!(ad is DrawingSVG))
 					{
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
@@ -1544,6 +1584,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.CoordinateSystem.Zoom = m_FrameServer.Magnifier.ZoomFactor;
 			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Magnifier.MagnifiedCenter);
 			DisableMagnifier();
+			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
 		private void mnuMagnifier150_Click(object sender, EventArgs e)
@@ -1635,6 +1676,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+			m_FrameServer.Metadata.ResizeFinished();
 		}
 		private void IncreaseDirectZoom()
 		{
@@ -1648,8 +1690,10 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom += 0.20f;
 				RelocateDirectZoom();
-				pbSurfaceScreen.Invalidate();
+				m_FrameServer.Metadata.ResizeFinished();	
 			}
+			
+			pbSurfaceScreen.Invalidate();
 		}
 		private void DecreaseDirectZoom()
 		{
@@ -1657,6 +1701,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
 				RelocateDirectZoom();
+				m_FrameServer.Metadata.ResizeFinished();
 				pbSurfaceScreen.Invalidate();
 			}
 		}
