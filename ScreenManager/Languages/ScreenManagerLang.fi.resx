@@ -135,6 +135,8 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaiikki-tila</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin oikea koko:</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Sulje mitta</value></data>
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Erilliskuvan kesto : {0} sadasosa sekuntia</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Erilliskuvan kesto: {0:0.00} sekuntia.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Tallenna video</value></data>
@@ -203,6 +205,8 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Fonttikoko:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Tallenna</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Kuva</value></data>
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Tallenna nykyinen kuva tiedostoon</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Avainkuvia on muokattu.\nHaluatko tallentaa avainkuvien tiedot ennen sulkemista?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Avainkuvien tietoja ei tallennettu</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Yleiset toiminnot:</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Käynnistä | Pysäytä</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Uudelleenkäynnistä liikeradan editointi</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Tallenna...</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Tallenna nykyinen kuva tiedostoon</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Näytöt</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Sulje mitta...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Aseta alkuperäinen nopeus</value></data>
@@ -322,6 +325,7 @@
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Sulje kuvien päällekkäisyystoiminto</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Mahdollista kuvien päällekkäisyys</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopioi edellisen kuvan piirrokset nykyiseen kuvaan</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kulma</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Ajanotto</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Markkeri</value></data>
@@ -337,16 +341,18 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Muuta toistoa ( Kerta | Jatkuva ) - Nykyinen: Jatkuva</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Muuta toistoa ( Kerta | Jatkuva ) - Nykyinen: Kerta</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Tallenna kuvasarja</value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Palauta työstöjakso koko videon mittaiseksi</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Tallenna diaesitys avainkuvista</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Tallenna video tauolla jokaisen avainkuvan kohdalla</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Aseta työstöjakson ensimmäinen kuva nykyiseksi kuvaksi</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Aseta työstöjakson viimeinen kuva nykyiseksi kuvaksi</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Näytä kommentit</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Muuntele videon nopeutta</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Tallenna nykyinen kuva tiedostoon</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Aseta työstöjakso</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Vain rajat...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Automaattiset tasot...</value></data>

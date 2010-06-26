@@ -135,6 +135,8 @@
    
    
    
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
@@ -203,6 +205,8 @@
    
    <data name="Generic_Save" xml:space="preserve"><value>Zapisz</value></data>
    
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Zapisz aktualny obraz do pliku</value></data>
    
    
    <data name="lblInfo_Text" xml:space="preserve"><value>Wspólne sterowanie :</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Zapisz aktualny obraz do pliku</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Ekrany</value></data>
    
    
@@ -322,6 +325,7 @@
    
    
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopiuj rysunki z poprzedniego kluczowego obrazu do bieżącego obrazu</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kąt</value></data>
    
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Krzyżyk</value></data>
@@ -337,8 +341,11 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Wybierz tryb powtarzania (Pojedynczo | Pętla) - Aktualny tryb : Pętla</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Wybierz tryb powtarzania (Pojedynczo | Pętla) - Aktualny tryb : Pojedynczo</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Zapisz sekwencję obrazów</value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Zresetuj Obszar Roboczy</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Zapisz pokaz slajdów z kluczowych obrazów</value></data>
+   
    
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Ustaw aktualną klatkę jako pierwszą klatkę Obszaru Roboczego</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę Obszaru Roboczego</value></data>
@@ -346,7 +353,6 @@
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Różna prędkość odtwarzania</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Zapisz aktualny obraz do pliku</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Ustaw Obszar Roboczy</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Tylko krawędzie...</value></data>
    

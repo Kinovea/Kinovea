@@ -135,6 +135,8 @@
    <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Modo Mosaico</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Medida real del segmento :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Calibrar la medida</value></data>
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duración de cada diapositiva: {0} centésimas de segundo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duración de cada diapositiva: {0:0.00} segundos.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Guardar Video</value></data>
@@ -203,6 +205,8 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Tamaño de la fuente:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Guardar</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imagen </value></data>
+   
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar la imàgen actual en un archivo</value></data>
    
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comunes :</value></data>
@@ -282,7 +286,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Lectura | Pausa</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reanudar la edición de la Trayectoria</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Guardar el video o los datos de las imàgenes clave…</value></data>
-   <data name="mnuSavePic" xml:space="preserve"><value>Guardar la imàgen actual en un archivo</value></data>
    <data name="mnuScreens" xml:space="preserve"><value>Pantallas</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Contrastar la medida</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Especificar la velocidad de origen</value></data>
@@ -322,6 +325,7 @@
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Desactivar la superposición de imágenes</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Activar la superposición de imágenes</value></data>
    <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copiar los dibujos de la Imagen clave Anterior en la imagen actual</value></data>
+   
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angulo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronómetro</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marcador en Cruz </value></data>
@@ -337,16 +341,18 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : En Bucle</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambiar el Modo Repeticiòn ( Una vez | En Bucle ) - Moda Actual : Una vez</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Guardar una secuencia de imagen </value></data>
+   
+   
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reinicializar la zona de trabajo</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Guardar una presentación de diapositivas de las imágenes claves</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Grabar el vídeo con una pausa en cada imagen clave</value></data>
+   
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Posicionar la entrada de la zona de trabajo sobre la imagen actual</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Posicionar la salida de la zona de trabajo sobre la imagen actual</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostrar Comentarios</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Variar la velocidad de lectura</value></data>
    
    
-   <data name="ToolTip_Snapshot" xml:space="preserve"><value>Guardar la imagen actual en un archivo</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Especificar el área de trabajo</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contornos Solamente...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveles automáticos...</value></data>

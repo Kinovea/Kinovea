@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,17 +47,18 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		
-		
 		public formDevicePicker(List<DeviceIdentifier> _devices, DeviceIdentifier _currentDevice)
 		{
 			InitializeComponent();
 			
-			// TODO: i18n.
+			this.Text = "   " + ScreenManagerLang.ToolTip_DevicePicker;
+			this.btnApply.Text = ScreenManagerLang.Generic_Apply;
+			this.btnCancel.Text = ScreenManagerLang.Generic_Cancel;
 			
-			// Current
-			lblCurrentlySelected.Text = String.Format("Currently selected: {0}", _currentDevice.Name);
+			lblCurrentlySelected.Text = ScreenManagerLang.dlgDevicePicker_CurrentlySelected + " " + _currentDevice.Name;
+			lblSelectAnother.Text = ScreenManagerLang.dlgDevicePicker_SelectAnother;
 			
+			// Populate the list.
 			foreach(DeviceIdentifier di in _devices)
 			{
 				if(di.Identification != _currentDevice.Identification)

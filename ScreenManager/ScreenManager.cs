@@ -36,15 +36,6 @@ using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
-	
-	#region Namespace wide delegates
-	// To call for a repaint of a screen. Used in various places.
-	public delegate void DelegateScreenInvalidate();
-	
-	// To execute a specific action when we 'undo' an 'add drawing' action. (change cursor, etc.)
-	public delegate void DelegateDrawingUndrawn();
-	#endregion
-	
     public class ScreenManagerKernel : IKernel, IScreenHandler, ICommonControlsHandler, IMessageFilter
     {
         #region Imports Win32
@@ -1234,10 +1225,6 @@ namespace Kinovea.ScreenManager
                 dp.UpdateStatusBar(StatusString);
             }
         }
-        public void OrganizeMenus()
-        {
-            DoOrganizeMenu();
-        }
         private void OrganizeCommonControls()
         {
         	m_bCanShowCommonControls = false;
@@ -1261,6 +1248,12 @@ namespace Kinovea.ScreenManager
         			}
         			break;
         	}
+        }
+        
+        #region Menu organization
+        public void OrganizeMenus()
+        {
+            DoOrganizeMenu();
         }
         private void BuildSvgMenu()
         {
@@ -1676,6 +1669,7 @@ namespace Kinovea.ScreenManager
 	        	mnuFormatForce169.Checked = false;
         	}
         }
+        #endregion
         
         #region Side by side saving
         private void bgWorkerDualSave_DoWork(object sender, DoWorkEventArgs e)
@@ -3937,8 +3931,16 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
-
-	#region Global enums
+	
+    #region Namespace wide delegates
+	// To call for a repaint of a screen. Used in various places.
+	public delegate void DelegateScreenInvalidate();
+	
+	// To execute a specific action when we 'undo' an 'add drawing' action. (change cursor, etc.)
+	public delegate void DelegateDrawingUndrawn();
+	#endregion
+    
+	#region Namespace wide enums
 	public enum VideoFilterType
 	{
 		AutoLevels,
@@ -3950,6 +3952,18 @@ namespace Kinovea.ScreenManager
 		Sandbox,
 		NumberOfVideoFilters
 	};	
+	
+	public enum DrawingToolType
+	{
+		Pointer,
+		Line2D,
+		Cross2D,
+		Angle2D,
+		Pencil,
+		Text,
+		Chrono,
+		NumberOfDrawingTools
+	};
     #endregion
 
 }

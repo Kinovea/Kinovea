@@ -129,7 +129,7 @@
     <Compile Include="CaptureScreen\FrameGrabbers\IFrameGrabberContainer.cs" />
     <Compile Include="CaptureScreen\FrameServerCapture.cs" />
     <Compile Include="CaptureScreen\ICaptureScreenUIHandler.cs" />
-    <Compile Include="CaptureScreen\IFrameServerContainer.cs" />
+    <Compile Include="CaptureScreen\IFrameServerCaptureContainer.cs" />
     <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs" />
     <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.Designer.cs">
       <DependentUpon>CapturedVideoBox.cs</DependentUpon>

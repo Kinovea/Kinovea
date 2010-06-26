@@ -682,6 +682,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Currently selected:.
+        /// </summary>
+        internal static string dlgDevicePicker_CurrentlySelected {
+            get {
+                return ResourceManager.GetString("dlgDevicePicker_CurrentlySelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select another device:.
+        /// </summary>
+        internal static string dlgDevicePicker_SelectAnother {
+            get {
+                return ResourceManager.GetString("dlgDevicePicker_SelectAnother", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Type of video.
         /// </summary>
         internal static string dlgDiapoExport_GroupDiapoType {
@@ -1290,6 +1308,24 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string Generic_Save {
             get {
                 return ResourceManager.GetString("Generic_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save image.
+        /// </summary>
+        internal static string Generic_SaveImage {
+            get {
+                return ResourceManager.GetString("Generic_SaveImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Video.
+        /// </summary>
+        internal static string Generic_Video {
+            get {
+                return ResourceManager.GetString("Generic_Video", resourceCulture);
             }
         }
         
@@ -1978,15 +2014,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save the Current Image to File.
-        /// </summary>
-        internal static string mnuSavePic {
-            get {
-                return ResourceManager.GetString("mnuSavePic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Screens.
         /// </summary>
         internal static string mnuScreens {
@@ -2365,6 +2392,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select source.
+        /// </summary>
+        internal static string ToolTip_DevicePicker {
+            get {
+                return ResourceManager.GetString("ToolTip_DevicePicker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Angle.
         /// </summary>
         internal static string ToolTip_DrawingToolAngle2D {
@@ -2500,6 +2536,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Start recording video.
+        /// </summary>
+        internal static string ToolTip_RecordStart {
+            get {
+                return ResourceManager.GetString("ToolTip_RecordStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Stop recording video.
+        /// </summary>
+        internal static string ToolTip_RecordStop {
+            get {
+                return ResourceManager.GetString("ToolTip_RecordStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Reset the Working Zone to Full Video.
         /// </summary>
         internal static string ToolTip_ResetWorkingZone {
@@ -2523,6 +2577,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_SavePausedVideo {
             get {
                 return ResourceManager.GetString("ToolTip_SavePausedVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select directory.
+        /// </summary>
+        internal static string ToolTip_SelectFolder {
+            get {
+                return ResourceManager.GetString("ToolTip_SelectFolder", resourceCulture);
             }
         }
         
@@ -2577,15 +2640,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_sldrSpeed {
             get {
                 return ResourceManager.GetString("ToolTip_sldrSpeed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save the Current Image to File.
-        /// </summary>
-        internal static string ToolTip_Snapshot {
-            get {
-                return ResourceManager.GetString("ToolTip_Snapshot", resourceCulture);
             }
         }
         
