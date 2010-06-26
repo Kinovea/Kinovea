@@ -1,4 +1,12 @@
 
+2010-06-26 - DEPRECATED.
+
+THIS BRANCH HAS BEEN MERGED INTO TRUNK.
+Branch has been merged into trunk at revision r296.
+Do not edit this branch anymore.
+
+--------------------------------------------------
+
 This branch is to work on the Capture screen sub-project.
 
 Refs:
