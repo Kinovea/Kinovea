@@ -55,19 +55,6 @@ namespace Kinovea.ScreenManager
             CaptureScreen screen = new CaptureScreen(m_ScreenManagerKernel);
             screen.refreshUICulture(); 
             m_ScreenManagerKernel.screenList.Add(screen);
-            
-            // Try to connect right away.
-            /*bool bAtLeastOneDevice = m_ScreenManagerKernel.Capture_TryDeviceConnection(screen);
-        	
-        	// if no device, alert user.
-        	if(!bAtLeastOneDevice)
-        	{
-        		MessageBox.Show(
-        			"zero capture device, pebkac",
-               		"debug",
-               		MessageBoxButtons.OK,
-                	MessageBoxIcon.Exclamation);	
-        	}*/
         }
         public void Unexecute()
         {

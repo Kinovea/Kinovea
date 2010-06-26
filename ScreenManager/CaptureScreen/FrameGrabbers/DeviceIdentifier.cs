@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2008-2009.
+Copyright © Joan Charmant 2010.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -23,15 +23,38 @@ using System;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// IFrameServerContainer.
-	/// This is basically the list of methods of the CaptureScreenUserInterface that are relevant for
-	/// the frameServerCapture.
+	/// AbstractDevice, a class to represent a device identification.
 	/// </summary>
-	public interface IFrameServerContainer
+	public class DeviceIdentifier
 	{
-		void DoInvalidate();
-		void DoInitDecodingSize();
-		void DisplayAsGrabbing(bool _bIsGrabbing);
-		void DoUpdateCapturedVideos();
+		#region Properties
+		public string Name
+		{
+			get { return m_Name; }
+		}
+		public string Identification
+		{
+			get { return m_Identification; }
+		}
+		#endregion
+		
+		#region Members
+		private string m_Identification;
+		private string m_Name;
+		#endregion
+		
+		#region Constructor
+		public DeviceIdentifier(string _name, string _identification)
+		{
+			m_Name = _name;
+			m_Identification = _identification;
+		}
+		#endregion
+	
+		public override string ToString()
+		{
+			return m_Name;
+		}
+	
 	}
 }
