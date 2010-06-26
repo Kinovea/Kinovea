@@ -38,6 +38,10 @@ namespace Kinovea.ScreenManager
         {
         	get;
         }
+        public abstract string FileName
+        {
+        	get;
+        }
         public abstract string FilePath
         {
         	get;

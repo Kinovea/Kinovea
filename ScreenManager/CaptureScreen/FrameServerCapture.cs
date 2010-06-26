@@ -58,6 +58,10 @@ namespace Kinovea.ScreenManager
 		{
 			get {return m_bIsRecording;}
 		}
+		public string DeviceName
+		{
+			get { return m_FrameGrabber.DeviceName; }
+		}
 		
 		// Image, Drawings and other screens overlays.
 		public Metadata Metadata
@@ -134,22 +138,14 @@ namespace Kinovea.ScreenManager
 			log.Debug("Screen connected.");
 			StartGrabbing();
 		}
-		public void SetImageSize(Size _size)
-		{
-			if(_size != Size.Empty)
-			{
-				log.Debug(String.Format("Image size specified. ({0})", _size.ToString()));
-				m_ImageSize = new Size(_size.Width, _size.Height);
-				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
-				m_Container.DoInitDecodingSize();
-			}
-			else
-			{
-				m_ImageSize = new Size(720, 576);	
-			}
-		}
 		public void FrameGrabbed()
 		{
+			//----------------------------------------------
+			// NOTE : This method is in the GRABBING thread,
+			// NO UI calls can be made directly from here.
+			// must use BeginInvoke at some point.
+			//----------------------------------------------
+			
 			// The frame grabber has just pushed a new frame to the buffer.
 			
 			// Consolidate this real-time frame locally.
@@ -181,6 +177,23 @@ namespace Kinovea.ScreenManager
 				{
 					bmp.Dispose();
 				}
+			}
+		}
+		public void SetImageSize(Size _size)
+		{
+			// This method is still in the grabbing thread. 
+			// (NO UI calls, must use BeginInvoke).
+			
+			if(_size != Size.Empty)
+			{
+				log.Debug(String.Format("Image size specified. ({0})", _size.ToString()));
+				m_ImageSize = new Size(_size.Width, _size.Height);
+				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
+				m_Container.DoInitDecodingSize();
+			}
+			else
+			{
+				m_ImageSize = new Size(720, 576);	
 			}
 		}
 		public void AlertCannotConnect()

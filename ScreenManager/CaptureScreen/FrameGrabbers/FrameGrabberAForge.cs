@@ -42,7 +42,10 @@ namespace Kinovea.ScreenManager
 		{
 			get {return m_bIsGrabbing;}
 		}
-
+		public override string DeviceName
+		{
+			get { return m_CurrentVideoDevice.Name; }
+		}
 		#endregion
 		
 		#region Members
@@ -202,6 +205,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
 		{
+			
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
 			if(!m_bSizeKnown)
 			{

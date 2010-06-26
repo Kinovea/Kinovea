@@ -66,9 +66,6 @@ namespace Kinovea.ScreenManager
 	            	smui.pnlScreens.Visible = true;
 	            	smui.AllowDrop = false;
  
-	            	// no common controls.
-	            	smui.splitScreensPanel.Panel2Collapsed = true;
-	            	
 	            	// left screen enabled.
 	            	smui.splitScreens.Panel1Collapsed = false;
 	            	smui.splitScreens.Panel1.AllowDrop = true;
@@ -82,9 +79,6 @@ namespace Kinovea.ScreenManager
             	{
 					smui.pnlScreens.Visible = true;
 	                smui.AllowDrop = false;
-	                
-	                // common controls enabled.
-	                smui.splitScreensPanel.Panel2Collapsed = false;
 
 	                // left screen
 	                smui.splitScreens.Panel1Collapsed = false;
@@ -101,9 +95,6 @@ namespace Kinovea.ScreenManager
 					smui.pnlScreens.Visible = false;
                 	smui.AllowDrop = true;
                 	
-                	// no common controls. (not really needed because we never go from 2 to 0 screens)
-	            	smui.splitScreensPanel.Panel2Collapsed = true;
-	            	
                 	smui.splitScreens.Panel1.AllowDrop = false;
                 	smui.splitScreens.Panel2.AllowDrop = false;
 
