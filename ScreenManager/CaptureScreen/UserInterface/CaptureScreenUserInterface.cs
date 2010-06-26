@@ -21,7 +21,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 #region Using directives
-using Kinovea.ScreenManager.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,10 +32,13 @@ using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+
 using AForge.Video.DirectShow;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -64,9 +66,9 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Members
-		private ICaptureScreenUIHandler m_ScreenUIHandler;
+		private ICaptureScreenUIHandler m_ScreenUIHandler;	// CaptureScreen seen trough a limited interface.
 		private FrameServerCapture m_FrameServer;
-		
+
 		// General
 		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
 		private bool m_bIsIdle = true;
@@ -89,6 +91,9 @@ namespace Kinovea.ScreenManager
 		// Video Filters Management
 		private bool m_bDrawtimeFiltered;
 		private DrawtimeFilterOutput m_DrawingFilterOutput;
+		
+		// Other
+		private bool m_bSettingsFold;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -137,6 +142,9 @@ namespace Kinovea.ScreenManager
 			BuildContextMenus();
 			m_bDocked = true;
 			
+			InitializeCaptureFiles();
+			
+			TryToConnect();
 			tmrCaptureDeviceDetector.Start();
 		}
 		#endregion
@@ -148,7 +156,41 @@ namespace Kinovea.ScreenManager
 		}
 		public void DoInitDecodingSize()
 		{
-			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.DecodingSize);
+			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.ImageSize);
+			
+			m_FrameServer.CoordinateSystem.Stretch = 1;
+			m_bStretchModeOn = false;
+			
+			// silent crash when trying to change size... Todo: investigate.
+			PanelCenter_Resize(null, EventArgs.Empty);
+			
+			// As a matter of fact we pass here at the first received frame.
+			// We can stop trying to connect now.
+			tmrCaptureDeviceDetector.Stop();
+		}
+		public void DisplayAsGrabbing(bool _bIsGrabbing)
+		{
+			if(_bIsGrabbing)
+			{
+				pbSurfaceScreen.Visible = _bIsGrabbing;
+	   			ShowHideResizers(_bIsGrabbing);
+				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;	
+			}
+			else
+			{
+				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturegrab5;	
+			}
+		}
+		private void DisplayAsRecording(bool _bIsRecording)
+		{
+			if(_bIsRecording)
+        	{
+        		btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
+        	}
+        	else
+        	{
+				btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;        		
+        	}
 		}
 		public void DoUpdateCapturedVideos()
 		{
@@ -193,13 +235,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public Methods
-		public void PostTryConnection()
-		{
-			if(m_FrameServer.IsConnected)
-			{
-				buttonPlay_Click(null, EventArgs.Empty);
-			}
-		}
 		public void DisplayAsActiveScreen(bool _bActive)
 		{
 			// Called from ScreenManager.
@@ -302,6 +337,7 @@ namespace Kinovea.ScreenManager
 			// This screen is about to be closed.
 			tmrCaptureDeviceDetector.Stop();
 			tmrCaptureDeviceDetector.Dispose();
+			PreferencesManager.Instance().Export();
 		}
 		#endregion
 		
@@ -390,6 +426,15 @@ namespace Kinovea.ScreenManager
 			
 			// Load texts
 			ReloadMenusCulture();
+		}
+		private void InitializeCaptureFiles()
+		{
+			tbImageFilename.Text = CreateNewFilename(null);
+			tbVideoFilename.Text = tbImageFilename.Text;
+			
+			PreferencesManager pm = PreferencesManager.Instance();
+			tbImageDirectory.Text = pm.CaptureImageDirectory;
+			tbVideoDirectory.Text = pm.CaptureVideoDirectory;
 		}
 		#endregion
 		
@@ -563,43 +608,73 @@ namespace Kinovea.ScreenManager
 		#region Video Controls
 
 		#region Playback Controls
-		private void buttonRecord_Click(object sender, EventArgs e)
+		private void btnRecord_Click(object sender, EventArgs e)
         {
-        	if(m_FrameServer.IsRecording)
-        	{
-        		// We will now be paused.
-        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.record;	
-        	}
-        	else
-        	{
-        		buttonRecord.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.stop;	
-        	}
-        	
-        	m_FrameServer.ToggleRecord();
-        }
-		private void buttonPlay_Click(object sender, EventArgs e)
-		{
-			// Toggle play / pause capture.
-			
-			// Prepare the interface for after the change.
-			if(m_FrameServer.IsRunning)
+			if(m_FrameServer.IsRecording)
 			{
-				// We are running, we'll be paused.		   		
-				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqplay17;	
+				m_FrameServer.StopRecording();
+				
+				// update file name.
+				tbVideoFilename.Text = CreateNewFilename(Path.GetFileName(m_FrameServer.CurrentCaptureFilePath));
+				
+				// create "Captured video" thumbnail.
+				
+				DisplayAsRecording(false);
+			}
+			else
+			{
+				// Start exporting frames to a video.
+			
+				// Check that the destination folder exists.
+				if(!ValidateFilename(tbVideoFilename.Text))
+				{
+					AlertInvalidFilename();	
+				}
+				else if(Directory.Exists(tbVideoDirectory.Text))
+				{
+					// no extension : mkv.
+					// extension specified by user : honor it if supported, mkv otherwise.
+					string filename = tbVideoFilename.Text;
+					string filenameToLower = filename.ToLower();
+					string filepath = tbVideoDirectory.Text + "\\" + filename;
+					
+					if(filename != "")
+					{
+						m_FrameServer.CurrentCaptureFilePath = filepath;
+						
+						if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
+						{
+							filepath = filepath + ".mkv";	
+						}
+						
+						m_FrameServer.StartRecording(filepath);
+						
+						DisplayAsRecording(true);
+					}
+					else
+					{
+						tbVideoFilename.Text = CreateNewFilename("");	
+					}
+				}
+				else
+				{
+					btnBrowseVideoLocation_Click(null, EventArgs.Empty);
+				}	
+			}
+			
+			OnPoke();
+        }
+		private void btnGrab_Click(object sender, EventArgs e)
+		{
+			if(m_FrameServer.IsGrabbing)
+			{
+				m_FrameServer.PauseGrabbing();
 			}
 		   	else
 		   	{
-		   		// We are paused, we'll be running.		   		
-		   		pbSurfaceScreen.Visible = true;				
-		   		m_FrameServer.CoordinateSystem.Stretch = 1.0f;
-		   		ShowHideResizers(true);
-	    		StretchSqueezeSurface();								
-				buttonPlay.BackgroundImage = Kinovea.ScreenManager.Properties.Resources.liqpause6;
+				m_FrameServer.StartGrabbing();
 		   	}
 
-		   	// Actually do the toggle.
-		   	m_FrameServer.TogglePlay();
-		   	
 			OnPoke();	
 		}
 		public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -676,68 +751,71 @@ namespace Kinovea.ScreenManager
 		#region Auto Stretch & Manual Resize
 		private void StretchSqueezeSurface()
 		{
-			// Check if the image was loaded squeezed.
-			// (happen when screen control isn't being fully expanded at video load time.)
-			if(pbSurfaceScreen.Height < panelCenter.Height && m_FrameServer.CoordinateSystem.Stretch < 1.0)
+			if (m_FrameServer.IsGrabbing)
 			{
-				m_FrameServer.CoordinateSystem.Stretch = 1.0;
-			}
-			
-			//---------------------------------------------------------------
-			// Check if the stretch factor is not going to outsize the panel.
-			// If so, force maximized, unless screen is smaller than video.
-			//---------------------------------------------------------------
-			int iTargetHeight = (int)((double)m_FrameServer.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
-			int iTargetWidth = (int)((double)m_FrameServer.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-			
-			if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
-			{
-				if (m_FrameServer.CoordinateSystem.Stretch > 1.0)
+				// Check if the image was loaded squeezed.
+				// (happen when screen control isn't being fully expanded at video load time.)
+				if(pbSurfaceScreen.Height < panelCenter.Height && m_FrameServer.CoordinateSystem.Stretch < 1.0)
 				{
-					m_bStretchModeOn = true;
+					m_FrameServer.CoordinateSystem.Stretch = 1.0;
 				}
-			}
-			
-			if ((m_bStretchModeOn) || (m_FrameServer.DecodingSize.Width > panelCenter.Width) || (m_FrameServer.DecodingSize.Height > panelCenter.Height))
-			{
-				//-------------------------------------------------------------------------------
-				// Maximiser :
-				//Redimensionner l'image selon la dimension la plus proche de la taille du panel.
-				//-------------------------------------------------------------------------------
-				float WidthRatio = (float)m_FrameServer.DecodingSize.Width / panelCenter.Width;
-				float HeightRatio = (float)m_FrameServer.DecodingSize.Height / panelCenter.Height;
 				
-				if (WidthRatio > HeightRatio)
+				//---------------------------------------------------------------
+				// Check if the stretch factor is not going to outsize the panel.
+				// If so, force maximized, unless screen is smaller than video.
+				//---------------------------------------------------------------
+				int iTargetHeight = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				int iTargetWidth = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+				
+				if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
 				{
-					pbSurfaceScreen.Width = panelCenter.Width;
-					pbSurfaceScreen.Height = (int)((float)m_FrameServer.DecodingSize.Height / WidthRatio);
+					if (m_FrameServer.CoordinateSystem.Stretch > 1.0)
+					{
+						m_bStretchModeOn = true;
+					}
+				}
+				
+				if ((m_bStretchModeOn) || (m_FrameServer.ImageSize.Width > panelCenter.Width) || (m_FrameServer.ImageSize.Height > panelCenter.Height))
+				{
+					//-------------------------------------------------------------------------------
+					// Maximiser :
+					// Redimensionner l'image selon la dimension la plus proche de la taille du panel.
+					//-------------------------------------------------------------------------------
+					float WidthRatio = (float)m_FrameServer.ImageSize.Width / panelCenter.Width;
+					float HeightRatio = (float)m_FrameServer.ImageSize.Height / panelCenter.Height;
 					
-					m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
+					if (WidthRatio > HeightRatio)
+					{
+						pbSurfaceScreen.Width = panelCenter.Width;
+						pbSurfaceScreen.Height = (int)((float)m_FrameServer.ImageSize.Height / WidthRatio);
+						
+						m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
+					}
+					else
+					{
+						pbSurfaceScreen.Width = (int)((float)m_FrameServer.ImageSize.Width / HeightRatio);
+						pbSurfaceScreen.Height = panelCenter.Height;
+						
+						m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
+					}
 				}
 				else
 				{
-					pbSurfaceScreen.Width = (int)((float)m_FrameServer.DecodingSize.Width / HeightRatio);
-					pbSurfaceScreen.Height = panelCenter.Height;
-					
-					m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
+					// Issue here, the width cannot be changed after grabbing started.
+					pbSurfaceScreen.Width = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+					pbSurfaceScreen.Height = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
 				}
-			}
-			else
-			{
 				
-				pbSurfaceScreen.Width = (int)((double)m_FrameServer.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-				pbSurfaceScreen.Height = (int)((double)m_FrameServer.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				//recentrer
+				pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
+				pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
+				ReplaceResizers();
+				
+				// Redéfinir les plans & grilles 3D
+				Size imageSize = new Size(m_FrameServer.ImageSize.Width, m_FrameServer.ImageSize.Height);
+				m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
+				m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);	
 			}
-			
-			//recentrer
-			pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
-			pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
-			ReplaceResizers();
-			
-			// Redéfinir les plans & grilles 3D
-			Size imageSize = new Size(m_FrameServer.DecodingSize.Width, m_FrameServer.DecodingSize.Height);
-			m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
-			m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 		}
 		private void ReplaceResizers()
 		{
@@ -813,13 +891,13 @@ namespace Kinovea.ScreenManager
 			// Resize at the following condition:
 			// Bigger than original image size, smaller than panel size.
 			//-------------------------------------------------------------------
-			if (_iTargetHeight > m_FrameServer.DecodingSize.Height &&
+			if (_iTargetHeight > m_FrameServer.ImageSize.Height &&
 			    _iTargetHeight < panelCenter.Height &&
-			    _iTargetWidth > m_FrameServer.DecodingSize.Width &&
+			    _iTargetWidth > m_FrameServer.ImageSize.Width &&
 			    _iTargetWidth < panelCenter.Width)
 			{
-				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.DecodingSize.Height);
-				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.DecodingSize.Width);
+				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.ImageSize.Height);
+				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.ImageSize.Width);
 
 				m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
 				m_bStretchModeOn = false;
@@ -883,11 +961,11 @@ namespace Kinovea.ScreenManager
 		private void ReloadTooltipsCulture()
 		{
 			// Video controls
-			toolTips.SetToolTip(buttonPlay, ScreenManagerLang.ToolTip_Play);
+			toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_Play);
 			
 			// Export buttons
-			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
-			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
+			//toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.ToolTip_Snapshot);
+			//toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
 
 			// Drawing tools
 			toolTips.SetToolTip(btnDrawingToolPointer, ScreenManagerLang.ToolTip_DrawingToolPointer);
@@ -1800,8 +1878,8 @@ namespace Kinovea.ScreenManager
 		}
 		private void EnableDisableAllPlayingControls(bool _bEnable)
 		{
-			buttonPlay.Enabled = _bEnable;
-			btnRafale.Enabled = _bEnable;
+			btnGrab.Enabled = _bEnable;
+			//btnRafale.Enabled = _bEnable;
 			//trkFrame.Enabled = _bEnable;
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
@@ -1819,315 +1897,132 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Export video and frames
+		private void btnBrowseImageLocation_Click(object sender, EventArgs e)
+        {
+        	// Select the image snapshot folder.	
+        	SelectSavingDirectory(tbImageDirectory);
+        }
+		private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
+        {
+        	// Select the video capture folder.	
+			SelectSavingDirectory(tbVideoDirectory);
+        }
+		private void SelectSavingDirectory(TextBox _tb)
+		{
+			folderBrowserDialog.Description = ""; // todo.
+            folderBrowserDialog.ShowNewFolderButton = true;
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            if(Directory.Exists(_tb.Text))
+            {
+               	folderBrowserDialog.SelectedPath = _tb.Text;
+            }
+            
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                _tb.Text = folderBrowserDialog.SelectedPath;
+            }			
+		}
+		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
+        {
+			if(!ValidateFilename(tbImageDirectory.Text))
+        	{
+        		AlertInvalidFilename();
+        	}
+        	else
+        	{
+        		PreferencesManager.Instance().CaptureImageDirectory = tbImageDirectory.Text;	
+        	}
+        }
+        private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
+        {
+        	if(!ValidateFilename(tbVideoDirectory.Text))
+        	{
+        		AlertInvalidFilename();
+        	}
+        	else
+        	{
+        		PreferencesManager.Instance().CaptureVideoDirectory = tbVideoDirectory.Text;	
+        	}
+        }
+        private void tbImageFilename_TextChanged(object sender, EventArgs e)
+        {
+			if(!ValidateFilename(tbImageFilename.Text))
+        	{
+        		AlertInvalidFilename();
+        	}
+        }
+        private void tbVideoFilename_TextChanged(object sender, EventArgs e)
+        {
+        	if(!ValidateFilename(tbVideoFilename.Text))
+        	{
+        		AlertInvalidFilename();
+        	}
+        }
+        
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
-			/*
 			// Export the current frame.
-			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
+			
+			if(!ValidateFilename(tbImageFilename.Text))
 			{
-				StopPlaying();
+				AlertInvalidFilename();	
+			}
+			else if(Directory.Exists(tbImageDirectory.Text))
+			{
+				
+				// no extension : jpg.
+				// extension specified by user : honor it if supported, jpg otherwise.				
+				string filename = tbImageFilename.Text;
+				string filenameToLower = filename.ToLower();
+				string filepath = tbImageDirectory.Text + "\\" + filename;
+				
 				try
 				{
-					SaveFileDialog dlgSave = new SaveFileDialog();
-					dlgSave.Title = ScreenManagerLang.dlgSaveTitle;
-					dlgSave.RestoreDirectory = true;
-					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-					dlgSave.FilterIndex = 1;
+					Bitmap bmp = m_FrameServer.GetFlushedImage();
 					
-					if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
+					if (filenameToLower.EndsWith("jpg") || filenameToLower.EndsWith("jpeg"))
 					{
-						dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoFile.FilePath);
+						Bitmap OutputJpg = ConvertToJPG(bmp);
+						OutputJpg.Save(filepath, ImageFormat.Jpeg);
+						OutputJpg.Dispose();
 					}
-					else
+					else if (filenameToLower.EndsWith("bmp"))
 					{
-						dlgSave.FileName = BuildFilename(m_FrameServer.VideoFile.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+						bmp.Save(filepath, ImageFormat.Bmp);
+					}
+					else if (filenameToLower.EndsWith("png"))
+					{
+						bmp.Save(filepath, ImageFormat.Png);
+					}
+					else if(filename != "")
+					{
+						// no extension.
+						filepath = filepath + ".jpg";
+						
+						Bitmap OutputJpg = ConvertToJPG(bmp);
+						OutputJpg.Save(filepath, ImageFormat.Jpeg);
+						OutputJpg.Dispose();
 					}
 					
-					if (dlgSave.ShowDialog() == DialogResult.OK)
-					{
-						
-						// 1. Reconstruct the extension.
-						// If the user let "file.00.00" as a filename, the extension is not appended automatically.
-						string strImgNameLower = dlgSave.FileName.ToLower();
-						string strImgName;
-						if (strImgNameLower.EndsWith("jpg") || strImgNameLower.EndsWith("jpeg") || strImgNameLower.EndsWith("bmp") || strImgNameLower.EndsWith("png"))
-						{
-							// Ok, the user added the extension himself or he did not use the preformatting.
-							strImgName = dlgSave.FileName;
-						}
-						else
-						{
-							// Get the extension
-							string extension;
-							switch (dlgSave.FilterIndex)
-							{
-								case 1:
-									extension = ".jpg";
-									break;
-								case 2:
-									extension = ".png";
-									break;
-								case 3:
-									extension = ".bmp";
-									break;
-								default:
-									extension = ".jpg";
-									break;
-							}
-							strImgName = dlgSave.FileName + extension;
-						}
-
-						//2. Get image.
-						Bitmap outputImage = GetFlushedImage();
-						
-						//3. Save the file.
-						if (strImgName.ToLower().EndsWith("jpg"))
-						{
-							Bitmap OutputJpg = ConvertToJPG(outputImage);
-							OutputJpg.Save(strImgName, ImageFormat.Jpeg);
-							OutputJpg.Dispose();
-						}
-						else if (strImgName.ToLower().EndsWith("bmp"))
-						{
-							outputImage.Save(strImgName, ImageFormat.Bmp);
-						}
-						else if (strImgName.ToLower().EndsWith("png"))
-						{
-							outputImage.Save(strImgName, ImageFormat.Png);
-						}
-
-						outputImage.Dispose();
-					}
+					bmp.Dispose();
+					
+					// Update the filename for the next snapshot.
+					// If the filename was empty, we'll create it without saving.
+					tbImageFilename.Text = CreateNewFilename(filename);
 				}
 				catch (Exception exp)
 				{
+					log.Error(exp.Message);
 					log.Error(exp.StackTrace);
-				}
-			}*/
-		}
-		private void btnRafale_Click(object sender, EventArgs e)
-		{
-			/*
-			//---------------------------------------------------------------------------------
-			// Workflow:
-			// 1. formRafaleExport  : configure the export, calls:
-			// 2. FileSaveDialog    : choose the file name, then:
-			// 3. formFrameExport   : Progress bar holder and updater, calls:
-			// 4. SaveImageSequence (below) to perform the real work. (saving the pics)
-			//---------------------------------------------------------------------------------
-
-			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
-			{
-				StopPlaying();
-
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DeactivateKeyboardHandler != null)
-				{
-					dp.DeactivateKeyboardHandler();
-				}
-				
-				// Launch sequence saving configuration dialog
-				formRafaleExport fre = new formRafaleExport(this, m_FrameServer.Metadata, m_FrameServer.VideoFile.FilePath, m_iSelDuration, m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds, m_FrameServer.VideoFile.Infos.fFps);
-				fre.ShowDialog();
-				fre.Dispose();
-
-				if (dp.ActivateKeyboardHandler != null)
-				{
-					dp.ActivateKeyboardHandler();
-				}
-			}*/
-		}
-		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, Int64 _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
-		{
-			/*
-			//---------------------------------------------------------------
-			// Save image sequence.
-			// (Method called back from the FormRafaleExport dialog box)
-			//
-			// We start at the first frame and use the interval in timestamps.
-			// We append the timecode between the filename and the extension.
-			//---------------------------------------------------------------
-
-			//-------------------------------------------------------------
-			// /!\ Cette fonction s'execute dans l'espace du WORKER THREAD.
-			// Les fonctions appelées d'ici ne doivent pas toucher l'UI.
-			// Les appels ici sont synchrones mais on peut remonter de
-			// l'information par bgWorker_ProgressChanged().
-			//-------------------------------------------------------------
-			if (_bKeyframesOnly)
-			{
-				int iCurrent = 0;
-				int iTotal = m_FrameServer.Metadata.Keyframes.Count;
-				foreach(Keyframe kf in m_FrameServer.Metadata.Keyframes)
-				{
-					if (kf.Position >= m_iSelStart && kf.Position <= m_iSelEnd)
-					{
-						// Build the file name
-						string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, kf.Position, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
-
-						// Get the image
-						Size iNewSize = new Size((int)((double)kf.FullFrame.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)kf.FullFrame.Height * m_FrameServer.CoordinateSystem.Stretch));
-						Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-						outputImage.SetResolution(kf.FullFrame.HorizontalResolution, kf.FullFrame.VerticalResolution);
-						Graphics g = Graphics.FromImage(outputImage);
-
-						if (_bBlendDrawings)
-						{
-							FlushOnGraphics(kf.FullFrame, g, iNewSize, iCurrent, kf.Position);
-						}
-						else
-						{
-							// image only.
-							g.DrawImage(kf.FullFrame, 0, 0, iNewSize.Width, iNewSize.Height);
-						}
-
-						// Save the file
-						SaveImageFile(fileName, outputImage);
-						outputImage.Dispose();
-					}
-					
-					// Report to Progress Bar
-					iCurrent++;
-					bgWorker.ReportProgress(iCurrent, iTotal);
-				}
+				}					
 			}
 			else
 			{
-				// We are in the worker thread space.
-				// We'll move the playhead and check for rafale period.
-
-				m_iFramesToDecode = 1;
-				ShowNextFrame(m_iSelStart, false);
-
-				bool done = false;
-				int iCurrent = 0;
-				do
-				{
-					ActivateKeyframe(m_iCurrentPosition, false);
-
-					// Build the file name
-					string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
-
-					Size iNewSize = new Size((int)((double)m_FrameServer.VideoFile.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoFile.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
-					Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-					outputImage.SetResolution(m_FrameServer.VideoFile.CurrentImage.HorizontalResolution, m_FrameServer.VideoFile.CurrentImage.VerticalResolution);
-					Graphics g = Graphics.FromImage(outputImage);
-
-					if (_bBlendDrawings)
-					{
-						int iKeyFrameIndex = -1;
-						if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
-						{
-							iKeyFrameIndex = m_iActiveKeyFrameIndex;
-						}
-
-						FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
-					}
-					else
-					{
-						// image only.
-						g.DrawImage(m_FrameServer.VideoFile.CurrentImage, 0, 0, iNewSize.Width, iNewSize.Height);
-					}
-
-					// Save the file
-					SaveImageFile(fileName, outputImage);
-					outputImage.Dispose();
-
-					// Report to Progress Bar
-					iCurrent++;
-					bgWorker.ReportProgress(iCurrent, iEstimatedTotal);
-
-
-					// Go to next timestamp.
-					if (m_iCurrentPosition + _iIntervalTimeStamps < m_iSelEnd)
-					{
-						m_iFramesToDecode = 1;
-						ShowNextFrame(m_iCurrentPosition + _iIntervalTimeStamps, false);
-					}
-					else
-					{
-						done = true;
-					}
-				}
-				while (!done);
-
-				// Replace at selection start.
-				m_iFramesToDecode = 1;
-				ShowNextFrame(m_iSelStart, false);
-				ActivateKeyframe(m_iCurrentPosition, false);
-			}
-
-			pbSurfaceScreen.Invalidate();*/
-		}
-		private void SaveImageFile(string _fileName, Bitmap _OutputImage)
-		{
-			if (_fileName.ToLower().EndsWith("jpg"))
-			{
-				Bitmap OutputJpg = ConvertToJPG(_OutputImage);
-				OutputJpg.Save(_fileName, ImageFormat.Jpeg);
-				OutputJpg.Dispose();
-			}
-			else if (_fileName.ToLower().EndsWith("bmp"))
-			{
-				_OutputImage.Save(_fileName, ImageFormat.Bmp);
-			}
-			else if (_fileName.ToLower().EndsWith("png"))
-			{
-				_OutputImage.Save(_fileName, ImageFormat.Png);
-			}
-			else
-			{
-				// the user may have put a filename in the form : "filename.ext"
-				// where ext is unsupported. Or he misunderstood and put ".00.00"
-				// We force format to jpg and we change back the extension to ".jpg".
-				string fileName = Path.GetDirectoryName(_fileName) + "\\" + Path.GetFileNameWithoutExtension(_fileName) + ".jpg";
-
-				Bitmap OutputJpg = ConvertToJPG(_OutputImage);
-				OutputJpg.Save(fileName, ImageFormat.Jpeg);
-				OutputJpg.Dispose();
+				btnBrowseImageLocation_Click(null, EventArgs.Empty);
 			}
 		}
 		
-		private string BuildFilename(string _FilePath, Int64 _position, TimeCodeFormat _timeCodeFormat)
-		{
-			return "todo";
-			/*
-			//-------------------------------------------------------
-			// Build a file name, including extension
-			// inserting the current timecode in the given file name.
-			//-------------------------------------------------------
-
-			TimeCodeFormat tcf;
-			if(_timeCodeFormat == TimeCodeFormat.TimeAndFrames)
-				tcf = TimeCodeFormat.ClassicTime;
-			else
-				tcf = _timeCodeFormat;
-			
-			// Timecode string (Not relative to sync position)
-			string suffix = TimeStampsToTimecode(_position - m_iSelStart, tcf, false);
-			string maxSuffix = TimeStampsToTimecode(m_iSelEnd - m_iSelStart, tcf, false);
-
-			switch (tcf)
-			{
-				case TimeCodeFormat.Frames:
-				case TimeCodeFormat.TenThousandthOfHours:
-				case TimeCodeFormat.HundredthOfMinutes:
-					
-					int iZerosToPad = maxSuffix.Length - suffix.Length;
-					for (int i = 0; i < iZerosToPad; i++)
-					{
-						// Add a leading zero.
-						suffix = suffix.Insert(0, "0");
-					}
-					break;
-				default:
-					break;
-			}
-
-			// Reconstruct filename
-			return Path.GetFileNameWithoutExtension(_FilePath) + "-" + suffix.Replace(':', '.');
-			*/
-		}
 		private Bitmap ConvertToJPG(Bitmap _image)
 		{
 			// Intermediate MemoryStream for the conversion.
@@ -2164,22 +2059,129 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
         
-		#region Capture device
+		#region Capture specifics
+		private void btnCamSettings_Click(object sender, EventArgs e)
+        {
+			m_FrameServer.PromptDeviceSelector();
+        }
         private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
         {
+        	TryToConnect();
+        }
+        private void TryToConnect()
+        {
+        	// Try to connect to a device.
         	if(!m_FrameServer.IsConnected)
         	{
         		// Prevent reentry.
         		if(!m_bTryingToConnect)
         		{
-        			m_bTryingToConnect = true;
-        			
-        			m_ScreenUIHandler.CaptureScreenUI_TryDeviceConnection();
-        			
+        			m_bTryingToConnect = true;        			
+        			m_FrameServer.NegociateDevice();       			
         			m_bTryingToConnect = false;
+        			
+        			if(m_FrameServer.IsConnected)
+        			{
+        				btnCamSettings.Enabled = true;
+        			}
         		}
         	}
         }
+        private string CreateNewFilename(string filename)
+        {
+        	//-------------------------------------------------------------------
+        	// Create the next file name from the existing one.
+        	// if the existing name has a number in it, we increment this number.
+        	// if not, we create a suffix.
+			//-------------------------------------------------------------------
+        	
+			string newFilename = "";
+			
+			if(filename == null || filename == "")
+			{
+				// Create the name from the current date.
+				DateTime now = DateTime.Now;
+				newFilename = String.Format("{0}-{1:00}-{2:00} - 1", now.Year, now.Month, now.Day);
+			}
+			else
+			{
+				// Find all numbers in the name, if any.
+				Regex r = new Regex(@"\d+");
+				MatchCollection mc = filename.EndsWith(".mp4") ? 
+					r.Matches(Path.GetFileNameWithoutExtension(filename)) : r.Matches(filename);
+	        	
+				if(mc.Count > 0)
+	        	{
+	        		// Increment the last one.
+	        		Match m = mc[mc.Count - 1];
+	        		int number = int.Parse(m.Value);
+	        		number++;
+	        	
+	        		// Todo: handle leading zeroes in the original.
+	        		// (LastIndexOf("0") ?
+	        		
+	        		// Replace the number in the original.
+	        		newFilename = r.Replace(filename, number.ToString(), 1, m.Index );
+	        	}
+	        	else
+	        	{
+	        		// No number found, add suffix between text and extension (works if no extension).
+	        		newFilename = String.Format("{0} - 2{1}", 
+	        		                            Path.GetFileNameWithoutExtension(filename), 
+	        		                            Path.GetExtension(filename));
+	        	}
+			}
+			
+        	return newFilename;
+        }
+        private bool ValidateFilename(string filename)
+        {
+        	// Validate filename chars.
+			bool bIsValid = false;
+			
+			try
+			{
+			  	new System.IO.FileInfo(filename);
+			  	bIsValid = true;
+			}
+			catch (ArgumentException)
+			{
+				// filename is empty, only white spaces or contains invalid chars.
+				log.Error(String.Format("Capture filename has invalid characters. Proposed file was: {0}", filename));
+			}
+			catch (NotSupportedException)
+			{
+				// filename contains a colon in the middle of the string.
+				log.Error(String.Format("Capture filename has a colon in the middle. Proposed file was: {0}", filename));
+			}
+			
+			return bIsValid;
+        }
+        private void AlertInvalidFilename()
+        {
+			MessageBox.Show(
+        		"The file name contains invalid characters.\n A file name cannot contain any of the following characters:\n \\ / : * ? \" < >",
+               	"Cannot save file",
+               	MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
+        }
+        private void FoldSettings(object sender, EventArgs e)
+        {
+        	if(m_bSettingsFold)
+        	{
+        		panelVideoControls.Height = 142;
+        		btnFoldSettings.BackgroundImage = Resources.dock16x16;
+        	}
+        	else
+        	{
+        		panelVideoControls.Height = lblSettings.Top + lblSettings.Height;
+        		btnFoldSettings.BackgroundImage = Resources.undock16x16;
+        	}
+        	
+        	m_bSettingsFold = !m_bSettingsFold;	
+        }
         #endregion
+        
+        
 	}
 }

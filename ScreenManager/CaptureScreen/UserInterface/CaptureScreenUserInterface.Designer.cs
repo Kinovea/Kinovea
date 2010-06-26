@@ -32,14 +32,24 @@ namespace Kinovea.ScreenManager
         	this.panelTop = new System.Windows.Forms.Panel();
         	this.lblFileName = new System.Windows.Forms.Label();
         	this.btnClose = new System.Windows.Forms.Button();
-        	this.lblSelDuration = new System.Windows.Forms.Label();
         	this.panelVideoControls = new System.Windows.Forms.Panel();
-        	this.buttonRecord = new System.Windows.Forms.Button();
-        	this.btnRafale = new System.Windows.Forms.Button();
-        	this.lblWorkingZone = new System.Windows.Forms.Label();
-        	this.btnSnapShot = new System.Windows.Forms.Button();
+        	this.pnlCaptureDock = new System.Windows.Forms.Panel();
+        	this.btnGrab = new System.Windows.Forms.Button();
+        	this.btnCamSettings = new System.Windows.Forms.Button();
+        	this.btnRecord = new System.Windows.Forms.Button();
+        	this.btnCamSnap = new System.Windows.Forms.Button();
         	this.lblTimeCode = new System.Windows.Forms.Label();
-        	this.buttonPlay = new System.Windows.Forms.Button();
+        	this.btnFoldSettings = new System.Windows.Forms.Button();
+        	this.lblSettings = new System.Windows.Forms.Label();
+        	this.btnSaveImageLocation = new System.Windows.Forms.Button();
+        	this.btnBrowseImageLocation = new System.Windows.Forms.Button();
+        	this.tbImageDirectory = new System.Windows.Forms.TextBox();
+        	this.tbImageFilename = new System.Windows.Forms.TextBox();
+        	this.lblImageFile = new System.Windows.Forms.Label();
+        	this.btnSaveVideoLocation = new System.Windows.Forms.Button();
+        	this.btnBrowseVideoLocation = new System.Windows.Forms.Button();
+        	this.tbVideoDirectory = new System.Windows.Forms.TextBox();
+        	this.tbVideoFilename = new System.Windows.Forms.TextBox();
         	this.lblSpeedTuner = new System.Windows.Forms.Label();
         	this.panelCenter = new System.Windows.Forms.Panel();
         	this.ImageResizerNE = new System.Windows.Forms.Label();
@@ -63,8 +73,10 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails = new System.Windows.Forms.Panel();
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.tmrCaptureDeviceDetector = new System.Windows.Forms.Timer(this.components);
+        	this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
+        	this.pnlCaptureDock.SuspendLayout();
         	this.panelCenter.SuspendLayout();
         	((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).BeginInit();
         	this.splitKeyframes.Panel1.SuspendLayout();
@@ -111,133 +123,289 @@ namespace Kinovea.ScreenManager
         	this.btnClose.UseVisualStyleBackColor = false;
         	this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
         	// 
-        	// lblSelDuration
-        	// 
-        	this.lblSelDuration.BackColor = System.Drawing.Color.Transparent;
-        	this.lblSelDuration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.lblSelDuration.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.lblSelDuration.Location = new System.Drawing.Point(104, 7);
-        	this.lblSelDuration.Name = "lblSelDuration";
-        	this.lblSelDuration.Size = new System.Drawing.Size(91, 15);
-        	this.lblSelDuration.TabIndex = 4;
-        	this.lblSelDuration.Text = "Durée : 0:00:00:00";
-        	// 
         	// panelVideoControls
         	// 
         	this.panelVideoControls.BackColor = System.Drawing.Color.White;
-        	this.panelVideoControls.Controls.Add(this.buttonRecord);
-        	this.panelVideoControls.Controls.Add(this.btnRafale);
-        	this.panelVideoControls.Controls.Add(this.lblWorkingZone);
-        	this.panelVideoControls.Controls.Add(this.btnSnapShot);
+        	this.panelVideoControls.Controls.Add(this.pnlCaptureDock);
         	this.panelVideoControls.Controls.Add(this.lblTimeCode);
-        	this.panelVideoControls.Controls.Add(this.lblSelDuration);
-        	this.panelVideoControls.Controls.Add(this.buttonPlay);
+        	this.panelVideoControls.Controls.Add(this.btnFoldSettings);
+        	this.panelVideoControls.Controls.Add(this.lblSettings);
+        	this.panelVideoControls.Controls.Add(this.btnSaveImageLocation);
+        	this.panelVideoControls.Controls.Add(this.btnBrowseImageLocation);
+        	this.panelVideoControls.Controls.Add(this.tbImageDirectory);
+        	this.panelVideoControls.Controls.Add(this.tbImageFilename);
+        	this.panelVideoControls.Controls.Add(this.lblImageFile);
+        	this.panelVideoControls.Controls.Add(this.btnSaveVideoLocation);
+        	this.panelVideoControls.Controls.Add(this.btnBrowseVideoLocation);
+        	this.panelVideoControls.Controls.Add(this.tbVideoDirectory);
+        	this.panelVideoControls.Controls.Add(this.tbVideoFilename);
         	this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
         	this.panelVideoControls.Dock = System.Windows.Forms.DockStyle.Bottom;
-        	this.panelVideoControls.Location = new System.Drawing.Point(0, 410);
-        	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 100);
+        	this.panelVideoControls.Location = new System.Drawing.Point(0, 364);
+        	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 70);
         	this.panelVideoControls.Name = "panelVideoControls";
-        	this.panelVideoControls.Size = new System.Drawing.Size(350, 100);
+        	this.panelVideoControls.Size = new System.Drawing.Size(350, 142);
         	this.panelVideoControls.TabIndex = 2;
         	this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
         	// 
-        	// buttonRecord
+        	// pnlCaptureDock
         	// 
-        	this.buttonRecord.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.record;
-        	this.buttonRecord.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        	this.buttonRecord.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.buttonRecord.FlatAppearance.BorderSize = 0;
-        	this.buttonRecord.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-        	this.buttonRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-        	this.buttonRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonRecord.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonRecord.Location = new System.Drawing.Point(58, 65);
-        	this.buttonRecord.MinimumSize = new System.Drawing.Size(30, 25);
-        	this.buttonRecord.Name = "buttonRecord";
-        	this.buttonRecord.Size = new System.Drawing.Size(40, 30);
-        	this.buttonRecord.TabIndex = 24;
-        	this.buttonRecord.UseVisualStyleBackColor = true;
-        	this.buttonRecord.Click += new System.EventHandler(this.buttonRecord_Click);
+        	this.pnlCaptureDock.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.capturedock3;
+        	this.pnlCaptureDock.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.pnlCaptureDock.Controls.Add(this.btnGrab);
+        	this.pnlCaptureDock.Controls.Add(this.btnCamSettings);
+        	this.pnlCaptureDock.Controls.Add(this.btnRecord);
+        	this.pnlCaptureDock.Controls.Add(this.btnCamSnap);
+        	this.pnlCaptureDock.Location = new System.Drawing.Point(0, 1);
+        	this.pnlCaptureDock.Name = "pnlCaptureDock";
+        	this.pnlCaptureDock.Size = new System.Drawing.Size(170, 42);
+        	this.pnlCaptureDock.TabIndex = 40;
         	// 
-        	// btnRafale
+        	// btnGrab
         	// 
-        	this.btnRafale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.btnRafale.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnRafale.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnRafale.FlatAppearance.BorderSize = 0;
-        	this.btnRafale.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnRafale.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnRafale.Image = global::Kinovea.ScreenManager.Properties.Resources.snapmulti_1;
-        	this.btnRafale.Location = new System.Drawing.Point(310, 68);
-        	this.btnRafale.MinimumSize = new System.Drawing.Size(25, 25);
-        	this.btnRafale.Name = "btnRafale";
-        	this.btnRafale.Size = new System.Drawing.Size(30, 25);
-        	this.btnRafale.TabIndex = 23;
-        	this.btnRafale.Tag = "";
-        	this.btnRafale.UseVisualStyleBackColor = true;
-        	this.btnRafale.Click += new System.EventHandler(this.btnRafale_Click);
+			this.btnGrab.BackColor = System.Drawing.Color.Transparent;
+        	this.btnGrab.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnGrab.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnGrab.FlatAppearance.BorderSize = 0;
+        	this.btnGrab.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnGrab.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+        	this.btnGrab.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnGrab.Image = global::Kinovea.ScreenManager.Properties.Resources.capturepause5;
+        	this.btnGrab.Location = new System.Drawing.Point(42, 6);
+        	this.btnGrab.MinimumSize = new System.Drawing.Size(30, 25);
+        	this.btnGrab.Name = "btnGrab";
+        	this.btnGrab.Size = new System.Drawing.Size(35, 25);
+        	this.btnGrab.TabIndex = 0;
+        	this.btnGrab.UseVisualStyleBackColor = false;
+        	this.btnGrab.Click += new System.EventHandler(this.btnGrab_Click);
         	// 
-        	// lblWorkingZone
+        	// btnCamSettings
         	// 
-        	this.lblWorkingZone.AutoSize = true;
-        	this.lblWorkingZone.BackColor = System.Drawing.Color.White;
-        	this.lblWorkingZone.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.lblWorkingZone.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.lblWorkingZone.ForeColor = System.Drawing.Color.Black;
-        	this.lblWorkingZone.Location = new System.Drawing.Point(14, 7);
-        	this.lblWorkingZone.Margin = new System.Windows.Forms.Padding(0);
-        	this.lblWorkingZone.Name = "lblWorkingZone";
-        	this.lblWorkingZone.Size = new System.Drawing.Size(75, 12);
-        	this.lblWorkingZone.TabIndex = 19;
-        	this.lblWorkingZone.Text = "Zone de Travail : ";
+        	this.btnCamSettings.BackColor = System.Drawing.Color.Transparent;
+        	this.btnCamSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnCamSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnCamSettings.Enabled = false;
+        	this.btnCamSettings.FlatAppearance.BorderSize = 0;
+        	this.btnCamSettings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnCamSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+        	this.btnCamSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnCamSettings.Image = global::Kinovea.ScreenManager.Properties.Resources.capture_settings5;
+        	this.btnCamSettings.Location = new System.Drawing.Point(5, 6);
+        	this.btnCamSettings.MinimumSize = new System.Drawing.Size(30, 25);
+        	this.btnCamSettings.Name = "btnCamSettings";
+        	this.btnCamSettings.Size = new System.Drawing.Size(35, 25);
+        	this.btnCamSettings.TabIndex = 39;
+        	this.btnCamSettings.UseVisualStyleBackColor = false;
+        	this.btnCamSettings.Click += new System.EventHandler(this.btnCamSettings_Click);
         	// 
-        	// btnSnapShot
+        	// btnRecord
         	// 
-        	this.btnSnapShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnSnapShot.FlatAppearance.BorderSize = 0;
-        	this.btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSnapShot.Image = global::Kinovea.ScreenManager.Properties.Resources.snapsingle_1;
-        	this.btnSnapShot.Location = new System.Drawing.Point(280, 68);
-        	this.btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
-        	this.btnSnapShot.Name = "btnSnapShot";
-        	this.btnSnapShot.Size = new System.Drawing.Size(30, 25);
-        	this.btnSnapShot.TabIndex = 18;
-        	this.btnSnapShot.Tag = "";
-        	this.btnSnapShot.UseVisualStyleBackColor = true;
-        	this.btnSnapShot.Click += new System.EventHandler(this.btnSnapShot_Click);
+			this.btnRecord.BackColor = System.Drawing.Color.Transparent;
+        	this.btnRecord.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnRecord.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnRecord.FlatAppearance.BorderSize = 0;
+        	this.btnRecord.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnRecord.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+        	this.btnRecord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnRecord.Image = global::Kinovea.ScreenManager.Properties.Resources.control_rec;
+        	this.btnRecord.Location = new System.Drawing.Point(128, 6);
+        	this.btnRecord.MinimumSize = new System.Drawing.Size(20, 25);
+        	this.btnRecord.Name = "btnRecord";
+        	this.btnRecord.Size = new System.Drawing.Size(25, 25);
+        	this.btnRecord.TabIndex = 24;
+        	this.btnRecord.UseVisualStyleBackColor = false;
+        	this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
+        	// 
+        	// btnCamSnap
+        	// 
+        	this.btnCamSnap.BackColor = System.Drawing.Color.Transparent;
+        	this.btnCamSnap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnCamSnap.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnCamSnap.FlatAppearance.BorderSize = 0;
+        	this.btnCamSnap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnCamSnap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+        	this.btnCamSnap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnCamSnap.Image = global::Kinovea.ScreenManager.Properties.Resources.camerasingle;
+        	this.btnCamSnap.Location = new System.Drawing.Point(94, 6);
+        	this.btnCamSnap.MinimumSize = new System.Drawing.Size(25, 25);
+        	this.btnCamSnap.Name = "btnCamSnap";
+        	this.btnCamSnap.Size = new System.Drawing.Size(30, 25);
+        	this.btnCamSnap.TabIndex = 30;
+        	this.btnCamSnap.Tag = "";
+        	this.btnCamSnap.UseVisualStyleBackColor = false;
+        	this.btnCamSnap.Click += new System.EventHandler(this.btnSnapShot_Click);
         	// 
         	// lblTimeCode
         	// 
+        	this.lblTimeCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.lblTimeCode.AutoSize = true;
         	this.lblTimeCode.BackColor = System.Drawing.Color.Transparent;
         	this.lblTimeCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.lblTimeCode.Location = new System.Drawing.Point(14, 44);
+        	this.lblTimeCode.Location = new System.Drawing.Point(253, 14);
         	this.lblTimeCode.Name = "lblTimeCode";
         	this.lblTimeCode.Size = new System.Drawing.Size(89, 12);
         	this.lblTimeCode.TabIndex = 2;
         	this.lblTimeCode.Text = "Position : 0:00:00:00";
+        	this.lblTimeCode.Visible = false;
         	// 
-        	// buttonPlay
+        	// btnFoldSettings
         	// 
-        	this.buttonPlay.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
-        	this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        	this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.buttonPlay.FlatAppearance.BorderSize = 0;
-        	this.buttonPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-        	this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-        	this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.buttonPlay.Location = new System.Drawing.Point(15, 65);
-        	this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
-        	this.buttonPlay.Name = "buttonPlay";
-        	this.buttonPlay.Size = new System.Drawing.Size(40, 30);
-        	this.buttonPlay.TabIndex = 0;
-        	this.buttonPlay.UseVisualStyleBackColor = true;
-        	this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+        	this.btnFoldSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.btnFoldSettings.BackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnFoldSettings.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.dock16x16;
+        	this.btnFoldSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+        	this.btnFoldSettings.Cursor = System.Windows.Forms.Cursors.Default;
+        	this.btnFoldSettings.FlatAppearance.BorderSize = 0;
+        	this.btnFoldSettings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gainsboro;
+        	this.btnFoldSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gainsboro;
+        	this.btnFoldSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnFoldSettings.Location = new System.Drawing.Point(328, 48);
+        	this.btnFoldSettings.Name = "btnFoldSettings";
+        	this.btnFoldSettings.Size = new System.Drawing.Size(20, 20);
+        	this.btnFoldSettings.TabIndex = 37;
+        	this.btnFoldSettings.UseVisualStyleBackColor = false;
+        	this.btnFoldSettings.Click += new System.EventHandler(this.FoldSettings);
+        	// 
+        	// lblSettings
+        	// 
+        	this.lblSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.lblSettings.BackColor = System.Drawing.Color.WhiteSmoke;
+        	this.lblSettings.Cursor = System.Windows.Forms.Cursors.Default;
+        	this.lblSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.lblSettings.ForeColor = System.Drawing.Color.SteelBlue;
+        	this.lblSettings.Location = new System.Drawing.Point(0, 45);
+        	this.lblSettings.Name = "lblSettings";
+        	this.lblSettings.Size = new System.Drawing.Size(350, 25);
+        	this.lblSettings.TabIndex = 38;
+        	this.lblSettings.Text = "   Settings";
+        	this.lblSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+        	this.lblSettings.Click += new System.EventHandler(this.FoldSettings);
+        	// 
+        	// btnSaveImageLocation
+        	// 
+        	this.btnSaveImageLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnSaveImageLocation.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnSaveImageLocation.FlatAppearance.BorderSize = 0;
+        	this.btnSaveImageLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnSaveImageLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnSaveImageLocation.Image = global::Kinovea.ScreenManager.Properties.Resources.picture_save;
+        	this.btnSaveImageLocation.Location = new System.Drawing.Point(15, 77);
+        	this.btnSaveImageLocation.MinimumSize = new System.Drawing.Size(25, 25);
+        	this.btnSaveImageLocation.Name = "btnSaveImageLocation";
+        	this.btnSaveImageLocation.Size = new System.Drawing.Size(30, 25);
+        	this.btnSaveImageLocation.TabIndex = 36;
+        	this.btnSaveImageLocation.Tag = "";
+        	this.btnSaveImageLocation.UseVisualStyleBackColor = true;
+        	this.btnSaveImageLocation.Click += new System.EventHandler(this.btnBrowseImageLocation_Click);
+        	// 
+        	// btnBrowseImageLocation
+        	// 
+        	this.btnBrowseImageLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.btnBrowseImageLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnBrowseImageLocation.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnBrowseImageLocation.FlatAppearance.BorderSize = 0;
+        	this.btnBrowseImageLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnBrowseImageLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnBrowseImageLocation.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
+        	this.btnBrowseImageLocation.Location = new System.Drawing.Point(307, 77);
+        	this.btnBrowseImageLocation.MinimumSize = new System.Drawing.Size(25, 25);
+        	this.btnBrowseImageLocation.Name = "btnBrowseImageLocation";
+        	this.btnBrowseImageLocation.Size = new System.Drawing.Size(30, 25);
+        	this.btnBrowseImageLocation.TabIndex = 35;
+        	this.btnBrowseImageLocation.Tag = "";
+        	this.btnBrowseImageLocation.UseVisualStyleBackColor = true;
+        	this.btnBrowseImageLocation.Click += new System.EventHandler(this.btnBrowseImageLocation_Click);
+        	// 
+        	// tbImageDirectory
+        	// 
+        	this.tbImageDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.tbImageDirectory.Location = new System.Drawing.Point(253, 80);
+        	this.tbImageDirectory.Name = "tbImageDirectory";
+        	this.tbImageDirectory.Size = new System.Drawing.Size(51, 20);
+        	this.tbImageDirectory.TabIndex = 34;
+        	this.tbImageDirectory.Text = "C:\\Docu...Images";
+        	this.tbImageDirectory.TextChanged += new System.EventHandler(this.tbImageDirectory_TextChanged);
+        	// 
+        	// tbImageFilename
+        	// 
+        	this.tbImageFilename.Location = new System.Drawing.Point(89, 80);
+        	this.tbImageFilename.Name = "tbImageFilename";
+        	this.tbImageFilename.Size = new System.Drawing.Size(157, 20);
+        	this.tbImageFilename.TabIndex = 33;
+        	this.tbImageFilename.Text = "2010-04-18 - 4.jpg";
+        	this.tbImageFilename.TextChanged += new System.EventHandler(this.tbImageFilename_TextChanged);
+        	// 
+        	// lblImageFile
+        	// 
+        	this.lblImageFile.AutoSize = true;
+        	this.lblImageFile.BackColor = System.Drawing.Color.White;
+        	this.lblImageFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.lblImageFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.lblImageFile.ForeColor = System.Drawing.Color.Black;
+        	this.lblImageFile.Location = new System.Drawing.Point(46, 84);
+        	this.lblImageFile.Margin = new System.Windows.Forms.Padding(0);
+        	this.lblImageFile.Name = "lblImageFile";
+        	this.lblImageFile.Size = new System.Drawing.Size(34, 12);
+        	this.lblImageFile.TabIndex = 32;
+        	this.lblImageFile.Text = "Image:";
+        	// 
+        	// btnSaveVideoLocation
+        	// 
+        	this.btnSaveVideoLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnSaveVideoLocation.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnSaveVideoLocation.FlatAppearance.BorderSize = 0;
+        	this.btnSaveVideoLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnSaveVideoLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnSaveVideoLocation.Image = global::Kinovea.ScreenManager.Properties.Resources.film_save;
+        	this.btnSaveVideoLocation.Location = new System.Drawing.Point(15, 108);
+        	this.btnSaveVideoLocation.MinimumSize = new System.Drawing.Size(25, 25);
+        	this.btnSaveVideoLocation.Name = "btnSaveVideoLocation";
+        	this.btnSaveVideoLocation.Size = new System.Drawing.Size(30, 25);
+        	this.btnSaveVideoLocation.TabIndex = 31;
+        	this.btnSaveVideoLocation.Tag = "";
+        	this.btnSaveVideoLocation.UseVisualStyleBackColor = true;
+        	this.btnSaveVideoLocation.Click += new System.EventHandler(this.btnBrowseVideoLocation_Click);
+        	// 
+        	// btnBrowseVideoLocation
+        	// 
+        	this.btnBrowseVideoLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.btnBrowseVideoLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+        	this.btnBrowseVideoLocation.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnBrowseVideoLocation.FlatAppearance.BorderSize = 0;
+        	this.btnBrowseVideoLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnBrowseVideoLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnBrowseVideoLocation.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
+        	this.btnBrowseVideoLocation.Location = new System.Drawing.Point(307, 108);
+        	this.btnBrowseVideoLocation.MinimumSize = new System.Drawing.Size(25, 25);
+        	this.btnBrowseVideoLocation.Name = "btnBrowseVideoLocation";
+        	this.btnBrowseVideoLocation.Size = new System.Drawing.Size(30, 25);
+        	this.btnBrowseVideoLocation.TabIndex = 28;
+        	this.btnBrowseVideoLocation.Tag = "";
+        	this.btnBrowseVideoLocation.UseVisualStyleBackColor = true;
+        	this.btnBrowseVideoLocation.Click += new System.EventHandler(this.btnBrowseVideoLocation_Click);
+        	// 
+        	// tbVideoDirectory
+        	// 
+        	this.tbVideoDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.tbVideoDirectory.Location = new System.Drawing.Point(252, 111);
+        	this.tbVideoDirectory.Name = "tbVideoDirectory";
+        	this.tbVideoDirectory.Size = new System.Drawing.Size(52, 20);
+        	this.tbVideoDirectory.TabIndex = 27;
+        	this.tbVideoDirectory.Text = "C:\\Docu...Videos";
+        	this.tbVideoDirectory.TextChanged += new System.EventHandler(this.tbVideoDirectory_TextChanged);
+        	// 
+        	// tbVideoFilename
+        	// 
+        	this.tbVideoFilename.Location = new System.Drawing.Point(89, 111);
+        	this.tbVideoFilename.Name = "tbVideoFilename";
+        	this.tbVideoFilename.Size = new System.Drawing.Size(156, 20);
+        	this.tbVideoFilename.TabIndex = 26;
+        	this.tbVideoFilename.Text = "2010-04-18 - 1.avi";
+        	this.tbVideoFilename.TextChanged += new System.EventHandler(this.tbVideoFilename_TextChanged);
         	// 
         	// lblSpeedTuner
         	// 
@@ -246,12 +414,12 @@ namespace Kinovea.ScreenManager
         	this.lblSpeedTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.lblSpeedTuner.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
         	this.lblSpeedTuner.ForeColor = System.Drawing.Color.Black;
-        	this.lblSpeedTuner.Location = new System.Drawing.Point(120, 44);
+        	this.lblSpeedTuner.Location = new System.Drawing.Point(45, 116);
         	this.lblSpeedTuner.Margin = new System.Windows.Forms.Padding(0);
         	this.lblSpeedTuner.Name = "lblSpeedTuner";
-        	this.lblSpeedTuner.Size = new System.Drawing.Size(67, 12);
+        	this.lblSpeedTuner.Size = new System.Drawing.Size(32, 12);
         	this.lblSpeedTuner.TabIndex = 10;
-        	this.lblSpeedTuner.Text = "Vitesse : 100%";
+        	this.lblSpeedTuner.Text = "Video:";
         	// 
         	// panelCenter
         	// 
@@ -266,7 +434,7 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.Location = new System.Drawing.Point(0, 0);
         	this.panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
         	this.panelCenter.Name = "panelCenter";
-        	this.panelCenter.Size = new System.Drawing.Size(350, 250);
+        	this.panelCenter.Size = new System.Drawing.Size(350, 220);
         	this.panelCenter.TabIndex = 2;
         	this.panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
@@ -280,7 +448,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNE.Location = new System.Drawing.Point(92, 78);
+        	this.ImageResizerNE.Location = new System.Drawing.Point(92, 63);
         	this.ImageResizerNE.Name = "ImageResizerNE";
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNE.TabIndex = 9;
@@ -294,7 +462,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
         	this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNW.Location = new System.Drawing.Point(57, 78);
+        	this.ImageResizerNW.Location = new System.Drawing.Point(57, 63);
         	this.ImageResizerNW.Name = "ImageResizerNW";
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNW.TabIndex = 8;
@@ -308,7 +476,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSW.Location = new System.Drawing.Point(57, 103);
+        	this.ImageResizerSW.Location = new System.Drawing.Point(57, 88);
         	this.ImageResizerSW.Name = "ImageResizerSW";
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSW.TabIndex = 7;
@@ -323,7 +491,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
         	this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSE.Location = new System.Drawing.Point(92, 103);
+        	this.ImageResizerSE.Location = new System.Drawing.Point(92, 88);
         	this.ImageResizerSE.Name = "ImageResizerSE";
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSE.TabIndex = 6;
@@ -388,8 +556,8 @@ namespace Kinovea.ScreenManager
         	this.splitKeyframes.Panel2.Controls.Add(this.pnlThumbnails);
         	this.splitKeyframes.Panel2.DoubleClick += new System.EventHandler(this.splitKeyframes_Panel2_DoubleClick);
         	this.splitKeyframes.Panel2MinSize = 30;
-        	this.splitKeyframes.Size = new System.Drawing.Size(350, 391);
-        	this.splitKeyframes.SplitterDistance = 250;
+        	this.splitKeyframes.Size = new System.Drawing.Size(350, 345);
+        	this.splitKeyframes.SplitterDistance = 220;
         	this.splitKeyframes.SplitterWidth = 2;
         	this.splitKeyframes.TabIndex = 10;
         	this.splitKeyframes.Resize += new System.EventHandler(this.splitKeyframes_Resize);
@@ -576,7 +744,7 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.Controls.Add(this.pictureBox1);
         	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
         	this.pnlThumbnails.Name = "pnlThumbnails";
-        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 111);
+        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 95);
         	this.pnlThumbnails.TabIndex = 3;
         	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
         	// 
@@ -610,6 +778,7 @@ namespace Kinovea.ScreenManager
         	this.panelTop.PerformLayout();
         	this.panelVideoControls.ResumeLayout(false);
         	this.panelVideoControls.PerformLayout();
+        	this.pnlCaptureDock.ResumeLayout(false);
         	this.panelCenter.ResumeLayout(false);
         	((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).EndInit();
         	this.splitKeyframes.Panel1.ResumeLayout(false);
@@ -619,16 +788,30 @@ namespace Kinovea.ScreenManager
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         	this.ResumeLayout(false);
         }
+		private System.Windows.Forms.Label lblImageFile;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.Button btnGrab;
+        private System.Windows.Forms.Button btnRecord;
+        private System.Windows.Forms.Button btnSaveImageLocation;
+        private System.Windows.Forms.TextBox tbImageDirectory;
+        private System.Windows.Forms.TextBox tbImageFilename;
+        private System.Windows.Forms.Button btnBrowseVideoLocation;
+        private System.Windows.Forms.TextBox tbVideoDirectory;
+        private System.Windows.Forms.TextBox tbVideoFilename;
+        private System.Windows.Forms.Button btnBrowseImageLocation;
+        private System.Windows.Forms.Button btnSaveVideoLocation;
+        private System.Windows.Forms.Button btnCamSettings;
+        private System.Windows.Forms.Button btnCamSnap;
+        private System.Windows.Forms.Panel pnlCaptureDock;
+        private System.Windows.Forms.Label lblSettings;
+        private System.Windows.Forms.Button btnFoldSettings;
         private System.Windows.Forms.Timer tmrCaptureDeviceDetector;
-        private System.Windows.Forms.Button buttonRecord;
 
         #endregion
 
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelCenter;
-        private System.Windows.Forms.Panel panelVideoControls;
-        private System.Windows.Forms.Button buttonPlay;
-        private System.Windows.Forms.Label lblSelDuration;
+        public System.Windows.Forms.Panel panelVideoControls;
         private System.Windows.Forms.Label ActiveScreenIndicator;
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Label lblTimeCode;
@@ -636,12 +819,10 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblFileName;
         private System.Windows.Forms.Label lblSpeedTuner;
         
-        private System.Windows.Forms.Button btnSnapShot;
         private System.Windows.Forms.Label ImageResizerSE;
         private System.Windows.Forms.Label ImageResizerSW;
         private System.Windows.Forms.Label ImageResizerNE;
         private System.Windows.Forms.Label ImageResizerNW;
-        private System.Windows.Forms.Label lblWorkingZone;
         public System.Windows.Forms.PictureBox pbSurfaceScreen;
         private System.Windows.Forms.SplitContainer splitKeyframes;
         private System.Windows.Forms.PictureBox pictureBox1;
@@ -655,7 +836,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnColorProfile;
         private System.Windows.Forms.Button btnDockBottom;
         private System.Windows.Forms.Button btnDrawingToolLine2D;
-        private System.Windows.Forms.Button btnRafale;
         private System.Windows.Forms.Button btnMagnifier;
         private System.Windows.Forms.Button btn3dplane;
         

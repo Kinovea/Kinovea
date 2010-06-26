@@ -86,6 +86,38 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap capture_settings5
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("capture_settings5", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap capturedock3
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("capturedock3", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap capturegrab5
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("capturegrab5", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap capturepause5
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("capturepause5", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap chrono5
 		{
 			get
@@ -126,6 +158,22 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap control_rec
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("control_rec", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap control_recstop
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("control_recstop", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap cross5
 		{
 			get
@@ -163,6 +211,22 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("filesave", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap film_save
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("film_save", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap folder
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("folder", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -427,6 +491,14 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("pdfexport", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		internal static System.Drawing.Bitmap picture_save
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("picture_save", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
