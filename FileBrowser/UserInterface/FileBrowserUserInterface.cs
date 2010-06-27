@@ -555,7 +555,7 @@ namespace Kinovea.FileBrowser
 				{
 					if (item.IsFileSystem)
 					{
-						DragDropEffects dde = DoDragDrop(item.Path, DragDropEffects.All);
+						DoDragDrop(item.Path, DragDropEffects.All);
 					}
 				}
 			}

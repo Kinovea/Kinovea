@@ -69,6 +69,7 @@
         	this.pbThumbnail.TabStop = false;
         	this.pbThumbnail.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	this.pbThumbnail.Click += new System.EventHandler(this.pbThumbnail_Click);
+        	this.pbThumbnail.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseDown);
         	this.pbThumbnail.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
         	// 
         	// tbTitle
@@ -89,6 +90,7 @@
         	this.tbTitle.TextChanged += new System.EventHandler(this.TbTitleTextChanged);
         	this.tbTitle.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	this.tbTitle.Click += new System.EventHandler(this.pbThumbnail_Click);
+        	this.tbTitle.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Controls_MouseDown);
         	this.tbTitle.Enter += new System.EventHandler(this.TbTitleEnter);
         	this.tbTitle.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
         	// 

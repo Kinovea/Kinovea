@@ -1797,13 +1797,11 @@ namespace Kinovea.ScreenManager
 						
 						if(filename != "")
 						{
-							m_FrameServer.CurrentCaptureFilePath = filepath;
-							
 							if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
 							{
 								filepath = filepath + ".mkv";	
 							}
-							
+							m_FrameServer.CurrentCaptureFilePath = filepath;
 							m_FrameServer.StartRecording(filepath);
 							
 							DisplayAsRecording(true);
