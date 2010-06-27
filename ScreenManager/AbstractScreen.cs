@@ -50,6 +50,11 @@ namespace Kinovea.ScreenManager
         {
         	get;
         }
+        public abstract VideoFiles.AspectRatio AspectRatio
+        {
+        	get;
+        	set;
+        }
 
         public abstract void DisplayAsActiveScreen(bool _bActive);
         public abstract void refreshUICulture();

@@ -72,6 +72,22 @@ namespace Kinovea.ScreenManager
 		{
 			get { return true;}
 		}
+		public override VideoFiles.AspectRatio AspectRatio
+        {
+            get { return m_FrameServer.VideoFile.Infos.eAspectRatio; }
+            set
+            {
+                m_FrameServer.VideoFile.ChangeAspectRatio(value);
+                
+                if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				{
+					m_PlayerScreenUI.ImportSelectionToMemory(true);
+				}
+                
+                m_PlayerScreenUI.UpdateImageSize();
+                RefreshImage();
+            }
+        }
         public FrameServerPlayer FrameServer
 		{
 			get { return m_FrameServer; }
@@ -199,22 +215,7 @@ namespace Kinovea.ScreenManager
 				RefreshImage();
             }
         }
-        public VideoFiles.AspectRatio AspectRatio
-        {
-            get { return m_FrameServer.VideoFile.Infos.eAspectRatio; }
-            set
-            {
-                m_FrameServer.VideoFile.ChangeAspectRatio(value);
-                
-                if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-				{
-					m_PlayerScreenUI.ImportSelectionToMemory(true);
-				}
-                
-                m_PlayerScreenUI.UpdateImageSize();
-                RefreshImage();
-            }
-        }
+        
         public bool Mirrored
         {
             get { return m_FrameServer.Metadata.Mirrored; }

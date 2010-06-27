@@ -1426,7 +1426,7 @@ namespace Kinovea.ScreenManager
                     mnuGrid.Checked = cs.ShowGrid;
                     mnuGridPerspective.Checked = cs.Show3DPlane;
                     
-                    ConfigureImageFormatMenus(null);
+                    ConfigureImageFormatMenus(cs);
                     
                     // Motion
                     mnuHighspeedCamera.Enabled = false;
@@ -1665,11 +1665,11 @@ namespace Kinovea.ScreenManager
 	        	}
 			}
         }
-        private void ConfigureImageFormatMenus(PlayerScreen _player)
+        private void ConfigureImageFormatMenus(AbstractScreen _screen)
         {
 			// Set the enable and check prop of the image formats menu according of current screen state.
 			
-        	if(_player != null)
+        	if(_screen != null)
         	{
         		mnuFormat.Enabled = true;
 				mnuFormatAuto.Enabled = true;
@@ -1681,7 +1681,7 @@ namespace Kinovea.ScreenManager
 	        	mnuFormatForce43.Checked = false;
 	        	mnuFormatForce169.Checked = false;
         	
-	        	switch(_player.AspectRatio)
+	        	switch(_screen.AspectRatio)
 	        	{
 	        		case VideoFiles.AspectRatio.Force43:
 	        			mnuFormatForce43.Checked = true;
@@ -2632,46 +2632,30 @@ namespace Kinovea.ScreenManager
         }
         private void mnuFormatAutoOnClick(object sender, EventArgs e)
         {
-        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(player != null)
-        	{
-        		if(player.AspectRatio != VideoFiles.AspectRatio.AutoDetect)
-        		{
-	        		mnuFormatForce43.Checked = false;
-	        		mnuFormatForce169.Checked = false;
-	        		mnuFormatAuto.Checked = true;
-	        		player.AspectRatio = VideoFiles.AspectRatio.AutoDetect;	
-        		}
-        	}
+        	ChangeAspectRatio(VideoFiles.AspectRatio.AutoDetect);
         }
         private void mnuFormatForce43OnClick(object sender, EventArgs e)
         {
-        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(player != null)
-        	{
-        		if(player.AspectRatio != VideoFiles.AspectRatio.Force43)
-        		{
-	        		mnuFormatForce43.Checked = true;
-	        		mnuFormatForce169.Checked = false;
-	        		mnuFormatAuto.Checked = false;
-	        		player.AspectRatio = VideoFiles.AspectRatio.Force43;
-        		}
-        	}
+        	ChangeAspectRatio(VideoFiles.AspectRatio.Force43);
         }
         private void mnuFormatForce169OnClick(object sender, EventArgs e)
         {
-        	PlayerScreen player = m_ActiveScreen as PlayerScreen;
-        	if(player != null)
-        	{
-        		if(player.AspectRatio != VideoFiles.AspectRatio.Force169)
+        	ChangeAspectRatio(VideoFiles.AspectRatio.Force169);
+        }      
+        private void ChangeAspectRatio(VideoFiles.AspectRatio _aspectRatio)
+        {
+        	if(m_ActiveScreen != null)
+        	{        		
+        		if(m_ActiveScreen.AspectRatio != _aspectRatio)
         		{
-	        		mnuFormatForce43.Checked = false;
-	        		mnuFormatForce169.Checked = true;
-	        		mnuFormatAuto.Checked = false;
-	        		player.AspectRatio = VideoFiles.AspectRatio.Force169;
-        		}
+        			m_ActiveScreen.AspectRatio = _aspectRatio;
+        		}	
+        		
+        		mnuFormatForce43.Checked = _aspectRatio == AspectRatio.Force43;
+        		mnuFormatForce169.Checked = _aspectRatio == AspectRatio.Force169;
+        		mnuFormatAuto.Checked = _aspectRatio == AspectRatio.AutoDetect;
         	}
-        }        
+        }
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
         	PlayerScreen player = m_ActiveScreen as PlayerScreen;
@@ -2758,10 +2742,6 @@ namespace Kinovea.ScreenManager
         	}
         }
         #endregion
-        #endregion
-
-        #region Delegates called from UI.
-        
         #endregion
 
         #region Delegates called from anywhere, through Services

@@ -89,7 +89,14 @@ namespace Kinovea.ScreenManager
 			get { return m_CurrentCaptureFilePath; }
 			set { m_CurrentCaptureFilePath = value; }
 		}
-
+		public VideoFiles.AspectRatio AspectRatio
+		{
+			get { return m_AspectRatio; }
+			set 
+			{ 
+				SetAspectRatio(value, m_FrameGrabber.FrameSize);
+			}
+		}
 		#endregion
 		
 		#region Members
@@ -100,6 +107,7 @@ namespace Kinovea.ScreenManager
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_MostRecentImage;
 		private Size m_ImageSize = new Size(720, 576);		
+		private VideoFiles.AspectRatio m_AspectRatio = VideoFiles.AspectRatio.AutoDetect;
 		
 		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
@@ -129,6 +137,7 @@ namespace Kinovea.ScreenManager
 		public FrameServerCapture()
 		{
 			m_FrameGrabber = new FrameGrabberAForge(this, m_FrameBuffer);
+			m_AspectRatio = (VideoFiles.AspectRatio)((int)PreferencesManager.Instance().AspectRatio);
 		}
 		#endregion
 		
@@ -149,7 +158,22 @@ namespace Kinovea.ScreenManager
 			// The frame grabber has just pushed a new frame to the buffer.
 			
 			// Consolidate this real-time frame locally.
-			m_MostRecentImage = m_FrameBuffer.ReadFrameAt(0);
+			Bitmap temp = m_FrameBuffer.ReadFrameAt(0);
+			
+			// Copy the frame over if size change is needed.
+			if(!temp.Size.Equals(m_ImageSize))
+			{
+				m_MostRecentImage = new Bitmap(m_ImageSize.Width, m_ImageSize.Height);
+				Graphics g = Graphics.FromImage(m_MostRecentImage);
+	
+				Rectangle rDst = new Rectangle(0, 0, m_MostRecentImage.Width, m_MostRecentImage.Height);
+				RectangleF rSrc = new Rectangle(0, 0, temp.Width, temp.Height);
+				g.DrawImage(temp, rDst, rSrc, GraphicsUnit.Pixel);	
+			}
+			else
+			{
+				m_MostRecentImage = temp;
+			}
 			
 			// Ask a refresh. This could also be done with a timer,
 			// but using the frame grabber event is convenient.
@@ -166,16 +190,29 @@ namespace Kinovea.ScreenManager
 			{
 				// Is it necessary to make another copy of the frame ?
 				Bitmap bmp = GetFlushedImage();
-				m_VideoFileWriter.SaveFrame(bmp);
+				SaveResult res = m_VideoFileWriter.SaveFrame(bmp);
 				
-				if(!m_bCaptureThumbSet)
+				if(res != SaveResult.Success)
 				{
-					m_CurrentCaptureBitmap = bmp;
-					m_bCaptureThumbSet = true;
+					log.Error("Error while saving frame to file.");
+					DisplayError(res);
+					bmp.Dispose();
+					m_bIsRecording = false;
+					m_VideoFileWriter.CloseSavingContext(true);
+					
+					// TODO: remove broken file.
 				}
 				else
 				{
-					bmp.Dispose();
+					if(!m_bCaptureThumbSet)
+					{
+						m_CurrentCaptureBitmap = bmp;
+						m_bCaptureThumbSet = true;
+					}
+					else
+					{
+						bmp.Dispose();
+					}
 				}
 			}
 		}
@@ -183,13 +220,10 @@ namespace Kinovea.ScreenManager
 		{
 			// This method is still in the grabbing thread. 
 			// (NO UI calls, must use BeginInvoke).
-			
 			if(_size != Size.Empty)
 			{
-				log.Debug(String.Format("Image size specified. ({0})", _size.ToString()));
-				m_ImageSize = new Size(_size.Width, _size.Height);
-				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
-				m_Container.DoInitDecodingSize();
+				SetAspectRatio(m_AspectRatio, _size);
+				log.Debug(String.Format("Image size specified. {0}", m_ImageSize));				
 			}
 			else
 			{
@@ -289,7 +323,21 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// Open a recording context.
-			SaveResult result = m_VideoFileWriter.OpenSavingContext(filepath, null, -1, false);
+			int interval = 40;
+			InfosVideo iv = new InfosVideo();
+			
+			// The FileWriter will currently only use the original size due to some problems.
+			// Most notably, DV video passed into 16:9 (720x405) crashes swscale().
+			iv.iWidth = m_FrameGrabber.FrameSize.Width;
+			iv.iHeight = m_FrameGrabber.FrameSize.Height;
+						
+			if(m_FrameGrabber.FramesInterval > 0)
+			{
+				// Hack. For interlaced video, we get the fields interval, which is half the frame interval.
+				interval = m_FrameGrabber.FramesInterval * 2;
+			}
+			
+			SaveResult result = m_VideoFileWriter.OpenSavingContext(filepath, iv, interval, false);
 			
 			if(result == SaveResult.Success)
 			{
@@ -342,16 +390,7 @@ namespace Kinovea.ScreenManager
 			_canvas.SmoothingMode = SmoothingMode.None;
 			
 			// Draw image.
-			Rectangle rDst;
-			/*if(m_FrameServer.Metadata.Mirrored)
-			{
-				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
-			}
-			else
-			{
-				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
-			}*/
-			
+			Rectangle rDst;			
 			rDst = new Rectangle(0, 0, _outputSize.Width, _outputSize.Height);
 			
 			RectangleF rSrc;
@@ -361,7 +400,7 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				rSrc = new Rectangle(0, 0, m_ImageSize.Width, m_ImageSize.Height);
+				rSrc = new Rectangle(0, 0, _image.Width, _image.Height);
 			}
 			
 			_canvas.DrawImage(_image, rDst, rSrc, GraphicsUnit.Pixel);
@@ -437,5 +476,33 @@ namespace Kinovea.ScreenManager
                 MessageBoxIcon.Exclamation);
         }
 		#endregion
+	
+		private void SetAspectRatio(VideoFiles.AspectRatio _aspectRatio, Size _size)
+		{
+			m_AspectRatio = _aspectRatio;
+			
+			if(m_FrameGrabber.IsConnected)
+			{
+				int newHeight;
+				
+				switch(_aspectRatio)
+				{
+					case AspectRatio.AutoDetect:
+					default:
+						newHeight = _size.Height;
+						break;
+					case AspectRatio.Force43:
+						newHeight = (_size.Width / 4) * 3;
+						break;
+					case AspectRatio.Force169:
+						newHeight = (_size.Width / 16) * 9;
+						break;
+				}
+				
+				m_ImageSize = new Size(_size.Width, newHeight);
+				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
+				m_Container.DoInitDecodingSize();				
+			}
+		}
 	}
 }

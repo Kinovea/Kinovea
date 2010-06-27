@@ -46,6 +46,16 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_CurrentVideoDevice.Name; }
 		}
+		public override int FramesInterval
+		{
+			get { return m_FramesInterval; }
+		}
+		public override Size FrameSize
+		{
+			// This may not be used because the user may want to bypass and force an aspect ratio.
+			// In this case, only the FrameServerCapture is aware of the final image size.
+			get { return m_FrameSize; }
+		}	
 		#endregion
 		
 		#region Members
@@ -56,6 +66,8 @@ namespace Kinovea.ScreenManager
 		private bool m_bIsConnected;
 		private bool m_bIsGrabbing;
 		private bool m_bSizeKnown;
+		private int m_FramesInterval = -1;
+		private Size m_FrameSize;
 		private int m_iConnectionsAttempts;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
@@ -179,7 +191,15 @@ namespace Kinovea.ScreenManager
 			m_VideoDevice = new VideoCaptureDevice(_device.Identification);
 			m_VideoDevice.DesiredFrameRate = 0;
 			m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
+			
 			m_bIsConnected = true;
+			
+			if(m_VideoDevice.VideoCapabilities.Length > 0)
+			{
+				m_FrameSize = m_VideoDevice.VideoCapabilities[0].FrameSize;
+				m_FramesInterval = 1000 / m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
+				log.Debug(String.Format("Reading Device Capabilities. Frame size:{0}, Frames interval : {1}", m_FrameSize, m_FramesInterval));
+			}
 		}
 		private void Disconnect()
 		{
@@ -205,12 +225,17 @@ namespace Kinovea.ScreenManager
 		}
 		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
 		{
-			
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
 			if(!m_bSizeKnown)
 			{
 				m_bSizeKnown = true;
-				m_Container.SetImageSize(eventArgs.Frame.Size);
+				Size sz = eventArgs.Frame.Size;
+				
+				m_Container.SetImageSize(sz);
+				log.Debug(String.Format("Device infos : {0}. Received frame : {1}", m_FrameSize, sz));
+				
+				// Update the "official" size (used for saving context.)
+				m_FrameSize = sz;
 			}
 			
 			m_FrameBuffer.PushFrame(eventArgs.Frame);

@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
@@ -42,6 +43,14 @@ namespace Kinovea.ScreenManager
 		{
 			get;
 		}
+		public abstract int FramesInterval
+		{
+			get;
+		}
+		public abstract Size FrameSize
+		{
+			get;
+		}	
 		
 		public abstract void PromptDeviceSelector();
 		public abstract void NegociateDevice();
