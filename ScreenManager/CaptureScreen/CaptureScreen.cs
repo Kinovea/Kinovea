@@ -65,6 +65,11 @@ namespace Kinovea.ScreenManager
 		{
 			get { return true;}
 		}
+		public override VideoFiles.AspectRatio AspectRatio
+		{
+			get { return m_FrameServer.AspectRatio; }
+			set { m_FrameServer.AspectRatio = value; }
+		}
 		public bool ShowGrid
         {
             get { return m_FrameServer.Metadata.Grid.Visible; }

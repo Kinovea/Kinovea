@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
 				
 		#region Members
 		private List<Bitmap> m_Bitmaps = new List<Bitmap>();
-		private int m_iBufferCapacity = 25;
+		private int m_iBufferCapacity = 5;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -71,7 +71,8 @@ namespace Kinovea.ScreenManager
 			// not just a reference to something that might be written over at any time.
 			Bitmap frame = null;
 			if(_iIndex >= 0 && _iIndex < m_Bitmaps.Count)
-			{
+			{				
+				// TODO: implement the proper circular buffer and we shouldn't need to clone anymore.
 				frame = AForge.Imaging.Image.Clone(m_Bitmaps[_iIndex]);
 			}
 			return frame;

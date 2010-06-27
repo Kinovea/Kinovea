@@ -582,12 +582,14 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.CoordinateSystem.Stretch = 1.0;
 				}
 				
+				Size imgSize = m_FrameServer.ImageSize;
+				
 				//---------------------------------------------------------------
 				// Check if the stretch factor is not going to outsize the panel.
 				// If so, force maximized, unless screen is smaller than video.
 				//---------------------------------------------------------------
-				int iTargetHeight = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
-				int iTargetWidth = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+				int iTargetHeight = (int)((double)imgSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				int iTargetWidth = (int)((double)imgSize.Width * m_FrameServer.CoordinateSystem.Stretch);
 				
 				if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
 				{
@@ -597,25 +599,25 @@ namespace Kinovea.ScreenManager
 					}
 				}
 				
-				if ((m_bStretchModeOn) || (m_FrameServer.ImageSize.Width > panelCenter.Width) || (m_FrameServer.ImageSize.Height > panelCenter.Height))
+				if ((m_bStretchModeOn) || (imgSize.Width > panelCenter.Width) || (imgSize.Height > panelCenter.Height))
 				{
 					//-------------------------------------------------------------------------------
 					// Maximiser :
 					// Redimensionner l'image selon la dimension la plus proche de la taille du panel.
 					//-------------------------------------------------------------------------------
-					float WidthRatio = (float)m_FrameServer.ImageSize.Width / panelCenter.Width;
-					float HeightRatio = (float)m_FrameServer.ImageSize.Height / panelCenter.Height;
+					float WidthRatio = (float)imgSize.Width / panelCenter.Width;
+					float HeightRatio = (float)imgSize.Height / panelCenter.Height;
 					
 					if (WidthRatio > HeightRatio)
 					{
 						pbSurfaceScreen.Width = panelCenter.Width;
-						pbSurfaceScreen.Height = (int)((float)m_FrameServer.ImageSize.Height / WidthRatio);
+						pbSurfaceScreen.Height = (int)((float)imgSize.Height / WidthRatio);
 						
 						m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
 					}
 					else
 					{
-						pbSurfaceScreen.Width = (int)((float)m_FrameServer.ImageSize.Width / HeightRatio);
+						pbSurfaceScreen.Width = (int)((float)imgSize.Width / HeightRatio);
 						pbSurfaceScreen.Height = panelCenter.Height;
 						
 						m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
@@ -623,8 +625,8 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					pbSurfaceScreen.Width = (int)((double)m_FrameServer.ImageSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-					pbSurfaceScreen.Height = (int)((double)m_FrameServer.ImageSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+					pbSurfaceScreen.Width = (int)((double)imgSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+					pbSurfaceScreen.Height = (int)((double)imgSize.Height * m_FrameServer.CoordinateSystem.Stretch);
 				}
 				
 				// Center
@@ -633,7 +635,7 @@ namespace Kinovea.ScreenManager
 				ReplaceResizers();
 				
 				// Redefine grids.
-				Size imageSize = new Size(m_FrameServer.ImageSize.Width, m_FrameServer.ImageSize.Height);
+				Size imageSize = new Size(imgSize.Width, imgSize.Height);
 				m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 				m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);	
 			}
