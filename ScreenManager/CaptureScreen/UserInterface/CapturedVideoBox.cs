@@ -65,14 +65,18 @@ namespace Kinovea.ScreenManager
             m_bAutoUpdatingTitle = true;
             tbTitle.Text = Path.GetFileName(m_CapturedVideo.Filepath);
             m_bAutoUpdatingTitle = false;
+            
 		}
 		#endregion
 		
 		#region Event Handlers - Mouse Enter / Leave
+		private void Controls_MouseDown(object sender, MouseEventArgs e)
+        {
+        	DoDragDrop(m_CapturedVideo.Filepath, DragDropEffects.Copy);
+        }
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
         	ShowButtons();
-        	//this.Focus();
         }
         private void Controls_MouseLeave(object sender, EventArgs e)
         {
@@ -157,5 +161,7 @@ namespace Kinovea.ScreenManager
         	}
         }
         #endregion
+        
+        
 	}
 }
