@@ -19,17 +19,20 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// ICommonControlsHandler.
-	/// Groups the methods of ScreenManager that must be reached from the 
-	/// CommonControls UI.
+	/// IScreenManagerUIContainer.
+	/// Groups the methods of ScreenManager that must be reached from the UI. 
 	/// This avoid a tunnel of several delegates, without the need to expose all the SM to the UI.
 	/// </summary>
-	public interface ICommonControlsHandler
+	public interface IScreenManagerUIContainer
 	{
+		DragDropEffects GetDragDropEffects(int _screen);
+		void DropLoadMovie(string _FilePath, int _iScreen);
+		
 		void CommonCtrl_GotoFirst();
 		void CommonCtrl_GotoPrev();
 		void CommonCtrl_GotoNext();

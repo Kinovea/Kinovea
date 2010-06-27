@@ -31,9 +31,9 @@ namespace Kinovea.ScreenManager
     public partial class CommonControls : UserControl
     {
         #region Properties
-        public ICommonControlsHandler CommonControlsHandler
+        public IScreenManagerUIContainer ScreenManagerUIContainer
 		{
-			set { m_CommonControlsHandler = value; }
+			set { m_ScreenManagerUIContainer = value; }
 		}
         public bool Playing
         {
@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
         private bool m_bPlaying;
         private bool m_bSyncMerging;
 		private long m_iOldPosition;
-		private ICommonControlsHandler m_CommonControlsHandler;
+		private IScreenManagerUIContainer m_ScreenManagerUIContainer;
 		private Button btnSnapShot = new Button();
 		private Button btnDualVideo = new Button();
         #endregion
@@ -78,7 +78,6 @@ namespace Kinovea.ScreenManager
         public CommonControls()
         {
             InitializeComponent();
-            
             PostInit();
         }
         private void PostInit()
@@ -141,81 +140,81 @@ namespace Kinovea.ScreenManager
         #region Buttons Handlers
         public void buttonGotoFirst_Click(object sender, EventArgs e)
         {
-        	if(m_CommonControlsHandler != null)
+        	if(m_ScreenManagerUIContainer != null)
         	{
-        		m_CommonControlsHandler.CommonCtrl_GotoFirst();
+        		m_ScreenManagerUIContainer.CommonCtrl_GotoFirst();
         		trkFrame.Position = trkFrame.Minimum;
             	PlayStopped();
         	}
         }
         public void buttonGotoPrevious_Click(object sender, EventArgs e)
         {
-            if(m_CommonControlsHandler != null)
+            if(m_ScreenManagerUIContainer != null)
             { 
-            	m_CommonControlsHandler.CommonCtrl_GotoPrev(); 
+            	m_ScreenManagerUIContainer.CommonCtrl_GotoPrev(); 
             	trkFrame.Position--;
             }
         }
         public void buttonPlay_Click(object sender, EventArgs e)
         {
-            if(m_CommonControlsHandler != null)
+            if(m_ScreenManagerUIContainer != null)
         	{
                 m_bPlaying = !m_bPlaying;
                 RefreshPlayButton();
-                m_CommonControlsHandler.CommonCtrl_Play(); 
+                m_ScreenManagerUIContainer.CommonCtrl_Play(); 
             }
         }
         public void buttonGotoNext_Click(object sender, EventArgs e)
         {
-            if(m_CommonControlsHandler != null)
+            if(m_ScreenManagerUIContainer != null)
         	{ 
-            	m_CommonControlsHandler.CommonCtrl_GotoNext(); 
+            	m_ScreenManagerUIContainer.CommonCtrl_GotoNext(); 
             	trkFrame.Position++;
             }
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
         {
-            if(m_CommonControlsHandler != null)
+            if(m_ScreenManagerUIContainer != null)
         	{
-            	m_CommonControlsHandler.CommonCtrl_GotoLast(); 
+            	m_ScreenManagerUIContainer.CommonCtrl_GotoLast(); 
             	trkFrame.Position = trkFrame.Maximum;
             }
         }
         private void btnSwap_Click(object sender, EventArgs e)
         {
-            if(m_CommonControlsHandler != null)
+            if(m_ScreenManagerUIContainer != null)
         	{ 
-            	m_CommonControlsHandler.CommonCtrl_Swap(); 
+            	m_ScreenManagerUIContainer.CommonCtrl_Swap(); 
             }
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
-            if(m_CommonControlsHandler != null)
+            if(m_ScreenManagerUIContainer != null)
         	{ 
-            	m_CommonControlsHandler.CommonCtrl_Sync(); 
+            	m_ScreenManagerUIContainer.CommonCtrl_Sync(); 
             }
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-       		if(m_CommonControlsHandler != null)
+       		if(m_ScreenManagerUIContainer != null)
         	{ 
        			m_bSyncMerging = !m_bSyncMerging;
-       			m_CommonControlsHandler.CommonCtrl_Merge();
+       			m_ScreenManagerUIContainer.CommonCtrl_Merge();
        			RefreshMergeTooltip();
        		}
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-       		if(m_CommonControlsHandler != null)
+       		if(m_ScreenManagerUIContainer != null)
         	{ 
-       			m_CommonControlsHandler.CommonCtrl_Snapshot();
+       			m_ScreenManagerUIContainer.CommonCtrl_Snapshot();
        		}
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
-       		if(m_CommonControlsHandler != null)
+       		if(m_ScreenManagerUIContainer != null)
         	{ 
-       			m_CommonControlsHandler.CommonCtrl_DualVideo();
+       			m_ScreenManagerUIContainer.CommonCtrl_DualVideo();
        		}
         }
         
@@ -228,9 +227,9 @@ namespace Kinovea.ScreenManager
             if(_iPosition != m_iOldPosition)
         	{
         		m_iOldPosition = _iPosition;
-            	if(m_CommonControlsHandler != null)
+            	if(m_ScreenManagerUIContainer != null)
         		{ 
-            		m_CommonControlsHandler.CommonCtrl_PositionChanged(_iPosition); 
+            		m_ScreenManagerUIContainer.CommonCtrl_PositionChanged(_iPosition); 
             	}
         	}
         }

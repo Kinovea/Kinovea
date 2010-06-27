@@ -33,16 +33,11 @@ namespace Kinovea.ScreenManager
     public partial class ScreenManagerUserInterface : UserControl
     {
         #region Delegates
-
-        // Déclarations de Types
-        public delegate void CallbackDropLoadMovie(string _FilePath, int _iScreen);
-
-        // Déclarations des variables
-        public Kinovea.ScreenManager.ScreenManagerUserInterface.CallbackDropLoadMovie m_CallbackDropLoadMovie;
-
+        //public delegate void CallbackDropLoadMovie(string _FilePath, int _iScreen);
         public delegate void DelegateUpdateTrkFrame(int _iFrame);
-        public Kinovea.ScreenManager.ScreenManagerUserInterface.DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
-
+        
+        //public CallbackDropLoadMovie m_CallbackDropLoadMovie;
+        public DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
         #endregion
 
         public ThumbListView m_ThumbsViewer = new ThumbListView();
@@ -50,18 +45,19 @@ namespace Kinovea.ScreenManager
         #region Members
         private List<String> m_FolderFileNames = new List<String>();
         private bool m_bThumbnailsWereVisible;
-        private ICommonControlsHandler m_CommonControlsHandler;
+        private IScreenManagerUIContainer m_ScreenManagerUIContainer;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
-		public ScreenManagerUserInterface(ICommonControlsHandler _CommonControlsHandler)
+		public ScreenManagerUserInterface(IScreenManagerUIContainer _ScreenManagerUIContainer)
         {
         	log.Debug("Constructing ScreenManagerUserInterface.");
 
-        	m_CommonControlsHandler = _CommonControlsHandler;
+        	m_ScreenManagerUIContainer = _ScreenManagerUIContainer;
         	
             InitializeComponent();
-            ComCtrls.CommonControlsHandler = m_CommonControlsHandler;
+            ComCtrls.ScreenManagerUIContainer = m_ScreenManagerUIContainer;
+            m_ThumbsViewer.ScreenManagerUIContainer = m_ScreenManagerUIContainer;
             
             BackColor = Color.White;
             Dock = DockStyle.Fill;
@@ -101,7 +97,7 @@ namespace Kinovea.ScreenManager
 			string filePath = CommandLineArgumentManager.Instance().InputFile;
 			if(filePath != null && File.Exists(filePath))
 			{
-				m_CallbackDropLoadMovie(filePath, -1);
+				m_ScreenManagerUIContainer.DropLoadMovie(filePath, -1);
 			}
 		}
         
@@ -166,60 +162,45 @@ namespace Kinovea.ScreenManager
         #region DragDrop
         private void ScreenManagerUserInterface_DragOver(object sender, DragEventArgs e)
         {
-            e.Effect = DragDropEffects.All;
+        	e.Effect = m_ScreenManagerUIContainer.GetDragDropEffects(-1);
         }
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {
                 CommitDrop(e, -1);
         }
-        
         private void splitScreens_Panel1_DragOver(object sender, DragEventArgs e)
         {
-            e.Effect = DragDropEffects.All;
+        	e.Effect = m_ScreenManagerUIContainer.GetDragDropEffects(0);
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
             CommitDrop(e, 1);
         }
-        
         private void splitScreens_Panel2_DragOver(object sender, DragEventArgs e)
         {
-            e.Effect = DragDropEffects.All;
+        	e.Effect = m_ScreenManagerUIContainer.GetDragDropEffects(1);
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
             CommitDrop(e, 2);
         }
-
         private void CommitDrop(DragEventArgs e, int _iScreen)
         {
             //-----------------------------------------------------------
-            // Un objet vient d'être déposé
-            // On supporte le drag&drop depuis le FileExplorer (listview)
-            // depuis l'explorateur windows,
-            // mais pas entre les écrans. (swap)
+            // An object has been dropped.
+            // Support drag & drop from the FileExplorer module (listview)
+            // or from the Windows Explorer.
+            // Not between screens.
             //-----------------------------------------------------------
             if (e.Data.GetDataPresent(DataFormats.StringFormat))
             {
-                //--------------------------------------
-                // Chaîne en provenance du FileExplorer.
-                //--------------------------------------
+                // String. Coming from the file explorer.
                 string filePath = (string)e.Data.GetData(DataFormats.StringFormat);
-                //if(filePath.Equals("swap"))
-                //{
-                //    // DragDrop entre les deux écrans désactivé : intérfère avec les
-                //    // outils de dessins...
-                //}
-                //else
-                //{
-                    m_CallbackDropLoadMovie(filePath, _iScreen);
-                //}
+                m_ScreenManagerUIContainer.DropLoadMovie(filePath, _iScreen);
             }
             else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                //------------------------------------------------
-                // Fichier en provenance de l'explorateur windows.
-                //------------------------------------------------
+                // File. Coming from Windows Explorer.
                 Array fileArray = (Array)e.Data.GetData(DataFormats.FileDrop);
 
                 if (fileArray != null)
@@ -229,8 +210,7 @@ namespace Kinovea.ScreenManager
                     // (ignore all files except first if number of files are dropped).
                     //----------------------------------------------------------------
                     string filePath = fileArray.GetValue(0).ToString();
-
-                    m_CallbackDropLoadMovie(filePath, _iScreen);
+                    m_ScreenManagerUIContainer.DropLoadMovie(filePath, _iScreen);
                 }
             }
 

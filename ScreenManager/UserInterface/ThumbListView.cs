@@ -61,8 +61,10 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Properties
-		public ScreenManagerUserInterface.CallbackDropLoadMovie m_CallBackLoadMovie;
-		
+		public IScreenManagerUIContainer ScreenManagerUIContainer
+		{
+			set { m_ScreenManagerUIContainer = value; }
+		}
 		#endregion
 
 		#region Members
@@ -79,8 +81,7 @@ namespace Kinovea.ScreenManager
 		private ThumbListViewItem m_SelectedVideo;
 				
 		private bool m_bEditMode;
-		//private PerformanceCounter m_RamCounter;
-		//private float m_fLastRamValue;
+		private IScreenManagerUIContainer m_ScreenManagerUIContainer;
 		private PreferencesManager m_PreferencesManager = PreferencesManager.Instance();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
@@ -376,12 +377,9 @@ namespace Kinovea.ScreenManager
 			CancelEditMode();
 			ThumbListViewItem tlvi = sender as ThumbListViewItem;
 			
-			if (m_CallBackLoadMovie != null && tlvi != null)
+			if (tlvi != null && !tlvi.ErrorImage)
 			{
-				if(!tlvi.ErrorImage)
-				{
-					m_CallBackLoadMovie(tlvi.FileName, -1);
-				}
+				m_ScreenManagerUIContainer.DropLoadMovie(tlvi.FileName, -1);
 			}
 		}
 		private void ThumbListViewItem_VideoSelected(object sender, EventArgs e)
@@ -596,11 +594,11 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.Return:
 						{
-							if (m_SelectedVideo != null && m_CallBackLoadMovie != null)
+							if (m_SelectedVideo != null)
 							{
 								if (!m_SelectedVideo.ErrorImage)
 								{
-									m_CallBackLoadMovie(m_SelectedVideo.FileName, -1);
+									m_ScreenManagerUIContainer.DropLoadMovie(m_SelectedVideo.FileName, -1);
 								}
 							}
 							break;

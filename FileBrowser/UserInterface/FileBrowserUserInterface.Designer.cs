@@ -239,7 +239,7 @@ namespace Kinovea.FileBrowser
         	// 
         	this.btnDeleteShortcut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnDeleteShortcut.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDeleteShortcut.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnDeleteShortcut.BackgroundImage")));
+        	this.btnDeleteShortcut.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_delete;
         	this.btnDeleteShortcut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDeleteShortcut.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.btnDeleteShortcut.FlatAppearance.BorderSize = 0;
@@ -256,7 +256,7 @@ namespace Kinovea.FileBrowser
         	// btnAddShortcut
         	// 
         	this.btnAddShortcut.BackColor = System.Drawing.Color.Transparent;
-        	this.btnAddShortcut.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnAddShortcut.BackgroundImage")));
+        	this.btnAddShortcut.BackgroundImage = global::Kinovea.FileBrowser.Properties.Resources.folder_add;
         	this.btnAddShortcut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnAddShortcut.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.btnAddShortcut.FlatAppearance.BorderSize = 0;

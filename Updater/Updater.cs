@@ -74,6 +74,7 @@ namespace Kinovea.Updater
             ToolStripMenuItem mnuCheckForUpdates = new ToolStripMenuItem();
             mnuCheckForUpdates.Tag = new ItemResourceInfo(resManager, "mnuCheckForUpdates");
             mnuCheckForUpdates.Text = ((ItemResourceInfo)mnuCheckForUpdates.Tag).resManager.GetString(((ItemResourceInfo)mnuCheckForUpdates.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuCheckForUpdates.Image = Properties.Resources.software_update;
             mnuCheckForUpdates.Click += new EventHandler(mnuCheckForUpdatesOnClick);
 
             mnuCheckForUpdates.MergeIndex = 3;

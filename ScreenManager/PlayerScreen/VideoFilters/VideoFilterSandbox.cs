@@ -80,6 +80,7 @@ namespace Kinovea.ScreenManager
 			// Menu
             m_Menu = new ToolStripMenuItem();
             m_Menu.Text = "Sandbox";
+            m_Menu.Image = Properties.Resources.controller;
             m_Menu.Click += new EventHandler(Menu_OnClick);
             m_Menu.MergeAction = MergeAction.Append;
 		}

@@ -100,12 +100,14 @@ namespace Kinovea.FileBrowser
 			// Add an item to shortcuts
 			mnuAddToShortcuts.Tag = new ItemResourceInfo(m_ResManager, "mnuAddToShortcuts");
 			mnuAddToShortcuts.Text = ((ItemResourceInfo)mnuAddToShortcuts.Tag).resManager.GetString(((ItemResourceInfo)mnuAddToShortcuts.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			mnuAddToShortcuts.Image = Properties.Resources.folder_add;
 			mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
 			mnuAddToShortcuts.Visible = false;
 			
 			// Delete selected shortcut
 			mnuDeleteShortcut.Tag = new ItemResourceInfo(m_ResManager, "mnuDeleteShortcut");
 			mnuDeleteShortcut.Text = ((ItemResourceInfo)mnuDeleteShortcut.Tag).resManager.GetString(((ItemResourceInfo)mnuDeleteShortcut.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			mnuDeleteShortcut.Image = Properties.Resources.folder_delete;
 			mnuDeleteShortcut.Click += new EventHandler(mnuDeleteShortcut_Click);
 			mnuDeleteShortcut.Visible = false;
 			
