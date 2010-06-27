@@ -407,7 +407,7 @@ namespace Kinovea.ScreenManager
         	this.btnDefaultProfile.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
         	this.btnDefaultProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
         	this.btnDefaultProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnDefaultProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.resetcolor;
+        	this.btnDefaultProfile.Image = global::Kinovea.ScreenManager.Properties.Resources.bin_empty;
         	this.btnDefaultProfile.Location = new System.Drawing.Point(202, 5);
         	this.btnDefaultProfile.Name = "btnDefaultProfile";
         	this.btnDefaultProfile.Size = new System.Drawing.Size(25, 25);

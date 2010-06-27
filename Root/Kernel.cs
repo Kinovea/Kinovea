@@ -359,7 +359,7 @@ namespace Kinovea.Root
             ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
             mnuHistoryReset.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistoryReset");
             mnuHistoryReset.Text = ((ItemResourceInfo)mnuHistoryReset.Tag).resManager.GetString(((ItemResourceInfo)mnuHistoryReset.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuHistoryReset.Image = Properties.Resources.time_delete;
+            mnuHistoryReset.Image = Properties.Resources.bin_empty;
             mnuHistoryReset.MergeAction = MergeAction.Append;
             mnuHistoryReset.Visible = false;
             mnuHistoryReset.Click += new EventHandler(mnuHistoryResetOnClick);

@@ -240,7 +240,7 @@ namespace Kinovea.ScreenManager
             //Close File (1)
             mnuCloseFile.Tag = new ItemResourceInfo(resManager, "Generic_Close");
             mnuCloseFile.Text = ((ItemResourceInfo)mnuCloseFile.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuCloseFile.Image = Properties.Resources.video_close;
+            mnuCloseFile.Image = Properties.Resources.film_close3;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
 
@@ -250,7 +250,7 @@ namespace Kinovea.ScreenManager
             //Close File (2)
             mnuCloseFile2.Tag = new ItemResourceInfo(resManager, "Generic_Close");
             mnuCloseFile2.Text = ((ItemResourceInfo)mnuCloseFile2.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseFile2.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuCloseFile2.Image = Properties.Resources.video_close;
+            mnuCloseFile2.Image = Properties.Resources.film_close3;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
@@ -416,12 +416,14 @@ namespace Kinovea.ScreenManager
             // Format 4:3
             mnuFormatForce43.Tag = new ItemResourceInfo(resManager, "mnuFormatForce43");
             mnuFormatForce43.Text = ((ItemResourceInfo)mnuFormatForce43.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatForce43.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFormatForce43.Image = Properties.Resources.format43;
             mnuFormatForce43.Click += new EventHandler(mnuFormatForce43OnClick);
             mnuFormatForce43.MergeAction = MergeAction.Append;
 
             // Format 16:9
             mnuFormatForce169.Tag = new ItemResourceInfo(resManager, "mnuFormatForce169");
             mnuFormatForce169.Text = ((ItemResourceInfo)mnuFormatForce169.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatForce169.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFormatForce169.Image = Properties.Resources.format169;
             mnuFormatForce169.Click += new EventHandler(mnuFormatForce169OnClick);
             mnuFormatForce169.MergeAction = MergeAction.Append;
             
