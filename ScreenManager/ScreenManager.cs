@@ -1263,7 +1263,7 @@ namespace Kinovea.ScreenManager
                 dp.UpdateStatusBar(StatusString);
             }
         }
-        private void OrganizeCommonControls()
+        public void OrganizeCommonControls()
         {
         	m_bCanShowCommonControls = false;
         	

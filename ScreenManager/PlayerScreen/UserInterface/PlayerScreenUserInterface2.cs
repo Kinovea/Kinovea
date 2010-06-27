@@ -4096,22 +4096,31 @@ namespace Kinovea.ScreenManager
 
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				// As of now, Keyframes infobox should display when we are on a keyframe
-				m_KeyframeCommentsHub.UserActivated = true;
-
-				if (m_iActiveKeyFrameIndex < 0)
+				if(!m_KeyframeCommentsHub.UserActivated)
 				{
-					// We are not on a keyframe but user asked to show the infos...
-					// did he want to create a keyframe here and put some infos,
-					// or did he only want to activate the infobox for next keyframes ?
-					//
-					// Since he clicked on the DrawingTools bar, we will act as if it was a Drawing,
-					// and add a keyframe here in case there isn't already one.
-					AddKeyframe();
+					// As of now, Keyframes infobox should display when we are on a keyframe
+					m_KeyframeCommentsHub.UserActivated = true;
+		
+					if (m_iActiveKeyFrameIndex < 0)
+					{
+						// We are not on a keyframe but user asked to show the infos...
+						// did he want to create a keyframe here and put some infos,
+						// or did he only want to activate the infobox for next keyframes ?
+						//
+						// Since he clicked on the DrawingTools bar, we will act as if it was a Drawing,
+						// and add a keyframe here in case there isn't already one.
+						AddKeyframe();
+					}
+		
+					m_KeyframeCommentsHub.UpdateContent(m_FrameServer.Metadata[m_iActiveKeyFrameIndex]);
+					m_KeyframeCommentsHub.Visible = true;
 				}
-
-				m_KeyframeCommentsHub.UpdateContent(m_FrameServer.Metadata[m_iActiveKeyFrameIndex]);
-				m_KeyframeCommentsHub.Visible = true;
+				else
+				{
+					m_KeyframeCommentsHub.UserActivated = false;
+					m_KeyframeCommentsHub.Visible = false;
+				}
+				
 			}
 		}
 		private void btnColorProfile_Click(object sender, EventArgs e)
