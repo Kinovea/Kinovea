@@ -393,7 +393,7 @@ namespace Kinovea.FileBrowser
 			{        		
 				// User must first select a node to add it to shortcuts.
 				// Otherwise we don't have the infos about the item.
-				if(etShortcuts.IsOnSelectedItem(e.Location))
+				if(m_CurrentExptreeItem != null && etShortcuts.IsOnSelectedItem(e.Location))
 				{
 					if(!m_CurrentExptreeItem.Path.StartsWith("::"))
 					{

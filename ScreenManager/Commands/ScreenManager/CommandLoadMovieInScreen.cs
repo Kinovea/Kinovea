@@ -299,6 +299,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            screenManagerKernel.OrganizeCommonControls();
             screenManagerKernel.OrganizeMenus();
             screenManagerKernel.UpdateStatusBar();
         }

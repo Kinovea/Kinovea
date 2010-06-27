@@ -108,7 +108,7 @@
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Par défaut, les dessins resteront visibles pendant {0} images autour de leur Image Clé.</value></data>
    <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unité de vitesse :</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Mètres / seconde ({0})</value></data>
-   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilomètre / heure ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilomètres / heure ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pieds / seconde ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Miles / heure ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nœuds ({0})</value></data>
