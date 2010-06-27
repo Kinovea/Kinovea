@@ -78,6 +78,14 @@ namespace Kinovea.Root.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap bin_empty
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("bin_empty", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap book_open
 		{
 			get
@@ -179,14 +187,6 @@ namespace Kinovea.Root.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("time", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		internal static System.Drawing.Bitmap time_delete
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("time_delete", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}

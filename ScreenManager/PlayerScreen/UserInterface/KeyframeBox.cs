@@ -98,6 +98,10 @@ namespace Kinovea.ScreenManager
                 StopEditing();
             }
         }
+        private void Controls_MouseDoubleClick(object sender, EventArgs e)
+        {
+        	if (ClickInfos != null) ClickInfos(this, e);	
+        }
         #endregion
 
 		#region Event Handlers - Buttons / Text
@@ -183,5 +187,6 @@ namespace Kinovea.ScreenManager
 			}
         }
         #endregion
+        
     }
 }

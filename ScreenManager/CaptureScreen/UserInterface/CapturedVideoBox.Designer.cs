@@ -40,7 +40,7 @@
         	// 
         	this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnClose.BackColor = System.Drawing.Color.Transparent;
-        	this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.close15x15;
+        	this.btnClose.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.bullet_close_black;
         	this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
         	this.btnClose.FlatAppearance.BorderSize = 0;
         	this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
