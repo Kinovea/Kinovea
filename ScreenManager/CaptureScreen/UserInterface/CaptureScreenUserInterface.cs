@@ -381,14 +381,20 @@ namespace Kinovea.ScreenManager
 			
 			// 1. Default context menu.
 			mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
+			mnuSavePic.Image = Properties.Resources.picture_save;
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
+			mnuCloseScreen.Image = Properties.Resources.video_close;
 			popMenu.Items.AddRange(new ToolStripItem[] { mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
+			mnuConfigureDrawing.Image = Properties.Resources.wrench;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
+			mnuDeleteDrawing.Image = Properties.Resources.delete;
 			mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
+			mnuShowMeasure.Image = Properties.Resources.measure;
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
+			mnuSealMeasure.Image = Properties.Resources.textfield;
 			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuSepDrawing, mnuShowMeasure, mnuSealMeasure, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 5. Magnifier
@@ -399,12 +405,16 @@ namespace Kinovea.ScreenManager
 			mnuMagnifier225.Click += new EventHandler(mnuMagnifier225_Click);
 			mnuMagnifier250.Click += new EventHandler(mnuMagnifier250_Click);
 			mnuMagnifierDirect.Click += new EventHandler(mnuMagnifierDirect_Click);
+			mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
 			mnuMagnifierQuit.Click += new EventHandler(mnuMagnifierQuit_Click);
+			mnuMagnifierQuit.Image = Properties.Resources.hide2;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { mnuMagnifier150, mnuMagnifier175, mnuMagnifier200, mnuMagnifier225, mnuMagnifier250, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 			
 			// 6. Grids
 			mnuGridsConfigure.Click += new EventHandler(mnuGridsConfigure_Click);
+			mnuGridsConfigure.Image = Properties.Resources.wrench;
 			mnuGridsHide.Click += new EventHandler(mnuGridsHide_Click);
+			mnuGridsHide.Image = Properties.Resources.hide2;
 			popMenuGrids.Items.AddRange(new ToolStripItem[] { mnuGridsConfigure, mnuGridsHide });
 			
 			// Default :
@@ -517,96 +527,46 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Video Controls
-		private void btnRecord_Click(object sender, EventArgs e)
-        {
-			if(m_FrameServer.IsRecording)
-			{
-				m_FrameServer.StopRecording();
-				EnableVideoFileEdit(true);
-				
-				// update file name.
-				tbVideoFilename.Text = CreateNewFilename(Path.GetFileName(m_FrameServer.CurrentCaptureFilePath));
-				
-				DisplayAsRecording(false);
-			}
-			else
-			{
-				// Start exporting frames to a video.
-			
-				// Check that the destination folder exists.
-				if(!ValidateFilename(tbVideoFilename.Text, false))
-				{
-					AlertInvalidFilename();	
-				}
-				else if(Directory.Exists(tbVideoDirectory.Text))
-				{
-					EnableVideoFileEdit(false);
-					
-					// no extension : mkv.
-					// extension specified by user : honor it if supported, mkv otherwise.
-					string filename = tbVideoFilename.Text;
-					string filenameToLower = filename.ToLower();
-					string filepath = tbVideoDirectory.Text + "\\" + filename;
-					
-					if(filename != "")
-					{
-						m_FrameServer.CurrentCaptureFilePath = filepath;
-						
-						if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
-						{
-							filepath = filepath + ".mkv";	
-						}
-						
-						m_FrameServer.StartRecording(filepath);
-						
-						DisplayAsRecording(true);
-					}
-					else
-					{
-						tbVideoFilename.Text = CreateNewFilename("");	
-					}
-				}
-				else
-				{
-					btnBrowseVideoLocation_Click(null, EventArgs.Empty);
-				}	
-			}
-			
-			OnPoke();
-        }
 		private void btnGrab_Click(object sender, EventArgs e)
 		{
-			if(m_FrameServer.IsGrabbing)
+			if(m_FrameServer.IsConnected)
 			{
-				m_FrameServer.PauseGrabbing();
+				if(m_FrameServer.IsGrabbing)
+				{
+					m_FrameServer.PauseGrabbing();
+				}
+			   	else
+			   	{
+					m_FrameServer.StartGrabbing();
+			   	}	
+				
+			   	OnPoke();	
 			}
-		   	else
-		   	{
-				m_FrameServer.StartGrabbing();
-		   	}
-
-			OnPoke();	
 		}
 		public void Common_MouseWheel(object sender, MouseEventArgs e)
 		{
 			// MouseWheel was recorded on one of the controls.
-			int iScrollOffset = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
-
-			if ((ModifierKeys & Keys.Control) == Keys.Control)
+			if(m_FrameServer.IsConnected)
 			{
-				if (iScrollOffset > 0)
+				int iScrollOffset = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+
+				if ((ModifierKeys & Keys.Control) == Keys.Control)
 				{
-					IncreaseDirectZoom();
+					if (iScrollOffset > 0)
+					{
+						IncreaseDirectZoom();
+					}
+					else
+					{
+						DecreaseDirectZoom();
+					}
 				}
 				else
 				{
-					DecreaseDirectZoom();
+					// return in recent frame history ?	
 				}
 			}
-			else
-			{
-				// return in recent frame history ?	
-			}
+			
 		}
 		#endregion
 
@@ -1778,28 +1738,90 @@ namespace Kinovea.ScreenManager
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Export the current frame.
-			
-			if(!ValidateFilename(tbImageFilename.Text, false))
+			if(m_FrameServer.IsConnected)
 			{
-				AlertInvalidFilename();	
-			}
-			else if(Directory.Exists(tbImageDirectory.Text))
-			{
-				string filepath = tbImageDirectory.Text + "\\" + tbImageFilename.Text;
-				Bitmap outputImage = m_FrameServer.GetFlushedImage();
-				
-				ImageHelper.Save(filepath, outputImage);
-				outputImage.Dispose();
-				
-				// Update the filename for the next snapshot.
-				// If the filename was empty, we'll create it without saving.
-				tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
-			}
-			else
-			{
-				btnBrowseImageLocation_Click(null, EventArgs.Empty);
+				if(!ValidateFilename(tbImageFilename.Text, false))
+				{
+					AlertInvalidFilename();	
+				}
+				else if(Directory.Exists(tbImageDirectory.Text))
+				{
+					string filepath = tbImageDirectory.Text + "\\" + tbImageFilename.Text;
+					Bitmap outputImage = m_FrameServer.GetFlushedImage();
+					
+					ImageHelper.Save(filepath, outputImage);
+					outputImage.Dispose();
+					
+					// Update the filename for the next snapshot.
+					// If the filename was empty, we'll create it without saving.
+					tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
+				}
+				else
+				{
+					btnBrowseImageLocation_Click(null, EventArgs.Empty);
+				}	
 			}
 		}
+		private void btnRecord_Click(object sender, EventArgs e)
+        {
+			if(m_FrameServer.IsConnected)
+			{
+				if(m_FrameServer.IsRecording)
+				{
+					m_FrameServer.StopRecording();
+					EnableVideoFileEdit(true);
+					
+					// update file name.
+					tbVideoFilename.Text = CreateNewFilename(Path.GetFileName(m_FrameServer.CurrentCaptureFilePath));
+					
+					DisplayAsRecording(false);
+				}
+				else
+				{
+					// Start exporting frames to a video.
+				
+					// Check that the destination folder exists.
+					if(!ValidateFilename(tbVideoFilename.Text, false))
+					{
+						AlertInvalidFilename();	
+					}
+					else if(Directory.Exists(tbVideoDirectory.Text))
+					{
+						EnableVideoFileEdit(false);
+						
+						// no extension : mkv.
+						// extension specified by user : honor it if supported, mkv otherwise.
+						string filename = tbVideoFilename.Text;
+						string filenameToLower = filename.ToLower();
+						string filepath = tbVideoDirectory.Text + "\\" + filename;
+						
+						if(filename != "")
+						{
+							m_FrameServer.CurrentCaptureFilePath = filepath;
+							
+							if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
+							{
+								filepath = filepath + ".mkv";	
+							}
+							
+							m_FrameServer.StartRecording(filepath);
+							
+							DisplayAsRecording(true);
+						}
+						else
+						{
+							tbVideoFilename.Text = CreateNewFilename("");	
+						}
+					}
+					else
+					{
+						btnBrowseVideoLocation_Click(null, EventArgs.Empty);
+					}	
+				}
+				
+				OnPoke();
+			}
+        }
 		#endregion
         
 		#region Capture specifics

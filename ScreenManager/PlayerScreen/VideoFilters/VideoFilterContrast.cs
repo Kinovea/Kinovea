@@ -72,6 +72,7 @@ namespace Kinovea.ScreenManager
             m_Menu = new ToolStripMenuItem();
             m_Menu.Tag = new ItemResourceInfo(resManager, "VideoFilterContrast_FriendlyName");
             m_Menu.Text = ((ItemResourceInfo)m_Menu.Tag).resManager.GetString(((ItemResourceInfo)m_Menu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            m_Menu.Image = Properties.Resources.contrast;
             m_Menu.Click += new EventHandler(Menu_OnClick);
             m_Menu.MergeAction = MergeAction.Append;
 		}

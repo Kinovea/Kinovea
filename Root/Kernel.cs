@@ -290,6 +290,7 @@ namespace Kinovea.Root
             // OpenFile
             mnuOpenFile.Tag = new ItemResourceInfo(RootResourceManager, "mnuOpenFile");
             mnuOpenFile.Text = ((ItemResourceInfo)mnuOpenFile.Tag).resManager.GetString(((ItemResourceInfo)mnuOpenFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuOpenFile.Image = Properties.Resources.folder;
             mnuOpenFile.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
             mnuOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
 
@@ -297,7 +298,8 @@ namespace Kinovea.Root
             // History
            	mnuHistory.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistory");
             mnuHistory.Text = ((ItemResourceInfo)mnuHistory.Tag).resManager.GetString(((ItemResourceInfo)mnuHistory.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
+			mnuHistory.Image = Properties.Resources.time;
+            
             #region History Items
             ToolStripMenuItem mnuHistoryVideo1 = new ToolStripMenuItem();
             mnuHistoryVideo1.MergeAction = MergeAction.Append;
@@ -357,6 +359,7 @@ namespace Kinovea.Root
             ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
             mnuHistoryReset.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistoryReset");
             mnuHistoryReset.Text = ((ItemResourceInfo)mnuHistoryReset.Tag).resManager.GetString(((ItemResourceInfo)mnuHistoryReset.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuHistoryReset.Image = Properties.Resources.time_delete;
             mnuHistoryReset.MergeAction = MergeAction.Append;
             mnuHistoryReset.Visible = false;
             mnuHistoryReset.Click += new EventHandler(mnuHistoryResetOnClick);
@@ -369,6 +372,7 @@ namespace Kinovea.Root
             // Quit
             mnuQuit.Tag = new ItemResourceInfo(RootResourceManager, "Generic_Quit");
             mnuQuit.Text = ((ItemResourceInfo)mnuQuit.Tag).resManager.GetString(((ItemResourceInfo)mnuQuit.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuQuit.Image = Properties.Resources.quit;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
             mnuFile.DropDownItems.AddRange(new ToolStripItem[] { 	mnuOpenFile, 
@@ -389,6 +393,7 @@ namespace Kinovea.Root
             //Undo
             mnuUndo.Tag = new ItemResourceInfo(RootResourceManager, "mnuUndo");
             mnuUndo.Text = ((ItemResourceInfo)mnuUndo.Tag).resManager.GetString(((ItemResourceInfo)mnuUndo.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuUndo.Image = Properties.Resources.arrow_undo;
             mnuUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             mnuUndo.Click += new EventHandler(menuUndoOnClick);
             mnuUndo.Enabled = false;
@@ -399,6 +404,7 @@ namespace Kinovea.Root
             //Redo
             mnuRedo.Tag = new ItemResourceInfo(RootResourceManager, "mnuRedo");
             mnuRedo.Text = ((ItemResourceInfo)mnuRedo.Tag).resManager.GetString(((ItemResourceInfo)mnuRedo.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuRedo.Image = Properties.Resources.arrow_redo;
             mnuRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
             mnuRedo.Click += new EventHandler(menuRedoOnClick);
             mnuRedo.Enabled = false;
@@ -416,6 +422,7 @@ namespace Kinovea.Root
             // Toggle File Explorer
             mnuToggleFileExplorer.Tag = new ItemResourceInfo(RootResourceManager, "mnuToggleFileExplorer");
             mnuToggleFileExplorer.Text = ((ItemResourceInfo)mnuToggleFileExplorer.Tag).resManager.GetString(((ItemResourceInfo)mnuToggleFileExplorer.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuToggleFileExplorer.Image = Properties.Resources.explorer;
             mnuToggleFileExplorer.Checked = true;
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
             mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
@@ -446,7 +453,8 @@ namespace Kinovea.Root
             // Languages
             mnuLanguages.Tag = new ItemResourceInfo(RootResourceManager, "mnuLanguages");
             mnuLanguages.Text = ((ItemResourceInfo)mnuLanguages.Tag).resManager.GetString(((ItemResourceInfo)mnuLanguages.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
+			mnuLanguages.Image = Properties.Resources.international;
+            
             #region Languages menus 
             
             // [Untranslatables]
@@ -528,11 +536,13 @@ namespace Kinovea.Root
             // Preferences
             mnuPreferences.Tag = new ItemResourceInfo(RootResourceManager, "mnuPreferences");
             mnuPreferences.Text = ((ItemResourceInfo)mnuPreferences.Tag).resManager.GetString(((ItemResourceInfo)mnuPreferences.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuPreferences.Image = Properties.Resources.wrench;
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
 
             // Time codes.
             mnuTimecode.Tag = new ItemResourceInfo(RootResourceManager, "dlgPreferences_LabelTimeFormat");
             mnuTimecode.Text = ((ItemResourceInfo)mnuTimecode.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecode.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecode.Image = Properties.Resources.time_edit;
             
             #region Timecode menus.
             mnuTimecodeClassic.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Classic");
@@ -575,22 +585,26 @@ namespace Kinovea.Root
             // Manual
             mnuHelpContents.Tag = new ItemResourceInfo(RootResourceManager, "mnuHelpContents");
             mnuHelpContents.Text = ((ItemResourceInfo)mnuHelpContents.Tag).resManager.GetString(((ItemResourceInfo)mnuHelpContents.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuHelpContents.Image = Properties.Resources.book_open;
             mnuHelpContents.ShortcutKeys = System.Windows.Forms.Keys.F1;
             mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
 
             // Video Tutorial
             mnuTutorialVideos.Tag = new ItemResourceInfo(RootResourceManager, "mnuTutorialVideos");
             mnuTutorialVideos.Text = ((ItemResourceInfo)mnuTutorialVideos.Tag).resManager.GetString(((ItemResourceInfo)mnuTutorialVideos.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTutorialVideos.Image = Properties.Resources.film;
             mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
 
             // Logs Folder
             mnuApplicationFolder.Tag = new ItemResourceInfo(RootResourceManager, "mnuApplicationFolder");
             mnuApplicationFolder.Text = ((ItemResourceInfo)mnuApplicationFolder.Tag).resManager.GetString(((ItemResourceInfo)mnuApplicationFolder.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuApplicationFolder.Image = Properties.Resources.bug;
             mnuApplicationFolder.Click += new EventHandler(mnuApplicationFolder_OnClick);
 
             // About
             mnuAbout.Tag = new ItemResourceInfo(RootResourceManager, "mnuAbout");
             mnuAbout.Text = ((ItemResourceInfo)mnuAbout.Tag).resManager.GetString(((ItemResourceInfo)mnuAbout.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			mnuAbout.Image = Properties.Resources.information;
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
             mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
