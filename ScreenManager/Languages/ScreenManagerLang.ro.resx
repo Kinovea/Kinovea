@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvează Video</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Aplica tuturor traiectoriilor</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Specificati originea sistemului de coordonate</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Crearea secvenţelor de cadre este imposibilă.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>O Secvenţă de cadre reprezintă o serie de cadre cheie salvată în format video.\n Vă rugăm să adăugaţi câteva cadre cheie înainte de a genera Secvenţa de imagini.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Fisierul video este imposibil de creat</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Resetează zona de lucru</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salvează o succesiune de imagini din cadrele cheie</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salveaza fisierul video cu o pauza in fiecare cadru cheie</value></data>
    

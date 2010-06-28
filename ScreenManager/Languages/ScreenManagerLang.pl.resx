@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Zapisz wideo</value></data>
    
    
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - nie można utworzyć pokazu slajdów.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
    
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Zresetuj Obszar Roboczy</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Zapisz pokaz slajdów z kluczowych obrazów</value></data>
    
    

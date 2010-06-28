@@ -447,11 +447,6 @@ namespace Kinovea.ScreenManager
 			// Propagate to PlayerScreen which will report to ScreenManager.
 			m_ScreenUIHandler.ScreenUI_CloseAsked();
 		}
-		private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
-		{
-			// Set focus to enable mouse scroll
-			panelVideoControls.Focus();
-		}
 		private void DeselectionTimer_OnTick(object sender, EventArgs e) 
 		{
 			// Deselect the currently selected drawing.
@@ -1749,8 +1744,12 @@ namespace Kinovea.ScreenManager
 				else if(Directory.Exists(tbImageDirectory.Text))
 				{
 					string filepath = tbImageDirectory.Text + "\\" + tbImageFilename.Text;
-					Bitmap outputImage = m_FrameServer.GetFlushedImage();
 					
+					// Todo: Check if file already exists.
+					// Currently the final filename is found in ImageHelper, which doesn't have access 
+					// to ScreenManagerLang messages...
+					Bitmap outputImage = m_FrameServer.GetFlushedImage();
+				
 					ImageHelper.Save(filepath, outputImage);
 					outputImage.Dispose();
 					
@@ -1789,8 +1788,6 @@ namespace Kinovea.ScreenManager
 					}
 					else if(Directory.Exists(tbVideoDirectory.Text))
 					{
-						EnableVideoFileEdit(false);
-						
 						// no extension : mkv.
 						// extension specified by user : honor it if supported, mkv otherwise.
 						string filename = tbVideoFilename.Text;
@@ -1803,10 +1800,15 @@ namespace Kinovea.ScreenManager
 							{
 								filepath = filepath + ".mkv";	
 							}
-							m_FrameServer.CurrentCaptureFilePath = filepath;
-							m_FrameServer.StartRecording(filepath);
 							
-							DisplayAsRecording(true);
+							// Check if file already exists.
+							if(OverwriteOrCreate(filepath))
+							{
+								m_FrameServer.CurrentCaptureFilePath = filepath;
+								m_FrameServer.StartRecording(filepath);
+								EnableVideoFileEdit(false);
+								DisplayAsRecording(true);
+							}							
 						}
 						else
 						{
@@ -1932,11 +1934,27 @@ namespace Kinovea.ScreenManager
         }
         private void AlertInvalidFilename()
         {
-			MessageBox.Show(
-        		"The file name contains invalid characters.\n A file name cannot contain any of the following characters:\n \\ / : * ? \" < >",
-               	"Cannot save file",
-               	MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation);
+        	string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;
+        	string msgText = ScreenManagerLang.Error_Capture_InvalidFile_Text.Replace("\\n", "\n");
+        		
+			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+        private bool OverwriteOrCreate(string _filepath)
+        {
+        	bool bOverwriteOrCreate = true;
+        	if(File.Exists(_filepath))
+        	{
+        		string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
+        		string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, _filepath).Replace("\\n", "\n");
+        		
+        		DialogResult dr = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        		if(dr != DialogResult.Yes)
+        		{
+        			bOverwriteOrCreate = false;
+        		}
+        	}
+        	
+        	return bOverwriteOrCreate;
         }
         private void FoldSettings(object sender, EventArgs e)
         {

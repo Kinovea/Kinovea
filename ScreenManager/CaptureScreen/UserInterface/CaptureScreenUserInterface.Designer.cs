@@ -147,7 +147,6 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.Size = new System.Drawing.Size(350, 142);
         	this.panelVideoControls.TabIndex = 2;
         	this.panelVideoControls.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
-        	this.panelVideoControls.MouseEnter += new System.EventHandler(this.PanelVideoControls_MouseEnter);
         	// 
         	// pnlCaptureDock
         	// 

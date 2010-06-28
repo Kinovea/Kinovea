@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salva il Video</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Applica a tutte le traiettorie</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Imposta le coordinate di origine</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Impossibile creare la videopresentazione.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una videopresentazione e' una sequenza di Immagini Chiave salvate in formato Video.\n Occorre aggiungere qualche Immagine Chiave PRIMA di generare la videopresentazione.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Impossibile creare il video richiesto</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro pari al Video Intero</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salva una videopresentazione delle Immagini Chiave</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salva il video con una pausa per ogni Immagine Chiave</value></data>
    

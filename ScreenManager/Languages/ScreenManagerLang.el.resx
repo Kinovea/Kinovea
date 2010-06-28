@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Αποθήκευση Video</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Εφαρμογή σε όλες τις διαδρομές</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Τοποθέτηση σημείου μηδέν, συστήματος συντεταγμένων</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Αδύνατη η δημιουργία Προβολής Διαφανειών</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Μια Προβολή Διαφανειών είναι μια ακολουθία Βασικών Εικόνων αποθηκευμένες σε μορφή video.\n Παρακαλούμε προσθέστε μερικές Βασικές Εικόνες πριν δημιουργήσετε την Προβολή Διαφανειών </value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Αδύνατη η δημιουργία Video με παύση</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Επαναφορά της Ζώνης Εργασίας σε Πλήρες Video</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Αποθήκευση προβολής-διαφανειών από τις Βασικές Εικόνες</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Αποθήκευση video με παύση σε κάθε βασική εικόνα</value></data>
    

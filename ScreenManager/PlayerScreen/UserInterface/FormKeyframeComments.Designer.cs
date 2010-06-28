@@ -28,6 +28,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
+        	this.components = new System.ComponentModel.Container();
         	this.rtbComment = new System.Windows.Forms.RichTextBox();
         	this.txtTitle = new System.Windows.Forms.TextBox();
         	this.pnlTextArea = new System.Windows.Forms.Panel();
@@ -40,6 +41,7 @@ namespace Kinovea.ScreenManager
         	this.btnBackColor = new System.Windows.Forms.Button();
         	this.pnlColors = new System.Windows.Forms.Panel();
         	this.pnlFontStyle = new System.Windows.Forms.Panel();
+        	this.toolTips = new System.Windows.Forms.ToolTip(this.components);
         	this.pnlTextArea.SuspendLayout();
         	this.pnlTitle.SuspendLayout();
         	this.pnlColors.SuspendLayout();
@@ -243,6 +245,7 @@ namespace Kinovea.ScreenManager
         	this.pnlFontStyle.ResumeLayout(false);
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Panel pnlColors;
         private System.Windows.Forms.Panel pnlFontStyle;
         private System.Windows.Forms.Button btnBold;

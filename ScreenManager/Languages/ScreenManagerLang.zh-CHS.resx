@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>保存视频</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>适用于所有路径.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>设定坐标系的原点</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>无法创建幻灯片.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>一张幻灯片是在视频文件内保存的一系列关键图像序列.\n 请在生成幻灯片之前添加一些关键图像.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>不能建立暂停视频</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>重置工作区的全部视频</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>从关键图像里保存一个幻灯片</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>在每一个关键图像上添加暂停并保存</value></data>
    

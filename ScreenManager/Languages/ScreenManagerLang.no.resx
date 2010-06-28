@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Lagre video</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Bruk på alle baner</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Sett koordinatene til systemstart</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – kan ikke lage slideshow</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Et slidehow er en sekvens nøkkelbilder som er lagret I et videoformat.\n Vennligst legg til nøkkelbilder før du genererer slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan ikke lage video</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Tilbakestill arbeidssonen til hele videoen</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Lagre slideshow fra nøkkelbilder</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Lagre video med en pause ved hvert bilde</value></data>
    
