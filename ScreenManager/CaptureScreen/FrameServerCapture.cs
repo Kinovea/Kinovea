@@ -230,15 +230,7 @@ namespace Kinovea.ScreenManager
 				m_ImageSize = new Size(720, 576);	
 			}
 		}
-		public void AlertCannotConnect()
-		{
-			// Couldn't find device. Signal to user.
-			MessageBox.Show(
-        		"Couldn't find any device to connect to.\nPlease make sure the device is properly connected.",
-               	"Cannot connect to video device",
-               	MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation);
-		}
+		
 		#endregion
 		
 		#region Public methods
@@ -442,7 +434,16 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		#region Saving to disk
+		#region Error messages
+		public void AlertCannotConnect()
+		{
+			// Couldn't find device. Signal to user.
+			MessageBox.Show(
+				ScreenManagerLang.Error_Capture_CannotConnect_Text.Replace("\\n", "\n"),
+               	ScreenManagerLang.Error_Capture_CannotConnect_Title,
+               	MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation);
+		}
 		private void DisplayError(SaveResult _result)
 		{
 			switch(_result)

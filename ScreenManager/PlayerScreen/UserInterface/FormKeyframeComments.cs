@@ -82,6 +82,12 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             this.Text = "   " + ScreenManagerLang.dlgKeyframeComment_Title;
+            toolTips.SetToolTip(btnBold, ScreenManagerLang.ToolTip_RichText_Bold);
+            toolTips.SetToolTip(btnItalic, ScreenManagerLang.ToolTip_RichText_Italic);
+            toolTips.SetToolTip(btnUnderline, ScreenManagerLang.ToolTip_RichText_Underline);
+            toolTips.SetToolTip(btnStrike, ScreenManagerLang.ToolTip_RichText_Strikeout);
+            toolTips.SetToolTip(btnForeColor, ScreenManagerLang.ToolTip_RichText_ForeColor);
+            toolTips.SetToolTip(btnBackColor, ScreenManagerLang.ToolTip_RichText_BackColor);
         }
         #endregion
 

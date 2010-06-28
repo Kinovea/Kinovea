@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Pas toe op alle trajectpaden.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Specificeer de originele trajectpad coördinaten</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan geen Diashow maken</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Een diashow is een rij opeenvolgende Kernbeelden opgeslagen in video format.\n Voer a.u.b. enkele kernbeelden in,voordat u de diashow maakt.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Kan geen video met pauzes maken</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Herstel het werkgebied naar volledige video</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Bewaar een diashow van de kernafbeeldingen</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Sla de video op met een pauze op elkKernbeeld</value></data>
    

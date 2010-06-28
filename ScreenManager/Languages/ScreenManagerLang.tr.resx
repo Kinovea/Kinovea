@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Video Kaydet</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Tüm yollara uygula.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Koordinatları sistem orijini olarak ayarla</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Slayt gösterisi yaratılamıyor.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Slayt gösterisi, video formatı olarak kaydedilen bir Anahtar İmaj sekansıdır.\n Lütfen slayt gösterimini yaratmadan önce bir miktar Anahtar İmaj ekleyin.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Duraklatılmış video yaratılamıyor.</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Çalışma Alanını Tam Videoya Geri Ayarla</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Anahtar İmajlardan bir slayt gösterimi kaydet</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Videoyu her bir anahtar imaj üzerinde duraklama ile kaydet</value></data>
    

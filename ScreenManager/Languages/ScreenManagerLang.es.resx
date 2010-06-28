@@ -179,6 +179,12 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Guardar el video.</value></data>
    <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Aplicar a todas las trayectorias</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Especificar el origen de coordenadas</value></data>
+   
+   
+   
+   
+   
+   
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Creaciòn de la presentación de diapositivas imposible.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un Pase de Diapositivas es una sucesión de imágenes clave guardas en un vídeo.\nAñada alguna imagen clave antes de generar el Pase de Diapositivas</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Imposible crear el vídeo</value></data>
@@ -344,6 +350,12 @@
    
    
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reinicializar la zona de trabajo</value></data>
+   
+   
+   
+   
+   
+   
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Guardar una presentación de diapositivas de las imágenes claves</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Grabar el vídeo con una pausa en cada imagen clave</value></data>
    

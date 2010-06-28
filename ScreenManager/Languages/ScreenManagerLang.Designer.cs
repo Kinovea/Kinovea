@@ -304,7 +304,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Default Color Profile.
+        ///   Recherche une chaîne localisée semblable à Reset to default Color Profile.
         /// </summary>
         internal static string dlgColorProfile_ToolTip_DefaultProfile {
             get {
@@ -1074,6 +1074,60 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgSetTrajectoryOrigin_Title {
             get {
                 return ResourceManager.GetString("dlgSetTrajectoryOrigin_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Couldn&apos;t find any device to connect to.\nPlease make sure the device is properly plugged to the computer..
+        /// </summary>
+        internal static string Error_Capture_CannotConnect_Text {
+            get {
+                return ResourceManager.GetString("Error_Capture_CannotConnect_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cannot connect to video device.
+        /// </summary>
+        internal static string Error_Capture_CannotConnect_Title {
+            get {
+                return ResourceManager.GetString("Error_Capture_CannotConnect_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The file {0} already exists.\nDo you want to replace it?.
+        /// </summary>
+        internal static string Error_Capture_FileExists_Text {
+            get {
+                return ResourceManager.GetString("Error_Capture_FileExists_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à File overwrite.
+        /// </summary>
+        internal static string Error_Capture_FileExists_Title {
+            get {
+                return ResourceManager.GetString("Error_Capture_FileExists_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The file name contains invalid characters.\n A file name cannot contain any of the following characters:\n \ / : * ? &quot; &lt; &gt;.
+        /// </summary>
+        internal static string Error_Capture_InvalidFile_Text {
+            get {
+                return ResourceManager.GetString("Error_Capture_InvalidFile_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Invalid file name.
+        /// </summary>
+        internal static string Error_Capture_InvalidFile_Title {
+            get {
+                return ResourceManager.GetString("Error_Capture_InvalidFile_Title", resourceCulture);
             }
         }
         
@@ -2559,6 +2613,60 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_ResetWorkingZone {
             get {
                 return ResourceManager.GetString("ToolTip_ResetWorkingZone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Background color.
+        /// </summary>
+        internal static string ToolTip_RichText_BackColor {
+            get {
+                return ResourceManager.GetString("ToolTip_RichText_BackColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bold.
+        /// </summary>
+        internal static string ToolTip_RichText_Bold {
+            get {
+                return ResourceManager.GetString("ToolTip_RichText_Bold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Foreground color.
+        /// </summary>
+        internal static string ToolTip_RichText_ForeColor {
+            get {
+                return ResourceManager.GetString("ToolTip_RichText_ForeColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Italic.
+        /// </summary>
+        internal static string ToolTip_RichText_Italic {
+            get {
+                return ResourceManager.GetString("ToolTip_RichText_Italic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Strikeout.
+        /// </summary>
+        internal static string ToolTip_RichText_Strikeout {
+            get {
+                return ResourceManager.GetString("ToolTip_RichText_Strikeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Underline.
+        /// </summary>
+        internal static string ToolTip_RichText_Underline {
+            get {
+                return ResourceManager.GetString("ToolTip_RichText_Underline", resourceCulture);
             }
         }
         
