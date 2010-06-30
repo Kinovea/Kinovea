@@ -1745,17 +1745,18 @@ namespace Kinovea.ScreenManager
 				{
 					string filepath = tbImageDirectory.Text + "\\" + tbImageFilename.Text;
 					
-					// Todo: Check if file already exists.
-					// Currently the final filename is found in ImageHelper, which doesn't have access 
-					// to ScreenManagerLang messages...
-					Bitmap outputImage = m_FrameServer.GetFlushedImage();
-				
-					ImageHelper.Save(filepath, outputImage);
-					outputImage.Dispose();
-					
-					// Update the filename for the next snapshot.
-					// If the filename was empty, we'll create it without saving.
-					tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
+					// Check if file already exists.
+					if(OverwriteOrCreateImage(filepath))
+					{
+						Bitmap outputImage = m_FrameServer.GetFlushedImage();
+						
+						ImageHelper.Save(filepath, outputImage);
+						outputImage.Dispose();
+						
+						// Update the filename for the next snapshot.
+						// If the filename was empty, we'll create it without saving.
+						tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
+					}
 				}
 				else
 				{
@@ -1773,7 +1774,7 @@ namespace Kinovea.ScreenManager
 					EnableVideoFileEdit(true);
 					
 					// update file name.
-					tbVideoFilename.Text = CreateNewFilename(Path.GetFileName(m_FrameServer.CurrentCaptureFilePath));
+					tbVideoFilename.Text = CreateNewFilename(tbVideoFilename.Text);
 					
 					DisplayAsRecording(false);
 				}
@@ -1791,8 +1792,8 @@ namespace Kinovea.ScreenManager
 						// no extension : mkv.
 						// extension specified by user : honor it if supported, mkv otherwise.
 						string filename = tbVideoFilename.Text;
-						string filenameToLower = filename.ToLower();
 						string filepath = tbVideoDirectory.Text + "\\" + filename;
+						string filenameToLower = filename.ToLower();
 						
 						if(filename != "")
 						{
@@ -1802,7 +1803,7 @@ namespace Kinovea.ScreenManager
 							}
 							
 							// Check if file already exists.
-							if(OverwriteOrCreate(filepath))
+							if(OverwriteOrCreateVideo(filepath))
 							{
 								m_FrameServer.CurrentCaptureFilePath = filepath;
 								m_FrameServer.StartRecording(filepath);
@@ -1939,13 +1940,42 @@ namespace Kinovea.ScreenManager
         		
 			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
-        private bool OverwriteOrCreate(string _filepath)
+        private bool OverwriteOrCreateVideo(string _filepath)
         {
+        	// Check if the specified video file exists, and asks the user if he wants to overwrite.
         	bool bOverwriteOrCreate = true;
         	if(File.Exists(_filepath))
         	{
         		string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
         		string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, _filepath).Replace("\\n", "\n");
+        		
+        		DialogResult dr = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        		if(dr != DialogResult.Yes)
+        		{
+        			bOverwriteOrCreate = false;
+        		}
+        	}
+        	
+        	return bOverwriteOrCreate;
+        }
+        private bool OverwriteOrCreateImage(string _filepath)
+        {
+        	// Check if the specified image file exists, and asks the user if he wants to overwrite.
+        	bool bOverwriteOrCreate = true;
+        	string filepathTest = _filepath;
+        	string filepathLower = _filepath.ToLower();
+        	if(!filepathLower.ToLower().EndsWith(".bmp") && 
+        	   !filepathLower.ToLower().EndsWith(".jpg") &&
+        	   !filepathLower.ToLower().EndsWith(".jpeg") &&
+        	   !filepathLower.ToLower().EndsWith(".png"))
+        	{
+        		filepathTest = _filepath + ".jpg";
+        	}       	
+        	
+        	if(File.Exists(filepathTest))
+        	{
+        		string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
+        		string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, filepathTest).Replace("\\n", "\n");
         		
         		DialogResult dr = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
         		if(dr != DialogResult.Yes)
