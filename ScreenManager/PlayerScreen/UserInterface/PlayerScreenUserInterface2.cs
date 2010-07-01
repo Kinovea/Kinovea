@@ -3869,9 +3869,12 @@ namespace Kinovea.ScreenManager
 		}
 		private void pnlThumbnails_DoubleClick(object sender, EventArgs e)
 		{
-			// On double click in the thumbs panel : Add a keyframe at current pos.
-			AddKeyframe();
-			OnPoke();
+			if (m_FrameServer.VideoFile.Loaded)
+			{
+				// On double click in the thumbs panel : Add a keyframe at current pos.
+				AddKeyframe();
+				OnPoke();
+			}
 		}
 
 		#region ThumbBox event Handlers
