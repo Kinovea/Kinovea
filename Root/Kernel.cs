@@ -997,10 +997,13 @@ namespace Kinovea.Root
                 bool bEnglishFound = false;
                 int i = 0;
 
+                CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
+                string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+                                
                 // Look for a matching locale.
                 while (!bLocaleFound && i < hiLocal.UserGuides.Count)
                 {
-                	if (hiLocal.UserGuides[i].Language == PreferencesManager.Instance().GetSupportedCulture().Name)
+                	if (hiLocal.UserGuides[i].Language == neutral)
                     {
                         bLocaleFound = true;
                         LocaleHelpUri = hiLocal.UserGuides[i].FileLocation;
