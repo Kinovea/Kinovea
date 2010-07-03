@@ -132,19 +132,12 @@
    
    
    
-   
-   
-   
-   
-   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
    
    
    
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Dokument PDF (*.pdf)|*.pdf;</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Eksportuj kluczowe Obrazy do PDF'a</value></data>
    
    
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Komentarze...</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Zapisz tylko wideo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Zapisz dane kluczowych obrazów</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Wszystkie pliki (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>Obrazy JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Obrazy PNG (*.png)|*.png|Bitmapy (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Zapisz sekwencję</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>Zapisz obraz</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Zapisz wideo</value></data>
-   
    
    
    
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Pokaz slajdów jest to sekwencja kluczowy obrazów zapisanych w formacie wideo.\n Dodaj proszę kilka kluczowych obrazów przed generacją pokazu.</value></data>
    
    
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - nie można utworzyć pliku PDF.</value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Błąd podczas próby zapisu pliku : plik jest otwarty w innym oknie.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Plik PDF zostanie stworzony z kluczowych obrazów.\n Dodaj proszę kilka kluczowych obrazów przed generacją dokumentu.</value></data>
    
    
    
@@ -212,7 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Zapisz</value></data>
    
    
-   <data name="Generic_SaveImage" xml:space="preserve"><value>Zapisz aktualny obraz do pliku</value></data>
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Zapisz obraz</value></data>
    
    
    <data name="lblInfo_Text" xml:space="preserve"><value>Wspólne sterowanie :</value></data>
@@ -269,7 +256,6 @@
    
    
    
-   <data name="mnuExportToPDF" xml:space="preserve"><value>Eksportuj do PDF'a</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Płynność</value></data>
    
    
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Ekrany</value></data>
    
    
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę obszaru roboczego</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dziesięciotysięczna część godziny</value></data>
    
    
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>To wideo jest Aktywne</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Dodaj kluczowy obraz</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Przełącz do Trybu Normalnego</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Przełącz do Trybu Analizy</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Idź do poprzedniej klatki</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil koloru</value></data>
    
    
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopiuj rysunki z poprzedniego kluczowego obrazu do bieżącego obrazu</value></data>
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kąt</value></data>
    

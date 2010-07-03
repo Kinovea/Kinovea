@@ -73,14 +73,6 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Το Kinovea συνεργάζεται με τα ακόλουθα στοιχεία άλλων λογισμικών::</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Είστε ευπρόσδεκτοι να βοηθήσετε στην μετάφραση, δοκιμή, εκσφαλμάτωση (debug), βελτίωση ή άλλη υποστήριξη για το Kinovea.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Μεταφράσεις:</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Ολες οι γλώσσες</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Περισσότερα video είναι διαθέσιμα μέσω του μενού : Επιλογές &gt; Έλεγχος για διαθέσιμες ενημερώσεις…</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Περί αυτού του video…</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Διαχωρισμός ανά γλώσσα:</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Επιλέξτε ποιο video θέλετε να δείτε:</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Κανένα Σχόλιο.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea - Παρακολούθηση Εκπαιδευτικού Video</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Παρακολούθηση</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Άνοιγμα Αρχείου Video</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Σχέδια</value></data>

@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
  */
 
 
+using Kinovea.FileBrowser.Languages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,7 +28,6 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using ExpTreeLib;
 using Kinovea.Services;
 
@@ -182,12 +182,12 @@ namespace Kinovea.FileBrowser
 		public void RefreshUICulture()
 		{
 			// ExpTree tab.
-			tabPageClassic.Text = m_ResManager.GetString("tabExplorer", Thread.CurrentThread.CurrentUICulture);
-			lblFolders.Text = m_ResManager.GetString("lblFolders", Thread.CurrentThread.CurrentUICulture);
-			lblVideoFiles.Text = m_ResManager.GetString("lblVideoFiles", Thread.CurrentThread.CurrentUICulture);
+			tabPageClassic.Text = FileBrowserLang.tabExplorer;
+			lblFolders.Text = FileBrowserLang.lblFolders;
+			lblVideoFiles.Text = FileBrowserLang.lblVideoFiles;
 			
 			// Shortcut tab.
-			tabPageShortcuts.Text = m_ResManager.GetString("tabFavorites", Thread.CurrentThread.CurrentUICulture);
+			tabPageShortcuts.Text = FileBrowserLang.tabShortcuts;
 			lblFavFolders.Text = lblFolders.Text;
 			lblFavFiles.Text = lblVideoFiles.Text;
 			etShortcuts.RootDisplayName = tabPageShortcuts.Text;
@@ -197,9 +197,8 @@ namespace Kinovea.FileBrowser
 			mnuDeleteShortcut.Text = ((ItemResourceInfo)mnuDeleteShortcut.Tag).resManager.GetString(((ItemResourceInfo)mnuDeleteShortcut.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			
 			// ToolTips
-			ttTabs.SetToolTip(btnAddShortcut, m_ResManager.GetString("mnuAddShortcut", Thread.CurrentThread.CurrentUICulture));
-			ttTabs.SetToolTip(btnDeleteShortcut, m_ResManager.GetString("mnuDeleteShortcut", Thread.CurrentThread.CurrentUICulture));
-			//ttTabs.SetToolTip(btnEditName, m_ResManager.GetString("mnuEditShortcut", Thread.CurrentThread.CurrentUICulture));
+			ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
+			ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
 		}
 		public void Closing()
 		{

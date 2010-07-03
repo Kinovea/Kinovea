@@ -127,12 +127,7 @@
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Επιλογή διαδρομής γύρω από την παρούσα εικόνα</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Ετικέτα ακολουθούμενη την διαδρομή</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Σημείο μηδέν, συστήματος συντεταγμένων</value></data>
-   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Μωσαϊκό βασικών εικόνων</value></data>
-   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Μωσαϊκό όλων των εικόνων</value></data>
-   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Αριθμός εικόνων : {0:0}.</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Αριστερά-προς-Δεξιά κίνηση</value></data>
-   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Συχνότητα :</value></data>
-   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Μωσαϊκό</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Μέτρηση σφραγίδας</value></data>
    
@@ -143,8 +138,6 @@
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Αρχικό video με παύση σε κάθε Βασική Εικόνα</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Προβολή-διαφανειών video με μόνο τις Βασικές εικόνες</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Τύπος Video</value></data>
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Αρχείο PDF (*.pdf)|*.pdf;</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Αποθήκευση αρχείου PDF από τις Βασικές Εικόνες</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Αποθήκευση Δεδομένων ως αρχείο Λογιστικού Φύλλου</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Σχόλια</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Αποθήκευση video μόνο.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Αποθήκευση video ή δεδομένων Βασικών Εικόνων…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Αποθήκευση Δεδομένων Βασικών Εικόνων</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Όλα τα αρχεία (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Αποθήκευση Ακολουθίας</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>Αποθήκευση Εικόνας</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Αποθήκευση Video</value></data>
-   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Εφαρμογή σε όλες τις διαδρομές</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Τοποθέτηση σημείου μηδέν, συστήματος συντεταγμένων</value></data>
    
    
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Μια Προβολή Διαφανειών είναι μια ακολουθία Βασικών Εικόνων αποθηκευμένες σε μορφή video.\n Παρακαλούμε προσθέστε μερικές Βασικές Εικόνες πριν δημιουργήσετε την Προβολή Διαφανειών </value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Αδύνατη η δημιουργία Video με παύση</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Πρέπει να προσθέστε μερικές Βασικές Εικόνες πριν χρησιμοποιήσετε αυτή την λειτουργία.</value></data>
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Αδύνατη η δημιουργία αρχείου Pdf.</value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Αποτυχία: Αδύνατη η αποθήκευση αρχείου: το αρχείο είναι ανοικτό σε άλλο παράθυρο.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Το αρχείο pdf θα δημιουργηθεί από Βασικές εικόνες.\n Παρακαλούμε προσθέστε μερικές Βασικές Εικόνες πριν δημιουργήσετε το αρχείο.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Αδύνατη η εγγραφή σε αρχείο.\n Σιγουρευτείτε ότι έχετε τα δικαιώματα να γράψετε στον φάκελο προορισμού και πως το αρχείο δεν χρησιμοποιείται αυτή την στιγμή.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Αδύνατη η αποθήκευση του Video. </value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Αδύνατη η αποθήκευση του Video. \n Ξαναπροσπαθήστε με άλλη μορφή αρχείου.</value></data>
@@ -212,7 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Εικόνα</value></data>
    
-   <data name="Generic_SaveImage" xml:space="preserve"><value>Αποθήκευση την Παρούσας Εικόνας σε Αρχείο</value></data>
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Αποθήκευση Εικόνας</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Οι Βασικές Εικόνες έχουν τροποποιηθεί.\n Επιθυμείτε να αποθηκεύσετε τα δεδομένα των εικόνων κλειδιά πριν διακόψετε?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Τα δεδομένα των Βασικών Εικόνων δεν έχουν αποθηκευτεί</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Κοινές Λειτουργίες :</value></data>
@@ -269,7 +256,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Τροχιές σε απλό κείμενο</value></data>
-   <data name="mnuExportToPDF" xml:space="preserve"><value>Εξαγωγή σε PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Ρευστοποίηση</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Μορφή Εικόνας</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Αυτόματη Ανίχνευση</value></data>
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Αναπαραγωγή | Παύση</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Επανεκκίνηση Έκδοσης Διαδρομής</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Αποθήκευση…</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Οθόνες</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Μέτρηση σφραγίδας…</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Καθορισμός Αρχικής Ταχύτητας…</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Τοποθέτηση του Τελευταίου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάκις Χιλιοστά της ώρας</value></data>
    
    
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Αυτό το Video είναι το ενεργό</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Προσθήκη Βασικής Εικόνας</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Προσθήκη Βασικής Εικόνας</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Αλλαγή σε τρόπο Ανάλυσης</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Πήγαινε στο προηγούμενο Πλαίσιο</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Προφίλ Χρώματος…</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Απενεργοποίηση επαλληλίας εικόνων</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Ενεργοποίηση επαλληλίας εικόνων</value></data>
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Αντιγραφή Σχεδίων προηγούμενης Βασικής Εικόνας στην παρούσα.</value></data>
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Γωνία</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Χρονόμετρο</value></data>

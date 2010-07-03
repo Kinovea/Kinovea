@@ -73,14 +73,6 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea wykorzystuje następujące komponenty:</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Jeśli chcesz pomóc tworzyć, tłumaczyć lub w inny sposób przyczynić się do rozwoje aplikacji Kinovea - zapraszamy.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Lokalizacja:</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Wszystkie języki</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Aby uzyskać dostęp do innych plików wideo użyj menu : Opcje &gt; Szukaj dostępnych aktualizacji...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>O tym pliku wideo...</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filtruj wg. języka :</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>oglądaj :</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Bez komentarza.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea - Obejrzy podręcznik wideo.</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Oglądaj</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Wszystkie pliki (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Otwórz plik wideo</value></data>
    

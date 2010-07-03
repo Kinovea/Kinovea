@@ -106,83 +106,11 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Localisations:.
+        ///   Recherche une chaîne localisée semblable à Translations:.
         /// </summary>
         internal static string dlgAbout_Info4 {
             get {
                 return ResourceManager.GetString("dlgAbout_Info4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à All Languages.
-        /// </summary>
-        internal static string dlgHelpVideos_FilterAll {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_FilterAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à More videos are available through the menu : Options &gt; Check For Available Updates....
-        /// </summary>
-        internal static string dlgHelpVideos_GetMore {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_GetMore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à About this Video….
-        /// </summary>
-        internal static string dlgHelpVideos_LblAboutThisVideo {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_LblAboutThisVideo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Filter by language:.
-        /// </summary>
-        internal static string dlgHelpVideos_LblFilterByLang {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_LblFilterByLang", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Select which video you would like to view:.
-        /// </summary>
-        internal static string dlgHelpVideos_LblSelectVideos {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_LblSelectVideos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à No Comment..
-        /// </summary>
-        internal static string dlgHelpVideos_NoComment {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_NoComment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea - Watch a Video Tutorial..
-        /// </summary>
-        internal static string dlgHelpVideos_Title {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Watch.
-        /// </summary>
-        internal static string dlgHelpVideos_Watch {
-            get {
-                return ResourceManager.GetString("dlgHelpVideos_Watch", resourceCulture);
             }
         }
         

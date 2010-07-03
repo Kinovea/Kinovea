@@ -75,23 +75,8 @@
    <data name="Updater_Download" xml:space="preserve"><value>Καταφόρτωση</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Καταφόρτωση Νέας 'Έκδοσης…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Μέγεθος Αρχείου :</value></data>
-   <data name="Updater_FilterAll" xml:space="preserve"><value>Όλες οι Γλώσσες</value></data>
-   <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Ενημέρωση είναι διαθέσιμη</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Νέο αντικείμενο</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Ενήμερο</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Κάνετε κλικ στο πλήκτρο για να αρχίσει η καταφόρτωση.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Κάποιο σφάλμα συνέβη καθώς γινόταν ο έλεγχος για ενημερώσεις. Παρακαλώ βεβαιωθείτε ότι υπάρχει διαθέσιμη σύνδεση στο διαδίκτυο.</value></data>
-   <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Όλοι οι οδηγοί του χρήστη είναι ενήμεροι.</value></data>
-   <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Όλα τα video είναι ενήμερα.</value></data>
-   <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Όλα τα video σε αυτή την γλώσσα είναι ενήμερα.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Αλλαγή Ημερολογίου :</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Διαχωρισμός ανά γλώσσα :</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>Εγχειρίδιο</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Επιλέξατε το εγχειρίδιο που επιθυμείτε να καταφορτώσετε</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Επιλέξατε το video που επιθυμείτε να καταφορτώσετε</value></data>
-   <data name="Updater_LblSoftware" xml:space="preserve"><value>Λογισμικό</value></data>
-   <data name="Updater_LblTotalSelected" xml:space="preserve"><value>Συνολικά επιλέχτηκαν :</value></data>
-   <data name="Updater_LblVideos" xml:space="preserve"><value>Βοηθητικά video</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Η νέα έκδοση καταφορτώθηκε με επιτυχία.\n Παρακαλώ κλείστε το Kinovea και εκκινήστε το αρχείο εγκατάστασης από το σημείο που το αποθηκεύσατε.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>ΜΒ</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Νέα Έκδοση</value></data>

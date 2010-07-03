@@ -145,8 +145,10 @@ namespace Kinovea.Updater
                 }
 
                 // Check if we are up to date.
+                bool testUpdate = false;
+                //testUpdate = true;
                 ThreePartsVersion currentVersion = new ThreePartsVersion(PreferencesManager.ReleaseVersion);
-                if (hiRemote.AppInfos.Version > currentVersion)
+                if (hiRemote.AppInfos.Version > currentVersion || testUpdate)
             	{
                 	// We are not up to date, display the full dialog.
                 	// The dialog is responsible for displaying the download success msg box.

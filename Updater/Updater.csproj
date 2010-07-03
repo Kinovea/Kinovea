@@ -89,12 +89,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\UpdateDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\UpdateDialog.Designer.cs">
-      <DependentUpon>UpdateDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInterface\UpdateDialog2.cs" />
@@ -148,10 +142,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\UpdateDialog.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>UpdateDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

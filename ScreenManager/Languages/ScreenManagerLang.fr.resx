@@ -127,12 +127,7 @@
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Section de trajectoire autour de l'image en cours</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label suivant la trajectoire</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Origine du repère de coordonnées</value></data>
-   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaïque des images clés.</value></data>
-   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaïque de toutes les images.</value></data>
-   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Nombre d'images :{0:0}.</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Mouvement de droite à gauche</value></data>
-   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Fréquence :</value></data>
-   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mode Mosaïque</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle du segment :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Étalonner la mesure</value></data>
    <data name="dlgDevicePicker_CurrentlySelected" xml:space="preserve"><value>En cours :</value></data>
@@ -143,8 +138,6 @@
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>La vidéo initiale avec une pause sur chaque Image Clé</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Diaporama vidéo avec uniquement les Images Clés </value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type de vidéo</value></data>
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Document PDF (*.pdf)|*.pdf;</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Enregistrer un Document PDF des Images Clés</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Enregistrer les Données pour un Tableur</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Texte (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaires...</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Enregistrer uniquement la vidéo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Enregistrer la Vidéo ou les Données des Images Clés...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Enregistrer les Données des Images Clés</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Tous les fichiers (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>Images JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Images PNG (*.png)|*.png|Images Bitmap (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Enregistrer la Séquence d'Images</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>Enregistrer l'Image</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Enregistrer la Vidéo</value></data>
-   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Appliquer à toutes les trajectoires.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Spécifier l'origine du repère de coordonnées</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Impossible de se connecter à la caméra</value></data>
    <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Aucune caméra n'a été trouvée.\nVeuillez vérifier que la caméra est bien connectée à l'ordinateur.</value></data>
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Un Diaporama est une succession d'Images Clés enregistrées sous forme de vidéo.\nVeuillez ajouter quelques Images Clés avant de générer le Diaporama.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Création de la vidéo impossible.</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Vous devez ajouter quelques images clés avant d'utiliser cette fonction.</value></data>
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Création du document Pdf Impossible</value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Enregistrement du fichier impossible : Le fichier est ouvert dans une autre fenêtre.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Le document Pdf sera créé à partir d'Images Clés. \nVeuillez ajouter quelques Images Clés avant de générer le document.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Le fichier n'a pu être écrit.\nAssurez vous d'avoir les droits suffisants pour écrire dans le dossier et que le fichier n'est pas en cours d'utilisation.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – Sauvegarde de la vidéo Impossible.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>La vidéo n'a pu être enregistrée.\nRéessayez en utilisant un format différent. </value></data>
@@ -269,7 +256,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectoires vers texte simple</value></data>
-   <data name="mnuExportToPDF" xml:space="preserve"><value>Exporter au Format PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidifier</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Format de l'image</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Détection Automatique</value></data>
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Lire | Pauser</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'édition de la Trajectoire</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Enregistrer...</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Écrans</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Caméra haute-vitesse...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Positionner la Sortie de la Zone de Travail sur l'Image Courante</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dix millièmes d'heure</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>pause</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom : {0}%</value></data>
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Cette Vidéo est la Vidéo Active</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Ajouter une Image Clé</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Retourner en Mode Normal</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Basculer vers le Mode Analyse</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Aller à l'Image Précédente</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil Couleur</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Désactiver la superposition des images</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Activer la superposition des images</value></data>
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copier les Dessins de l'Image Clé Précédente dans l'Image Courante</value></data>
    <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Choisir la source</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Chronomètre</value></data>

@@ -73,14 +73,6 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea on yhteensopiva seuraavien ohjelmistojen kanssa:</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Tervetuloa osallistumaan Kinovean kehittämiseen kielikäännösten, testaamisen, virheraportoinnin ja muun tuen kautta</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Käännökset:</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Kaikki kielet</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Voit hankkia lisää videoita valikon kautta: Optiot-&gt;Tarkista saatavilla olevat päivitykset</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Tästä videosta...</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Suodata kielen perusteella:</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Valitse haluamasi video:</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Ei kommenttia.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea – Katso opetusvideo.</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Katso</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Kaikki tiedostot (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Avaa videotiedosto</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piirrokset</value></data>

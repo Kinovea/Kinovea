@@ -2699,7 +2699,6 @@ namespace Kinovea.ScreenManager
 			toolTips.SetToolTip(btnSnapShot, ScreenManagerLang.Generic_SaveImage);
 			toolTips.SetToolTip(btnRafale, ScreenManagerLang.ToolTip_Rafale);
 			toolTips.SetToolTip(btnDiaporama, ScreenManagerLang.ToolTip_SaveDiaporama);
-			toolTips.SetToolTip(btnPdf, ScreenManagerLang.dlgExportToPDF_Title);
 			toolTips.SetToolTip(btnSaveVideo, ScreenManagerLang.dlgSaveVideoTitle);
 			toolTips.SetToolTip(btnPausedVideo, ScreenManagerLang.ToolTip_SavePausedVideo);
 			
@@ -4878,7 +4877,7 @@ namespace Kinovea.ScreenManager
 				try
 				{
 					SaveFileDialog dlgSave = new SaveFileDialog();
-					dlgSave.Title = ScreenManagerLang.dlgSaveTitle;
+					dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
 					dlgSave.RestoreDirectory = true;
 					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
 					dlgSave.FilterIndex = 1;

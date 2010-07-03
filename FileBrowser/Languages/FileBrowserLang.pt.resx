@@ -72,7 +72,6 @@
    <data name="mnuAddShortcut" xml:space="preserve"><value>Adicionar atalho</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Adicionar aos atalhos</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Apagar atalho</value></data>
-   <data name="mnuEditShortcut" xml:space="preserve"><value>Editar atalho</value></data>
    <data name="tabExplorer" xml:space="preserve"><value>Gerenciador</value></data>
-   <data name="tabFavorites" xml:space="preserve"><value>Atalhos</value></data>
+   <data name="tabShortcuts" xml:space="preserve"><value>Atalhos</value></data>
 </root>

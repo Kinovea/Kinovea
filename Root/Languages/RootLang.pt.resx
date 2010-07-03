@@ -73,14 +73,6 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea trabalha em cooperação com os seguintes componentes:</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Você é bem vindo a ajudar a traduzir, testar, depurar, melhorar ou qualquer outro tipo de suporte ao Kinovea.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Traduções:</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Todos os Idiomas</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Mais vídeos disponíveis através do menu: Opções &gt; Checar atualizações disponíveis...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Sobre esse Vídeo...</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filtrar por Idioma :</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Selecionar qual vídeo voce gostaria de ver:</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Sem Comentários.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea - Assistir um Video Tutorial.</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Assistir</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos os arquivos (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir arquivo de vídeo</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Desenhos</value></data>

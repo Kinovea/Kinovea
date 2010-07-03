@@ -75,23 +75,8 @@
    <data name="Updater_Download" xml:space="preserve"><value>Lataa</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Ladataan uutta versiota...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Tiedoston koko:</value></data>
-   <data name="Updater_FilterAll" xml:space="preserve"><value>Kaikki kielet</value></data>
-   <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Päivitys saatavilla</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Uusi</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Ajan tasalla</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Klikkaa “Lataa” aloittaaksesi latauksen.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Haettaessa päivityksiä tapahtui virhe. Tarkista internetyhteytesi.</value></data>
-   <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Kaikki käyttöohjeet ovat ajan tasalla.</value></data>
-   <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Kaikki videot ovat ajan tasalla.</value></data>
-   <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Kaikki tämänkieliset videot ovat ajan tasalla.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Muutosloki:</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Kielisuodatin:</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>Käyttöopas</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Valitse haluamasi käyttöopas ladattavaksi:</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Valitse haluamasi videot ladattaviksi:</value></data>
-   <data name="Updater_LblSoftware" xml:space="preserve"><value>Ohjelmistoa</value></data>
-   <data name="Updater_LblTotalSelected" xml:space="preserve"><value>Valintojen lukumäärä:</value></data>
-   <data name="Updater_LblVideos" xml:space="preserve"><value>Apuvideot</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Uusi versio ladattiin onnistuneesti.\n Sulje Kinovea ja käynnistä asennusohjelma tallennuspaikastaan.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Uusi versio</value></data>

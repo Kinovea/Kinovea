@@ -75,23 +75,8 @@
    <data name="Updater_Download" xml:space="preserve"><value>下载</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>正在下载新版本…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>文件大小:</value></data>
-   <data name="Updater_FilterAll" xml:space="preserve"><value>全部语言</value></data>
-   <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>有新更新</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>新项目</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>最新</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>点击“下载”按钮开始下载</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>检查更新出错. 请确认有效的网络连接.</value></data>
-   <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>所有的用户指南已是最新的.</value></data>
-   <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>所有的视频已经是最新的.</value></data>
-   <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>改语言的所有视频已经是最新的.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>更改日志:</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>语言过滤器 :</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>说明书</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>选择您想要下载的说明书:</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>选择您想要下载的视频:</value></data>
-   <data name="Updater_LblSoftware" xml:space="preserve"><value>软件</value></data>
-   <data name="Updater_LblTotalSelected" xml:space="preserve"><value>总共选择了:</value></data>
-   <data name="Updater_LblVideos" xml:space="preserve"><value>帮助视频</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>新版本已成功下载.\n 请关闭并启动安装程序. </value></data>
    
    <data name="Updater_NewVersion" xml:space="preserve"><value>新版本</value></data>
