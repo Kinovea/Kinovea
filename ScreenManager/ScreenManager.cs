@@ -2141,7 +2141,7 @@ namespace Kinovea.ScreenManager
 							// [capture][capture] -> remove both and add player.
 							IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs);
-							IUndoableCommand crs2 = new CommandRemoveScreen(this, 1, true);
+							IUndoableCommand crs2 = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs2);
 							IUndoableCommand caps = new CommandAddPlayerScreen(this, true);
 	                    	cm.LaunchUndoableCommand(caps);
@@ -2271,7 +2271,7 @@ namespace Kinovea.ScreenManager
 							// [capture][capture] -> remove both and add two players.
 							IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs);
-							IUndoableCommand crs2 = new CommandRemoveScreen(this, 1, true);
+							IUndoableCommand crs2 = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs2);
 							IUndoableCommand caps1 = new CommandAddPlayerScreen(this, true);
                         	cm.LaunchUndoableCommand(caps1);
@@ -2409,7 +2409,7 @@ namespace Kinovea.ScreenManager
 							// remove both and add one capture.
 							IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs);
-							IUndoableCommand crs2 = new CommandRemoveScreen(this, 1, true);
+							IUndoableCommand crs2 = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs2);
 							IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
 	                    	cm.LaunchUndoableCommand(cacs);
@@ -2504,7 +2504,7 @@ namespace Kinovea.ScreenManager
             				// [player][player] -> remove both and add 2 capture.
             				IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs);
-            				IUndoableCommand crs2 = new CommandRemoveScreen(this, 1, true);
+            				IUndoableCommand crs2 = new CommandRemoveScreen(this, 0, true);
 							cm.LaunchUndoableCommand(crs2);
 							IUndoableCommand cacs = new CommandAddCaptureScreen(this, true);
                         	cm.LaunchUndoableCommand(cacs);
