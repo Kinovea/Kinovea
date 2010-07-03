@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
 					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 					g.CompositingQuality = CompositingQuality.HighSpeed;
 					g.InterpolationMode = InterpolationMode.Bilinear;
-					g.SmoothingMode = SmoothingMode.None;
+					g.SmoothingMode = SmoothingMode.HighQuality;
 					
 					//---------------------------------------------------------------------------
 					// We reserve n² placeholders, so we have exactly as many images on width than on height.
@@ -156,6 +156,9 @@ namespace Kinovea.ScreenManager
 						
 					Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
 			
+					// Configure font for image numbers.
+					Font f = new Font("Arial", GetFontSize(iThumbWidth), FontStyle.Bold);
+					
 					for(int i=0;i<iSide;i++)
 					{
 						for(int j=0;j<iSide;j++)
@@ -176,6 +179,9 @@ namespace Kinovea.ScreenManager
 								
 								Rectangle rDst = new Rectangle(iLeft, j*iThumbHeight, iThumbWidth, iThumbHeight);
 								g.DrawImage(selectedFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
+								
+								// Draw the image number.
+								DrawImageNumber(g, iImageIndex, rDst, f);
 							}
 						}
 					}
@@ -234,6 +240,45 @@ namespace Kinovea.ScreenManager
 			}
 			
 			return inputFrames;	
+		}
+		private static int GetFontSize(int _iThumbWidth)
+		{
+			// Return the font size for the image number based on the thumb width.
+			int fontSize = 18;
+			
+			if(_iThumbWidth >= 200)
+			{
+				fontSize = 18;
+			}
+			else if(_iThumbWidth >= 150)
+			{
+				fontSize = 14;
+			}
+			else
+			{
+				fontSize = 10;
+			}
+			
+			return fontSize;
+		}
+		private static void DrawImageNumber(Graphics _canvas, int _iImageIndex, Rectangle _rDst, Font _font)
+		{
+			string number = String.Format(" {0}", _iImageIndex + 1);
+			SizeF bgSize = _canvas.MeasureString(number, _font);
+			bgSize = new SizeF(bgSize.Width + 6, bgSize.Height + 2);
+            
+			// 1. Draw background.
+            GraphicsPath gp = new GraphicsPath();
+            gp.StartFigure();
+            gp.AddLine(_rDst.Left, _rDst.Top, _rDst.Left + bgSize.Width, _rDst.Top);
+            gp.AddLine(_rDst.Left + bgSize.Width, _rDst.Top, _rDst.Left + bgSize.Width, _rDst.Top + (bgSize.Height / 2));
+            gp.AddArc(_rDst.Left, _rDst.Top, bgSize.Width, bgSize.Height, 0, 90);
+            gp.AddLine(_rDst.Left + (bgSize.Width/2), _rDst.Top + bgSize.Height, _rDst.Left, _rDst.Top + bgSize.Height);
+            gp.CloseFigure();
+            _canvas.FillPath(Brushes.Black, gp);
+            
+            // 2. Draw image number.
+			_canvas.DrawString(number, _font, Brushes.White, _rDst.Location);
 		}
 		#endregion
 		
