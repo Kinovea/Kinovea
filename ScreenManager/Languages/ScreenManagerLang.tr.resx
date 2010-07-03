@@ -127,12 +127,7 @@
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Geçerli imajın etrafındaki yol kesiti</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Yolu takip eden etiket</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Sistem orijini koordinatları</value></data>
-   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Anahtar imajların mozaiği</value></data>
-   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Tüm imajların mozaiği</value></data>
-   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>İmaj sayısı : {0:0}.</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Sağdan sola hareket</value></data>
-   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frekans :</value></data>
-   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mozaik Modu</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin gerçek büyüklüğü :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Ölçümü Kalibre Et</value></data>
    
@@ -143,8 +138,6 @@
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Her bir Anahtar İmaj üzerinde duraklatma olan orijinal video</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Sadece Anahtar İmajları içeren Video slayt gösterisi</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Video tipi</value></data>
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF dökümanı (*.pdf)|*.pdf;</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Anahtar İmajları içeren bir PDF Dökümanı Kaydet</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Veriyi Spreadsheet Dökümanı olarak Kaydet </value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Yorumlar...</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Sadece videoyu kaydet.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Video veya Anahtar İmaj Verisini Kaydet...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Anahtar İmaj Verisini Kaydet</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG İmajları (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG İmajları (*.png)|*.png|Bitmap İmajları (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Sekans Kaydet</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>İmaj Kaydet</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Video Kaydet</value></data>
-   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Tüm yollara uygula.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Koordinatları sistem orijini olarak ayarla</value></data>
    
    
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Slayt gösterisi, video formatı olarak kaydedilen bir Anahtar İmaj sekansıdır.\n Lütfen slayt gösterimini yaratmadan önce bir miktar Anahtar İmaj ekleyin.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Duraklatılmış video yaratılamıyor.</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Bu fonksiyonu kullanmadan önce bir miktar anahtar imaj eklemelisiniz.</value></data>
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Pdf Dökümanı yaratılamıyor.</value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Hata: Dosya kaydedilemiyor : dosya başka bir pencere içerisinde açık durumda.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>PDF dökümanı Anahtar İmajlardan yaratılacak.\n Lütfen dökümanı yaratmadan önce bir miktar Anahtar İmaj ekleyin.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Dosyayı yazamıyor.\n Hedef klasöre yazmak için gerekli izinlere sahip olduğunuzdan ve dosyanın şu anda kullanımda olmadığından emin olun.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Videoyu Kaydedemiyor.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Videoyu Kaydedemiyor.\n Başka bir format ile tekrar deneyin.</value></data>
@@ -212,7 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Kaydet</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>İmaj</value></data>
    
-   <data name="Generic_SaveImage" xml:space="preserve"><value>Geçerli İmajı Dosyaya Kaydet</value></data>
+   <data name="Generic_SaveImage" xml:space="preserve"><value>İmaj Kaydet</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Anahtar İmajlar değiştirildi.\n Kapatmadan önce anahtar imaj verisini kaydetmek istiyor musunuz?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Anahtar imaj verisi kaydedilmedi</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Ortak Kontroller :</value></data>
@@ -269,7 +256,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>İzleme yollarından basit metine</value></data>
-   <data name="mnuExportToPDF" xml:space="preserve"><value>PDF'ye aktar</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Sıvılaştır</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>İmaj Formatı</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Oynat | Duraklat</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Yol Düzenlemesini Baştan Başlat</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Kaydet...</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Ekranlar</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Orijinal Hızı Ayarla</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Çalışma Alanının İlk Karesini Geçerli Kareye Denkleştir</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin onbindesi</value></data>
    
    
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Bu Video Aktif olan Video</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Anahtar İmaj Ekle</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Normal Moda Geri Dön</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Analiz Moduna Geç</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Bir Önceki Kareye Git</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Renk Profili</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>İmajların süperkonumlandırmasını İptal Et</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>İmajların süperkonumlandırmasını Aktive Et</value></data>
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Önceki Anahtar İmaj Çizimlerini Geçerli İmajın üzerine Kopyala</value></data>
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Açı</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Kronometre</value></data>

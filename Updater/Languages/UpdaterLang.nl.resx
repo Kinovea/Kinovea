@@ -75,23 +75,8 @@
    <data name="Updater_Download" xml:space="preserve"><value>Download</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Inlezen nieuwe versie…</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Bestandgrootte :</value></data>
-   <data name="Updater_FilterAll" xml:space="preserve"><value>Alle Talen</value></data>
-   <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Onmiddellijk vernieuwen</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Nieuw onderdeel</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Up to date</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Klik op de button 'Download'om inlezen te starten.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Een fout is opgetreden bij het controleren op nieuwe versies. Zorg er voor dat er een verbinding met Internet is.</value></data>
-   <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Alle gebruikershandleidingen zijn actueel.</value></data>
-   <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Alle videos zijn actueel.</value></data>
-   <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Alle videos in deze taal zijn actueel.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lijst met veranderingen :</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Filter op taal :</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>Handleiding</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Kies de handleiding die u wenst te downloaden:</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Kies de videos die u wenst te downloaden:</value></data>
-   <data name="Updater_LblSoftware" xml:space="preserve"><value>Software</value></data>
-   <data name="Updater_LblTotalSelected" xml:space="preserve"><value>Totaal gekozen :</value></data>
-   <data name="Updater_LblVideos" xml:space="preserve"><value>Help videos</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>De nieuwe versie is met succes ingelezen.\n Sluit Kinovea a.u.b. af en start het installatiebestand vanuit de plaats waar u deze hebt opgeslagen.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>Mb</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nieuw versie</value></data>

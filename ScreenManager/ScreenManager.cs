@@ -978,7 +978,7 @@ namespace Kinovea.ScreenManager
        				
        				// Configure Save dialog.
        				SaveFileDialog dlgSave = new SaveFileDialog();
-					dlgSave.Title = ScreenManagerLang.dlgSaveTitle;
+					dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
 					dlgSave.RestoreDirectory = true;
 					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
 					dlgSave.FilterIndex = 1;

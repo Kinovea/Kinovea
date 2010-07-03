@@ -127,12 +127,7 @@
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Seleção de caminho ao redor da imagem atual</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Informação seguindo o Caminho</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordenadas de origem sistema</value></data>
-   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaico dos quadros de imagens.</value></data>
-   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaico de todas as imagens.</value></data>
-   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Número de imagens: {0:0}.</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Movimento da Direita para esquerda</value></data>
-   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frequência:</value></data>
-   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Modo Mosaico</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tamanho real do segmento:</value></data>
    
    
@@ -143,8 +138,6 @@
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Video original com pausa em cada Quadro de Imagem.</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Apresentação em slides apenas com os Quadros de Imagem.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de video</value></data>
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>Documento PDF (*.pdf)|*.pdf;</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Salvar Documento PDF com os Quadros de Imagem</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salvar dados como uma Planilha</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentários...</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Salvar apenas o vídeo.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Salvar Dados dos Quadros de Imagens</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Todos os Arquivos (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>Imagens JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Imagens PNG (*.png)|*.png|Imagens Bitmap (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Salvar Sequência</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>Salvar Imagem</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salvar Vídeo</value></data>
-   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Aplicar a todos os caminhos.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Definir a origem do sistema de coordenadas </value></data>
    
    
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Uma Apresentação de Slides é uma sequência de Quadros de Imagens salvos num formato de vídeo.\n Por favor, adicione alguns Quadros antes de gerar o Slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Nao pode criar video pausado.</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Você precisa adicionar alguns Quadros de Imagens antes de usar esta função.</value></data>
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Não pode criar o documento PDF. </value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Falha: Sem conseguir salvar o arquivo: o mesmo está aberto em outra janela.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>O documento PDF será criado a partir de Quadros de Imagens.\n Por favor, adicione alguns Quadros antes de gerar o documento. </value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Sem poder salvar o arquivo. \nVerifique se você tem autorização para salvar arquivos na pasta escolhida e se o mesmo nao está em uso.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Sem poder salvar o vídeo.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Sem poder salvar o vídeo. \nTente denovo com um formato diferente.</value></data>
@@ -212,7 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Salvar</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imagem</value></data>
    
-   <data name="Generic_SaveImage" xml:space="preserve"><value>Salvar a Imagem Atual em Arquivo</value></data>
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Salvar Imagem</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Quadros de imagens foram modificados.\nVocê deseja salvá-los antes de sair?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Dados dos quadros de imagens não foram salvos.</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comuns:</value></data>
@@ -269,7 +256,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    
-   <data name="mnuExportToPDF" xml:space="preserve"><value>Exportar para PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Fluidificar</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Formato da Imagem</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Auto Detecção</value></data>
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Reproduzir | Pausar</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reiniciar Edição do Caminho</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Telas</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar a medida...</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Ajustar Velocidade Original...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ajustar o Último Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
    
    
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Esse Vídeo é o Vídeo Ativo</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Adicionar um Quadro de Imagem</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Voltar ao Módulo Normal</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Mudar para o Módulo de Análises</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Voltar ao Quadro Anterior</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil de Cores</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Desabilitar sobreposição de imagens.</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Habilitar sobreposição de imagens.</value></data>
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Copiar o Desenho do Quadro de Imagens anterior para o Quadro Atual.</value></data>
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Ângulo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronômetro</value></data>

@@ -75,23 +75,8 @@
    <data name="Updater_Download" xml:space="preserve"><value>Baixar</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Baixando Nova Versão...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Tamanho do arquivo :</value></data>
-   <data name="Updater_FilterAll" xml:space="preserve"><value>Todos os Idiomas</value></data>
-   <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Atualização disponível</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Novo item</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Atualizado</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Clique no botão 'Baixar' para iniciar o download.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Ocorreu um erro enquanto o programa procurava atualizações. Por favor, verifique se existe uma conexão de Internet ativa.</value></data>
-   <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Todas as guias de usuário estão atualizadas.</value></data>
-   <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Todos os vídeos estão atualizados.</value></data>
-   <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Todos os vídeos nesse idioma estão atualizados.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Log de mudanças:</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Filtrar por Idioma:</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>Manual</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Selecione o manual que você deseja baixar:</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Selecione os vídeos que voce deseja baixar:</value></data>
-   <data name="Updater_LblSoftware" xml:space="preserve"><value>Software</value></data>
-   <data name="Updater_LblTotalSelected" xml:space="preserve"><value>Total selecionado:</value></data>
-   <data name="Updater_LblVideos" xml:space="preserve"><value>Vídeos de ajuda</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>A nova versão foi baixada com sucesso.\n Por favor, feche o Kinovea e execute o instalador de onde você o salvou.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nova Versão</value></data>

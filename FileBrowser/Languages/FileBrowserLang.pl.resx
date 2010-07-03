@@ -72,7 +72,6 @@
    
    
    
-   
    <data name="tabExplorer" xml:space="preserve"><value>Przeglądarka</value></data>
-   <data name="tabFavorites" xml:space="preserve"><value>Ulubione</value></data>
+   <data name="tabShortcuts" xml:space="preserve"><value>Ulubione</value></data>
 </root>

@@ -72,7 +72,6 @@
    <data name="mnuAddShortcut" xml:space="preserve"><value>Προσθήκη συντόμευσης</value></data>
    <data name="mnuAddToShortcuts" xml:space="preserve"><value>Προσθήκη στις συντομεύσεις</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Διαγραφή συντόμευσης</value></data>
-   <data name="mnuEditShortcut" xml:space="preserve"><value>Σύνταξη συντόμευσης</value></data>
-   <data name="tabExplorer" xml:space="preserve"><value>Εξερευνητής</value></data>
-   <data name="tabFavorites" xml:space="preserve"><value>Συντομεύσεις</value></data>
+   
+   <data name="tabShortcuts" xml:space="preserve"><value>Συντομεύσεις</value></data>
 </root>

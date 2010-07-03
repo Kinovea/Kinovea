@@ -75,23 +75,8 @@
    <data name="Updater_Download" xml:space="preserve"><value>Last ned</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Last ned ny versjon...</value></data>
    <data name="Updater_FileSize" xml:space="preserve"><value>Filstørrelse:</value></data>
-   <data name="Updater_FilterAll" xml:space="preserve"><value>Alle språk</value></data>
-   <data name="Updater_HelpItem_NeedUpdate" xml:space="preserve"><value>Oppdatering tilgjengelig</value></data>
-   <data name="Updater_HelpItem_NewItem" xml:space="preserve"><value>Ny</value></data>
-   <data name="Updater_HelpItem_UpToDate" xml:space="preserve"><value>Oppdatert</value></data>
-   <data name="Updater_Instruction" xml:space="preserve"><value>Trykk “Last ned” for å starte nedlasting.</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>En feil oppstod ved sjekk av oppdateringer. Vennligst se etter at du er logget på internett. </value></data>
-   <data name="Updater_LblAllManualsUpToDate" xml:space="preserve"><value>Alle brukerveiledninger er oppdatert.</value></data>
-   <data name="Updater_LblAllVideosUpToDate" xml:space="preserve"><value>Alle videoer er oppdatert.</value></data>
-   <data name="Updater_LblAllVideosUpToDateCategory" xml:space="preserve"><value>Alle videoer på dette språket er oppdatert.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Endre logg:</value></data>
-   <data name="Updater_LblFilterByLang" xml:space="preserve"><value>Filtrer på språk:</value></data>
-   <data name="Updater_LblManuals" xml:space="preserve"><value>Manual</value></data>
-   <data name="Updater_LblSelectManuals" xml:space="preserve"><value>Velg ønsket manual:</value></data>
-   <data name="Updater_LblSelectVideos" xml:space="preserve"><value>Velg ønskede videoer:</value></data>
-   <data name="Updater_LblSoftware" xml:space="preserve"><value>Programvare</value></data>
-   <data name="Updater_LblTotalSelected" xml:space="preserve"><value>Antall valgte:</value></data>
-   <data name="Updater_LblVideos" xml:space="preserve"><value>Hjelpe videoer</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Den nye versjonen ble lastet ned. \n Vennligst lukk Kinovea og start installasjonen av ny versjon.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Ny versjon</value></data>

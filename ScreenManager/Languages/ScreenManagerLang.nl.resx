@@ -127,12 +127,7 @@
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Trajectpad sectie rond huidig beeld</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label volgt het Trajectpad</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Originele systeem coördinaten</value></data>
-   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaiek van de kernbeelden.</value></data>
-   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaiek van alle beelden.</value></data>
-   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Aantal beelden : {0:0}.</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Beweging rechts-naar-links</value></data>
-   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frequentie: </value></data>
-   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaiek modus</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    
@@ -143,8 +138,6 @@
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originele video met een pauze op elk Kernbeeld</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video diashow met alleen de Kernbeelden.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF document (*.pdf)|*.pdf</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Exporteer de beeldanalyse naar PDF</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Bewaar de gegevens als een tabel document</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaar…</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Bewaar alleen video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar kernbeeldgegegevens.</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG afbeeldingen (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG afbeeldingen (*.png)|*.png|Bitmap afbeeldingen (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>Bewaar afbeelding</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
-   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Pas toe op alle trajectpaden.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Specificeer de originele trajectpad coördinaten</value></data>
    
    
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Een diashow is een rij opeenvolgende Kernbeelden opgeslagen in video format.\n Voer a.u.b. enkele kernbeelden in,voordat u de diashow maakt.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Kan geen video met pauzes maken</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>U dient enkele Kernbeelden toe te voegen, voordat u deze functie kan gebruiken.</value></data>
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea - Kan geen Pdf-bestand maken.</value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Fout bij opslag van bestand : het bestand is in ander scherm geopend.</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Het Pdf-bestand wordt gemaakt uit de kernbeelden. \n Voer a.u.b. enkele kernbeelden in, voordat u het document gaat maken.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Onmogelijk bestand te maken. \nZorg ervoor dat u de rechten heeft om bestanden op te slaan in doelmap en dat het bestand niet nu in gebruik is.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan bestand niet opslaan.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan video niet opslaan.\nProbeer nogmaals met een ander format.</value></data>
@@ -212,7 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    
-   <data name="Generic_SaveImage" xml:space="preserve"><value>Bewaar huidig beeld in bestand</value></data>
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Bewaar afbeelding</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Kernbeelden zijn veranderd. \nWilt u de veranderde kernbeelden opslaan voor afsluiten ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Standaard bediening:</value></data>
@@ -269,7 +256,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Trajectory naar simpele tekst</value></data>
-   <data name="mnuExportToPDF" xml:space="preserve"><value>Export naar PDF</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Vloeiend</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Beeldtype</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatische detectie</value></data>
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Afspelen | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Schermen</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Stel Originele Snelheid in...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een minuut</value></data>
    
    
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Deze video is de actieve video</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Voeg een kernbeeld toe</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Schakel terug naar normale weergave</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Schakel naar analyse weergave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ga naar vorige frame</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Kleurprofiel</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Deactiveer superposition van de beelden</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Activeer superposition van de beelden</value></data>
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopieer de vorige tekenvormen in huidige beeld.</value></data>
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Hoek</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopwatch/tijdas</value></data>

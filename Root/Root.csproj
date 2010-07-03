@@ -113,12 +113,6 @@
     <Compile Include="UserInterface\FormPreferences.Designer.cs">
       <DependentUpon>FormPreferences.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\HelpVideosDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\HelpVideosDialog.Designer.cs">
-      <DependentUpon>HelpVideosDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Languages\RootLang.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -271,10 +265,6 @@
     <EmbeddedResource Include="UserInterface\FormPreferences.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormPreferences.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\HelpVideosDialog.resx">
-      <DependentUpon>HelpVideosDialog.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\%24this.Icon.ico" />
     <EmbeddedResource Include="UserInterface\SupervisorUserInterface.resx">

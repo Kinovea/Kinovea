@@ -72,15 +72,7 @@
    <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea is subject to the terms of the Gnu General Public License version 2.</value></data>
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea uses the following software components:</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>You are welcome to help translate, test, debug, improve or otherwise support Kinovea.</value></data>
-   <data name="dlgAbout_Info4" xml:space="preserve"><value>Localisations:</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>All Languages</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>More videos are available through the menu : Options &gt; Check For Available Updates...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>About this Video…</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filter by language:</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Select which video you would like to view:</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>No Comment.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea - Watch a Video Tutorial.</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Watch</value></data>
+   <data name="dlgAbout_Info4" xml:space="preserve"><value>Translations:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>All files (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open Video File</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Drawings</value></data>

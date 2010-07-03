@@ -985,73 +985,34 @@ namespace Kinovea.Root
         private void mnuHelpContents_OnClick(object sender, EventArgs e)
         {
             // Launch Help file from current UI language.
-
-            ResourceManager SharedResources = PreferencesManager.ResourceManager;
-            HelpIndex hiLocal = new HelpIndex(Application.StartupPath + "\\" + SharedResources.GetString("URILocalHelpIndex"));
-
-            if (hiLocal.LoadSuccess)
+            string resourceUri = GetLocalizedHelpResource(true);
+            if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-                string LocaleHelpUri = "";
-                string EnglishHelpUri = "";
-                bool bLocaleFound = false;
-                bool bEnglishFound = false;
-                int i = 0;
-
-                CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
-                string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
-                                
-                // Look for a matching locale.
-                while (!bLocaleFound && i < hiLocal.UserGuides.Count)
-                {
-                	if (hiLocal.UserGuides[i].Language == neutral)
-                    {
-                        bLocaleFound = true;
-                        LocaleHelpUri = hiLocal.UserGuides[i].FileLocation;
-                    }
-
-                    if (hiLocal.UserGuides[i].Language == "en")
-                    {
-                        bEnglishFound = true;
-                        EnglishHelpUri = hiLocal.UserGuides[i].FileLocation;
-                    }
-
-                    i++;
-                }
-
-                if (bLocaleFound)
-                {
-                    Help.ShowHelp(MainWindow, LocaleHelpUri);
-                }
-                else if (bEnglishFound)
-                {
-                    Help.ShowHelp(MainWindow, EnglishHelpUri);
-                }
-                else
-                {
-                    log.Error("Cannot find any help file.");
-                }
+            	Help.ShowHelp(MainWindow, resourceUri);
             }
             else
             {
-                log.Error("Cannot find the xml help index.");
+            	log.Error(String.Format("Cannot find the manual. ({0}).", resourceUri));
             }
         }
         private void mnuTutorialVideos_OnClick(object sender, EventArgs e)
         {
-            ResourceManager SharedResources = PreferencesManager.ResourceManager;
-            HelpIndex hiLocal = new HelpIndex(Application.StartupPath + "\\" + SharedResources.GetString("URILocalHelpIndex"));
-
-            if (hiLocal.LoadSuccess)
+        	// Launch help video from current UI language.
+			string resourceUri = GetLocalizedHelpResource(false);
+            if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-                HelpVideosDialog hvd = new HelpVideosDialog(RootResourceManager, hiLocal, ScreenManager);
-                hvd.ShowDialog();
-                hvd.Dispose();
-            }
-            else
-            {
-                log.Error("Cannot find the xml help index.");
-            }
-
+	        	IUndoableCommand clmis = new CommandLoadMovieInScreen(ScreenManager, resourceUri, -1, true);
+	            CommandManager cm = CommandManager.Instance();
+	            cm.LaunchUndoableCommand(clmis);
+        	}
+        	else
+        	{
+        		log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
+        		MessageBox.Show(ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
+                                    ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Exclamation);
+        	}
         }
         private void mnuApplicationFolder_OnClick(object sender, EventArgs e)
         {
@@ -1136,6 +1097,60 @@ namespace Kinovea.Root
             log.Debug("SpeedPercentage : " + am.SpeedPercentage.ToString());
             log.Debug("StretchImage : " + am.StretchImage.ToString());
             log.Debug("HideExplorer : " + am.HideExplorer.ToString());
+        }
+        private string GetLocalizedHelpResource(bool _manual)
+        {
+        	// Find the local file path of a help resource (manual or help video) according to what is saved in the help index.
+        	
+        	string resourceUri = "";
+        	
+        	// Load the help file system.
+        	HelpIndex hiLocal = new HelpIndex(Application.StartupPath + "\\" + PreferencesManager.ResourceManager.GetString("URILocalHelpIndex"));
+
+            if (hiLocal.LoadSuccess)
+            {
+            	// Loop into the file to find the required resource in the matching locale, or fallback to english.
+                string EnglishUri = "";
+                bool bLocaleFound = false;
+                bool bEnglishFound = false;
+                int i = 0;
+
+                CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
+                string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+                                
+                // Look for a matching locale, or English.
+                int iTotalResource = _manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
+                while (!bLocaleFound && i < iTotalResource)
+                {
+                	HelpItem hi = _manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
+                	
+                	if (hi.Language == neutral)
+                    {
+                        bLocaleFound = true;
+                        resourceUri = hi.FileLocation;
+                        break;
+                    }
+
+                    if (hi.Language == "en")
+                    {
+                        bEnglishFound = true;
+                        EnglishUri = hi.FileLocation;
+                    }
+
+                    i++;
+                }
+
+                if (!bLocaleFound && bEnglishFound)
+                {
+                	resourceUri = EnglishUri;
+                }
+            }
+            else
+            {
+                log.Error("Cannot find the xml help index.");
+            }
+            
+            return resourceUri;
         }
         #endregion
 

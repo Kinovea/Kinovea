@@ -106,15 +106,6 @@ namespace Kinovea.FileBrowser.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Edit shortcut.
-        /// </summary>
-        internal static string mnuEditShortcut {
-            get {
-                return ResourceManager.GetString("mnuEditShortcut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Explorer.
         /// </summary>
         internal static string tabExplorer {
@@ -126,9 +117,9 @@ namespace Kinovea.FileBrowser.Languages {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Shortcuts.
         /// </summary>
-        internal static string tabFavorites {
+        internal static string tabShortcuts {
             get {
-                return ResourceManager.GetString("tabFavorites", resourceCulture);
+                return ResourceManager.GetString("tabShortcuts", resourceCulture);
             }
         }
     }

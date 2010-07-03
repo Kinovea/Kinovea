@@ -73,14 +73,6 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>本软件包含以下几个功能模块:</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>非常欢迎帮助我们翻译, 测试, 调试, 改进 或者支持我们.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>本地化语言:</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>所有语言</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>更多视频请点击 : 选项 &gt; 检查更新...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>关于这个视频...</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>语言过滤器:</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>选择视频进行查看</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>没有评论</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>观看视频教程.</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>观看</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>所有文件 (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>打开视频文件</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>绘制</value></data>

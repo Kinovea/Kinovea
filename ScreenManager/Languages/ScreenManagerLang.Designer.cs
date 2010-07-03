@@ -457,51 +457,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Frequency :.
-        /// </summary>
-        internal static string dlgConfigureMosaic_LabelFrequencyRoot {
-            get {
-                return ResourceManager.GetString("dlgConfigureMosaic_LabelFrequencyRoot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Number of images : {0:0}..
-        /// </summary>
-        internal static string dlgConfigureMosaic_LabelImages {
-            get {
-                return ResourceManager.GetString("dlgConfigureMosaic_LabelImages", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mosaic of all images..
-        /// </summary>
-        internal static string dlgConfigureMosaic_radioFrequency {
-            get {
-                return ResourceManager.GetString("dlgConfigureMosaic_radioFrequency", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mosaic of key images..
-        /// </summary>
-        internal static string dlgConfigureMosaic_radioKeyframes {
-            get {
-                return ResourceManager.GetString("dlgConfigureMosaic_radioKeyframes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mosaic Mode.
-        /// </summary>
-        internal static string dlgConfigureMosaic_Title {
-            get {
-                return ResourceManager.GetString("dlgConfigureMosaic_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Number of frames per second at capture time :\n(ex: 300).
         /// </summary>
         internal static string dlgConfigureSpeed_lblFPSCaptureTime {
@@ -772,24 +727,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à PDF document (*.pdf)|*.pdf;.
-        /// </summary>
-        internal static string dlgExportToPDF_Filter {
-            get {
-                return ResourceManager.GetString("dlgExportToPDF_Filter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save a PDF Document from Key Images.
-        /// </summary>
-        internal static string dlgExportToPDF_Title {
-            get {
-                return ResourceManager.GetString("dlgExportToPDF_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Comments....
         /// </summary>
         internal static string dlgKeyframeComment_Title {
@@ -997,15 +934,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à All files (*.*)|*.*.
-        /// </summary>
-        internal static string dlgSaveFileFilter {
-            get {
-                return ResourceManager.GetString("dlgSaveFileFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp.
         /// </summary>
         internal static string dlgSaveFilter {
@@ -1020,15 +948,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgSaveSequenceTitle {
             get {
                 return ResourceManager.GetString("dlgSaveSequenceTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save Image .
-        /// </summary>
-        internal static string dlgSaveTitle {
-            get {
-                return ResourceManager.GetString("dlgSaveTitle", resourceCulture);
             }
         }
         
@@ -1056,15 +975,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgSaveVideoTitle {
             get {
                 return ResourceManager.GetString("dlgSaveVideoTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Apply to all paths..
-        /// </summary>
-        internal static string dlgSetTrajectoryOrigin_ApplyToAll {
-            get {
-                return ResourceManager.GetString("dlgSetTrajectoryOrigin_ApplyToAll", resourceCulture);
             }
         }
         
@@ -1191,33 +1101,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string Error_SavePausedVideo_NoKeyframes {
             get {
                 return ResourceManager.GetString("Error_SavePausedVideo_NoKeyframes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Kinovea - Cannot Create Pdf Document. .
-        /// </summary>
-        internal static string Error_SavePdf {
-            get {
-                return ResourceManager.GetString("Error_SavePdf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Failure: Unable to save file : the file is open in another window..
-        /// </summary>
-        internal static string Error_SavePdf_IOException {
-            get {
-                return ResourceManager.GetString("Error_SavePdf_IOException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à The Pdf document will be created out of Key Images.\n Please add some Key Images before generating the document. .
-        /// </summary>
-        internal static string Error_SavePdf_NoKeyFrames {
-            get {
-                return ResourceManager.GetString("Error_SavePdf_NoKeyFrames", resourceCulture);
             }
         }
         
@@ -1852,15 +1735,6 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Export to PDF.
-        /// </summary>
-        internal static string mnuExportToPDF {
-            get {
-                return ResourceManager.GetString("mnuExportToPDF", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à XHTML.
         /// </summary>
         internal static string mnuExportXHTML {
@@ -2064,15 +1938,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuSave {
             get {
                 return ResourceManager.GetString("mnuSave", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Screens.
-        /// </summary>
-        internal static string mnuScreens {
-            get {
-                return ResourceManager.GetString("mnuScreens", resourceCulture);
             }
         }
         
@@ -2383,38 +2248,11 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à This Video is the Active Video.
-        /// </summary>
-        internal static string ToolTip_ActiveScreenIndicator {
-            get {
-                return ResourceManager.GetString("ToolTip_ActiveScreenIndicator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Add a Key Image.
         /// </summary>
         internal static string ToolTip_AddKeyframe {
             get {
                 return ResourceManager.GetString("ToolTip_AddKeyframe", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Switch Back to Normal Mode .
-        /// </summary>
-        internal static string ToolTip_AnalyseModeAnalyse {
-            get {
-                return ResourceManager.GetString("ToolTip_AnalyseModeAnalyse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Switch to Analysis Mode.
-        /// </summary>
-        internal static string ToolTip_AnalyseModeNormal {
-            get {
-                return ResourceManager.GetString("ToolTip_AnalyseModeNormal", resourceCulture);
             }
         }
         
@@ -2451,15 +2289,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_CommonCtrl_EnableMerge {
             get {
                 return ResourceManager.GetString("ToolTip_CommonCtrl_EnableMerge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Copy Previous Key Image Drawings into the Current Image.
-        /// </summary>
-        internal static string ToolTip_CopyDrawings {
-            get {
-                return ResourceManager.GetString("ToolTip_CopyDrawings", resourceCulture);
             }
         }
         

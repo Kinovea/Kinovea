@@ -330,10 +330,6 @@
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\FormConfigureMosaic.Designer.cs">
-      <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs" />
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.Designer.cs">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
@@ -443,9 +439,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
       <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\VideoFilters\FormConfigureMosaic.resx">
-      <DependentUpon>FormConfigureMosaic.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>

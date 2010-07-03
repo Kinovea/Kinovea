@@ -127,12 +127,7 @@
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Deler av bane rundt aktuelt bilde</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Beskrivelse følger banen</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Koordinater ved startsted</value></data>
-   <data name="dlgConfigureMosaic_radioKeyframes" xml:space="preserve"><value>Mosaikk av nøkkelbilder</value></data>
-   <data name="dlgConfigureMosaic_radioFrequency" xml:space="preserve"><value>Mosaikk av alle bilder</value></data>
-   <data name="dlgConfigureMosaic_LabelImages" xml:space="preserve"><value>Antall bilder : {0:0}.</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Høyre-til-venstre bevegelse</value></data>
-   <data name="dlgConfigureMosaic_LabelFrequencyRoot" xml:space="preserve"><value>Frekvens:</value></data>
-   <data name="dlgConfigureMosaic_Title" xml:space="preserve"><value>Mosaikk modus</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Reell størrelse på segment:</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Kalibrere måling</value></data>
    
@@ -143,8 +138,6 @@
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Original video med pause ved hvert nøkkelbilde</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video slideshow med bare nøkkelbilder</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type video</value></data>
-   <data name="dlgExportToPDF_Filter" xml:space="preserve"><value>PDF dokument (*.pdf)|*.pdf;</value></data>
-   <data name="dlgExportToPDF_Title" xml:space="preserve"><value>Lagre et PDF dokument fra nøkkelbilder</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Lagre data som et regneark dokument</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Kommentarer...</value></data>
@@ -170,14 +163,11 @@
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Lagre kun video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Lagre video eller nøkkelbilde data</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Lagre nøkkelbilde data</value></data>
-   <data name="dlgSaveFileFilter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG Images (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG Images (*.png)|*.png|Bitmap Images (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Lagre sekvens</value></data>
-   <data name="dlgSaveTitle" xml:space="preserve"><value>Lagre bilde</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Lagre video</value></data>
-   <data name="dlgSetTrajectoryOrigin_ApplyToAll" xml:space="preserve"><value>Bruk på alle baner</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Sett koordinatene til systemstart</value></data>
    
    
@@ -189,9 +179,6 @@
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Et slidehow er en sekvens nøkkelbilder som er lagret I et videoformat.\n Vennligst legg til nøkkelbilder før du genererer slideshow.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Kan ikke lage video</value></data>
    <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>Du må legge til nøkkelbilder før du kan benytte denne funksjonen</value></data>
-   <data name="Error_SavePdf" xml:space="preserve"><value>Kinovea – kan ikke lage Pdf dokument</value></data>
-   <data name="Error_SavePdf_IOException" xml:space="preserve"><value>Advarsel: Kan ikke lagre fil : filen er åpen I et annet vindu</value></data>
-   <data name="Error_SavePdf_NoKeyFrames" xml:space="preserve"><value>Pdf dukumentet blir laget av nøkkelbilder. \n Vennligst legg til nøkkelbilder før lagring.</value></data>
    <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Kan ikke skrive til fil.\nPass på at du har rettighetene til å skrive til aktuell mappe og at filen ikke er I bruk. </value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea – kan ikke lagre video</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan ikke lagre video. \n Prøv igjen med et annet format.</value></data>
@@ -212,7 +199,7 @@
    <data name="Generic_Save" xml:space="preserve"><value>Lagre</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Bilde</value></data>
    
-   <data name="Generic_SaveImage" xml:space="preserve"><value>Lagre det aktuelle bilde</value></data>
+   <data name="Generic_SaveImage" xml:space="preserve"><value>Lagre bilde</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Nøkkelbilder er endret.\nØnsker du å lagre bilder før du avslutter ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Nøkkelbilder ble ikke lagret</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Standardvalg:</value></data>
@@ -269,7 +256,6 @@
    <data name="mnuExportMSXML" xml:space="preserve"><value>Microsoft Excel (MS-XML)</value></data>
    <data name="mnuExportXHTML" xml:space="preserve"><value>XHTML</value></data>
    <data name="mnuExportTEXT" xml:space="preserve"><value>Overføring til enkel tekst</value></data>
-   <data name="mnuExportToPDF" xml:space="preserve"><value>Eksporter til Pdf</value></data>
    
    <data name="mnuFormat" xml:space="preserve"><value>Bildeformat</value></data>
    <data name="mnuFormatAuto" xml:space="preserve"><value>Automatisk valg</value></data>
@@ -292,7 +278,6 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Spill av | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Start bane på nytt Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Lagre...</value></data>
-   <data name="mnuScreens" xml:space="preserve"><value>Vindu</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrere måling</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Sett original fart</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>La siste arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
@@ -324,15 +309,11 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
    
    
-   <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Dette er den aktive videoen</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Legg til nøkkelbilde</value></data>
-   <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Bytt til Normalmodus</value></data>
-   <data name="ToolTip_AnalyseModeNormal" xml:space="preserve"><value>Bytt til Analysemodus</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Gå til forrige bilde</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Fargeprofil</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Deaktiver superposisjon av bilde</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Aktiver superposisjon av bilde</value></data>
-   <data name="ToolTip_CopyDrawings" xml:space="preserve"><value>Kopier tegninger fra forrige nøkkelbilde til det aktuelle bilde</value></data>
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Vinkel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stoppeklokke</value></data>

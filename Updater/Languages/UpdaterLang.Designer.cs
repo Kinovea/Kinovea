@@ -133,51 +133,6 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à All Languages.
-        /// </summary>
-        internal static string Updater_FilterAll {
-            get {
-                return ResourceManager.GetString("Updater_FilterAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Update available.
-        /// </summary>
-        internal static string Updater_HelpItem_NeedUpdate {
-            get {
-                return ResourceManager.GetString("Updater_HelpItem_NeedUpdate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à New item.
-        /// </summary>
-        internal static string Updater_HelpItem_NewItem {
-            get {
-                return ResourceManager.GetString("Updater_HelpItem_NewItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Up to date.
-        /// </summary>
-        internal static string Updater_HelpItem_UpToDate {
-            get {
-                return ResourceManager.GetString("Updater_HelpItem_UpToDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Click the &apos;Download&apos; button to begin downloading..
-        /// </summary>
-        internal static string Updater_Instruction {
-            get {
-                return ResourceManager.GetString("Updater_Instruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à An error occurred while checking for updates. Please ensure an Internet connection is available. .
         /// </summary>
         internal static string Updater_InternetError {
@@ -187,101 +142,11 @@ namespace Kinovea.Updater.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à All user guides are up to date..
-        /// </summary>
-        internal static string Updater_LblAllManualsUpToDate {
-            get {
-                return ResourceManager.GetString("Updater_LblAllManualsUpToDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à All videos are up to date..
-        /// </summary>
-        internal static string Updater_LblAllVideosUpToDate {
-            get {
-                return ResourceManager.GetString("Updater_LblAllVideosUpToDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à All videos in this language are up to date..
-        /// </summary>
-        internal static string Updater_LblAllVideosUpToDateCategory {
-            get {
-                return ResourceManager.GetString("Updater_LblAllVideosUpToDateCategory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Change Log :.
         /// </summary>
         internal static string Updater_LblChangeLog {
             get {
                 return ResourceManager.GetString("Updater_LblChangeLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Filter by language :.
-        /// </summary>
-        internal static string Updater_LblFilterByLang {
-            get {
-                return ResourceManager.GetString("Updater_LblFilterByLang", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Manual.
-        /// </summary>
-        internal static string Updater_LblManuals {
-            get {
-                return ResourceManager.GetString("Updater_LblManuals", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Select the manual you wish to download :.
-        /// </summary>
-        internal static string Updater_LblSelectManuals {
-            get {
-                return ResourceManager.GetString("Updater_LblSelectManuals", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Select the videos you wish to download :.
-        /// </summary>
-        internal static string Updater_LblSelectVideos {
-            get {
-                return ResourceManager.GetString("Updater_LblSelectVideos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Software.
-        /// </summary>
-        internal static string Updater_LblSoftware {
-            get {
-                return ResourceManager.GetString("Updater_LblSoftware", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Total selected :.
-        /// </summary>
-        internal static string Updater_LblTotalSelected {
-            get {
-                return ResourceManager.GetString("Updater_LblTotalSelected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Help Videos.
-        /// </summary>
-        internal static string Updater_LblVideos {
-            get {
-                return ResourceManager.GetString("Updater_LblVideos", resourceCulture);
             }
         }
         

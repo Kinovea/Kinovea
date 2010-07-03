@@ -73,14 +73,6 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea benytter seg av følgende programvarekomponenter :</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Du er velkommen til å oversette, teste, debugge, forbedre eller på andre måter hjelpe Kinovea.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Lokalisering :</value></data>
-   <data name="dlgHelpVideos_FilterAll" xml:space="preserve"><value>Alle språk</value></data>
-   <data name="dlgHelpVideos_GetMore" xml:space="preserve"><value>Flere videoer er tilgjengelige via menyen: Valg &gt; Se etter oppdateringer...</value></data>
-   <data name="dlgHelpVideos_LblAboutThisVideo" xml:space="preserve"><value>Om denne videoen...</value></data>
-   <data name="dlgHelpVideos_LblFilterByLang" xml:space="preserve"><value>Filtrer etter språk:</value></data>
-   <data name="dlgHelpVideos_LblSelectVideos" xml:space="preserve"><value>Velg foretrukket video:</value></data>
-   <data name="dlgHelpVideos_NoComment" xml:space="preserve"><value>Ingen kommentar.</value></data>
-   <data name="dlgHelpVideos_Title" xml:space="preserve"><value>Kinovea – Se instruksjonsvideo.</value></data>
-   <data name="dlgHelpVideos_Watch" xml:space="preserve"><value>Se</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Åpne videofil</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tegninger</value></data>
