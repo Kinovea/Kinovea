@@ -278,6 +278,7 @@ namespace Kinovea.ScreenManager
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
+		private MessageToaster m_MessageToaster;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -346,6 +347,7 @@ namespace Kinovea.ScreenManager
 			BuildContextMenus();
 			InitializeDrawingTools();
 			SyncSetAlpha(0.5f);
+			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
 			
 			// From prefs or command line.
 			m_ColorProfile.Load(PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder") + "\\current.xml");
@@ -1591,6 +1593,7 @@ namespace Kinovea.ScreenManager
 					buttonPlay.Image = Resources.liqplay17;
 					m_bIsCurrentlyPlaying = false;
 					ActivateKeyframe(m_iCurrentPosition);
+					ToastPause();
 				}
 				else
 				{
@@ -2783,6 +2786,7 @@ namespace Kinovea.ScreenManager
 								m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 								ActivateKeyframe(m_iCurrentPosition);
 								bWasPlaying = true;
+								ToastPause();
 							}
 						}
 						
@@ -3257,6 +3261,11 @@ namespace Kinovea.ScreenManager
 						}
 						
 						FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
+						
+						if(m_MessageToaster.Enabled)
+						{
+							m_MessageToaster.Draw(e.Graphics);
+						}
 						
 						//m_Stopwatch.Stop();
             			//log.Debug(String.Format("Paint: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
@@ -4528,6 +4537,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Metadata.Magnifier.MagnifiedCenter);
 			DisableMagnifier();
 			m_FrameServer.Metadata.ResizeFinished();
+			ToastZoom();
 			pbSurfaceScreen.Invalidate();
 		}
 		private void mnuMagnifier150_Click(object sender, EventArgs e)
@@ -4639,6 +4649,7 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.CoordinateSystem.Zoom += 0.20f;
 					RelocateDirectZoom();
 					m_FrameServer.Metadata.ResizeFinished();
+					ToastZoom();
 				}	
 			}
 			
@@ -4653,9 +4664,18 @@ namespace Kinovea.ScreenManager
 			}
 			else if (m_FrameServer.CoordinateSystem.Zooming)
 			{
-				m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
+				if (m_FrameServer.CoordinateSystem.Zoom > 1.2f)
+				{
+					m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
+				}
+				else
+				{
+					m_FrameServer.CoordinateSystem.Zoom = 1.0f;	
+				}
+
 				RelocateDirectZoom();
 				m_FrameServer.Metadata.ResizeFinished();
+				ToastZoom();
 			}
 			
 			pbSurfaceScreen.Invalidate();
@@ -4664,6 +4684,20 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameServer.CoordinateSystem.RelocateZoomWindow();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+		}
+		#endregion
+		
+		#region Toasts
+		private void ToastZoom()
+		{
+			m_MessageToaster.SetDuration(750);
+			int percentage = (int)(m_FrameServer.CoordinateSystem.Zoom * 100);
+			m_MessageToaster.Show(String.Format(ScreenManagerLang.Toast_Zoom, percentage.ToString()));
+		}
+		private void ToastPause()
+		{
+			m_MessageToaster.SetDuration(750);
+			m_MessageToaster.Show(ScreenManagerLang.Toast_Pause);
 		}
 		#endregion
 

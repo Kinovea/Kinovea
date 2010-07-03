@@ -322,6 +322,8 @@
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numeros de las imàgenes</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimas de minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Diez milesimas de hora</value></data>
+   
+   
    <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Este Video est el Video Activo</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Añadir un a imàgen clave</value></data>
    <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Volver al Modo Normal</value></data>

@@ -2365,6 +2365,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à pause.
+        /// </summary>
+        internal static string Toast_Pause {
+            get {
+                return ResourceManager.GetString("Toast_Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Zoom: {0}%.
+        /// </summary>
+        internal static string Toast_Zoom {
+            get {
+                return ResourceManager.GetString("Toast_Zoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à This Video is the Active Video.
         /// </summary>
         internal static string ToolTip_ActiveScreenIndicator {
