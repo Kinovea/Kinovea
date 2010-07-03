@@ -322,6 +322,8 @@
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin onbindesi</value></data>
+   
+   
    <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Bu Video Aktif olan Video</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Anahtar İmaj Ekle</value></data>
    <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Normal Moda Geri Dön</value></data>

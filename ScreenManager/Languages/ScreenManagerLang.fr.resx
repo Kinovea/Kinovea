@@ -322,6 +322,8 @@
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numéros des images</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centièmes de minutes</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dix millièmes d'heure</value></data>
+   <data name="Toast_Pause" xml:space="preserve"><value>pause</value></data>
+   <data name="Toast_Zoom" xml:space="preserve"><value>Zoom : {0}%</value></data>
    <data name="ToolTip_ActiveScreenIndicator" xml:space="preserve"><value>Cette Vidéo est la Vidéo Active</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Ajouter une Image Clé</value></data>
    <data name="ToolTip_AnalyseModeAnalyse" xml:space="preserve"><value>Retourner en Mode Normal</value></data>

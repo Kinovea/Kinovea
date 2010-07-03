@@ -422,6 +422,7 @@
     <Compile Include="UserInterface\ThumbListViewItem.Designer.cs">
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\MessageToaster.cs" />
     <EmbeddedResource Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.resx">
       <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
       <SubType>Designer</SubType>
