@@ -1338,7 +1338,7 @@ namespace Kinovea.ScreenManager
             	// Then loop files within the sub directory.
 	            foreach (string file in Directory.GetFiles(_dir))
 	            {
-	                if (Path.GetExtension(file).Equals(".svg"))
+	            	if (Path.GetExtension(file).ToLower().Equals(".svg"))
 	                {
 	                	m_bHasSvgFiles = true;
 	                	
