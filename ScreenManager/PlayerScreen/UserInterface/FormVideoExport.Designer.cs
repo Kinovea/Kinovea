@@ -197,7 +197,6 @@ namespace Kinovea.ScreenManager
         	this.groupOptions.TabIndex = 26;
         	this.groupOptions.TabStop = false;
         	this.groupOptions.Text = "dlgSaveAnalysisOrVideo_GroupOptions";
-        	this.groupOptions.Visible = false;
         	// 
         	// checkSlowMotion
         	// 
