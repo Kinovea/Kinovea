@@ -78,17 +78,12 @@ namespace Kinovea.ScreenManager
         	m_OriginalFilename = _OriginalFilename;
         	
             InitializeComponent();
-            if(m_iSlowmotionPercentage != 100)
-            {
-            	groupOptions.Visible = true;
-            	this.Height = 370;
-            }
-            else
+            
+            if(m_iSlowmotionPercentage == 100)
             {
             	groupOptions.Visible = false;
-            	this.Height = 280;
+            	this.Height -= groupOptions.Height;
             }
-            
             
             InitCulture();
         }
