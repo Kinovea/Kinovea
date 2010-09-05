@@ -102,7 +102,7 @@ namespace Kinovea.ScreenManager
         private int m_iMaxWidth;			// Number of pixels in the control that can be used for position.
         private int m_iMinimumPixel;
         private int m_iMaximumPixel;
-        private int m_iPixelPosition;			// Left of the cursor in pixels.
+        private int m_iPixelPosition;		// Left of the cursor in pixels.
         
         private int m_iCursorWidth = Kinovea.ScreenManager.Properties.Resources.liqcursor.Width;
         private int m_iSpacers = 10;
@@ -177,8 +177,6 @@ namespace Kinovea.ScreenManager
         	
         	if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
         	if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
-        	
-        	//log.Debug(String.Format("Remap - [{0} - {1} - {2}], m_iPixelPosition:{3}", m_iMinimum, m_iPosition, m_iMaximum, m_iPixelPosition));
         	
         	UpdateMarkersPositions();
         	UpdateCursorPosition();
@@ -322,12 +320,6 @@ namespace Kinovea.ScreenManager
 	            
 	            // Draw the cursor.
 	            e.Graphics.DrawImage(bmpNavCursor, m_iPixelPosition, 0);
-        	}
-        	else
-        	{
-        		// If not enabled (draw-time filter like mosaic displayed ?), 
-        		// we move the cursor to the left and do not draw the markers.
-        		e.Graphics.DrawImage(bmpNavCursorDisabled, m_iMinimumPixel-bmpNavCursor.Width/2, 0);
         	}
         	
         	m_bInvalidateAsked = false;

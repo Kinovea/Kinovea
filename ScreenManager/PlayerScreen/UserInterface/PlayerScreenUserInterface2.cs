@@ -1669,9 +1669,6 @@ namespace Kinovea.ScreenManager
 				// Update the frame tracker internal timestamps (including position if needed).
 				trkFrame.Remap(m_iSelStart, m_iSelEnd);
 				
-				// Update the position but don't trigger a refresh.
-				trkSelection.UpdatePositionValueOnly(trkFrame.Position);
-
 				if (m_bShowInfos) { UpdateDebugInfos(); }
 			}
 		}
@@ -1696,9 +1693,11 @@ namespace Kinovea.ScreenManager
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				m_iFramesToDecode = 1;
 
-				ShowNextFrame(trkSelection.SelTarget, true);
-				m_iCurrentPosition = trkSelection.SelTarget + trkSelection.Minimum;
-
+				//ShowNextFrame(trkSelection.SelTarget, true);
+				//m_iCurrentPosition = trkSelection.SelTarget + trkSelection.Minimum;
+				ShowNextFrame(trkSelection.SelPos, true);
+				m_iCurrentPosition = trkSelection.SelPos + trkSelection.Minimum;
+				
 				UpdateNavigationCursor();
 				ActivateKeyframe(m_iCurrentPosition);
 				if (m_bShowInfos) { UpdateDebugInfos(); }
@@ -3585,10 +3584,9 @@ namespace Kinovea.ScreenManager
 					// Finish the setup
 					box.Left = iPixelsOffset + iPixelsSpacing;
 
-					box.pbThumbnail.Image = kf.Thumbnail;
 					box.UpdateTitle(kf.Title);
 					box.Tag = iKeyframeIndex;
-					box.pbThumbnail.SizeMode = PictureBoxSizeMode.CenterImage;
+					box.pbThumbnail.SizeMode = PictureBoxSizeMode.StretchImage;
 					
 					box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
 					box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);

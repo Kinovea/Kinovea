@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.labelInfos);
 			this.Controls.Add(this.progressBar);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "formProgressBar";

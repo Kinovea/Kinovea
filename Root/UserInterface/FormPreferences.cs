@@ -92,7 +92,8 @@ namespace Kinovea.Root
         }
         private void InitPages()
         {
-            this.Size = new Size(608, 356);
+            //this.Size = new Size(608, 356);
+            //this.Height = 356;
 
             // Culture
             this.Text = "   " + RootLang.dlgPreferences_Title;
@@ -193,16 +194,9 @@ namespace Kinovea.Root
         }
         private void PositionAllPages()
         {
-            int iLeft = 154;
             int iTop = 8;
-
-            pageGeneral.Left = iLeft;
             pageGeneral.Top = iTop;
-
-            pagePlayAnalyze.Left = iLeft;
             pagePlayAnalyze.Top = iTop;
-
-            pageDrawings.Left = iLeft;
             pageDrawings.Top = iTop;
         }
         private void ShowPage(Pages _page)
