@@ -365,7 +365,6 @@ namespace Kinovea.ScreenManager
         	// 
         	this.trkSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.trkSelection.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqbackdock;
         	this.trkSelection.Location = new System.Drawing.Point(91, 5);
         	this.trkSelection.Maximum = ((long)(100));
         	this.trkSelection.Minimum = ((long)(0));
@@ -374,7 +373,7 @@ namespace Kinovea.ScreenManager
         	this.trkSelection.SelLocked = false;
         	this.trkSelection.SelPos = ((long)(0));
         	this.trkSelection.SelStart = ((long)(0));
-        	this.trkSelection.Size = new System.Drawing.Size(329, 20);
+        	this.trkSelection.Size = new System.Drawing.Size(325, 20);
         	this.trkSelection.TabIndex = 17;
         	this.trkSelection.ToolTip = "";
         	this.trkSelection.SelectionChanged += new Kinovea.ScreenManager.SelectionTracker.SelectionChangedHandler(this.trkSelection_SelectionChanged);

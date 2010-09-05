@@ -36,9 +36,10 @@ namespace Kinovea.ScreenManager
         	// 
         	// progressBar
         	// 
-        	this.progressBar.Location = new System.Drawing.Point(20, 12);
+        	this.progressBar.Location = new System.Drawing.Point(27, 15);
+        	this.progressBar.Margin = new System.Windows.Forms.Padding(4);
         	this.progressBar.Name = "progressBar";
-        	this.progressBar.Size = new System.Drawing.Size(335, 22);
+        	this.progressBar.Size = new System.Drawing.Size(447, 27);
         	this.progressBar.Step = 1;
         	this.progressBar.TabIndex = 1;
         	this.progressBar.UseWaitCursor = true;
@@ -46,9 +47,10 @@ namespace Kinovea.ScreenManager
         	// labelInfos
         	// 
         	this.labelInfos.AutoSize = true;
-        	this.labelInfos.Location = new System.Drawing.Point(17, 47);
+        	this.labelInfos.Location = new System.Drawing.Point(27, 63);
+        	this.labelInfos.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
         	this.labelInfos.Name = "labelInfos";
-        	this.labelInfos.Size = new System.Drawing.Size(36, 13);
+        	this.labelInfos.Size = new System.Drawing.Size(46, 17);
         	this.labelInfos.TabIndex = 2;
         	this.labelInfos.Text = "[Infos]";
         	this.labelInfos.UseWaitCursor = true;
@@ -64,9 +66,10 @@ namespace Kinovea.ScreenManager
         	// buttonCancel
         	// 
         	this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        	this.buttonCancel.Location = new System.Drawing.Point(270, 42);
+        	this.buttonCancel.Location = new System.Drawing.Point(361, 58);
+        	this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
         	this.buttonCancel.Name = "buttonCancel";
-        	this.buttonCancel.Size = new System.Drawing.Size(85, 22);
+        	this.buttonCancel.Size = new System.Drawing.Size(113, 27);
         	this.buttonCancel.TabIndex = 3;
         	this.buttonCancel.Text = "Cancel";
         	this.buttonCancel.UseVisualStyleBackColor = true;
@@ -75,15 +78,16 @@ namespace Kinovea.ScreenManager
         	// 
         	// formFramesImport
         	// 
-        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+        	this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.CancelButton = this.buttonCancel;
-        	this.ClientSize = new System.Drawing.Size(369, 76);
+        	this.ClientSize = new System.Drawing.Size(492, 106);
         	this.ControlBox = false;
         	this.Controls.Add(this.buttonCancel);
         	this.Controls.Add(this.labelInfos);
         	this.Controls.Add(this.progressBar);
-        	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+        	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+        	this.Margin = new System.Windows.Forms.Padding(4);
         	this.MaximizeBox = false;
         	this.MinimizeBox = false;
         	this.Name = "formFramesImport";

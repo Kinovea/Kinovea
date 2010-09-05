@@ -102,13 +102,11 @@ namespace Kinovea.ScreenManager
         	// buttonGotoFirst
         	// 
         	this.buttonGotoFirst.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonGotoFirst.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqfirst7;
-        	this.buttonGotoFirst.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonGotoFirst.Image = global::Kinovea.ScreenManager.Properties.Resources.liqfirst7;
         	this.buttonGotoFirst.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoFirst.FlatAppearance.BorderSize = 0;
         	this.buttonGotoFirst.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.buttonGotoFirst.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoFirst.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
         	this.buttonGotoFirst.Location = new System.Drawing.Point(130, 10);
         	this.buttonGotoFirst.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoFirst.Name = "buttonGotoFirst";
@@ -120,13 +118,11 @@ namespace Kinovea.ScreenManager
         	// buttonGotoPrevious
         	// 
         	this.buttonGotoPrevious.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonGotoPrevious.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqprev5;
-        	this.buttonGotoPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonGotoPrevious.Image = global::Kinovea.ScreenManager.Properties.Resources.liqprev5;
         	this.buttonGotoPrevious.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoPrevious.FlatAppearance.BorderSize = 0;
         	this.buttonGotoPrevious.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.buttonGotoPrevious.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoPrevious.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
         	this.buttonGotoPrevious.Location = new System.Drawing.Point(160, 10);
         	this.buttonGotoPrevious.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoPrevious.Name = "buttonGotoPrevious";
@@ -138,13 +134,11 @@ namespace Kinovea.ScreenManager
         	// buttonGotoNext
         	// 
         	this.buttonGotoNext.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonGotoNext.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqnext6;
-        	this.buttonGotoNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonGotoNext.Image = global::Kinovea.ScreenManager.Properties.Resources.liqnext6;
         	this.buttonGotoNext.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoNext.FlatAppearance.BorderSize = 0;
         	this.buttonGotoNext.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.buttonGotoNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoNext.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
         	this.buttonGotoNext.Location = new System.Drawing.Point(230, 10);
         	this.buttonGotoNext.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoNext.Name = "buttonGotoNext";
@@ -156,13 +150,11 @@ namespace Kinovea.ScreenManager
         	// buttonGotoLast
         	// 
         	this.buttonGotoLast.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonGotoLast.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqlast5;
-        	this.buttonGotoLast.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonGotoLast.Image = global::Kinovea.ScreenManager.Properties.Resources.liqlast5;
         	this.buttonGotoLast.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonGotoLast.FlatAppearance.BorderSize = 0;
         	this.buttonGotoLast.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.buttonGotoLast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonGotoLast.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
         	this.buttonGotoLast.Location = new System.Drawing.Point(260, 10);
         	this.buttonGotoLast.MinimumSize = new System.Drawing.Size(25, 25);
         	this.buttonGotoLast.Name = "buttonGotoLast";
@@ -174,13 +166,11 @@ namespace Kinovea.ScreenManager
         	// buttonPlay
         	// 
         	this.buttonPlay.BackColor = System.Drawing.Color.Transparent;
-        	this.buttonPlay.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
-        	this.buttonPlay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.buttonPlay.Image = global::Kinovea.ScreenManager.Properties.Resources.liqplay17;
         	this.buttonPlay.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.buttonPlay.FlatAppearance.BorderSize = 0;
         	this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonPlay.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
         	this.buttonPlay.Location = new System.Drawing.Point(190, 7);
         	this.buttonPlay.MinimumSize = new System.Drawing.Size(30, 25);
         	this.buttonPlay.Name = "buttonPlay";

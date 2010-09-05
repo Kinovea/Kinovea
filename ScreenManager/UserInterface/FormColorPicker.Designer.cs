@@ -55,7 +55,9 @@ namespace Kinovea.ScreenManager
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(209, 176);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+            this.MinimizeBox = false;
 			this.Name = "ColorPicker";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

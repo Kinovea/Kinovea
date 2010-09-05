@@ -94,11 +94,9 @@ namespace Kinovea.ScreenManager
         }
         private void SetupForm()
         {
-        	
         	InitializeComponent();
         	ConfigureForm(m_ToolType);
             LocalizeForm();
-            
         }
         private void ConfigureForm(DrawingToolType _ToolType)
         {

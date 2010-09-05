@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
             this.ClientSize = new System.Drawing.Size(369, 76);
             this.Controls.Add(this.labelInfos);
             this.Controls.Add(this.progressBar);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "formFramesExport";

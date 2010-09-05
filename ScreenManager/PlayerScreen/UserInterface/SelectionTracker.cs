@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
             }
         }
         [Category("Behavior"), Browsable(true)]
-        	public long SelEnd
+        public long SelEnd
         {
             get
             {
@@ -106,24 +106,11 @@ namespace Kinovea.ScreenManager
                 UpdateAppearence();
             }
         }
-        [Category("Behavior"), Browsable(true)]
-        public bool SelLocked
-        {
-            get
-            {
-                return m_bSelLocked;
-            }
-            set
-            {
-                m_bSelLocked = value;
-            }
-        }
         [Category("Behavior"), Browsable(false)]
         public long SelPos
         {
             get 
             {
-                // Only for debugging purposes !
                 return m_iSelPos;
             }
             set
@@ -141,9 +128,17 @@ namespace Kinovea.ScreenManager
                 UpdateAppearence();
             }
         }
-        public long SelTarget
+        [Category("Behavior"), Browsable(true)]
+        public bool SelLocked
         {
-            get { return m_iSelTarget;}
+            get
+            {
+                return m_bSelLocked;
+            }
+            set
+            {
+                m_bSelLocked = value;
+            }
         }
         [Category("Misc"), Browsable(true)]
         public string ToolTip
@@ -151,25 +146,47 @@ namespace Kinovea.ScreenManager
         	get {return toolTips.GetToolTip(this);}
             set
             {
-                toolTips.SetToolTip(SelectedZone, value);
                 toolTips.SetToolTip(this, value);
             }
         }
         #endregion
 
         #region Members
-        private long m_iMinimum = 0;
-        private long m_iMaximum = 100;
-        private long m_iSelStart = 0;
-        private long m_iSelEnd = 100;
-        private bool m_bSelLocked = false;
-        private long m_iSelPos = 0;
-        private long m_iSelTarget = 0;
+        private bool m_bSelLocked;
         
-        private int m_iMaxWidth = 0;        // Max size of selection in pixels
+        // Data
+        private long m_iMinimum;		// All data are in absolute timestamps.
+        private long m_iMaximum = 100;
+        private long m_iSelStart;
+        private long m_iSelEnd = 100;
+        private long m_iSelPos;
+
+        // Display
         private bool m_bEnabled = true;
-        private Bitmap m_MiddleBarDisabled;
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private int m_iMinimumPixel;
+        private int m_iMaximumPixel;
+        private int m_iMaxWidthPixel;      	// Inner size of selection in pixels.
+        private int m_iStartPixel;			// First pixel of the selection zone.
+        private int m_iEndPixel;			// Last pixel of the selection zone.
+        private int m_iPositionPixel;		// Exact position of the playhead.
+		
+        // Graphics
+        private static readonly Bitmap bmpBumperLeft = Resources.liqbumperleft;
+       	private static readonly Bitmap bmpBumperRight = Resources.liqbumperright;
+       	private static readonly Bitmap bmpBackground = Resources.liqbackdock;
+       	private static readonly Bitmap bmpHandlerLeft = Resources.liqhandlerleft2;
+        private static readonly Bitmap bmpHandlerRight = Resources.liqhandlerright3;
+       	private static readonly Bitmap bmpMiddleBar = Resources.liqmiddlebar;
+       	private static readonly int m_iSpacerWidth = 10;
+       	private static readonly int m_iBumperWidth = bmpBumperLeft.Width;
+       	private static readonly int m_iHandlerWidth = bmpHandlerLeft.Width;
+		
+       	// Interaction
+       	private bool m_bDraggingLeft;
+       	private bool m_bDraggingRight;
+       	private bool m_bDraggingTarget;
+       	
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Events Delegates
@@ -189,12 +206,16 @@ namespace Kinovea.ScreenManager
         public SelectionTracker()
         {
             InitializeComponent();
-            m_iMaxWidth = this.Width - BumperLeft.Width - BumperRight.Width - HandlerLeft.Width - HandlerRight.Width; 
-            m_MiddleBarDisabled = Grayscale.CommonAlgorithms.Y.Apply(Resources.liqmiddlebar);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
+            this.Cursor = Cursors.Hand;
+            
+            m_iMinimumPixel = m_iSpacerWidth + m_iBumperWidth;
+           	m_iMaximumPixel = Width - m_iSpacerWidth - m_iBumperWidth;
+            m_iMaxWidthPixel = m_iMaximumPixel - m_iMinimumPixel;
         }
         #endregion
 
-        #region Public Methods
+        #region Public Methods - Timestamps to pixels.
         public void UpdateInternalState(long _iMin, long _iMax, long _iStart, long _iEnd, long _iPos)
         {
         	// This method is only a shortcut to updating all properties at once.
@@ -202,6 +223,7 @@ namespace Kinovea.ScreenManager
         	// by other means than the user manipulating the control.
         	// (for example, at initialization or reset.)
         	// This method update the appearence of the control only, it doesn't raise the events back.
+        	// All input data are in absolute timestamps.
         	m_iMinimum = _iMin;
         	m_iMaximum = _iMax;
         	m_iSelStart = _iStart;
@@ -210,254 +232,202 @@ namespace Kinovea.ScreenManager
         	
         	UpdateAppearence();
         }
-        public void UpdatePositionValueOnly(long _iPos)
-        {
-        	// This method does't refresh the control.
-        	// This is useful when dealing with manually modifiying the selection,
-        	// when we don't want the manipulation to cause another refresh.
-        	m_iSelPos = _iPos;
-        }
         public void Reset()
         {
-        	UpdateInternalState(m_iMinimum, m_iMaximum, m_iMinimum, m_iMaximum, m_iMinimum);
+        	m_iSelStart = m_iMinimum;
+        	m_iSelEnd = m_iMaximum;
+        	m_iSelPos = m_iMinimum;
+        	UpdateAppearence();
         }
         public void EnableDisable(bool _bEnable)
 		{
-			m_bEnabled = _bEnable;
-			HandlerLeft.Enabled = _bEnable;
-			HandlerRight.Enabled = _bEnable;
-			if(_bEnable)
-			{
-				SelectedZone.BackgroundImage = Resources.liqmiddlebar;
-			}
-			else
-			{
-				SelectedZone.BackgroundImage = m_MiddleBarDisabled;
-			}
+        	m_bEnabled = _bEnable;
+			Invalidate();
 		}
         #endregion
-        
-        #region Event Handlers - Handlers
-        private void HandlerLeft_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((e.Button == MouseButtons.Left) && (!m_bSelLocked) && m_bEnabled)
-            {
-                int GlobalMouseX = e.X + HandlerLeft.Left;
-                int OldHandlerLeft = HandlerLeft.Left;
-
-                // Prevent going too far left/right
-                if (((GlobalMouseX + (HandlerLeft.Width / 2)) <= HandlerRight.Left) &&
-                     (GlobalMouseX - (HandlerLeft.Width / 2)  >= BumperLeft.Width))
-                {
-                    HandlerLeft.Left = GlobalMouseX - (HandlerLeft.Width / 2);
-                    StretchSelection();
-
-                    UpdateValuesAndReport();
-                }
-            }
-        }
-        private void HandlerRight_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
-            {
-                // Déplacer le handler
-                int GlobalMouseX = e.X + HandlerRight.Left;
-                int OldHandlerLeft = HandlerRight.Left;
-
-                // Empécher d'aller trop loin à droite et à gauche
-                if ((GlobalMouseX + (HandlerRight.Width / 2) <= (this.Width - BumperRight.Width)) &&
-                    (GlobalMouseX - (HandlerRight.Width / 2)) >= (HandlerLeft.Left + HandlerLeft.Width))
-                {
-                    HandlerRight.Left = GlobalMouseX - (HandlerRight.Width / 2);
-                    StretchSelection();
-
-                    UpdateValuesAndReport();
-                }
-            }
-        
-        }
-        private void HandlerLeft_MouseUp(object sender, MouseEventArgs e)
-        {
-            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
-            {
-                if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-            }
-        }
-        private void HandlerRight_MouseUp(object sender, MouseEventArgs e)
-        {
-            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
-            {
-                if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-            }
-        }
-        #endregion
-        
-        #region Event Handlers - Bumpers and background
-        private void BumperLeft_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-			// Double click on bumper : make the handler to jump here.
-            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
-            {
-                HandlerLeft.Left = BumperLeft.Left + BumperLeft.Width;
-                StretchSelection();
-
-                UpdateValuesAndReport();
-                if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-            }
-        }
-        private void BumperRight_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if ((e.Button == MouseButtons.Left) && !m_bSelLocked && m_bEnabled)
-            {
-                // Ramener le handler de doite à la fin.
-                HandlerRight.Left = BumperRight.Left - HandlerRight.Width;
-                StretchSelection();
-
-                UpdateValuesAndReport();
-                if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-            }
-        }
-        private void EndOfTrackLeft_DoubleClick(object sender, EventArgs e)
-        {
-        	// End of track is same as bumper.
-            if (!m_bSelLocked && m_bEnabled)
-            {
-                HandlerLeft.Left = BumperLeft.Left + BumperLeft.Width;
-                StretchSelection();
-
-                UpdateValuesAndReport();
-                if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-            }
-        }
-        private void EndOfTrackRight_DoubleClick(object sender, EventArgs e)
-        {
-        	// End of track is same as bumper.
-            if (!m_bSelLocked && m_bEnabled)
-            {
-                HandlerRight.Left = BumperRight.Left - HandlerRight.Width;
-                StretchSelection();
-
-                UpdateValuesAndReport();
-                if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-            }
-        }
-        private void SelectionTracker_DoubleClick(object sender, EventArgs e)
-        {
-            // Double click in background : make the closest handler to jump here.
-            if (!m_bSelLocked && m_bEnabled)
-            {
-                Point MouseCoords = this.PointToClient(Cursor.Position);
-
-                if ((MouseCoords.X > BumperLeft.Width + (HandlerLeft.Width / 2)) &&
-                    (MouseCoords.X < this.Width - BumperRight.Width - (HandlerRight.Width / 2)))
-                {
-
-                    if (MouseCoords.X < HandlerLeft.Left)
-                    {
-                        HandlerLeft.Left = MouseCoords.X - (HandlerLeft.Width / 2);
-                    }
-                    else
-                    {
-                        HandlerRight.Left = MouseCoords.X - (HandlerRight.Width / 2);
-                    }
-
-                    StretchSelection();
-                    UpdateValuesAndReport();
-                    if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-                }
-            }
-        }
-        #endregion
-        
-        #region Event Handlers - Middle part
-        private void SelectedZone_MouseClick(object sender, MouseEventArgs e)
-        {
-            // Target selection.
-            if (e.Button == MouseButtons.Left && m_bEnabled)
-            {
-                m_iSelTarget = Rescale(SelectedZone.Left + e.X - BumperLeft.Width - HandlerLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum);
-                
-                m_iSelPos = m_iSelTarget + m_iMinimum;
-                UpdateAppearence();
-                
-                if (TargetAcquired != null) { TargetAcquired(this, EventArgs.Empty); }
-            }
-        }
-        #endregion
 		
-        #region Event Handlers - Automatic
+        #region Interaction Events - Pixels to timestamps.
+        private void SelectionTracker_MouseDown(object sender, MouseEventArgs e)
+        {
+        	m_bDraggingLeft = false;
+        	m_bDraggingRight = false;
+        	m_bDraggingTarget = false;
+
+        	if (m_bEnabled && e.Button == MouseButtons.Left)
+            {
+        		if(e.X >= m_iStartPixel - m_iHandlerWidth && e.X < m_iStartPixel)
+        		{
+        			// in handler left.
+        			m_bDraggingLeft = true;
+        		}
+        		else if(e.X >= m_iEndPixel && e.X < m_iEndPixel + m_iHandlerWidth)
+        		{
+        			// in handler right.
+        			m_bDraggingRight = true;
+        		}
+        		else if(e.X >= m_iStartPixel && e.X < m_iEndPixel)
+        		{
+        			// in selection.
+        			m_bDraggingTarget = true;
+        		}
+        		else if(e.X < m_iMinimumPixel)
+        		{
+        			// before minimum.
+        		}
+        		else if(e.X >= m_iMaximumPixel)
+        		{
+        			// after maximum.
+        		}
+        		else
+        		{
+        			// in background.
+        		}
+        	}
+        }
+        private void SelectionTracker_MouseMove(object sender, MouseEventArgs e)
+        {
+        	if (m_bEnabled && 
+        	    (e.Button == MouseButtons.Left) &&
+        	    (m_bDraggingLeft || m_bDraggingRight || m_bDraggingTarget))
+            {
+    			if(m_bDraggingLeft)
+        		{
+    				if(e.X >= m_iMinimumPixel - (m_iHandlerWidth / 2) && e.X < m_iEndPixel - (m_iHandlerWidth / 2))
+    				{
+        				m_iStartPixel = e.X + (m_iHandlerWidth / 2);
+        				m_iPositionPixel = Math.Max(m_iPositionPixel, m_iStartPixel);
+        			}
+    			}
+        		else if(m_bDraggingRight)
+        		{
+        			if(e.X >= m_iStartPixel + (m_iHandlerWidth / 2) && e.X < m_iMaximumPixel + (m_iHandlerWidth / 2))
+    				{
+        				m_iEndPixel = e.X - (m_iHandlerWidth / 2);
+        				m_iPositionPixel = Math.Min(m_iPositionPixel, m_iEndPixel);
+        			}
+        		}
+        		else if(m_bDraggingTarget)
+        		{
+        			if(e.X >= m_iStartPixel && e.X < m_iEndPixel)
+    				{
+        				m_iPositionPixel = e.X;
+        			}
+        		}
+        		
+        		Invalidate();
+        		
+        		// Update values and report to container.
+        		m_iSelPos = GetTimestampFromCoord(m_iPositionPixel);
+    			m_iSelStart = GetTimestampFromCoord(m_iStartPixel);
+    			m_iSelEnd = GetTimestampFromCoord(m_iEndPixel);
+	        	if (SelectionChanging != null) { SelectionChanging(this, EventArgs.Empty); }
+        	}
+        }
+        private void SelectionTracker_MouseUp(object sender, MouseEventArgs e)
+        {
+        	// This is when the validation of the change occur.
+        	if (m_bEnabled && e.Button == MouseButtons.Left)
+            {
+        		if(m_bDraggingTarget)
+        		{
+        			// Handle the special case of simple click to change position.
+        			// (mouseMove is not triggered in this case.)
+        			if(e.X >= m_iStartPixel && e.X < m_iEndPixel)
+    				{
+        				m_iPositionPixel = e.X;
+        				Invalidate();
+        			}
+        			
+        			// Update values and report to container.
+        			m_iSelPos = GetTimestampFromCoord(m_iPositionPixel);
+					if (TargetAcquired != null) { TargetAcquired(this, EventArgs.Empty); }
+        		}
+        		else if(m_bDraggingLeft || m_bDraggingRight)
+        		{
+        			// Update values and report to container.
+	        		m_iSelStart = GetTimestampFromCoord(m_iStartPixel);
+	        		m_iSelEnd = GetTimestampFromCoord(m_iEndPixel);
+	        		if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
+        		}
+        	}
+        }
+        #endregion
+        
+        #region Paint / Resize
+        private void SelectionTracker_Paint(object sender, PaintEventArgs e)
+        {
+        	// Draw the control.
+        	// All the position variables must have been set already.
+        	
+        	// Draw background.
+        	// (we draw it first to be able to cover the extra tiling)
+        	for(int i=m_iMinimumPixel; i<m_iMaximumPixel; i+=bmpBackground.Width)
+        	{
+        		e.Graphics.DrawImage(bmpBackground, i, 0);
+        	}
+        	
+        	// Draw bumpers
+        	e.Graphics.DrawImage(bmpBumperLeft, m_iSpacerWidth, 0);
+        	e.Graphics.DrawImage(bmpBumperRight, m_iMaximumPixel, 0);
+        	
+        	// Draw content.
+        	if(m_bEnabled)
+    		{
+	            // Draw selection zone. 
+	    		// (we draw it first to be able to cover the extra tiling)
+	            for(int i=m_iStartPixel;i<m_iEndPixel;i+=bmpMiddleBar.Width)
+	        	{
+	            	e.Graphics.DrawImage(bmpMiddleBar, i, 0);
+	        	}
+	            
+	            // Draw handlers
+	            e.Graphics.DrawImage(bmpHandlerLeft, m_iStartPixel - m_iHandlerWidth, 0);
+	            e.Graphics.DrawImage(bmpHandlerRight, m_iEndPixel, 0);
+	            
+	    		// Draw hairline.
+	   			e.Graphics.DrawLine(Pens.Black, m_iPositionPixel, 4, m_iPositionPixel, Height - 10);
+        	}
+        }
         private void SelectionTracker_Resize(object sender, EventArgs e)
         {
-        	m_iMaxWidth = this.Width - BumperLeft.Width - BumperRight.Width - HandlerLeft.Width - HandlerRight.Width; 
-        	UpdateAppearence();
-        }
-        private void SelectedZone_Paint(object sender, PaintEventArgs e)
-        {
-            // Drawing playhead as hairline.
-            if ((m_iSelEnd - m_iSelStart > 0) && (m_iSelPos >= m_iSelStart) && (m_iSelPos <= m_iSelEnd))
-            {
-                int head = Rescale(m_iSelPos - m_iSelStart, m_iSelEnd - m_iSelStart, SelectedZone.Width);
-
-                if (head == SelectedZone.Width) { head = SelectedZone.Width - 1; }
-
-                e.Graphics.DrawLine(Pens.Black, head, 4, head, SelectedZone.Height - 6);
-            }
+        	// Resize of the control only : data doesn't change.
+        	m_iMaximumPixel = Width - m_iSpacerWidth - m_iBumperWidth;
+            m_iMaxWidthPixel = m_iMaximumPixel - m_iMinimumPixel;
+            UpdateAppearence();
         }
         #endregion
         
         #region Binding UI and Data
-        private int Rescale(long _iOldValue, long _iOldMax, long _iNewMax)
-        {
-            // Rescale : Pixels -> Values
-            return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
-        }
-        private void UpdateValuesAndReport()
-        {
-        	// One or both handlers have been modified BY USER ACTION.
-        	// Update the internal values and raise the 'changing' event.
-        	
-            if (m_iSelEnd - m_iSelStart >= 0)
-            {
-                m_iSelStart = Rescale(SelectedZone.Left - BumperLeft.Width - HandlerLeft.Width, m_iMaxWidth, m_iMaximum - m_iMinimum) + m_iMinimum;
-                m_iSelEnd = Rescale(SelectedZone.Left - BumperLeft.Width - HandlerLeft.Width + SelectedZone.Width, m_iMaxWidth, m_iMaximum - m_iMinimum) + m_iMinimum;
-            
-                // Forcer quand même à rester à l'intérieur des bornes fixées au chargement du contrôle.
-                // Certaines vidéos ont des frames inaccessibles au premier abord qui se révèlent ensuite...
-                // On les ignore car cela perturbe grandement le système de numération des frames.
-
-                if (m_iSelStart < m_iMinimum)
-                    m_iSelStart = m_iMinimum;
-
-                if (m_iSelEnd > m_iMaximum)
-                    m_iSelEnd = m_iMaximum;
-
-                // Raise the event.
-                if (SelectionChanging != null) { SelectionChanging(this, EventArgs.Empty); }
-            }
-        }
         private void UpdateAppearence()
         {
         	// Internal state of data has been modified programmatically.
-        	// (for example, at initialization or reset.)
+        	// (for example, initialization, reset, boundaries buttons, etc.)
         	// This method updates the appearence of the control only, it doesn't raise the events back.
-    	
             if (m_iMaximum - m_iMinimum > 0)
             {
-                HandlerLeft.Left = BumperLeft.Width + Rescale(m_iSelStart - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
-                HandlerRight.Left = BumperLeft.Width + HandlerLeft.Width + Rescale(m_iSelEnd - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidth);
-                
-                StretchSelection();
-                SelectedZone.Invalidate();
+            	m_iStartPixel = GetCoordFromTimestamp(m_iSelStart);
+               	m_iEndPixel = GetCoordFromTimestamp(m_iSelEnd);
+              	m_iPositionPixel = GetCoordFromTimestamp(m_iSelPos);
+              	Invalidate();
             }
-    	
         }
-        private void StretchSelection()
+        private int GetCoordFromTimestamp(long _ts)
+       	{
+        	// Take any timestamp and convert it into a pixel coord.
+			int iret = m_iMinimumPixel + Rescale(_ts - m_iMinimum, m_iMaximum - m_iMinimum, m_iMaxWidthPixel);
+            return iret;
+       	}
+        private long GetTimestampFromCoord(int _posPixel)
+       	{
+        	// Take any position in pixel and convert it into a timestamp.
+        	// At this point, the pixel position shouldn't be outside the boundaries values.
+       		long ret = m_iMinimum + Rescale(_posPixel - m_iMinimumPixel, m_iMaxWidthPixel, m_iMaximum - m_iMinimum);
+       		return ret;
+       	}
+        private int Rescale(long _iOldValue, long _iOldMax, long _iNewMax)
         {
-        	// Called after the Handlers have been set, to update the middle part.
-        	
-            SelectedZone.Left = HandlerLeft.Left + HandlerLeft.Width;
-            SelectedZone.Width = HandlerRight.Left - SelectedZone.Left;
+            return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
         }
-        #endregion
+        #endregion 
     }
 }
