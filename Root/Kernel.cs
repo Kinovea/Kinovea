@@ -83,6 +83,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeFrames = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTimecodeMilliseconds = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeHoM = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTToH = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
@@ -553,6 +554,10 @@ namespace Kinovea.Root
             mnuTimecodeFrames.Text = ((ItemResourceInfo)mnuTimecodeFrames.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeFrames.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
             
+            mnuTimecodeMilliseconds.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Milliseconds");
+            mnuTimecodeMilliseconds.Text = ((ItemResourceInfo)mnuTimecodeMilliseconds.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeMilliseconds.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuTimecodeMilliseconds.Click += new EventHandler(mnuTimecodeMilliseconds_OnClick);
+            
             mnuTimecodeHoM.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_HundredthOfMinutes");
             mnuTimecodeHoM.Text = ((ItemResourceInfo)mnuTimecodeHoM.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeHoM.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeHoM.Click += new EventHandler(mnuTimecodeHoM_OnClick);
@@ -567,7 +572,7 @@ namespace Kinovea.Root
             mnuTimecodeTimeAndFrames.Text = ((ItemResourceInfo)mnuTimecodeTimeAndFrames.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeTimeAndFrames.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
             
-            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeHoM, mnuTimecodeTToH, mnuTimecodeTimeAndFrames});
+            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeHoM, mnuTimecodeTToH, mnuTimecodeTimeAndFrames});
             #endregion
             
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuLanguages, 
@@ -925,6 +930,7 @@ namespace Kinovea.Root
         {
         	mnuTimecodeClassic.Checked = false;
         	mnuTimecodeFrames.Checked = false;
+        	mnuTimecodeMilliseconds.Checked = false;
         	mnuTimecodeHoM.Checked = false;
         	mnuTimecodeTToH.Checked = false;
         	mnuTimecodeTimeAndFrames.Checked = false;
@@ -935,6 +941,9 @@ namespace Kinovea.Root
             {
                 case TimeCodeFormat.Frames:
                     mnuTimecodeFrames.Checked = true;
+                    break;
+                case TimeCodeFormat.Milliseconds:
+                    mnuTimecodeMilliseconds.Checked = true;
                     break;
                 case TimeCodeFormat.HundredthOfMinutes:
                     mnuTimecodeHoM.Checked = true;
@@ -958,6 +967,10 @@ namespace Kinovea.Root
         private void mnuTimecodeFrames_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimeCodeFormat.Frames);
+        }
+        private void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
+        {
+            SwitchTimecode(TimeCodeFormat.Milliseconds);
         }
         private void mnuTimecodeHoM_OnClick(object sender, EventArgs e)
         {

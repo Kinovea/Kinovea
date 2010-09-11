@@ -130,6 +130,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Geri Al</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasik (h:mm:ss:yüzdesi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>

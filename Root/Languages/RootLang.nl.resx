@@ -130,6 +130,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Annuleer</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiek (h:mm:ss:hondersten)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frame nummers</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hondersten van een minuut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een uur</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>

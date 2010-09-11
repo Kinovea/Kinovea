@@ -619,7 +619,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Frames Numbers.
+        ///   Recherche une chaîne localisée semblable à Frames numbers.
         /// </summary>
         internal static string TimeCodeFormat_Frames {
             get {
@@ -633,6 +633,15 @@ namespace Kinovea.Root.Languages {
         internal static string TimeCodeFormat_HundredthOfMinutes {
             get {
                 return ResourceManager.GetString("TimeCodeFormat_HundredthOfMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Total milliseconds.
+        /// </summary>
+        internal static string TimeCodeFormat_Milliseconds {
+            get {
+                return ResourceManager.GetString("TimeCodeFormat_Milliseconds", resourceCulture);
             }
         }
         

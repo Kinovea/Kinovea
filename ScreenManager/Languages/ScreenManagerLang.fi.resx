@@ -305,6 +305,7 @@
    <data name="statusEmptyScreen" xml:space="preserve"><value>Tyhjä</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassinen (t:mm:ss:sadasosat)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kuvanumerot</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Minuutin sadasosat</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosat</value></data>
    
