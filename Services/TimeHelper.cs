@@ -90,17 +90,15 @@ namespace Kinovea.Services
 			
 			switch(_tcf)
 			{
-				case TimeCodeFormat.ClassicTime:
-					tct = TimeCodeType.String;
-					break;
-					
 				case TimeCodeFormat.Frames:
+				case TimeCodeFormat.Milliseconds:	
 				case TimeCodeFormat.HundredthOfMinutes:
 				case TimeCodeFormat.TenThousandthOfHours:
 				case TimeCodeFormat.Timestamps:
 					tct = TimeCodeType.Number;
 					break;
-					
+				
+				case TimeCodeFormat.ClassicTime:
 				case TimeCodeFormat.TimeAndFrames:
 				default:
 					tct = TimeCodeType.String;

@@ -2221,6 +2221,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Total milliseconds.
+        /// </summary>
+        internal static string TimeCodeFormat_Milliseconds {
+            get {
+                return ResourceManager.GetString("TimeCodeFormat_Milliseconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Ten thousandth of an hour.
         /// </summary>
         internal static string TimeCodeFormat_TenThousandthOfHours {

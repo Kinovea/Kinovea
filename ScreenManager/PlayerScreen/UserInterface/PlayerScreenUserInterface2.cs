@@ -1322,6 +1322,9 @@ namespace Kinovea.ScreenManager
 						outputTimeCode = String.Format("0");
 					}
 					break;
+				case TimeCodeFormat.Milliseconds:
+					outputTimeCode = String.Format("{0}", (int)iMilliseconds);
+					break;
 				case TimeCodeFormat.TenThousandthOfHours:
 					// 1 Ten Thousandth of Hour = 360 ms.
 					double fTth = ((double)iMilliseconds / 360.0);
@@ -1348,8 +1351,8 @@ namespace Kinovea.ScreenManager
 				case TimeCodeFormat.Timestamps:
 					outputTimeCode = String.Format("{0}", (int)iTimeStamp);
 					break;
-					default :
-						outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth);
+				default :
+					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth);
 					break;
 			}
 
@@ -5272,6 +5275,7 @@ namespace Kinovea.ScreenManager
 			switch (tcf)
 			{
 				case TimeCodeFormat.Frames:
+				case TimeCodeFormat.Milliseconds:
 				case TimeCodeFormat.TenThousandthOfHours:
 				case TimeCodeFormat.HundredthOfMinutes:
 					

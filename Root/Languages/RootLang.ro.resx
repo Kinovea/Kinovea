@@ -130,6 +130,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Anulează</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasic (h:mm:ss:sutimi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numărul imaginilor</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Markeri timp</value></data>

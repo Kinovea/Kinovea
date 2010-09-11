@@ -130,6 +130,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Tilbake</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Standard (h:mm:ss:hundredel)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildenummer</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredels minutt</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Titusendedels time</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Tidsmarkør format:</value></data>

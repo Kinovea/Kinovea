@@ -305,6 +305,7 @@
    <data name="statusEmptyScreen" xml:space="preserve"><value>Gol</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasic (h:mm:ss:sutimi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numerele cadrelor</value></data>
+   
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Sutimi de minut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    

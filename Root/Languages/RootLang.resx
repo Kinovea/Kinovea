@@ -129,7 +129,8 @@
    <data name="mnuTutorialVideos" xml:space="preserve"><value>Video Tutorials…</value></data>
    <data name="mnuUndo" xml:space="preserve"><value>Undo</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classic (h:mm:ss:hundredth)</value></data>
-   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames Numbers</value></data>
+   <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames numbers</value></data>
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total milliseconds</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hundredth of a minute</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Ten thousandth of an hour</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>

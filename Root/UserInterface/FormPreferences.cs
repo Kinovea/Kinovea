@@ -126,6 +126,7 @@ namespace Kinovea.Root
             lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat + " :";
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
+            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
             cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
