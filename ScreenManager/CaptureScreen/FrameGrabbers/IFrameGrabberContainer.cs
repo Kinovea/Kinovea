@@ -40,5 +40,6 @@ namespace Kinovea.ScreenManager
 		void SetImageSize(Size _size);
 		void FrameGrabbed();
 		void AlertCannotConnect();
+		void AlertConnectionLost();
 	}
 }

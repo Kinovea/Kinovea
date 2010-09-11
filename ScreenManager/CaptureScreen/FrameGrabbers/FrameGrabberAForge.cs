@@ -69,6 +69,7 @@ namespace Kinovea.ScreenManager
 		private int m_FramesInterval = -1;
 		private Size m_FrameSize;
 		private int m_iConnectionsAttempts;
+		private int m_iGrabbedSinceLastCheck;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -113,9 +114,9 @@ namespace Kinovea.ScreenManager
 	        	// but the NewFrame event will never be raised for us.
 	        	//----------------------------------------------------------------------------------------
 	        	
-	        	FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
+	        	FilterInfoCollection videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 	        	
-	        	if(videoDevices.Count > 0)
+	        	if(videoDevices != null && videoDevices.Count > 0)
 	        	{
 	        		ConnectToDevice(videoDevices, 0);
 	        	}
@@ -125,6 +126,31 @@ namespace Kinovea.ScreenManager
 	        		m_Container.AlertCannotConnect();
 	        	}
 			}
+		}
+		public override void CheckDeviceConnection()
+		{
+			// Try to check if we're still connected to the video source.
+			// Testing for m_VideoDevice.IsRunning doesn't work.
+			// (It returns true even when the device is disconnected.)
+			
+			// We count the number of frames we received since last check.
+			// If we are supposed to do grabbing and we received nothing,
+			// the device has probably been disconnected.
+			// This prevent working with very slow capturing devices (less than one frame per second).
+			// This doesn't work if we are not currently grabbing.
+			if(m_bIsGrabbing && m_iGrabbedSinceLastCheck == 0)
+			{
+				log.Debug(String.Format("Device has been disconnected."));
+				m_VideoDevice.Stop();
+				m_bIsConnected = false;
+				m_bIsGrabbing = false;
+				m_Container.AlertConnectionLost();
+				 
+				// Set connection attempts so we don't show the initial error message.
+				m_iConnectionsAttempts = 2;
+			}
+			
+			m_iGrabbedSinceLastCheck = 0;
 		}
 		public override void StartGrabbing()
 		{
@@ -149,6 +175,7 @@ namespace Kinovea.ScreenManager
 					m_VideoDevice.Stop();
 				}
 				m_bIsGrabbing = false;
+				m_iGrabbedSinceLastCheck = 0;
 			}
 		}
 		public override void BeforeClose()
@@ -175,12 +202,19 @@ namespace Kinovea.ScreenManager
 		private void ConnectToDevice(FilterInfoCollection _devices, int _iSelected)
 		{
 			m_CurrentVideoDevice = new DeviceIdentifier(_devices[_iSelected].Name, _devices[_iSelected].MonikerString);
-			
-			log.Debug(String.Format("Connecting to device: index: {0}, name: {1}, moniker string:{2}", 
+			if(m_CurrentVideoDevice != null)
+			{
+				log.Debug(String.Format("Connecting to device: index: {0}, name: {1}, moniker string:{2}", 
 			                        _iSelected, m_CurrentVideoDevice.Name, m_CurrentVideoDevice.Identification));
 			
-			ConnectToDevice(m_CurrentVideoDevice);
-			m_Container.Connected();
+				ConnectToDevice(m_CurrentVideoDevice);
+				m_Container.Connected();
+			}
+			else
+			{
+				log.Error(String.Format("Couldn't create the DeviceIdentifier: index: {0}, name: {1}, moniker string:{2}", 
+			                        _iSelected, _devices[_iSelected].Name, _devices[_iSelected].MonikerString));
+			}
 		}
 		private void ConnectToDevice(DeviceIdentifier _device)
 		{
@@ -189,17 +223,25 @@ namespace Kinovea.ScreenManager
 			log.Debug(String.Format("Connecting to device. {0}", _device.Name));
 				
 			m_VideoDevice = new VideoCaptureDevice(_device.Identification);
-			m_VideoDevice.DesiredFrameRate = 0;
-			m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
-			
-			m_bIsConnected = true;
-			
-			if(m_VideoDevice.VideoCapabilities.Length > 0)
+			if(m_VideoDevice != null)
 			{
-				m_FrameSize = m_VideoDevice.VideoCapabilities[0].FrameSize;
-				m_FramesInterval = 1000 / m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
-				log.Debug(String.Format("Reading Device Capabilities. Frame size:{0}, Frames interval : {1}", m_FrameSize, m_FramesInterval));
+				m_VideoDevice.DesiredFrameRate = 0;
+				m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
+				
+				m_bIsConnected = true;
+				
+				if(m_VideoDevice.VideoCapabilities.Length > 0)
+				{
+					m_FrameSize = m_VideoDevice.VideoCapabilities[0].FrameSize;
+					m_FramesInterval = 1000 / m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
+					log.Debug(String.Format("Reading Device Capabilities. Frame size:{0}, Frames interval : {1}", m_FrameSize, m_FramesInterval));
+				}
 			}
+			else
+			{
+				log.Error("Couldn't create the VideoCaptureDevice.");
+			}
+			
 		}
 		private void Disconnect()
 		{
@@ -214,7 +256,6 @@ namespace Kinovea.ScreenManager
 				m_bSizeKnown = false;
 				m_iConnectionsAttempts = 0;
 				m_Container.SetImageSize(Size.Empty);
-				
 				
 				m_VideoDevice.Stop();
 				m_VideoDevice.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
@@ -238,6 +279,7 @@ namespace Kinovea.ScreenManager
 				m_FrameSize = sz;
 			}
 			
+			m_iGrabbedSinceLastCheck++;
 			m_FrameBuffer.Write(eventArgs.Frame);
 			m_Container.FrameGrabbed();
 		}
