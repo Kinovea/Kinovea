@@ -246,6 +246,10 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameGrabber.NegociateDevice();
 		}
+		public void CheckDeviceConnection()
+		{
+			m_FrameGrabber.CheckDeviceConnection();
+		}
 		public void StartGrabbing()
 		{
 			//m_FrameBuffer.Clear();
@@ -443,6 +447,12 @@ namespace Kinovea.ScreenManager
                	ScreenManagerLang.Error_Capture_CannotConnect_Title,
                	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
+		}
+		public void AlertConnectionLost()
+		{
+			// Device stopped sending frames.
+			// We should just display a quick toaster message.
+			// TODO.
 		}
 		private void DisplayError(SaveResult _result)
 		{

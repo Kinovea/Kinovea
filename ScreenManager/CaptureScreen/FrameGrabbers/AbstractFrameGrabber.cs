@@ -54,6 +54,7 @@ namespace Kinovea.ScreenManager
 		
 		public abstract void PromptDeviceSelector();
 		public abstract void NegociateDevice();
+		public abstract void CheckDeviceConnection();
 		public abstract void StartGrabbing();
 		public abstract void PauseGrabbing();
 		public abstract void BeforeClose();

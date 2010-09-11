@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
 			m_RecentColors = PreferencesManager.Instance().RecentColors;
 			
 			m_ColorPicker.DisplayRecentColors(m_RecentColors);
-			this.Height = m_ColorPicker.Height + 35;
+			this.Height = m_ColorPicker.Height + 45;
 		}
 		#endregion
 		

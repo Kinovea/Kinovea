@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
 			
 			// As a matter of fact we pass here at the first received frame.
 			// We can stop trying to connect now.
-			tmrCaptureDeviceDetector.Stop();
+			ShowHideResizers(true);
 			UpdateFilenameLabel();
 			OnPoke();
 		}
@@ -171,8 +171,8 @@ namespace Kinovea.ScreenManager
 		{
 			if(_bIsGrabbing)
 			{
-				pbSurfaceScreen.Visible = _bIsGrabbing;
-	   			ShowHideResizers(_bIsGrabbing);
+				pbSurfaceScreen.Visible = true;
+	   			ShowHideResizers(true);
 				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;	
 			}
 			else
@@ -568,7 +568,7 @@ namespace Kinovea.ScreenManager
 		#region Auto Stretch & Manual Resize
 		private void StretchSqueezeSurface()
 		{
-			if (m_FrameServer.IsGrabbing)
+			if (m_FrameServer.IsConnected)
 			{
 				// Check if the image was loaded squeezed.
 				// (happen when screen control isn't being fully expanded at video load time.)
@@ -1834,26 +1834,36 @@ namespace Kinovea.ScreenManager
         }
         private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
         {
-        	TryToConnect();
+        	if(!m_FrameServer.IsConnected)
+        	{
+        		TryToConnect();
+        	}
+        	else
+        	{
+        		CheckDeviceConnection();
+        	}
         }
         private void TryToConnect()
         {
         	// Try to connect to a device.
-        	if(!m_FrameServer.IsConnected)
-        	{
-        		// Prevent reentry.
-        		if(!m_bTryingToConnect)
-        		{
-        			m_bTryingToConnect = true;        			
-        			m_FrameServer.NegociateDevice();       			
-        			m_bTryingToConnect = false;
-        			
-        			if(m_FrameServer.IsConnected)
-        			{
-        				btnCamSettings.Enabled = true;
-        			}
-        		}
-        	}
+    		// Prevent reentry.
+    		if(!m_bTryingToConnect)
+    		{
+    			m_bTryingToConnect = true;        			
+    			m_FrameServer.NegociateDevice();       			
+    			m_bTryingToConnect = false;
+    			
+				btnCamSettings.Enabled = m_FrameServer.IsConnected;
+    		}
+        }
+        private void CheckDeviceConnection()
+        {
+        	if(!m_bTryingToConnect)
+    		{
+    			m_bTryingToConnect = true;        			
+    			m_FrameServer.CheckDeviceConnection();
+    			m_bTryingToConnect = false;
+    		}
         }
         private string CreateNewFilename(string filename)
         {
