@@ -26,65 +26,62 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// FrameBuffer - a buffer that holds the recent history of grabbed frames.
-	/// Provides pointers to head and nth frame.
 	/// Handles buffer rotation.
-	/// 
-	/// todo: turn into a proper circular buffer.
 	/// </summary>
 	public class FrameBuffer
 	{
-		#region Properties
-		public int BufferCapacity
-		{
-			get { return m_iBufferCapacity; }
-		}
-		public int BufferCount
-		{
-			get { return m_Bitmaps.Count; }
-		}
-		#endregion
-				
 		#region Members
-		private List<Bitmap> m_Bitmaps = new List<Bitmap>();
-		private int m_iBufferCapacity = 5;
+		private static readonly int m_iCapacity = 10;
+		private int m_iHead;
+		private int m_iTail;
+		private Bitmap[] m_Buffer = new Bitmap[m_iCapacity];
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
 		#region Public methods
-		public void PushFrame(Bitmap _bmp)
+		public void Write(Bitmap _bmp)
 		{
 			// A frame is received and must be stored.
-			// We only store the reference at that point.
-			
-			// rotate buffer: remove last frame.
-			if(m_Bitmaps.Count >= m_iBufferCapacity)
+			//log.Debug(String.Format("Writing frame. tail:{0}, head:{1}", m_iTail, m_iHead));			
+			if(m_Buffer[m_iTail] != null)
 			{
-				m_Bitmaps[m_Bitmaps.Count-1].Dispose();
-				m_Bitmaps.RemoveAt(m_Bitmaps.Count - 1);
+				m_Buffer[m_iTail].Dispose();
+				m_Buffer[m_iTail] = null;
+			}
+            
+			m_Buffer[m_iTail] = AForge.Imaging.Image.Clone(_bmp);
+			
+			m_iTail++;
+			if(m_iTail == m_iCapacity) m_iTail = 0;
+		}
+		public Bitmap Read()
+		{
+			// Read next frame. It had been properly cloned during write.
+			// Don't move if underflow.
+			Bitmap frame = m_Buffer[m_iHead];
+			//log.Debug(String.Format("Reading frame. tail:{0}, head:{1}", m_iTail, m_iHead));
+			if(frame != null)
+			{
+				m_iHead++;
+				if(m_iHead == m_iCapacity) m_iHead = 0;
 			}
 			
-			m_Bitmaps.Insert(0, _bmp);			
-		}
-		public Bitmap ReadFrameAt(int _iIndex)
-		{
-			// A frame from the buffer is asked. The caller needs a stable image, 
-			// not just a reference to something that might be written over at any time.
-			Bitmap frame = null;
-			if(_iIndex >= 0 && _iIndex < m_Bitmaps.Count)
-			{				
-				// TODO: implement the proper circular buffer and we shouldn't need to clone anymore.
-				frame = AForge.Imaging.Image.Clone(m_Bitmaps[_iIndex]);
-			}
 			return frame;
 		}
-		public void Dispose()
+		public void Clear()
 		{
 			// Release all non managed resources.
-			for(int i=m_Bitmaps.Count-1;i>=0;i--)
+			//log.Debug(String.Format("Clearing frame. tail:{0}, head:{1}", m_iTail, m_iHead));
+			for(int i=0; i<m_Buffer.Length; i++)
 			{
-				m_Bitmaps[i].Dispose();
-				m_Bitmaps.RemoveAt(i);
+				if(m_Buffer[i] != null)
+				{
+					m_Buffer[i].Dispose();	
+				}
 			}
+			
+			m_iHead = 0;
+			m_iTail = 0;
 		}
 		#endregion
 		

@@ -158,7 +158,7 @@ namespace Kinovea.ScreenManager
 			// The frame grabber has just pushed a new frame to the buffer.
 			
 			// Consolidate this real-time frame locally.
-			Bitmap temp = m_FrameBuffer.ReadFrameAt(0);
+			Bitmap temp = m_FrameBuffer.Read();
 			
 			// Copy the frame over if size change is needed.
 			if(!temp.Size.Equals(m_ImageSize))
