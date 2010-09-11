@@ -2008,7 +2008,16 @@ namespace Kinovea.ScreenManager
         	btnBrowseVideoLocation.Enabled = _bEnable;
 			btnSaveVideoLocation.Enabled = _bEnable;        	
         }
+        void TextBoxes_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+        	TextBox tb = sender as TextBox;
+        	if(tb != null)
+        	{
+        		tb.SelectAll();	
+        	}
+        }
         #endregion
+        
         
 	}
 }
