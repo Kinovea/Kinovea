@@ -141,7 +141,7 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.Controls.Add(this.tbVideoFilename);
         	this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
         	this.panelVideoControls.Dock = System.Windows.Forms.DockStyle.Bottom;
-        	this.panelVideoControls.Location = new System.Drawing.Point(0, 364);
+        	this.panelVideoControls.Location = new System.Drawing.Point(0, 368);
         	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 70);
         	this.panelVideoControls.Name = "panelVideoControls";
         	this.panelVideoControls.Size = new System.Drawing.Size(350, 142);
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         	// 
         	// btnGrab
         	// 
-			this.btnGrab.BackColor = System.Drawing.Color.Transparent;
+        	this.btnGrab.BackColor = System.Drawing.Color.Transparent;
         	this.btnGrab.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnGrab.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.btnGrab.FlatAppearance.BorderSize = 0;
@@ -200,7 +200,7 @@ namespace Kinovea.ScreenManager
         	// 
         	// btnRecord
         	// 
-			this.btnRecord.BackColor = System.Drawing.Color.Transparent;
+        	this.btnRecord.BackColor = System.Drawing.Color.Transparent;
         	this.btnRecord.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnRecord.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.btnRecord.FlatAppearance.BorderSize = 0;
@@ -321,21 +321,23 @@ namespace Kinovea.ScreenManager
         	// 
         	this.tbImageDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.tbImageDirectory.Location = new System.Drawing.Point(253, 80);
+        	this.tbImageDirectory.Location = new System.Drawing.Point(237, 80);
         	this.tbImageDirectory.Name = "tbImageDirectory";
-        	this.tbImageDirectory.Size = new System.Drawing.Size(51, 20);
+        	this.tbImageDirectory.Size = new System.Drawing.Size(67, 20);
         	this.tbImageDirectory.TabIndex = 34;
         	this.tbImageDirectory.Text = "C:\\Docu...Images";
         	this.tbImageDirectory.TextChanged += new System.EventHandler(this.tbImageDirectory_TextChanged);
+        	this.tbImageDirectory.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
         	// tbImageFilename
         	// 
         	this.tbImageFilename.Location = new System.Drawing.Point(89, 80);
         	this.tbImageFilename.Name = "tbImageFilename";
-        	this.tbImageFilename.Size = new System.Drawing.Size(157, 20);
+        	this.tbImageFilename.Size = new System.Drawing.Size(142, 20);
         	this.tbImageFilename.TabIndex = 33;
         	this.tbImageFilename.Text = "2010-04-18 - 4.jpg";
         	this.tbImageFilename.TextChanged += new System.EventHandler(this.tbImageFilename_TextChanged);
+        	this.tbImageFilename.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
         	// lblImageFile
         	// 
@@ -390,21 +392,23 @@ namespace Kinovea.ScreenManager
         	// 
         	this.tbVideoDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.tbVideoDirectory.Location = new System.Drawing.Point(252, 111);
+        	this.tbVideoDirectory.Location = new System.Drawing.Point(237, 111);
         	this.tbVideoDirectory.Name = "tbVideoDirectory";
-        	this.tbVideoDirectory.Size = new System.Drawing.Size(52, 20);
+        	this.tbVideoDirectory.Size = new System.Drawing.Size(67, 20);
         	this.tbVideoDirectory.TabIndex = 27;
         	this.tbVideoDirectory.Text = "C:\\Docu...Videos";
         	this.tbVideoDirectory.TextChanged += new System.EventHandler(this.tbVideoDirectory_TextChanged);
+        	this.tbVideoDirectory.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
         	// tbVideoFilename
         	// 
         	this.tbVideoFilename.Location = new System.Drawing.Point(89, 111);
         	this.tbVideoFilename.Name = "tbVideoFilename";
-        	this.tbVideoFilename.Size = new System.Drawing.Size(156, 20);
+        	this.tbVideoFilename.Size = new System.Drawing.Size(142, 20);
         	this.tbVideoFilename.TabIndex = 26;
         	this.tbVideoFilename.Text = "2010-04-18 - 1.avi";
         	this.tbVideoFilename.TextChanged += new System.EventHandler(this.tbVideoFilename_TextChanged);
+        	this.tbVideoFilename.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
         	// lblSpeedTuner
         	// 
@@ -433,13 +437,13 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.Location = new System.Drawing.Point(0, 0);
         	this.panelCenter.MinimumSize = new System.Drawing.Size(350, 25);
         	this.panelCenter.Name = "panelCenter";
-        	this.panelCenter.Size = new System.Drawing.Size(350, 220);
+        	this.panelCenter.Size = new System.Drawing.Size(350, 222);
         	this.panelCenter.TabIndex = 2;
         	this.panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
+        	this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
         	this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
         	this.panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
-        	this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
         	// 
         	// ImageResizerNE
         	// 
@@ -448,7 +452,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerNE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNE.Location = new System.Drawing.Point(92, 63);
+        	this.ImageResizerNE.Location = new System.Drawing.Point(92, 64);
         	this.ImageResizerNE.Name = "ImageResizerNE";
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNE.TabIndex = 9;
@@ -463,7 +467,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
         	this.ImageResizerNW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerNW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerNW.Location = new System.Drawing.Point(57, 63);
+        	this.ImageResizerNW.Location = new System.Drawing.Point(57, 64);
         	this.ImageResizerNW.Name = "ImageResizerNW";
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNW.TabIndex = 8;
@@ -478,7 +482,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.Cursor = System.Windows.Forms.Cursors.SizeNESW;
         	this.ImageResizerSW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSW.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSW.Location = new System.Drawing.Point(57, 88);
+        	this.ImageResizerSW.Location = new System.Drawing.Point(57, 89);
         	this.ImageResizerSW.Name = "ImageResizerSW";
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSW.TabIndex = 7;
@@ -494,7 +498,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.ImageResizerSE.ForeColor = System.Drawing.Color.Transparent;
         	this.ImageResizerSE.Image = global::Kinovea.ScreenManager.Properties.Resources.resizer4;
-        	this.ImageResizerSE.Location = new System.Drawing.Point(92, 88);
+        	this.ImageResizerSE.Location = new System.Drawing.Point(92, 89);
         	this.ImageResizerSE.Name = "ImageResizerSE";
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSE.TabIndex = 6;
@@ -560,8 +564,8 @@ namespace Kinovea.ScreenManager
         	this.splitKeyframes.Panel2.Controls.Add(this.pnlThumbnails);
         	this.splitKeyframes.Panel2.DoubleClick += new System.EventHandler(this.splitKeyframes_Panel2_DoubleClick);
         	this.splitKeyframes.Panel2MinSize = 30;
-        	this.splitKeyframes.Size = new System.Drawing.Size(350, 345);
-        	this.splitKeyframes.SplitterDistance = 220;
+        	this.splitKeyframes.Size = new System.Drawing.Size(350, 349);
+        	this.splitKeyframes.SplitterDistance = 222;
         	this.splitKeyframes.SplitterWidth = 2;
         	this.splitKeyframes.TabIndex = 10;
         	this.splitKeyframes.Resize += new System.EventHandler(this.splitKeyframes_Resize);
@@ -748,7 +752,7 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.Controls.Add(this.pictureBox1);
         	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
         	this.pnlThumbnails.Name = "pnlThumbnails";
-        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 95);
+        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 97);
         	this.pnlThumbnails.TabIndex = 3;
         	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
         	// 
