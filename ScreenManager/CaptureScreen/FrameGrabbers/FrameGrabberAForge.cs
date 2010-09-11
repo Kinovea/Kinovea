@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
 				
 				m_VideoDevice.Stop();
 				m_VideoDevice.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
-				m_FrameBuffer.Dispose();
+				m_FrameBuffer.Clear();
 				
 				m_bIsConnected = false;
 			}
@@ -238,7 +238,7 @@ namespace Kinovea.ScreenManager
 				m_FrameSize = sz;
 			}
 			
-			m_FrameBuffer.PushFrame(eventArgs.Frame);
+			m_FrameBuffer.Write(eventArgs.Frame);
 			m_Container.FrameGrabbed();
 		}
 		#endregion
