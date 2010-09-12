@@ -311,6 +311,9 @@
    <data name="Toast_Pause" xml:space="preserve"><value>Pause</value></data>
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom : {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Déconnecté</value></data>
+   <data name="Toast_StartRecord" xml:space="preserve"><value>Enregistrement démarré</value></data>
+   <data name="Toast_StopRecord" xml:space="preserve"><value>Enregistrement arrêté</value></data>
+   <data name="Toast_ImageSaved" xml:space="preserve"><value>Image enregistrée</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Ajouter une Image Clé</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Aller à l'Image Précédente</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil Couleur</value></data>
