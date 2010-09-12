@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
 		// Other
 		private bool m_bSettingsFold;
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
-		
+		private MessageToaster m_MessageToaster;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -131,6 +131,7 @@ namespace Kinovea.ScreenManager
 			m_bDocked = true;
 			
 			InitializeCaptureFiles();
+			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
 			
 			// Delegates
 			m_InitDecodingSize = new InitDecodingSize(InitDecodingSize_Invoked);
@@ -162,7 +163,6 @@ namespace Kinovea.ScreenManager
 			PanelCenter_Resize(null, EventArgs.Empty);
 			
 			// As a matter of fact we pass here at the first received frame.
-			// We can stop trying to connect now.
 			ShowHideResizers(true);
 			UpdateFilenameLabel();
 			OnPoke();
@@ -180,18 +180,10 @@ namespace Kinovea.ScreenManager
 				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturegrab5;	
 			}
 		}
-		private void DisplayAsRecording(bool _bIsRecording)
+		public void AlertDisconnected()
 		{
-			if(_bIsRecording)
-        	{
-        		btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
-        		toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
-        	}
-        	else
-        	{
-				btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;        		
-				toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
-        	}
+			ToastDisconnect();
+			pbSurfaceScreen.Invalidate();
 		}
 		public void DoUpdateCapturedVideos()
 		{
@@ -529,6 +521,7 @@ namespace Kinovea.ScreenManager
 				if(m_FrameServer.IsGrabbing)
 				{
 					m_FrameServer.PauseGrabbing();
+					ToastPause();
 				}
 			   	else
 			   	{
@@ -536,6 +529,10 @@ namespace Kinovea.ScreenManager
 			   	}	
 				
 			   	OnPoke();	
+			}
+			else
+			{
+				m_FrameServer.PauseGrabbing();	
 			}
 		}
 		public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -562,6 +559,19 @@ namespace Kinovea.ScreenManager
 				}
 			}
 			
+		}
+		private void DisplayAsRecording(bool _bIsRecording)
+		{
+			if(_bIsRecording)
+        	{
+        		btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
+        		toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
+        	}
+        	else
+        	{
+				btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;        		
+				toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
+        	}
 		}
 		#endregion
 
@@ -1161,7 +1171,12 @@ namespace Kinovea.ScreenManager
 		{
 			// Draw the image.
 			m_FrameServer.Draw(e.Graphics);
-						
+			
+			if(m_MessageToaster.Enabled)
+			{
+				m_MessageToaster.Draw(e.Graphics);
+			}
+
 			// Draw selection Border if needed.
 			if (m_bShowImageBorder)
 			{
@@ -1647,25 +1662,51 @@ namespace Kinovea.ScreenManager
 			{
 				m_FrameServer.CoordinateSystem.Zoom += 0.20f;
 				RelocateDirectZoom();
-				m_FrameServer.Metadata.ResizeFinished();	
+				m_FrameServer.Metadata.ResizeFinished();
+				ToastZoom();
 			}
 			
 			pbSurfaceScreen.Invalidate();
 		}
 		private void DecreaseDirectZoom()
 		{
-			if (m_FrameServer.CoordinateSystem.Zoom > 1.0f)
+			if (m_FrameServer.CoordinateSystem.Zoom > 1.2f)
 			{
 				m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
-				RelocateDirectZoom();
-				m_FrameServer.Metadata.ResizeFinished();
-				pbSurfaceScreen.Invalidate();
 			}
+			else
+			{
+				m_FrameServer.CoordinateSystem.Zoom = 1.0f;	
+			}
+			
+			RelocateDirectZoom();
+			m_FrameServer.Metadata.ResizeFinished();
+			ToastZoom();
+			pbSurfaceScreen.Invalidate();
 		}
 		private void RelocateDirectZoom()
 		{
 			m_FrameServer.CoordinateSystem.RelocateZoomWindow();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+		}
+		#endregion
+		
+		#region Toasts
+		private void ToastZoom()
+		{
+			m_MessageToaster.SetDuration(750);
+			int percentage = (int)(m_FrameServer.CoordinateSystem.Zoom * 100);
+			m_MessageToaster.Show(String.Format(ScreenManagerLang.Toast_Zoom, percentage.ToString()));
+		}
+		private void ToastPause()
+		{
+			m_MessageToaster.SetDuration(750);
+			m_MessageToaster.Show(ScreenManagerLang.Toast_Pause);
+		}
+		private void ToastDisconnect()
+		{
+			m_MessageToaster.SetDuration(1500);
+			m_MessageToaster.Show(ScreenManagerLang.Toast_Disconnected);
 		}
 		#endregion
 		
@@ -1853,11 +1894,15 @@ namespace Kinovea.ScreenManager
     			m_FrameServer.NegociateDevice();       			
     			m_bTryingToConnect = false;
     			
-				btnCamSettings.Enabled = m_FrameServer.IsConnected;
+    			if(m_FrameServer.IsConnected)
+    			{
+    				btnCamSettings.Enabled = true;
+    			}
     		}
         }
         private void CheckDeviceConnection()
         {
+        	// Ensure we stay connected.
         	if(!m_bTryingToConnect)
     		{
     			m_bTryingToConnect = true;        			

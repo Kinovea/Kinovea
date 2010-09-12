@@ -70,6 +70,7 @@ namespace Kinovea.ScreenManager
 		private Size m_FrameSize;
 		private int m_iConnectionsAttempts;
 		private int m_iGrabbedSinceLastCheck;
+		private int m_iConnectionsWithoutFrames;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -121,6 +122,13 @@ namespace Kinovea.ScreenManager
 	        		ConnectToDevice(videoDevices, 0);
 	        	}
 	        	
+	        	m_iGrabbedSinceLastCheck = 0;
+	        	
+	        	if(m_bIsConnected)
+	        	{
+	        		m_iConnectionsWithoutFrames++;
+	        	}
+	        	
 	        	if(!m_bIsConnected && m_iConnectionsAttempts == 2)
 	        	{
 	        		m_Container.AlertCannotConnect();
@@ -129,25 +137,49 @@ namespace Kinovea.ScreenManager
 		}
 		public override void CheckDeviceConnection()
 		{
+			//--------------------------------------------------------------------------------------------------
 			// Try to check if we're still connected to the video source.
-			// Testing for m_VideoDevice.IsRunning doesn't work.
-			// (It returns true even when the device is disconnected.)
-			
-			// We count the number of frames we received since last check.
-			// If we are supposed to do grabbing and we received nothing,
-			// the device has probably been disconnected.
-			// This prevent working with very slow capturing devices (less than one frame per second).
+			// The problem is that we are not notified when the source disconnects.
+			//
+			// The only way we have to detect that is to count the number of frames we received since last check.
+			// If we are supposed to do grabbing and we received nothing, we are in one of two conditions:
+			// 1. The device has been disconnected.
+			// 2. We are in STOP state of Play/Edit mode, but the device is still connected.
+			//
+			// The problem is that even in condition 1, we may still succeed in reconnecting.
+			// But, if we detect that we CONSTANTLY succeed in reconnecting but there are still no frames coming,
+			// we are probably in condition 2. Thus we'll stop trying to disconnect/reconnect, and just wait
+			// for the source to start sending frames again.
+			//
+			// Note:
+			// This prevents working with very slow capturing devices (less than one frame per second).
 			// This doesn't work if we are not currently grabbing.
-			if(m_bIsGrabbing && m_iGrabbedSinceLastCheck == 0)
+			//--------------------------------------------------------------------------------------------------
+			
+			if(m_iConnectionsWithoutFrames < 2)
 			{
-				log.Debug(String.Format("Device has been disconnected."));
-				m_VideoDevice.Stop();
-				m_bIsConnected = false;
-				m_bIsGrabbing = false;
-				m_Container.AlertConnectionLost();
-				 
-				// Set connection attempts so we don't show the initial error message.
-				m_iConnectionsAttempts = 2;
+				if(m_bIsGrabbing && m_iGrabbedSinceLastCheck == 0)
+				{
+					log.Debug(String.Format("Device has been disconnected."));
+					m_VideoDevice.SignalToStop();
+					m_VideoDevice.WaitForStop();
+					
+					m_bIsGrabbing = false;
+					m_bIsConnected = false;
+					m_Container.AlertConnectionLost();
+					 
+					// Set connection attempts so we don't show the initial error message.
+					m_iConnectionsAttempts = 2;
+				}
+				else
+				{
+					//log.Debug(String.Format("Device is still connected, or we are not grabbing and can't check."));
+				}
+			}
+			else
+			{
+				//log.Debug(String.Format("Device has succeeded in reconnecting twice, but still doesn't send frames."));
+				//log.Debug(String.Format("This probably means it is on STOP state, we will wait for frames without disconnecting."));
 			}
 			
 			m_iGrabbedSinceLastCheck = 0;
@@ -167,13 +199,15 @@ namespace Kinovea.ScreenManager
 		}
 		public override void PauseGrabbing()
 		{
-			if(m_bIsConnected && m_VideoDevice != null)
+			if(m_VideoDevice != null)
 			{
 				log.Debug("Pausing frame grabbing.");
-				if(m_bIsGrabbing)
+				
+				if(m_bIsConnected && m_bIsGrabbing)
 				{
 					m_VideoDevice.Stop();
 				}
+				
 				m_bIsGrabbing = false;
 				m_iGrabbedSinceLastCheck = 0;
 			}
@@ -227,6 +261,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_VideoDevice.DesiredFrameRate = 0;
 				m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
+				m_VideoDevice.VideoSourceError += new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
 				
 				m_bIsConnected = true;
 				
@@ -259,6 +294,7 @@ namespace Kinovea.ScreenManager
 				
 				m_VideoDevice.Stop();
 				m_VideoDevice.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
+				m_VideoDevice.VideoSourceError -= new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
 				m_FrameBuffer.Clear();
 				
 				m_bIsConnected = false;
@@ -279,9 +315,14 @@ namespace Kinovea.ScreenManager
 				m_FrameSize = sz;
 			}
 			
+			m_iConnectionsWithoutFrames = 0;
 			m_iGrabbedSinceLastCheck++;
 			m_FrameBuffer.Write(eventArgs.Frame);
 			m_Container.FrameGrabbed();
+		}
+		private void VideoDevice_VideoSourceError(object sender, VideoSourceErrorEventArgs eventArgs)
+		{
+			log.Error(String.Format("Error happened to device."));
 		}
 		#endregion
 	}
