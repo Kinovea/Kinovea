@@ -566,11 +566,13 @@ namespace Kinovea.ScreenManager
         	{
         		btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
         		toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
+        		ToastStartRecord();
         	}
         	else
         	{
 				btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;        		
 				toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
+				ToastStopRecord();
         	}
 		}
 		#endregion
@@ -1708,6 +1710,21 @@ namespace Kinovea.ScreenManager
 			m_MessageToaster.SetDuration(1500);
 			m_MessageToaster.Show(ScreenManagerLang.Toast_Disconnected);
 		}
+		private void ToastStartRecord()
+		{
+			m_MessageToaster.SetDuration(1000);
+			m_MessageToaster.Show(ScreenManagerLang.Toast_StartRecord);
+		}
+		private void ToastStopRecord()
+		{
+			m_MessageToaster.SetDuration(750);
+			m_MessageToaster.Show(ScreenManagerLang.Toast_StopRecord);
+		}
+		private void ToastImageSaved()
+		{
+			m_MessageToaster.SetDuration(750);
+			m_MessageToaster.Show(ScreenManagerLang.Toast_ImageSaved);
+		}
 		#endregion
 		
 		#region Export video and frames
@@ -1797,6 +1814,8 @@ namespace Kinovea.ScreenManager
 						// Update the filename for the next snapshot.
 						// If the filename was empty, we'll create it without saving.
 						tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
+						
+						ToastImageSaved();
 					}
 				}
 				else

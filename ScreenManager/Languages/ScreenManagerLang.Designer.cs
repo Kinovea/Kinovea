@@ -2248,11 +2248,38 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Image Saved.
+        /// </summary>
+        internal static string Toast_ImageSaved {
+            get {
+                return ResourceManager.GetString("Toast_ImageSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Pause.
         /// </summary>
         internal static string Toast_Pause {
             get {
                 return ResourceManager.GetString("Toast_Pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Recording started.
+        /// </summary>
+        internal static string Toast_StartRecord {
+            get {
+                return ResourceManager.GetString("Toast_StartRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Recording stopped.
+        /// </summary>
+        internal static string Toast_StopRecord {
+            get {
+                return ResourceManager.GetString("Toast_StopRecord", resourceCulture);
             }
         }
         

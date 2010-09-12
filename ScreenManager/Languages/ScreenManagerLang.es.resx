@@ -311,6 +311,9 @@
    
    
    
+   
+   
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Añadir un a imàgen clave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ir a la imagen anterior</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Perfil Color</value></data>
