@@ -310,6 +310,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tunnin kymmenestuhannesosat</value></data>
    
    
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Lisää avainkuva</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Mene edelliseen kuvaan</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Väriprofiili</value></data>

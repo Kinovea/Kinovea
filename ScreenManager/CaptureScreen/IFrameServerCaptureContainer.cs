@@ -33,6 +33,7 @@ namespace Kinovea.ScreenManager
 		void DoInvalidate();
 		void DoInitDecodingSize();
 		void DisplayAsGrabbing(bool _bIsGrabbing);
+		void AlertDisconnected();
 		void DoUpdateCapturedVideos();
 	}
 }

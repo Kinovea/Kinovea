@@ -310,6 +310,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Zece miimi de oră</value></data>
    
    
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Adaugă un cadru cheie</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Mergi către cadrul precedent</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil Culoare</value></data>

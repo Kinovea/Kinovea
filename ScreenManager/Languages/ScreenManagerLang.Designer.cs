@@ -2239,7 +2239,16 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à pause.
+        ///   Recherche une chaîne localisée semblable à Disconnected.
+        /// </summary>
+        internal static string Toast_Disconnected {
+            get {
+                return ResourceManager.GetString("Toast_Disconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Pause.
         /// </summary>
         internal static string Toast_Pause {
             get {

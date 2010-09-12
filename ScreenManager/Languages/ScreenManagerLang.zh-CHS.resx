@@ -310,6 +310,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>万分之一小时</value></data>
    
    
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>新增一个关键图像</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>转到上一帧</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>颜色配置</value></data>

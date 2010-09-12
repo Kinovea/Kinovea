@@ -451,8 +451,7 @@ namespace Kinovea.ScreenManager
 		public void AlertConnectionLost()
 		{
 			// Device stopped sending frames.
-			// We should just display a quick toaster message.
-			// TODO.
+			m_Container.AlertDisconnected();
 		}
 		private void DisplayError(SaveResult _result)
 		{

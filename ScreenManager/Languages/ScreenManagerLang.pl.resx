@@ -310,6 +310,7 @@
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dziesięciotysięczna część godziny</value></data>
    
    
+   
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Dodaj kluczowy obraz</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Idź do poprzedniej klatki</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Profil koloru</value></data>

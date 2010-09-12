@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
 		private static readonly int m_DefaultFontSize = 24;
 		private Brush m_ForeBrush = new SolidBrush(Color.FromArgb(255, Color.White));
 		private Brush m_BackBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -70,6 +71,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void Show(string _message)
 		{
+			log.Debug(String.Format("Toasting message: {0}", _message));
 			m_Message = _message;
 			m_bEnabled = true;
 			StartStopTimer();
