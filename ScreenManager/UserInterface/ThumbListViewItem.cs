@@ -510,6 +510,8 @@ namespace Kinovea.ScreenManager
 			{
 				// User cancelled confirmation box.
 			}
+
+			// Other possible error case: the file couldn't be deleted because it's still in use.
 			
 			// If file was effectively moved to trash, reload the folder.
 			if(!File.Exists(m_FileName))

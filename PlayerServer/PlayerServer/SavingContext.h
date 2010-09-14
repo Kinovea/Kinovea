@@ -49,7 +49,7 @@ namespace Kinovea
 
 			// User parameters
 			char* pFilePath;
-			int iFramesInterval;				
+			double fFramesInterval;				
 			int iBitrate;				
 			Size outputSize;
 
@@ -59,7 +59,7 @@ namespace Kinovea
 			SavingContext::SavingContext()
 			{
 				bInputWasMpeg2 = false;
-				iFramesInterval = 40;			// Default speed : 25 fps.
+				fFramesInterval = 40;			// Default speed : 25 fps.
 				iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
 				fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
 				outputSize = Size(720, 576);

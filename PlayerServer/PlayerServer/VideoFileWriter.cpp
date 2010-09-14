@@ -59,7 +59,7 @@ VideoFileWriter::!VideoFileWriter()
 /// VideoFileWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, int _iFramesInterval, bool _bHasMetadata)
+SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, double _fFramesInterval, bool _bHasMetadata)
 {
 	//---------------------------------------------------------------------------------------------------
 	// Set the saving context.
@@ -105,7 +105,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 		m_SavingContext->iSampleAspectRatioDenominator = _infosVideo->iSampleAspectRatioDenominator;
 	}
 	
-	if(_iFramesInterval > 0) m_SavingContext->iFramesInterval = _iFramesInterval;
+	if(_fFramesInterval > 0) m_SavingContext->fFramesInterval = _fFramesInterval;
 	
 	do
 	{
@@ -440,6 +440,8 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 	// Implement from ref: http://www.mplayerhq.hu/DOCS/HTML/en/menc-feat-dvd-mpeg4.html
 
 
+	log->Debug("Setting up the encoder.");
+
 	// Codec.
 	// Equivalent to : -vcodec mpeg4
 	_SavingContext->pOutputCodecContext->codec_id = _SavingContext->pOutputCodec->id;
@@ -461,14 +463,33 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 	// Framerate - timebase.
 	// Certains codecs (MPEG1/2) ne supportent qu'un certain nombre restreints de framerates.
 	// src [kinovea]
-	if(_SavingContext->iFramesInterval == 0)
-		_SavingContext->iFramesInterval = 40;
+	if(_SavingContext->fFramesInterval == 0)
+		_SavingContext->fFramesInterval = 40;
 
-	int iFramesPerSecond = 1000 / _SavingContext->iFramesInterval;
-	_SavingContext->pOutputCodecContext->time_base.den			= iFramesPerSecond ;
-	_SavingContext->pOutputCodecContext->time_base.num			= 1;
+	int iTimebase = (int)Math::Round(1000000.0f / _SavingContext->fFramesInterval);
 
-
+	// Examples : 25000, 30000, 29970.
+	// Treat some special cases and use rounding for the others.
+	if(iTimebase == 29970)
+	{
+		log->Debug(String::Format("Pushing special timebase: 30000:1001"));
+		_SavingContext->pOutputCodecContext->time_base.den			= 30000;
+		_SavingContext->pOutputCodecContext->time_base.num			= 1001;
+	}
+	else if(iTimebase == 24975)
+	{
+		log->Debug(String::Format("Pushing special timebase: 25000:1001"));
+		_SavingContext->pOutputCodecContext->time_base.den			= 25000;
+		_SavingContext->pOutputCodecContext->time_base.num			= 1001;
+	}
+	else
+	{
+		iTimebase = (int)Math::Round((double)iTimebase / 1000);
+		log->Debug(String::Format("Pushing timebase: {0}:1", iTimebase));
+		_SavingContext->pOutputCodecContext->time_base.den			= iTimebase;
+		_SavingContext->pOutputCodecContext->time_base.num			= 1;
+	}
+	
 	// Picture width / height.
 	// If we are transcoding from a video, this will be the same as the input size.
 	// (not the decoding size).

@@ -885,7 +885,7 @@ namespace Kinovea.ScreenManager
             {
                 if (bPlaying)
                 {
-                    int frameInterval = Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2);
+                    double frameInterval = Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2);
 										
 					// On play, simply launch the dynamic sync.
 					// It will handle which video can start right away.
@@ -3149,31 +3149,14 @@ namespace Kinovea.ScreenManager
 	            ResetDynamicSyncFlags();
         	}
         }
-        private void StartDynamicSync(int _interval)
+        private void StartDynamicSync(double _interval)
         {
         	m_bDynamicSynching = true;
         	DynamicSync();
-        	/*
-            if (m_DelegateMMTimerEventHandler != null)
-            {
-                int myData = 0;	// dummy data
-                m_IdMultimediaTimer = timeSetEvent( _interval,                              // Délai en ms.
-                                                    _interval,                              // Resolution en ms.
-                                                    m_DelegateMMTimerEventHandler,          // event handler du tick.
-                                                    ref myData,                             // ?
-                                                    TIME_PERIODIC | TIME_KILL_SYNCHRONOUS); // Type d'event.
-                log.Debug("Common multimedia timer started");
-            }*/
         }
         private void StopDynamicSync()
         {
         	m_bDynamicSynching = false;
-        	/*
-            if (m_IdMultimediaTimer != 0)
-            {
-                timeKillEvent(m_IdMultimediaTimer);
-                log.Debug("Common multimedia timer stopped");
-            }*/
         }
         private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
         {
