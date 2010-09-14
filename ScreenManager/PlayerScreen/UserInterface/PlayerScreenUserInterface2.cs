@@ -2206,13 +2206,13 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Timers & Playloop
-		private void StartMultimediaTimer(int _interval)
+		private void StartMultimediaTimer(double _interval)
 		{
 			Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
 
 			int myData = 0;	// dummy data
-			m_IdMultimediaTimer = timeSetEvent( _interval,                              // Délai en ms.
-			                                   _interval,                              // Resolution en ms.
+			m_IdMultimediaTimer = timeSetEvent( (int)_interval,                              // Délai en ms.
+			                                   (int)_interval,                              // Resolution en ms.
 			                                   m_TimerEventHandler,            // event handler du tick.
 			                                   ref myData,                             // ?
 			                                   TIME_PERIODIC | TIME_KILL_SYNCHRONOUS); // Type d'event (1=periodic)
@@ -2601,13 +2601,13 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Invalidate();
 			}
 		}
-		private int GetPlaybackFrameInterval()
+		private double GetPlaybackFrameInterval()
 		{
 			// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
 			// m_iSlowmotionPercentage must be > 0.
-			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0 && m_iSlowmotionPercentage > 0)
+			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0 && m_iSlowmotionPercentage > 0)
 			{
-				return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_iSlowmotionPercentage / 100.0));
+				return (m_FrameServer.VideoFile.Infos.fFrameInterval / ((double)m_iSlowmotionPercentage / 100.0));
 			}
 			else
 			{

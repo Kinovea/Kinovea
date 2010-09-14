@@ -86,7 +86,7 @@ namespace VideoFiles
 #pragma region Public Methods
 	public:
 		
-		SaveResult OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, int _iFramesInterval, bool _bHasMetadata);
+		SaveResult OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, double _fFramesInterval, bool _bHasMetadata);
 		SaveResult CloseSavingContext(bool _bEncodingSuccess);
 		SaveResult SaveFrame(Bitmap^ _image);
 		SaveResult SaveMetadata(String^ _Metadata);

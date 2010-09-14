@@ -44,9 +44,9 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_OutputFileName; }
 		}   
-		public int FrameInterval
+		public double FrameInterval
 		{
-			get { return m_iFrameInterval; }
+			get { return m_fFrameInterval; }
 		}
 		public bool PausedVideo
 		{
@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         #region Members
         private string m_InputFileName;
         private string m_OutputFileName;
-        private int m_iFrameInterval;
+        private double m_fFrameInterval;
         private bool m_bDiaporama;
         #endregion
 
@@ -150,7 +150,7 @@ namespace Kinovea.ScreenManager
                 {
             		// Commit output props.
                 	m_OutputFileName = filePath;
-                	m_iFrameInterval = trkInterval.Value;
+                	m_fFrameInterval = (double)trkInterval.Value;
                 	
                 	DialogResult = DialogResult.OK;
                 	result = DialogResult.OK;

@@ -148,14 +148,14 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public int FrameInterval
+        public double FrameInterval
         {
             get 
             { 
             	// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
-				if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.iFrameInterval > 0)
+				if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0)
 				{
-					return (int)((double)m_FrameServer.VideoFile.Infos.iFrameInterval / ((double)m_PlayerScreenUI.SlowmotionPercentage / 100));
+					return (m_FrameServer.VideoFile.Infos.fFrameInterval / ((double)m_PlayerScreenUI.SlowmotionPercentage / 100));
 				}
 				else
 				{

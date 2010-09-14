@@ -67,7 +67,7 @@ namespace Kinovea.ScreenManager
 		private long m_iSaveEnd;
         private string m_SaveFile;
         private Metadata m_SaveMetadata;
-        private int m_iSaveFramesInterval;
+        private double m_fSaveFramesInterval;
         private bool m_bSaveFlushDrawings;
         private bool m_bSaveKeyframesOnly;
         private bool m_bSavePausedVideo;
@@ -119,7 +119,7 @@ namespace Kinovea.ScreenManager
 			// Draw the current image on canvas according to conf.
 			// This is called back from screen paint method.
 		}
-		public void Save(int _iPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
+		public void Save(double _fPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
 		{
 			// Let the user select what he wants to save exactly.
 			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
             	{
             		DoSave(fve.Filename, 
     						fve.MuxDrawings ? m_Metadata : null,
-    						fve.UseSlowMotion ? _iPlaybackFrameInterval : m_VideoFile.Infos.iFrameInterval,
+    						fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoFile.Infos.fFrameInterval,
     						_iSelStart,
     						_iSelEnd,
     						fve.BlendDrawings,
@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Saving processing
-		private void DoSave(String _FilePath, Metadata _Metadata, int _iPlaybackFrameInterval, Int64 _iSelStart, Int64 _iSelEnd, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap _DelegateOutputBitmap)
+		private void DoSave(String _FilePath, Metadata _Metadata, double _fPlaybackFrameInterval, Int64 _iSelStart, Int64 _iSelEnd, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap _DelegateOutputBitmap)
         {
 			// Save video.
     		// We use a bgWorker and a Progress Bar.
@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
             m_iSaveEnd = _iSelEnd;
             m_SaveMetadata = _Metadata;
             m_SaveFile = _FilePath;
-            m_iSaveFramesInterval = _iPlaybackFrameInterval;
+            m_fSaveFramesInterval = _fPlaybackFrameInterval;
             m_bSaveFlushDrawings = _bFlushDrawings;
             m_bSaveKeyframesOnly = _bKeyframesOnly;
             m_bSavePausedVideo = _bPausedVideo;
@@ -221,7 +221,7 @@ namespace Kinovea.ScreenManager
         	try
         	{
         		m_SaveResult = m_VideoFile.Save(	m_SaveFile, 
-	        	                                	m_iSaveFramesInterval, 
+	        	                                	m_fSaveFramesInterval, 
 	        	                                	m_iSaveStart, 
 	        	                                	m_iSaveEnd, 
 	        	                                	metadata, 

@@ -51,7 +51,7 @@ namespace Kinovea
 
 				double  fFps;
 				bool    bFpsIsReliable;					
-				int		iFrameInterval;					// in Milliseconds.
+				double	fFrameInterval;					// in Milliseconds.
 				int64_t iDurationTimeStamps;			// Duration between first and last. Not between 0 and last.
 				int64_t iFirstTimeStamp;				// The first frame timestamp. (not always 0) 
 				double  fAverageTimeStampsPerSeconds;
