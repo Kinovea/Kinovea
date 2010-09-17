@@ -5,7 +5,7 @@
 		<file value="${APPDATA}\Kinovea\log.txt" />
 		<appendToFile value="false" />
 		<layout type="log4net.Layout.PatternLayout">
-			<conversionPattern value="%date - %-5level - %logger - %message%newline" />
+			<conversionPattern value="%timestamp - %-5level - [%thread] - %logger{1} - %message%newline" />
 		</layout>
 	</appender>
 	<root>
