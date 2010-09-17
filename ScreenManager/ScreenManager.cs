@@ -96,6 +96,7 @@ namespace Kinovea.ScreenManager
         // Dual saving
         private string m_DualSaveFileName;
         private bool m_bDualSaveCancelled;
+        private bool m_bDualSaveInProgress;
         private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
         private BackgroundWorker m_bgWorkerDualSave;
         private formProgressBar m_DualSaveProgressBar;
@@ -741,7 +742,7 @@ namespace Kinovea.ScreenManager
 								mirrorFilter.ApplyInPlace( img );
 	                    	}
 	                    	
-	                    	((PlayerScreen)screen).SyncMergeImage = img;
+	                    	((PlayerScreen)screen).SetSyncMergeImage(img, !m_bDualSaveInProgress);
 	                    }
 	                }	
         		}
@@ -1028,7 +1029,13 @@ namespace Kinovea.ScreenManager
 			        	m_bgWorkerDualSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerDualSave_ProgressChanged);
 			            m_bgWorkerDualSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerDualSave_RunWorkerCompleted);
 			
-			            // Create the progress bar and launch the worker.
+			            // Make sure none of the screen will try to update itself.
+       					// Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
+			            m_bDualSaveInProgress = true;
+			            ps1.DualSaveInProgress = true;
+       					ps2.DualSaveInProgress = true;
+			            
+       					// Create the progress bar and launch the worker.
 			            m_DualSaveProgressBar = new formProgressBar(true);
 			            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
 			            m_bgWorkerDualSave.RunWorkerAsync();
@@ -1040,8 +1047,11 @@ namespace Kinovea.ScreenManager
 			            	DeleteTemporaryFile(m_DualSaveFileName);
 	    				}
 	    				
-	       				// Reset to where we were.
-	       				m_iCurrentFrame = iCurrentFrame;
+			            // Reset to where we were.
+	       				m_bDualSaveInProgress = false;
+			            ps1.DualSaveInProgress = false;
+       					ps2.DualSaveInProgress = false;
+			            m_iCurrentFrame = iCurrentFrame;
 	       				OnCommonPositionChanged(m_iCurrentFrame, true);
 		        	}       				
        			}
@@ -1731,8 +1741,8 @@ namespace Kinovea.ScreenManager
        				OnCommonPositionChanged(m_iCurrentFrame, false);
        				
        				Bitmap img1 = ps1.GetFlushedImage();
-				    Bitmap img2 = ps2.GetFlushedImage();
-				    Bitmap composite = ImageHelper.GetSideBySideComposite(img1, img2);
+       				Bitmap img2 = ps2.GetFlushedImage();
+       				Bitmap composite = ImageHelper.GetSideBySideComposite(img1, img2);
        				
        				// Configure a fake InfoVideo to setup image size.
        				InfosVideo iv = new InfosVideo();
@@ -1766,9 +1776,9 @@ namespace Kinovea.ScreenManager
 	       					{
 	       						// Move both playheads and get the composite image.
 	       						OnCommonPositionChanged(-1, false);
-				       			img1 = ps1.GetFlushedImage();
+	       						img1 = ps1.GetFlushedImage();
 				       			img2 = ps2.GetFlushedImage();
-				       			composite = ImageHelper.GetSideBySideComposite(img1, img2);
+	       						composite = ImageHelper.GetSideBySideComposite(img1, img2);
 				       			
 				       			// Save to file.
 				       			m_VideoFileWriter.SaveFrame(composite);

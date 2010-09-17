@@ -104,15 +104,18 @@ namespace Kinovea.Root
 			{
 				sw.WriteLine(ex.Message);
 				sw.Write(ex.Source);
+				sw.WriteLine(ex.InnerException.ToString());
 				sw.Write(ex.StackTrace);
 				sw.Close();
 			}
 			
 			// Dump again in the log.
-			log.Error("Unhandled Crash.");
-			log.Error(ex.Message);
-			log.Error(ex.Source);
-			log.Error(ex.StackTrace);
+			log.Error("Unhandled Crash -------------------------");
+			log.Error(String.Format("Message: {0}", ex.Message));
+			log.Error(String.Format("Source: {0}", ex.Source));
+			log.Error(String.Format("Target site: {0}", ex.TargetSite));
+			log.Error(String.Format("InnerException: {0}", ex.InnerException));
+			log.Error(String.Format("Stack: {0}", ex.StackTrace));
 		}
     }
 }

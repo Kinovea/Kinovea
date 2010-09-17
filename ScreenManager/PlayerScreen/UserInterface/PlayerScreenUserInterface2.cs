@@ -202,20 +202,10 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Invalidate();
 			}
 		}
-		public Bitmap SyncMergeImage
-		{
-			set
-			{
-				//if(m_SyncMergeImage != null)
-				//	m_SyncMergeImage.Dispose();
-				
-				m_SyncMergeImage = value;
-				
-				// Ask for a repaint. We don't wait for the next frame to be drawn
-				// because the user may be manually moving the other video.
-				pbSurfaceScreen.Invalidate();
-			}
-		}
+		public bool DualSaveInProgress
+        {
+        	set { m_DualSaveInProgress = value; }
+        }
 		#endregion
 
 		#region Members
@@ -243,6 +233,7 @@ namespace Kinovea.ScreenManager
 		private Bitmap m_SyncMergeImage;
 		private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
 		private ImageAttributes m_SyncMergeImgAttr = new ImageAttributes();
+		private bool m_DualSaveInProgress;
 		
 		// Image
 		private bool m_bStretchModeOn;
@@ -771,6 +762,20 @@ namespace Kinovea.ScreenManager
 				EnableDisableDrawingTools(true);
 				
 				// TODO:recall saved state.
+			}
+		}
+		public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
+		{
+			//if(m_SyncMergeImage != null)
+			//	m_SyncMergeImage.Dispose();
+			
+			m_SyncMergeImage = _SyncMergeImage;
+				
+			if(_bUpdateUI)
+			{
+				// Ask for a repaint. We don't wait for the next frame to be drawn
+				// because the user may be manually moving the other video.
+				pbSurfaceScreen.Invalidate();
 			}
 		}
 		public bool OnKeyPress(Keys _keycode)
@@ -3238,7 +3243,7 @@ namespace Kinovea.ScreenManager
 			// We always draw at full SurfaceScreen size.
 			// It is the SurfaceScreen itself that is resized if needed.
 			//-------------------------------------------------------------------
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
+			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded && !m_DualSaveInProgress)
 			{
 				if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 				{
@@ -3416,23 +3421,10 @@ namespace Kinovea.ScreenManager
 				// not the option of the original video in this screen.)
 				Rectangle rSyncDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
 				g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
-				
-				
-				// Testing other ways to merge the images.
-				/*Bitmap bmpOverlay = new Bitmap(_iNewSize.Width, _iNewSize.Height, PixelFormat.Format24bppRgb);
-				Graphics gOverlay = Graphics.FromImage(bmpOverlay);
-				gOverlay.DrawImage(m_SyncMergeImage, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height);
-				
-				BaseInPlaceFilter2 filter = new Intersect( bmpOverlay ); 	// takes min of pixels.
-				//BaseInPlaceFilter2 filter = new Merge( bmpOverlay );		// takes max of pixels.
-				//BaseInPlaceFilter2 filter = new Subtract( bmpOverlay);
-				Bitmap resultImage = filter.Apply(_sourceImage);
-    			
-    			g.DrawImage(resultImage, rDst, rSrc, GraphicsUnit.Pixel);*/
 			}
 			
 			FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
-			FlushMagnifierOnGraphics(_sourceImage, g);			
+			FlushMagnifierOnGraphics(_sourceImage, g);
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
 		{
@@ -5233,11 +5225,10 @@ namespace Kinovea.ScreenManager
 			// Returns an image with all drawings flushed, including
 			// grids, chronos, magnifier, etc.
 			// image should be at same strech factor than the one visible on screen.
-
 			Size iNewSize = new Size((int)((double)m_FrameServer.VideoFile.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoFile.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
 			output.SetResolution(m_FrameServer.VideoFile.CurrentImage.HorizontalResolution, m_FrameServer.VideoFile.CurrentImage.VerticalResolution);
-
+			
 			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 			{
 				m_DrawingFilterOutput.Draw(Graphics.FromImage(output), iNewSize, m_DrawingFilterOutput.PrivateData);
@@ -5248,7 +5239,7 @@ namespace Kinovea.ScreenManager
 				if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
 				{
 					iKeyFrameIndex = m_iActiveKeyFrameIndex;
-				}
+				}				
 				
 				FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 			}

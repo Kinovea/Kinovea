@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
         {
         	BackColor = Color.White;
             
-        	/*btnSnapShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	btnSnapShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	btnSnapShot.BackColor = System.Drawing.Color.Transparent;
         	btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
         	btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	btnSnapShot.Image = ScreenManager.Properties.Resources.snapsingle_1;
-        	//btnSnapShot.Location = new System.Drawing.Point(this.Width - 30, btnMerge.Top);
+        	btnSnapShot.Location = new System.Drawing.Point(trkFrame.Left + trkFrame.Width + 10, btnMerge.Top);
         	btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
         	btnSnapShot.Name = "btnSnapShot";
         	btnSnapShot.Size = new System.Drawing.Size(30, 25);
@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
         	btnDualVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	btnDualVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	btnDualVideo.Image = ScreenManager.Properties.Resources.savevideo;
-        	btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Left + btnSnapShot.Width + 10, btnSnapShot.Top);
+        	btnDualVideo.Location = new System.Drawing.Point(trkFrame.Left + trkFrame.Width + 45, btnSnapShot.Top);
         	btnDualVideo.MinimumSize = new System.Drawing.Size(25, 25);
         	btnDualVideo.Name = "btnDualVideo";
         	btnDualVideo.Size = new System.Drawing.Size(30, 25);
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
         	btnDualVideo.Click += new System.EventHandler(btnDualVideo_Click);
             
         	this.Controls.Add(btnSnapShot);
-        	this.Controls.Add(btnDualVideo);*/
+        	this.Controls.Add(btnDualVideo);
         }
         public void RefreshUICulture()
         {

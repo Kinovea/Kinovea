@@ -192,10 +192,10 @@ namespace Kinovea.ScreenManager
         		RefreshImage();
         	}
         }
-        public Bitmap SyncMergeImage
-		{
-			set { m_PlayerScreenUI.SyncMergeImage = value;}
-		}
+        public bool DualSaveInProgress
+        {
+        	set { m_PlayerScreenUI.DualSaveInProgress = value; }
+        }
         
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
@@ -355,6 +355,10 @@ namespace Kinovea.ScreenManager
         	// It is used as a communication channel between the filter and the player.
         	m_PlayerScreenUI.SetDrawingtimeFilterOutput(_dfo);
         }
+        public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
+		{
+        	m_PlayerScreenUI.SetSyncMergeImage(_SyncMergeImage, _bUpdateUI);
+		}
         public void Save()
         {
         	m_PlayerScreenUI.Save();
