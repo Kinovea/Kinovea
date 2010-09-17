@@ -215,7 +215,11 @@ namespace Kinovea.ScreenManager
         	string metadata = "";
         	if(m_SaveMetadata != null)
         	{
-        		metadata = m_SaveMetadata.ToXmlString();
+        		// Get the metadata as XML string.
+        		// If frame duplication is going to occur (when saving in slow motion at less than 8fps)
+        		// We have to store this in the xml output to be able to match frames with timestamps later.
+        		int iDuplicateFactor = (int)Math.Ceiling(m_fSaveFramesInterval / 125.0);
+        		metadata = m_SaveMetadata.ToXmlString(iDuplicateFactor);
         	}
         	
         	try
