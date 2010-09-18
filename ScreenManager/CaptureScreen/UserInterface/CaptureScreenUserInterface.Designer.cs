@@ -60,6 +60,7 @@ namespace Kinovea.ScreenManager
         	this.ActiveScreenIndicator = new System.Windows.Forms.Label();
         	this.toolTips = new System.Windows.Forms.ToolTip(this.components);
         	this.splitKeyframes = new System.Windows.Forms.SplitContainer();
+        	this.btnDrawingToolCircle = new System.Windows.Forms.Button();
         	this.btn3dplane = new System.Windows.Forms.Button();
         	this.btnMagnifier = new System.Windows.Forms.Button();
         	this.btnDockBottom = new System.Windows.Forms.Button();
@@ -551,6 +552,7 @@ namespace Kinovea.ScreenManager
         	// splitKeyframes.Panel2
         	// 
         	this.splitKeyframes.Panel2.BackColor = System.Drawing.Color.White;
+        	this.splitKeyframes.Panel2.Controls.Add(this.btnDrawingToolCircle);
         	this.splitKeyframes.Panel2.Controls.Add(this.btn3dplane);
         	this.splitKeyframes.Panel2.Controls.Add(this.btnMagnifier);
         	this.splitKeyframes.Panel2.Controls.Add(this.btnDockBottom);
@@ -570,6 +572,23 @@ namespace Kinovea.ScreenManager
         	this.splitKeyframes.TabIndex = 10;
         	this.splitKeyframes.Resize += new System.EventHandler(this.splitKeyframes_Resize);
         	// 
+        	// btnDrawingToolCircle
+        	// 
+        	this.btnDrawingToolCircle.BackColor = System.Drawing.Color.Transparent;
+        	this.btnDrawingToolCircle.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.circle;
+        	this.btnDrawingToolCircle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+        	this.btnDrawingToolCircle.FlatAppearance.BorderSize = 0;
+        	this.btnDrawingToolCircle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnDrawingToolCircle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnDrawingToolCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnDrawingToolCircle.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolCircle.Location = new System.Drawing.Point(120, 2);
+        	this.btnDrawingToolCircle.Name = "btnDrawingToolCircle";
+        	this.btnDrawingToolCircle.Size = new System.Drawing.Size(25, 25);
+        	this.btnDrawingToolCircle.TabIndex = 20;
+        	this.btnDrawingToolCircle.UseVisualStyleBackColor = false;
+        	this.btnDrawingToolCircle.Click += new System.EventHandler(this.btnDrawingToolCircle_Click);
+        	// 
         	// btn3dplane
         	// 
         	this.btn3dplane.BackColor = System.Drawing.Color.Transparent;
@@ -580,7 +599,7 @@ namespace Kinovea.ScreenManager
         	this.btn3dplane.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btn3dplane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btn3dplane.ForeColor = System.Drawing.Color.Black;
-        	this.btn3dplane.Location = new System.Drawing.Point(170, 2);
+        	this.btn3dplane.Location = new System.Drawing.Point(195, 2);
         	this.btn3dplane.Name = "btn3dplane";
         	this.btn3dplane.Size = new System.Drawing.Size(25, 25);
         	this.btn3dplane.TabIndex = 19;
@@ -597,7 +616,7 @@ namespace Kinovea.ScreenManager
         	this.btnMagnifier.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnMagnifier.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnMagnifier.ForeColor = System.Drawing.Color.Black;
-        	this.btnMagnifier.Location = new System.Drawing.Point(195, 2);
+        	this.btnMagnifier.Location = new System.Drawing.Point(220, 2);
         	this.btnMagnifier.Name = "btnMagnifier";
         	this.btnMagnifier.Size = new System.Drawing.Size(25, 25);
         	this.btnMagnifier.TabIndex = 18;
@@ -633,7 +652,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolCross2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolCross2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolCross2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolCross2D.Location = new System.Drawing.Point(120, 2);
+        	this.btnDrawingToolCross2D.Location = new System.Drawing.Point(145, 2);
         	this.btnDrawingToolCross2D.Name = "btnDrawingToolCross2D";
         	this.btnDrawingToolCross2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolCross2D.TabIndex = 7;
@@ -667,7 +686,7 @@ namespace Kinovea.ScreenManager
         	this.btnColorProfile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnColorProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnColorProfile.ForeColor = System.Drawing.Color.Black;
-        	this.btnColorProfile.Location = new System.Drawing.Point(220, 2);
+        	this.btnColorProfile.Location = new System.Drawing.Point(245, 2);
         	this.btnColorProfile.Name = "btnColorProfile";
         	this.btnColorProfile.Size = new System.Drawing.Size(25, 25);
         	this.btnColorProfile.TabIndex = 15;
@@ -718,7 +737,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolAngle2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolAngle2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolAngle2D.Location = new System.Drawing.Point(145, 2);
+        	this.btnDrawingToolAngle2D.Location = new System.Drawing.Point(170, 2);
         	this.btnDrawingToolAngle2D.Name = "btnDrawingToolAngle2D";
         	this.btnDrawingToolAngle2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolAngle2D.TabIndex = 8;
@@ -796,6 +815,7 @@ namespace Kinovea.ScreenManager
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Button btnDrawingToolCircle;
 		private System.Windows.Forms.Label lblImageFile;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button btnGrab;
