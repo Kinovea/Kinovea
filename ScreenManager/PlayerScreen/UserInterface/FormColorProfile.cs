@@ -19,13 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 #endregion
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -85,33 +85,36 @@ namespace Kinovea.ScreenManager
         private void LocalizeForm()
         {
             // Window & Controls
-            this.Text = "   " + m_ResourceManager.GetString("dlgColorProfile_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnApply.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgColorProfile_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnApply.Text = ScreenManagerLang.Generic_Apply;
 
             // ToolTips
-            toolTips.SetToolTip(btnLoadProfile, m_ResourceManager.GetString("dlgColorProfile_ToolTip_LoadProfile", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnSaveProfile, m_ResourceManager.GetString("dlgColorProfile_ToolTip_SaveProfile", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnDefaultProfile, m_ResourceManager.GetString("dlgColorProfile_ToolTip_DefaultProfile", Thread.CurrentThread.CurrentUICulture));
+            toolTips.SetToolTip(btnLoadProfile, ScreenManagerLang.dlgColorProfile_ToolTip_LoadProfile);
+            toolTips.SetToolTip(btnSaveProfile, ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile);
+            toolTips.SetToolTip(btnDefaultProfile, ScreenManagerLang.dlgColorProfile_ToolTip_DefaultProfile);
 
-            toolTips.SetToolTip(btnDrawingToolText, m_ResourceManager.GetString("ToolTip_DrawingToolText", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnDrawingToolPencil, m_ResourceManager.GetString("ToolTip_DrawingToolPencil", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnDrawingToolLine2D, m_ResourceManager.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnDrawingToolCross2D, m_ResourceManager.GetString("ToolTip_DrawingToolCross2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnDrawingToolAngle2D, m_ResourceManager.GetString("ToolTip_DrawingToolAngle2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnDrawingToolChrono, m_ResourceManager.GetString("ToolTip_DrawingToolChrono", Thread.CurrentThread.CurrentUICulture));
+            toolTips.SetToolTip(btnDrawingToolText, ScreenManagerLang.ToolTip_DrawingToolText);
+            toolTips.SetToolTip(btnDrawingToolPencil, ScreenManagerLang.ToolTip_DrawingToolPencil);
+            toolTips.SetToolTip(btnDrawingToolLine2D, ScreenManagerLang.ToolTip_DrawingToolLine2D);
+            toolTips.SetToolTip(btnDrawingToolCircle, ScreenManagerLang.ToolTip_DrawingToolCircle);
+            toolTips.SetToolTip(btnDrawingToolCross2D, ScreenManagerLang.ToolTip_DrawingToolCross2D);
+            toolTips.SetToolTip(btnDrawingToolAngle2D, ScreenManagerLang.ToolTip_DrawingToolAngle2D);
+            toolTips.SetToolTip(btnDrawingToolChrono, ScreenManagerLang.ToolTip_DrawingToolChrono);
 
-            toolTips.SetToolTip(btnTextColor, m_ResourceManager.GetString("ToolTip_DrawingToolText", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnPencilColor, m_ResourceManager.GetString("ToolTip_DrawingToolPencil", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnLineColor, m_ResourceManager.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnCrossColor, m_ResourceManager.GetString("ToolTip_DrawingToolCross2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnAngleColor, m_ResourceManager.GetString("ToolTip_DrawingToolAngle2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnChronoColor, m_ResourceManager.GetString("ToolTip_DrawingToolChrono", Thread.CurrentThread.CurrentUICulture));
+            toolTips.SetToolTip(btnTextColor, ScreenManagerLang.ToolTip_DrawingToolText);
+            toolTips.SetToolTip(btnPencilColor, ScreenManagerLang.ToolTip_DrawingToolPencil);
+            toolTips.SetToolTip(btnLineColor, ScreenManagerLang.ToolTip_DrawingToolLine2D);
+            toolTips.SetToolTip(btnCircleColor, ScreenManagerLang.ToolTip_DrawingToolCircle);
+            toolTips.SetToolTip(btnCrossColor, ScreenManagerLang.ToolTip_DrawingToolCross2D);
+            toolTips.SetToolTip(btnAngleColor, ScreenManagerLang.ToolTip_DrawingToolAngle2D);
+            toolTips.SetToolTip(btnChronoColor, ScreenManagerLang.ToolTip_DrawingToolChrono);
 
-            toolTips.SetToolTip(cmbTextSize, m_ResourceManager.GetString("ToolTip_DrawingToolText", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnPencilStyle, m_ResourceManager.GetString("ToolTip_DrawingToolPencil", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(btnLineStyle, m_ResourceManager.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture));
-            toolTips.SetToolTip(cmbChronoSize, m_ResourceManager.GetString("ToolTip_DrawingToolChrono", Thread.CurrentThread.CurrentUICulture));
+            toolTips.SetToolTip(cmbTextSize, ScreenManagerLang.ToolTip_DrawingToolText);
+            toolTips.SetToolTip(btnPencilStyle, ScreenManagerLang.ToolTip_DrawingToolPencil);
+            toolTips.SetToolTip(btnCircleStyle, ScreenManagerLang.ToolTip_DrawingToolCircle);
+            toolTips.SetToolTip(btnLineStyle, ScreenManagerLang.ToolTip_DrawingToolLine2D);
+            toolTips.SetToolTip(cmbChronoSize, ScreenManagerLang.ToolTip_DrawingToolChrono);
         }
         #endregion
 
@@ -128,6 +131,10 @@ namespace Kinovea.ScreenManager
         {
         	PickColor(DrawingToolType.Line2D);
         }
+        private void BtnCircleColorClick(object sender, EventArgs e)
+        {
+			PickColor(DrawingToolType.Circle);
+        }
         private void btnCrossColor_Click(object sender, EventArgs e)
         {
         	PickColor(DrawingToolType.Cross2D);
@@ -143,6 +150,14 @@ namespace Kinovea.ScreenManager
             m_StylePicker.Top = grpColors.Top + btnLineStyle.Top;
             m_StylePicker.Left = grpColors.Left + btnLineStyle.Left + btnLineStyle.Width - m_StylePicker.Width;
             m_StylePicker.Visible = true;
+        }
+        private void BtnCircleStyleClick(object sender, EventArgs e)
+        {
+        	m_DrawingToolPick = DrawingToolType.Circle;
+            m_StylePicker.ToolType = DrawingToolType.Circle;
+            m_StylePicker.Top = grpColors.Top + btnCircleStyle.Top;
+            m_StylePicker.Left = grpColors.Left + btnCircleStyle.Left + btnCircleStyle.Width - m_StylePicker.Width;
+            m_StylePicker.Visible = true;	
         }
         private void btnPencilStyle_Click(object sender, EventArgs e)
         {
@@ -171,6 +186,14 @@ namespace Kinovea.ScreenManager
             LineStyle stl = (LineStyle)btn.Tag;
             
             stl.Draw(e.Graphics, true, Color.Black);
+        }
+        void BtnCircleStylePaint(object sender, PaintEventArgs e)
+        {
+        	// Ask the style to draw itself on the button canvas.
+            Button btn = (Button)sender;
+            LineStyle stl = (LineStyle)btn.Tag;
+            
+            stl.Draw(e.Graphics, true, Color.Black);	
         }
         #endregion
 
@@ -216,6 +239,7 @@ namespace Kinovea.ScreenManager
             btnTextColor.BackColor = m_TempColorProfile.ColorText;
             btnPencilColor.BackColor = m_TempColorProfile.ColorPencil;
             btnLineColor.BackColor = m_TempColorProfile.ColorLine2D;
+            btnCircleColor.BackColor = m_TempColorProfile.ColorCircle;
             btnCrossColor.BackColor = m_TempColorProfile.ColorCross2D;
             btnAngleColor.BackColor = m_TempColorProfile.ColorAngle2D;
             btnChronoColor.BackColor = m_TempColorProfile.ColorChrono;
@@ -224,6 +248,7 @@ namespace Kinovea.ScreenManager
             // Styles
             btnLineStyle.Tag = m_TempColorProfile.StyleLine2D;
             btnPencilStyle.Tag = m_TempColorProfile.StylePencil;
+            btnCircleStyle.Tag = m_TempColorProfile.StyleCircle;
             
             // Font sizes
             cmbTextSize.Text = m_TempColorProfile.FontSizeText.ToString();
@@ -238,6 +263,7 @@ namespace Kinovea.ScreenManager
             btnTextColor.FlatAppearance.MouseOverBackColor = btnTextColor.BackColor;
             btnPencilColor.FlatAppearance.MouseOverBackColor = btnPencilColor.BackColor;
             btnLineColor.FlatAppearance.MouseOverBackColor = btnLineColor.BackColor;
+            btnCircleColor.FlatAppearance.MouseOverBackColor = btnCircleColor.BackColor;
             btnCrossColor.FlatAppearance.MouseOverBackColor = btnCrossColor.BackColor;
             btnAngleColor.FlatAppearance.MouseOverBackColor = btnAngleColor.BackColor;
             btnChronoColor.FlatAppearance.MouseOverBackColor = btnChronoColor.BackColor;
@@ -246,6 +272,7 @@ namespace Kinovea.ScreenManager
             FixButtonColor(btnTextColor);
             FixButtonColor(btnPencilColor);
             FixButtonColor(btnLineColor);
+            FixButtonColor(btnCircleColor);
             FixButtonColor(btnCrossColor);
             FixButtonColor(btnAngleColor);
             FixButtonColor(btnChronoColor);
@@ -322,5 +349,13 @@ namespace Kinovea.ScreenManager
             m_ColorProfile.Save(folder + "\\current.xml");
         }
         #endregion
+        
+        
+        
+        
+        
+        
+        
+        
     }
 }

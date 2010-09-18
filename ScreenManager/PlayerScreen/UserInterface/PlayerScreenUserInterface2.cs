@@ -995,6 +995,7 @@ namespace Kinovea.ScreenManager
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Chrono] = new DrawingToolChrono();
+			m_DrawingTools[(int)DrawingToolType.Circle] = new DrawingToolCircle();
 			
 			m_ActiveTool = DrawingToolType.Pointer;
 		}
@@ -2731,6 +2732,7 @@ namespace Kinovea.ScreenManager
 			toolTips.SetToolTip(btnDrawingToolPencil, ScreenManagerLang.ToolTip_DrawingToolPencil);
 			toolTips.SetToolTip(btnDrawingToolLine2D, ScreenManagerLang.ToolTip_DrawingToolLine2D);
 			toolTips.SetToolTip(btnDrawingToolCross2D, ScreenManagerLang.ToolTip_DrawingToolCross2D);
+			toolTips.SetToolTip(btnDrawingToolCircle, ScreenManagerLang.ToolTip_DrawingToolCircle);
 			toolTips.SetToolTip(btnDrawingToolAngle2D, ScreenManagerLang.ToolTip_DrawingToolAngle2D);
 			toolTips.SetToolTip(btnShowComments, ScreenManagerLang.ToolTip_ShowComments);
 			toolTips.SetToolTip(btnColorProfile, ScreenManagerLang.ToolTip_ColorProfile);
@@ -3995,11 +3997,22 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnDrawingToolAngle2D_Click(object sender, EventArgs e)
 		{
+			btnDrawingToolCircle_Click(sender, e);
 			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
 			{
 				OnPoke();
 				m_ActiveTool = DrawingToolType.Angle2D;
 				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorAngle2D, 0));
+				PrepareKeyframesDock();
+			}
+		}
+		private void btnDrawingToolCircle_Click(object sender, EventArgs e)
+		{
+			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
+			{
+				OnPoke();
+				m_ActiveTool = DrawingToolType.Circle;
+				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
 				PrepareKeyframesDock();
 			}
 		}
@@ -4752,6 +4765,7 @@ namespace Kinovea.ScreenManager
 			btnDrawingToolCross2D.Enabled = _bEnable;
 			btnDrawingToolLine2D.Enabled = _bEnable;
 			btnDrawingToolPencil.Enabled = _bEnable;
+			btnDrawingToolCircle.Enabled = _bEnable;
 			btnDrawingToolPointer.Enabled = _bEnable;
 			btnDrawingToolText.Enabled = _bEnable;
 			btnMagnifier.Enabled = _bEnable;

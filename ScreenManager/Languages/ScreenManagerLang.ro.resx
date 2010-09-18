@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Unghi</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometru</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker cruce</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linie</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Creion</value></data>

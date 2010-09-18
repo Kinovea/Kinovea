@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Winkelmessung</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stoppuhr/Zeitachse</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marker setzen</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linie/Längenmessung</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Stift</value></data>

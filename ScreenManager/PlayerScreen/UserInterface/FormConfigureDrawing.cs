@@ -112,6 +112,7 @@ namespace Kinovea.ScreenManager
 			// TODO: Height should be computed.
             switch (_ToolType)
             {
+            	case DrawingToolType.Circle:
                 case DrawingToolType.Pencil:
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
@@ -161,7 +162,7 @@ namespace Kinovea.ScreenManager
                     stlPicker.Visible = false;
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
-                    Height = 268;
+                    Height = 280;
                     break;
             }
             

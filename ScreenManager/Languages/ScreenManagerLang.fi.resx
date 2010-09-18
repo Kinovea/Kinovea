@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Kulma</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Ajanotto</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Markkeri</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Viiva</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Kynä</value></data>

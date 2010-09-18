@@ -1250,6 +1250,9 @@ namespace Kinovea.ScreenManager
                 case "DrawingChrono":
                     ad = DrawingChrono.FromXml(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp));
                     break;
+				case "DrawingCircle":
+                    ad = DrawingCircle.FromXml(_xmlReader, scaling);
+                    break;
                 default:
                     // Unkown Drawing. 
                     // Forward compatibility : return null.

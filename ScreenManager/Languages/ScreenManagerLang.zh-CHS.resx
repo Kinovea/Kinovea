@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>角度</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>秒表</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>交叉标记</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>线</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>铅笔</value></data>
