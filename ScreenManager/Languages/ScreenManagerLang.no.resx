@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Vinkel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stoppeklokke</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Kryss markering</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linje</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Blyant</value></data>

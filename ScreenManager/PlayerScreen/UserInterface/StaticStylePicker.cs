@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
             this.SuspendLayout();
             switch(m_ToolType)
             {
+            	case DrawingToolType.Circle:
                 case DrawingToolType.Pencil:
                     ConfigureButtonsForBrushes();
                     break;
@@ -269,7 +270,8 @@ namespace Kinovea.ScreenManager
             // Ask each and every preconfigured style to draw itself on its button's canvas.
             Button btn = (Button)sender;
             LineStyle stl = (LineStyle)btn.Tag;
-            stl.Draw(e.Graphics, m_ToolType == DrawingToolType.Pencil, Color.Black);
+            bool circles = m_ToolType == DrawingToolType.Pencil || m_ToolType == DrawingToolType.Circle;
+            stl.Draw(e.Graphics, circles, Color.Black);
         }
         #endregion
 

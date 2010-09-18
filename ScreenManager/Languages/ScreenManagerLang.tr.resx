@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Açı</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Kronometre</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Kesişme İşaretleyicisi</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Çizgi</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Kalem</value></data>

@@ -3970,6 +3970,7 @@ namespace Kinovea.ScreenManager
 		Pencil,
 		Text,
 		Chrono,
+		Circle,
 		NumberOfDrawingTools
 	};
     #endregion

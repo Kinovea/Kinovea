@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angulo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronómetro</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marcador en Cruz </value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linea</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Lapiz</value></data>

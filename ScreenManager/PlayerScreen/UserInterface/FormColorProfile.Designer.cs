@@ -32,6 +32,9 @@ namespace Kinovea.ScreenManager
         	this.btnApply = new System.Windows.Forms.Button();
         	this.btnCancel = new System.Windows.Forms.Button();
         	this.grpColors = new System.Windows.Forms.GroupBox();
+        	this.btnCircleStyle = new System.Windows.Forms.Button();
+        	this.btnCircleColor = new System.Windows.Forms.Button();
+        	this.btnDrawingToolCircle = new System.Windows.Forms.Button();
         	this.cmbTextSize = new System.Windows.Forms.ComboBox();
         	this.cmbChronoSize = new System.Windows.Forms.ComboBox();
         	this.btnChronoColor = new System.Windows.Forms.Button();
@@ -59,7 +62,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-        	this.btnApply.Location = new System.Drawing.Point(23, 292);
+        	this.btnApply.Location = new System.Drawing.Point(23, 327);
         	this.btnApply.Name = "btnApply";
         	this.btnApply.Size = new System.Drawing.Size(99, 24);
         	this.btnApply.TabIndex = 70;
@@ -71,7 +74,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        	this.btnCancel.Location = new System.Drawing.Point(128, 292);
+        	this.btnCancel.Location = new System.Drawing.Point(128, 327);
         	this.btnCancel.Name = "btnCancel";
         	this.btnCancel.Size = new System.Drawing.Size(99, 24);
         	this.btnCancel.TabIndex = 75;
@@ -83,6 +86,9 @@ namespace Kinovea.ScreenManager
         	this.grpColors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
         	        	        	| System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.grpColors.Controls.Add(this.btnCircleStyle);
+        	this.grpColors.Controls.Add(this.btnCircleColor);
+        	this.grpColors.Controls.Add(this.btnDrawingToolCircle);
         	this.grpColors.Controls.Add(this.cmbTextSize);
         	this.grpColors.Controls.Add(this.cmbChronoSize);
         	this.grpColors.Controls.Add(this.btnChronoColor);
@@ -101,9 +107,56 @@ namespace Kinovea.ScreenManager
         	this.grpColors.Controls.Add(this.btnDrawingToolText);
         	this.grpColors.Location = new System.Drawing.Point(12, 36);
         	this.grpColors.Name = "grpColors";
-        	this.grpColors.Size = new System.Drawing.Size(215, 243);
+        	this.grpColors.Size = new System.Drawing.Size(215, 273);
         	this.grpColors.TabIndex = 31;
         	this.grpColors.TabStop = false;
+        	// 
+        	// btnCircleStyle
+        	// 
+        	this.btnCircleStyle.BackColor = System.Drawing.Color.White;
+        	this.btnCircleStyle.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnCircleStyle.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+        	this.btnCircleStyle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+        	this.btnCircleStyle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
+        	this.btnCircleStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnCircleStyle.Location = new System.Drawing.Point(160, 130);
+        	this.btnCircleStyle.Name = "btnCircleStyle";
+        	this.btnCircleStyle.Size = new System.Drawing.Size(40, 25);
+        	this.btnCircleStyle.TabIndex = 68;
+        	this.btnCircleStyle.UseVisualStyleBackColor = false;
+        	this.btnCircleStyle.Paint += new System.Windows.Forms.PaintEventHandler(this.BtnCircleStylePaint);
+        	this.btnCircleStyle.Click += new System.EventHandler(this.BtnCircleStyleClick);
+        	// 
+        	// btnCircleColor
+        	// 
+        	this.btnCircleColor.BackColor = System.Drawing.Color.Black;
+        	this.btnCircleColor.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnCircleColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+        	this.btnCircleColor.FlatAppearance.BorderSize = 0;
+        	this.btnCircleColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnCircleColor.Location = new System.Drawing.Point(58, 130);
+        	this.btnCircleColor.Name = "btnCircleColor";
+        	this.btnCircleColor.Size = new System.Drawing.Size(85, 25);
+        	this.btnCircleColor.TabIndex = 66;
+        	this.btnCircleColor.UseVisualStyleBackColor = false;
+        	this.btnCircleColor.Click += new System.EventHandler(this.BtnCircleColorClick);
+        	// 
+        	// btnDrawingToolCircle
+        	// 
+        	this.btnDrawingToolCircle.BackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnDrawingToolCircle.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.circle;
+        	this.btnDrawingToolCircle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+        	this.btnDrawingToolCircle.FlatAppearance.BorderSize = 0;
+        	this.btnDrawingToolCircle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnDrawingToolCircle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
+        	this.btnDrawingToolCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.btnDrawingToolCircle.ForeColor = System.Drawing.Color.Black;
+        	this.btnDrawingToolCircle.Location = new System.Drawing.Point(15, 130);
+        	this.btnDrawingToolCircle.Name = "btnDrawingToolCircle";
+        	this.btnDrawingToolCircle.Size = new System.Drawing.Size(25, 25);
+        	this.btnDrawingToolCircle.TabIndex = 67;
+        	this.btnDrawingToolCircle.TabStop = false;
+        	this.btnDrawingToolCircle.UseVisualStyleBackColor = false;
         	// 
         	// cmbTextSize
         	// 
@@ -146,7 +199,7 @@ namespace Kinovea.ScreenManager
         	        	        	"28",
         	        	        	"32",
         	        	        	"36"});
-        	this.cmbChronoSize.Location = new System.Drawing.Point(161, 202);
+        	this.cmbChronoSize.Location = new System.Drawing.Point(161, 237);
         	this.cmbChronoSize.Name = "cmbChronoSize";
         	this.cmbChronoSize.Size = new System.Drawing.Size(40, 21);
         	this.cmbChronoSize.TabIndex = 65;
@@ -160,7 +213,7 @@ namespace Kinovea.ScreenManager
         	this.btnChronoColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnChronoColor.FlatAppearance.BorderSize = 0;
         	this.btnChronoColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnChronoColor.Location = new System.Drawing.Point(59, 200);
+        	this.btnChronoColor.Location = new System.Drawing.Point(59, 235);
         	this.btnChronoColor.Name = "btnChronoColor";
         	this.btnChronoColor.Size = new System.Drawing.Size(85, 25);
         	this.btnChronoColor.TabIndex = 60;
@@ -177,7 +230,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolChrono.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolChrono.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolChrono.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolChrono.Location = new System.Drawing.Point(16, 200);
+        	this.btnDrawingToolChrono.Location = new System.Drawing.Point(16, 235);
         	this.btnDrawingToolChrono.Name = "btnDrawingToolChrono";
         	this.btnDrawingToolChrono.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolChrono.TabIndex = 44;
@@ -223,7 +276,7 @@ namespace Kinovea.ScreenManager
         	this.btnAngleColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnAngleColor.FlatAppearance.BorderSize = 0;
         	this.btnAngleColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnAngleColor.Location = new System.Drawing.Point(59, 165);
+        	this.btnAngleColor.Location = new System.Drawing.Point(59, 200);
         	this.btnAngleColor.Name = "btnAngleColor";
         	this.btnAngleColor.Size = new System.Drawing.Size(85, 25);
         	this.btnAngleColor.TabIndex = 55;
@@ -240,7 +293,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolAngle2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolAngle2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolAngle2D.Location = new System.Drawing.Point(16, 165);
+        	this.btnDrawingToolAngle2D.Location = new System.Drawing.Point(16, 200);
         	this.btnDrawingToolAngle2D.Name = "btnDrawingToolAngle2D";
         	this.btnDrawingToolAngle2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolAngle2D.TabIndex = 40;
@@ -254,7 +307,7 @@ namespace Kinovea.ScreenManager
         	this.btnCrossColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
         	this.btnCrossColor.FlatAppearance.BorderSize = 0;
         	this.btnCrossColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnCrossColor.Location = new System.Drawing.Point(59, 130);
+        	this.btnCrossColor.Location = new System.Drawing.Point(59, 165);
         	this.btnCrossColor.Name = "btnCrossColor";
         	this.btnCrossColor.Size = new System.Drawing.Size(85, 25);
         	this.btnCrossColor.TabIndex = 50;
@@ -271,7 +324,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolCross2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolCross2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolCross2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolCross2D.Location = new System.Drawing.Point(16, 130);
+        	this.btnDrawingToolCross2D.Location = new System.Drawing.Point(16, 165);
         	this.btnDrawingToolCross2D.Name = "btnDrawingToolCross2D";
         	this.btnDrawingToolCross2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolCross2D.TabIndex = 38;
@@ -421,7 +474,7 @@ namespace Kinovea.ScreenManager
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackColor = System.Drawing.Color.White;
-        	this.ClientSize = new System.Drawing.Size(240, 328);
+        	this.ClientSize = new System.Drawing.Size(240, 363);
         	this.Controls.Add(this.btnDefaultProfile);
         	this.Controls.Add(this.grpColors);
         	this.Controls.Add(this.btnSaveProfile);
@@ -430,7 +483,7 @@ namespace Kinovea.ScreenManager
         	this.Controls.Add(this.btnCancel);
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
         	this.MaximizeBox = false;
-            this.MinimizeBox = false;
+        	this.MinimizeBox = false;
         	this.Name = "formColorProfile";
         	this.ShowInTaskbar = false;
         	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -438,6 +491,9 @@ namespace Kinovea.ScreenManager
         	this.grpColors.ResumeLayout(false);
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Button btnDrawingToolCircle;
+        private System.Windows.Forms.Button btnCircleColor;
+        private System.Windows.Forms.Button btnCircleStyle;
 
         #endregion
 

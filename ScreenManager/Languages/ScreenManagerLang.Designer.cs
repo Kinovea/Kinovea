@@ -2365,6 +2365,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Circle.
+        /// </summary>
+        internal static string ToolTip_DrawingToolCircle {
+            get {
+                return ResourceManager.GetString("ToolTip_DrawingToolCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Cross Marker.
         /// </summary>
         internal static string ToolTip_DrawingToolCross2D {

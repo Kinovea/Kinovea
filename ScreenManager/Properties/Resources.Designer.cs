@@ -206,6 +206,14 @@ namespace Kinovea.ScreenManager.Properties
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
+		internal static System.Drawing.Bitmap circle
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("circle", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
 		internal static System.Drawing.Bitmap closegrey
 		{
 			get

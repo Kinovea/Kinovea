@@ -322,6 +322,7 @@
    <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Choisir la source</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angle</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Chronomètre</value></data>
+   <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cercle</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marqueur en Croix</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Ligne</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Crayon</value></data>

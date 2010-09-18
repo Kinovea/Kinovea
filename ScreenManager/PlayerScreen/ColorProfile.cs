@@ -61,6 +61,10 @@ namespace Kinovea.ScreenManager
         {
             get { return m_DecorationText.BackColor; }
         }
+        public Color ColorCircle
+        {
+            get { return m_DecorationCircle.Color; }
+        }
         public LineStyle StyleLine2D
         {
         	get { return m_DecorationLine2D; }
@@ -68,6 +72,10 @@ namespace Kinovea.ScreenManager
         public LineStyle StylePencil
         {
             get { return m_DecorationPencil; }
+        }
+        public LineStyle StyleCircle
+        {
+            get { return m_DecorationCircle; }
         }
         public int FontSizeText
         {
@@ -85,6 +93,7 @@ namespace Kinovea.ScreenManager
         private LineStyle m_DecorationCross2D;
         private LineStyle m_DecorationLine2D;
         private LineStyle m_DecorationPencil;
+        private LineStyle m_DecorationCircle;
         private InfosTextDecoration m_DecorationText;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -98,7 +107,8 @@ namespace Kinovea.ScreenManager
             m_DecorationChrono = new InfosTextDecoration(10, Color.Black);
             m_DecorationCross2D = new LineStyle(1, LineShape.Simple, Color.CornflowerBlue);
             m_DecorationLine2D = new LineStyle(3, LineShape.Simple, Color.LightGreen);
-            m_DecorationPencil = new LineStyle(6, LineShape.Simple, Color.LightGreen);
+            m_DecorationPencil = new LineStyle(9, LineShape.Simple, Color.SeaGreen);
+            m_DecorationCircle = new LineStyle(9, LineShape.Simple, Color.CadetBlue);
             m_DecorationText = new InfosTextDecoration(10, Color.CornflowerBlue);
         }
 		#endregion
@@ -138,6 +148,10 @@ namespace Kinovea.ScreenManager
                 
                 PreferencesWriter.WriteStartElement("Pencil");
                 m_DecorationPencil.ToXml(PreferencesWriter);
+                PreferencesWriter.WriteEndElement();
+                
+                PreferencesWriter.WriteStartElement("Circle");
+                m_DecorationCircle.ToXml(PreferencesWriter);
                 PreferencesWriter.WriteEndElement();
                 
                 PreferencesWriter.WriteStartElement("Text");
@@ -240,7 +254,10 @@ namespace Kinovea.ScreenManager
                                 		case "Pencil":
                                 			m_DecorationPencil = ParseLineStyleEntry(reader, reader.Name);
                                 			break;
-										case "Text":
+										case "Circle":
+                                			m_DecorationCircle = ParseLineStyleEntry(reader, reader.Name);
+                                			break;
+                                		case "Text":
                                 			m_DecorationText = ParseTextDecorationEntry(reader, reader.Name);
                                 			break; 
                                 		default:
@@ -374,6 +391,7 @@ namespace Kinovea.ScreenManager
             this.m_DecorationCross2D = _origin.m_DecorationCross2D.Clone();
             this.m_DecorationLine2D = _origin.m_DecorationLine2D.Clone();
             this.m_DecorationPencil = _origin.m_DecorationPencil.Clone();
+            this.m_DecorationCircle = _origin.m_DecorationCircle.Clone();
             this.m_DecorationText = _origin.m_DecorationText.Clone();
         }
         public void UpdateData(DrawingToolType _tool, Color _color)
@@ -397,6 +415,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case DrawingToolType.Pencil:
 					m_DecorationPencil.Update(_color);
+                    break;
+                 case DrawingToolType.Circle:
+					m_DecorationCircle.Update(_color);
                     break;
                 case DrawingToolType.Text:
                     m_DecorationText.Update(_color);
@@ -425,6 +446,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case DrawingToolType.Line2D:
                     m_DecorationLine2D.Update(_style, false, true, true);
+                    break;
+                case DrawingToolType.Circle:
+					m_DecorationCircle.Update(_style, false, true, true);
                     break;
                 case DrawingToolType.Angle2D:
                 case DrawingToolType.Chrono: 
@@ -485,10 +509,15 @@ namespace Kinovea.ScreenManager
                     _drawing.UpdateDecoration(m_DecorationPencil.Color);
         			_drawing.UpdateDecoration(m_DecorationPencil);
                     break;
+                case DrawingToolType.Circle:
+                    _drawing.UpdateDecoration(m_DecorationCircle.Color);
+        			_drawing.UpdateDecoration(m_DecorationCircle);
+                    break;
                 case DrawingToolType.Text: 
                     _drawing.UpdateDecoration(m_DecorationText.BackColor);
         			_drawing.UpdateDecoration(m_DecorationText.FontSize);
                     break;
+				
                 default:
                     // Unsupported tool type.
                     break;

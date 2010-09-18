@@ -322,6 +322,7 @@
    
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Γωνία</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Χρονόμετρο</value></data>
+   
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Σταυρός Σημάδι</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Γραμμή</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Μολύβι</value></data>
