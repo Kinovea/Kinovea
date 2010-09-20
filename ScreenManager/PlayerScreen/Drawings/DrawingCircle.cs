@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         private Point m_RescaledOrigin;
         private int m_iRescaledRadius;
         private int m_iRescaledDiameter;
-        private static readonly double m_fDegreesToRadians = Math.PI / 180.0;
+        //private static readonly double m_fDegreesToRadians = Math.PI / 180.0;
         #endregion
 
         #region Constructor
