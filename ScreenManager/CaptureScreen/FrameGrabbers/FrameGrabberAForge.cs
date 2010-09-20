@@ -265,7 +265,7 @@ namespace Kinovea.ScreenManager
 				
 				m_bIsConnected = true;
 				
-				if(m_VideoDevice.VideoCapabilities.Length > 0)
+				if((m_VideoDevice.VideoCapabilities != null) && (m_VideoDevice.VideoCapabilities.Length > 0))
 				{
 					m_FrameSize = m_VideoDevice.VideoCapabilities[0].FrameSize;
 					m_FramesInterval = 1000 / m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
@@ -276,7 +276,7 @@ namespace Kinovea.ScreenManager
 			{
 				log.Error("Couldn't create the VideoCaptureDevice.");
 			}
-			
+
 		}
 		private void Disconnect()
 		{

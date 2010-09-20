@@ -36,7 +36,8 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingToolType OnMouseUp()
         {
-            return DrawingToolType.Pointer;
+            //return DrawingToolType.Pointer;
+            return DrawingToolType.Circle;
         }
         public override Cursor GetCursor(Color _color, int _iSize)
         {
