@@ -158,21 +158,24 @@ namespace Kinovea.ScreenManager
 			// The frame grabber has just pushed a new frame to the buffer.
 			
 			// Consolidate this real-time frame locally.
-			Bitmap temp = m_FrameBuffer.Read();
+			Bitmap temp = m_FrameBuffer.ReadAt(0);
 			
-			// Copy the frame over if size change is needed.
-			if(!temp.Size.Equals(m_ImageSize))
+			if(temp != null)
 			{
-				m_MostRecentImage = new Bitmap(m_ImageSize.Width, m_ImageSize.Height);
-				Graphics g = Graphics.FromImage(m_MostRecentImage);
-	
-				Rectangle rDst = new Rectangle(0, 0, m_MostRecentImage.Width, m_MostRecentImage.Height);
-				RectangleF rSrc = new Rectangle(0, 0, temp.Width, temp.Height);
-				g.DrawImage(temp, rDst, rSrc, GraphicsUnit.Pixel);	
-			}
-			else
-			{
-				m_MostRecentImage = temp;
+				// Copy the frame over if size change is needed.
+				if(!temp.Size.Equals(m_ImageSize))
+				{
+					m_MostRecentImage = new Bitmap(m_ImageSize.Width, m_ImageSize.Height);
+					Graphics g = Graphics.FromImage(m_MostRecentImage);
+		
+					Rectangle rDst = new Rectangle(0, 0, m_MostRecentImage.Width, m_MostRecentImage.Height);
+					RectangleF rSrc = new Rectangle(0, 0, temp.Width, temp.Height);
+					g.DrawImage(temp, rDst, rSrc, GraphicsUnit.Pixel);	
+				}
+				else
+				{
+					m_MostRecentImage = temp;
+				}
 			}
 			
 			// Ask a refresh. This could also be done with a timer,
