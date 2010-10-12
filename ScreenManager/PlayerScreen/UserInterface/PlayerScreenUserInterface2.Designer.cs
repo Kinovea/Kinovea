@@ -511,7 +511,7 @@ namespace Kinovea.ScreenManager
         	this.sldrSpeed.LargeChange = 5;
         	this.sldrSpeed.Location = new System.Drawing.Point(195, 65);
         	this.sldrSpeed.Maximum = 200;
-        	this.sldrSpeed.Minimum = 0;
+        	this.sldrSpeed.Minimum = 1;
         	this.sldrSpeed.MinimumSize = new System.Drawing.Size(20, 10);
         	this.sldrSpeed.Name = "sldrSpeed";
         	this.sldrSpeed.Size = new System.Drawing.Size(150, 10);

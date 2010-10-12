@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
 			{
 				// This happens only in the context of synching 
 				// when the other video changed its speed percentage (user or forced).
-				sldrSpeed.UpdateSpeedValue(value);
+				sldrSpeed.Value = value;
 				m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
 				
 				// Reset timer with new value.
@@ -1967,7 +1967,7 @@ namespace Kinovea.ScreenManager
 					{
 						sldrSpeed.Value -= sldrSpeed.SmallChange;
 					}
-
+					
 					e.Handled = true;
 				}
 
@@ -1984,12 +1984,17 @@ namespace Kinovea.ScreenManager
 					}
 					e.Handled = true;
 				}
+				
+				m_iSlowmotionPercentage = sldrSpeed.Value;
+				UpdateSpeedLabel();
 			}
 		}
 		private void lblSpeedTuner_DoubleClick(object sender, EventArgs e)
 		{
 			// Double click on the speed label : Back to 100%
 			sldrSpeed.Value = sldrSpeed.StickyValue;
+			m_iSlowmotionPercentage = sldrSpeed.Value;
+			UpdateSpeedLabel();
 		}
 		private void UpdateSpeedLabel()
 		{

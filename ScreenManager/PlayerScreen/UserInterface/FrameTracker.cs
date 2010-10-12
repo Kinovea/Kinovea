@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
         private int m_iMaximumPixel;
         private int m_iPixelPosition;		// Left of the cursor in pixels.
         
-        private int m_iCursorWidth = Kinovea.ScreenManager.Properties.Resources.liqcursor.Width;
+        private int m_iCursorWidth = Resources.liqcursor.Width;
         private int m_iSpacers = 10;
         
         private bool m_bReportOnMouseMove = false;
