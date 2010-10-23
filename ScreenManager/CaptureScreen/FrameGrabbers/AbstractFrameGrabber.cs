@@ -43,14 +43,14 @@ namespace Kinovea.ScreenManager
 		{
 			get;
 		}
-		public abstract int FramesInterval
+		public abstract double FramesInterval
 		{
 			get;
 		}
 		public abstract Size FrameSize
 		{
 			get;
-		}	
+		}
 		
 		public abstract void PromptDeviceSelector();
 		public abstract void NegociateDevice();

@@ -40,7 +40,22 @@ namespace Kinovea.ScreenManager
 	public class FrameServerCapture : AbstractFrameServer, IFrameGrabberContainer
 	{
 		#region Properties
-		
+		public string Status
+		{
+			get
+			{
+				if(m_FrameGrabber.IsConnected)
+				{
+					string bufferFill = String.Format(ScreenManagerLang.statusBufferFill, m_FrameBuffer.FillPercentage);
+					string status = String.Format("{0} ({1})", m_FrameGrabber.DeviceName, bufferFill);
+					return status;		
+				}
+				else
+				{
+					return ScreenManagerLang.statusEmptyScreen;	
+				}
+			}
+		}
 		// Capture device.
 		public bool IsConnected
 		{
@@ -105,12 +120,16 @@ namespace Kinovea.ScreenManager
 		// Grabbing frames
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
-		private Bitmap m_MostRecentImage;
+		private Bitmap m_ImageToDisplay;
 		private Size m_ImageSize = new Size(720, 576);		
 		private VideoFiles.AspectRatio m_AspectRatio = VideoFiles.AspectRatio.AutoDetect;
+		private int m_iFrameIndex;
+		private int m_iFramesGrabbed;
+		private double m_fEstimatedInterval;
 		
 		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
+		private bool m_bWritingToDisk;								// true during frame write.
 		private Metadata m_Metadata;
 		private Magnifier m_Magnifier = new Magnifier();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
@@ -124,10 +143,6 @@ namespace Kinovea.ScreenManager
 		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
 		private bool m_bCaptureThumbSet;
 		private Bitmap m_CurrentCaptureBitmap;
-		
-		/*
-		private int m_iDelayFrames = 0;							// Delay between what is captured and what is seen on screen.
-		*/
 		
 		// General
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -156,27 +171,10 @@ namespace Kinovea.ScreenManager
 			//----------------------------------------------
 			
 			// The frame grabber has just pushed a new frame to the buffer.
+			m_iFramesGrabbed++;
 			
 			// Consolidate this real-time frame locally.
-			Bitmap temp = m_FrameBuffer.ReadAt(0);
-			
-			if(temp != null)
-			{
-				// Copy the frame over if size change is needed.
-				if(!temp.Size.Equals(m_ImageSize))
-				{
-					m_MostRecentImage = new Bitmap(m_ImageSize.Width, m_ImageSize.Height);
-					Graphics g = Graphics.FromImage(m_MostRecentImage);
-		
-					Rectangle rDst = new Rectangle(0, 0, m_MostRecentImage.Width, m_MostRecentImage.Height);
-					RectangleF rSrc = new Rectangle(0, 0, temp.Width, temp.Height);
-					g.DrawImage(temp, rDst, rSrc, GraphicsUnit.Pixel);	
-				}
-				else
-				{
-					m_MostRecentImage = temp;
-				}
-			}
+			m_ImageToDisplay = m_FrameBuffer.ReadAt(m_iFrameIndex);
 			
 			// Ask a refresh. This could also be done with a timer,
 			// but using the frame grabber event is convenient.
@@ -192,8 +190,10 @@ namespace Kinovea.ScreenManager
 			if(m_bIsRecording)
 			{
 				// Is it necessary to make another copy of the frame ?
+				m_bWritingToDisk = true;
 				Bitmap bmp = GetFlushedImage();
 				SaveResult res = m_VideoFileWriter.SaveFrame(bmp);
+				m_bWritingToDisk = false;
 				
 				if(res != SaveResult.Success)
 				{
@@ -217,6 +217,7 @@ namespace Kinovea.ScreenManager
 						bmp.Dispose();
 					}
 				}
+				
 			}
 		}
 		public void SetImageSize(Size _size)
@@ -230,10 +231,10 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				m_ImageSize = new Size(720, 576);	
+				m_ImageSize = new Size(720, 576);
+				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
 			}
-		}
-		
+		}	
 		#endregion
 		
 		#region Public methods
@@ -249,9 +250,27 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameGrabber.NegociateDevice();
 		}
-		public void CheckDeviceConnection()
+		public void CheckDeviceConnection(int _interval)
 		{
+			// This function is called regularly.
+			// We use it for various checks and updates to stay up to date.
+			
 			m_FrameGrabber.CheckDeviceConnection();
+			
+			// Estimate frame rate.
+			if(m_iFramesGrabbed > 0)
+			{
+				m_fEstimatedInterval = (double)_interval / (double)m_iFramesGrabbed;
+			}
+			else
+			{
+				m_fEstimatedInterval = 0;
+			}
+			
+			m_iFramesGrabbed = 0;
+			
+			// update status screen (for buffer fill percentage.)
+			m_Container.DoUpdateStatusBar();
 		}
 		public void StartGrabbing()
 		{
@@ -276,16 +295,14 @@ namespace Kinovea.ScreenManager
 		{
 			// Draw the current image on canvas according to conf.
 			// This is called back from UI paint method.
-			if(m_FrameGrabber.IsConnected)
+			if(m_FrameGrabber.IsConnected && !m_bWritingToDisk)
 			{
-				Bitmap image = GetImageToDisplay();
-				
-				if(image != null)
+				if(m_ImageToDisplay != null)
 				{
 					try
 					{
 						Size outputSize = new Size((int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
-						FlushOnGraphics(image, _canvas, outputSize);
+						FlushOnGraphics(m_ImageToDisplay, _canvas, outputSize);
 					}
 					catch (Exception exp)
 					{
@@ -304,16 +321,17 @@ namespace Kinovea.ScreenManager
 			// This can be used by snapshot or movie saving.
 			// We don't use the screen size, but the original video size (differs from PlayerScreen.)
 			// This always represents the image that is drawn on screen, not the last image grabbed by the device.
-			Bitmap source = GetImageToDisplay();	
 			Bitmap output = new Bitmap(m_ImageSize.Width, m_ImageSize.Height, PixelFormat.Format24bppRgb);
-			output.SetResolution(source.HorizontalResolution, source.VerticalResolution);
-			FlushOnGraphics(source, Graphics.FromImage(output), output.Size);
+			output.SetResolution(m_ImageToDisplay.HorizontalResolution, m_ImageToDisplay.VerticalResolution);
+			FlushOnGraphics(m_ImageToDisplay, Graphics.FromImage(output), output.Size);
 			return output;
 		}
 		public void StartRecording(string filepath)
 		{
 			// Start recording.
 			// We always record what is displayed on screen, not what is grabbed by the device.
+			
+			log.Debug("Start recording images to file.");
 			
 			// Restart capturing if needed.
 			if(!m_FrameGrabber.IsGrabbing)
@@ -322,15 +340,18 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// Open a recording context.
-			int interval = 40;
-			InfosVideo iv = new InfosVideo();
-			
+			InfosVideo iv = new InfosVideo();			
 			// The FileWriter will currently only use the original size due to some problems.
 			// Most notably, DV video passed into 16:9 (720x405) crashes swscale().
 			iv.iWidth = m_FrameGrabber.FrameSize.Width;
 			iv.iHeight = m_FrameGrabber.FrameSize.Height;
-						
-			if(m_FrameGrabber.FramesInterval > 0)
+			
+			double interval = 40;		
+			if(m_fEstimatedInterval > 0)
+			{
+				interval = m_fEstimatedInterval;
+			}
+			else if(m_FrameGrabber.FramesInterval > 0)
 			{
 				// Hack. For interlaced video, we get the fields interval, which is half the frame interval.
 				interval = m_FrameGrabber.FramesInterval * 2;
@@ -355,6 +376,8 @@ namespace Kinovea.ScreenManager
 		{
 			// Stop recording
 			m_bIsRecording = false;
+			m_bWritingToDisk = false;
+			log.Debug("Stop recording images to file.");
 			
 			// Close the recording context.
 			m_VideoFileWriter.CloseSavingContext(true);
@@ -368,18 +391,43 @@ namespace Kinovea.ScreenManager
 			//----------------------------------------------------------------------------
 			CapturedVideo cv = new CapturedVideo(m_CurrentCaptureFilePath, m_CurrentCaptureBitmap);
 			m_RecentlyCapturedVideos.Add(cv);
-			m_CurrentCaptureBitmap.Dispose();
+			if(m_CurrentCaptureBitmap != null) m_CurrentCaptureBitmap.Dispose();
 			m_Container.DoUpdateCapturedVideos();
+		}
+		public int DelayChanged(int percentage)
+		{
+			// Set the new delay, and give back the value in seconds.
+			// The value given back is just an integer, not a double, because we don't have that much precision.
+			// The frame rate is roughly estimated from frame received by seconds,
+			// and there is a latency inherent to the camcorder that we can't know.
+			m_iFrameIndex = (int)(((double)m_FrameBuffer.Capacity / 100.0) * percentage);
+			
+			// Compute the corresponding time.
+			int delay;
+			if(m_fEstimatedInterval > 0)
+			{
+				delay = (int)(((double)m_iFrameIndex * m_fEstimatedInterval) / 1000);
+			}
+			else
+			{
+				double interval = (m_FrameGrabber.FramesInterval > 0)?(double)m_FrameGrabber.FramesInterval:40.0;
+				delay = (int)(((double)m_iFrameIndex * interval) / 1000);
+			}
+			
+			// Re-adjust frame for the special case of no delay at all.
+			// (it's not always easy to drag all the way left to the real 0 spot).
+			if(delay < 1)
+				m_iFrameIndex = 0;
+			
+			return delay;
+		}
+		public void PreferencesUpdated()
+		{
+			m_FrameBuffer.UpdateMemoryCapacity();
 		}
 		#endregion
 		
 		#region Final image creation
-		private Bitmap GetImageToDisplay()
-		{
-			// Get the right image to display, according to delay.
-			// Drawings will then be drawn as overlays on this image.
-			return m_MostRecentImage;
-		}
 		private void FlushOnGraphics(Bitmap _image, Graphics _canvas, Size _outputSize)
 		{
 			// Configure canvas.
@@ -514,7 +562,8 @@ namespace Kinovea.ScreenManager
 				
 				m_ImageSize = new Size(_size.Width, newHeight);
 				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
-				m_Container.DoInitDecodingSize();				
+				m_Container.DoInitDecodingSize();
+				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
 			}
 		}
 	}

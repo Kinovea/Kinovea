@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -30,15 +31,36 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public class FrameBuffer
 	{
+		#region Properties
+		public int Capacity
+		{
+			get { return m_iCapacity; }
+		}
+		public int FillPercentage
+		{
+			get { return (int)(((double)m_iFill / (double)m_iCapacity)*100);}
+		}
+		#endregion
+		
 		#region Members
-		private static readonly int m_iCapacity = 10;
-		private Bitmap[] m_Buffer = new Bitmap[m_iCapacity];
+		private int m_iCapacity = 50;
+		private Size m_Size = new Size(640,480);
+		private int m_iWorkingZoneMemory = 256;
+		private Bitmap[] m_Buffer;
 		private int m_iHead; // next spot to read from.
 		private int m_iTail; // next spot to write to.
-		private int m_iFill; // number of spots that were written but not read yet.
+		private int m_iToRead; // number of spots that were written but not read yet.
+		private int m_iFill; // number of spots that were written.
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
+		#region Constructor
+		public FrameBuffer()
+		{
+			 m_Buffer = new Bitmap[m_iCapacity];
+		}
+		#endregion
+		
 		#region Public methods
 		public void Write(Bitmap _bmp)
 		{
@@ -49,34 +71,29 @@ namespace Kinovea.ScreenManager
 				m_Buffer[m_iTail] = null;
 			}
             
-			m_Buffer[m_iTail] = AForge.Imaging.Image.Clone(_bmp);
-			m_iFill++;
+			// Copy the image to its final place in the buffer.
+			if(!_bmp.Size.Equals(m_Size))
+			{
+				// Copy and resize.
+				m_Buffer[m_iTail] = new Bitmap(m_Size.Width, m_Size.Height);
+				Graphics g = Graphics.FromImage(m_Buffer[m_iTail]);
+	
+				Rectangle rDst = new Rectangle(0, 0, m_Size.Width, m_Size.Height);
+				RectangleF rSrc = new Rectangle(0, 0, _bmp.Width, _bmp.Height);
+				g.DrawImage(_bmp, rDst, rSrc, GraphicsUnit.Pixel);
+			}
+			else
+			{
+				// simple copy.
+				m_Buffer[m_iTail] = AForge.Imaging.Image.Clone(_bmp);
+			}
+			
+			if(m_iFill < m_iCapacity) m_iFill++;
+			m_iToRead++;
 			m_iTail++;
 			if(m_iTail == m_iCapacity) m_iTail = 0;
 			
-			log.Debug(String.Format("Wrote frame. tail:{0}, head:{1}, count:{2}", m_iTail, m_iHead, m_iFill));
-		}
-		public Bitmap Read()
-		{
-			// Read next frame. It had been properly cloned during write.
-			// Don't move if underflow.
-			Bitmap frame = null;
-			
-			if(m_iFill > 0)
-			{
-				frame = m_Buffer[m_iHead];
-				
-				//log.Debug(String.Format("Reading frame. tail:{0}, head:{1}", m_iTail, m_iHead));
-				if(frame != null)
-				{
-					m_iFill--;
-					m_iHead++;
-					if(m_iHead == m_iCapacity) m_iHead = 0;
-				}
-			}
-			
-			log.Debug(String.Format("Read frame. tail:{0}, head:{1}, count:{2}", m_iTail, m_iHead, m_iFill));
-			return frame;
+			//log.Debug(String.Format("Wrote frame. tail:{0}, head:{1}, count:{2}", m_iTail, m_iHead, m_iFill));
 		}
 		public Bitmap ReadAt(int _index)
 		{
@@ -94,7 +111,7 @@ namespace Kinovea.ScreenManager
 				frame = m_Buffer[spot];
 				if(frame != null)
 				{
-					m_iFill--;
+					m_iToRead--;
 					m_iHead++;
 					if(m_iHead == m_iCapacity) m_iHead = 0;
 				}
@@ -123,8 +140,40 @@ namespace Kinovea.ScreenManager
 			
 			m_iHead = 0;
 			m_iTail = 0;
+			m_iToRead = 0;
+			m_iFill = 0;
+		}
+		public void UpdateFrameSize(Size _size)
+		{
+			// The buffer directly keep the images at the final display size.
+			// This avoid an extra copy when the display size is not the decoding size. (force 16:9 for example).
+			m_Size = _size;
+			ResetBuffer();
+			
+		}
+		public void UpdateMemoryCapacity()
+		{
+			// This is called when the memory cache size is changed in the preferences.
+			PreferencesManager pm = PreferencesManager.Instance();
+			if(pm.WorkingZoneMemory != m_iWorkingZoneMemory)
+			{
+				m_iWorkingZoneMemory = pm.WorkingZoneMemory;
+				ResetBuffer();
+			}
 		}
 		#endregion
+		
+		private void ResetBuffer()
+		{
+			// Buffer capacity.
+			int bytesPerFrame = m_Size.Width * m_Size.Height * 3;
+			int capacity = (int)(((double)m_iWorkingZoneMemory * 1048576) / (double)bytesPerFrame);
+			m_iCapacity = capacity > 0 ? capacity : 50;
+			
+			// Reset the buffer.
+			Clear();
+			m_Buffer = new Bitmap[m_iCapacity];
+		}
 		
 	}
 }

@@ -1285,6 +1285,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delay display by: {0:0} s.
+        /// </summary>
+        internal static string lblDelay_Text {
+            get {
+                return ResourceManager.GetString("lblDelay_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Common Controls :.
         /// </summary>
         internal static string lblInfo_Text {
@@ -2181,6 +2190,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string SaveMovie_UnknownError {
             get {
                 return ResourceManager.GetString("SaveMovie_UnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Buffer: {0}%.
+        /// </summary>
+        internal static string statusBufferFill {
+            get {
+                return ResourceManager.GetString("statusBufferFill", resourceCulture);
             }
         }
         

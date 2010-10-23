@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
 	{	
 		#region Internal delegates for async methods
 		private delegate void InitDecodingSize();
-		private InitDecodingSize m_InitDecodingSize;
+        private Kinovea.ScreenManager.CaptureScreenUserInterface.InitDecodingSize m_InitDecodingSize;
 		#endregion
 		
 		#region Properties
@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
 		// General
 		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
 		private bool m_bTryingToConnect;
-
+		private int m_iDelay;
 		// Image
 		private bool m_bStretchModeOn;			// This is just a toggle to know what to do on double click.
 		private bool m_bShowImageBorder;
@@ -109,6 +109,8 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuGridsHide = new ToolStripMenuItem();
 		#endregion
 
+		private SpeedSlider sldrDelay = new SpeedSlider();
+		
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -123,12 +125,15 @@ namespace Kinovea.ScreenManager
 			
 			// Initialize UI.
 			InitializeComponent();
+			UpdateDelayLabel();
+			AddExtraControls();
 			this.Dock = DockStyle.Fill;
 			ShowHideResizers(false);
 			InitializeDrawingTools();
 			InitializeMetadata();
 			BuildContextMenus();
 			m_bDocked = true;
+        	
 			
 			InitializeCaptureFiles();
 			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
@@ -225,6 +230,10 @@ namespace Kinovea.ScreenManager
 			}
 
 		}
+		public void DoUpdateStatusBar()
+		{
+			m_ScreenUIHandler.ScreenUI_UpdateStatusBarAsked();
+		}
 		#endregion
 		
 		#region Public Methods
@@ -238,13 +247,16 @@ namespace Kinovea.ScreenManager
 			// Labels
 			lblSettings.Text = "   " + ScreenManagerLang.Generic_Configuration;
 			lblImageFile.Text = ScreenManagerLang.Generic_Image;
-			lblSpeedTuner.Text = ScreenManagerLang.Generic_Video;
+			lblVideoFile.Text = ScreenManagerLang.Generic_Video;
+			UpdateDelayLabel();
 			
 			ReloadTooltipsCulture();
 			ReloadMenusCulture();
 			
 			// Refresh image to update grids colors, etc.
 			pbSurfaceScreen.Invalidate();
+			
+			m_FrameServer.PreferencesUpdated();
 		}
 		public bool OnKeyPress(Keys _keycode)
 		{
@@ -337,6 +349,29 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Various Inits & Setups
+		private void AddExtraControls()
+		{
+			// Add additional controls to the screen. This is needed due to some issue in SharpDevelop with custom controls.
+			//(This method is hopefully temporary).
+			panelVideoControls.Controls.Add(sldrDelay);
+			
+			//sldrDelay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			sldrDelay.BackColor = System.Drawing.Color.White;
+        	//sldrDelay.Enabled = false;
+        	sldrDelay.LargeChange = 1;
+        	sldrDelay.Location = new System.Drawing.Point(lblDelay.Left + lblDelay.Width + 10, lblDelay.Top + 2);
+        	sldrDelay.Maximum = 100;
+        	sldrDelay.Minimum = 0;
+        	sldrDelay.MinimumSize = new System.Drawing.Size(20, 10);
+        	sldrDelay.Name = "sldrSpeed";
+        	sldrDelay.Size = new System.Drawing.Size(150, 10);
+        	sldrDelay.SmallChange = 1;
+        	sldrDelay.StickyValue = -100;
+        	sldrDelay.StickyMark = true;
+        	sldrDelay.Value = 0;
+        	sldrDelay.ValueChanged += new Kinovea.ScreenManager.SpeedSlider.ValueChangedHandler(sldrDelay_ValueChanged);
+        	//sldrDelay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sldrSpeed_KeyDown);
+		}
 		private void InitializeDrawingTools()
         {
 			// Create Drawing Tools
@@ -575,6 +610,17 @@ namespace Kinovea.ScreenManager
 				ToastStopRecord();
         	}
 		}
+		private void sldrDelay_ValueChanged(object sender, EventArgs e)
+		{
+			// sldrDelay value always goes [0..100].
+			m_iDelay = m_FrameServer.DelayChanged(sldrDelay.Value);
+			UpdateDelayLabel();
+		}
+		private void UpdateDelayLabel()
+		{
+			lblDelay.Text = String.Format(ScreenManagerLang.lblDelay_Text, m_iDelay);	
+		}
+		
 		#endregion
 
 		#region Auto Stretch & Manual Resize
@@ -1935,7 +1981,7 @@ namespace Kinovea.ScreenManager
         	if(!m_bTryingToConnect)
     		{
     			m_bTryingToConnect = true;        			
-    			m_FrameServer.CheckDeviceConnection();
+    			m_FrameServer.CheckDeviceConnection(tmrCaptureDeviceDetector.Interval);
     			m_bTryingToConnect = false;
     		}
         }

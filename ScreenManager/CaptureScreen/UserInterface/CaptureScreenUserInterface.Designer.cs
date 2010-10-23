@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
         	this.btnCamSettings = new System.Windows.Forms.Button();
         	this.btnRecord = new System.Windows.Forms.Button();
         	this.btnCamSnap = new System.Windows.Forms.Button();
-        	this.lblTimeCode = new System.Windows.Forms.Label();
+        	this.lblDelay = new System.Windows.Forms.Label();
         	this.btnFoldSettings = new System.Windows.Forms.Button();
         	this.lblSettings = new System.Windows.Forms.Label();
         	this.btnSaveImageLocation = new System.Windows.Forms.Button();
@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
         	this.btnBrowseVideoLocation = new System.Windows.Forms.Button();
         	this.tbVideoDirectory = new System.Windows.Forms.TextBox();
         	this.tbVideoFilename = new System.Windows.Forms.TextBox();
-        	this.lblSpeedTuner = new System.Windows.Forms.Label();
+        	this.lblVideoFile = new System.Windows.Forms.Label();
         	this.panelCenter = new System.Windows.Forms.Panel();
         	this.ImageResizerNE = new System.Windows.Forms.Label();
         	this.ImageResizerNW = new System.Windows.Forms.Label();
@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.panelVideoControls.BackColor = System.Drawing.Color.White;
         	this.panelVideoControls.Controls.Add(this.pnlCaptureDock);
-        	this.panelVideoControls.Controls.Add(this.lblTimeCode);
+        	this.panelVideoControls.Controls.Add(this.lblDelay);
         	this.panelVideoControls.Controls.Add(this.btnFoldSettings);
         	this.panelVideoControls.Controls.Add(this.lblSettings);
         	this.panelVideoControls.Controls.Add(this.btnSaveImageLocation);
@@ -140,7 +140,7 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.Controls.Add(this.btnBrowseVideoLocation);
         	this.panelVideoControls.Controls.Add(this.tbVideoDirectory);
         	this.panelVideoControls.Controls.Add(this.tbVideoFilename);
-        	this.panelVideoControls.Controls.Add(this.lblSpeedTuner);
+        	this.panelVideoControls.Controls.Add(this.lblVideoFile);
         	this.panelVideoControls.Dock = System.Windows.Forms.DockStyle.Bottom;
         	this.panelVideoControls.Location = new System.Drawing.Point(0, 368);
         	this.panelVideoControls.MinimumSize = new System.Drawing.Size(175, 70);
@@ -236,18 +236,16 @@ namespace Kinovea.ScreenManager
         	this.btnCamSnap.UseVisualStyleBackColor = false;
         	this.btnCamSnap.Click += new System.EventHandler(this.btnSnapShot_Click);
         	// 
-        	// lblTimeCode
+        	// lblDelay
         	// 
-        	this.lblTimeCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.lblTimeCode.AutoSize = true;
-        	this.lblTimeCode.BackColor = System.Drawing.Color.Transparent;
-        	this.lblTimeCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.lblTimeCode.Location = new System.Drawing.Point(253, 14);
-        	this.lblTimeCode.Name = "lblTimeCode";
-        	this.lblTimeCode.Size = new System.Drawing.Size(89, 12);
-        	this.lblTimeCode.TabIndex = 2;
-        	this.lblTimeCode.Text = "Position : 0:00:00:00";
-        	this.lblTimeCode.Visible = false;
+        	this.lblDelay.AutoSize = true;
+        	this.lblDelay.BackColor = System.Drawing.Color.Transparent;
+        	this.lblDelay.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.lblDelay.Location = new System.Drawing.Point(202, 16);
+        	this.lblDelay.Name = "lblDelay";
+        	this.lblDelay.Size = new System.Drawing.Size(61, 12);
+        	this.lblDelay.TabIndex = 2;
+        	this.lblDelay.Text = "Décalage : 0s";
         	// 
         	// btnFoldSettings
         	// 
@@ -411,19 +409,19 @@ namespace Kinovea.ScreenManager
         	this.tbVideoFilename.TextChanged += new System.EventHandler(this.tbVideoFilename_TextChanged);
         	this.tbVideoFilename.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
-        	// lblSpeedTuner
+        	// lblVideoFile
         	// 
-        	this.lblSpeedTuner.AutoSize = true;
-        	this.lblSpeedTuner.BackColor = System.Drawing.Color.White;
-        	this.lblSpeedTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.lblSpeedTuner.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.lblSpeedTuner.ForeColor = System.Drawing.Color.Black;
-        	this.lblSpeedTuner.Location = new System.Drawing.Point(45, 116);
-        	this.lblSpeedTuner.Margin = new System.Windows.Forms.Padding(0);
-        	this.lblSpeedTuner.Name = "lblSpeedTuner";
-        	this.lblSpeedTuner.Size = new System.Drawing.Size(32, 12);
-        	this.lblSpeedTuner.TabIndex = 10;
-        	this.lblSpeedTuner.Text = "Video:";
+        	this.lblVideoFile.AutoSize = true;
+        	this.lblVideoFile.BackColor = System.Drawing.Color.White;
+        	this.lblVideoFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.lblVideoFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.lblVideoFile.ForeColor = System.Drawing.Color.Black;
+        	this.lblVideoFile.Location = new System.Drawing.Point(45, 116);
+        	this.lblVideoFile.Margin = new System.Windows.Forms.Padding(0);
+        	this.lblVideoFile.Name = "lblVideoFile";
+        	this.lblVideoFile.Size = new System.Drawing.Size(32, 12);
+        	this.lblVideoFile.TabIndex = 10;
+        	this.lblVideoFile.Text = "Video:";
         	// 
         	// panelCenter
         	// 
@@ -815,6 +813,8 @@ namespace Kinovea.ScreenManager
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Label lblDelay;
+        private System.Windows.Forms.Label lblVideoFile;
         private System.Windows.Forms.Button btnDrawingToolCircle;
 		private System.Windows.Forms.Label lblImageFile;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
@@ -842,10 +842,8 @@ namespace Kinovea.ScreenManager
         public System.Windows.Forms.Panel panelVideoControls;
         private System.Windows.Forms.Label ActiveScreenIndicator;
         private System.Windows.Forms.ToolTip toolTips;
-        private System.Windows.Forms.Label lblTimeCode;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblFileName;
-        private System.Windows.Forms.Label lblSpeedTuner;
         
         private System.Windows.Forms.Label ImageResizerSE;
         private System.Windows.Forms.Label ImageResizerSW;

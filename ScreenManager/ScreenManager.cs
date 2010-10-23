@@ -688,6 +688,10 @@ namespace Kinovea.ScreenManager
             
             PrepareSync(false);
         }
+        public void Screen_UpdateStatusBarAsked(AbstractScreen _SenderScreen)
+        {
+        	UpdateStatusBar();
+        }
         public void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation)
         {
             // Appelé lors de changement de framerate.
@@ -1258,10 +1262,10 @@ namespace Kinovea.ScreenManager
             switch(screenList.Count)
             {
                 case 1:
-            		StatusString = screenList[0].FileName;
+            		StatusString = screenList[0].Status;
                     break;
                 case 2:
-            		StatusString = screenList[0].FileName + " | " + screenList[1].FileName;
+            		StatusString = screenList[0].Status + " | " + screenList[1].Status;
                     break;
                 default:
                     break;

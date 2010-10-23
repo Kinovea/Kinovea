@@ -202,6 +202,7 @@
    <data name="Generic_SaveImage" xml:space="preserve"><value>Speichere Einzelbild</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Schlüsselbilder wurden geändert.\nWollen Sie die Änderungen speichern?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Schlüsselbilddaten wurden nicht gespeichert</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Standardauswahl:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Dauer</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -303,6 +304,7 @@
    <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Speicherfehler im Kodierprozeß</value></data>
    <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Speicherfehler – Unbekannter Fehler</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Leer</value></data>
+   
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassisch (h:mm:ss:Hundertstelsekunden)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Bildnummer</value></data>
    

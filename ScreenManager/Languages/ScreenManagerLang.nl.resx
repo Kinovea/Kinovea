@@ -202,6 +202,7 @@
    <data name="Generic_SaveImage" xml:space="preserve"><value>Bewaar afbeelding</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Kernbeelden zijn veranderd. \nWilt u de veranderde kernbeelden opslaan voor afsluiten ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Standaard bediening:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duur </value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
@@ -303,6 +304,7 @@
    <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Fout bij het opslaan van het bestand : een fout kwam voor bij het codeerproces.</value></data>
    <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Fout bij het opslaan van het bestand : onbekende fout.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Leeg</value></data>
+   
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiek (h:mm:ss:hundredth)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames nummers</value></data>
    

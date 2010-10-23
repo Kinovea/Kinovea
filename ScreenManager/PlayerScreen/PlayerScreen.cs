@@ -64,6 +64,10 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
+		public override string Status
+		{
+			get	{return FileName;}
+		}
 		public override string FilePath
 		{
 			get { return m_FrameServer.VideoFile.FilePath; }
@@ -276,6 +280,10 @@ namespace Kinovea.ScreenManager
         public void ScreenUI_SetAsActiveScreen()
         {
         	m_ScreenHandler.Screen_SetActiveScreen(this);
+        }
+        public void ScreenUI_UpdateStatusBarAsked()
+        {
+        	m_ScreenHandler.Screen_UpdateStatusBarAsked(this);
         }
         public void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly)
         {

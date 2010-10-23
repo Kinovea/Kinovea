@@ -202,6 +202,7 @@
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salvar Imagem</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Quadros de imagens foram modificados.\nVocê deseja salvá-los antes de sair?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Dados dos quadros de imagens não foram salvos.</value></data>
+   
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comuns:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duração</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Início</value></data>
@@ -303,6 +304,7 @@
    <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: alguns erros ocorreram durante o processo de codificação.</value></data>
    <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Falha: Erro ao tentar salvar o arquivo: erro desconhecido.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Vazio</value></data>
+   
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clássico (h:mm:ss:centésimos)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de Quadros</value></data>
    
