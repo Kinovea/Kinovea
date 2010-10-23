@@ -121,10 +121,12 @@ namespace Kinovea.ScreenManager
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_ImageToDisplay;
+		private Bitmap m_PreviousImageDisplayed;
 		private Size m_ImageSize = new Size(720, 576);		
 		private VideoFiles.AspectRatio m_AspectRatio = VideoFiles.AspectRatio.AutoDetect;
 		private int m_iFrameIndex;
 		private int m_iFramesGrabbed;
+		private int m_iFrameDropped;
 		private double m_fEstimatedInterval;
 		
 		// Image, drawings and other screens overlays.
@@ -176,14 +178,6 @@ namespace Kinovea.ScreenManager
 			// Consolidate this real-time frame locally.
 			m_ImageToDisplay = m_FrameBuffer.ReadAt(m_iFrameIndex);
 			
-			// Ask a refresh. This could also be done with a timer,
-			// but using the frame grabber event is convenient.
-			if(!m_bPainting)
-			{
-				m_bPainting = true;
-				m_Container.DoInvalidate();
-			}
-			
 			// We also use this event to commit frame to disk during saving.
 			// However, it is what is drawn on screen that will be pushed to the file,
 			// not the frame the device just grabbed.
@@ -218,6 +212,15 @@ namespace Kinovea.ScreenManager
 					}
 				}
 				
+			}
+			
+			// Ask a refresh. This could also be done with a timer,
+			// but using the frame grabber event is convenient.
+			// We do this AFTER writing the frame to disk, to avoid flickering.
+			if(!m_bPainting)
+			{
+				m_bPainting = true;
+				m_Container.DoInvalidate();
 			}
 		}
 		public void SetImageSize(Size _size)
@@ -254,7 +257,7 @@ namespace Kinovea.ScreenManager
 		{
 			// This function is called regularly.
 			// We use it for various checks and updates to stay up to date.
-			
+			//log.Debug(String.Format("Periodic check. grabbed:{0}, dropped:{1}", m_iFramesGrabbed, m_iFrameDropped));
 			m_FrameGrabber.CheckDeviceConnection();
 			
 			// Estimate frame rate.
@@ -268,6 +271,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			m_iFramesGrabbed = 0;
+			m_iFrameDropped = 0;
 			
 			// update status screen (for buffer fill percentage.)
 			m_Container.DoUpdateStatusBar();
@@ -295,22 +299,36 @@ namespace Kinovea.ScreenManager
 		{
 			// Draw the current image on canvas according to conf.
 			// This is called back from UI paint method.
-			if(m_FrameGrabber.IsConnected && !m_bWritingToDisk)
+			if(m_FrameGrabber.IsConnected)
 			{
 				if(m_ImageToDisplay != null)
 				{
+					Bitmap imageToDraw = m_ImageToDisplay;
+					
+					if(m_bWritingToDisk && m_PreviousImageDisplayed != null)
+					{
+						// Dropping frame due to writing to disk.
+						m_iFrameDropped++;
+						
+						// At this point we can't use the current frame, 
+						// so we fall back to the previous one to avoid flickering.
+						imageToDraw = m_PreviousImageDisplayed;
+					}
+
 					try
 					{
 						Size outputSize = new Size((int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
-						FlushOnGraphics(m_ImageToDisplay, _canvas, outputSize);
+						FlushOnGraphics(imageToDraw, _canvas, outputSize);
 					}
 					catch (Exception exp)
 					{
 						log.Error("Error while painting image.");
 						log.Error(exp.Message);
 						log.Error(exp.StackTrace);
-					}		
-				}	
+					}
+						
+					m_PreviousImageDisplayed = imageToDraw;
+				}
 			}
 			
 			m_bPainting = false;
