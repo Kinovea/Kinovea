@@ -1179,7 +1179,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left)
+			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left && m_ActiveTool == DrawingToolType.Pointer)
 			{
 				OnPoke();
 				
