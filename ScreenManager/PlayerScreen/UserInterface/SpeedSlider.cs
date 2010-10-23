@@ -128,18 +128,19 @@ namespace Kinovea.ScreenManager
             set
             {
                 m_iStickyValue = value;
+                m_iStickyPixel = GetCoordFromValue(m_iStickyValue);
             }
         }
         [Category("Behavior"), Browsable(true)]
-        public bool MiddleMark
+        public bool StickyMark
         {
             get
             {
-                return m_bMiddleMark;
+                return m_bStickyMark;
             }
             set
             {
-                m_bMiddleMark = value;
+                m_bStickyMark = value;
             }
         }
         #endregion
@@ -158,9 +159,9 @@ namespace Kinovea.ScreenManager
         private int m_iMaxWidth;			// Number of pixels in the control that can be used for values.
         private int m_iMinimumPixel;
         private int m_iMaximumPixel;
-        private int m_iMiddlePixel;
+        private int m_iStickyPixel;
         private int m_iPixelPosition;		// Left of the cursor in pixels.
-        private bool m_bMiddleMark = true;
+        private bool m_bStickyMark = true;
         
         private bool m_bDecreasing;
 		private bool m_bIncreasing;
@@ -197,7 +198,7 @@ namespace Kinovea.ScreenManager
             m_iMinimumPixel = m_iButtonWidth + m_iSpacers;
             m_iMaximumPixel = this.Width - (m_iSpacers + m_iButtonWidth);
             m_iMaxWidth = m_iMaximumPixel - m_iMinimumPixel;
-            m_iMiddlePixel = m_iMinimumPixel + (m_iMaxWidth / 2);
+            m_iStickyPixel = GetCoordFromValue(m_iStickyValue);
                         
             this.BackColor = Color.White;
         }
@@ -256,7 +257,7 @@ namespace Kinovea.ScreenManager
 			            {
 			            	// Inside sticky zone, fall back to sticky value.
 			            	m_iValue = m_iStickyValue;
-			            	m_iPixelPosition = m_iMiddlePixel - (m_iCursorWidth/2);
+			            	m_iPixelPosition = m_iStickyPixel - (m_iCursorWidth/2);
 			            }
 	        		
 	        			Invalidate();
@@ -327,10 +328,10 @@ namespace Kinovea.ScreenManager
         	}
         	
         	// MiddleMarker
-        	if(m_bMiddleMark)
+        	if(m_bStickyMark)
         	{
-        		e.Graphics.DrawLine(Pens.Gray, m_iMiddlePixel, 0, m_iMiddlePixel, 3);
-        		e.Graphics.DrawLine(Pens.Gray, m_iMiddlePixel, 7, m_iMiddlePixel, 10);
+        		e.Graphics.DrawLine(Pens.Gray, m_iStickyPixel, 0, m_iStickyPixel, 3);
+        		e.Graphics.DrawLine(Pens.Gray, m_iStickyPixel, 7, m_iStickyPixel, 10);
         	}
         	
       		// Draw th e cursor.
@@ -346,7 +347,7 @@ namespace Kinovea.ScreenManager
         	// Resize of the control only : internal data doesn't change.
         	m_iMaximumPixel = this.Width - (m_iSpacers + m_iButtonWidth);
             m_iMaxWidth = m_iMaximumPixel - m_iMinimumPixel;
-            m_iMiddlePixel = m_iMinimumPixel + (m_iMaxWidth / 2);
+            m_iStickyPixel = GetCoordFromValue(m_iStickyValue);
             
             UpdateCursorPosition();
             Invalidate();

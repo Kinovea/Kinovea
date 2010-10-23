@@ -43,13 +43,23 @@ namespace Kinovea.ScreenManager
         
 		#region Members
 		private Bitmap m_Thumbnail;
-		private string m_Filepath; 
+		private string m_Filepath;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
 		public CapturedVideo(string _Filepath, Bitmap _image)
 		{
 			m_Filepath = _Filepath;
-			m_Thumbnail = new Bitmap(_image, 100, 75);
+			if(_image != null) 
+			{
+				m_Thumbnail = new Bitmap(_image, 100, 75);
+			}
+			else
+			{
+				m_Thumbnail = new Bitmap(100, 75);
+				log.Error("Cannot create captured video thumbnail.");
+			}
+			
 		}
 	}
 }

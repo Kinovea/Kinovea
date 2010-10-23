@@ -35,5 +35,6 @@ namespace Kinovea.ScreenManager
 		void DisplayAsGrabbing(bool _bIsGrabbing);
 		void AlertDisconnected();
 		void DoUpdateCapturedVideos();
+		void DoUpdateStatusBar();
 	}
 }

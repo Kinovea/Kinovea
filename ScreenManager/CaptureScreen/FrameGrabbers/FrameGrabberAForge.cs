@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_CurrentVideoDevice.Name; }
 		}
-		public override int FramesInterval
+		public override double FramesInterval
 		{
 			get { return m_FramesInterval; }
 		}
@@ -55,9 +55,9 @@ namespace Kinovea.ScreenManager
 			// This may not be used because the user may want to bypass and force an aspect ratio.
 			// In this case, only the FrameServerCapture is aware of the final image size.
 			get { return m_FrameSize; }
-		}	
+		}
 		#endregion
-		
+			
 		#region Members
 		private VideoCaptureDevice m_VideoDevice;
 		private DeviceIdentifier m_CurrentVideoDevice;
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
 		private bool m_bIsConnected;
 		private bool m_bIsGrabbing;
 		private bool m_bSizeKnown;
-		private int m_FramesInterval = -1;
+		private double m_FramesInterval = -1;
 		private Size m_FrameSize;
 		private int m_iConnectionsAttempts;
 		private int m_iGrabbedSinceLastCheck;
@@ -141,7 +141,7 @@ namespace Kinovea.ScreenManager
 			// Try to check if we're still connected to the video source.
 			// The problem is that we are not notified when the source disconnects.
 			//
-			// The only way we have to detect that is to count the number of frames we received since last check.
+			// The only way we have to detect is to count the number of frames we received since last check.
 			// If we are supposed to do grabbing and we received nothing, we are in one of two conditions:
 			// 1. The device has been disconnected.
 			// 2. We are in STOP state of Play/Edit mode, but the device is still connected.
@@ -155,7 +155,6 @@ namespace Kinovea.ScreenManager
 			// This prevents working with very slow capturing devices (less than one frame per second).
 			// This doesn't work if we are not currently grabbing.
 			//--------------------------------------------------------------------------------------------------
-			
 			if(m_iConnectionsWithoutFrames < 2)
 			{
 				if(m_bIsGrabbing && m_iGrabbedSinceLastCheck == 0)
@@ -268,7 +267,7 @@ namespace Kinovea.ScreenManager
 				if((m_VideoDevice.VideoCapabilities != null) && (m_VideoDevice.VideoCapabilities.Length > 0))
 				{
 					m_FrameSize = m_VideoDevice.VideoCapabilities[0].FrameSize;
-					m_FramesInterval = 1000 / m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
+					m_FramesInterval = 1000 / (double)m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
 					log.Debug(String.Format("Reading Device Capabilities. Frame size:{0}, Frames interval : {1}", m_FrameSize, m_FramesInterval));
 				}
 			}

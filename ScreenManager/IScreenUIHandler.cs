@@ -29,5 +29,6 @@ namespace Kinovea.ScreenManager
 	{
 		void ScreenUI_CloseAsked();
 		void ScreenUI_SetAsActiveScreen();
+		void ScreenUI_UpdateStatusBarAsked();
 	}
 }
