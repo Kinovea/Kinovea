@@ -4118,11 +4118,21 @@ namespace Kinovea.ScreenManager
 
 			if (m_FrameServer.VideoFile.Loaded)
 			{
-				if(!m_KeyframeCommentsHub.UserActivated)
+				// If the video is currently playing, the comments are not visible.
+				// We stop the video and show them.
+				bool bWasPlaying = m_bIsCurrentlyPlaying;
+				if (m_bIsCurrentlyPlaying)
+				{
+					StopPlaying();
+					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+					ActivateKeyframe(m_iCurrentPosition);
+				}
+				
+				if(m_iActiveKeyFrameIndex < 0 || !m_KeyframeCommentsHub.UserActivated || bWasPlaying)
 				{
 					// As of now, Keyframes infobox should display when we are on a keyframe
 					m_KeyframeCommentsHub.UserActivated = true;
-		
+					
 					if (m_iActiveKeyFrameIndex < 0)
 					{
 						// We are not on a keyframe but user asked to show the infos...
@@ -4133,7 +4143,7 @@ namespace Kinovea.ScreenManager
 						// and add a keyframe here in case there isn't already one.
 						AddKeyframe();
 					}
-		
+
 					m_KeyframeCommentsHub.UpdateContent(m_FrameServer.Metadata[m_iActiveKeyFrameIndex]);
 					m_KeyframeCommentsHub.Visible = true;
 				}
