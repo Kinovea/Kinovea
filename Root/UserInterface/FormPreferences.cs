@@ -18,14 +18,16 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager;
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
 using Kinovea.Root.Languages;
+using Kinovea.ScreenManager;
 using Kinovea.Services;
 
 namespace Kinovea.Root
@@ -78,7 +80,8 @@ namespace Kinovea.Root
             // They will then be used to fill the controls.
 
             m_iFilesToSave = m_prefManager.HistoryCount;
-            m_UICultureName = m_prefManager.GetSupportedCulture().Name;
+            CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
+            m_UICultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
             m_TimeCodeFormat = m_prefManager.TimeCodeFormat;
             m_SpeedUnit = m_prefManager.SpeedUnit;
  			m_ImageAspectRatio = m_prefManager.AspectRatio;       

@@ -853,13 +853,8 @@ namespace Kinovea.Root
 			mnuTurkish.Checked = false;
             mnuChinese.Checked = false;
 			
-            CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
-            
-            string cultureName = ci.Name;
-            if(!ci.IsNeutralCulture)
-        	{
-        		cultureName = ci.Parent.Name;
-        	}
+            CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();            
+            string cultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
             
             switch (cultureName)
             {
