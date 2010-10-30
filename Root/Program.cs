@@ -100,22 +100,29 @@ namespace Kinovea.Root
 			string prefDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
 			string name = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
 		
+			string message = String.Format("Message: {0}", ex.Message);
+			string source = String.Format("Source: {0}", ex.Source);
+			string target = String.Format("Target site: {0}", ex.TargetSite);
+			string inner = String.Format("InnerException: {0}", ex.InnerException);
+			string trace = String.Format("Stack: {0}", ex.StackTrace);
+			
 			using (StreamWriter sw = File.AppendText(prefDir + name))
 			{
-				sw.WriteLine(ex.Message);
-				sw.Write(ex.Source);
-				sw.WriteLine(ex.InnerException.ToString());
-				sw.Write(ex.StackTrace);
+				sw.WriteLine(message);
+				sw.WriteLine(source);
+				sw.WriteLine(target);
+				sw.WriteLine(inner);
+				sw.WriteLine(trace);
 				sw.Close();
 			}
 			
 			// Dump again in the log.
 			log.Error("Unhandled Crash -------------------------");
-			log.Error(String.Format("Message: {0}", ex.Message));
-			log.Error(String.Format("Source: {0}", ex.Source));
-			log.Error(String.Format("Target site: {0}", ex.TargetSite));
-			log.Error(String.Format("InnerException: {0}", ex.InnerException));
-			log.Error(String.Format("Stack: {0}", ex.StackTrace));
+			log.Error(message);
+			log.Error(source);
+			log.Error(target);
+			log.Error(inner);
+			log.Error(trace);
 		}
     }
 }
