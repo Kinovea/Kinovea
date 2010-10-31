@@ -614,6 +614,10 @@ namespace Kinovea.ScreenManager
 		{
 			// sldrDelay value always goes [0..100].
 			m_iDelay = m_FrameServer.DelayChanged(sldrDelay.Value);
+			if(!m_FrameServer.IsGrabbing)
+			{
+				pbSurfaceScreen.Invalidate();	
+			}
 			UpdateDelayLabel();
 		}
 		private void UpdateDelayLabel()
@@ -1105,10 +1109,10 @@ namespace Kinovea.ScreenManager
 					}
 				}
 					
-				/*if (!m_bIsCurrentlyPlaying)
+				if (!m_FrameServer.IsGrabbing)
 				{
 					pbSurfaceScreen.Invalidate();
-				}*/
+				}
 			}
 		}
 		private void SurfaceScreen_MouseUp(object sender, MouseEventArgs e)
@@ -1259,7 +1263,6 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Focus();
 			}
 		}
-		
 		#endregion
 
 		#region PanelCenter Events

@@ -437,6 +437,11 @@ namespace Kinovea.ScreenManager
 			if(delay < 1)
 				m_iFrameIndex = 0;
 			
+			if(!m_FrameGrabber.IsGrabbing)
+			{
+				FrameGrabbed();
+			}
+			
 			return delay;
 		}
 		public void PreferencesUpdated()
