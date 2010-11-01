@@ -447,6 +447,10 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 	_SavingContext->pOutputCodecContext->codec_id = _SavingContext->pOutputCodec->id;
 	_SavingContext->pOutputCodecContext->codec_type = CODEC_TYPE_VIDEO;
 
+	// By default the fourcc is 'FMP4' but Windows Media Player doesn't recognize it.
+	// We'll force to 'XVID' fourcc. (similar as -vtag XVID) even if it wasn't the XviD codec that encoded the video :-(
+	_SavingContext->pOutputCodecContext->codec_tag = ('D'<<24) + ('I'<<16) + ('V'<<8) + 'X';
+
 	// The average bitrate (unused for constant quantizer encoding.)
 	// Source: statically fixed to 25Mb/s for now. 
 	_SavingContext->pOutputCodecContext->bit_rate = _SavingContext->iBitrate;
