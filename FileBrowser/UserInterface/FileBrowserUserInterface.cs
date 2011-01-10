@@ -144,6 +144,7 @@ namespace Kinovea.FileBrowser
 			// Called when:
 			// - the user changes node in exptree, either explorer or shortcuts
 			// - a file modification happens in the thumbnails page. (delete/rename)
+			// - a capture is completed.
 			
 			log.Debug("DoRefreshFileList called");
 			
