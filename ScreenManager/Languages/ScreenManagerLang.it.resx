@@ -90,10 +90,10 @@
    <data name="CommandShowScreen_FriendlyName" xml:space="preserve"><value>Mostra gli schermi</value></data>
    <data name="CommandSwapScreens_FriendlyName" xml:space="preserve"><value>Scambia gli schermi </value></data>
    <data name="CommandToggleCommonControls_FriendlyName" xml:space="preserve"><value>Mostra / Nascondi i Controlli Comuni</value></data>
-   
+   <data name="dlgColorPicker_Title" xml:space="preserve"><value>Colori</value></data>
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Impostazioni Colore...</value></data>
-   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Preimpostazioni standard del Colore</value></data>
+   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Ricarica impostazioni STANDARD Colore</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Carica impostazioni Colore</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Salva impostazioni Colore</value></data>
    <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Mostra sempre le etichette</value></data>
@@ -130,8 +130,8 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Movimento da destra verso sinistra</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Dimensione reale del segmento :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Misura stabilita</value></data>
-   
-   
+   <data name="dlgDevicePicker_CurrentlySelected" xml:space="preserve"><value>Selezione attuale:</value></data>
+   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Scegli un altro dispositivo</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0} centesimi di secondo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0:0.00} secondi.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Salva il Video</value></data>
@@ -169,12 +169,12 @@
    <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Salva il Video</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Imposta le coordinate di origine</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Impossibile connettersi al dispositivo video</value></data>
+   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>Impossibile trovare un dispositivo video a cui connettersi.\nAssicurarsi che il dispositivo sia correttamente collegato al computer.</value></data>
+   <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sovrascrittura del file</value></data>
+   <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Il file {0} esiste gia'.\nVuoi sostituirlo?</value></data>
+   <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nome file non valido</value></data>
+   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Il nome file contiene caratteri non validi.\n Un nome file non puo' contenere alcuno dei caratteri seguenti:\n \ / : * ? " &lt; &gt;</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea – Impossibile creare la videopresentazione.</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Una videopresentazione e' una sequenza di Immagini Chiave salvate in formato Video.\n Occorre aggiungere qualche Immagine Chiave PRIMA di generare la videopresentazione.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea – Impossibile creare il video richiesto</value></data>
@@ -198,11 +198,11 @@
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensione del Font</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Immagine</value></data>
-   
+   <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salva l'Immagine </value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Le Immagini Chiave sono state modificate.\nSalvare le Immagini Chiave ed i loro Dati prima di chiudere ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Immagini Chiave non salvate</value></data>
-   
+   <data name="lblDelay_Text" xml:space="preserve"><value>Ritarda la visualizzazione di: {0:0} s</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controlli Comuni :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Durata</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Inizio</value></data>
@@ -280,14 +280,14 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Imposta la velocita' originale</value></data>
+   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Videocamera ad alta velocita'...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come FINE (ULTIMO fotogramma) della Zona Lavoro </value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Imposta il Fotogramma attuale come INIZIO (PRIMO fotogramma) della Zona Lavoro </value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Nitidezza...</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizza</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Fine tracciatura Traiettoria</value></data>
-   
+   <data name="mnuSVGTools" xml:space="preserve"><value>Riferimenti visivi</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Inverti le posizioni dei Video</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Cancella il file</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Rinomina il file</value></data>
@@ -296,7 +296,7 @@
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Traccia la Traiettoria</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>E' avvenuto un errore sconosciuto.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – Errore durante la riproduzione.</value></data>
-   
+   <data name="RecentlyUsedColors" xml:space="preserve"><value>Colori utilizzati di recente:</value></data>
    <data name="SaveMovie_CodecNotFound" xml:space="preserve"><value>Errore : Impossibile salvare il File : codifica non supportata.</value></data>
    <data name="SaveMovie_CodecNotOpened" xml:space="preserve"><value>Errore : Impossibile salvare il File : problemi nell'inizializzazione codificatore.</value></data>
    <data name="SaveMovie_Error" xml:space="preserve"><value>Kinovea – Errore nel salvataggio.</value></data>
@@ -304,27 +304,27 @@
    <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Errore : Impossibile salvare il File : sono accaduti errori durante processo di codifica. </value></data>
    <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Errore : Impossibile salvare il File : errore sconosciuto.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Vuoto</value></data>
-   
+   <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Classico (h:mm:ss:centesimi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Numero Fotogrammi</value></data>
-   
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totale in millisecondi</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centesimi di Minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Decimillesimi d'ora</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="Toast_Pause" xml:space="preserve"><value>Pausa</value></data>
+   <data name="Toast_Zoom" xml:space="preserve"><value>Zoom: {0}%</value></data>
+   <data name="Toast_Disconnected" xml:space="preserve"><value>Scollegato</value></data>
+   <data name="Toast_StartRecord" xml:space="preserve"><value>Registrazione iniziata </value></data>
+   <data name="Toast_StopRecord" xml:space="preserve"><value>Registrazione fermata </value></data>
+   <data name="Toast_ImageSaved" xml:space="preserve"><value>Immagine salvata </value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Aggiungi un'Immagine Chiave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Vai al Fotogramma precedente</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Impostazioni Colore</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Disabilita la sovrapposizione di immagini</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Abilita la sovrapposizione di immagini</value></data>
-   
+   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Scegli la sorgente</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Angolo</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Cronometro</value></data>
-   
+   <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cerchio</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Marcatori a croce</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Linea</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Matita</value></data>
@@ -338,24 +338,24 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : Loop</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Cambia modalita' Ripetizione ( una volta | Loop ) - Modalita' attuale : una volta </value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Salva una sequenza di Immagini</value></data>
-   
-   
+   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Attiva registrazione video</value></data>
+   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Ferma registrazione video</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Reimposta la Zona Lavoro pari al Video Intero</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Grassetto</value></data>
+   <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Italico</value></data>
+   <data name="ToolTip_RichText_Underline" xml:space="preserve"><value>Sottolineato</value></data>
+   <data name="ToolTip_RichText_Strikeout" xml:space="preserve"><value>Barrato</value></data>
+   <data name="ToolTip_RichText_ForeColor" xml:space="preserve"><value>Colore carattere</value></data>
+   <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Colore di sfondo</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Salva una videopresentazione delle Immagini Chiave</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Salva il video con una pausa per ogni Immagine Chiave</value></data>
-   
+   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Scegli una directory</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Imposta il Fotogramma attuale come PRIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Imposta il Fotogramma attuale come ULTIMO fotogramma della Zona Lavoro </value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostra i Commenti</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varia la velocita' di riproduzione</value></data>
-   
-   
+   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Salva entrambe le immagini in una immagine composta</value></data>
+   <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Salva entrambi i video in un video composto</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Imposta la Zona Lavoro</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Solo Contorni...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Livelli automatici...</value></data>

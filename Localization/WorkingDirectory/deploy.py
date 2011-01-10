@@ -69,9 +69,9 @@ def ResGen(module):
 # saxonDir : the saxon executable.
 # devDir : the directory where you checked out Kinovea trunk svn.
 # resgenDir : the resgen executable.
-saxonDir = '"C:\\Program Files\\saxonb9-1-0-6n\\bin\\Transform"'		 
-devDir = "C:\\Documents and Settings\\Administrateur\\Mes documents\\Dev  Prog\\Videa\\Sources\\trunk"
-resgenDir = '"C:\\Program Files\\Microsoft Visual Studio 8\\SDK\\v2.0\\Bin\\resgen.exe"'
+saxonDir = '"C:\\Program Files\\saxonhe9-2-1-5n\\bin\\Transform.exe"'
+devDir = "C:\\Users\\Joan\\Dev  Prog\\Videa\\Sources\\trunk"
+resgenDir = '"C:\\Program Files\\Microsoft SDKs\\Windows\\v7.0\\Bin\\resgen.exe"'
 
 print "Cleanup"
 if (os.path.isfile('content.xml')):
