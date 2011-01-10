@@ -411,6 +411,13 @@ namespace Kinovea.ScreenManager
 			m_RecentlyCapturedVideos.Add(cv);
 			if(m_CurrentCaptureBitmap != null) m_CurrentCaptureBitmap.Dispose();
 			m_Container.DoUpdateCapturedVideos();
+			
+			// Ask the Explorer tree to refresh itself, (but not the thumbnails pane.)
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.RefreshFileExplorer != null)
+            {
+                dp.RefreshFileExplorer(false);
+            }
 		}
 		public int DelayChanged(int percentage)
 		{
