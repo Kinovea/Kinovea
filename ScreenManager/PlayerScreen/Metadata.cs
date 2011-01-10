@@ -25,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
 
@@ -1364,9 +1365,8 @@ namespace Kinovea.ScreenManager
     	{
     		// Transform kva to ODF's content.xml 
     		// and packs it into a proper .ods using zip compression.
-			
-    		string stylesheet = @"xslt\kva2odf-en.xsl";
-			
+    		string stylesheet = Application.StartupPath + "\\xslt\\kva2odf-en.xsl";
+    		
 			try
 			{
 	            // Create archive.
@@ -1517,8 +1517,7 @@ namespace Kinovea.ScreenManager
     	private void ExportMSXML(string _filePath, string _kva)
     	{
     		// Export a file to MS-XML.
-			
-    		string stylesheet = @"xslt\kva2msxml-en.xsl";
+    		string stylesheet = Application.StartupPath + "\\xslt\\kva2msxml-en.xsl";
 			
     		try
 			{
@@ -1546,8 +1545,7 @@ namespace Kinovea.ScreenManager
     	private void ExportXHTML(string _filePath, string _kva)
     	{
     		// Transform kva to XHTML.
-    		
-			string stylesheet = @"xslt\kva2xhtml-en.xsl";
+			string stylesheet = Application.StartupPath + "\\xslt\\kva2xhtml-en.xsl";
 			
 			try
 			{
@@ -1576,7 +1574,7 @@ namespace Kinovea.ScreenManager
     	{
     		// Transform kva to TEXT.
     		
-			string stylesheet = @"xslt\kva2txt-en.xsl";
+			string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
 			
 			try
 			{
