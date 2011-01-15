@@ -136,7 +136,6 @@ namespace Kinovea.ScreenManager
         
         // Position
         private Point m_TopLeft;                         	// position (in image coords).
-        private SizeF m_BackgroundSize;				  	// Size of the background rectangle (in image coords).
 		private double m_fStretchFactor;
         private Point m_DirectZoomTopLeft;
         
@@ -144,13 +143,13 @@ namespace Kinovea.ScreenManager
         private InfosTextDecoration m_TextStyle;		  	// Style infos (font, font size, colors)
         private InfosTextDecoration m_MemoTextStyle;	  	// Used when configuring.
 		private InfosFading m_InfosFading;
-        private static readonly int m_iDefaultBackgroundAlpha = 128;
 		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
 
         private Metadata m_ParentMetadata;
 
         // Computed
-        private Point m_RescaledTopLeft;
+		private LabelBackground m_LabelBackground = new LabelBackground();
+        private SizeF m_BackgroundSize;				  	// Size of the background rectangle (scaled).
         #endregion
 
         #region Constructors
@@ -211,7 +210,7 @@ namespace Kinovea.ScreenManager
                 // Update the text before we draw the background because it is used to compute size. 
                 m_Text = GetTextValue(_iCurrentTimestamp);
 
-                DrawBackground(_canvas, fOpacityFactor, _bSelected);
+                DrawBackground(_canvas, fOpacityFactor);
                 DrawText(_canvas, fOpacityFactor);
                 if (m_bShowLabel && m_Label.Length > 0)
                 {
@@ -610,106 +609,35 @@ namespace Kinovea.ScreenManager
         #region Lower level helpers
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
-            m_RescaledTopLeft = new Point((int)((double)(m_TopLeft.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
+            m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
         }
-        private void DrawBackground(Graphics _canvas, double _fOpacityFactor, bool _bSelected)
+        private void ShiftCoordinates(int _iShiftHorz, int _iShiftVert, double _fStretchFactor)
+        {
+            m_LabelBackground.Location = new Point((int)((double)m_TopLeft.X * _fStretchFactor) + _iShiftHorz, (int)((double)m_TopLeft.Y * _fStretchFactor) + _iShiftVert);
+        }
+        private void DrawBackground(Graphics _canvas, double _fOpacityFactor)
         {
             // Draw background rounded rectangle.
             // The radius for rounding is based on font size.
-            double fFontSize = (double)m_TextStyle.FontSize * m_fStretchFactor;
-            int radius = (int)(fFontSize / 2);
-            int diameter = radius * 2;
-
-            // Get size. Size is not rescaled.
-            Button but = new Button(); // Hack to get a Graphics object.
-            Graphics g = but.CreateGraphics();
-            m_BackgroundSize = g.MeasureString(m_Text + " ", m_TextStyle.GetInternalFont((float)m_fStretchFactor));
-            g.Dispose();
-
-            Rectangle RescaledBackground = new Rectangle(m_RescaledTopLeft.X, m_RescaledTopLeft.Y, (int)m_BackgroundSize.Width + 11, (int)m_BackgroundSize.Height + 7);
-
-            GraphicsPath gp = new GraphicsPath();
-            gp.StartFigure();
-
-            gp.AddArc(RescaledBackground.X, RescaledBackground.Y, diameter, diameter, 180, 90);
-            gp.AddLine(RescaledBackground.X + radius, RescaledBackground.Y, RescaledBackground.X + RescaledBackground.Width - diameter, RescaledBackground.Y);
-
-            gp.AddArc(RescaledBackground.X + RescaledBackground.Width - diameter, RescaledBackground.Y, diameter, diameter, 270, 90);
-            gp.AddLine(RescaledBackground.X + RescaledBackground.Width, RescaledBackground.Y + radius, RescaledBackground.X + RescaledBackground.Width, RescaledBackground.Y + RescaledBackground.Height - diameter);
-
-            gp.AddArc(RescaledBackground.X + RescaledBackground.Width - diameter, RescaledBackground.Y + RescaledBackground.Height - diameter, diameter, diameter, 0, 90);
-            gp.AddLine(RescaledBackground.X + RescaledBackground.Width - radius, RescaledBackground.Y + RescaledBackground.Height, RescaledBackground.X + radius, RescaledBackground.Y + RescaledBackground.Height);
-
-            gp.AddArc(RescaledBackground.X, RescaledBackground.Y + RescaledBackground.Height - diameter, diameter, diameter, 90, 90);
-            gp.AddLine(RescaledBackground.X, RescaledBackground.Y + RescaledBackground.Height - radius, RescaledBackground.X, RescaledBackground.Y + radius);
-
-            gp.CloseFigure();
-
-            int BackgroundAlpha = (int)((double)m_iDefaultBackgroundAlpha * _fOpacityFactor);
-
-            _canvas.FillPath(new SolidBrush(Color.FromArgb(BackgroundAlpha, m_TextStyle.BackColor)), gp);
-
-            #region unused
-            /*if (_bSelected)
-            {
-                // Draw another path around the chrono to indicate it is selected.
-                radius = 9;
-                diameter = radius * 2;
-
-                GraphicsPath gpSelect = new GraphicsPath();
-                gpSelect.StartFigure();
-
-                gpSelect.AddArc(RescaledBackground.X - 2, RescaledBackground.Y - 2, diameter, diameter, 180, 90);
-                gpSelect.AddLine(RescaledBackground.X - 2 + radius, RescaledBackground.Y - 2, RescaledBackground.X + RescaledBackground.Width + 4 - diameter, RescaledBackground.Y - 2);
-
-                gpSelect.AddArc(RescaledBackground.X + RescaledBackground.Width + 2 - diameter, RescaledBackground.Y - 2, diameter, diameter, 270, 90);
-                gpSelect.AddLine(RescaledBackground.X + RescaledBackground.Width + 2, RescaledBackground.Y - 2 + radius, RescaledBackground.X + RescaledBackground.Width + 2, RescaledBackground.Y + RescaledBackground.Height - 2 - diameter);
-
-                gpSelect.AddArc(RescaledBackground.X + RescaledBackground.Width + 2 - diameter, RescaledBackground.Y + RescaledBackground.Height + 2 - diameter, diameter, diameter, 0, 90);
-                gpSelect.AddLine(RescaledBackground.X + RescaledBackground.Width + 2 - radius, RescaledBackground.Y + RescaledBackground.Height + 2, RescaledBackground.X - 2 + radius, RescaledBackground.Y + RescaledBackground.Height + 2);
-
-                gpSelect.AddArc(RescaledBackground.X - 2, RescaledBackground.Y + RescaledBackground.Height + 2 - diameter, diameter, diameter, 90, 90);
-                gpSelect.AddLine(RescaledBackground.X - 2, RescaledBackground.Y + RescaledBackground.Height + 2 - radius, RescaledBackground.X - 2, RescaledBackground.Y - 2 + radius);
-
-                gpSelect.CloseFigure();
-
-                _canvas.DrawPath(new Pen(Color.FromArgb(BackgroundAlpha, m_BackgroundColor)), gpSelect);
-            }*/
-            #endregion
+            Font f = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
+            m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
+            int radius = (int)(f.Size / 2);
+            
+            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextStyle.BackColor);
         }
         private void DrawLabel(Graphics _canvas, double _fOpacityFactor)
         {
             // Label background and size is relative to the main chrono.
-            double fMainFontSize = (double)m_TextStyle.FontSize * m_fStretchFactor;
+            double fMainFontSize = (double)m_TextStyle.GetRescaledFontSize((float)m_fStretchFactor);
             int radius = (int)(fMainFontSize / 4);
-            int diameter = radius * 2;
-
             Font fontText = m_TextStyle.GetInternalFont(0.5f);
-            
-            // Get size.
-            Button but = new Button(); // Hack to get a Graphics object.
-            Graphics g = but.CreateGraphics();
-            SizeF labelSize = g.MeasureString(m_Label + " ", fontText);
-            g.Dispose();
+            SizeF labelSize = _canvas.MeasureString(m_Label + " ", fontText);
 
             // the label background starts at the end of the rounded angle of the main background.
-            Rectangle RescaledBackground = new Rectangle(m_RescaledTopLeft.X + radius, m_RescaledTopLeft.Y - (int)labelSize.Height - 1, (int)labelSize.Width + 11, (int)labelSize.Height);
+            Rectangle RescaledBackground = new Rectangle(m_LabelBackground.Location.X + radius, m_LabelBackground.Location.Y - (int)labelSize.Height - 1, (int)labelSize.Width + 11, (int)labelSize.Height);
 
-            GraphicsPath gp = new GraphicsPath();
-            gp.StartFigure();
-
-            gp.AddLine(RescaledBackground.X, RescaledBackground.Y, RescaledBackground.X + RescaledBackground.Width - diameter, RescaledBackground.Y);
-
-            gp.AddArc(RescaledBackground.X + RescaledBackground.Width - diameter, RescaledBackground.Y, diameter, diameter, 270, 90);
-            gp.AddLine(RescaledBackground.X + RescaledBackground.Width, RescaledBackground.Y + radius, RescaledBackground.X + RescaledBackground.Width, RescaledBackground.Y + RescaledBackground.Height);
-
-            gp.AddLine(RescaledBackground.X + RescaledBackground.Width, RescaledBackground.Y + RescaledBackground.Height, RescaledBackground.X + radius, RescaledBackground.Y + RescaledBackground.Height);
-
-            gp.AddArc(RescaledBackground.X, RescaledBackground.Y + RescaledBackground.Height - diameter, diameter, diameter, 90, 90);
-            gp.AddLine(RescaledBackground.X, RescaledBackground.Y + RescaledBackground.Height - radius, RescaledBackground.X, RescaledBackground.Y);
-
-            gp.CloseFigure();
-            _canvas.FillPath(new SolidBrush(m_TextStyle.GetFadingBackColor(0.5 * _fOpacityFactor)), gp);
+            LabelBackground labelBG = new LabelBackground(RescaledBackground.Location, true, 11, 0);
+            labelBG.Draw(_canvas, _fOpacityFactor, radius, (int)labelSize.Width, (int)labelSize.Height, m_TextStyle.GetFadingBackColor(0.5f));
             
             // Label text
             SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor(_fOpacityFactor));
@@ -719,17 +647,13 @@ namespace Kinovea.ScreenManager
         {
         	Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
         	SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor((float)_fOpacityFactor));
-            _canvas.DrawString(m_Text, fontText, fontBrush, new Point(m_RescaledTopLeft.X + 7, m_RescaledTopLeft.Y + 5));
-        }
-        private void ShiftCoordinates(int _iShiftHorz, int _iShiftVert, double _fStretchFactor)
-        {
-            m_RescaledTopLeft = new Point((int)((double)m_TopLeft.X * _fStretchFactor) + _iShiftHorz, (int)((double)m_TopLeft.Y * _fStretchFactor) + _iShiftVert);
+        	_canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
         }
         private bool IsPointInObject(Point _point)
         {
             // Point coordinates are descaled.
             // We need to descale the hit area size for coherence.
-            Size descaledSize = new Size((int)((m_BackgroundSize.Width + 11) / m_fStretchFactor), (int)((m_BackgroundSize.Height + 7) / m_fStretchFactor));
+            Size descaledSize = new Size((int)((m_BackgroundSize.Width + m_LabelBackground.MarginWidth) / m_fStretchFactor), (int)((m_BackgroundSize.Height + m_LabelBackground.MarginHeight) / m_fStretchFactor));
 
             GraphicsPath areaPath = new GraphicsPath();
             areaPath.AddRectangle(new Rectangle(m_TopLeft.X, m_TopLeft.Y, descaledSize.Width, descaledSize.Height));
@@ -790,7 +714,7 @@ namespace Kinovea.ScreenManager
     	private Rectangle GetHandleRectangle()
         {
             // This function is only used for Hit Testing.
-            Size descaledSize = new Size((int)((m_BackgroundSize.Width + 11) / m_fStretchFactor), (int)((m_BackgroundSize.Height + 7) / m_fStretchFactor));
+            Size descaledSize = new Size((int)((m_BackgroundSize.Width + m_LabelBackground.MarginWidth) / m_fStretchFactor), (int)((m_BackgroundSize.Height + m_LabelBackground.MarginHeight) / m_fStretchFactor));
 
             return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
         }

@@ -172,6 +172,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
     <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />

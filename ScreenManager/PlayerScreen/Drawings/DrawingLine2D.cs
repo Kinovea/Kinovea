@@ -1,5 +1,6 @@
+#region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright © Joan Charmant 2008-2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -17,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
+#endregion
 
 using System;
 using System.Drawing;
@@ -72,7 +74,7 @@ namespace Kinovea.ScreenManager
         // Decoration
         private LineStyle m_PenStyle;
         private LineStyle m_MemoPenStyle;
-        private KeyframeLabel m_LabelMeasure = new KeyframeLabel(true, Color.Black);
+        private KeyframeLabel m_LabelMeasure;
         private bool m_bShowMeasure = false;        
         private Metadata m_ParentMetadata;
         #endregion
@@ -89,9 +91,8 @@ namespace Kinovea.ScreenManager
 
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            SetMeasureLabelConnector();
-            m_LabelMeasure.Background = new Rectangle(10,-20, m_LabelMeasure.Background.Width, m_LabelMeasure.Background.Height);
-            m_LabelMeasure.ResetBackground(m_fStretchFactor, m_DirectZoomTopLeft);
+            
+            m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black);
             
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
@@ -134,13 +135,10 @@ namespace Kinovea.ScreenManager
                 {
                 	// Text of the measure. (The helpers knows the unit)
 	                string text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);
-	                m_LabelMeasure.TextInfos[0] = text;
+	                m_LabelMeasure.Text = text;
 	                
-	                SetMeasureLabelConnector();
-	                m_LabelMeasure.ResetBackground(_fStretchFactor, _DirectZoomTopLeft);
-	                
-	                // Draw.
-	                m_LabelMeasure.Draw(_canvas, fOpacityFactor);
+                    // Draw.
+	                m_LabelMeasure.Draw(_canvas, _fStretchFactor, _DirectZoomTopLeft, fOpacityFactor);
                 }
             }
         }
@@ -154,24 +152,18 @@ namespace Kinovea.ScreenManager
             {
             	case 1:
             		m_StartPoint = point;
+                    m_LabelMeasure.MoveTo(GetMiddlePoint());
             		break;
             	case 2:
             		m_EndPoint = point;
+                    m_LabelMeasure.MoveTo(GetMiddlePoint());
             		break;
             	case 3:
-            		{
-            			// absolute coords.
-            			// Small defect: the label will jump to align with the mouse. 
-            			// We should pass the delta coords in this case.
-            			m_LabelMeasure.Background = new Rectangle(point.X - m_LabelMeasure.Location.X - (m_LabelMeasure.Background.Width/2),
-            			                                          point.Y - m_LabelMeasure.Location.Y - (m_LabelMeasure.Background.Height/2),
-            			                                          m_LabelMeasure.Background.Width, 
-            			                                          m_LabelMeasure.Background.Height);
-	                }
+            		// Move the center of the mini label to the mouse coord.
+            		m_LabelMeasure.MoveLabel(point);
             		break;
             }
 
-            // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override void MoveDrawing(int _deltaX, int _deltaY)
@@ -185,6 +177,8 @@ namespace Kinovea.ScreenManager
 
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            
+            m_LabelMeasure.MoveTo(GetMiddlePoint());
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
@@ -302,6 +296,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            dl.m_LabelMeasure.MoveTo(dl.GetMiddlePoint());
             dl.RescaleCoordinates(dl.m_fStretchFactor, dl.m_DirectZoomTopLeft);
             return dl;
         }
@@ -349,8 +344,6 @@ namespace Kinovea.ScreenManager
         {
             m_RescaledStartPoint = new Point((int)((double)(m_StartPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_StartPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
             m_RescaledEndPoint = new Point((int)((double)(m_EndPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_EndPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
-        
-        	m_LabelMeasure.Rescale(_fStretchFactor, _DirectZoomTopLeft);
         }
         private Rectangle GetHandleRectangle(int _handle)
         {
@@ -410,15 +403,11 @@ namespace Kinovea.ScreenManager
 
             return areaRegion.IsVisible(_point);
         }
-        private void SetMeasureLabelConnector()
+        private Point GetMiddlePoint()
         {
-        	// This set the connector point of the label to the middle of the line.
-			// The relative position of the label to the line is set at construction 
-			// and by the user in MoveHandleTo().
         	int ix = m_StartPoint.X + ((m_EndPoint.X - m_StartPoint.X)/2);
             int iy = m_StartPoint.Y + ((m_EndPoint.Y - m_StartPoint.Y)/2);
-            
-            m_LabelMeasure.Location = new Point(ix, iy);
+            return new Point(ix, iy);
         }
         #endregion
     }

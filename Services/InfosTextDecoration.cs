@@ -227,9 +227,6 @@ namespace Kinovea.Services
 		public Font GetInternalFont(float _fStretchFactor)
 		{
 			// Returns the internal font with a different size.
-			// used for labels on chrono for exemple or to get the strecthed font.
-			// The final font size returned here may not be part of the allowed font sizes
-			// and may exeed the max allowed font size, because it's just for rendering purposes.
 			Font f;
 			if(_fStretchFactor == 1.0f)
 			{
@@ -237,9 +234,7 @@ namespace Kinovea.Services
 			}
 			else
 			{
-				float fFontSize = m_Font.Size * _fStretchFactor;
-				if(fFontSize < 8) fFontSize = 8;
-			
+				float fFontSize = GetRescaledFontSize(_fStretchFactor);			
 				f = new Font(m_Font.Name, fFontSize, m_Font.Style);
 			}
 			
@@ -248,6 +243,15 @@ namespace Kinovea.Services
 		public Font GetInternalFont()
 		{
 			return GetInternalFont(1.0f);
+		}
+		public float GetRescaledFontSize(float _fStretchFactor)
+		{
+			// used for labels on chrono for exemple or to get the strecthed font.
+			// The final font size returned here may not be part of the allowed font sizes
+			// and may exeed the max allowed font size, because it's just for rendering purposes.
+			float fFontSize = m_Font.Size * _fStretchFactor;
+			if(fFontSize < 8) fFontSize = 8;
+			return fFontSize;
 		}
 		public int ReverseFontSize(int _wantedHeight, String _text)
         {
