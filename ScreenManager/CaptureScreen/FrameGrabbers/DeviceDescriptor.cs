@@ -19,13 +19,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// AbstractDevice, a class to represent a device identification.
 	/// </summary>
-	public class DeviceIdentifier
+	public class DeviceDescriptor
 	{
 		#region Properties
 		public string Name
@@ -35,26 +36,53 @@ namespace Kinovea.ScreenManager
 		public string Identification
 		{
 			get { return m_Identification; }
+		}		
+		public List<DeviceCapability> Capabilities
+		{
+			get { return m_Capabilities; }
+			set { m_Capabilities = value; }
+		}
+		public DeviceCapability SelectedCapability
+		{
+			get { return m_SelectedCapability; }
+			set { m_SelectedCapability = value; }
 		}
 		#endregion
 		
 		#region Members
 		private string m_Identification;
 		private string m_Name;
+		private List<DeviceCapability> m_Capabilities = new List<DeviceCapability>();
+		private DeviceCapability m_SelectedCapability;
 		#endregion
 		
 		#region Constructor
-		public DeviceIdentifier(string _name, string _identification)
+		public DeviceDescriptor(string _name, string _identification)
 		{
 			m_Name = _name;
 			m_Identification = _identification;
 		}
 		#endregion
 	
+		public DeviceCapability GetBestSizeCapability()
+		{
+			DeviceCapability bestCaps = m_Capabilities[0];
+			int maxPixels = bestCaps.NumberOfPixels;
+			
+			for(int i = 1;i<m_Capabilities.Count;i++)
+			{
+				if(m_Capabilities[i].NumberOfPixels > maxPixels)
+				{
+					bestCaps = m_Capabilities[i];
+					maxPixels = bestCaps.NumberOfPixels;	
+				}
+			}
+			
+			return bestCaps;
+		}
 		public override string ToString()
 		{
 			return m_Name;
 		}
-	
 	}
 }

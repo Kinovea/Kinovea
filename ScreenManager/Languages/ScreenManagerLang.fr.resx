@@ -130,8 +130,9 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Mouvement de droite à gauche</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle du segment :</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Étalonner la mesure</value></data>
+   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Source en cours</value></data>
    <data name="dlgDevicePicker_CurrentlySelected" xml:space="preserve"><value>En cours :</value></data>
-   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Choisir une autre source :</value></data>
+   <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Choisir une autre source</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durée de chaque Image Clé : {0} centièmes de secondes.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durée de chaque Image Clé : {0:0.00} secondes.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Enregistrer une Vidéo</value></data>

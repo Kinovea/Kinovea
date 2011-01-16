@@ -60,12 +60,13 @@ namespace Kinovea.ScreenManager
 			
 		#region Members
 		private VideoCaptureDevice m_VideoDevice;
-		private DeviceIdentifier m_CurrentVideoDevice;
+		private DeviceDescriptor m_CurrentVideoDevice;
 		private IFrameGrabberContainer m_Container;	// FrameServerCapture seen through a limited interface.
 		private FrameBuffer m_FrameBuffer;
 		private bool m_bIsConnected;
 		private bool m_bIsGrabbing;
 		private bool m_bSizeKnown;
+		private bool m_bSizeChanged;
 		private double m_FramesInterval = -1;
 		private Size m_FrameSize;
 		private int m_iConnectionsAttempts;
@@ -85,16 +86,53 @@ namespace Kinovea.ScreenManager
 		#region AbstractFrameGrabber implementation
 		public override void PromptDeviceSelector()
 		{
-			// Ask the user which device he wants to use.
+			// Ask the user which device he wants to use or which size/framerate.
 			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice);
 			if(fdp.ShowDialog() == DialogResult.OK)
 			{
-				DeviceIdentifier selected = fdp.SelectedDevice;
-				if(selected != null)
+				DeviceDescriptor dev = fdp.SelectedDevice;
+				if(dev != null)
 				{
-					m_CurrentVideoDevice = selected;
-					ConnectToDevice(m_CurrentVideoDevice);
-					m_Container.Connected();
+					if(dev.Identification == m_CurrentVideoDevice.Identification)
+					{
+						// Device unchanged.
+						DeviceCapability cap = fdp.SelectedCapability;
+						if(cap != null)
+						{
+							if(!cap.Equals(m_CurrentVideoDevice.SelectedCapability))
+							{
+								// Changed capability.
+								m_CurrentVideoDevice.SelectedCapability = cap;
+								
+								if(m_bIsGrabbing)
+								{
+									m_VideoDevice.Stop();
+								}
+								
+								m_VideoDevice.DesiredFrameSize = cap.FrameSize;
+								m_VideoDevice.DesiredFrameRate = cap.Framerate;
+								
+								m_FrameSize = cap.FrameSize;
+								m_FramesInterval = 1000 / (double)cap.Framerate;
+					
+								log.Debug(String.Format("Picked new capability: {0}", cap.ToString()));
+								
+								m_bSizeChanged = true;
+								
+								if(m_bIsGrabbing)
+								{
+									m_VideoDevice.Start();
+								}
+							}
+						}
+					}
+					else
+					{
+						// Changed device
+						m_CurrentVideoDevice = dev;
+						ConnectToDevice(m_CurrentVideoDevice);
+						m_Container.Connected();
+					}
 				}
 			}
 			fdp.Dispose();
@@ -218,23 +256,23 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Private methods
-		private List<DeviceIdentifier> ListDevices()
+		private List<DeviceDescriptor> ListDevices()
 		{
 			// List all the devices currently connected.
 			FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
 			
-			List<DeviceIdentifier> devices = new List<DeviceIdentifier>();
+			List<DeviceDescriptor> devices = new List<DeviceDescriptor>();
 			
 			foreach(FilterInfo fi in videoDevices)
 			{
-				devices.Add(new DeviceIdentifier(fi.Name, fi.MonikerString));				
+				devices.Add(new DeviceDescriptor(fi.Name, fi.MonikerString));				
 			}
 
 			return devices;
 		}
 		private void ConnectToDevice(FilterInfoCollection _devices, int _iSelected)
 		{
-			m_CurrentVideoDevice = new DeviceIdentifier(_devices[_iSelected].Name, _devices[_iSelected].MonikerString);
+			m_CurrentVideoDevice = new DeviceDescriptor(_devices[_iSelected].Name, _devices[_iSelected].MonikerString);
 			if(m_CurrentVideoDevice != null)
 			{
 				log.Debug(String.Format("Connecting to device: index: {0}, name: {1}, moniker string:{2}", 
@@ -249,7 +287,7 @@ namespace Kinovea.ScreenManager
 			                        _iSelected, _devices[_iSelected].Name, _devices[_iSelected].MonikerString));
 			}
 		}
-		private void ConnectToDevice(DeviceIdentifier _device)
+		private void ConnectToDevice(DeviceDescriptor _device)
 		{
 			Disconnect();
 			
@@ -258,18 +296,36 @@ namespace Kinovea.ScreenManager
 			m_VideoDevice = new VideoCaptureDevice(_device.Identification);
 			if(m_VideoDevice != null)
 			{
-				m_VideoDevice.DesiredFrameRate = 0;
+				if((m_VideoDevice.VideoCapabilities != null) && (m_VideoDevice.VideoCapabilities.Length > 0))
+				{
+					// Import the capabilities of the device.
+					foreach(VideoCapabilities vc in m_VideoDevice.VideoCapabilities)
+					{
+						DeviceCapability dc = new DeviceCapability(vc.FrameSize, vc.MaxFrameRate);
+						_device.Capabilities.Add(dc);
+						
+						log.Debug(String.Format("Device Capability. {0}", dc.ToString()));
+					}
+					
+					// Pick the one with max frame size.
+					DeviceCapability bestSizeCap = _device.GetBestSizeCapability();
+					_device.SelectedCapability = bestSizeCap;
+					m_VideoDevice.DesiredFrameSize = bestSizeCap.FrameSize;
+					
+					m_FrameSize = bestSizeCap.FrameSize;
+					m_FramesInterval = 1000 / (double)bestSizeCap.Framerate;
+					
+					log.Debug(String.Format("Picked best size capability: {0}", bestSizeCap.ToString()));
+				}
+				else
+				{
+					m_VideoDevice.DesiredFrameRate = 0;
+				}
+				
 				m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
 				m_VideoDevice.VideoSourceError += new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
 				
 				m_bIsConnected = true;
-				
-				if((m_VideoDevice.VideoCapabilities != null) && (m_VideoDevice.VideoCapabilities.Length > 0))
-				{
-					m_FrameSize = m_VideoDevice.VideoCapabilities[0].FrameSize;
-					m_FramesInterval = 1000 / (double)m_VideoDevice.VideoCapabilities[0].MaxFrameRate;
-					log.Debug(String.Format("Reading Device Capabilities. Frame size:{0}, Frames interval : {1}", m_FrameSize, m_FramesInterval));
-				}
 			}
 			else
 			{
@@ -302,9 +358,10 @@ namespace Kinovea.ScreenManager
 		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
 		{
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
-			if(!m_bSizeKnown)
+			if(!m_bSizeKnown || m_bSizeChanged)
 			{
 				m_bSizeKnown = true;
+				m_bSizeChanged = false;
 				Size sz = eventArgs.Frame.Size;
 				
 				m_Container.SetImageSize(sz);
