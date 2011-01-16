@@ -50,19 +50,22 @@ namespace Kinovea.ScreenManager
 		{
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.lstOtherDevices = new System.Windows.Forms.ListBox();
-			this.lblSelectAnother = new System.Windows.Forms.Label();
+			this.gpCurrentDevice = new System.Windows.Forms.GroupBox();
+			this.btnCamcorder = new System.Windows.Forms.Button();
+			this.cmbCapabilities = new System.Windows.Forms.ComboBox();
+			this.lblConfig = new System.Windows.Forms.Label();
 			this.lblCurrentlySelected = new System.Windows.Forms.Label();
-			this.groupBox1.SuspendLayout();
+			this.gpOtherDevices = new System.Windows.Forms.GroupBox();
+			this.cmbOtherDevices = new System.Windows.Forms.ComboBox();
+			this.gpCurrentDevice.SuspendLayout();
+			this.gpOtherDevices.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnApply
 			// 
 			this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnApply.Enabled = false;
-			this.btnApply.Location = new System.Drawing.Point(105, 179);
+			this.btnApply.Location = new System.Drawing.Point(115, 239);
 			this.btnApply.Name = "btnApply";
 			this.btnApply.Size = new System.Drawing.Size(99, 24);
 			this.btnApply.TabIndex = 76;
@@ -73,83 +76,116 @@ namespace Kinovea.ScreenManager
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(210, 179);
+			this.btnCancel.Location = new System.Drawing.Point(220, 239);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(99, 24);
 			this.btnCancel.TabIndex = 77;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
 			// 
-			// groupBox1
+			// gpCurrentDevice
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-									| System.Windows.Forms.AnchorStyles.Left) 
+			this.gpCurrentDevice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox1.Controls.Add(this.lstOtherDevices);
-			this.groupBox1.Controls.Add(this.lblSelectAnother);
-			this.groupBox1.Controls.Add(this.lblCurrentlySelected);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(297, 161);
-			this.groupBox1.TabIndex = 78;
-			this.groupBox1.TabStop = false;
+			this.gpCurrentDevice.Controls.Add(this.btnCamcorder);
+			this.gpCurrentDevice.Controls.Add(this.cmbCapabilities);
+			this.gpCurrentDevice.Controls.Add(this.lblConfig);
+			this.gpCurrentDevice.Controls.Add(this.lblCurrentlySelected);
+			this.gpCurrentDevice.Location = new System.Drawing.Point(12, 12);
+			this.gpCurrentDevice.Name = "gpCurrentDevice";
+			this.gpCurrentDevice.Size = new System.Drawing.Size(307, 125);
+			this.gpCurrentDevice.TabIndex = 78;
+			this.gpCurrentDevice.TabStop = false;
+			this.gpCurrentDevice.Text = "Current device";
 			// 
-			// lstOtherDevices
+			// btnCamcorder
 			// 
-			this.lstOtherDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-									| System.Windows.Forms.AnchorStyles.Right)));
-			this.lstOtherDevices.FormattingEnabled = true;
-			this.lstOtherDevices.Location = new System.Drawing.Point(20, 86);
-			this.lstOtherDevices.Name = "lstOtherDevices";
-			this.lstOtherDevices.Size = new System.Drawing.Size(259, 56);
-			this.lstOtherDevices.TabIndex = 2;
-			this.lstOtherDevices.SelectedIndexChanged += new System.EventHandler(this.lstOtherDevices_SelectedIndexChanged);
+			this.btnCamcorder.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.camera_selected;
+			this.btnCamcorder.FlatAppearance.BorderSize = 0;
+			this.btnCamcorder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnCamcorder.Location = new System.Drawing.Point(16, 25);
+			this.btnCamcorder.Name = "btnCamcorder";
+			this.btnCamcorder.Size = new System.Drawing.Size(30, 30);
+			this.btnCamcorder.TabIndex = 8;
+			this.btnCamcorder.UseVisualStyleBackColor = true;
 			// 
-			// lblSelectAnother
+			// cmbCapabilities
 			// 
-			this.lblSelectAnother.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-									| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblSelectAnother.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.lblSelectAnother.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblSelectAnother.ForeColor = System.Drawing.Color.SteelBlue;
-			this.lblSelectAnother.Location = new System.Drawing.Point(20, 60);
-			this.lblSelectAnother.Name = "lblSelectAnother";
-			this.lblSelectAnother.Size = new System.Drawing.Size(259, 23);
-			this.lblSelectAnother.TabIndex = 1;
-			this.lblSelectAnother.Text = "Select another device :";
-			this.lblSelectAnother.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.cmbCapabilities.FormattingEnabled = true;
+			this.cmbCapabilities.Location = new System.Drawing.Point(105, 78);
+			this.cmbCapabilities.Name = "cmbCapabilities";
+			this.cmbCapabilities.Size = new System.Drawing.Size(173, 21);
+			this.cmbCapabilities.TabIndex = 5;
+			// 
+			// lblConfig
+			// 
+			this.lblConfig.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblConfig.ForeColor = System.Drawing.Color.Black;
+			this.lblConfig.Location = new System.Drawing.Point(6, 76);
+			this.lblConfig.Name = "lblConfig";
+			this.lblConfig.Size = new System.Drawing.Size(93, 23);
+			this.lblConfig.TabIndex = 4;
+			this.lblConfig.Text = "Configuration";
+			this.lblConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblCurrentlySelected
 			// 
-			this.lblCurrentlySelected.Location = new System.Drawing.Point(20, 23);
+			this.lblCurrentlySelected.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCurrentlySelected.Location = new System.Drawing.Point(63, 32);
 			this.lblCurrentlySelected.Name = "lblCurrentlySelected";
-			this.lblCurrentlySelected.Size = new System.Drawing.Size(259, 20);
+			this.lblCurrentlySelected.Size = new System.Drawing.Size(231, 20);
 			this.lblCurrentlySelected.TabIndex = 0;
-			this.lblCurrentlySelected.Text = "Currently selected : ...";
+			this.lblCurrentlySelected.Text = "My Device";
+			// 
+			// gpOtherDevices
+			// 
+			this.gpOtherDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.gpOtherDevices.Controls.Add(this.cmbOtherDevices);
+			this.gpOtherDevices.Location = new System.Drawing.Point(12, 143);
+			this.gpOtherDevices.Name = "gpOtherDevices";
+			this.gpOtherDevices.Size = new System.Drawing.Size(307, 79);
+			this.gpOtherDevices.TabIndex = 79;
+			this.gpOtherDevices.TabStop = false;
+			this.gpOtherDevices.Text = "Select another device";
+			// 
+			// cmbOtherDevices
+			// 
+			this.cmbOtherDevices.FormattingEnabled = true;
+			this.cmbOtherDevices.Location = new System.Drawing.Point(16, 37);
+			this.cmbOtherDevices.Name = "cmbOtherDevices";
+			this.cmbOtherDevices.Size = new System.Drawing.Size(262, 21);
+			this.cmbOtherDevices.TabIndex = 7;
 			// 
 			// formDevicePicker
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(321, 215);
-			this.Controls.Add(this.groupBox1);
+			this.ClientSize = new System.Drawing.Size(331, 275);
+			this.Controls.Add(this.gpOtherDevices);
+			this.Controls.Add(this.gpCurrentDevice);
 			this.Controls.Add(this.btnApply);
 			this.Controls.Add(this.btnCancel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-            this.MinimizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "formDevicePicker";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "FormDevicePicker";
-			this.groupBox1.ResumeLayout(false);
+			this.gpCurrentDevice.ResumeLayout(false);
+			this.gpOtherDevices.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.Label lblSelectAnother;
-		private System.Windows.Forms.ListBox lstOtherDevices;
+		private System.Windows.Forms.ComboBox cmbOtherDevices;
+		private System.Windows.Forms.Button btnCamcorder;
+		private System.Windows.Forms.GroupBox gpOtherDevices;
+		private System.Windows.Forms.Label lblConfig;
+		private System.Windows.Forms.ComboBox cmbCapabilities;
+		private System.Windows.Forms.GroupBox gpCurrentDevice;
 		private System.Windows.Forms.Label lblCurrentlySelected;
-		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnApply;
 	}

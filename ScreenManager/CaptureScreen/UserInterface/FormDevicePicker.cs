@@ -32,45 +32,74 @@ namespace Kinovea.ScreenManager
 	public partial class formDevicePicker : Form
 	{
 		#region Properties
-		public DeviceIdentifier SelectedDevice
+		public DeviceDescriptor SelectedDevice
 		{
 			get 
 			{ 
-				DeviceIdentifier selected = null;
-				if(lstOtherDevices.SelectedIndex >= 0)
+				DeviceDescriptor selected = null;
+				if(cmbOtherDevices.SelectedIndex >= 0)
 				{
-					selected = lstOtherDevices.Items[lstOtherDevices.SelectedIndex] as DeviceIdentifier;	
+					selected = cmbOtherDevices.Items[cmbOtherDevices.SelectedIndex] as DeviceDescriptor;	
 				}
-
 				return selected;
 			}
 		}
+		public DeviceCapability SelectedCapability
+		{
+			get 
+			{ 
+				DeviceCapability selected = null;
+				if(cmbCapabilities.SelectedIndex >= 0)
+				{
+					selected = cmbCapabilities.Items[cmbCapabilities.SelectedIndex] as DeviceCapability;	
+				}
+				return selected;
+			}
+		}
+		
 		#endregion
 		
-		public formDevicePicker(List<DeviceIdentifier> _devices, DeviceIdentifier _currentDevice)
+		public formDevicePicker(List<DeviceDescriptor> _devices, DeviceDescriptor _currentDevice)
 		{
 			InitializeComponent();
 			
 			this.Text = "   " + ScreenManagerLang.ToolTip_DevicePicker;
 			this.btnApply.Text = ScreenManagerLang.Generic_Apply;
 			this.btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+			this.gpCurrentDevice.Text = ScreenManagerLang.dlgDevicePicker_CurrentDevice;
+			this.gpOtherDevices.Text = ScreenManagerLang.dlgDevicePicker_SelectAnother;
+			this.lblConfig.Text = ScreenManagerLang.Generic_Configuration;
 			
-			lblCurrentlySelected.Text = ScreenManagerLang.dlgDevicePicker_CurrentlySelected + " " + _currentDevice.Name;
-			lblSelectAnother.Text = ScreenManagerLang.dlgDevicePicker_SelectAnother;
-			
-			// Populate the list.
-			foreach(DeviceIdentifier di in _devices)
+			// Populate current.
+			lblCurrentlySelected.Text =  _currentDevice.Name;
+			int selectedCap = 0;
+			for(int i = 0;i<_currentDevice.Capabilities.Count;i++)
 			{
-				if(di.Identification != _currentDevice.Identification)
+				DeviceCapability dc = _currentDevice.Capabilities[i];
+				cmbCapabilities.Items.Add(dc);
+				if(dc == _currentDevice.SelectedCapability)
 				{
-					lstOtherDevices.Items.Add(di);
+					selectedCap = i;
 				}
 			}
-		}
+			cmbCapabilities.SelectedIndex = selectedCap;
+			
+			// Populate other devices.
+			int selectedDev = 0;
+			for(int i = 0;i<_devices.Count;i++)
+			{
+				DeviceDescriptor dd = _devices[i];
+				cmbOtherDevices.Items.Add(dd);
 				
-		private void lstOtherDevices_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			btnApply.Enabled = true;
+				if(dd.Identification == _currentDevice.Identification)
+				{
+					selectedDev = i;
+				}
+			}
+			
+			cmbOtherDevices.SelectedIndex = selectedDev;
+			
+			gpOtherDevices.Enabled = _devices.Count > 1;
 		}
 	}
 }

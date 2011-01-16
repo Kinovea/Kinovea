@@ -132,6 +132,7 @@
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Messung kalibrieren</value></data>
    
    
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0} Hundertstelsekunden</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Anzeigedauer jedes Bildes : {0:0.00} Sekunden</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Speichere Video</value></data>

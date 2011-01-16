@@ -637,6 +637,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Current device.
+        /// </summary>
+        internal static string dlgDevicePicker_CurrentDevice {
+            get {
+                return ResourceManager.GetString("dlgDevicePicker_CurrentDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Currently selected:.
         /// </summary>
         internal static string dlgDevicePicker_CurrentlySelected {
@@ -646,7 +655,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Select another device:.
+        ///   Recherche une chaîne localisée semblable à Select another device.
         /// </summary>
         internal static string dlgDevicePicker_SelectAnother {
             get {
