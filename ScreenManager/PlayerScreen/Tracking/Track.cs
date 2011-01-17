@@ -1199,7 +1199,7 @@ namespace Kinovea.ScreenManager
             // The coordinate system defaults to the first point,
             // but can be specified by user.
             Point coordOrigin;
-            if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 && m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
+            if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 || m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
             {
             	coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
             }
