@@ -861,7 +861,10 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteStartElement("LengthUnit");
             _xmlWriter.WriteAttributeString("UserUnitLength", m_CalibrationHelper.GetLengthAbbreviation());
             _xmlWriter.WriteString(((int)m_CalibrationHelper.CurrentLengthUnit).ToString());
+            _xmlWriter.WriteEndElement();
             
+            _xmlWriter.WriteStartElement("CoordinatesOrigin");
+            _xmlWriter.WriteString(m_CalibrationHelper.CoordinatesOrigin.X + ";" + m_CalibrationHelper.CoordinatesOrigin.Y);
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteEndElement();
@@ -969,7 +972,8 @@ namespace Kinovea.ScreenManager
     			{
 	    			// Convert from 1.2 to 1.3.
 					XslCompiledTransform xslt = new XslCompiledTransform();
-					xslt.Load(@"xslt\kva-1.2to1.3.xsl");
+					string stylesheet = Application.StartupPath + "\\xslt\\kva-1.2to1.3.xsl";
+					xslt.Load(stylesheet);
 					
 					StringWriter writer = new StringWriter();
 					XmlTextWriter xmlWriter = new XmlTextWriter(writer);
@@ -1078,6 +1082,11 @@ namespace Kinovea.ScreenManager
                     else if(_xmlReader.Name == "LengthUnit")
                     {
                     	m_CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)int.Parse(_xmlReader.ReadString());
+                    }
+                    else if(_xmlReader.Name == "CoordinatesOrigin")
+                    {
+                    	// Note: we don't adapt to the destination image size. It makes little sense anyway.
+                    	m_CalibrationHelper.CoordinatesOrigin = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
                     }
                 }
                 else if (_xmlReader.Name == "CalibrationHelp")
