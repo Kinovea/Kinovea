@@ -171,6 +171,15 @@ namespace Kinovea.ScreenManager
 			// Release configuration form.
 			fde.Dispose();
 		}
+		public void AfterSave()
+		{
+			// Ask the Explorer tree to refresh itself, (but not the thumbnails pane.)
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.RefreshFileExplorer != null)
+            {
+                dp.RefreshFileExplorer(false);
+            }
+		}
 		#endregion
 		
 		#region Saving processing
@@ -268,6 +277,10 @@ namespace Kinovea.ScreenManager
             {
             	ReportError(m_SaveResult);
             }
+        	else
+        	{
+        		AfterSave();
+        	}
         }
 		private void ReportError(SaveResult _err)
         {
