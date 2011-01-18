@@ -998,6 +998,9 @@ namespace Kinovea.ScreenManager
 					composite.Dispose();
 					leftImage.Dispose();
 					rightImage.Dispose();
+					
+					DelegatesPool dp = DelegatesPool.Instance();
+            		if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
        			}
        		}
        	}
@@ -1834,6 +1837,9 @@ namespace Kinovea.ScreenManager
     		{
     			m_VideoFileWriter.CloseSavingContext((int)e.Result == 0);
     		}
+    		
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
         }
         private void dualSave_CancelAsked(object sender)
 		{

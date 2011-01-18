@@ -4951,6 +4951,7 @@ namespace Kinovea.ScreenManager
 						Bitmap outputImage = GetFlushedImage();
 						ImageHelper.Save(strImgName, outputImage);						
 						outputImage.Dispose();
+						m_FrameServer.AfterSave();
 					}
 				}
 				catch (Exception exp)
@@ -4984,6 +4985,7 @@ namespace Kinovea.ScreenManager
 				formRafaleExport fre = new formRafaleExport(this, m_FrameServer.Metadata, m_FrameServer.VideoFile.FilePath, m_iSelDuration, m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds, m_FrameServer.VideoFile.Infos.fFps);
 				fre.ShowDialog();
 				fre.Dispose();
+				m_FrameServer.AfterSave();
 
 				if (dp.ActivateKeyboardHandler != null)
 				{
