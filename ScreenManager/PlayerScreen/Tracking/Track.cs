@@ -363,7 +363,9 @@ namespace Kinovea.ScreenManager
             if (points.Length > 1)
             {
             	// Tension parameter is at 0.5f for bezier effect (smooth curve).
-            	_canvas.DrawCurve(GetTrackPen(m_LineStyle, m_TrackStatus, _fFadingFactor, _before), points, 0.5f);	
+            	Pen tempPen = GetTrackPen(m_LineStyle, m_TrackStatus, _fFadingFactor, _before);
+            	_canvas.DrawCurve(tempPen, points, 0.5f);
+            	tempPen.Dispose();
             }
         }
         private void DrawMarker(Graphics _canvas,  double _fFadingFactor, bool _bCurrentlyPlaying)
@@ -613,8 +615,10 @@ namespace Kinovea.ScreenManager
 
                             GraphicsPath areaPath = new GraphicsPath();
                             areaPath.AddLines(points);
-                            areaPath.Widen(new Pen(Color.Black, 12));
-
+                            Pen tempPen = new Pen(Color.Black, 12);
+                            areaPath.Widen(tempPen);
+                            tempPen.Dispose();
+                            
                             // Create region from the path
                             Region areaRegion = new Region(areaPath);
 

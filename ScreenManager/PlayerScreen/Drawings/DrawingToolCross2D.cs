@@ -48,8 +48,12 @@ namespace Kinovea.ScreenManager
             // Center point is {4,4}
             g.DrawLine(p, 1, 4, 7, 4);
             g.DrawLine(p, 4, 1, 4, 7);
-            g.FillEllipse(new SolidBrush(Color.FromArgb(32, _color)), 0, 0, 8, 8);
-
+            
+            SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, _color));
+            g.FillEllipse(tempBrush, 0, 0, 8, 8);
+            tempBrush.Dispose();
+            p.Dispose();
+            
             return new Cursor(b.GetHicon());
         }
     }

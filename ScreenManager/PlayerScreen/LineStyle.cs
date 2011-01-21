@@ -143,6 +143,7 @@ namespace Kinovea.ScreenManager
                 
                 SolidBrush b = new SolidBrush(_color);
                 _canvas.FillEllipse(b, left, top, m_iSize, m_iSize);
+                b.Dispose();
         	}
         	else
         	{
@@ -150,6 +151,7 @@ namespace Kinovea.ScreenManager
         		Pen p = (Pen)m_Pen.Clone();
         		p.Color = _color;
 	        	_canvas.DrawLine(p, 2, _canvas.VisibleClipBounds.Height / 2, _canvas.VisibleClipBounds.Width - 4, _canvas.VisibleClipBounds.Height / 2);
+	        	p.Dispose();
         	}
         }	
         public void ToXml(XmlTextWriter _xmlWriter)

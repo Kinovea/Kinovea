@@ -108,6 +108,8 @@ namespace Kinovea.ScreenManager
                     points[i] = new Point(m_RescaledPointList[i].X, m_RescaledPointList[i].Y);
                 }
                 _canvas.DrawCurve(penLine, points, 0.5f);
+                
+                penLine.Dispose();
             }
         }
         public override void MoveHandleTo(Point point, int handleNumber)
@@ -317,7 +319,8 @@ namespace Kinovea.ScreenManager
             areaPen.LineJoin = LineJoin.Round;
             
             areaPath.Widen(areaPen);
-
+			areaPen.Dispose();
+			
             // Create region from the path
             Region areaRegion = new Region(areaPath);
 

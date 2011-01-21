@@ -224,8 +224,10 @@ namespace Kinovea.ScreenManager
             int iSrchTop = _currentPoint.Y - (int)(((double)m_SearchWindowSize.Height * _fStretchFactor) / 2);
             
             Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchWindowSize.Width * _fStretchFactor), (int)((double)m_SearchWindowSize.Height * _fStretchFactor));
-            _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(64.0f * _fOpacityFactor), _color)), SrchZone);
-			
+            Pen tempPen = new Pen(Color.FromArgb((int)(64.0f * _fOpacityFactor), _color));
+            _canvas.DrawRectangle(tempPen, SrchZone);
+            tempPen.Dispose();
+            
             // Features coordinates are relative to the previous search window.
             foreach (Ipoint p in ((TrackPointSURF)_currentPoint).FoundFeatures)
             {

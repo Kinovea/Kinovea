@@ -112,6 +112,8 @@ namespace Kinovea.ScreenManager
                 	Font fontText = new Font("Arial", 8, FontStyle.Bold);
         			SolidBrush fontBrush = new SolidBrush(m_PenSelected.Color);
                 	e.Graphics.DrawString(m_Text, fontText, fontBrush, m_CurrentMouse.X - 67,m_CurrentMouse.Y + 2);
+                	fontBrush.Dispose();
+                	fontText.Dispose();
                 }
             }
 		}

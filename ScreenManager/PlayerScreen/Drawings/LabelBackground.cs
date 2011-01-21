@@ -121,7 +121,9 @@ namespace Kinovea.ScreenManager
             gp.CloseFigure();
 
             int BackgroundAlpha = (int)((double)m_iDefaultBackgroundAlpha * _fOpacityFactor);
-            _canvas.FillPath(new SolidBrush(Color.FromArgb(BackgroundAlpha, _color)), gp);
+            SolidBrush b = new SolidBrush(Color.FromArgb(BackgroundAlpha, _color));
+            _canvas.FillPath(b, gp);
+            b.Dispose();
 		}
 	}
 }

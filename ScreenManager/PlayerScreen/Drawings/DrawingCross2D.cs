@@ -102,12 +102,15 @@ namespace Kinovea.ScreenManager
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
                 // Cross
-                Pen PenEdges = m_PenStyle.GetInternalPen(iPenAlpha); //new Pen(Color.FromArgb(iPenAlpha, PenColor), 1);
+                Pen PenEdges = m_PenStyle.GetInternalPen(iPenAlpha);
                 _canvas.DrawLine(PenEdges, RescaledCenterPoint.X - m_iDefaultRadius, RescaledCenterPoint.Y, RescaledCenterPoint.X + m_iDefaultRadius, RescaledCenterPoint.Y);
                 _canvas.DrawLine(PenEdges, RescaledCenterPoint.X, RescaledCenterPoint.Y - m_iDefaultRadius, RescaledCenterPoint.X, RescaledCenterPoint.Y + m_iDefaultRadius);
 
                 // Background
-                _canvas.FillEllipse(new SolidBrush(Color.FromArgb((int)((double)m_iDefaultBackgroundAlpha * fOpacityFactor), m_PenStyle.Color)), RescaledCenterPoint.X - m_iDefaultRadius - 1, RescaledCenterPoint.Y - m_iDefaultRadius - 1, (m_iDefaultRadius * 2) + 2, (m_iDefaultRadius * 2) + 2);
+                SolidBrush tempBrush = new SolidBrush(Color.FromArgb((int)((double)m_iDefaultBackgroundAlpha * fOpacityFactor), m_PenStyle.Color));
+                _canvas.FillEllipse(tempBrush, RescaledCenterPoint.X - m_iDefaultRadius - 1, RescaledCenterPoint.Y - m_iDefaultRadius - 1, (m_iDefaultRadius * 2) + 2, (m_iDefaultRadius * 2) + 2);
+                tempBrush.Dispose();
+                PenEdges.Dispose();
             }
         }
         public override void MoveHandleTo(Point point, int handleNumber)
@@ -249,7 +252,8 @@ namespace Kinovea.ScreenManager
 
             // Create region from the path
             Region areaRegion = new Region(areaPath);
-
+            areaPen.Dispose();
+            
             return areaRegion.IsVisible(_point);
         }
         #endregion

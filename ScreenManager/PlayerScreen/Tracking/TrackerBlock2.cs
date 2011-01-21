@@ -326,8 +326,9 @@ namespace Kinovea.ScreenManager
 			int iSrchLeft = (int) (fX - (((double)m_SearchWindowSize.Width * _fStretchFactor) / 2));
 			int iSrchTop = (int) (fY - (((double)m_SearchWindowSize.Height * _fStretchFactor) / 2));
             Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchWindowSize.Width * _fStretchFactor), (int)((double)m_SearchWindowSize.Height * _fStretchFactor));
-            _canvas.DrawRectangle(new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color)), SrchZone);
-            //_canvas.FillRectangle(new SolidBrush(Color.FromArgb((int)(48.0f * _fOpacityFactor), _color)), SrchZone);
+            Pen tempPen = new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color));
+            _canvas.DrawRectangle(tempPen, SrchZone);
+            tempPen.Dispose();
             
             // Current Block.
             int iTplLeft = (int) (fX - (((double)m_BlockSize.Width * _fStretchFactor) / 2));

@@ -42,7 +42,7 @@ namespace Kinovea.Services
 		} 
 		public int FontSize
 		{
-			get { return (int)m_Font.Size;}
+			get { return m_FontSize;}
 		}
 		public Color BackColor
 		{
@@ -51,7 +51,9 @@ namespace Kinovea.Services
 		#endregion
 		
 		#region Members
-		private Font m_Font;
+		private string m_FontName;
+		private int m_FontSize;
+		private FontStyle m_FontStyle;
 		private Color m_ForeColor;
 		private Color m_BackColor;
 		#endregion
@@ -67,7 +69,9 @@ namespace Kinovea.Services
 		}
 		public InfosTextDecoration(string _fontName, int _fontSize, FontStyle _fontStyle, Color _foreColor, Color _backColor)
 		{
-			m_Font = new Font(_fontName, _fontSize, _fontStyle);
+			m_FontName = _fontName;
+			m_FontSize = _fontSize;
+			m_FontStyle = _fontStyle;
 			m_ForeColor = _foreColor;
 			m_BackColor = _backColor;
 			FixForeColor();
@@ -83,7 +87,7 @@ namespace Kinovea.Services
 		public void Update(int _iFontSize)
 		{
 			// Update the TextDecoration for font size only.
-			m_Font = new Font(m_Font.Name, _iFontSize, m_Font.Style);
+			m_FontSize = _iFontSize;
 		}
 		
 		#region XML conversion
@@ -92,11 +96,11 @@ namespace Kinovea.Services
 			_xmlWriter.WriteStartElement("TextDecoration");
 			
 			_xmlWriter.WriteStartElement("FontName");
-            _xmlWriter.WriteString(m_Font.Name);
+            _xmlWriter.WriteString(m_FontName);
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("FontSize");
-            _xmlWriter.WriteString(m_Font.Size.ToString());
+            _xmlWriter.WriteString(m_FontSize.ToString());
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("ForeColor");
@@ -206,7 +210,9 @@ namespace Kinovea.Services
 	        }*/
 			#endregion
 			
-			result.m_Font = new Font(fontName, fontSize, FontStyle.Bold);
+			result.m_FontName = fontName;
+			result.m_FontSize = fontSize;
+			result.m_FontStyle = FontStyle.Bold;
 			result.FixForeColor();
 			return result;
 		}
@@ -224,24 +230,20 @@ namespace Kinovea.Services
 		{
 			return Color.FromArgb((int)((double)_color.A * _fFadingFactor), _color.R, _color.G, _color.B);
 		}
+		public Font GetInternalFontDefault(int fontSize)
+		{
+			return new Font(m_FontName, fontSize, m_FontStyle);
+		}
 		public Font GetInternalFont(float _fStretchFactor)
 		{
 			// Returns the internal font with a different size.
-			Font f;
-			if(_fStretchFactor == 1.0f)
-			{
-				f = m_Font;
-			}
-			else
-			{
-				float fFontSize = GetRescaledFontSize(_fStretchFactor);			
-				f = new Font(m_Font.Name, fFontSize, m_Font.Style);
-			}
-			
-			return f;
+			// The caller is responsible for disposing the font object.
+			float fFontSize = GetRescaledFontSize(_fStretchFactor);			
+			return new Font(m_FontName, fFontSize, m_FontStyle);
 		}
 		public Font GetInternalFont()
 		{
+			// The caller is responsible for disposing the font object.
 			return GetInternalFont(1.0f);
 		}
 		public float GetRescaledFontSize(float _fStretchFactor)
@@ -249,7 +251,7 @@ namespace Kinovea.Services
 			// used for labels on chrono for exemple or to get the strecthed font.
 			// The final font size returned here may not be part of the allowed font sizes
 			// and may exeed the max allowed font size, because it's just for rendering purposes.
-			float fFontSize = m_Font.Size * _fStretchFactor;
+			float fFontSize = m_FontSize * _fStretchFactor;
 			if(fFontSize < 8) fFontSize = 8;
 			return fFontSize;
 		}
@@ -268,7 +270,7 @@ namespace Kinovea.Services
             
             foreach(int size in AllowedFontSizes)
             {
-            	Font testFont = new Font(m_Font.Name, size, m_Font.Style);
+            	Font testFont = new Font(m_FontName, size, m_FontStyle);
             	SizeF bgSize = g.MeasureString(_text + " ", testFont);
             	testFont.Dispose();
             	
@@ -295,7 +297,9 @@ namespace Kinovea.Services
         {
 			int iHash = 0;
             
-			iHash ^= m_Font.GetHashCode();
+			iHash ^= m_FontSize.GetHashCode();
+            iHash ^= m_FontName.GetHashCode();
+			iHash ^= m_FontStyle.GetHashCode();
             iHash ^= m_ForeColor.GetHashCode();
 			iHash ^= m_BackColor.GetHashCode();
 			
@@ -303,7 +307,7 @@ namespace Kinovea.Services
 		}
 		public InfosTextDecoration Clone()
 		{
-			return new InfosTextDecoration(m_Font.Name, (int)m_Font.Size, m_Font.Style, m_ForeColor, m_BackColor);
+			return new InfosTextDecoration(m_FontName, m_FontSize, m_FontStyle, m_ForeColor, m_BackColor);
 		}
 		#endregion
 	}

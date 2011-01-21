@@ -146,7 +146,6 @@ namespace Kinovea.ScreenManager
             m_TextBox.Multiline = true;
             m_TextBox.TextChanged += new EventHandler(TextBox_TextChanged);
             
-            
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -173,6 +172,8 @@ namespace Kinovea.ScreenManager
                     SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor(fOpacityFactor));
                     Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
                    _canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
+                   fontBrush.Dispose();
+                   fontText.Dispose();
                 }
             }
         }
@@ -382,10 +383,10 @@ namespace Kinovea.ScreenManager
             Graphics g = but.CreateGraphics();
            
             // Size of textbox, we don't use the actual font size (far too big)
-            Font f = m_TextStyle.GetInternalFont();
-            SizeF edSize = g.MeasureString(m_Text + " ", new Font(f.Name, m_iDefaultFontSize, f.Style));
+            Font f = m_TextStyle.GetInternalFontDefault(m_iDefaultFontSize);
+            SizeF edSize = g.MeasureString(m_Text + " ", f);
             m_TextBox.Size = new Size((int)edSize.Width + 8, (int)edSize.Height);
-
+            f.Dispose();
             g.Dispose();
         }
         private void DrawBackground(Graphics _canvas, double _fOpacityFactor)
@@ -395,6 +396,7 @@ namespace Kinovea.ScreenManager
             Font f = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
             int radius = (int)(f.Size / 2);
+            f.Dispose();
             
             m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextStyle.BackColor);
         }
