@@ -185,6 +185,8 @@ namespace Kinovea.ScreenManager
 							}
 						}
 					}
+					
+					f.Dispose();
 				}					
 			}
 			

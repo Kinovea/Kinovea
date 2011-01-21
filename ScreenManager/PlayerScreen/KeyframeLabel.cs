@@ -223,15 +223,21 @@ namespace Kinovea.ScreenManager
         	// Small dot and connector.        	
         	Color fadingColor = m_TextDecoration.GetFadingBackColor(_fOpacityFactor);
             Color moreFadingColor = m_TextDecoration.GetFadingBackColor(_fOpacityFactor/4);
-            _canvas.FillEllipse(new SolidBrush(fadingColor), m_AttachLocationRescaled.X - 2, m_AttachLocationRescaled.Y - 2, 4, 4);
-            _canvas.DrawLine(new Pen(moreFadingColor), m_AttachLocationRescaled.X, m_AttachLocationRescaled.Y, m_LabelBackground.Location.X + m_BackgroundSize.Width / 2, m_LabelBackground.Location.Y + m_BackgroundSize.Height / 2);
-
+            SolidBrush fillBrush = new SolidBrush(fadingColor);
+            Pen p = new Pen(moreFadingColor); 
+            _canvas.FillEllipse(fillBrush, m_AttachLocationRescaled.X - 2, m_AttachLocationRescaled.Y - 2, 4, 4);
+            _canvas.DrawLine(p, m_AttachLocationRescaled.X, m_AttachLocationRescaled.Y, m_LabelBackground.Location.X + m_BackgroundSize.Width / 2, m_LabelBackground.Location.Y + m_BackgroundSize.Height / 2);
+            p.Dispose();
+            fillBrush.Dispose();
+            
             // Background
         	m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextDecoration.BackColor);
         	
         	// Text
         	SolidBrush fontBrush = new SolidBrush(m_TextDecoration.GetFadingForeColor(_fOpacityFactor));
         	_canvas.DrawString(" " + m_Text, f, fontBrush, m_LabelBackground.TextLocation);
+        	fontBrush.Dispose();
+        	f.Dispose();
         }    
         public void MoveTo(Point _attachPoint)
         {

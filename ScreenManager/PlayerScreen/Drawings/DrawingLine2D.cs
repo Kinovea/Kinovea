@@ -131,6 +131,8 @@ namespace Kinovea.ScreenManager
                 	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(1));
                 }
                 
+                penEdges.Dispose();
+                
                 if(m_bShowMeasure)
                 {
                 	// Text of the measure. (The helpers knows the unit)
@@ -397,6 +399,7 @@ namespace Kinovea.ScreenManager
             }
             
             areaPath.Widen(areaPen);
+            areaPen.Dispose();
             
             // Create region from the path
             Region areaRegion = new Region(areaPath);

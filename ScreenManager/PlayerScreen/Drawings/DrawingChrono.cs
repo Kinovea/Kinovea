@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
+using Kinovea.ScreenManager.Languages;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -27,7 +28,6 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -351,8 +351,7 @@ namespace Kinovea.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolChrono", Thread.CurrentThread.CurrentUICulture);
+            return ScreenManagerLang.ToolTip_DrawingToolChrono;
         }
         public override int GetHashCode()
         {
@@ -622,6 +621,7 @@ namespace Kinovea.ScreenManager
             Font f = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
             int radius = (int)(f.Size / 2);
+            f.Dispose();
             
             m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextStyle.BackColor);
         }
@@ -632,8 +632,8 @@ namespace Kinovea.ScreenManager
             int radius = (int)(fMainFontSize / 4);
             Font fontText = m_TextStyle.GetInternalFont(0.5f);
             SizeF labelSize = _canvas.MeasureString(m_Label + " ", fontText);
-
-            // the label background starts at the end of the rounded angle of the main background.
+            
+			// the label background starts at the end of the rounded angle of the main background.
             Rectangle RescaledBackground = new Rectangle(m_LabelBackground.Location.X + radius, m_LabelBackground.Location.Y - (int)labelSize.Height - 1, (int)labelSize.Width + 11, (int)labelSize.Height);
 
             LabelBackground labelBG = new LabelBackground(RescaledBackground.Location, true, 11, 0);
@@ -642,12 +642,16 @@ namespace Kinovea.ScreenManager
             // Label text
             SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor(_fOpacityFactor));
             _canvas.DrawString(m_Label, fontText, fontBrush, new Point(RescaledBackground.X+4, RescaledBackground.Y+1));
+            fontBrush.Dispose();
+            fontText.Dispose();
         }
         private void DrawText(Graphics _canvas, double _fOpacityFactor)
         {
         	Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
         	SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor((float)_fOpacityFactor));
         	_canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
+        	fontBrush.Dispose();
+        	fontText.Dispose();
         }
         private bool IsPointInObject(Point _point)
         {

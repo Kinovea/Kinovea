@@ -164,6 +164,7 @@ namespace Kinovea.ScreenManager
             {
                 _canvas.FillEllipse(br, GetRescaledHandleRectangle(i+1));
             }
+            br.Dispose();
             
             if (m_bSupport3D)
             {

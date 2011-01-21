@@ -45,6 +45,7 @@ namespace Kinovea.ScreenManager
             Bitmap b = new Bitmap(_iSize + 2, _iSize + 2);
             Graphics g = Graphics.FromImage(b);
             g.DrawEllipse(p, 1, 1, _iSize, _iSize);
+            p.Dispose();
             return new Cursor(b.GetHicon());
         }
     }
