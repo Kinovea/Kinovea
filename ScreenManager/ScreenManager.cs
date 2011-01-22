@@ -736,17 +736,8 @@ namespace Kinovea.ScreenManager
 	                {
 	                    if (screen != _screen && screen is PlayerScreen)
 	                    {
-	                    	Bitmap img = AForge.Imaging.Image.Clone(_image);
-	                    	
-	                    	// Mirroring is the only modification to the image we handle for now,
-	                    	// no drawings, no magnifier, no zoom, etc.
-	                    	if(((PlayerScreen)_screen).Mirrored)
-	                    	{
-	                    		Mirror mirrorFilter = new Mirror(false, true);
-								mirrorFilter.ApplyInPlace( img );
-	                    	}
-	                    	
-	                    	((PlayerScreen)screen).SetSyncMergeImage(img, !m_bDualSaveInProgress);
+	                    	// The image has been cloned and transformed in the caller screen.
+	                    	((PlayerScreen)screen).SetSyncMergeImage(_image, !m_bDualSaveInProgress);
 	                    }
 	                }	
         		}
@@ -756,9 +747,6 @@ namespace Kinovea.ScreenManager
         		{
         			DynamicSync();
         		}
-        		
-        		
-        		
         	}
         }
         public void Player_Reset(PlayerScreen _screen)
