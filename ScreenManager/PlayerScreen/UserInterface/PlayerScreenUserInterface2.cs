@@ -194,6 +194,8 @@ namespace Kinovea.ScreenManager
 			{
 				m_bSyncMerge = value;
 				
+				m_FrameServer.CoordinateSystem.FreeMove = m_bSyncMerge;
+				
 				if(!m_bSyncMerge && m_SyncMergeImage != null)
 				{
 					m_SyncMergeImage.Dispose();
@@ -2463,10 +2465,7 @@ namespace Kinovea.ScreenManager
 				if(_bAllowUIUpdate) pbSurfaceScreen.Invalidate();
 				
 				// Report image for synchro and merge.
-				if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
-				{
-					m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(m_FrameServer.VideoFile.CurrentImage);
-				}
+				ReportForSyncMerge();
 			}
 			else
 			{
@@ -3086,9 +3085,10 @@ namespace Kinovea.ScreenManager
 								// (including chronos, tracks and grids)
 								bool bMovingObject = ((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).OnMouseMove(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
 								
-								if (!bMovingObject && m_FrameServer.CoordinateSystem.Zooming)
+								if (!bMovingObject)
 								{
-									// User is not moving anything and we are zooming : move the zoom window.
+									// User is not moving anything: move the whole image.
+									// This may not have any effect if we try to move outside the original size and not in "free move" mode.
 									
 									// Get mouse deltas (descaled=in image coords).
 									double fDeltaX = (double)((DrawingToolPointer)m_DrawingTools[(int)m_ActiveTool]).MouseDelta.X;
@@ -3128,6 +3128,9 @@ namespace Kinovea.ScreenManager
 					{
 						m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].UpdateTrackPoint(m_FrameServer.VideoFile.CurrentImage);
 					}
+					
+					// Report for synchro and merge to update image in the other screen.
+					ReportForSyncMerge();
 				}
 				
 				m_FrameServer.Metadata.Magnifier.OnMouseUp(e);
@@ -3372,18 +3375,8 @@ namespace Kinovea.ScreenManager
 				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
 			}
 			
-			Rectangle rSrc;
-			if (m_FrameServer.CoordinateSystem.Zooming)
-			{
-				rSrc = m_FrameServer.CoordinateSystem.ZoomWindow;
-			}
-			else
-			{
-				rSrc = new Rectangle(0, 0, _sourceImage.Width, _sourceImage.Height);
-			}
-			
 			// DrawImage is slow.
-			g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
+			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
 			
 			// Using BitBlt forces to use GetHBitmap, which is as slow as DrawImage.
 			/*if(m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
@@ -4666,15 +4659,15 @@ namespace Kinovea.ScreenManager
 				// Max zoom : 600%
 				if (m_FrameServer.CoordinateSystem.Zoom < 6.0f)
 				{
-					m_FrameServer.CoordinateSystem.Zoom += 0.20f;
+					m_FrameServer.CoordinateSystem.Zoom += 0.10f;
 					RelocateDirectZoom();
 					m_FrameServer.Metadata.ResizeFinished();
 					ToastZoom();
+					ReportForSyncMerge();
 				}	
 			}
 			
 			pbSurfaceScreen.Invalidate();
-			
 		}
 		private void DecreaseDirectZoom()
 		{
@@ -4684,9 +4677,9 @@ namespace Kinovea.ScreenManager
 			}
 			else if (m_FrameServer.CoordinateSystem.Zooming)
 			{
-				if (m_FrameServer.CoordinateSystem.Zoom > 1.2f)
+				if (m_FrameServer.CoordinateSystem.Zoom > 1.1f)
 				{
-					m_FrameServer.CoordinateSystem.Zoom -= 0.20f;
+					m_FrameServer.CoordinateSystem.Zoom -= 0.10f;
 				}
 				else
 				{
@@ -4696,6 +4689,7 @@ namespace Kinovea.ScreenManager
 				RelocateDirectZoom();
 				m_FrameServer.Metadata.ResizeFinished();
 				ToastZoom();
+				ReportForSyncMerge();
 			}
 			
 			pbSurfaceScreen.Invalidate();
@@ -4730,6 +4724,31 @@ namespace Kinovea.ScreenManager
 			m_SyncMergeMatrix.Matrix33 = _alpha;
 			m_SyncMergeMatrix.Matrix44 = 1.0f;
 			m_SyncMergeImgAttr.SetColorMatrix(m_SyncMergeMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+		}
+		private void ReportForSyncMerge()
+		{
+			// We have to re-apply the transformations here, because when drawing in this screen we draw directly on the canvas.
+			// (there is no intermediate image that we could reuse here, this might be a future optimization).
+			// We need to clone it anyway, so we might aswell do the transform.
+			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
+			{
+				Size imgSize = new Size(m_FrameServer.VideoFile.CurrentImage.Size.Width, m_FrameServer.VideoFile.CurrentImage.Size.Height);
+				Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
+				Graphics g = Graphics.FromImage(img);
+				
+				Rectangle rDst;
+				if(m_FrameServer.Metadata.Mirrored)
+				{
+					rDst = new Rectangle(imgSize.Width, 0, -imgSize.Width, imgSize.Height);
+				}
+				else
+				{
+					rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
+				}
+				
+				g.DrawImage(m_FrameServer.VideoFile.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+				m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
+			}
 		}
 		#endregion
 		

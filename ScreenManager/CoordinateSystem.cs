@@ -66,6 +66,11 @@ namespace Kinovea.ScreenManager
 		public Rectangle ZoomWindow
 		{
 			get { return m_DirectZoomWindow;}
+		}		
+		public bool FreeMove
+		{
+			get { return m_bFreeMove; }
+			set { m_bFreeMove = value; }
 		}
 		#endregion
 		
@@ -77,6 +82,7 @@ namespace Kinovea.ScreenManager
 		private double m_fZoom = 1.0f;		
 		private Rectangle m_DirectZoomWindow = new Rectangle(0, 0, 0, 0);
 		//private bool m_bMirrored;
+		private bool m_bFreeMove;				// If we allow the image to be moved out of bounds.
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 				
@@ -112,11 +118,14 @@ namespace Kinovea.ScreenManager
 			int iNewLeft = _center.X - (iNewWidth / 2);
 			int iNewTop = _center.Y - (iNewHeight / 2);
 
-			if (iNewLeft < 0) iNewLeft = 0;
-			if (iNewLeft + iNewWidth >= m_OriginalSize.Width) iNewLeft = m_OriginalSize.Width - iNewWidth;
-
-			if (iNewTop < 0) iNewTop = 0;
-			if (iNewTop + iNewHeight >= m_OriginalSize.Height) iNewTop = m_OriginalSize.Height - iNewHeight;
+			if(!m_bFreeMove)
+			{
+				if (iNewLeft < 0) iNewLeft = 0;
+				if (iNewLeft + iNewWidth >= m_OriginalSize.Width) iNewLeft = m_OriginalSize.Width - iNewWidth;
+	
+				if (iNewTop < 0) iNewTop = 0;
+				if (iNewTop + iNewHeight >= m_OriginalSize.Height) iNewTop = m_OriginalSize.Height - iNewHeight;
+			}
 
 			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, iNewWidth, iNewHeight);	
 		}
@@ -129,14 +138,17 @@ namespace Kinovea.ScreenManager
 			int iNewTop = (int)((double)m_DirectZoomWindow.Top - _fDeltaY);
 			
 			// Restraint the tentative coords at image borders.
-			if (iNewLeft < 0) iNewLeft = 0;
-			if (iNewTop < 0) iNewTop = 0;
-			
-			if (iNewLeft + m_DirectZoomWindow.Width >= m_OriginalSize.Width)
-				iNewLeft = m_OriginalSize.Width - m_DirectZoomWindow.Width;
-			
-			if (iNewTop + m_DirectZoomWindow.Height >= m_OriginalSize.Height)
-				iNewTop = m_OriginalSize.Height - m_DirectZoomWindow.Height;
+			if(!m_bFreeMove)
+			{
+				if (iNewLeft < 0) iNewLeft = 0;
+				if (iNewTop < 0) iNewTop = 0;
+				
+				if (iNewLeft + m_DirectZoomWindow.Width >= m_OriginalSize.Width)
+					iNewLeft = m_OriginalSize.Width - m_DirectZoomWindow.Width;
+				
+				if (iNewTop + m_DirectZoomWindow.Height >= m_OriginalSize.Height)
+					iNewTop = m_OriginalSize.Height - m_DirectZoomWindow.Height;
+			}
 			
 			// Reposition.
 			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
