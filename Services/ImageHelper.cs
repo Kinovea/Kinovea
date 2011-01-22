@@ -94,10 +94,17 @@ namespace Kinovea.Services
 
 			return new Bitmap(memStr);
 		}
-		public static Bitmap GetSideBySideComposite(Bitmap _leftImage, Bitmap _rightImage)
+		public static Bitmap GetSideBySideComposite(Bitmap _leftImage, Bitmap _rightImage, bool _video)
 		{
 			// Create the output image.
 			int maxHeight = Math.Max(_leftImage.Height, _rightImage.Height);
+			
+			// For video export, only even heights are valid.			
+			if(_video && (maxHeight % 2 != 0))
+			{
+				maxHeight++;
+			}
+			
 			Bitmap composite = new Bitmap(_leftImage.Width + _rightImage.Width, maxHeight, _leftImage.PixelFormat);
 			
 			// Vertically center the shortest image.
