@@ -979,7 +979,7 @@ namespace Kinovea.ScreenManager
        				// get a copy of the images with drawings flushed on.
        				Bitmap leftImage = ps1.GetFlushedImage();
        				Bitmap rightImage = ps2.GetFlushedImage();
-       				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage);
+       				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false);
        				
        				// Configure Save dialog.
        				SaveFileDialog dlgSave = new SaveFileDialog();
@@ -1749,7 +1749,9 @@ namespace Kinovea.ScreenManager
        				
        				Bitmap img1 = ps1.GetFlushedImage();
        				Bitmap img2 = ps2.GetFlushedImage();
-       				Bitmap composite = ImageHelper.GetSideBySideComposite(img1, img2);
+       				Bitmap composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
+       				
+       				log.Debug(String.Format("Composite size: {0}.", composite.Size));
        				
        				// Configure a fake InfoVideo to setup image size.
        				InfosVideo iv = new InfosVideo();
@@ -1785,7 +1787,7 @@ namespace Kinovea.ScreenManager
 	       						OnCommonPositionChanged(-1, false);
 	       						img1 = ps1.GetFlushedImage();
 				       			img2 = ps2.GetFlushedImage();
-	       						composite = ImageHelper.GetSideBySideComposite(img1, img2);
+	       						composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
 				       			
 				       			// Save to file.
 				       			m_VideoFileWriter.SaveFrame(composite);
