@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private List<Button> m_ColorButtons = new List<Button>();
 		private Color m_PickedColor;
+		private static readonly int m_iButtonSize = 15;
 		#endregion
 		
 		#region Construction and Initialization
@@ -58,7 +59,7 @@ namespace Kinovea.ScreenManager
 		{
 			this.SuspendLayout();
 			InitializeComponent();
-			GeneratePalette(0, 0, 15, 15);
+			GeneratePalette(0, 0, m_iButtonSize, m_iButtonSize);
 			this.ResumeLayout();
 		}
 		private void GeneratePalette(int _left, int _top, int _buttonWidth, int _buttonHeight) 
@@ -153,23 +154,20 @@ namespace Kinovea.ScreenManager
 				lblRecent.AutoSize = true;
 				
 				lblRecent.Text = ScreenManagerLang.RecentlyUsedColors;
-				lblRecent.Top = 175;
+				lblRecent.Top = this.Margin.Top + (11 * m_iButtonSize) + 30;
 				Controls.Add(lblRecent);
 				
 				List<Button> recentButtons = new List<Button>();
 				int x = 0;
-				int y = lblRecent.Top + lblRecent.Height + 5;
-				int side = 15;
+				int y = lblRecent.Bottom + 5;
 				for(int i=0; i<_recentColors.Count;i++)
 				{
-					Button b = createColorButton(_recentColors[i], x, y, side, side);
+					Button b = createColorButton(_recentColors[i], x, y, m_iButtonSize, m_iButtonSize);
 					recentButtons.Add(b);
-					x += side;
+					x += m_iButtonSize;
 				}
 				
 				Controls.AddRange(recentButtons.ToArray());
-				
-				this.Height = this.Height + 5 + lblRecent.Height + 5 + side + 5;
 			}
 			
 		}
