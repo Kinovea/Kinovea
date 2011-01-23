@@ -117,27 +117,26 @@ namespace Kinovea.ScreenManager
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
                     stlPicker.ToolType = DrawingToolType.Pencil;
-                    stlPicker.Top = 187;
+                    stlPicker.Top = m_ColorPicker.Bottom + 10;
                     stlPicker.Left = (grpConfig.Width - stlPicker.Width) / 2;
                     stlPicker.Visible = true;
-                    Height = 375;
+                    grpConfig.Height = stlPicker.Bottom + 20;
                     break;
                 case DrawingToolType.Line2D:
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
                     stlPicker.ToolType = DrawingToolType.Line2D;
-                    stlPicker.Top = 187;
+                    stlPicker.Top = m_ColorPicker.Bottom + 10;
                     stlPicker.Left = (grpConfig.Width - stlPicker.Width) / 2;
                     stlPicker.Visible = true;
-                    Height = 362;
+                    grpConfig.Height = stlPicker.Bottom + 20;
                     break;
                 case DrawingToolType.Text:
                     stlPicker.Visible = false;
                     lblFontSize.Visible = true;
-                    lblFontSize.Top = 187;
-                    cmbFontSize.Top = 187;
+                    lblFontSize.Top = m_ColorPicker.Bottom + 10;
+                    cmbFontSize.Top = m_ColorPicker.Bottom + 10;
                     cmbFontSize.Visible = true;
-                    Height = 310;
                     
                     // Initialize font size combo.
                     cmbFontSize.Items.Clear();
@@ -156,16 +155,20 @@ namespace Kinovea.ScreenManager
                     {
                     	cmbFontSize.Text = ((DrawingText)m_Drawing).FontSize.ToString();
                     }
+                    grpConfig.Height = cmbFontSize.Bottom + 20;
                     break;
                 default:
                     // For the rest, only show the color picker.
                     stlPicker.Visible = false;
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
-                    Height = 280;
+                    grpConfig.Height = m_ColorPicker.Bottom + 20;
                     break;
             }
             
+            btnCancel.Top = grpConfig.Bottom + 10;
+            btnOK.Top = grpConfig.Bottom + 10;
+            this.Height = btnOK.Bottom + 10;
         }
         private void LocalizeForm()
         {

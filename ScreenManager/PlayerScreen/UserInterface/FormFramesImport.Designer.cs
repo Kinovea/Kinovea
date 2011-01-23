@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
         	// 
         	// labelInfos
         	// 
-        	this.labelInfos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+        	this.labelInfos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
         	this.labelInfos.AutoSize = true;
         	this.labelInfos.Location = new System.Drawing.Point(20, 49);
         	this.labelInfos.Name = "labelInfos";
@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
         	// 
         	// buttonCancel
         	// 
-        	this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+        	this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         	this.buttonCancel.Location = new System.Drawing.Point(271, 45);
         	this.buttonCancel.Name = "buttonCancel";
@@ -81,6 +81,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        	this.AutoSize = true;
         	this.CancelButton = this.buttonCancel;
         	this.ClientSize = new System.Drawing.Size(369, 82);
         	this.ControlBox = false;

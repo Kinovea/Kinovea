@@ -54,6 +54,7 @@ namespace Kinovea.ScreenManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.Name = "ColorPicker";
 			this.Size = new System.Drawing.Size(200, 165);
 			this.ResumeLayout(false);

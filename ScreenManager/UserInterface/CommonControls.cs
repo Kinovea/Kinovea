@@ -84,7 +84,6 @@ namespace Kinovea.ScreenManager
         {
         	BackColor = Color.White;
             
-        	btnSnapShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	btnSnapShot.BackColor = System.Drawing.Color.Transparent;
         	btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -92,14 +91,13 @@ namespace Kinovea.ScreenManager
         	btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	btnSnapShot.Image = ScreenManager.Properties.Resources.snapsingle_1;
-        	btnSnapShot.Location = new System.Drawing.Point(trkFrame.Left + trkFrame.Width + 10, btnMerge.Top);
+        	btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
         	btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
         	btnSnapShot.Name = "btnSnapShot";
         	btnSnapShot.Size = new System.Drawing.Size(30, 25);
         	btnSnapShot.UseVisualStyleBackColor = false;
         	btnSnapShot.Click += new System.EventHandler(btnSnapshot_Click);
         	
-        	btnDualVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	btnDualVideo.BackColor = System.Drawing.Color.Transparent;
         	btnDualVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	btnDualVideo.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -107,7 +105,7 @@ namespace Kinovea.ScreenManager
         	btnDualVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	btnDualVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	btnDualVideo.Image = ScreenManager.Properties.Resources.savevideo;
-        	btnDualVideo.Location = new System.Drawing.Point(trkFrame.Left + trkFrame.Width + 45, btnSnapShot.Top);
+        	btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnSnapShot.Top);
         	btnDualVideo.MinimumSize = new System.Drawing.Size(25, 25);
         	btnDualVideo.Name = "btnDualVideo";
         	btnDualVideo.Size = new System.Drawing.Size(30, 25);
@@ -137,6 +135,12 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
         
+		private void CommonControls_Resize(object sender, EventArgs e)
+		{
+			btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
+			btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnMerge.Top);
+		}
+		
         #region Buttons Handlers
         public void buttonGotoFirst_Click(object sender, EventArgs e)
         {

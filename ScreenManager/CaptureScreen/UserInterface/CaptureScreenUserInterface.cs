@@ -2123,12 +2123,12 @@ namespace Kinovea.ScreenManager
         {
         	if(m_bSettingsFold)
         	{
-        		panelVideoControls.Height = 142;
+        		panelVideoControls.Height = tbVideoDirectory.Bottom + 12;
         		btnFoldSettings.BackgroundImage = Resources.dock16x16;
         	}
         	else
         	{
-        		panelVideoControls.Height = lblSettings.Top + lblSettings.Height;
+        		panelVideoControls.Height = lblSettings.Bottom;
         		btnFoldSettings.BackgroundImage = Resources.undock16x16;
         	}
         	

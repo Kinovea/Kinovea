@@ -242,6 +242,7 @@ namespace Kinovea.ScreenManager
         	this.Controls.Add(this.buttonPlay);
         	this.Name = "CommonControls";
         	this.Size = new System.Drawing.Size(665, 45);
+        	this.Resize += new System.EventHandler(this.CommonControls_Resize);
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
