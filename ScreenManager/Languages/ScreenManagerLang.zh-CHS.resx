@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>设置工作区的最后一帧为当前帧</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>设置工作区的第一帧为当前帧</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>锐化...</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>显示测量</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>固定</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>结束路径 </value></data>

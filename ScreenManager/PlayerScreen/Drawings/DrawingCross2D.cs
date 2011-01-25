@@ -42,6 +42,16 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public bool ShowCoordinates
+		{
+			get { return m_bShowCoordinates; }
+			set { m_bShowCoordinates = value; }
+		}
+        public Metadata ParentMetadata
+        {
+            // get => unused.
+            set { m_ParentMetadata = value; }
+        }
         
         // Next 2 props are accessed from Track creation.
         public Point CenterPoint 
@@ -64,9 +74,12 @@ namespace Kinovea.ScreenManager
         private LineStyle m_PenStyle;
         private LineStyle m_MemoPenStyle;
         private InfosFading m_InfosFading;
+		private KeyframeLabel m_LabelCoordinates;
+        private bool m_bShowCoordinates;
+        private Metadata m_ParentMetadata;
         private static readonly int m_iDefaultBackgroundAlpha = 64;
         private static readonly int m_iDefaultRadius = 3;
-               
+
         // Computed
         private Point RescaledCenterPoint;
         #endregion
@@ -82,6 +95,8 @@ namespace Kinovea.ScreenManager
             // Decoration
             m_PenStyle = new LineStyle(1, LineShape.Simple, Color.CornflowerBlue);
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            
+            m_LabelCoordinates = new KeyframeLabel(m_CenterPoint, Color.Black);
             
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -111,17 +126,29 @@ namespace Kinovea.ScreenManager
                 _canvas.FillEllipse(tempBrush, RescaledCenterPoint.X - m_iDefaultRadius - 1, RescaledCenterPoint.Y - m_iDefaultRadius - 1, (m_iDefaultRadius * 2) + 2, (m_iDefaultRadius * 2) + 2);
                 tempBrush.Dispose();
                 PenEdges.Dispose();
+                
+                if(m_bShowCoordinates)
+                {
+                	m_LabelCoordinates.Text = m_ParentMetadata.CalibrationHelper.GetPointText(m_CenterPoint, true);
+	                m_LabelCoordinates.Draw(_canvas, _fStretchFactor, _DirectZoomTopLeft, fOpacityFactor);
+                }
             }
         }
         public override void MoveHandleTo(Point point, int handleNumber)
         {
-            // Not implemented (No handlers)
+            // This is only implemented for the coordinates mini label.
+            if(handleNumber == 1)
+            {
+		        m_LabelCoordinates.MoveLabel(point);
+            }
         }
         public override void MoveDrawing(int _deltaX, int _deltaY)
         {
             // _delatX and _delatY are mouse delta already descaled.
             m_CenterPoint.X += _deltaX;
             m_CenterPoint.Y += _deltaY;
+            
+            m_LabelCoordinates.MoveTo(m_CenterPoint);
 
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -135,7 +162,11 @@ namespace Kinovea.ScreenManager
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (fOpacityFactor > 0)
             {
-                if (IsPointInObject(_point))
+            	if(m_bShowCoordinates && m_LabelCoordinates.HitTest(_point))
+            	{
+            		iHitResult = 1;
+            	}
+            	else if (IsPointInObject(_point))
                 {
                     iHitResult = 0;
                 }
@@ -153,9 +184,28 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(m_CenterPoint.X.ToString() + ";" + m_CenterPoint.Y.ToString());
             _xmlWriter.WriteEndElement();
 
+            // Color, style, fading.
             m_PenStyle.ToXml(_xmlWriter);
             m_InfosFading.ToXml(_xmlWriter, false);
 
+            // Show coords.
+            _xmlWriter.WriteStartElement("CoordinatesVisible");
+            _xmlWriter.WriteString(m_bShowCoordinates.ToString());
+            _xmlWriter.WriteEndElement();
+            
+            if(m_bShowCoordinates)
+            {
+            	// This is only for spreadsheet export support. These values are not read at import.
+            	_xmlWriter.WriteStartElement("Coordinates");
+            	
+            	PointF coords = m_ParentMetadata.CalibrationHelper.GetPointInUserUnit(m_CenterPoint);
+	            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
+	            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
+            	_xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
+            	
+            	_xmlWriter.WriteEndElement();
+            }
+            
             // </Drawing>
             _xmlWriter.WriteEndElement();
         }
@@ -180,6 +230,10 @@ namespace Kinovea.ScreenManager
                     {
                         dc.m_InfosFading.FromXml(_xmlReader);
                     }
+                    else if(_xmlReader.Name == "CoordinatesVisible")
+                    {
+                    	dc.m_bShowCoordinates = bool.Parse(_xmlReader.ReadString());
+                    }
                     else
                     {
                         // forward compatibility : ignore new fields. 
@@ -195,6 +249,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
+            dc.m_LabelCoordinates.MoveTo(dc.CenterPoint);
             dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);
             return dc;
         }

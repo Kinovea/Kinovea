@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Sharpen...</value></data>
+   <data name="mnuShowCoordinates" xml:space="preserve"><value>Display coordinates</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Display Measure</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilize</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End Path Edition </value></data>

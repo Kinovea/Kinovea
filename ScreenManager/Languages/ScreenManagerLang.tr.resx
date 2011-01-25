@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Çalışma Alanının İlk Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Çalışma Alanının Son Karesini Geçerli Kareye Denkleştir</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Keskinleştir...</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Ölçümü Göster</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilize Et</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Yol Düzenlemesini Sonlandır</value></data>

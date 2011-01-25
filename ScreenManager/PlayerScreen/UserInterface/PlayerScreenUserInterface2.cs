@@ -261,6 +261,7 @@ namespace Kinovea.ScreenManager
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
 		private bool m_bMeasuring;
+		private bool m_bCrossCoordinates;
 		private Point m_DescaledMouse;
 
 		// Video Filters Management
@@ -291,6 +292,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
 		
 		private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
 		private ToolStripMenuItem mnuRestartTracking = new ToolStripMenuItem();
@@ -1034,6 +1036,7 @@ namespace Kinovea.ScreenManager
 			m_bDocked = true;
 			m_bTextEdit = false;
 			m_bMeasuring = false;
+			m_bCrossCoordinates = false;
 			
 			m_bDrawtimeFiltered = false;
 			
@@ -1162,7 +1165,9 @@ namespace Kinovea.ScreenManager
 			mnuShowMeasure.Image = Properties.Resources.measure;
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
 			mnuSealMeasure.Image = Properties.Resources.textfield;
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuSepDrawing, mnuTrackTrajectory, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
+			mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
+			mnuShowCoordinates.Image = Properties.Resources.measure;
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuSepDrawing, mnuTrackTrajectory, mnuShowCoordinates, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
@@ -2660,6 +2665,7 @@ namespace Kinovea.ScreenManager
 			mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
 			mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
+			mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
 			mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
 			
 			// 3. Tracking pop menu (Restart, Stop tracking)
@@ -2762,6 +2768,10 @@ namespace Kinovea.ScreenManager
 			if(_drawing is DrawingLine2D)
 			{
 				mnuShowMeasure.Checked = ((DrawingLine2D)_drawing).ShowMeasure;
+			}
+			else if(_drawing is DrawingCross2D)
+			{
+				mnuShowCoordinates.Checked = ((DrawingCross2D)_drawing).ShowCoordinates;
 			}
 		}
 		#endregion
@@ -2885,11 +2895,15 @@ namespace Kinovea.ScreenManager
 									// Color
 									m_ColorProfile.SetupDrawing(ad, m_ActiveTool);
 									
-									DrawingLine2D line = ad as DrawingLine2D;
-									if(line != null)
+									if(ad is DrawingLine2D)
 									{
-										line.ParentMetadata = m_FrameServer.Metadata;
-										line.ShowMeasure = m_bMeasuring;
+										((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
+										((DrawingLine2D)ad).ShowMeasure = m_bMeasuring;
+									}
+									else if(ad is DrawingCross2D)
+									{
+										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
+										((DrawingCross2D)ad).ShowCoordinates = m_bCrossCoordinates;
 									}
 								}
 								else
@@ -2968,6 +2982,7 @@ namespace Kinovea.ScreenManager
 								mnuGotoKeyframe.Visible = gotoVisible;
 								mnuShowMeasure.Visible = isLine;
 								mnuSealMeasure.Visible = isLine;
+								mnuShowCoordinates.Visible = isCross;
 								
 								mnuSepDrawing.Visible = !(ad is DrawingSVG);
 								mnuSepDrawing2.Visible = isCross || gotoVisible || isLine;
@@ -4297,6 +4312,21 @@ namespace Kinovea.ScreenManager
 					mnuShowMeasure.Checked = !mnuShowMeasure.Checked;
 					line.ShowMeasure = mnuShowMeasure.Checked;
 					m_bMeasuring = mnuShowMeasure.Checked;
+					pbSurfaceScreen.Invalidate();
+				}
+			}
+		}
+		private void mnuShowCoordinates_Click(object sender, EventArgs e)
+		{
+			// Enable / disable the display of the coordinates for this cross marker.
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				DrawingCross2D cross = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingCross2D;
+				if(cross!= null)
+				{
+					mnuShowCoordinates.Checked = !mnuShowCoordinates.Checked;
+					cross.ShowCoordinates = mnuShowCoordinates.Checked;
+					m_bCrossCoordinates = mnuShowCoordinates.Checked;
 					pbSurfaceScreen.Invalidate();
 				}
 			}

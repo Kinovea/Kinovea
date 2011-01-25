@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Posicionar la salida de la zona de trabajo sobre la imagen actual</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Posicionar la entrada de la zona de trabajo sobre la imagen actual</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Fortalecimiento de contornos…</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostar la medida</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizar</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminar la ediciòn de la Trayectoria</value></data>

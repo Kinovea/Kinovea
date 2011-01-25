@@ -2005,6 +2005,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Display coordinates.
+        /// </summary>
+        internal static string mnuShowCoordinates {
+            get {
+                return ResourceManager.GetString("mnuShowCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Display Measure.
         /// </summary>
         internal static string mnuShowMeasure {

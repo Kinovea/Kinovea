@@ -1247,6 +1247,7 @@ namespace Kinovea.ScreenManager
                     break;
                 case "DrawingCross2D":
                     ad = DrawingCross2D.FromXml(_xmlReader, scaling);
+                    ((DrawingCross2D)ad).ParentMetadata = this;
                     break;
                 case "DrawingAngle2D":
                     ad = DrawingAngle2D.FromXml(_xmlReader, scaling);

@@ -43,6 +43,10 @@
 
   <xsl:call-template name="keyframes-table"/>    
   
+  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates) &gt; 0">
+    <xsl:call-template name="points-table"/>
+  </xsl:if>
+  
   <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure) &gt; 0">
     <xsl:call-template name="lines-table"/>
   </xsl:if>
@@ -182,6 +186,43 @@
 			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="Position/@UserTime"/></text:p></table:table-cell>
 		</table:table-row>
 	</xsl:for-each>
+</xsl:template>
+
+<xsl:template name="points-table">
+  <!-- Context node: Keyframes -->
+	
+	<xsl:call-template name="empty-row"/>
+
+  <table:table-row>
+    <table:table-cell table:style-name="keyimages-title" table:number-columns-spanned="4"><text:p>Points</text:p></table:table-cell>
+  </table:table-row>
+  <table:table-row>
+    <table:table-cell table:style-name="header"><text:p>X</text:p></table:table-cell>
+    <table:table-cell table:style-name="header"><text:p>Y</text:p></table:table-cell>
+    <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
+    <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
+  </table:table-row>
+  <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
+    <table:table-row>
+    
+      <table:table-cell>
+        <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
+        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
+        <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></xsl:attribute>
+        <text:p><xsl:value-of select="@UserX"/></text:p>
+      </table:table-cell>
+	  
+	  <table:table-cell>
+        <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
+        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
+        <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></xsl:attribute>
+        <text:p><xsl:value-of select="@UserY"/></text:p>
+      </table:table-cell>
+      
+      <table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Position/@UserTime"/></text:p></table:table-cell>
+			<table:table-cell table:style-name="data"><text:p><xsl:value-of select="../../../Title"/></text:p></table:table-cell>
+    </table:table-row>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template name="lines-table">

@@ -31,7 +31,11 @@
 	<br/>
 
   <xsl:call-template name="keyframes-table"/>
-    
+  
+  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates) &gt; 0">
+    <xsl:call-template name="points-table"/>
+  </xsl:if>
+  
   <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure) &gt; 0">
     <xsl:call-template name="lines-table"/>
   </xsl:if>
@@ -160,6 +164,31 @@ td {
 				<td class="data left"><xsl:value-of select="Title"/></td>
 				<td class="data right"><xsl:value-of select="Position/@UserTime"/></td>
 			</tr>
+		</xsl:for-each>
+	</table>
+</xsl:template>
+
+
+<xsl:template name="points-table">
+  <!-- Context node: Keyframes -->
+	<br/>
+	<table>
+	  <tr>
+			<td class="keyimages-title" colspan="4">Points</td>
+		</tr>
+		<tr>
+				<td class="header">X</td>
+				<td class="header">Y</td>
+				<td class="header">Time</td>
+				<td class="header">Key Image</td>
+    </tr>
+		<xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
+      <tr>
+        <td class="data right"><xsl:value-of select="@UserX"/></td>
+        <td class="data right"><xsl:value-of select="@UserY"/></td>
+        <td class="data right"><xsl:value-of select="../../../Position/@UserTime"/></td>
+        <td class="data left"><xsl:value-of select="../../../Title"/></td>
+      </tr>
 		</xsl:for-each>
 	</table>
 </xsl:template>

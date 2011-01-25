@@ -40,6 +40,10 @@
     
   <xsl:call-template name="keyframes-table"/>    
   
+  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates) &gt; 0">
+    <xsl:call-template name="points-table"/>
+  </xsl:if>
+  
   <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure) &gt; 0">
     <xsl:call-template name="lines-table"/>
   </xsl:if>
@@ -195,6 +199,30 @@
     <Row>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="Title"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="Position/@UserTime"/></Data></Cell>
+    </Row>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template name="points-table">
+  <!-- Context node: Keyframes -->
+  
+  <xsl:call-template name="empty-row"/>	
+
+  <Row>
+    <Cell ss:MergeAcross="3" ss:StyleID="keyimages-title"><Data ss:Type="String">Points</Data></Cell>
+  </Row>
+  <Row>
+    <Cell ss:StyleID="header"><Data ss:Type="String">X</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Y</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Time</Data></Cell>
+    <Cell ss:StyleID="header"><Data ss:Type="String">Key Image</Data></Cell>
+  </Row>
+  <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
+    <Row>
+      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Title"/></Data></Cell>
     </Row>
   </xsl:for-each>
 </xsl:template>
