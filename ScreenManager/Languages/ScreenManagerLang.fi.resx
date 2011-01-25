@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Aseta työstöjakson viimeinen kuva nykyiseksi kuvaksi</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Aseta työstöjakson ensimmäinen kuva nykyiseksi kuvaksi</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Tarkenna...</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Näytä mitta</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiloi</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Lopeta liikeradan editointi</value></data>

@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>La siste arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>La første arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Skarp opp</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Vis måling</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>End bane Editor</value></data>

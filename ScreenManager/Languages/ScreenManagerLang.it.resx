@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come FINE (ULTIMO fotogramma) della Zona Lavoro </value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Imposta il Fotogramma attuale come INIZIO (PRIMO fotogramma) della Zona Lavoro </value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Nitidezza...</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Visualizza la misura</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizza</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Fine tracciatura Traiettoria</value></data>

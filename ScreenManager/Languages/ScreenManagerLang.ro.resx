@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Setaţi începutul zonei de lucru pe cadrul curent</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Accentuare de contururi...</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afiseaza indicator</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizator</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Termină ediţia traiectoriei</value></data>

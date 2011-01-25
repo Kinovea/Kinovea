@@ -61,7 +61,11 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_CurrentSpeedUnit; }
 			set { m_CurrentSpeedUnit = value; }
-		}	
+		}
+		public bool IsOriginSet
+		{
+			get { return (m_CoordinatesOrigin.X >= 0 && m_CoordinatesOrigin.Y >= 0); }
+		}
 		public Point CoordinatesOrigin
 		{
 			get { return m_CoordinatesOrigin; }
@@ -215,6 +219,35 @@ namespace Kinovea.ScreenManager
 		{
 			// Return the length in the user unit.
 			return _fPixelLength  * m_fPixelToUnit;
+		}
+		
+		public PointF GetPointInUserUnit(Point p)
+		{
+			double fX = GetLengthInUserUnit(p.X - m_CoordinatesOrigin.X);
+			double fY = GetLengthInUserUnit(m_CoordinatesOrigin.Y - p.Y);
+			return new PointF((float)fX, (float)fY);
+		}
+		public string GetPointText(Point p, bool _bAbbreviation)
+		{
+			double fX = GetLengthInUserUnit(p.X - m_CoordinatesOrigin.X);
+			double fY = GetLengthInUserUnit(m_CoordinatesOrigin.Y - p.Y);
+			
+			string pointText;
+			if(m_CurrentLengthUnit == LengthUnits.Pixels)
+			{
+				pointText = String.Format("{{{0:0};{1:0}}}", fX, fY);
+			}
+			else
+			{
+				pointText = String.Format("{{{0:0.00};{1:0.00}}}", fX, fY);
+			}
+			
+			if(_bAbbreviation)
+			{
+				pointText = pointText + " " + GetLengthAbbreviation();
+			}
+			
+			return pointText;
 		}
 		
 		public static string GetSpeedAbbreviationFromUnit(SpeedUnits _unit)

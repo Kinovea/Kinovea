@@ -2740,6 +2740,7 @@ namespace Kinovea.ScreenManager
 				fsto.StartPosition = FormStartPosition.CenterScreen;
 				fsto.ShowDialog();
 				fsto.Dispose();
+				ps.RefreshImage();
         	}
         }
         #endregion

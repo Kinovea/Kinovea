@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Maak eerste frame van het werkgebied nu het huidige frame</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Verscherp…</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliseer…</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beëindig Trajectory bewerking</value></data>

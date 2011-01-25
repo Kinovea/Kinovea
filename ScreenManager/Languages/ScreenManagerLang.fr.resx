@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Positionner la Sortie de la Zone de Travail sur l'Image Courante</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Positionner l'Entrée de la Zone de Travail sur l'Image Courante</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Renforcement des Contours...</value></data>
+   <data name="mnuShowCoordinates" xml:space="preserve"><value>Afficher les coordonnées</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Afficher la mesure</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Terminer l'édition de la Trajectoire</value></data>

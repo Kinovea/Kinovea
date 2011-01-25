@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ajustar o Último Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Ajustar o Primeiro Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Nitidez...</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Mostrar Medida</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Estabilizar</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Fim da Edição do Caminho</value></data>

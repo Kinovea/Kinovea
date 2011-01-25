@@ -286,6 +286,7 @@
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Ustaw aktualną klatkę jako pierwszą klatkę obszaru roboczego</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Wyostrz...</value></data>
    
+   
    <data name="mnuStabilize" xml:space="preserve"><value>Stabilizuj</value></data>
    
    

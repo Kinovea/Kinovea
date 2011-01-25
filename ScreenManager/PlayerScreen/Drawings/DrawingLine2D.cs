@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
         private LineStyle m_PenStyle;
         private LineStyle m_MemoPenStyle;
         private KeyframeLabel m_LabelMeasure;
-        private bool m_bShowMeasure = false;        
+        private bool m_bShowMeasure;
         private Metadata m_ParentMetadata;
         #endregion
 
@@ -177,10 +177,10 @@ namespace Kinovea.ScreenManager
             m_EndPoint.X += _deltaX;
             m_EndPoint.Y += _deltaY;
 
+            m_LabelMeasure.MoveTo(GetMiddlePoint());
+            
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            
-            m_LabelMeasure.MoveTo(GetMiddlePoint());
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {

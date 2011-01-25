@@ -285,6 +285,7 @@
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Τοποθέτηση του Τελευταίου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Τοποθέτηση του Πρώτου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Όξυνση…</value></data>
+   
    <data name="mnuShowMeasure" xml:space="preserve"><value>Απεικόνιση Μέτρησης</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Σταθεροποίηση</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Τερματισμός Έκδοσης Διαδρομής</value></data>
