@@ -1328,6 +1328,7 @@ namespace Kinovea.ScreenManager
 					// Create a menu
 					ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
 					mnuSubDir.Text = Path.GetFileName(subDir);
+					mnuSubDir.Image = Properties.Resources.folder;
 					mnuSubDir.MergeAction = MergeAction.Append;
 					
 					// Build sub tree.
