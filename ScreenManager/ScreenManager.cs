@@ -104,8 +104,12 @@ namespace Kinovea.ScreenManager
         // Video Filters
         private AbstractVideoFilter[] m_VideoFilters;
         private bool m_bHasSvgFiles;
+        private string m_SvgPath;
+        private FileSystemWatcher m_SVGFilesWatcher = new FileSystemWatcher();
+        private MethodInvoker m_SVGFilesChangedInvoker;
+        private bool m_BuildingSVGMenu;
         
-        //Menus
+        #region Menus
         public ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
@@ -132,6 +136,7 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
         
         public ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
+        #endregion
 
         #region Synchronization
         private MMTimerEventHandler m_DelegateMMTimerEventHandler;
@@ -189,6 +194,21 @@ namespace Kinovea.ScreenManager
             dp.DeactivateKeyboardHandler = DoDeactivateKeyboardHandler;
             dp.ActivateKeyboardHandler = DoActivateKeyboardHandler;
             dp.VideoProcessingDone = DoVideoProcessingDone;
+            
+            // Watch for changes in the guides directory.
+            m_SvgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
+            m_SVGFilesWatcher.Path = m_SvgPath;
+            m_SVGFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
+        	m_SVGFilesWatcher.Filter = "*.svg";
+        	m_SVGFilesWatcher.IncludeSubdirectories = true;
+        	m_SVGFilesWatcher.Changed += new FileSystemEventHandler(OnSVGFilesChanged);
+        	m_SVGFilesWatcher.Created += new FileSystemEventHandler(OnSVGFilesChanged);
+        	m_SVGFilesWatcher.Deleted += new FileSystemEventHandler(OnSVGFilesChanged);
+        	m_SVGFilesWatcher.Renamed += new RenamedEventHandler(OnSVGFilesChanged);
+        	
+        	m_SVGFilesChangedInvoker = new MethodInvoker(DoSVGFilesChanged);
+        	
+        	m_SVGFilesWatcher.EnableRaisingEvents = true;
         }
         private void PlugDelegates()
         {
@@ -1309,15 +1329,15 @@ namespace Kinovea.ScreenManager
             mnuSVGTools.Text = ((ItemResourceInfo)mnuSVGTools.Tag).resManager.GetString(((ItemResourceInfo)mnuSVGTools.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuSVGTools.Image = Properties.Resources.vector;
             mnuSVGTools.MergeAction = MergeAction.Append;
-            
-        	String svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
 
-        	AddSvgSubMenus(svgPath, mnuSVGTools);
+        	AddSvgSubMenus(m_SvgPath, mnuSVGTools);
+        	
         }
         private void AddSvgSubMenus(string _dir, ToolStripMenuItem _menu)
         {
         	// This is a recursive function that browses a directory and its sub directories,
         	// each directory is made into a menu tree, each svg file is added as a menu leaf.
+        	m_BuildingSVGMenu = true;
         	
         	if(Directory.Exists(_dir))
             {
@@ -1352,7 +1372,8 @@ namespace Kinovea.ScreenManager
 	                	ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
 		            	mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(file);
 		            	mnuSVGDrawing.Tag = file;
-			            mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
+			            mnuSVGDrawing.Image = Properties.Resources.vector;
+		            	mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
 			            mnuSVGDrawing.MergeAction = MergeAction.Append;
 			            
 			            // Add to parent.
@@ -1360,6 +1381,8 @@ namespace Kinovea.ScreenManager
 	                }
 	            }
             }
+        	
+        	m_BuildingSVGMenu = false;
         }
         private void DoOrganizeMenu()
         {
@@ -1714,6 +1737,22 @@ namespace Kinovea.ScreenManager
 	        	mnuFormatForce169.Checked = false;
         	}
         }
+        private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
+	    {
+        	// We are in the file watcher thread. NO direct UI Calls from here.
+        	log.Debug(String.Format("Action recorded in the guides directory: {0}", e.ChangeType));
+        	if(!m_BuildingSVGMenu)
+        	{
+				m_BuildingSVGMenu = true;
+        		((ScreenManagerUserInterface)UI).BeginInvoke(m_SVGFilesChangedInvoker);
+        	}
+	    }
+        public void DoSVGFilesChanged()
+        {
+        	mnuSVGTools.DropDownItems.Clear();
+        	AddSvgSubMenus(m_SvgPath, mnuSVGTools);
+        }
+        
         #endregion
         
         #region Side by side saving
