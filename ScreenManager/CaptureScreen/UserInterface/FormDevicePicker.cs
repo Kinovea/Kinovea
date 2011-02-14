@@ -69,6 +69,9 @@ namespace Kinovea.ScreenManager
 			this.gpCurrentDevice.Text = ScreenManagerLang.dlgDevicePicker_CurrentDevice;
 			this.gpOtherDevices.Text = ScreenManagerLang.dlgDevicePicker_SelectAnother;
 			this.lblConfig.Text = ScreenManagerLang.Generic_Configuration;
+			this.lblNoConf.Text = ScreenManagerLang.dlgDevicePicker_NoConf;
+			lblNoConf.Top = lblConfig.Top;
+			lblNoConf.Left = lblConfig.Right;
 			
 			// Populate current.
 			lblCurrentlySelected.Text =  _currentDevice.Name;
@@ -82,7 +85,18 @@ namespace Kinovea.ScreenManager
 					selectedCap = i;
 				}
 			}
-			cmbCapabilities.SelectedIndex = selectedCap;
+			
+			if(_currentDevice.Capabilities.Count > 0)
+			{
+				cmbCapabilities.SelectedIndex = selectedCap;
+				cmbCapabilities.Visible = true;
+				lblNoConf.Visible = false;
+			}
+			else
+			{
+				lblNoConf.Visible = true;
+				cmbCapabilities.Visible = false;
+			}
 			
 			// Populate other devices.
 			int selectedDev = 0;
