@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.gpCurrentDevice = new System.Windows.Forms.GroupBox();
+			this.lblNoConf = new System.Windows.Forms.Label();
 			this.btnCamcorder = new System.Windows.Forms.Button();
 			this.cmbCapabilities = new System.Windows.Forms.ComboBox();
 			this.lblConfig = new System.Windows.Forms.Label();
@@ -87,6 +88,7 @@ namespace Kinovea.ScreenManager
 			// 
 			this.gpCurrentDevice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.gpCurrentDevice.Controls.Add(this.lblNoConf);
 			this.gpCurrentDevice.Controls.Add(this.btnCamcorder);
 			this.gpCurrentDevice.Controls.Add(this.cmbCapabilities);
 			this.gpCurrentDevice.Controls.Add(this.lblConfig);
@@ -97,6 +99,18 @@ namespace Kinovea.ScreenManager
 			this.gpCurrentDevice.TabIndex = 78;
 			this.gpCurrentDevice.TabStop = false;
 			this.gpCurrentDevice.Text = "Current device";
+			// 
+			// lblNoConf
+			// 
+			this.lblNoConf.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblNoConf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblNoConf.ForeColor = System.Drawing.Color.Gray;
+			this.lblNoConf.Location = new System.Drawing.Point(107, 99);
+			this.lblNoConf.Name = "lblNoConf";
+			this.lblNoConf.Size = new System.Drawing.Size(187, 23);
+			this.lblNoConf.TabIndex = 9;
+			this.lblNoConf.Text = "No other option available";
+			this.lblNoConf.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// btnCamcorder
 			// 
@@ -179,6 +193,7 @@ namespace Kinovea.ScreenManager
 			this.gpOtherDevices.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblNoConf;
 		private System.Windows.Forms.ComboBox cmbOtherDevices;
 		private System.Windows.Forms.Button btnCamcorder;
 		private System.Windows.Forms.GroupBox gpOtherDevices;
