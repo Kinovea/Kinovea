@@ -119,12 +119,13 @@ namespace Kinovea.ScreenManager
 			PreferencesManager pm = PreferencesManager.Instance();
 			pm.Import();
 			
-			m_iOctaves = pm.SurfOctaves;
+			/*m_iOctaves = pm.SurfOctaves;
 	        m_iIntervals = pm.SurfIntervals;
 	        m_iInitSample = pm.SurfInitSample;
 	        m_fThreshold = pm.SurfThreshold;
 	        m_iInterpolationSteps = pm.SurfInterpolationSteps;
-			m_bUpright = pm.SurfUpright;
+			m_bUpright = pm.SurfUpright;*/
+			
 			
 			log.Debug(String.Format("SURF params : Octaves:{0}, Intervals:{1}, Treshold:{2}", m_iOctaves, m_iIntervals, m_fThreshold));
 		}

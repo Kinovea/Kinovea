@@ -18,11 +18,13 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
