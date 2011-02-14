@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -66,19 +67,33 @@ namespace Kinovea.ScreenManager
 	
 		public DeviceCapability GetBestSizeCapability()
 		{
-			DeviceCapability bestCaps = m_Capabilities[0];
-			int maxPixels = bestCaps.NumberOfPixels;
+			DeviceCapability bestCap = m_Capabilities[0];
+			int maxPixels = bestCap.NumberOfPixels;
 			
 			for(int i = 1;i<m_Capabilities.Count;i++)
 			{
 				if(m_Capabilities[i].NumberOfPixels > maxPixels)
 				{
-					bestCaps = m_Capabilities[i];
-					maxPixels = bestCaps.NumberOfPixels;	
+					bestCap = m_Capabilities[i];
+					maxPixels = bestCap.NumberOfPixels;	
 				}
 			}
 			
-			return bestCaps;
+			return bestCap;
+		}
+		public DeviceCapability GetCapabilityFromSpecs(DeviceCapability _cap)
+		{
+			DeviceCapability matchCap = null;
+			
+			foreach(DeviceCapability cap in m_Capabilities)
+			{
+				if(cap.Equals(_cap))
+				{
+					matchCap = cap;
+				}
+			}
+			
+			return matchCap;
 		}
 		public override string ToString()
 		{

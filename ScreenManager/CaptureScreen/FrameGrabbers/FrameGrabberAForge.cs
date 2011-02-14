@@ -21,10 +21,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 using AForge.Video;
 using AForge.Video.DirectShow;
-using System.Windows.Forms;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -103,6 +104,8 @@ namespace Kinovea.ScreenManager
 							{
 								// Changed capability.
 								m_CurrentVideoDevice.SelectedCapability = cap;
+								PreferencesManager pm = PreferencesManager.Instance();
+								pm.UpdateSelectedCapability(m_CurrentVideoDevice.Identification, cap);
 								
 								if(m_bIsGrabbing)
 								{
@@ -307,15 +310,32 @@ namespace Kinovea.ScreenManager
 						log.Debug(String.Format("Device Capability. {0}", dc.ToString()));
 					}
 					
-					// Pick the one with max frame size.
-					DeviceCapability bestSizeCap = _device.GetBestSizeCapability();
-					_device.SelectedCapability = bestSizeCap;
-					m_VideoDevice.DesiredFrameSize = bestSizeCap.FrameSize;
+					DeviceCapability selectedCapability = null;
 					
-					m_FrameSize = bestSizeCap.FrameSize;
-					m_FramesInterval = 1000 / (double)bestSizeCap.Framerate;
+					// Check if we already know this device and have a preferred configuration.
+					PreferencesManager pm = PreferencesManager.Instance();
+					foreach(DeviceConfiguration conf in pm.DeviceConfigurations)
+					{
+						if(conf.id == _device.Identification)
+						{							
+							// Try to find the previously selected capability.
+							selectedCapability = _device.GetCapabilityFromSpecs(conf.cap);
+							log.Debug(String.Format("Picking capability from preferences: {0}", selectedCapability.ToString()));
+						}
+					}
+
+					if(selectedCapability == null)
+					{
+						// Pick the one with max frame size.
+						selectedCapability = _device.GetBestSizeCapability();
+						log.Debug(String.Format("Picking a default capability (best size): {0}", selectedCapability.ToString()));
+						pm.UpdateSelectedCapability(_device.Identification, selectedCapability);
+					}
 					
-					log.Debug(String.Format("Picked best size capability: {0}", bestSizeCap.ToString()));
+					_device.SelectedCapability = selectedCapability;
+					m_VideoDevice.DesiredFrameSize = selectedCapability.FrameSize;
+					m_FrameSize = selectedCapability.FrameSize;
+					m_FramesInterval = 1000 / (double)selectedCapability.Framerate;
 				}
 				else
 				{

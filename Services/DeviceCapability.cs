@@ -21,7 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Services
 {
 	/// <summary>
 	/// DeviceCapability - one possible output for the device.
