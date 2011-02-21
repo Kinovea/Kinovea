@@ -123,6 +123,24 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap bullet_edit
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("bullet_edit", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap bullet_white
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("bullet_white", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap camera_selected
 		{
 			get

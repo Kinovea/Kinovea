@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.splitResizeBar.Panel2.AutoScroll = true;
         	this.splitResizeBar.Panel2.BackColor = System.Drawing.Color.White;
+        	this.splitResizeBar.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel2Paint);
         	this.splitResizeBar.Panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel2MouseDown);
         	this.splitResizeBar.Panel2.Resize += new System.EventHandler(this.splitResizeBar_Panel2_Resize);
         	this.splitResizeBar.Panel2.MouseEnter += new System.EventHandler(this.Panel2MouseEnter);
@@ -88,7 +89,7 @@ namespace Kinovea.ScreenManager
         	this.btnLarge.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnLarge.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnLarge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnLarge.Location = new System.Drawing.Point(84, 10);
+        	this.btnLarge.Location = new System.Drawing.Point(87, 10);
         	this.btnLarge.Name = "btnLarge";
         	this.btnLarge.Size = new System.Drawing.Size(20, 15);
         	this.btnLarge.TabIndex = 17;
@@ -105,7 +106,7 @@ namespace Kinovea.ScreenManager
         	this.btnMedium.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnMedium.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnMedium.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnMedium.Location = new System.Drawing.Point(62, 13);
+        	this.btnMedium.Location = new System.Drawing.Point(65, 13);
         	this.btnMedium.Name = "btnMedium";
         	this.btnMedium.Size = new System.Drawing.Size(16, 12);
         	this.btnMedium.TabIndex = 16;
@@ -122,7 +123,7 @@ namespace Kinovea.ScreenManager
         	this.btnSmall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnSmall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnSmall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSmall.Location = new System.Drawing.Point(44, 16);
+        	this.btnSmall.Location = new System.Drawing.Point(47, 16);
         	this.btnSmall.Name = "btnSmall";
         	this.btnSmall.Size = new System.Drawing.Size(12, 9);
         	this.btnSmall.TabIndex = 15;
@@ -139,7 +140,7 @@ namespace Kinovea.ScreenManager
         	this.btnExtraLarge.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnExtraLarge.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnExtraLarge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnExtraLarge.Location = new System.Drawing.Point(110, 7);
+        	this.btnExtraLarge.Location = new System.Drawing.Point(113, 7);
         	this.btnExtraLarge.Name = "btnExtraLarge";
         	this.btnExtraLarge.Size = new System.Drawing.Size(24, 18);
         	this.btnExtraLarge.TabIndex = 14;
@@ -156,7 +157,7 @@ namespace Kinovea.ScreenManager
         	this.btnExtraSmall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnExtraSmall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
         	this.btnExtraSmall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnExtraSmall.Location = new System.Drawing.Point(30, 19);
+        	this.btnExtraSmall.Location = new System.Drawing.Point(33, 19);
         	this.btnExtraSmall.Name = "btnExtraSmall";
         	this.btnExtraSmall.Size = new System.Drawing.Size(8, 6);
         	this.btnExtraSmall.TabIndex = 13;

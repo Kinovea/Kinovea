@@ -21,7 +21,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
+
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -111,7 +113,7 @@ namespace Kinovea.ScreenManager
                 {
                     try
                     {
-                    	InfosThumbnail it = m_VideoFile.GetThumbnail(fileNames[i], 200);
+                    	InfosThumbnail it = m_VideoFile.GetThumbnail(fileNames[i], 200, 5);
                         m_InfosThumbnailQueue.Insert(0, it);
                     }
                     catch (Exception)
@@ -195,8 +197,11 @@ namespace Kinovea.ScreenManager
 		                    	}
 		                    	else
 		                    	{
-		                    		tlvi.Duration = TimeHelper.MillisecondsToTimecode(_infosThumbQueue[i].iDurationMilliseconds, false);
+		                    		tlvi.Duration = TimeHelper.MillisecondsToTimecode(_infosThumbQueue[i].iDurationMilliseconds, false, true);
 		                    	}
+		                    	
+		                    	tlvi.ImageSize = (Size)_infosThumbQueue[i].imageSize;
+		                    	tlvi.HasKva = _infosThumbQueue[i].HasKva;
 		                    }
 	                    	else
 	                    	{

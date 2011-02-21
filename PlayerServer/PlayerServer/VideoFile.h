@@ -213,7 +213,7 @@ namespace VideoFiles
 
 		LoadResult Load(String^ _FilePath);
 		
-		InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth);
+		InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth, int _iMaxThumbnails);
 		
 		String^	ReadMetadata();
 		

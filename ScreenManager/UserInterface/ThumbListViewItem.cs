@@ -18,7 +18,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +28,9 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
+using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 using Microsoft.VisualBasic.FileIO;
 
@@ -89,7 +91,9 @@ namespace Kinovea.ScreenManager
 				{
 					if(m_Bitmaps.Count > 0)
 					{
-						m_CurrentThumbnail = m_Bitmaps[0];
+						m_iCurrentThumbnailIndex = 0;
+						m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
+						
 					}
 				}
 				
@@ -110,10 +114,19 @@ namespace Kinovea.ScreenManager
 			get { return m_DurationText;}	// unused.
 			set { m_DurationText = value;}
 		}
+		public Size ImageSize
+		{
+			set { m_ImageSize = String.Format("{0}×{1}", value.Width, value.Height);}
+		}
 		public bool IsImage
 		{
 			get { return m_bIsImage; }
 			set { m_bIsImage = value; }
+		}
+		public bool HasKva
+		{
+			get { return m_bHasKva; }
+			set { m_bHasKva = value; }
 		}
 		#endregion
 		
@@ -125,9 +138,13 @@ namespace Kinovea.ScreenManager
 		private List<Bitmap> m_Bitmaps;
 		private Bitmap m_CurrentThumbnail;
 		private string m_DurationText = "0:00:00";
+		private string m_ImageSize = "";
 		private bool m_bIsImage;
+		private bool m_bHasKva;
 		private string m_ImageText;
 		private int m_iCurrentThumbnailIndex;
+		private bool m_Hovering;
+		private Bitmap bmpKvaAnalysis = Resources.bullet_white;
 		private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
 		private ResourceManager m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 		
@@ -147,9 +164,10 @@ namespace Kinovea.ScreenManager
 		private static readonly Pen m_PenUnselected = new Pen(Color.Silver, 2);
 		private static readonly Pen m_PenShadow = new Pen(Color.Lavender, 2);
 		private static readonly Font m_FontDuration = new Font("Arial", 8, FontStyle.Bold);
-		//private static readonly InfosTextDecoration m_itdDuration = new InfosTextDecoration("Arial", 10, FontStyle.Bold, Color.White, Color.Black);
-		private SolidBrush m_BrushDuration;
-		private Pen m_PenDuration;
+		private static readonly SolidBrush m_BrushQuickPreviewActive = new SolidBrush(Color.FromArgb(128, Color.SteelBlue));
+		private static readonly SolidBrush m_BrushQuickPreviewInactive = new SolidBrush(Color.FromArgb(128, Color.LightSteelBlue));
+		private static readonly SolidBrush m_BrushDuration = new SolidBrush(Color.FromArgb(150, Color.Black));
+		private Pen m_PenDuration = new Pen(m_BrushDuration);
 		#endregion
 		
 		#region Construction & initialization
@@ -164,9 +182,6 @@ namespace Kinovea.ScreenManager
 			tmrThumbs.Tick += new EventHandler(tmrThumbs_Tick);
 			m_iCurrentThumbnailIndex = 0;
 			
-			Color c = Color.Black;//SteelBlue;
-			m_BrushDuration = new SolidBrush(Color.FromArgb(150, c.R, c.G, c.B));
-			m_PenDuration = new Pen(m_BrushDuration);
 			m_PenDuration.StartCap = LineCap.Round;
 			m_PenDuration.Width = 14;
 			
@@ -363,6 +378,24 @@ namespace Kinovea.ScreenManager
 				e.Graphics.DrawRectangle(p, 1, 1, picBox.Width-2, picBox.Height-2);
 				e.Graphics.DrawRectangle(Pens.White, 2, 2, picBox.Width-5, picBox.Height-5);
 				
+				// Draw quick preview rectangles.
+				if(m_Hovering && m_Bitmaps != null && m_Bitmaps.Count > 1)
+				{
+					int rectWidth = picBox.Width / m_Bitmaps.Count;
+					int rectHeight = 20;
+					for(int i=0;i<m_Bitmaps.Count;i++)
+					{
+						if(i == m_iCurrentThumbnailIndex)
+						{
+							e.Graphics.FillRectangle(m_BrushQuickPreviewActive, rectWidth * i, picBox.Height - 20, rectWidth, rectHeight);	
+						}
+						else
+						{
+							e.Graphics.FillRectangle(m_BrushQuickPreviewInactive, rectWidth * i, picBox.Height - 20, rectWidth, rectHeight);	
+						}						
+					}
+				}
+				
 				// Draw duration text in the corner + background.
 				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 				if(m_bIsImage)
@@ -379,8 +412,44 @@ namespace Kinovea.ScreenManager
 					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
 					e.Graphics.DrawString(m_DurationText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
 				}
+				
+				// Draw image size				
+				SizeF bgSize2 = e.Graphics.MeasureString(m_ImageSize, m_FontDuration);
+				int sizeTop = 29;
+				e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize2.Width - 1, sizeTop, (float)picBox.Width - 4, sizeTop);
+				e.Graphics.DrawString(m_ImageSize, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize2.Width - 3, sizeTop - 7);
+				
+				// Draw KVA file indicator
+				if(m_bHasKva)
+				{
+					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - 20, 45, (float)picBox.Width - 4, 45);
+					e.Graphics.DrawImage(bmpKvaAnalysis, picBox.Width - 25, 38);
+				}
 			}
 		}
+		private void PicBoxMouseMove(object sender, MouseEventArgs e)
+        {
+        	if(!m_bErrorImage && m_Bitmaps != null)
+        	{
+        		if(m_Bitmaps.Count > 0)
+        		{
+        			if(e.Y > picBox.Height - 20)
+		        	{
+		        		tmrThumbs.Stop();
+		        		int index = e.X / (picBox.Width / m_Bitmaps.Count);
+		        		m_iCurrentThumbnailIndex = index;
+		        		if(m_iCurrentThumbnailIndex == m_Bitmaps.Count) m_iCurrentThumbnailIndex = 0;
+			  			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
+			  			picBox.Invalidate();
+		        	}
+		        	else
+		        	{
+			  			tmrThumbs.Start();
+		        	}
+        		}
+        	}
+        	
+        }
 		private void ThumbListViewItemPaint(object sender, PaintEventArgs e)
 		{
 			// Draw the shadow
@@ -409,6 +478,8 @@ namespace Kinovea.ScreenManager
 		}
 		private void PicBoxMouseEnter(object sender, EventArgs e)
         {
+			m_Hovering = true;
+		
 			if(!m_bErrorImage && m_Bitmaps != null)
 			{
 				if(m_Bitmaps.Count > 1)
@@ -426,12 +497,15 @@ namespace Kinovea.ScreenManager
         }
 		private void PicBoxMouseLeave(object sender, EventArgs e)
         {
+			m_Hovering = false;
+			
         	if(!m_bErrorImage && m_Bitmaps != null)
         	{
 				tmrThumbs.Stop();
 				if(m_Bitmaps.Count > 0)
 				{
-					m_CurrentThumbnail = m_Bitmaps[0];
+					m_iCurrentThumbnailIndex = 0;
+					m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
 	  				picBox.Invalidate();	
 				}
         	}

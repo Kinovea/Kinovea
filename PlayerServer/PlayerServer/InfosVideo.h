@@ -77,6 +77,8 @@ namespace Kinovea
 			public:
 				List <Bitmap^>^ Thumbnails;
 				int64_t iDurationMilliseconds;
+				Size^ imageSize;
+				bool HasKva;
 				bool IsImage;
 		};
 		public ref class PrimarySelection
