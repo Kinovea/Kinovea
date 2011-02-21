@@ -1323,7 +1323,7 @@ namespace Kinovea.ScreenManager
 			switch (tcf)
 			{
 				case TimeCodeFormat.ClassicTime:
-					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth);
+					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth, true);
 					break;
 				case TimeCodeFormat.Frames:
 					if (m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
@@ -1349,7 +1349,7 @@ namespace Kinovea.ScreenManager
 					outputTimeCode = String.Format("{0}:{1:00}", (int)fCtm, Math.Floor((fCtm - (int)fCtm) * 100));
 					break;
 				case TimeCodeFormat.TimeAndFrames:
-					String timeString = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth);
+					String timeString = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth, true);
 					String frameString;
 					if (m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
 					{
@@ -1365,7 +1365,7 @@ namespace Kinovea.ScreenManager
 					outputTimeCode = String.Format("{0}", (int)iTimeStamp);
 					break;
 				default :
-					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth);
+					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth, true);
 					break;
 			}
 

@@ -18,15 +18,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -76,6 +78,8 @@ namespace Kinovea.ScreenManager
 		private int m_iHorzSpacing = 20;   	// Right placed and respected even for the last column.
 		private int m_iVertSpacing = 20;
 		private int m_iCurrentSize = (int)ExplorerThumbSizes.Large;
+		private static readonly Brush m_GradientBrush = new LinearGradientBrush(new Point(33, 0), new Point(350, 0), Color.LightSteelBlue, Color.White);
+    	private static readonly Pen m_GradientPen = new Pen(m_GradientBrush);
 
 		private List<ThumbListLoader> m_Loaders = new List<ThumbListLoader>();
 		private ThumbListViewItem m_SelectedVideo;
@@ -671,6 +675,11 @@ namespace Kinovea.ScreenManager
         	{
         		splitResizeBar.Panel2.Focus();
         	}
+        }
+        
+        private void Panel2Paint(object sender, PaintEventArgs e)
+        {
+    		e.Graphics.DrawLine(m_GradientPen, 33, 0, 350, 0);
         }
 	}
 }

@@ -67,6 +67,7 @@
         	this.picBox.TabStop = false;
         	this.picBox.DoubleClick += new System.EventHandler(this.ThumbListViewItem_DoubleClick);
         	this.picBox.MouseLeave += new System.EventHandler(this.PicBoxMouseLeave);
+        	this.picBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PicBoxMouseMove);
         	this.picBox.Click += new System.EventHandler(this.ThumbListViewItem_Click);
         	this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBoxPaint);
         	this.picBox.MouseEnter += new System.EventHandler(this.PicBoxMouseEnter);
