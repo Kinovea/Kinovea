@@ -61,8 +61,14 @@ namespace Kinovea.ScreenManager
 		
 		#endregion
 		
+		#region Members
+		private string m_CurrentDeviceId;
+		#endregion
+		
 		public formDevicePicker(List<DeviceDescriptor> _devices, DeviceDescriptor _currentDevice)
 		{
+			m_CurrentDeviceId = _currentDevice.Identification;
+			
 			InitializeComponent();
 			
 			this.Text = "   " + ScreenManagerLang.ToolTip_DevicePicker;
@@ -116,6 +122,14 @@ namespace Kinovea.ScreenManager
 			cmbOtherDevices.SelectedIndex = selectedDev;
 			
 			gpOtherDevices.Enabled = _devices.Count > 1;
+		}
+		
+		private void cmbOtherDevices_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Enable / disable the configuration picker if we change device,
+			// so the user doesn't think he could change both at the same time.
+			DeviceDescriptor selected = cmbOtherDevices.Items[cmbOtherDevices.SelectedIndex] as DeviceDescriptor;
+			gpCurrentDevice.Enabled = (selected.Identification == m_CurrentDeviceId);
 		}
 	}
 }

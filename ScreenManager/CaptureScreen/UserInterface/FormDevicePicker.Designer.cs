@@ -171,6 +171,7 @@ namespace Kinovea.ScreenManager
 			this.cmbOtherDevices.Name = "cmbOtherDevices";
 			this.cmbOtherDevices.Size = new System.Drawing.Size(262, 21);
 			this.cmbOtherDevices.TabIndex = 7;
+			this.cmbOtherDevices.SelectedIndexChanged += new System.EventHandler(this.cmbOtherDevices_SelectedIndexChanged);
 			// 
 			// formDevicePicker
 			// 
