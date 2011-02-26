@@ -1015,6 +1015,7 @@ namespace Kinovea.ScreenManager
        	public void CommonCtrl_DualVideo()
        	{
        		// Create and save a composite video with side by side synchronized images.
+       		// If merge is active, just save one video.
        		
        		if (m_bSynching && screenList.Count == 2)
             {
@@ -1761,6 +1762,7 @@ namespace Kinovea.ScreenManager
         	// This is executed in Worker Thread space. (Do not call any UI methods)
         	
         	// For each position: get both images, compute the composite, save it to the file.
+        	// If blending is activated, only get the image from left screen, since it already contains both images.
         	log.Debug("Saving side by side video.");
         	
         	if (m_bSynching && screenList.Count == 2)
@@ -1776,9 +1778,18 @@ namespace Kinovea.ScreenManager
        				OnCommonPositionChanged(m_iCurrentFrame, false);
        				
        				Bitmap img1 = ps1.GetFlushedImage();
-       				Bitmap img2 = ps2.GetFlushedImage();
-       				Bitmap composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
-       				
+       				Bitmap img2 = null;
+       				Bitmap composite;
+       				if(!m_bSyncMerging)
+       				{
+       					img2 = ps2.GetFlushedImage();
+       					composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
+       				}
+       				else
+       				{
+       					composite = img1;
+       				}
+       					
        				log.Debug(String.Format("Composite size: {0}.", composite.Size));
        				
        				// Configure a fake InfoVideo to setup image size.
@@ -1793,8 +1804,11 @@ namespace Kinovea.ScreenManager
 						m_VideoFileWriter.SaveFrame(composite);
 						
 						img1.Dispose();
-				       	img2.Dispose();
-				       	composite.Dispose();
+						if(!m_bSyncMerging)
+	       				{
+		       			   	img2.Dispose();
+					       	composite.Dispose();
+	       				}
 				       	
 				       	m_bgWorkerDualSave.ReportProgress(1, m_iMaxFrame);
 						
@@ -1813,17 +1827,28 @@ namespace Kinovea.ScreenManager
 	       					{
 	       						// Move both playheads and get the composite image.
 	       						OnCommonPositionChanged(-1, false);
-	       						img1 = ps1.GetFlushedImage();
-				       			img2 = ps2.GetFlushedImage();
-	       						composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
+	       						img1 = ps1.GetFlushedImage();				       			
+	       						if(!m_bSyncMerging)
+	       						{
+	       							img2 = ps2.GetFlushedImage();
+	       							composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
+	       						}
+	       						else
+	       						{
+	       							composite = img1;
+	       						}
 				       			
 				       			// Save to file.
 				       			m_VideoFileWriter.SaveFrame(composite);
 				       			
 				       			// Clean up and report progress.
 				       			img1.Dispose();
-				       			img2.Dispose();
-				       			composite.Dispose();
+				       			if(!m_bSyncMerging)
+	       						{
+				       				img2.Dispose();
+				       				composite.Dispose();
+				       			}
+				       			
 				       			m_bgWorkerDualSave.ReportProgress(m_iCurrentFrame+1, m_iMaxFrame);
 	       					}
 	       				}
