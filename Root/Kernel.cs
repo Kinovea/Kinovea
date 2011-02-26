@@ -911,7 +911,7 @@ namespace Kinovea.Root
                 dp.StopPlaying();
             }
 
-            formPreferences fp = new formPreferences();
+            FormPreferences2 fp = new FormPreferences2(-1);
             fp.ShowDialog();
             fp.Dispose();
 

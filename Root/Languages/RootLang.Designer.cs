@@ -151,7 +151,7 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Play / Analyze.
+        ///   Recherche une chaîne localisée semblable à Playback.
         /// </summary>
         internal static string dlgPreferences_ButtonPlayAnalyze {
             get {
