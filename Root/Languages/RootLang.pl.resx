@@ -77,7 +77,7 @@
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Otwórz plik wideo</value></data>
    
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Ogólne</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Odtwórz/Analizuj</value></data>
+   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Odtwórz</value></data>
    
    
    

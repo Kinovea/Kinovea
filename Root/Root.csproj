@@ -119,6 +119,31 @@
       <DependentUpon>RootLang.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="UserInterface\FormPreferences2.cs" />
+    <Compile Include="UserInterface\FormPreferences2.Designer.cs">
+      <DependentUpon>FormPreferences2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanelButtton.cs" />
+    <Compile Include="UserInterface\PreferencePanelButtton.Designer.cs">
+      <DependentUpon>PreferencePanelButtton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\IPreferencePanel.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.Designer.cs">
+      <DependentUpon>PreferencePanelCapture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelDrawings.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelDrawings.Designer.cs">
+      <DependentUpon>PreferencePanelDrawings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelGeneral.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelGeneral.Designer.cs">
+      <DependentUpon>PreferencePanelGeneral.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.Designer.cs">
+      <DependentUpon>PreferencePanelPlayer.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +187,24 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormPreferences2.resx">
+      <DependentUpon>FormPreferences2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanelButtton.resx">
+      <DependentUpon>PreferencePanelButtton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelCapture.resx">
+      <DependentUpon>PreferencePanelCapture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelDrawings.resx">
+      <DependentUpon>PreferencePanelDrawings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelGeneral.resx">
+      <DependentUpon>PreferencePanelGeneral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelPlayer.resx">
+      <DependentUpon>PreferencePanelPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\SplashScreen.resx">
       <SubType>Designer</SubType>
@@ -240,6 +283,7 @@
       <Project>{0A577C03-D217-4540-AAB4-D167A85E32C0}</Project>
       <Name>Updater</Name>
     </ProjectReference>
+    <Folder Include="UserInterface\PreferencePanels" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Splash.png" />
