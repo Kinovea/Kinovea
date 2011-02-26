@@ -170,6 +170,11 @@ namespace Kinovea.ScreenManager
 				buttonPlayingMode.Enabled = !m_bSynched;
 			}
 		}
+		public Int64 SelectionDuration
+		{
+			// The duration of the selection in ts.
+			get { return m_iSelDuration; }	
+		}
 		public Int64 SyncPosition
 		{
 			// The absolute ts of the sync point for this video.

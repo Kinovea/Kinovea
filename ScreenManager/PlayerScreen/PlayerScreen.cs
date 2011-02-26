@@ -147,7 +147,7 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    Int64 iDurationTimestamp = m_FrameServer.VideoFile.Infos.iDurationTimeStamps;
+                    Int64 iDurationTimestamp = m_PlayerScreenUI.SelectionDuration;
                     return (int)(iDurationTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
                 }
             }
