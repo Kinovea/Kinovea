@@ -318,9 +318,8 @@ namespace Kinovea.ScreenManager
 				
 				try
 				{
-					Point imageCenter = new Point(m_FrameServer.Metadata.ImageSize.Width / 2, m_FrameServer.Metadata.ImageSize.Height / 2);
-					DrawingSVG dsvg = new DrawingSVG(imageCenter.X,
-					                                 imageCenter.Y, 
+					DrawingSVG dsvg = new DrawingSVG(m_FrameServer.ImageSize.Width,
+					                                 m_FrameServer.ImageSize.Height, 
 					                                 0, 
 					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
 					                                 _filename);
