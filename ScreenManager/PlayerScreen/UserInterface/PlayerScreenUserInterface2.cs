@@ -962,11 +962,8 @@ namespace Kinovea.ScreenManager
 					// Add a KeyFrame here if it doesn't exist.
 					AddKeyframe();
 										
-					// The drawing is initialized at the center of the image.
-					Point imageCenter = new Point(m_FrameServer.Metadata.ImageSize.Width / 2, m_FrameServer.Metadata.ImageSize.Height / 2);
-					
-					DrawingSVG dsvg = new DrawingSVG(imageCenter.X,
-					                                 imageCenter.Y, 
+					DrawingSVG dsvg = new DrawingSVG(m_FrameServer.Metadata.ImageSize.Width,
+					                                 m_FrameServer.Metadata.ImageSize.Height, 
 					                                 m_iCurrentPosition, 
 					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
 					                                 _filename);

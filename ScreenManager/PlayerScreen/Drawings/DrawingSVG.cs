@@ -67,8 +67,9 @@ namespace Kinovea.ScreenManager
         // Drawing original dimensions are used to compute the drawing scale.
         
         private float m_fDrawingScale = 1.0f;			// The current scale of the drawing if it were rendered on the original sized image.
+        private float m_fInitialScale = 1.0f;			// The scale we apply upon loading to make sure the image fits the screen.
         private Rectangle m_UnscaledRenderingWindow;	// The area of the original sized image that would be covered by the drawing in its current scale.
-		private float m_fDrawingRenderingScale = 1.0f; // The scale of the drawing taking drawing transform AND image transform into account.
+		private float m_fDrawingRenderingScale = 1.0f;  // The scale of the drawing taking drawing transform AND image transform into account.
         private Rectangle m_RescaledRectangle;			// The area of the user sized image that will be covered by the drawing.
         
         private double m_fStretchFactor;				// The scaling of the image.
@@ -92,7 +93,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingSVG(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
+        public DrawingSVG(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
         {
         	m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
@@ -113,8 +114,14 @@ namespace Kinovea.ScreenManager
 	        
 	        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
 	        m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;
+	        
+	        // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
+	        m_fInitialScale = (float) (((float)_iHeight * 0.75) / m_iOriginalHeight);
+	        m_iOriginalWidth = (int) ((float)m_iOriginalWidth * m_fInitialScale);
+	        m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
+	        
 	        m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
-			m_UnscaledRenderingWindow = new Rectangle(x - m_iOriginalWidth/2, y - m_iOriginalHeight/2, m_iOriginalWidth, m_iOriginalHeight);
+	        m_UnscaledRenderingWindow = new Rectangle((_iWidth - m_iOriginalWidth)/2, (_iHeight - m_iOriginalHeight)/2, m_iOriginalWidth, m_iOriginalHeight);
 			
 			// Everything start unscaled.
 			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -324,69 +331,6 @@ namespace Kinovea.ScreenManager
             
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
-        {
-        	// TODO: implement me.
-        	
-        	
-        	/*
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingCross2D");
-
-            // CenterPoint
-            _xmlWriter.WriteStartElement("CenterPoint");
-            _xmlWriter.WriteString(m_TopLeftPoint.X.ToString() + ";" + m_TopLeftPoint.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            m_PenStyle.ToXml(_xmlWriter);
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // </Drawing>
-            _xmlWriter.WriteEndElement();*/
-        }
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
-        {
-        	
-        	// TODO: implement me.
-        	
-        	
-            DrawingSVG dsvg = new DrawingSVG(0,0,0,0, null);
-
-            /*while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "CenterPoint")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        dc.m_CenterPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "LineStyle")
-                    {
-                        dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dc.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);*/
-            return dsvg;
-        }
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
@@ -400,6 +344,14 @@ namespace Kinovea.ScreenManager
         }
         
         #region Not implemented
+        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        {
+        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
+        }
+        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
+        {
+            return null;
+        }
         public override void UpdateDecoration(Color _color)
         {
         	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
@@ -447,7 +399,7 @@ namespace Kinovea.ScreenManager
         	// Compute the final drawing sizes,
         	// taking both the drawing transformation and the image scaling into account.
         	m_fDrawingScale = (float)m_UnscaledRenderingWindow.Width / (float)m_iOriginalWidth;
-        	m_fDrawingRenderingScale = (float)(m_fStretchFactor * m_fDrawingScale);
+        	m_fDrawingRenderingScale = (float)(m_fStretchFactor * m_fDrawingScale * m_fInitialScale);
         	
         	if(m_svgRendered == null || m_fDrawingRenderingScale != m_SvgWindow.Document.RootElement.CurrentScale)
         	{
@@ -508,7 +460,11 @@ namespace Kinovea.ScreenManager
         	
         	if(unshiftedX >= 0 && unshiftedY >= 0 && unshiftedX < m_Renderer.IdMapRaster.Width && unshiftedY < m_Renderer.IdMapRaster.Height)
         	{
-        		hit = m_Renderer.HitTest(unshiftedX, unshiftedY);
+        		// Using the Renderer hit test means we only get a hit when we are exactly on a line or other part of the drawing.
+        		// This can make it hard to use the tool, when you have to be spot on a pixel wide line to grab it.
+        		// We'll use the whole bounding box as a hit.
+        		//hit = m_Renderer.HitTest(unshiftedX, unshiftedY);
+        		hit = true;
         	}
         	
         	return hit;
