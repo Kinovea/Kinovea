@@ -304,7 +304,7 @@ namespace Kinovea.ScreenManager
 					// Import the capabilities of the device.
 					foreach(VideoCapabilities vc in m_VideoDevice.VideoCapabilities)
 					{
-						DeviceCapability dc = new DeviceCapability(vc.FrameSize, vc.MaxFrameRate);
+						DeviceCapability dc = new DeviceCapability(vc.FrameSize, vc.FrameRate);
 						_device.Capabilities.Add(dc);
 						
 						log.Debug(String.Format("Device Capability. {0}", dc.ToString()));
