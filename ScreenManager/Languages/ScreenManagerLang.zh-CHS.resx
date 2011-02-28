@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>配置持久度</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>网格数量 :</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>配置网格</value></data>
+   
+   
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>捕捉时间内每秒帧数 :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>显示时间内每秒帧数 : {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>视频比原来慢 {0:0} 倍.</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>视频种类</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>保存数据为电子表格</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>注释...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>视频分析文件 (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>载入关键图像数据</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>颜色:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>配置</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>字体大小</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>保存</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>图片</value></data>
    
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>转到关键图像</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>网格</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>隐藏</value></data>
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>载入关键图像数据...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>放大 x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>放大 x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>重启路径</value></data>
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>校准测量...</value></data>
+   
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>设置原始速度...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>设置工作区的最后一帧为当前帧</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>设置工作区的第一帧为当前帧</value></data>

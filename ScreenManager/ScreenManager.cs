@@ -131,6 +131,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
         public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         public ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
         public ToolStripMenuItem mnuGridPerspective = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
@@ -769,6 +770,18 @@ namespace Kinovea.ScreenManager
         		}
         	}
         }
+        public void Player_SendImage(PlayerScreen _screen, Bitmap _image)
+        {
+        	// An image was sent from a screen to be added as an observational reference in the other screen.
+        	for(int i=0;i<screenList.Count;i++)
+            {
+        		if (screenList[i] != _screen && screenList[i] is PlayerScreen)
+                {
+                	// The image has been cloned and transformed in the caller screen.
+                	screenList[i].AddImageDrawing(_image);
+                }
+            }			
+        }
         public void Player_Reset(PlayerScreen _screen)
         {
         	// A screen was reset. (ex: a video was reloded in place).
@@ -1328,11 +1341,26 @@ namespace Kinovea.ScreenManager
         	// Top level menu.
         	mnuSVGTools.Tag = new ItemResourceInfo(resManager, "mnuSVGTools");
             mnuSVGTools.Text = ((ItemResourceInfo)mnuSVGTools.Tag).resManager.GetString(((ItemResourceInfo)mnuSVGTools.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuSVGTools.Image = Properties.Resources.vector;
+            mnuSVGTools.Image = Properties.Resources.images;
             mnuSVGTools.MergeAction = MergeAction.Append;
-
+            
+            // Import menu and separator.
+            mnuImportImage.Tag = new ItemResourceInfo(resManager, "mnuImportImage");
+            mnuImportImage.Text = ((ItemResourceInfo)mnuImportImage.Tag).resManager.GetString(((ItemResourceInfo)mnuImportImage.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuImportImage.Image = Properties.Resources.image;
+            mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
+			mnuImportImage.MergeAction = MergeAction.Append;
+            
+			AddImportImageMenu(mnuSVGTools);
+            
+            // Dynamic menus.
         	AddSvgSubMenus(m_SvgPath, mnuSVGTools);
         	
+        }
+        private void AddImportImageMenu(ToolStripMenuItem _menu)
+        {
+        	_menu.DropDownItems.Add(mnuImportImage);
+            _menu.DropDownItems.Add(new ToolStripSeparator());
         }
         private void AddSvgSubMenus(string _dir, ToolStripMenuItem _menu)
         {
@@ -1751,6 +1779,7 @@ namespace Kinovea.ScreenManager
         public void DoSVGFilesChanged()
         {
         	mnuSVGTools.DropDownItems.Clear();
+        	AddImportImageMenu(mnuSVGTools);
         	AddSvgSubMenus(m_SvgPath, mnuSVGTools);
         }
         
@@ -2742,29 +2771,41 @@ namespace Kinovea.ScreenManager
         		player.Mirrored = mnuMirror.Checked;
         	}
         }
+        private void mnuImportImage_OnClick(object sender, EventArgs e)
+        {
+        	// Display file open dialog and launch the drawing.
+        	OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = ScreenManagerLang.dlgImportReference_Title;
+            openFileDialog.Filter = ScreenManagerLang.dlgImportReference_Filter;
+            openFileDialog.FilterIndex = 1;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (openFileDialog.FileName.Length > 0 && m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
+                {
+                	LoadDrawing(openFileDialog.FileName, Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg");
+                }
+            }
+        }
         private void mnuSVGDrawing_OnClick(object sender, EventArgs e)
         {
         	// One of the dynamically added SVG tools menu has been clicked.
 
         	// Add a drawing of the right type to the active screen.
         	ToolStripMenuItem menu = sender as ToolStripMenuItem;
-        	if(menu != null && m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
+        	if(menu != null)
         	{
         		string svgFile = menu.Tag as string;
-        		if(svgFile != null)
-        		{
-        			// Add the corresponding svg drawing in the active screen.
-        			if(m_ActiveScreen is PlayerScreen)
-	        		{
-        				((PlayerScreen)m_ActiveScreen).AddSVGDrawing(svgFile);
-	        		}
-        			else if(m_ActiveScreen is CaptureScreen)
-        			{
-        				((CaptureScreen)m_ActiveScreen).AddSVGDrawing(svgFile);
-        			}
-        		}
+        		LoadDrawing(svgFile, true);
         	}
         	
+        }
+        private void LoadDrawing(string _filePath, bool _bIsSVG)
+        {
+        	if(_filePath != null && _filePath.Length > 0 && m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
+    		{
+    			m_ActiveScreen.AddImageDrawing(_filePath, _bIsSVG);
+    		}	
         }
         private void mnuGrid_OnClick(object sender, EventArgs e)
         {

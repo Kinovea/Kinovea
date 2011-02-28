@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurează Persistenţa</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Numărul de diviziuni :</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurează grila</value></data>
+   
+   
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Numărul de cadre pe secundă în timpul capturii :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Numărul de cadre pe secundă în timpul rulării : {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Fişierul video este de {0:0} ori mai lent decât originalul.</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipul fisierului video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salveaza datele ca tabel</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentarii...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analiză Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Toate fişierele (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Încarcă datele cadrelor cheie </value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Culoare :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuraţie</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensiune font :</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Salvează</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imagine</value></data>
    
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Mergi la cadrul cheie </value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grilă</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Ascunde</value></data>
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Încarc datele cadrelor cheie...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restartează ediţia traiectoriei</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salvează fişierul video sau datele cadrelor cheie...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibreaza...</value></data>
+   
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Specificaţi viteza originală...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Setaţi începutul zonei de lucru pe cadrul curent</value></data>

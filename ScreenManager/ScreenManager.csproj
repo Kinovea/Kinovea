@@ -167,6 +167,7 @@
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\ColorProfile.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
@@ -219,6 +220,10 @@
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.Designer.cs">
+      <DependentUpon>FormConfigureOpacity.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureSpeed.cs">
       <SubType>Form</SubType>
@@ -436,6 +441,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureOpacity.resx">
+      <DependentUpon>FormConfigureOpacity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>

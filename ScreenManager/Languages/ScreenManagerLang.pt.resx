@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurar Persistência</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Número de Divisões:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurar Grade</value></data>
+   
+   
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Número de quadros por segundo no tempo de captura :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Número de quadros por segundo no tempo de exibição: {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>O vídeo é {0:0} vezes menor que o original.</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo de video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salvar dados como uma Planilha</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comentários...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|Todos os Arquivos (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carregar Dados dos Quadros de Imagem</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Cor:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuração</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Tamanho da Fonte:</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Salvar</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Imagem</value></data>
    
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ir para o Quadro de Imagem</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grade</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Esconder</value></data>
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carregar Dados de Quadros de Imagens...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reiniciar Edição do Caminho</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salvar Vídeo ou Dados dos Quadros de Imagens...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrar a medida...</value></data>
+   
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Ajustar Velocidade Original...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ajustar o Último Quadro da Zona de Trabalho pelo Quadro Atual</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Ajustar o Primeiro Quadro da Zona de Trabalho pelo Quadro Atual</value></data>

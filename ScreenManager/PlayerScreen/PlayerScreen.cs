@@ -303,6 +303,10 @@ namespace Kinovea.ScreenManager
         {
         	m_ScreenHandler.Player_ImageChanged(this, _image);
         }
+        public void PlayerScreenUI_SendImage(Bitmap _image)
+        {
+        	m_ScreenHandler.Player_SendImage(this, _image);
+        }
         public void PlayerScreenUI_Reset()
         {
         	m_ScreenHandler.Player_Reset(this);
@@ -333,6 +337,14 @@ namespace Kinovea.ScreenManager
         public override void RefreshImage()
         {
             m_PlayerScreenUI.RefreshImage();
+        }
+        public override void AddImageDrawing(string _filename, bool _bIsSvg)
+        {
+        	m_PlayerScreenUI.AddImageDrawing(_filename, _bIsSvg);
+        }
+        public override void AddImageDrawing(Bitmap _bmp)
+        {
+        	m_PlayerScreenUI.AddImageDrawing(_bmp);
         }
         #endregion
         
@@ -370,11 +382,6 @@ namespace Kinovea.ScreenManager
         public void Save()
         {
         	m_PlayerScreenUI.Save();
-        }
-        public void AddSVGDrawing(string filename)
-        {
-        	// todo, move up in Abstract screen ?
-        	m_PlayerScreenUI.AddSVGDrawing(filename);
         }
         public void ConfigureHighSpeedCamera()
         {

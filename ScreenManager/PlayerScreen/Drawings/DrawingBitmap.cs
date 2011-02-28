@@ -1,6 +1,6 @@
-﻿#region License
+#region License
 /*
-Copyright © Joan Charmant 2010.
+Copyright � Joan Charmant 2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -28,13 +28,10 @@ using System.Threading;
 using System.Xml;
 
 using Kinovea.Services;
-using SharpVectors.Dom.Svg;
-using SharpVectors.Dom.Svg.Rendering;
-using SharpVectors.Renderer.Gdi;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingSVG : AbstractDrawing
+    public class DrawingBitmap : AbstractDrawing
     {
         #region Properties
         public override DrawingToolType ToolType
@@ -54,32 +51,19 @@ namespace Kinovea.ScreenManager
 
         #region Members
 		
-        // SVG
-        private GdiRenderer m_Renderer  = new GdiRenderer();
-		private SvgWindow m_SvgWindow;
-		private bool m_bLoaded;
-		private Bitmap m_svgRendered;
-		private Bitmap m_svgHitMap;
+        // Bitmap
+        private Bitmap m_Bitmap;
         
-        // Position
-        // The drawing scale is used to keep track of the user transform on the drawing, outside of the image transform context.
-        // The unscale rendering window is used for hit testing.
-        // Drawing original dimensions are used to compute the drawing scale.
-        
-        private float m_fDrawingScale = 1.0f;			// The current scale of the drawing if it were rendered on the original sized image.
         private float m_fInitialScale = 1.0f;			// The scale we apply upon loading to make sure the image fits the screen.
         private Rectangle m_UnscaledRenderingWindow;	// The area of the original sized image that would be covered by the drawing in its current scale.
-		private float m_fDrawingRenderingScale = 1.0f;  // The scale of the drawing taking drawing transform AND image transform into account.
-        private Rectangle m_RescaledRectangle;			// The area of the user sized image that will be covered by the drawing.
+		private Rectangle m_RescaledRectangle;			// The area of the user sized image that will be covered by the drawing.
         
         private double m_fStretchFactor;				// The scaling of the image.
         private Point m_DirectZoomTopLeft;				// Shift of the image.
         
-        private int m_iOriginalWidth;					// After initial scaling.
+        private int m_iOriginalWidth;
         private int m_iOriginalHeight;
         private double m_fOriginalAspectRatio;
-        
-        private bool m_bFinishedResizing;
        
         // Decoration
         private InfosFading m_InfosFading;
@@ -93,40 +77,47 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingSVG(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
+        public DrawingBitmap(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
         {
-        	m_fStretchFactor = 1.0;
+        	m_Bitmap = new Bitmap(_filename);
+
+            if(m_Bitmap != null)
+            {
+            	Initialize(_iWidth, _iHeight, _iTimestamp, _iAverageTimeStampsPerFrame);
+            }
+        }
+        public DrawingBitmap(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, Bitmap _bmp)
+        {
+        	m_Bitmap = AForge.Imaging.Image.Clone(_bmp);
+
+            if(m_Bitmap != null)
+            {
+            	Initialize(_iWidth, _iHeight, _iTimestamp, _iAverageTimeStampsPerFrame);
+            }
+        }
+        private void Initialize(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        {
+			m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             
-            //----------------------------
-			// Init and import an SVG.
-			//----------------------------
-			m_Renderer.BackColor = Color.Transparent;
-			
-			// Rendering window. The width and height will be updated later.
-			m_SvgWindow = new SvgWindow(100, 100, m_Renderer);
-			
-			// FIXME: some files have external DTD that will be attempted to be loaded.
-			// See files created from Amaya for example.
-         	m_SvgWindow.Src = _filename;
-	        m_bLoaded = true;
-	        
-	        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
-	        m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;
+        	m_iOriginalWidth = m_Bitmap.Width;
+	        m_iOriginalHeight  = m_Bitmap.Height;
 	        
 	        // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
+	        // For bitmap drawing, we only do this if no upsizing is involved.
 	        m_fInitialScale = (float) (((float)_iHeight * 0.75) / m_iOriginalHeight);
-	        m_iOriginalWidth = (int) ((float)m_iOriginalWidth * m_fInitialScale);
-	        m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
+	        if(m_fInitialScale < 1.0)
+	        {
+	        	m_iOriginalWidth = (int) ((float)m_iOriginalWidth * m_fInitialScale);
+	        	m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
+	        }
 	        
 	        m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
 	        m_UnscaledRenderingWindow = new Rectangle((_iWidth - m_iOriginalWidth)/2, (_iHeight - m_iOriginalHeight)/2, m_iOriginalWidth, m_iOriginalHeight);
 			
 			// Everything start unscaled.
 			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-
-	        // Render on first draw call.
-	        m_bFinishedResizing = true;
+        
 	        
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
@@ -140,11 +131,11 @@ namespace Kinovea.ScreenManager
 			m_FadingColorMatrix.Matrix33 = 1.0f;	// Change alpha value here for fading. (i.e: 0.5f).
 			m_FadingColorMatrix.Matrix44 = 1.0f;
 			m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-            
+			
 			PreferencesManager pm = PreferencesManager.Instance();
 			m_PenBoundingBox = new Pen(Color.FromArgb(255, pm.GridColor.R, pm.GridColor.G, pm.GridColor.B), 1);
 		 	m_PenBoundingBox.DashStyle = DashStyle.Dash;
-		 	m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);
+		 	m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);        	
         }
         #endregion
 
@@ -153,33 +144,24 @@ namespace Kinovea.ScreenManager
         {
         	double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             
-        	if (fOpacityFactor > 0 && m_bLoaded)
+        	if (fOpacityFactor > 0)
             {
             	if(m_fStretchFactor != _fStretchFactor || _DirectZoomTopLeft != m_DirectZoomTopLeft)
             	{
             		// Compute the new image coordinate system.
-            		// We do not call the SVG rendering engine at this point, and 
-            		// will use the .NET interpolation until the user is done resizing.
-            		// Later on, ResizeFinished() should be called to trigger the full rendering.
             		m_fStretchFactor = _fStretchFactor;
             		m_DirectZoomTopLeft = _DirectZoomTopLeft;
             		RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             	}
             	
-            	if(m_bFinishedResizing)
-            	{
-            		m_bFinishedResizing = false;
-            		RenderAtNewScale();
-            	}
-                
-            	if (m_svgRendered != null)
+            	if (m_Bitmap != null)
 				{
             		// Prepare for opacity attribute.
             		m_FadingColorMatrix.Matrix33 = (float)fOpacityFactor;
             		m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             		
             		// Render drawing.
-            		_canvas.DrawImage(m_svgRendered, m_RescaledRectangle, 0, 0, m_svgRendered.Width, m_svgRendered.Height, GraphicsUnit.Pixel, m_FadingImgAttr);
+            		_canvas.DrawImage(m_Bitmap, m_RescaledRectangle, 0, 0, m_Bitmap.Width, m_Bitmap.Height, GraphicsUnit.Pixel, m_FadingImgAttr);
             		
             		// Render handling box.
             		if(_bSelected)
@@ -202,11 +184,8 @@ namespace Kinovea.ScreenManager
             
             // None of the computations below should involve the image stretch factor.
             // We just compute the drawing bounding box as if it drew on the unscaled image.
+            // Code copy pasted from SVGDrawing (mutualize ?).
             
-            // We do not call the SVG rendering engine at this point, and 
-	        // will use the .NET interpolation until the user is done resizing.
-	        // Later on, ResizeFinished() should be called to trigger the full rendering.
-	            		
             switch (handleNumber)
             {
                 case 1:
@@ -285,7 +264,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            // Update scaled coordinates accordingly (we must do this before the RenderAtNewScale happen).
+            // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             
         }
@@ -331,7 +310,7 @@ namespace Kinovea.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            return "SVG Drawing";
+            return "Bitmap Drawing";
         }
         public override int GetHashCode()
         {
@@ -372,41 +351,7 @@ namespace Kinovea.ScreenManager
         
         #endregion
 
-        public void ResizeFinished()
-        {
-        	// While the user was resizing the drawing or the image, we didn't update / render the SVG image.
-        	// Now that he is done, we can stop using the low quality interpolation and resort to SVG scalability.
-        	
-        	// However we do not know the final scale until we get back in Draw(),
-        	// So we just switch a flag on and we'll call the rendering from there.
-        	m_bFinishedResizing = true;
-        }
-        
         #region Lower level helpers
-        private void RenderAtNewScale()
-        {
-        	// Depending on the complexity of the SVG, this can be a costly operation.
-        	// We should only do that when mouse move is over,
-        	// and use the interpolated version during the change.
-        	
-        	// Compute the final drawing sizes,
-        	// taking both the drawing transformation and the image scaling into account.
-        	m_fDrawingScale = (float)m_UnscaledRenderingWindow.Width / (float)m_iOriginalWidth;
-        	m_fDrawingRenderingScale = (float)(m_fStretchFactor * m_fDrawingScale * m_fInitialScale);
-        	
-        	if(m_svgRendered == null || m_fDrawingRenderingScale != m_SvgWindow.Document.RootElement.CurrentScale)
-        	{
-	        	m_SvgWindow.Document.RootElement.CurrentScale = (float)m_fDrawingRenderingScale;
-	        	m_SvgWindow.InnerWidth = m_RescaledRectangle.Width;
-	        	m_SvgWindow.InnerHeight = m_RescaledRectangle.Height;
-	        	
-	            m_svgRendered = m_Renderer.Render(m_SvgWindow.Document as SvgDocument);
-		        m_svgHitMap = m_Renderer.IdMapRaster;
-		        
-		        log.Debug(String.Format("Rendering SVG ({0};{1}), Initial scaling to fit video: {2:0.00}. User scaling: {3:0.00}. Video image scaling: {4:0.00}, Final transformation: {5:0.00}.",
-		                                m_iOriginalWidth, m_iOriginalHeight, m_fInitialScale, m_fDrawingScale , m_fStretchFactor, m_fDrawingRenderingScale));
-        	}
-        }
         private Rectangle GetHandleRectangle(int _handle)
         {
             //----------------------------------------------------------------------------
@@ -431,43 +376,17 @@ namespace Kinovea.ScreenManager
             {
             	return new Rectangle(m_UnscaledRenderingWindow.Left - widen, m_UnscaledRenderingWindow.Bottom - widen, widen * 2, widen * 2);
             }
-        } 
+        }
         private bool IsPointOnDrawing(int x, int y)
         {
-        	// [x,y] is expressed in the original image coordinate system,
-        	// But the drawing should have been rendered to its final scale by now.
-        	// The final scale takes into account the user transformation and the image scaling.
-        	
-        	// We MUST stop the interpolation trick and render to the new dimensions before coming here.
-        	
-        	bool hit = false;
-        	
-        	// Rescale the mouse point.
-           	int scaledX = (int)((x - m_DirectZoomTopLeft.X) * m_fStretchFactor);
-            int scaledY = (int)((y - m_DirectZoomTopLeft.Y) * m_fStretchFactor);
-
-        	// Unshift the mouse point. (because the drawing always draws itself on a [0, 0, width, height] image.
-        	
-        	int unshiftedX = scaledX - m_RescaledRectangle.X;
-        	int unshiftedY = scaledY - m_RescaledRectangle.Y;
-        	
-        	if(unshiftedX >= 0 && unshiftedY >= 0 && unshiftedX < m_Renderer.IdMapRaster.Width && unshiftedY < m_Renderer.IdMapRaster.Height)
-        	{
-        		// Using the Renderer hit test means we only get a hit when we are exactly on a line or other part of the drawing.
-        		// This can make it hard to use the tool, when you have to be spot on a pixel wide line to grab it.
-        		// We'll use the whole bounding box as a hit.
-        		//hit = m_Renderer.HitTest(unshiftedX, unshiftedY);
-        		hit = true;
-        	}
-        	
-        	return hit;
+            return m_UnscaledRenderingWindow.Contains(x, y);
         }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
         	// Computes the rendering window in the user image coordinate system.
         	
         	// Stretch factor is the difference between the original image size and the current image size.
-        	// It doesn't know anything about the SVG drawing internal scaling.
+        	// It doesn't know anything about the bitmap custom scaling done by user.
 
         	int iLeft = (int)((m_UnscaledRenderingWindow.X - _DirectZoomTopLeft.X) * _fStretchFactor);
         	int iTop = (int)((m_UnscaledRenderingWindow.Y - _DirectZoomTopLeft.Y) * _fStretchFactor);
@@ -480,4 +399,3 @@ namespace Kinovea.ScreenManager
         #endregion
     }
 }
-

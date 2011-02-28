@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configurer la Persistance</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Nombre de Divisions :</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configurer la Grille</value></data>
+   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configurer l'opacité</value></data>
+   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacité : {0:0}%</value></data>
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Nombre d'images par seconde lors de la capture :\n(par ex:300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Nombre d'images par seconde à la lecture : {0:0.00} ips.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>La vidéo est {0:0} fois plus lente que l'original</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type de vidéo</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Enregistrer les Données pour un Tableur</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Texte (*.txt)|*.txt;</value></data>
+   <data name="dlgImportReference_Title" xml:space="preserve"><value>Importer une image comme référence</value></data>
+   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Tous les fichiers supportés (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaires...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Analyse Video Kinovea (*.kva)|*.kva|XML (*.xml)|*.xml|Tous les Fichiers (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Charger des Données d'Images Clés</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Couleur :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuration</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Taille de la Police :</value></data>
+   <data name="Generic_Opacity" xml:space="preserve"><value>Opacité</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Enregistrer</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Image</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Vidéo</value></data>
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Aller à l'Image Clé</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grille</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Masquer</value></data>
+   <data name="mnuImportImage" xml:space="preserve"><value>Importer une image…</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Charger des Données d'Images Clés...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'édition de la Trajectoire</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Enregistrer...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>
+   <data name="mnuSendPic" xml:space="preserve"><value>Envoyer l'image vers l'autre vidéo</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Caméra haute-vitesse...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Positionner la Sortie de la Zone de Travail sur l'Image Courante</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Positionner l'Entrée de la Zone de Travail sur l'Image Courante</value></data>

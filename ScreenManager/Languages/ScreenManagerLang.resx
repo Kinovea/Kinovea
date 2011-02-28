@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configure Persistence</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Number of Divisions :</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configure Grid</value></data>
+   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configure Opacity</value></data>
+   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Opacity: {0:0}%</value></data>
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Number of frames per second at capture time :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Number of frames per seconds at display time : {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video is {0:0} times slower than original.</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type of video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Save Data as a Spreadsheet Document</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   <data name="dlgImportReference_Title" xml:space="preserve"><value>Import an image as reference</value></data>
+   <data name="dlgImportReference_Filter" xml:space="preserve"><value>All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Comments...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Load Key Images Data</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuration</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Font Size :</value></data>
+   <data name="Generic_Opacity" xml:space="preserve"><value>Opacity</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Save</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Image</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Go to Key Image</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grid</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Hide</value></data>
+   <data name="mnuImportImage" xml:space="preserve"><value>Import image…</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Load Key Images Data...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restart Path Edition</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Save...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibrate measure...</value></data>
+   <data name="mnuSendPic" xml:space="preserve"><value>Send image to the other video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High-speed camera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Set the Last Frame of Working Zone to the Current Frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Set the First Frame of Working Zone to the Current Frame</value></data>
