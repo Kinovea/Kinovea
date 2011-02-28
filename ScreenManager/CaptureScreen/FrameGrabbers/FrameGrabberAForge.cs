@@ -320,7 +320,8 @@ namespace Kinovea.ScreenManager
 						{							
 							// Try to find the previously selected capability.
 							selectedCapability = _device.GetCapabilityFromSpecs(conf.cap);
-							log.Debug(String.Format("Picking capability from preferences: {0}", selectedCapability.ToString()));
+							if(selectedCapability != null)
+								log.Debug(String.Format("Picking capability from preferences: {0}", selectedCapability.ToString()));
 						}
 					}
 
