@@ -89,6 +89,7 @@ namespace Kinovea.ScreenManager
 
 		private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
 		private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
 		private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
@@ -307,25 +308,38 @@ namespace Kinovea.ScreenManager
 
 			return bWasHandled;
 		}
-		public void AddSVGDrawing(string _filename)
+		public void AddImageDrawing(string _filename, bool _bIsSvg)
 		{
-			// Add an SVG drawing from the file.
+			// Add an image drawing from a file.
 			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			
 			if(m_FrameServer.IsConnected && File.Exists(_filename))
 			{		
 				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 				
 				try
 				{
-					DrawingSVG dsvg = new DrawingSVG(m_FrameServer.ImageSize.Width,
-					                                 m_FrameServer.ImageSize.Height, 
-					                                 0, 
-					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-					                                 _filename);
-									
-					m_FrameServer.Metadata[0].AddDrawing(dsvg);
-					m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+                    if(_bIsSvg)
+					{
+						DrawingSVG dsvg = new DrawingSVG(m_FrameServer.ImageSize.Width,
+						                                 m_FrameServer.ImageSize.Height, 
+						                                 0, 
+						                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+						                                 _filename);
+					
+						m_FrameServer.Metadata[0].AddDrawing(dsvg);
+					}
+					else
+					{
+						DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.ImageSize.Width,
+						                                 		m_FrameServer.ImageSize.Height, 
+						                                 		0, 
+						                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+						                                 		_filename);
+					
+						m_FrameServer.Metadata[0].AddDrawing(dbmp);	
+					}
+					
+                    m_FrameServer.Metadata.SelectedDrawingFrame = 0;
 					m_FrameServer.Metadata.SelectedDrawing = 0;
 				}
 				catch
@@ -336,6 +350,24 @@ namespace Kinovea.ScreenManager
 				}
 				
 				pbSurfaceScreen.Invalidate();
+			}
+		}
+		public void AddImageDrawing(Bitmap _bmp)
+		{
+			// Add an image drawing from a bitmap.
+			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
+			if(m_FrameServer.IsConnected)
+			{
+				DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.ImageSize.Width,
+				                                 		m_FrameServer.ImageSize.Height, 
+				                                 		0, 
+				                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+				                                 		_bmp);
+					
+				m_FrameServer.Metadata[0].AddDrawing(dbmp);	
+				
+				m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+				m_FrameServer.Metadata.SelectedDrawing = 0;
 			}
 		}
 		public void BeforeClose()
@@ -415,13 +447,15 @@ namespace Kinovea.ScreenManager
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
 			mnuConfigureDrawing.Image = Properties.Resources.wrench;
+			mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
+			mnuConfigureOpacity.Image = Properties.Resources.persistence;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
 			mnuDeleteDrawing.Image = Properties.Resources.delete;
 			mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
 			mnuShowMeasure.Image = Properties.Resources.measure;
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
 			mnuSealMeasure.Image = Properties.Resources.textfield;
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuSepDrawing, mnuShowMeasure, mnuSealMeasure, mnuSepDrawing2, mnuDeleteDrawing });
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureOpacity, mnuSepDrawing, mnuShowMeasure, mnuSealMeasure, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 5. Magnifier
 			mnuMagnifier150.Click += new EventHandler(mnuMagnifier150_Click);
@@ -808,6 +842,7 @@ namespace Kinovea.ScreenManager
 			
 			// 2. Drawings context menu.
 			mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+			mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
 			mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
 			mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
@@ -1010,13 +1045,15 @@ namespace Kinovea.ScreenManager
 							
 							// We use temp variables because ToolStripMenuItem.Visible always returns false...
 							bool isLine = (ad is DrawingLine2D);
-							bool configVisible = !(ad is DrawingSVG);
+							bool configVisible = !(ad is DrawingSVG) && !(ad is DrawingBitmap);
+							bool opacityVisible = (ad is DrawingSVG) || (ad is DrawingBitmap);
 							
 							mnuConfigureDrawing.Visible = configVisible;
+							mnuConfigureOpacity.Visible = opacityVisible;
 							mnuShowMeasure.Visible = isLine;
 							mnuSealMeasure.Visible = isLine;
 							
-							mnuSepDrawing.Visible = !(ad is DrawingSVG);
+							mnuSepDrawing.Visible = true;
 							mnuSepDrawing2.Visible = isLine;
 							
 							
@@ -1204,7 +1241,11 @@ namespace Kinovea.ScreenManager
 						m_ActiveTool = DrawingToolType.Text;
 						m_bTextEdit = true;
 					}
-					else if(!(ad is DrawingSVG))
+					else if(ad is DrawingSVG || ad is DrawingBitmap)
+					{
+						mnuConfigureOpacity_Click(null, EventArgs.Empty);
+					}
+					else
 					{
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
@@ -1520,16 +1561,15 @@ namespace Kinovea.ScreenManager
 				this.ContextMenuStrip = popMenu;
 			}
 		}
-		private void mnuConfigureFading_Click(object sender, EventArgs e)
+		private void mnuConfigureOpacity_Click(object sender, EventArgs e)
 		{
 			if(m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
-				formConfigureFading fcf = new formConfigureFading(m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				LocateForm(fcf);
-				fcf.ShowDialog();
-				fcf.Dispose();
+				formConfigureOpacity fco = new formConfigureOpacity(m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
+				LocateForm(fco);
+				fco.ShowDialog();
+				fco.Dispose();
 				pbSurfaceScreen.Invalidate();
-				this.ContextMenuStrip = popMenu;
 			}
 		}
 		private void mnuShowMeasure_Click(object sender, EventArgs e)

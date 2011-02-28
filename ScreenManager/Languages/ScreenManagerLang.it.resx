@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configura la persistenza</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Numero di suddivisioni :</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configura Griglia</value></data>
+   
+   
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Numero di fotogrammi al secondo nella cattura :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Numero di fotogrammi al secondo nella riproduzione : {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Il Video e' {0:0} volte piu' lento dell'originale.</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Tipo di video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Salva i Dati in formato foglio di calcolo</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commenti...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analisi (*.kva)|*.kva|XML (*.xml)|*.xml|Tutti I Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Carica le Immagini Chiave e loro Dati</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Colore</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configurazione</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensione del Font</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Salva</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Immagine</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Vai al Fotogramma dell'Immagine Chiave</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Griglia</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Nascondi</value></data>
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carica Immagini Chiave e loro Dati...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
+   
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Videocamera ad alta velocita'...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come FINE (ULTIMO fotogramma) della Zona Lavoro </value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Imposta il Fotogramma attuale come INIZIO (PRIMO fotogramma) della Zona Lavoro </value></data>

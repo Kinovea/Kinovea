@@ -457,6 +457,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Opacity: {0:0}%.
+        /// </summary>
+        internal static string dlgConfigureOpacity_lblValue {
+            get {
+                return ResourceManager.GetString("dlgConfigureOpacity_lblValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Configure Opacity.
+        /// </summary>
+        internal static string dlgConfigureOpacity_Title {
+            get {
+                return ResourceManager.GetString("dlgConfigureOpacity_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Number of frames per second at capture time :\n(ex: 300).
         /// </summary>
         internal static string dlgConfigureSpeed_lblFPSCaptureTime {
@@ -741,6 +759,24 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgExportSpreadsheet_Title {
             get {
                 return ResourceManager.GetString("dlgExportSpreadsheet_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à All supported files (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF.
+        /// </summary>
+        internal static string dlgImportReference_Filter {
+            get {
+                return ResourceManager.GetString("dlgImportReference_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Import an image as reference.
+        /// </summary>
+        internal static string dlgImportReference_Title {
+            get {
+                return ResourceManager.GetString("dlgImportReference_Title", resourceCulture);
             }
         }
         
@@ -1254,6 +1290,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string Generic_Image {
             get {
                 return ResourceManager.GetString("Generic_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Opacity.
+        /// </summary>
+        internal static string Generic_Opacity {
+            get {
+                return ResourceManager.GetString("Generic_Opacity", resourceCulture);
             }
         }
         
@@ -1843,6 +1888,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Import image….
+        /// </summary>
+        internal static string mnuImportImage {
+            get {
+                return ResourceManager.GetString("mnuImportImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Load Key Images Data....
         /// </summary>
         internal static string mnuLoadAnalysis {
@@ -1974,6 +2028,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuSealMeasure {
             get {
                 return ResourceManager.GetString("mnuSealMeasure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Send image to the other video.
+        /// </summary>
+        internal static string mnuSendPic {
+            get {
+                return ResourceManager.GetString("mnuSendPic", resourceCulture);
             }
         }
         

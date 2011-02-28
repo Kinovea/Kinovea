@@ -285,11 +285,13 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuPlayPause = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSetCaptureSpeed = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
 		private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
 		private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuConfigureFading = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuTrackTrajectory = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
@@ -937,54 +939,96 @@ namespace Kinovea.ScreenManager
 			
 			StretchSqueezeSurface();
 		}
-		public void AddSVGDrawing(string _filename)
+		public void AddImageDrawing(string _filename, bool _bIsSvg)
 		{
-			// Add an SVG drawing from the file.
-			
+			// Add an image drawing from a file.
 			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded && File.Exists(_filename))
+			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
 			{
-				if(m_bIsCurrentlyPlaying)
+				BeforeAddImageDrawing();
+			
+				if(File.Exists(_filename))
 				{
-					StopPlaying();
-					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-					ActivateKeyframe(m_iCurrentPosition);	
-				}
+					try
+					{
+						if(_bIsSvg)
+						{
+							DrawingSVG dsvg = new DrawingSVG(m_FrameServer.Metadata.ImageSize.Width,
+							                                 m_FrameServer.Metadata.ImageSize.Height, 
+							                                 m_iCurrentPosition, 
+							                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+							                                 _filename);
 						
-				PrepareKeyframesDock();
-				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-				m_FrameServer.Metadata.SelectedTrack = -1;
-				m_FrameServer.Metadata.SelectedChrono = -1;
+    						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
+						}
+						else
+						{
+							DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.Metadata.ImageSize.Width,
+							                                 		m_FrameServer.Metadata.ImageSize.Height, 
+							                                 		m_iCurrentPosition, 
+							                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+							                                 		_filename);
+						
+							m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dbmp);	
+						}
+					}
+					catch
+					{
+						// An error occurred during the creation.
+						// example : external DTD an no network or invalid svg file.
+						// TODO: inform the user.
+					}
+				}
 				
-				try
-				{
-					// Add a KeyFrame here if it doesn't exist.
-					AddKeyframe();
-										
-					DrawingSVG dsvg = new DrawingSVG(m_FrameServer.Metadata.ImageSize.Width,
-					                                 m_FrameServer.Metadata.ImageSize.Height, 
-					                                 m_iCurrentPosition, 
-					                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-					                                 _filename);
+				AfterAddImageDrawing();
+			}	
+		}
+		public void AddImageDrawing(Bitmap _bmp)
+		{
+			// Add an image drawing from a bitmap.
+			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
+			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
+			{
+				BeforeAddImageDrawing();
+			
+				DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.Metadata.ImageSize.Width,
+							                                 		m_FrameServer.Metadata.ImageSize.Height, 
+							                                 		m_iCurrentPosition, 
+							                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+							                                 		_bmp);
+						
+				m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dbmp);
+				
+				AfterAddImageDrawing();
+			}
+		}
+		private void BeforeAddImageDrawing()
+		{
+			if(m_bIsCurrentlyPlaying)
+			{
+				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+				ActivateKeyframe(m_iCurrentPosition);	
+			}
 					
-					m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
-				}
-				catch
-				{
-					// An error occurred during the creation.
-					// example : external DTD an no network or invalid svg file.
-					// TODO: inform the user.
-				}
-				
-				m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-				m_FrameServer.Metadata.SelectedDrawing = -1;
-				
-				m_ActiveTool = DrawingToolType.Pointer;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
-				
-				pbSurfaceScreen.Invalidate();
-			}		
+			PrepareKeyframesDock();
+			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+			m_FrameServer.Metadata.SelectedTrack = -1;
+			m_FrameServer.Metadata.SelectedChrono = -1;
+			
+			// Add a KeyFrame here if it doesn't exist.
+			AddKeyframe();
+			
+		}
+		private void AfterAddImageDrawing()
+		{
+			m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+			m_FrameServer.Metadata.SelectedDrawing = -1;
+			
+			m_ActiveTool = DrawingToolType.Pointer;
+			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+			
+			pbSurfaceScreen.Invalidate();
 		}
 		#endregion
 		
@@ -1148,15 +1192,19 @@ namespace Kinovea.ScreenManager
 			mnuSetCaptureSpeed.Image = Properties.Resources.camera_speed;
 			mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
 			mnuSavePic.Image = Properties.Resources.picture_save;
+			mnuSendPic.Click += new EventHandler(mnuSendPic_Click);
+			mnuSendPic.Image = Properties.Resources.image;
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
 			mnuCloseScreen.Image = Properties.Resources.film_close3;
-			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSetCaptureSpeed, mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSetCaptureSpeed, mnuSavePic, mnuSendPic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
 			mnuConfigureDrawing.Image = Properties.Resources.wrench;
 			mnuConfigureFading.Click += new EventHandler(mnuConfigureFading_Click);
 			mnuConfigureFading.Image = Properties.Resources.persistence;
+			mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
+			mnuConfigureOpacity.Image = Properties.Resources.persistence;
 			mnuTrackTrajectory.Click += new EventHandler(mnuTrackTrajectory_Click);
 			mnuTrackTrajectory.Image = Properties.Resources.tracking;
 			mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
@@ -1169,7 +1217,7 @@ namespace Kinovea.ScreenManager
 			mnuSealMeasure.Image = Properties.Resources.textfield;
 			mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
 			mnuShowCoordinates.Image = Properties.Resources.measure;
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuSepDrawing, mnuTrackTrajectory, mnuShowCoordinates, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuConfigureOpacity, mnuSepDrawing, mnuTrackTrajectory, mnuShowCoordinates, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
@@ -2658,11 +2706,13 @@ namespace Kinovea.ScreenManager
 			mnuPlayPause.Text = ScreenManagerLang.mnuPlayPause;
 			mnuSetCaptureSpeed.Text = ScreenManagerLang.mnuSetCaptureSpeed;
 			mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
+			mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
 			mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
 			
 			// 2. Drawings context menu.
 			mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 			mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
+			mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
 			mnuTrackTrajectory.Text = ScreenManagerLang.mnuTrackTrajectory;
 			mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
@@ -2963,6 +3013,7 @@ namespace Kinovea.ScreenManager
 							if(m_bDrawtimeFiltered)
 							{
 								mnuDirectTrack.Visible = false;
+								mnuSendPic.Visible = false;
 								panelCenter.ContextMenuStrip = popMenu;
 							}
 							else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
@@ -2973,20 +3024,22 @@ namespace Kinovea.ScreenManager
 								// We use temp variables because ToolStripMenuItem.Visible always returns false...
 								bool isCross = (ad is DrawingCross2D);
 								bool isLine = (ad is DrawingLine2D);
-								bool fadingVisible = m_PrefManager.DefaultFading.Enabled && !(ad is DrawingSVG);
+								bool fadingVisible = m_PrefManager.DefaultFading.Enabled && !(ad is DrawingSVG) && !(ad is DrawingBitmap);
 								bool gotoVisible = (fadingVisible && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
-								bool configVisible = !(ad is DrawingSVG);
+								bool configVisible = !(ad is DrawingSVG) && !(ad is DrawingBitmap);
+								bool opacityVisible = (ad is DrawingSVG) || (ad is DrawingBitmap);
 								
 								mnuTrackTrajectory.Visible = isCross;
 								mnuTrackTrajectory.Enabled = (ad.infosFading.ReferenceTimestamp == m_iCurrentPosition);
 								mnuConfigureFading.Visible = fadingVisible;
+								mnuConfigureOpacity.Visible = opacityVisible;
 								mnuConfigureDrawing.Visible = configVisible; 
 								mnuGotoKeyframe.Visible = gotoVisible;
 								mnuShowMeasure.Visible = isLine;
 								mnuSealMeasure.Visible = isLine;
 								mnuShowCoordinates.Visible = isCross;
 								
-								mnuSepDrawing.Visible = !(ad is DrawingSVG);
+								mnuSepDrawing.Visible = true;
 								mnuSepDrawing2.Visible = isCross || gotoVisible || isLine;
 								
 								// "Color & Size" or "Color" depending on drawing type.
@@ -3040,6 +3093,7 @@ namespace Kinovea.ScreenManager
 							{
 								// No drawing touched and no tool selected, but not currently playing.
 								mnuDirectTrack.Visible = true;
+								mnuSendPic.Visible = m_bSynched;
 								panelCenter.ContextMenuStrip = popMenu;
 							}
 						}
@@ -3047,6 +3101,7 @@ namespace Kinovea.ScreenManager
 						{
 							// Currently playing.
 							mnuDirectTrack.Visible = false;
+							mnuSendPic.Visible = false;
 							panelCenter.ContextMenuStrip = popMenu;
 						}
 					}
@@ -3241,7 +3296,11 @@ namespace Kinovea.ScreenManager
 						m_ActiveTool = DrawingToolType.Text;
 						m_bTextEdit = true;
 					}
-					else if(!(ad is DrawingSVG))
+					else if(ad is DrawingSVG || ad is DrawingBitmap)
+					{
+						mnuConfigureOpacity_Click(null, EventArgs.Empty);
+					}
+					else
 					{
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
@@ -3549,6 +3608,7 @@ namespace Kinovea.ScreenManager
 		private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
 		{
 			mnuDirectTrack.Visible = false;
+			mnuSendPic.Visible = m_bSynched;
 			panelCenter.ContextMenuStrip = popMenu;
 		}
 		#endregion
@@ -4228,6 +4288,17 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Invalidate();
 			}
 		}
+		private void mnuConfigureOpacity_Click(object sender, EventArgs e)
+		{
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				formConfigureOpacity fco = new formConfigureOpacity(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
+				LocateForm(fco);
+				fco.ShowDialog();
+				fco.Dispose();
+				pbSurfaceScreen.Invalidate();
+			}
+		}
 		private void mnuDirectTrack_Click(object sender, EventArgs e)
 		{
 			// Track the point. No Cross2D was selected.
@@ -4764,23 +4835,37 @@ namespace Kinovea.ScreenManager
 			// We need to clone it anyway, so we might aswell do the transform.
 			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
 			{
-				Size imgSize = new Size(m_FrameServer.VideoFile.CurrentImage.Size.Width, m_FrameServer.VideoFile.CurrentImage.Size.Height);
-				Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
-				Graphics g = Graphics.FromImage(img);
-				
-				Rectangle rDst;
-				if(m_FrameServer.Metadata.Mirrored)
-				{
-					rDst = new Rectangle(imgSize.Width, 0, -imgSize.Width, imgSize.Height);
-				}
-				else
-				{
-					rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
-				}
-				
-				g.DrawImage(m_FrameServer.VideoFile.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+				Bitmap img = CloneTransformedImage();
 				m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
 			}
+		}
+		private void mnuSendPic_Click(object sender, EventArgs e)
+		{
+			// Send the current image to the other screen for conversion into an observational reference.
+			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
+			{
+				Bitmap img = CloneTransformedImage();
+				m_PlayerScreenUIHandler.PlayerScreenUI_SendImage(img);	
+			}
+		}
+		private Bitmap CloneTransformedImage()
+		{
+			Size imgSize = new Size(m_FrameServer.VideoFile.CurrentImage.Size.Width, m_FrameServer.VideoFile.CurrentImage.Size.Height);
+			Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
+			Graphics g = Graphics.FromImage(img);
+			
+			Rectangle rDst;
+			if(m_FrameServer.Metadata.Mirrored)
+			{
+				rDst = new Rectangle(imgSize.Width, 0, -imgSize.Width, imgSize.Height);
+			}
+			else
+			{
+				rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
+			}
+			
+			g.DrawImage(m_FrameServer.VideoFile.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+			return img;
 		}
 		#endregion
 		

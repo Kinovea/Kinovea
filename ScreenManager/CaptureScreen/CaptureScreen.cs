@@ -19,11 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -146,11 +148,15 @@ namespace Kinovea.ScreenManager
 		{
 			// Not implemented.
 		}
-        #endregion
-    
-    	public void AddSVGDrawing(string filename)
+		public override void AddImageDrawing(string _filename, bool _bIsSvg)
         {
-        	m_CaptureScreenUI.AddSVGDrawing(filename);
+			m_CaptureScreenUI.AddImageDrawing(_filename, _bIsSvg);
         }
+		public override void AddImageDrawing(Bitmap _bmp)
+        {
+			// Implemented but currently not used.
+        	m_CaptureScreenUI.AddImageDrawing(_bmp);
+        }
+        #endregion
     }
 }

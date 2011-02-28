@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
 		void PlayerScreenUI_PauseAsked();
 		void PlayerScreenUI_SelectionChanged(bool _bInitialization);
 		void PlayerScreenUI_ImageChanged(Bitmap _image);
+		void PlayerScreenUI_SendImage(Bitmap _image);
 		void PlayerScreenUI_Reset();
 	}
 }

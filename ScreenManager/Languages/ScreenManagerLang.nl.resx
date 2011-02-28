@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configureer Persistentie</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Aantal delen:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configureer grid</value></data>
+   
+   
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Aantal beelden per seconde bij opname :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Aantal beelden per seconde bij afspelen : {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video is {0:0} malen langzamer dan origineel.</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Bewaar de gegevens als een tabel document</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaar…</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle bestanden (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Laad de kernbeeldgegevens</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuratie</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ga naar Kernbeeld</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Verberg</value></data>
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Laad kernbeeldgegevens…</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
+   
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High Speed camera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Maak eerste frame van het werkgebied nu het huidige frame</value></data>

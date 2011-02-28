@@ -107,6 +107,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Konfigurer vedlikehold</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Antall kategorier:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Konfigurer rutenett</value></data>
+   
+   
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Antall bilder per sekund ved opptak :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Antall bilder per sekund ved visning: {0:0.00} bps</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video er {0:0} langsommere enn originalt</value></data>
@@ -142,6 +144,8 @@
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Type video</value></data>
    <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Lagre data som et regneark dokument</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
+   
+   
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Kommentarer...</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analysis (*.kva)|*.kva|XML (*.xml)|*.xml|All Files (*.*)|*.*;</value></data>
    <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Last inn nøkkelbilde data</value></data>
@@ -198,6 +202,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Farger:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfigurasjon</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Skriftstørrelse:</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Lagre</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Bilde</value></data>
    
@@ -267,6 +272,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Gå til nøkkelbilde</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Rutenett</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Skjul</value></data>
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Last inn nøkkelbilde data...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -282,6 +288,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Start bane på nytt Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Lagre...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrere måling</value></data>
+   
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Sett original fart</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>La siste arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>La første arbeidsbilde I arbeidssonen være det aktuelle bildet</value></data>

@@ -134,9 +134,13 @@
    
    
    
+   
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
+   
+   
    
    
    
@@ -197,6 +201,7 @@
    <data name="Generic_Close" xml:space="preserve"><value>Zamknij</value></data>
    
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguracja</value></data>
+   
    
    <data name="Generic_Save" xml:space="preserve"><value>Zapisz</value></data>
    
@@ -267,6 +272,7 @@
    
    <data name="mnuGrid" xml:space="preserve"><value>Siatka</value></data>
    
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Wczytaj kluczowe dane obrazu</value></data>
    
    
@@ -281,6 +287,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
+   
    
    
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Ustaw aktualną klatkę jako ostatnią klatkę obszaru roboczego</value></data>

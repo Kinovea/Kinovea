@@ -582,6 +582,24 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap image
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("image", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap images
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("images", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap keyframesonly
 		{
 			get

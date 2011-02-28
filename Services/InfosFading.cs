@@ -62,6 +62,11 @@ namespace Kinovea.Services
             get { return m_iAverageTimeStampsPerFrame; }
             set { m_iAverageTimeStampsPerFrame = value; }
         }
+		public float MasterFactor
+		{
+			get { return m_fMasterFactor; }
+			set { m_fMasterFactor = value; }
+		}
         #endregion
 
         #region Members
@@ -71,6 +76,7 @@ namespace Kinovea.Services
         private int m_iFadingFrames;
         private long m_iReferenceTimestamp;
         private long m_iAverageTimeStampsPerFrame;
+        private float m_fMasterFactor = 1.0f;
         #endregion
 
         #region Construction
@@ -85,6 +91,7 @@ namespace Kinovea.Services
             m_iFadingFrames = 20;
             m_iReferenceTimestamp = 0;
             m_iAverageTimeStampsPerFrame = 0;
+            m_fMasterFactor = 1.0f;
 
         }
         public InfosFading(long _iReferenceTimestamp, long _iAverageTimeStampsPerFrame)
@@ -111,6 +118,7 @@ namespace Kinovea.Services
             this.FadingFrames = _origin.FadingFrames;
             this.ReferenceTimestamp = _origin.ReferenceTimestamp;
             this.AverageTimeStampsPerFrame = _origin.AverageTimeStampsPerFrame;
+            this.MasterFactor = _origin.MasterFactor;
         }
         public void ToXml(XmlTextWriter _xmlWriter, bool _bMainDefault)
         {
@@ -191,7 +199,7 @@ namespace Kinovea.Services
 
             if (!m_bEnabled)
             {
-                // No fading. (= only if on the Key frame)
+                // No fading.
                 if (_iTimestamp == m_iReferenceTimestamp)
                 {
                     fOpacityFactor = 1.0f;
@@ -225,7 +233,7 @@ namespace Kinovea.Services
                 fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, m_iFadingFrames);
             }
 
-            return fOpacityFactor;
+            return fOpacityFactor * m_fMasterFactor;
         }
         public bool IsVisible(long _iRefTimestamp, long _iTestTimestamp, int iVisibleFrames)
         {

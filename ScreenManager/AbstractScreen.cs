@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
@@ -65,5 +66,7 @@ namespace Kinovea.ScreenManager
         public abstract void BeforeClose();
         public abstract bool OnKeyPress(Keys _key);
         public abstract void RefreshImage();
+        public abstract void AddImageDrawing(string _filename, bool _bIsSvg);
+        public abstract void AddImageDrawing(Bitmap _bmp);
     }   
 }
