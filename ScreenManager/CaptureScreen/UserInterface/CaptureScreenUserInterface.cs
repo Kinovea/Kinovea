@@ -84,6 +84,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
+		private ToolStripMenuItem mnuCamSettings = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
@@ -438,11 +439,13 @@ namespace Kinovea.ScreenManager
 			// Attach the event handlers and build the menus.
 			
 			// 1. Default context menu.
+			mnuCamSettings.Click += new EventHandler(btnCamSettings_Click);
+			mnuCamSettings.Image = Properties.Resources.camera_video;
 			mnuSavePic.Click += new EventHandler(btnSnapShot_Click);
 			mnuSavePic.Image = Properties.Resources.picture_save;
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
 			mnuCloseScreen.Image = Properties.Resources.capture_close2;
-			popMenu.Items.AddRange(new ToolStripItem[] { mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuCamSettings, mnuSavePic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -837,6 +840,7 @@ namespace Kinovea.ScreenManager
 			// this is done at construction time and at RefreshUICulture time.
 			
 			// 1. Default context menu.
+			mnuCamSettings.Text = ScreenManagerLang.ToolTip_DevicePicker;
 			mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
 			mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
 			
