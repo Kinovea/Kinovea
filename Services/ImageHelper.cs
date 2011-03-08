@@ -94,35 +94,72 @@ namespace Kinovea.Services
 
 			return new Bitmap(memStr);
 		}
-		public static Bitmap GetSideBySideComposite(Bitmap _leftImage, Bitmap _rightImage, bool _video)
+		public static Bitmap GetSideBySideComposite(Bitmap _leftImage, Bitmap _rightImage, bool _video, bool _horizontal)
 		{
-			// Create the output image.
-			int maxHeight = Math.Max(_leftImage.Height, _rightImage.Height);
+			Bitmap composite = null;
 			
-			// For video export, only even heights are valid.			
-			if(_video && (maxHeight % 2 != 0))
+			if(!_horizontal)
 			{
-				maxHeight++;
+				// Create the output image.
+				int height = Math.Max(_leftImage.Height, _rightImage.Height);
+				int width = _leftImage.Width + _rightImage.Width;
+					
+				// For video export, only even heights are valid.			
+				if(_video && (height % 2 != 0))
+				{
+					height++;
+				}
+				
+				composite = new Bitmap(width, height, _leftImage.PixelFormat);
+				
+				// Vertically center the shortest image.
+				int leftTop = 0;
+				if(_leftImage.Height < height)
+				{
+					leftTop = (height - _leftImage.Height) / 2;
+				}
+				int rightTop = 0;
+				if(_rightImage.Height < height)
+				{
+					rightTop = (height - _rightImage.Height) / 2;
+				}
+				
+				// Draw the images on the output.
+				Graphics g = Graphics.FromImage(composite);
+				g.DrawImage(_leftImage, 0, leftTop);
+				g.DrawImage(_rightImage, _leftImage.Width, rightTop);
 			}
-			
-			Bitmap composite = new Bitmap(_leftImage.Width + _rightImage.Width, maxHeight, _leftImage.PixelFormat);
-			
-			// Vertically center the shortest image.
-			int leftTop = 0;
-			if(_leftImage.Height < maxHeight)
+			else
 			{
-				leftTop = (maxHeight - _leftImage.Height) / 2;
+				// Create the output image.
+				int height = _leftImage.Height + _rightImage.Height;
+				int width = Math.Max(_leftImage.Width, _rightImage.Width);
+				
+				// For video export, only even heights are valid.			
+				if(_video && (height % 2 != 0))
+				{
+					height++;
+				}
+				
+				composite = new Bitmap(width, height, _leftImage.PixelFormat);
+				
+				// Horizontally center the shortest image.
+				int firstLeft = 0;
+				if(_leftImage.Width < width)
+				{
+					firstLeft = (width - _leftImage.Width) / 2;
+				}
+				int secondLeft = 0;
+				if(_rightImage.Width < width)
+				{
+					secondLeft = (width - _rightImage.Width) / 2;
+				}
+				
+				// Draw the images on the output.
+				Graphics g = Graphics.FromImage(composite);
+				g.DrawImage(_leftImage, firstLeft, 0);
+				g.DrawImage(_rightImage, secondLeft, _leftImage.Height);	
 			}
-			int rightTop = 0;
-			if(_rightImage.Height < maxHeight)
-			{
-				rightTop = (maxHeight - _rightImage.Height) / 2;
-			}
-			
-			// Draw the images on the output.
-			Graphics g = Graphics.FromImage(composite);
-			g.DrawImage(_leftImage, 0, leftTop);
-			g.DrawImage(_rightImage, _leftImage.Width, rightTop);
 			
 			return composite;
 		}
