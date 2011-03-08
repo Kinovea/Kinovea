@@ -1000,7 +1000,7 @@ namespace Kinovea.ScreenManager
        				// get a copy of the images with drawings flushed on.
        				Bitmap leftImage = ps1.GetFlushedImage();
        				Bitmap rightImage = ps2.GetFlushedImage();
-       				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false);
+       				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
        				
        				// Configure Save dialog.
        				SaveFileDialog dlgSave = new SaveFileDialog();
@@ -1812,7 +1812,7 @@ namespace Kinovea.ScreenManager
        				if(!m_bSyncMerging)
        				{
        					img2 = ps2.GetFlushedImage();
-       					composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
+       					composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
        				}
        				else
        				{
@@ -1860,7 +1860,7 @@ namespace Kinovea.ScreenManager
 	       						if(!m_bSyncMerging)
 	       						{
 	       							img2 = ps2.GetFlushedImage();
-	       							composite = ImageHelper.GetSideBySideComposite(img1, img2, true);
+	       							composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
 	       						}
 	       						else
 	       						{
