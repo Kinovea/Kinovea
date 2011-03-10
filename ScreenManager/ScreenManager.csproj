@@ -122,6 +122,7 @@
     <Compile Include="AbstractScreen.cs" />
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
+    <Compile Include="CaptureScreen\FilenameHelper.cs" />
     <Compile Include="CaptureScreen\FrameBuffer.cs" />
     <Compile Include="CaptureScreen\FrameGrabbers\DeviceDescriptor.cs" />
     <Compile Include="CaptureScreen\FrameGrabbers\AbstractFrameGrabber.cs" />
