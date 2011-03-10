@@ -81,6 +81,9 @@ namespace Kinovea.ScreenManager
 		private bool m_bSettingsFold;
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		private MessageToaster m_MessageToaster;
+		private string m_LastSavedImage;
+		private string m_LastSavedVideo;
+		private FilenameHelper m_FilenameHelper = new FilenameHelper();
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -376,7 +379,7 @@ namespace Kinovea.ScreenManager
 			// This screen is about to be closed.
 			tmrCaptureDeviceDetector.Stop();
 			tmrCaptureDeviceDetector.Dispose();
-			PreferencesManager.Instance().Export();
+			m_PrefManager.Export();
 		}
 		#endregion
 		
@@ -491,12 +494,15 @@ namespace Kinovea.ScreenManager
 		}
 		private void InitializeCaptureFiles()
 		{
-			tbImageFilename.Text = CreateNewFilename(null);
-			tbVideoFilename.Text = tbImageFilename.Text;
+			// Get the last values used and move forward (or use default if first time).
+			m_LastSavedImage = m_FilenameHelper.InitImage();
+			m_LastSavedVideo = m_FilenameHelper.InitVideo();
 			
-			PreferencesManager pm = PreferencesManager.Instance();
-			tbImageDirectory.Text = pm.CaptureImageDirectory;
-			tbVideoDirectory.Text = pm.CaptureVideoDirectory;
+			tbImageFilename.Text = m_LastSavedImage;
+			tbVideoFilename.Text = m_LastSavedVideo;
+			
+			tbImageDirectory.Text = m_PrefManager.CaptureImageDirectory;
+			tbVideoDirectory.Text = m_PrefManager.CaptureVideoDirectory;
 		}
 		private void UpdateFilenameLabel()
 		{
@@ -1858,18 +1864,18 @@ namespace Kinovea.ScreenManager
 		}
 		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
         {
-			if(!ValidateFilename(tbImageDirectory.Text, true))
+			if(!m_FilenameHelper.ValidateFilename(tbImageDirectory.Text, true))
         	{
         		AlertInvalidFilename();
         	}
         	else
         	{
-        		PreferencesManager.Instance().CaptureImageDirectory = tbImageDirectory.Text;	
+        		m_PrefManager.CaptureImageDirectory = tbImageDirectory.Text;	
         	}
         }
         private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
         {
-        	if(!ValidateFilename(tbVideoDirectory.Text, true))
+        	if(!m_FilenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
         	{
         		AlertInvalidFilename();
         	}
@@ -1880,14 +1886,14 @@ namespace Kinovea.ScreenManager
         }
         private void tbImageFilename_TextChanged(object sender, EventArgs e)
         {
-			if(!ValidateFilename(tbImageFilename.Text, true))
+			if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, true))
         	{
         		AlertInvalidFilename();
         	}
         }
         private void tbVideoFilename_TextChanged(object sender, EventArgs e)
         {
-        	if(!ValidateFilename(tbVideoFilename.Text, true))
+        	if(!m_FilenameHelper.ValidateFilename(tbVideoFilename.Text, true))
         	{
         		AlertInvalidFilename();
         	}
@@ -1897,13 +1903,19 @@ namespace Kinovea.ScreenManager
 			// Export the current frame.
 			if(m_FrameServer.IsConnected)
 			{
-				if(!ValidateFilename(tbImageFilename.Text, false))
+				if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, false))
 				{
 					AlertInvalidFilename();	
 				}
 				else if(Directory.Exists(tbImageDirectory.Text))
 				{
-					string filepath = tbImageDirectory.Text + "\\" + tbImageFilename.Text;
+					
+					// In the meantime the other screen could have make a snapshot too,
+					// which would have updated the last saved file name in the global prefs.
+					// However we keep using the name of the last file saved in this specific screen to keep them independant.
+					// for ex. the user might be saving to "Front - 4" on the left, and to "Side - 7" on the right.
+					string filename = tbImageFilename.Text;
+					string filepath = tbImageDirectory.Text + "\\" + filename;
 					
 					// Check if file already exists.
 					if(OverwriteOrCreateImage(filepath))
@@ -1912,10 +1924,15 @@ namespace Kinovea.ScreenManager
 						
 						ImageHelper.Save(filepath, outputImage);
 						outputImage.Dispose();
+
+						// Keep track of the last successful save.
+						// Each screen must keep its own independant history.
+						m_LastSavedImage = filename;
+						m_PrefManager.CaptureImageFile = filename;
+						m_PrefManager.Export();
 						
 						// Update the filename for the next snapshot.
-						// If the filename was empty, we'll create it without saving.
-						tbImageFilename.Text = CreateNewFilename(tbImageFilename.Text);
+						tbImageFilename.Text = m_FilenameHelper.Next(m_LastSavedImage);
 						
 						ToastImageSaved();
 					}
@@ -1935,8 +1952,12 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.StopRecording();
 					EnableVideoFileEdit(true);
 					
+					// Keep track of the last successful save.
+					m_PrefManager.CaptureVideoFile = m_LastSavedVideo;
+					m_PrefManager.Export();
+					
 					// update file name.
-					tbVideoFilename.Text = CreateNewFilename(tbVideoFilename.Text);
+					tbVideoFilename.Text = m_FilenameHelper.Next(m_LastSavedVideo);
 					
 					DisplayAsRecording(false);
 				}
@@ -1945,7 +1966,7 @@ namespace Kinovea.ScreenManager
 					// Start exporting frames to a video.
 				
 					// Check that the destination folder exists.
-					if(!ValidateFilename(tbVideoFilename.Text, false))
+					if(!m_FilenameHelper.ValidateFilename(tbVideoFilename.Text, false))
 					{
 						AlertInvalidFilename();	
 					}
@@ -1957,25 +1978,19 @@ namespace Kinovea.ScreenManager
 						string filepath = tbVideoDirectory.Text + "\\" + filename;
 						string filenameToLower = filename.ToLower();
 						
-						if(filename != "")
+						if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
 						{
-							if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
-							{
-								filepath = filepath + ".mkv";	
-							}
-							
-							// Check if file already exists.
-							if(OverwriteOrCreateVideo(filepath))
-							{
-								m_FrameServer.CurrentCaptureFilePath = filepath;
-								m_FrameServer.StartRecording(filepath);
-								EnableVideoFileEdit(false);
-								DisplayAsRecording(true);
-							}							
+							filepath = filepath + ".mkv";	
 						}
-						else
+						
+						// Check if file already exists.
+						if(OverwriteOrCreateVideo(filepath))
 						{
-							tbVideoFilename.Text = CreateNewFilename("");	
+							m_LastSavedVideo = filename;
+							m_FrameServer.CurrentCaptureFilePath = filepath;
+							m_FrameServer.StartRecording(filepath);
+							EnableVideoFileEdit(false);
+							DisplayAsRecording(true);
 						}
 					}
 					else
@@ -2031,84 +2046,7 @@ namespace Kinovea.ScreenManager
     			m_bTryingToConnect = false;
     		}
         }
-        private string CreateNewFilename(string filename)
-        {
-        	//-------------------------------------------------------------------
-        	// Create the next file name from the existing one.
-        	// if the existing name has a number in it, we increment this number.
-        	// if not, we create a suffix.
-			//-------------------------------------------------------------------
-        	
-			string newFilename = "";
-			
-			if(filename == null || filename == "")
-			{
-				// Create the name from the current date.
-				DateTime now = DateTime.Now;
-				newFilename = String.Format("{0}-{1:00}-{2:00} - 1", now.Year, now.Month, now.Day);
-			}
-			else
-			{
-				// Find all numbers in the name, if any.
-				Regex r = new Regex(@"\d+");
-				MatchCollection mc = filename.EndsWith(".mp4") ? 
-					r.Matches(Path.GetFileNameWithoutExtension(filename)) : r.Matches(filename);
-	        	
-				if(mc.Count > 0)
-	        	{
-	        		// Increment the last one.
-	        		Match m = mc[mc.Count - 1];
-	        		int number = int.Parse(m.Value);
-	        		number++;
-	        	
-	        		// Todo: handle leading zeroes in the original.
-	        		// (LastIndexOf("0") ?
-	        		
-	        		// Replace the number in the original.
-	        		newFilename = r.Replace(filename, number.ToString(), 1, m.Index );
-	        	}
-	        	else
-	        	{
-	        		// No number found, add suffix between text and extension (works if no extension).
-	        		newFilename = String.Format("{0} - 2{1}", 
-	        		                            Path.GetFileNameWithoutExtension(filename), 
-	        		                            Path.GetExtension(filename));
-	        	}
-			}
-			
-        	return newFilename;
-        }
-        private bool ValidateFilename(string _filename, bool _allowEmpty)
-        {
-        	// Validate filename chars.
-        	bool bIsValid = false;
-        	
-        	if(_filename.Length == 0 && _allowEmpty)
-        	{
-        		// special case for when the user is currently typing.
-        		bIsValid = true;
-        	}
-        	else
-        	{
-				try
-				{
-				  	new System.IO.FileInfo(_filename);
-				  	bIsValid = true;
-				}
-				catch (ArgumentException)
-				{
-					// filename is empty, only white spaces or contains invalid chars.
-					log.Error(String.Format("Capture filename has invalid characters. Proposed file was: {0}", _filename));
-				}
-				catch (NotSupportedException)
-				{
-					// filename contains a colon in the middle of the string.
-					log.Error(String.Format("Capture filename has a colon in the middle. Proposed file was: {0}", _filename));
-				}
-        	}
-			
-			return bIsValid;
-        }
+       
         private void AlertInvalidFilename()
         {
         	string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;
