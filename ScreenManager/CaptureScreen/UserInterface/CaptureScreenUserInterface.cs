@@ -1900,6 +1900,7 @@ namespace Kinovea.ScreenManager
 				if(m_FrameServer.IsRecording)
 				{
 					m_FrameServer.StopRecording();
+					btnCamSettings.Enabled = true;
 					EnableVideoFileEdit(true);
 					
 					// Keep track of the last successful save.
@@ -1934,6 +1935,7 @@ namespace Kinovea.ScreenManager
 								m_ScreenUIHandler.CaptureScreenUI_FileSaved();
 							}
 							
+							btnCamSettings.Enabled = false;
 							m_LastSavedVideo = filename;
 							m_FrameServer.CurrentCaptureFilePath = filepath;
 							m_FrameServer.StartRecording(filepath);
@@ -1966,6 +1968,7 @@ namespace Kinovea.ScreenManager
         }
         private void EnableVideoFileEdit(bool _bEnable)
         {
+        	lblVideoFile.Enabled = _bEnable;
         	tbVideoFilename.Enabled = _bEnable && !m_PrefManager.CaptureUsePattern;
 			btnSaveVideoLocation.Enabled = _bEnable;        	
         }
@@ -1982,7 +1985,10 @@ namespace Kinovea.ScreenManager
 		#region Device management
 		private void btnCamSettings_Click(object sender, EventArgs e)
         {
-			m_FrameServer.PromptDeviceSelector();
+			if(!m_FrameServer.IsRecording)
+			{
+				m_FrameServer.PromptDeviceSelector();
+			}
         }
         private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
         {
