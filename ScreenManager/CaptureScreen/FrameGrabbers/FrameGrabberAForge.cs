@@ -57,6 +57,10 @@ namespace Kinovea.ScreenManager
 			// In this case, only the FrameServerCapture is aware of the final image size.
 			get { return m_FrameSize; }
 		}
+		public override DeviceCapability SelectedCapability
+		{
+			get { return m_CurrentVideoDevice.SelectedCapability; }
+		}
 		#endregion
 			
 		#region Members

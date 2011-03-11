@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
 				if(m_FrameGrabber.IsConnected)
 				{
 					string bufferFill = String.Format(ScreenManagerLang.statusBufferFill, m_FrameBuffer.FillPercentage);
-					string status = String.Format("{0} ({1})", m_FrameGrabber.DeviceName, bufferFill);
+					string status = String.Format("{0} - {1} ({2})", m_FrameGrabber.DeviceName, m_FrameGrabber.SelectedCapability.ToString(), bufferFill);
 					return status;		
 				}
 				else

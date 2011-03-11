@@ -78,7 +78,6 @@ namespace Kinovea.ScreenManager
 		private bool m_bMeasuring;
 		
 		// Other
-		private bool m_bSettingsFold;
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		private MessageToaster m_MessageToaster;
 		private string m_LastSavedImage;
@@ -246,9 +245,11 @@ namespace Kinovea.ScreenManager
 		public void RefreshUICulture()
 		{
 			// Labels
-			lblSettings.Text = "   " + ScreenManagerLang.Generic_Configuration;
-			lblImageFile.Text = ScreenManagerLang.Generic_Image;
-			lblVideoFile.Text = ScreenManagerLang.Generic_Video;
+			lblImageFile.Text = ScreenManagerLang.Capture_NextImage;
+			lblVideoFile.Text = ScreenManagerLang.Capture_NextVideo;
+			int maxRight = Math.Max(lblImageFile.Right, lblVideoFile.Right);
+			tbImageFilename.Left = maxRight + 5;
+			tbVideoFilename.Left = maxRight + 5;
 			UpdateDelayLabel();
 			
 			ReloadTooltipsCulture();
@@ -1962,23 +1963,6 @@ namespace Kinovea.ScreenManager
         	}
         	
         	return bOverwriteOrCreate;
-        }
-        private void FoldSettings(object sender, EventArgs e)
-        {
-        	if(m_bSettingsFold)
-        	{
-        		panelVideoControls.Height = tbVideoFilename.Bottom + 12;
-        		btnFoldSettings.BackgroundImage = Resources.dock16x16;
-        		lblSettings.Visible = false;
-        	}
-        	else
-        	{
-        		panelVideoControls.Height = lblSettings.Bottom;
-        		btnFoldSettings.BackgroundImage = Resources.undock16x16;
-        		lblSettings.Visible = true;
-        	}
-        	
-        	m_bSettingsFold = !m_bSettingsFold;	
         }
         private void EnableVideoFileEdit(bool _bEnable)
         {

@@ -78,6 +78,8 @@
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Odtwórz | Zatrzymaj wideo</value></data>
    
    
+   
+   
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Dodaj rysunek</value></data>
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Dodaj ekran do </value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Usuń rysunek</value></data>

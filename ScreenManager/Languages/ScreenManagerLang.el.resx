@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Και τα δυο Video ένα πλαίσιο μπροστά</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Και τα δυο Video ένα πλαίσιο πίσω</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Αναπαραγωγή | Παύση και τα δυο Video</value></data>
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Προσθήκη οθόνης για αποτύπωση</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Προσθήκη Χρονομέτρου</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Προσθήκη Σχεδίου</value></data>

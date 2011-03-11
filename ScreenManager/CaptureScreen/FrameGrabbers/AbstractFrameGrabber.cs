@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -48,6 +49,10 @@ namespace Kinovea.ScreenManager
 			get;
 		}
 		public abstract Size FrameSize
+		{
+			get;
+		}
+		public abstract DeviceCapability SelectedCapability
 		{
 			get;
 		}

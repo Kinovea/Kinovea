@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Go to Next Frame for Both Videos</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Go to Previous Frame for Both Videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Play | Pause Both Videos</value></data>
+   <data name="Capture_NextImage" xml:space="preserve"><value>Next image :</value></data>
+   <data name="Capture_NextVideo" xml:space="preserve"><value>Next video :</value></data>
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Add Screen for Capture</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Add Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Add Drawing</value></data>

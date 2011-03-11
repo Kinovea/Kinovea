@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Vai al fotogramma seguente per entrambi i Video</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Vai al fotogramma precedente per entrambi i Video</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Riproduci | metti in Pausa entrambi i Video</value></data>
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Aggiungi uno schermo di Cattura Video</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Aggiungi Cronometro</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Aggiungi disegno</value></data>
