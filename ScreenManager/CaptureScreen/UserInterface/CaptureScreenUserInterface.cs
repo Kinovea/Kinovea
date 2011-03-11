@@ -503,10 +503,6 @@ namespace Kinovea.ScreenManager
 			tbVideoFilename.Text = m_LastSavedVideo;
 			tbImageFilename.Enabled = !m_PrefManager.CaptureUsePattern;
 			tbVideoFilename.Enabled = !m_PrefManager.CaptureUsePattern;
-			
-			// Directories
-			tbImageDirectory.Text = m_PrefManager.CaptureImageDirectory;
-			tbVideoDirectory.Text = m_PrefManager.CaptureVideoDirectory;
 		}
 		private void UpdateFilenameLabel()
 		{
@@ -876,11 +872,6 @@ namespace Kinovea.ScreenManager
 		}
 		private void ReloadTooltipsCulture()
 		{
-			toolTips.SetToolTip(btnBrowseImageLocation, ScreenManagerLang.ToolTip_SelectFolder);
-			toolTips.SetToolTip(btnBrowseVideoLocation, ScreenManagerLang.ToolTip_SelectFolder);
-			toolTips.SetToolTip(btnSaveImageLocation, ScreenManagerLang.ToolTip_SelectFolder);
-			toolTips.SetToolTip(btnSaveVideoLocation, ScreenManagerLang.ToolTip_SelectFolder);
-			
 			// Video controls
 			toolTips.SetToolTip(btnGrab, ScreenManagerLang.ToolTip_Play);
 			toolTips.SetToolTip(btnCamSnap, ScreenManagerLang.Generic_SaveImage);
@@ -1840,58 +1831,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Export video and frames
-		
-		#region directories
-		private void btnBrowseImageLocation_Click(object sender, EventArgs e)
-        {
-        	// Select the image snapshot folder.	
-        	SelectSavingDirectory(tbImageDirectory);
-        }
-		private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
-        {
-        	// Select the video capture folder.	
-			SelectSavingDirectory(tbVideoDirectory);
-        }
-		private void SelectSavingDirectory(TextBox _tb)
-		{
-			folderBrowserDialog.Description = ""; // todo.
-            folderBrowserDialog.ShowNewFolderButton = true;
-            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
-
-            if(Directory.Exists(_tb.Text))
-            {
-               	folderBrowserDialog.SelectedPath = _tb.Text;
-            }
-            
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                _tb.Text = folderBrowserDialog.SelectedPath;
-            }			
-		}
-		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
-        {
-			if(!m_FilenameHelper.ValidateFilename(tbImageDirectory.Text, true))
-        	{
-        		ScreenManagerKernel.AlertInvalidFileName();
-        	}
-        	else
-        	{
-        		m_PrefManager.CaptureImageDirectory = tbImageDirectory.Text;	
-        	}
-        }
-        private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
-        {
-        	if(!m_FilenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
-        	{
-        		ScreenManagerKernel.AlertInvalidFileName();
-        	}
-        	else
-        	{
-        		PreferencesManager.Instance().CaptureVideoDirectory = tbVideoDirectory.Text;	
-        	}
-        }
-        #endregion
-		
         private void tbImageFilename_TextChanged(object sender, EventArgs e)
         {
 			if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, true))
@@ -1915,7 +1854,7 @@ namespace Kinovea.ScreenManager
 				{
 					ScreenManagerKernel.AlertInvalidFileName();
 				}
-				else if(Directory.Exists(tbImageDirectory.Text))
+				else if(Directory.Exists(m_PrefManager.CaptureImageDirectory))
 				{
 					// In the meantime the other screen could have make a snapshot too,
 					// which would have updated the last saved file name in the global prefs.
@@ -1923,10 +1862,10 @@ namespace Kinovea.ScreenManager
 					// for ex. the user might be saving to "Front - 4" on the left, and to "Side - 7" on the right.
 					// This doesn't apply if we are using a pattern though.
 					string filename = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitImage() : tbImageFilename.Text;
-					string filepath = tbImageDirectory.Text + "\\" + filename;
+					string filepath = m_PrefManager.CaptureImageDirectory + "\\" + filename + m_PrefManager.GetImageFormat();
 					
 					// Check if file already exists.
-					if(OverwriteOrCreateImage(filepath))
+					if(OverwriteOrCreateFile(filepath))
 					{
 						Bitmap outputImage = m_FrameServer.GetFlushedImage();
 						
@@ -1951,10 +1890,6 @@ namespace Kinovea.ScreenManager
 						ToastImageSaved();
 					}
 				}
-				else
-				{
-					btnBrowseImageLocation_Click(null, EventArgs.Empty);
-				}	
 			}
 		}
 		private void btnRecord_Click(object sender, EventArgs e)
@@ -1984,21 +1919,13 @@ namespace Kinovea.ScreenManager
 					{
 						ScreenManagerKernel.AlertInvalidFileName();	
 					}
-					else if(Directory.Exists(tbVideoDirectory.Text))
+					else if(Directory.Exists(m_PrefManager.CaptureVideoDirectory))
 					{
-						// no extension : mkv.
-						// extension specified by user : honor it if supported, mkv otherwise.
 						string filename = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitVideo() : tbVideoFilename.Text;
-						string filepath = tbVideoDirectory.Text + "\\" + filename;
-						string filenameToLower = filename.ToLower();
-						
-						if(!filenameToLower.EndsWith("mkv") && !filenameToLower.EndsWith("mp4") && !filenameToLower.EndsWith("avi"))
-						{
-							filepath = filepath + ".mkv";	
-						}
+						string filepath = m_PrefManager.CaptureVideoDirectory + "\\" + filename + m_PrefManager.GetVideoFormat();
 						
 						// Check if file already exists.
-						if(OverwriteOrCreateVideo(filepath))
+						if(OverwriteOrCreateFile(filepath))
 						{
 							if(m_PrefManager.CaptureUsePattern)
 							{
@@ -2013,16 +1940,12 @@ namespace Kinovea.ScreenManager
 							DisplayAsRecording(true);
 						}
 					}
-					else
-					{
-						btnBrowseVideoLocation_Click(null, EventArgs.Empty);
-					}	
 				}
 				
 				OnPoke();
 			}
         }
-        private bool OverwriteOrCreateVideo(string _filepath)
+        private bool OverwriteOrCreateFile(string _filepath)
         {
         	// Check if the specified video file exists, and asks the user if he wants to overwrite.
         	bool bOverwriteOrCreate = true;
@@ -2040,45 +1963,19 @@ namespace Kinovea.ScreenManager
         	
         	return bOverwriteOrCreate;
         }
-        private bool OverwriteOrCreateImage(string _filepath)
-        {
-        	// Check if the specified image file exists, and asks the user if he wants to overwrite.
-        	bool bOverwriteOrCreate = true;
-        	string filepathTest = _filepath;
-        	string filepathLower = _filepath.ToLower();
-        	if(!filepathLower.ToLower().EndsWith(".bmp") && 
-        	   !filepathLower.ToLower().EndsWith(".jpg") &&
-        	   !filepathLower.ToLower().EndsWith(".jpeg") &&
-        	   !filepathLower.ToLower().EndsWith(".png"))
-        	{
-        		filepathTest = _filepath + ".jpg";
-        	}       	
-        	
-        	if(File.Exists(filepathTest))
-        	{
-        		string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
-        		string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, filepathTest).Replace("\\n", "\n");
-        		
-        		DialogResult dr = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-        		if(dr != DialogResult.Yes)
-        		{
-        			bOverwriteOrCreate = false;
-        		}
-        	}
-        	
-        	return bOverwriteOrCreate;
-        }
         private void FoldSettings(object sender, EventArgs e)
         {
         	if(m_bSettingsFold)
         	{
-        		panelVideoControls.Height = tbVideoDirectory.Bottom + 12;
+        		panelVideoControls.Height = tbVideoFilename.Bottom + 12;
         		btnFoldSettings.BackgroundImage = Resources.dock16x16;
+        		lblSettings.Visible = false;
         	}
         	else
         	{
         		panelVideoControls.Height = lblSettings.Bottom;
         		btnFoldSettings.BackgroundImage = Resources.undock16x16;
+        		lblSettings.Visible = true;
         	}
         	
         	m_bSettingsFold = !m_bSettingsFold;	
@@ -2086,8 +1983,6 @@ namespace Kinovea.ScreenManager
         private void EnableVideoFileEdit(bool _bEnable)
         {
         	tbVideoFilename.Enabled = _bEnable && !m_PrefManager.CaptureUsePattern;
-        	tbVideoDirectory.Enabled = _bEnable;
-        	btnBrowseVideoLocation.Enabled = _bEnable;
 			btnSaveVideoLocation.Enabled = _bEnable;        	
         }
         private void TextBoxes_MouseDoubleClick(object sender, MouseEventArgs e)

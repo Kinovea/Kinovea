@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 using Kinovea.Root.Languages;
@@ -49,6 +50,10 @@ namespace Kinovea.Root
 		#endregion
 		
 		#region Members
+		private string m_ImageDirectory;
+		private string m_VideoDirectory;
+		private KinoveaImageFormat m_ImageFormat;
+		private KinoveaVideoFormat m_VideoFormat;
 		private bool m_bUsePattern;
 		private string m_Pattern;
 		private bool m_bResetCounter;
@@ -83,13 +88,36 @@ namespace Kinovea.Root
 		}
 		private void ImportPreferences()
         {
+			m_ImageDirectory = m_prefManager.CaptureImageDirectory;
+			m_VideoDirectory = m_prefManager.CaptureVideoDirectory;
+			m_ImageFormat = m_prefManager.CaptureImageFormat;
+			m_VideoFormat = m_prefManager.CaptureVideoFormat;
 			m_bUsePattern = m_prefManager.CaptureUsePattern;
 			m_Pattern = m_prefManager.CapturePattern;
 			m_iCounter = m_prefManager.CaptureImageCounter; // Use the image counter for sample.
 		}
 		private void InitPage()
 		{
+			// General tab
 			tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
+			lblImageDirectory.Text = RootLang.dlgPreferences_Capture_lblImageDirectory;
+			lblVideoDirectory.Text = RootLang.dlgPreferences_Capture_lblVideoDirectory;
+			tbImageDirectory.Text = m_ImageDirectory;
+			tbVideoDirectory.Text = m_VideoDirectory;
+			
+            lblImageFormat.Text = RootLang.dlgPreferences_Capture_lblImageFormat;
+            cmbImageFormat.Items.Add("JPG");
+            cmbImageFormat.Items.Add("PNG");
+            cmbImageFormat.Items.Add("BMP");
+            cmbImageFormat.SelectedIndex = ((int)m_ImageFormat < cmbImageFormat.Items.Count) ? (int)m_ImageFormat : 0;
+            
+			lblVideoFormat.Text = RootLang.dlgPreferences_Capture_lblVideoFormat;
+            cmbVideoFormat.Items.Add("MKV");
+            cmbVideoFormat.Items.Add("MP4");
+            cmbVideoFormat.Items.Add("AVI");
+            cmbVideoFormat.SelectedIndex = ((int)m_VideoFormat < cmbVideoFormat.Items.Count) ? (int)m_VideoFormat : 0;
+            
+			// Naming tab
 			tabNaming.Text = RootLang.dlgPreferences_Capture_tabNaming;
 			rbFreeText.Text = RootLang.dlgPreferences_Capture_rbFreeText;
 			rbPattern.Text = RootLang.dlgPreferences_Capture_rbPattern;
@@ -111,6 +139,68 @@ namespace Kinovea.Root
 		#endregion
 		
 		#region Handlers
+		
+		#region Tab general
+		private void btnBrowseImageLocation_Click(object sender, EventArgs e)
+        {
+        	// Select the image snapshot folder.	
+        	SelectSavingDirectory(tbImageDirectory);
+        }
+		private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
+        {
+        	// Select the video capture folder.	
+			SelectSavingDirectory(tbVideoDirectory);
+        }
+		private void SelectSavingDirectory(TextBox _tb)
+		{
+			FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+			folderBrowserDialog.Description = ""; // todo.
+            folderBrowserDialog.ShowNewFolderButton = true;
+            folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
+
+            if(Directory.Exists(_tb.Text))
+            {
+               	folderBrowserDialog.SelectedPath = _tb.Text;
+            }
+            
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                _tb.Text = folderBrowserDialog.SelectedPath;
+            }			
+		}
+		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
+		{
+			if(!m_filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
+        	{
+        		ScreenManagerKernel.AlertInvalidFileName();
+        	}
+        	else
+        	{
+        		m_ImageDirectory = tbImageDirectory.Text;	
+        	}
+		}
+		private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
+        {
+        	if(!m_filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
+        	{
+        		ScreenManagerKernel.AlertInvalidFileName();
+        	}
+        	else
+        	{
+        		m_VideoDirectory = tbVideoDirectory.Text;	
+        	}
+        }
+		private void cmbImageFormat_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			m_ImageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
+		}
+		private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			m_VideoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
+		}
+		#endregion
+		
+		#region Tab naming
 		private void tbPattern_TextChanged(object sender, EventArgs e)
 		{
 			if(m_filenameHelper.ValidateFilename(tbPattern.Text, true))
@@ -152,11 +242,13 @@ namespace Kinovea.Root
 			m_iCounter = 1;
 			UpdateSample();
 		}
-		private void RbFreeTextCheckedChanged(object sender, EventArgs e)
+		private void radio_CheckedChanged(object sender, EventArgs e)
 		{
 			m_bUsePattern = rbPattern.Checked;
 			EnableDisablePattern(m_bUsePattern);
 		}
+		#endregion
+		
 		#endregion
 		
 		#region Private methods
@@ -191,13 +283,20 @@ namespace Kinovea.Root
 		
 		public void CommitChanges()
 		{
-			m_prefManager.CapturePattern = m_Pattern;
+			m_prefManager.CaptureImageDirectory = m_ImageDirectory;
+			m_prefManager.CaptureVideoDirectory = m_VideoDirectory;
+			m_prefManager.CaptureImageFormat = m_ImageFormat;
+			m_prefManager.CaptureVideoFormat = m_VideoFormat;
+			
 			m_prefManager.CaptureUsePattern = m_bUsePattern;
+			m_prefManager.CapturePattern = m_Pattern;
 			if(m_bResetCounter)
 			{
 				m_prefManager.CaptureImageCounter = 1;
 				m_prefManager.CaptureVideoCounter = 1;
 			}
 		}
+		
+		
 	}
 }

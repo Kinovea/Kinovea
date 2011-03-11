@@ -79,6 +79,10 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Σχέδια</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Γενικά</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Αναπαραγωγή</value></data>
+   
+   
+   
+   
    <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"/>
    <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"/>
    <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"/>

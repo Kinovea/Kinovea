@@ -90,6 +90,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>

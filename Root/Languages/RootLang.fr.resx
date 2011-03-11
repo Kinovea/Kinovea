@@ -79,6 +79,10 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dessins</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Général</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Lecture</value></data>
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Dossier images :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Dossier vidéos :</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Format image :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Format vidéo :</value></data>
    <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Nommage des fichiers</value></data>
    <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Texte libre avec compteur automatique</value></data>
    <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Modèle de nommage</value></data>

@@ -205,6 +205,24 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Image directory:.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblImageDirectory {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblImageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Image format:.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblImageFormat {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblImageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Minute.
         /// </summary>
         internal static string dlgPreferences_Capture_lblMinute {
@@ -228,6 +246,24 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_lblSecond {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_lblSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Video directory:.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblVideoDirectory {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblVideoDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Video format:.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblVideoFormat {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblVideoFormat", resourceCulture);
             }
         }
         
