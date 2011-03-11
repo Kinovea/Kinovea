@@ -204,26 +204,22 @@ namespace Kinovea.ScreenManager
 			
 			if(m_FrameServer.RecentlyCapturedVideos.Count > 0)
 			{
-				int iBoxIndex = 0;
 				int iPixelsOffset = 0;
 				int iPixelsSpacing = 20;
 				
-				foreach (CapturedVideo cv in m_FrameServer.RecentlyCapturedVideos)
+				for(int i = m_FrameServer.RecentlyCapturedVideos.Count - 1; i >= 0; i--)
 				{
-					CapturedVideoBox box = new CapturedVideoBox(cv);
+				 	CapturedVideoBox box = new CapturedVideoBox(m_FrameServer.RecentlyCapturedVideos[i]);
 					SetupDefaultThumbBox(box);
 					
 					// Finish the setup
 					box.Left = iPixelsOffset + iPixelsSpacing;
-					box.pbThumbnail.Image = cv.Thumbnail;
+					box.pbThumbnail.Image = m_FrameServer.RecentlyCapturedVideos[i].Thumbnail;
 					//box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
 					//box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
 					
 					iPixelsOffset += (iPixelsSpacing + box.Width);
-
 					pnlThumbnails.Controls.Add(box);
-
-					iBoxIndex++;
 				}
 				
 				DockKeyframePanel(false);
