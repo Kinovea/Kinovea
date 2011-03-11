@@ -258,6 +258,12 @@ namespace Kinovea.ScreenManager
 			ReloadTooltipsCulture();
 			ReloadMenusCulture();
 			
+			// Update the file naming.
+			// By doing this we fix the naming for prefs change in free text (FT), in pattern, switch from FT to pattern,
+			// switch from pattern to FT, no change in pattern.
+			// but we loose any changes that have been done between the last saving and now. (no pref change in FT)
+			InitializeCaptureFiles();
+			
 			// Refresh image to update grids colors, etc.
 			pbSurfaceScreen.Invalidate();
 			
@@ -497,10 +503,12 @@ namespace Kinovea.ScreenManager
 			// Get the last values used and move forward (or use default if first time).
 			m_LastSavedImage = m_FilenameHelper.InitImage();
 			m_LastSavedVideo = m_FilenameHelper.InitVideo();
-			
 			tbImageFilename.Text = m_LastSavedImage;
 			tbVideoFilename.Text = m_LastSavedVideo;
+			tbImageFilename.Enabled = !m_PrefManager.CaptureUsePattern;
+			tbVideoFilename.Enabled = !m_PrefManager.CaptureUsePattern;
 			
+			// Directories
 			tbImageDirectory.Text = m_PrefManager.CaptureImageDirectory;
 			tbVideoDirectory.Text = m_PrefManager.CaptureVideoDirectory;
 		}
@@ -1836,6 +1844,8 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Export video and frames
+		
+		#region directories
 		private void btnBrowseImageLocation_Click(object sender, EventArgs e)
         {
         	// Select the image snapshot folder.	
@@ -1866,7 +1876,7 @@ namespace Kinovea.ScreenManager
         {
 			if(!m_FilenameHelper.ValidateFilename(tbImageDirectory.Text, true))
         	{
-        		AlertInvalidFilename();
+        		ScreenManagerKernel.AlertInvalidFileName();
         	}
         	else
         	{
@@ -1877,25 +1887,27 @@ namespace Kinovea.ScreenManager
         {
         	if(!m_FilenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
         	{
-        		AlertInvalidFilename();
+        		ScreenManagerKernel.AlertInvalidFileName();
         	}
         	else
         	{
         		PreferencesManager.Instance().CaptureVideoDirectory = tbVideoDirectory.Text;	
         	}
         }
+        #endregion
+		
         private void tbImageFilename_TextChanged(object sender, EventArgs e)
         {
 			if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, true))
         	{
-        		AlertInvalidFilename();
+        		ScreenManagerKernel.AlertInvalidFileName();
         	}
         }
         private void tbVideoFilename_TextChanged(object sender, EventArgs e)
         {
         	if(!m_FilenameHelper.ValidateFilename(tbVideoFilename.Text, true))
         	{
-        		AlertInvalidFilename();
+        		ScreenManagerKernel.AlertInvalidFileName();
         	}
         }
 		private void btnSnapShot_Click(object sender, EventArgs e)
@@ -1905,16 +1917,16 @@ namespace Kinovea.ScreenManager
 			{
 				if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, false))
 				{
-					AlertInvalidFilename();	
+					ScreenManagerKernel.AlertInvalidFileName();
 				}
 				else if(Directory.Exists(tbImageDirectory.Text))
 				{
-					
 					// In the meantime the other screen could have make a snapshot too,
 					// which would have updated the last saved file name in the global prefs.
 					// However we keep using the name of the last file saved in this specific screen to keep them independant.
 					// for ex. the user might be saving to "Front - 4" on the left, and to "Side - 7" on the right.
-					string filename = tbImageFilename.Text;
+					// This doesn't apply if we are using a pattern though.
+					string filename = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitImage() : tbImageFilename.Text;
 					string filepath = tbImageDirectory.Text + "\\" + filename;
 					
 					// Check if file already exists.
@@ -1924,7 +1936,13 @@ namespace Kinovea.ScreenManager
 						
 						ImageHelper.Save(filepath, outputImage);
 						outputImage.Dispose();
-
+						
+						if(m_PrefManager.CaptureUsePattern)
+						{
+							m_FilenameHelper.AutoIncrement(true);
+							m_ScreenUIHandler.CaptureScreenUI_FileSaved();
+						}
+						
 						// Keep track of the last successful save.
 						// Each screen must keep its own independant history.
 						m_LastSavedImage = filename;
@@ -1932,7 +1950,7 @@ namespace Kinovea.ScreenManager
 						m_PrefManager.Export();
 						
 						// Update the filename for the next snapshot.
-						tbImageFilename.Text = m_FilenameHelper.Next(m_LastSavedImage);
+						tbImageFilename.Text = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitImage() : m_FilenameHelper.Next(m_LastSavedImage);
 						
 						ToastImageSaved();
 					}
@@ -1957,7 +1975,7 @@ namespace Kinovea.ScreenManager
 					m_PrefManager.Export();
 					
 					// update file name.
-					tbVideoFilename.Text = m_FilenameHelper.Next(m_LastSavedVideo);
+					tbVideoFilename.Text = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitVideo() : m_FilenameHelper.Next(m_LastSavedVideo);
 					
 					DisplayAsRecording(false);
 				}
@@ -1968,13 +1986,13 @@ namespace Kinovea.ScreenManager
 					// Check that the destination folder exists.
 					if(!m_FilenameHelper.ValidateFilename(tbVideoFilename.Text, false))
 					{
-						AlertInvalidFilename();	
+						ScreenManagerKernel.AlertInvalidFileName();	
 					}
 					else if(Directory.Exists(tbVideoDirectory.Text))
 					{
 						// no extension : mkv.
 						// extension specified by user : honor it if supported, mkv otherwise.
-						string filename = tbVideoFilename.Text;
+						string filename = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitVideo() : tbVideoFilename.Text;
 						string filepath = tbVideoDirectory.Text + "\\" + filename;
 						string filenameToLower = filename.ToLower();
 						
@@ -1986,6 +2004,12 @@ namespace Kinovea.ScreenManager
 						// Check if file already exists.
 						if(OverwriteOrCreateVideo(filepath))
 						{
+							if(m_PrefManager.CaptureUsePattern)
+							{
+								m_FilenameHelper.AutoIncrement(false);
+								m_ScreenUIHandler.CaptureScreenUI_FileSaved();
+							}
+							
 							m_LastSavedVideo = filename;
 							m_FrameServer.CurrentCaptureFilePath = filepath;
 							m_FrameServer.StartRecording(filepath);
@@ -2001,58 +2025,6 @@ namespace Kinovea.ScreenManager
 				
 				OnPoke();
 			}
-        }
-		#endregion
-        
-		#region Capture specifics
-		private void btnCamSettings_Click(object sender, EventArgs e)
-        {
-			m_FrameServer.PromptDeviceSelector();
-        }
-        private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
-        {
-        	if(!m_FrameServer.IsConnected)
-        	{
-        		TryToConnect();
-        	}
-        	else
-        	{
-        		CheckDeviceConnection();
-        	}
-        }
-        private void TryToConnect()
-        {
-        	// Try to connect to a device.
-    		// Prevent reentry.
-    		if(!m_bTryingToConnect)
-    		{
-    			m_bTryingToConnect = true;        			
-    			m_FrameServer.NegociateDevice();       			
-    			m_bTryingToConnect = false;
-    			
-    			if(m_FrameServer.IsConnected)
-    			{
-    				btnCamSettings.Enabled = true;
-    			}
-    		}
-        }
-        private void CheckDeviceConnection()
-        {
-        	// Ensure we stay connected.
-        	if(!m_bTryingToConnect)
-    		{
-    			m_bTryingToConnect = true;        			
-    			m_FrameServer.CheckDeviceConnection(tmrCaptureDeviceDetector.Interval);
-    			m_bTryingToConnect = false;
-    		}
-        }
-       
-        private void AlertInvalidFilename()
-        {
-        	string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;
-        	string msgText = ScreenManagerLang.Error_Capture_InvalidFile_Text.Replace("\\n", "\n");
-        		
-			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
         private bool OverwriteOrCreateVideo(string _filepath)
         {
@@ -2117,18 +2089,62 @@ namespace Kinovea.ScreenManager
         }
         private void EnableVideoFileEdit(bool _bEnable)
         {
-        	tbVideoFilename.Enabled = _bEnable;
+        	tbVideoFilename.Enabled = _bEnable && !m_PrefManager.CaptureUsePattern;
         	tbVideoDirectory.Enabled = _bEnable;
         	btnBrowseVideoLocation.Enabled = _bEnable;
 			btnSaveVideoLocation.Enabled = _bEnable;        	
         }
-        void TextBoxes_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void TextBoxes_MouseDoubleClick(object sender, MouseEventArgs e)
         {
         	TextBox tb = sender as TextBox;
         	if(tb != null)
         	{
         		tb.SelectAll();	
         	}
+        }
+        #endregion
+        
+		#region Device management
+		private void btnCamSettings_Click(object sender, EventArgs e)
+        {
+			m_FrameServer.PromptDeviceSelector();
+        }
+        private void tmrCaptureDeviceDetector_Tick(object sender, EventArgs e)
+        {
+        	if(!m_FrameServer.IsConnected)
+        	{
+        		TryToConnect();
+        	}
+        	else
+        	{
+        		CheckDeviceConnection();
+        	}
+        }
+        private void TryToConnect()
+        {
+        	// Try to connect to a device.
+    		// Prevent reentry.
+    		if(!m_bTryingToConnect)
+    		{
+    			m_bTryingToConnect = true;        			
+    			m_FrameServer.NegociateDevice();       			
+    			m_bTryingToConnect = false;
+    			
+    			if(m_FrameServer.IsConnected)
+    			{
+    				btnCamSettings.Enabled = true;
+    			}
+    		}
+        }
+        private void CheckDeviceConnection()
+        {
+        	// Ensure we stay connected.
+        	if(!m_bTryingToConnect)
+    		{
+    			m_bTryingToConnect = true;        			
+    			m_FrameServer.CheckDeviceConnection(tmrCaptureDeviceDetector.Interval);
+    			m_bTryingToConnect = false;
+    		}
         }
         #endregion
         

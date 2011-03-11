@@ -75,9 +75,21 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Yerelleştirmeler:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Video Dosyasını Aç</value></data>
+   
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Çizimler</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Genel</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>İzle</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>

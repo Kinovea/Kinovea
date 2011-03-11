@@ -75,9 +75,21 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Käännökset:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Kaikki tiedostot (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Avaa videotiedosto</value></data>
+   
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piirrokset</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Yleinen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Näytä</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Aina näkyvillä</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Näytä piirrustukset videon aikana</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Aktivoi pysyvyys</value></data>

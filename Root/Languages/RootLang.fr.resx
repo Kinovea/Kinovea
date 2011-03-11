@@ -75,9 +75,21 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Traductions:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tous les fichiers (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Ouvrir un Fichier Vidéo</value></data>
+   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capture</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dessins</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Général</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Lecture</value></data>
+   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Nommage des fichiers</value></data>
+   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Texte libre avec compteur automatique</value></data>
+   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Modèle de nommage</value></data>
+   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Année</value></data>
+   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Mois</value></data>
+   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Jour</value></data>
+   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Heure</value></data>
+   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minute</value></data>
+   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Seconde</value></data>
+   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Compteur</value></data>
+   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Reset des compteurs</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Toujours Visible</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activer la persistance</value></data>

@@ -30,6 +30,8 @@ namespace Kinovea.ScreenManager
 	/// without passing the complete ScreenManager object, and thus without 
 	/// exposing all public methods of ScreenManager.
 	/// Previously, these method were injected one by one as delegates.
+	/// The methods starting with Player_ or Capture_ are generally used when a screen
+	/// needs to have an impact on the other screen.
 	/// 
 	/// These methods are implemented in ScreenManager.
 	/// </summary>
@@ -44,5 +46,6 @@ namespace Kinovea.ScreenManager
 		void Player_ImageChanged(PlayerScreen _screen, Bitmap _image);
 		void Player_SendImage(PlayerScreen _screen, Bitmap _image);
 		void Player_Reset(PlayerScreen _screen);
+		void Capture_FileSaved(CaptureScreen _screen);
 	}
 }

@@ -75,9 +75,21 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Localizări:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Toate fişierele (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Deschide fişier video</value></data>
+   
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Desene</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Rulează</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Întotdeauna vizibil</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activează persistenţa</value></data>

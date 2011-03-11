@@ -124,6 +124,10 @@ namespace Kinovea.ScreenManager
         {
         	m_ScreenHandler.Screen_UpdateStatusBarAsked(this);
         }
+        public void CaptureScreenUI_FileSaved()
+        {
+        	m_ScreenHandler.Capture_FileSaved(this);
+        }
         #endregion
         
         #region AbstractScreen Implementation

@@ -28,11 +28,9 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public interface ICaptureScreenUIHandler : IScreenUIHandler
 	{
-		// Nothing needed currently.
-		// The UI can directly calls in its FrameServerCapture object for capture dependant tasks.
-		// This interface would generally be used for propagating requests to the ScreenManager.
-		
+		// This interface is used for propagating requests to the ScreenManager.
 		// Note that there are some methods hidden here via IScreenUIHandler inheritance.
-		// Just, there is currently no method that is specific to capture.
+
+		void CaptureScreenUI_FileSaved();
 	}
 }

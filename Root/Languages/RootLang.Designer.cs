@@ -133,6 +133,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Capture.
+        /// </summary>
+        internal static string dlgPreferences_btnCapture {
+            get {
+                return ResourceManager.GetString("dlgPreferences_btnCapture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Drawings.
         /// </summary>
         internal static string dlgPreferences_btnDrawings {
@@ -156,6 +165,105 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_ButtonPlayAnalyze {
             get {
                 return ResourceManager.GetString("dlgPreferences_ButtonPlayAnalyze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset counters.
+        /// </summary>
+        internal static string dlgPreferences_Capture_btnResetCounter {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_btnResetCounter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Counter.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblCounter {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblCounter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Day.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblDay {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hour.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblHour {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Minute.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblMinute {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Month.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblMonth {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Second.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblSecond {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Year.
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblYear {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Free text with automatic counter.
+        /// </summary>
+        internal static string dlgPreferences_Capture_rbFreeText {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_rbFreeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Naming pattern.
+        /// </summary>
+        internal static string dlgPreferences_Capture_rbPattern {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_rbPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à File naming.
+        /// </summary>
+        internal static string dlgPreferences_Capture_tabNaming {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_tabNaming", resourceCulture);
             }
         }
         

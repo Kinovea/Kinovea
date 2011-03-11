@@ -75,9 +75,21 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Riferimenti:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tutti I files (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Apri File Video</value></data>
+   
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Disegni</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Generale</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Riproduzione</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visibile</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostra disegni quando riproduce il video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Attiva la persistenza</value></data>

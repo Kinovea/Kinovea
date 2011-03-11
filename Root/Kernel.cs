@@ -906,14 +906,20 @@ namespace Kinovea.Root
         private void mnuPreferencesOnClick(object sender, EventArgs e)
         {
             DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.StopPlaying != null)
+            if (dp.StopPlaying != null && dp.DeactivateKeyboardHandler != null)
             {
                 dp.StopPlaying();
-            }
-
+                dp.DeactivateKeyboardHandler();
+			}
+            
             FormPreferences2 fp = new FormPreferences2(-1);
             fp.ShowDialog();
             fp.Dispose();
+            
+            if(dp.ActivateKeyboardHandler != null)
+            {
+            	dp.ActivateKeyboardHandler();
+            }
 
             // Refresh Preferences
             PreferencesManager pm = PreferencesManager.Instance();
