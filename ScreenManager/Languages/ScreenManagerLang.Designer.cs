@@ -691,6 +691,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Properties.
+        /// </summary>
+        internal static string dlgDevicePicker_DeviceProperties {
+            get {
+                return ResourceManager.GetString("dlgDevicePicker_DeviceProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à No other option available.
         /// </summary>
         internal static string dlgDevicePicker_NoConf {

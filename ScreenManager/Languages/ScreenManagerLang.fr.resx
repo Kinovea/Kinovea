@@ -136,6 +136,7 @@
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Étalonner la mesure</value></data>
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Source en cours</value></data>
    <data name="dlgDevicePicker_CurrentlySelected" xml:space="preserve"><value>En cours :</value></data>
+   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Propriétés</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Pas d'autre option disponible</value></data>
    <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Choisir une autre source</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durée de chaque Image Clé : {0} centièmes de secondes.</value></data>

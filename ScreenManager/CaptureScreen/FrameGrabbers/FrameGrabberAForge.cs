@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
 		public override void PromptDeviceSelector()
 		{
 			// Ask the user which device he wants to use or which size/framerate.
-			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice);
+			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice, new PromptDevicePropertyPage(DisplayDevicePropertyPage));
 			if(fdp.ShowDialog() == DialogResult.OK)
 			{
 				DeviceDescriptor dev = fdp.SelectedDevice;
@@ -259,6 +259,17 @@ namespace Kinovea.ScreenManager
 		public override void BeforeClose()
 		{
 			Disconnect();
+		}
+		public void DisplayDevicePropertyPage(IntPtr _handle)
+		{
+			try
+			{
+				m_VideoDevice.DisplayPropertyPage(_handle);
+			}
+			catch(Exception)
+			{
+				log.ErrorFormat("Error when trying to display device property page.");
+			}	
 		}
 		#endregion
 		

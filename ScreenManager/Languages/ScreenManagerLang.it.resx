@@ -137,6 +137,7 @@
    
    <data name="dlgDevicePicker_CurrentlySelected" xml:space="preserve"><value>Selezione attuale:</value></data>
    
+   
    <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Scegli un altro dispositivo</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0} centesimi di secondo.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Durata per ogni Immagine Chiave : {0:0.00} secondi.</value></data>
