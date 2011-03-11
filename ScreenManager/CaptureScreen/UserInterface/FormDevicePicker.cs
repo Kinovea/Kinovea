@@ -63,11 +63,13 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private string m_CurrentDeviceId;
+		private PromptDevicePropertyPage m_PromptDevicePropertyPage;
 		#endregion
 		
-		public formDevicePicker(List<DeviceDescriptor> _devices, DeviceDescriptor _currentDevice)
+		public formDevicePicker(List<DeviceDescriptor> _devices, DeviceDescriptor _currentDevice, PromptDevicePropertyPage _PromptDevicePropertyPage)
 		{
 			m_CurrentDeviceId = _currentDevice.Identification;
+			m_PromptDevicePropertyPage = _PromptDevicePropertyPage;
 			
 			InitializeComponent();
 			
@@ -76,8 +78,9 @@ namespace Kinovea.ScreenManager
 			this.btnCancel.Text = ScreenManagerLang.Generic_Cancel;
 			this.gpCurrentDevice.Text = ScreenManagerLang.dlgDevicePicker_CurrentDevice;
 			this.gpOtherDevices.Text = ScreenManagerLang.dlgDevicePicker_SelectAnother;
-			this.lblConfig.Text = ScreenManagerLang.Generic_Configuration;
+			this.lblConfig.Text = ScreenManagerLang.Generic_Configuration + " :";
 			this.lblNoConf.Text = ScreenManagerLang.dlgDevicePicker_NoConf;
+			this.btnDeviceProperties.Text = ScreenManagerLang.dlgDevicePicker_DeviceProperties;
 			lblNoConf.Top = lblConfig.Top;
 			lblNoConf.Left = lblConfig.Right;
 			
@@ -130,6 +133,16 @@ namespace Kinovea.ScreenManager
 			// so the user doesn't think he could change both at the same time.
 			DeviceDescriptor selected = cmbOtherDevices.Items[cmbOtherDevices.SelectedIndex] as DeviceDescriptor;
 			gpCurrentDevice.Enabled = (selected.Identification == m_CurrentDeviceId);
+		}
+		
+		private void btnDeviceProperties_Click(object sender, EventArgs e)
+		{
+			// Ask the API to display the device property page.
+			// This page is implemented by the driver.
+			if(m_PromptDevicePropertyPage != null)
+			{
+				m_PromptDevicePropertyPage(this.Handle);
+			}
 		}
 	}
 }

@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.gpCurrentDevice = new System.Windows.Forms.GroupBox();
+			this.btnDeviceProperties = new System.Windows.Forms.Button();
 			this.lblNoConf = new System.Windows.Forms.Label();
 			this.btnCamcorder = new System.Windows.Forms.Button();
 			this.cmbCapabilities = new System.Windows.Forms.ComboBox();
@@ -66,7 +67,7 @@ namespace Kinovea.ScreenManager
 			// 
 			this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnApply.Location = new System.Drawing.Point(115, 239);
+			this.btnApply.Location = new System.Drawing.Point(115, 261);
 			this.btnApply.Name = "btnApply";
 			this.btnApply.Size = new System.Drawing.Size(99, 24);
 			this.btnApply.TabIndex = 76;
@@ -77,7 +78,7 @@ namespace Kinovea.ScreenManager
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(220, 239);
+			this.btnCancel.Location = new System.Drawing.Point(220, 261);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(99, 24);
 			this.btnCancel.TabIndex = 77;
@@ -88,6 +89,7 @@ namespace Kinovea.ScreenManager
 			// 
 			this.gpCurrentDevice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.gpCurrentDevice.Controls.Add(this.btnDeviceProperties);
 			this.gpCurrentDevice.Controls.Add(this.lblNoConf);
 			this.gpCurrentDevice.Controls.Add(this.btnCamcorder);
 			this.gpCurrentDevice.Controls.Add(this.cmbCapabilities);
@@ -95,17 +97,27 @@ namespace Kinovea.ScreenManager
 			this.gpCurrentDevice.Controls.Add(this.lblCurrentlySelected);
 			this.gpCurrentDevice.Location = new System.Drawing.Point(12, 12);
 			this.gpCurrentDevice.Name = "gpCurrentDevice";
-			this.gpCurrentDevice.Size = new System.Drawing.Size(307, 125);
+			this.gpCurrentDevice.Size = new System.Drawing.Size(307, 153);
 			this.gpCurrentDevice.TabIndex = 78;
 			this.gpCurrentDevice.TabStop = false;
 			this.gpCurrentDevice.Text = "Current device";
 			// 
+			// btnDeviceProperties
+			// 
+			this.btnDeviceProperties.Location = new System.Drawing.Point(105, 114);
+			this.btnDeviceProperties.Name = "btnDeviceProperties";
+			this.btnDeviceProperties.Size = new System.Drawing.Size(173, 24);
+			this.btnDeviceProperties.TabIndex = 10;
+			this.btnDeviceProperties.Text = "Device Properties";
+			this.btnDeviceProperties.UseVisualStyleBackColor = true;
+			this.btnDeviceProperties.Click += new System.EventHandler(this.btnDeviceProperties_Click);
+			// 
 			// lblNoConf
 			// 
-			this.lblNoConf.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblNoConf.BackColor = System.Drawing.Color.Transparent;
 			this.lblNoConf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblNoConf.ForeColor = System.Drawing.Color.Gray;
-			this.lblNoConf.Location = new System.Drawing.Point(107, 99);
+			this.lblNoConf.Location = new System.Drawing.Point(105, 52);
 			this.lblNoConf.Name = "lblNoConf";
 			this.lblNoConf.Size = new System.Drawing.Size(187, 23);
 			this.lblNoConf.TabIndex = 9;
@@ -125,6 +137,7 @@ namespace Kinovea.ScreenManager
 			// 
 			// cmbCapabilities
 			// 
+			this.cmbCapabilities.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbCapabilities.FormattingEnabled = true;
 			this.cmbCapabilities.Location = new System.Drawing.Point(105, 78);
 			this.cmbCapabilities.Name = "cmbCapabilities";
@@ -133,7 +146,7 @@ namespace Kinovea.ScreenManager
 			// 
 			// lblConfig
 			// 
-			this.lblConfig.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblConfig.BackColor = System.Drawing.Color.Transparent;
 			this.lblConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblConfig.ForeColor = System.Drawing.Color.Black;
 			this.lblConfig.Location = new System.Drawing.Point(6, 76);
@@ -157,7 +170,7 @@ namespace Kinovea.ScreenManager
 			this.gpOtherDevices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.gpOtherDevices.Controls.Add(this.cmbOtherDevices);
-			this.gpOtherDevices.Location = new System.Drawing.Point(12, 143);
+			this.gpOtherDevices.Location = new System.Drawing.Point(12, 171);
 			this.gpOtherDevices.Name = "gpOtherDevices";
 			this.gpOtherDevices.Size = new System.Drawing.Size(307, 79);
 			this.gpOtherDevices.TabIndex = 79;
@@ -166,6 +179,7 @@ namespace Kinovea.ScreenManager
 			// 
 			// cmbOtherDevices
 			// 
+			this.cmbOtherDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbOtherDevices.FormattingEnabled = true;
 			this.cmbOtherDevices.Location = new System.Drawing.Point(16, 37);
 			this.cmbOtherDevices.Name = "cmbOtherDevices";
@@ -178,7 +192,7 @@ namespace Kinovea.ScreenManager
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(331, 275);
+			this.ClientSize = new System.Drawing.Size(331, 297);
 			this.Controls.Add(this.gpOtherDevices);
 			this.Controls.Add(this.gpCurrentDevice);
 			this.Controls.Add(this.btnApply);
@@ -194,6 +208,7 @@ namespace Kinovea.ScreenManager
 			this.gpOtherDevices.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button btnDeviceProperties;
 		private System.Windows.Forms.Label lblNoConf;
 		private System.Windows.Forms.ComboBox cmbOtherDevices;
 		private System.Windows.Forms.Button btnCamcorder;

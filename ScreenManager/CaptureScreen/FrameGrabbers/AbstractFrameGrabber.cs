@@ -23,7 +23,9 @@ using System.Drawing;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
-{
+{	
+	public delegate void PromptDevicePropertyPage(IntPtr _handle);
+	
 	/// <summary>
 	/// AbstractFrameGrabber.
 	/// Class to encapsulate all the functionnality of providing access to the actual grabbing library.
