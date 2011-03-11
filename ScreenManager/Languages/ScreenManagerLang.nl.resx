@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ga naar het volgende frame van beide videos</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Ga naar het vorige frame van beide videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Speel | Pauzeer beide videos</value></data>
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Voeg een Opnamescherm toe</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Voeg een tekening toe</value></data>

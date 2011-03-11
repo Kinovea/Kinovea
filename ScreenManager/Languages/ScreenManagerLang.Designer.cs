@@ -151,6 +151,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Next image :.
+        /// </summary>
+        internal static string Capture_NextImage {
+            get {
+                return ResourceManager.GetString("Capture_NextImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Next video :.
+        /// </summary>
+        internal static string Capture_NextVideo {
+            get {
+                return ResourceManager.GetString("Capture_NextVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Add Screen for Capture.
         /// </summary>
         internal static string CommandAddCaptureScreen_FriendlyName {

@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ir para o Próximo Quadro de Ambos os Vídeos.</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Voltar ao Quadro Anterior de Ambos os Vídeos.</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduzir | Pausar Ambos os Videos</value></data>
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Adicionar Tela para Captura</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Adicionar Cronômetro</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Adicionar Desenho</value></data>

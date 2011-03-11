@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Mene kummankin videon seuraavaan kuvaan</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Palaa kummankin videon edelliseen kuvaan</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Käynnistä | Pysäytä kummatkin videot</value></data>
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Lisää näyttö kuvaukseen</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Lisää ajanotto</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Lisää piirros</value></data>

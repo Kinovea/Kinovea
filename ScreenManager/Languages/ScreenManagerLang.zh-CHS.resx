@@ -76,6 +76,8 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>跳到两个视频的下一帧</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>跳到两个视频的上一帧</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>播放 | 暂停 两个视频</value></data>
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>新增捕捉屏幕</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>新增秒表</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>新增绘制</value></data>
