@@ -788,6 +788,17 @@ namespace Kinovea.ScreenManager
         	// We need to also reset all the sync states.
         	PrepareSync(true);        	
         }
+        public void Capture_FileSaved(CaptureScreen _screen)
+        {
+        	// A file was saved in one screen, we need to update the text on the other.
+        	for(int i=0;i<screenList.Count;i++)
+            {
+        		if (screenList[i] != _screen && screenList[i] is CaptureScreen)
+                {
+                	screenList[i].refreshUICulture();
+                }
+            }
+        }
         #endregion
         
         #region ICommonControlsHandler Implementation
@@ -1325,6 +1336,14 @@ namespace Kinovea.ScreenManager
         			}
         			break;
         	}
+        }
+        
+        public static void AlertInvalidFileName()
+        {
+        	string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;
+        	string msgText = ScreenManagerLang.Error_Capture_InvalidFile_Text.Replace("\\n", "\n");
+        		
+			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
         
         #region Menu organization

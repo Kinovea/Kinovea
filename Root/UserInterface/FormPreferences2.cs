@@ -77,7 +77,7 @@ namespace Kinovea.Root
 			m_PrefPages.Add(new PreferencePanelGeneral());
 			m_PrefPages.Add(new PreferencePanelPlayer());
 			m_PrefPages.Add(new PreferencePanelDrawings());
-			//m_PrefPages.Add(new PreferencePanelCapture());
+			m_PrefPages.Add(new PreferencePanelCapture());
 			
 			AddPages();
 		}

@@ -75,9 +75,21 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Lokalisering :</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle filer (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Åpne videofil</value></data>
+   
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tegninger</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Generelt</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Spill av</value></data>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Alltid synlig</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Vis tegninger samtidig meg videoavspilling</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Start likevekt</value></data>
