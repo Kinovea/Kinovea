@@ -90,6 +90,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Întotdeauna vizibil</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Arată desenele când este rulat fişierul video</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activează persistenţa</value></data>

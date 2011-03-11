@@ -90,6 +90,10 @@
    
    
    
+   
+   
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Aina näkyvillä</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Näytä piirrustukset videon aikana</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Aktivoi pysyvyys</value></data>

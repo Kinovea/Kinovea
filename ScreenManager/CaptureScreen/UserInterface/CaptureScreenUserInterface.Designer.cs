@@ -42,13 +42,9 @@ namespace Kinovea.ScreenManager
         	this.btnFoldSettings = new System.Windows.Forms.Button();
         	this.lblSettings = new System.Windows.Forms.Label();
         	this.btnSaveImageLocation = new System.Windows.Forms.Button();
-        	this.btnBrowseImageLocation = new System.Windows.Forms.Button();
-        	this.tbImageDirectory = new System.Windows.Forms.TextBox();
         	this.tbImageFilename = new System.Windows.Forms.TextBox();
         	this.lblImageFile = new System.Windows.Forms.Label();
         	this.btnSaveVideoLocation = new System.Windows.Forms.Button();
-        	this.btnBrowseVideoLocation = new System.Windows.Forms.Button();
-        	this.tbVideoDirectory = new System.Windows.Forms.TextBox();
         	this.tbVideoFilename = new System.Windows.Forms.TextBox();
         	this.lblVideoFile = new System.Windows.Forms.Label();
         	this.panelCenter = new System.Windows.Forms.Panel();
@@ -132,13 +128,9 @@ namespace Kinovea.ScreenManager
         	this.panelVideoControls.Controls.Add(this.btnFoldSettings);
         	this.panelVideoControls.Controls.Add(this.lblSettings);
         	this.panelVideoControls.Controls.Add(this.btnSaveImageLocation);
-        	this.panelVideoControls.Controls.Add(this.btnBrowseImageLocation);
-        	this.panelVideoControls.Controls.Add(this.tbImageDirectory);
         	this.panelVideoControls.Controls.Add(this.tbImageFilename);
         	this.panelVideoControls.Controls.Add(this.lblImageFile);
         	this.panelVideoControls.Controls.Add(this.btnSaveVideoLocation);
-        	this.panelVideoControls.Controls.Add(this.btnBrowseVideoLocation);
-        	this.panelVideoControls.Controls.Add(this.tbVideoDirectory);
         	this.panelVideoControls.Controls.Add(this.tbVideoFilename);
         	this.panelVideoControls.Controls.Add(this.lblVideoFile);
         	this.panelVideoControls.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -255,8 +247,8 @@ namespace Kinovea.ScreenManager
         	this.btnFoldSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnFoldSettings.Cursor = System.Windows.Forms.Cursors.Default;
         	this.btnFoldSettings.FlatAppearance.BorderSize = 0;
-        	this.btnFoldSettings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gainsboro;
-        	this.btnFoldSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gainsboro;
+        	this.btnFoldSettings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.btnFoldSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.btnFoldSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnFoldSettings.Location = new System.Drawing.Point(328, 48);
         	this.btnFoldSettings.Name = "btnFoldSettings";
@@ -279,12 +271,13 @@ namespace Kinovea.ScreenManager
         	this.lblSettings.TabIndex = 38;
         	this.lblSettings.Text = "   Settings";
         	this.lblSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+        	this.lblSettings.Visible = false;
         	this.lblSettings.Click += new System.EventHandler(this.FoldSettings);
         	// 
         	// btnSaveImageLocation
         	// 
         	this.btnSaveImageLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnSaveImageLocation.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnSaveImageLocation.Cursor = System.Windows.Forms.Cursors.Arrow;
         	this.btnSaveImageLocation.FlatAppearance.BorderSize = 0;
         	this.btnSaveImageLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnSaveImageLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -296,37 +289,6 @@ namespace Kinovea.ScreenManager
         	this.btnSaveImageLocation.TabIndex = 36;
         	this.btnSaveImageLocation.Tag = "";
         	this.btnSaveImageLocation.UseVisualStyleBackColor = true;
-        	this.btnSaveImageLocation.Click += new System.EventHandler(this.btnBrowseImageLocation_Click);
-        	// 
-        	// btnBrowseImageLocation
-        	// 
-        	this.btnBrowseImageLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.btnBrowseImageLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnBrowseImageLocation.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnBrowseImageLocation.FlatAppearance.BorderSize = 0;
-        	this.btnBrowseImageLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnBrowseImageLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnBrowseImageLocation.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
-        	this.btnBrowseImageLocation.Location = new System.Drawing.Point(307, 77);
-        	this.btnBrowseImageLocation.MinimumSize = new System.Drawing.Size(25, 25);
-        	this.btnBrowseImageLocation.Name = "btnBrowseImageLocation";
-        	this.btnBrowseImageLocation.Size = new System.Drawing.Size(30, 25);
-        	this.btnBrowseImageLocation.TabIndex = 35;
-        	this.btnBrowseImageLocation.Tag = "";
-        	this.btnBrowseImageLocation.UseVisualStyleBackColor = true;
-        	this.btnBrowseImageLocation.Click += new System.EventHandler(this.btnBrowseImageLocation_Click);
-        	// 
-        	// tbImageDirectory
-        	// 
-        	this.tbImageDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.tbImageDirectory.Location = new System.Drawing.Point(237, 80);
-        	this.tbImageDirectory.Name = "tbImageDirectory";
-        	this.tbImageDirectory.Size = new System.Drawing.Size(67, 20);
-        	this.tbImageDirectory.TabIndex = 34;
-        	this.tbImageDirectory.Text = "C:\\Docu...Images";
-        	this.tbImageDirectory.TextChanged += new System.EventHandler(this.tbImageDirectory_TextChanged);
-        	this.tbImageDirectory.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
         	// tbImageFilename
         	// 
@@ -334,7 +296,7 @@ namespace Kinovea.ScreenManager
         	this.tbImageFilename.Name = "tbImageFilename";
         	this.tbImageFilename.Size = new System.Drawing.Size(142, 20);
         	this.tbImageFilename.TabIndex = 33;
-        	this.tbImageFilename.Text = "2010-04-18 - 4.jpg";
+        	this.tbImageFilename.Text = "computed";
         	this.tbImageFilename.TextChanged += new System.EventHandler(this.tbImageFilename_TextChanged);
         	this.tbImageFilename.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
@@ -355,7 +317,7 @@ namespace Kinovea.ScreenManager
         	// btnSaveVideoLocation
         	// 
         	this.btnSaveVideoLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnSaveVideoLocation.Cursor = System.Windows.Forms.Cursors.Hand;
+        	this.btnSaveVideoLocation.Cursor = System.Windows.Forms.Cursors.Arrow;
         	this.btnSaveVideoLocation.FlatAppearance.BorderSize = 0;
         	this.btnSaveVideoLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnSaveVideoLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -367,37 +329,6 @@ namespace Kinovea.ScreenManager
         	this.btnSaveVideoLocation.TabIndex = 31;
         	this.btnSaveVideoLocation.Tag = "";
         	this.btnSaveVideoLocation.UseVisualStyleBackColor = true;
-        	this.btnSaveVideoLocation.Click += new System.EventHandler(this.btnBrowseVideoLocation_Click);
-        	// 
-        	// btnBrowseVideoLocation
-        	// 
-        	this.btnBrowseVideoLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.btnBrowseVideoLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnBrowseVideoLocation.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnBrowseVideoLocation.FlatAppearance.BorderSize = 0;
-        	this.btnBrowseVideoLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnBrowseVideoLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnBrowseVideoLocation.Image = global::Kinovea.ScreenManager.Properties.Resources.folder;
-        	this.btnBrowseVideoLocation.Location = new System.Drawing.Point(307, 108);
-        	this.btnBrowseVideoLocation.MinimumSize = new System.Drawing.Size(25, 25);
-        	this.btnBrowseVideoLocation.Name = "btnBrowseVideoLocation";
-        	this.btnBrowseVideoLocation.Size = new System.Drawing.Size(30, 25);
-        	this.btnBrowseVideoLocation.TabIndex = 28;
-        	this.btnBrowseVideoLocation.Tag = "";
-        	this.btnBrowseVideoLocation.UseVisualStyleBackColor = true;
-        	this.btnBrowseVideoLocation.Click += new System.EventHandler(this.btnBrowseVideoLocation_Click);
-        	// 
-        	// tbVideoDirectory
-        	// 
-        	this.tbVideoDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.tbVideoDirectory.Location = new System.Drawing.Point(237, 111);
-        	this.tbVideoDirectory.Name = "tbVideoDirectory";
-        	this.tbVideoDirectory.Size = new System.Drawing.Size(67, 20);
-        	this.tbVideoDirectory.TabIndex = 27;
-        	this.tbVideoDirectory.Text = "C:\\Docu...Videos";
-        	this.tbVideoDirectory.TextChanged += new System.EventHandler(this.tbVideoDirectory_TextChanged);
-        	this.tbVideoDirectory.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
         	// tbVideoFilename
         	// 
@@ -405,7 +336,7 @@ namespace Kinovea.ScreenManager
         	this.tbVideoFilename.Name = "tbVideoFilename";
         	this.tbVideoFilename.Size = new System.Drawing.Size(142, 20);
         	this.tbVideoFilename.TabIndex = 26;
-        	this.tbVideoFilename.Text = "2010-04-18 - 1.avi";
+        	this.tbVideoFilename.Text = "computed";
         	this.tbVideoFilename.TextChanged += new System.EventHandler(this.tbVideoFilename_TextChanged);
         	this.tbVideoFilename.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TextBoxes_MouseDoubleClick);
         	// 
@@ -821,12 +752,8 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button btnGrab;
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.Button btnSaveImageLocation;
-        private System.Windows.Forms.TextBox tbImageDirectory;
         private System.Windows.Forms.TextBox tbImageFilename;
-        private System.Windows.Forms.Button btnBrowseVideoLocation;
-        private System.Windows.Forms.TextBox tbVideoDirectory;
         private System.Windows.Forms.TextBox tbVideoFilename;
-        private System.Windows.Forms.Button btnBrowseImageLocation;
         private System.Windows.Forms.Button btnSaveVideoLocation;
         private System.Windows.Forms.Button btnCamSettings;
         private System.Windows.Forms.Button btnCamSnap;
