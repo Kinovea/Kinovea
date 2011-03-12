@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
 			// 
 			// btnDeviceProperties
 			// 
-			this.btnDeviceProperties.Location = new System.Drawing.Point(105, 114);
+			this.btnDeviceProperties.Location = new System.Drawing.Point(115, 113);
 			this.btnDeviceProperties.Name = "btnDeviceProperties";
 			this.btnDeviceProperties.Size = new System.Drawing.Size(173, 24);
 			this.btnDeviceProperties.TabIndex = 10;
@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
 			this.lblNoConf.BackColor = System.Drawing.Color.Transparent;
 			this.lblNoConf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblNoConf.ForeColor = System.Drawing.Color.Gray;
-			this.lblNoConf.Location = new System.Drawing.Point(105, 52);
+			this.lblNoConf.Location = new System.Drawing.Point(115, 51);
 			this.lblNoConf.Name = "lblNoConf";
 			this.lblNoConf.Size = new System.Drawing.Size(187, 23);
 			this.lblNoConf.TabIndex = 9;
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
 			// 
 			this.cmbCapabilities.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbCapabilities.FormattingEnabled = true;
-			this.cmbCapabilities.Location = new System.Drawing.Point(105, 78);
+			this.cmbCapabilities.Location = new System.Drawing.Point(115, 77);
 			this.cmbCapabilities.Name = "cmbCapabilities";
 			this.cmbCapabilities.Size = new System.Drawing.Size(173, 21);
 			this.cmbCapabilities.TabIndex = 5;
@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
 			this.lblConfig.BackColor = System.Drawing.Color.Transparent;
 			this.lblConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblConfig.ForeColor = System.Drawing.Color.Black;
-			this.lblConfig.Location = new System.Drawing.Point(6, 76);
+			this.lblConfig.Location = new System.Drawing.Point(16, 75);
 			this.lblConfig.Name = "lblConfig";
 			this.lblConfig.Size = new System.Drawing.Size(93, 23);
 			this.lblConfig.TabIndex = 4;
@@ -183,7 +183,7 @@ namespace Kinovea.ScreenManager
 			this.cmbOtherDevices.FormattingEnabled = true;
 			this.cmbOtherDevices.Location = new System.Drawing.Point(16, 37);
 			this.cmbOtherDevices.Name = "cmbOtherDevices";
-			this.cmbOtherDevices.Size = new System.Drawing.Size(262, 21);
+			this.cmbOtherDevices.Size = new System.Drawing.Size(272, 21);
 			this.cmbOtherDevices.TabIndex = 7;
 			this.cmbOtherDevices.SelectedIndexChanged += new System.EventHandler(this.cmbOtherDevices_SelectedIndexChanged);
 			// 

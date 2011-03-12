@@ -103,13 +103,13 @@ namespace Kinovea.ScreenManager
         public ColorProfile()
         {
             // Default values
-            m_DecorationAngle2D = new InfosTextDecoration(8, Color.DarkOliveGreen);
-            m_DecorationChrono = new InfosTextDecoration(10, Color.Black);
+            m_DecorationAngle2D = new InfosTextDecoration(12, Color.DarkOliveGreen);
+            m_DecorationChrono = new InfosTextDecoration(12, Color.Black);
             m_DecorationCross2D = new LineStyle(1, LineShape.Simple, Color.CornflowerBlue);
             m_DecorationLine2D = new LineStyle(3, LineShape.Simple, Color.LightGreen);
             m_DecorationPencil = new LineStyle(9, LineShape.Simple, Color.SeaGreen);
             m_DecorationCircle = new LineStyle(9, LineShape.Simple, Color.CadetBlue);
-            m_DecorationText = new InfosTextDecoration(10, Color.CornflowerBlue);
+            m_DecorationText = new InfosTextDecoration(12, Color.CornflowerBlue);
         }
 		#endregion
         
