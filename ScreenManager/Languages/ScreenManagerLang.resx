@@ -276,6 +276,7 @@
    <data name="mnuGrid" xml:space="preserve"><value>Grid</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Hide</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Import image…</value></data>
+   <data name="mnuInvertAngle" xml:space="preserve"><value>Invert angle</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Load Key Images Data...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>

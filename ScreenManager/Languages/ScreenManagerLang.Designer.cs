@@ -1924,6 +1924,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Invert angle.
+        /// </summary>
+        internal static string mnuInvertAngle {
+            get {
+                return ResourceManager.GetString("mnuInvertAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Load Key Images Data....
         /// </summary>
         internal static string mnuLoadAnalysis {

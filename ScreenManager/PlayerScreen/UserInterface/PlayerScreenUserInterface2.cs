@@ -293,6 +293,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuConfigureFading = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuTrackTrajectory = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuInvertAngle = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
 		private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
@@ -1207,6 +1208,8 @@ namespace Kinovea.ScreenManager
 			mnuConfigureOpacity.Image = Properties.Resources.persistence;
 			mnuTrackTrajectory.Click += new EventHandler(mnuTrackTrajectory_Click);
 			mnuTrackTrajectory.Image = Properties.Resources.tracking;
+			mnuInvertAngle.Click += new EventHandler(mnuInvertAngle_Click);
+			mnuInvertAngle.Image = Properties.Resources.angle;
 			mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
 			mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
@@ -1217,7 +1220,7 @@ namespace Kinovea.ScreenManager
 			mnuSealMeasure.Image = Properties.Resources.textfield;
 			mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
 			mnuShowCoordinates.Image = Properties.Resources.measure;
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuConfigureOpacity, mnuSepDrawing, mnuTrackTrajectory, mnuShowCoordinates, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuConfigureOpacity, mnuSepDrawing, mnuTrackTrajectory, mnuInvertAngle, mnuShowCoordinates, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
@@ -2714,6 +2717,7 @@ namespace Kinovea.ScreenManager
 			mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
 			mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
 			mnuTrackTrajectory.Text = ScreenManagerLang.mnuTrackTrajectory;
+			mnuInvertAngle.Text = ScreenManagerLang.mnuInvertAngle;
 			mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
 			mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
@@ -3024,12 +3028,14 @@ namespace Kinovea.ScreenManager
 								// We use temp variables because ToolStripMenuItem.Visible always returns false...
 								bool isCross = (ad is DrawingCross2D);
 								bool isLine = (ad is DrawingLine2D);
+								bool isAngle = (ad is DrawingAngle2D);
 								bool fadingVisible = m_PrefManager.DefaultFading.Enabled && !(ad is DrawingSVG) && !(ad is DrawingBitmap);
 								bool gotoVisible = (fadingVisible && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
 								bool configVisible = !(ad is DrawingSVG) && !(ad is DrawingBitmap);
 								bool opacityVisible = (ad is DrawingSVG) || (ad is DrawingBitmap);
 								
 								mnuTrackTrajectory.Visible = isCross;
+								mnuInvertAngle.Visible = isAngle;
 								mnuTrackTrajectory.Enabled = (ad.infosFading.ReferenceTimestamp == m_iCurrentPosition);
 								mnuConfigureFading.Visible = fadingVisible;
 								mnuConfigureOpacity.Visible = opacityVisible;
@@ -3040,7 +3046,7 @@ namespace Kinovea.ScreenManager
 								mnuShowCoordinates.Visible = isCross;
 								
 								mnuSepDrawing.Visible = true;
-								mnuSepDrawing2.Visible = isCross || gotoVisible || isLine;
+								mnuSepDrawing2.Visible = isCross || gotoVisible || isLine || isAngle;
 								
 								// "Color & Size" or "Color" depending on drawing type.
 								SetPopupConfigureParams(ad);
@@ -4360,6 +4366,18 @@ namespace Kinovea.ScreenManager
 				}
 			}
 			pbSurfaceScreen.Invalidate();
+		}
+		private void mnuInvertAngle_Click(object sender, EventArgs e)
+		{
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				DrawingAngle2D da = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingAngle2D;
+				if(da != null)
+				{
+					da.InvertAngle();
+					pbSurfaceScreen.Invalidate();
+				}	
+			}
 		}
 		private void mnuGotoKeyframe_Click(object sender, EventArgs e)
 		{

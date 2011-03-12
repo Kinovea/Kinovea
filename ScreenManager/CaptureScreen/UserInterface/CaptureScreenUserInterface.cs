@@ -93,6 +93,7 @@ namespace Kinovea.ScreenManager
 		private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
 		private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuInvertAngle = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
 		private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
@@ -458,13 +459,15 @@ namespace Kinovea.ScreenManager
 			mnuConfigureDrawing.Image = Properties.Resources.wrench;
 			mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
 			mnuConfigureOpacity.Image = Properties.Resources.persistence;
+			mnuInvertAngle.Click += new EventHandler(mnuInvertAngle_Click);
+			mnuInvertAngle.Image = Properties.Resources.angle;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
 			mnuDeleteDrawing.Image = Properties.Resources.delete;
 			mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
 			mnuShowMeasure.Image = Properties.Resources.measure;
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
 			mnuSealMeasure.Image = Properties.Resources.textfield;
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureOpacity, mnuSepDrawing, mnuShowMeasure, mnuSealMeasure, mnuSepDrawing2, mnuDeleteDrawing });
+			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureOpacity, mnuSepDrawing, mnuInvertAngle, mnuShowMeasure, mnuSealMeasure, mnuSepDrawing2, mnuDeleteDrawing });
 
 			// 5. Magnifier
 			mnuMagnifier150.Click += new EventHandler(mnuMagnifier150_Click);
@@ -854,6 +857,7 @@ namespace Kinovea.ScreenManager
 			// 2. Drawings context menu.
 			mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 			mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
+			mnuInvertAngle.Text = ScreenManagerLang.mnuInvertAngle;
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
 			mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
 			mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
@@ -1051,17 +1055,18 @@ namespace Kinovea.ScreenManager
 							
 							// We use temp variables because ToolStripMenuItem.Visible always returns false...
 							bool isLine = (ad is DrawingLine2D);
+							bool isAngle = (ad is DrawingAngle2D);
 							bool configVisible = !(ad is DrawingSVG) && !(ad is DrawingBitmap);
 							bool opacityVisible = (ad is DrawingSVG) || (ad is DrawingBitmap);
 							
 							mnuConfigureDrawing.Visible = configVisible;
 							mnuConfigureOpacity.Visible = opacityVisible;
+							mnuInvertAngle.Visible = isAngle;
 							mnuShowMeasure.Visible = isLine;
 							mnuSealMeasure.Visible = isLine;
 							
 							mnuSepDrawing.Visible = true;
-							mnuSepDrawing2.Visible = isLine;
-							
+							mnuSepDrawing2.Visible = isLine || isAngle;
 							
 							// "Color & Size" or "Color" depending on drawing type.
 							SetPopupConfigureParams(ad);
@@ -1576,6 +1581,18 @@ namespace Kinovea.ScreenManager
 				fco.ShowDialog();
 				fco.Dispose();
 				pbSurfaceScreen.Invalidate();
+			}
+		}
+		private void mnuInvertAngle_Click(object sender, EventArgs e)
+		{
+			if(m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				DrawingAngle2D da = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingAngle2D;
+				if(da != null)
+				{
+					da.InvertAngle();
+					pbSurfaceScreen.Invalidate();
+				}	
 			}
 		}
 		private void mnuShowMeasure_Click(object sender, EventArgs e)

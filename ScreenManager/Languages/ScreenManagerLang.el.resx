@@ -276,6 +276,7 @@
    <data name="mnuGrid" xml:space="preserve"><value>Πλέγμα</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Απόκρυψη</value></data>
    
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Φόρτωση Δεδομένων Βασικών Εικόνων…</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Μεγέθυνση x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Μεγέθυνση x1.75</value></data>
