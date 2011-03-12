@@ -142,6 +142,7 @@ namespace Kinovea.ScreenManager
 			
 			InitializeCaptureFiles();
 			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
+			m_ColorProfile.Load(PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder") + "\\current.xml");
 			
 			// Delegates
 			m_InitDecodingSize = new InitDecodingSize(InitDecodingSize_Invoked);
