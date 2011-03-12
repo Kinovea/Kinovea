@@ -276,6 +276,7 @@
    <data name="mnuGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Ausblenden</value></data>
    
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Lade die Informationen der Schlüsselbilder...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>

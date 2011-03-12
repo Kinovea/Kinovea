@@ -78,6 +78,15 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap angle
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("angle", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap angle5
 		{
 			get

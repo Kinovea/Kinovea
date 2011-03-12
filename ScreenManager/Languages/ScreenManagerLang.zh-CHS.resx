@@ -276,6 +276,7 @@
    <data name="mnuGrid" xml:space="preserve"><value>网格</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>隐藏</value></data>
    
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>载入关键图像数据...</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>放大 x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>放大 x1.75</value></data>

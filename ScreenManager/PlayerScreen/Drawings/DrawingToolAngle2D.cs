@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
     {
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
-            return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X + 70, _Origin.Y + 35, _Origin.X + 70, _Origin.Y - 35, _iTimestamp, _AverageTimeStampsPerFrame);
+            return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X + 50, _Origin.Y, _Origin.X, _Origin.Y - 50, _iTimestamp, _AverageTimeStampsPerFrame);
         }
         public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
         {
