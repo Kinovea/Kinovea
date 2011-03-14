@@ -150,6 +150,24 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap camera_network2
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("camera_network2", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap camera_notfound
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("camera-notfound", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap camera_selected
 		{
 			get

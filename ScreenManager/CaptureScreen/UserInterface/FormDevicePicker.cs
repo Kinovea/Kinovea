@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -157,6 +158,7 @@ namespace Kinovea.ScreenManager
 				
 				if(_currentDevice.Network)
 				{
+					btnCamcorder.BackgroundImage = Resources.camera_network2;
 					PreferencesManager pm = PreferencesManager.Instance();
 					
 					// Recently used cameras.
@@ -192,6 +194,8 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
+					btnCamcorder.BackgroundImage = Resources.camera_selected;
+					
 					int selectedCap = 0;
 					for(int i = 0;i<_currentDevice.Capabilities.Count;i++)
 					{
@@ -218,6 +222,8 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
+				btnCamcorder.BackgroundImage = Resources.camera_notfound;
+				
 				// No device currently selected.
 				lblConfig.Visible = false;
 				lblNoConf.Visible = false;
