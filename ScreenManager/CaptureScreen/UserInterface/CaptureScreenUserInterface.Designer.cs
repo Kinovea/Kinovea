@@ -54,6 +54,8 @@ namespace Kinovea.ScreenManager
         	this.ActiveScreenIndicator = new System.Windows.Forms.Label();
         	this.toolTips = new System.Windows.Forms.ToolTip(this.components);
         	this.splitKeyframes = new System.Windows.Forms.SplitContainer();
+        	this.pnlThumbnails = new System.Windows.Forms.Panel();
+        	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.btnDrawingToolCircle = new System.Windows.Forms.Button();
         	this.btn3dplane = new System.Windows.Forms.Button();
         	this.btnMagnifier = new System.Windows.Forms.Button();
@@ -65,8 +67,6 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPencil = new System.Windows.Forms.Button();
         	this.btnDrawingToolAngle2D = new System.Windows.Forms.Button();
         	this.btnDrawingToolPointer = new System.Windows.Forms.Button();
-        	this.pnlThumbnails = new System.Windows.Forms.Panel();
-        	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.tmrCaptureDeviceDetector = new System.Windows.Forms.Timer(this.components);
         	this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
         	this.panelTop.SuspendLayout();
@@ -173,7 +173,6 @@ namespace Kinovea.ScreenManager
         	this.btnCamSettings.BackColor = System.Drawing.Color.Transparent;
         	this.btnCamSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnCamSettings.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnCamSettings.Enabled = false;
         	this.btnCamSettings.FlatAppearance.BorderSize = 0;
         	this.btnCamSettings.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
         	this.btnCamSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
@@ -462,6 +461,30 @@ namespace Kinovea.ScreenManager
         	this.splitKeyframes.TabIndex = 0;
         	this.splitKeyframes.Resize += new System.EventHandler(this.splitKeyframes_Resize);
         	// 
+        	// pnlThumbnails
+        	// 
+        	this.pnlThumbnails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Left) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.pnlThumbnails.AutoScroll = true;
+        	this.pnlThumbnails.BackColor = System.Drawing.Color.Black;
+        	this.pnlThumbnails.Controls.Add(this.pictureBox1);
+        	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
+        	this.pnlThumbnails.Name = "pnlThumbnails";
+        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 97);
+        	this.pnlThumbnails.TabIndex = 3;
+        	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
+        	// 
+        	// pictureBox1
+        	// 
+        	this.pictureBox1.BackColor = System.Drawing.Color.DimGray;
+        	this.pictureBox1.Location = new System.Drawing.Point(5, 8);
+        	this.pictureBox1.Name = "pictureBox1";
+        	this.pictureBox1.Size = new System.Drawing.Size(100, 75);
+        	this.pictureBox1.TabIndex = 2;
+        	this.pictureBox1.TabStop = false;
+        	this.pictureBox1.Visible = false;
+        	// 
         	// btnDrawingToolCircle
         	// 
         	this.btnDrawingToolCircle.BackColor = System.Drawing.Color.Transparent;
@@ -650,30 +673,6 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPointer.TabIndex = 5;
         	this.btnDrawingToolPointer.UseVisualStyleBackColor = false;
         	this.btnDrawingToolPointer.Click += new System.EventHandler(this.btnDrawingToolPointer_Click);
-        	// 
-        	// pnlThumbnails
-        	// 
-        	this.pnlThumbnails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        	        	        	| System.Windows.Forms.AnchorStyles.Left) 
-        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.pnlThumbnails.AutoScroll = true;
-        	this.pnlThumbnails.BackColor = System.Drawing.Color.Black;
-        	this.pnlThumbnails.Controls.Add(this.pictureBox1);
-        	this.pnlThumbnails.Location = new System.Drawing.Point(0, 27);
-        	this.pnlThumbnails.Name = "pnlThumbnails";
-        	this.pnlThumbnails.Size = new System.Drawing.Size(350, 97);
-        	this.pnlThumbnails.TabIndex = 3;
-        	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
-        	// 
-        	// pictureBox1
-        	// 
-        	this.pictureBox1.BackColor = System.Drawing.Color.DimGray;
-        	this.pictureBox1.Location = new System.Drawing.Point(5, 8);
-        	this.pictureBox1.Name = "pictureBox1";
-        	this.pictureBox1.Size = new System.Drawing.Size(100, 75);
-        	this.pictureBox1.TabIndex = 2;
-        	this.pictureBox1.TabStop = false;
-        	this.pictureBox1.Visible = false;
         	// 
         	// tmrCaptureDeviceDetector
         	// 

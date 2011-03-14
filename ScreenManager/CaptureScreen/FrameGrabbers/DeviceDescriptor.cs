@@ -20,6 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -48,20 +50,58 @@ namespace Kinovea.ScreenManager
 			get { return m_SelectedCapability; }
 			set { m_SelectedCapability = value; }
 		}
+		public string NetworkCameraUrl
+		{
+			get { return m_Url; }
+			set { m_Url = value; }
+		}
+		public NetworkCameraFormat NetworkCameraFormat
+		{
+			get { return m_Format; }
+			set { m_Format = value; }
+		}
+		public bool Empty
+		{
+			get { return m_bEmpty; }
+		}	
+		public bool Network
+		{
+			get { return m_bNetwork; }
+			set { m_bNetwork = value; }
+		}
 		#endregion
 		
 		#region Members
 		private string m_Identification;
 		private string m_Name;
+		private string m_Url = "";
+		private NetworkCameraFormat m_Format;
+		private bool m_bEmpty;
+		private bool m_bNetwork;
 		private List<DeviceCapability> m_Capabilities = new List<DeviceCapability>();
-		private DeviceCapability m_SelectedCapability;
+		private DeviceCapability m_SelectedCapability = new DeviceCapability(Size.Empty, 0);
 		#endregion
 		
 		#region Constructor
 		public DeviceDescriptor(string _name, string _identification)
 		{
+			// Constructor for capture devices.
 			m_Name = _name;
 			m_Identification = _identification;
+		}
+		public DeviceDescriptor(string _name, string _url, NetworkCameraFormat _format)
+		{
+			// Constructor for network devices.
+			m_Name = _name;
+			m_Url = _url;
+			m_Format = _format;
+			m_bNetwork = true;
+		}
+		public DeviceDescriptor(string _name)
+		{
+			// Constructor for empty devices.
+			m_Name = _name;
+			m_bEmpty = true;
 		}
 		#endregion
 	

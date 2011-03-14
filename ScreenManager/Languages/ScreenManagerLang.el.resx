@@ -78,6 +78,8 @@
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Αναπαραγωγή | Παύση και τα δυο Video</value></data>
    
    
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Προσθήκη οθόνης για αποτύπωση</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Προσθήκη Χρονομέτρου</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Προσθήκη Σχεδίου</value></data>
@@ -134,6 +136,8 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Αριστερά-προς-Δεξιά κίνηση</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Πραγματικό μέγεθος του τμήματος</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Μέτρηση σφραγίδας</value></data>
+   
+   
    
    
    

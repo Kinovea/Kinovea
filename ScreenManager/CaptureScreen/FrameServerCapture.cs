@@ -47,7 +47,12 @@ namespace Kinovea.ScreenManager
 				if(m_FrameGrabber.IsConnected)
 				{
 					string bufferFill = String.Format(ScreenManagerLang.statusBufferFill, m_FrameBuffer.FillPercentage);
-					string status = String.Format("{0} - {1} ({2})", m_FrameGrabber.DeviceName, m_FrameGrabber.SelectedCapability.ToString(), bufferFill);
+					string estimatedInterval = String.Format("{0:0.00} fps", m_fEstimatedInterval > 0 ? 1000 / m_fEstimatedInterval : 0);
+					string status = String.Format("{0} - {1} ({2}, {3})",
+					                              m_FrameGrabber.DeviceName, 
+					                              m_FrameGrabber.SelectedCapability.ToString(), 
+					                              estimatedInterval,
+					                              bufferFill);
 					return status;		
 				}
 				else
@@ -234,6 +239,7 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
+				m_ImageToDisplay = null;
 				m_ImageSize = new Size(720, 576);
 				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
 			}
@@ -253,7 +259,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameGrabber.NegociateDevice();
 		}
-		public void CheckDeviceConnection(int _interval)
+		public void HeartBeat()
 		{
 			// This function is called regularly.
 			// We use it for various checks and updates to stay up to date.
@@ -263,7 +269,15 @@ namespace Kinovea.ScreenManager
 			// Estimate frame rate.
 			if(m_iFramesGrabbed > 0)
 			{
-				m_fEstimatedInterval = (double)_interval / (double)m_iFramesGrabbed;
+				double fEstimatedInterval = (double)CaptureScreen.HeartBeat / (double)m_iFramesGrabbed;
+				if(m_fEstimatedInterval == 0 && m_FrameGrabber.SelectedCapability.Framerate == 0)
+				{
+					// We didn't have a framerate until now and device doesn't advertise any. 
+					// This happens for network camera for example, we use the estimated one to init buffer.
+					
+				}
+				m_fEstimatedInterval = fEstimatedInterval;
+				
 			}
 			else
 			{
@@ -278,8 +292,11 @@ namespace Kinovea.ScreenManager
 		}
 		public void StartGrabbing()
 		{
-			//m_FrameBuffer.Clear();
 			m_FrameGrabber.StartGrabbing();
+			if(m_FrameGrabber.SelectedCapability.Framerate != 0)
+			{
+				m_fEstimatedInterval = 1000 / m_FrameGrabber.SelectedCapability.Framerate;
+			}
 			m_Container.DisplayAsGrabbing(true);
 		}
 		public void PauseGrabbing()
@@ -340,8 +357,21 @@ namespace Kinovea.ScreenManager
 			// We don't use the screen size, but the original video size (differs from PlayerScreen.)
 			// This always represents the image that is drawn on screen, not the last image grabbed by the device.
 			Bitmap output = new Bitmap(m_ImageSize.Width, m_ImageSize.Height, PixelFormat.Format24bppRgb);
-			output.SetResolution(m_ImageToDisplay.HorizontalResolution, m_ImageToDisplay.VerticalResolution);
-			FlushOnGraphics(m_ImageToDisplay, Graphics.FromImage(output), output.Size);
+			
+			try
+			{
+				if(m_ImageToDisplay != null)
+				{
+					output.SetResolution(m_ImageToDisplay.HorizontalResolution, m_ImageToDisplay.VerticalResolution);
+					FlushOnGraphics(m_ImageToDisplay, Graphics.FromImage(output), output.Size);
+				}	
+			}
+			catch(Exception)
+			{
+				log.ErrorFormat("Exception while trying to get flushed image. Returning blank image.");
+			}
+			
+			
 			return output;
 		}
 		public void StartRecording(string filepath)

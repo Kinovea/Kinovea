@@ -90,7 +90,8 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_FrameServer; }
 			set { m_FrameServer = value; }
-		}    
+		}  
+        public static readonly int HeartBeat = 1000;
         #endregion
 
         #region Members
