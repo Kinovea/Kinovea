@@ -78,6 +78,8 @@
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Play | Pause Both Videos</value></data>
    <data name="Capture_NextImage" xml:space="preserve"><value>Next image :</value></data>
    <data name="Capture_NextVideo" xml:space="preserve"><value>Next video :</value></data>
+   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Camera not found</value></data>
+   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Network camera</value></data>
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Add Screen for Capture</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Add Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Add Drawing</value></data>
@@ -139,6 +141,8 @@
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Properties</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>No other option available</value></data>
    <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Select another device</value></data>
+   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL :</value></data>
+   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Type :</value></data>
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duration on each Key Image : {0} hundredth of seconds.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duration of each Key Image : {0:0.00} seconds.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Save Video</value></data>

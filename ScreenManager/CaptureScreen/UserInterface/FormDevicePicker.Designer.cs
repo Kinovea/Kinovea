@@ -51,6 +51,9 @@ namespace Kinovea.ScreenManager
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.gpCurrentDevice = new System.Windows.Forms.GroupBox();
+			this.lblStreamType = new System.Windows.Forms.Label();
+			this.cmbStreamType = new System.Windows.Forms.ComboBox();
+			this.lblUrl = new System.Windows.Forms.Label();
 			this.btnDeviceProperties = new System.Windows.Forms.Button();
 			this.lblNoConf = new System.Windows.Forms.Label();
 			this.btnCamcorder = new System.Windows.Forms.Button();
@@ -59,6 +62,7 @@ namespace Kinovea.ScreenManager
 			this.lblCurrentlySelected = new System.Windows.Forms.Label();
 			this.gpOtherDevices = new System.Windows.Forms.GroupBox();
 			this.cmbOtherDevices = new System.Windows.Forms.ComboBox();
+			this.cmbUrl = new System.Windows.Forms.ComboBox();
 			this.gpCurrentDevice.SuspendLayout();
 			this.gpOtherDevices.SuspendLayout();
 			this.SuspendLayout();
@@ -89,6 +93,10 @@ namespace Kinovea.ScreenManager
 			// 
 			this.gpCurrentDevice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.gpCurrentDevice.Controls.Add(this.cmbUrl);
+			this.gpCurrentDevice.Controls.Add(this.lblStreamType);
+			this.gpCurrentDevice.Controls.Add(this.cmbStreamType);
+			this.gpCurrentDevice.Controls.Add(this.lblUrl);
 			this.gpCurrentDevice.Controls.Add(this.btnDeviceProperties);
 			this.gpCurrentDevice.Controls.Add(this.lblNoConf);
 			this.gpCurrentDevice.Controls.Add(this.btnCamcorder);
@@ -101,6 +109,35 @@ namespace Kinovea.ScreenManager
 			this.gpCurrentDevice.TabIndex = 78;
 			this.gpCurrentDevice.TabStop = false;
 			this.gpCurrentDevice.Text = "Current device";
+			// 
+			// lblStreamType
+			// 
+			this.lblStreamType.AutoSize = true;
+			this.lblStreamType.Location = new System.Drawing.Point(16, 113);
+			this.lblStreamType.Name = "lblStreamType";
+			this.lblStreamType.Size = new System.Drawing.Size(17, 13);
+			this.lblStreamType.TabIndex = 14;
+			this.lblStreamType.Text = "T:";
+			this.lblStreamType.Visible = false;
+			// 
+			// cmbStreamType
+			// 
+			this.cmbStreamType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cmbStreamType.FormattingEnabled = true;
+			this.cmbStreamType.Location = new System.Drawing.Point(39, 113);
+			this.cmbStreamType.Name = "cmbStreamType";
+			this.cmbStreamType.Size = new System.Drawing.Size(70, 21);
+			this.cmbStreamType.TabIndex = 13;
+			// 
+			// lblUrl
+			// 
+			this.lblUrl.AutoSize = true;
+			this.lblUrl.Location = new System.Drawing.Point(16, 98);
+			this.lblUrl.Name = "lblUrl";
+			this.lblUrl.Size = new System.Drawing.Size(26, 13);
+			this.lblUrl.TabIndex = 11;
+			this.lblUrl.Text = "Url :";
+			this.lblUrl.Visible = false;
 			// 
 			// btnDeviceProperties
 			// 
@@ -159,9 +196,9 @@ namespace Kinovea.ScreenManager
 			// lblCurrentlySelected
 			// 
 			this.lblCurrentlySelected.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblCurrentlySelected.Location = new System.Drawing.Point(63, 32);
+			this.lblCurrentlySelected.Location = new System.Drawing.Point(77, 32);
 			this.lblCurrentlySelected.Name = "lblCurrentlySelected";
-			this.lblCurrentlySelected.Size = new System.Drawing.Size(231, 20);
+			this.lblCurrentlySelected.Size = new System.Drawing.Size(217, 20);
 			this.lblCurrentlySelected.TabIndex = 0;
 			this.lblCurrentlySelected.Text = "My Device";
 			// 
@@ -187,6 +224,14 @@ namespace Kinovea.ScreenManager
 			this.cmbOtherDevices.TabIndex = 7;
 			this.cmbOtherDevices.SelectedIndexChanged += new System.EventHandler(this.cmbOtherDevices_SelectedIndexChanged);
 			// 
+			// cmbUrl
+			// 
+			this.cmbUrl.FormattingEnabled = true;
+			this.cmbUrl.Location = new System.Drawing.Point(48, 95);
+			this.cmbUrl.Name = "cmbUrl";
+			this.cmbUrl.Size = new System.Drawing.Size(43, 21);
+			this.cmbUrl.TabIndex = 15;
+			// 
 			// formDevicePicker
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -205,9 +250,14 @@ namespace Kinovea.ScreenManager
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "FormDevicePicker";
 			this.gpCurrentDevice.ResumeLayout(false);
+			this.gpCurrentDevice.PerformLayout();
 			this.gpOtherDevices.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ComboBox cmbUrl;
+		private System.Windows.Forms.ComboBox cmbStreamType;
+		private System.Windows.Forms.Label lblStreamType;
+		private System.Windows.Forms.Label lblUrl;
 		private System.Windows.Forms.Button btnDeviceProperties;
 		private System.Windows.Forms.Label lblNoConf;
 		private System.Windows.Forms.ComboBox cmbOtherDevices;

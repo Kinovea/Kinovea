@@ -56,7 +56,12 @@ namespace Kinovea.Services
         }
 		public override string ToString()
 		{
-			return String.Format("{0}×{1} px @ {2} fps", m_FrameSize.Width, m_FrameSize.Height, m_iFramerate);
+			string description = "";
+			if(!m_FrameSize.IsEmpty)
+			{
+				description = String.Format("{0}×{1} px @ {2} fps", m_FrameSize.Width, m_FrameSize.Height, m_iFramerate);
+			}
+			return description;
 		}
 		public override bool Equals(object obj)
 		{

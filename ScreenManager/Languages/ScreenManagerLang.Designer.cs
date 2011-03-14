@@ -151,6 +151,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Camera not found.
+        /// </summary>
+        internal static string Capture_CameraNotFound {
+            get {
+                return ResourceManager.GetString("Capture_CameraNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Network camera.
+        /// </summary>
+        internal static string Capture_NetworkCamera {
+            get {
+                return ResourceManager.GetString("Capture_NetworkCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Next image :.
         /// </summary>
         internal static string Capture_NextImage {
@@ -714,6 +732,24 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgDevicePicker_SelectAnother {
             get {
                 return ResourceManager.GetString("dlgDevicePicker_SelectAnother", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type :.
+        /// </summary>
+        internal static string dlgDevicePicker_Type {
+            get {
+                return ResourceManager.GetString("dlgDevicePicker_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à URL :.
+        /// </summary>
+        internal static string dlgDevicePicker_Url {
+            get {
+                return ResourceManager.GetString("dlgDevicePicker_Url", resourceCulture);
             }
         }
         

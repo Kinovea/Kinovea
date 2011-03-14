@@ -78,6 +78,8 @@
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproduzir | Pausar Ambos os Videos</value></data>
    
    
+   
+   
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Adicionar Tela para Captura</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Adicionar Cronômetro</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Adicionar Desenho</value></data>
@@ -133,6 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordenadas de origem sistema</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Movimento da Direita para esquerda</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Tamanho real do segmento:</value></data>
+   
+   
    
    
    

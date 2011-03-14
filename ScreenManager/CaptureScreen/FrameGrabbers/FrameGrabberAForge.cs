@@ -25,12 +25,17 @@ using System.Windows.Forms;
 
 using AForge.Video;
 using AForge.Video.DirectShow;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// FrameGrabberAForge - a FrameGrabber using DirectShow via AForge library.
+	/// We define 3 type of sources:
+	/// - capture sources. (Directshow devices)
+	/// - network source. Built-in source to represent a network camera.
+	/// - empty source. Built-in source when no capture sources have been found.
 	/// </summary>
 	public class FrameGrabberAForge : AbstractFrameGrabber
 	{
@@ -64,7 +69,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 			
 		#region Members
-		private VideoCaptureDevice m_VideoDevice;
+		private IVideoSource m_VideoSource;
 		private DeviceDescriptor m_CurrentVideoDevice;
 		private IFrameGrabberContainer m_Container;	// FrameServerCapture seen through a limited interface.
 		private FrameBuffer m_FrameBuffer;
@@ -77,6 +82,7 @@ namespace Kinovea.ScreenManager
 		private int m_iConnectionsAttempts;
 		private int m_iGrabbedSinceLastCheck;
 		private int m_iConnectionsWithoutFrames;
+		private PreferencesManager m_PrefsManager = PreferencesManager.Instance();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -91,80 +97,124 @@ namespace Kinovea.ScreenManager
 		#region AbstractFrameGrabber implementation
 		public override void PromptDeviceSelector()
 		{
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DeactivateKeyboardHandler != null)
+            {
+                dp.DeactivateKeyboardHandler();
+			}
+			
+			bool reconnected = false;
+			
 			// Ask the user which device he wants to use or which size/framerate.
 			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice, new PromptDevicePropertyPage(DisplayDevicePropertyPage));
+			
 			if(fdp.ShowDialog() == DialogResult.OK)
 			{
 				DeviceDescriptor dev = fdp.SelectedDevice;
-				if(dev != null)
+				
+				if(dev == null || dev.Empty)
 				{
-					if(dev.Identification == m_CurrentVideoDevice.Identification)
+					log.DebugFormat("Selected device is null or empty.");
+					if(m_CurrentVideoDevice != null)
 					{
-						// Device unchanged.
-						DeviceCapability cap = fdp.SelectedCapability;
-						if(cap != null)
-						{
-							if(!cap.Equals(m_CurrentVideoDevice.SelectedCapability))
-							{
-								// Changed capability.
-								m_CurrentVideoDevice.SelectedCapability = cap;
-								PreferencesManager pm = PreferencesManager.Instance();
-								pm.UpdateSelectedCapability(m_CurrentVideoDevice.Identification, cap);
-								
-								if(m_bIsGrabbing)
-								{
-									m_VideoDevice.Stop();
-								}
-								
-								m_VideoDevice.DesiredFrameSize = cap.FrameSize;
-								m_VideoDevice.DesiredFrameRate = cap.Framerate;
-								
-								m_FrameSize = cap.FrameSize;
-								m_FramesInterval = 1000 / (double)cap.Framerate;
-					
-								log.Debug(String.Format("Picked new capability: {0}", cap.ToString()));
-								
-								m_bSizeChanged = true;
-								
-								if(m_bIsGrabbing)
-								{
-									m_VideoDevice.Start();
-								}
-							}
-						}
+						// From something to empty.
+						Disconnect();
+					}
+				}
+				else if(dev.Network)
+				{
+					if(m_CurrentVideoDevice == null || !m_CurrentVideoDevice.Network)
+					{
+						// From empty or non-network to network.
+						log.DebugFormat("Selected network camera - connect with default parameters");
+						reconnected = ConnectToDevice(dev);	
 					}
 					else
 					{
-						// Changed device
-						m_CurrentVideoDevice = dev;
-						ConnectToDevice(m_CurrentVideoDevice);
-						m_Container.Connected();
+						// From network to network.
+						log.DebugFormat("Network camera - parameters changed - connect with new parameters");
+						// Parameters were set on the dialog. We don't care if the parameters were actually changed.
+						DeviceDescriptor netDevice = new DeviceDescriptor(ScreenManagerLang.Capture_NetworkCamera, fdp.SelectedUrl, fdp.SelectedFormat);
+						reconnected = ConnectToDevice(netDevice);
+					}
+				} 
+				else
+				{
+					if(m_CurrentVideoDevice == null || m_CurrentVideoDevice.Network || dev.Identification != m_CurrentVideoDevice.Identification)
+					{
+						// From network or different capture device to capture device.
+						log.DebugFormat("Selected capture device");
+						reconnected = ConnectToDevice(dev);
+					}
+					else
+					{
+						// From same capture device - caps changed.
+						DeviceCapability cap = fdp.SelectedCapability;
+						if(cap != null && !cap.Equals(m_CurrentVideoDevice.SelectedCapability))
+						{							
+							log.DebugFormat("Capture device, capability changed.");
+							
+							m_CurrentVideoDevice.SelectedCapability = cap;
+							m_PrefsManager.UpdateSelectedCapability(m_CurrentVideoDevice.Identification, cap);
+							
+							if(m_bIsGrabbing)
+							{
+								m_VideoSource.Stop();
+							}
+							
+							((VideoCaptureDevice)m_VideoSource).DesiredFrameSize = cap.FrameSize;
+							((VideoCaptureDevice)m_VideoSource).DesiredFrameRate = cap.Framerate;
+							
+							m_FrameSize = cap.FrameSize;
+							m_FramesInterval = 1000 / (double)cap.Framerate;
+				
+							log.Debug(String.Format("New capability: {0}", cap.ToString()));
+							
+							m_bSizeChanged = true;
+							
+							if(m_bIsGrabbing)
+							{
+								m_VideoSource.Start();
+							}	
+						}
 					}
 				}
+				
+				if(reconnected)
+				{
+					m_Container.Connected();
+				}
+				
 			}
+			
 			fdp.Dispose();
+			
+			if(dp.ActivateKeyboardHandler != null)
+            {
+            	dp.ActivateKeyboardHandler();
+            }
 		}
 		public override void NegociateDevice()
 		{
 			if(!m_bIsConnected)
 			{
-				log.Debug("Try to connect to a Capture Device.");
+				log.Debug("Trying to connect to a Capture source.");
 				
 				m_iConnectionsAttempts++;
 	        	
-				//----------------------------------------------------------------------------------------
-				// TODO: Proper device negociation.
-	        	// Apparently there's no way to know if a device is already used by an application.
-	        	// Let's try to connect to the first device if any.
-	        	// If the device is already streaming to another application, we will connect successfully, 
-	        	// but the NewFrame event will never be raised for us.
-	        	//----------------------------------------------------------------------------------------
-	        	
-	        	FilterInfoCollection videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-	        	
-	        	if(videoDevices != null && videoDevices.Count > 0)
+				// TODO: Detect if a device is already in use 
+				// (by an other app or even just by the other screen).
+	        	List<DeviceDescriptor> devices = ListDevices();
+	        	if(devices.Count > 0)
 	        	{
-	        		ConnectToDevice(videoDevices, 0);
+	        		DeviceDescriptor device = devices[0];
+	        		if(!device.Empty)
+					{
+						if(ConnectToDevice(device))
+						{
+							m_Container.Connected();
+						}
+					}
 	        	}
 	        	
 	        	m_iGrabbedSinceLastCheck = 0;
@@ -200,13 +250,16 @@ namespace Kinovea.ScreenManager
 			// This prevents working with very slow capturing devices (less than one frame per second).
 			// This doesn't work if we are not currently grabbing.
 			//--------------------------------------------------------------------------------------------------
-			if(m_iConnectionsWithoutFrames < 2)
+			bool stayConnected = m_CurrentVideoDevice.Empty || m_CurrentVideoDevice.Network;
+			if(!stayConnected && m_iConnectionsWithoutFrames < 2)
 			{
 				if(m_bIsGrabbing && m_iGrabbedSinceLastCheck == 0)
 				{
-					log.Debug(String.Format("Device has been disconnected."));
-					m_VideoDevice.SignalToStop();
-					m_VideoDevice.WaitForStop();
+					log.DebugFormat("{0} has been disconnected.", m_CurrentVideoDevice.Name);
+					
+					// Close properly.
+					m_VideoSource.SignalToStop();
+					m_VideoSource.WaitForStop();
 					
 					m_bIsGrabbing = false;
 					m_bIsConnected = false;
@@ -230,26 +283,26 @@ namespace Kinovea.ScreenManager
 		}
 		public override void StartGrabbing()
 		{
-			if(m_bIsConnected && m_VideoDevice != null)
+			if(m_bIsConnected && m_VideoSource != null)
 			{
 				if(!m_bIsGrabbing)
 				{
-					m_VideoDevice.Start();
+					m_VideoSource.Start();
 				}
 				
 				m_bIsGrabbing = true;
-				log.Debug("Starting to grab frames from the capture device.");
+				log.DebugFormat("Starting to grab frames from {0}.", m_CurrentVideoDevice.Name);
 			}
 		}
 		public override void PauseGrabbing()
 		{
-			if(m_VideoDevice != null)
+			if(m_VideoSource != null)
 			{
 				log.Debug("Pausing frame grabbing.");
 				
 				if(m_bIsConnected && m_bIsGrabbing)
 				{
-					m_VideoDevice.Stop();
+					m_VideoSource.Stop();
 				}
 				
 				m_bIsGrabbing = false;
@@ -262,120 +315,144 @@ namespace Kinovea.ScreenManager
 		}
 		public void DisplayDevicePropertyPage(IntPtr _handle)
 		{
-			try
+			VideoCaptureDevice device = m_VideoSource as VideoCaptureDevice;
+			if(device != null)
 			{
-				m_VideoDevice.DisplayPropertyPage(_handle);
+				try
+				{
+					device.DisplayPropertyPage(_handle);
+				}
+				catch(Exception)
+				{
+					log.ErrorFormat("Error when trying to display device property page.");
+				}	
 			}
-			catch(Exception)
-			{
-				log.ErrorFormat("Error when trying to display device property page.");
-			}	
 		}
 		#endregion
 		
 		#region Private methods
 		private List<DeviceDescriptor> ListDevices()
 		{
-			// List all the devices currently connected.
-			FilterInfoCollection videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
-			
+			// List all the devices currently connected (+ special entries).
 			List<DeviceDescriptor> devices = new List<DeviceDescriptor>();
-			
+
+			// Capture devices
+			FilterInfoCollection videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 			foreach(FilterInfo fi in videoDevices)
 			{
 				devices.Add(new DeviceDescriptor(fi.Name, fi.MonikerString));				
 			}
+			
+			if(devices.Count == 0)
+			{
+				// Special entry if no Directshow camera found.
+				// We add this one so the network camera doesn't get connected by default.
+				devices.Add(new DeviceDescriptor(ScreenManagerLang.Capture_CameraNotFound));
+			}
+			
+			// Special entry for network cameras.
+			devices.Add(new DeviceDescriptor(ScreenManagerLang.Capture_NetworkCamera, m_PrefsManager.NetworkCameraUrl, m_PrefsManager.NetworkCameraFormat));
 
 			return devices;
 		}
-		private void ConnectToDevice(FilterInfoCollection _devices, int _iSelected)
+		private bool ConnectToDevice(DeviceDescriptor _device)
 		{
-			m_CurrentVideoDevice = new DeviceDescriptor(_devices[_iSelected].Name, _devices[_iSelected].MonikerString);
-			if(m_CurrentVideoDevice != null)
-			{
-				log.Debug(String.Format("Connecting to device: index: {0}, name: {1}, moniker string:{2}", 
-			                        _iSelected, m_CurrentVideoDevice.Name, m_CurrentVideoDevice.Identification));
+			log.DebugFormat("Connecting to {0}", _device.Name);
 			
-				ConnectToDevice(m_CurrentVideoDevice);
-				m_Container.Connected();
-			}
-			else
-			{
-				log.Error(String.Format("Couldn't create the DeviceIdentifier: index: {0}, name: {1}, moniker string:{2}", 
-			                        _iSelected, _devices[_iSelected].Name, _devices[_iSelected].MonikerString));
-			}
-		}
-		private void ConnectToDevice(DeviceDescriptor _device)
-		{
 			Disconnect();
-			
-			log.Debug(String.Format("Connecting to device. {0}", _device.Name));
-				
-			m_VideoDevice = new VideoCaptureDevice(_device.Identification);
-			if(m_VideoDevice != null)
+			bool created = false;
+			if(_device.Network)
 			{
-				if((m_VideoDevice.VideoCapabilities != null) && (m_VideoDevice.VideoCapabilities.Length > 0))
+				// Network Camera. Connect to last used url.
+				// The user will have to open the dialog again if parameters have changed or aren't good.
+				if(_device.NetworkCameraFormat == NetworkCameraFormat.JPEG)
 				{
-					// Import the capabilities of the device.
-					foreach(VideoCapabilities vc in m_VideoDevice.VideoCapabilities)
-					{
-						DeviceCapability dc = new DeviceCapability(vc.FrameSize, vc.FrameRate);
-						_device.Capabilities.Add(dc);
-						
-						log.Debug(String.Format("Device Capability. {0}", dc.ToString()));
-					}
-					
-					DeviceCapability selectedCapability = null;
-					
-					// Check if we already know this device and have a preferred configuration.
-					PreferencesManager pm = PreferencesManager.Instance();
-					foreach(DeviceConfiguration conf in pm.DeviceConfigurations)
-					{
-						if(conf.id == _device.Identification)
-						{							
-							// Try to find the previously selected capability.
-							selectedCapability = _device.GetCapabilityFromSpecs(conf.cap);
-							if(selectedCapability != null)
-								log.Debug(String.Format("Picking capability from preferences: {0}", selectedCapability.ToString()));
-						}
-					}
-
-					if(selectedCapability == null)
-					{
-						// Pick the one with max frame size.
-						selectedCapability = _device.GetBestSizeCapability();
-						log.Debug(String.Format("Picking a default capability (best size): {0}", selectedCapability.ToString()));
-						pm.UpdateSelectedCapability(_device.Identification, selectedCapability);
-					}
-					
-					_device.SelectedCapability = selectedCapability;
-					m_VideoDevice.DesiredFrameSize = selectedCapability.FrameSize;
-					m_FrameSize = selectedCapability.FrameSize;
-					m_FramesInterval = 1000 / (double)selectedCapability.Framerate;
+					m_VideoSource = new JPEGStream(_device.NetworkCameraUrl);
 				}
 				else
 				{
-					m_VideoDevice.DesiredFrameRate = 0;
+					m_VideoSource = new MJPEGStream(_device.NetworkCameraUrl);
 				}
+				m_PrefsManager.NetworkCameraFormat = _device.NetworkCameraFormat;
+				m_PrefsManager.NetworkCameraUrl = _device.NetworkCameraUrl;
+				m_PrefsManager.Export();
 				
-				m_VideoDevice.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
-				m_VideoDevice.VideoSourceError += new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
-				
+				created = true;
+			}
+			else
+			{
+				m_VideoSource = new VideoCaptureDevice(_device.Identification);
+				VideoCaptureDevice captureDevice = m_VideoSource as VideoCaptureDevice;
+				if(captureDevice != null)
+				{
+					if((captureDevice.VideoCapabilities != null) && (captureDevice.VideoCapabilities.Length > 0))
+					{
+						// Import the capabilities of the device.
+						foreach(VideoCapabilities vc in captureDevice.VideoCapabilities)
+						{
+							DeviceCapability dc = new DeviceCapability(vc.FrameSize, vc.FrameRate);
+							_device.Capabilities.Add(dc);
+							
+							log.Debug(String.Format("Device Capability. {0}", dc.ToString()));
+						}
+						
+						DeviceCapability selectedCapability = null;
+						
+						// Check if we already know this device and have a preferred configuration.
+						foreach(DeviceConfiguration conf in m_PrefsManager.DeviceConfigurations)
+						{
+							if(conf.id == _device.Identification)
+							{							
+								// Try to find the previously selected capability.
+								selectedCapability = _device.GetCapabilityFromSpecs(conf.cap);
+								if(selectedCapability != null)
+									log.Debug(String.Format("Picking capability from preferences: {0}", selectedCapability.ToString()));
+							}
+						}
+	
+						if(selectedCapability == null)
+						{
+							// Pick the one with max frame size.
+							selectedCapability = _device.GetBestSizeCapability();
+							log.Debug(String.Format("Picking a default capability (best size): {0}", selectedCapability.ToString()));
+							m_PrefsManager.UpdateSelectedCapability(_device.Identification, selectedCapability);
+						}
+						
+						_device.SelectedCapability = selectedCapability;
+						captureDevice.DesiredFrameSize = selectedCapability.FrameSize;
+						m_FrameSize = selectedCapability.FrameSize;
+						m_FramesInterval = 1000 / (double)selectedCapability.Framerate;
+					}
+					else
+					{
+						captureDevice.DesiredFrameRate = 0;
+					}
+					
+					created = true;
+				}
+			}
+			
+			if(created)
+			{
+				m_CurrentVideoDevice = _device;
+				m_VideoSource.NewFrame += new NewFrameEventHandler( VideoDevice_NewFrame );
+				m_VideoSource.VideoSourceError += new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
 				m_bIsConnected = true;
 			}
 			else
 			{
-				log.Error("Couldn't create the VideoCaptureDevice.");
+				log.Error("Couldn't create the capture device.");
 			}
-
+			
+			return created;
 		}
 		private void Disconnect()
 		{
 			// The screen is about to be closed, release resources.
 			
-			if(m_bIsConnected && m_VideoDevice != null)
+			if(m_bIsConnected && m_VideoSource != null)
 			{
-				log.Debug(String.Format("disconnecting from device. {0}", m_CurrentVideoDevice.Name));
+				log.DebugFormat("disconnecting from {0}", m_CurrentVideoDevice.Name);
 				
 				// Reset
 				m_bIsGrabbing = false;
@@ -383,11 +460,11 @@ namespace Kinovea.ScreenManager
 				m_iConnectionsAttempts = 0;
 				m_Container.SetImageSize(Size.Empty);
 				
-				m_VideoDevice.Stop();
-				m_VideoDevice.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
-				m_VideoDevice.VideoSourceError -= new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
-				m_FrameBuffer.Clear();
+				m_VideoSource.Stop();
+				m_VideoSource.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
+				m_VideoSource.VideoSourceError -= new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
 				
+				m_FrameBuffer.Clear();
 				m_bIsConnected = false;
 			}
 		}
@@ -401,10 +478,19 @@ namespace Kinovea.ScreenManager
 				Size sz = eventArgs.Frame.Size;
 				
 				m_Container.SetImageSize(sz);
-				log.Debug(String.Format("Device infos : {0}. Received frame : {1}", m_FrameSize, sz));
+				log.DebugFormat("Device infos : {0}. Received frame : {1}", m_FrameSize, sz);
 				
 				// Update the "official" size (used for saving context.)
 				m_FrameSize = sz;
+				
+				if(m_CurrentVideoDevice.Network)
+				{
+					// This source is now officially working. Save the parameters to prefs.
+					m_PrefsManager.NetworkCameraUrl = m_CurrentVideoDevice.NetworkCameraUrl;
+					m_PrefsManager.NetworkCameraFormat = m_CurrentVideoDevice.NetworkCameraFormat;
+					m_PrefsManager.AddRecentCamera(m_CurrentVideoDevice.NetworkCameraUrl);
+					m_PrefsManager.Export();
+				}
 			}
 			
 			m_iConnectionsWithoutFrames = 0;
@@ -414,7 +500,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void VideoDevice_VideoSourceError(object sender, VideoSourceErrorEventArgs eventArgs)
 		{
-			log.Error(String.Format("Error happened to device."));
+			log.ErrorFormat("Error happened to {0}.", m_CurrentVideoDevice.Name);
 		}
 		#endregion
 	}

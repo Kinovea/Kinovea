@@ -80,6 +80,8 @@
    
    
    
+   
+   
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Dodaj rysunek</value></data>
    <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Dodaj ekran do </value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Usuń rysunek</value></data>
@@ -98,6 +100,8 @@
    <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Domyślny profil kolorów</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Wczytaj profil koloru</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Zapisz profil koloru</value></data>
+   
+   
    
    
    

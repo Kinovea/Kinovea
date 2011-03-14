@@ -137,6 +137,7 @@ namespace Kinovea.ScreenManager
 			InitializeDrawingTools();
 			InitializeMetadata();
 			BuildContextMenus();
+			tmrCaptureDeviceDetector.Interval = CaptureScreen.HeartBeat;
 			m_bDocked = true;
         	
 			
@@ -183,7 +184,6 @@ namespace Kinovea.ScreenManager
 			if(_bIsGrabbing)
 			{
 				pbSurfaceScreen.Visible = true;
-	   			ShowHideResizers(true);
 				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;	
 			}
 			else
@@ -519,6 +519,7 @@ namespace Kinovea.ScreenManager
 		private void btnClose_Click(object sender, EventArgs e)
 		{
 			// Propagate to PlayerScreen which will report to ScreenManager.
+			this.Cursor = Cursors.WaitCursor;
 			m_ScreenUIHandler.ScreenUI_CloseAsked();
 		}
 		private void DeselectionTimer_OnTick(object sender, EventArgs e) 
@@ -1957,6 +1958,8 @@ namespace Kinovea.ScreenManager
 							m_LastSavedVideo = filename;
 							m_FrameServer.CurrentCaptureFilePath = filepath;
 							m_FrameServer.StartRecording(filepath);
+							// Record will force grabbing if needed.
+							btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;
 							EnableVideoFileEdit(false);
 							DisplayAsRecording(true);
 						}
@@ -2028,11 +2031,6 @@ namespace Kinovea.ScreenManager
     			m_bTryingToConnect = true;        			
     			m_FrameServer.NegociateDevice();       			
     			m_bTryingToConnect = false;
-    			
-    			if(m_FrameServer.IsConnected)
-    			{
-    				btnCamSettings.Enabled = true;
-    			}
     		}
         }
         private void CheckDeviceConnection()
@@ -2040,13 +2038,12 @@ namespace Kinovea.ScreenManager
         	// Ensure we stay connected.
         	if(!m_bTryingToConnect)
     		{
-    			m_bTryingToConnect = true;        			
-    			m_FrameServer.CheckDeviceConnection(tmrCaptureDeviceDetector.Interval);
+    			m_bTryingToConnect = true;
+    			m_FrameServer.HeartBeat();
     			m_bTryingToConnect = false;
     		}
         }
         #endregion
-        
-        
+
 	}
 }
