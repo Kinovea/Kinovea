@@ -690,6 +690,7 @@ namespace Kinovea.ScreenManager
         	this.MinimumSize = new System.Drawing.Size(350, 310);
         	this.Name = "CaptureScreenUserInterface";
         	this.Size = new System.Drawing.Size(350, 510);
+        	this.Load += new System.EventHandler(this.CaptureScreenUserInterface_Load);
         	this.panelTop.ResumeLayout(false);
         	this.panelTop.PerformLayout();
         	this.panelVideoControls.ResumeLayout(false);
