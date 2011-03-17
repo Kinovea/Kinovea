@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
 			this.btnApply = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.gpCurrentDevice = new System.Windows.Forms.GroupBox();
+			this.cmbUrl = new System.Windows.Forms.ComboBox();
 			this.lblStreamType = new System.Windows.Forms.Label();
 			this.cmbStreamType = new System.Windows.Forms.ComboBox();
 			this.lblUrl = new System.Windows.Forms.Label();
@@ -62,7 +63,6 @@ namespace Kinovea.ScreenManager
 			this.lblCurrentlySelected = new System.Windows.Forms.Label();
 			this.gpOtherDevices = new System.Windows.Forms.GroupBox();
 			this.cmbOtherDevices = new System.Windows.Forms.ComboBox();
-			this.cmbUrl = new System.Windows.Forms.ComboBox();
 			this.gpCurrentDevice.SuspendLayout();
 			this.gpOtherDevices.SuspendLayout();
 			this.SuspendLayout();
@@ -109,6 +109,14 @@ namespace Kinovea.ScreenManager
 			this.gpCurrentDevice.TabIndex = 78;
 			this.gpCurrentDevice.TabStop = false;
 			this.gpCurrentDevice.Text = "Current device";
+			// 
+			// cmbUrl
+			// 
+			this.cmbUrl.FormattingEnabled = true;
+			this.cmbUrl.Location = new System.Drawing.Point(48, 95);
+			this.cmbUrl.Name = "cmbUrl";
+			this.cmbUrl.Size = new System.Drawing.Size(43, 21);
+			this.cmbUrl.TabIndex = 15;
 			// 
 			// lblStreamType
 			// 
@@ -163,9 +171,9 @@ namespace Kinovea.ScreenManager
 			// 
 			// btnCamcorder
 			// 
-			this.btnCamcorder.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.camera_selected;
 			this.btnCamcorder.FlatAppearance.BorderSize = 0;
 			this.btnCamcorder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnCamcorder.Image = global::Kinovea.ScreenManager.Properties.Resources.camera_selected;
 			this.btnCamcorder.Location = new System.Drawing.Point(16, 25);
 			this.btnCamcorder.Name = "btnCamcorder";
 			this.btnCamcorder.Size = new System.Drawing.Size(30, 30);
@@ -223,14 +231,6 @@ namespace Kinovea.ScreenManager
 			this.cmbOtherDevices.Size = new System.Drawing.Size(272, 21);
 			this.cmbOtherDevices.TabIndex = 7;
 			this.cmbOtherDevices.SelectedIndexChanged += new System.EventHandler(this.cmbOtherDevices_SelectedIndexChanged);
-			// 
-			// cmbUrl
-			// 
-			this.cmbUrl.FormattingEnabled = true;
-			this.cmbUrl.Location = new System.Drawing.Point(48, 95);
-			this.cmbUrl.Name = "cmbUrl";
-			this.cmbUrl.Size = new System.Drawing.Size(43, 21);
-			this.cmbUrl.TabIndex = 15;
 			// 
 			// formDevicePicker
 			// 

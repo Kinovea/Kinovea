@@ -139,7 +139,6 @@ namespace Kinovea.ScreenManager
 			BuildContextMenus();
 			tmrCaptureDeviceDetector.Interval = CaptureScreen.HeartBeat;
 			m_bDocked = true;
-        	
 			
 			InitializeCaptureFiles();
 			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
@@ -177,7 +176,6 @@ namespace Kinovea.ScreenManager
 			// As a matter of fact we pass here at the first received frame.
 			ShowHideResizers(true);
 			UpdateFilenameLabel();
-			OnPoke();
 		}
 		public void DisplayAsGrabbing(bool _bIsGrabbing)
 		{
@@ -272,17 +270,46 @@ namespace Kinovea.ScreenManager
 		{
 			bool bWasHandled = false;
 			
+			if(tbImageFilename.Focused || tbVideoFilename.Focused)
+			{
+				return false;
+			}
+			
 			// Method called from the Screen Manager's PreFilterMessage.
 			switch (_keycode)
 			{
+				case Keys.Space:
+				case Keys.Return:
+					{
+						if ((ModifierKeys & Keys.Control) == Keys.Control)
+						{
+							btnRecord_Click(null, EventArgs.Empty);
+						}
+						else
+						{
+							OnButtonGrab();
+						}
+						bWasHandled = true;
+						break;
+					}
 				case Keys.Escape:
 					{
+						if(m_FrameServer.IsRecording)
+						{
+							btnRecord_Click(null, EventArgs.Empty);
+						}
 						DisablePlayAndDraw();
 						pbSurfaceScreen.Invalidate();
 						bWasHandled = true;
 						break;
 					}
-				
+				case Keys.Left:
+				case Keys.Right:
+					{
+						sldrDelay_KeyDown(null, new KeyEventArgs(_keycode));
+						bWasHandled = true;
+						break;
+					}
 				case Keys.Add:
 					{
 						IncreaseDirectZoom();
@@ -307,7 +334,6 @@ namespace Kinovea.ScreenManager
 						// Remove selected Drawing
 						// Note: Should only work if the Drawing is currently being moved...
 						DeleteSelectedDrawing();
-						
 						bWasHandled = true;
 						break;
 					}
@@ -389,6 +415,10 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Various Inits & Setups
+		private void CaptureScreenUserInterface_Load(object sender, EventArgs e)
+        {
+        	m_ScreenUIHandler.ScreenUI_SetAsActiveScreen();
+        }
 		private void AddExtraControls()
 		{
 			// Add additional controls to the screen. This is needed due to some issue in SharpDevelop with custom controls.
@@ -410,7 +440,7 @@ namespace Kinovea.ScreenManager
         	sldrDelay.StickyMark = true;
         	sldrDelay.Value = 0;
         	sldrDelay.ValueChanged += new Kinovea.ScreenManager.SpeedSlider.ValueChangedHandler(sldrDelay_ValueChanged);
-        	//sldrDelay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sldrSpeed_KeyDown);
+        	sldrDelay.KeyDown += new System.Windows.Forms.KeyEventHandler(sldrDelay_KeyDown);
 		}
 		private void InitializeDrawingTools()
         {
@@ -601,6 +631,18 @@ namespace Kinovea.ScreenManager
 		{
 			if(m_FrameServer.IsConnected)
 			{
+				OnPoke();
+				OnButtonGrab();
+			}
+			else
+			{
+				m_FrameServer.PauseGrabbing();	
+			}
+		}
+		private void OnButtonGrab()
+		{
+			if(m_FrameServer.IsConnected)
+			{
 				if(m_FrameServer.IsGrabbing)
 				{
 					m_FrameServer.PauseGrabbing();
@@ -609,13 +651,7 @@ namespace Kinovea.ScreenManager
 			   	else
 			   	{
 					m_FrameServer.StartGrabbing();
-			   	}	
-				
-			   	OnPoke();	
-			}
-			else
-			{
-				m_FrameServer.PauseGrabbing();	
+			   	}
 			}
 		}
 		public void Common_MouseWheel(object sender, MouseEventArgs e)
@@ -667,6 +703,48 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Invalidate();	
 			}
 			UpdateDelayLabel();
+		}
+		private void sldrDelay_KeyDown(object sender, KeyEventArgs e)
+		{
+			// Increase/Decrease delay on LEFT/RIGHT Arrows.
+			if (m_FrameServer.IsConnected)
+			{
+				if (e.KeyCode == Keys.Left)
+				{
+					// If Control is pressed, jump to the next 25% spot.
+					if( (ModifierKeys & Keys.Control) == Keys.Control)
+					{
+						sldrDelay.Value = 25 * ((sldrDelay.Value-1) / 25);
+					}
+					else if (sldrDelay.Value >= sldrDelay.Minimum + sldrDelay.SmallChange)
+					{
+						sldrDelay.Value -= sldrDelay.SmallChange;
+					}
+					
+					e.Handled = true;
+				}
+
+				if (e.KeyCode == Keys.Right)
+				{
+					// If Control is pressed, jump to the next 25% spot.
+					if( (ModifierKeys & Keys.Control) == Keys.Control)
+					{
+						sldrDelay.Value = 25 * ((sldrDelay.Value / 25) + 1);
+					}
+					else if (sldrDelay.Value <= sldrDelay.Maximum - sldrDelay.SmallChange)
+					{
+						sldrDelay.Value+=sldrDelay.SmallChange;
+					}
+					e.Handled = true;
+				}
+				
+				m_iDelay = m_FrameServer.DelayChanged(sldrDelay.Value);
+				if(!m_FrameServer.IsGrabbing)
+				{
+					pbSurfaceScreen.Invalidate();	
+				}
+				UpdateDelayLabel();
+			}	
 		}
 		private void UpdateDelayLabel()
 		{
@@ -2045,5 +2123,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        
+        
 	}
 }
