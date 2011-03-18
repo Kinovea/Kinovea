@@ -429,7 +429,7 @@ namespace Kinovea.ScreenManager
 		        		tmrThumbs.Stop();
 		        		int index = e.X / (picBox.Width / m_Bitmaps.Count);
 		        		m_iCurrentThumbnailIndex = index;
-		        		if(m_iCurrentThumbnailIndex == m_Bitmaps.Count) m_iCurrentThumbnailIndex = 0;
+		        		if(m_iCurrentThumbnailIndex >= m_Bitmaps.Count) m_iCurrentThumbnailIndex = m_Bitmaps.Count - 1;
 			  			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
 			  			picBox.Invalidate();
 		        	}
