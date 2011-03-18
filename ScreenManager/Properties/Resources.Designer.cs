@@ -420,6 +420,33 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap dualcapture
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("dualcapture", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap dualmixed2
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("dualmixed2", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap dualplayback
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("dualplayback", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap ExportDock5
 		{
 			get
