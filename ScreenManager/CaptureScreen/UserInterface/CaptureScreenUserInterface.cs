@@ -214,9 +214,8 @@ namespace Kinovea.ScreenManager
 					// Finish the setup
 					box.Left = iPixelsOffset + iPixelsSpacing;
 					box.pbThumbnail.Image = m_FrameServer.RecentlyCapturedVideos[i].Thumbnail;
-					//box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
-					box.DoubleClickThumb += new CapturedVideoBox.DoubleClickThumbHandler(CapturedVideoBox_DoubleClick);
-					
+					box.CloseThumb += new CapturedVideoBox.CloseThumbHandler(CapturedVideoBox_Close);
+					box.LaunchVideo += new CapturedVideoBox.LaunchVideoHandler(CapturedVideoBox_LaunchVideo);
 					
 					iPixelsOffset += (iPixelsSpacing + box.Width);
 					pnlThumbnails.Controls.Add(box);
@@ -255,6 +254,7 @@ namespace Kinovea.ScreenManager
 			
 			ReloadTooltipsCulture();
 			ReloadMenusCulture();
+			ReloadCapturedVideosCulture();			
 			
 			// Update the file naming.
 			// By doing this we fix the naming for prefs change in free text (FT), in pattern, switch from FT to pattern,
@@ -996,6 +996,17 @@ namespace Kinovea.ScreenManager
 				mnuShowMeasure.Checked = ((DrawingLine2D)_drawing).ShowMeasure;
 			}
 		}
+		private void ReloadCapturedVideosCulture()
+		{
+			foreach(Control c in pnlThumbnails.Controls)
+			{
+				CapturedVideoBox cvb = c as CapturedVideoBox;
+				if(cvb != null)
+				{
+					cvb.RefreshUICulture();
+				}
+			}
+		}
 		#endregion
 
 		#region SurfaceScreen Events
@@ -1444,12 +1455,28 @@ namespace Kinovea.ScreenManager
 		{
 			OnPoke();
 		}
-		private void CapturedVideoBox_DoubleClick(object sender, EventArgs e)
+		private void CapturedVideoBox_LaunchVideo(object sender, EventArgs e)
 		{
 			CapturedVideoBox box = sender as CapturedVideoBox;
 			if(box != null)
 			{
 				m_ScreenUIHandler.CaptureScreenUI_LoadVideo(box.FilePath);
+			}
+		}
+		private void CapturedVideoBox_Close(object sender, EventArgs e)
+		{
+			CapturedVideoBox box = sender as CapturedVideoBox;
+			if(box != null)
+			{
+				for(int i = 0; i<m_FrameServer.RecentlyCapturedVideos.Count;i++)
+				{
+					if(m_FrameServer.RecentlyCapturedVideos[i].Filepath == box.FilePath)
+					{
+						m_FrameServer.RecentlyCapturedVideos.RemoveAt(i);
+					}
+				}
+				
+				DoUpdateCapturedVideos();
 			}
 		}
 		
