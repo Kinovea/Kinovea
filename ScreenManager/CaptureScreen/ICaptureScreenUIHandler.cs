@@ -32,5 +32,6 @@ namespace Kinovea.ScreenManager
 		// Note that there are some methods hidden here via IScreenUIHandler inheritance.
 
 		void CaptureScreenUI_FileSaved();
+		void CaptureScreenUI_LoadVideo(string _filepath);
 	}
 }

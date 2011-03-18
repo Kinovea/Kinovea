@@ -41,12 +41,22 @@ namespace Kinovea.ScreenManager
         // Déclarations de Types
         public delegate void CloseThumbHandler(object sender, EventArgs e);
         public delegate void ClickThumbHandler(object sender, EventArgs e);
+        public delegate void DoubleClickThumbHandler(object sender, EventArgs e);
         
         // Déclarations des évènements
         [Category("Action"), Browsable(true)]
         public event CloseThumbHandler CloseThumb;
         [Category("Action"), Browsable(true)]
         public event ClickThumbHandler ClickThumb;
+        [Category("Action"), Browsable(true)]
+        public event DoubleClickThumbHandler DoubleClickThumb;
+        #endregion
+        
+        #region Properties
+        public string FilePath
+        {
+        	get { return m_CapturedVideo.Filepath; }
+        }
         #endregion
         
 		#region Members
@@ -70,9 +80,12 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Event Handlers - Mouse Enter / Leave
-		private void Controls_MouseDown(object sender, MouseEventArgs e)
+		private void pbThumbnail_MouseMove(object sender, MouseEventArgs e)
         {
-        	DoDragDrop(m_CapturedVideo.Filepath, DragDropEffects.Copy);
+        	if(e.Button == MouseButtons.Left)
+        	{
+        		DoDragDrop(m_CapturedVideo.Filepath, DragDropEffects.Copy);
+        	}
         }
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
@@ -98,6 +111,10 @@ namespace Kinovea.ScreenManager
         private void pbThumbnail_Click(object sender, EventArgs e)
         {
             if (ClickThumb != null) ClickThumb(this, e);
+        }
+        private void pbThumbnail_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+        	if (DoubleClickThumb != null) DoubleClickThumb(this, e);
         }
         private void TbTitleTextChanged(object sender, EventArgs e)
         {
@@ -161,6 +178,7 @@ namespace Kinovea.ScreenManager
         	}
         }
         #endregion
+
         
         
 	}

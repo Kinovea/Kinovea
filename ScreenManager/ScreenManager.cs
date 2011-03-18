@@ -799,6 +799,40 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+        public void Capture_LoadVideo(CaptureScreen _screen, string _filepath)
+        {
+        	// Launch a video in the other screen.
+        	
+        	if(screenList.Count == 1)
+        	{
+                // Create the screen if necessary
+        		DoLoadMovieInScreen(_filepath, -1, true);
+        	}
+        	else if(screenList.Count == 2)
+        	{
+        		// Identify the other screen.
+        		AbstractScreen otherScreen = null;
+        		int iOtherScreenIndex = 0;
+        		for(int i=0;i<screenList.Count;i++)
+            	{
+        			if (screenList[i] != _screen)
+                	{
+        				otherScreen = screenList[i];
+        				iOtherScreenIndex = i+1;
+                	}
+            	}
+        		
+        		if(otherScreen is CaptureScreen)
+        		{
+        			// Unload capture screen to play the video ?
+        		}
+        		else if(otherScreen is PlayerScreen)
+        		{
+        			// Replace the video.
+        			DoLoadMovieInScreen(_filepath, iOtherScreenIndex, true);
+        		}
+        	}
+        }
         #endregion
         
         #region ICommonControlsHandler Implementation
