@@ -2013,35 +2013,26 @@ namespace Kinovea.ScreenManager
 		private void sldrSpeed_KeyDown(object sender, KeyEventArgs e)
 		{
 			// Increase/Decrease speed on UP/DOWN Arrows.
-			
 			if (m_FrameServer.VideoFile.Loaded)
 			{
+				int jumpFactor = 25;
+				if( (ModifierKeys & Keys.Control) == Keys.Control)
+				{
+					jumpFactor = 1;
+				}
+				else if((ModifierKeys & Keys.Shift) == Keys.Shift)
+				{
+					jumpFactor = 10;
+				}
+			
 				if (e.KeyCode == Keys.Down)
 				{
-					// If Control is pressed, jump to the next 25% spot.
-					if( (ModifierKeys & Keys.Control) == Keys.Control)
-					{
-						sldrSpeed.Value = 25 * ((sldrSpeed.Value-1) / 25);
-					}
-					else if (sldrSpeed.Value >= sldrSpeed.Minimum + sldrSpeed.SmallChange)
-					{
-						sldrSpeed.Value -= sldrSpeed.SmallChange;
-					}
-					
+					sldrSpeed.Value = jumpFactor * ((sldrSpeed.Value-1) / jumpFactor);
 					e.Handled = true;
 				}
-
-				if (e.KeyCode == Keys.Up)
+				else if (e.KeyCode == Keys.Up)
 				{
-					// If Control is pressed, jump to the next 25% spot.
-					if( (ModifierKeys & Keys.Control) == Keys.Control)
-					{
-						sldrSpeed.Value = 25 * ((sldrSpeed.Value / 25) + 1);
-					}
-					else if (sldrSpeed.Value <= sldrSpeed.Maximum - sldrSpeed.SmallChange)
-					{
-						sldrSpeed.Value+=sldrSpeed.SmallChange;
-					}
+					sldrSpeed.Value = jumpFactor * ((sldrSpeed.Value / jumpFactor) + 1);
 					e.Handled = true;
 				}
 				
