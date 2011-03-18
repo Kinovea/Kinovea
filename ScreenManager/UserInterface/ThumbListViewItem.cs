@@ -197,26 +197,13 @@ namespace Kinovea.ScreenManager
 		}
 		private void BuildContextMenus()
 		{
-			// Launch
-			mnuLaunch.Tag = new ItemResourceInfo(m_ResManager, "mnuThumbnailPlay");
-			mnuLaunch.Text = ((ItemResourceInfo)mnuLaunch.Tag).resManager.GetString(((ItemResourceInfo)mnuLaunch.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuLaunch.Image = Properties.Resources.film_go;
 			mnuLaunch.Click += new EventHandler(mnuLaunch_Click);
-			
-			// Rename
-			mnuRename.Tag = new ItemResourceInfo(m_ResManager, "mnuThumbnailRename");
-			mnuRename.Text = ((ItemResourceInfo)mnuRename.Tag).resManager.GetString(((ItemResourceInfo)mnuRename.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuRename.Image = Properties.Resources.textfield;
 			mnuRename.Click += new EventHandler(mnuRename_Click);
-			
-			// Delete
-			mnuDelete.Tag = new ItemResourceInfo(m_ResManager, "mnuThumbnailDelete");
-			mnuDelete.Text = ((ItemResourceInfo)mnuDelete.Tag).resManager.GetString(((ItemResourceInfo)mnuDelete.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuDelete.Image = Properties.Resources.delete;
 			mnuDelete.Click += new EventHandler(mnuDelete_Click);
-			
 			popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuSep, mnuRename, mnuDelete});
-			
 			this.ContextMenuStrip = popMenu;
 		}
 		#endregion
@@ -307,6 +294,10 @@ namespace Kinovea.ScreenManager
 		}
 		public void RefreshUICulture()
 		{
+			mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
+			mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
+			mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
+			
 			// The # char is just a placeholder for a space,
 		    // Because MeasureString doesn't support trailing spaces. 
 		    // (see PicBoxPaint)
