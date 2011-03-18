@@ -709,33 +709,25 @@ namespace Kinovea.ScreenManager
 		{
 			// Increase/Decrease delay on LEFT/RIGHT Arrows.
 			if (m_FrameServer.IsConnected)
-			{
+			{				
+				int jumpFactor = 25;
+				if( (ModifierKeys & Keys.Control) == Keys.Control)
+				{
+					jumpFactor = 1;
+				}
+				else if((ModifierKeys & Keys.Shift) == Keys.Shift)
+				{
+					jumpFactor = 10;
+				}
+			
 				if (e.KeyCode == Keys.Left)
 				{
-					// If Control is pressed, jump to the next 25% spot.
-					if( (ModifierKeys & Keys.Control) == Keys.Control)
-					{
-						sldrDelay.Value = 25 * ((sldrDelay.Value-1) / 25);
-					}
-					else if (sldrDelay.Value >= sldrDelay.Minimum + sldrDelay.SmallChange)
-					{
-						sldrDelay.Value -= sldrDelay.SmallChange;
-					}
-					
+					sldrDelay.Value = jumpFactor * ((sldrDelay.Value-1) / jumpFactor);
 					e.Handled = true;
 				}
-
-				if (e.KeyCode == Keys.Right)
+				else if (e.KeyCode == Keys.Right)
 				{
-					// If Control is pressed, jump to the next 25% spot.
-					if( (ModifierKeys & Keys.Control) == Keys.Control)
-					{
-						sldrDelay.Value = 25 * ((sldrDelay.Value / 25) + 1);
-					}
-					else if (sldrDelay.Value <= sldrDelay.Maximum - sldrDelay.SmallChange)
-					{
-						sldrDelay.Value+=sldrDelay.SmallChange;
-					}
+					sldrDelay.Value = jumpFactor * ((sldrDelay.Value / jumpFactor) + 1);
 					e.Handled = true;
 				}
 				
