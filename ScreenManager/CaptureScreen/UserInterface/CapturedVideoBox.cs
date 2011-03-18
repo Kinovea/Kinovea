@@ -24,7 +24,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Kinovea.ScreenManager
 {
@@ -41,7 +43,7 @@ namespace Kinovea.ScreenManager
         // Déclarations de Types
         public delegate void CloseThumbHandler(object sender, EventArgs e);
         public delegate void ClickThumbHandler(object sender, EventArgs e);
-        public delegate void DoubleClickThumbHandler(object sender, EventArgs e);
+        public delegate void LaunchVideoHandler(object sender, EventArgs e);
         
         // Déclarations des évènements
         [Category("Action"), Browsable(true)]
@@ -49,7 +51,7 @@ namespace Kinovea.ScreenManager
         [Category("Action"), Browsable(true)]
         public event ClickThumbHandler ClickThumb;
         [Category("Action"), Browsable(true)]
-        public event DoubleClickThumbHandler DoubleClickThumb;
+        public event LaunchVideoHandler LaunchVideo;
         #endregion
         
         #region Properties
@@ -62,9 +64,22 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private CapturedVideo m_CapturedVideo;
 		private bool m_bAutoUpdatingTitle;
+		
+		#region Context menu
+		private ContextMenuStrip popMenu = new ContextMenuStrip();
+		private ToolStripMenuItem mnuLoadVideo = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
 		#endregion
 		
-		#region Constructor
+		#endregion
+		
+		public void RefreshUICulture()
+		{
+			ReloadMenusCulture();
+		}
+		
+		#region Construction & initialization
 		public CapturedVideoBox(CapturedVideo _cv)
 		{
 			m_CapturedVideo = _cv;
@@ -76,6 +91,19 @@ namespace Kinovea.ScreenManager
             tbTitle.Text = Path.GetFileName(m_CapturedVideo.Filepath);
             m_bAutoUpdatingTitle = false;
             
+            BuildContextMenus();
+            ReloadMenusCulture();
+		}
+		private void BuildContextMenus()
+		{
+			mnuLoadVideo.Click += new EventHandler(mnuLoadVideo_Click);
+			mnuLoadVideo.Image = Properties.Resources.film_go;
+			mnuHide.Click += new EventHandler(mnuHide_Click);
+			mnuHide.Image = Properties.Resources.hide2;
+			mnuDelete.Click += new EventHandler(mnuDelete_Click);
+			mnuDelete.Image = Properties.Resources.delete;
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuHide, mnuDelete });	
+			this.ContextMenuStrip = popMenu;
 		}
 		#endregion
 		
@@ -114,7 +142,7 @@ namespace Kinovea.ScreenManager
         }
         private void pbThumbnail_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-        	if (DoubleClickThumb != null) DoubleClickThumb(this, e);
+        	if (LaunchVideo != null) LaunchVideo(this, e);
         }
         private void TbTitleTextChanged(object sender, EventArgs e)
         {
@@ -132,7 +160,59 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        #region Event Handlers - Menu
+        private void mnuLoadVideo_Click(object sender, EventArgs e)
+		{
+			if (LaunchVideo != null) LaunchVideo(this, e);	
+		}
+        private void mnuHide_Click(object sender, EventArgs e)
+		{
+			if (CloseThumb != null) CloseThumb(this, e);
+		}
+        private void mnuDelete_Click(object sender, EventArgs e)
+		{
+			// Use the built-in dialogs to confirm (or not).
+			// Delete is done through moving to recycle bin.
+			if(File.Exists(m_CapturedVideo.Filepath))
+			{
+				try
+				{
+					FileSystem.DeleteFile(m_CapturedVideo.Filepath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+				}
+				catch(OperationCanceledException)
+				{
+					// User cancelled confirmation box.
+				}
+	
+				// Other possible error case: the file couldn't be deleted because it's still in use.
+				
+				// If file was effectively moved to trash, hide the thumb and reload the folder.
+				if(!File.Exists(m_CapturedVideo.Filepath))
+				{
+					if (CloseThumb != null) CloseThumb(this, e);
+					
+					// Ask the Explorer tree to refresh itself...
+					// This will in turn refresh the thumbnails pane.
+		            DelegatesPool dp = DelegatesPool.Instance();
+		            if (dp.RefreshFileExplorer != null)
+		            {
+		                dp.RefreshFileExplorer(true);
+		            }
+				}
+			}
+			
+		}
+        #endregion
+        
         #region Private helpers
+        private void ReloadMenusCulture()
+		{
+        	// Reload the text for each menu.
+			// this is done at construction time and at RefreshUICulture time.
+			mnuLoadVideo.Text = ScreenManagerLang.mnuThumbnailPlay;
+			mnuHide.Text = ScreenManagerLang.mnuGridsHide;
+			mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
+        }
         private void ShowButtons()
         {
             //btnClose.Visible = true;
