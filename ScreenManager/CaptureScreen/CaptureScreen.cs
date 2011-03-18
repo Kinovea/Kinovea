@@ -129,6 +129,10 @@ namespace Kinovea.ScreenManager
         {
         	m_ScreenHandler.Capture_FileSaved(this);
         }
+        public void CaptureScreenUI_LoadVideo(string _filepath)
+        {
+        	m_ScreenHandler.Capture_LoadVideo(this, _filepath);
+        }
         #endregion
         
         #region AbstractScreen Implementation

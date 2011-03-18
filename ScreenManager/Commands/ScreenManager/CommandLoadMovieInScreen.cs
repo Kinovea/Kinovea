@@ -194,6 +194,31 @@ namespace Kinovea.ScreenManager
 	                                }
 	                            }
                 			}
+                			else
+                			{
+                				// Only screen is a capture screen and we try to play a video.
+                				// In that case we create a new player screen and load the video in it.
+                				
+                            	ICommand caps = new CommandAddPlayerScreen(screenManagerKernel, false);
+                            	CommandManager.LaunchCommand(caps);
+
+                            	// load video.
+                            	PlayerScreen newScreen = (screenManagerKernel.screenList.Count > 0) ? (screenManagerKernel.screenList[1] as PlayerScreen) : null;
+                            	if(newScreen != null)
+                            	{
+	                            	clm = new CommandLoadMovie(newScreen, filePath);
+	                            	CommandManager.LaunchCommand(clm);
+	
+	                            	//video loaded finely, save in history.
+	                            	if (newScreen.FrameServer.VideoFile.Loaded)
+	                            	{
+	                                	SaveFileToHistory(filePath);
+	                            	}
+
+                            		// Display screens.
+                            		CommandManager.LaunchCommand(css);
+                            	}
+                			}
                             
                             break;
                         }

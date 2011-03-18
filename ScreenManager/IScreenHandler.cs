@@ -47,5 +47,6 @@ namespace Kinovea.ScreenManager
 		void Player_SendImage(PlayerScreen _screen, Bitmap _image);
 		void Player_Reset(PlayerScreen _screen);
 		void Capture_FileSaved(CaptureScreen _screen);
+		void Capture_LoadVideo(CaptureScreen _screen, string _filepath);
 	}
 }

@@ -215,7 +215,8 @@ namespace Kinovea.ScreenManager
 					box.Left = iPixelsOffset + iPixelsSpacing;
 					box.pbThumbnail.Image = m_FrameServer.RecentlyCapturedVideos[i].Thumbnail;
 					//box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
-					//box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
+					box.DoubleClickThumb += new CapturedVideoBox.DoubleClickThumbHandler(CapturedVideoBox_DoubleClick);
+					
 					
 					iPixelsOffset += (iPixelsSpacing + box.Width);
 					pnlThumbnails.Controls.Add(box);
@@ -1443,7 +1444,15 @@ namespace Kinovea.ScreenManager
 		{
 			OnPoke();
 		}
-
+		private void CapturedVideoBox_DoubleClick(object sender, EventArgs e)
+		{
+			CapturedVideoBox box = sender as CapturedVideoBox;
+			if(box != null)
+			{
+				m_ScreenUIHandler.CaptureScreenUI_LoadVideo(box.FilePath);
+			}
+		}
+		
 		#region Docking Undocking
 		private void btnDockBottom_Click(object sender, EventArgs e)
 		{
