@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -82,7 +83,8 @@ namespace Kinovea.ScreenManager
 		public override void Menu_OnClick(object sender, EventArgs e)
         {
 			// 1. Display preview dialog box.
-			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(GetPreviewImage(), m_Menu.Text);
+			Bitmap preview = GetPreviewImage();
+			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, m_Menu.Text);
             if (fpvf.ShowDialog() == DialogResult.OK)
             {
             	// 2. Process filter.
@@ -92,6 +94,7 @@ namespace Kinovea.ScreenManager
             	// m_MemoPlayerScreen = m_PlayerScreen.GetMemo();
             }
             fpvf.Dispose();
+            preview.Dispose();
         }
 		protected override void Process()
 		{
@@ -110,14 +113,19 @@ namespace Kinovea.ScreenManager
 		private Bitmap GetPreviewImage()
 		{
 			// Deep clone an image then pass it to the filter.
-			Bitmap bmp = AForge.Imaging.Image.Clone(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
+			Bitmap bmp = CloneTo24bpp(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
 			return ProcessSingleImage(bmp);
 		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
 			// Apply filter.
-			Bitmap tmp = new DifferenceEdgeDetector().Apply(Grayscale.CommonAlgorithms.BT709.Apply(_src));
+			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
+			Bitmap tmp = new DifferenceEdgeDetector().Apply(Grayscale.CommonAlgorithms.BT709.Apply(img));
 			_src.Dispose();
+			if(_src.PixelFormat != PixelFormat.Format24bppRgb)
+			{
+				img.Dispose();
+			}
 			
 			// Back to 24bpp.
 			Bitmap tmp2 = new GrayscaleToRGB().Apply(tmp);
