@@ -183,7 +183,9 @@ namespace VideoFiles
 		AVCodecContext*					m_pCodecCtx;
 		AVFrame*						m_pCurrentDecodedFrameBGR;		// Last decoded video frame as an AVFrame.
 		uint8_t*						m_Buffer;						// Last decoded video frame data.
-		
+		enum PixelFormat				m_PixelFormatFFmpeg;
+		enum Imaging::PixelFormat		m_PixelFormatDotNet;
+
 		int								m_iAudioStream;
 		AVCodecContext*					m_pAudioCodecCtx;
 		
