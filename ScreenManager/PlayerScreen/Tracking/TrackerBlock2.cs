@@ -132,8 +132,8 @@ namespace Kinovea.ScreenManager
 				BitmapData imageData = img.LockBits( new Rectangle( 0, 0, img.Width, img.Height ), ImageLockMode.ReadOnly, img.PixelFormat );
 				BitmapData templateData = tpl.LockBits(new Rectangle( 0, 0, tpl.Width, tpl.Height ), ImageLockMode.ReadOnly, tpl.PixelFormat );
 				
-				Image<Bgr, Byte> cvImage = new Image<Bgr, Byte>(imageData.Width, imageData.Height, imageData.Stride, imageData.Scan0);
-				Image<Bgr, Byte> cvTemplate = new Image<Bgr, Byte>(templateData.Width, templateData.Height, templateData.Stride, templateData.Scan0);
+				Image<Bgra, Byte> cvImage = new Image<Bgra, Byte>(imageData.Width, imageData.Height, imageData.Stride, imageData.Scan0);
+				Image<Bgra, Byte> cvTemplate = new Image<Bgra, Byte>(templateData.Width, templateData.Height, templateData.Stride, templateData.Scan0);
 				
 				cvImage.ROI = searchZone;
 				
@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
 			
 			// Copy the template from the image into its own Bitmap.
 			
-			Bitmap tpl = new Bitmap(m_BlockSize.Width, m_BlockSize.Height, PixelFormat.Format24bppRgb);
+			Bitmap tpl = new Bitmap(m_BlockSize.Width, m_BlockSize.Height, PixelFormat.Format32bppPArgb);
 			
 			bool bUpdateWithCurrentImage = true;
 			
@@ -232,7 +232,7 @@ namespace Kinovea.ScreenManager
 				BitmapData imageData = _CurrentImage.LockBits( new Rectangle( 0, 0, _CurrentImage.Width, _CurrentImage.Height ), ImageLockMode.ReadOnly, _CurrentImage.PixelFormat );
 				BitmapData templateData = tpl.LockBits(new Rectangle( 0, 0, tpl.Width, tpl.Height ), ImageLockMode.ReadWrite, tpl.PixelFormat );
 				
-				int pixelSize = 3;
+				int pixelSize = 4;
 	            
 	            int tplStride = templateData.Stride;
 	            int templateWidthInBytes = m_BlockSize.Width * pixelSize;

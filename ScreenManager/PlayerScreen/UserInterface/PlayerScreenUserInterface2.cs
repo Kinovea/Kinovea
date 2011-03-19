@@ -3419,7 +3419,6 @@ namespace Kinovea.ScreenManager
 			// This function is used both by the main rendering loop and by image export functions.
 
 			// Notes on performances:
-			// - The fastest pixel format to render is Format32bppPArgb. (But we can't directly decode from FFMpeg into that)
 			// - The global performance depends on the size of the *source* image. Not destination.
 			//   (rendering 1 pixel from an HD source will still be slow)
 			// - Using a matrix transform instead of the buit in interpolation doesn't seem to do much.
@@ -3448,19 +3447,7 @@ namespace Kinovea.ScreenManager
 				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
 			}
 			
-			// DrawImage is slow.
 			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
-			
-			// Using BitBlt forces to use GetHBitmap, which is as slow as DrawImage.
-			/*if(m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-			{
-				IntPtr pTarget = g.GetHdc();
-				m_FrameServer.VideoFile.RenderToGraphics(g, pTarget);
-			}
-			else
-			{
-				g.DrawImage(_sourceImage, rDst, rSrc, GraphicsUnit.Pixel);
-			}*/
 			
 			// Testing Key images overlay.
 			// Creates a ghost image of the last keyframe superposed with the current image.
