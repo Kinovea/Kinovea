@@ -3496,8 +3496,11 @@ namespace Kinovea.ScreenManager
 				g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
 			}
 			
-			FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
-			FlushMagnifierOnGraphics(_sourceImage, g);
+			if ((m_bIsCurrentlyPlaying && m_PrefManager.DrawOnPlay) || !m_bIsCurrentlyPlaying)
+			{
+				FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
+				FlushMagnifierOnGraphics(_sourceImage, g);
+			}
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
 		{
@@ -3519,22 +3522,19 @@ namespace Kinovea.ScreenManager
 			// 3. Regular drawings.
 			if (m_PrefManager.DefaultFading.Enabled)
 			{
-				if ((m_bIsCurrentlyPlaying && m_PrefManager.DrawOnPlay) || !m_bIsCurrentlyPlaying)
+				// If fading is on, we ask all drawings to draw themselves with their respective
+				// fading factor for this position.
+
+				int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(_iPosition);
+
+				// Draw in reverse keyframes z order so the closest next keyframe gets drawn on top (last).
+				for (int ikf = zOrder.Length-1; ikf >= 0 ; ikf--)
 				{
-					// If fading is on, we ask all drawings to draw themselves with their respective
-					// fading factor for this position.
-
-					int[] zOrder = m_FrameServer.Metadata.GetKeyframesZOrder(_iPosition);
-
-					// Draw in reverse keyframes z order so the closest next keyframe gets drawn on top (last).
-					for (int ikf = zOrder.Length-1; ikf >= 0 ; ikf--)
+					Keyframe kf = m_FrameServer.Metadata.Keyframes[zOrder[ikf]];
+					for (int idr = kf.Drawings.Count - 1; idr >= 0; idr--)
 					{
-						Keyframe kf = m_FrameServer.Metadata.Keyframes[zOrder[ikf]];
-						for (int idr = kf.Drawings.Count - 1; idr >= 0; idr--)
-						{
-							bool bSelected = (zOrder[ikf] == m_FrameServer.Metadata.SelectedDrawingFrame && idr == m_FrameServer.Metadata.SelectedDrawing);
-							kf.Drawings[idr].Draw(_canvas, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
-						}
+						bool bSelected = (zOrder[ikf] == m_FrameServer.Metadata.SelectedDrawingFrame && idr == m_FrameServer.Metadata.SelectedDrawing);
+						kf.Drawings[idr].Draw(_canvas, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
 					}
 				}
 			}
