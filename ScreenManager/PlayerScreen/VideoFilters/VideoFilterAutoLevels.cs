@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -83,13 +84,15 @@ namespace Kinovea.ScreenManager
 		public override void Menu_OnClick(object sender, EventArgs e)
         {
 			// 1. Display preview dialog box.
-			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(GetPreviewImage(), m_Menu.Text);
+			Bitmap preview = GetPreviewImage();
+			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, m_Menu.Text);
             if (fpvf.ShowDialog() == DialogResult.OK)
             {
             	// 2. Process filter.
             	StartProcessing();
             }
             fpvf.Dispose();
+            preview.Dispose();
         }
 		protected override void Process()
 		{
@@ -108,20 +111,29 @@ namespace Kinovea.ScreenManager
 		private Bitmap GetPreviewImage()
 		{
 			// Deep clone an image then pass it to the filter.
-			Bitmap bmp = AForge.Imaging.Image.Clone(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
-			return ProcessSingleImage(bmp);
+			Bitmap bmp = CloneTo24bpp(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
+			return ProcessSingleImage(bmp);			
 		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			ImageStatistics stats = new ImageStatistics(_src);
+			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
+			
+			ImageStatistics stats = new ImageStatistics(img);
         	
 			LevelsLinear levelsLinear = new LevelsLinear();
         	levelsLinear.InRed   = stats.Red.GetRange( 0.87 );
             levelsLinear.InGreen = stats.Green.GetRange( 0.87 );
             levelsLinear.InBlue  = stats.Blue.GetRange( 0.87 );
             
-            levelsLinear.ApplyInPlace(_src);
+            levelsLinear.ApplyInPlace(img);
 			
+            if(_src.PixelFormat != PixelFormat.Format24bppRgb)
+			{
+            	Graphics g = Graphics.FromImage(_src);
+            	g.DrawImageUnscaled(img, 0, 0);
+            	img.Dispose();
+            }
+            
 			return _src;
 		}
 		#endregion

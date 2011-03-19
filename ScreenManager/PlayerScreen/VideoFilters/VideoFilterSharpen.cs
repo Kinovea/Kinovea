@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -81,19 +82,20 @@ namespace Kinovea.ScreenManager
 		public override void Menu_OnClick(object sender, EventArgs e)
         {
 			// 1. Display preview dialog box.
-			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(GetPreviewImage(), m_Menu.Text);
+			Bitmap preview = GetPreviewImage();
+			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, m_Menu.Text);
             if (fpvf.ShowDialog() == DialogResult.OK)
             {
             	// 2. Process filter.
             	StartProcessing();
             }
             fpvf.Dispose();
+            preview.Dispose();
         }
 		protected override void Process()
 		{
 			// Method called back from AbstractVideoFilter after a call to StartProcessing().
 			// Use StartProcessing() to get progress bar and threading support.
-			
 			for(int i=0;i<m_FrameList.Count;i++)
             {
 				m_FrameList[i].BmpImage = ProcessSingleImage(m_FrameList[i].BmpImage);
@@ -106,13 +108,21 @@ namespace Kinovea.ScreenManager
 		private Bitmap GetPreviewImage()
 		{
 			// Deep clone an image then pass it to the filter.
-			Bitmap bmp = AForge.Imaging.Image.Clone(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
+			Bitmap bmp = CloneTo24bpp(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
 			return ProcessSingleImage(bmp);
 		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
+			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
 			Sharpen sharpenFilter = new Sharpen();
-			sharpenFilter.ApplyInPlace(_src);
+			sharpenFilter.ApplyInPlace(img);
+			
+			if(_src.PixelFormat != PixelFormat.Format24bppRgb)
+			{
+            	Graphics g = Graphics.FromImage(_src);
+            	g.DrawImageUnscaled(img, 0, 0);
+            	img.Dispose();
+            }
 			
 			return _src;
 		}

@@ -21,7 +21,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 #region Using directives
-using AForge.Imaging.Filters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

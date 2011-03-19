@@ -21,6 +21,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using Kinovea.Services;
@@ -131,6 +133,13 @@ namespace Kinovea.ScreenManager
                 dp.VideoProcessingDone(_dfo);
             }
         }
+        protected Bitmap CloneTo24bpp(Bitmap _src)
+		{
+			Bitmap bmp = new Bitmap(_src.Width, _src.Height, PixelFormat.Format24bppRgb);
+			Graphics g = Graphics.FromImage(bmp);
+			g.DrawImageUnscaled(_src, 0, 0);
+			return bmp;
+		}
         #endregion
 	}
 }

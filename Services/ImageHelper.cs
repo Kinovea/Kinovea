@@ -98,7 +98,7 @@ namespace Kinovea.Services
 		{
 			Bitmap composite = null;
 			
-			if(!_horizontal)
+			if(_horizontal)
 			{
 				// Create the output image.
 				int height = Math.Max(_leftImage.Height, _rightImage.Height);
