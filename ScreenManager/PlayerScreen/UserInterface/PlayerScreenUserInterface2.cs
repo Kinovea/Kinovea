@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
 					m_SyncMergeImage.Dispose();
 				}
 				
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		public bool DualSaveInProgress
@@ -486,7 +486,7 @@ namespace Kinovea.ScreenManager
 					//---------------------------------------------------------------------------------------
 					
 					iPostLoadResult = 0;
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 
 					//--------------------------------------------------------
 					// 1. Internal data : timestamps. Controls : trkSelection.
@@ -648,7 +648,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.SetupMetadata();
 			((DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer]).SetImageSize(m_FrameServer.Metadata.ImageSize);
 
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		public void DisplayAsActiveScreen(bool _bActive)
 		{
@@ -737,7 +737,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
 			// Refresh image to update timecode in chronos, grids colors, default fading, etc.
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
 		{
@@ -786,7 +786,7 @@ namespace Kinovea.ScreenManager
 			{
 				// Ask for a repaint. We don't wait for the next frame to be drawn
 				// because the user may be manually moving the other video.
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		public bool OnKeyPress(Keys _keycode)
@@ -809,7 +809,7 @@ namespace Kinovea.ScreenManager
 					case Keys.Escape:
 						{
 							DisablePlayAndDraw();
-							pbSurfaceScreen.Invalidate();
+							DoInvalidate();
 							bWasHandled = true;
 							break;
 						}
@@ -1028,7 +1028,7 @@ namespace Kinovea.ScreenManager
 			m_ActiveTool = DrawingToolType.Pointer;
 			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
 			
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		#endregion
 		
@@ -1454,7 +1454,7 @@ namespace Kinovea.ScreenManager
 		private void ShowBorder(bool _bShow)
 		{
 			m_bShowImageBorder = _bShow;
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void DrawImageBorder(Graphics _canvas)
 		{
@@ -2197,7 +2197,7 @@ namespace Kinovea.ScreenManager
 			}
 			StretchSqueezeSurface();
 			m_FrameServer.Metadata.ResizeFinished();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void ImageResizerSE_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -2252,7 +2252,7 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
 				m_bStretchModeOn = false;
 				StretchSqueezeSurface();
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		private void Resizers_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -2262,7 +2262,7 @@ namespace Kinovea.ScreenManager
 		private void Resizers_MouseUp(object sender, MouseEventArgs e)
 		{
 			m_FrameServer.Metadata.ResizeFinished();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		#endregion
 		
@@ -2510,7 +2510,7 @@ namespace Kinovea.ScreenManager
 				}
 				
 				// Display image
-				if(_bAllowUIUpdate) pbSurfaceScreen.Invalidate();
+				if(_bAllowUIUpdate) DoInvalidate();
 				
 				// Report image for synchro and merge.
 				ReportForSyncMerge();
@@ -2549,7 +2549,7 @@ namespace Kinovea.ScreenManager
 							if(_bAllowUIUpdate)
 							{
 								trkSelection.SelPos = m_iCurrentPosition;
-								pbSurfaceScreen.Invalidate();
+								DoInvalidate();
 							}
 							//Close Tracks
 							m_FrameServer.Metadata.StopAllTracking();
@@ -2599,7 +2599,7 @@ namespace Kinovea.ScreenManager
 					if (_bAllowUIUpdate)
 					{
 						buttonPlay.Image = Resources.liqplay17;
-						pbSurfaceScreen.Invalidate();
+						DoInvalidate();
 					}
 				}
 			}
@@ -2656,7 +2656,7 @@ namespace Kinovea.ScreenManager
 				UpdateCurrentPositionLabel();
 				UpdateSpeedLabel();
 				m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoFile.Infos.fFps * m_fHighSpeedFactor;
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		private double GetPlaybackFrameInterval()
@@ -2683,7 +2683,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.SelectedDrawing = -1;
 			log.Debug("Deselection timer fired.");
 			m_DeselectionTimer.Stop();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 
 		#endregion
@@ -3102,7 +3102,7 @@ namespace Kinovea.ScreenManager
 						}
 					}
 					
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 				}
 			}
 		}
@@ -3122,7 +3122,7 @@ namespace Kinovea.ScreenManager
 					
 					if (!m_bIsCurrentlyPlaying)
 					{
-						pbSurfaceScreen.Invalidate();
+						DoInvalidate();
 					}
 				}
 				else if (e.Button == MouseButtons.Left)
@@ -3175,7 +3175,7 @@ namespace Kinovea.ScreenManager
 					
 					if (!m_bIsCurrentlyPlaying)
 					{
-						pbSurfaceScreen.Invalidate();
+						DoInvalidate();
 					}
 				}
 			}
@@ -3256,7 +3256,7 @@ namespace Kinovea.ScreenManager
 					m_DeselectionTimer.Start();					
 				}
 				
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -3569,6 +3569,8 @@ namespace Kinovea.ScreenManager
 		}
 		private void DoInvalidate()
 		{
+			// This function should be the single point where we call for rendering.
+			// Here we can decide to render directly on the surface or go through the Windows message pump.
 			pbSurfaceScreen.Invalidate();
 		}
 		#endregion
@@ -3586,7 +3588,7 @@ namespace Kinovea.ScreenManager
 		private void PanelCenter_Resize(object sender, EventArgs e)
 		{
 			StretchSqueezeSurface();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -3665,7 +3667,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			UpdateFramesMarkers();
-			pbSurfaceScreen.Invalidate(); // Because of trajectories with keyframes labels.
+			DoInvalidate(); // Because of trajectories with keyframes labels.
 		}
 		private void SetupDefaultThumbBox(UserControl _box)
 		{
@@ -3761,7 +3763,7 @@ namespace Kinovea.ScreenManager
 			// Update thumb boxes.
 			EnableDisableKeyframes();
 
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 
 		}
 		private void GotoNextKeyframe()
@@ -3901,7 +3903,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.RemoveAt(_iKeyframeIndex);
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 			OrganizeKeyframes();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		public void UpdateKeyframes()
 		{
@@ -4115,12 +4117,12 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
 					btnMagnifier.Image = Resources.magnifier2;
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 				}
 				else
 				{
 					DisableMagnifier();
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 				}
 			}
 		}
@@ -4136,7 +4138,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
 			m_ActiveTool = DrawingToolType.Pointer;
 			OnPoke();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void UpdateCursor()
 		{
@@ -4257,7 +4259,7 @@ namespace Kinovea.ScreenManager
 				LocateForm(fcd);
 				fcd.ShowDialog();
 				fcd.Dispose();
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		private void mnuConfigureFading_Click(object sender, EventArgs e)
@@ -4268,7 +4270,7 @@ namespace Kinovea.ScreenManager
 				LocateForm(fcf);
 				fcf.ShowDialog();
 				fcf.Dispose();
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		private void mnuConfigureOpacity_Click(object sender, EventArgs e)
@@ -4279,7 +4281,7 @@ namespace Kinovea.ScreenManager
 				LocateForm(fco);
 				fco.ShowDialog();
 				fco.Dispose();
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		private void mnuDirectTrack_Click(object sender, EventArgs e)
@@ -4300,7 +4302,7 @@ namespace Kinovea.ScreenManager
 			m_ActiveTool = DrawingToolType.Pointer;
 			SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 			
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuTrackTrajectory_Click(object sender, EventArgs e)
 		{
@@ -4342,7 +4344,7 @@ namespace Kinovea.ScreenManager
 					SetCursor(m_DrawingTools[(int)DrawingToolType.Pointer].GetCursor(Color.Empty, 0));
 				}
 			}
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuInvertAngle_Click(object sender, EventArgs e)
 		{
@@ -4352,7 +4354,7 @@ namespace Kinovea.ScreenManager
 				if(da != null)
 				{
 					da.InvertAngle();
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 				}	
 			}
 		}
@@ -4380,7 +4382,7 @@ namespace Kinovea.ScreenManager
 					mnuShowMeasure.Checked = !mnuShowMeasure.Checked;
 					line.ShowMeasure = mnuShowMeasure.Checked;
 					m_bMeasuring = mnuShowMeasure.Checked;
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 				}
 			}
 		}
@@ -4395,7 +4397,7 @@ namespace Kinovea.ScreenManager
 					mnuShowCoordinates.Checked = !mnuShowCoordinates.Checked;
 					cross.ShowCoordinates = mnuShowCoordinates.Checked;
 					m_bCrossCoordinates = mnuShowCoordinates.Checked;
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 				}
 			}
 		}
@@ -4427,7 +4429,7 @@ namespace Kinovea.ScreenManager
 						fcm.Dispose();
 						
 						m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-						pbSurfaceScreen.Invalidate();
+						DoInvalidate();
 						
 						if (dp.ActivateKeyboardHandler != null)
 						{
@@ -4448,7 +4450,7 @@ namespace Kinovea.ScreenManager
 				IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
 				CommandManager cm = CommandManager.Instance();
 				cm.LaunchUndoableCommand(cdd);
-				pbSurfaceScreen.Invalidate();
+				DoInvalidate();
 			}
 		}
 		#endregion
@@ -4457,7 +4459,7 @@ namespace Kinovea.ScreenManager
 		private void mnuStopTracking_Click(object sender, EventArgs e)
 		{
 			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].StopTracking();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuDeleteEndOfTrajectory_Click(object sender, EventArgs e)
 		{
@@ -4465,13 +4467,13 @@ namespace Kinovea.ScreenManager
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cdeot);
 
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 			UpdateFramesMarkers();
 		}
 		private void mnuRestartTracking_Click(object sender, EventArgs e)
 		{
 			m_FrameServer.Metadata.Tracks[m_FrameServer.Metadata.SelectedTrack].RestartTracking();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuDeleteTrajectory_Click(object sender, EventArgs e)
 		{
@@ -4602,7 +4604,7 @@ namespace Kinovea.ScreenManager
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
 			
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuChronoDelete_Click(object sender, EventArgs e)
 		{
@@ -4625,7 +4627,7 @@ namespace Kinovea.ScreenManager
 			LocateForm(fcc);
 			fcc.ShowDialog();
 			fcc.Dispose();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 
 			if (dp.ActivateKeyboardHandler != null)
 			{
@@ -4638,7 +4640,7 @@ namespace Kinovea.ScreenManager
 		private void mnuMagnifierQuit_Click(object sender, EventArgs e)
 		{
 			DisableMagnifier();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuMagnifierDirect_Click(object sender, EventArgs e)
 		{
@@ -4649,7 +4651,7 @@ namespace Kinovea.ScreenManager
 			DisableMagnifier();
 			m_FrameServer.Metadata.ResizeFinished();
 			ToastZoom();
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuMagnifier150_Click(object sender, EventArgs e)
 		{
@@ -4676,7 +4678,7 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.Magnifier.ZoomFactor = _fValue;
 			UncheckMagnifierMenus();
 			_menu.Checked = true;
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void UncheckMagnifierMenus()
 		{
@@ -4710,7 +4712,7 @@ namespace Kinovea.ScreenManager
 				fcg.Dispose();
 			}
 
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void mnuGridsHide_Click(object sender, EventArgs e)
 		{
@@ -4725,7 +4727,7 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.Metadata.Grid.Visible = false;
 			}
 
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 
 			// Triggers an update to the main menu.
 			OnPoke();
@@ -4765,7 +4767,7 @@ namespace Kinovea.ScreenManager
 				}	
 			}
 			
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void DecreaseDirectZoom()
 		{
@@ -4790,7 +4792,7 @@ namespace Kinovea.ScreenManager
 				ReportForSyncMerge();
 			}
 			
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void RelocateDirectZoom()
 		{
@@ -5243,7 +5245,7 @@ namespace Kinovea.ScreenManager
 				ActivateKeyframe(m_iCurrentPosition, false);
 			}
 
-			pbSurfaceScreen.Invalidate();
+			DoInvalidate();
 		}
 		private void btnVideo_Click(object sender, EventArgs e)
 		{
