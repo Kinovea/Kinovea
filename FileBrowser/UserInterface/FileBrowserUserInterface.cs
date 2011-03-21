@@ -200,6 +200,28 @@ namespace Kinovea.FileBrowser
 			// ToolTips
 			ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
 			ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
+		}		
+		public void ReloadShortcuts()
+		{
+			// Refresh the folder tree with data stored in prefs.
+			ArrayList shortcuts = new ArrayList();
+			List<ShortcutFolder> scuts = m_PreferencesManager.ShortcutFolders;
+			
+			// Sort by last folder name.
+			scuts.Sort();
+			
+			foreach(ShortcutFolder sf in scuts)
+			{
+				if(Directory.Exists(sf.Location))
+					shortcuts.Add(sf.Location);
+			}
+			
+			etShortcuts.SetShortcuts(shortcuts);
+			etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
+		}
+		public void ResetShortcutList()
+		{
+			lvShortcuts.Clear();
 		}
 		public void Closing()
 		{
@@ -228,7 +250,6 @@ namespace Kinovea.FileBrowser
 			{
 				// We don't maintain synchronization with the Shortcuts tab. 
 				ResetShortcutList();
-				
 				UpdateFileList(m_CurrentExptreeItem, lvExplorer, true);				
 			}
 		}
@@ -281,24 +302,6 @@ namespace Kinovea.FileBrowser
 		#region Shortcuts tab
 		
 		#region Shortcuts Handling
-		private void ReloadShortcuts()
-		{
-			// Refresh the folder tree with data stored in prefs.
-			ArrayList shortcuts = new ArrayList();
-			List<ShortcutFolder> scuts = m_PreferencesManager.ShortcutFolders;
-			
-			// Sort by last folder name.
-			scuts.Sort();
-			
-			foreach(ShortcutFolder sf in scuts)
-			{
-				if(Directory.Exists(sf.Location))
-					shortcuts.Add(sf.Location);
-			}
-			
-			etShortcuts.SetShortcuts(shortcuts);
-			etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
-		}
 		private void btnAddShortcut_Click(object sender, EventArgs e)
 		{
 			AddShortcut();
@@ -323,13 +326,10 @@ namespace Kinovea.FileBrowser
 				m_PreferencesManager.ShortcutFolders.Add(sf);
 				m_PreferencesManager.Export();
 				ReloadShortcuts();
-				SelectShortcut(sf);
 			}
 		}
 		private void DeleteSelectedShortcut()
 		{
-			// TODO: Ask for confirmation, or better make an undoable command.
-			
 			if(m_CurrentShortcutItem != null)
 			{
 				// Find and delete the shortcut.
@@ -337,20 +337,13 @@ namespace Kinovea.FileBrowser
 				{
 					if(sf.Location == m_CurrentShortcutItem.Path)
 					{
-						m_PreferencesManager.ShortcutFolders.Remove(sf);
-									
-						// Refresh the list.
-						ReloadShortcuts();
-						ResetShortcutList();
-						
+						IUndoableCommand cds = new CommandDeleteShortcut(this, sf);
+				        CommandManager cm = CommandManager.Instance();
+				        cm.LaunchUndoableCommand(cds);
 						break;
 					}
 				}	
 			}
-		}
-		private void ResetShortcutList()
-		{
-			lvShortcuts.Clear();
 		}
 		#endregion
 		
@@ -435,12 +428,6 @@ namespace Kinovea.FileBrowser
 				}
 			}	
         }
-        private void SelectShortcut(ShortcutFolder _shortcut)
-		{
-        	// Selected a particular node.
-        	// Might be used at startup and after adding a shortcut.
-        	// TODO
-		}
         #endregion
 		
 		#region ListView

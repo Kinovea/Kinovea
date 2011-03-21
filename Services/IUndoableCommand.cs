@@ -25,6 +25,9 @@ namespace Kinovea.Services
 {
     public interface IUndoableCommand : ICommand
     {
+    	/// <summary>
+    	/// Code to revert the action of the command.
+    	/// </summary>
         void Unexecute();
     }
 }
