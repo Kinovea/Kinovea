@@ -266,29 +266,32 @@ namespace Kinovea.ScreenManager
 			//log.Debug(String.Format("Periodic check. grabbed:{0}, dropped:{1}", m_iFramesGrabbed, m_iFrameDropped));
 			m_FrameGrabber.CheckDeviceConnection();
 			
-			// Estimate frame rate.
-			if(m_iFramesGrabbed > 0)
+			if(m_FrameGrabber.IsGrabbing)
 			{
-				double fEstimatedInterval = (double)CaptureScreen.HeartBeat / (double)m_iFramesGrabbed;
-				if(m_fEstimatedInterval == 0 && m_FrameGrabber.SelectedCapability.Framerate == 0)
+				// Estimate frame rate.
+				if(m_iFramesGrabbed > 0)
 				{
-					// We didn't have a framerate until now and device doesn't advertise any. 
-					// This happens for network camera for example, we use the estimated one to init buffer.
+					double fEstimatedInterval = (double)CaptureScreen.HeartBeat / (double)m_iFramesGrabbed;
+					if(m_fEstimatedInterval == 0 && m_FrameGrabber.SelectedCapability.Framerate == 0)
+					{
+						// We didn't have a framerate until now and device doesn't advertise any. 
+						// This happens for network camera for example, we use the estimated one to init buffer.
+						
+					}
+					m_fEstimatedInterval = fEstimatedInterval;
 					
 				}
-				m_fEstimatedInterval = fEstimatedInterval;
+				else
+				{
+					m_fEstimatedInterval = 0;
+				}
 				
+				m_iFramesGrabbed = 0;
+				m_iFrameDropped = 0;
+				
+				// update status screen (for buffer fill percentage.)
+				m_Container.DoUpdateStatusBar();
 			}
-			else
-			{
-				m_fEstimatedInterval = 0;
-			}
-			
-			m_iFramesGrabbed = 0;
-			m_iFrameDropped = 0;
-			
-			// update status screen (for buffer fill percentage.)
-			m_Container.DoUpdateStatusBar();
 		}
 		public void StartGrabbing()
 		{
