@@ -61,6 +61,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuRedo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuView = new ToolStripMenuItem();
         public ToolStripMenuItem mnuToggleFileExplorer = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuToolbar = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
@@ -93,6 +94,9 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
 
+        // Toolbar
+        public ToolStripButton toolOpenFile = new ToolStripButton();
+        
         // Status
         private ToolStripStatusLabel stLabel = new ToolStripStatusLabel();
 
@@ -182,21 +186,17 @@ namespace Kinovea.Root
         }
         public void ExtendMenu(ToolStrip _menu)
         {
-            // Each module must merge its menu into the root one.
-
             _menu.AllowMerge = true;
-
             GetModuleMenus(_menu);
             GetSubModulesMenus(_menu);
 
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
-            // Nothing at this level.
+        	_toolbar.AllowMerge = true;
+        	GetModuleToolBar(_toolbar);
             GetSubModulesToolBars(_toolbar);
-
-			// TODO: add tool buttons for screens dispositions.
-            _toolbar.Visible = false;
+            _toolbar.Visible = true;
         }
         public void ExtendStatusBar(ToolStrip _statusbar)
         {
@@ -205,8 +205,6 @@ namespace Kinovea.Root
                 // This level
                 stLabel = new ToolStripStatusLabel();
                 _statusbar.Items.AddRange(new ToolStripItem[] { stLabel });
-            
-                // TODO: get statusbar from other modules when they have some.
             }
         }
         public void ExtendUI()
@@ -429,9 +427,12 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
             mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
 
-            ToolStripSeparator mnuSepView = new ToolStripSeparator();
-
-            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuSepView });
+            mnuToolbar.Text = "Toolbar";
+            mnuToolbar.Checked = true;
+            mnuToolbar.Click += new EventHandler(mnuToolbar_OnClick);
+			mnuToolbar.Visible = false;
+			
+            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuToolbar, new ToolStripSeparator() });
             #endregion
 
             #region Image
@@ -634,6 +635,16 @@ namespace Kinovea.Root
             Updater.ExtendMenu(_menu);
             ScreenManager.ExtendMenu(_menu);
         }
+        private void GetModuleToolBar(ToolStrip _toolbar)
+        {
+        	// Open.
+        	toolOpenFile.DisplayStyle          = ToolStripItemDisplayStyle.Image;
+            toolOpenFile.Image                 = Properties.Resources.folder;
+            toolOpenFile.ToolTipText           = RootLang.mnuOpenFile;
+            toolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
+            
+            _toolbar.Items.Add(toolOpenFile);
+        }
         private void GetSubModulesToolBars(ToolStrip _toolbar)
         {
             FileBrowser.ExtendToolBar(_toolbar);
@@ -770,6 +781,11 @@ namespace Kinovea.Root
             {
                 MainWindow.SupervisorControl.CollapseExplorer();
             }
+        }
+        private void mnuToolbar_OnClick(object sender, EventArgs e)
+        {
+        	MainWindow.toolStrip.Visible = !MainWindow.toolStrip.Visible;
+        	mnuToolbar.Checked = MainWindow.toolStrip.Visible;
         }
         #endregion
 

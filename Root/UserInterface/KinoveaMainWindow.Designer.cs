@@ -49,10 +49,9 @@ namespace Kinovea.Root
         	// toolStrip
         	// 
         	this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-        	this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
         	resources.ApplyResources(this.toolStrip, "toolStrip");
         	this.toolStrip.Name = "toolStrip";
-        	this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+        	this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
         	// 
         	// KinoveaMainWindow
         	// 
