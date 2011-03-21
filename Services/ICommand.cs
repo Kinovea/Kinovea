@@ -25,11 +25,17 @@ namespace Kinovea.Services
 {
     public interface ICommand
     {
+    	/// <summary>
+    	/// The name of the command as it will appear in the undo menu.
+    	/// </summary>
         string FriendlyName
         {
             get;
         }
 
+        /// <summary>
+        /// Code to perform (or perform again in the case of redo) the command.
+        /// </summary>
         void Execute();
     }
 }

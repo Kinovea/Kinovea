@@ -75,6 +75,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandDeleteShortcut.cs" />
     <Compile Include="FileBrowser.cs" />
     <Compile Include="UserInterface\FileBrowserUserInterface.cs">
       <SubType>UserControl</SubType>
@@ -105,6 +106,7 @@
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Services</Name>
     </ProjectReference>
+    <Folder Include="Commands" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\FileBrowserLang.de.resx">
