@@ -138,6 +138,15 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
         #endregion
 
+        #region Toolbar
+        public ToolStripButton toolSave = new ToolStripButton();
+        public ToolStripButton toolOnePlayer = new ToolStripButton();
+        public ToolStripButton toolTwoPlayers = new ToolStripButton();
+        public ToolStripButton toolOneCapture = new ToolStripButton();
+        public ToolStripButton toolTwoCaptures = new ToolStripButton();
+        public ToolStripButton toolTwoMixed = new ToolStripButton();
+        #endregion
+        
         #region Synchronization
         private MMTimerEventHandler m_DelegateMMTimerEventHandler;
         
@@ -370,7 +379,7 @@ namespace Kinovea.ScreenManager
             ToolStripMenuItem mnuTwoCaptures = new ToolStripMenuItem();
             mnuTwoCaptures.Tag = new ItemResourceInfo(resManager, "mnuTwoCaptures");
             mnuTwoCaptures.Text = ((ItemResourceInfo)mnuTwoCaptures.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoCaptures.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuTwoCaptures.Image = Properties.Resources.dualcapture;
+            mnuTwoCaptures.Image = Properties.Resources.dualcapture2;
             mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
             mnuTwoCaptures.MergeAction = MergeAction.Append;
 			            
@@ -378,7 +387,7 @@ namespace Kinovea.ScreenManager
             ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
             mnuTwoMixed.Tag = new ItemResourceInfo(resManager, "mnuTwoMixed");
             mnuTwoMixed.Text = ((ItemResourceInfo)mnuTwoMixed.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoMixed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuTwoMixed.Image = Properties.Resources.dualmixed2;
+            mnuTwoMixed.Image = Properties.Resources.dualmixed3;
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
                         
@@ -555,65 +564,46 @@ namespace Kinovea.ScreenManager
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
-            // TODO: Expose workspaces presets as buttons.
-
-            //ToolStrip toolbar = new ToolStrip();
-
-            /* Déroulement:
-             * 1. Instanciation de l'item de menu.
-             * 2. Association du texte du menu avec une resource.
-             * 3. Affectation du contenu de la resource dans le texte.
-             * 4. Affectation d'un Event Handler pour gérer l'action à lancer.
-             * 5. Définition du mode d'insertion dans le menu général.
-             * 6. Détermination de l'index d'insertion dans le menu général.
-             * 7. Organisation des sous menus entre eux et avec le parent direct.
-             * Note : les menus intraduisibles doivent avoir un .Tag == null.
-            */
-
-
-            /*
-            ToolStripButton toolOnePlayer = new ToolStripButton();
-            toolOnePlayer.Tag = new ItemResourceInfo(resManager, "toolOnePlayer", "mnuMonoPlayer");
-            toolOnePlayer.Name                  = "toolOnePlayer";
-            toolOnePlayer.DisplayStyle          = ToolStripItemDisplayStyle.Image;
-            toolOnePlayer.Image                 = (System.Drawing.Image)(Kinovea.ScreenManager.Properties.Resources.MonoPlayer3);
-            toolOnePlayer.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolOnePlayer.AutoSize              = true;
-            toolOnePlayer.ToolTipText           = ((ItemResourceInfo)toolOnePlayer.Tag).resManager.GetString(((ItemResourceInfo)toolOnePlayer.Tag).strToolTipText, Thread.CurrentThread.CurrentUICulture); ;
-            toolOnePlayer.Click += new EventHandler(mnuMonoPlayerOnClick);
-
+			// Save
+			toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolSave.Image = Properties.Resources.filesave;
+           toolSave.Click += new EventHandler(mnuSaveOnClick);
+        	
+        	// Workspace presets.
+        	
+            toolOnePlayer.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolOnePlayer.Image = Properties.Resources.television;
+            toolOnePlayer.Click += new EventHandler(mnuOnePlayerOnClick);
             
-            ToolStripButton toolTwoPlayers = new ToolStripButton();
-            toolTwoPlayers.Tag = new ItemResourceInfo(resManager, "toolTwoPlayers", "mnuDoublePlayer");
-            toolTwoPlayers.Name = "toolTwoPlayers";
-            //toolTwoPlayers.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText; 
             toolTwoPlayers.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            //toolTwoPlayers.Text = ((ItemResourceInfo)toolTwoPlayers.Tag).resManager.GetString(((ItemResourceInfo)toolTwoPlayers.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            //toolTwoPlayers.TextAlign = ContentAlignment.BottomCenter;
-            //toolTwoPlayers.TextImageRelation = TextImageRelation.ImageAboveText;
-            toolTwoPlayers.Image = (System.Drawing.Image)(Kinovea.ScreenManager.Properties.Resources.DualPlayer2);
-            toolTwoPlayers.ImageTransparentColor = System.Drawing.Color.Magenta;
-            toolTwoPlayers.AutoSize = true;
-            toolTwoPlayers.ToolTipText = ((ItemResourceInfo)toolTwoPlayers.Tag).resManager.GetString(((ItemResourceInfo)toolTwoPlayers.Tag).strToolTipText, Thread.CurrentThread.CurrentUICulture); ;
-            toolTwoPlayers.Click += new EventHandler(mnuDoublePlayerOnClick);
+            toolTwoPlayers.Image = Properties.Resources.dualplayback;
+            toolTwoPlayers.Click += new EventHandler(mnuTwoPlayersOnClick);
             
-
-
-
-            //Organisation de la Toolbar
-            ToolStripItem[] allButtons = new ToolStripItem[] { toolOnePlayer, toolTwoPlayers };
-            toolbar.Items.AddRange(allButtons);
+            toolOneCapture.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolOneCapture.Image = Properties.Resources.camera_video;
+            toolOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
             
-            toolbar.AllowMerge = true;
-
-            toolStrips.Add(toolbar);
-            */
-
-
-
-            // No sub modules.
-
-
+            toolTwoCaptures.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolTwoCaptures.Image = Properties.Resources.dualcapture2;
+            toolTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
+            
+            toolTwoMixed.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolTwoMixed.Image = Properties.Resources.dualmixed3;
+            toolTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
+            
+            ToolStrip ts = new ToolStrip(new ToolStripItem[] { 
+                                         	toolSave,
+                                         	new ToolStripSeparator(),
+                                         	toolOnePlayer,
+                                         	toolTwoPlayers,
+                                         	new ToolStripSeparator(),
+                                         	toolOneCapture, 
+                                         	toolTwoCaptures, 
+                                         	new ToolStripSeparator(),
+                                         	toolTwoMixed });
+            
+            ToolStripManager.Merge(ts, _toolbar);
+            
         }
         public void ExtendStatusBar(ToolStrip _statusbar)
         {
@@ -628,6 +618,7 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Refresh UI Culture at ScreenManager level.");
             OrganizeMenus();
+            ReloadToolbarCulture();
             UpdateStatusBar();
 
             ((ScreenManagerUserInterface)this.UI).RefreshUICulture();
@@ -1492,6 +1483,7 @@ namespace Kinovea.ScreenManager
                     
                 	// File
                     mnuSave.Enabled = true;
+                    toolSave.Enabled = true;
                    	mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
@@ -1524,6 +1516,7 @@ namespace Kinovea.ScreenManager
                     
              		// File
                     mnuSave.Enabled = false;
+                    toolSave.Enabled = false;
                    	mnuExportSpreadsheet.Enabled = false;
                     mnuExportODF.Enabled = false;
                     mnuExportMSXML.Enabled = false;
@@ -1566,6 +1559,7 @@ namespace Kinovea.ScreenManager
             {
             	// File
                 mnuSave.Enabled = false;
+                toolSave.Enabled = false;
             	mnuLoadAnalysis.Enabled = false;
 				mnuExportSpreadsheet.Enabled = false;
                 mnuExportODF.Enabled = false;
@@ -1840,7 +1834,18 @@ namespace Kinovea.ScreenManager
         	AddImportImageMenu(mnuSVGTools);
         	AddSvgSubMenus(m_SvgPath, mnuSVGTools);
         }
-        
+        #endregion
+
+        #region Toolbar
+        private void ReloadToolbarCulture()
+        {
+        	toolSave.ToolTipText = ScreenManagerLang.mnuSave;
+            toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
+            toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
+            toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;
+            toolTwoCaptures.ToolTipText = ScreenManagerLang.mnuTwoCaptures;
+            toolTwoMixed.ToolTipText = ScreenManagerLang.mnuTwoMixed;	
+        }
         #endregion
         
         #region Side by side saving
