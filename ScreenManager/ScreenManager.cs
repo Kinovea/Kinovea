@@ -1240,21 +1240,23 @@ namespace Kinovea.ScreenManager
                     	// All the remaining keystrokes impact both screen, 
                     	// even if the common controls aren't visible.
                     	//-------------------------------------------------
-                        case Keys.PageUp:
-                    	case Keys.PageDown:
-                            {
-                    			// Change active screen.
-                    			if(!bThumbnailsViewerVisible)
-                    			{
-                    				if(m_bSynching)
-                               		{
-                    					ActivateOtherScreen();
-                    					bWasHandled = true;
-                    				}
-                    			}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                    	case Keys.Tab:
+                    	    {
+                    			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+								{
+	                    			// Change active screen.
+	                    			if(!bThumbnailsViewerVisible)
+	                    			{
+	                    				if(screenList.Count == 2)
+	                               		{
+	                    					ActivateOtherScreen();
+	                    					bWasHandled = true;
+	                    				}
+	                    			}
+	                    			else
+	                    			{
+	                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+	                    			}
                     			}
                     			break;
                     		}
