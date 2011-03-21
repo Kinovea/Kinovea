@@ -1056,7 +1056,7 @@ namespace Kinovea.ScreenManager
 					dlgSave.RestoreDirectory = true;
 					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
 					dlgSave.FilterIndex = 1;
-					// TODO: suggest file name.
+					dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
 					
 					// Launch the dialog and save image.
 					if (dlgSave.ShowDialog() == DialogResult.OK)
@@ -1092,6 +1092,8 @@ namespace Kinovea.ScreenManager
 		            dlgSave.RestoreDirectory = true;
 		            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
 		            dlgSave.FilterIndex = 1;
+		            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
+					
        				if (dlgSave.ShowDialog() == DialogResult.OK)
 		            {
 	                	int iCurrentFrame = m_iCurrentFrame;

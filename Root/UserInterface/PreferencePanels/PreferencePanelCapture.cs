@@ -255,7 +255,6 @@ namespace Kinovea.Root
 		private void UpdateSample()
 		{
 			string sample = m_filenameHelper.ConvertPattern(tbPattern.Text, m_iCounter);
-			// TODO: check for invalid chars.
 			lblSample.Text = sample;
 			m_Pattern = tbPattern.Text;
 		}
