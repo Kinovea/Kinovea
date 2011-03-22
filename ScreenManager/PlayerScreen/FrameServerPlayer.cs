@@ -52,7 +52,15 @@ namespace Kinovea.ScreenManager
 		}
 		public bool Loaded
 		{
-			get { return m_VideoFile.Loaded;}
+			get 
+			{ 
+				bool loaded = false;
+				if(m_VideoFile != null && m_VideoFile.Loaded)
+				{
+					loaded = true;
+				}
+				return loaded;
+			}
 		}
 		#endregion
 		
