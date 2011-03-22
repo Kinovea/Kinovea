@@ -1190,8 +1190,6 @@ namespace Kinovea.ScreenManager
                     	case Keys.Escape:
                     	case Keys.F6:
                     	case Keys.F11:
-                    	case Keys.Down:
-                    	case Keys.Up:
                             {
                     			//---------------------------------------------------
                     			// These keystrokes impact each screen independently.
@@ -1209,6 +1207,25 @@ namespace Kinovea.ScreenManager
                     			}
                                 break;
                             }
+                    	case Keys.Down:
+                    	case Keys.Up:
+                    		{
+                    			//-----------------------------------------------------------------------
+                    			// These keystrokes impact only one screen, because it will automatically 
+                    			// trigger the same change in the other screen.
+                    			//------------------------------------------------------------------------
+                    			if(!bThumbnailsViewerVisible)
+                    			{
+                    				if(screenList.Count > 0)
+                    				{
+                    					bWasHandled = screenList[0].OnKeyPress(keyCode);
+                    				}
+                    			}
+                    			else
+                    			{
+                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+                    			}
+                                break;}
                         case Keys.Space:
                     	case Keys.Return:
                     	case Keys.Left:
