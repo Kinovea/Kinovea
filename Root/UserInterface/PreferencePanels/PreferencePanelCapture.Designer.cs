@@ -81,15 +81,21 @@ namespace Kinovea.Root
 			this.tbPattern = new System.Windows.Forms.TextBox();
 			this.rbPattern = new System.Windows.Forms.RadioButton();
 			this.rbFreeText = new System.Windows.Forms.RadioButton();
+			this.tabMemory = new System.Windows.Forms.TabPage();
+			this.lblMemoryBuffer = new System.Windows.Forms.Label();
+			this.trkMemoryBuffer = new System.Windows.Forms.TrackBar();
 			this.tabSubPages.SuspendLayout();
 			this.tabGeneral.SuspendLayout();
 			this.tabNaming.SuspendLayout();
+			this.tabMemory.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabSubPages
 			// 
 			this.tabSubPages.Controls.Add(this.tabGeneral);
 			this.tabSubPages.Controls.Add(this.tabNaming);
+			this.tabSubPages.Controls.Add(this.tabMemory);
 			this.tabSubPages.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabSubPages.Location = new System.Drawing.Point(0, 0);
 			this.tabSubPages.Name = "tabSubPages";
@@ -126,7 +132,7 @@ namespace Kinovea.Root
 			this.btnBrowseVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
 			this.btnBrowseVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnBrowseVideo.Image = global::Kinovea.Root.Properties.Resources.folder;
-			this.btnBrowseVideo.Location = new System.Drawing.Point(375, 56);
+			this.btnBrowseVideo.Location = new System.Drawing.Point(375, 54);
 			this.btnBrowseVideo.MinimumSize = new System.Drawing.Size(25, 25);
 			this.btnBrowseVideo.Name = "btnBrowseVideo";
 			this.btnBrowseVideo.Size = new System.Drawing.Size(30, 25);
@@ -144,7 +150,7 @@ namespace Kinovea.Root
 			this.btnBrowseImage.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
 			this.btnBrowseImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnBrowseImage.Image = global::Kinovea.Root.Properties.Resources.folder;
-			this.btnBrowseImage.Location = new System.Drawing.Point(375, 27);
+			this.btnBrowseImage.Location = new System.Drawing.Point(375, 25);
 			this.btnBrowseImage.MinimumSize = new System.Drawing.Size(25, 25);
 			this.btnBrowseImage.Name = "btnBrowseImage";
 			this.btnBrowseImage.Size = new System.Drawing.Size(30, 25);
@@ -173,7 +179,7 @@ namespace Kinovea.Root
 			// 
 			this.cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbImageFormat.FormattingEnabled = true;
-			this.cmbImageFormat.Location = new System.Drawing.Point(127, 100);
+			this.cmbImageFormat.Location = new System.Drawing.Point(127, 105);
 			this.cmbImageFormat.Name = "cmbImageFormat";
 			this.cmbImageFormat.Size = new System.Drawing.Size(52, 21);
 			this.cmbImageFormat.TabIndex = 5;
@@ -183,7 +189,7 @@ namespace Kinovea.Root
 			// 
 			this.cmbVideoFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbVideoFormat.FormattingEnabled = true;
-			this.cmbVideoFormat.Location = new System.Drawing.Point(127, 132);
+			this.cmbVideoFormat.Location = new System.Drawing.Point(127, 137);
 			this.cmbVideoFormat.Name = "cmbVideoFormat";
 			this.cmbVideoFormat.Size = new System.Drawing.Size(52, 21);
 			this.cmbVideoFormat.TabIndex = 4;
@@ -191,7 +197,7 @@ namespace Kinovea.Root
 			// 
 			// lblVideoFormat
 			// 
-			this.lblVideoFormat.Location = new System.Drawing.Point(16, 135);
+			this.lblVideoFormat.Location = new System.Drawing.Point(16, 140);
 			this.lblVideoFormat.Name = "lblVideoFormat";
 			this.lblVideoFormat.Size = new System.Drawing.Size(94, 17);
 			this.lblVideoFormat.TabIndex = 3;
@@ -199,7 +205,7 @@ namespace Kinovea.Root
 			// 
 			// lblImageFormat
 			// 
-			this.lblImageFormat.Location = new System.Drawing.Point(16, 103);
+			this.lblImageFormat.Location = new System.Drawing.Point(16, 108);
 			this.lblImageFormat.Name = "lblImageFormat";
 			this.lblImageFormat.Size = new System.Drawing.Size(94, 17);
 			this.lblImageFormat.TabIndex = 2;
@@ -493,6 +499,38 @@ namespace Kinovea.Root
 			this.rbFreeText.UseVisualStyleBackColor = true;
 			this.rbFreeText.CheckedChanged += new System.EventHandler(this.radio_CheckedChanged);
 			// 
+			// tabMemory
+			// 
+			this.tabMemory.Controls.Add(this.lblMemoryBuffer);
+			this.tabMemory.Controls.Add(this.trkMemoryBuffer);
+			this.tabMemory.Location = new System.Drawing.Point(4, 22);
+			this.tabMemory.Name = "tabMemory";
+			this.tabMemory.Size = new System.Drawing.Size(424, 210);
+			this.tabMemory.TabIndex = 2;
+			this.tabMemory.Text = "Memory";
+			this.tabMemory.UseVisualStyleBackColor = true;
+			// 
+			// lblMemoryBuffer
+			// 
+			this.lblMemoryBuffer.AutoSize = true;
+			this.lblMemoryBuffer.Location = new System.Drawing.Point(15, 30);
+			this.lblMemoryBuffer.Name = "lblMemoryBuffer";
+			this.lblMemoryBuffer.Size = new System.Drawing.Size(221, 13);
+			this.lblMemoryBuffer.TabIndex = 36;
+			this.lblMemoryBuffer.Text = "Memory allocated for capture buffers : {0} MB";
+			// 
+			// trkMemoryBuffer
+			// 
+			this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
+			this.trkMemoryBuffer.Maximum = 1024;
+			this.trkMemoryBuffer.Minimum = 16;
+			this.trkMemoryBuffer.Name = "trkMemoryBuffer";
+			this.trkMemoryBuffer.Size = new System.Drawing.Size(386, 45);
+			this.trkMemoryBuffer.TabIndex = 38;
+			this.trkMemoryBuffer.TickFrequency = 50;
+			this.trkMemoryBuffer.Value = 16;
+			this.trkMemoryBuffer.ValueChanged += new System.EventHandler(this.trkMemoryBuffer_ValueChanged);
+			// 
 			// PreferencePanelCapture
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,8 +543,14 @@ namespace Kinovea.Root
 			this.tabGeneral.PerformLayout();
 			this.tabNaming.ResumeLayout(false);
 			this.tabNaming.PerformLayout();
+			this.tabMemory.ResumeLayout(false);
+			this.tabMemory.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblMemoryBuffer;
+		private System.Windows.Forms.TrackBar trkMemoryBuffer;
+		private System.Windows.Forms.TabPage tabMemory;
 		private System.Windows.Forms.Label lblVideoFormat;
 		private System.Windows.Forms.Label lblImageFormat;
 		private System.Windows.Forms.Label lblVideoDirectory;

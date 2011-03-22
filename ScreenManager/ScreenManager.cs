@@ -708,6 +708,7 @@ namespace Kinovea.ScreenManager
                 mnuCloseFile2OnClick(null, EventArgs.Empty);
             }
             
+            UpdateCaptureBuffers();
             PrepareSync(false);
         }
         public void Screen_UpdateStatusBarAsked(AbstractScreen _SenderScreen)
@@ -1391,6 +1392,20 @@ namespace Kinovea.ScreenManager
         				((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = true;	
         			}
         			break;
+        	}
+        }
+        private void UpdateCaptureBuffers()
+        {
+        	// The screen list has changed and involve capture screens.
+        	// Update their shared state to trigger a memory buffer reset.
+        	bool shared = screenList.Count == 2;
+        	foreach(AbstractScreen screen in screenList)
+        	{
+        		CaptureScreen capScreen = screen as CaptureScreen;
+        		if(capScreen != null)
+        		{
+        			capScreen.Shared = shared;
+        		}
         	}
         }
         
@@ -2641,6 +2656,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            UpdateCaptureBuffers();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -2739,6 +2755,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            UpdateCaptureBuffers();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -2819,6 +2836,7 @@ namespace Kinovea.ScreenManager
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
             
+            UpdateCaptureBuffers();
             OrganizeCommonControls();
             OrganizeMenus();
         }
@@ -4076,13 +4094,14 @@ namespace Kinovea.ScreenManager
                 // Once we have made such a recall, the Redo menu must be disabled...
                 cm.BlockRedo();
 
+                UpdateCaptureBuffers();
+                
                 // Mettre à jour menus et Status bar
                 UpdateStatusBar();
                 OrganizeCommonControls();
                 OrganizeMenus();
 
                 m_StoredStates.RemoveAt(iLastState);
-
             }
         }
         private void ReinstateScreen(ScreenState _OldScreen, int _iNewPosition, ScreenManagerState _CurrentState)

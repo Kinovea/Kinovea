@@ -82,6 +82,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_FrameGrabber.DeviceName; }
 		}
+		public bool Shared
+		{
+			set {m_bShared = value;}
+		}
 		
 		// Image, Drawings and other screens overlays.
 		public Metadata Metadata
@@ -152,6 +156,7 @@ namespace Kinovea.ScreenManager
 		private Bitmap m_CurrentCaptureBitmap;
 		
 		// General
+		private bool m_bShared;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -484,9 +489,9 @@ namespace Kinovea.ScreenManager
 			
 			return delay;
 		}
-		public void PreferencesUpdated()
+		public void UpdateMemoryCapacity()
 		{
-			m_FrameBuffer.UpdateMemoryCapacity();
+			m_FrameBuffer.UpdateMemoryCapacity(m_bShared);
 		}
 		#endregion
 		

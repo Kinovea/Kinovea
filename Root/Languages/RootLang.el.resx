@@ -94,6 +94,8 @@
    <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"/>
    <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"/>
    <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"/>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"/>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"/>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Ορατό Πάντα</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Απεικόνηση σχεδίων κατά την αναπαραγωγή</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Ενεργοποίηση Επιμονής</value></data>

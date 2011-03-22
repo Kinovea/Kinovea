@@ -43,9 +43,9 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private int m_iCapacity = 50;
+		private int m_iCapacity = 1;
 		private Size m_Size = new Size(640,480);
-		private int m_iWorkingZoneMemory = 256;
+		private int m_iCaptureMemoryBuffer = 16;
 		private Bitmap[] m_Buffer;
 		private int m_iHead; // next spot to read from.
 		private int m_iTail; // next spot to write to.
@@ -151,13 +151,15 @@ namespace Kinovea.ScreenManager
 			ResetBuffer();
 			
 		}
-		public void UpdateMemoryCapacity()
+		public void UpdateMemoryCapacity(bool _bShared)
 		{
 			// This is called when the memory cache size is changed in the preferences.
 			PreferencesManager pm = PreferencesManager.Instance();
-			if(pm.WorkingZoneMemory != m_iWorkingZoneMemory)
+			int iAllocatedMemory = _bShared ? pm.CaptureMemoryBuffer / 2 : pm.CaptureMemoryBuffer;
+			if(iAllocatedMemory != m_iCaptureMemoryBuffer)
 			{
-				m_iWorkingZoneMemory = pm.WorkingZoneMemory;
+				log.DebugFormat("Changing memory capacity from {0} to {1}", m_iCaptureMemoryBuffer, iAllocatedMemory);
+				m_iCaptureMemoryBuffer = iAllocatedMemory;
 				ResetBuffer();
 			}
 		}
@@ -166,9 +168,10 @@ namespace Kinovea.ScreenManager
 		private void ResetBuffer()
 		{
 			// Buffer capacity.
+			log.Debug("Capture buffer reset");
 			int bytesPerFrame = m_Size.Width * m_Size.Height * 3;
-			int capacity = (int)(((double)m_iWorkingZoneMemory * 1048576) / (double)bytesPerFrame);
-			m_iCapacity = capacity > 0 ? capacity : 50;
+			int capacity = (int)(((double)m_iCaptureMemoryBuffer * 1048576) / (double)bytesPerFrame);
+			m_iCapacity = capacity > 0 ? capacity : 1;
 			
 			// Reset the buffer.
 			Clear();

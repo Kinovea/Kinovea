@@ -94,6 +94,8 @@
    <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Seconde</value></data>
    <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Compteur</value></data>
    <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Reset des compteurs</value></data>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Mémoire</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Mémoire allouée pour la mémoire tampon : {0} Mo.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Toujours Visible</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Montrer les dessins pendant la lecture vidéo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activer la persistance</value></data>

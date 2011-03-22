@@ -94,6 +94,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sta Persistentie toe</value></data>

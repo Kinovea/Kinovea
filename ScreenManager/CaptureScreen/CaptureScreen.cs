@@ -91,6 +91,14 @@ namespace Kinovea.ScreenManager
 			get { return m_FrameServer; }
 			set { m_FrameServer = value; }
 		}  
+        public bool Shared
+        {
+        	set 
+        	{
+        		m_FrameServer.Shared = value;
+        		m_FrameServer.UpdateMemoryCapacity();
+        	}
+        }
         public static readonly int HeartBeat = 1000;
         #endregion
 
