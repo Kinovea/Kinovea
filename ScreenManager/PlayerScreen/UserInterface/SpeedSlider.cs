@@ -209,6 +209,21 @@ namespace Kinovea.ScreenManager
         	m_bEnabled = _bEnable;
 			Invalidate();
         }
+        public void ForceValue(int _value)
+        {
+        	// This method is used when the value must be forced, 
+        	// but the internal state of the parent control hasn't been updated.
+        	// It does raise the event back.
+        	m_iValue = _value;
+            if (m_iValue < m_iMinimum) m_iValue = m_iMinimum;
+            if (m_iValue > m_iMaximum) m_iValue = m_iMaximum;
+            UpdateCursorPosition();
+			Invalidate();
+			if (ValueChanged != null)
+            {
+                ValueChanged(this, EventArgs.Empty);
+            }
+        }
         #endregion
         
         #region Event Handlers - User Manipulation

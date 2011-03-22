@@ -135,6 +135,7 @@ namespace Kinovea.ScreenManager
 			{
 				// This happens only in the context of synching 
 				// when the other video changed its speed percentage (user or forced).
+                // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
 				sldrSpeed.Value = value;
 				m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
 				
@@ -2026,25 +2027,20 @@ namespace Kinovea.ScreenManager
 			
 				if (e.KeyCode == Keys.Down)
 				{
-					sldrSpeed.Value = jumpFactor * ((sldrSpeed.Value-1) / jumpFactor);
+					sldrSpeed.ForceValue(jumpFactor * ((sldrSpeed.Value-1) / jumpFactor));
 					e.Handled = true;
 				}
 				else if (e.KeyCode == Keys.Up)
 				{
-					sldrSpeed.Value = jumpFactor * ((sldrSpeed.Value / jumpFactor) + 1);
+					sldrSpeed.ForceValue(jumpFactor * ((sldrSpeed.Value / jumpFactor) + 1));
 					e.Handled = true;
 				}
-				
-				m_iSlowmotionPercentage = sldrSpeed.Value;
-				UpdateSpeedLabel();
 			}
 		}
 		private void lblSpeedTuner_DoubleClick(object sender, EventArgs e)
 		{
 			// Double click on the speed label : Back to 100%
-			sldrSpeed.Value = sldrSpeed.StickyValue;
-			m_iSlowmotionPercentage = sldrSpeed.Value;
-			UpdateSpeedLabel();
+			sldrSpeed.ForceValue(sldrSpeed.StickyValue);
 		}
 		private void UpdateSpeedLabel()
 		{
@@ -2401,8 +2397,6 @@ namespace Kinovea.ScreenManager
 					ShowNextFrame(-1, true);
 				}
 
-				
-				
 				UpdateNavigationCursor();
 				
 				if (m_bShowInfos) { UpdateDebugInfos(); }
@@ -2452,7 +2446,7 @@ namespace Kinovea.ScreenManager
 					m_iFramesToDecode = 0;
 					if (sldrSpeed.Value >= sldrSpeed.Minimum + sldrSpeed.LargeChange)
 					{
-						sldrSpeed.Value -= sldrSpeed.LargeChange;
+						sldrSpeed.ForceValue(sldrSpeed.Value - sldrSpeed.LargeChange);
 					}
 				}
 			}
