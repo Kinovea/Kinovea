@@ -223,6 +223,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory allocated for capture buffers: {0} MB..
+        /// </summary>
+        internal static string dlgPreferences_Capture_lblMemoryBuffer {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_lblMemoryBuffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Minute.
         /// </summary>
         internal static string dlgPreferences_Capture_lblMinute {
@@ -291,6 +300,15 @@ namespace Kinovea.Root.Languages {
         internal static string dlgPreferences_Capture_rbPattern {
             get {
                 return ResourceManager.GetString("dlgPreferences_Capture_rbPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory.
+        /// </summary>
+        internal static string dlgPreferences_Capture_tabMemory {
+            get {
+                return ResourceManager.GetString("dlgPreferences_Capture_tabMemory", resourceCulture);
             }
         }
         

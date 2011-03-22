@@ -58,6 +58,7 @@ namespace Kinovea.Root
 		private string m_Pattern;
 		private bool m_bResetCounter;
 		private long m_iCounter;
+		private int m_iMemoryBuffer;
 		
 		private PreferencesManager m_prefManager;
 		private FilenameHelper m_filenameHelper = new FilenameHelper();
@@ -95,6 +96,7 @@ namespace Kinovea.Root
 			m_bUsePattern = m_prefManager.CaptureUsePattern;
 			m_Pattern = m_prefManager.CapturePattern;
 			m_iCounter = m_prefManager.CaptureImageCounter; // Use the image counter for sample.
+			m_iMemoryBuffer = m_prefManager.CaptureMemoryBuffer;
 		}
 		private void InitPage()
 		{
@@ -135,6 +137,11 @@ namespace Kinovea.Root
 			
 			rbPattern.Checked = m_bUsePattern;
 			rbFreeText.Checked = !m_bUsePattern;
+			
+			// Memory tab
+			tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
+			trkMemoryBuffer.Value = m_iMemoryBuffer;
+			UpdateMemoryLabel();
 		}
 		#endregion
 		
@@ -154,7 +161,7 @@ namespace Kinovea.Root
 		private void SelectSavingDirectory(TextBox _tb)
 		{
 			FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-			folderBrowserDialog.Description = ""; // todo.
+			folderBrowserDialog.Description = ""; // TODO.
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
 
@@ -249,6 +256,14 @@ namespace Kinovea.Root
 		}
 		#endregion
 		
+		#region Tab Memory
+		private void trkMemoryBuffer_ValueChanged(object sender, EventArgs e)
+		{
+			m_iMemoryBuffer = trkMemoryBuffer.Value;
+			UpdateMemoryLabel();
+		}
+		#endregion
+		
 		#endregion
 		
 		#region Private methods
@@ -278,6 +293,10 @@ namespace Kinovea.Root
 			lblSecond.Enabled = _bEnable;
 			lblCounter.Enabled = _bEnable;
 		}
+		private void UpdateMemoryLabel()
+		{
+			lblMemoryBuffer.Text = String.Format(RootLang.dlgPreferences_Capture_lblMemoryBuffer, trkMemoryBuffer.Value);	
+		}
 		#endregion
 		
 		public void CommitChanges()
@@ -294,8 +313,8 @@ namespace Kinovea.Root
 				m_prefManager.CaptureImageCounter = 1;
 				m_prefManager.CaptureVideoCounter = 1;
 			}
+			
+			m_prefManager.CaptureMemoryBuffer = m_iMemoryBuffer;
 		}
-		
-		
 	}
 }

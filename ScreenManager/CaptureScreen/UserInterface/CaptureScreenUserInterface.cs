@@ -265,7 +265,7 @@ namespace Kinovea.ScreenManager
 			// Refresh image to update grids colors, etc.
 			pbSurfaceScreen.Invalidate();
 			
-			m_FrameServer.PreferencesUpdated();
+			m_FrameServer.UpdateMemoryCapacity();
 		}
 		public bool OnKeyPress(Keys _keycode)
 		{

@@ -94,6 +94,8 @@
    
    
    
+   
+   
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visível</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar desenhos quando o vídeo estiver reproduzindo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Habilitar persistência</value></data>

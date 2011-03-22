@@ -62,7 +62,7 @@ namespace Kinovea.Root
 			// 
 			// chkDeinterlace
 			// 
-			this.chkDeinterlace.Location = new System.Drawing.Point(24, 198);
+			this.chkDeinterlace.Location = new System.Drawing.Point(13, 199);
 			this.chkDeinterlace.Name = "chkDeinterlace";
 			this.chkDeinterlace.Size = new System.Drawing.Size(369, 20);
 			this.chkDeinterlace.TabIndex = 23;
@@ -77,7 +77,7 @@ namespace Kinovea.Root
 			this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneSeconds);
 			this.grpSwitchToAnalysis.Controls.Add(this.trkWorkingZoneMemory);
 			this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneMemory);
-			this.grpSwitchToAnalysis.Location = new System.Drawing.Point(24, 20);
+			this.grpSwitchToAnalysis.Location = new System.Drawing.Point(13, 20);
 			this.grpSwitchToAnalysis.Name = "grpSwitchToAnalysis";
 			this.grpSwitchToAnalysis.Size = new System.Drawing.Size(405, 163);
 			this.grpSwitchToAnalysis.TabIndex = 26;

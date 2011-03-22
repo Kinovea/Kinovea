@@ -94,6 +94,8 @@
    <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Second</value></data>
    <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Counter</value></data>
    <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Reset counters</value></data>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memory</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memory allocated for capture buffers: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Always Visible</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Show drawings when video is playing</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Enable persistence</value></data>

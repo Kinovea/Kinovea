@@ -53,7 +53,8 @@ namespace Kinovea.ScreenManager
         public void Execute()
         {
             CaptureScreen screen = new CaptureScreen(m_ScreenManagerKernel);
-            screen.refreshUICulture(); 
+            if(m_ScreenManagerKernel.screenList.Count > 1) screen.Shared = true;
+            screen.refreshUICulture();
             m_ScreenManagerKernel.screenList.Add(screen);
         }
         public void Unexecute()
