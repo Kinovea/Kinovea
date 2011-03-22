@@ -420,6 +420,7 @@ namespace Kinovea.ScreenManager
 						
 						_device.SelectedCapability = selectedCapability;
 						captureDevice.DesiredFrameSize = selectedCapability.FrameSize;
+						captureDevice.DesiredFrameRate = selectedCapability.Framerate;
 						m_FrameSize = selectedCapability.FrameSize;
 						m_FramesInterval = 1000 / (double)selectedCapability.Framerate;
 					}
