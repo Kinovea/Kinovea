@@ -379,7 +379,7 @@ namespace Kinovea.ScreenManager
 			m_DeselectionTimer.Interval = 3000;
 			m_DeselectionTimer.Tick += new EventHandler(DeselectionTimer_OnTick);
 
-			
+			EnableDisableActions(false);
 			//SetupDebugPanel();
 		}
 		#endregion
@@ -425,7 +425,7 @@ namespace Kinovea.ScreenManager
 			EnableDisableSnapshot(_bEnable);
 			EnableDisableDrawingTools(_bEnable);
 			
-			if(_bEnable && m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1)
+			if(_bEnable && m_FrameServer.Loaded && m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1)
 			{
 				// If we are in the special case of a one-frame video, disable playback controls.
 				EnableDisableAllPlayingControls(false);
@@ -5249,19 +5249,22 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnVideo_Click(object sender, EventArgs e)
 		{
-			StopPlaying();
-			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
+			if(m_FrameServer.Loaded)
 			{
-				dp.DeactivateKeyboardHandler();
-			}
-			
-			Save();
-			
-			if (dp.ActivateKeyboardHandler != null)
-			{
-				dp.ActivateKeyboardHandler();
+				StopPlaying();
+				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+				DelegatesPool dp = DelegatesPool.Instance();
+				if (dp.DeactivateKeyboardHandler != null)
+				{
+					dp.DeactivateKeyboardHandler();
+				}
+				
+				Save();
+				
+				if (dp.ActivateKeyboardHandler != null)
+				{
+					dp.ActivateKeyboardHandler();
+				}	
 			}
 		}
 		private void btnDiaporama_Click(object sender, EventArgs e)
