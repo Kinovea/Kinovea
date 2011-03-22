@@ -279,6 +279,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Gå til nøkkelbilde</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Rutenett</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Skjul</value></data>
+   <data name="mnuHome" xml:space="preserve"><value>Utforsk fil</value></data>
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Last inn nøkkelbilde data...</value></data>

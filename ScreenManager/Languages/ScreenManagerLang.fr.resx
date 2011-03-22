@@ -279,6 +279,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Aller à l'Image Clé</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grille</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Masquer</value></data>
+   <data name="mnuHome" xml:space="preserve"><value>Explorateur de Fichiers</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importer une image…</value></data>
    <data name="mnuInvertAngle" xml:space="preserve"><value>Inverser l'angle</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Charger des Données d'Images Clés...</value></data>

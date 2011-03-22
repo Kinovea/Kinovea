@@ -1951,6 +1951,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à File Explorer.
+        /// </summary>
+        internal static string mnuHome {
+            get {
+                return ResourceManager.GetString("mnuHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Import image….
         /// </summary>
         internal static string mnuImportImage {
