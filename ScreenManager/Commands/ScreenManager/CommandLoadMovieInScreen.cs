@@ -201,6 +201,9 @@ namespace Kinovea.ScreenManager
                 				
                             	ICommand caps = new CommandAddPlayerScreen(screenManagerKernel, false);
                             	CommandManager.LaunchCommand(caps);
+                            	
+                            	// Reset the buffer before the video is loaded.
+                            	screenManagerKernel.UpdateCaptureBuffers();
 
                             	// load video.
                             	PlayerScreen newScreen = (screenManagerKernel.screenList.Count > 0) ? (screenManagerKernel.screenList[1] as PlayerScreen) : null;

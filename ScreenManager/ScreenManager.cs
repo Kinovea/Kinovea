@@ -807,7 +807,8 @@ namespace Kinovea.ScreenManager
         	
         	if(screenList.Count == 1)
         	{
-                // Create the screen if necessary
+                // Create the screen if necessary.
+                // The buffer of the capture screen will be reset during the operation.
         		DoLoadMovieInScreen(_filepath, -1, true);
         	}
         	else if(screenList.Count == 2)
@@ -1394,7 +1395,7 @@ namespace Kinovea.ScreenManager
         			break;
         	}
         }
-        private void UpdateCaptureBuffers()
+        public void UpdateCaptureBuffers()
         {
         	// The screen list has changed and involve capture screens.
         	// Update their shared state to trigger a memory buffer reset.
