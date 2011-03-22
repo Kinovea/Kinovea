@@ -139,6 +139,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Toolbar
+        public ToolStripButton toolHome = new ToolStripButton();
         public ToolStripButton toolSave = new ToolStripButton();
         public ToolStripButton toolOnePlayer = new ToolStripButton();
         public ToolStripButton toolTwoPlayers = new ToolStripButton();
@@ -564,12 +565,16 @@ namespace Kinovea.ScreenManager
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
-			// Save
+        	// Save
 			toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolSave.Image = Properties.Resources.filesave;
-           toolSave.Click += new EventHandler(mnuSaveOnClick);
+            toolSave.Click += new EventHandler(mnuSaveOnClick);
         	
         	// Workspace presets.
+        	
+        	toolHome.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolHome.Image = Properties.Resources.home3;
+            toolHome.Click += new EventHandler(mnuHome_OnClick);
         	
             toolOnePlayer.DisplayStyle = ToolStripItemDisplayStyle.Image;
             toolOnePlayer.Image = Properties.Resources.television;
@@ -593,6 +598,8 @@ namespace Kinovea.ScreenManager
             
             ToolStrip ts = new ToolStrip(new ToolStripItem[] { 
                                          	toolSave,
+                                         	new ToolStripSeparator(),
+                                         	toolHome,
                                          	new ToolStripSeparator(),
                                          	toolOnePlayer,
                                          	toolTwoPlayers,
@@ -1842,7 +1849,8 @@ namespace Kinovea.ScreenManager
         private void ReloadToolbarCulture()
         {
         	toolSave.ToolTipText = ScreenManagerLang.mnuSave;
-            toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
+        	toolHome.ToolTipText = ScreenManagerLang.mnuHome;
+        	toolOnePlayer.ToolTipText = ScreenManagerLang.mnuOnePlayer;
             toolTwoPlayers.ToolTipText = ScreenManagerLang.mnuTwoPlayers;
             toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;
             toolTwoCaptures.ToolTipText = ScreenManagerLang.mnuTwoCaptures;
@@ -2259,6 +2267,29 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region View
+        private void mnuHome_OnClick(object sender, EventArgs e)
+        {
+        	// Remove all screens.
+        	if(screenList.Count > 0)
+        	{
+		    	m_bSynching = false;
+		        CommandManager cm = CommandManager.Instance();
+		        
+		        int screenCount = screenList.Count;
+		        for(int i=0;i<screenCount;i++)
+		        {
+					IUndoableCommand crs = new CommandRemoveScreen(this, 0, true);
+					cm.LaunchUndoableCommand(crs);
+		        }
+		          
+		        // Display the new list.
+		        ICommand css = new CommandShowScreens(this);
+		        CommandManager.LaunchCommand(css);
+		        
+		        OrganizeCommonControls();
+		        OrganizeMenus();
+        	}
+        }
         private void mnuOnePlayerOnClick(object sender, EventArgs e)
         {
         	//------------------------------------------------------------

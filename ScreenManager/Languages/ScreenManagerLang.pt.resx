@@ -279,6 +279,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ir para o Quadro de Imagem</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Grade</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Esconder</value></data>
+   <data name="mnuHome" xml:space="preserve"><value>Gerenciador de Arquivos</value></data>
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carregar Dados de Quadros de Imagens...</value></data>

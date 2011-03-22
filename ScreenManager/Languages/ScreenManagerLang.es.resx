@@ -279,6 +279,7 @@
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Ir a la Imagen Clave</value></data>
    <data name="mnuGrid" xml:space="preserve"><value>Cuadrícula</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Ocultar</value></data>
+   <data name="mnuHome" xml:space="preserve"><value>Explorador De Archivos</value></data>
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Cargando datos claves de las imágenes …</value></data>
