@@ -628,7 +628,7 @@ bool VideoFileWriter::WriteMetadata(SavingContext^ _SavingContext, String^ _Meta
 ///<summary>
 /// VideoFileWriter::EncodeAndWriteVideoFrame
 /// Save a single frame in the video file. Takes a Bitmap as input.
-/// Input pix fmt must be PIX_FMT_BGR24.
+/// Input pix fmt must be PIX_FMT_BGRA.
 ///</summary>
 bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap)
 {
@@ -653,7 +653,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 		}	
 		
 		// Allocate the buffer holding actual frame data.
-		int iSizeInputFrameBuffer = avpicture_get_size(PIX_FMT_BGR24, _InputBitmap->Width, _InputBitmap->Height);
+		int iSizeInputFrameBuffer = avpicture_get_size(PIX_FMT_BGRA, _InputBitmap->Width, _InputBitmap->Height);
 		pInputFrameBuffer = (uint8_t*)av_malloc(iSizeInputFrameBuffer);
 		if (pInputFrameBuffer == nullptr) 
 		{
@@ -665,7 +665,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 		bInputFrameAllocated = true;
 		
 		// Setting up various pointers between the buffers.
-		avpicture_fill((AVPicture *)pInputFrame, pInputFrameBuffer, PIX_FMT_BGR24, _InputBitmap->Width, _InputBitmap->Height);
+		avpicture_fill((AVPicture *)pInputFrame, pInputFrameBuffer, PIX_FMT_BGRA, _InputBitmap->Width, _InputBitmap->Height);
 		
 		// Associate the Bitmap to the AVFrame
 		Rectangle rect = Rectangle(0, 0, _InputBitmap->Width, _InputBitmap->Height);
@@ -678,7 +678,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 			
 
 		//------------------------------------------------------------------------------------------
-		// -> At that point, pInputFrame holds a non compressed bitmap, at the .NET PIX_FMT (BGR24)
+		// -> At that point, pInputFrame holds a non compressed bitmap, at the .NET PIX_FMT (BGRA)
 		// This bitmap is still at the decoding size.
 		//------------------------------------------------------------------------------------------
 
@@ -707,7 +707,7 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 		avpicture_fill((AVPicture *)pOutputFrame, pOutputFrameBuffer, _SavingContext->pOutputCodecContext->pix_fmt, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height);
 		
 		// j. Nouveau scaling context
-		SwsContext* scalingContext = sws_getContext(_InputBitmap->Width, _InputBitmap->Height, PIX_FMT_BGR24, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height, _SavingContext->pOutputCodecContext->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL); 
+		SwsContext* scalingContext = sws_getContext(_InputBitmap->Width, _InputBitmap->Height, PIX_FMT_BGRA, _SavingContext->outputSize.Width, _SavingContext->outputSize.Height, _SavingContext->pOutputCodecContext->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL); 
 
 		// k. Convertir l'image de son format de pixels d'origine vers le format de pixels de sortie.
 		if (sws_scale(scalingContext, pInputFrame->data, pInputFrame->linesize, 0, _InputBitmap->Height, pOutputFrame->data, pOutputFrame->linesize) < 0) 
