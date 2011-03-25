@@ -1088,6 +1088,7 @@ namespace Kinovea.ScreenManager
 			m_bDrawtimeFiltered = false;
 			
 			m_fHighSpeedFactor = 1.0f;
+			UpdateSpeedLabel();
 		}
 		private void DemuxMetadata()
 		{
