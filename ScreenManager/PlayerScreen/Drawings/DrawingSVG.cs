@@ -79,6 +79,8 @@ namespace Kinovea.ScreenManager
         private int m_iOriginalHeight;
         private double m_fOriginalAspectRatio;
         
+        private bool m_bSizeInPercentage;
+        
         private bool m_bFinishedResizing;
        
         // Decoration
@@ -111,8 +113,18 @@ namespace Kinovea.ScreenManager
          	m_SvgWindow.Src = _filename;
 	        m_bLoaded = true;
 	        
-	        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
-	        m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;
+	        if(m_SvgWindow.Document.RootElement.Width.BaseVal.UnitType == SvgLengthType.Percentage)
+	        {
+	        	m_bSizeInPercentage = true;
+	        	m_iOriginalWidth = (int)(m_SvgWindow.Document.RootElement.ViewBox.BaseVal.Width * (m_SvgWindow.Document.RootElement.Width.BaseVal.Value/100));
+	        	m_iOriginalHeight = (int)(m_SvgWindow.Document.RootElement.ViewBox.BaseVal.Height * (m_SvgWindow.Document.RootElement.Height.BaseVal.Value/100));	
+	        }
+	        else
+	        {
+	        	m_bSizeInPercentage = false;
+		        m_iOriginalWidth = (int)m_SvgWindow.Document.RootElement.Width.BaseVal.Value;
+		        m_iOriginalHeight  = (int)m_SvgWindow.Document.RootElement.Height.BaseVal.Value;		        
+	        }
 	        
 	        // Set the initial scale so that the drawing is some part of the image height, to make sure it fits well.
 	        m_fInitialScale = (float) (((float)_iHeight * 0.75) / m_iOriginalHeight);
@@ -396,7 +408,10 @@ namespace Kinovea.ScreenManager
         	
         	if(m_svgRendered == null || m_fDrawingRenderingScale != m_SvgWindow.Document.RootElement.CurrentScale)
         	{
-	        	m_SvgWindow.Document.RootElement.CurrentScale = (float)m_fDrawingRenderingScale;
+        		// In the case of percentage, CurrentScale is always 100%. But since there is a cache for the transformation matrix,
+                // we need to set it anyway to clear the cache.
+        		m_SvgWindow.Document.RootElement.CurrentScale = m_bSizeInPercentage ? 1.0f : (float)m_fDrawingRenderingScale;
+	        	
 	        	m_SvgWindow.InnerWidth = m_RescaledRectangle.Width;
 	        	m_SvgWindow.InnerHeight = m_RescaledRectangle.Height;
 	        	
