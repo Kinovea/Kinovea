@@ -34,11 +34,6 @@ namespace SharpVectors.Renderer.Gdi
 
 			RectangleF elmRect = new RectangleF(x, y, width, height);
 
-			if ( element.ParentNode is SvgElement )
-			{
-                // TODO: should it be moved with x and y?
-			}
-
 			fitToViewbox(graphics, elmRect);
 		}
         #endregion
