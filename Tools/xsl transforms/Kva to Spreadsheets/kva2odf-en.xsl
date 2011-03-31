@@ -101,22 +101,22 @@
 			
 			    <table:table-cell>
             <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
-            <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
-            <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></xsl:attribute>			     
+            <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
+            <xsl:attribute name="office:value"><xsl:value-of select="@UserXInvariant"/></xsl:attribute>
 			      <text:p><xsl:value-of select="@UserX"/></text:p>
           </table:table-cell>
           
 			    <table:table-cell>
             <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
-            <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
-            <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></xsl:attribute>			     
+            <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
+            <xsl:attribute name="office:value"><xsl:value-of select="@UserYInvariant"/></xsl:attribute>
 			      <text:p><xsl:value-of select="@UserY"/></text:p>
           </table:table-cell>
           
           <table:table-cell>
             <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
             <text:p><xsl:value-of select="@UserTime"/></text:p>
-          </table:table-cell>                     
+          </table:table-cell>
           
 			</table:table-row>
 		</xsl:for-each>
@@ -204,18 +204,18 @@
   </table:table-row>
   <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
     <table:table-row>
-    
+      <!-- Numerical data must be formatted using point as decimal separator. Hence the use of User*Invariant -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
-        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
-        <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></xsl:attribute>
+        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
+        <xsl:attribute name="office:value"><xsl:value-of select="@UserXInvariant"/></xsl:attribute>
         <text:p><xsl:value-of select="@UserX"/></text:p>
       </table:table-cell>
 	  
 	  <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
-        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
-        <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></xsl:attribute>
+        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
+        <xsl:attribute name="office:value"><xsl:value-of select="@UserYInvariant"/></xsl:attribute>
         <text:p><xsl:value-of select="@UserY"/></text:p>
       </table:table-cell>
       
@@ -240,11 +240,11 @@
   </table:table-row>
   <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure">
     <table:table-row>
-    
+      <!-- Numerical data must be formatted using point as decimal separator. Hence the use of UserLengthInvariant -->
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
-        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
-        <xsl:attribute name="office:value"><xsl:value-of select="concat(substring-before(@UserLength,','), '.', substring-after(@UserLength,','))"/></xsl:attribute>			     
+        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
+        <xsl:attribute name="office:value"><xsl:value-of select="@UserLengthInvariant"/></xsl:attribute>
         <text:p><xsl:value-of select="@UserLength"/></text:p>
       </table:table-cell>
     
@@ -271,8 +271,8 @@
     
       <table:table-cell>
         <xsl:attribute name="table:style-name"><xsl:value-of select="'data'"/></xsl:attribute>
-        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>			     
-        <xsl:attribute name="office:value"><xsl:value-of select="@UserAngle"/></xsl:attribute>			     
+        <xsl:attribute name="office:value-type"><xsl:value-of select="'float'"/></xsl:attribute>
+        <xsl:attribute name="office:value"><xsl:value-of select="@UserAngle"/></xsl:attribute>
         <text:p><xsl:value-of select="@UserAngle"/></text:p>
       </table:table-cell>
     

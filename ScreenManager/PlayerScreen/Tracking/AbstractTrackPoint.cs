@@ -18,10 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.Services;
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -74,7 +76,9 @@ namespace Kinovea.ScreenManager
             string userT = _ParentMetadata.m_TimeStampsToTimecodeCallback(T, TimeCodeFormat.Unknown, false);
 			
             _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
+            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userX));
             _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", userY));
+            _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userY));
             _xmlWriter.WriteAttributeString("UserTime", userT);
             
 			// Native data.
