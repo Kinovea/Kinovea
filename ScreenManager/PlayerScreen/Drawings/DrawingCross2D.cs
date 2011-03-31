@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -200,8 +201,10 @@ namespace Kinovea.ScreenManager
             	
             	PointF coords = m_ParentMetadata.CalibrationHelper.GetPointInUserUnit(m_CenterPoint);
 	            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
+	            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
-            	_xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
+	            _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
+	            _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
             	
             	_xmlWriter.WriteEndElement();
             }

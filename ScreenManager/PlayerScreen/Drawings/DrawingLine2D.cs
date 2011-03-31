@@ -23,6 +23,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -244,8 +245,10 @@ namespace Kinovea.ScreenManager
             	
             	double len = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit(m_StartPoint, m_EndPoint);
 	            string value = String.Format("{0:0.00}", len);
-	                
+	            string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
+
             	_xmlWriter.WriteAttributeString("UserLength", value);
+            	_xmlWriter.WriteAttributeString("UserLengthInvariant", valueInvariant);
             	_xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
             	
             	_xmlWriter.WriteEndElement();

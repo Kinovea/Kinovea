@@ -94,9 +94,8 @@
     </Row>
     <xsl:for-each select="TrackPositionList/TrackPosition">
       <Row>
-        <!-- We need to replace the comma with dots. ie. Excel will only accept "-0.32", not "-0,32". -->
-        <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></Data></Cell>          
-        <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></Data></Cell>                    
+        <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserXInvariant"/></Data></Cell>
+        <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserYInvariant"/></Data></Cell>
         <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="@UserTime"/></Data></Cell>
       </Row>
     </xsl:for-each>
@@ -219,8 +218,8 @@
   </Row>
   <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
     <Row>
-      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserX,','), '.', substring-after(@UserX,','))"/></Data></Cell>
-      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserY,','), '.', substring-after(@UserY,','))"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserXInvariant"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserYInvariant"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Title"/></Data></Cell>
     </Row>
@@ -242,7 +241,7 @@
   </Row>
   <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure">
     <Row>
-      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="concat(substring-before(@UserLength,','), '.', substring-after(@UserLength,','))"/></Data></Cell>
+      <Cell ss:StyleID="data"><Data ss:Type="Number"><xsl:value-of select="@UserLengthInvariant"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Position/@UserTime"/></Data></Cell>
       <Cell ss:StyleID="data"><Data ss:Type="String"><xsl:value-of select="../../../Title"/></Data></Cell>
     </Row>
