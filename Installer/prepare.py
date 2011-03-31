@@ -14,7 +14,7 @@ refdir = '..\\Refs'
 xsltdir = '..\\Tools\\xsl transforms'
 svgdir = '..\\Tools\\svg'
 otherdir = 'OtherFiles'
-destdir = 'Kinovea.Files\current'
+destdir = 'Kinovea.Files'
 
 #Kinovea binaries
 shutil.copy2(os.path.join(bindir, "Kinovea.exe"), destdir)
@@ -91,11 +91,12 @@ shutil.copy2(os.path.join(xsltdir, "Kva to Spreadsheets\\kva2txt-en.xsl"), os.pa
 if not os.path.exists(os.path.join(destdir, "guides")):
     os.makedirs(os.path.join(destdir, "guides"))
 
-shutil.copy2(os.path.join(svgdir, "footbones.svg"), os.path.join(destdir, "guides\\footbones.svg"))
+shutil.copy2(os.path.join(svgdir, "circle - blue.svg"), os.path.join(destdir, "guides\\circle - blue.svg"))
+shutil.copy2(os.path.join(svgdir, "clock - degrees - blue.svg"), os.path.join(destdir, "guides\\clock - degrees - blue.svg"))
+shutil.copy2(os.path.join(svgdir, "foot.svg"), os.path.join(destdir, "guides\\foot.svg"))
 shutil.copy2(os.path.join(svgdir, "hexaxial.svg"), os.path.join(destdir, "guides\\hexaxial.svg"))
-shutil.copy2(os.path.join(svgdir, "Human_skeleton.svg"), os.path.join(destdir, "guides\\Human_skeleton.svg"))
+shutil.copy2(os.path.join(svgdir, "human skeleton.svg"), os.path.join(destdir, "guides\\human skeleton.svg"))
 shutil.copy2(os.path.join(svgdir, "protractor.svg"), os.path.join(destdir, "guides\\protractor.svg"))
-shutil.copy2(os.path.join(svgdir, "ring.svg"), os.path.join(destdir, "guides\\ring.svg"))
 
 #Help files
 if os.path.exists(os.path.join(destdir, "Manuals")) : 
