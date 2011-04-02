@@ -136,8 +136,7 @@
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Beweging rechts-naar-links</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Fixeer de afmeting</value></data>
-   
-   <data name="dlgDevicePicker_CurrentlySelected" xml:space="preserve"><value>Huidige selectie:</value></data>
+   <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Huidige selectie:</value></data>
    
    
    <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Kies een ander apparaat</value></data>
