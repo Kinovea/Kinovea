@@ -97,6 +97,7 @@ namespace Kinovea.Root
             cmbLanguage.Items.Add(new LanguageIdentifier("es", PreferencesManager.LanguageSpanish));
             cmbLanguage.Items.Add(new LanguageIdentifier("fr", PreferencesManager.LanguageFrench));
             cmbLanguage.Items.Add(new LanguageIdentifier("it", PreferencesManager.LanguageItalian));
+            cmbLanguage.Items.Add(new LanguageIdentifier("lt", PreferencesManager.LanguageLithuanian));
             cmbLanguage.Items.Add(new LanguageIdentifier("nl", PreferencesManager.LanguageDutch));
             cmbLanguage.Items.Add(new LanguageIdentifier("no", PreferencesManager.LanguageNorwegian));
             cmbLanguage.Items.Add(new LanguageIdentifier("pl", PreferencesManager.LanguagePolish));

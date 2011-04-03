@@ -134,6 +134,8 @@ if os.path.exists(os.path.join(destdir, "Zh-CHS")) :
 	shutil.rmtree(os.path.join(destdir, "Zh-CHS"))
 if os.path.exists(os.path.join(destdir, "el")) : 
 	shutil.rmtree(os.path.join(destdir, "el"))
+if os.path.exists(os.path.join(destdir, "lt")) : 
+	shutil.rmtree(os.path.join(destdir, "lt"))
 
 shutil.copytree(os.path.join(bindir, "de"), os.path.join(destdir, "de"))
 shutil.copytree(os.path.join(bindir, "es"), os.path.join(destdir, "es"))
@@ -148,6 +150,6 @@ shutil.copytree(os.path.join(bindir, "no"), os.path.join(destdir, "no"))
 shutil.copytree(os.path.join(bindir, "tr"), os.path.join(destdir, "tr"))
 shutil.copytree(os.path.join(bindir, "Zh-CHS"), os.path.join(destdir, "Zh-CHS"))
 shutil.copytree(os.path.join(bindir, "el"), os.path.join(destdir, "el"))
-
+shutil.copytree(os.path.join(bindir, "lt"), os.path.join(destdir, "lt"))
 
 

@@ -97,6 +97,7 @@
     </Compile>
     <EmbeddedResource Include="Languages\UpdaterLang.el.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.lt.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.Zh-CHS.resx" />

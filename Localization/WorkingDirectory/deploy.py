@@ -46,6 +46,9 @@ def ValidateResx(file):
 	p = re.compile("<data name=\"\" xml:space=\"preserve\"/>", re.IGNORECASE)
 	resx = p.sub('', resx)
 	
+	p = re.compile("<data name=\"\" xml:space=\"preserve\"><value/></data>", re.IGNORECASE)
+	resx = p.sub('', resx)
+	
 	f = open( file, "wb")
 	f.write(resx)
 	f.close()
