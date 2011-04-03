@@ -381,7 +381,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overzicht…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Keer om….</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisch contrast…</value></data>
-   <data name="" xml:space="preserve"><value/></data>
+   
    
    
 </root>

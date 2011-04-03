@@ -80,6 +80,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuTurkish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGreek = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLithuanian = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
@@ -517,6 +518,10 @@ namespace Kinovea.Root
             mnuGreek = new ToolStripMenuItem(PreferencesManager.LanguageGreek);
             mnuGreek.Click += new EventHandler(menuGreekOnClick);
             
+            // Lithuanian
+            mnuLithuanian = new ToolStripMenuItem(PreferencesManager.LanguageLithuanian);
+            mnuLithuanian.Click += new EventHandler(menuLithuanianOnClick);
+            
             // Re-Order alphabetically by localized name.
             mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { 
                                                 						mnuGerman,
@@ -524,8 +529,9 @@ namespace Kinovea.Root
                                                 						mnuEnglish, 
                                                 						mnuSpanish, 
                                                 						mnuFrench, 
-                                                						mnuItalian, 
-                                                						mnuDutch, 
+                                                						mnuItalian,
+                                                						mnuLithuanian,
+                                                						mnuDutch,
                                                 						mnuNorwegian,
                                                 						mnuPolish, 
                                                 						mnuPortuguese, 
@@ -845,6 +851,10 @@ namespace Kinovea.Root
         private void menuGreekOnClick(object sender, EventArgs e)
         {
             SwitchCulture("el");
+        }
+        private void menuLithuanianOnClick(object sender, EventArgs e)
+        {
+            SwitchCulture("lt");
         }
         private void SwitchCulture(string name)
         {

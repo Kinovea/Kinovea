@@ -440,6 +440,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.el.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.fi.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.lt.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
