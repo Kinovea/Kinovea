@@ -365,13 +365,43 @@ namespace Kinovea.ScreenManager
 			{
 				// Network Camera. Connect to last used url.
 				// The user will have to open the dialog again if parameters have changed or aren't good.
+				
+				// Parse URL for inline username:password.
+				string login = "";
+				string pass = "";
+				
+				Uri networkCameraUrl = new Uri(_device.NetworkCameraUrl);
+				if(!string.IsNullOrEmpty(networkCameraUrl.UserInfo))
+				{
+					string [] split = networkCameraUrl.UserInfo.Split(new Char [] {':'});
+					if(split.Length == 2)
+					{
+						login = split[0];
+						pass = split[1];
+					}
+				}
+				
 				if(_device.NetworkCameraFormat == NetworkCameraFormat.JPEG)
 				{
-					m_VideoSource = new JPEGStream(_device.NetworkCameraUrl);
+					JPEGStream source = new JPEGStream(_device.NetworkCameraUrl);
+					if(!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(pass))
+					{
+						source.Login = login;
+						source.Password = pass;
+					}
+					
+					m_VideoSource = source;
 				}
 				else
 				{
-					m_VideoSource = new MJPEGStream(_device.NetworkCameraUrl);
+					MJPEGStream source = new MJPEGStream(_device.NetworkCameraUrl);
+					if(!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(pass))
+					{
+						source.Login = login;
+						source.Password = pass;
+					}
+					
+					m_VideoSource = source;
 				}
 				m_PrefsManager.NetworkCameraFormat = _device.NetworkCameraFormat;
 				m_PrefsManager.NetworkCameraUrl = _device.NetworkCameraUrl;
@@ -501,7 +531,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void VideoDevice_VideoSourceError(object sender, VideoSourceErrorEventArgs eventArgs)
 		{
-			log.ErrorFormat("Error happened to {0}.", m_CurrentVideoDevice.Name);
+			log.ErrorFormat("Capture error: {1}", m_CurrentVideoDevice.Name, eventArgs.Description);
 		}
 		#endregion
 	}
