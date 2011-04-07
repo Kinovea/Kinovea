@@ -1,0 +1,44 @@
+
+2011/04/07 - Actual branch creation under SVN
+
+Done at this point:
+
+1. For Attached drawings
+- AbstractDrawing stripped of non universally implemented methods.
+- Creation of a few interfaces for decorations (line style, color), xml export, setup of the tool.
+- Adaptation of all existing drawings to this new framework.
+
+
+2. For Unattached drawings
+- Grid & Plane (same class) to conform and inherit AbstractDrawing.
+- Metadata.SetLocations replaces Metadata.Plane.SetLocations and Metadata.Grid.SetLocations, to avoid exposing Grid and Plane to the outside.
+- Concept of ExtraDrawings list in Metadata to hold all the unattached drawings and treat them as a list.
+- Chronometer objects (already conformant to AbstractDrawing) are added to the extra drawings list.
+- hit test, move and movehandle in left click (Pointer tool) use the new extra drawing list instead of separate treatments for Grids and Chrono.
+- Temporarily Deactivated undo/redo support for Chronometer add, delete, modify.
+- Track made conformant to AbstractDrawing.
+
+
+
+2011/04/05 - Sandbox branch
+
+This branch is to work on a refactoring of the drawing and drawing tools framework.
+As a number of tools will be considered for addition, the ease of these addition is questionned.
+
+The problem
+-----------
+It is not particularly easy to add drawing tools and doing so implies modifications in many parts of the code.
+
+Drawings are either attached to a key image (angle, line, Svg), or unattached (Track, Magnifier).
+For the unattached drawings, there are unique tools (magnifier, grid, plane) and tools creating multiple instances (track, later spotlight).
+
+Some drawings are somewhat hybrids (Chronometer).
+The unattached drawings are not homogenous, there is a lot of code duplication for hit testing, they don't follow a similar interface etc.
+Attached drawings herit from a class with functions not implemented by all tools. (decoration, xml export)
+
+The approach
+------------
+- Unattached drawings will conform to a similar interface. It is supposed that they can actually herit from the same type as the attached drawings (AbstractDrawing).
+- We will try to treat all unattached drawings at once wherever, using their parent type.
+- Unattached drawings creating multiple instances will work with a single Manager that will proxy the requests to the individual instances.
+- Attached drawings will implement a core interface and then have their extra functions defined in interfaces.

@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
     	#region members
     	// Common
         private bool m_bPreConfigure;				// true if we are updating the ColorProfile.
-    	private DrawingToolType m_ToolType;		// Needed for controls organisation and visibility.
+    	private DrawingType m_DrawingType;			// Needed for controls organisation and visibility.
     	private bool m_bManualClose = false;		// Needed to handle cancel button.
     	private ColorPicker m_ColorPicker = new ColorPicker();
     	
@@ -57,14 +57,14 @@ namespace Kinovea.ScreenManager
         private ColorProfile m_TempColorProfile;    // Temporary ColorProfile.
     	
     	// For individual drawing configuration only.
-    	private AbstractDrawing m_Drawing;			// The drawing we will modify.
+    	private IDecorable m_Drawing;               // The drawing we will modify.
     	private PictureBox m_SurfaceScreen;         // Used to update the image while configuring.
         
         //private int m_MemoFontSize = -1;
         #endregion
         
         #region Construction & Initialization
-        public formConfigureDrawing(DrawingToolType _ToolType, ColorProfile _colorProfile)
+        public formConfigureDrawing(DrawingType _DrawingType, ColorProfile _colorProfile)
         {
             // This constructor is called when we will be updating 
             // the DrawingTool entry in the main ColorProfile.
@@ -77,28 +77,27 @@ namespace Kinovea.ScreenManager
             m_TempColorProfile = new ColorProfile();
             m_TempColorProfile.Load(_colorProfile);
             
-            m_ToolType = _ToolType;
+            m_DrawingType = _DrawingType;
             
             SetupForm();
         }
-        public formConfigureDrawing(AbstractDrawing _drawing, PictureBox _SurfaceScreen)
+        public formConfigureDrawing(IDecorable _drawing, PictureBox _SurfaceScreen)
         {
             // This constructor is called when we will be updating a specific drawing.
             m_bPreConfigure = false;
             m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
-            m_ToolType = m_Drawing.ToolType;
-            m_Drawing.MemorizeDecoration();
-
-            SetupForm();
+            m_DrawingType = m_Drawing.DrawingType;
+	        m_Drawing.MemorizeDecoration();            
+	        SetupForm();
         }
         private void SetupForm()
         {
         	InitializeComponent();
-        	ConfigureForm(m_ToolType);
+        	ConfigureForm(m_DrawingType);
             LocalizeForm();
         }
-        private void ConfigureForm(DrawingToolType _ToolType)
+        private void ConfigureForm(DrawingType _DrawingType)
         {
         	// Configure the controls depending on the tool updated.
         	
@@ -110,28 +109,28 @@ namespace Kinovea.ScreenManager
 			grpConfig.Controls.Add(m_ColorPicker);
         	
 			// TODO: Height should be computed.
-            switch (_ToolType)
+            switch (_DrawingType)
             {
-            	case DrawingToolType.Circle:
-                case DrawingToolType.Pencil:
+            	case DrawingType.Circle:
+                case DrawingType.Pencil:
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
-                    stlPicker.ToolType = DrawingToolType.Pencil;
+                    stlPicker.DrawingType = DrawingType.Pencil;
                     stlPicker.Top = m_ColorPicker.Bottom + 10;
                     stlPicker.Left = (grpConfig.Width - stlPicker.Width) / 2;
                     stlPicker.Visible = true;
                     grpConfig.Height = stlPicker.Bottom + 20;
                     break;
-                case DrawingToolType.Line2D:
+                case DrawingType.Line:
                     lblFontSize.Visible = false;
                     cmbFontSize.Visible = false;
-                    stlPicker.ToolType = DrawingToolType.Line2D;
+                    stlPicker.DrawingType = DrawingType.Line;
                     stlPicker.Top = m_ColorPicker.Bottom + 10;
                     stlPicker.Left = (grpConfig.Width - stlPicker.Width) / 2;
                     stlPicker.Visible = true;
                     grpConfig.Height = stlPicker.Bottom + 20;
                     break;
-                case DrawingToolType.Text:
+                case DrawingType.Label:
                     stlPicker.Visible = false;
                     lblFontSize.Visible = true;
                     lblFontSize.Top = m_ColorPicker.Bottom + 10;
@@ -184,7 +183,7 @@ namespace Kinovea.ScreenManager
         {
             if (m_bPreConfigure)
             {
-                m_TempColorProfile.UpdateData(m_ToolType, m_ColorPicker.PickedColor); 
+                m_TempColorProfile.UpdateData(m_DrawingType, m_ColorPicker.PickedColor); 
             }
             else
             {
@@ -198,7 +197,7 @@ namespace Kinovea.ScreenManager
         {
             if (m_bPreConfigure)
             {
-                m_TempColorProfile.UpdateData(m_ToolType, stlPicker.PickedStyle);
+                m_TempColorProfile.UpdateData(m_DrawingType, stlPicker.PickedStyle);
             }
             else
             {
@@ -211,7 +210,7 @@ namespace Kinovea.ScreenManager
         {
             if (m_bPreConfigure)
             {
-            	m_TempColorProfile.UpdateData(m_ToolType, int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
+            	m_TempColorProfile.UpdateData(m_DrawingType, int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
             }
             else
             {

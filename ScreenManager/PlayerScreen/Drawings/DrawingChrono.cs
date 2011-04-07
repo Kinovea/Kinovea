@@ -32,7 +32,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingChrono : AbstractDrawing
+    public class DrawingChrono : AbstractDrawing, IDecorable, IXMLSerializable
     {
         #region Enums
         /// <summary>
@@ -48,9 +48,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-        	get { return DrawingToolType.Chrono; }
+        	get { return DrawingType.Chrono; }
         }
         public Metadata ParentMetadata
         {
@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // Invisible handler to change font size.
             // Compare wanted mouse position with current bottom right.
@@ -226,7 +226,7 @@ namespace Kinovea.ScreenManager
             int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
             UpdateDecoration(newFontSize);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // Note: _delatX and _delatY are mouse delta already descaled.            
             m_TopLeft.X += _deltaX;
@@ -262,7 +262,59 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+        
+        public override string ToString()
+        {
+            // Return the name of the tool used to draw this drawing.
+            return ScreenManagerLang.ToolTip_DrawingToolChrono;
+        }
+        public override int GetHashCode()
+        {
+            // Combine all relevant fields with XOR to get the Hash.
+            int iHash = m_TopLeft.GetHashCode();
+            iHash ^= m_iStartCountingTimestamp.GetHashCode();
+            iHash ^= m_iStopCountingTimestamp.GetHashCode();
+            iHash ^= m_iVisibleTimestamp.GetHashCode();
+            iHash ^= m_iInvisibleTimestamp.GetHashCode();
+            iHash ^= m_bCountdown.GetHashCode();
+            iHash ^= m_TextStyle.GetHashCode();
+            iHash ^= m_Label.GetHashCode();
+            iHash ^= m_bShowLabel.GetHashCode();
+
+            return iHash;
+        }
+        
+        #region IDecorable implementation
+        public void UpdateDecoration(Color _color)
+        {
+        	m_TextStyle.Update(_color);
+        }
+        public void UpdateDecoration(LineStyle _style)
+        {
+        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));	
+        }
+        public void UpdateDecoration(int _iFontSize)
+        {
+        	m_TextStyle.Update(_iFontSize);
+        }
+        public void MemorizeDecoration()
+        {
+        	// Here we actually store more than decoration.
+        	m_MemoTextStyle = m_TextStyle.Clone();
+        	m_MemoLabel = m_Label;
+        	m_bMemoShowLabel = m_bShowLabel;
+        }
+        public void RecallDecoration()
+        {
+        	m_TextStyle = m_MemoTextStyle.Clone();
+        	m_Label = m_MemoLabel;
+        	m_bShowLabel = m_bMemoShowLabel;
+        }
+		#endregion
+		
+		#region IXMLSerializable implementation
+		public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Chrono");
             _xmlWriter.WriteAttributeString("Type", "DrawingChrono");
@@ -347,52 +399,6 @@ namespace Kinovea.ScreenManager
 
             // </Drawing>
             _xmlWriter.WriteEndElement();
-        }
-        public override string ToString()
-        {
-            // Return the name of the tool used to draw this drawing.
-            return ScreenManagerLang.ToolTip_DrawingToolChrono;
-        }
-        public override int GetHashCode()
-        {
-            // Combine all relevant fields with XOR to get the Hash.
-            int iHash = m_TopLeft.GetHashCode();
-            iHash ^= m_iStartCountingTimestamp.GetHashCode();
-            iHash ^= m_iStopCountingTimestamp.GetHashCode();
-            iHash ^= m_iVisibleTimestamp.GetHashCode();
-            iHash ^= m_iInvisibleTimestamp.GetHashCode();
-            iHash ^= m_bCountdown.GetHashCode();
-            iHash ^= m_TextStyle.GetHashCode();
-            iHash ^= m_Label.GetHashCode();
-            iHash ^= m_bShowLabel.GetHashCode();
-
-            return iHash;
-        }
-        
-        public override void UpdateDecoration(Color _color)
-        {
-        	m_TextStyle.Update(_color);
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));	
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	m_TextStyle.Update(_iFontSize);
-        }
-        public override void MemorizeDecoration()
-        {
-        	// Here we actually store more than decoration.
-        	m_MemoTextStyle = m_TextStyle.Clone();
-        	m_MemoLabel = m_Label;
-        	m_bMemoShowLabel = m_bShowLabel;
-        }
-        public override void RecallDecoration()
-        {
-        	m_TextStyle = m_MemoTextStyle.Clone();
-        	m_Label = m_MemoLabel;
-        	m_bShowLabel = m_bMemoShowLabel;
         }
 		#endregion
 

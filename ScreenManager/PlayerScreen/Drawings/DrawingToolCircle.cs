@@ -26,13 +26,14 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolCircle : AbstractDrawingTool
     {
+    	public override DrawingType DrawingType
+        {
+        	get { return DrawingType.Circle; }
+        }
+
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-        public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
-        {
-            _Keyframe.Drawings[0].MoveHandleTo(_MouseCoordinates, 2);
         }
         public override DrawingToolType OnMouseUp()
         {

@@ -26,13 +26,14 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolCross2D : AbstractDrawingTool
     {
+    	public override DrawingType DrawingType
+        {
+        	get { return DrawingType.Cross; }
+        }
+
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-
-        public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
-        {
         }
         public override DrawingToolType OnMouseUp()
         {

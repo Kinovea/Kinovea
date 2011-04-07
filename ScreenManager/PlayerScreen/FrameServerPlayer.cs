@@ -115,8 +115,7 @@ namespace Kinovea.ScreenManager
 				m_Metadata.AverageTimeStampsPerFrame = m_VideoFile.Infos.iAverageTimeStampsPerFrame;
 				m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoFile.Infos.fFps;
 				m_Metadata.FirstTimeStamp = m_VideoFile.Infos.iFirstTimeStamp;
-				m_Metadata.Plane.SetLocations(imageSize, 1.0, new Point(0,0));
-				m_Metadata.Grid.SetLocations(imageSize, 1.0, new Point(0,0));
+				m_Metadata.SetLocations(imageSize, 1.0, new Point(0,0));
 				
 				log.Debug("Setup metadata.");
 				m_Metadata.CleanupHash();

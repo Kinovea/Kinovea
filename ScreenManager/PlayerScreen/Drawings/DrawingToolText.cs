@@ -26,13 +26,14 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolText : AbstractDrawingTool
     {
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+		public override DrawingType DrawingType
+        {
+        	get { return DrawingType.Label; }
+        }
+        
+		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return new DrawingText(_Origin.X - 8, _Origin.Y - 8, 100, 25, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-        public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
-        {
-            // Nothing to do...
         }
         public override DrawingToolType OnMouseUp()
         {

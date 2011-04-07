@@ -25,18 +25,19 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingCross2D : AbstractDrawing
+    public class DrawingCross2D : AbstractDrawing, IXMLSerializable, IDecorable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-        	get { return DrawingToolType.Cross2D; }
+        	get { return DrawingType.Cross; }
         }
         public override InfosFading infosFading
         {
@@ -135,7 +136,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // This is only implemented for the coordinates mini label.
             if(handleNumber == 1)
@@ -143,7 +144,7 @@ namespace Kinovea.ScreenManager
 		        m_LabelCoordinates.MoveLabel(point);
             }
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             m_CenterPoint.X += _deltaX;
@@ -175,7 +176,10 @@ namespace Kinovea.ScreenManager
             
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+        
+		#region IXMLSerializable implementation
+        public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
             _xmlWriter.WriteAttributeString("Type", "DrawingCross2D");
@@ -212,6 +216,8 @@ namespace Kinovea.ScreenManager
             // </Drawing>
             _xmlWriter.WriteEndElement();
         }
+        #endregion
+        
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
             DrawingCross2D dc = new DrawingCross2D(0,0,0,0);
@@ -270,28 +276,28 @@ namespace Kinovea.ScreenManager
             return iHash;
         }
         
-        public override void UpdateDecoration(Color _color)
+        #region IDecorable implementation
+        public void UpdateDecoration(Color _color)
         {
         	m_PenStyle.Update(_color);
         }
-        public override void UpdateDecoration(LineStyle _style)
+        public void UpdateDecoration(LineStyle _style)
         {
         	// Actually not used for now.
         	m_PenStyle.Update(_style, false, true, true);	
         }
-        public override void UpdateDecoration(int _iFontSize)
+        public void UpdateDecoration(int _iFontSize)
         {
         	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
         }
-        public override void MemorizeDecoration()
+        public void MemorizeDecoration()
         {
         	m_MemoPenStyle = m_PenStyle.Clone();
         }
-        public override void RecallDecoration()
+        public void RecallDecoration()
         {
         	m_PenStyle = m_MemoPenStyle.Clone();
         }
-        
         #endregion
 
         #region Lower level helpers

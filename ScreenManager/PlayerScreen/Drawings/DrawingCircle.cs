@@ -18,24 +18,26 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
+
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingCircle : AbstractDrawing
+    public class DrawingCircle : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-        	get { return DrawingToolType.Circle; }
+        	get { return DrawingType.Circle; }
         }
         public override InfosFading infosFading
         {
@@ -151,7 +153,7 @@ namespace Kinovea.ScreenManager
                 penLine.Dispose();
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // _point is mouse coordinates already descaled.
             // User is dragging the outline of the circle, figure out the new radius at this point.
@@ -164,7 +166,7 @@ namespace Kinovea.ScreenManager
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             m_Origin.X += _deltaX;
@@ -196,7 +198,10 @@ namespace Kinovea.ScreenManager
             }
             return iHitResult;
         }        
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+        
+        #region IXMLSerializable implementation
+        public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
             _xmlWriter.WriteAttributeString("Type", "DrawingCircle");
@@ -217,6 +222,37 @@ namespace Kinovea.ScreenManager
             // </Drawing>
             _xmlWriter.WriteEndElement();
         }
+        #endregion
+        
+        #region IDecorable implementation
+        public void UpdateDecoration(Color _color)
+        {
+        	m_PenStyle.Update(_color);
+        }
+        public void UpdateDecoration(LineStyle _style)
+        {
+        	m_PenStyle.Update(_style, false, true, true);
+        }
+        public void UpdateDecoration(int _iFontSize)
+        {
+        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
+        }
+        public void MemorizeDecoration()
+        {
+        	m_MemoPenStyle = m_PenStyle.Clone();
+        }
+        public void RecallDecoration()
+        {
+        	m_PenStyle = m_MemoPenStyle.Clone();
+        }
+        #endregion
+        
+        #region IInitializable implementation
+        public void ContinueSetup(Point point)
+		{
+			MoveHandle(point, 2);
+		}
+        #endregion
         
         public override string ToString()
         {
@@ -229,28 +265,6 @@ namespace Kinovea.ScreenManager
             iHash ^= m_iRadius.GetHashCode();
             return iHash;
         }
-        
-        public override void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public override void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
-        
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
         	// _scale.X and _scale.Y are used to map drawings that were set in one video,
@@ -299,7 +313,6 @@ namespace Kinovea.ScreenManager
             dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);
             return dc;
         }
-        #endregion
         
         #region Lower level helpers
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)

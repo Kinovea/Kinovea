@@ -394,32 +394,32 @@ namespace Kinovea.ScreenManager
             this.m_DecorationCircle = _origin.m_DecorationCircle.Clone();
             this.m_DecorationText = _origin.m_DecorationText.Clone();
         }
-        public void UpdateData(DrawingToolType _tool, Color _color)
+        public void UpdateData(DrawingType _tool, Color _color)
         {
         	// Update a ColorProfile entry from specified color.
         	// This method is only used to update the color.
         	
         	switch (_tool)
             {
-        		case DrawingToolType.Angle2D:
+        		case DrawingType.Angle:
         			m_DecorationAngle2D.Update(_color);
         			break;
-				case DrawingToolType.Chrono:
+				case DrawingType.Chrono:
         			m_DecorationChrono.Update(_color);
         			break;
-        		case DrawingToolType.Cross2D:
+        		case DrawingType.Cross:
         			m_DecorationCross2D.Update(_color);
         			break;
-                case DrawingToolType.Line2D:
+                case DrawingType.Line:
                     m_DecorationLine2D.Update(_color);
                     break;
-                case DrawingToolType.Pencil:
+                case DrawingType.Pencil:
 					m_DecorationPencil.Update(_color);
                     break;
-                 case DrawingToolType.Circle:
+                 case DrawingType.Circle:
 					m_DecorationCircle.Update(_color);
                     break;
-                case DrawingToolType.Text:
+                case DrawingType.Label:
                     m_DecorationText.Update(_color);
                     break;
                 default:
@@ -427,7 +427,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public void UpdateData(DrawingToolType _tool, LineStyle _style)
+        public void UpdateData(DrawingType _tool, LineStyle _style)
         {
         	// Update a ColorProfile entry from specified _style.
         	// This method is only used to update the line shape and line size.
@@ -441,87 +441,87 @@ namespace Kinovea.ScreenManager
         	
 			switch (_tool)
             {
-                case DrawingToolType.Pencil:
+                case DrawingType.Pencil:
 					m_DecorationPencil.Update(_style, false, true, true);
                     break;
-                case DrawingToolType.Line2D:
+                case DrawingType.Line:
                     m_DecorationLine2D.Update(_style, false, true, true);
                     break;
-                case DrawingToolType.Circle:
+                case DrawingType.Circle:
 					m_DecorationCircle.Update(_style, false, true, true);
                     break;
-                case DrawingToolType.Angle2D:
-                case DrawingToolType.Chrono: 
-                case DrawingToolType.Cross2D:
-                case DrawingToolType.Text:
+                case DrawingType.Angle:
+                case DrawingType.Chrono: 
+                case DrawingType.Cross:
+                case DrawingType.Label:
                 default:
                     // These tools do not have any line shape / line size info. 
                     break;
             }
         }
-        public void UpdateData(DrawingToolType _tool, int _iFontSize)
+        public void UpdateData(DrawingType _tool, int _iFontSize)
         {
         	// Update a ColorProfile entry from specified font size.
         	// This method is only used to update the font size.
         	switch (_tool)
             {
-        		case DrawingToolType.Angle2D:
+        		case DrawingType.Angle:
         			// Actually not used for now.
                     m_DecorationAngle2D.Update(_iFontSize);
                     break;
-                case DrawingToolType.Chrono:
+                case DrawingType.Chrono:
 					m_DecorationChrono.Update(_iFontSize);
                     break;
-                case DrawingToolType.Text:
+                case DrawingType.Label:
                     m_DecorationText.Update(_iFontSize);
                     break;
-                case DrawingToolType.Cross2D: 
-                case DrawingToolType.Line2D:
-                case DrawingToolType.Pencil:
+                case DrawingType.Cross: 
+                case DrawingType.Line:
+                case DrawingType.Pencil:
                 default:
                     // These tools do not have any font size info. 
                     break;
             }
         	
         }
-        public void SetupDrawing(AbstractDrawing _drawing, DrawingToolType _tool)
-        {	
+        public void SetupDrawing(IDecorable _drawing)
+        {
         	// Modify a drawing instance according to the current value for its parent tool.
-        	switch (_tool)
+    		switch (_drawing.DrawingType)
             {
-        		case DrawingToolType.Angle2D:
+        		case DrawingType.Angle:
         			_drawing.UpdateDecoration(m_DecorationAngle2D.BackColor);
         			_drawing.UpdateDecoration(m_DecorationAngle2D.FontSize);
                     break;
-                case DrawingToolType.Chrono: 
+                case DrawingType.Chrono: 
                     _drawing.UpdateDecoration(m_DecorationChrono.BackColor);
         			_drawing.UpdateDecoration(m_DecorationChrono.FontSize);
                     break;
-                case DrawingToolType.Cross2D: 
+                case DrawingType.Cross: 
                     _drawing.UpdateDecoration(m_DecorationCross2D.Color);
         			_drawing.UpdateDecoration(m_DecorationCross2D);
                     break;
-				case DrawingToolType.Line2D: 
+				case DrawingType.Line: 
                     _drawing.UpdateDecoration(m_DecorationLine2D.Color);
         			_drawing.UpdateDecoration(m_DecorationLine2D);
                     break;
-                case DrawingToolType.Pencil: 
+                case DrawingType.Pencil: 
                     _drawing.UpdateDecoration(m_DecorationPencil.Color);
         			_drawing.UpdateDecoration(m_DecorationPencil);
                     break;
-                case DrawingToolType.Circle:
+                case DrawingType.Circle:
                     _drawing.UpdateDecoration(m_DecorationCircle.Color);
         			_drawing.UpdateDecoration(m_DecorationCircle);
                     break;
-                case DrawingToolType.Text: 
+                case DrawingType.Label: 
                     _drawing.UpdateDecoration(m_DecorationText.BackColor);
         			_drawing.UpdateDecoration(m_DecorationText.FontSize);
                     break;
 				
                 default:
-                    // Unsupported tool type.
+                    // Unsupported drawing type.
                     break;
-            }
+            }	        	
         }
     }
 }

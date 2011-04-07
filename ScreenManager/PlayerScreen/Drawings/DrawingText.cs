@@ -33,12 +33,12 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingText : AbstractDrawing
+    public class DrawingText : AbstractDrawing, IXMLSerializable, IDecorable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-        	get { return DrawingToolType.Text; }
+        	get { return DrawingType.Label; }
         }
         public override InfosFading infosFading
         {
@@ -198,7 +198,7 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {	
         	// Invisible handler to change font size.
             // Compare wanted mouse position with current bottom right.
@@ -206,7 +206,7 @@ namespace Kinovea.ScreenManager
             int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
             UpdateDecoration(newFontSize);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // Note: _delatX and _delatY are mouse delta already descaled.            
             m_TopLeft.X += _deltaX;
@@ -221,7 +221,10 @@ namespace Kinovea.ScreenManager
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+
+		#region IXMLSerializable implementation
+        public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
             _xmlWriter.WriteAttributeString("Type", "DrawingText");
@@ -249,29 +252,32 @@ namespace Kinovea.ScreenManager
             // </Drawing>
             _xmlWriter.WriteEndElement();
         }
+        #endregion
         
-        public override void UpdateDecoration(Color _color)
+        #region IDecorable implementation
+        public void UpdateDecoration(Color _color)
         {
         	m_TextStyle.Update(_color);
         }
-        public override void UpdateDecoration(LineStyle _style)
+        public void UpdateDecoration(LineStyle _style)
         {
         	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));	
         }
-        public override void UpdateDecoration(int _iFontSize)
+        public void UpdateDecoration(int _iFontSize)
         {
         	m_TextStyle.Update(_iFontSize);
         	AutoSizeTextbox();
         }
-        public override void MemorizeDecoration()
+        public void MemorizeDecoration()
         {
         	m_MemoTextStyle = m_TextStyle.Clone();
         }
-        public override void RecallDecoration()
+        public void RecallDecoration()
         {
         	m_TextStyle = m_MemoTextStyle.Clone();
         	AutoSizeTextbox();
         }
+        #endregion
         
         public override string ToString()
         {
@@ -288,7 +294,6 @@ namespace Kinovea.ScreenManager
             iHash ^= m_TextStyle.GetHashCode();
             return iHash;
         }
-        #endregion
 
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
@@ -409,6 +414,5 @@ namespace Kinovea.ScreenManager
             return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
         }
         #endregion
-
     }
 }

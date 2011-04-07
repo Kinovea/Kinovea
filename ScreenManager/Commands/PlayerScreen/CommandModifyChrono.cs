@@ -70,15 +70,15 @@ namespace Kinovea.ScreenManager
         	// In the special case of Countdown toggle, the new value will be 0 -> false, true otherwise .
             m_psui = _psui;
             m_Metadata = _Metadata;
-            m_iChronoIndex = m_Metadata.SelectedChrono;
+            //m_iChronoIndex = m_Metadata.SelectedChrono;
             m_iNewValue = _newValue;
             m_ModifType = _modifType;
 
             // old values
-            m_iStartCountingTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeStart;
+            /*m_iStartCountingTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeStart;
             m_iStopCountingTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeStop;
             m_iInvisibleTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeInvisible;
-            m_bCountdown = m_Metadata.Chronos[m_iChronoIndex].CountDown;
+            m_bCountdown = m_Metadata.Chronos[m_iChronoIndex].CountDown;*/
         }
         #endregion
 
@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Execute()
         {
-            switch (m_ModifType)
+            /*switch (m_ModifType)
             {
                 case DrawingChrono.ChronoModificationType.TimeStart:
                     m_Metadata.Chronos[m_iChronoIndex].Start(m_iNewValue);
@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
                     break;
                 default:
                     break;
-            }
+            }*/
 
             m_psui.pbSurfaceScreen.Invalidate();
         }
@@ -114,10 +114,10 @@ namespace Kinovea.ScreenManager
         {
             // The 'execute' action might have forced a modification on other values. (e.g. stop before start)
             // We must reinject all the old values.
-            m_Metadata.Chronos[m_iChronoIndex].Start(m_iStartCountingTimestamp);
+            /*m_Metadata.Chronos[m_iChronoIndex].Start(m_iStartCountingTimestamp);
             m_Metadata.Chronos[m_iChronoIndex].Stop(m_iStopCountingTimestamp);
             m_Metadata.Chronos[m_iChronoIndex].Hide(m_iInvisibleTimestamp);
-            m_Metadata.Chronos[m_iChronoIndex].CountDown = m_bCountdown;
+            m_Metadata.Chronos[m_iChronoIndex].CountDown = m_bCountdown;*/
             
             m_psui.pbSurfaceScreen.Invalidate();
         }
