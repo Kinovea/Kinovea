@@ -45,6 +45,9 @@ namespace Kinovea.ScreenManager
                     case DrawingChrono.ChronoModificationType.TimeHide:
                         friendlyName = ScreenManagerLang.mnuChronoHide;
                         break;
+                    case DrawingChrono.ChronoModificationType.Countdown:
+                        friendlyName = ScreenManagerLang.mnuChronoCountdown;
+                        break;
                     default:
                         break;
                 }
@@ -55,13 +58,17 @@ namespace Kinovea.ScreenManager
         #region Members
         private PlayerScreenUserInterface m_psui;
         private Metadata m_Metadata;
-        private int m_iChronoIndex;
+        private DrawingChrono m_Chrono;
+        
+        // New value
         private DrawingChrono.ChronoModificationType m_ModifType;
-        private long m_iStartCountingTimestamp;         
+        private long m_iNewValue;
+
+        // Memo
+        private long m_iStartCountingTimestamp;
         private long m_iStopCountingTimestamp;          
         private long m_iInvisibleTimestamp;
-        private bool m_bCountdown;
-        private long m_iNewValue;				
+        private bool m_bCountdown;				
 		#endregion
         
         #region constructor
@@ -70,15 +77,18 @@ namespace Kinovea.ScreenManager
         	// In the special case of Countdown toggle, the new value will be 0 -> false, true otherwise .
             m_psui = _psui;
             m_Metadata = _Metadata;
-            //m_iChronoIndex = m_Metadata.SelectedChrono;
+            m_Chrono = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingChrono;
             m_iNewValue = _newValue;
             m_ModifType = _modifType;
 
-            // old values
-            /*m_iStartCountingTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeStart;
-            m_iStopCountingTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeStop;
-            m_iInvisibleTimestamp = m_Metadata.Chronos[m_iChronoIndex].TimeInvisible;
-            m_bCountdown = m_Metadata.Chronos[m_iChronoIndex].CountDown;*/
+            // Save old values
+            if(m_Chrono != null)
+            {
+            	m_iStartCountingTimestamp = m_Chrono.TimeStart;
+	            m_iStopCountingTimestamp = m_Chrono.TimeStop;
+	            m_iInvisibleTimestamp = m_Chrono.TimeInvisible;
+	            m_bCountdown = m_Chrono.CountDown;
+            }
         }
         #endregion
 
@@ -87,37 +97,40 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Execute()
         {
-            /*switch (m_ModifType)
-            {
-                case DrawingChrono.ChronoModificationType.TimeStart:
-                    m_Metadata.Chronos[m_iChronoIndex].Start(m_iNewValue);
-                    break;
-                case DrawingChrono.ChronoModificationType.TimeStop:
-                    m_Metadata.Chronos[m_iChronoIndex].Stop(m_iNewValue);
-                    break;
-                case DrawingChrono.ChronoModificationType.TimeHide:
-                    m_Metadata.Chronos[m_iChronoIndex].Hide(m_iNewValue);
-                    break;
-                case DrawingChrono.ChronoModificationType.Countdown:
-                    if(m_iNewValue == 0)
-                    	m_Metadata.Chronos[m_iChronoIndex].CountDown = false;
-                    else
-                    	m_Metadata.Chronos[m_iChronoIndex].CountDown = true;
-                    break;
-                default:
-                    break;
-            }*/
-
+        	if(m_Chrono != null)
+        	{
+        		switch (m_ModifType)
+	            {
+	                case DrawingChrono.ChronoModificationType.TimeStart:
+	                    m_Chrono.Start(m_iNewValue);
+	                    break;
+	                case DrawingChrono.ChronoModificationType.TimeStop:
+	                    m_Chrono.Stop(m_iNewValue);
+	                    break;
+	                case DrawingChrono.ChronoModificationType.TimeHide:
+	                    m_Chrono.Hide(m_iNewValue);
+	                    break;
+	                case DrawingChrono.ChronoModificationType.Countdown:
+	                    m_Chrono.CountDown = (m_iNewValue != 0);
+	                    break;
+	                default:
+	                    break;
+	            }
+        	}
+            
             m_psui.pbSurfaceScreen.Invalidate();
         }
         public void Unexecute()
         {
             // The 'execute' action might have forced a modification on other values. (e.g. stop before start)
             // We must reinject all the old values.
-            /*m_Metadata.Chronos[m_iChronoIndex].Start(m_iStartCountingTimestamp);
-            m_Metadata.Chronos[m_iChronoIndex].Stop(m_iStopCountingTimestamp);
-            m_Metadata.Chronos[m_iChronoIndex].Hide(m_iInvisibleTimestamp);
-            m_Metadata.Chronos[m_iChronoIndex].CountDown = m_bCountdown;*/
+            if(m_Chrono != null)
+            {
+	            m_Chrono.Start(m_iStartCountingTimestamp);
+	            m_Chrono.Stop(m_iStopCountingTimestamp);
+	            m_Chrono.Hide(m_iInvisibleTimestamp);
+	            m_Chrono.CountDown = m_bCountdown;
+            }
             
             m_psui.pbSurfaceScreen.Invalidate();
         }

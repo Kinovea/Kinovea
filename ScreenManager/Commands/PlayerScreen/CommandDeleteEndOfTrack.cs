@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreenUserInterface m_psui;
         private Metadata m_Metadata;
-        private int m_iTrackIndex;
+        private Track m_Track;
         private long m_iTimeStamp;
         public List<AbstractTrackPoint> m_Positions;
 
@@ -46,33 +46,31 @@ namespace Kinovea.ScreenManager
         {
             m_psui = _psui;
             m_Metadata = _Metadata;
-            m_iTrackIndex = m_Metadata.SelectedTrack;
+            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as Track;
             m_iTimeStamp = _iTimeStamp;
         }
         #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
-        public void Execute()
+       public void Execute()
         {
             // We store the old end-of-track values only here (and not in the ctor) 
             // because some points may be moved between the undo and 
             // the redo and we'll want to keep teir values.
-            m_Positions = m_Metadata.Tracks[m_iTrackIndex].GetEndOfTrack(m_iTimeStamp);
-            m_Metadata.Tracks[m_iTrackIndex].ChopTrajectory(m_iTimeStamp);
-            m_psui.pbSurfaceScreen.Invalidate();
+            if(m_Track != null)
+            {
+            	m_Positions = m_Track.GetEndOfTrack(m_iTimeStamp);
+	            m_Track.ChopTrajectory(m_iTimeStamp);
+	            m_psui.pbSurfaceScreen.Invalidate();
+            }
         }
         public void Unexecute()
         {
             // Revival of the discarded points.
-            if(m_Positions != null)
+            if(m_Positions != null && m_Track != null)
             {
-            	m_Metadata.Tracks[m_iTrackIndex].AppendPoints(m_iTimeStamp, m_Positions);
+            	m_Track.AppendPoints(m_iTimeStamp, m_Positions);
             }
             m_psui.pbSurfaceScreen.Invalidate();
         }
     }
 }
-
-

@@ -148,29 +148,12 @@ namespace Kinovea.ScreenManager
 
             _Metadata.UnselectAll();
 
-            /*if (!IsOnDrawing(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
-            {
-                if (!IsOnChrono(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
-                {
-                    if (!IsOnTrack(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
-                    {
-                        if (!IsOnGrids(_Metadata, _MouseCoordinates))
-                        {
-                            // Moving the whole image (Direct Zoom)
-                            m_SelectedObjectType = SelectedObjectType.None;
-                            bHit = false;
-                        }
-                    }
-                }
-            }*/
-
-            // Refactoring in progress.
             if (!IsOnDrawing(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
 			{
-            	if (!IsOnExtraDrawing(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
+            	if (!IsOnTrack(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
                 {
-            		if (!IsOnTrack(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
-                    {
+            		if (!IsOnExtraDrawing(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
+                	{
             			// Moving the whole image (Direct Zoom)
 						m_SelectedObjectType = SelectedObjectType.None;
 						bHit = false;
@@ -229,12 +212,6 @@ namespace Kinovea.ScreenManager
                             			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
                             		}
                             		break;
-                                case SelectedObjectType.Track:
-                                    if (_Metadata.SelectedTrack >= 0)
-                                    {
-                                    	_Metadata.Tracks[_Metadata.SelectedTrack].MoveDrawing(deltaX, deltaY, _ModifierKeys);
-                                    }
-                                    break;
                                 case SelectedObjectType.Drawing:
                                     if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
                                     {
@@ -257,12 +234,6 @@ namespace Kinovea.ScreenManager
                             			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle);		
                             		}
                             		break;
-                                case SelectedObjectType.Track:
-                                    if (_Metadata.SelectedTrack >= 0)
-                                    {
-                                    	_Metadata.Tracks[_Metadata.SelectedTrack].MoveHandle(_MouseLocation, m_iResizingHandle);
-                                    }
-                                    break;
                                 case SelectedObjectType.Drawing:
                                     if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
                                     {
@@ -396,40 +367,45 @@ namespace Kinovea.ScreenManager
         }
         private bool IsOnTrack(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
         {
+        	// Track have their own special hit test because we need to differenciate the interactive case from the edit case.
             bool bTrackHit = false;
 
-            for (int i = 0; i < _Metadata.Tracks.Count; i++)
+            for (int i = 0; i < _Metadata.ExtraDrawings.Count; i++)
             {
-				// Result: 
-            	// -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
-            
-                int handle = _Metadata.Tracks[i].HitTest(_MouseCoordinates, _iCurrentTimeStamp);
-
-                if (handle >= 0)
-                {
-                    bTrackHit = true;
-                    m_SelectedObjectType = SelectedObjectType.Track;
-                    _Metadata.SelectedTrack = i;
-
-                    if(handle > 1)
-                	{
-                		// Touched target or handler.
-                    	// The handler would have been saved inside the track object.
-                		m_UserAction = UserAction.Move;	
-                	}
-                    else if (_Metadata.Tracks[i].Status == Track.TrackStatus.Interactive)
-                    {
-                    	m_UserAction = UserAction.Resize;
-                    	m_iResizingHandle = handle;	
-                    }
-                    else
-                    {
-                    	// edit mode + 0 or 1.
-                    	m_UserAction = UserAction.Move;
-                    }
-                   
-                    break;
-                }
+            	Track trk = _Metadata.ExtraDrawings[i] as Track;
+            	if(trk != null)
+            	{
+            		// Result: 
+	            	// -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
+	            
+	                int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp);
+	
+	                if (handle >= 0)
+	                {
+	                    bTrackHit = true;
+	                    m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
+                		_Metadata.SelectedExtraDrawing = i;
+	
+	                    if(handle > 1)
+	                	{
+	                		// Touched target or handler.
+	                    	// The handler would have been saved inside the track object.
+	                		m_UserAction = UserAction.Move;	
+	                	}
+	                    else if (trk.Status == Track.TrackStatus.Interactive)
+	                    {
+	                    	m_UserAction = UserAction.Resize;
+	                    	m_iResizingHandle = handle;	
+	                    }
+	                    else
+	                    {
+	                    	// edit mode + 0 or 1.
+	                    	m_UserAction = UserAction.Move;
+	                    }
+	                   
+	                    break;
+	                }
+	            }	
             }
 
             return bTrackHit;
