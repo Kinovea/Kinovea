@@ -1,4 +1,11 @@
 
+2011/04/07
+Unattached drawings:
+- Tracks merged into the list of ExtraDrawings.
+- Fixed Chrono commands (undo/redo for add, delete, modify).
+- Fixed Tracks commands (undo/redo for delete, delete end).
+
+
 2011/04/07 - Actual branch creation under SVN
 
 Done at this point:

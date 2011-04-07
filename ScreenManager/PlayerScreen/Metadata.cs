@@ -98,14 +98,12 @@ namespace Kinovea.ScreenManager
             	// All kind of objects should be taken into account here, even those
             	// that we currently don't save to the .kva but only draw on the image.
             	// (grids, magnifier).
-            	
-            	// 2011/04/07 - Count if there are dynamic drawings added.
-            	
-            	/*bool hasData = (m_Keyframes.Count != 0) || (m_Tracks.Count > 0) || (m_Chronos.Count > 0) ||
-            		(m_Magnifier.Mode != MagnifierMode.NotVisible) || m_Plane.Visible || m_Grid.Visible;*/
-            		
-            	bool hasData = (m_Keyframes.Count != 0) || (m_Tracks.Count > 0) || (m_Magnifier.Mode != MagnifierMode.NotVisible) || m_Plane.Visible || m_Grid.Visible;
-            	
+            	bool hasData =  
+            		(m_Keyframes.Count != 0) ||
+            		(m_ExtraDrawings.Count > m_iStaticExtraDrawings) || 
+            		m_Plane.Visible || 
+            		m_Grid.Visible || 
+            		(m_Magnifier.Mode != MagnifierMode.NotVisible);
             	return hasData;
             }
         }
@@ -142,16 +140,6 @@ namespace Kinovea.ScreenManager
         {
         	get { return m_Magnifier;}
         	set { m_Magnifier = value;}
-        }
-        public List<Track> Tracks
-        {	// remove
-            get { return m_Tracks; }
-        }
-        public int SelectedTrack
-        {
-        	// remove
-            get { return m_iSelectedTrack; }
-            set { m_iSelectedTrack = value;}
         }
         #endregion
         
@@ -199,10 +187,7 @@ namespace Kinovea.ScreenManager
         private List<AbstractDrawing> m_ExtraDrawings = new List<AbstractDrawing>();
         private int m_iSelectedExtraDrawing = -1;
         private int m_iStaticExtraDrawings;			// TODO: will be removed when even Chronos and tracks are represented by a single manager object.
-        
-        // TODO: move to ExtraDrawings.
-        private List<Track> m_Tracks = new List<Track>();
-        private int m_iSelectedTrack = -1;
+
         private Magnifier m_Magnifier = new Magnifier();
         
         // Grid and plane must be known individually because of the main menu access. (visibility toggle).
@@ -276,12 +261,9 @@ namespace Kinovea.ScreenManager
 
             md.FromXml(xmlReader);
 
-            if (md.m_Keyframes.Count > 0 && md.m_Tracks.Count > 0)
+            if (md.m_Keyframes.Count > 0)
             {
-                foreach (Track t in md.m_Tracks)
-                {
-                    t.IntegrateKeyframes();
-                }
+            	md.UpdateTrajectoriesForKeyframes();
             }
 
             md.m_Plane.SetLocations(md.m_ImageSize, 1.0, new Point(0, 0));
@@ -290,6 +272,8 @@ namespace Kinovea.ScreenManager
             
             return md;
         }
+        
+        #region Key images
         public void Clear()
         {
             m_Keyframes.Clear();
@@ -306,12 +290,36 @@ namespace Kinovea.ScreenManager
         {
             m_Keyframes.RemoveAt(_index);
         }
+        #endregion
         
         public void AddChrono(DrawingChrono _chrono)
         {
         	_chrono.ParentMetadata = this;
         	m_ExtraDrawings.Add(_chrono);
         	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
+        }
+        public void AddTrack(Track _track, ShowClosestFrame _showClosestFrame, Color _color)
+        {
+        	_track.ParentMetadata = this;
+        	_track.Status = Track.TrackStatus.Edit;
+        	_track.m_ShowClosestFrame = _showClosestFrame;
+        	_track.MainColor = _color;
+        	m_ExtraDrawings.Add(_track);
+        	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
+        }
+        public bool HasTrack()
+        {
+        	// Used for file menu to know if we can export to text.
+        	bool hasTrack = false;
+        	foreach(AbstractDrawing ad in m_ExtraDrawings)
+        	{
+        		if(ad is Track)
+        		{
+        			hasTrack = true;
+        			break;
+        		}
+        	}
+        	return hasTrack;
         }
         public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
         {
@@ -361,36 +369,19 @@ namespace Kinovea.ScreenManager
             // TODO - merge mechanics
 
             ResetCoreContent();
-
             m_FullPath = _file;
-
             XmlTextReader xmlReader = new XmlTextReader(_file);
             FromXml(xmlReader);
-
-            if (m_Tracks.Count > 0 && m_Keyframes.Count > 0)
-            {
-                UpdateTrajectoriesForKeyframes();
-            }
+            UpdateTrajectoriesForKeyframes();
         }
         public void LoadFromString(String _xmlString)
         {
             ResetCoreContent();
-
             StringReader reader = new StringReader(_xmlString);
             XmlTextReader xmlReader = new XmlTextReader(reader);
-
             FromXml(xmlReader);
-
-            if (m_Keyframes.Count > 0 && m_Tracks.Count > 0)
-            {
-                foreach (Track t in m_Tracks)
-                {
-                    t.IntegrateKeyframes();
-                }
-            }
-
-            m_Plane.SetLocations(m_ImageSize, 1.0, new Point(0, 0));
-            m_Grid.SetLocations(m_ImageSize, 1.0, new Point(0, 0));
+            UpdateTrajectoriesForKeyframes();
+            SetLocations(m_ImageSize, 1.0, new Point(0, 0));
         }
         #endregion
         
@@ -421,9 +412,13 @@ namespace Kinovea.ScreenManager
         {
             // Called when keyframe added, removed or title changed
             // => Updates the trajectories.
-            foreach (Track t in m_Tracks)
+            foreach (AbstractDrawing ad in m_ExtraDrawings)
             {
-                t.IntegrateKeyframes();
+            	Track t = ad as Track;
+            	if(t != null)
+            	{
+            		t.IntegrateKeyframes();
+            	}
             }
         }
         public void AllDrawingTextToNormalMode()
@@ -441,10 +436,26 @@ namespace Kinovea.ScreenManager
         }
         public void StopAllTracking()
         {
-            foreach (Track t in m_Tracks)
+           foreach (AbstractDrawing ad in m_ExtraDrawings)
             {
-                t.StopTracking();
+            	Track t = ad as Track;
+            	if(t != null)
+            	{
+            		t.StopTracking();
+            	}
             }
+        }
+        public void UpdateTrackPoint(Bitmap _bmp)
+        {
+        	// Happens when mouse up and editing a track.
+        	if(m_iSelectedExtraDrawing > 0)
+        	{
+        		Track t = m_ExtraDrawings[m_iSelectedExtraDrawing] as Track;
+        		if(t != null && t.Status == Track.TrackStatus.Edit)
+        		{
+        			t.UpdateTrackPoint(_bmp);
+        		}
+        	}
         }
         public void CleanupHash()
         {
@@ -497,11 +508,6 @@ namespace Kinovea.ScreenManager
             m_iSelectedDrawingFrame = -1;
             m_iSelectedDrawing = -1;
             m_iSelectedExtraDrawing = -1;
-            
-            m_iSelectedTrack = -1;
-            //m_iSelectedChrono = -1;
-            //m_Plane.Selected = false;
-            //m_Grid.Selected = false;
         }
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
@@ -596,9 +602,9 @@ namespace Kinovea.ScreenManager
 			
         	AbstractDrawing hitDrawing = null;
 			
-			for(int i=0;i<m_ExtraDrawings.Count;i++)
+			for(int i=m_ExtraDrawings.Count-1;i>=0;i--)
             {
-				int hitRes = m_ExtraDrawings[i].HitTest(_MouseLocation, 0);
+				int hitRes = m_ExtraDrawings[i].HitTest(_MouseLocation, _iTimestamp);
             	if(hitRes >= 0)
             	{
             		m_iSelectedExtraDrawing = i;
@@ -608,27 +614,6 @@ namespace Kinovea.ScreenManager
             }
 			
 			return hitDrawing;
-        }
-        public bool IsOnTrack(Point _MouseLocation, long _iTimestamp)
-        {
-            // Note: Mouse coordinates are already descaled.
-
-            bool bTrackHit = false;
-            int iCurrentTrack = 0;
-            while (!bTrackHit && iCurrentTrack < m_Tracks.Count)
-            {
-                if (m_Tracks[iCurrentTrack].HitTest(_MouseLocation, _iTimestamp) >= 0)
-                {
-                    bTrackHit = true;
-                    m_iSelectedTrack = iCurrentTrack;
-                }
-                else
-                {
-                    iCurrentTrack++;
-                }
-            }
-
-            return bTrackHit;
         }
         #endregion
         
@@ -717,15 +702,12 @@ namespace Kinovea.ScreenManager
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
             m_Keyframes.Clear();
-            ClearExtraDrawings();
-            //m_Chronos.Clear();
-            
             StopAllTracking();
-            m_Tracks.Clear();
+            ClearExtraDrawings();
             m_Grid.Reset();
             m_Plane.Reset();
-            m_Mirrored = false;
             m_Magnifier.ResetData();
+            m_Mirrored = false;
             UnselectAll();
         }
         private void ClearExtraDrawings()
@@ -806,18 +788,28 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Tracks infos.
-                if (m_Tracks.Count > 0)
+                bool atLeastOne = false;
+                foreach(AbstractDrawing ad in m_ExtraDrawings)
                 {
-                    _xmlWriter.WriteStartElement("Tracks");
-                    foreach (Track trk in m_Tracks)
-                    {
-                        trk.ToXmlString(_xmlWriter);
-                    }
-                    _xmlWriter.WriteEndElement();
+                	Track trk = ad as Track;
+                	if(trk != null)
+                	{
+                		if(atLeastOne == false)
+                		{
+                			_xmlWriter.WriteStartElement("Tracks");
+                			atLeastOne = true;
+                		}
+                		
+						trk.ToXmlString(_xmlWriter);
+                	}
+                }
+                if(atLeastOne)
+                {
+                	_xmlWriter.WriteEndElement();
                 }
 
                 // Chronos infos.
-                bool atLeastOne = false;
+                atLeastOne = false;
                 foreach(AbstractDrawing ad in m_ExtraDrawings)
                 {
                 	DrawingChrono dc = ad as DrawingChrono;
@@ -837,16 +829,6 @@ namespace Kinovea.ScreenManager
                 	_xmlWriter.WriteEndElement();
                 }
                 
-                /*if (m_Chronos.Count > 0)
-                {
-                    _xmlWriter.WriteStartElement("Chronos");
-                    foreach (DrawingChrono dc in m_Chronos)
-                    {
-                        dc.ToXmlString(_xmlWriter);
-                    }
-                    _xmlWriter.WriteEndElement();
-                }*/
-
                 _xmlWriter.WriteEndElement();
                 _xmlWriter.WriteEndDocument();
                 _xmlWriter.Flush();
@@ -996,16 +978,6 @@ namespace Kinovea.ScreenManager
                 iHashCode ^= ad.GetHashCode();
             }
             return iHashCode;
-        }
-        private int GetTracksHashCode()
-        {
-            // Tracks hashcodes are XORed with one another. 
-            int iHashCode = 0;
-            foreach (Track trk in m_Tracks)
-            {
-                iHashCode ^= trk.GetHashCode();
-            }
-            return iHashCode;    
         }
 		private static string ConvertFormat(string _xmlString)
         {
@@ -1368,12 +1340,8 @@ namespace Kinovea.ScreenManager
                         Track trk = Track.FromXml(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp), m_ImageSize);
                         if (trk != null)
                         {
-                            // Finish setup
-                            trk.ParentMetadata = this;
-                            trk.m_ShowClosestFrame = m_ShowClosestFrameCallback;
-
-                            m_Tracks.Add(trk);
-                            this.SelectedTrack = m_Tracks.Count - 1;
+                            AddTrack(trk, m_ShowClosestFrameCallback, trk.MainColor);
+                            trk.Status = Track.TrackStatus.Interactive;
                         }
                     }
                 }

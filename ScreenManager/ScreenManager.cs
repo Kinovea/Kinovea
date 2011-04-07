@@ -1530,7 +1530,7 @@ namespace Kinovea.ScreenManager
                     mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportTEXT.Enabled = player.FrameServer.Metadata.Tracks.Count > 0;
+                    mnuExportTEXT.Enabled = player.FrameServer.Metadata.HasTrack();
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Image
