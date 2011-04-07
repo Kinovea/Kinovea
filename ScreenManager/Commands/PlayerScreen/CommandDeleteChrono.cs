@@ -46,9 +46,9 @@ namespace Kinovea.ScreenManager
         {
             m_psui = _psui;
             m_Metadata = _Metadata;
-            m_iChronoIndex = m_Metadata.SelectedChrono;
-            m_iTotalChronos = m_Metadata.Chronos.Count;
-            m_Chrono = m_Metadata.Chronos[m_iChronoIndex];
+            //m_iChronoIndex = m_Metadata.SelectedChrono;
+            //m_iTotalChronos = m_Metadata.Chronos.Count;
+            //m_Chrono = m_Metadata.Chronos[m_iChronoIndex];
         }
         #endregion
 
@@ -63,9 +63,9 @@ namespace Kinovea.ScreenManager
             // Even if drawings were added in between, we can't come back here
             // before all those new drawings have been unstacked from the m_CommandStack stack.
 
-            m_Metadata.Chronos.RemoveAt(m_iChronoIndex);
+            /*m_Metadata.Chronos.RemoveAt(m_iChronoIndex);
             m_Metadata.SelectedChrono = -1;
-            m_psui.pbSurfaceScreen.Invalidate();
+            m_psui.pbSurfaceScreen.Invalidate();*/
         }
         public void Unexecute()
         {
@@ -74,8 +74,8 @@ namespace Kinovea.ScreenManager
             // 1. Look for the keyframe
             // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
             // We must still be able to undo any Add action that where performed before.
-            m_Metadata.Chronos.Insert(m_iChronoIndex, m_Chrono);
-            m_psui.pbSurfaceScreen.Invalidate();
+            /*m_Metadata.Chronos.Insert(m_iChronoIndex, m_Chrono);
+            m_psui.pbSurfaceScreen.Invalidate();*/
         }
     }
 }

@@ -385,9 +385,11 @@ namespace Kinovea.ScreenManager
 	       		
 	       		// Chronos
 	       		m_ChronosMarks.Clear();
-	       		foreach(DrawingChrono dc in m_Metadata.Chronos)
+	       		//foreach(DrawingChrono dc in m_Metadata.Chronos)
+	       		foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
 	       		{
-	       			if(dc.TimeStart != long.MaxValue && dc.TimeStop != long.MaxValue)
+					DrawingChrono dc = ad as DrawingChrono;
+	       			if(dc != null && dc.TimeStart != long.MaxValue && dc.TimeStop != long.MaxValue)
 					{
 	       				// todo: currently doesn't support the chrono without end.
 	       			

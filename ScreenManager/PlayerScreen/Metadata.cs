@@ -42,6 +42,7 @@ namespace Kinovea.ScreenManager
     public class Metadata
     {
         #region Properties
+        
         public bool IsDirty
         {
             get 
@@ -93,12 +94,18 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
+            	// This is used to know if there is anything to burn on the images when saving.
             	// All kind of objects should be taken into account here, even those
             	// that we currently don't save to the .kva but only draw on the image.
             	// (grids, magnifier).
-            	bool hasData = (Count != 0) || (m_Tracks.Count > 0) || (m_Chronos.Count > 0) ||
-            		(m_Magnifier.Mode != MagnifierMode.NotVisible) || m_Plane.Visible || m_Grid.Visible;
+            	
+            	// 2011/04/07 - Count if there are dynamic drawings added.
+            	
+            	/*bool hasData = (m_Keyframes.Count != 0) || (m_Tracks.Count > 0) || (m_Chronos.Count > 0) ||
+            		(m_Magnifier.Mode != MagnifierMode.NotVisible) || m_Plane.Visible || m_Grid.Visible;*/
             		
+            	bool hasData = (m_Keyframes.Count != 0) || (m_Tracks.Count > 0) || (m_Magnifier.Mode != MagnifierMode.NotVisible) || m_Plane.Visible || m_Grid.Visible;
+            	
             	return hasData;
             }
         }
@@ -112,25 +119,17 @@ namespace Kinovea.ScreenManager
             get {return m_iSelectedDrawing; }
             set { m_iSelectedDrawing = value; }
         }
-
-        public List<Track> Tracks
-        {
-            get { return m_Tracks; }
-        }
-        public int SelectedTrack
-        {
-            get { return m_iSelectedTrack; }
-            set { m_iSelectedTrack = value;}
-        }
-        public List<DrawingChrono> Chronos
-        {
-            get { return m_Chronos; }
-        }
-        public int SelectedChrono
-        {
-            get { return m_iSelectedChrono; }
-            set { m_iSelectedChrono = value; }
-        }
+        public List<AbstractDrawing> ExtraDrawings
+		{
+			get { return m_ExtraDrawings;}
+		}
+        public int SelectedExtraDrawing
+		{
+			get { return m_iSelectedExtraDrawing; }
+			set { m_iSelectedExtraDrawing = value; }
+		}
+        
+        #region Accessors to Fixed extra drawings  
         public Plane3D Plane
         {
             get { return m_Plane; }
@@ -139,17 +138,29 @@ namespace Kinovea.ScreenManager
         {
             get { return m_Grid; }
         }
-        public bool Mirrored
-        {
-            get { return m_Mirrored; }
-            set { m_Mirrored = value; }
-        }
         public Magnifier Magnifier
         {
         	get { return m_Magnifier;}
         	set { m_Magnifier = value;}
         }
-
+        public List<Track> Tracks
+        {	// remove
+            get { return m_Tracks; }
+        }
+        public int SelectedTrack
+        {
+        	// remove
+            get { return m_iSelectedTrack; }
+            set { m_iSelectedTrack = value;}
+        }
+        #endregion
+        
+        public bool Mirrored
+        {
+            get { return m_Mirrored; }
+            set { m_Mirrored = value; }
+        }
+        
         // General infos
         public Int64 AverageTimeStampsPerFrame
         {
@@ -179,23 +190,34 @@ namespace Kinovea.ScreenManager
         
         private PreferencesManager m_PrefManager = PreferencesManager.Instance();
         private string m_FullPath;
+        
         private List<Keyframe> m_Keyframes = new List<Keyframe>();
         private int m_iSelectedDrawingFrame = -1;
         private int m_iSelectedDrawing = -1;
+        
+        // Drawings not attached to any key image.
+        private List<AbstractDrawing> m_ExtraDrawings = new List<AbstractDrawing>();
+        private int m_iSelectedExtraDrawing = -1;
+        private int m_iStaticExtraDrawings;			// TODO: will be removed when even Chronos and tracks are represented by a single manager object.
+        
+        // TODO: move to ExtraDrawings.
         private List<Track> m_Tracks = new List<Track>();
         private int m_iSelectedTrack = -1;
-        private List<DrawingChrono> m_Chronos = new List<DrawingChrono>();
-        private int m_iSelectedChrono = -1;
+        private Magnifier m_Magnifier = new Magnifier();
+        
+        // Grid and plane must be known individually because of the main menu access. (visibility toggle).
         private Plane3D m_Plane = new Plane3D(500, 8, true);
         private Plane3D m_Grid = new Plane3D(500, 8, false);
+        
         private bool m_Mirrored;
-        private Magnifier m_Magnifier = new Magnifier();
+        
         private string m_GlobalTitle = " ";
         private Size m_ImageSize = new Size(0,0);
         private Int64 m_iAverageTimeStampsPerFrame = 1;
         private Int64 m_iFirstTimeStamp;
         private Int64 m_iSelectionStart;
         private int m_iDuplicateFactor = 1;
+        private int m_iLastCleanHash;
         private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
         
@@ -206,23 +228,33 @@ namespace Kinovea.ScreenManager
         private Int64 m_iInputSelectionStart;
         private string m_InputFileName;
         
-        // Export to spreadsheet
-        IEntryFactory m_EntryFactory = new ZipEntryFactory();
-
-        // Clean hash
-        private int m_iLastCleanHash;
-
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Constructor
+        #region Constructor & Init
         public Metadata(GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
         { 
             m_TimeStampsToTimecodeCallback = _TimeStampsToTimecodeCallback;
             m_ShowClosestFrameCallback = _ShowClosestFrameCallback;
            
+            InitExtraDrawingTools();
+            
             log.Debug("Constructing new Metadata object.");
             CleanupHash();
+        }
+        private void InitExtraDrawingTools()
+        {
+        	// Add the static extra drawing tools to the list of drawings.
+        	// These drawings are unique and not attached to any particular key image.
+        	// It can be truly unique drawings like Grids, or it can be proxy drawings, like SpotlightManager.
+        	
+        	// /!\ Must be in the same order as the enum ExtraDrawingType (defined in ScreenManager.cs)
+        	// This enum is then used to quickly identify an extra drawing without resorting to Reflection.
+        	// For example, use m_ExtraDrawings[ExtraDrawingType.Grid] to access the grid directly.
+        	
+            m_ExtraDrawings.Add(m_Grid);
+            m_ExtraDrawings.Add(m_Plane);
+            m_iStaticExtraDrawings = m_ExtraDrawings.Count;
         }
         #endregion
 
@@ -274,6 +306,20 @@ namespace Kinovea.ScreenManager
         {
             m_Keyframes.RemoveAt(_index);
         }
+        
+        public void AddChrono(DrawingChrono _chrono)
+        {
+        	_chrono.ParentMetadata = this;
+        	m_ExtraDrawings.Add(_chrono);
+        	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
+        }
+        public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+        	m_Grid.SetLocations(_ImageSize, _fStretchFactor, _DirectZoomTopLeft);
+        	m_Plane.SetLocations(_ImageSize, _fStretchFactor, _DirectZoomTopLeft);
+        }
+        
+        #region read/write XML
         public String ToXmlString()
         {
             StringWriter writer = new StringWriter();
@@ -346,6 +392,8 @@ namespace Kinovea.ScreenManager
             m_Plane.SetLocations(m_ImageSize, 1.0, new Point(0, 0));
             m_Grid.SetLocations(m_ImageSize, 1.0, new Point(0, 0));
         }
+        #endregion
+        
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
@@ -406,7 +454,8 @@ namespace Kinovea.ScreenManager
         public override int GetHashCode()
         {
             // Combine all fields hashes, using XOR operator.
-            int iHashCode = GetKeyframesHashCode() ^ GetChronometersHashCode() ^ GetTracksHashCode();
+            //int iHashCode = GetKeyframesHashCode() ^ GetChronometersHashCode() ^ GetTracksHashCode();
+            int iHashCode = GetKeyframesHashCode() ^ GetExtraDrawingsHashCode();
             return iHashCode;
         }
         public List<Bitmap> GetFullImages()
@@ -435,19 +484,24 @@ namespace Kinovea.ScreenManager
         			}
         		}
         	}
-        	
-        	
         }
         
         #region Objects Hit Tests
+        // Note: these hit tests are for right click only.
+        // They work slightly differently than the hit test in the PointerTool which is for left click.
+        // The main difference is that here we only need to know if the drawing was hit at all,
+        // in the pointer tool, we need to differenciate which handle was hit.
+        // For example, Tracks can here be handled with all other ExtraDrawings.
         public void UnselectAll()
         {
             m_iSelectedDrawingFrame = -1;
             m_iSelectedDrawing = -1;
+            m_iSelectedExtraDrawing = -1;
+            
             m_iSelectedTrack = -1;
-            m_iSelectedChrono = -1;
-            m_Plane.Selected = false;
-            m_Grid.Selected = false;
+            //m_iSelectedChrono = -1;
+            //m_Plane.Selected = false;
+            //m_Grid.Selected = false;
         }
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
@@ -510,6 +564,7 @@ namespace Kinovea.ScreenManager
         }
         public bool IsOnDrawing(int _iActiveKeyframeIndex, Point _MouseLocation, long _iTimestamp)
         {
+        	// Returns whether the mouse is on a drawing attached to a key image.
             bool bDrawingHit = false;
 
             if (m_PrefManager.DefaultFading.Enabled && m_Keyframes.Count > 0)
@@ -533,27 +588,26 @@ namespace Kinovea.ScreenManager
 
             return bDrawingHit;
         }
-        public bool IsOnChronometer(Point _MouseLocation, long _iTimestamp)
+        public AbstractDrawing IsOnExtraDrawing(Point _MouseLocation, long _iTimestamp)
         {
-            // Note: Mouse coordinates are already descaled.
-            
-            bool bChronoHit = false;
-
-            int iCurrentChrono = 0;
-            while (iCurrentChrono < m_Chronos.Count && !bChronoHit)
+        	// Check if the mouse is on one of the drawings not attached to any key image.
+        	// Returns the drawing on which we stand (or null if none), and select it on the way.
+        	// the caller will then check its type and decide which action to perform.
+			
+        	AbstractDrawing hitDrawing = null;
+			
+			for(int i=0;i<m_ExtraDrawings.Count;i++)
             {
-                if (m_Chronos[iCurrentChrono].HitTest(_MouseLocation, _iTimestamp) >= 0)
-                {
-                    bChronoHit = true;
-                    m_iSelectedChrono = iCurrentChrono;
-                }
-                else
-                {
-                    iCurrentChrono++;
-                }
+				int hitRes = m_ExtraDrawings[i].HitTest(_MouseLocation, 0);
+            	if(hitRes >= 0)
+            	{
+            		m_iSelectedExtraDrawing = i;
+            		hitDrawing = m_ExtraDrawings[i];
+            		break;
+            	}
             }
-
-            return bChronoHit;
+			
+			return hitDrawing;
         }
         public bool IsOnTrack(Point _MouseLocation, long _iTimestamp)
         {
@@ -575,31 +629,6 @@ namespace Kinovea.ScreenManager
             }
 
             return bTrackHit;
-        }
-        public bool IsOnGrid(Point _MouseLocation)
-        {
-            // Note: Mouse coordinates are already descaled.
-
-            bool bGridHit = false;
-            if (m_Plane.Visible == true)
-            {
-                if (m_Plane.HitTest(_MouseLocation) >= 0)
-                {
-                    bGridHit = true;
-                    m_Plane.Selected = true;
-                }
-            }
-
-            if (!bGridHit && m_Grid.Visible == true)
-            {
-                if (m_Grid.HitTest(_MouseLocation) >= 0)
-                {
-                    bGridHit = true;
-                    m_Grid.Selected = true;
-                }
-            }
-
-            return bGridHit;
         }
         #endregion
         
@@ -688,7 +717,8 @@ namespace Kinovea.ScreenManager
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
             m_Keyframes.Clear();
-            m_Chronos.Clear();
+            ClearExtraDrawings();
+            //m_Chronos.Clear();
             
             StopAllTracking();
             m_Tracks.Clear();
@@ -697,6 +727,12 @@ namespace Kinovea.ScreenManager
             m_Mirrored = false;
             m_Magnifier.ResetData();
             UnselectAll();
+        }
+        private void ClearExtraDrawings()
+        {
+        	// Clear all drawings that are dynamically added to the non attached list.
+        	// keep stuff like grid, magnifier, but remove Chronos, Tracks.
+        	m_ExtraDrawings.RemoveRange(2, m_ExtraDrawings.Count - 2);
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
         {
@@ -781,7 +817,27 @@ namespace Kinovea.ScreenManager
                 }
 
                 // Chronos infos.
-                if (m_Chronos.Count > 0)
+                bool atLeastOne = false;
+                foreach(AbstractDrawing ad in m_ExtraDrawings)
+                {
+                	DrawingChrono dc = ad as DrawingChrono;
+                	if(dc != null)
+                	{
+                		if(atLeastOne == false)
+                		{
+                			_xmlWriter.WriteStartElement("Chronos");
+                			atLeastOne = true;
+                		}
+                		
+						dc.ToXmlString(_xmlWriter);
+                	}
+                }
+                if(atLeastOne)
+                {
+                	_xmlWriter.WriteEndElement();
+                }
+                
+                /*if (m_Chronos.Count > 0)
                 {
                     _xmlWriter.WriteStartElement("Chronos");
                     foreach (DrawingChrono dc in m_Chronos)
@@ -789,7 +845,7 @@ namespace Kinovea.ScreenManager
                         dc.ToXmlString(_xmlWriter);
                     }
                     _xmlWriter.WriteEndElement();
-                }
+                }*/
 
                 _xmlWriter.WriteEndElement();
                 _xmlWriter.WriteEndDocument();
@@ -932,15 +988,14 @@ namespace Kinovea.ScreenManager
             }
             return iHashCode;    
         }
-        private int GetChronometersHashCode()
+        private int GetExtraDrawingsHashCode()
         {
-            // Chronos hashcodes are XORed with one another. 
-            int iHashCode = 0;
-            foreach (DrawingChrono dc in m_Chronos)
+        	int iHashCode = 0;
+            foreach (AbstractDrawing ad in m_ExtraDrawings)
             {
-                iHashCode ^= dc.GetHashCode();
+                iHashCode ^= ad.GetHashCode();
             }
-            return iHashCode;    
+            return iHashCode;
         }
         private int GetTracksHashCode()
         {
@@ -1283,11 +1338,7 @@ namespace Kinovea.ScreenManager
                         DrawingChrono dc = (DrawingChrono)ParseDrawing(_xmlReader);
                         if (dc != null)
                         {
-                            m_Chronos.Add(dc);
-                            
-                            // complete setup
-                            this.SelectedChrono = m_Chronos.Count - 1;
-                            m_Chronos[SelectedChrono].ParentMetadata = this;
+                            AddChrono(dc);
                         }
                     }
                 }

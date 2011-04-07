@@ -27,18 +27,19 @@ using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingLine2D : AbstractDrawing
+    public class DrawingLine2D : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-        	get { return DrawingToolType.Line2D; }
+        	get { return DrawingType.Line; }
         }
         public override InfosFading infosFading
         {
@@ -145,7 +146,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // Move the specified handle to the specified coordinates.
             // In Line2D, handles are directly mapped to the endpoints of the line.
@@ -169,7 +170,7 @@ namespace Kinovea.ScreenManager
 
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             m_StartPoint.X += _deltaX;
@@ -214,7 +215,10 @@ namespace Kinovea.ScreenManager
             }
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+
+		#region IXMLSerializable implementation
+        public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
             _xmlWriter.WriteAttributeString("Type", "DrawingLine2D");
@@ -255,6 +259,53 @@ namespace Kinovea.ScreenManager
             }
             
             _xmlWriter.WriteEndElement();// </Drawing>
+        }
+        #endregion
+
+        #region IDecorable implementation
+        public void UpdateDecoration(Color _color)
+        {
+        	m_PenStyle.Update(_color);
+        }
+        public void UpdateDecoration(LineStyle _style)
+        {
+        	m_PenStyle.Update(_style, false, true, true);
+        }
+        public void UpdateDecoration(int _iFontSize)
+        {
+        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
+        }
+        public void MemorizeDecoration()
+        {
+        	m_MemoPenStyle = m_PenStyle.Clone();
+        }
+        public void RecallDecoration()
+        {
+        	m_PenStyle = m_MemoPenStyle.Clone();
+        }
+        #endregion
+        
+        #region IInitializable implementation
+        public void ContinueSetup(Point point)
+		{
+			MoveHandle(point, 2);
+		}
+        #endregion
+        
+        public override string ToString()
+        {
+            // Return the name of the tool used to draw this drawing.
+            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
+            return rm.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture);
+        }
+        public override int GetHashCode()
+        {
+            // Combine all relevant fields with XOR to get the Hash.
+            int iHash = m_StartPoint.GetHashCode();
+            iHash ^= m_EndPoint.GetHashCode();
+            iHash ^= m_PenStyle.GetHashCode();
+
+            return iHash;
         }
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
@@ -306,43 +357,6 @@ namespace Kinovea.ScreenManager
             return dl;
         }
         
-        public override void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public override void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
-        
-        public override string ToString()
-        {
-            // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture);
-        }
-        public override int GetHashCode()
-        {
-            // Combine all relevant fields with XOR to get the Hash.
-            int iHash = m_StartPoint.GetHashCode();
-            iHash ^= m_EndPoint.GetHashCode();
-            iHash ^= m_PenStyle.GetHashCode();
-
-            return iHash;
-        }
-        #endregion
 
         #region Lower level helpers
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)

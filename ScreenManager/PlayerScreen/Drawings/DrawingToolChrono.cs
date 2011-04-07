@@ -29,23 +29,21 @@ namespace Kinovea.ScreenManager
         // WARNING.
         // Chrono is a very special drawing and is not treated as such.
         // The DrawingChronos doesn't belong to a single KF but to the Metadata directly.
-        // We keep using the AbstractDrawingTool and AbstractDrawing classes for conveniency.
+        // We keep using the AbstractDrawingTool and AbstractDrawing classes for convenience.
         //-----------------------------------------------------------------------------------
 
+		public override DrawingType DrawingType
+        {
+        	get { return DrawingType.Chrono; }
+        }
+		
         public DrawingToolChrono()
         {
         }
-
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return new DrawingChrono(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
         }
-
-        public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
-        {
-            // Nothing to do.
-        }
-
         public override DrawingToolType OnMouseUp()
         {
             // Fall back to Pointer tool.

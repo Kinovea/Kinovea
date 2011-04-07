@@ -47,10 +47,10 @@ namespace Kinovea.ScreenManager
             m_DoInvalidate = _invalidate;
         	m_DoUndrawn = _undrawn;
             m_Metadata = _Metadata;
-            m_iTotalChronos = m_Metadata.Chronos.Count;
+            //m_iTotalChronos = m_Metadata.Chronos.Count;
             
             // Chrono (as all Drawings) are added to the list in reverse order.
-            m_Chrono = m_Metadata.Chronos[0];
+            //m_Chrono = m_Metadata.Chronos[0];
         }
         #endregion
 
@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
             // First execution : Work has already been done in the PlayerScreen (interactively).
             // Redo : We need to bring back the drawing to life.
 
-            if (m_Metadata.Chronos.Count == m_iTotalChronos)
+            /*if (m_Metadata.Chronos.Count == m_iTotalChronos)
             {
                 // first exec.
                 // Nothing to do.
@@ -71,21 +71,22 @@ namespace Kinovea.ScreenManager
             else if (m_Metadata.Chronos.Count == m_iTotalChronos - 1)
             {
                 //Redo.
-                m_Metadata.Chronos.Insert(0, m_Chrono);
+                //m_Metadata.Chronos.Insert(0, m_Chrono);
+                m_Metadata.AddChrono(m_Chrono);
                 m_DoInvalidate();
-            }
+            }*/
         }
         public void Unexecute()
         {
             // Delete the last added chrono.
             
             // 1. Look for the keyframe
-            if (m_Metadata.Chronos.Count > 0)
+            /*if (m_Metadata.Chronos.Count > 0)
             {
                 m_Metadata.Chronos.RemoveAt(0);
                 m_DoUndrawn();
                 m_DoInvalidate();
-            }
+            }*/
         }
     }
 }

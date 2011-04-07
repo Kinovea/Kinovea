@@ -26,19 +26,8 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolPointer : AbstractDrawingTool
     {
-    	#region Properties
-        public Point MouseDelta
-        {
-            get { return m_MouseDelta; }
-        }
-		#endregion
-        
-        #region Members
-        //--------------------------------------------------------------------
-        // We do not keep the strecth/zoom factor here.
-        // All coordinates must be given already descaled to image coordinates.
-        //--------------------------------------------------------------------
-        private enum UserAction
+    	#region Enum
+		private enum UserAction
         {
             None,
             Move,           
@@ -50,9 +39,28 @@ namespace Kinovea.ScreenManager
             Track,   
             Chrono,  
             Drawing,
+            ExtraDrawing,
             Grid,
             Plane
+        }    	
+    	#endregion
+    	
+    	#region Properties
+    	public override DrawingType DrawingType
+        {
+        	get { return DrawingType.None; }
         }
+        public Point MouseDelta
+        {
+            get { return m_MouseDelta; }
+        }
+		#endregion
+        
+        #region Members
+        //--------------------------------------------------------------------
+        // We do not keep the strecth/zoom factor here.
+        // All coordinates must be given already descaled to image coordinates.
+        //--------------------------------------------------------------------
         private UserAction m_UserAction;
         private SelectedObjectType m_SelectedObjectType;
         private Point m_lastPoint;
@@ -84,10 +92,6 @@ namespace Kinovea.ScreenManager
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return null;
-        }
-        public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
-        {
-            // Not used, see non overriding OnMouseMove below.
         }
         public override DrawingToolType OnMouseUp()
         {
@@ -144,7 +148,7 @@ namespace Kinovea.ScreenManager
 
             _Metadata.UnselectAll();
 
-            if (!IsOnDrawing(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
+            /*if (!IsOnDrawing(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
             {
                 if (!IsOnChrono(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
                 {
@@ -158,8 +162,22 @@ namespace Kinovea.ScreenManager
                         }
                     }
                 }
-            }
+            }*/
 
+            // Refactoring in progress.
+            if (!IsOnDrawing(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
+			{
+            	if (!IsOnExtraDrawing(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
+                {
+            		if (!IsOnTrack(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
+                    {
+            			// Moving the whole image (Direct Zoom)
+						m_SelectedObjectType = SelectedObjectType.None;
+						bHit = false;
+            		}
+            	}
+            }
+            
             // Store position (descaled: in original image coords).
             m_lastPoint.X = _MouseCoordinates.X;
             m_lastPoint.Y = _MouseCoordinates.Y;
@@ -205,35 +223,22 @@ namespace Kinovea.ScreenManager
                         {
                             switch (m_SelectedObjectType)
                             {
-                                case SelectedObjectType.Grid:
-                                    _Metadata.Grid.MouseMove(deltaX, deltaY, _ModifierKeys);
-                                    break;
-                                case SelectedObjectType.Plane:
-                                    _Metadata.Plane.MouseMove(deltaX, deltaY, _ModifierKeys);
-                                    break;
+                            	case SelectedObjectType.ExtraDrawing:
+                            		if (_Metadata.SelectedExtraDrawing >= 0)
+                            		{
+                            			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
+                            		}
+                            		break;
                                 case SelectedObjectType.Track:
                                     if (_Metadata.SelectedTrack >= 0)
                                     {
-                                        if (_Metadata.Tracks[_Metadata.SelectedTrack].Status == Track.TrackStatus.Edit)
-                                        {
-                                            _Metadata.Tracks[_Metadata.SelectedTrack].MoveCursor(deltaX, deltaY);
-                                        }
-                                        else
-                                        {
-                                            _Metadata.Tracks[_Metadata.SelectedTrack].MoveCursor(_MouseLocation.X, _MouseLocation.Y);
-                                        }
-                                    }
-                                    break;
-                                case SelectedObjectType.Chrono:
-                                    if (_Metadata.SelectedChrono >= 0)
-                                    {
-                                        _Metadata.Chronos[_Metadata.SelectedChrono].MoveDrawing(deltaX, deltaY);
+                                    	_Metadata.Tracks[_Metadata.SelectedTrack].MoveDrawing(deltaX, deltaY, _ModifierKeys);
                                     }
                                     break;
                                 case SelectedObjectType.Drawing:
                                     if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
                                     {
-                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY);
+                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
                                     }
                                     break;
                                 default:
@@ -246,28 +251,22 @@ namespace Kinovea.ScreenManager
                         {
                             switch (m_SelectedObjectType)
                             {
-                                case SelectedObjectType.Grid:
-                                    _Metadata.Grid.MoveHandleTo(_MouseLocation, m_iResizingHandle);
-                                    break;
-                                case SelectedObjectType.Plane:
-                                    _Metadata.Plane.MoveHandleTo(_MouseLocation, m_iResizingHandle);
-                                    break;
+                            	case SelectedObjectType.ExtraDrawing:
+                            		if (_Metadata.SelectedExtraDrawing >= 0)
+                            		{
+                            			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle);		
+                            		}
+                            		break;
                                 case SelectedObjectType.Track:
                                     if (_Metadata.SelectedTrack >= 0)
                                     {
-                                        _Metadata.Tracks[_Metadata.SelectedTrack].MoveLabelTo(deltaX, deltaY, m_iResizingHandle);
-                                    }
-                                    break;
-                                case SelectedObjectType.Chrono:
-                                    if (_Metadata.SelectedChrono >= 0)
-                                    {
-                                        _Metadata.Chronos[_Metadata.SelectedChrono].MoveHandleTo(_MouseLocation, m_iResizingHandle);
+                                    	_Metadata.Tracks[_Metadata.SelectedTrack].MoveHandle(_MouseLocation, m_iResizingHandle);
                                     }
                                     break;
                                 case SelectedObjectType.Drawing:
                                     if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
                                     {
-                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveHandleTo(_MouseLocation, m_iResizingHandle);
+                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveHandle(_MouseLocation, m_iResizingHandle);
                                     }
                                     break;
                                 default:
@@ -302,7 +301,7 @@ namespace Kinovea.ScreenManager
         private bool IsOnDrawing(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
         {
             bool bIsOnDrawing = false;
-
+			
             if (_bAllFrames && _Metadata.Keyframes.Count > 0)
             {
                 int[] zOrder = _Metadata.GetKeyframesZOrder(_iCurrentTimeStamp);
@@ -359,36 +358,41 @@ namespace Kinovea.ScreenManager
 
             return bDrawingHit;
         }
-        private bool IsOnChrono(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
+        private bool IsOnExtraDrawing(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
         {
-            bool bIsOnChrono = false;
+        	// Test if we hit an unattached drawing.
+        	
+        	bool bIsOnDrawing = false;
+            int hitRes = -1;
+            int iCurrentDrawing = 0;
 
-            for (int i = 0; i < _Metadata.Chronos.Count; i++)
+            while (hitRes < 0 && iCurrentDrawing < _Metadata.ExtraDrawings.Count)
             {
-                int handle = _Metadata.Chronos[i].HitTest(_MouseCoordinates, _iCurrentTimeStamp);
-
-                if (handle >= 0)
+            	hitRes = _Metadata.ExtraDrawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp);
+                if (hitRes >= 0)
                 {
-                    bIsOnChrono = true;
-                    m_SelectedObjectType = SelectedObjectType.Chrono;
-                    _Metadata.SelectedChrono = i;
-
-                    if (handle > 0)
-                    {
-                    	m_UserAction = UserAction.Resize;
-                    	m_iResizingHandle = handle;
-                    }
-                    else
-                    {
-                    	m_UserAction = UserAction.Move;
-                    }
-                
-                    
-                    break;
+                	bIsOnDrawing = true;
+                	m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
+                	_Metadata.SelectedExtraDrawing = iCurrentDrawing;
+                	
+                	// Handler hit ?
+	                if (hitRes > 0)
+	                {
+	                    m_UserAction = UserAction.Resize;
+	                    m_iResizingHandle = hitRes;
+	                }
+	                else
+	                {
+	                    m_UserAction = UserAction.Move;
+	                }
+                }
+                else
+                {
+                    iCurrentDrawing++;
                 }
             }
-
-            return bIsOnChrono;
+            
+            return bIsOnDrawing;
         }
         private bool IsOnTrack(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
         {
@@ -407,104 +411,28 @@ namespace Kinovea.ScreenManager
                     m_SelectedObjectType = SelectedObjectType.Track;
                     _Metadata.SelectedTrack = i;
 
-                    if (_Metadata.Tracks[i].Status == Track.TrackStatus.Interactive)
+                    if(handle > 1)
+                	{
+                		// Touched target or handler.
+                    	// The handler would have been saved inside the track object.
+                		m_UserAction = UserAction.Move;	
+                	}
+                    else if (_Metadata.Tracks[i].Status == Track.TrackStatus.Interactive)
                     {
-                        // Trajectory is in interactive mode.
-
-                        if (handle == 0)
-                        {
-                            // Mouse touched the trajectory.
-                            m_UserAction = UserAction.Move;
-
-                            // We should update the playhead now. No need to wait for the next mouse move.
-                            _Metadata.Tracks[i].MoveCursor(_MouseCoordinates.X, _MouseCoordinates.Y);
-                        }
-                        else if (handle == 1)
-                        {
-                            // Mouse touched the cursor. We'll update the playhead when mouse move.
-                            m_UserAction = UserAction.Move;
-                        }
-                        else
-                        {
-                            // Mouse touched a Label.
-                            m_UserAction = UserAction.Resize;
-                            m_iResizingHandle = handle;
-                        }
+                    	m_UserAction = UserAction.Resize;
+                    	m_iResizingHandle = handle;	
                     }
                     else
                     {
-                        // Trajectory is in edit mode.
-                        // We react to labels and cursor.
-
-                        if (handle == 1)
-                        {
-                            // Mouse touched the cursor.
-                            m_UserAction = UserAction.Move;
-                        }
-                        else if (handle > 1)
-                        {
-                            // Mouse touched a Label.
-                            m_UserAction = UserAction.Resize;
-                            m_iResizingHandle = handle;
-                        }
+                    	// edit mode + 0 or 1.
+                    	m_UserAction = UserAction.Move;
                     }
-
+                   
                     break;
                 }
             }
 
             return bTrackHit;
-        }
-        private bool IsOnGrids(Metadata _Metadata, Point _MouseCoordinates)
-        {
-            // Check wether we hit the Grid or the 3D Plane.
-            bool bIsOnGrids = false;
-            int handle = -1;
-
-            if (_Metadata.Plane.Visible)
-            {
-                handle = _Metadata.Plane.HitTest(_MouseCoordinates);
-                if (handle >= 0)
-                {
-                    bIsOnGrids = true;
-                    m_SelectedObjectType = SelectedObjectType.Plane;
-                    _Metadata.Plane.Selected = true;
-                    // Handler hit ?
-                    if (handle > 0)
-                    {
-                        m_UserAction = UserAction.Resize;
-                        m_iResizingHandle = handle;
-                    }
-                    else
-                    {
-                        m_UserAction = UserAction.Move;
-                    }
-                }
-            }
-
-            if (!bIsOnGrids && _Metadata.Grid.Visible)
-            {
-                handle = _Metadata.Grid.HitTest(_MouseCoordinates);
-                if (handle >= 0)
-                {
-                    bIsOnGrids = true;
-                    m_SelectedObjectType = SelectedObjectType.Grid;
-                    _Metadata.Grid.Selected = true;
-
-                    // Handler hit ?
-                    if (handle > 0)
-                    {
-                        m_UserAction = UserAction.Resize;
-                        m_iResizingHandle = handle;
-                    }
-                    else
-                    {
-                        m_UserAction = UserAction.Move;
-                    }
-                }
-            }
-
-            return bIsOnGrids;
         }
         private void SetupHandCursors()
         {

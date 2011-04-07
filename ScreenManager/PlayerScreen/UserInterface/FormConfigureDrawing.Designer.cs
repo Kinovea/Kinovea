@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
             this.stlPicker.Name = "stlPicker";
             this.stlPicker.Size = new System.Drawing.Size(162, 77);
             this.stlPicker.TabIndex = 15;
-            this.stlPicker.ToolType = Kinovea.ScreenManager.DrawingToolType.Line2D;
+            this.stlPicker.DrawingType = Kinovea.ScreenManager.DrawingType.Line;
             this.stlPicker.StylePicked += new Kinovea.ScreenManager.StaticStylePicker.DelegateStylePicked(this.stlPicker_StylePicked);
             // 
             // formConfigureDrawing

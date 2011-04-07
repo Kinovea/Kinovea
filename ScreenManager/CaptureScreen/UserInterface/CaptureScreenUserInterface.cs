@@ -446,6 +446,7 @@ namespace Kinovea.ScreenManager
 		private void InitializeDrawingTools()
         {
 			// Create Drawing Tools
+			// Note that there is no chrono tool, which just means the spot [DrawingToolType.Chrono] of the associative array will stay empty.
 			m_DrawingTools = new AbstractDrawingTool[(int)DrawingToolType.NumberOfDrawingTools];
 			
 			m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
@@ -812,8 +813,7 @@ namespace Kinovea.ScreenManager
 				
 				// Redefine grids.
 				Size imageSize = new Size(imgSize.Width, imgSize.Height);
-				m_FrameServer.Metadata.Plane.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
-				m_FrameServer.Metadata.Grid.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);	
+				m_FrameServer.Metadata.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 			}
 		}
 		private void ReplaceResizers()
@@ -1069,7 +1069,11 @@ namespace Kinovea.ScreenManager
 									m_FrameServer.Metadata.SelectedDrawing = 0;
 									
 									// Color
-									m_ColorProfile.SetupDrawing(ad, m_ActiveTool);
+									IDecorable decorableDrawing = ad as IDecorable;
+									if(decorableDrawing != null)
+									{
+										m_ColorProfile.SetupDrawing(decorableDrawing);
+									}
 									
 									// Special preparation if it's a line.
 									DrawingLine2D line = ad as DrawingLine2D;
@@ -1114,7 +1118,7 @@ namespace Kinovea.ScreenManager
 										panelCenter.Controls.Add(dt.EditBox);
 										dt.EditBox.BringToFront();
 										dt.EditBox.Focus();
-										m_ColorProfile.SetupDrawing(dt, DrawingToolType.Text);
+										m_ColorProfile.SetupDrawing(dt as IDecorable);
 									}
 								}
 							}
@@ -1131,6 +1135,7 @@ namespace Kinovea.ScreenManager
 					if (m_FrameServer.IsConnected)
 					{
 						m_FrameServer.Metadata.UnselectAll();
+						AbstractDrawing hitDrawing = null;
 						
 						if (m_FrameServer.Metadata.IsOnDrawing(0, descaledMouse, 0))
 						{
@@ -1157,9 +1162,12 @@ namespace Kinovea.ScreenManager
 							
 							panelCenter.ContextMenuStrip = popMenuDrawings;
 						}
-						else if (m_FrameServer.Metadata.IsOnGrid(descaledMouse))
+						else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(descaledMouse, 0)) != null)
 						{
-							panelCenter.ContextMenuStrip = popMenuGrids;
+							if(hitDrawing is Plane3D)
+							{
+								panelCenter.ContextMenuStrip = popMenuGrids;
+							}
 						}
 						else if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Magnifier.IsOnObject(e))
 						{
@@ -1169,7 +1177,7 @@ namespace Kinovea.ScreenManager
 						{
 							// Launch Preconfigure dialog.
 							// = Updates the tool's entry of the main color profile.
-							formConfigureDrawing fcd = new formConfigureDrawing(m_ActiveTool, m_ColorProfile);
+							formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);
 							LocateForm(fcd);
 							fcd.ShowDialog();
 							fcd.Dispose();
@@ -1207,7 +1215,11 @@ namespace Kinovea.ScreenManager
 					if (m_ActiveTool != DrawingToolType.Pointer)
 					{
 						// Currently setting the second point of a Drawing.
-						m_DrawingTools[(int)m_ActiveTool].OnMouseMove(m_FrameServer.Metadata[0], m_FrameServer.CoordinateSystem.Untransform(new Point(e.X, e.Y)));
+						IInitializable initializableDrawing = m_FrameServer.Metadata[0].Drawings[0] as IInitializable;
+						if(initializableDrawing != null)
+						{
+							initializableDrawing.ContinueSetup(m_FrameServer.CoordinateSystem.Untransform(new Point(e.X, e.Y)));
+						}
 					}
 					else
 					{
@@ -1321,6 +1333,7 @@ namespace Kinovea.ScreenManager
 				Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 				m_FrameServer.Metadata.UnselectAll();
+				AbstractDrawing hitDrawing = null;
 				
 				//------------------------------------------------------------------------------------
 				// - If on text, switch to edit mode.
@@ -1345,9 +1358,12 @@ namespace Kinovea.ScreenManager
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
 					}
 				}
-				else if (m_FrameServer.Metadata.IsOnGrid(descaledMouse))
+				else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(descaledMouse, 0)) != null)
 				{
-					mnuGridsConfigure_Click(null, EventArgs.Empty);
+					if(hitDrawing is Plane3D)
+					{
+						mnuGridsConfigure_Click(null, EventArgs.Empty);
+					}
 				}
 				else
 				{
@@ -1672,12 +1688,16 @@ namespace Kinovea.ScreenManager
 		{
 			if(m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
-				formConfigureDrawing fcd = new formConfigureDrawing(m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				LocateForm(fcd);
-				fcd.ShowDialog();
-				fcd.Dispose();
-				pbSurfaceScreen.Invalidate();
-				this.ContextMenuStrip = popMenu;
+				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
+				if(decorableDrawing != null)
+				{
+					formConfigureDrawing fcd = new formConfigureDrawing(decorableDrawing, pbSurfaceScreen);
+					LocateForm(fcd);
+					fcd.ShowDialog();
+					fcd.Dispose();
+					pbSurfaceScreen.Invalidate();
+					this.ContextMenuStrip = popMenu;
+				}
 			}
 		}
 		private void mnuConfigureOpacity_Click(object sender, EventArgs e)

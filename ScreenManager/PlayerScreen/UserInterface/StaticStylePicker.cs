@@ -18,15 +18,15 @@ namespace Kinovea.ScreenManager
             get { return m_PickedStyle; }
         }
         /// <summary>
-        /// ToolType is used to configure the Style Picker display.
+        /// DrawingType is used to configure the Style Picker display.
         /// See ConfigureStyleButtons to see the possible values.
         /// </summary>
-        public DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-            get { return m_ToolType; }
+            get { return m_DrawingType; }
             set
             {
-                m_ToolType = value;
+                m_DrawingType = value;
                 ConfigureStyleButtons();
             }
         }
@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private LineStyle m_PickedStyle;
-        private DrawingToolType m_ToolType;
+        private DrawingType m_DrawingType;
         private int m_iRows = 3;
         private int m_iCols = 4;
         private int m_iRowHeight = 25;
@@ -53,13 +53,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public StaticStylePicker() : this(DrawingToolType.Line2D)
+        public StaticStylePicker() : this(DrawingType.Line)
         {
         }
-        public StaticStylePicker(DrawingToolType _dtt)
+        public StaticStylePicker(DrawingType _dtt)
         {
             InitializeComponent();
-            m_ToolType = _dtt;
+            m_DrawingType = _dtt;
             ConfigureStyleButtons();
         }
         #endregion
@@ -69,16 +69,16 @@ namespace Kinovea.ScreenManager
             m_PickedStyle = LineStyle.DefaultValue;
 
             this.SuspendLayout();
-            switch(m_ToolType)
+            switch(m_DrawingType)
             {
-            	case DrawingToolType.Circle:
-                case DrawingToolType.Pencil:
+            	case DrawingType.Circle:
+                case DrawingType.Pencil:
                     ConfigureButtonsForBrushes();
                     break;
-                case DrawingToolType.Cross2D:// /!\ This is actually used for Track Line.
+                case DrawingType.Cross:// /!\ This is actually used for Track Line.
                    	ConfigureButtonsForTrackLines();
                     break;
-                case DrawingToolType.Line2D:
+                case DrawingType.Line:
                 default:
                     ConfigureButtonsForLines();
                     break;
@@ -270,7 +270,7 @@ namespace Kinovea.ScreenManager
             // Ask each and every preconfigured style to draw itself on its button's canvas.
             Button btn = (Button)sender;
             LineStyle stl = (LineStyle)btn.Tag;
-            bool circles = m_ToolType == DrawingToolType.Pencil || m_ToolType == DrawingToolType.Circle;
+            bool circles = m_DrawingType == DrawingType.Pencil || m_DrawingType == DrawingType.Circle;
             stl.Draw(e.Graphics, circles, Color.Black);
         }
         #endregion

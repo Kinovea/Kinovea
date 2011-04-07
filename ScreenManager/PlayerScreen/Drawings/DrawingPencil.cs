@@ -25,19 +25,20 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingPencil : AbstractDrawing
+    public class DrawingPencil : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
     {
 
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingType DrawingType
         {
-        	get { return DrawingToolType.Pencil; }
+        	get { return DrawingType.Pencil; }
         }
         public override InfosFading infosFading
         {
@@ -112,10 +113,10 @@ namespace Kinovea.ScreenManager
                 penLine.Dispose();
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             for(int i=0;i<m_PointList.Count;i++)
@@ -144,7 +145,10 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+
+		#region IXMLSerializable implementation
+        public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
             _xmlWriter.WriteAttributeString("Type", "DrawingPencil");
@@ -166,6 +170,8 @@ namespace Kinovea.ScreenManager
             // </Drawing>
             _xmlWriter.WriteEndElement();
         }
+        #endregion
+        
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
@@ -187,28 +193,36 @@ namespace Kinovea.ScreenManager
             return iHashCode;
         }
        
-        public override void UpdateDecoration(Color _color)
+        #region IDecorable implementation
+        public void UpdateDecoration(Color _color)
         {
         	m_PenStyle.Update(_color);
         }
-        public override void UpdateDecoration(LineStyle _style)
+        public void UpdateDecoration(LineStyle _style)
         {
         	m_PenStyle.Update(_style, false, true, true);
         }
-        public override void UpdateDecoration(int _iFontSize)
+        public void UpdateDecoration(int _iFontSize)
         {
         	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
         }
-        public override void MemorizeDecoration()
+        public void MemorizeDecoration()
         {
         	m_MemoPenStyle = m_PenStyle.Clone();
         }
-        public override void RecallDecoration()
+        public void RecallDecoration()
         {
         	m_PenStyle = m_MemoPenStyle.Clone();
         }
         #endregion
 
+        #region IInitializable implementation
+        public void ContinueSetup(Point point)
+		{
+			AddPoint(point);
+		}
+        #endregion
+        
         public void AddPoint(Point _coordinates)
         {
             m_PointList.Add(_coordinates);
@@ -285,7 +299,6 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-     
 
         #region Lower level helpers
         private Point RescalePoint(Point _point, double _fStretchFactor)

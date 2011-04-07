@@ -27,9 +27,20 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class Plane3D
+	public class Plane3D : AbstractDrawing
     {
         #region Properties
+		public override InfosFading infosFading
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
+		}
         public bool Visible
         {
             get { return m_bVisible; }
@@ -55,7 +66,6 @@ namespace Kinovea.ScreenManager
             get { return m_bSelected; }
             set { m_bSelected = value; }
         }
-
         #endregion
 
         #region Members
@@ -136,9 +146,15 @@ namespace Kinovea.ScreenManager
             RedefineHomography();
         }
 
-        public void Draw(Graphics _canvas, double _fStretchFactor, Point _DirectZoomTopLeft)
-        {
-            if (m_fStretchFactor != _fStretchFactor || _DirectZoomTopLeft.X != m_DirectZoomTopLeft.X || _DirectZoomTopLeft.Y != m_DirectZoomTopLeft.Y)
+        #region AbstractDrawing implementation
+        public override void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+		{
+        	if(!m_bVisible)
+        	{
+        		return;
+        	}
+        	
+			if (m_fStretchFactor != _fStretchFactor || _DirectZoomTopLeft.X != m_DirectZoomTopLeft.X || _DirectZoomTopLeft.Y != m_DirectZoomTopLeft.Y)
             {
                 m_fStretchFactor = _fStretchFactor;
                 m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
@@ -221,10 +237,10 @@ namespace Kinovea.ScreenManager
                     _canvas.DrawLine(m_PenEdges, m_RescaledSourceCorners[1].X + (iCol * fColLength), m_RescaledSourceCorners[0].Y, m_RescaledSourceCorners[1].X + (iCol * fColLength), m_RescaledSourceCorners[3].Y);    
                 }
             }
-        }
-        public int HitTest(Point _point)
-        {
-            //-----------------------------------------------------
+		}
+		public override int HitTest(Point _point, long _iCurrentTimestamp)
+		{
+			//-----------------------------------------------------
             // This function is used by the PointerTool 
             // to know if we hit this particular drawing and where.
             //
@@ -234,69 +250,31 @@ namespace Kinovea.ScreenManager
             // _point is mouse coordinates already descaled 
             // (in original image coords).
             //-----------------------------------------------------
-            
             int iHitResult = -1;
 
-            // On a corner ?
-            for (int i = 0; i < m_SourceCorners.Length; i++)
+            if(m_bVisible)
             {
-                if (GetHandleRectangle(i+1).Contains(_point))
-                {
-                    iHitResult = i+1;
-                }
-            }
-
-            // On main grid ?
-            if (iHitResult == -1 && IsPointInObject(_point))
-            {
-                iHitResult = 0;
+	            // On a corner ?
+	            for (int i = 0; i < m_SourceCorners.Length; i++)
+	            {
+	                if (GetHandleRectangle(i+1).Contains(_point))
+	                {
+	                    iHitResult = i+1;
+	                }
+	            }
+	
+	            // On main grid ?
+	            if (iHitResult == -1 && IsPointInObject(_point))
+	            {
+	                iHitResult = 0;
+	            }
             }
             
             return iHitResult;
-        }
-        private Rectangle GetHandleRectangle(int _iHandleId)
-        {
-            //----------------------------------------------------------------------------
-            // This function is only used for Hit Testing.
-            // The Rectangle here is bigger than the bounding box of the handlers circles.
-            //----------------------------------------------------------------------------
-            int widen = 6;
-            int x = (int)((float)m_SourceCorners[_iHandleId - 1].X - (float)widen);
-            int y = (int)((float)m_SourceCorners[_iHandleId - 1].Y - (float)widen);
-
-            return new Rectangle(x, y, widen * 2, widen*2);
-        }
-        private Rectangle GetRescaledHandleRectangle(int _iHandleId)
-        {
-            // Only used for drawing handlers.
-            int x = (int)((float)m_RescaledSourceCorners[_iHandleId - 1].X - (float)4);
-            int y = (int)((float)m_RescaledSourceCorners[_iHandleId - 1].Y - (float)4);
- 
-            return new Rectangle(x, y, 8, 8);
-        }
-        private bool IsPointInObject(Point _point)
-        {
-            bool bIsPointInObject = false;
-            if (m_bValidPlane)
-            {
-                GraphicsPath areaPath = new GraphicsPath();
-                areaPath.AddLine(m_SourceCorners[0], m_SourceCorners[1]);
-                areaPath.AddLine(m_SourceCorners[1], m_SourceCorners[2]);
-                areaPath.AddLine(m_SourceCorners[2], m_SourceCorners[3]);
-                areaPath.CloseAllFigures();
-
-                // Create region from the path
-                Region areaRegion = new Region(areaPath);
-
-                // point is descaled.
-                bIsPointInObject = areaRegion.IsVisible(_point);
-            }
-            
-            return bIsPointInObject;
-        }
-        public void MouseMove(int _deltaX, int _deltaY, Keys _ModifierKeys)
-        {
-            if ((_ModifierKeys & Keys.Alt) == Keys.Alt)
+		}
+		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+		{
+			if ((_ModifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // => Remesh.
                 m_iDivisions = m_iDivisions + ((_deltaX - _deltaY)/4);
@@ -387,10 +365,10 @@ namespace Kinovea.ScreenManager
                 RedefineHomography();
                 m_fShift = 0.0F;
             }
-        }
-        public void MoveHandleTo(Point point, int handleNumber)
-        {
-            // _point is mouse coordinates already descaled.
+		}
+		public override void MoveHandle(Point point, int handleNumber)
+		{
+			// _point is mouse coordinates already descaled.
             if (m_bSupport3D)
             {
                 // If 3D, only move the selected corner.
@@ -451,7 +429,50 @@ namespace Kinovea.ScreenManager
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
                 RedefineHomography();
             }
+		}
+		#endregion
+	
+        private Rectangle GetHandleRectangle(int _iHandleId)
+        {
+            //----------------------------------------------------------------------------
+            // This function is only used for Hit Testing.
+            // The Rectangle here is bigger than the bounding box of the handlers circles.
+            //----------------------------------------------------------------------------
+            int widen = 6;
+            int x = (int)((float)m_SourceCorners[_iHandleId - 1].X - (float)widen);
+            int y = (int)((float)m_SourceCorners[_iHandleId - 1].Y - (float)widen);
+
+            return new Rectangle(x, y, widen * 2, widen*2);
         }
+        private Rectangle GetRescaledHandleRectangle(int _iHandleId)
+        {
+            // Only used for drawing handlers.
+            int x = (int)((float)m_RescaledSourceCorners[_iHandleId - 1].X - (float)4);
+            int y = (int)((float)m_RescaledSourceCorners[_iHandleId - 1].Y - (float)4);
+ 
+            return new Rectangle(x, y, 8, 8);
+        }
+        private bool IsPointInObject(Point _point)
+        {
+            bool bIsPointInObject = false;
+            if (m_bValidPlane)
+            {
+                GraphicsPath areaPath = new GraphicsPath();
+                areaPath.AddLine(m_SourceCorners[0], m_SourceCorners[1]);
+                areaPath.AddLine(m_SourceCorners[1], m_SourceCorners[2]);
+                areaPath.AddLine(m_SourceCorners[2], m_SourceCorners[3]);
+                areaPath.CloseAllFigures();
+
+                // Create region from the path
+                Region areaRegion = new Region(areaPath);
+
+                // point is descaled.
+                bIsPointInObject = areaRegion.IsVisible(_point);
+            }
+            
+            return bIsPointInObject;
+        }
+
         public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             // Initialize corners positions

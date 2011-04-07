@@ -26,12 +26,19 @@ namespace Kinovea.ScreenManager
 {
     public abstract class AbstractDrawingTool
     {
+    	#region Properties
+        /// <summary>
+        /// The type of drawing that this tool generates.
+        /// </summary>
+    	public abstract DrawingType DrawingType
+        {
+            get;
+        }
+        #endregion
+        
         // Return an object of the type of this tool.
         public abstract AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame);
 
-        // Only used during initial setup. Last Drawing will have been inserted at [0].
-        public abstract void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates);
-        
         // Only used at first MouseUp after initial setup.
         public abstract DrawingToolType OnMouseUp();
 

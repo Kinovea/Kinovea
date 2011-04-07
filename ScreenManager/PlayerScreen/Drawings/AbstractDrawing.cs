@@ -18,54 +18,68 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.Services;
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	///  An abstract layer for drawings.
+	/// Describes a generic drawing.
 	/// </summary>
     public abstract class AbstractDrawing
     {
-        #region Properties
-        public abstract DrawingToolType ToolType
-        {
-        	get;
-        }
+    	/// <summary>
+    	/// Gets or set the fading object for this drawing. 
+    	/// This is used in opacity calculation for Persistence.
+    	/// </summary>
         public abstract InfosFading infosFading
         {
             get;
             set;
         }
-        #endregion
-
-        #region Methods
         
-        // Display
+        /// <summary>
+        /// Draws this drawing on the provided canvas.
+        /// The drawing must be drawn at the proper scale and place in the canvas.
+        /// </summary>
+        /// <param name="_canvas">The GDI+ surface on which to draw</param>
+        /// <param name="_fStretchFactor">The scaling factor between the canvas and the original image size</param>
+        /// <param name="_bSelected">Whether the drawing is currently selected</param>
+        /// <param name="_iCurrentTimestamp">The current time position in the video</param>
+        /// <param name="_DirectZoomTopLeft">The position of the zoom window relatively to the top left corner of the original image</param>
         public abstract void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft);
         
-        // User interaction
+        /// <summary>
+        /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.
+        /// </summary>
+        /// <param name="_point">The coordinates at original image scale of the point to evaluate</param>
+        /// <param name="_iCurrentTimestamp">The current time position in the video</param>
+        /// <returns>-1 : missed. 0 : The drawing as a whole has been hit. n (with n>0) : The id of a manipulation handle that has been hit</returns>
         public abstract int HitTest(Point _point, long _iCurrentTimestamp);
-        public abstract void MoveHandleTo(Point point, int handleNumber);
-        public abstract void MoveDrawing(int _deltaX, int _deltaY);
         
-        // Export
-        public abstract void ToXmlString(XmlTextWriter _xmlXriter);
+        /// <summary>
+        /// Move the specified handle to its new location.
+        /// </summary>
+        /// <param name="point">The new location of the handle, in original image scale coordinates</param>
+        /// <param name="handleNumber">The handle identifier</param>
+        public abstract void MoveHandle(Point point, int handleNumber);
         
-        // Decoration
-        public abstract void UpdateDecoration(Color _color);
-        public abstract void UpdateDecoration(LineStyle _style);
-        public abstract void UpdateDecoration(int _iFontSize);
-        public abstract void MemorizeDecoration();
-        public abstract void RecallDecoration();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_deltaX"></param>
+        /// <param name="_deltaY"></param>
         
-        // And also:
-        // ToString();
-        // FromXml();
-        // GetHashCode();
-        #endregion
+        /// <summary>
+        /// Move the drawing as a whole.
+        /// </summary>
+        /// <param name="_deltaX">Change in x coordinates</param>
+        /// <param name="_deltaY">Change in y coordinates</param>
+        /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
+        public abstract void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys);
     }
 }

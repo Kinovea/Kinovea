@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
     /// In Edit state: dragging the target moves the point's coordinates.
     /// In Interactive state: dragging the target moves to the next point (in time).
     /// </summary>
-    public class Track
+    public class Track : AbstractDrawing
     {
     	#region Enums
         public enum TrackView
@@ -141,7 +141,12 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_bUntrackable; }
 		}
-
+		// Fading is not modifiable from outside.
+        public override InfosFading  infosFading
+        {
+            get { throw new Exception("Track, The method or operation is not implemented."); }
+            set { throw new Exception("Track, The method or operation is not implemented."); }
+        }
         #endregion
 
         #region Members
@@ -150,7 +155,8 @@ namespace Kinovea.ScreenManager
         private TrackView m_TrackView = TrackView.Complete;
         private TrackStatus m_TrackStatus = TrackStatus.Edit;
         private TrackExtraData m_TrackExtraData = TrackExtraData.None;
-        
+        private int m_iMovingHandler = -1;
+        	
         // Tracker tool.
         private AbstractTracker m_Tracker;
         private bool m_bUntrackable;
@@ -248,9 +254,9 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Drawing routines
-        public void Draw(Graphics _canvas, double _fStretchFactor, long _iCurrentTimestamp, Point _DirectZoomTopLeft, bool _bCurrentlyPlaying)
-        {
+        #region AbstractDrawing implementation
+		public override void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+		{
             if (_iCurrentTimestamp >= m_iBeginTimeStamp)
             {
                 // 0. Compute the fading factor. 
@@ -325,7 +331,7 @@ namespace Kinovea.ScreenManager
 	            	// Target marker.
 	            	if( fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
                     {
-	            		DrawMarker(_canvas, fOpacityFactor, _bCurrentlyPlaying);
+	            		DrawMarker(_canvas, fOpacityFactor);
 	            	}
 	            	
 	            	// Tracking algorithm visualization.
@@ -343,6 +349,133 @@ namespace Kinovea.ScreenManager
             	}
             }
         }
+		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+		{
+			if (m_TrackStatus == TrackStatus.Edit)
+            {
+				if(m_iMovingHandler == 1)
+				{
+	                // Update cursor label.
+	                // Image will be reseted at mouse up. (=> UpdateTrackPoint)
+	                m_Positions[m_iCurrentPoint].X += _deltaX;
+	                m_Positions[m_iCurrentPoint].Y += _deltaY;
+	                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+				}
+            }
+			else
+            {
+				if(m_iMovingHandler > 1)
+				{
+					// Update coords label.
+					MoveLabelTo(_deltaX, _deltaY, m_iMovingHandler);
+				}
+            }
+		}
+		public override void MoveHandle(Point point, int handleNumber)
+		{
+			// We come here when moving the target or moving along the trajectory,
+			// and in interactive mode (change current frame).
+			if(m_TrackStatus == TrackStatus.Interactive && (handleNumber == 0 || handleNumber == 1))
+			{
+				MoveCursor(point.X, point.Y);
+			}
+		}
+		public override int HitTest(Point _point, long _iCurrentTimestamp)
+        {
+            //---------------------------------------------------------
+            // Result: 
+            // -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
+            // _point is mouse coordinates already descaled.
+            //---------------------------------------------------------
+            int iHitResult = -1;
+
+            if (_iCurrentTimestamp >= m_iBeginTimeStamp && _iCurrentTimestamp <= m_iEndTimeStamp)
+            {
+                // We give priority to labels in case a label is on the trajectory,
+                // we need to be able to move it around.
+                // If label attch mode, this will tell if we are on the label.
+                if (m_TrackStatus == TrackStatus.Interactive)
+                {
+                    iHitResult = IsOnKeyframesLabels(_point);
+                }
+
+                if (iHitResult == -1)
+                {
+                	Rectangle rectangleTarget;
+                	if(m_TrackStatus == TrackStatus.Edit)
+                	{
+                		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].ToPoint());
+                	}
+                	else
+                	{
+                		int widen = 3;
+                    	rectangleTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
+                	}
+                    
+                    if (rectangleTarget.Contains(_point))
+                    {
+                        iHitResult = 1;
+                    }
+                    else
+                    {
+                        // TODO: investigate why this might crash sometimes.
+                        try
+                        {
+                        	int iStart = GetFirstVisiblePoint();
+                        	int iEnd = GetLastVisiblePoint();
+			                
+                        	// Create path which contains wide line for easy mouse selection
+                            int iTotalVisiblePoints = iEnd - iStart;
+                        	Point[] points = new Point[iTotalVisiblePoints];
+                            for (int i = 0; i < iTotalVisiblePoints; i++)
+                            {
+                                points[i] = new Point(m_Positions[i+iStart].X, m_Positions[i+iStart].Y);
+                            }
+
+                            GraphicsPath areaPath = new GraphicsPath();
+                            areaPath.AddLines(points);
+                            Pen tempPen = new Pen(Color.Black, 12);
+                            areaPath.Widen(tempPen);
+                            tempPen.Dispose();
+                            
+                            // Create region from the path
+                            Region areaRegion = new Region(areaPath);
+
+                            if (areaRegion.IsVisible(_point))
+                            {
+                                iHitResult = 0;
+                            }
+                        }
+                        catch (Exception exp)
+                        {
+                            iHitResult = -1;
+                            log.Error("Error while hit testing track.");
+                            log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
+        					log.Error("Message : " + exp.Message.ToString());
+        					Exception inner = exp.InnerException;
+			     			while( inner != null )
+			     			{
+			          			log.Error("Inner exception : " + inner.Message.ToString());
+			          			inner = inner.InnerException;
+			     			}
+                        }
+                    }
+                }
+            }
+            
+            if(iHitResult == 0 && m_TrackStatus == TrackStatus.Interactive)
+            {
+            	// Instantly jump to the frame.
+            	MoveCursor(_point.X, _point.Y);
+            }
+
+            m_iMovingHandler = iHitResult;
+            
+            return iHitResult;
+        }
+       #endregion
+        
+        #region Drawing routines
         private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor)
         {
         	// Points are drawn with various alpha values, possibly 0:
@@ -368,7 +501,7 @@ namespace Kinovea.ScreenManager
             	tempPen.Dispose();
             }
         }
-        private void DrawMarker(Graphics _canvas,  double _fFadingFactor, bool _bCurrentlyPlaying)
+        private void DrawMarker(Graphics _canvas,  double _fFadingFactor)
         { 
         	int radius = m_iDefaultCrossRadius;
         	
@@ -561,98 +694,11 @@ namespace Kinovea.ScreenManager
 		#endregion
     
         #region User manipulation
-        public int HitTest(Point _point, long _iCurrentTimestamp)
-        {
-            //---------------------------------------------------------
-            // Result: 
-            // -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
-            // _point is mouse coordinates already descaled.
-            //---------------------------------------------------------
-            int iHitResult = -1;
-
-            if (_iCurrentTimestamp >= m_iBeginTimeStamp && _iCurrentTimestamp <= m_iEndTimeStamp)
-            {
-                // We give priority to labels in case a label is on the trajectory,
-                // we need to be able to move it around.
-                // If label attch mode, this will tell if we are on the label.
-                if (m_TrackStatus == TrackStatus.Interactive)
-                {
-                    iHitResult = IsOnKeyframesLabels(_point);
-                }
-
-                if (iHitResult == -1)
-                {
-                	Rectangle rectangleTarget;
-                	if(m_TrackStatus == TrackStatus.Edit)
-                	{
-                		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].ToPoint());
-                	}
-                	else
-                	{
-                		int widen = 3;
-                    	rectangleTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
-                	}
-                    
-                    if (rectangleTarget.Contains(_point))
-                    {
-                        iHitResult = 1;
-                    }
-                    else
-                    {
-                        // TODO: investigate why this might crash sometimes.
-                        try
-                        {
-                        	int iStart = GetFirstVisiblePoint();
-                        	int iEnd = GetLastVisiblePoint();
-			                
-                        	// Create path which contains wide line for easy mouse selection
-                            int iTotalVisiblePoints = iEnd - iStart;
-                        	Point[] points = new Point[iTotalVisiblePoints];
-                            for (int i = 0; i < iTotalVisiblePoints; i++)
-                            {
-                                points[i] = new Point(m_Positions[i+iStart].X, m_Positions[i+iStart].Y);
-                            }
-
-                            GraphicsPath areaPath = new GraphicsPath();
-                            areaPath.AddLines(points);
-                            Pen tempPen = new Pen(Color.Black, 12);
-                            areaPath.Widen(tempPen);
-                            tempPen.Dispose();
-                            
-                            // Create region from the path
-                            Region areaRegion = new Region(areaPath);
-
-                            if (areaRegion.IsVisible(_point))
-                            {
-                                iHitResult = 0;
-                            }
-                        }
-                        catch (Exception exp)
-                        {
-                            iHitResult = -1;
-                            log.Error("Error while hit testing track.");
-                            log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
-        					log.Error("Message : " + exp.Message.ToString());
-        					Exception inner = exp.InnerException;
-			     			while( inner != null )
-			     			{
-			          			log.Error("Inner exception : " + inner.Message.ToString());
-			          			inner = inner.InnerException;
-			     			}
-                        }
-                    }
-                }
-            }
-
-            return iHitResult;
-        }
-        public void MoveCursor(int _X, int _Y)
+        private void MoveCursor(int _X, int _Y)
         {
             if (m_TrackStatus == TrackStatus.Edit)
             {
-                //----------------------------------------
                 // Move cursor to new coords
-                //----------------------------------------
                 // In this case, _X and _Y are delta values.
                 // Image will be reseted at mouse up. (=> UpdateTrackPoint)
                 m_Positions[m_iCurrentPoint].X += _X;
@@ -671,7 +717,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public void MoveLabelTo(int _deltaX, int _deltaY, int _iLabelNumber)
+        private void MoveLabelTo(int _deltaX, int _deltaY, int _iLabelNumber)
         {
         	// _iLabelNumber coding: 2 = main label, 3+ = keyframes labels.
         	
