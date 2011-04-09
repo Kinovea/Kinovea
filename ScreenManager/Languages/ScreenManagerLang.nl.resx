@@ -76,10 +76,10 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ga naar het volgende frame van beide videos</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Ga naar het vorige frame van beide videos</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Speel | Pauzeer beide videos</value></data>
-   
-   
-   
-   
+   <data name="Capture_NextImage" xml:space="preserve"><value>Volgende afbeelding:</value></data>
+   <data name="Capture_NextVideo" xml:space="preserve"><value>Volgende video:</value></data>
+   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Camera niet gevonden</value></data>
+   <data name="Capture_NetworkCamera" xml:space="preserve"><value>Netwerk camera</value></data>
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Voeg een Opnamescherm toe</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Voeg een tekening toe</value></data>
@@ -97,7 +97,7 @@
    <data name="dlgColorPicker_Title" xml:space="preserve"><value>Kleuren</value></data>
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Kleurprofiel…</value></data>
-   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Basis kleurprofiel</value></data>
+   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Herstel naar basis kleurenprofiel</value></data>
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Laad een kleurenprofiel</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Bewaar kleurenprofiel</value></data>
    <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Toon altijd Label</value></data>
@@ -111,8 +111,8 @@
    <data name="dlgConfigureFading_Title" xml:space="preserve"><value>Configureer Persistentie</value></data>
    <data name="dlgConfigureGrids_Divisions" xml:space="preserve"><value>Aantal delen:</value></data>
    <data name="dlgConfigureGrids_Title" xml:space="preserve"><value>Configureer grid</value></data>
-   
-   
+   <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Configureer doorzichtigheid</value></data>
+   <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Doorzichtigheid: {0:0}%</value></data>
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Aantal beelden per seconde bij opname :\n(ex: 300)</value></data>
    <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Aantal beelden per seconde bij afspelen : {0:0.00} fps.</value></data>
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video is {0:0} malen langzamer dan origineel.</value></data>
@@ -126,10 +126,10 @@
    <data name="dlgConfigureTrajectory_ExtraData_TotalDistance" xml:space="preserve"><value>Afstand</value></data>
    <data name="dlgConfigureTrajectory_ExtraData_Speed" xml:space="preserve"><value>Snelheid</value></data>
    <data name="dlgConfigureTrajectory_lblMode" xml:space="preserve"><value>Mode:</value></data>
-   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trajectory</value></data>
+   <data name="dlgConfigureTrajectory_ModeTrajectory" xml:space="preserve"><value>Trajectpad</value></data>
    <data name="dlgConfigureTrajectory_Style" xml:space="preserve"><value>Stijl:</value></data>
    <data name="dlgConfigureTrajectory_Title" xml:space="preserve"><value>Configureer Trajectpad</value></data>
-   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Compleet trajectpad</value></data>
+   <data name="dlgConfigureTrajectory_RadioComplete" xml:space="preserve"><value>Compleet Trajectpad</value></data>
    <data name="dlgConfigureTrajectory_RadioFocus" xml:space="preserve"><value>Trajectpad sectie rond huidig beeld</value></data>
    <data name="dlgConfigureTrajectory_RadioLabel" xml:space="preserve"><value>Label volgt het Trajectpad</value></data>
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Originele systeem coördinaten</value></data>
@@ -137,31 +137,31 @@
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Werkelijke afmetingen van het segment:</value></data>
    <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Fixeer de afmeting</value></data>
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Huidige selectie:</value></data>
-   
-   
+   <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Eigenschappen</value></data>
+   <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Geen andere optie beschikbaar</value></data>
    <data name="dlgDevicePicker_SelectAnother" xml:space="preserve"><value>Kies een ander apparaat</value></data>
-   
-   
-   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duur van elke dia :{0} hondersten van seconden.</value></data>
-   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duur van elke dia :{0:0.00} seconden.</value></data>
+   <data name="dlgDevicePicker_Url" xml:space="preserve"><value>URL:</value></data>
+   <data name="dlgDevicePicker_Type" xml:space="preserve"><value>Type:</value></data>
+   <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Duur van elke Kernbeeld :{0} hondersten van seconden.</value></data>
+   <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Duur van elke Kernbeeld :{0:0.00} seconden.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="dlgDiapoExport_RadioPausedVideo" xml:space="preserve"><value>Originele video met een pauze op elk Kernbeeld</value></data>
    <data name="dlgDiapoExport_RadioSlideshow" xml:space="preserve"><value>Video diashow met alleen de Kernbeelden.</value></data>
    <data name="dlgDiapoExport_GroupDiapoType" xml:space="preserve"><value>Videotype</value></data>
-   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Bewaar de gegevens als een tabel document</value></data>
+   <data name="dlgExportSpreadsheet_Title" xml:space="preserve"><value>Bewaar de gegevens als een databestanddocument</value></data>
    <data name="dlgExportSpreadsheet_Filter" xml:space="preserve"><value>OpenOffice Calc (*.ods)|*.ods|Microsoft Excel (*.xml)|*.xml|XHTML (*.html)|*.html|Text (*.txt)|*.txt;</value></data>
-   
-   
+   <data name="dlgImportReference_Title" xml:space="preserve"><value>Importeer een afbeelding als referentie</value></data>
+   <data name="dlgImportReference_Filter" xml:space="preserve"><value>Alle ondersteunde bestandtypes (*.SVG;*.JPG;*.PNG;*.BMP;*.GIF)|*.SVG;*.JPG;*.PNG;*.BMP;*.GIF</value></data>
    <data name="dlgKeyframeComment_Title" xml:space="preserve"><value>Commentaar…</value></data>
    <data name="dlgLoadAnalysis_Filter" xml:space="preserve"><value>Kinovea Video Analyse (*.kva)|*.kva|XML (*.xml)|*.xml|Alle bestanden (*.*)|*.*;</value></data>
-   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Laad de kernbeeldgegevens</value></data>
+   <data name="dlgLoadAnalysis_Title" xml:space="preserve"><value>Laad de Kernbeeldgegevens</value></data>
    <data name="dlgRafaleExport_GroupInfos" xml:space="preserve"><value>Informatie</value></data>
-   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Meng tekenvormen op video</value></data>
+   <data name="dlgRafaleExport_LabelBlend" xml:space="preserve"><value>Meng tekenvormen op de beelden</value></data>
    <data name="dlgRafaleExport_LabelFrequencyHundredth" xml:space="preserve"><value>Enkel frame iedere {0} honderste van een seconde</value></data>
    <data name="dlgRafaleExport_LabelFrequencyRoot" xml:space="preserve"><value>Frequentie van beeldexport :</value></data>
    <data name="dlgRafaleExport_LabelFrequencySeconds" xml:space="preserve"><value>Enkel frame iedere {0:0.00} van een seconde</value></data>
    <data name="dlgRafaleExport_LabelInfoSuffix" xml:space="preserve"><value>De extensie wordt automatisch gekoppeld aan de bestandsnaam. ( "file" =&gt; "file-00.00.jpg")</value></data>
-   <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exporteer alleen kernbeelden.</value></data>
+   <data name="dlgRafaleExport_LabelKeyframesOnly" xml:space="preserve"><value>Exporteer alleen Kernbeelden.</value></data>
    <data name="dlgRafaleExport_LabelTotalFrames" xml:space="preserve"><value>Totaal aantal beelden te exporten : {0:0}.</value></data>
    <data name="dlgRafaleExport_LabelTotalSeconds" xml:space="preserve"><value>Duur van het geëxporteerde beeldmateriaal {0:0.00} seconden.</value></data>
    <data name="dlgRafaleExport_Title" xml:space="preserve"><value>Bewaar een volgorde van de beelden.</value></data>
@@ -169,12 +169,12 @@
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Houdt rekening met Slow Motion. (Huidig =</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opties</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Opslagmethode</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Bewaar alleen de kernbeeldgegevens.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Bewaar video en kernbeeldgegevens in een enkel bestand.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Bewaar alleen de Kernbeeldgegevens.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Bewaar video en Kernbeeldgegevens in een enkel bestand.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Markeer permanent de Kernbeeld gegevens op de video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Bewaar alleen video.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
-   <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar kernbeeldgegegevens.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Bewaar video of Kernbeeldgegevens…</value></data>
+   <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar Kernbeeldgegegevens.</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG afbeeldingen (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG afbeeldingen (*.png)|*.png|Bitmap afbeeldingen (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
    <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
@@ -186,12 +186,12 @@
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Overschrijf bestand</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>Het bestand {0} bestaat reeds.\nWilt u het vervangen?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Incorrecte bestandsnaam</value></data>
-   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Een bestandsnaam bevat onjuiste characters.\n Een bestandsnaam kan geen van de volgende tekens bevatten:\n \ / : * ? " &lt; &gt;</value></data>
+   <data name="Error_Capture_InvalidFile_Text" xml:space="preserve"><value>Een bestandsnaam bevat onjuiste tekens.\n Een bestandsnaam kan geen van de volgende tekens bevatten:\n \ / : * ? " &lt; &gt;</value></data>
    <data name="Error_SaveDiaporama" xml:space="preserve"><value>Kinovea - Kan geen Diashow maken</value></data>
    <data name="Error_SaveDiaporama_NoKeyframes" xml:space="preserve"><value>Een diashow is een rij opeenvolgende Kernbeelden opgeslagen in video format.\n Voer a.u.b. enkele kernbeelden in,voordat u de diashow maakt.</value></data>
    <data name="Error_SavePausedVideo" xml:space="preserve"><value>Kinovea - Kan geen video met pauzes maken</value></data>
-   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>U dient enkele Kernbeelden toe te voegen, voordat u deze functie kan gebruiken.</value></data>
-   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Onmogelijk bestand te maken. \nZorg ervoor dat u de rechten heeft om bestanden op te slaan in doelmap en dat het bestand niet nu in gebruik is.</value></data>
+   <data name="Error_SavePausedVideo_NoKeyframes" xml:space="preserve"><value>U dient enkele Kernbeelden toe te voegen, voordat u deze functie kunt gebruiken.</value></data>
+   <data name="Error_SaveMovie_FileError" xml:space="preserve"><value>Onmogelijk bestand te maken. \nZorg ervoor dat u de rechten heeft om bestanden op te slaan in doelmap en dat het bestand nu niet in gebruik is.</value></data>
    <data name="Error_SaveMovie_Title" xml:space="preserve"><value>Kinovea - Kan bestand niet opslaan.</value></data>
    <data name="Error_SaveMovie_LowLevelError" xml:space="preserve"><value>Kan video niet opslaan.\nProbeer nogmaals met een ander format.</value></data>
    <data name="FormFileSave_Infos" xml:space="preserve"><value>Voortgang :</value></data>
@@ -208,7 +208,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuratie</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
-   
+   <data name="Generic_Opacity" xml:space="preserve"><value>Doorzichtigheid</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
@@ -279,8 +279,8 @@
    <data name="mnuGrid" xml:space="preserve"><value>Raster</value></data>
    <data name="mnuGridsHide" xml:space="preserve"><value>Verberg</value></data>
    <data name="mnuHome" xml:space="preserve"><value>Bladeren</value></data>
-   
-   
+   <data name="mnuImportImage" xml:space="preserve"><value>Importeer een afbeelding…</value></data>
+   <data name="mnuInvertAngle" xml:space="preserve"><value>Draai hoek om</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Laad kernbeeldgegevens…</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
@@ -290,22 +290,22 @@
    <data name="mnuMagnifierDirect" xml:space="preserve"><value>Schakel naar Direct Zoom</value></data>
    <data name="mnuMagnifierQuit" xml:space="preserve"><value>Sluit Vergrootglas</value></data>
    <data name="mnuMirror" xml:space="preserve"><value>Spiegel</value></data>
-   <data name="mnuOneCapture" xml:space="preserve"><value>Eén opname scherm</value></data>
-   <data name="mnuOnePlayer" xml:space="preserve"><value>Eén afspeel scherm</value></data>
+   <data name="mnuOneCapture" xml:space="preserve"><value>Eén opname-scherm</value></data>
+   <data name="mnuOnePlayer" xml:space="preserve"><value>Eén afspeelscherm</value></data>
    <data name="mnuPlayPause" xml:space="preserve"><value>Afspelen | Pause</value></data>
    <data name="mnuRestartTracking" xml:space="preserve"><value>Herstart Trajectpad Editor</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Bewaar video of kernbeeldgegevens…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Fixeer de afmeting</value></data>
-   
+   <data name="mnuSendPic" xml:space="preserve"><value>Zend beeld naar de andere video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>High Speed camera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Maak laatste frame van het werkgebied nu het huidige frame</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Maak eerste frame van het werkgebied nu het huidige frame</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Verscherp…</value></data>
-   
+   <data name="mnuShowCoordinates" xml:space="preserve"><value>Toon de coördinaten</value></data>
    <data name="mnuShowMeasure" xml:space="preserve"><value>Toon afmeting</value></data>
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliseer…</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Beëindig Trajectory bewerking</value></data>
-   
+   <data name="mnuSVGTools" xml:space="preserve"><value>Observatie Referentie</value></data>
    <data name="mnuSwapScreens" xml:space="preserve"><value>Draai Video posities om</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Verwijder bestand</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Hernoem bestand</value></data>
@@ -325,7 +325,7 @@
    <data name="statusBufferFill" xml:space="preserve"><value>Buffer: {0}%</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klassiek (h:mm:ss:hundredth)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Frames nummers</value></data>
-   
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Totaal in millisecondes</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Hondersten van een minuut</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Tienduizendsten van een minuut</value></data>
    <data name="Toast_Pause" xml:space="preserve"><value>Pauze</value></data>
