@@ -95,7 +95,8 @@ namespace Kinovea.Root
             btn3DPlaneColor.BackColor = m_PerspectiveGridColor;
             FixColors();
             chkEnablePersistence.Checked = m_DefaultFading.Enabled;
-            trkFading.Value = m_DefaultFading.FadingFrames;
+            trkFading.Maximum = m_prefManager.MaxFading;
+            trkFading.Value = Math.Min(m_DefaultFading.FadingFrames, trkFading.Maximum);
             chkAlwaysVisible.Checked = m_DefaultFading.AlwaysVisible;
             EnableDisableFadingOptions();
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);

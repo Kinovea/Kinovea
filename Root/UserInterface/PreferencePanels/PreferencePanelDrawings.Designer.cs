@@ -202,11 +202,12 @@ namespace Kinovea.Root
 			// 
 			this.trkFading.BackColor = System.Drawing.Color.White;
 			this.trkFading.Location = new System.Drawing.Point(19, 77);
-			this.trkFading.Maximum = 60;
+			this.trkFading.Maximum = 200;
 			this.trkFading.Minimum = 1;
 			this.trkFading.Name = "trkFading";
 			this.trkFading.Size = new System.Drawing.Size(359, 45);
 			this.trkFading.TabIndex = 54;
+			this.trkFading.TickFrequency = 5;
 			this.trkFading.Value = 5;
 			this.trkFading.ValueChanged += new System.EventHandler(this.trkFading_ValueChanged);
 			// 

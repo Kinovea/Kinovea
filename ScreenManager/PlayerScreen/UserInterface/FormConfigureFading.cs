@@ -57,7 +57,9 @@ namespace Kinovea.ScreenManager
         private void ConfigureForm()
         {
         	// Display current values.
-            trkValue.Value = m_Drawing.infosFading.FadingFrames;
+        	PreferencesManager pm = PreferencesManager.Instance();
+        	trkValue.Maximum = pm.MaxFading;
+            trkValue.Value = Math.Min(m_Drawing.infosFading.FadingFrames, trkValue.Maximum);
             chkDefault.Checked = m_Drawing.infosFading.UseDefault;
             chkAlwaysVisible.Checked = m_Drawing.infosFading.AlwaysVisible;
             chkEnable.Checked = m_Drawing.infosFading.Enabled;
@@ -78,7 +80,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-            	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault + String.Format("({0})", info.FadingFrames);
+            	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault + String.Format("({0})", Math.Min(info.FadingFrames, trkValue.Maximum));
             }
             
             UpdateValueLabel();
@@ -114,7 +116,8 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateValueLabel()
         {
-            lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureFading_lblValue, m_Drawing.infosFading.FadingFrames.ToString());
+        	int val = Math.Min(trkValue.Maximum, m_Drawing.infosFading.FadingFrames);
+            lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureFading_lblValue, val.ToString());
         }
         private void EnableDisable()
         {
