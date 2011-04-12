@@ -67,7 +67,7 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Mevcut Güncellemeleri Tara...</value></data>
+   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Yazılım Güncelleme...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Yeni bir sürüm mevcut !</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Lütfen yükleyici dosya için gerekli hedef klasörünü seçin.</value></data>
    <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Yükleme Klasörünü Seçin</value></data>
