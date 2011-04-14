@@ -923,6 +923,9 @@ namespace Kinovea.Root
                 case "el":
                     mnuGreek.Checked = true;
                     break;
+                case "lt":
+                    mnuLithuanian.Checked = true;
+                    break;
                 case "en":
                 default:
                     mnuEnglish.Checked = true;
