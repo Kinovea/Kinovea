@@ -287,6 +287,7 @@ namespace Kinovea.ScreenManager
 			{
 				if(!m_bIsGrabbing)
 				{
+					m_bSizeKnown = false;
 					m_VideoSource.Start();
 				}
 				

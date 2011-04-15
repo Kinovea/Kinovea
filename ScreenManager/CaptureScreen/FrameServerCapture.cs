@@ -206,8 +206,6 @@ namespace Kinovea.ScreenManager
 					bmp.Dispose();
 					m_bIsRecording = false;
 					m_VideoFileWriter.CloseSavingContext(true);
-					
-					// TODO: remove broken file.
 				}
 				else
 				{
@@ -221,7 +219,6 @@ namespace Kinovea.ScreenManager
 						bmp.Dispose();
 					}
 				}
-				
 			}
 			
 			// Ask a refresh. This could also be done with a timer,
