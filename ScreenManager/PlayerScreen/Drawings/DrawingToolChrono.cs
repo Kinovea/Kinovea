@@ -25,16 +25,13 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolChrono : AbstractDrawingTool
     {
-        //-----------------------------------------------------------------------------------
-        // WARNING.
-        // Chrono is a very special drawing and is not treated as such.
-        // The DrawingChronos doesn't belong to a single KF but to the Metadata directly.
-        // We keep using the AbstractDrawingTool and AbstractDrawing classes for convenience.
-        //-----------------------------------------------------------------------------------
-
 		public override DrawingType DrawingType
         {
         	get { return DrawingType.Chrono; }
+        }
+		public override bool Attached
+        {
+        	get { return false; }
         }
 		
         public DrawingToolChrono()

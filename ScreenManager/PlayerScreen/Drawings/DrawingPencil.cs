@@ -34,7 +34,6 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingPencil : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
     {
-
         #region Properties
         public DrawingType DrawingType
         {
@@ -45,6 +44,14 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         #endregion
 
         #region Members

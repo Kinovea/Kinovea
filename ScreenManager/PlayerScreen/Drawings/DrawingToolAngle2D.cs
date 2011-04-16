@@ -30,10 +30,21 @@ namespace Kinovea.ScreenManager
         {
         	get { return DrawingType.Angle; }
         }
-
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+		public override bool Attached
         {
-            return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X + 50, _Origin.Y, _Origin.X, _Origin.Y - 50, _iTimestamp, _AverageTimeStampsPerFrame);
+        	get { return true; }
+        }
+        
+		private DelegateScreenInvalidate m_invalidate;
+		
+		public DrawingToolAngle2D(DelegateScreenInvalidate _invalidate)
+		{
+			m_invalidate = _invalidate;	
+		}
+		
+		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        {
+            return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X + 50, _Origin.Y, _Origin.X, _Origin.Y - 50, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
         }
         public override DrawingToolType OnMouseUp()
         {

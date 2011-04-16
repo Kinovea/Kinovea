@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -32,6 +33,23 @@ namespace Kinovea.ScreenManager
 	/// </summary>
     public abstract class AbstractDrawing
     {
+    	#region Enum
+    	/// <summary>
+    	/// Describe the various capabilities for generic menus.
+    	/// </summary>
+    	[Flags]
+		public enum Capabilities
+		{
+			None = 0,
+		    ConfigureColor = 1,
+		    ConfigureColorSize = 2,
+		    Fading = 4,
+		    Opacity = 8
+		}
+
+    	#endregion
+    	
+    	#region Properties
     	/// <summary>
     	/// Gets or set the fading object for this drawing. 
     	/// This is used in opacity calculation for Persistence.
@@ -42,6 +60,26 @@ namespace Kinovea.ScreenManager
             set;
         }
         
+        /// <summary>
+        /// Get the capabilities of this drawing for the generic part of context menu.
+        /// </summary>
+        public abstract Capabilities Caps
+        {
+        	get;
+        }
+        
+        /// <summary>
+    	/// Gets the list of extra context menu specific to this drawing.
+    	/// </summary>
+        public abstract List<ToolStripMenuItem> ContextMenu
+        {
+            get;
+        }
+        
+        
+        #endregion
+    	
+        #region Methods
         /// <summary>
         /// Draws this drawing on the provided canvas.
         /// The drawing must be drawn at the proper scale and place in the canvas.
@@ -69,17 +107,12 @@ namespace Kinovea.ScreenManager
         public abstract void MoveHandle(Point point, int handleNumber);
         
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="_deltaX"></param>
-        /// <param name="_deltaY"></param>
-        
-        /// <summary>
         /// Move the drawing as a whole.
         /// </summary>
         /// <param name="_deltaX">Change in x coordinates</param>
         /// <param name="_deltaY">Change in y coordinates</param>
         /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
         public abstract void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys);
+        #endregion
     }
 }

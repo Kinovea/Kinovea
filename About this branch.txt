@@ -1,11 +1,23 @@
 
+--------------------------------------------------------------------------------
+2011/04/16
+Attached drawings:
+- Save tool type in the button Tag property -> Group all event handler into one for tool selection.
+- Introduction of the Capabilities concept implemented by each drawing, to know which generic context menu we should show (configure, fading, opacity).
+- When drawing have specific right click menu (like "Show Measure") they are stored inside the drawing itself and added dynamically on right click.
+- Port of these simplifications to the Capture screen. (+ port of the ToolPointer variable simplification).
+- Migration of the LocateForm helper function to ScreenManagerKernel, so it's not duplicated between screens.
+- Migration of the showmeasure and show coordinates flags into the corresponding tools as static properties. (previously as bool in each screen UI)
+TODO: fix color profile mess.
+
+--------------------------------------------------------------------------------
 2011/04/07
 Unattached drawings:
 - Tracks merged into the list of ExtraDrawings.
 - Fixed Chrono commands (undo/redo for add, delete, modify).
 - Fixed Tracks commands (undo/redo for delete, delete end).
 
-
+--------------------------------------------------------------------------------
 2011/04/07 - Actual branch creation under SVN
 
 Done at this point:
@@ -26,7 +38,7 @@ Done at this point:
 - Track made conformant to AbstractDrawing.
 
 
-
+--------------------------------------------------------------------------------
 2011/04/05 - Sandbox branch
 
 This branch is to work on a refactoring of the drawing and drawing tools framework.
@@ -45,7 +57,7 @@ Attached drawings herit from a class with functions not implemented by all tools
 
 The approach
 ------------
-- Unattached drawings will conform to a similar interface. It is supposed that they can actually herit from the same type as the attached drawings (AbstractDrawing).
-- We will try to treat all unattached drawings at once wherever, using their parent type.
+- Unattached drawings will conform to a similar interface. It is supposed that they can actually inherit from the same type as the attached drawings (AbstractDrawing).
+- We will try to treat all unattached drawings at once everywhere, using their parent type.
 - Unattached drawings creating multiple instances will work with a single Manager that will proxy the requests to the individual instances.
 - Attached drawings will implement a core interface and then have their extra functions defined in interfaces.

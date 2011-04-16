@@ -500,7 +500,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolCircle.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolCircle.TabIndex = 20;
         	this.btnDrawingToolCircle.UseVisualStyleBackColor = false;
-        	this.btnDrawingToolCircle.Click += new System.EventHandler(this.btnDrawingToolCircle_Click);
+        	this.btnDrawingToolCircle.Click += new System.EventHandler(this.btnDrawingTool_Click);
         	// 
         	// btn3dplane
         	// 
@@ -570,7 +570,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolCross2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolCross2D.TabIndex = 7;
         	this.btnDrawingToolCross2D.UseVisualStyleBackColor = false;
-        	this.btnDrawingToolCross2D.Click += new System.EventHandler(this.btnDrawingToolCross2D_Click);
+        	this.btnDrawingToolCross2D.Click += new System.EventHandler(this.btnDrawingTool_Click);
         	// 
         	// btnDrawingToolLine2D
         	// 
@@ -587,7 +587,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolLine2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolLine2D.TabIndex = 4;
         	this.btnDrawingToolLine2D.UseVisualStyleBackColor = false;
-        	this.btnDrawingToolLine2D.Click += new System.EventHandler(this.btnDrawingToolLine2D_Click);
+        	this.btnDrawingToolLine2D.Click += new System.EventHandler(this.btnDrawingTool_Click);
         	// 
         	// btnColorProfile
         	// 
@@ -621,7 +621,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolText.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolText.TabIndex = 10;
         	this.btnDrawingToolText.UseVisualStyleBackColor = false;
-        	this.btnDrawingToolText.Click += new System.EventHandler(this.btnDrawingToolText_Click);
+        	this.btnDrawingToolText.Click += new System.EventHandler(this.btnDrawingTool_Click);
         	// 
         	// btnDrawingToolPencil
         	// 
@@ -638,7 +638,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPencil.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolPencil.TabIndex = 9;
         	this.btnDrawingToolPencil.UseVisualStyleBackColor = false;
-        	this.btnDrawingToolPencil.Click += new System.EventHandler(this.btnDrawingToolPencil_Click);
+        	this.btnDrawingToolPencil.Click += new System.EventHandler(this.btnDrawingTool_Click);
         	// 
         	// btnDrawingToolAngle2D
         	// 
@@ -655,7 +655,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolAngle2D.Size = new System.Drawing.Size(25, 25);
         	this.btnDrawingToolAngle2D.TabIndex = 8;
         	this.btnDrawingToolAngle2D.UseVisualStyleBackColor = false;
-        	this.btnDrawingToolAngle2D.Click += new System.EventHandler(this.btnDrawingToolAngle2D_Click);
+        	this.btnDrawingToolAngle2D.Click += new System.EventHandler(this.btnDrawingTool_Click);
         	// 
         	// btnDrawingToolPointer
         	// 

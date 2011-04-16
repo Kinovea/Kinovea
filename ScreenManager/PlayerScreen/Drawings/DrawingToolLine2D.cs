@@ -26,14 +26,31 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolLine2D : AbstractDrawingTool
     {
+    	/// <summary>
+    	/// This static property is used to keep the same setting for new lines.
+    	/// Once we activate the measure, new lines will be created with the setting on, and vice versa.
+    	/// </summary>
+    	public static bool ShowMeasure;
+    	
     	public override DrawingType DrawingType
         {
         	get { return DrawingType.Line; }
         }
-
+		public override bool Attached
+        {
+        	get { return true; }
+        }
+		
+		private DelegateScreenInvalidate m_invalidate;
+		
+		public DrawingToolLine2D(DelegateScreenInvalidate _invalidate)
+		{
+			m_invalidate = _invalidate;	
+		}
+		
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
-            return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
+            return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
         }
         public override DrawingToolType OnMouseUp()
         {

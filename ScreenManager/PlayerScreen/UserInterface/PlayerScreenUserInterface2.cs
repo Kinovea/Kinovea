@@ -266,8 +266,6 @@ namespace Kinovea.ScreenManager
 		private formKeyframeComments m_KeyframeCommentsHub;
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
-		private bool m_bMeasuring;
-		private bool m_bCrossCoordinates;
 		private Point m_DescaledMouse;
 
 		// Video Filters Management
@@ -294,14 +292,10 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuConfigureFading = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuTrackTrajectory = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuInvertAngle = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuGotoKeyframe = new ToolStripMenuItem();
 		private ToolStripSeparator mnuSepDrawing = new ToolStripSeparator();
 		private ToolStripSeparator mnuSepDrawing2 = new ToolStripSeparator();
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
 		
 		private ContextMenuStrip popMenuTrack = new ContextMenuStrip();
 		private ToolStripMenuItem mnuRestartTracking = new ToolStripMenuItem();
@@ -1037,21 +1031,27 @@ namespace Kinovea.ScreenManager
 		#region Various Inits & Setups
 		private void InitializeDrawingTools()
 		{
-			// Create Drawing Tools
-			// Must be filled in the order of DrawingToolType enum for now.
+			// Create Drawing Tools, map with buttons.
 			m_DrawingTools = new AbstractDrawingTool[(int)DrawingToolType.NumberOfDrawingTools];
-			
-			m_PointerTool = new DrawingToolPointer();
-			
-			m_DrawingTools[(int)DrawingToolType.Pointer] = m_PointerTool;
-			m_DrawingTools[(int)DrawingToolType.Line2D] = new DrawingToolLine2D();
-			m_DrawingTools[(int)DrawingToolType.Cross2D] = new DrawingToolCross2D();
-			m_DrawingTools[(int)DrawingToolType.Angle2D] = new DrawingToolAngle2D();
+			m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
+			m_DrawingTools[(int)DrawingToolType.Line2D] = new DrawingToolLine2D(DoInvalidate);
+			m_DrawingTools[(int)DrawingToolType.Cross2D] = new DrawingToolCross2D(DoInvalidate);
+			m_DrawingTools[(int)DrawingToolType.Angle2D] = new DrawingToolAngle2D(DoInvalidate);
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Chrono] = new DrawingToolChrono();
 			m_DrawingTools[(int)DrawingToolType.Circle] = new DrawingToolCircle();
+
+			btnDrawingToolPointer.Tag = DrawingToolType.Pointer;
+			btnDrawingToolLine2D.Tag = DrawingToolType.Line2D;
+			btnDrawingToolCross2D.Tag = DrawingToolType.Cross2D;
+			btnDrawingToolAngle2D.Tag = DrawingToolType.Angle2D;
+			btnDrawingToolPencil.Tag = DrawingToolType.Pencil;
+			btnDrawingToolText.Tag = DrawingToolType.Text;
+			btnDrawingToolChrono.Tag = DrawingToolType.Chrono;
+			btnDrawingToolCircle.Tag = DrawingToolType.Circle;
 			
+			m_PointerTool = (DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer];
 			m_ActiveTool = DrawingToolType.Pointer;
 		}
 		private void ResetData()
@@ -1086,8 +1086,8 @@ namespace Kinovea.ScreenManager
 			
 			m_bDocked = true;
 			m_bTextEdit = false;
-			m_bMeasuring = false;
-			m_bCrossCoordinates = false;
+			DrawingToolLine2D.ShowMeasure = false;
+			DrawingToolCross2D.ShowCoordinates = false;
 			
 			m_bDrawtimeFiltered = false;
 			
@@ -1213,20 +1213,11 @@ namespace Kinovea.ScreenManager
 			mnuConfigureOpacity.Image = Properties.Resources.persistence;
 			mnuTrackTrajectory.Click += new EventHandler(mnuTrackTrajectory_Click);
 			mnuTrackTrajectory.Image = Properties.Resources.tracking;
-			mnuInvertAngle.Click += new EventHandler(mnuInvertAngle_Click);
-			mnuInvertAngle.Image = Properties.Resources.angle;
 			mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
 			mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
 			mnuDeleteDrawing.Image = Properties.Resources.delete;
-			mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
-			mnuShowMeasure.Image = Properties.Resources.measure;
-			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
-			mnuSealMeasure.Image = Properties.Resources.textfield;
-			mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
-			mnuShowCoordinates.Image = Properties.Resources.measure;
-			popMenuDrawings.Items.AddRange(new ToolStripItem[] { mnuConfigureDrawing, mnuConfigureFading, mnuConfigureOpacity, mnuSepDrawing, mnuTrackTrajectory, mnuInvertAngle, mnuShowCoordinates, mnuShowMeasure, mnuSealMeasure, mnuGotoKeyframe, mnuSepDrawing2, mnuDeleteDrawing });
-
+			
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
 			mnuStopTracking.Visible = false;
@@ -2637,7 +2628,7 @@ namespace Kinovea.ScreenManager
 				else
 				{
 					fcs.StartPosition = FormStartPosition.Manual;
-					LocateForm(fcs);
+					ScreenManagerKernel.LocateForm(fcs);
 				}
 				
 				if (fcs.ShowDialog() == DialogResult.OK)
@@ -2708,12 +2699,8 @@ namespace Kinovea.ScreenManager
 			mnuConfigureFading.Text = ScreenManagerLang.mnuConfigureFading;
 			mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
 			mnuTrackTrajectory.Text = ScreenManagerLang.mnuTrackTrajectory;
-			mnuInvertAngle.Text = ScreenManagerLang.mnuInvertAngle;
 			mnuGotoKeyframe.Text = ScreenManagerLang.mnuGotoKeyframe;
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
-			mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
-			mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
-			mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
 			
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Text = ScreenManagerLang.mnuStopTracking;
@@ -2797,29 +2784,6 @@ namespace Kinovea.ScreenManager
 			toolTips.SetToolTip(btnMagnifier, ScreenManagerLang.ToolTip_Magnifier);
 			toolTips.SetToolTip(btn3dplane, ScreenManagerLang.mnu3DPlane);
 
-		}
-		private void SetPopupConfigureParams(AbstractDrawing _drawing)
-		{
-			// choose between "Color" and "Color & Size" popup menu.
-
-			if (_drawing is DrawingAngle2D || _drawing is DrawingCross2D)
-			{
-				mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-			}
-			else
-			{
-				mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
-			}
-			
-			// Check Show Measure menu
-			if(_drawing is DrawingLine2D)
-			{
-				mnuShowMeasure.Checked = ((DrawingLine2D)_drawing).ShowMeasure;
-			}
-			else if(_drawing is DrawingCross2D)
-			{
-				mnuShowCoordinates.Checked = ((DrawingCross2D)_drawing).ShowCoordinates;
-			}
 		}
 		#endregion
 
@@ -2942,12 +2906,12 @@ namespace Kinovea.ScreenManager
 									if(ad is DrawingLine2D)
 									{
 										((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
-										((DrawingLine2D)ad).ShowMeasure = m_bMeasuring;
+										((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
 									}
 									else if(ad is DrawingCross2D)
 									{
 										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
-										((DrawingCross2D)ad).ShowCoordinates = m_bCrossCoordinates;
+										((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
 									}
 								}
 								else
@@ -3011,45 +2975,72 @@ namespace Kinovea.ScreenManager
 							}
 							else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 							{
-								// If we are on a Cross2D, we activate the menu to let the user Track it.
+								// Rebuild the context menu according to the capabilities of the drawing we are on.
+								
 								AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
-								
-								// We use temp variables because ToolStripMenuItem.Visible always returns false...
-								bool isCross = (ad is DrawingCross2D);
-								bool isLine = (ad is DrawingLine2D);
-								bool isAngle = (ad is DrawingAngle2D);
-								bool fadingVisible = m_PrefManager.DefaultFading.Enabled && !(ad is DrawingSVG) && !(ad is DrawingBitmap);
-								bool gotoVisible = (fadingVisible && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
-								bool configVisible = !(ad is DrawingSVG) && !(ad is DrawingBitmap);
-								bool opacityVisible = (ad is DrawingSVG) || (ad is DrawingBitmap);
-								
-								mnuTrackTrajectory.Visible = isCross;
-								mnuInvertAngle.Visible = isAngle;
-								mnuTrackTrajectory.Enabled = (ad.infosFading.ReferenceTimestamp == m_iCurrentPosition);
-								mnuConfigureFading.Visible = fadingVisible;
-								mnuConfigureOpacity.Visible = opacityVisible;
-								mnuConfigureDrawing.Visible = configVisible; 
-								mnuGotoKeyframe.Visible = gotoVisible;
-								mnuShowMeasure.Visible = isLine;
-								mnuSealMeasure.Visible = isLine;
-								mnuShowCoordinates.Visible = isCross;
-								
-								mnuSepDrawing.Visible = true;
-								mnuSepDrawing2.Visible = isCross || gotoVisible || isLine || isAngle;
-								
-								// "Color & Size" or "Color" depending on drawing type.
-								SetPopupConfigureParams(ad);
-								
-								panelCenter.ContextMenuStrip = popMenuDrawings;
+								if(ad != null)
+								{
+									popMenuDrawings.Items.Clear();
+									
+									// Generic context menu from drawing capabilities.
+									if((ad.Caps & AbstractDrawing.Capabilities.ConfigureColor) == AbstractDrawing.Capabilities.ConfigureColor)
+									{
+									   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
+									   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
+									}
+									   
+									if((ad.Caps & AbstractDrawing.Capabilities.ConfigureColorSize) == AbstractDrawing.Capabilities.ConfigureColorSize)
+									{
+										mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+									   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
+									}
+										
+									if(m_PrefManager.DefaultFading.Enabled && ((ad.Caps & AbstractDrawing.Capabilities.Fading) == AbstractDrawing.Capabilities.Fading))
+									{
+										popMenuDrawings.Items.Add(mnuConfigureFading);
+									}
+									
+									if((ad.Caps & AbstractDrawing.Capabilities.Opacity) == AbstractDrawing.Capabilities.Opacity)
+									{
+										popMenuDrawings.Items.Add(mnuConfigureOpacity);
+									}
+									
+									popMenuDrawings.Items.Add(mnuSepDrawing);
+
+									// Specific menus. Hosted by the drawing itself.
+									bool hasExtraMenu = (ad.ContextMenu != null && ad.ContextMenu.Count > 0);
+									if(hasExtraMenu)
+									{
+										foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
+										{
+											popMenuDrawings.Items.Add(tsmi);
+										}
+									}
+									
+									bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
+									if(gotoVisible)
+										popMenuDrawings.Items.Add(mnuGotoKeyframe);
+									
+									if(hasExtraMenu || gotoVisible)
+										popMenuDrawings.Items.Add(mnuSepDrawing2);
+										
+									// Generic delete
+									popMenuDrawings.Items.Add(mnuDeleteDrawing);
+									
+									// Set this menu as the context menu.
+									panelCenter.ContextMenuStrip = popMenuDrawings;
+								}
 							} 
 							else if( (hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
 							{ 
+								// Unlike attached drawings, each extra drawing type has its own context menu for now.
+								
 								if(hitDrawing is DrawingChrono)
 								{
 									// Toggle to countdown is active only if we have a stop time.
 									mnuChronoCountdown.Enabled = ((DrawingChrono)hitDrawing).HasTimeStop;
 									mnuChronoCountdown.Checked = ((DrawingChrono)hitDrawing).CountDown;
-									panelCenter.ContextMenuStrip = popMenuChrono;	
+									panelCenter.ContextMenuStrip = popMenuChrono;
 								}
 								else if(hitDrawing is Plane3D)
 								{
@@ -3078,10 +3069,10 @@ namespace Kinovea.ScreenManager
 							}
 							else if(m_ActiveTool != DrawingToolType.Pointer)
 							{
-								// Launch Preconfigure dialog.
-								// = Updates the tool's entry of the main color profile.
+								// Right click without being on any drawing but with a drawing tool active.
+								// Launch Preconfigure dialog. => Updates the tool's entry of the main color profile.
 								formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);
-								LocateForm(fcd);
+								ScreenManagerKernel.LocateForm(fcd);
 								fcd.ShowDialog();
 								fcd.Dispose();
 								
@@ -3089,7 +3080,7 @@ namespace Kinovea.ScreenManager
 							}
 							else
 							{
-								// No drawing touched and no tool selected, but not currently playing.
+								// No drawing touched and no tool selected, but not currently playing. Default menu.
 								mnuDirectTrack.Visible = true;
 								mnuSendPic.Visible = m_bSynched;
 								panelCenter.ContextMenuStrip = popMenu;
@@ -4013,16 +4004,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Drawings Toolbar Events
-		private void btnDrawingToolLine2D_Click(object sender, EventArgs e)
-		{
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
-			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Line2D;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorLine2D, 0));
-				PrepareKeyframesDock();
-			}
-		}
 		private void btnDrawingToolPointer_Click(object sender, EventArgs e)
 		{
 			OnPoke();
@@ -4033,54 +4014,26 @@ namespace Kinovea.ScreenManager
 				DockKeyframePanel(true);
 			}
 		}
-		private void btnDrawingToolCross2D_Click(object sender, EventArgs e)
+		private void btnDrawingTool_Click(object sender, EventArgs e)
 		{
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
+			// User clicked on a drawing tool button. We find which with its Tag property.
+			// Deactivate magnifier if not commited.
+			// Set this tool as the active tool (waiting for the actual use) and set the cursor accordingly.
+			if(m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
 			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Cross2D;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorCross2D, 0));
-				PrepareKeyframesDock();
+				m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
+				btnMagnifier.Image = Resources.magnifier2;
+				DoInvalidate();
 			}
-		}
-		private void btnDrawingToolAngle2D_Click(object sender, EventArgs e)
-		{
-			btnDrawingToolCircle_Click(sender, e);
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
+			
+			OnPoke();
+			m_ActiveTool = (DrawingToolType)((Button)sender).Tag;
+			UpdateCursor();
+			
+			// Ensure there's a key image at this position, unless the tool creates unattached drawings.
+			if(m_DrawingTools[(int)m_ActiveTool].Attached)
 			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Angle2D;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorAngle2D, 0));
 				PrepareKeyframesDock();
-			}
-		}
-		private void btnDrawingToolCircle_Click(object sender, EventArgs e)
-		{
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
-			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Circle;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
-				PrepareKeyframesDock();
-			}
-		}
-		private void btnDrawingToolPencil_Click(object sender, EventArgs e)
-		{
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
-			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Pencil;
-				UpdateCursor();
-				PrepareKeyframesDock();
-			}
-		}
-		private void btnDrawingToolChrono_Click(object sender, EventArgs e)
-		{
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
-			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Chrono;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorChrono, 0));
 			}
 		}
 		private void btnMagnifier_Click(object sender, EventArgs e)
@@ -4114,46 +4067,12 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
-		private void DisableMagnifier()
-		{
-			// Revert to no magnification.
-			m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
-			btnMagnifier.Image = Resources.magnifier2;
-			SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
-		}
 		private void btn3dplane_Click(object sender, EventArgs e)
 		{
 			m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
 			m_ActiveTool = DrawingToolType.Pointer;
 			OnPoke();
 			DoInvalidate();
-		}
-		private void UpdateCursor()
-		{
-			// Ther current cursor must be updated.
-
-			// Get the cursor and use it.
-			if (m_ActiveTool == DrawingToolType.Pencil)
-			{
-				int iCircleSize = (int)((double)m_ColorProfile.StylePencil.Size * m_FrameServer.CoordinateSystem.Stretch);
-				Cursor c = m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorPencil, iCircleSize);
-				SetCursor(c);
-			}
-			else if (m_ActiveTool == DrawingToolType.Cross2D)
-			{
-				Cursor c = m_DrawingTools[(int)m_ActiveTool].GetCursor(m_ColorProfile.ColorCross2D, 0);
-				SetCursor(c);
-			}
-		}
-		private void btnDrawingToolText_Click(object sender, EventArgs e)
-		{
-			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.Direct)
-			{
-				OnPoke();
-				m_ActiveTool = DrawingToolType.Text;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
-				PrepareKeyframesDock();
-			}
 		}
 		private void btnShowComments_Click(object sender, EventArgs e)
 		{
@@ -4209,7 +4128,26 @@ namespace Kinovea.ScreenManager
 
 			UpdateCursor();
 		}
-		public void SetCursor(Cursor _cur)
+		private void UpdateCursor()
+		{
+			// The current cursor must be updated.
+
+			AbstractDrawingTool drawingTool = m_DrawingTools[(int)m_ActiveTool];
+			Color cursorColor = m_ColorProfile.GetColor(drawingTool.DrawingType);
+				
+			// Get the cursor and use it.
+			if (m_ActiveTool == DrawingToolType.Pencil)
+			{
+				int iCircleSize = (int)((double)m_ColorProfile.StylePencil.Size * m_FrameServer.CoordinateSystem.Stretch);
+				Cursor c = drawingTool.GetCursor(cursorColor, iCircleSize);
+				SetCursor(c);
+			}
+			else
+			{
+				SetCursor(drawingTool.GetCursor(cursorColor, 0));	
+			}
+		}
+		private void SetCursor(Cursor _cur)
 		{
 			if (m_ActiveTool != DrawingToolType.Pointer)
 			{
@@ -4222,60 +4160,11 @@ namespace Kinovea.ScreenManager
 
 			pbSurfaceScreen.Cursor = _cur;
 		}
-		private void LocateForm(Form _form)
-		{
-			// A helper function to center the dialog boxes.
-			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width)
-			{
-				_form.StartPosition = FormStartPosition.CenterScreen;
-			}
-			else
-			{
-				_form.Location = new Point(Cursor.Position.X - (_form.Width / 2), Cursor.Position.Y - 20);
-			}
-		}
 		#endregion
 
 		#region Context Menus Events
 		
-		#region Drawings Menus
-		private void mnuConfigureDrawing_Click(object sender, EventArgs e)
-		{
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
-				if(decorableDrawing != null)
-				{
-					formConfigureDrawing fcd = new formConfigureDrawing(decorableDrawing, pbSurfaceScreen);
-					LocateForm(fcd);
-					fcd.ShowDialog();
-					fcd.Dispose();
-					DoInvalidate();
-				}
-			}
-		}
-		private void mnuConfigureFading_Click(object sender, EventArgs e)
-		{
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				formConfigureFading fcf = new formConfigureFading(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				LocateForm(fcf);
-				fcf.ShowDialog();
-				fcf.Dispose();
-				DoInvalidate();
-			}
-		}
-		private void mnuConfigureOpacity_Click(object sender, EventArgs e)
-		{
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				formConfigureOpacity fco = new formConfigureOpacity(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				LocateForm(fco);
-				fco.ShowDialog();
-				fco.Dispose();
-				DoInvalidate();
-			}
-		}
+		#region Main
 		private void mnuDirectTrack_Click(object sender, EventArgs e)
 		{
 			// Track the point. No Cross2D was selected.
@@ -4289,6 +4178,88 @@ namespace Kinovea.ScreenManager
 			
 			DoInvalidate();
 		}
+		private void mnuSendPic_Click(object sender, EventArgs e)
+		{
+			// Send the current image to the other screen for conversion into an observational reference.
+			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
+			{
+				Bitmap img = CloneTransformedImage();
+				m_PlayerScreenUIHandler.PlayerScreenUI_SendImage(img);	
+			}
+		}
+		#endregion
+		
+		#region Drawings Menus
+		private void mnuConfigureDrawing_Click(object sender, EventArgs e)
+		{
+			// Generic menu for all drawings with the Color or ColorSize capability.
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
+				if(decorableDrawing != null)
+				{
+					formConfigureDrawing fcd = new formConfigureDrawing(decorableDrawing, pbSurfaceScreen);
+					ScreenManagerKernel.LocateForm(fcd);
+					fcd.ShowDialog();
+					fcd.Dispose();
+					DoInvalidate();
+				}
+			}
+		}
+		private void mnuConfigureFading_Click(object sender, EventArgs e)
+		{
+			// Generic menu for all drawings with the Fading capability.
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				formConfigureFading fcf = new formConfigureFading(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
+				ScreenManagerKernel.LocateForm(fcf);
+				fcf.ShowDialog();
+				fcf.Dispose();
+				DoInvalidate();
+			}
+		}
+		private void mnuConfigureOpacity_Click(object sender, EventArgs e)
+		{
+			// Generic menu for all drawings with the Opacity capability.
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				formConfigureOpacity fco = new formConfigureOpacity(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
+				ScreenManagerKernel.LocateForm(fco);
+				fco.ShowDialog();
+				fco.Dispose();
+				DoInvalidate();
+			}
+		}
+		private void mnuGotoKeyframe_Click(object sender, EventArgs e)
+		{
+			// Generic menu for all drawings when we are not on their attachement key frame.
+			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				long iPosition = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing].infosFading.ReferenceTimestamp;
+
+				m_iFramesToDecode = 1;
+				ShowNextFrame(iPosition, true);
+				UpdateNavigationCursor();
+				trkSelection.SelPos = trkFrame.Position;
+				ActivateKeyframe(m_iCurrentPosition);
+			}
+		}
+		private void mnuDeleteDrawing_Click(object sender, EventArgs e)
+		{
+			// Generic menu for all attached drawings.
+			DeleteSelectedDrawing();
+		}
+		private void DeleteSelectedDrawing()
+		{
+			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			{
+				IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
+				CommandManager cm = CommandManager.Instance();
+				cm.LaunchUndoableCommand(cdd);
+				DoInvalidate();
+			}
+		}
+		
 		private void mnuTrackTrajectory_Click(object sender, EventArgs e)
 		{
 			//---------------------------------------
@@ -4304,131 +4275,25 @@ namespace Kinovea.ScreenManager
 				if (iSelectedDrawing >= 0)
 				{
 					// TODO - link to CommandAddTrajectory.
-
 					// Add track on this point.
-					DrawingCross2D dc = (DrawingCross2D)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing];
-					
-					Track trk = new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
-					m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, dc.PenColor);
-					
-					// Suppress the point as a Drawing (?)
-					m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.RemoveAt(iSelectedDrawing);
-					m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-					m_FrameServer.Metadata.SelectedDrawing = -1;
-
-					// Return to the pointer tool.
-					m_ActiveTool = DrawingToolType.Pointer;
-					SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
-				}
-			}
-			DoInvalidate();
-		}
-		private void mnuInvertAngle_Click(object sender, EventArgs e)
-		{
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				DrawingAngle2D da = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingAngle2D;
-				if(da != null)
-				{
-					da.InvertAngle();
-					DoInvalidate();
-				}	
-			}
-		}
-		private void mnuGotoKeyframe_Click(object sender, EventArgs e)
-		{
-			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				long iPosition = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing].infosFading.ReferenceTimestamp;
-
-				m_iFramesToDecode = 1;
-				ShowNextFrame(iPosition, true);
-				UpdateNavigationCursor();
-				trkSelection.SelPos = trkFrame.Position;
-				ActivateKeyframe(m_iCurrentPosition);
-			}
-		}
-		private void mnuShowMeasure_Click(object sender, EventArgs e)
-		{
-			// Enable / disable the display of the measure for this line.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				DrawingLine2D line = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingLine2D;
-				if(line!= null)
-				{
-					mnuShowMeasure.Checked = !mnuShowMeasure.Checked;
-					line.ShowMeasure = mnuShowMeasure.Checked;
-					m_bMeasuring = mnuShowMeasure.Checked;
-					DoInvalidate();
-				}
-			}
-		}
-		private void mnuShowCoordinates_Click(object sender, EventArgs e)
-		{
-			// Enable / disable the display of the coordinates for this cross marker.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				DrawingCross2D cross = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingCross2D;
-				if(cross!= null)
-				{
-					mnuShowCoordinates.Checked = !mnuShowCoordinates.Checked;
-					cross.ShowCoordinates = mnuShowCoordinates.Checked;
-					m_bCrossCoordinates = mnuShowCoordinates.Checked;
-					DoInvalidate();
-				}
-			}
-		}
-		private void mnuSealMeasure_Click(object sender, EventArgs e)
-		{
-			// display a dialog that let the user specify how many real-world-units long is this line.
-			
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				DrawingLine2D line = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as DrawingLine2D;
-				if(line!= null)
-				{
-					if(line.m_StartPoint.X != line.m_EndPoint.X || line.m_StartPoint.Y != line.m_EndPoint.Y)
+					DrawingCross2D dc = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing] as DrawingCross2D;
+					if(dc != null)
 					{
-						if(!line.ShowMeasure)
-							line.ShowMeasure = true;
+						Track trk = new Track(dc.CenterPoint.X, dc.CenterPoint.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
+						m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, dc.PenColor);
 						
-						m_bMeasuring = true;
-						
-						DelegatesPool dp = DelegatesPool.Instance();
-						if (dp.DeactivateKeyboardHandler != null)
-						{
-							dp.DeactivateKeyboardHandler();
-						}
-
-						formConfigureMeasure fcm = new formConfigureMeasure(m_FrameServer.Metadata, line);
-						LocateForm(fcm);
-						fcm.ShowDialog();
-						fcm.Dispose();
-						
-						m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-						DoInvalidate();
-						
-						if (dp.ActivateKeyboardHandler != null)
-						{
-							dp.ActivateKeyboardHandler();
-						}
+						// Suppress the point as a Drawing (?)
+						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.RemoveAt(iSelectedDrawing);
+						m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+						m_FrameServer.Metadata.SelectedDrawing = -1;
+	
+						// Return to the pointer tool.
+						m_ActiveTool = DrawingToolType.Pointer;
+						SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
 					}
 				}
 			}
-		}
-		private void mnuDeleteDrawing_Click(object sender, EventArgs e)
-		{
-			DeleteSelectedDrawing();
-		}
-		private void DeleteSelectedDrawing()
-		{
-			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
-				CommandManager cm = CommandManager.Instance();
-				cm.LaunchUndoableCommand(cdd);
-				DoInvalidate();
-			}
+			DoInvalidate();
 		}
 		#endregion
 		
@@ -4605,23 +4470,27 @@ namespace Kinovea.ScreenManager
 		}
 		private void mnuChronoConfigure_Click(object sender, EventArgs e)
 		{
-			/*DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
+			DrawingChrono dc = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingChrono;
+			if(dc != null)
 			{
-				dp.DeactivateKeyboardHandler();
+				DelegatesPool dp = DelegatesPool.Instance();
+				if (dp.DeactivateKeyboardHandler != null)
+				{
+					dp.DeactivateKeyboardHandler();
+				}
+				
+				// Change this chrono display.
+				formConfigureChrono fcc = new formConfigureChrono(dc, pbSurfaceScreen);
+				ScreenManagerKernel.LocateForm(fcc);
+				fcc.ShowDialog();
+				fcc.Dispose();
+				DoInvalidate();
+	
+				if (dp.ActivateKeyboardHandler != null)
+				{
+					dp.ActivateKeyboardHandler();
+				}	
 			}
-			
-			// Change this chrono display.
-			formConfigureChrono fcc = new formConfigureChrono(m_FrameServer.Metadata.Chronos[m_FrameServer.Metadata.SelectedChrono], pbSurfaceScreen);
-			LocateForm(fcc);
-			fcc.ShowDialog();
-			fcc.Dispose();
-			DoInvalidate();
-
-			if (dp.ActivateKeyboardHandler != null)
-			{
-				dp.ActivateKeyboardHandler();
-			}*/
 		}
 		#endregion
 
@@ -4677,49 +4546,42 @@ namespace Kinovea.ScreenManager
 			mnuMagnifier225.Checked = false;
 			mnuMagnifier250.Checked = false;
 		}
+		private void DisableMagnifier()
+		{
+			// Revert to no magnification.
+			m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
+			btnMagnifier.Image = Resources.magnifier2;
+			SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
+		}
 		#endregion
 
 		#region Grids Menus
 		private void mnuGridsConfigure_Click(object sender, EventArgs e)
 		{
-			/*formConfigureGrids fcg;
-
-			if (m_FrameServer.Metadata.Plane.Selected)
+			Plane3D grid = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Plane3D;
+			if(grid != null)
 			{
-				m_FrameServer.Metadata.Plane.Selected = false;
-				fcg = new formConfigureGrids(m_FrameServer.Metadata.Plane, pbSurfaceScreen);
-				LocateForm(fcg);
+				formConfigureGrids fcg;
+				grid.Selected = false;
+				fcg = new formConfigureGrids(grid, pbSurfaceScreen);
+				ScreenManagerKernel.LocateForm(fcg);
 				fcg.ShowDialog();
 				fcg.Dispose();
 			}
-			else if (m_FrameServer.Metadata.Grid.Selected)
-			{
-				m_FrameServer.Metadata.Grid.Selected = false;
-				fcg = new formConfigureGrids(m_FrameServer.Metadata.Grid, pbSurfaceScreen);
-				LocateForm(fcg);
-				fcg.ShowDialog();
-				fcg.Dispose();
-			}*/
-
+			
 			DoInvalidate();
 		}
 		private void mnuGridsHide_Click(object sender, EventArgs e)
 		{
-			/*if (m_FrameServer.Metadata.Plane.Selected)
+			Plane3D grid = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Plane3D;
+			if(grid != null)
 			{
-				m_FrameServer.Metadata.Plane.Selected = false;
-				m_FrameServer.Metadata.Plane.Visible = false;
+				grid.Visible = false;	
+				DoInvalidate();
+
+				// Triggers an update to the main menu.
+				OnPoke();
 			}
-			else if (m_FrameServer.Metadata.Grid.Selected)
-			{
-				m_FrameServer.Metadata.Grid.Selected = false;
-				m_FrameServer.Metadata.Grid.Visible = false;
-			}*/
-
-			DoInvalidate();
-
-			// Triggers an update to the main menu.
-			OnPoke();
 		}
 		#endregion
 
@@ -4823,15 +4685,6 @@ namespace Kinovea.ScreenManager
 			{
 				Bitmap img = CloneTransformedImage();
 				m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
-			}
-		}
-		private void mnuSendPic_Click(object sender, EventArgs e)
-		{
-			// Send the current image to the other screen for conversion into an observational reference.
-			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
-			{
-				Bitmap img = CloneTransformedImage();
-				m_PlayerScreenUIHandler.PlayerScreenUI_SendImage(img);	
 			}
 		}
 		private Bitmap CloneTransformedImage()

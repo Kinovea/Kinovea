@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
@@ -30,6 +31,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -46,16 +48,37 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get 
+			{
+        		// Rebuild the menu to get the localized text.
+				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+        		
+				mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
+				mnuShowMeasure.Checked = m_bShowMeasure;
+        		mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
+        		
+        		contextMenu.Add(mnuShowMeasure);
+        		contextMenu.Add(mnuSealMeasure);
+        		
+				return contextMenu; 
+			}
+		}
         public Metadata ParentMetadata
         {
             // get => unused.
             set { m_ParentMetadata = value; }
         }
-		public bool ShowMeasure 
-		{
-			get { return m_bShowMeasure; }
-			set { m_bShowMeasure = value; }
-		}
+        public bool ShowMeasure
+        {
+        	get { return m_bShowMeasure;}
+        	set { m_bShowMeasure = value;}
+        }
         #endregion
 
         #region Members
@@ -79,10 +102,15 @@ namespace Kinovea.ScreenManager
         private KeyframeLabel m_LabelMeasure;
         private bool m_bShowMeasure;
         private Metadata m_ParentMetadata;
+        
+        // Context menu
+        private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
+        private DelegateScreenInvalidate m_invalidate;
         #endregion
 
         #region Constructors
-        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame, DelegateScreenInvalidate _invalidate)
         {
             // Core
             m_StartPoint = new Point(x1, y1);
@@ -98,6 +126,14 @@ namespace Kinovea.ScreenManager
             
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            
+            // Context menu
+            mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
+			mnuShowMeasure.Image = Properties.Resources.measure;
+			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
+			mnuSealMeasure.Image = Properties.Resources.textfield;
+			
+			m_invalidate = _invalidate;
         }
         #endregion
 
@@ -309,7 +345,7 @@ namespace Kinovea.ScreenManager
         }
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
-            DrawingLine2D dl = new DrawingLine2D(0,0,0,0,0,0);
+            DrawingLine2D dl = new DrawingLine2D(0,0,0,0,0,0, null);
 
             while (_xmlReader.Read())
             {
@@ -357,7 +393,52 @@ namespace Kinovea.ScreenManager
             return dl;
         }
         
-
+        #region Context menu
+        private void mnuShowMeasure_Click(object sender, EventArgs e)
+		{
+			// Enable / disable the display of the measure for this line.
+			m_bShowMeasure = !m_bShowMeasure;
+			
+			// Use this setting as the default value for new lines.
+			DrawingToolLine2D.ShowMeasure = m_bShowMeasure;
+			
+			if(m_invalidate != null)
+        	{
+        		m_invalidate();
+        	}
+		}
+        private void mnuSealMeasure_Click(object sender, EventArgs e)
+		{
+			// display a dialog that let the user specify how many real-world-units long is this line.
+			
+			if(m_StartPoint.X != m_EndPoint.X || m_StartPoint.Y != m_EndPoint.Y)
+			{
+				if(!m_bShowMeasure)
+					m_bShowMeasure = true;
+				
+				DrawingToolLine2D.ShowMeasure = true;
+				
+				DelegatesPool dp = DelegatesPool.Instance();
+				if (dp.DeactivateKeyboardHandler != null)
+					dp.DeactivateKeyboardHandler();
+	
+				formConfigureMeasure fcm = new formConfigureMeasure(m_ParentMetadata, this);
+				ScreenManagerKernel.LocateForm(fcm);
+				fcm.ShowDialog();
+				fcm.Dispose();
+				
+				// Update traj for distance and speed after calibration.
+				m_ParentMetadata.UpdateTrajectoriesForKeyframes();
+				
+				if(m_invalidate != null)
+	        		m_invalidate();
+				
+				if (dp.ActivateKeyboardHandler != null)
+					dp.ActivateKeyboardHandler();
+			}
+		}
+        #endregion
+        
         #region Lower level helpers
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {

@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
@@ -28,6 +29,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -44,6 +46,25 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColor | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get 
+			{ 
+				// Rebuild the menu to get the localized text.
+				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+        		
+				mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
+				mnuShowCoordinates.Checked = m_bShowCoordinates;
+        		
+        		contextMenu.Add(mnuShowCoordinates);
+        		
+				return contextMenu; 
+			}
+		}
         public bool ShowCoordinates
 		{
 			get { return m_bShowCoordinates; }
@@ -84,10 +105,14 @@ namespace Kinovea.ScreenManager
 
         // Computed
         private Point RescaledCenterPoint;
+        
+        // Context menu
+        private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
+        private DelegateScreenInvalidate m_invalidate;
         #endregion
 
         #region Constructors
-        public DrawingCross2D(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingCross2D(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, DelegateScreenInvalidate _invalidate)
         {
             // Position
             m_CenterPoint = new Point(x, y);
@@ -102,6 +127,11 @@ namespace Kinovea.ScreenManager
             
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            
+            // Context menu
+            mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
+			mnuShowCoordinates.Image = Properties.Resources.measure;
+            m_invalidate = _invalidate;
         }
         #endregion
 
@@ -220,7 +250,7 @@ namespace Kinovea.ScreenManager
         
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
-            DrawingCross2D dc = new DrawingCross2D(0,0,0,0);
+            DrawingCross2D dc = new DrawingCross2D(0,0,0,0, null);
 
             while (_xmlReader.Read())
             {
@@ -300,6 +330,22 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Context menu
+        private void mnuShowCoordinates_Click(object sender, EventArgs e)
+		{
+			// Enable / disable the display of the coordinates for this cross marker.
+			m_bShowCoordinates = !m_bShowCoordinates;
+			
+			// Use this setting as the default value for new lines.
+			DrawingToolCross2D.ShowCoordinates = m_bShowCoordinates;
+			
+			if(m_invalidate != null)
+        	{
+        		m_invalidate();
+        	}
+		}
+        #endregion
+        
         #region Lower level helpers
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {

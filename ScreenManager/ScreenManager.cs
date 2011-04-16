@@ -1417,6 +1417,18 @@ namespace Kinovea.ScreenManager
         		
 			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
+        public static void LocateForm(Form _form)
+		{
+			// A helper function to locate the dialog box right under the mouse, or center of screen.
+			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width)
+			{
+				_form.StartPosition = FormStartPosition.CenterScreen;
+			}
+			else
+			{
+				_form.Location = new Point(Cursor.Position.X - (_form.Width / 2), Cursor.Position.Y - 20);
+			}
+		}
         
         #region Menu organization
         public void OrganizeMenus()
