@@ -26,14 +26,31 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolCross2D : AbstractDrawingTool
     {
+    	/// <summary>
+    	/// This static property is used to keep the same setting for new cross markers.
+    	/// Once we activate the display of coords, new markers will be created with the setting on, and vice versa.
+    	/// </summary>
+    	public static bool ShowCoordinates;
+    	
     	public override DrawingType DrawingType
         {
         	get { return DrawingType.Cross; }
         }
-
+		public override bool Attached
+        {
+        	get { return true; }
+        }
+		
+		private DelegateScreenInvalidate m_invalidate;
+		
+		public DrawingToolCross2D(DelegateScreenInvalidate _invalidate)
+		{
+			m_invalidate = _invalidate;	
+		}
+		
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
-            return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
+            return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
         }
         public override DrawingToolType OnMouseUp()
         {

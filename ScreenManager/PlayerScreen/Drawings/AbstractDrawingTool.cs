@@ -34,6 +34,13 @@ namespace Kinovea.ScreenManager
         {
             get;
         }
+    	/// <summary>
+    	/// Return true if this tool creates drawings attached to a particular key image.
+    	/// </summary>
+    	public abstract bool Attached
+    	{
+    		get;
+    	}
         #endregion
         
         // Return an object of the type of this tool.

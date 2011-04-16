@@ -30,7 +30,11 @@ namespace Kinovea.ScreenManager
         {
         	get { return DrawingType.Pencil; }
         }
-
+		public override bool Attached
+        {
+        	get { return true; }
+        }
+		
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return new DrawingPencil(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);

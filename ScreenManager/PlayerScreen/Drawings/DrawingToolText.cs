@@ -30,6 +30,10 @@ namespace Kinovea.ScreenManager
         {
         	get { return DrawingType.Label; }
         }
+		public override bool Attached
+        {
+        	get { return true; }
+        }
         
 		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {

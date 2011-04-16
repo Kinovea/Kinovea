@@ -19,8 +19,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
@@ -28,6 +28,8 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -48,6 +50,20 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
+        public override InfosFading  infosFading
+        {
+        	// Fading is not modifiable from outside for chrono.
+            get { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
+            set { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
+        }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         public DrawingType DrawingType
         {
         	get { return DrawingType.Chrono; }
@@ -86,12 +102,6 @@ namespace Kinovea.ScreenManager
         {
         	// This is used to know if we can toggle to countdown or not.
         	get{ return (m_iStopCountingTimestamp != long.MaxValue);}
-        }
-        // Fading is not modifiable from outside for chrono.
-        public override InfosFading  infosFading
-        {
-            get { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
-            set { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
         }
         
         // The following properties are used from the formConfigureChrono.

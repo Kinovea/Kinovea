@@ -486,42 +486,76 @@ namespace Kinovea.ScreenManager
         }
         public void SetupDrawing(IDecorable _drawing)
         {
+        	// TODO: simplify the process of the setting up the drawing.
+        	// The drawing may have a pointer on the color profile ?
+        	// The drawing tool may have a pointer on the color profile ?
+        	
         	// Modify a drawing instance according to the current value for its parent tool.
-    		switch (_drawing.DrawingType)
+    		
+        	_drawing.UpdateDecoration(GetColor(_drawing.DrawingType));
+        	
+        	switch (_drawing.DrawingType)
             {
         		case DrawingType.Angle:
-        			_drawing.UpdateDecoration(m_DecorationAngle2D.BackColor);
         			_drawing.UpdateDecoration(m_DecorationAngle2D.FontSize);
                     break;
                 case DrawingType.Chrono: 
-                    _drawing.UpdateDecoration(m_DecorationChrono.BackColor);
-        			_drawing.UpdateDecoration(m_DecorationChrono.FontSize);
+            		_drawing.UpdateDecoration(m_DecorationChrono.FontSize);
                     break;
                 case DrawingType.Cross: 
-                    _drawing.UpdateDecoration(m_DecorationCross2D.Color);
-        			_drawing.UpdateDecoration(m_DecorationCross2D);
+            		_drawing.UpdateDecoration(m_DecorationCross2D);
                     break;
 				case DrawingType.Line: 
-                    _drawing.UpdateDecoration(m_DecorationLine2D.Color);
-        			_drawing.UpdateDecoration(m_DecorationLine2D);
+            		_drawing.UpdateDecoration(m_DecorationLine2D);
                     break;
                 case DrawingType.Pencil: 
-                    _drawing.UpdateDecoration(m_DecorationPencil.Color);
-        			_drawing.UpdateDecoration(m_DecorationPencil);
+            		_drawing.UpdateDecoration(m_DecorationPencil);
                     break;
                 case DrawingType.Circle:
-                    _drawing.UpdateDecoration(m_DecorationCircle.Color);
-        			_drawing.UpdateDecoration(m_DecorationCircle);
+            		_drawing.UpdateDecoration(m_DecorationCircle);
                     break;
                 case DrawingType.Label: 
-                    _drawing.UpdateDecoration(m_DecorationText.BackColor);
-        			_drawing.UpdateDecoration(m_DecorationText.FontSize);
+            		_drawing.UpdateDecoration(m_DecorationText.FontSize);
                     break;
 				
                 default:
                     // Unsupported drawing type.
                     break;
             }	        	
+        }
+        
+        public Color GetColor(DrawingType _drawingType)
+        {
+        	Color color = Color.Empty;
+        	
+        	switch (_drawingType)
+            {
+        		case DrawingType.Angle:
+                    color = m_DecorationAngle2D.BackColor;
+                    break;
+                case DrawingType.Chrono:
+					color = m_DecorationChrono.BackColor;
+                    break;
+                case DrawingType.Circle:
+                    color = m_DecorationCircle.Color;
+                    break;
+                case DrawingType.Cross:
+                    color = m_DecorationCross2D.Color;
+                    break;
+                case DrawingType.Label:
+                    color = m_DecorationText.BackColor;
+                    break;
+                case DrawingType.Line:
+                    color = m_DecorationLine2D.Color;
+                    break;
+                case DrawingType.Pencil:
+                    color = m_DecorationPencil.Color;
+                    break;
+                default:
+                    break;
+            }
+			
+        	return color;
         }
     }
 }

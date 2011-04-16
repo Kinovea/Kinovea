@@ -50,6 +50,11 @@ namespace Kinovea.ScreenManager
         {
         	get { return DrawingType.None; }
         }
+    	public override bool Attached
+        {
+        	get { throw new Exception("Not implemented."); }
+        }
+		
         public Point MouseDelta
         {
             get { return m_MouseDelta; }

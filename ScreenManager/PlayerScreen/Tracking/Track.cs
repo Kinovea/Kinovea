@@ -147,6 +147,14 @@ namespace Kinovea.ScreenManager
             get { throw new Exception("Track, The method or operation is not implemented."); }
             set { throw new Exception("Track, The method or operation is not implemented."); }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.None; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         #endregion
 
         #region Members

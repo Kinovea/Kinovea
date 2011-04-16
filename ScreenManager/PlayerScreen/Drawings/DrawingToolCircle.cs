@@ -30,7 +30,11 @@ namespace Kinovea.ScreenManager
         {
         	get { return DrawingType.Circle; }
         }
-
+		public override bool Attached
+        {
+        	get { return true; }
+        }
+		
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
         {
             return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame);
