@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
             m_DecorationCross2D = new LineStyle(1, LineShape.Simple, Color.CornflowerBlue);
             m_DecorationLine2D = new LineStyle(3, LineShape.Simple, Color.LightGreen);
             m_DecorationPencil = new LineStyle(9, LineShape.Simple, Color.SeaGreen);
-            m_DecorationCircle = new LineStyle(9, LineShape.Simple, Color.CadetBlue);
+            m_DecorationCircle = new LineStyle(3, LineShape.Simple, Color.CadetBlue);
             m_DecorationText = new InfosTextDecoration(12, Color.CornflowerBlue);
         }
 		#endregion
@@ -323,8 +323,8 @@ namespace Kinovea.ScreenManager
                 }
                 catch (Exception)
                 {
-                    log.Error("Error happenned while parsing color profile. We'll keep the default values.");
-					log.Error("File we tried to read was :" + _filePath);                    
+                    log.Debug("Error happenned while parsing color profile. We'll keep the default values.");
+					log.Debug("File we tried to read was :" + _filePath);                    
                 }
                 finally
                 {
