@@ -379,11 +379,12 @@ namespace Kinovea.ScreenManager
 			
 			return output;
 		}
-		public void StartRecording(string filepath)
+		public bool StartRecording(string filepath)
 		{
 			// Start recording.
 			// We always record what is displayed on screen, not what is grabbed by the device.
 			
+			bool bRecordingStarted = false;
 			log.Debug("Start recording images to file.");
 			
 			// Restart capturing if needed.
@@ -417,13 +418,26 @@ namespace Kinovea.ScreenManager
 				// The frames will be pushed to the file upon receiving the FrameGrabbed event.
 				m_bCaptureThumbSet = false;
 				m_bIsRecording = true;
+				bRecordingStarted = true;
 			}
 			else
 			{
-				m_VideoFileWriter.CloseSavingContext(false);
-				m_bIsRecording = false;	
+				try
+				{
+					m_VideoFileWriter.CloseSavingContext(false);	
+				}
+				catch (Exception exp)
+				{
+					// Saving context couldn't be opened properly. Depending on failure we might also fail at trying to close it again.
+					log.Error(exp.Message);
+					log.Error(exp.StackTrace);	
+				}
+
+				m_bIsRecording = false;
 				DisplayError(result);
 			}
+			
+			return bRecordingStarted;
 		}
 		public void StopRecording()
 		{

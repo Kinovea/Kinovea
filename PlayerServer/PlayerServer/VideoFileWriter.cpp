@@ -777,6 +777,9 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 		av_free(pOutputFrame);
 	}
 
+	// (Temporary) fix to OOM error that sometimes happen with very large image size.
+	GC::Collect();
+
 	return bWritten;
 }
 
