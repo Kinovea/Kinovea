@@ -2063,11 +2063,14 @@ namespace Kinovea.ScreenManager
 							btnCamSettings.Enabled = false;
 							m_LastSavedVideo = filename;
 							m_FrameServer.CurrentCaptureFilePath = filepath;
-							m_FrameServer.StartRecording(filepath);
-							// Record will force grabbing if needed.
-							btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;
-							EnableVideoFileEdit(false);
-							DisplayAsRecording(true);
+							bool bRecordingStarted = m_FrameServer.StartRecording(filepath);
+							if(bRecordingStarted)
+							{
+								// Record will force grabbing if needed.
+								btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;
+								EnableVideoFileEdit(false);
+								DisplayAsRecording(true);
+							}
 						}
 					}
 				}
