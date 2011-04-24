@@ -97,7 +97,7 @@
    
    <data name="dlgColorProfile_FileFilter" xml:space="preserve"><value>XML (*.xml)|*.xml;</value></data>
    <data name="dlgColorProfile_Title" xml:space="preserve"><value>Προφίλ Χρώματος…</value></data>
-   <data name="dlgColorProfile_ToolTip_DefaultProfile" xml:space="preserve"><value>Προκαθορισμένο Προφίλ Χρωμάτων</value></data>
+   
    <data name="dlgColorProfile_ToolTip_LoadProfile" xml:space="preserve"><value>Φόρτωση Προφίλ Χρώματος</value></data>
    <data name="dlgColorProfile_ToolTip_SaveProfile" xml:space="preserve"><value>Αποθήκευση Προφίλ Χρώματος</value></data>
    <data name="dlgConfigureChrono_chkShowLabel" xml:space="preserve"><value>Εμφάνιση Ετικέτας Πάντα</value></data>
@@ -297,7 +297,7 @@
    <data name="mnuSave" xml:space="preserve"><value>Αποθήκευση…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Μέτρηση σφραγίδας…</value></data>
    
-   <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Καθορισμός Αρχικής Ταχύτητας…</value></data>
+   
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Τοποθέτηση του Τελευταίου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="mnuSetSelectionStart" xml:space="preserve"><value>Τοποθέτηση του Πρώτου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="mnuSharpen" xml:space="preserve"><value>Όξυνση…</value></data>
@@ -322,27 +322,27 @@
    <data name="SaveMovie_TranscodeNotFinished" xml:space="preserve"><value>Αποτυχία: Αδύνατη η αποθήκευση αρχείου: κάποιο σφάλμα συνέβη κατά την διαδικασία κωδικοποίησης.</value></data>
    <data name="SaveMovie_UnknownError" xml:space="preserve"><value>Αποτυχία: Αδύνατη η αποθήκευση αρχείου: άγνωστο σφάλμα.</value></data>
    <data name="statusEmptyScreen" xml:space="preserve"><value>Άδειο</value></data>
-   
+   <data name="statusBufferFill" xml:space="preserve"><value>Ενδιάμεση μνήμη: {0}%</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Κλασικό (ω:λλ:δδ:εκατοστά)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Νούμερα Πλαισίων</value></data>
-   
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Σύνολο σε χιλιοστά δευτερολέπτου</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Εκατοστά του λεπτού</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Δεκάκις Χιλιοστά της ώρας</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="Toast_Pause" xml:space="preserve"><value>Παύση</value></data>
+   <data name="Toast_Zoom" xml:space="preserve"><value>Μεχέθυνση: {0}%</value></data>
+   <data name="Toast_Disconnected" xml:space="preserve"><value>Αποσύνδεση</value></data>
+   <data name="Toast_StartRecord" xml:space="preserve"><value>Η εγγραφή ξεκίνησε</value></data>
+   <data name="Toast_StopRecord" xml:space="preserve"><value>Η εγγραφή σταμάτησε</value></data>
+   <data name="Toast_ImageSaved" xml:space="preserve"><value>Η εικόνα σώθηκε</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Προσθήκη Βασικής Εικόνας</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Πήγαινε στο προηγούμενο Πλαίσιο</value></data>
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Προφίλ Χρώματος…</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Απενεργοποίηση επαλληλίας εικόνων</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Ενεργοποίηση επαλληλίας εικόνων</value></data>
-   
+   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Επολογή πηγής</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Γωνία</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Χρονόμετρο</value></data>
-   
+   <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Κύκλος</value></data>
    <data name="ToolTip_DrawingToolCross2D" xml:space="preserve"><value>Σταυρός Σημάδι</value></data>
    <data name="ToolTip_DrawingToolLine2D" xml:space="preserve"><value>Γραμμή</value></data>
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Μολύβι</value></data>
@@ -356,24 +356,24 @@
    <data name="ToolTip_PlayingMode_Loop" xml:space="preserve"><value>Αλλαγή Τρόπου Επανάληψης (Μια Φορά | Κύκλος) - Παρόν τρόπος : Κύκλος</value></data>
    <data name="ToolTip_PlayingMode_Once" xml:space="preserve"><value>Αλλαγή Τρόπου Επανάληψης (Μια Φορά | Κύκλος) - Παρόν τρόπος : Μια Φορά</value></data>
    <data name="ToolTip_Rafale" xml:space="preserve"><value>Αποθήκευση Ακολουθίας Εικόνων</value></data>
-   
-   
+   <data name="ToolTip_RecordStart" xml:space="preserve"><value>Εκκίνηση εγγραφής βίντεο</value></data>
+   <data name="ToolTip_RecordStop" xml:space="preserve"><value>Παύση εγγραφής βίντεο</value></data>
    <data name="ToolTip_ResetWorkingZone" xml:space="preserve"><value>Επαναφορά της Ζώνης Εργασίας σε Πλήρες Video</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="ToolTip_RichText_Bold" xml:space="preserve"><value>Έντονα</value></data>
+   <data name="ToolTip_RichText_Italic" xml:space="preserve"><value>Πλάγια</value></data>
+   <data name="ToolTip_RichText_Underline" xml:space="preserve"><value>Υπογραμμισμένα</value></data>
+   <data name="ToolTip_RichText_Strikeout" xml:space="preserve"><value>Διεγραμμένα</value></data>
+   <data name="ToolTip_RichText_ForeColor" xml:space="preserve"><value>Χρώμα προσκήνιου</value></data>
+   <data name="ToolTip_RichText_BackColor" xml:space="preserve"><value>Χρώμα φόντου</value></data>
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Αποθήκευση προβολής-διαφανειών από τις Βασικές Εικόνες</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Αποθήκευση video με παύση σε κάθε βασική εικόνα</value></data>
-   
+   <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Επιλογή Κατεύθυνσης Προορισμού</value></data>
    <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Τοποθέτηση του Πρώτου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Τοποθέτηση του Τελευταίου Πλαισίου της Ζώνης Εργασίας στο παρόν Πλαίσιο</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Εμφάνιση Σχολίων</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Μεταβαλλόμενη Ταχύτητα Αναπαραγωγής</value></data>
-   
-   
+   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Αποθήκευση και των δύο εικόνων σαν μια σύνθετη εικόνα</value></data>
+   <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Αποθήκευση και των δύο βίντεο σαν ένα σύνθετο βίντεο</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Καθορισμός της Ζώνης Εργασίας</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Μόνο οι Άκρες…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Αυτόματα Επίπεδα…</value></data>
