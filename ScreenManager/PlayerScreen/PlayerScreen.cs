@@ -111,6 +111,20 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+        public bool IsSingleFrame
+        {
+        	get
+            {
+                if (!m_FrameServer.VideoFile.Loaded)
+                {
+                    return false;
+                }
+                else
+                {
+                    return (m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1);
+                }
+            }	
+        }
         public bool IsInAnalysisMode
         {
             get
