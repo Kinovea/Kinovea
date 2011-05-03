@@ -78,7 +78,7 @@
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Įrašymas</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piešimas</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Pagrindinis</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Groti / analizuoti</value></data>
+   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Groti</value></data>
    <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Paveikslėlio aplankas:</value></data>
    <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Vaizdo aplankas:</value></data>
    <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Paveikslėlio formatas:</value></data>

@@ -215,7 +215,7 @@
    <data name="Generic_SaveImage" xml:space="preserve"><value>Salvar Imagem</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Quadros de imagens foram modificados.\nVocê deseja salvá-los antes de sair?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Dados dos quadros de imagens não foram salvos.</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Atrasar texto em: {0:0} s</value></data>
+   <data name="lblDelay_Text" xml:space="preserve"><value>Atrasar em: {0:0} s</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comuns:</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duração</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Início</value></data>

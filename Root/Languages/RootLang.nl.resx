@@ -79,10 +79,10 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Algemeen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Afspelen</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Afbeeldingen map</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videobeelden map</value></data>
-   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype</value></data>
-   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype</value></data>
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Afbeeldingen map :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videobeelden map :</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype :</value></data>
    <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Bestandsnaam</value></data>
    <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Vrije tekst met automatische teller</value></data>
    <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Vormgeving naam</value></data>
