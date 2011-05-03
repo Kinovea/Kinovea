@@ -79,10 +79,10 @@
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Piirrokset</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Yleinen</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Näytä</value></data>
-   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Kuvahakemisto</value></data>
-   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videohakemisto</value></data>
-   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Kuvamuoto</value></data>
-   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videomuoto</value></data>
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Kuvahakemisto :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videohakemisto :</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Kuvamuoto :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videomuoto :</value></data>
    <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Tiedoston nimeäminen</value></data>
    <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Vapaa teksti automaattisella numeroinnilla</value></data>
    <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Nimeämisasetukset</value></data>
