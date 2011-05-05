@@ -74,11 +74,11 @@
    <data name="Updater_CurrentVersion" xml:space="preserve"><value>Huidige versie :</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Download</value></data>
    <data name="Updater_Downloading" xml:space="preserve"><value>Inlezen nieuwe versie…</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Bestandgrootte :</value></data>
+   <data name="Updater_FileSize" xml:space="preserve"><value>Bestandsgrootte :</value></data>
    <data name="Updater_InternetError" xml:space="preserve"><value>Een fout is opgetreden bij het controleren op nieuwe versies. Zorg er voor dat er een verbinding met Internet is.</value></data>
    <data name="Updater_LblChangeLog" xml:space="preserve"><value>Lijst met veranderingen :</value></data>
    <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>De nieuwe versie is met succes ingelezen.\n Sluit Kinovea a.u.b. af en start het installatiebestand vanuit de plaats waar u deze hebt opgeslagen.</value></data>
-   <data name="Updater_MegaBytes" xml:space="preserve"><value>Mb</value></data>
+   <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
    <data name="Updater_NewVersion" xml:space="preserve"><value>Nieuwe versie</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Stop</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Controleert op een nieuwe versie.</value></data>
