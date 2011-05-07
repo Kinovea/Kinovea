@@ -9,7 +9,7 @@ import re
 # Generates the CHM help file and folder for online help.
 #
 # Usage: See workflow.txt.
-#   This script will first clean up the master.txt from extra wiki syntax (bullets), to get an XML document.
+#   This script will first turn the master.txt to a proper XML document.
 #   then the XML document will be passed through several XSLT scripts to generate
 #   - the intermediate toc pages (sub books / sub pages)
 #   - the various files needed by HTML Workshop (hhc, hhp)
@@ -23,26 +23,94 @@ import re
 #   Copy images to this folder.
 #--------------------------------------------------------------------------------------------------
 
+#----------------------------------
+# Export tree to XML
+#----------------------------------
+def ExportTree(node, file):
+    if len(node['childs']) > 0:
+        # A book topic.
+        line = '<Book id="%s" title="%s">' % (node['id'], node['title'])
+        file.write(line + '\n')
+        for n in node['childs']:
+            ExportTree(n, file)
+        file.write('</Book>')
+    else:
+        # A page topic.
+        line = '<Page id="%s" title="%s" />' % (node['id'], node['title'])
+        file.write(line + '\n')
+
+
+#----------------------------------
+# Verif function to print the tree.
+#----------------------------------
+def PrintTree(node):
+    print node['id']
+    tree = node['childs']
+    for n in tree:
+        PrintTree(n)
+
+#-------------------------------------------------------------
+# Add a page to the tree at the right place and update parent.
+#-------------------------------------------------------------
+def AddToTree(currentNode, node):
+    if node['depth'] > currentNode['depth']:
+        # First child of the current node.
+        node['parent'] = currentNode
+        currentNode['childs'].append(node)
+    elif node['depth'] == currentNode['depth']:
+        # Sibling of the current node.
+        node['parent'] = currentNode['parent']
+        currentNode['parent']['childs'].append(node)
+    else:
+        # Sibling of an ancestor
+        
+        # Move up to get a sibling
+        up = currentNode['depth'] - node['depth']
+        for i in xrange(up):
+            currentNode = currentNode['parent']
+        
+        # then attach to the parent of this sibling
+        node['parent'] = currentNode['parent']
+        currentNode['parent']['childs'].append(node)
+
 #-------------------------------------------------------------------------------------------
-# Function that clean up the wiki syntax generated for indentation to get a proper XML file.
+# Turn the wiki table of content to XML.
 #-------------------------------------------------------------------------------------------
 def MasterToXml(file):
-    print "Cleaning up " + file
     f = open( file, "r")
-    text = f.read()
+    lines = f.readlines()
     f.close()
-    
-    #Remove lines with only spaces and a bullet.
-    p = re.compile("[\s]{4,}?[o*+]", re.IGNORECASE)
-    text = p.sub('', text)
-    
-    #Test regex
-    #match = re.search("[\s]{4,}?o", text)
-    #if match is not None: 
-    #   print match.group(0)
 
+    # Parse the toc to create the tree in memory.
+    currentNode = dict(id='000', title='', depth=0, parent=None, childs=[])
+    root = currentNode
+    
+    for line in lines:
+        # Check for language. Should be the first line.
+        match = re.search("lang:([a-z]{2})", line)
+        if match is not None:
+            language = match.group(1)
+
+        # Check for topic, retrieve the number of leading spaces of indentation, id and title.
+        # Will be in one of the following format:
+        #  * 001 - [[001|Home]]
+        #  * 100 - Using Kinovea
+        match = re.search("(?P<indent>[\s]{2,}?)\* (?P<id>[\d]{3}) - (\[\[[\d]{3}\|)?(?P<title>[^\]\n]*)", line)
+        if match is not None:
+            depth = len(match.group('indent')) / 2
+            id = match.group('id')
+            title = match.group('title')
+            node = dict(id=id, title=title, depth=depth, parent=None, childs=[])
+            AddToTree(currentNode, node)
+            currentNode = node
+
+    # Recursive export to XML tags.
     f = open( "master.xml", "wb")
-    f.write(text)
+    line = '<Toc lang="%s">' % language
+    f.write(line + '\n')
+    for n in root['childs']:
+        ExportTree(n, f)
+    f.write('</Toc>')
     f.close()
 
 
