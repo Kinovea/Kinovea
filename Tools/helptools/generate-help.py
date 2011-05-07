@@ -88,3 +88,8 @@ os.system(saxon + " -t -s:master.xml -xsl:webtoc.xsl -o:web/toc.htm")
 # Copy topic files to the web folder.
 for f in glob.glob('src/*.*'):
    shutil.copy(f, 'web')
+   
+# Clean temporary files
+for type in ('*.hhp', '*.hhc', '*.xml'):
+    for f in glob.glob(type):
+        os.unlink(f)
