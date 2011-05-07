@@ -117,15 +117,14 @@ def CleanupFile(file):
 #------------------------------------------------------------------------------------------
 
 # 1. General Clean up uneeded files and directories.
-if os.path.exists('lib'):
-	shutil.rmtree('lib')
-if os.path.exists('feed.mode.list.html'):
-	os.remove('feed.mode.list.html')
-if os.path.exists('feed.html'):
-	os.remove('feed.html')
-if os.path.exists('doku.html'):
-	os.remove('doku.html')
+if os.path.exists('src/lib'):
+	shutil.rmtree('src/lib')
+
+	# Remove previously generated files
+for unused in ('src/feed.mode.list.html', 'src/feed.html', 'src/doku.html', 'src/000.html', 'src/001.html', 'src/004.html', 'src/005.html'):
+    for f in glob.glob(unused):
+        os.unlink(f)
 
 # 2. Clean up remaining HTML files.
-for file in glob.glob("*.html"):
+for file in glob.glob("src/*.html"):
 	CleanupFile(file)

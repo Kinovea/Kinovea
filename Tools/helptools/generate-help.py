@@ -3,24 +3,24 @@ import os, glob, shutil
 import re
 
 #--------------------------------------------------------------------------------------------------
-# generatetoc.py
+# generate-help.py
 # joan@kinovea.org
 #
-# Creates several toc files dynamically to avoid redundant copy-pasting.
+# Generates the CHM help file and folder for online help.
 #
-# Usage: 
-#   Go to 000 page and copy the list of topics in a new file named master.txt in this folder.
+# Usage: See workflow.txt.
 #   This script will first clean up the master.txt from extra wiki syntax (bullets), to get an XML document.
 #   then the XML document will be passed through several XSLT scripts to generate
 #   - the intermediate toc pages (sub books / sub pages)
 #   - the various files needed by HTML Workshop (hhc, hhp)
-#   Finally the CHM will be generated.
+#   The CHM compiler will be called to generate the CHM.
+#   The toc.htm file for online help will be generated (ndoc style).
 #
 # Prerequisites:
-#   SiteExport zip output unzipped in a /src folder.
-#   Execute export-cleanup.py in this folder to get clean HTML files.
-#   Move the custom 001, 004 and 005 files to this folder.
-#   Move images to this folder.
+#   SiteExport zip output unzipped in a ./src folder.
+#   Execute cleanup.py to get clean HTML files.
+#   Move the custom 001, 004 and 005 files to ./src.
+#   Copy images to this folder.
 #--------------------------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------------------
@@ -54,7 +54,8 @@ saxon = '"C:\\Program Files\\saxonhe9-2-1-5n\\bin\\Transform.exe"'
 helpCompiler = '"C:\\Program Files\\HTML Help Workshop\\hhc.exe"'
 
 # Remove previously generated files
-for type in ('*.html', '*.hhp', '*.hhc', '*.xml', '*.chm'):
+# (do not remove ./web/index.htm)
+for type in ('*.html', '*.hhp', '*.hhc', '*.xml', '*.chm', 'web/*.html', 'web/toc.htm'):
     for f in glob.glob(type):
         os.unlink(f)
 
@@ -66,7 +67,11 @@ os.system(saxon + " -t -s:master.xml -xsl:books.xsl -o:dummy")
 
 # Move the newly created files to the working directory
 for f in glob.glob('*.html'):
-   shutil.copy(f, os.path.join("src", f))
+   shutil.move(f, os.path.join("src", f))
+
+# Copy custom files to the working directory
+for f in glob.glob('en/*.html'):
+   shutil.copy(f, 'src')
 
 # Generates hhp (HTML Workshop project file).
 os.system(saxon + " -t -s:master.xml -xsl:hhp.xsl -o:project.hhp")
@@ -76,3 +81,10 @@ os.system(saxon + " -t -s:master.xml -xsl:hhc.xsl -o:toc.hhc")
 
 # Execute HTML Help Workshop
 os.system(helpCompiler + " project.hhp")
+
+# Generates toc.htm for online help.
+os.system(saxon + " -t -s:master.xml -xsl:webtoc.xsl -o:web/toc.htm")
+
+# Copy topic files to the web folder.
+for f in glob.glob('src/*.*'):
+   shutil.copy(f, 'web')
