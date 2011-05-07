@@ -12,7 +12,7 @@ import re
 #   Go to 000 page and copy the list of topics in a new file named master.txt in this folder.
 #   This script will first clean up the master.txt from extra wiki syntax (bullets), to get an XML document.
 #   then the XML document will be passed through several XSLT scripts to generate
-#   - the intermediate toc pages (100, 300).
+#   - the intermediate toc pages (sub books / sub pages)
 #   - the various files needed by HTML Workshop (hhc, hhp)
 #   Finally the CHM will be generated.
 #
@@ -53,36 +53,26 @@ def MasterToXml(file):
 saxon = '"C:\\Program Files\\saxonhe9-2-1-5n\\bin\\Transform.exe"'
 helpCompiler = '"C:\\Program Files\\HTML Help Workshop\\hhc.exe"'
 
-
 # Remove previously generated files
-for f in glob.glob('*.hhp'):
-   os.unlink(f)
+for type in ('*.html', '*.hhp', '*.hhc', '*.xml', '*.chm'):
+    for f in glob.glob(type):
+        os.unlink(f)
 
-for f in glob.glob('*.hhc'):
-   os.unlink(f)
-   
-for f in glob.glob('*.xml'):
-   os.unlink(f)
-
-for f in glob.glob('*.chm'):
-   os.unlink(f)
-   
 # Clean up dokuwiki syntax (list indentation) to get a clean XML document.
 MasterToXml("master.txt")
 
-# Generates intermediate toc for books.
+# Generates intermediate toc for sub books / sub pages.
 os.system(saxon + " -t -s:master.xml -xsl:books.xsl -o:dummy")
+
+# Move the newly created files to the working directory
+for f in glob.glob('*.html'):
+   shutil.copy(f, os.path.join("src", f))
 
 # Generates hhp (HTML Workshop project file).
 os.system(saxon + " -t -s:master.xml -xsl:hhp.xsl -o:project.hhp")
 
-# Generates hhc (HTML Workshop toc)
+# Generates hhc (HTML Workshop toc - an HTML document)
 os.system(saxon + " -t -s:master.xml -xsl:hhc.xsl -o:toc.hhc")
 
 # Execute HTML Help Workshop
 os.system(helpCompiler + " project.hhp")
-
-
-
-
-
