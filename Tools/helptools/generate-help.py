@@ -77,6 +77,7 @@ def AddToTree(currentNode, node):
 # Turn the wiki table of content to XML.
 #-------------------------------------------------------------------------------------------
 def MasterToXml(file):
+    global lang
     f = open( file, "r")
     lines = f.readlines()
     f.close()
@@ -89,7 +90,7 @@ def MasterToXml(file):
         # Check for language. Should be the first line.
         match = re.search("lang:([a-z]{2})", line)
         if match is not None:
-            language = match.group(1)
+            lang = match.group(1)
 
         # Check for topic, retrieve the number of leading spaces of indentation, id and title.
         # Will be in one of the following format:
@@ -106,13 +107,33 @@ def MasterToXml(file):
 
     # Recursive export to XML tags.
     f = open( "master.xml", "wb")
-    line = '<Toc lang="%s">' % language
+    line = '<Toc lang="%s">' % lang
     f.write(line + '\n')
     for n in root['childs']:
         ExportTree(n, f)
     f.write('</Toc>')
     f.close()
 
+#---------------------------------------------
+# Fuction to remove files that are in readonly
+#---------------------------------------------  
+def handleRemoveReadonly(func, path, exc_info):
+    import stat
+    if not os.access(path, os.W_OK):
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+    else:
+        raise
+
+#---------------------------------------------
+# Fuction to remove files that are in readonly
+#---------------------------------------------  
+def RemoveGeneratedFiles():
+    # Remove previously generated files
+    # (do not remove ./web/index.htm)
+    for type in ('*.hhp', '*.hhc', '*.xml', 'web/*.html', 'web/toc.htm'):
+        for f in glob.glob(type):
+            os.unlink(f)
 
 #------------------------------------------------------------------------------------------
 # Program Entry point.
@@ -120,14 +141,12 @@ def MasterToXml(file):
 
 saxon = '"C:\\Program Files\\saxonhe9-2-1-5n\\bin\\Transform.exe"'
 helpCompiler = '"C:\\Program Files\\HTML Help Workshop\\hhc.exe"'
+lang = 'en'
 
-# Remove previously generated files
-# (do not remove ./web/index.htm)
-for type in ('*.html', '*.hhp', '*.hhc', '*.xml', '*.chm', 'web/*.html', 'web/toc.htm'):
-    for f in glob.glob(type):
-        os.unlink(f)
+RemoveGeneratedFiles()
 
 # Clean up dokuwiki syntax (list indentation) to get a clean XML document.
+# Also retrieve language id.
 MasterToXml("master.txt")
 
 # Generates intermediate toc for sub books / sub pages.
@@ -138,7 +157,7 @@ for f in glob.glob('*.html'):
    shutil.move(f, os.path.join("src", f))
 
 # Copy custom files to the working directory
-for f in glob.glob('en/*.html'):
+for f in glob.glob(lang + '/*.html'):
    shutil.copy(f, 'src')
 
 # Generates hhp (HTML Workshop project file).
@@ -156,8 +175,11 @@ os.system(saxon + " -t -s:master.xml -xsl:webtoc.xsl -o:web/toc.htm")
 # Copy topic files to the web folder.
 for f in glob.glob('src/*.*'):
    shutil.copy(f, 'web')
-   
-# Clean temporary files
-for type in ('*.hhp', '*.hhc', '*.xml'):
-    for f in glob.glob(type):
-        os.unlink(f)
+
+# Move/copy generated files to the language folder
+chm = 'kinovea.%s.chm' % lang
+shutil.move(chm, os.path.join(lang, chm))
+shutil.copytree('web', os.path.join(lang, 'web'))
+shutil.rmtree(os.path.join(lang, 'web/.svn'), ignore_errors=False, onerror=handleRemoveReadonly)
+
+RemoveGeneratedFiles()

@@ -116,12 +116,11 @@ def CleanupFile(file):
 # Program Entry point.
 #------------------------------------------------------------------------------------------
 
-# 1. General Clean up uneeded files and directories.
+# 1. Delete unused files and directories.
 if os.path.exists('src/lib'):
 	shutil.rmtree('src/lib')
 
-	# Remove previously generated files
-for unused in ('src/feed.mode.list.html', 'src/feed.html', 'src/doku.html', 'src/000.html', 'src/001.html', 'src/004.html', 'src/005.html'):
+for unused in ('src/feed.mode.list.html', 'src/feed.html', 'src/doku.html', 'src/000.html', 'src/001.html', 'src/004.html'):
     for f in glob.glob(unused):
         os.unlink(f)
 
