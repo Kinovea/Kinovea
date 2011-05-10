@@ -76,9 +76,9 @@
    <data name="buttonGotoNext_ToolTip" xml:space="preserve"><value>Ir al siguiente cuadro de ambos videos.</value></data>
    <data name="buttonGotoPrevious_ToolTip" xml:space="preserve"><value>Ir al cuadro anterior de ambos videos.</value></data>
    <data name="buttonPlay_ToolTip" xml:space="preserve"><value>Reproducir | Pausar ambos videos</value></data>
-   <data name="Capture_NextImage" xml:space="preserve"><value>Proxima imagen :</value></data>
-   <data name="Capture_NextVideo" xml:space="preserve"><value>Proxima video :</value></data>
-   <data name="Capture_CameraNotFound" xml:space="preserve"><value>Cámara no se encuentra</value></data>
+   <data name="Capture_NextImage" xml:space="preserve"><value>Próxima imagen :</value></data>
+   <data name="Capture_NextVideo" xml:space="preserve"><value>Próximo video :</value></data>
+   <data name="Capture_CameraNotFound" xml:space="preserve"><value>No se encontró la cámara</value></data>
    <data name="Capture_NetworkCamera" xml:space="preserve"><value>Cámara de red</value></data>
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Añadir Pantalla de Captura</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Añadir un Cronómetro</value></data>
@@ -182,7 +182,7 @@
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Guardar el video.</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Especificar el origen de coordenadas</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>No se puede connectar a la cámara</value></data>
-   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No se encontró la cámara.\nPor favor compruebe que la cámara está connectada a la computadora.</value></data>
+   <data name="Error_Capture_CannotConnect_Text" xml:space="preserve"><value>No se encontró la cámara.\nPor favor compruebe que la cámara está conectada al ordenador.</value></data>
    <data name="Error_Capture_FileExists_Title" xml:space="preserve"><value>Sobrescribir archivo</value></data>
    <data name="Error_Capture_FileExists_Text" xml:space="preserve"><value>El archivo {0} ya existe.\n¿Desea reemplazarlo ?</value></data>
    <data name="Error_Capture_InvalidFile_Title" xml:space="preserve"><value>Nombre de archivo no válido</value></data>
@@ -215,7 +215,7 @@
    <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar la imagen.</value></data>
    <data name="InfoBox_MetadataIsDirty_Text" xml:space="preserve"><value>Imágenes clave han sido modificados.\n ¿Desea guardar los datos antes de cerrar ?</value></data>
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Imágenes clave no guardadas</value></data>
-   <data name="lblDelay_Text" xml:space="preserve"><value>Retardo de la pantalla: {0:0} s</value></data>
+   <data name="lblDelay_Text" xml:space="preserve"><value>Retraso mostrando imágenes: {0:0} s</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Controles Comunes :</value></data>
    <data name="lblSelDuration_Text" xml:space="preserve"><value>Duraciòn</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Principio</value></data>
@@ -332,7 +332,7 @@
    <data name="Toast_Zoom" xml:space="preserve"><value>Zoom : {0}%</value></data>
    <data name="Toast_Disconnected" xml:space="preserve"><value>Desconectado</value></data>
    <data name="Toast_StartRecord" xml:space="preserve"><value>Grabación iniciada</value></data>
-   <data name="Toast_StopRecord" xml:space="preserve"><value>Grabación detuvo</value></data>
+   <data name="Toast_StopRecord" xml:space="preserve"><value>Grabación detenida</value></data>
    <data name="Toast_ImageSaved" xml:space="preserve"><value>Imagen grabada</value></data>
    <data name="ToolTip_AddKeyframe" xml:space="preserve"><value>Añadir un a imàgen clave</value></data>
    <data name="ToolTip_Back" xml:space="preserve"><value>Ir a la imagen anterior</value></data>
@@ -372,8 +372,8 @@
    <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Posicionar la salida de la zona de trabajo sobre la imagen actual</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Mostrar Comentarios</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Variar la velocidad de lectura</value></data>
-   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Guardar los dos imagenes en una imagen de compuesto</value></data>
-   <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Guardar los dos videos en una video de compuesto</value></data>
+   <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Guardar los dos imagenes en una imagen compuesta</value></data>
+   <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Guardar los dos videos en una video compuesto</value></data>
    <data name="ToolTip_trkSelection" xml:space="preserve"><value>Especificar el área de trabajo</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Contornos Solamente...</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Niveles automáticos...</value></data>
