@@ -81,6 +81,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGreek = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLithuanian = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSwedish = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
@@ -522,6 +523,10 @@ namespace Kinovea.Root
             mnuLithuanian = new ToolStripMenuItem(PreferencesManager.LanguageLithuanian);
             mnuLithuanian.Click += new EventHandler(menuLithuanianOnClick);
             
+            // Swedish
+            mnuSwedish = new ToolStripMenuItem(PreferencesManager.LanguageSwedish);
+            mnuSwedish.Click += new EventHandler(menuSwedishOnClick);
+            
             // Re-Order alphabetically by localized name.
             mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { 
                                                 						mnuGerman,
@@ -537,6 +542,7 @@ namespace Kinovea.Root
                                                 						mnuPortuguese, 
                                                 						mnuRomanian, 
                                                 						mnuFinnish,
+                                                						mnuSwedish,
                                                 						mnuTurkish,
                                                 						mnuChinese });
             #endregion
@@ -856,6 +862,10 @@ namespace Kinovea.Root
         {
             SwitchCulture("lt");
         }
+        private void menuSwedishOnClick(object sender, EventArgs e)
+        {
+            SwitchCulture("sv");
+        }
         private void SwitchCulture(string name)
         {
             IUndoableCommand command = new CommandSwitchUICulture(this, Thread.CurrentThread, new CultureInfo(name), Thread.CurrentThread.CurrentUICulture);
@@ -878,6 +888,8 @@ namespace Kinovea.Root
             mnuNorwegian.Checked = false;
 			mnuTurkish.Checked = false;
             mnuChinese.Checked = false;
+            mnuLithuanian.Checked = false;
+            mnuSwedish.Checked = false;
 			
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();            
             string cultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
@@ -925,6 +937,9 @@ namespace Kinovea.Root
                     break;
                 case "lt":
                     mnuLithuanian.Checked = true;
+                    break;
+                case "sv":
+                    mnuSwedish.Checked = true;
                     break;
                 case "en":
                 default:
