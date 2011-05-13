@@ -67,22 +67,22 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Program uppdatering...</value></data>
+   <data name="mnuCheckForUpdates" xml:space="preserve"><value>Programuppdatering...</value></data>
    <data name="Updater_Behind" xml:space="preserve"><value>Ny version är tillgänglig!</value></data>
    <data name="Updater_BrowseFolderDescription" xml:space="preserve"><value>Välj katalog för installationsfilen.</value></data>
-   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Välj Målmapp</value></data>
-   <data name="Updater_CurrentVersion" xml:space="preserve"><value>Nuvarande Version:</value></data>
+   <data name="Updater_ChooseDestinationFolder" xml:space="preserve"><value>Välj målmapp</value></data>
+   <data name="Updater_CurrentVersion" xml:space="preserve"><value>Nuvarande version:</value></data>
    <data name="Updater_Download" xml:space="preserve"><value>Nedladdning</value></data>
-   <data name="Updater_Downloading" xml:space="preserve"><value>Nedladdning Ny Version...</value></data>
-   <data name="Updater_FileSize" xml:space="preserve"><value>Fil Storlek :</value></data>
-   <data name="Updater_InternetError" xml:space="preserve"><value>Ett fel uppstod vid kontroll av uppdateringar. Vänligen kontrollera internet anslutningen.</value></data>
-   <data name="Updater_LblChangeLog" xml:space="preserve"><value>Byta Log :</value></data>
-   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Den nya versionen laddades ner  komplett.\n Stäng ner Kinovea och starta installation där du sparade den.</value></data>
+   <data name="Updater_Downloading" xml:space="preserve"><value>Nedladdning ny version...</value></data>
+   <data name="Updater_FileSize" xml:space="preserve"><value>Filstorlek :</value></data>
+   <data name="Updater_InternetError" xml:space="preserve"><value>Ett fel uppstod vid kontroll av uppdateringar. Vänligen kontrollera Internetanslutningen.</value></data>
+   <data name="Updater_LblChangeLog" xml:space="preserve"><value>Byt Log :</value></data>
+   <data name="Updater_mboxDownloadSuccess_Description" xml:space="preserve"><value>Den nya versionen laddades ner  komplett.\n Stäng Kinovea och starta installation där du sparade den.</value></data>
    <data name="Updater_MegaBytes" xml:space="preserve"><value>MB</value></data>
-   <data name="Updater_NewVersion" xml:space="preserve"><value>Ny Version</value></data>
+   <data name="Updater_NewVersion" xml:space="preserve"><value>Ny version</value></data>
    <data name="Updater_Quit" xml:space="preserve"><value>Avsluta</value></data>
    <data name="Updater_Title" xml:space="preserve"><value>Kinovea - Kontrollerar om ny  version finns.</value></data>
-   <data name="Updater_UpToDate" xml:space="preserve"><value>Din version är den senaste !</value></data>
+   <data name="Updater_UpToDate" xml:space="preserve"><value>Din version är den senaste!</value></data>
    
    
 </root>
