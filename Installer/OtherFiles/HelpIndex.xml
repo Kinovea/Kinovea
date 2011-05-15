@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <kinovea>
-  <software release="0.8.7"> </software>
+  <software release="0.8.15"> </software>
   <lang id="fr">
-    <manual id="0" revision="5">
+    <manual id="0" revision="6">
       <title>Guide d'utilisation en français</title>
-      <filesize>1808691</filesize>
+      <filesize>2652383</filesize>
       <location>.\Manuals\kinovea.fr.chm</location>
     </manual>
     <video id="0" revision="1">
@@ -17,9 +17,9 @@
     </video>
   </lang>
   <lang id="en">
-    <manual id="0" revision="5">
+    <manual id="0" revision="6">
       <title>User's Guide in English</title>
-      <filesize>1772216</filesize>
+      <filesize>2498725</filesize>
       <location>.\Manuals\kinovea.en.chm</location>
     </manual>
     <video id="0" revision="1">
@@ -31,9 +31,9 @@
     </video>
   </lang>
   <lang id="it">
-    <manual id="0" revision="5">
+    <manual id="0" revision="6">
       <title>User's Guide in Italiano</title>
-      <filesize>1807579</filesize>
+      <filesize>2686439</filesize>
       <location>.\Manuals\kinovea.it.chm</location>
     </manual>
   </lang>
