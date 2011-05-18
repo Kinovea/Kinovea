@@ -113,7 +113,7 @@ namespace Kinovea.Root
             PreferencesManager.ReleaseVersion = String.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build);
             
             // Set type of release (Experimental vs Production) 
-            PreferencesManager.ExperimentalRelease = false; 
+            PreferencesManager.ExperimentalRelease = true; 
             
             // Display some system infos in the log.
             log.Info(String.Format("Kinovea version : {0}, ({1})", PreferencesManager.ReleaseVersion, PreferencesManager.ExperimentalRelease?"Experimental":"Production"));
