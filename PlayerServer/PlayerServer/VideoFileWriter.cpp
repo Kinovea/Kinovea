@@ -118,7 +118,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 		}
 
 		// 2. Allocate muxer parameters object.
-		if ((m_SavingContext->pOutputFormatContext = av_alloc_format_context()) == nullptr) 
+		if ((m_SavingContext->pOutputFormatContext = avformat_alloc_context()) == nullptr) 
 		{
 			result = SaveResult::MuxerParametersNotAllocated;
 			log->Error("Muxer parameters object not allocated");
@@ -193,14 +193,14 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 
 			// Get default configuration for subtitle streams.
 			// (Will allocate pointed CodecCtx)
-			avcodec_get_context_defaults2(m_SavingContext->pOutputDataStream->codec, CODEC_TYPE_SUBTITLE);
+			avcodec_get_context_defaults2(m_SavingContext->pOutputDataStream->codec, AVMEDIA_TYPE_SUBTITLE);
 			
 			// Identify codec. Will show as "S_TEXT/UTF8" for Matroska.
 			m_SavingContext->pOutputDataStream->codec->codec_id = CODEC_ID_TEXT;
 
 			// ISO 639 code for subtitle language. ( -> en.wikipedia.org/wiki/List_of_ISO_639-3_codes)	 
 			// => "Malaysian Sign Language" code is "XML" :-)
-			av_strlcpy(m_SavingContext->pOutputDataStream->language, "XML", sizeof(m_SavingContext->pOutputDataStream->language));
+			av_metadata_set2(&m_SavingContext->pOutputDataStream->metadata, "language", "XML", 0);
 		}
 
 		int iFFMpegResult;
@@ -377,15 +377,15 @@ AVOutputFormat* VideoFileWriter::GuessOutputFormat(String^ _FilePath, bool _bHas
 
 	if(Filepath->EndsWith("mkv") || _bHasMetadata)
 	{
-		pOutputFormat = guess_format("matroska", nullptr, nullptr);
+		pOutputFormat = av_guess_format("matroska", nullptr, nullptr);
 	}
 	else if(Filepath->EndsWith("mp4")) 
 	{
-		pOutputFormat = guess_format("mp4", nullptr, nullptr);
+		pOutputFormat = av_guess_format("mp4", nullptr, nullptr);
 	}
 	else
 	{
-		pOutputFormat = guess_format("avi", nullptr, nullptr);
+		pOutputFormat = av_guess_format("avi", nullptr, nullptr);
 	}
 
 	return pOutputFormat;
@@ -445,7 +445,7 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 	// Codec.
 	// Equivalent to : -vcodec mpeg4
 	_SavingContext->pOutputCodecContext->codec_id = _SavingContext->pOutputCodec->id;
-	_SavingContext->pOutputCodecContext->codec_type = CODEC_TYPE_VIDEO;
+	_SavingContext->pOutputCodecContext->codec_type = AVMEDIA_TYPE_VIDEO;
 
 	// By default the fourcc is 'FMP4' but Windows Media Player doesn't recognize it.
 	// We'll force to 'XVID' fourcc. (similar as -vtag XVID) even if it wasn't the XviD codec that encoded the video :-(
@@ -800,7 +800,7 @@ bool VideoFileWriter::WriteFrame(int _iEncodedSize, SavingContext^ _SavingContex
 		// Flag Keyframes as such.
 		if(_SavingContext->pOutputCodecContext->coded_frame->key_frame || bForceKeyframe)
 		{
-			OutputPacket.flags |= PKT_FLAG_KEY;
+			OutputPacket.flags |= AV_PKT_FLAG_KEY;
 		}
 
 		// Associate various buffers before the commit.

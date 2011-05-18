@@ -1,0 +1,34 @@
+
+
+2011-05-18
+- Sync to latest build from Kyle Schwarz.
+- http://ffmpeg.zeranoe.com/builds/
+FFmpeg version git-b4bcd1e
+	libavutil    51.  2. 1 / 51.  2. 1
+	libavcodec   53.  6. 0 / 53.  6. 0
+	libavformat  53.  1. 0 / 53.  1. 0
+	libavdevice  53.  0. 0 / 53.  0. 0
+	libavfilter   2.  5. 0 /  2.  5. 0
+	libswscale    0. 14. 0 /  0. 14. 0
+	libpostproc  51.  2. 0 / 51.  2. 0
+
+2010-05-03
+- Sync to latest automated build from Ramiro Polla
+- http://ffmpeg.arrozcru.org/autobuilds/blog/2010/05/03/ffmpeg-r23012-swscale-r31050-ok/
+
+
+2009-06-22
+- Revert to last version.
+- many files become unreadable with the latest versions of FFMpeg...
+- (negative timestamp after first frame decoded)
+
+2009-06-21 
+- Sync to latest automated build from Ramiro Polla 
+- ffmpeg-r19244 swscale-r29376 OK
+- http://ffmpeg.arrozcru.org/autobuilds/
+- http://ffmpeg.arrozcru.org/autobuilds/blog/2009/06/21/ffmpeg-r19244-swscale-r29376-ok/
+
+
+2008-06-08
+Kinovea uses ffmpeg r13712 since at least 0.7.6
+http://ffmpeg.arrozcru.org/builds/
