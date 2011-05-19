@@ -127,12 +127,12 @@ namespace Kinovea.ScreenManager
 			// Draw the current image on canvas according to conf.
 			// This is called back from screen paint method.
 		}
-		public void Save(double _fPlaybackFrameInterval, int _iSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
+		public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
 		{
 			// Let the user select what he wants to save exactly.
 			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
 			
-			formVideoExport fve = new formVideoExport(m_VideoFile.FilePath, m_Metadata, _iSlowmotionPercentage);
+			formVideoExport fve = new formVideoExport(m_VideoFile.FilePath, m_Metadata, _fSlowmotionPercentage);
             
 			if(fve.Spawn() == DialogResult.OK)
             {
