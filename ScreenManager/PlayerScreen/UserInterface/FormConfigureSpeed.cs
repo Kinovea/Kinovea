@@ -38,8 +38,6 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureSpeed : Form
     {
     	#region Properties
-    	
-    	#endregion
     	public double SlowFactor
     	{
     		get 
@@ -55,6 +53,8 @@ namespace Kinovea.ScreenManager
 	            }
     		}
     	}
+    	#endregion
+    	
     	#region Members
         private double m_fVideoFps;					// This is the fps read in the video. (ex: 24 fps)
         private double m_fRealWorldFps;				// The current fps modified value (ex: 1000 fps).
@@ -128,6 +128,10 @@ namespace Kinovea.ScreenManager
         {
             // Fall back To original.
             tbFPSRealWorld.Text = String.Format("{0:0.00}", m_fVideoFps);
+            
+            // Force proper reset of values, as the text may lack full precision.
+            m_fRealWorldFps = m_fVideoFps;
+            m_fSlowFactor = 1.0;
         }
         #endregion
     }
