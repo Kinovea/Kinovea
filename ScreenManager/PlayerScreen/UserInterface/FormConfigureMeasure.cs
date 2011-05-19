@@ -111,7 +111,7 @@ namespace Kinovea.ScreenManager
             	// Save value.
 	            try
 	            {
-	            	double fRealWorldMeasure = double.Parse(tbMeasure.Text, CultureInfo.InvariantCulture);
+	            	double fRealWorldMeasure = double.Parse(tbMeasure.Text);
 	            
 	            	if(fRealWorldMeasure > 0 && m_fCurrentLengthReal > 0)
 	            	{
