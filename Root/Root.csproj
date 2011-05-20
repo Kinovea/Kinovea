@@ -182,6 +182,7 @@
       <LastGenOutput>RootLang.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.sv.resx" />
     <EmbeddedResource Include="Languages\RootLang.tr.resx" />
     <EmbeddedResource Include="Languages\RootLang.Zh-CHS.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -237,19 +238,31 @@
       <Link>cxcore200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg-r23012\bin\avcodec-52.dll">
-      <Link>avcodec-52.dll</Link>
+    <None Include="..\Refs\FFmpeg\bin\avcodec-53.dll">
+      <Link>avcodec-53.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg-r23012\bin\avformat-52.dll">
-      <Link>avformat-52.dll</Link>
+    <None Include="..\Refs\FFmpeg\bin\avdevice-53.dll">
+      <Link>avdevice-53.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg-r23012\bin\avutil-50.dll">
-      <Link>avutil-50.dll</Link>
+    <None Include="..\Refs\FFmpeg\bin\avfilter-2.dll">
+      <Link>avfilter-2.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFMpeg-r23012\bin\swscale-0.dll">
+    <None Include="..\Refs\FFmpeg\bin\avformat-53.dll">
+      <Link>avformat-53.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\FFmpeg\bin\avutil-51.dll">
+      <Link>avutil-51.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\FFmpeg\bin\postproc-51.dll">
+      <Link>postproc-51.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\FFmpeg\bin\swscale-0.dll">
       <Link>swscale-0.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

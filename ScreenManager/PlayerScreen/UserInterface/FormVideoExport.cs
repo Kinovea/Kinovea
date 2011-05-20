@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
     	//private PlayerScreen m_PlayerScreen;
         
     	private string m_OriginalFilename;
-    	private int m_iSlowmotionPercentage;
+    	private double m_fSlowmotionPercentage;
 		private Metadata m_Metadata;
     	
         private bool m_bSaveAnalysis;
@@ -71,15 +71,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
 		#region constructor and initialisation
-		public formVideoExport(string _OriginalFilename, Metadata _Metadata, int _iSlowmotionPercentage)
+		public formVideoExport(string _OriginalFilename, Metadata _Metadata, double _fSlowmotionPercentage)
         {
-        	m_iSlowmotionPercentage = _iSlowmotionPercentage;
+        	m_fSlowmotionPercentage = _fSlowmotionPercentage;
         	m_Metadata = _Metadata;
         	m_OriginalFilename = _OriginalFilename;
         	
             InitializeComponent();
             
-            if(m_iSlowmotionPercentage == 100)
+            if(m_fSlowmotionPercentage == 100)
             {
             	groupOptions.Visible = false;
             	this.Height -= groupOptions.Height;
@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
             
             groupOptions.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupOptions;
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
-            checkSlowMotion.Text = checkSlowMotion.Text + m_iSlowmotionPercentage.ToString() + "%).";
+            checkSlowMotion.Text = checkSlowMotion.Text + m_fSlowmotionPercentage.ToString() + "%).";
 
             btnOK.Text = ScreenManagerLang.Generic_Save;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
@@ -123,7 +123,7 @@ namespace Kinovea.ScreenManager
 			// We use this method instead of directly calling ShowDialog()
 			// in order to catch for the special case where the user has no choice.
 			
-			if(!m_Metadata.HasData && m_iSlowmotionPercentage == 100)
+			if(!m_Metadata.HasData && m_fSlowmotionPercentage == 100)
 			{
 				// User has no other choice than saving the video only.
 				// Directly ask for a filename.
@@ -202,7 +202,7 @@ namespace Kinovea.ScreenManager
                 radioSaveMuxed.Enabled = false;
                 radioSaveBlended.Enabled = false;
                 radioSaveAnalysis.Enabled = false;
-                checkSlowMotion.Enabled = (m_iSlowmotionPercentage != 100);
+                checkSlowMotion.Enabled = (m_fSlowmotionPercentage != 100);
             }
             else
             {
@@ -221,7 +221,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // Save video and or analysis, slowmotion enabled
-                    checkSlowMotion.Enabled = (m_iSlowmotionPercentage != 100);
+                    checkSlowMotion.Enabled = (m_fSlowmotionPercentage != 100);
                 }
             }
         }

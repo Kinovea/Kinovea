@@ -71,31 +71,31 @@
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Toon/Verberg bestand verkenner</value></data>
    <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea is onderworpen aan de afspraken van de Gnu General Public Licence version 2.</value></data>
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea werkt samen met de volgende software onderdelen:</value></data>
-   <data name="dlgAbout_Info3" xml:space="preserve"><value>U bent welkom om mee te werken aan vertalingen, testen, debugging, verbeteringen of anderszins te helpen bij Kinovea.</value></data>
+   <data name="dlgAbout_Info3" xml:space="preserve"><value>U bent welkom om mee te werken aan vertalingen, testen, debuggen, verbeteringen of anderszins te helpen bij Kinovea.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Vertalingen:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Alle bestanden (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Open een video bestand</value></data>
-   
+   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Opnemen</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Tekeningen</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Algemeen</value></data>
-   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Speel</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Afspelen</value></data>
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Afbeeldingen map :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Videobeelden map :</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Afbeeldingstype :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Videotype :</value></data>
+   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Bestandsnaam</value></data>
+   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Vrije tekst met automatische teller</value></data>
+   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Vormgeving naam</value></data>
+   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Jaar</value></data>
+   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Maand</value></data>
+   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Dag</value></data>
+   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Uur</value></data>
+   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuut</value></data>
+   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Seconde</value></data>
+   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Teller</value></data>
+   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Herstart teller</value></data>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Geheugen</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Toegewezen geheugen voor buffering van opname: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Altijd zichtbaar</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sta Persistentie toe</value></data>
@@ -106,19 +106,19 @@
    <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Schakel naar Analyse functie</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Kleuren</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistentie</value></data>
-   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Raster :</value></data>
-   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Aantal bestanden in historie :</value></data>
+   <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Raster:</value></data>
+   <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Aantal bestanden in historie:</value></data>
    <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Standaard beeldformaat:</value></data>
-   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Taal :</value></data>
+   <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Taal:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>En</value></data>
-   <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspectief Vlak :</value></data>
+   <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Perspectief Vlak:</value></data>
    <data name="dlgPreferences_LabelTimeFormat" xml:space="preserve"><value>Tijdmarkeringsvorm</value></data>
-   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Werkgebied zal minder dan {0} Mb van het geheugen nemen.</value></data>
+   <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Werkgebied zal minder dan {0} MB van het geheugen innemen.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>Werkgebied is minder dan {0} seconden.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Standaard zullen tekeningen zichtbaar zijn gedurende {0} beelden vanaf het Kernbeeld.</value></data>
    <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Snelheid eenheid:</value></data>
    <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Meter per seconde ({0})</value></data>
-   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer per seconde ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilometer per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Voet per seconde ({0})</value></data>
    <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Mijl per uur ({0})</value></data>
    <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Knopen ({0})</value></data>

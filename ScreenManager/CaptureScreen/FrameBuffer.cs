@@ -18,10 +18,12 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -147,9 +149,11 @@ namespace Kinovea.ScreenManager
 		{
 			// The buffer directly keep the images at the final display size.
 			// This avoid an extra copy when the display size is not the decoding size. (force 16:9 for example).
-			m_Size = _size;
-			ResetBuffer();
-			
+			if(!m_Size.Equals(_size))
+			{
+				m_Size = _size;
+				ResetBuffer();
+			}
 		}
 		public void UpdateMemoryCapacity(bool _bShared)
 		{

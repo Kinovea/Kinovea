@@ -107,7 +107,7 @@ namespace Kinovea.Root
             cmbLanguage.Items.Clear();
             
             // Order : Native Alphabetical.
-            // Deutsh, Greek, English, Español, Français, Italiano, Lithuanian, Nederlands, Norsk, Polski, Portuges, Romana, Suomi, chinese.
+            // Deutsh, Greek, English, Español, Français, Italiano, Lithuanian, Nederlands, Norsk, Polski, Portuges, Romana, Suomi, Svenska, Chinese.
             cmbLanguage.Items.Add(new LanguageIdentifier("de", PreferencesManager.LanguageGerman));
             cmbLanguage.Items.Add(new LanguageIdentifier("el", PreferencesManager.LanguageGreek));
             cmbLanguage.Items.Add(new LanguageIdentifier("en", PreferencesManager.LanguageEnglish));
@@ -121,6 +121,7 @@ namespace Kinovea.Root
             cmbLanguage.Items.Add(new LanguageIdentifier("pt", PreferencesManager.LanguagePortuguese));
             cmbLanguage.Items.Add(new LanguageIdentifier("ro", PreferencesManager.LanguageRomanian));
             cmbLanguage.Items.Add(new LanguageIdentifier("fi", PreferencesManager.LanguageFinnish));
+            cmbLanguage.Items.Add(new LanguageIdentifier("sv", PreferencesManager.LanguageSwedish));
             cmbLanguage.Items.Add(new LanguageIdentifier("tr", PreferencesManager.LanguageTurkish));
             cmbLanguage.Items.Add(new LanguageIdentifier("zh-CHS", PreferencesManager.LanguageChinese));
 

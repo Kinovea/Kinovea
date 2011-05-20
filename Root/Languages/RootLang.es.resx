@@ -75,27 +75,27 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Traducciones:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos los archivos (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir un Video</value></data>
-   
+   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Captura</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dibujos</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>General</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Lectura</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Carpeta de imágenes :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Carpeta de videos :</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato de imagen :</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato de video :</value></data>
+   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Nombrado de archivos</value></data>
+   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Texto libre con contador automático</value></data>
+   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Modelo de nomenclatura</value></data>
+   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Año</value></data>
+   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Mes</value></data>
+   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Día</value></data>
+   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Horas</value></data>
+   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minutos</value></data>
+   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Segundo</value></data>
+   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Contador</value></data>
+   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Reiniciar contadores</value></data>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memoria</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memoria asignada al buffer : {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Siempre Visible</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activar persistencia</value></data>
@@ -116,12 +116,12 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>La Zona De Trabajo tomará menos de {0} MB de Memoria.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>La Zona de Trabajo es menor a {0} segundos.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Por defecto, los dibujos permanecerán visibles durante {0} imágenes alrededor la imagen clave</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unidad de velocidad :</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metros por segundo ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilómetros por hora ({0})</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pies por segundo ({0})</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Millas por hora ({0})</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nudos ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferencias…</value></data>
    <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Cargando la Interfaz Gráfica ...</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value></data>
@@ -148,7 +148,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Cancelar</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clasico (h:mm:ss:centésimos)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de Cuadros</value></data>
-   
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total en milisegundos</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimas de un minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Diez milésimas de una hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Time Stamps</value></data>

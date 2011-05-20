@@ -521,6 +521,7 @@ namespace Kinovea.Root
 			// 
 			// trkMemoryBuffer
 			// 
+			this.trkMemoryBuffer.BackColor = System.Drawing.Color.White;
 			this.trkMemoryBuffer.Location = new System.Drawing.Point(15, 55);
 			this.trkMemoryBuffer.Maximum = 1024;
 			this.trkMemoryBuffer.Minimum = 16;

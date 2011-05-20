@@ -70,7 +70,7 @@
    <data name="lblFolders" xml:space="preserve"><value>Mappen:</value></data>
    <data name="lblVideoFiles" xml:space="preserve"><value>Video bestanden:</value></data>
    <data name="mnuAddShortcut" xml:space="preserve"><value>Voeg snelkoppeling toe</value></data>
-   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Toevoeging aan snelkoppeingen</value></data>
+   <data name="mnuAddToShortcuts" xml:space="preserve"><value>Toevoegen aan snelkoppelingen</value></data>
    <data name="mnuDeleteShortcut" xml:space="preserve"><value>Verwijder snelkoppeling</value></data>
    <data name="tabExplorer" xml:space="preserve"><value>Verkenner</value></data>
    <data name="tabShortcuts" xml:space="preserve"><value>Favorieten</value></data>
