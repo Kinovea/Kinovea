@@ -729,7 +729,7 @@ namespace Kinovea.ScreenManager
             			otherScreen = 0;
             		}
             		
-            		((PlayerScreen)screenList[otherScreen]).SlowmotionPercentage = ((PlayerScreen)_screen).SlowmotionPercentage;
+            		((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)_screen).RealtimePercentage;
             	
             		SetSyncPoint(true);
             	}
@@ -959,11 +959,9 @@ namespace Kinovea.ScreenManager
             {
                 if (bPlaying)
                 {
-                    double frameInterval = Math.Min(((PlayerScreen)screenList[0]).FrameInterval/2, ((PlayerScreen)screenList[1]).FrameInterval/2);
-										
 					// On play, simply launch the dynamic sync.
 					// It will handle which video can start right away.
-					StartDynamicSync(frameInterval);
+					StartDynamicSync();
                 }
                 else
                 {
@@ -1558,7 +1556,15 @@ namespace Kinovea.ScreenManager
                     mnuGrid.Checked = player.ShowGrid;
                     mnuGridPerspective.Checked = player.Show3DPlane;
                     
-                    ConfigureImageFormatMenus(player);
+                    if(!player.IsSingleFrame)
+                    {
+                    	ConfigureImageFormatMenus(player);
+                    }
+                    else
+                    {
+                    	// Prevent usage of format menu for image files
+                    	ConfigureImageFormatMenus(null);
+                    }
                     
                     // Motion
                     mnuHighspeedCamera.Enabled = true;
@@ -3303,7 +3309,7 @@ namespace Kinovea.ScreenManager
 	            ResetDynamicSyncFlags();
         	}
         }
-        private void StartDynamicSync(double _interval)
+        private void StartDynamicSync()
         {
         	m_bDynamicSynching = true;
         	DynamicSync();

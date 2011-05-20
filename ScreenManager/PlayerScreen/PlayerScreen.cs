@@ -111,6 +111,20 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
+        public bool IsSingleFrame
+        {
+        	get
+            {
+                if (!m_FrameServer.VideoFile.Loaded)
+                {
+                    return false;
+                }
+                else
+                {
+                    return (m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1);
+                }
+            }	
+        }
         public bool IsInAnalysisMode
         {
             get
@@ -159,7 +173,7 @@ namespace Kinovea.ScreenManager
             	// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
 				if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0)
 				{
-					return (m_FrameServer.VideoFile.Infos.fFrameInterval / ((double)m_PlayerScreenUI.SlowmotionPercentage / 100));
+					return m_PlayerScreenUI.FrameInterval;
 				}
 				else
 				{
@@ -167,10 +181,10 @@ namespace Kinovea.ScreenManager
 				}
 	        }
         }
-        public int SlowmotionPercentage
+        public double RealtimePercentage
         {
-        	get { return m_PlayerScreenUI.SlowmotionPercentage; }
-        	set { m_PlayerScreenUI.SlowmotionPercentage = value;}
+        	get { return m_PlayerScreenUI.RealtimePercentage; }
+        	set { m_PlayerScreenUI.RealtimePercentage = value;}
         }
         public bool Synched
         {

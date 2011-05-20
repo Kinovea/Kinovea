@@ -128,16 +128,34 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
-		public int SlowmotionPercentage
+		public double FrameInterval
 		{
-			get { return m_iSlowmotionPercentage; }
+			get 
+			{
+				return (m_FrameServer.VideoFile.Infos.fFrameInterval / (m_fSlowmotionPercentage / 100));
+			}
+		}
+		public double RealtimePercentage
+		{
+			// RealtimePercentage expresses the speed percentage relative to real time action.
+			// It takes high speed camera into account.
+			get 
+			{ 
+				return m_fSlowmotionPercentage / m_fHighSpeedFactor;
+			}
 			set
 			{
 				// This happens only in the context of synching 
 				// when the other video changed its speed percentage (user or forced).
                 // We must NOT trigger the event here, or it will impact the other screen in an infinite loop.
-				sldrSpeed.Value = value;
-				m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
+				// Compute back the slow motion percentage relative to the playback framerate.
+				double fPlaybackPercentage = value * m_fHighSpeedFactor;
+				if(fPlaybackPercentage > 200) fPlaybackPercentage = 200;
+				sldrSpeed.Value = (int)fPlaybackPercentage;
+				
+				// If the other screen is in high speed context, we honor the decimal value.
+				// (When it will be changed from this screen's slider, it will be an integer value).
+				m_fSlowmotionPercentage = fPlaybackPercentage > 0 ? fPlaybackPercentage : 1;
 				
 				// Reset timer with new value.
 				if (m_bIsCurrentlyPlaying)
@@ -230,7 +248,7 @@ namespace Kinovea.ScreenManager
 		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private int m_iDroppedFrames;                  // For debug purposes only.
 		private int m_iDecodedFrames;
-		private int m_iSlowmotionPercentage = 100;
+		private double m_fSlowmotionPercentage = 100.0f;	// Always between 1 and 200 : this specific value is not impacted by high speed cameras.
 		private bool m_bIsIdle = true;
 		
 		// Synchronisation
@@ -1058,7 +1076,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_iFramesToDecode = 1;
 			
-			m_iSlowmotionPercentage = 100;
+			m_fSlowmotionPercentage = 100.0;
 			m_bDrawtimeFiltered = false;
 			m_bIsCurrentlyPlaying = false;
 			m_bSeekToStart = false;
@@ -1989,7 +2007,7 @@ namespace Kinovea.ScreenManager
 		#region Speed Slider
 		private void sldrSpeed_ValueChanged(object sender, EventArgs e)
 		{
-			m_iSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
+			m_fSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
 			
 			if (m_FrameServer.VideoFile.Loaded)
 			{
@@ -2042,12 +2060,20 @@ namespace Kinovea.ScreenManager
 		{
 			if(m_fHighSpeedFactor != 1.0)
 			{
-				double fPercentage = (double)m_iSlowmotionPercentage / m_fHighSpeedFactor;
-				lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, fPercentage);
+				double fRealtimePercentage = (double)m_fSlowmotionPercentage / m_fHighSpeedFactor;
+				lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, fRealtimePercentage);
 			}
 			else
 			{
-				lblSpeedTuner.Text = ScreenManagerLang.lblSpeedTuner_Text + " " + m_iSlowmotionPercentage + "%";
+				if(m_fSlowmotionPercentage % 1 == 0)
+				{
+					lblSpeedTuner.Text = ScreenManagerLang.lblSpeedTuner_Text + " " + m_fSlowmotionPercentage + "%";
+				}
+				else
+				{
+					// Special case when the speed percentage is coming from the other screen and is not an integer.
+					lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, m_fSlowmotionPercentage);
+				}
 			}			
 		}
 		#endregion
@@ -2647,6 +2673,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionLabels();
 				UpdateCurrentPositionLabel();
 				UpdateSpeedLabel();
+				m_PlayerScreenUIHandler.PlayerScreenUI_SpeedChanged(true);
 				m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoFile.Infos.fFps * m_fHighSpeedFactor;
 				DoInvalidate();
 			}
@@ -2655,9 +2682,9 @@ namespace Kinovea.ScreenManager
 		{
 			// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
 			// m_iSlowmotionPercentage must be > 0.
-			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0 && m_iSlowmotionPercentage > 0)
+			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0 && m_fSlowmotionPercentage > 0)
 			{
-				return (m_FrameServer.VideoFile.Infos.fFrameInterval / ((double)m_iSlowmotionPercentage / 100.0));
+				return (m_FrameServer.VideoFile.Infos.fFrameInterval / ((double)m_fSlowmotionPercentage / 100.0));
 			}
 			else
 			{
@@ -5157,7 +5184,7 @@ namespace Kinovea.ScreenManager
 			// and when PlaybackFrameInterval, m_iSlowmotionPercentage, GetOutputBitmap are available publically.
 			
 			m_FrameServer.Save(	GetPlaybackFrameInterval(),
-			                   m_iSlowmotionPercentage,
+			                   m_fSlowmotionPercentage,
 			                   m_iSelStart,
 			                   m_iSelEnd,
 			                   new DelegateGetOutputBitmap(GetOutputBitmap));

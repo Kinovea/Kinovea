@@ -68,47 +68,47 @@
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
    <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Escolher Idioma</value></data>
-   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/Esconder o Gerenciador de Arquivos</value></data>
-   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea está sujeito a Gnu General Public License versão 2.</value></data>
+   <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Mostrar/Ocultar o Gerenciador de Arquivos</value></data>
+   <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea está sujeito aos termos da Gnu General Public License versão 2.</value></data>
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea trabalha em cooperação com os seguintes componentes:</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Você é bem vindo a ajudar a traduzir, testar, depurar, melhorar ou qualquer outro tipo de suporte ao Kinovea.</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Traduções:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Todos os arquivos (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Abrir arquivo de vídeo</value></data>
-   
+   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capturar</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Desenhos</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Geral</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>Reproduzir</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>Pasta de Imagens:</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Pasta de Videos:</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>Formato da Imagem:</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Formato do Video:</value></data>
+   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Nome dos arquivos</value></data>
+   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Texto livre com contador automático</value></data>
+   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>Padrão de nomeação</value></data>
+   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Ano</value></data>
+   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Mês</value></data>
+   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Dia</value></data>
+   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Hora</value></data>
+   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Minuto</value></data>
+   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Segundo</value></data>
+   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Contador</value></data>
+   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Resetar contadores</value></data>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Memória</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Memória usada para captura de buffers: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Sempre Visível</value></data>
-   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar desenhos quando o vídeo estiver reproduzindo</value></data>
+   <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar desenhos enquanto o vídeo estiver reproduzindo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Habilitar persistência</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Sempre desentrelaçar ao abrir um novo vídeo.</value></data>
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forçar formato 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forçar formato 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Auto Detecção</value></data>
-   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o Módulo Análise</value></data>
+   <data name="dlgPreferences_GroupAnalysisMode" xml:space="preserve"><value>Mudar para o Módulo de Análise</value></data>
    <data name="dlgPreferences_GroupColors" xml:space="preserve"><value>Cores</value></data>
    <data name="dlgPreferences_grpPersistence" xml:space="preserve"><value>Persistência</value></data>
    <data name="dlgPreferences_LabelGrid" xml:space="preserve"><value>Grade:</value></data>
    <data name="dlgPreferences_LabelHistoryCount" xml:space="preserve"><value>Número de arquivos no histórico:</value></data>
-   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Formato padrão de imagem</value></data>
+   <data name="dlgPreferences_LabelImageFormat" xml:space="preserve"><value>Formato padrão de imagem:</value></data>
    <data name="dlgPreferences_LabelLanguages" xml:space="preserve"><value>Idioma:</value></data>
    <data name="dlgPreferences_LabelLogic" xml:space="preserve"><value>E</value></data>
    <data name="dlgPreferences_LabelPlane3D" xml:space="preserve"><value>Grade de Perspectiva:</value></data>
@@ -116,14 +116,14 @@
    <data name="dlgPreferences_LabelWorkingZoneMemory" xml:space="preserve"><value>Zona de Trabalho usará menos que {0} MB de Memória.</value></data>
    <data name="dlgPreferences_LabelWorkingZoneSeconds" xml:space="preserve"><value>A Zona de Trabalho é menor que {0} segundos.</value></data>
    <data name="dlgPreferences_lblFading" xml:space="preserve"><value>Por padrão os desenhos permanecerão {0} imagens ao redor do Quadro de Imagem.</value></data>
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_LabelSpeedUnit" xml:space="preserve"><value>Unidade de Velocidade:</value></data>
+   <data name="dlgPreferences_Speed_MetersPerSecond" xml:space="preserve"><value>Metros por segundo ({0})</value></data>
+   <data name="dlgPreferences_Speed_KilometersPerHour" xml:space="preserve"><value>Kilomêtros por hora ({0})</value></data>
+   <data name="dlgPreferences_Speed_FeetPerSecond" xml:space="preserve"><value>Pés por segundo ({0})</value></data>
+   <data name="dlgPreferences_Speed_MilesPerHour" xml:space="preserve"><value>Milhas por hora ({0})</value></data>
+   <data name="dlgPreferences_Speed_Knots" xml:space="preserve"><value>Nós ({0})</value></data>
    <data name="dlgPreferences_Title" xml:space="preserve"><value>Preferências...</value></data>
-   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Carregando Interface de Usuário... </value></data>
+   <data name="dlgSplash_LoadInfos" xml:space="preserve"><value>Carregando a Interface de Usuário... </value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Cancelar</value></data>
    <data name="Generic_Quit" xml:space="preserve"><value>Sair</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Salvar</value></data>
@@ -148,8 +148,8 @@
    <data name="mnuUndo" xml:space="preserve"><value>Desfazer</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Clássico (h:mm:ss:centésimos)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Número de Quadros</value></data>
-   
-   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimos de um minuto</value></data>
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Total em milisegundos</value></data>
+   <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Centésimos de minuto</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Dez milésimos de uma hora</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Contador de Tempo</value></data>
    <data name="TimeCodeFormat_TimeAndFrames" xml:space="preserve"><value>Clássico + Número de Quadros</value></data>

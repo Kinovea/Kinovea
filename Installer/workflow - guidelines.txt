@@ -8,6 +8,7 @@ TODO:
 
 1. Modifier prepare.py si add/delete fichiers.
 2. Positionner le mode expérimental / production. Voir dans le ctor de RootKernel.
++ log level
 3. Masquer les fonctions en cours de développement qui ne sont pas terminées.
 4. Mettre à jour le readme.txt
 - n° version, date, révision.
@@ -18,7 +19,7 @@ TODO:
 6. Vider le dossier \Kinovea.Files\
 Exécuter prepare.py.
 
-7. Mettre à jour le script NSI:
+7. Mettre à jour le script NSIS:
 	- @9 : n° version
 	- Nouvelles dépendances / nouveaux fichiers à installer et désinstaller.
 	- Nouvelles langues à décommenter.

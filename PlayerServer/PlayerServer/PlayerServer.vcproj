@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\Refs\FFMpeg-r23012\include\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavcodec\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavformat\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libswscale\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavutil\&quot;"
+				AdditionalIncludeDirectories="..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -60,9 +60,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib Gdi32.lib $(NOINHERIT)"
+				AdditionalDependencies="avformat.lib avdevice.lib avcodec.lib avfilter.lib avutil.lib swscale.lib postproc.lib Gdi32.lib $(NOINHERIT)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Refs\FFMpeg-r23012\lib"
+				AdditionalLibraryDirectories="..\..\Refs\FFmpeg\lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				RandomizedBaseAddress="1"
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\Refs\FFMpeg-r23012\include&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavcodec\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavformat\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libswscale\&quot;;&quot;..\..\Refs\FFMpeg-r23012\include\libavutil\&quot;"
+				AdditionalIncludeDirectories="..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -137,9 +137,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="true"
-				AdditionalDependencies="avformat.lib avcodec.lib avutil.lib swscale.lib $(NOINHERIT)"
+				AdditionalDependencies="avformat.lib avdevice.lib avcodec.lib avfilter.lib avutil.lib swscale.lib postproc.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\Refs\FFMpeg-r23012\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\Refs\FFmpeg\lib&quot;"
 				GenerateDebugInformation="false"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -252,19 +252,23 @@
 				Name="FFMpeg"
 				>
 				<File
-					RelativePath="..\..\Refs\FFMpeg-r23012\include\libavcodec\avcodec.h"
+					RelativePath="..\..\Refs\FFmpeg\include\libavcodec\avcodec.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Refs\FFMpeg-r23012\include\libavformat\avformat.h"
+					RelativePath="..\..\Refs\FFmpeg\include\libavformat\avformat.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Refs\FFMpeg-r23012\include\libavutil\avstring.h"
+					RelativePath="..\..\Refs\FFmpeg\include\libavutil\avstring.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Refs\FFMpeg-r23012\include\libswscale\swscale.h"
+					RelativePath="..\..\Refs\FFmpeg\include\libavutil\avutil.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Refs\FFmpeg\include\libswscale\swscale.h"
 					>
 				</File>
 			</Filter>

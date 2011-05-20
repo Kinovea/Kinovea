@@ -67,7 +67,7 @@
    <resheader name="writer">
       <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
    </resheader>
-   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Dili değiştir</value></data>
+   <data name="CommandSwitchUICulture_FriendlyName" xml:space="preserve"><value>Dili Değiştir</value></data>
    <data name="CommandToggleFileExplorer_FriendlyName" xml:space="preserve"><value>Dosya Yöneticisini Göster/Gizle</value></data>
    <data name="dlgAbout_Info1" xml:space="preserve"><value>Kinovea Gnu Genel Kamu Lisansı sürüm 2 maddelerine tabidir.</value></data>
    <data name="dlgAbout_Info2" xml:space="preserve"><value>Kinovea aşağıda belirtilen yazılım bileşenleriyle beraber çalışır:</value></data>
@@ -75,27 +75,27 @@
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Yerelleştirmeler:</value></data>
    <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tüm Dosyalar (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Video Dosyasını Aç</value></data>
-   
+   <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capture</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Çizimler</value></data>
    <data name="dlgPreferences_ButtonGeneral" xml:space="preserve"><value>Genel</value></data>
    <data name="dlgPreferences_ButtonPlayAnalyze" xml:space="preserve"><value>İzle</value></data>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   <data name="dlgPreferences_Capture_lblImageDirectory" xml:space="preserve"><value>İmaj klasörü:</value></data>
+   <data name="dlgPreferences_Capture_lblVideoDirectory" xml:space="preserve"><value>Video klasörü:</value></data>
+   <data name="dlgPreferences_Capture_lblImageFormat" xml:space="preserve"><value>İmaj formatı:</value></data>
+   <data name="dlgPreferences_Capture_lblVideoFormat" xml:space="preserve"><value>Video formatı:</value></data>
+   <data name="dlgPreferences_Capture_tabNaming" xml:space="preserve"><value>Dosya isimlendirme</value></data>
+   <data name="dlgPreferences_Capture_rbFreeText" xml:space="preserve"><value>Otomatik sayaçlı boş metin</value></data>
+   <data name="dlgPreferences_Capture_rbPattern" xml:space="preserve"><value>İsimlendirme şablonu</value></data>
+   <data name="dlgPreferences_Capture_lblYear" xml:space="preserve"><value>Yıl</value></data>
+   <data name="dlgPreferences_Capture_lblMonth" xml:space="preserve"><value>Ay</value></data>
+   <data name="dlgPreferences_Capture_lblDay" xml:space="preserve"><value>Gün</value></data>
+   <data name="dlgPreferences_Capture_lblHour" xml:space="preserve"><value>Saat</value></data>
+   <data name="dlgPreferences_Capture_lblMinute" xml:space="preserve"><value>Dakika</value></data>
+   <data name="dlgPreferences_Capture_lblSecond" xml:space="preserve"><value>Saniye</value></data>
+   <data name="dlgPreferences_Capture_lblCounter" xml:space="preserve"><value>Sayaç</value></data>
+   <data name="dlgPreferences_Capture_btnResetCounter" xml:space="preserve"><value>Sayaçları sıfırla</value></data>
+   <data name="dlgPreferences_Capture_tabMemory" xml:space="preserve"><value>Bellek</value></data>
+   <data name="dlgPreferences_Capture_lblMemoryBuffer" xml:space="preserve"><value>Capture tamponu için ayrılmış bellek: {0} MB.</value></data>
    <data name="dlgPreferences_chkAlwaysVisible" xml:space="preserve"><value>Her zaman Görünür</value></data>
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>
@@ -148,7 +148,7 @@
    <data name="mnuUndo" xml:space="preserve"><value>Geri Al</value></data>
    <data name="TimeCodeFormat_Classic" xml:space="preserve"><value>Klasik (h:mm:ss:yüzdesi)</value></data>
    <data name="TimeCodeFormat_Frames" xml:space="preserve"><value>Kare Sayıları</value></data>
-   
+   <data name="TimeCodeFormat_Milliseconds" xml:space="preserve"><value>Toplam milisaniye</value></data>
    <data name="TimeCodeFormat_HundredthOfMinutes" xml:space="preserve"><value>Bir dakikanın yüzdesi</value></data>
    <data name="TimeCodeFormat_TenThousandthOfHours" xml:space="preserve"><value>Bir saatin on bindesi</value></data>
    <data name="TimeCodeFormat_Timestamps" xml:space="preserve"><value>Zaman Etiketleri</value></data>

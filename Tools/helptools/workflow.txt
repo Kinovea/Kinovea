@@ -1,0 +1,49 @@
+Note: this is for realease management.
+Admin rights on the web server are needed for now.
+
+
+New workflow (2011-05-07)
+-------------------------
+
+. For each language :
+0. Backup wiki. languages namespaces pages and media.
+0. Delete previous zip export and src folder.
+0. In language directory, delete web folder and .chm file.
+
+A. Preparation :
+--------------------------------
+1. SiteExport namespace. (If first try goes +200 files, it failed. Do it again to get about 50 files.).
+2. Extract to src/…
+3. Copy images to src/…
+4. Run cleanup.py to clean HTML files.
+5. Update 001 and 004 manually.
+6. 005 :
+- Open datasheet template in writer.
+- Open wiki exported 005.html in writer, turn everything to Arial 10.
+- Copy table rows over the odt datasheet. Possile to copy multiple rows at once (per theme)
+- Export as pdf
+- remove logo and align header text to the left and export as xhtml as 005.html.
+
+B. Generate CHM and online help.
+--------------------------------
+7. Paste the table of content pseudo XML from page 000 to a "master.txt" file.
+8. run generate-chm.py it will : 
+- Create intermediary toc pages (100, 113, etc.)
+- Copy 001, 004, 005 to src/….
+- Create project and toc files for HTML Workshop
+- Run CHM compiler.
+- Create toc.htm for online help (ndoc style)
+- Copy topic files to /web
+- Copy chm and web folder to the language directory
+
+At the end the language directory should contain:
+- the chm file
+- the web folder
+- the datasheet pdf (manual export from the odt).
+
+>> Repeat with another language.
+
+Notes:
+The master datasheet odt is created for english language.
+Then its content is ported on the wiki 005 page for translation.
+The datasheet odt for each language is created from the english one with translations backported from the wiki to the odt.
