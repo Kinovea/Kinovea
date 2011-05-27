@@ -197,7 +197,7 @@ namespace Kinovea.ScreenManager
 		                    	}
 		                    	else
 		                    	{
-		                    		tlvi.Duration = TimeHelper.MillisecondsToTimecode(_infosThumbQueue[i].iDurationMilliseconds, false, true);
+		                    		tlvi.Duration = TimeHelper.MillisecondsToTimecode((double)_infosThumbQueue[i].iDurationMilliseconds, false, true);
 		                    	}
 		                    	
 		                    	tlvi.ImageSize = (Size)_infosThumbQueue[i].imageSize;
