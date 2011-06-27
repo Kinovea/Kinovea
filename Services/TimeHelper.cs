@@ -44,13 +44,13 @@ namespace Kinovea.Services
 			bool bNegative = (_fTotalMilliseconds < 0);
 			
 			//Computes the total of hours, minutes, seconds, milliseconds.
-			iTotalSeconds   = (int)Math.Round(_fTotalMilliseconds / 1000);
+			iTotalSeconds   = (int)(Math.Round(_fTotalMilliseconds) / 1000);
 			iTotalMinutes   = iTotalSeconds / 60;
 			iTotalHours     = iTotalMinutes / 60;
 
 			iMinutes        = iTotalMinutes - (iTotalHours * 60);
 			iSeconds        = iTotalSeconds - (iTotalMinutes * 60);
-			iMilliseconds   = (int)(Math.Round(_fTotalMilliseconds)) - (iTotalSeconds * 1000);
+			iMilliseconds = (int)Math.Round(_fTotalMilliseconds % 1000);
 						
 			// Since the time can be relative to a sync point, it can be negative.
 			string negativeSign = bNegative ? "- " : "";
