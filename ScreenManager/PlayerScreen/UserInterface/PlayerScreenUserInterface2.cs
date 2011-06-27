@@ -1376,16 +1376,16 @@ namespace Kinovea.ScreenManager
 			}
 
 			// timestamp to milliseconds. (Needed for most formats)
-			double iSeconds;
+			double fSeconds;
 
 			if (m_FrameServer.VideoFile.Loaded)
-				iSeconds = (double)iTimeStamp / m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds;
+				fSeconds = (double)iTimeStamp / m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds;
 			else
-				iSeconds = 0;
+				fSeconds = 0;
 
 			// m_fSlowFactor is different from 1.0f only when user specify that the capture fps
 			// was different than the playing fps. We readjust time.
-			double fMilliseconds = (iSeconds * 1000) / m_fHighSpeedFactor;
+			double fMilliseconds = (fSeconds * 1000) / m_fHighSpeedFactor;
 			
 			// If there are more than 100 frames per seconds, we display milliseconds.
 			// This can happen when the user manually tune the input fps.
