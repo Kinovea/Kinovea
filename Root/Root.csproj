@@ -386,15 +386,25 @@
     <None Include="Resources\closegrey.png" />
     <None Include="Resources\videos.png" />
   </ItemGroup>
+  <ItemGroup>
+	<!-- List of extra files to copy to output dir -->
+    <SVGItem Include="$(MSBuildProjectDirectory)\..\Tools\svg\*.svg" />
+	<XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\xsl transforms\Kva to Spreadsheets\*.xsl" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
-  <PropertyGroup>
-    <PostBuildEvent>"..\..\..\..\Tools\build events\postbuild.bat"</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="AfterBuild">
+	<!-- Clean the svg and xslt directories, and copy files over -->
+	<RemoveDir Directories="$(OutputPath)\guides" />
+  	<MakeDir Directories = "$(OutputPath)\guides" Condition = "!Exists('$(OutputPath)\guides')" />
+    <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)\guides" />
+	
+  	<RemoveDir Directories="$(OutputPath)\xslt" />
+  	<MakeDir Directories = "$(OutputPath)\xslt" Condition = "!Exists('$(OutputPath)\xslt')" />
+    <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)\xslt" />
+  </Target>
 </Project>
