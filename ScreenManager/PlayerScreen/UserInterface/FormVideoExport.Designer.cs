@@ -31,14 +31,15 @@ namespace Kinovea.ScreenManager
         	this.btnOK = new System.Windows.Forms.Button();
         	this.btnCancel = new System.Windows.Forms.Button();
         	this.groupSaveMethod = new System.Windows.Forms.GroupBox();
+        	this.tbSaveAnalysis = new System.Windows.Forms.TextBox();
+        	this.tbSaveBlended = new System.Windows.Forms.TextBox();
+        	this.tbSaveMuxed = new System.Windows.Forms.TextBox();
         	this.btnSaveBlended = new System.Windows.Forms.Button();
         	this.btnSaveMuxed = new System.Windows.Forms.Button();
         	this.btnSaveAnalysis = new System.Windows.Forms.Button();
-        	this.btnSaveVideo = new System.Windows.Forms.Button();
         	this.radioSaveBlended = new System.Windows.Forms.RadioButton();
         	this.radioSaveMuxed = new System.Windows.Forms.RadioButton();
         	this.radioSaveAnalysis = new System.Windows.Forms.RadioButton();
-        	this.radioSaveVideo = new System.Windows.Forms.RadioButton();
         	this.groupOptions = new System.Windows.Forms.GroupBox();
         	this.checkSlowMotion = new System.Windows.Forms.CheckBox();
         	this.groupSaveMethod.SuspendLayout();
@@ -48,7 +49,7 @@ namespace Kinovea.ScreenManager
         	// btnOK
         	// 
         	this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-        	this.btnOK.Location = new System.Drawing.Point(306, 310);
+        	this.btnOK.Location = new System.Drawing.Point(405, 367);
         	this.btnOK.Name = "btnOK";
         	this.btnOK.Size = new System.Drawing.Size(99, 24);
         	this.btnOK.TabIndex = 35;
@@ -60,7 +61,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        	this.btnCancel.Location = new System.Drawing.Point(411, 310);
+        	this.btnCancel.Location = new System.Drawing.Point(510, 367);
         	this.btnCancel.Name = "btnCancel";
         	this.btnCancel.Size = new System.Drawing.Size(99, 24);
         	this.btnCancel.TabIndex = 40;
@@ -69,20 +70,57 @@ namespace Kinovea.ScreenManager
         	// 
         	// groupSaveMethod
         	// 
+        	this.groupSaveMethod.Controls.Add(this.tbSaveAnalysis);
+        	this.groupSaveMethod.Controls.Add(this.tbSaveBlended);
+        	this.groupSaveMethod.Controls.Add(this.tbSaveMuxed);
         	this.groupSaveMethod.Controls.Add(this.btnSaveBlended);
         	this.groupSaveMethod.Controls.Add(this.btnSaveMuxed);
         	this.groupSaveMethod.Controls.Add(this.btnSaveAnalysis);
-        	this.groupSaveMethod.Controls.Add(this.btnSaveVideo);
         	this.groupSaveMethod.Controls.Add(this.radioSaveBlended);
         	this.groupSaveMethod.Controls.Add(this.radioSaveMuxed);
         	this.groupSaveMethod.Controls.Add(this.radioSaveAnalysis);
-        	this.groupSaveMethod.Controls.Add(this.radioSaveVideo);
         	this.groupSaveMethod.Location = new System.Drawing.Point(12, 12);
         	this.groupSaveMethod.Name = "groupSaveMethod";
-        	this.groupSaveMethod.Size = new System.Drawing.Size(498, 196);
+        	this.groupSaveMethod.Size = new System.Drawing.Size(597, 258);
         	this.groupSaveMethod.TabIndex = 25;
         	this.groupSaveMethod.TabStop = false;
         	this.groupSaveMethod.Text = "dlgSaveAnalysisOrVideo_GroupSaveMethod";
+        	// 
+        	// tbSaveAnalysis
+        	// 
+        	this.tbSaveAnalysis.BorderStyle = System.Windows.Forms.BorderStyle.None;
+        	this.tbSaveAnalysis.ForeColor = System.Drawing.Color.DimGray;
+        	this.tbSaveAnalysis.Location = new System.Drawing.Point(108, 131);
+        	this.tbSaveAnalysis.Multiline = true;
+        	this.tbSaveAnalysis.Name = "tbSaveAnalysis";
+        	this.tbSaveAnalysis.Size = new System.Drawing.Size(456, 39);
+        	this.tbSaveAnalysis.TabIndex = 27;
+        	this.tbSaveAnalysis.Text = "Only the drawings and tools will be saved, in a separate text file.\r\nThe file can" +
+        	" be imported back on a video later.";
+        	// 
+        	// tbSaveBlended
+        	// 
+        	this.tbSaveBlended.BorderStyle = System.Windows.Forms.BorderStyle.None;
+        	this.tbSaveBlended.ForeColor = System.Drawing.Color.DimGray;
+        	this.tbSaveBlended.Location = new System.Drawing.Point(108, 202);
+        	this.tbSaveBlended.Multiline = true;
+        	this.tbSaveBlended.Name = "tbSaveBlended";
+        	this.tbSaveBlended.Size = new System.Drawing.Size(456, 41);
+        	this.tbSaveBlended.TabIndex = 26;
+        	this.tbSaveBlended.Text = "Drawings and tools will be visible everywhere but not modifiable.\r\nExtra comments" +
+        	" attached to key images will not be saved.";
+        	// 
+        	// tbSaveMuxed
+        	// 
+        	this.tbSaveMuxed.BorderStyle = System.Windows.Forms.BorderStyle.None;
+        	this.tbSaveMuxed.ForeColor = System.Drawing.Color.DimGray;
+        	this.tbSaveMuxed.Location = new System.Drawing.Point(108, 57);
+        	this.tbSaveMuxed.Multiline = true;
+        	this.tbSaveMuxed.Name = "tbSaveMuxed";
+        	this.tbSaveMuxed.Size = new System.Drawing.Size(456, 42);
+        	this.tbSaveMuxed.TabIndex = 25;
+        	this.tbSaveMuxed.Text = "When opened in Kinovea, the drawings and tools will still be editable.\r\nWhen open" +
+        	"ed in other players, the drawings and tools will not be visible.";
         	// 
         	// btnSaveBlended
         	// 
@@ -92,7 +130,7 @@ namespace Kinovea.ScreenManager
         	this.btnSaveBlended.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnSaveBlended.FlatAppearance.BorderSize = 0;
         	this.btnSaveBlended.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSaveBlended.Location = new System.Drawing.Point(21, 105);
+        	this.btnSaveBlended.Location = new System.Drawing.Point(21, 176);
         	this.btnSaveBlended.Name = "btnSaveBlended";
         	this.btnSaveBlended.Size = new System.Drawing.Size(48, 32);
         	this.btnSaveBlended.TabIndex = 24;
@@ -107,7 +145,7 @@ namespace Kinovea.ScreenManager
         	this.btnSaveMuxed.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnSaveMuxed.FlatAppearance.BorderSize = 0;
         	this.btnSaveMuxed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSaveMuxed.Location = new System.Drawing.Point(21, 65);
+        	this.btnSaveMuxed.Location = new System.Drawing.Point(21, 31);
         	this.btnSaveMuxed.Name = "btnSaveMuxed";
         	this.btnSaveMuxed.Size = new System.Drawing.Size(48, 32);
         	this.btnSaveMuxed.TabIndex = 23;
@@ -122,78 +160,55 @@ namespace Kinovea.ScreenManager
         	this.btnSaveAnalysis.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnSaveAnalysis.FlatAppearance.BorderSize = 0;
         	this.btnSaveAnalysis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSaveAnalysis.Location = new System.Drawing.Point(21, 145);
+        	this.btnSaveAnalysis.Location = new System.Drawing.Point(21, 105);
         	this.btnSaveAnalysis.Name = "btnSaveAnalysis";
         	this.btnSaveAnalysis.Size = new System.Drawing.Size(48, 32);
         	this.btnSaveAnalysis.TabIndex = 22;
         	this.btnSaveAnalysis.UseVisualStyleBackColor = false;
         	this.btnSaveAnalysis.Click += new System.EventHandler(this.BtnSaveAnalysisClick);
         	// 
-        	// btnSaveVideo
-        	// 
-        	this.btnSaveVideo.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnSaveVideo.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.savevideo;
-        	this.btnSaveVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-        	this.btnSaveVideo.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-        	this.btnSaveVideo.FlatAppearance.BorderSize = 0;
-        	this.btnSaveVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnSaveVideo.Location = new System.Drawing.Point(21, 25);
-        	this.btnSaveVideo.Name = "btnSaveVideo";
-        	this.btnSaveVideo.Size = new System.Drawing.Size(48, 32);
-        	this.btnSaveVideo.TabIndex = 21;
-        	this.btnSaveVideo.UseVisualStyleBackColor = false;
-        	this.btnSaveVideo.Click += new System.EventHandler(this.BtnSaveVideoClick);
-        	// 
         	// radioSaveBlended
         	// 
         	this.radioSaveBlended.AutoSize = true;
-        	this.radioSaveBlended.Location = new System.Drawing.Point(81, 113);
+        	this.radioSaveBlended.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.radioSaveBlended.Location = new System.Drawing.Point(81, 176);
         	this.radioSaveBlended.Name = "radioSaveBlended";
-        	this.radioSaveBlended.Size = new System.Drawing.Size(213, 17);
+        	this.radioSaveBlended.Size = new System.Drawing.Size(350, 20);
         	this.radioSaveBlended.TabIndex = 20;
-        	this.radioSaveBlended.Text = "dlgSaveAnalysisOrVideo_RadioBlended";
+        	this.radioSaveBlended.Text = "Save video with drawings and tools applied on images";
         	this.radioSaveBlended.UseVisualStyleBackColor = true;
         	this.radioSaveBlended.CheckedChanged += new System.EventHandler(this.radio_CheckedChanged);
         	// 
         	// radioSaveMuxed
         	// 
         	this.radioSaveMuxed.AutoSize = true;
-        	this.radioSaveMuxed.Location = new System.Drawing.Point(81, 73);
+        	this.radioSaveMuxed.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.radioSaveMuxed.Location = new System.Drawing.Point(81, 31);
         	this.radioSaveMuxed.Name = "radioSaveMuxed";
-        	this.radioSaveMuxed.Size = new System.Drawing.Size(206, 17);
+        	this.radioSaveMuxed.Size = new System.Drawing.Size(301, 20);
         	this.radioSaveMuxed.TabIndex = 15;
-        	this.radioSaveMuxed.Text = "dlgSaveAnalysisOrVideo_RadioMuxed";
+        	this.radioSaveMuxed.Text = "Save video with drawings and tools modifiable";
         	this.radioSaveMuxed.UseVisualStyleBackColor = true;
         	this.radioSaveMuxed.CheckedChanged += new System.EventHandler(this.radio_CheckedChanged);
         	// 
         	// radioSaveAnalysis
         	// 
         	this.radioSaveAnalysis.AutoSize = true;
-        	this.radioSaveAnalysis.Location = new System.Drawing.Point(78, 153);
+        	this.radioSaveAnalysis.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        	this.radioSaveAnalysis.Location = new System.Drawing.Point(81, 105);
         	this.radioSaveAnalysis.Name = "radioSaveAnalysis";
-        	this.radioSaveAnalysis.Size = new System.Drawing.Size(212, 17);
+        	this.radioSaveAnalysis.Size = new System.Drawing.Size(173, 20);
         	this.radioSaveAnalysis.TabIndex = 10;
-        	this.radioSaveAnalysis.Text = "dlgSaveAnalysisOrVideo_RadioAnalysis";
+        	this.radioSaveAnalysis.Text = "Save drawings and tools";
         	this.radioSaveAnalysis.UseVisualStyleBackColor = true;
         	this.radioSaveAnalysis.CheckedChanged += new System.EventHandler(this.radio_CheckedChanged);
-        	// 
-        	// radioSaveVideo
-        	// 
-        	this.radioSaveVideo.AutoSize = true;
-        	this.radioSaveVideo.Location = new System.Drawing.Point(81, 33);
-        	this.radioSaveVideo.Name = "radioSaveVideo";
-        	this.radioSaveVideo.Size = new System.Drawing.Size(201, 17);
-        	this.radioSaveVideo.TabIndex = 5;
-        	this.radioSaveVideo.Text = "dlgSaveAnalysisOrVideo_RadioVideo";
-        	this.radioSaveVideo.UseVisualStyleBackColor = true;
-        	this.radioSaveVideo.CheckedChanged += new System.EventHandler(this.radio_CheckedChanged);
         	// 
         	// groupOptions
         	// 
         	this.groupOptions.Controls.Add(this.checkSlowMotion);
-        	this.groupOptions.Location = new System.Drawing.Point(12, 223);
+        	this.groupOptions.Location = new System.Drawing.Point(12, 286);
         	this.groupOptions.Name = "groupOptions";
-        	this.groupOptions.Size = new System.Drawing.Size(495, 73);
+        	this.groupOptions.Size = new System.Drawing.Size(597, 73);
         	this.groupOptions.TabIndex = 26;
         	this.groupOptions.TabStop = false;
         	this.groupOptions.Text = "dlgSaveAnalysisOrVideo_GroupOptions";
@@ -201,7 +216,7 @@ namespace Kinovea.ScreenManager
         	// checkSlowMotion
         	// 
         	this.checkSlowMotion.AutoSize = true;
-        	this.checkSlowMotion.Location = new System.Drawing.Point(29, 37);
+        	this.checkSlowMotion.Location = new System.Drawing.Point(21, 35);
         	this.checkSlowMotion.Name = "checkSlowMotion";
         	this.checkSlowMotion.Size = new System.Drawing.Size(201, 17);
         	this.checkSlowMotion.TabIndex = 25;
@@ -215,7 +230,7 @@ namespace Kinovea.ScreenManager
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackColor = System.Drawing.Color.White;
         	this.CancelButton = this.btnCancel;
-        	this.ClientSize = new System.Drawing.Size(522, 346);
+        	this.ClientSize = new System.Drawing.Size(621, 403);
         	this.Controls.Add(this.groupOptions);
         	this.Controls.Add(this.groupSaveMethod);
         	this.Controls.Add(this.btnOK);
@@ -234,9 +249,11 @@ namespace Kinovea.ScreenManager
         	this.groupOptions.PerformLayout();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.TextBox tbSaveMuxed;
+        private System.Windows.Forms.TextBox tbSaveBlended;
+        private System.Windows.Forms.TextBox tbSaveAnalysis;
         private System.Windows.Forms.RadioButton radioSaveBlended;
         private System.Windows.Forms.Button btnSaveBlended;
-        private System.Windows.Forms.Button btnSaveVideo;
         private System.Windows.Forms.Button btnSaveAnalysis;
         private System.Windows.Forms.Button btnSaveMuxed;
 
@@ -247,7 +264,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.GroupBox groupSaveMethod;
         private System.Windows.Forms.RadioButton radioSaveMuxed;
         private System.Windows.Forms.RadioButton radioSaveAnalysis;
-        private System.Windows.Forms.RadioButton radioSaveVideo;
         private System.Windows.Forms.GroupBox groupOptions;
         private System.Windows.Forms.CheckBox checkSlowMotion;
     }

@@ -170,8 +170,11 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>选项</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>保存方法</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>只保存关键图像数据.</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>合并文件中的视频与关键图像数据.</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>永久性地保留视频上的关键图像数据.</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>只保存视频.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>保存视频或关键图像数据...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>保存关键图像数据</value></data>
