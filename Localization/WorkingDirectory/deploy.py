@@ -85,7 +85,7 @@ for file in glob.glob("*.resx"):
 
 
 # 0. Extract content.xml from the OpenOffice document.
-z = zipfile.ZipFile("Kinovea-l14n-rev0014.ods", "r")
+z = zipfile.ZipFile("Kinovea-l14n-rev0015.ods", "r")
 z.extract("content.xml")
 
 

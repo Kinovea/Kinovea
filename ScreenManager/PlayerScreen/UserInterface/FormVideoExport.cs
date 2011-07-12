@@ -18,18 +18,20 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// A class to help the user on what to save and how.
+	/// A dialog to help the user on what to save and how.
 	/// </summary>
     public partial class formVideoExport : Form
     {
@@ -91,10 +93,12 @@ namespace Kinovea.ScreenManager
         {
             this.Text = "   " + ScreenManagerLang.dlgSaveAnalysisOrVideo_Title;
             groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;            
-            radioSaveVideo.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioVideo;
             radioSaveMuxed.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioMuxed;
+            tbSaveMuxed.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintMuxed.Split('#');
             radioSaveBlended.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBlended;
-			radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
+			tbSaveBlended.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintBlended.Split('#');
+            radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
+            tbSaveAnalysis.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintAnalysis.Split('#');
             
             groupOptions.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupOptions;
             checkSlowMotion.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_CheckSlow;
@@ -106,14 +110,7 @@ namespace Kinovea.ScreenManager
             EnableDisableOptions();
 
             // default option
-            if(m_Metadata.HasData)
-            {
-            	radioSaveMuxed.Checked = true;
-            }
-            else
-            {
-            	radioSaveVideo.Checked = true;
-            }
+            radioSaveMuxed.Checked = true;
         }
 		#endregion
         
@@ -122,10 +119,8 @@ namespace Kinovea.ScreenManager
 		{
 			// We use this method instead of directly calling ShowDialog()
 			// in order to catch for the special case where the user has no choice.
-			
 			if(!m_Metadata.HasData && m_fSlowmotionPercentage == 100)
 			{
-				// User has no other choice than saving the video only.
 				// Directly ask for a filename.
 				return DoSaveVideo();
 			}
@@ -165,11 +160,6 @@ namespace Kinovea.ScreenManager
                 Show();	
             }
         }
-        private void BtnSaveVideoClick(object sender, EventArgs e)
-        {
-        	UncheckAllOptions();
-        	radioSaveVideo.Checked = true;
-        }
         private void BtnSaveAnalysisClick(object sender, EventArgs e)
         {
         	UncheckAllOptions();
@@ -194,40 +184,13 @@ namespace Kinovea.ScreenManager
         #region lower levels helpers
         private void EnableDisableOptions()
         {
-            if (!m_Metadata.HasData)
-            {
-                // Can only save the video alone.
-
-                radioSaveVideo.Enabled = true;
-                radioSaveMuxed.Enabled = false;
-                radioSaveBlended.Enabled = false;
-                radioSaveAnalysis.Enabled = false;
-                checkSlowMotion.Enabled = (m_fSlowmotionPercentage != 100);
-            }
-            else
-            {
-                // Can save video and/or data
-
-                radioSaveVideo.Enabled = true;
-                radioSaveMuxed.Enabled = true;
-                radioSaveBlended.Enabled = true;
-				radioSaveAnalysis.Enabled = true;
-                
-                if (radioSaveAnalysis.Checked)
-                {
-                    // Only save analysis, slowmotion disabled.
-                    checkSlowMotion.Enabled = false;
-                }
-                else
-                {
-                    // Save video and or analysis, slowmotion enabled
-                    checkSlowMotion.Enabled = (m_fSlowmotionPercentage != 100);
-                }
-            }
+            radioSaveMuxed.Enabled = true;
+            radioSaveBlended.Enabled = true;
+			radioSaveAnalysis.Enabled = true;            
+			checkSlowMotion.Enabled = radioSaveAnalysis.Checked ? false : (m_fSlowmotionPercentage != 100);
         }
         private void UncheckAllOptions()
         {
-        	radioSaveVideo.Checked = false;
             radioSaveAnalysis.Checked = false;
             radioSaveMuxed.Checked = false;
             radioSaveBlended.Checked = false;	

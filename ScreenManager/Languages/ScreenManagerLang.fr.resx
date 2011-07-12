@@ -169,11 +169,14 @@
    <data name="dlgSaveAnalysisOrVideo_CheckSlow" xml:space="preserve"><value>Tenir compte du ralentit pour l'enregistrement. (Actuel = </value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Options</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Méthode d'Enregistrement</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Enregistrer uniquement les données des images clés.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Combiner la vidéo et les données des images clés dans le fichier.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Incruster définitivement les données des images clés sur la vidéo.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Enregistrer uniquement l'analyse</value></data>
+   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Seuls seront sauvés les dessins et autres objets d'analyse, dans un fichier à part.#Le fichier pourra être réimporté sur une vidéo.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Enregistrer la vidéo avec l'analyse modifiable</value></data>
+   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>Dans Kinovea, les dessins et autres objets d'analyse seront modifiables.#Dans les autres logiciels, les dessins ne seront pas visibles.</value></data>
+   <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Enregistrer la vidéo avec l'analyse incrustée définitivement</value></data>
+   <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Les objets d'analyse seront visible dans tous les lecteurs, mais non modifiables.#Les commentaires supplémentaires attachés aux images clés ne seront pas enregistrés.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Enregistrer uniquement la vidéo.</value></data>
-   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Enregistrer la Vidéo ou les Données des Images Clés...</value></data>
+   <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Enregistrement de la Vidéo...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Enregistrer les Données des Images Clés</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>Images JPEG (*.jpg,*.jpeg)|*.jpg;*.jpeg|Images PNG (*.png)|*.png|Images Bitmap (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Enregistrer la Séquence d'Images</value></data>
