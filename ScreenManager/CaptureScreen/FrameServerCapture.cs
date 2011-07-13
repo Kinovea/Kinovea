@@ -20,11 +20,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.Threading;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
@@ -47,11 +49,9 @@ namespace Kinovea.ScreenManager
 				if(m_FrameGrabber.IsConnected)
 				{
 					string bufferFill = String.Format(ScreenManagerLang.statusBufferFill, m_FrameBuffer.FillPercentage);
-					string estimatedInterval = String.Format("{0:0.00} fps", m_fEstimatedInterval > 0 ? 1000 / m_fEstimatedInterval : 0);
-					string status = String.Format("{0} - {1} ({2}, {3})",
+					string status = String.Format("{0} - {1} ({2})",
 					                              m_FrameGrabber.DeviceName, 
 					                              m_FrameGrabber.SelectedCapability.ToString(), 
-					                              estimatedInterval,
 					                              bufferFill);
 					return status;		
 				}
@@ -126,38 +126,44 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private IFrameServerCaptureContainer m_Container;	// CaptureScreenUserInterface seen through a limited interface.
 		
+		// Threading
+		private Control m_DummyControl = new Control();
+		private readonly object m_Locker = new object();
+		
 		// Grabbing frames
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_ImageToDisplay;
-		private Bitmap m_PreviousImageDisplayed;
+		//private Bitmap m_PreviousImageDisplayed;
 		private Size m_ImageSize = new Size(720, 576);		
 		private VideoFiles.AspectRatio m_AspectRatio = VideoFiles.AspectRatio.AutoDetect;
-		private int m_iFrameIndex;
-		private int m_iFramesGrabbed;
-		private int m_iFrameDropped;
-		private double m_fEstimatedInterval;
+		private int m_iFrameIndex;		// The "age" we pull from, in the circular buffer.
+		private int m_iCurrentBufferFill;
 		
 		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
-		private bool m_bWritingToDisk;								// true during frame write.
 		private Metadata m_Metadata;
 		private Magnifier m_Magnifier = new Magnifier();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		
 		// Saving to disk
 		private bool m_bIsRecording;
-		private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
+		private VideoRecorder m_VideoRecorder;
 		
 		// Captured video thumbnails.
 		private string m_CurrentCaptureFilePath;
 		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
-		private bool m_bCaptureThumbSet;
-		private Bitmap m_CurrentCaptureBitmap;
+		
 		
 		// General
+		private Stopwatch m_Stopwatch = new Stopwatch();
 		private bool m_bShared;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		#endregion
+		
+		#region Delegates
+		public delegate void FrameGrabbedDelegate();
+		public FrameGrabbedDelegate m_FrameGrabbedDelegate;
 		#endregion
 		
 		#region Constructor
@@ -165,6 +171,9 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameGrabber = new FrameGrabberAForge(this, m_FrameBuffer);
 			m_AspectRatio = (VideoFiles.AspectRatio)((int)PreferencesManager.Instance().AspectRatio);
+			
+			IntPtr forceHandleCreation = m_DummyControl.Handle; // Needed to show that the main thread "owns" this Control.
+			m_FrameGrabbedDelegate = new FrameGrabbedDelegate(FrameGrabbed_Invoked);
 		}
 		#endregion
 		
@@ -176,59 +185,10 @@ namespace Kinovea.ScreenManager
 		}
 		public void FrameGrabbed()
 		{
-			//----------------------------------------------
-			// NOTE : This method is in the GRABBING thread,
-			// NO UI calls can be made directly from here.
-			// must use BeginInvoke at some point.
-			//----------------------------------------------
-			
-			// The frame grabber has just pushed a new frame to the buffer.
-			m_iFramesGrabbed++;
-			
-			// Consolidate this real-time frame locally.
-			m_ImageToDisplay = m_FrameBuffer.ReadAt(m_iFrameIndex);
-			
-			// We also use this event to commit frame to disk during saving.
-			// However, it is what is drawn on screen that will be pushed to the file,
-			// not the frame the device just grabbed.
-			if(m_bIsRecording)
-			{
-				// Is it necessary to make another copy of the frame ?
-				m_bWritingToDisk = true;
-				Bitmap bmp = GetFlushedImage();
-				SaveResult res = m_VideoFileWriter.SaveFrame(bmp);
-				m_bWritingToDisk = false;
-				
-				if(res != SaveResult.Success)
-				{
-					log.Error("Error while saving frame to file.");
-					DisplayError(res);
-					bmp.Dispose();
-					m_bIsRecording = false;
-					m_VideoFileWriter.CloseSavingContext(true);
-				}
-				else
-				{
-					if(!m_bCaptureThumbSet)
-					{
-						m_CurrentCaptureBitmap = bmp;
-						m_bCaptureThumbSet = true;
-					}
-					else
-					{
-						bmp.Dispose();
-					}
-				}
-			}
-			
-			// Ask a refresh. This could also be done with a timer,
-			// but using the frame grabber event is convenient.
-			// We do this AFTER writing the frame to disk, to avoid flickering.
-			if(!m_bPainting)
-			{
-				m_bPainting = true;
-				m_Container.DoInvalidate();
-			}
+			// We are still in the grabbing thread. 
+			// We must return as fast as possible to avoid slowing down the grabbing.
+			// We use a Control object to merge back into the main thread, we'll do the work there.
+			m_DummyControl.BeginInvoke(m_FrameGrabbedDelegate);
 		}
 		public void SetImageSize(Size _size)
 		{
@@ -263,45 +223,16 @@ namespace Kinovea.ScreenManager
 		}
 		public void HeartBeat()
 		{
-			// This function is called regularly.
-			// We use it for various checks and updates to stay up to date.
-			//log.Debug(String.Format("Periodic check. grabbed:{0}, dropped:{1}", m_iFramesGrabbed, m_iFrameDropped));
-			m_FrameGrabber.CheckDeviceConnection();
+			// Heartbeat called regularly by the UI to ensure the grabber is still alive.
 			
-			if(m_FrameGrabber.IsGrabbing)
-			{
-				// Estimate frame rate.
-				if(m_iFramesGrabbed > 0)
-				{
-					double fEstimatedInterval = (double)CaptureScreen.HeartBeat / (double)m_iFramesGrabbed;
-					if(m_fEstimatedInterval == 0 && m_FrameGrabber.SelectedCapability.Framerate == 0)
-					{
-						// We didn't have a framerate until now and device doesn't advertise any. 
-						// This happens for network camera for example, we use the estimated one to init buffer.
-						
-					}
-					m_fEstimatedInterval = fEstimatedInterval;
-					
-				}
-				else
-				{
-					m_fEstimatedInterval = 0;
-				}
-				
-				m_iFramesGrabbed = 0;
-				m_iFrameDropped = 0;
-				
-				// update status screen (for buffer fill percentage.)
-				m_Container.DoUpdateStatusBar();
-			}
+			// This runs on the UI thread and is not accurate.
+			// Do not use it for measures needing accuracy, like framerate estimation.
+			
+			m_FrameGrabber.CheckDeviceConnection();
 		}
 		public void StartGrabbing()
 		{
 			m_FrameGrabber.StartGrabbing();
-			if(m_FrameGrabber.SelectedCapability.Framerate != 0)
-			{
-				m_fEstimatedInterval = 1000 / m_FrameGrabber.SelectedCapability.Framerate;
-			}
 			m_Container.DisplayAsGrabbing(true);
 		}
 		public void PauseGrabbing()
@@ -325,22 +256,10 @@ namespace Kinovea.ScreenManager
 			{
 				if(m_ImageToDisplay != null)
 				{
-					Bitmap imageToDraw = m_ImageToDisplay;
-					
-					if(m_bWritingToDisk && m_PreviousImageDisplayed != null)
-					{
-						// Dropping frame due to writing to disk.
-						m_iFrameDropped++;
-						
-						// At this point we can't use the current frame, 
-						// so we fall back to the previous one to avoid flickering.
-						imageToDraw = m_PreviousImageDisplayed;
-					}
-
 					try
 					{
 						Size outputSize = new Size((int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
-						FlushOnGraphics(imageToDraw, _canvas, outputSize);
+						FlushOnGraphics(m_ImageToDisplay, _canvas, outputSize);
 					}
 					catch (Exception exp)
 					{
@@ -348,8 +267,6 @@ namespace Kinovea.ScreenManager
 						log.Error(exp.Message);
 						log.Error(exp.StackTrace);
 					}
-						
-					m_PreviousImageDisplayed = imageToDraw;
 				}
 			}
 			
@@ -379,11 +296,8 @@ namespace Kinovea.ScreenManager
 			
 			return output;
 		}
-		public bool StartRecording(string filepath)
+		public bool StartRecording(string _filepath)
 		{
-			// Start recording.
-			// We always record what is displayed on screen, not what is grabbed by the device.
-			
 			bool bRecordingStarted = false;
 			log.Debug("Start recording images to file.");
 			
@@ -393,46 +307,19 @@ namespace Kinovea.ScreenManager
 				m_FrameGrabber.StartGrabbing();
 			}
 			
-			// Open a recording context.
-			InfosVideo iv = new InfosVideo();			
-			// The FileWriter will currently only use the original size due to some problems.
-			// Most notably, DV video passed into 16:9 (720x405) crashes swscale().
-			iv.iWidth = m_FrameGrabber.FrameSize.Width;
-			iv.iHeight = m_FrameGrabber.FrameSize.Height;
-			
-			double interval = 40;		
-			if(m_fEstimatedInterval > 0)
-			{
-				interval = m_fEstimatedInterval;
-			}
-			else if(m_FrameGrabber.FramesInterval > 0)
-			{
-				// Hack. For interlaced video, we get the fields interval, which is half the frame interval.
-				interval = m_FrameGrabber.FramesInterval * 2;
-			}
-			
-			SaveResult result = m_VideoFileWriter.OpenSavingContext(filepath, iv, interval, false);
+			// Prepare the recorder
+			m_VideoRecorder = new VideoRecorder();
+			double interval = (m_FrameGrabber.FramesInterval > 0) ? m_FrameGrabber.FramesInterval : 40;
+			SaveResult result = m_VideoRecorder.Initialize(_filepath, interval, m_FrameGrabber.FrameSize);
 			
 			if(result == SaveResult.Success)
 			{
 				// The frames will be pushed to the file upon receiving the FrameGrabbed event.
-				m_bCaptureThumbSet = false;
 				m_bIsRecording = true;
 				bRecordingStarted = true;
 			}
 			else
 			{
-				try
-				{
-					m_VideoFileWriter.CloseSavingContext(false);	
-				}
-				catch (Exception exp)
-				{
-					// Saving context couldn't be opened properly. Depending on failure we might also fail at trying to close it again.
-					log.Error(exp.Message);
-					log.Error(exp.StackTrace);	
-				}
-
 				m_bIsRecording = false;
 				DisplayError(result);
 			}
@@ -441,25 +328,25 @@ namespace Kinovea.ScreenManager
 		}
 		public void StopRecording()
 		{
-			// Stop recording
 			m_bIsRecording = false;
-			m_bWritingToDisk = false;
 			log.Debug("Stop recording images to file.");
 			
-			// Close the recording context.
-			m_VideoFileWriter.CloseSavingContext(true);
-						
-			//----------------------------------------------------------------------------
-			// Add a VideofileBox (in the Keyframes panel) with a thumbnail of this video.
-			// As for KeyframeBox, you'd be able to edit the filename.
-			// double click = open it in a Playback screen.
-			// time label would be the duration.
-			// using the close button do not delete the file, it just hides it.
-			//----------------------------------------------------------------------------
-			CapturedVideo cv = new CapturedVideo(m_CurrentCaptureFilePath, m_CurrentCaptureBitmap);
-			m_RecentlyCapturedVideos.Add(cv);
-			if(m_CurrentCaptureBitmap != null) m_CurrentCaptureBitmap.Dispose();
-			m_Container.DoUpdateCapturedVideos();
+			if(m_VideoRecorder != null)
+			{
+				// Add a VideofileBox with a thumbnail of this video.
+				if(m_VideoRecorder.CaptureThumb != null)
+				{
+					CapturedVideo cv = new CapturedVideo(m_CurrentCaptureFilePath, m_VideoRecorder.CaptureThumb);
+					m_RecentlyCapturedVideos.Add(cv);
+					m_VideoRecorder.CaptureThumb.Dispose();
+					m_Container.DoUpdateCapturedVideos();
+				}
+			
+				// Terminate the recording thread and release resources. This will treat any outstanding frames in the queue.
+				m_VideoRecorder.Dispose();
+			}
+
+			Thread.CurrentThread.Priority = ThreadPriority.Normal;
 			
 			// Ask the Explorer tree to refresh itself, (but not the thumbnails pane.)
             DelegatesPool dp = DelegatesPool.Instance();
@@ -476,26 +363,23 @@ namespace Kinovea.ScreenManager
 			// and there is a latency inherent to the camcorder that we can't know.
 			m_iFrameIndex = (int)(((double)m_FrameBuffer.Capacity / 100.0) * percentage);
 			
-			// Compute the corresponding time.
-			int delay;
-			if(m_fEstimatedInterval > 0)
-			{
-				delay = (int)(((double)m_iFrameIndex * m_fEstimatedInterval) / 1000);
-			}
-			else
-			{
-				double interval = (m_FrameGrabber.FramesInterval > 0)?(double)m_FrameGrabber.FramesInterval:40.0;
-				delay = (int)(((double)m_iFrameIndex * interval) / 1000);
-			}
+			double interval = (m_FrameGrabber.FramesInterval > 0)?(double)m_FrameGrabber.FramesInterval:40.0;
+			int delay = (int)(((double)m_iFrameIndex * interval) / 1000);
 			
 			// Re-adjust frame for the special case of no delay at all.
 			// (it's not always easy to drag all the way left to the real 0 spot).
 			if(delay < 1)
 				m_iFrameIndex = 0;
 			
+			// Explicitely call the refresh if we are not currently grabbing.
 			if(!m_FrameGrabber.IsGrabbing)
 			{
-				FrameGrabbed();
+				m_ImageToDisplay = m_FrameBuffer.ReadAt(m_iFrameIndex);
+				if(!m_bPainting)
+				{
+					m_bPainting = true;
+					m_Container.DoInvalidate();
+				}
 			}
 			
 			return delay;
@@ -617,6 +501,7 @@ namespace Kinovea.ScreenManager
         }
 		#endregion
 	
+		#region Private Methods
 		private void SetAspectRatio(VideoFiles.AspectRatio _aspectRatio, Size _size)
 		{
 			m_AspectRatio = _aspectRatio;
@@ -645,5 +530,45 @@ namespace Kinovea.ScreenManager
 				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
 			}
 		}
+		private void FrameGrabbed_Invoked()
+		{
+            // We are back in the Main thread.
+
+			// Get the raw frame we will be displaying/saving.
+			m_ImageToDisplay = m_FrameBuffer.ReadAt(m_iFrameIndex);
+		
+			if(m_bIsRecording && m_VideoRecorder != null && m_VideoRecorder.Initialized)
+			{
+				// The recorder runs in its own thread.
+				// We need to make a full copy of the frame because m_ImageToDisplay may change before we actually save it.
+				// TODO: drop mechanism in case the frame queue grows too big.
+				if(!m_VideoRecorder.Cancelling)
+				{
+					Bitmap bmp = GetFlushedImage();
+					m_VideoRecorder.EnqueueFrame(bmp);
+				}
+				else
+				{
+					StopRecording();
+					m_Container.DisplayAsRecording(false);
+					DisplayError(m_VideoRecorder.CancelReason);
+				}
+			}
+			
+			// Ask a refresh.
+			if(!m_bPainting)
+			{
+				m_bPainting = true;
+				m_Container.DoInvalidate();
+			}
+			
+			// Update status bar if needed.
+			if(m_iCurrentBufferFill != m_FrameBuffer.FillPercentage)
+			{
+				m_iCurrentBufferFill = m_FrameBuffer.FillPercentage;
+				m_Container.DoUpdateStatusBar();
+			}
+		}
+		#endregion
 	}
 }

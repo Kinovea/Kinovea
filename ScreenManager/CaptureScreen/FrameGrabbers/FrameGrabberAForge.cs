@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 using AForge.Video;
@@ -553,6 +554,8 @@ namespace Kinovea.ScreenManager
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
 			if(!m_bSizeKnown || m_bSizeChanged)
 			{
+				Thread.CurrentThread.Name = "Grab";
+				
 				m_bSizeKnown = true;
 				m_bSizeChanged = false;
 				

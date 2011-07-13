@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
 	{	
 		#region Internal delegates for async methods
 		private delegate void InitDecodingSize();
-        private Kinovea.ScreenManager.CaptureScreenUserInterface.InitDecodingSize m_InitDecodingSize;
+        private InitDecodingSize m_InitDecodingSize;
 		#endregion
 		
 		#region Properties
@@ -188,6 +188,21 @@ namespace Kinovea.ScreenManager
 			{
 				btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturegrab5;	
 			}
+		}
+		public void DisplayAsRecording(bool _bIsRecording)
+		{
+			if(_bIsRecording)
+        	{
+        		btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
+        		toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
+        		ToastStartRecord();
+        	}
+        	else
+        	{
+				btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;        		
+				toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
+				ToastStopRecord();
+        	}
 		}
 		public void AlertDisconnected()
 		{
@@ -680,21 +695,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 		}
-		private void DisplayAsRecording(bool _bIsRecording)
-		{
-			if(_bIsRecording)
-        	{
-        		btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_recstop;
-        		toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
-        		ToastStartRecord();
-        	}
-        	else
-        	{
-				btnRecord.Image = Kinovea.ScreenManager.Properties.Resources.control_rec;        		
-				toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
-				ToastStopRecord();
-        	}
-		}
+		
 		private void sldrDelay_ValueChanged(object sender, EventArgs e)
 		{
 			// sldrDelay value always goes [0..100].

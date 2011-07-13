@@ -29,7 +29,10 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// FrameBuffer - a buffer that holds the recent history of grabbed frames.
+	/// This is an In-Memory Buffer
 	/// Handles buffer rotation.
+	/// Frames are inserted at the tail.
+	/// Head represents the first frame not read yet.
 	/// </summary>
 	public class FrameBuffer
 	{

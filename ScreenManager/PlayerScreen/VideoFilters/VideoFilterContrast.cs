@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
 		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			double fValue = 1.6;
+			float fValue = 1.6F;
 			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
 			
 			ContrastCorrection filter = new ContrastCorrection(fValue);	
