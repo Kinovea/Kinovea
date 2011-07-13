@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 using Kinovea.Services;
@@ -101,6 +102,7 @@ namespace Kinovea.ScreenManager
             //-------------------------------------------------------------
             // /!\ This is WORKER THREAD space. Do not update UI.
             //-------------------------------------------------------------
+            Thread.CurrentThread.Name = String.Format("Thumbnail Loader ({0})", Thread.CurrentThread.ManagedThreadId);
             List<String> fileNames = (List<String>)e.Argument;
             m_InfosThumbnailQueue.Clear();
             m_iLastFilled = -1;
