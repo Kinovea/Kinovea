@@ -1371,16 +1371,16 @@ namespace Kinovea.ScreenManager
 			}
 
 			// timestamp to milliseconds. (Needed for most formats)
-			double iSeconds;
+			double fSeconds;
 
 			if (m_FrameServer.VideoFile.Loaded)
-				iSeconds = (double)iTimeStamp / m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds;
+				fSeconds = (double)iTimeStamp / m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds;
 			else
-				iSeconds = 0;
+				fSeconds = 0;
 
 			// m_fSlowFactor is different from 1.0f only when user specify that the capture fps
 			// was different than the playing fps. We readjust time.
-			double iMilliseconds = (iSeconds * 1000) / m_fHighSpeedFactor;
+			double fMilliseconds = (fSeconds * 1000) / m_fHighSpeedFactor;
 			
 			// If there are more than 100 frames per seconds, we display milliseconds.
 			// This can happen when the user manually tune the input fps.
@@ -1390,7 +1390,7 @@ namespace Kinovea.ScreenManager
 			switch (tcf)
 			{
 				case TimeCodeFormat.ClassicTime:
-					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth, true);
+					outputTimeCode = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					break;
 				case TimeCodeFormat.Frames:
 					if (m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
@@ -1403,20 +1403,20 @@ namespace Kinovea.ScreenManager
 					}
 					break;
 				case TimeCodeFormat.Milliseconds:
-					outputTimeCode = String.Format("{0}", (int)iMilliseconds);
+					outputTimeCode = String.Format("{0}", (int)Math.Round(fMilliseconds));
 					break;
 				case TimeCodeFormat.TenThousandthOfHours:
 					// 1 Ten Thousandth of Hour = 360 ms.
-					double fTth = ((double)iMilliseconds / 360.0);
+					double fTth = fMilliseconds / 360.0;
 					outputTimeCode = String.Format("{0}:{1:00}", (int)fTth, Math.Floor((fTth - (int)fTth)*100));
 					break;
 				case TimeCodeFormat.HundredthOfMinutes:
 					// 1 Hundredth of minute = 600 ms.
-					double fCtm = ((double)iMilliseconds / 600.0);
+					double fCtm = fMilliseconds / 600.0;
 					outputTimeCode = String.Format("{0}:{1:00}", (int)fCtm, Math.Floor((fCtm - (int)fCtm) * 100));
 					break;
 				case TimeCodeFormat.TimeAndFrames:
-					String timeString = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth, true);
+					String timeString = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					String frameString;
 					if (m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
 					{
@@ -1432,7 +1432,7 @@ namespace Kinovea.ScreenManager
 					outputTimeCode = String.Format("{0}", (int)iTimeStamp);
 					break;
 				default :
-					outputTimeCode = TimeHelper.MillisecondsToTimecode((long)iMilliseconds, bShowThousandth, true);
+					outputTimeCode = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					break;
 			}
 

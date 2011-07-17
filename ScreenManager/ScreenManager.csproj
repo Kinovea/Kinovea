@@ -63,12 +63,10 @@
     <FileAlignment>1024</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge, Version=1.5.0.0, Culture=neutral, PublicKeyToken=75f8e82c5042a70f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="AForge">
       <HintPath>..\Refs\AForge.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Imaging, Version=1.6.2.0, Culture=neutral, PublicKeyToken=38eb47741dd0492e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="AForge.Imaging">
       <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Math">
@@ -145,6 +143,7 @@
     <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.Designer.cs">
       <DependentUpon>FormDevicePicker.cs</DependentUpon>
     </Compile>
+    <Compile Include="CaptureScreen\VideoRecorder.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteDrawing.cs" />

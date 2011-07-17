@@ -27,12 +27,17 @@ namespace Kinovea.ScreenManager
 	/// This is basically the list of methods of the CaptureScreenUserInterface that are relevant for
 	/// the frameServerCapture.
 	/// frameServerCapture does not need to (and shouldn't) see anything else from its container.
+	/// 
+	/// The drawback is that we can't use Control.BeginInvoke on IFrameServerCaptureContainer.
+	/// Calls that must be asynchronous and run on the UI thread must be tunelled synchronously to the container
+	/// which will then initiate the asynchronous call.
 	/// </summary>
 	public interface IFrameServerCaptureContainer
 	{
 		void DoInvalidate();
 		void DoInitDecodingSize();
 		void DisplayAsGrabbing(bool _bIsGrabbing);
+		void DisplayAsRecording(bool _bIsRecording);
 		void AlertDisconnected();
 		void DoUpdateCapturedVideos();
 		void DoUpdateStatusBar();

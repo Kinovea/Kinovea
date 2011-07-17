@@ -56,6 +56,8 @@ namespace Kinovea.Root
             {
             	SanityCheckDirectories();
             	
+            	Thread.CurrentThread.Name = "Main";
+            	
                 log.Debug("Kinovea starting.");
                 log.Debug("Application level initialisations.");
                 Application.EnableVisualStyles();
@@ -68,7 +70,7 @@ namespace Kinovea.Root
                 
                 RootKernel kernel = new RootKernel();
                 kernel.Prepare();
-
+                
                 log.Debug("Close splash screen.");
                 splashForm.Close();
 

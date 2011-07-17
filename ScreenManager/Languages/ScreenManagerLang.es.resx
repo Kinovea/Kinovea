@@ -170,8 +170,11 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opciones</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Método para guardar</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Guardar sólo los datos de las imàgenes clave.</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave en un solo archivo.</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Incrustar permanentemente los datos de las imágenes clave sobre el vídeo</value></data>
+   
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Guardar solo el video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Guardar el video y los datos de las imàgenes clave…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Guardar los datos de las imàgenes clave .</value></data>
