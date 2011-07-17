@@ -1,3 +1,4 @@
+#region Licence
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -17,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
+#endregion
 
 using System;
 using System.Drawing;

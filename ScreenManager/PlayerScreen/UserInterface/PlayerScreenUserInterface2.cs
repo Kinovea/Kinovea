@@ -1210,7 +1210,7 @@ namespace Kinovea.ScreenManager
 			
 			// 1. Default context menu.
 			mnuDirectTrack.Click += new EventHandler(mnuDirectTrack_Click);
-			mnuDirectTrack.Image = Properties.Resources.tracking;
+			mnuDirectTrack.Image = Properties.Drawings.track;
 			mnuPlayPause.Click += new EventHandler(buttonPlay_Click);
 			mnuSetCaptureSpeed.Click += new EventHandler(mnuSetCaptureSpeed_Click);
 			mnuSetCaptureSpeed.Image = Properties.Resources.camera_speed;
@@ -1224,47 +1224,47 @@ namespace Kinovea.ScreenManager
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
-			mnuConfigureDrawing.Image = Properties.Resources.wrench;
+			mnuConfigureDrawing.Image = Properties.Drawings.configure;
 			mnuConfigureFading.Click += new EventHandler(mnuConfigureFading_Click);
-			mnuConfigureFading.Image = Properties.Resources.persistence;
+			mnuConfigureFading.Image = Properties.Drawings.persistence;
 			mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
-			mnuConfigureOpacity.Image = Properties.Resources.persistence;
+			mnuConfigureOpacity.Image = Properties.Drawings.persistence;
 			mnuTrackTrajectory.Click += new EventHandler(mnuTrackTrajectory_Click);
-			mnuTrackTrajectory.Image = Properties.Resources.tracking;
+			mnuTrackTrajectory.Image = Properties.Drawings.track;
 			mnuGotoKeyframe.Click += new EventHandler(mnuGotoKeyframe_Click);
 			mnuGotoKeyframe.Image = Properties.Resources.page_white_go;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
-			mnuDeleteDrawing.Image = Properties.Resources.delete;
+			mnuDeleteDrawing.Image = Properties.Drawings.delete;
 			
 			// 3. Tracking pop menu (Restart, Stop tracking)
 			mnuStopTracking.Click += new EventHandler(mnuStopTracking_Click);
 			mnuStopTracking.Visible = false;
-			mnuStopTracking.Image = Properties.Resources.track_stop2;
+			mnuStopTracking.Image = Properties.Drawings.trackstop;
 			mnuRestartTracking.Click += new EventHandler(mnuRestartTracking_Click);
 			mnuRestartTracking.Visible = false;
-			mnuRestartTracking.Image = Properties.Resources.tracking_play;
+			mnuRestartTracking.Image = Properties.Drawings.trackingplay;
 			mnuDeleteTrajectory.Click += new EventHandler(mnuDeleteTrajectory_Click);
-			mnuDeleteTrajectory.Image = Properties.Resources.delete;
+			mnuDeleteTrajectory.Image = Properties.Drawings.delete;
 			mnuDeleteEndOfTrajectory.Click += new EventHandler(mnuDeleteEndOfTrajectory_Click);
 			//mnuDeleteEndOfTrajectory.Image = Properties.Resources.track_trim2;
 			mnuConfigureTrajectory.Click += new EventHandler(mnuConfigureTrajectory_Click);
-			mnuConfigureTrajectory.Image = Properties.Resources.wrench;
+			mnuConfigureTrajectory.Image = Properties.Drawings.configure;
 			popMenuTrack.Items.AddRange(new ToolStripItem[] { mnuConfigureTrajectory, new ToolStripSeparator(), mnuStopTracking, mnuRestartTracking, new ToolStripSeparator(), mnuDeleteEndOfTrajectory, mnuDeleteTrajectory });
 
 			// 4. Chrono pop menu (Start, Stop, Hide, etc.)
 			mnuChronoConfigure.Click += new EventHandler(mnuChronoConfigure_Click);
-			mnuChronoConfigure.Image = Properties.Resources.wrench;
+			mnuChronoConfigure.Image = Properties.Drawings.configure;
 			mnuChronoStart.Click += new EventHandler(mnuChronoStart_Click);
-			mnuChronoStart.Image = Properties.Resources.chrono_start2;
+			mnuChronoStart.Image = Properties.Drawings.chronostart;
 			mnuChronoStop.Click += new EventHandler(mnuChronoStop_Click);
-			mnuChronoStop.Image = Properties.Resources.chrono_stop;
+			mnuChronoStop.Image = Properties.Drawings.chronostop;
 			mnuChronoCountdown.Click += new EventHandler(mnuChronoCountdown_Click);
 			mnuChronoCountdown.Checked = false;
 			mnuChronoCountdown.Enabled = false;
 			mnuChronoHide.Click += new EventHandler(mnuChronoHide_Click);
-			mnuChronoHide.Image = Properties.Resources.hide2;
+			mnuChronoHide.Image = Properties.Drawings.hide;
 			mnuChronoDelete.Click += new EventHandler(mnuChronoDelete_Click);
-			mnuChronoDelete.Image = Properties.Resources.delete;
+			mnuChronoDelete.Image = Properties.Drawings.delete;
 			popMenuChrono.Items.AddRange(new ToolStripItem[] { mnuChronoConfigure, new ToolStripSeparator(), mnuChronoStart, mnuChronoStop, mnuChronoCountdown, new ToolStripSeparator(), mnuChronoHide, mnuChronoDelete, });
 
 			// 5. Magnifier
@@ -1277,14 +1277,14 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierDirect.Click += new EventHandler(mnuMagnifierDirect_Click);
 			mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
 			mnuMagnifierQuit.Click += new EventHandler(mnuMagnifierQuit_Click);
-			mnuMagnifierQuit.Image = Properties.Resources.hide2;
+			mnuMagnifierQuit.Image = Properties.Resources.hide;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { mnuMagnifier150, mnuMagnifier175, mnuMagnifier200, mnuMagnifier225, mnuMagnifier250, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 			
 			// 6. Grids
 			mnuGridsConfigure.Click += new EventHandler(mnuGridsConfigure_Click);
-			mnuGridsConfigure.Image = Properties.Resources.wrench;
+			mnuGridsConfigure.Image = Properties.Drawings.configure;
 			mnuGridsHide.Click += new EventHandler(mnuGridsHide_Click);
-			mnuGridsHide.Image = Properties.Resources.hide2;
+			mnuGridsHide.Image = Properties.Drawings.hide;
 			popMenuGrids.Items.AddRange(new ToolStripItem[] { mnuGridsConfigure, mnuGridsHide });
 			
 			// The right context menu and its content will be choosen upon MouseDown.

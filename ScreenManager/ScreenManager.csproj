@@ -220,6 +220,10 @@
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormColorProfile2.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormColorProfile2.Designer.cs">
+      <DependentUpon>FormColorProfile2.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
@@ -352,6 +356,9 @@
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
+    <Compile Include="Properties\Drawings.Designer.cs">
+      <DependentUpon>Drawings.resx</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\ColorPicker.cs" />
     <Compile Include="UserInterface\ColorPicker.Designer.cs">
       <DependentUpon>ColorPicker.cs</DependentUpon>
@@ -462,6 +469,9 @@
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Drawings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Services\Services.csproj">
@@ -528,93 +538,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\closegrey.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\sync5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\swap4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqnext6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqfirst7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqprev5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqlast5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqsync3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqplay16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\activepencil.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqbackdock.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqbumperleft.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqbumperright.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqcursor.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqhandlerleft2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqhandlerright3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqmiddlebar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqpause6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqplay17.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\playmulti3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\playonce4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\primselec_locked3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\primselec_unlocked3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\resizer4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkBack5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkCursor7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkDecrease2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkIncrease2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MenuFileNewIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\ScreenManagerLang.de.resx">
@@ -707,114 +630,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\close15x15.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\comment20x20.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\TextToolIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\dock16x16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\undock16x16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\comments2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\angle5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\line6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\move.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\screencap5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\snaprafale.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\outward4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\filesave.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\folder_new.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SwatchIcon3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\import6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\diaporama.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\pdfexport.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handlersetright.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handlersetleft.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\chrono.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Spectrum.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Spectrum2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifier2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifierActive2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\chrono5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layout1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layoutB.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layoutC2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layoutD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\missing3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\plane4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cross5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handopen24b.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handclose24c.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\resettimescale.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
