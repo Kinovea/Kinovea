@@ -509,11 +509,11 @@ namespace Kinovea.ScreenManager
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
-			mnuConfigureDrawing.Image = Properties.Resources.wrench;
+			mnuConfigureDrawing.Image = Properties.Drawings.configure;
 			mnuConfigureOpacity.Click += new EventHandler(mnuConfigureOpacity_Click);
-			mnuConfigureOpacity.Image = Properties.Resources.persistence;
+			mnuConfigureOpacity.Image = Properties.Drawings.persistence;
 			mnuDeleteDrawing.Click += new EventHandler(mnuDeleteDrawing_Click);
-			mnuDeleteDrawing.Image = Properties.Resources.delete;
+			mnuDeleteDrawing.Image = Properties.Drawings.delete;
 
 			// 5. Magnifier
 			mnuMagnifier150.Click += new EventHandler(mnuMagnifier150_Click);
@@ -525,14 +525,14 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierDirect.Click += new EventHandler(mnuMagnifierDirect_Click);
 			mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
 			mnuMagnifierQuit.Click += new EventHandler(mnuMagnifierQuit_Click);
-			mnuMagnifierQuit.Image = Properties.Resources.hide2;
+			mnuMagnifierQuit.Image = Properties.Resources.hide;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { mnuMagnifier150, mnuMagnifier175, mnuMagnifier200, mnuMagnifier225, mnuMagnifier250, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 			
 			// 6. Grids
 			mnuGridsConfigure.Click += new EventHandler(mnuGridsConfigure_Click);
-			mnuGridsConfigure.Image = Properties.Resources.wrench;
+			mnuGridsConfigure.Image = Properties.Drawings.configure;
 			mnuGridsHide.Click += new EventHandler(mnuGridsHide_Click);
-			mnuGridsHide.Image = Properties.Resources.hide2;
+			mnuGridsHide.Image = Properties.Drawings.hide;
 			popMenuGrids.Items.AddRange(new ToolStripItem[] { mnuGridsConfigure, mnuGridsHide });
 			
 			// Default :

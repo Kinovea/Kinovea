@@ -129,9 +129,9 @@ namespace Kinovea.ScreenManager
             
             // Context menu
             mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
-			mnuShowMeasure.Image = Properties.Resources.measure;
+			mnuShowMeasure.Image = Properties.Drawings.measure;
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
-			mnuSealMeasure.Image = Properties.Resources.textfield;
+			mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
 			
 			m_invalidate = _invalidate;
         }

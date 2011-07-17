@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
         	// btnLabel
         	// 
         	this.btnLabel.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnLabel.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.trajconflabel3;
+        	this.btnLabel.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.trajconflabel;
         	this.btnLabel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnLabel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnLabel.FlatAppearance.BorderSize = 0;
@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
         	// btnFocus
         	// 
         	this.btnFocus.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnFocus.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.trajconffocus3;
+        	this.btnFocus.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.trajconffocus;
         	this.btnFocus.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnFocus.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnFocus.FlatAppearance.BorderSize = 0;
@@ -225,7 +225,7 @@ namespace Kinovea.ScreenManager
         	// btnComplete
         	// 
         	this.btnComplete.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnComplete.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.trajconfall3;
+        	this.btnComplete.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.trajconfall;
         	this.btnComplete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnComplete.FlatAppearance.BorderColor = System.Drawing.Color.Black;
         	this.btnComplete.FlatAppearance.BorderSize = 0;

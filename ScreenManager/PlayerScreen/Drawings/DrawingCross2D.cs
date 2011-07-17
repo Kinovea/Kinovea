@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
             
             // Context menu
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
-			mnuShowCoordinates.Image = Properties.Resources.measure;
+			mnuShowCoordinates.Image = Properties.Drawings.measure;
             m_invalidate = _invalidate;
         }
         #endregion

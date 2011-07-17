@@ -199,7 +199,7 @@ namespace Kinovea.ScreenManager
 		{
 			mnuLaunch.Image = Properties.Resources.film_go;
 			mnuLaunch.Click += new EventHandler(mnuLaunch_Click);
-			mnuRename.Image = Properties.Resources.textfield;
+			mnuRename.Image = Properties.Resources.rename;
 			mnuRename.Click += new EventHandler(mnuRename_Click);
 			mnuDelete.Image = Properties.Resources.delete;
 			mnuDelete.Click += new EventHandler(mnuDelete_Click);

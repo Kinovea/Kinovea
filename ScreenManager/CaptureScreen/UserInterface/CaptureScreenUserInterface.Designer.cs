@@ -416,7 +416,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.ActiveScreenIndicator.BackColor = System.Drawing.Color.Transparent;
         	this.ActiveScreenIndicator.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.ActiveScreenIndicator.Image = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
+        	this.ActiveScreenIndicator.Image = global::Kinovea.ScreenManager.Properties.Drawings.pencil;
         	this.ActiveScreenIndicator.Location = new System.Drawing.Point(1, 3);
         	this.ActiveScreenIndicator.Margin = new System.Windows.Forms.Padding(0);
         	this.ActiveScreenIndicator.Name = "ActiveScreenIndicator";
@@ -488,7 +488,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolCircle
         	// 
         	this.btnDrawingToolCircle.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolCircle.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.circle;
+        	this.btnDrawingToolCircle.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.circle;
         	this.btnDrawingToolCircle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolCircle.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolCircle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -505,7 +505,7 @@ namespace Kinovea.ScreenManager
         	// btn3dplane
         	// 
         	this.btn3dplane.BackColor = System.Drawing.Color.Transparent;
-        	this.btn3dplane.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.plane4;
+        	this.btn3dplane.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.plane;
         	this.btn3dplane.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btn3dplane.FlatAppearance.BorderSize = 0;
         	this.btn3dplane.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -558,7 +558,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolCross2D
         	// 
         	this.btnDrawingToolCross2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolCross2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.cross5;
+        	this.btnDrawingToolCross2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.crossmark;
         	this.btnDrawingToolCross2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolCross2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolCross2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -575,7 +575,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolLine2D
         	// 
         	this.btnDrawingToolLine2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolLine2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.line6;
+        	this.btnDrawingToolLine2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.line;
         	this.btnDrawingToolLine2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolLine2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolLine2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -609,7 +609,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolText
         	// 
         	this.btnDrawingToolText.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolText.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.TextToolIcon;
+        	this.btnDrawingToolText.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.label;
         	this.btnDrawingToolText.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolText.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolText.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -626,7 +626,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolPencil
         	// 
         	this.btnDrawingToolPencil.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolPencil.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
+        	this.btnDrawingToolPencil.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.pencil;
         	this.btnDrawingToolPencil.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.btnDrawingToolPencil.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolPencil.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
@@ -643,7 +643,7 @@ namespace Kinovea.ScreenManager
         	// btnDrawingToolAngle2D
         	// 
         	this.btnDrawingToolAngle2D.BackColor = System.Drawing.Color.Transparent;
-        	this.btnDrawingToolAngle2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.angle5;
+        	this.btnDrawingToolAngle2D.BackgroundImage = global::Kinovea.ScreenManager.Properties.Drawings.angle;
         	this.btnDrawingToolAngle2D.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
         	this.btnDrawingToolAngle2D.FlatAppearance.BorderSize = 0;
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;

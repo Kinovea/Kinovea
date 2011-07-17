@@ -69,33 +69,6 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap activepencil
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("activepencil", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap angle
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("angle", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap angle5
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("angle5", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
 		internal static System.Drawing.Bitmap arrow_out
 		{
 			get
@@ -258,42 +231,6 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap chrono_start2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("chrono_start2", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap chrono_stop
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("chrono_stop", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap chrono5
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("chrono5", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap circle
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("circle", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
 		internal static System.Drawing.Bitmap closegrey
 		{
 			get
@@ -371,15 +308,6 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("coordinate_axis", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap cross5
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("cross5", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -627,11 +555,11 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap hide2
+		internal static System.Drawing.Bitmap hide
 		{
 			get
 			{
-				object obj = ResourceManager.GetObject("hide2", resourceCulture);
+				object obj = ResourceManager.GetObject("hide", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -704,15 +632,6 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("layoutD", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap line6
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("line6", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -870,15 +789,6 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap measure
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("measure", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
 		internal static System.Drawing.Bitmap MenuFileNewIcon
 		{
 			get
@@ -933,29 +843,11 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap persistence
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("persistence", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
 		internal static System.Drawing.Bitmap picture_save
 		{
 			get
 			{
 				object obj = ResourceManager.GetObject("picture_save", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap plane4
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("plane4", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -1001,6 +893,15 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("record", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap rename
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("rename", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
@@ -1284,96 +1185,6 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap textfield
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("textfield", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap TextToolIcon
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("TextToolIcon", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap track_stop2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("track_stop2", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap track_trim2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("track_trim2", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap tracking
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("tracking", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap tracking_play
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("tracking_play", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap trajconfall3
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconfall3", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap trajconffocus3
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconffocus3", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap trajconflabel3
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconflabel3", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap trajconfsetorigin
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("trajconfsetorigin", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
 		internal static System.Drawing.Bitmap undock16x16
 		{
 			get
@@ -1388,15 +1199,6 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("vector", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap wrench
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("wrench", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}

@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
 			mnuLoadVideo.Click += new EventHandler(mnuLoadVideo_Click);
 			mnuLoadVideo.Image = Properties.Resources.film_go;
 			mnuHide.Click += new EventHandler(mnuHide_Click);
-			mnuHide.Image = Properties.Resources.hide2;
+			mnuHide.Image = Properties.Resources.hide;
 			mnuDelete.Click += new EventHandler(mnuDelete_Click);
 			mnuDelete.Image = Properties.Resources.delete;
 			popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuHide, mnuDelete });	

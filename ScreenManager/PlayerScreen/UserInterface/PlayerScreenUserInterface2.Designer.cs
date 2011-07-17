@@ -884,7 +884,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.ActiveScreenIndicator.BackColor = System.Drawing.Color.Transparent;
         	this.ActiveScreenIndicator.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.ActiveScreenIndicator.Image = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
+        	this.ActiveScreenIndicator.Image = global::Kinovea.ScreenManager.Properties.Drawings.pencil;
         	this.ActiveScreenIndicator.Location = new System.Drawing.Point(1, 3);
         	this.ActiveScreenIndicator.Margin = new System.Windows.Forms.Padding(0);
         	this.ActiveScreenIndicator.Name = "ActiveScreenIndicator";
@@ -941,7 +941,7 @@ namespace Kinovea.ScreenManager
         	this.btn3dplane.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btn3dplane.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btn3dplane.ForeColor = System.Drawing.Color.Black;
-        	this.btn3dplane.Image = global::Kinovea.ScreenManager.Properties.Resources.plane4;
+        	this.btn3dplane.Image = global::Kinovea.ScreenManager.Properties.Drawings.plane;
         	this.btn3dplane.Location = new System.Drawing.Point(275, 2);
         	this.btn3dplane.Name = "btn3dplane";
         	this.btn3dplane.Size = new System.Drawing.Size(25, 25);
@@ -975,7 +975,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolChrono.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolChrono.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolChrono.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolChrono.Image = global::Kinovea.ScreenManager.Properties.Resources.chrono5;
+        	this.btnDrawingToolChrono.Image = global::Kinovea.ScreenManager.Properties.Drawings.chrono;
         	this.btnDrawingToolChrono.Location = new System.Drawing.Point(245, 2);
         	this.btnDrawingToolChrono.Name = "btnDrawingToolChrono";
         	this.btnDrawingToolChrono.Size = new System.Drawing.Size(25, 25);
@@ -1011,7 +1011,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolCross2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolCross2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolCross2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolCross2D.Image = global::Kinovea.ScreenManager.Properties.Resources.cross5;
+        	this.btnDrawingToolCross2D.Image = global::Kinovea.ScreenManager.Properties.Drawings.crossmark;
         	this.btnDrawingToolCross2D.Location = new System.Drawing.Point(195, 2);
         	this.btnDrawingToolCross2D.Name = "btnDrawingToolCross2D";
         	this.btnDrawingToolCross2D.Size = new System.Drawing.Size(25, 25);
@@ -1046,7 +1046,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolLine2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolLine2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolLine2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolLine2D.Image = global::Kinovea.ScreenManager.Properties.Resources.line6;
+        	this.btnDrawingToolLine2D.Image = global::Kinovea.ScreenManager.Properties.Drawings.line;
         	this.btnDrawingToolLine2D.Location = new System.Drawing.Point(145, 2);
         	this.btnDrawingToolLine2D.Name = "btnDrawingToolLine2D";
         	this.btnDrawingToolLine2D.Size = new System.Drawing.Size(25, 25);
@@ -1080,7 +1080,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolText.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolText.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolText.Image = global::Kinovea.ScreenManager.Properties.Resources.TextToolIcon;
+        	this.btnDrawingToolText.Image = global::Kinovea.ScreenManager.Properties.Drawings.label;
         	this.btnDrawingToolText.Location = new System.Drawing.Point(95, 2);
         	this.btnDrawingToolText.Name = "btnDrawingToolText";
         	this.btnDrawingToolText.Size = new System.Drawing.Size(25, 25);
@@ -1097,7 +1097,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPencil.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolPencil.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolPencil.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolPencil.Image = global::Kinovea.ScreenManager.Properties.Resources.activepencil;
+        	this.btnDrawingToolPencil.Image = global::Kinovea.ScreenManager.Properties.Drawings.pencil;
         	this.btnDrawingToolPencil.Location = new System.Drawing.Point(120, 2);
         	this.btnDrawingToolPencil.Name = "btnDrawingToolPencil";
         	this.btnDrawingToolPencil.Size = new System.Drawing.Size(25, 25);
@@ -1114,7 +1114,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolCircle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolCircle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolCircle.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolCircle.Image = global::Kinovea.ScreenManager.Properties.Resources.circle;
+        	this.btnDrawingToolCircle.Image = global::Kinovea.ScreenManager.Properties.Drawings.circle;
         	this.btnDrawingToolCircle.Location = new System.Drawing.Point(170, 2);
         	this.btnDrawingToolCircle.Name = "btnDrawingToolCircle";
         	this.btnDrawingToolCircle.Size = new System.Drawing.Size(25, 25);
@@ -1131,7 +1131,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolAngle2D.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolAngle2D.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolAngle2D.ForeColor = System.Drawing.Color.Black;
-        	this.btnDrawingToolAngle2D.Image = global::Kinovea.ScreenManager.Properties.Resources.angle5;
+        	this.btnDrawingToolAngle2D.Image = global::Kinovea.ScreenManager.Properties.Drawings.angle;
         	this.btnDrawingToolAngle2D.Location = new System.Drawing.Point(220, 2);
         	this.btnDrawingToolAngle2D.Name = "btnDrawingToolAngle2D";
         	this.btnDrawingToolAngle2D.Size = new System.Drawing.Size(25, 25);
