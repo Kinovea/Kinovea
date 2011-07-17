@@ -979,7 +979,34 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save only the key images data..
+        ///   Recherche une chaîne localisée semblable à Only the description of drawings and other analysis objects will be saved.#The file can be imported in a video later..
+        /// </summary>
+        internal static string dlgSaveAnalysisOrVideo_HintAnalysis {
+            get {
+                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_HintAnalysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Analysis objects will be visible in all players but not modifiable.#Extra comments attached to key images will not be saved..
+        /// </summary>
+        internal static string dlgSaveAnalysisOrVideo_HintBlended {
+            get {
+                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_HintBlended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à When opened in Kinovea, the drawings and other analysis objects will still be modifiable.#When opened in other players, the drawings and analysis objects will not be visible..
+        /// </summary>
+        internal static string dlgSaveAnalysisOrVideo_HintMuxed {
+            get {
+                return ResourceManager.GetString("dlgSaveAnalysisOrVideo_HintMuxed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save only the analysis.
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_RadioAnalysis {
             get {
@@ -988,7 +1015,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Permanently paint key images data on the video..
+        ///   Recherche une chaîne localisée semblable à Save video with analysis permanently applied on the video.
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_RadioBlended {
             get {
@@ -997,7 +1024,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Combine video and key images data in the file..
+        ///   Recherche une chaîne localisée semblable à Save video with analysis modifiable.
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_RadioMuxed {
             get {
@@ -1015,7 +1042,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save Video or Key Images Data....
+        ///   Recherche une chaîne localisée semblable à Save Video....
         /// </summary>
         internal static string dlgSaveAnalysisOrVideo_Title {
             get {
