@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
     	public DrawingToolLine2D()
     	{
     		m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.LightGreen));
-    		m_DefaultStylePreset.Elements.Add("line style", new StyleElementLineStyle(2));
+    		m_DefaultStylePreset.Elements.Add("line size", new StyleElementLineSize(2));
     		m_StylePreset = m_DefaultStylePreset.Clone();
     	}
     	public DrawingToolLine2D(DelegateScreenInvalidate _invalidate)

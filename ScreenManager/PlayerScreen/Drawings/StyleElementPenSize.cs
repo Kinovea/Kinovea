@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -27,6 +28,8 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Style element to represent a pen size.
+	/// Editor: owner drawn combo box.
+	/// Very similar to StyleElementLineStyle, just the rendering changes. (lines vs circles)
 	/// </summary>
 	public class StyleElementPenSize : AbstractStyleElement
 	{
@@ -34,14 +37,12 @@ namespace Kinovea.ScreenManager
 		public override object Value
 		{
 			get { return m_iPenSize; }
-			set { m_iPenSize = (value is int) ? (int)value : 5;}
+			set { m_iPenSize = (value is int) ? (int)value : m_iDefaultSize;}
 		}
 		#endregion
 		
 		#region Members
-		private static readonly string[] m_AllowedSizes = { "2", "3", "4", "5", "7", "9", "11", "13", "16", "19", "22", "25" };
-		private static readonly int m_MinSize = int.Parse(m_AllowedSizes[0]);
-		private static readonly int m_MaxSize = int.Parse(m_AllowedSizes[m_AllowedSizes.Length - 1]);
+		private static readonly int[] m_Sizes = { 2, 3, 4, 5, 7, 9, 11, 13, 16, 19, 22, 25 };
 		private static readonly int m_iDefaultSize = 3;
 		private int m_iPenSize;
 		#endregion
@@ -49,18 +50,30 @@ namespace Kinovea.ScreenManager
 		#region Constructor
 		public StyleElementPenSize(int _default)
 		{
-			m_iPenSize = (_default >= m_MinSize && _default <= m_MaxSize) ? _default : m_iDefaultSize;
+			m_iPenSize = (_default >= m_Sizes[0] && _default <= m_Sizes[m_Sizes.Length-1]) ? _default : m_iDefaultSize;
 		}
 		#endregion
 		
 		#region Public Methods
 		public override Control GetEditor()
 		{
-			// TEMPORARY : We use a simple combobox until the pen size picker is fixed.
 			ComboBox editor = new ComboBox();
-			editor.Items.AddRange(m_AllowedSizes);
-			editor.Text = m_iPenSize.ToString();
+			editor.DropDownStyle = ComboBoxStyle.DropDownList;
+			editor.ItemHeight = m_Sizes[m_Sizes.Length-1] + 2;
+			editor.DrawMode = DrawMode.OwnerDrawFixed;
+			foreach(int i in m_Sizes) editor.Items.Add(new object());
+			editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
+			
+			// Set current value
+			int index = -1;
+			for(int i=0;i<m_Sizes.Length;i++)
+			{
+				if(m_iPenSize == m_Sizes[i])
+					index = i;
+			}
+			editor.SelectedIndex = index;
+			
 			return editor;
 		}
 		public override AbstractStyleElement Clone()
@@ -79,14 +92,25 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Private Methods
+		private void editor_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			if(e.Index >= 0 && e.Index < m_Sizes.Length)
+			{
+				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+				int itemPenSize = m_Sizes[e.Index];
+				int left = (e.Bounds.Width - itemPenSize) / 2;
+				int top = (e.Bounds.Height - itemPenSize) / 2;
+				e.Graphics.FillEllipse(Brushes.Black, e.Bounds.Left + left, e.Bounds.Top + top, itemPenSize, itemPenSize);
+			}
+		}
 		private void editor_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			int i;
-			bool parsed = int.TryParse(((ComboBox)sender).Text, out i);
-			int parsedSize = parsed ? i : m_iDefaultSize;
-			m_iPenSize = (parsedSize >= m_MinSize && parsedSize <= m_MaxSize) ? parsedSize : m_iDefaultSize;
-			((ComboBox)sender).Text = m_iPenSize.ToString();
-		}	
+			int index = ((ComboBox)sender).SelectedIndex;
+			if( index >= 0 && index < m_Sizes.Length)
+			{
+				m_iPenSize = m_Sizes[index];
+			}
+		}
 		#endregion
 	}
 }

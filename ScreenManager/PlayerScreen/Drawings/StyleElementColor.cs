@@ -27,6 +27,7 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Style element to represent a color used by the drawing.
+	/// Editor: clickable area giving access to a color picker dialog.
 	/// </summary>
 	public class StyleElementColor : AbstractStyleElement
 	{
@@ -53,8 +54,8 @@ namespace Kinovea.ScreenManager
 		public override Control GetEditor()
 		{
 			Control editor = new Control();
-			editor.BackColor = m_Color;
 			editor.Click += new EventHandler(editor_Click);
+			editor.Paint += new PaintEventHandler(editor_Paint);
 			return editor;
 		}
 		public override AbstractStyleElement Clone()
@@ -79,10 +80,18 @@ namespace Kinovea.ScreenManager
 			if(picker.ShowDialog() == DialogResult.OK)
 			{
 				m_Color = picker.PickedColor;
-				((Control)sender).BackColor = m_Color;
+				((Control)sender).Invalidate();
 			}
 			picker.Dispose();
 		}	
+		private void editor_Paint(object sender, PaintEventArgs e)
+		{
+			using(SolidBrush b = new SolidBrush(m_Color))
+			{
+				e.Graphics.FillRectangle(b, e.ClipRectangle);
+				e.Graphics.DrawRectangle(Pens.LightGray, e.ClipRectangle.Left, e.ClipRectangle.Top, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);	
+			}
+		}
 		#endregion
 	}
 }
