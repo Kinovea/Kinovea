@@ -98,15 +98,15 @@ namespace Kinovea.ScreenManager
 			if(firstElement != null)
 			{
 				Control firstEditor = firstElement.GetEditor();
-				firstEditor.Size = new Size(50, 20);
+				firstEditor.Size = new Size(70, 20);
 				firstEditor.Location = new Point((grpStyle.Width - firstEditor.Width)/2, 15);
 				grpStyle.Controls.Add(firstEditor);
 				
 				if(secondElement != null)
 				{
 					Control secondEditor = secondElement.GetEditor();
-					secondEditor.Size = new Size(50, 20);
-					secondEditor.Location = new Point((grpStyle.Width - secondEditor.Width)/2, 45);
+					secondEditor.Size = new Size(70, 20);
+					secondEditor.Location = new Point((grpStyle.Width - secondEditor.Width)/2, firstEditor.Bottom + 10);
 					grpStyle.Controls.Add(secondEditor);
 				}
 			}
@@ -119,9 +119,7 @@ namespace Kinovea.ScreenManager
 				LoadPreset(preset);
 			}
 		}
-		#endregion
-		
-		void BtnDefaultClick(object sender, EventArgs e)
+		private void BtnDefaultClick(object sender, EventArgs e)
 		{
 			// Reset all tools to their default preset.
 			ToolManager tm = ToolManager.Instance();
@@ -132,5 +130,8 @@ namespace Kinovea.ScreenManager
 			
 			LoadPresets();
 		}
+		#endregion
+		
+		
 	}
 }

@@ -27,6 +27,7 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Style element to represent the size of font used by the drawing.
+	/// Editor: regular combo box.
 	/// </summary>
 	public class StyleElementFontSize : AbstractStyleElement
 	{
@@ -55,6 +56,7 @@ namespace Kinovea.ScreenManager
 		public override Control GetEditor()
 		{
 			ComboBox editor = new ComboBox();
+			editor.DropDownStyle = ComboBoxStyle.DropDownList;
 			editor.Items.AddRange(AllowedFontSizes);
 			editor.Text = m_iFontSize.ToString();
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);

@@ -183,7 +183,7 @@
     <Compile Include="PlayerScreen\Drawings\LineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
-    <Compile Include="PlayerScreen\Drawings\StyleElementLineStyle.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementLineSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementPenSize.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolStylePreset.cs" />
