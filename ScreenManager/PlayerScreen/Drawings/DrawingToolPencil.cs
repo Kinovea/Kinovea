@@ -22,36 +22,77 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolPencil : AbstractDrawingTool
     {
+    	#region Properties
+    	public override string InternalName
+		{
+			get { return "pencil"; }
+		}
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolPencil; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { return Properties.Drawings.pencil; }
+    	}
     	public override DrawingType DrawingType
-        {
-        	get { return DrawingType.Pencil; }
-        }
-		public override bool Attached
-        {
-        	get { return true; }
-        }
+    	{
+    		get { return DrawingType.Pencil; }
+    	}
+    	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override DrawingStyle StylePreset
+		{
+			get { return m_StylePreset;}
+			set { m_StylePreset = value;}
+		}
+		public override DrawingStyle DefaultStylePreset
+		{
+			get { return m_DefaultStylePreset;}
+		}
+    	#endregion
+    	
+    	#region Members
+    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+    	private DrawingStyle m_StylePreset;
+    	#endregion
 		
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-        {
-            return new DrawingPencil(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-        public override DrawingToolType OnMouseUp()
-        {
-            return DrawingToolType.Pencil;
-        }
-        public override Cursor GetCursor(Color _color, int _iSize)
-        {
-            // Draw custom cursor: Colored and sized circle.
-            Pen p = new Pen(_color, 1);
-            Bitmap b = new Bitmap(_iSize + 2, _iSize + 2);
-            Graphics g = Graphics.FromImage(b);
-            g.DrawEllipse(p, 1, 1, _iSize, _iSize);
-            p.Dispose();
-            return new Cursor(b.GetHicon());
-        }
+    	#region Constructor
+		public DrawingToolPencil()
+		{
+			m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.SeaGreen));
+			m_DefaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(9));
+			m_StylePreset = m_DefaultStylePreset.Clone();
+		}
+		#endregion
+    	
+    	#region Public Methods
+    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+    	{
+    		return new DrawingPencil(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
+    	}
+    	public override DrawingToolType OnMouseUp()
+    	{
+    		return DrawingToolType.Pencil;
+    	}
+    	public override Cursor GetCursor(Color _color, int _iSize)
+    	{
+    		// Draw custom cursor: Colored and sized circle.
+    		Pen p = new Pen(_color, 1);
+    		Bitmap b = new Bitmap(_iSize + 2, _iSize + 2);
+    		Graphics g = Graphics.FromImage(b);
+    		g.DrawEllipse(p, 1, 1, _iSize, _iSize);
+    		p.Dispose();
+    		return new Cursor(b.GetHicon());
+    	}
+    	#endregion
     }
 }

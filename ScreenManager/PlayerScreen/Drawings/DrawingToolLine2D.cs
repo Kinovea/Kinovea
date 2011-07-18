@@ -22,44 +22,84 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolLine2D : AbstractDrawingTool
     {
+    	
+    	#region Properties
+    	public override string InternalName
+		{
+			get { return "line"; }
+		}
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { return Properties.Drawings.line; }
+    	}
+    	public override DrawingType DrawingType
+    	{
+    		get { return DrawingType.Line; }
+    	}
+    	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override DrawingStyle StylePreset
+		{
+			get { return m_StylePreset;}
+			set { m_StylePreset = value;}
+		}
+		public override DrawingStyle DefaultStylePreset
+		{
+			get { return m_DefaultStylePreset;}
+		}
+    	
     	/// <summary>
     	/// This static property is used to keep the same setting for new lines.
     	/// Once we activate the measure, new lines will be created with the setting on, and vice versa.
     	/// </summary>
     	public static bool ShowMeasure;
-    	
-    	public override DrawingType DrawingType
-        {
-        	get { return DrawingType.Line; }
-        }
-		public override bool Attached
-        {
-        	get { return true; }
-        }
+    	#endregion
 		
-		private DelegateScreenInvalidate m_invalidate;
+    	#region Members
+    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+    	private DrawingStyle m_StylePreset;
+    	private DelegateScreenInvalidate m_invalidate;
+    	#endregion
 		
-		public DrawingToolLine2D(DelegateScreenInvalidate _invalidate)
-		{
-			m_invalidate = _invalidate;	
-		}
+    	#region Constructor
+    	public DrawingToolLine2D()
+    	{
+    		m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.LightGreen));
+    		m_DefaultStylePreset.Elements.Add("line style", new StyleElementLineStyle(2));
+    		m_StylePreset = m_DefaultStylePreset.Clone();
+    	}
+    	public DrawingToolLine2D(DelegateScreenInvalidate _invalidate)
+    	{
+    		m_invalidate = _invalidate;
+    	}
+    	#endregion
 		
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-        {
-            return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
-        }
-        public override DrawingToolType OnMouseUp()
-        {
-            //return DrawingToolType.Pointer;
-            return DrawingToolType.Line2D;
-        }
-        public override Cursor GetCursor(Color _color, int _iSize)
-        {
-            return Cursors.Cross;
-        }
+    	#region Public Methods
+    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+    	{
+    		return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
+    	}
+    	public override DrawingToolType OnMouseUp()
+    	{
+    		//return DrawingToolType.Pointer;
+    		return DrawingToolType.Line2D;
+    	}
+    	public override Cursor GetCursor(Color _color, int _iSize)
+    	{
+    		return Cursors.Cross;
+    	}
+    	#endregion
     }
 }

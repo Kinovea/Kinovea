@@ -4149,9 +4149,9 @@ namespace Kinovea.ScreenManager
 			OnPoke();
 
 			// Load, save or modify current profile.
-			formColorProfile fcp = new formColorProfile(m_ColorProfile);
-			fcp.ShowDialog();
-			fcp.Dispose();
+			FormToolPresets ftp = new FormToolPresets();
+			ftp.ShowDialog();
+			ftp.Dispose();
 
 			UpdateCursor();
 		}
