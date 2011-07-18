@@ -166,17 +166,27 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
-    <Compile Include="PlayerScreen\ColorProfile.cs" />
+    <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
+    <Compile Include="PlayerScreen\Drawings\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
+    <Compile Include="PlayerScreen\Drawings\InfosTextDecoration.cs" />
     <Compile Include="PlayerScreen\Drawings\IXMLSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
+    <Compile Include="PlayerScreen\Drawings\LineStyle.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementLineStyle.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementPenSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
+    <Compile Include="PlayerScreen\Drawings\ToolStylePreset.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
     <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />
@@ -198,8 +208,6 @@
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
     <Compile Include="PlayerScreen\CalibrationHelper.cs" />
-    <Compile Include="PlayerScreen\LineStyle.cs">
-    </Compile>
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
     <Compile Include="PlayerScreen\Plane3D.cs" />
@@ -220,9 +228,9 @@
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormColorProfile2.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormColorProfile2.Designer.cs">
-      <DependentUpon>FormColorProfile2.cs</DependentUpon>
+    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
+      <DependentUpon>FormToolPresets.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">

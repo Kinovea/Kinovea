@@ -22,6 +22,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolPointer : AbstractDrawingTool
@@ -46,14 +48,35 @@ namespace Kinovea.ScreenManager
     	#endregion
     	
     	#region Properties
-    	public override DrawingType DrawingType
+    	public override string InternalName
+		{
+			get { return "pointer"; }
+		}
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolPointer; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { throw new NotImplementedException(); }
+    	}
+		public override DrawingType DrawingType
         {
         	get { return DrawingType.None; }
         }
     	public override bool Attached
         {
-        	get { throw new Exception("Not implemented."); }
+        	get { throw new NotImplementedException(); }
         }
+    	public override DrawingStyle StylePreset
+		{
+			get	{ throw new NotImplementedException(); }
+			set	{ throw new NotImplementedException(); }
+		}
+    	public override DrawingStyle DefaultStylePreset
+		{
+			get	{ throw new NotImplementedException(); }
+		}
 		
         public Point MouseDelta
         {

@@ -22,7 +22,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace Kinovea.Services
+using Kinovea.Services;
+
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// A class to encapsulate all text decoration informations

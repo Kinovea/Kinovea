@@ -21,34 +21,73 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolChrono : AbstractDrawingTool
     {
-		public override DrawingType DrawingType
-        {
-        	get { return DrawingType.Chrono; }
-        }
-		public override bool Attached
-        {
-        	get { return false; }
-        }
-		
-        public DrawingToolChrono()
-        {
-        }
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-        {
-            return new DrawingChrono(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-        public override DrawingToolType OnMouseUp()
-        {
-            // Fall back to Pointer tool.
-            return DrawingToolType.Pointer;
-        }
-        public override Cursor GetCursor(Color _color, int _iSize)
-        {
-            return Cursors.Cross;
-        }
+    	#region Properties
+    	public override string InternalName
+    	{
+    		get { return "chrono"; }
+    	}
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolChrono; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { return Properties.Drawings.chrono; }
+    	}
+    	public override DrawingType DrawingType
+    	{
+    		get { return DrawingType.Chrono; }
+    	}
+    	public override bool Attached
+    	{
+    		get { return false; }
+    	}
+		public override DrawingStyle StylePreset
+		{
+			get { return m_StylePreset;}
+			set { m_StylePreset = value;}
+		}
+		public override DrawingStyle DefaultStylePreset
+		{
+			get { return m_DefaultStylePreset;}
+		}
+    	#endregion
+    	
+    	#region Members
+    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+    	private DrawingStyle m_StylePreset;
+    	#endregion
+    	
+    	#region Constructor
+    	public DrawingToolChrono()
+    	{
+    		m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.Black));
+    		m_DefaultStylePreset.Elements.Add("font size", new StyleElementFontSize(12));
+    		
+    		m_StylePreset = m_DefaultStylePreset.Clone();
+    	}
+    	#endregion
+        
+    	#region Public Methods
+    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+    	{
+    		return new DrawingChrono(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
+    	}
+    	public override DrawingToolType OnMouseUp()
+    	{
+    		// Fall back to Pointer tool.
+    		return DrawingToolType.Pointer;
+    	}
+    	public override Cursor GetCursor(Color _color, int _iSize)
+    	{
+    		return Cursors.Cross;
+    	}
+    	#endregion
     }
 }

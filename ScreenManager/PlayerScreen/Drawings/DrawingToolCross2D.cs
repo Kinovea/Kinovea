@@ -22,57 +22,95 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolCross2D : AbstractDrawingTool
     {
+    	#region Properties
+    	public override string InternalName
+		{
+			get { return "crossmark"; }
+		}
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { return Properties.Drawings.crossmark; }
+    	}
+    	public override DrawingType DrawingType
+    	{
+    		get { return DrawingType.Cross; }
+    	}
+    	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override DrawingStyle StylePreset
+		{
+			get { return m_StylePreset;}
+			set { m_StylePreset = value;}
+		}
+		public override DrawingStyle DefaultStylePreset
+		{
+			get { return m_DefaultStylePreset;}
+		}
+    	
     	/// <summary>
     	/// This static property is used to keep the same setting for new cross markers.
     	/// Once we activate the display of coords, new markers will be created with the setting on, and vice versa.
     	/// </summary>
     	public static bool ShowCoordinates;
-    	
-    	public override DrawingType DrawingType
-        {
-        	get { return DrawingType.Cross; }
-        }
-		public override bool Attached
-        {
-        	get { return true; }
-        }
+    	#endregion
 		
-		private DelegateScreenInvalidate m_invalidate;
+    	#region Private Methods
+    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+    	private DrawingStyle m_StylePreset;
+    	private DelegateScreenInvalidate m_invalidate;
+    	#endregion
 		
-		public DrawingToolCross2D(DelegateScreenInvalidate _invalidate)
-		{
-			m_invalidate = _invalidate;	
-		}
+    	#region Constructor
+    	public DrawingToolCross2D()
+    	{
+    		m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CornflowerBlue));
+    		m_StylePreset = m_DefaultStylePreset.Clone();
+    	}
+    	public DrawingToolCross2D(DelegateScreenInvalidate _invalidate)
+    	{
+    		m_invalidate = _invalidate;
+    	}
+    	#endregion
 		
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-        {
-            return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
-        }
-        public override DrawingToolType OnMouseUp()
-        {
-            return DrawingToolType.Cross2D; // After placed, we keep using the Cross2D tool.
-        }
-        public override Cursor GetCursor(Color _color, int _iSize)
-        {
-            // Draw custom cursor: cross inside a semi transparent circle (same as drawing).
-            Pen p = new Pen(_color, 1);
-            Bitmap b = new Bitmap(9, 9);
-            Graphics g = Graphics.FromImage(b);
+    	#region Public Methods
+    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+    	{
+    		return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
+    	}
+    	public override DrawingToolType OnMouseUp()
+    	{
+    		return DrawingToolType.Cross2D; // After placed, we keep using the Cross2D tool.
+    	}
+    	public override Cursor GetCursor(Color _color, int _iSize)
+    	{
+    		// Draw custom cursor: cross inside a semi transparent circle (same as drawing).
+    		Pen p = new Pen(_color, 1);
+    		Bitmap b = new Bitmap(9, 9);
+    		Graphics g = Graphics.FromImage(b);
 
-            // Center point is {4,4}
-            g.DrawLine(p, 1, 4, 7, 4);
-            g.DrawLine(p, 4, 1, 4, 7);
-            
-            SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, _color));
-            g.FillEllipse(tempBrush, 0, 0, 8, 8);
-            tempBrush.Dispose();
-            p.Dispose();
-            
-            return new Cursor(b.GetHicon());
-        }
+    		// Center point is {4,4}
+    		g.DrawLine(p, 1, 4, 7, 4);
+    		g.DrawLine(p, 4, 1, 4, 7);
+    		
+    		SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, _color));
+    		g.FillEllipse(tempBrush, 0, 0, 8, 8);
+    		tempBrush.Dispose();
+    		p.Dispose();
+    		
+    		return new Cursor(b.GetHicon());
+    	}
+    	#endregion
     }
 }

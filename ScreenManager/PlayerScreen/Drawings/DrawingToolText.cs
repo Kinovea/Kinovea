@@ -1,3 +1,4 @@
+#region Licence
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -17,35 +18,77 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
-
+#endregion
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolText : AbstractDrawingTool
     {
-		public override DrawingType DrawingType
-        {
-        	get { return DrawingType.Label; }
-        }
-		public override bool Attached
-        {
-        	get { return true; }
-        }
+    	#region Properties
+    	public override string InternalName
+    	{
+    		get { return "label"; }
+    	}
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolText; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { return Properties.Drawings.label; }
+    	}
+    	public override DrawingType DrawingType
+    	{
+    		get { return DrawingType.Label; }
+    	}
+    	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override DrawingStyle StylePreset
+		{
+			get { return m_StylePreset;}
+			set { m_StylePreset = value; }
+		}
+		public override DrawingStyle DefaultStylePreset
+		{
+			get { return m_DefaultStylePreset;}
+		}
+    	#endregion
         
+    	#region Members
+    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+    	private DrawingStyle m_StylePreset;
+    	#endregion
+    	
+    	#region Constructor
+		public DrawingToolText()
+		{
+			m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
+			m_DefaultStylePreset.Elements.Add("font size", new StyleElementFontSize(12));
+			
+			m_StylePreset = m_DefaultStylePreset.Clone();
+		}
+		#endregion
+		
+		#region Public Methods
 		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-        {
-            return new DrawingText(_Origin.X - 8, _Origin.Y - 8, 100, 25, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-        public override DrawingToolType OnMouseUp()
-        {
-            return DrawingToolType.Pointer;
-        }
-        public override Cursor GetCursor(Color _color, int _iSize)
-        {
-            return Cursors.IBeam;
-        }
+		{
+			return new DrawingText(_Origin.X - 8, _Origin.Y - 8, 100, 25, _iTimestamp, _AverageTimeStampsPerFrame);
+		}
+		public override DrawingToolType OnMouseUp()
+		{
+			return DrawingToolType.Pointer;
+		}
+		public override Cursor GetCursor(Color _color, int _iSize)
+		{
+			return Cursors.IBeam;
+		}
+		#endregion
     }
 }

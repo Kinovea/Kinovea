@@ -1,3 +1,43 @@
+2011-07-18
+Start of a completely new framework for color and style.
+
+Philosophy:
+- The list of tools might be dynamic some day.
+- Thus, the color and style configuration dialogs shouldn't know about individual tools and drawings.
+- Even for core tools, the implementer shouldn't worry about how the style might be updated.
+- Implementer should "declare" his needs in terms of styling and the edition should be handled by the framework.
+
+Issue:
+- Style is composed of several unrelated types (size, color, width, or more complex types)
+- But we need to see them in a generic way.
+
+Design:
+- All the tools are collected in a global list, each screen will then filter this list according to its needs/capabilities.
+- Each drawing and drawing tool will have a style object.
+- Style object themselves are very dynamic, they are just a list of style elements.
+- Style elements are atomic, they are for example, a line width, or a color.
+- Style elements wrap atomic types and host a graphical editor to provide UI value change service.
+
+With this framework:
+- It's possible to have an object with arbitrary styling elements.
+- Once the style element list is declared, we just have to care about how to actually apply the style to the object, not how the style itself will be updated.
+- Drawing and drawing tools can use similar styling concepts: tool preset can be pushed directly to the drawing constructor.
+
+Done at this point: 
+- Start of work from the tools side.
+- Adding style elements.
+- List of style presets for tools.
+
+Todo:
+- Implement line shape and pen size editors.
+- Serialization to xml.
+- Use a style object in drawings, use it to draw the actual shape.
+- Push tool style preset through drawing constructor.
+- Update the configuration dialog to the new framework. The right click with drawing activated should be redirected to the tool preset dialog.
+
+--------------------------------------------------------------------------------
+2011-07-17
+Resources for drawings put in a separate .resx file
 
 --------------------------------------------------------------------------------
 2011/04/16
@@ -8,6 +48,7 @@ Attached drawings:
 - Port of these simplifications to the Capture screen. (+ port of the ToolPointer variable simplification).
 - Migration of the LocateForm helper function to ScreenManagerKernel, so it's not duplicated between screens.
 - Migration of the showmeasure and show coordinates flags into the corresponding tools as static properties. (previously as bool in each screen UI)
+
 TODO: fix color profile mess.
 
 --------------------------------------------------------------------------------
