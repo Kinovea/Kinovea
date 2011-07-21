@@ -1,3 +1,20 @@
+
+2011-07-21
+Continuation of the implementation of the new styling framework.
+
+1. Use drawing tools preset to set up the generated drawing.
+2. Removed DrawingType enum. Was only used in the context of decoration with the color profile.
+3. Generate the cursor using the style inside the tool (for Pencil and Cross), instead of reading back the color profile value.
+4. Use a dictionary instead of a simple list in the ToolManager.
+5. Load the tools by key in the Player. (not complete, the enum DrawingToolType is still used).
+6. Removed the dependency injection to screen invalidate in Drawing Tools. (Now in the menu items that the specific Drawing host).
+
+Broken:
+- StaticStylePicker (line shape selector).
+- Serialization.
+- Tool preset cancellation.
+
+--------------------------------------------------------------------------------
 2011-07-21
 
 Continuation of the implementation of the new styling framework.

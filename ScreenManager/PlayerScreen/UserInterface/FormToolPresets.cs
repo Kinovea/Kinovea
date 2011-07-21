@@ -52,11 +52,11 @@ namespace Kinovea.ScreenManager
 			// Load the list
 			lstPresets.Items.Clear();
 			ToolManager tm = ToolManager.Instance();
-			foreach(AbstractDrawingTool tool in tm.Tools)
+			foreach(KeyValuePair<string, AbstractDrawingTool> pair in tm.Tools)
 			{
-				if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
+				if(pair.Value.StylePreset != null && pair.Value.StylePreset.Elements.Count > 0)
 				{
-					lstPresets.Items.Add(new ToolStylePreset(tool));
+					lstPresets.Items.Add(new ToolStylePreset(pair.Value));
 				}
 			}
 				
@@ -151,9 +151,9 @@ namespace Kinovea.ScreenManager
 		{
 			// Reset all tools to their default preset.
 			ToolManager tm = ToolManager.Instance();
-			foreach(AbstractDrawingTool tool in tm.Tools)
+			foreach(KeyValuePair<string, AbstractDrawingTool> pair in tm.Tools)
 			{
-				tool.ResetToDefaultStyle();
+				pair.Value.ResetToDefaultStyle();
 			}
 			
 			LoadPresets();

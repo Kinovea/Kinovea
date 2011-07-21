@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
 	public class ToolManager
 	{
 		#region Properties
-		public IEnumerable<AbstractDrawingTool> Tools
+		public Dictionary<string, AbstractDrawingTool> Tools
 		{
 			get { return m_Tools; }
 		}
@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private static ToolManager m_instance = null;
-		private List<AbstractDrawingTool> m_Tools = new List<AbstractDrawingTool>();
+		private Dictionary<string, AbstractDrawingTool> m_Tools = new Dictionary<string, AbstractDrawingTool>();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
@@ -64,23 +64,22 @@ namespace Kinovea.ScreenManager
         	// The core drawing tools are loaded statically.
         	// Maybe in the future we can have a plug-in system with .dll containing extensions tools.
         	// Note that the pointer "tool" is not listed here.
-        	m_Tools.Add(new DrawingToolAngle2D());
-        	m_Tools.Add(new DrawingToolChrono());
-        	m_Tools.Add(new DrawingToolCircle());
-        	m_Tools.Add(new DrawingToolCross2D());
-        	m_Tools.Add(new DrawingToolLine2D());
-        	m_Tools.Add(new DrawingToolPencil());
-        	m_Tools.Add(new DrawingToolText());
+        	m_Tools.Add("Angle", new DrawingToolAngle2D());
+        	m_Tools.Add("Chrono", new DrawingToolChrono());
+        	m_Tools.Add("Circle", new DrawingToolCircle());
+        	m_Tools.Add("CrossMark", new DrawingToolCross2D());
+        	m_Tools.Add("Line", new DrawingToolLine2D());
+        	m_Tools.Add("Pencil", new DrawingToolPencil());
+        	m_Tools.Add("Label", new DrawingToolText());
         	
         	// some more to test the dynamics.
-        	m_Tools.Add(new DrawingToolPencil());
-        	m_Tools.Add(new DrawingToolText());
-        	m_Tools.Add(new DrawingToolChrono());
-        	m_Tools.Add(new DrawingToolCircle());
-        	m_Tools.Add(new DrawingToolPencil());
-        	m_Tools.Add(new DrawingToolText());
-        	m_Tools.Add(new DrawingToolChrono());
-        	m_Tools.Add(new DrawingToolCircle());
+        	m_Tools.Add("Angle 2", new DrawingToolAngle2D());
+        	m_Tools.Add("Arrow", new DrawingToolChrono());
+        	m_Tools.Add("LowerBody", new DrawingToolCircle());
+        	m_Tools.Add("WireBody", new DrawingToolCross2D());
+        	m_Tools.Add("MultiLine", new DrawingToolLine2D());
+        	m_Tools.Add("Rotation", new DrawingToolPencil());
+        	m_Tools.Add("Cadence", new DrawingToolText());
         }
         #endregion
         

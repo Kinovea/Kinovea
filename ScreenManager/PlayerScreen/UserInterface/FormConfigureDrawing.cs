@@ -48,13 +48,13 @@ namespace Kinovea.ScreenManager
     	#region members
     	// Common
         private bool m_bPreConfigure;				// true if we are updating the ColorProfile.
-    	private DrawingType m_DrawingType;			// Needed for controls organisation and visibility.
+    	//private DrawingType m_DrawingType;			// Needed for controls organisation and visibility.
     	private bool m_bManualClose = false;		// Needed to handle cancel button.
     	private ColorPicker m_ColorPicker = new ColorPicker();
     	
     	// For color profile configuration only.
-        private ColorProfile m_ColorProfile;        // Direct ref to the original color profile.
-        private ColorProfile m_TempColorProfile;    // Temporary ColorProfile.
+        //private ColorProfile m_ColorProfile;        // Direct ref to the original color profile.
+        //private ColorProfile m_TempColorProfile;    // Temporary ColorProfile.
     	
     	// For individual drawing configuration only.
     	private IDecorable m_Drawing;               // The drawing we will modify.
@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Construction & Initialization
-        public formConfigureDrawing(DrawingType _DrawingType, ColorProfile _colorProfile)
+        /*public formConfigureDrawing(DrawingType _DrawingType, ColorProfile _colorProfile)
         {
             // This constructor is called when we will be updating 
             // the DrawingTool entry in the main ColorProfile.
@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             m_DrawingType = _DrawingType;
             
             SetupForm();
-        }
+        }*/
         public formConfigureDrawing(IDecorable _drawing, PictureBox _SurfaceScreen)
         {
             // This constructor is called when we will be updating a specific drawing.
@@ -94,15 +94,15 @@ namespace Kinovea.ScreenManager
         private void SetupForm()
         {
         	InitializeComponent();
-        	ConfigureForm(m_DrawingType);
+        	//ConfigureForm(m_DrawingType);
             LocalizeForm();
         }
-        private void ConfigureForm(DrawingType _DrawingType)
+        private void ConfigureForm(/*DrawingType _DrawingType*/)
         {
         	// Configure the controls depending on the tool updated.
         	
         	// Color Picker (always visible).
-        	m_ColorPicker.Top = 18;
+        	/*m_ColorPicker.Top = 18;
 			m_ColorPicker.Left = 9;
 			
 			m_ColorPicker.ColorPicked += new ColorPickedHandler(colorPicker_ColorPicked);
@@ -168,7 +168,7 @@ namespace Kinovea.ScreenManager
             
             btnCancel.Top = grpConfig.Bottom + 10;
             btnOK.Top = grpConfig.Bottom + 10;
-            this.Height = btnOK.Bottom + 10;
+            this.Height = btnOK.Bottom + 10;*/
         }
         private void LocalizeForm()
         {
@@ -182,7 +182,7 @@ namespace Kinovea.ScreenManager
         #region User choices handlers
         private void colorPicker_ColorPicked(object sender, EventArgs e)
         {
-            if (m_bPreConfigure)
+            /*if (m_bPreConfigure)
             {
                 m_TempColorProfile.UpdateData(m_DrawingType, m_ColorPicker.PickedColor); 
             }
@@ -192,11 +192,11 @@ namespace Kinovea.ScreenManager
             	m_SurfaceScreen.Invalidate();
             }
             
-            PreferencesManager.Instance().AddRecentColor(m_ColorPicker.PickedColor);
+            PreferencesManager.Instance().AddRecentColor(m_ColorPicker.PickedColor);*/
         }
         private void stlPicker_StylePicked(object sender, EventArgs e)
         {
-            if (m_bPreConfigure)
+            /*if (m_bPreConfigure)
             {
                 m_TempColorProfile.UpdateData(m_DrawingType, stlPicker.PickedStyle);
             }
@@ -204,12 +204,12 @@ namespace Kinovea.ScreenManager
             {
             	//m_Drawing.UpdateDecoration(stlPicker.PickedStyle);
             	m_SurfaceScreen.Invalidate();
-            }
+            }*/
         }
 
         private void cmbFontSize_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (m_bPreConfigure)
+            /*if (m_bPreConfigure)
             {
             	m_TempColorProfile.UpdateData(m_DrawingType, int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
             }
@@ -217,14 +217,14 @@ namespace Kinovea.ScreenManager
             {
             	//m_Drawing.UpdateDecoration(int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
             	m_SurfaceScreen.Invalidate();
-            }
+            }*/
         }
         #endregion
     
         #region OK/Cancel Handlers
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (m_bPreConfigure)
+            /*if (m_bPreConfigure)
             {
                 m_ColorProfile.Load(m_TempColorProfile);
                 
@@ -236,7 +236,7 @@ namespace Kinovea.ScreenManager
                 // Nothing special to do, the drawing has already been updated.   
             }
 
-            m_bManualClose = true;
+            m_bManualClose = true;*/
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {

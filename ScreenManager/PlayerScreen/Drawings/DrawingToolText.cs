@@ -42,10 +42,6 @@ namespace Kinovea.ScreenManager
     	{
     		get { return Properties.Drawings.label; }
     	}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Label; }
-    	}
     	public override bool Attached
     	{
     		get { return true; }
@@ -79,7 +75,7 @@ namespace Kinovea.ScreenManager
 		#region Public Methods
 		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
 		{
-			return new DrawingText(_Origin.X - 8, _Origin.Y - 8, 100, 25, _iTimestamp, _AverageTimeStampsPerFrame);
+			return new DrawingText(_Origin.X - 8, _Origin.Y - 8, 100, 25, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
 		}
 		public override DrawingToolType OnMouseUp()
 		{

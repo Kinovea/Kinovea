@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style = new DrawingStyle();
+        private DrawingStyle m_Style;
         private KeyframeLabel m_LabelMeasure;
         private bool m_bShowMeasure;
         private Metadata m_ParentMetadata;
@@ -106,11 +106,10 @@ namespace Kinovea.ScreenManager
         // Context menu
         private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
-        private DelegateScreenInvalidate m_invalidate;
         #endregion
 
         #region Constructors
-        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame, DelegateScreenInvalidate _invalidate)
+        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
             m_StartPoint = new Point(x1, y1);
@@ -119,10 +118,9 @@ namespace Kinovea.ScreenManager
             m_DirectZoomTopLeft = new Point(0, 0);
             
             // Decoration
+            m_Style = _preset.Clone();
             m_StyleHelper.Color = Color.DarkSlateGray;
             m_StyleHelper.LineSize = 1;
-            m_Style.Elements.Add("color", new StyleElementColor(m_StyleHelper.Color));
-            m_Style.Elements.Add("line size", new StyleElementLineSize(m_StyleHelper.LineSize)); // todo: line shape.
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "line size");
             
@@ -139,8 +137,6 @@ namespace Kinovea.ScreenManager
 			mnuShowMeasure.Image = Properties.Drawings.measure;
 			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
 			mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
-			
-			m_invalidate = _invalidate;
         }
         #endregion
 
@@ -385,10 +381,7 @@ namespace Kinovea.ScreenManager
 			// Use this setting as the default value for new lines.
 			DrawingToolLine2D.ShowMeasure = m_bShowMeasure;
 			
-			if(m_invalidate != null)
-        	{
-        		m_invalidate();
-        	}
+			CallInvalidateFromMenu(sender);
 		}
         private void mnuSealMeasure_Click(object sender, EventArgs e)
 		{
@@ -413,8 +406,7 @@ namespace Kinovea.ScreenManager
 				// Update traj for distance and speed after calibration.
 				m_ParentMetadata.UpdateTrajectoriesForKeyframes();
 				
-				if(m_invalidate != null)
-	        		m_invalidate();
+				CallInvalidateFromMenu(sender);
 				
 				if (dp.ActivateKeyboardHandler != null)
 					dp.ActivateKeyboardHandler();

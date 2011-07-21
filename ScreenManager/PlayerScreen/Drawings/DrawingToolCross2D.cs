@@ -41,10 +41,6 @@ namespace Kinovea.ScreenManager
     	{
     		get { return Properties.Drawings.crossmark; }
     	}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Cross; }
-    	}
     	public override bool Attached
     	{
     		get { return true; }
@@ -69,25 +65,20 @@ namespace Kinovea.ScreenManager
     	#region Private Methods
     	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
     	private DrawingStyle m_StylePreset;
-    	private DelegateScreenInvalidate m_invalidate;
     	#endregion
 		
     	#region Constructor
     	public DrawingToolCross2D()
     	{
-    		m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CornflowerBlue));
+    		m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
     		m_StylePreset = m_DefaultStylePreset.Clone();
-    	}
-    	public DrawingToolCross2D(DelegateScreenInvalidate _invalidate)
-    	{
-    		m_invalidate = _invalidate;
     	}
     	#endregion
 		
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
+    		return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override DrawingToolType OnMouseUp()
     	{
@@ -96,7 +87,8 @@ namespace Kinovea.ScreenManager
     	public override Cursor GetCursor(Color _color, int _iSize)
     	{
     		// Draw custom cursor: cross inside a semi transparent circle (same as drawing).
-    		Pen p = new Pen(_color, 1);
+    		Color c = (Color)m_StylePreset.Elements["back color"].Value;
+    		Pen p = new Pen(c, 1);
     		Bitmap b = new Bitmap(9, 9);
     		Graphics g = Graphics.FromImage(b);
 
@@ -104,7 +96,7 @@ namespace Kinovea.ScreenManager
     		g.DrawLine(p, 1, 4, 7, 4);
     		g.DrawLine(p, 4, 1, 4, 7);
     		
-    		SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, _color));
+    		SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, c));
     		g.FillEllipse(tempBrush, 0, 0, 8, 8);
     		tempBrush.Dispose();
     		p.Dispose();

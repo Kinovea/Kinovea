@@ -41,10 +41,6 @@ namespace Kinovea.ScreenManager
     	{
     		get { return Properties.Drawings.pencil; }
     	}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Pencil; }
-    	}
     	public override bool Attached
     	{
     		get { return true; }
@@ -77,7 +73,7 @@ namespace Kinovea.ScreenManager
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingPencil(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
+    		return new DrawingPencil(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override DrawingToolType OnMouseUp()
     	{
@@ -86,10 +82,12 @@ namespace Kinovea.ScreenManager
     	public override Cursor GetCursor(Color _color, int _iSize)
     	{
     		// Draw custom cursor: Colored and sized circle.
-    		Pen p = new Pen(_color, 1);
-    		Bitmap b = new Bitmap(_iSize + 2, _iSize + 2);
+    		Color c = (Color)m_StylePreset.Elements["color"].Value;
+    		int size = (int)m_StylePreset.Elements["pen size"].Value;
+    		Pen p = new Pen(c, 1);
+    		Bitmap b = new Bitmap(size + 2, size + 2);
     		Graphics g = Graphics.FromImage(b);
-    		g.DrawEllipse(p, 1, 1, _iSize, _iSize);
+    		g.DrawEllipse(p, 1, 1, size, size);
     		p.Dispose();
     		return new Cursor(b.GetHicon());
     	}

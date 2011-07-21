@@ -21,7 +21,7 @@ namespace Kinovea.ScreenManager
         /// DrawingType is used to configure the Style Picker display.
         /// See ConfigureStyleButtons to see the possible values.
         /// </summary>
-        public DrawingType DrawingType
+        /*public DrawingType DrawingType
         {
             get { return m_DrawingType; }
             set
@@ -29,7 +29,7 @@ namespace Kinovea.ScreenManager
                 m_DrawingType = value;
                 ConfigureStyleButtons();
             }
-        }
+        }*/
         #endregion
 
         #region Events
@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private LineStyle m_PickedStyle;
-        private DrawingType m_DrawingType;
+        //private DrawingType m_DrawingType;
         private int m_iRows = 3;
         private int m_iCols = 4;
         private int m_iRowHeight = 25;
@@ -53,13 +53,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public StaticStylePicker() : this(DrawingType.Line)
+        /*public StaticStylePicker() : this(DrawingType.Line)
         {
-        }
-        public StaticStylePicker(DrawingType _dtt)
+        }*/
+        public StaticStylePicker(/*DrawingType _dtt*/)
         {
             InitializeComponent();
-            m_DrawingType = _dtt;
+            //m_DrawingType = _dtt;
             ConfigureStyleButtons();
         }
         #endregion
@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
             m_PickedStyle = LineStyle.DefaultValue;
 
             this.SuspendLayout();
-            switch(m_DrawingType)
+            /*switch(m_DrawingType)
             {
             	case DrawingType.Circle:
                 case DrawingType.Pencil:
@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
                 default:
                     ConfigureButtonsForLines();
                     break;
-            }
+            }*/
             this.ResumeLayout(true);
         }
         private void ConfigureButtonsForBrushes()
@@ -270,8 +270,8 @@ namespace Kinovea.ScreenManager
             // Ask each and every preconfigured style to draw itself on its button's canvas.
             Button btn = (Button)sender;
             LineStyle stl = (LineStyle)btn.Tag;
-            bool circles = m_DrawingType == DrawingType.Pencil || m_DrawingType == DrawingType.Circle;
-            stl.Draw(e.Graphics, circles, Color.Black);
+            //bool circles = m_DrawingType == DrawingType.Pencil || m_DrawingType == DrawingType.Circle;
+            //stl.Draw(e.Graphics, circles, Color.Black);
         }
         #endregion
 

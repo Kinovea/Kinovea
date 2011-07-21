@@ -396,7 +396,7 @@ namespace Kinovea.ScreenManager
             this.m_DecorationCircle = _origin.m_DecorationCircle.Clone();
             this.m_DecorationText = _origin.m_DecorationText.Clone();
         }
-        public void UpdateData(DrawingType _tool, Color _color)
+        /*public void UpdateData(DrawingType _tool, Color _color)
         {
         	// Update a ColorProfile entry from specified color.
         	// This method is only used to update the color.
@@ -428,8 +428,8 @@ namespace Kinovea.ScreenManager
                     // These tools do not have any color info. (shouldn't happen) 
                     break;
             }
-        }
-        public void UpdateData(DrawingType _tool, LineStyle _style)
+        }*/
+        /*public void UpdateData(DrawingType _tool, LineStyle _style)
         {
         	// Update a ColorProfile entry from specified _style.
         	// This method is only used to update the line shape and line size.
@@ -460,8 +460,8 @@ namespace Kinovea.ScreenManager
                     // These tools do not have any line shape / line size info. 
                     break;
             }
-        }
-        public void UpdateData(DrawingType _tool, int _iFontSize)
+        }*/
+        /*public void UpdateData(DrawingType _tool, int _iFontSize)
         {
         	// Update a ColorProfile entry from specified font size.
         	// This method is only used to update the font size.
@@ -485,7 +485,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
         	
-        }
+        }*/
         public void SetupDrawing(IDecorable _drawing)
         {
         	// TODO: simplify the process of the setting up the drawing.
@@ -526,7 +526,7 @@ namespace Kinovea.ScreenManager
             }	  */      	
         }
         
-        public Color GetColor(DrawingType _drawingType)
+        /*public Color GetColor(DrawingType _drawingType)
         {
         	Color color = Color.Empty;
         	
@@ -558,6 +558,6 @@ namespace Kinovea.ScreenManager
             }
 			
         	return color;
-        }
+        }*/
     }
 }

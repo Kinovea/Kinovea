@@ -113,6 +113,22 @@ namespace Kinovea.ScreenManager
         /// <param name="_deltaY">Change in y coordinates</param>
         /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
         public abstract void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys);
+        
+        public void CallInvalidateFromMenu(object sender)
+        {
+        	// The screen invalidate hook was injected inside menus during popMenu attach.
+        	// This avoids having an injection hanging in DrawingTool.
+			ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+			if(tsmi != null)
+			{
+				DelegateScreenInvalidate screenInvalidate = tsmi.Tag as DelegateScreenInvalidate;
+				if(screenInvalidate != null)
+				{
+					screenInvalidate();
+				}
+			}
+        }
+        
         #endregion
     }
 }

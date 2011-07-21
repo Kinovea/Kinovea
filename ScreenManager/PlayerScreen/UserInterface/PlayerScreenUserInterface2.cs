@@ -1051,14 +1051,26 @@ namespace Kinovea.ScreenManager
 		{
 			// Create Drawing Tools, map with buttons.
 			m_DrawingTools = new AbstractDrawingTool[(int)DrawingToolType.NumberOfDrawingTools];
-			m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
+			/*m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
 			m_DrawingTools[(int)DrawingToolType.Line2D] = new DrawingToolLine2D(DoInvalidate);
 			m_DrawingTools[(int)DrawingToolType.Cross2D] = new DrawingToolCross2D(DoInvalidate);
 			m_DrawingTools[(int)DrawingToolType.Angle2D] = new DrawingToolAngle2D(DoInvalidate);
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Chrono] = new DrawingToolChrono();
-			m_DrawingTools[(int)DrawingToolType.Circle] = new DrawingToolCircle();
+			m_DrawingTools[(int)DrawingToolType.Circle] = new DrawingToolCircle();*/
+			
+			// Refactoring in progress. This will probably change as the tool loading is reworked.
+			ToolManager tm = ToolManager.Instance();
+			m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
+			m_DrawingTools[(int)DrawingToolType.Line2D] = tm.Tools["Line"];
+			m_DrawingTools[(int)DrawingToolType.Cross2D] = tm.Tools["CrossMark"];
+			m_DrawingTools[(int)DrawingToolType.Angle2D] = tm.Tools["Angle"];
+			m_DrawingTools[(int)DrawingToolType.Pencil] = tm.Tools["Pencil"];
+			m_DrawingTools[(int)DrawingToolType.Text] = tm.Tools["Label"];
+			m_DrawingTools[(int)DrawingToolType.Chrono] = tm.Tools["Chrono"];
+			m_DrawingTools[(int)DrawingToolType.Circle] = tm.Tools["Circle"];
+			//--
 
 			btnDrawingToolPointer.Tag = DrawingToolType.Pointer;
 			btnDrawingToolLine2D.Tag = DrawingToolType.Line2D;
@@ -3042,6 +3054,7 @@ namespace Kinovea.ScreenManager
 									{
 										foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
 										{
+											tsmi.Tag = (DelegateScreenInvalidate)DoInvalidate;	// Inject dependency on this screen's invalidate method.
 											popMenuDrawings.Items.Add(tsmi);
 										}
 									}
@@ -4164,7 +4177,7 @@ namespace Kinovea.ScreenManager
 			// The current cursor must be updated.
 
 			AbstractDrawingTool drawingTool = m_DrawingTools[(int)m_ActiveTool];
-			Color cursorColor = m_ColorProfile.GetColor(drawingTool.DrawingType);
+			Color cursorColor = Color.Black; //m_ColorProfile.GetColor(drawingTool.DrawingType);
 				
 			// Get the cursor and use it.
 			if (m_ActiveTool == DrawingToolType.Pencil)

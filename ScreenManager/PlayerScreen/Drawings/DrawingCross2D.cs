@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
         
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style = new DrawingStyle();
+        private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
 		private KeyframeLabel m_LabelCoordinates;
         private bool m_bShowCoordinates;
@@ -108,11 +108,10 @@ namespace Kinovea.ScreenManager
         
         // Context menu
         private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
-        private DelegateScreenInvalidate m_invalidate;
         #endregion
 
         #region Constructors
-        public DrawingCross2D(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, DelegateScreenInvalidate _invalidate)
+        public DrawingCross2D(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Position
             m_CenterPoint = new Point(x, y);
@@ -120,8 +119,8 @@ namespace Kinovea.ScreenManager
             m_DirectZoomTopLeft = new Point(0, 0);
             
             // Decoration & binding with editors
-            m_StyleHelper.Color = Color.Yellow; //CornflowerBlue
-            m_Style.Elements.Add("back color", new StyleElementColor(m_StyleHelper.Color));
+            m_Style = _preset.Clone();
+            m_StyleHelper.Color = Color.CornflowerBlue;
             m_Style.Bind(m_StyleHelper, "Color", "back color");
                         
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
@@ -134,7 +133,6 @@ namespace Kinovea.ScreenManager
             // Context menu
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
 			mnuShowCoordinates.Image = Properties.Drawings.measure;
-            m_invalidate = _invalidate;
         }
         #endregion
 
@@ -318,10 +316,7 @@ namespace Kinovea.ScreenManager
 			// Use this setting as the default value for new lines.
 			DrawingToolCross2D.ShowCoordinates = m_bShowCoordinates;
 			
-			if(m_invalidate != null)
-        	{
-        		m_invalidate();
-        	}
+			CallInvalidateFromMenu(sender);
 		}
         #endregion
         

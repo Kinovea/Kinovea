@@ -40,10 +40,6 @@ namespace Kinovea.ScreenManager
     	{
     		get { return Properties.Drawings.chrono; }
     	}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Chrono; }
-    	}
     	public override bool Attached
     	{
     		get { return false; }
@@ -67,9 +63,8 @@ namespace Kinovea.ScreenManager
     	#region Constructor
     	public DrawingToolChrono()
     	{
-    		m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.Black));
-    		m_DefaultStylePreset.Elements.Add("font size", new StyleElementFontSize(12));
-    		
+    		m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.Black));
+    		m_DefaultStylePreset.Elements.Add("font size", new StyleElementFontSize(16));
     		m_StylePreset = m_DefaultStylePreset.Clone();
     	}
     	#endregion
@@ -77,7 +72,7 @@ namespace Kinovea.ScreenManager
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingChrono(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame);
+    		return new DrawingChrono(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override DrawingToolType OnMouseUp()
     	{

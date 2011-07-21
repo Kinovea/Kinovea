@@ -41,10 +41,6 @@ namespace Kinovea.ScreenManager
     	{
     		get { return Properties.Drawings.circle; }
     	}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Circle; }
-    	}
     	public override bool Attached
     	{
     		get { return true; }
@@ -67,16 +63,15 @@ namespace Kinovea.ScreenManager
     	
     	public DrawingToolCircle()
     	{
-			m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.CadetBlue));
-			m_DefaultStylePreset.Elements.Add("line size", new StyleElementPenSize(3));
-			
+			m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CadetBlue));
+			m_DefaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(3));
 			m_StylePreset = m_DefaultStylePreset.Clone();
     	}
     	
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame);
+    		return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override DrawingToolType OnMouseUp()
     	{

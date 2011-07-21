@@ -60,11 +60,7 @@ namespace Kinovea.ScreenManager
     	{
     		get { throw new NotImplementedException(); }
     	}
-		public override DrawingType DrawingType
-        {
-        	get { return DrawingType.None; }
-        }
-    	public override bool Attached
+		public override bool Attached
         {
         	get { throw new NotImplementedException(); }
         }

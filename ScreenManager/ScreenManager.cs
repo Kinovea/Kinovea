@@ -4125,28 +4125,6 @@ namespace Kinovea.ScreenManager
 		Circle,
 		NumberOfDrawingTools
 	};
-	public enum DrawingType
-	{
-		None,
-		Line,
-		Cross,
-		Angle,
-		Pencil,
-		Label,
-		Chrono,
-		Circle,
-		Arrow,
-		Grid,
-		Grid3D,
-		Track,
-		Spotlight,
-		Magnifier,
-		Bitmap,
-		Svg,
-		AutoNumbering,
-		Cadence,
-		RotationArrow
-	};
 	public enum ExtraDrawingType
 	{
 		Grid,

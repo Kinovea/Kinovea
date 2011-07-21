@@ -39,8 +39,8 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private ResourceManager m_ResourceManager;
-        private StaticStylePicker m_StylePicker;
-		private DrawingType m_DrawingTypePick;		// Used to identify the type of drawing being modified.
+        //private StaticStylePicker m_StylePicker;
+		//private DrawingType m_DrawingTypePick;		// Used to identify the type of drawing being modified.
 													// when we are in the commons events handlers.
 		private ColorProfile m_ColorProfile;		// Ref to the original.
         private ColorProfile m_TempColorProfile;	// Working copy.
@@ -73,14 +73,14 @@ namespace Kinovea.ScreenManager
         	UpdateColorsAndStyles();
 
             // Size Picker Control
-            m_StylePicker = new StaticStylePicker(DrawingType.Line);
-            m_StylePicker.MouseLeft += new StaticStylePicker.DelegateMouseLeft(StylePicker_MouseLeft);
+            //m_StylePicker = new StaticStylePicker(DrawingType.Line);
+            /*m_StylePicker.MouseLeft += new StaticStylePicker.DelegateMouseLeft(StylePicker_MouseLeft);
             m_StylePicker.StylePicked += new StaticStylePicker.DelegateStylePicked(StylePicker_StylePicked);
             m_StylePicker.Visible = false;
             this.Controls.Add(m_StylePicker);
-            m_StylePicker.BringToFront();
+            m_StylePicker.BringToFront();*/
 
-            m_DrawingTypePick = DrawingType.None;
+            //m_DrawingTypePick = DrawingType.None;
         }
         private void LocalizeForm()
         {
@@ -121,55 +121,55 @@ namespace Kinovea.ScreenManager
         #region Color & Style Buttons Handlers
         private void btnTextColor_Click(object sender, EventArgs e)
         {
-        	PickColor(DrawingType.Label);
+        	//PickColor(DrawingType.Label);
         }
         private void btnPencilColor_Click(object sender, EventArgs e)
         {
-        	PickColor(DrawingType.Pencil);
+        	//PickColor(DrawingType.Pencil);
         }
         private void btnLineColor_Click(object sender, EventArgs e)
         {
-        	PickColor(DrawingType.Line);
+        	//PickColor(DrawingType.Line);
         }
         private void BtnCircleColorClick(object sender, EventArgs e)
         {
-			PickColor(DrawingType.Circle);
+			//PickColor(DrawingType.Circle);
         }
         private void btnCrossColor_Click(object sender, EventArgs e)
         {
-        	PickColor(DrawingType.Cross);
+        	//PickColor(DrawingType.Cross);
         }
         private void btnAngleColor_Click(object sender, EventArgs e)
         {
-        	PickColor(DrawingType.Angle);
+        	//PickColor(DrawingType.Angle);
         }
         private void btnLineStyle_Click(object sender, EventArgs e)
         {
-            m_DrawingTypePick = DrawingType.Line;
+            /*m_DrawingTypePick = DrawingType.Line;
             m_StylePicker.DrawingType = m_DrawingTypePick;
             m_StylePicker.Top = grpColors.Top + btnLineStyle.Top;
             m_StylePicker.Left = grpColors.Left + btnLineStyle.Left + btnLineStyle.Width - m_StylePicker.Width;
-            m_StylePicker.Visible = true;
+            m_StylePicker.Visible = true;*/
         }
         private void BtnCircleStyleClick(object sender, EventArgs e)
         {
-        	m_DrawingTypePick = DrawingType.Circle;
+        	/*m_DrawingTypePick = DrawingType.Circle;
             m_StylePicker.DrawingType = DrawingType.Circle;
             m_StylePicker.Top = grpColors.Top + btnCircleStyle.Top;
             m_StylePicker.Left = grpColors.Left + btnCircleStyle.Left + btnCircleStyle.Width - m_StylePicker.Width;
-            m_StylePicker.Visible = true;	
+            m_StylePicker.Visible = true;*/	
         }
         private void btnPencilStyle_Click(object sender, EventArgs e)
         {
-            m_DrawingTypePick = DrawingType.Pencil;
+            /*m_DrawingTypePick = DrawingType.Pencil;
             m_StylePicker.DrawingType = m_DrawingTypePick;
             m_StylePicker.Top = grpColors.Top + btnPencilStyle.Top;
             m_StylePicker.Left = grpColors.Left + btnPencilStyle.Left + btnPencilStyle.Width - m_StylePicker.Width;
-            m_StylePicker.Visible = true;
+            m_StylePicker.Visible = true;*/
         }
         private void btnChronoColor_Click(object sender, EventArgs e)
         {
-        	PickColor(DrawingType.Chrono);
+        	//PickColor(DrawingType.Chrono);
         }
         private void btnLineStyle_Paint(object sender, PaintEventArgs e)
         {
@@ -198,35 +198,35 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Decoration Update Handlers
-        private void PickColor(DrawingType _drawingType)
+        private void PickColor(/*DrawingType _drawingType*/)
         {
-        	FormColorPicker picker = new FormColorPicker();
+        	/*FormColorPicker picker = new FormColorPicker();
         	if(picker.ShowDialog() == DialogResult.OK)
         	{
         		m_TempColorProfile.UpdateData(_drawingType, picker.PickedColor);
         		UpdateColorsAndStyles();
         	}
-        	picker.Dispose();
+        	picker.Dispose();*/
         }
         private void StylePicker_StylePicked(object sender, EventArgs e)
         {
-        	m_TempColorProfile.UpdateData(m_DrawingTypePick, m_StylePicker.PickedStyle);
+        	/*m_TempColorProfile.UpdateData(m_DrawingTypePick, m_StylePicker.PickedStyle);
         	UpdateColorsAndStyles();
             m_DrawingTypePick = DrawingType.None;
-            m_StylePicker.Visible = false;
+            m_StylePicker.Visible = false;*/
         }
         private void StylePicker_MouseLeft(object sender, EventArgs e)
         {
-            m_DrawingTypePick = DrawingType.None;
-            m_StylePicker.Visible = false;
+            //m_DrawingTypePick = DrawingType.None;
+            //m_StylePicker.Visible = false;
         }
         private void CmbTextSizeSelectedIndexChanged(object sender, EventArgs e)
         {
-        	m_TempColorProfile.UpdateData(DrawingType.Label, int.Parse(((ComboBox)sender).Text));
+        	//m_TempColorProfile.UpdateData(DrawingType.Label, int.Parse(((ComboBox)sender).Text));
         }
         private void CmbChronoSizeSelectedIndexChanged(object sender, EventArgs e)
         {
-        	m_TempColorProfile.UpdateData(DrawingType.Chrono, int.Parse(((ComboBox)sender).Text));
+        	//m_TempColorProfile.UpdateData(DrawingType.Chrono, int.Parse(((ComboBox)sender).Text));
         }
         #endregion
         

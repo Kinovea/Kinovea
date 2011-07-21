@@ -42,10 +42,6 @@ namespace Kinovea.ScreenManager
     	{
     		get { return Properties.Drawings.line; }
     	}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Line; }
-    	}
     	public override bool Attached
     	{
     		get { return true; }
@@ -70,7 +66,6 @@ namespace Kinovea.ScreenManager
     	#region Members
     	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
     	private DrawingStyle m_StylePreset;
-    	private DelegateScreenInvalidate m_invalidate;
     	#endregion
 		
     	#region Constructor
@@ -80,16 +75,12 @@ namespace Kinovea.ScreenManager
     		m_DefaultStylePreset.Elements.Add("line size", new StyleElementLineSize(2));
     		m_StylePreset = m_DefaultStylePreset.Clone();
     	}
-    	public DrawingToolLine2D(DelegateScreenInvalidate _invalidate)
-    	{
-    		m_invalidate = _invalidate;
-    	}
     	#endregion
 		
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate);
+    		return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override DrawingToolType OnMouseUp()
     	{

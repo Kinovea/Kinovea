@@ -53,14 +53,6 @@ namespace Kinovea.ScreenManager
     	}
     	
     	/// <summary>
-        /// The type of drawing that this tool generates.
-        /// TODO: remove as part of refactoring ?
-        /// </summary>
-    	public abstract DrawingType DrawingType
-        {
-            get;
-        }
-    	/// <summary>
     	/// Return true if this tool creates drawings attached to a particular key image.
     	/// </summary>
     	public abstract bool Attached
