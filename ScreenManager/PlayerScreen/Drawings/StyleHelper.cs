@@ -373,6 +373,7 @@ namespace Kinovea.ScreenManager
 		{
 			_p.StartCap = LineCap.Round;
         	_p.EndCap = LineCap.Round;
+        	_p.LineJoin = LineJoin.Round;
         	return _p;
 		}
 		#endregion

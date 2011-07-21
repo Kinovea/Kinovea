@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
         private string m_Text;							// Actual text displayed.
         
       	private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style = new DrawingStyle();
+        private DrawingStyle m_Style;
       	
         private InfosFading m_InfosFading;
         
@@ -127,18 +127,16 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingText(int x, int y, int width, int height, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingText(int x, int y, int width, int height, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_Text = " ";
             m_TopLeft = new Point(x, y);
             m_BackgroundSize = new SizeF(100, 20);
             
-            
             // Decoration & binding with editors
+            m_Style = _preset.Clone();
             m_StyleHelper.Bicolor = new Bicolor(Color.Black);
             m_StyleHelper.Font = new Font("Arial", m_iDefaultFontSize, FontStyle.Bold);
-            m_Style.Elements.Add("back color", new StyleElementColor(m_StyleHelper.Bicolor.Background));
-            m_Style.Elements.Add("font size", new StyleElementFontSize((int)m_StyleHelper.Font.Size));
             m_Style.Bind(m_StyleHelper, "Bicolor", "back color");
             m_Style.Bind(m_StyleHelper, "Font", "font size");
             
@@ -274,7 +272,7 @@ namespace Kinovea.ScreenManager
 
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
         {
-            DrawingText dt = new DrawingText(0,0,0,0,0,0);
+            DrawingText dt = new DrawingText(0,0,0,0,0,0, null);
 
             while (_xmlReader.Read())
             {

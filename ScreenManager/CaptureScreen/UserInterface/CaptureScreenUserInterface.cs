@@ -461,9 +461,9 @@ namespace Kinovea.ScreenManager
 			m_DrawingTools = new AbstractDrawingTool[(int)DrawingToolType.NumberOfDrawingTools];
 			
 			m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
-			m_DrawingTools[(int)DrawingToolType.Line2D] = new DrawingToolLine2D(DoInvalidate);
-			m_DrawingTools[(int)DrawingToolType.Cross2D] = new DrawingToolCross2D(DoInvalidate);
-			m_DrawingTools[(int)DrawingToolType.Angle2D] = new DrawingToolAngle2D(DoInvalidate);
+			m_DrawingTools[(int)DrawingToolType.Line2D] = new DrawingToolLine2D();
+			m_DrawingTools[(int)DrawingToolType.Cross2D] = new DrawingToolCross2D();
+			m_DrawingTools[(int)DrawingToolType.Angle2D] = new DrawingToolAngle2D();
 			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
 			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
 			m_DrawingTools[(int)DrawingToolType.Circle] = new DrawingToolCircle();
@@ -1182,10 +1182,11 @@ namespace Kinovea.ScreenManager
 						{
 							// Launch Preconfigure dialog.
 							// = Updates the tool's entry of the main color profile.
-							formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);
-							ScreenManagerKernel.LocateForm(fcd);
-							fcd.ShowDialog();
-							fcd.Dispose();
+							/*formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);*/
+							FormToolPresets ftp = new FormToolPresets();
+							ScreenManagerKernel.LocateForm(ftp);
+							ftp.ShowDialog();
+							ftp.Dispose();
 							
 							UpdateCursor();
 						}
@@ -1591,9 +1592,9 @@ namespace Kinovea.ScreenManager
 			OnPoke();
 
 			// Load, save or modify current profile.
-			formColorProfile fcp = new formColorProfile(m_ColorProfile);
-			fcp.ShowDialog();
-			fcp.Dispose();
+			FormToolPresets ftp = new FormToolPresets();
+			ftp.ShowDialog();
+			ftp.Dispose();
 
 			UpdateCursor();
 		}
@@ -1602,7 +1603,7 @@ namespace Kinovea.ScreenManager
 			// The current cursor must be updated.
 
 			AbstractDrawingTool drawingTool = m_DrawingTools[(int)m_ActiveTool];
-			Color cursorColor = m_ColorProfile.GetColor(drawingTool.DrawingType);
+			Color cursorColor = Color.Black; //m_ColorProfile.GetColor(drawingTool.DrawingType);
 				
 			// Get the cursor and use it.
 			if (m_ActiveTool == DrawingToolType.Pencil)

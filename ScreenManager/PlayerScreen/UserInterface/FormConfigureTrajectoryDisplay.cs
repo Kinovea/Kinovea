@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
         {
         	// Style Picker Control
             m_StlPicker = new StaticStylePicker();
-            m_StlPicker.DrawingType = DrawingType.Cross; // This actually means Track for the style picker.
+            //m_StlPicker.DrawingType = DrawingType.Cross; // This actually means Track for the style picker.
             m_StlPicker.MouseLeft += new StaticStylePicker.DelegateMouseLeft(StylePicker_MouseLeft);
             m_StlPicker.StylePicked += new StaticStylePicker.DelegateStylePicked(StylePicker_StylePicked);
             m_StlPicker.Visible = false;

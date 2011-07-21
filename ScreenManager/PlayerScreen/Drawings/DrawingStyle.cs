@@ -81,6 +81,10 @@ namespace Kinovea.ScreenManager
 			{
 				elem.Bind(_target, _targetProperty);
 			}
+			else
+			{
+				log.ErrorFormat("The element \"{0}\" was not found.", _source);
+			}
 		}
 		public void RaiseValueChanged()
 		{

@@ -138,7 +138,7 @@ namespace Kinovea.ScreenManager
         
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style = new DrawingStyle();
+        private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
 		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
 
@@ -151,10 +151,10 @@ namespace Kinovea.ScreenManager
 
         #region Constructors
         public DrawingChrono()
-        	: this(0, 0, 0, 1)
+        	: this(0, 0, 0, 1, new DrawingStyle())
         {
         }
-        public DrawingChrono(int x, int y, long start, long _AverageTimeStampsPerFrame)
+        public DrawingChrono(int x, int y, long start, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
             m_TopLeft = new Point(x, y);
@@ -167,10 +167,9 @@ namespace Kinovea.ScreenManager
 
             m_Text = "error";
             
+            m_Style = _preset.Clone();
             m_StyleHelper.Bicolor = new Bicolor(Color.Black);
             m_StyleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
-            m_Style.Elements.Add("color", new StyleElementColor(m_StyleHelper.Bicolor.Background)); 
-            m_Style.Elements.Add("font size", new StyleElementFontSize((int)m_StyleHelper.Font.Size));
             m_Style.Bind(m_StyleHelper, "Bicolor", "color");
             m_Style.Bind(m_StyleHelper, "Font", "font size");
             

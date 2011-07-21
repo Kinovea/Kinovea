@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         private Point m_Origin;
         private int m_iRadius;
         private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style = new DrawingStyle();
+        private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
         private double m_fStretchFactor;
         private Point m_DirectZoomTopLeft;
@@ -74,7 +74,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingCircle(int Ox, int Oy, int radius, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingCircle(int Ox, int Oy, int radius, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
             m_Origin = new Point(Ox, Oy);
@@ -85,10 +85,9 @@ namespace Kinovea.ScreenManager
             m_DirectZoomTopLeft = new Point(0, 0);
 			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             
-			m_StyleHelper.Color = Color.Black;
+			m_Style = _preset.Clone();
+			m_StyleHelper.Color = Color.Empty;
 			m_StyleHelper.LineSize = 1;
-			m_Style.Elements.Add("color", new StyleElementColor(m_StyleHelper.Color));
-			m_Style.Elements.Add("pen size", new StyleElementPenSize(m_StyleHelper.LineSize));
 			m_Style.Bind(m_StyleHelper, "Color", "color");
 			m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
 			
@@ -218,7 +217,7 @@ namespace Kinovea.ScreenManager
         	// _scale.X and _scale.Y are used to map drawings that were set in one video,
         	// to a destination video with different dimensions.
         	// For the radius, we arbitrarily choose to scale on X.
-            DrawingCircle dc = new DrawingCircle(0,0,0,0,0);
+        	DrawingCircle dc = new DrawingCircle(0,0,0,0,0, new DrawingStyle());
 
             while (_xmlReader.Read())
             {

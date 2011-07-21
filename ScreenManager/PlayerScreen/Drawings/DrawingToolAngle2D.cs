@@ -42,10 +42,6 @@ namespace Kinovea.ScreenManager
 		{
 			get { return Properties.Drawings.angle; }
 		}
-    	public override DrawingType DrawingType
-    	{
-    		get { return DrawingType.Angle; }
-    	}
     	public override bool Attached
     	{
     		get { return true; }
@@ -64,7 +60,6 @@ namespace Kinovea.ScreenManager
     	#region Members
     	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
     	private DrawingStyle m_StylePreset;
-    	private DelegateScreenInvalidate m_invalidate;
     	#endregion
 		
 		#region Constructor
@@ -73,17 +68,13 @@ namespace Kinovea.ScreenManager
 			m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
 			m_StylePreset = m_DefaultStylePreset.Clone();
 		}
-		public DrawingToolAngle2D(DelegateScreenInvalidate _invalidate)
-		{
-			m_invalidate = _invalidate;
-		}
 		#endregion
 		
 		#region Public Methods
 		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
 		{
 			return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X + 50, _Origin.Y, _Origin.X, _Origin.Y - 50, 
-			                          _iTimestamp, _AverageTimeStampsPerFrame, m_invalidate, m_StylePreset);
+			                          _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
 		}
 		public override DrawingToolType OnMouseUp()
 		{

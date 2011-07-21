@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         // Core & decoration
         private List<Point> m_PointList;
         private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style = new DrawingStyle();
+        private DrawingStyle m_Style;
         private double m_fStretchFactor;
         private InfosFading m_InfosFading;
         private Point m_DirectZoomTopLeft;
@@ -69,10 +69,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingPencil() : this(0, 0, 0, 0, 0, 0)
-        {
-        }
-        public DrawingPencil(int x1, int y1, int x2, int y2, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public DrawingPencil() : this(0, 0, 0, 0, 0, 0, null){}
+        public DrawingPencil(int x1, int y1, int x2, int y2, long _iTimestamp, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_PointList = new List<Point>();
             m_PointList.Add(new Point(x1, y1));
@@ -82,10 +80,9 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             
+            m_Style = _preset.Clone();
             m_StyleHelper.Color = Color.Black;
             m_StyleHelper.LineSize = 1;
-            m_Style.Elements.Add("color", new StyleElementColor(Color.Black));
-            m_Style.Elements.Add("pen size", new StyleElementPenSize(1));
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
             
