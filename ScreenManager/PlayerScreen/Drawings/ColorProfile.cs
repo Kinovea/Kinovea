@@ -494,7 +494,7 @@ namespace Kinovea.ScreenManager
         	
         	// Modify a drawing instance according to the current value for its parent tool.
     		
-        	_drawing.UpdateDecoration(GetColor(_drawing.DrawingType));
+        	/*_drawing.UpdateDecoration(GetColor(_drawing.DrawingType));
         	
         	switch (_drawing.DrawingType)
             {
@@ -523,7 +523,7 @@ namespace Kinovea.ScreenManager
                 default:
                     // Unsupported drawing type.
                     break;
-            }	        	
+            }	  */      	
         }
         
         public Color GetColor(DrawingType _drawingType)

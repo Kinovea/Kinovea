@@ -50,6 +50,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
+        public DrawingStyle DrawingStyle
+        {
+        	get { return m_Style;}
+        }
         public override InfosFading  infosFading
         {
         	// Fading is not modifiable from outside for chrono.
@@ -64,10 +68,6 @@ namespace Kinovea.ScreenManager
 		{
 			get { return null; }
 		}
-        public DrawingType DrawingType
-        {
-        	get { return DrawingType.Chrono; }
-        }
         public Metadata ParentMetadata
         {
             get { return m_ParentMetadata; }    // unused.
@@ -105,22 +105,11 @@ namespace Kinovea.ScreenManager
         }
         
         // The following properties are used from the formConfigureChrono.
-        // However for decorations (BackgroundColor and FontSize), 
-        // the update is done through the UpdateDecoration methods. 
-        public Color BackgroundColor
-        {
-            get { return m_TextStyle.BackColor;}
-        }
-        public int FontSize
-        {
-            get { return m_TextStyle.FontSize;}
-        }
         public string Label
         {
             get { return m_Label; }
             set { m_Label = value; }
         }
-        
         public bool ShowLabel
         {
             get { return m_bShowLabel; }
@@ -135,14 +124,12 @@ namespace Kinovea.ScreenManager
         private long m_iStopCountingTimestamp;          	// chrono stops counting. 
         private long m_iVisibleTimestamp;               	// chrono becomes visible.
         private long m_iInvisibleTimestamp;             	// chrono stops being visible.
-        private bool m_bCountdown;						// chrono works backwards. (Must have a stop)
+        private bool m_bCountdown;							// chrono works backwards. (Must have a stop)
 		
         // Data
         private string m_Text;							  	// Actual text displayed.
         private string m_Label;
         private bool m_bShowLabel;
-        private string m_MemoLabel;					  	// Used when configuring.
-        private bool m_bMemoShowLabel;				  	// Used when configuring.
         
         // Position
         private Point m_TopLeft;                         	// position (in image coords).
@@ -150,9 +137,9 @@ namespace Kinovea.ScreenManager
         private Point m_DirectZoomTopLeft;
         
         // Decoration
-        private InfosTextDecoration m_TextStyle;		  	// Style infos (font, font size, colors)
-        private InfosTextDecoration m_MemoTextStyle;	  	// Used when configuring.
-		private InfosFading m_InfosFading;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style = new DrawingStyle();
+        private InfosFading m_InfosFading;
 		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
 
         private Metadata m_ParentMetadata;
@@ -180,8 +167,13 @@ namespace Kinovea.ScreenManager
 
             m_Text = "error";
             
-            m_TextStyle = new InfosTextDecoration("Arial", 16, FontStyle.Bold, Color.White, Color.Black);
-
+            m_StyleHelper.Bicolor = new Bicolor(Color.Black);
+            m_StyleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+            m_Style.Elements.Add("color", new StyleElementColor(m_StyleHelper.Bicolor.Background)); 
+            m_Style.Elements.Add("font size", new StyleElementFontSize((int)m_StyleHelper.Font.Size));
+            m_Style.Bind(m_StyleHelper, "Bicolor", "color");
+            m_Style.Bind(m_StyleHelper, "Font", "font size");
+            
             m_Label = "";
             m_bShowLabel = true;
             
@@ -233,8 +225,7 @@ namespace Kinovea.ScreenManager
             // Invisible handler to change font size.
             // Compare wanted mouse position with current bottom right.
             int wantedHeight = point.Y - m_TopLeft.Y;
-            int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
-            UpdateDecoration(newFontSize);
+            m_StyleHelper.ForceFontSize(wantedHeight, m_Text);
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
@@ -288,40 +279,12 @@ namespace Kinovea.ScreenManager
             iHash ^= m_iVisibleTimestamp.GetHashCode();
             iHash ^= m_iInvisibleTimestamp.GetHashCode();
             iHash ^= m_bCountdown.GetHashCode();
-            iHash ^= m_TextStyle.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             iHash ^= m_Label.GetHashCode();
             iHash ^= m_bShowLabel.GetHashCode();
 
             return iHash;
         }
-        
-        #region IDecorable implementation
-        public void UpdateDecoration(Color _color)
-        {
-        	m_TextStyle.Update(_color);
-        }
-        public void UpdateDecoration(LineStyle _style)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));	
-        }
-        public void UpdateDecoration(int _iFontSize)
-        {
-        	m_TextStyle.Update(_iFontSize);
-        }
-        public void MemorizeDecoration()
-        {
-        	// Here we actually store more than decoration.
-        	m_MemoTextStyle = m_TextStyle.Clone();
-        	m_MemoLabel = m_Label;
-        	m_bMemoShowLabel = m_bShowLabel;
-        }
-        public void RecallDecoration()
-        {
-        	m_TextStyle = m_MemoTextStyle.Clone();
-        	m_Label = m_MemoLabel;
-        	m_bShowLabel = m_bMemoShowLabel;
-        }
-		#endregion
 		
 		#region IXMLSerializable implementation
 		public void ToXmlString(XmlTextWriter _xmlWriter)
@@ -395,7 +358,7 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteEndElement();
 
             // Colors and font
-            m_TextStyle.ToXml(_xmlWriter);
+            //m_TextStyle.ToXml(_xmlWriter);
             
             // Label
             _xmlWriter.WriteStartElement("Label");
@@ -473,10 +436,10 @@ namespace Kinovea.ScreenManager
                         // Adapt to new Image size.
                         dc.m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
                     }
-                    else if (_xmlReader.Name == "TextDecoration")
+                    /*else if (_xmlReader.Name == "TextDecoration")
                     {
                     	dc.m_TextStyle = InfosTextDecoration.FromXml(_xmlReader);
-                    }
+                    }*/
                     else if (_xmlReader.Name == "Values")
                     {
                         dc.ParseWorkingValues(_xmlReader, dc, _remapTimestampCallback);
@@ -634,37 +597,38 @@ namespace Kinovea.ScreenManager
         {
             // Draw background rounded rectangle.
             // The radius for rounding is based on font size.
-            Font f = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
             int radius = (int)(f.Size / 2);
             f.Dispose();
             
-            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextStyle.BackColor);
+            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
         }
         private void DrawLabel(Graphics _canvas, double _fOpacityFactor)
         {
             // Label background and size is relative to the main chrono.
-            double fMainFontSize = (double)m_TextStyle.GetRescaledFontSize((float)m_fStretchFactor);
-            int radius = (int)(fMainFontSize / 4);
-            Font fontText = m_TextStyle.GetInternalFont(0.5f);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
+            int radius = (int)(f.Size / 4);
+            f.Dispose();
+            Font fontText = m_StyleHelper.GetFont(0.5f);
             SizeF labelSize = _canvas.MeasureString(m_Label + " ", fontText);
             
 			// the label background starts at the end of the rounded angle of the main background.
             Rectangle RescaledBackground = new Rectangle(m_LabelBackground.Location.X + radius, m_LabelBackground.Location.Y - (int)labelSize.Height - 1, (int)labelSize.Width + 11, (int)labelSize.Height);
 
             LabelBackground labelBG = new LabelBackground(RescaledBackground.Location, true, 11, 0);
-            labelBG.Draw(_canvas, _fOpacityFactor, radius, (int)labelSize.Width, (int)labelSize.Height, m_TextStyle.GetFadingBackColor(0.5f));
+            labelBG.Draw(_canvas, _fOpacityFactor, radius, (int)labelSize.Width, (int)labelSize.Height, m_StyleHelper.GetBackgroundColor(128));
             
             // Label text
-            SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor(_fOpacityFactor));
+            SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor * 255));
             _canvas.DrawString(m_Label, fontText, fontBrush, new Point(RescaledBackground.X+4, RescaledBackground.Y+1));
             fontBrush.Dispose();
             fontText.Dispose();
         }
         private void DrawText(Graphics _canvas, double _fOpacityFactor)
         {
-        	Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
-        	SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor((float)_fOpacityFactor));
+        	Font fontText = m_StyleHelper.GetFont((float)m_fStretchFactor);
+        	SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor * 255));
         	_canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
         	fontBrush.Dispose();
         	fontText.Dispose();

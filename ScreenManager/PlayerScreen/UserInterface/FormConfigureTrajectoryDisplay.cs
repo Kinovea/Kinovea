@@ -172,6 +172,7 @@ namespace Kinovea.ScreenManager
         private void btnTextColor_Click(object sender, EventArgs e)
         {
         	FormColorPicker picker = new FormColorPicker();
+        	ScreenManagerKernel.LocateForm(picker);
         	if(picker.ShowDialog() == DialogResult.OK)
         	{
         		btnTextColor.BackColor = picker.PickedColor;

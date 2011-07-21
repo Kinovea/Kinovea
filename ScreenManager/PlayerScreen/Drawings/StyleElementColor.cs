@@ -23,6 +23,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
@@ -35,7 +37,19 @@ namespace Kinovea.ScreenManager
 		public override object Value
 		{
 			get { return m_Color; }
-			set { m_Color = (value is Color) ? (Color)value : Color.Black;}
+			set 
+			{ 
+				m_Color = (value is Color) ? (Color)value : Color.Black;
+				RaiseValueChanged();
+			}
+		}
+		public override Bitmap Icon
+		{
+			get { return Properties.Drawings.editorcolor;}
+		}
+		public override string DisplayName
+		{
+			get { return ScreenManagerLang.Generic_ColorPicker;}
 		}
 		#endregion
 		
@@ -61,6 +75,7 @@ namespace Kinovea.ScreenManager
 		public override AbstractStyleElement Clone()
 		{
 			AbstractStyleElement clone = new StyleElementColor(m_Color);
+			clone.Bind(this);
 			return clone;
 		}
 		public override void ReadXML(XmlReader _xmlReader)
@@ -77,9 +92,11 @@ namespace Kinovea.ScreenManager
 		private void editor_Click(object sender, EventArgs e)
 		{
 			FormColorPicker picker = new FormColorPicker();
+			ScreenManagerKernel.LocateForm(picker);
 			if(picker.ShowDialog() == DialogResult.OK)
 			{
 				m_Color = picker.PickedColor;
+				RaiseValueChanged();
 				((Control)sender).Invalidate();
 			}
 			picker.Dispose();

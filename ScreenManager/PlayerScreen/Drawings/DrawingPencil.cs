@@ -28,6 +28,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -35,9 +36,9 @@ namespace Kinovea.ScreenManager
     public class DrawingPencil : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public DrawingType DrawingType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingType.Pencil; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
@@ -58,8 +59,8 @@ namespace Kinovea.ScreenManager
         
         // Core & decoration
         private List<Point> m_PointList;
-        private LineStyle m_PenStyle;
-        private LineStyle m_MemoPenStyle;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style = new DrawingStyle();
         private double m_fStretchFactor;
         private InfosFading m_InfosFading;
         private Point m_DirectZoomTopLeft;
@@ -81,7 +82,12 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             
-            m_PenStyle = new LineStyle(1, LineShape.Simple, Color.Black);
+            m_StyleHelper.Color = Color.Black;
+            m_StyleHelper.LineSize = 1;
+            m_Style.Elements.Add("color", new StyleElementColor(Color.Black));
+            m_Style.Elements.Add("pen size", new StyleElementPenSize(1));
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+            m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
             
             // Computed
             m_RescaledPointList = new List<Point>();
@@ -105,18 +111,14 @@ namespace Kinovea.ScreenManager
                 m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
-                float fPenWidth = (float)((double)m_PenStyle.Size * m_fStretchFactor);
-                if (fPenWidth < 1) fPenWidth = 1;
-
-                Pen penLine = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
-                
                 Point[] points = new Point[m_RescaledPointList.Count];
                 for (int i = 0; i < points.Length; i++)
                 {
                     points[i] = new Point(m_RescaledPointList[i].X, m_RescaledPointList[i].Y);
                 }
-                _canvas.DrawCurve(penLine, points, 0.5f);
                 
+                Pen penLine = m_StyleHelper.GetPen(iPenAlpha, m_fStretchFactor);
+                _canvas.DrawCurve(penLine, points, 0.5f);
                 penLine.Dispose();
             }
         }
@@ -171,7 +173,7 @@ namespace Kinovea.ScreenManager
             }
             _xmlWriter.WriteEndElement();
 
-            m_PenStyle.ToXml(_xmlWriter);
+            //m_PenStyle.ToXml(_xmlWriter);
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // </Drawing>
@@ -182,8 +184,7 @@ namespace Kinovea.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolPencil", Thread.CurrentThread.CurrentUICulture);
+            return ScreenManagerLang.ToolTip_DrawingToolPencil;
         }
         public override int GetHashCode()
         {
@@ -195,33 +196,10 @@ namespace Kinovea.ScreenManager
                 iHashCode ^= p.GetHashCode();
             }
 
-            iHashCode ^= m_PenStyle.GetHashCode();
+            iHashCode ^= m_StyleHelper.GetHashCode();
 
             return iHashCode;
         }
-       
-        #region IDecorable implementation
-        public void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
-        #endregion
 
         #region IInitializable implementation
         public void ContinueSetup(Point point)
@@ -247,10 +225,10 @@ namespace Kinovea.ScreenManager
                     {
                         ParsePointList(dp, _xmlReader, _scale);
                     }
-                    else if (_xmlReader.Name == "LineStyle")
+                    /*else if (_xmlReader.Name == "LineStyle")
                     {
                         dp.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
+                    }*/
                     else if (_xmlReader.Name == "InfosFading")
                     {
                         dp.m_InfosFading.FromXml(_xmlReader);
@@ -333,7 +311,7 @@ namespace Kinovea.ScreenManager
             }
             areaPath.AddCurve(points, 0.5f);
 
-            Pen areaPen = new Pen(Color.Black, m_PenStyle.Size + 7);
+            Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
             areaPen.StartCap = LineCap.Round;
             areaPen.EndCap = LineCap.Round;
             areaPen.LineJoin = LineJoin.Round;

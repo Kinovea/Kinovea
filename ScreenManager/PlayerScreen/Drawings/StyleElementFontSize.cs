@@ -23,6 +23,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
@@ -35,7 +37,19 @@ namespace Kinovea.ScreenManager
 		public override object Value
 		{
 			get { return m_iFontSize; }
-			set { m_iFontSize = (value is int) ? (int)value : m_iDefaultFontSize;}
+			set 
+			{ 
+				m_iFontSize = (value is int) ? (int)value : m_iDefaultFontSize;
+				RaiseValueChanged();
+			}
+		}
+		public override Bitmap Icon
+		{
+			get { return Properties.Drawings.editortext;}
+		}
+		public override string DisplayName
+		{
+			get { return ScreenManagerLang.Generic_FontSizePicker;}
 		}
 		#endregion
 		
@@ -65,6 +79,7 @@ namespace Kinovea.ScreenManager
 		public override AbstractStyleElement Clone()
 		{
 			AbstractStyleElement clone = new StyleElementFontSize(m_iFontSize);
+			clone.Bind(this);
 			return clone;
 		}
 		public override void ReadXML(XmlReader _xmlReader)
@@ -83,6 +98,7 @@ namespace Kinovea.ScreenManager
 			int i;
 			bool parsed = int.TryParse(((ComboBox)sender).Text, out i);
 			m_iFontSize = parsed ? i : m_iDefaultFontSize;
+			RaiseValueChanged();
 			((ComboBox)sender).Text = m_iFontSize.ToString();
 		}
 		#endregion
