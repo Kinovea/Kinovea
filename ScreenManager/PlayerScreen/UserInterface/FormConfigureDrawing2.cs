@@ -23,63 +23,46 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// The dialog lets the user configure the whole list of tool presets.
-	/// Modifications done on the current presets, reload from file to revert.
-	/// Replaces FormColorProfile.
+	/// Dialog that let the user change the style of a specific drawing.
+	/// Works on the original and revert to a copy in case of cancel.
 	/// </summary>
-	public partial class FormToolPresets : Form
+	public partial class FormConfigureDrawing2 : Form
 	{
 		#region Members
+		private DrawingStyle m_Style;
 		private AbstractStyleElement m_firstElement;
 		private AbstractStyleElement m_secondElement;
+		private DelegateScreenInvalidate m_Invalidate;
+		private bool m_bManualClose;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public FormToolPresets()
+		public FormConfigureDrawing2(DrawingStyle _style, DelegateScreenInvalidate _invalidate)
 		{
+			m_Style = _style;
+			m_Style.ReadValue();
+			m_Style.Memorize();
+			m_Invalidate = _invalidate;
 			InitializeComponent();
-			LoadPresets();
+			SetupForm();
+			LocalizeForm();
 		}
 		#endregion
 		
 		#region Private Methods
-		private void LoadPresets()
+		private void SetupForm()
 		{
-			// Load the list
-			lstPresets.Items.Clear();
-			ToolManager tm = ToolManager.Instance();
-			foreach(AbstractDrawingTool tool in tm.Tools)
-			{
-				if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
-				{
-					lstPresets.Items.Add(new ToolStylePreset(tool));
-				}
-			}
-				
-			if(lstPresets.Items.Count > 0)
-			{
-				lstPresets.SelectedIndex = 0;
-			}
-		}
-		private void LoadPreset(ToolStylePreset _preset)
-		{
-			// Load a single preset
-			btnToolIcon.BackColor = Color.Transparent;
-			btnToolIcon.Image = _preset.ToolIcon;
-			lblToolName.Text = _preset.ToolDisplayName;
-			
 			// Layout depends on the list of style elements.
 			// Currently we only support 2 editable style elements.
 			// Example: pencil tool has a color picker and a pen size picker.
 			
-			m_firstElement = null;
-			m_secondElement = null;
-			
-			foreach(KeyValuePair<string, AbstractStyleElement> styleElement in _preset.Style.Elements)
+			foreach(KeyValuePair<string, AbstractStyleElement> styleElement in m_Style.Elements)
 			{
 				if(m_firstElement == null)
 				{
@@ -98,65 +81,100 @@ namespace Kinovea.ScreenManager
 			// Configure editor line for each element.
 			// The style element is responsible for updating the internal value and the editor appearance.
 			// The element internal value might also be bound to a style helper property so that the underlying drawing will get updated.
-			
-			// Clean up
-			btnFirstElement.Visible = false;
-			lblFirstElement.Visible = false;
-			grpConfig.Controls.RemoveByKey("firstEditor");
-			btnSecondElement.Visible = false;
-			lblSecondElement.Visible = false;
-			grpConfig.Controls.RemoveByKey("secondEditor");
-			
 			if(m_firstElement != null)
 			{
 				btnFirstElement.BackColor = Color.Transparent;
 				btnFirstElement.Image = m_firstElement.Icon;
-				btnFirstElement.Visible = true;
 				lblFirstElement.Text = m_firstElement.DisplayName;
-				lblFirstElement.Visible = true;
+				
+				m_firstElement.ValueChanged += element_ValueChanged;
 				
 				int editorsLeft = 150; // works in High DPI ?
 				
 				Control firstEditor = m_firstElement.GetEditor();
 				firstEditor.Size = new Size(50, 20);
 				firstEditor.Location = new Point(editorsLeft, btnFirstElement.Top);
-				firstEditor.Name = "firstEditor";
 				grpConfig.Controls.Add(firstEditor);
 				
 				if(m_secondElement != null)
 				{
 					btnSecondElement.BackColor = Color.Transparent;
 					btnSecondElement.Image = m_secondElement.Icon;
-					btnSecondElement.Visible = true;
 					lblSecondElement.Text = m_secondElement.DisplayName;
-					lblSecondElement.Visible = true;
 
+					m_secondElement.ValueChanged += element_ValueChanged;
+					
 					Control secondEditor = m_secondElement.GetEditor();
 					secondEditor.Size = new Size(50, 20);
 					secondEditor.Location = new Point(editorsLeft, btnSecondElement.Top);
-					secondEditor.Name = "secondEditor";
 					grpConfig.Controls.Add(secondEditor);
 				}
+				else
+				{
+					btnSecondElement.Visible = false;
+					lblSecondElement.Visible = false;
+				}
+			}
+			else
+			{
+				// Shouldn't happen. Only ask for the dialog if style.Elements.Count > 0.
+				btnFirstElement.Visible = false;
+				lblFirstElement.Visible = false;
 			}
 		}
-		private void LstPresetsSelectedIndexChanged(object sender, EventArgs e)
+		private void LocalizeForm()
 		{
-			ToolStylePreset preset = lstPresets.SelectedItem as ToolStylePreset;
-			if(preset != null)
+			this.Text = "   " + ScreenManagerLang.dlgConfigureDrawing_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+		}
+		private void element_ValueChanged()
+		{
+			if(m_Invalidate != null)
+				m_Invalidate();
+		}
+		private void Form_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(!m_bManualClose)
 			{
-				LoadPreset(preset);
+				UnhookEvents();
+				Revert();
 			}
 		}
-		private void BtnDefaultClick(object sender, EventArgs e)
+		private void UnhookEvents()
 		{
-			// Reset all tools to their default preset.
-			ToolManager tm = ToolManager.Instance();
-			foreach(AbstractDrawingTool tool in tm.Tools)
+			// Unhook event handlers
+			if(m_firstElement != null)
 			{
-				tool.ResetToDefaultStyle();
+				m_firstElement.ValueChanged -= element_ValueChanged;
 			}
 			
-			LoadPresets();
+			if(m_secondElement != null)
+			{
+				m_secondElement.ValueChanged -= element_ValueChanged;
+			}
+		}
+		private void Revert()
+		{
+			// Revert to memo and re-update data.
+			m_Style.Revert();
+			m_Style.RaiseValueChanged();
+			
+			// Update main UI.
+			if(m_Invalidate != null)
+				m_Invalidate();
+		}
+		private void BtnCancel_Click(object sender, EventArgs e)
+		{	
+			UnhookEvents();
+			Revert();
+			m_bManualClose = true;
+		}
+		private void BtnOK_Click(object sender, EventArgs e)
+		{
+			UnhookEvents();
+			m_bManualClose = true;	
 		}
 		#endregion
 		

@@ -37,7 +37,19 @@ namespace Kinovea.ScreenManager
 		public override object Value
 		{
 			get { return m_iPenSize; }
-			set { m_iPenSize = (value is int) ? (int)value : m_iDefaultSize;}
+			set 
+			{ 
+				m_iPenSize = (value is int) ? (int)value : m_iDefaultSize;
+				RaiseValueChanged();
+			}
+		}
+		public override Bitmap Icon
+		{
+			get { return Properties.Drawings.editorpen;}
+		}
+		public override string DisplayName
+		{
+			get { return "Pen size :";}
 		}
 		#endregion
 		
@@ -79,6 +91,7 @@ namespace Kinovea.ScreenManager
 		public override AbstractStyleElement Clone()
 		{
 			AbstractStyleElement clone = new StyleElementPenSize(m_iPenSize);
+			clone.Bind(this);
 			return clone;
 		}
 		public override void ReadXML(XmlReader _xmlReader)
@@ -109,6 +122,7 @@ namespace Kinovea.ScreenManager
 			if( index >= 0 && index < m_Sizes.Length)
 			{
 				m_iPenSize = m_Sizes[index];
+				RaiseValueChanged();
 			}
 		}
 		#endregion

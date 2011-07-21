@@ -37,9 +37,9 @@ namespace Kinovea.ScreenManager
     public class DrawingCross2D : AbstractDrawing, IXMLSerializable, IDecorable
     {
         #region Properties
-        public DrawingType DrawingType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingType.Cross; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
@@ -83,7 +83,7 @@ namespace Kinovea.ScreenManager
 		}
         public Color PenColor
         {
-        	get { return m_PenStyle.Color; }
+        	get { return m_StyleHelper.Color; }
         }
         #endregion
 
@@ -94,8 +94,8 @@ namespace Kinovea.ScreenManager
         private Point m_DirectZoomTopLeft;
         
         // Decoration
-        private LineStyle m_PenStyle;
-        private LineStyle m_MemoPenStyle;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style = new DrawingStyle();
         private InfosFading m_InfosFading;
 		private KeyframeLabel m_LabelCoordinates;
         private bool m_bShowCoordinates;
@@ -119,8 +119,11 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             
-            // Decoration
-            m_PenStyle = new LineStyle(1, LineShape.Simple, Color.CornflowerBlue);
+            // Decoration & binding with editors
+            m_StyleHelper.Color = Color.Yellow; //CornflowerBlue
+            m_Style.Elements.Add("back color", new StyleElementColor(m_StyleHelper.Color));
+            m_Style.Bind(m_StyleHelper, "Color", "back color");
+                        
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             
             m_LabelCoordinates = new KeyframeLabel(m_CenterPoint, Color.Black);
@@ -139,9 +142,9 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            int iPenAlpha = (int)((double)255 * fOpacityFactor);
+            int iAlpha = (int)((double)255 * fOpacityFactor);
 
-            if (iPenAlpha > 0)
+            if (iAlpha > 0)
             {
                 // Rescale the points.
                 m_fStretchFactor = _fStretchFactor;
@@ -149,12 +152,13 @@ namespace Kinovea.ScreenManager
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
                 // Cross
-                Pen PenEdges = m_PenStyle.GetInternalPen(iPenAlpha);
+                Pen PenEdges = m_StyleHelper.GetPen(iAlpha);
                 _canvas.DrawLine(PenEdges, RescaledCenterPoint.X - m_iDefaultRadius, RescaledCenterPoint.Y, RescaledCenterPoint.X + m_iDefaultRadius, RescaledCenterPoint.Y);
                 _canvas.DrawLine(PenEdges, RescaledCenterPoint.X, RescaledCenterPoint.Y - m_iDefaultRadius, RescaledCenterPoint.X, RescaledCenterPoint.Y + m_iDefaultRadius);
 
                 // Background
-                SolidBrush tempBrush = new SolidBrush(Color.FromArgb((int)((double)m_iDefaultBackgroundAlpha * fOpacityFactor), m_PenStyle.Color));
+                SolidBrush tempBrush = m_StyleHelper.GetBrush((int)((double)m_iDefaultBackgroundAlpha * fOpacityFactor));
+                
                 _canvas.FillEllipse(tempBrush, RescaledCenterPoint.X - m_iDefaultRadius - 1, RescaledCenterPoint.Y - m_iDefaultRadius - 1, (m_iDefaultRadius * 2) + 2, (m_iDefaultRadius * 2) + 2);
                 tempBrush.Dispose();
                 PenEdges.Dispose();
@@ -220,7 +224,7 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteEndElement();
 
             // Color, style, fading.
-            m_PenStyle.ToXml(_xmlWriter);
+            m_Style.WriteXml(_xmlWriter);
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // Show coords.
@@ -263,7 +267,7 @@ namespace Kinovea.ScreenManager
                     }
                     else if (_xmlReader.Name == "LineStyle")
                     {
-                        dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
+                        //dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
                     }
                     else if (_xmlReader.Name == "InfosFading")
                     {
@@ -295,40 +299,15 @@ namespace Kinovea.ScreenManager
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolCross2D", Thread.CurrentThread.CurrentUICulture);
+            return ScreenManagerLang.ToolTip_DrawingToolCross2D;
         }
         public override int GetHashCode()
         {
             // Combine all relevant fields with XOR to get the Hash.
             int iHash = m_CenterPoint.GetHashCode();
-            iHash ^= m_PenStyle.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
-        
-        #region IDecorable implementation
-        public void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public void UpdateDecoration(LineStyle _style)
-        {
-        	// Actually not used for now.
-        	m_PenStyle.Update(_style, false, true, true);	
-        }
-        public void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
-        #endregion
 
         #region Context menu
         private void mnuShowCoordinates_Click(object sender, EventArgs e)

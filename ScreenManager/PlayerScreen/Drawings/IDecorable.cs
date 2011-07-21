@@ -23,20 +23,11 @@ using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Defines methods to change decoration of a drawing.
-	/// </summary>
 	public interface IDecorable
 	{
-		DrawingType DrawingType
-        {
-        	get;
-        }
-		
-		void UpdateDecoration(Color _color);
-        void UpdateDecoration(LineStyle _style);
-        void UpdateDecoration(int _iFontSize);
-        void MemorizeDecoration();
-        void RecallDecoration();
+		DrawingStyle DrawingStyle
+		{
+			get;
+		}
 	}
 }

@@ -185,6 +185,7 @@
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementPenSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolStylePreset.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
@@ -228,6 +229,10 @@
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
+      <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
@@ -462,6 +467,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing2.resx">
+      <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
     </EmbeddedResource>
@@ -474,11 +482,17 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
       <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormToolPresets.resx">
+      <DependentUpon>FormToolPresets.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Drawings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
+      <DependentUpon>FormColorPicker.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

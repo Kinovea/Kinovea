@@ -2923,12 +2923,14 @@ namespace Kinovea.ScreenManager
 									m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
 									m_FrameServer.Metadata.SelectedDrawing = 0;
 									
-									// Color
-									IDecorable decorableDrawing = ad as IDecorable;
-									if(decorableDrawing != null)
-									{
-										m_ColorProfile.SetupDrawing(decorableDrawing);
-									}
+			// Color
+			// REMOVEME as part of drawing style refactoring. The Drawing tool should inject its current style upon drawing generation.
+			// The drawing would do a copy of the style and then live its life.
+			/*IDecorable decorableDrawing = ad as IDecorable;
+			if(decorableDrawing != null)
+			{
+				m_ColorProfile.SetupDrawing(decorableDrawing);
+			}*/
 									
 									if(ad is DrawingLine2D)
 									{
@@ -3098,10 +3100,12 @@ namespace Kinovea.ScreenManager
 							{
 								// Right click without being on any drawing but with a drawing tool active.
 								// Launch Preconfigure dialog. => Updates the tool's entry of the main color profile.
-								formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);
+			// TODO: Part of drawing tools refactoring.
+			// Simply launch FormToolPreset on the right line.
+								/*formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);
 								ScreenManagerKernel.LocateForm(fcd);
 								fcd.ShowDialog();
-								fcd.Dispose();
+								fcd.Dispose();*/
 								
 								UpdateCursor();
 							}
@@ -4223,9 +4227,9 @@ namespace Kinovea.ScreenManager
 			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
 				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
-				if(decorableDrawing != null)
+				if(decorableDrawing != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
 				{
-					formConfigureDrawing fcd = new formConfigureDrawing(decorableDrawing, pbSurfaceScreen);
+					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
 					ScreenManagerKernel.LocateForm(fcd);
 					fcd.ShowDialog();
 					fcd.Dispose();
@@ -4507,7 +4511,7 @@ namespace Kinovea.ScreenManager
 				}
 				
 				// Change this chrono display.
-				formConfigureChrono fcc = new formConfigureChrono(dc, pbSurfaceScreen);
+				formConfigureChrono fcc = new formConfigureChrono(dc, DoInvalidate);
 				ScreenManagerKernel.LocateForm(fcc);
 				fcc.ShowDialog();
 				fcc.Dispose();

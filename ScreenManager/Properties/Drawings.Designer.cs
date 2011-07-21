@@ -150,6 +150,33 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap editorcolor
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("editorcolor", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap editorpen
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("editorpen", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap editortext
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("editortext", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap hide
 		{
 			get

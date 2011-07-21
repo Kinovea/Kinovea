@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
 		#region Constructor
 		public DrawingToolAngle2D()
 		{
-			m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.DarkOliveGreen));
+			m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
 			m_StylePreset = m_DefaultStylePreset.Clone();
 		}
 		public DrawingToolAngle2D(DelegateScreenInvalidate _invalidate)

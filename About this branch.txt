@@ -1,3 +1,40 @@
+2011-07-21
+
+Continuation of the implementation of the new styling framework.
+
+1. Creation of the StyleHelper class to supercede InfoTextDecoration and LineStyle utility classes.
+This class should be the only one used by a Drawing for actual drawing.
+It exposes a number of styling primitives and provide Pen, Brushes or Font objects on demand.
+
+2. Creation of the Bicolor structure to hold a foreground/background tuple with the foreground automatically set to black or white according to the background luma.
+
+3. Implementation of a binding mechanism to automatically update the primitives in the style helper when a style element value is changed from its mini editor.
+The binding is loose. For example, it is possible to bind a font size style element to the Font property of the style helper.
+
+This allow for quick specification of a drawing styling needs. The process would be, for example for Cross Marker :
+- Set Color property of Style helper to a default value.
+- Create a style element object (mini editor) so the configure dialog knows that the user should be able to edit some kind of "color" value.
+- Bind the color of the style element (mini editor) to the color of the style helper (for drawing) so that each time the user changes the value, it is pushed to the helper property that we use.
+
+4. Update of the configure dialog for drawings (and the one for chrono) to use the new framework and dynamically add the mini editors.
+
+With this in place, 3 lines of code are just what is needed to set up a styling property, have it appear automatically on the configure dialog, and get automatic updates.
+As an example, adding support for font size modification on angle drawings is 2 lines of code: adding the mini editor and binding it to the Font property we use. (Not activated).
+
+5. Added an Icon and a display name to the style element to improve the mini editors presentation.
+6. Added a Memorize + Revert service in DrawingStyle. Used by the configuration dialogs to support cancel.
+
+Misc:
+Removed unused members of IDecorable in the Interface and in all implementations.
+Call locateform() for all instanciations of color picker dialog.
+
+Broken:
+- Serialization.
+- Tool presets injection in generated drawings.
+- Line shape / arrow endings.
+
+--------------------------------------------------------------------------------
+
 2011-07-18
 Start of a completely new framework for color and style.
 

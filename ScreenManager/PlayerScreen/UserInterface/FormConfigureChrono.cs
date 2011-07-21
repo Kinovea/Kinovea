@@ -18,13 +18,16 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.Services;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -37,121 +40,156 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureChrono : Form
     {
     	#region Members
-    	// Generic
-    	private ResourceManager m_ResourceManager;
     	private bool m_bManualClose = false;
-        
-    	// Specific to the configure page.
-    	private PictureBox m_SurfaceScreen; 	// Used to update the image while configuring.
+    	private DelegateScreenInvalidate m_Invalidate;
     	private DrawingChrono m_Chrono;
+    	private string m_MemoLabel;
+    	private bool m_bMemoShowLabel;
+    	private AbstractStyleElement m_firstElement;
+		private AbstractStyleElement m_secondElement;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Construction & Initialization
-        public formConfigureChrono(DrawingChrono _chrono, PictureBox _SurfaceScreen)
+        public formConfigureChrono(DrawingChrono _chrono, DelegateScreenInvalidate _invalidate)
         {
             InitializeComponent();
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-
-            m_SurfaceScreen = _SurfaceScreen;
+            m_Invalidate = _invalidate;
             m_Chrono = _chrono;
+			m_Chrono.DrawingStyle.ReadValue();
+			m_Chrono.DrawingStyle.Memorize();
+            m_MemoLabel = m_Chrono.Label;
+            m_bMemoShowLabel = m_Chrono.ShowLabel;
             
-            // Save the current state in case we need to recall it later.
-            m_Chrono.MemorizeDecoration();
-
-            // Initialize font size combo.
-            cmbFontSize.Items.Clear();
-            foreach(int size in InfosTextDecoration.AllowedFontSizes)
-            {
-            	cmbFontSize.Items.Add(size.ToString());
-            }
+            SetupForm();
+            LocalizeForm();
             
-            // Show current values:
-            cmbFontSize.Text = m_Chrono.FontSize.ToString();
-            btnChronoColor.BackColor = m_Chrono.BackgroundColor;
-            FixColors();
             tbLabel.Text = m_Chrono.Label;
             chkShowLabel.Checked = m_Chrono.ShowLabel;
-
-            // Localize
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureChrono_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            lblColor.Text = m_ResourceManager.GetString("Generic_ColorPicker", Thread.CurrentThread.CurrentUICulture);
-            lblFontSize.Text = m_ResourceManager.GetString("Generic_FontSizePicker", Thread.CurrentThread.CurrentUICulture);
-            lblLabel.Text = m_ResourceManager.GetString("dlgConfigureChrono_Label", Thread.CurrentThread.CurrentUICulture);
-            chkShowLabel.Text = m_ResourceManager.GetString("dlgConfigureChrono_chkShowLabel", Thread.CurrentThread.CurrentUICulture);
-        
         }
         #endregion
 
-        #region ColorPicker Handling
-        private void btnChronoColor_Click(object sender, EventArgs e)
+        #region Public Methods
+        private void SetupForm()
         {
-        	FormColorPicker picker = new FormColorPicker();
-        	if(picker.ShowDialog() == DialogResult.OK)
+        	foreach(KeyValuePair<string, AbstractStyleElement> styleElement in m_Chrono.DrawingStyle.Elements)
         	{
-        		btnChronoColor.BackColor = picker.PickedColor;
-            	m_Chrono.UpdateDecoration(picker.PickedColor);
-            	FixColors();
-            	m_SurfaceScreen.Invalidate();
+        		if(m_firstElement == null)
+        		{
+        			m_firstElement = styleElement.Value;
+        		}
+        		else if(m_secondElement == null)
+        		{
+        			m_secondElement = styleElement.Value;
+        		}
+        		else
+        		{
+        			log.DebugFormat("Discarding style element: \"{0}\". (Only 2 style elements supported).", styleElement.Key);
+        		}
         	}
-        	picker.Dispose();
+        	
+        	// Configure editor line for each element.
+        	// The style element is responsible for updating the internal value and the editor appearance.
+        	// The element internal value might also be bound to a style helper property so that the underlying drawing will get updated.
+        	if(m_firstElement != null)
+        	{
+        		lblFirstElement.Text = m_firstElement.DisplayName;
+        		m_firstElement.ValueChanged += element_ValueChanged;
+        		
+        		int editorsLeft = 150; // works in High DPI ?
+        		
+        		Control firstEditor = m_firstElement.GetEditor();
+        		firstEditor.Size = new Size(50, 20);
+        		firstEditor.Location = new Point(editorsLeft, lblFirstElement.Top - 3);
+        		grpConfig.Controls.Add(firstEditor);
+        		
+        		if(m_secondElement != null)
+        		{
+        			lblSecondElement.Text = m_secondElement.DisplayName;
+        			m_secondElement.ValueChanged += element_ValueChanged;
+        			
+        			Control secondEditor = m_secondElement.GetEditor();
+        			secondEditor.Size = new Size(50, 20);
+        			secondEditor.Location = new Point(editorsLeft, lblSecondElement.Top  - 3);
+        			grpConfig.Controls.Add(secondEditor);
+        		}
+        		else
+        		{
+        			lblSecondElement.Visible = false;
+        		}
+        	}
+        	else
+        	{
+        		lblFirstElement.Visible = false;
+        	}
         }
-        private void FixColors()
+        private void LocalizeForm()
         {
-            // Fix the color of the button.
-            btnChronoColor.FlatAppearance.MouseOverBackColor = btnChronoColor.BackColor;
-
-            // Put a black frame around white rectangles.
-            if (Color.Equals(btnChronoColor.BackColor, Color.FromArgb(255, 255, 255)) || Color.Equals(btnChronoColor.BackColor, Color.White))
-            {
-                btnChronoColor.FlatAppearance.BorderSize = 1;
-            }
-            else
-            {
-                btnChronoColor.FlatAppearance.BorderSize = 0;
-            }
+        	this.Text = "   " + ScreenManagerLang.dlgConfigureChrono_Title;
+        	btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+        	btnOK.Text = ScreenManagerLang.Generic_Apply;
+        	grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+        	
+        	lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
+        	chkShowLabel.Text = ScreenManagerLang.dlgConfigureChrono_chkShowLabel;
         }
-        #endregion
-
-        #region m_FontSize & Label Handling
-        private void cmbFontSize_SelectedValueChanged(object sender, EventArgs e)
+        private void element_ValueChanged()
         {
-        	m_Chrono.UpdateDecoration(int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
-            m_SurfaceScreen.Invalidate();
+        	if(m_Invalidate != null) m_Invalidate();
         }
         private void tbLabel_TextChanged(object sender, EventArgs e)
         {
-            m_Chrono.Label = tbLabel.Text;
-            m_SurfaceScreen.Invalidate();
+        	m_Chrono.Label = tbLabel.Text;
+        	if(m_Invalidate != null) m_Invalidate();
         }
         private void chkShowLabel_CheckedChanged(object sender, EventArgs e)
         {
-            m_Chrono.ShowLabel = chkShowLabel.Checked;
-            m_SurfaceScreen.Invalidate();
+        	m_Chrono.ShowLabel = chkShowLabel.Checked;
+        	if(m_Invalidate != null) m_Invalidate();
         }
         #endregion
-
-        #region OK/Cancel Handlers
+        
+        #region Closing
+        private void UnhookEvents()
+		{
+			// Unhook event handlers
+			if(m_firstElement != null)
+			{
+				m_firstElement.ValueChanged -= element_ValueChanged;
+			}
+			
+			if(m_secondElement != null)
+			{
+				m_secondElement.ValueChanged -= element_ValueChanged;
+			}
+		}
+		private void Revert()
+		{
+			// Revert to memo and re-update data.
+			m_Chrono.DrawingStyle.Revert();
+			m_Chrono.DrawingStyle.RaiseValueChanged();
+			m_Chrono.Label = m_MemoLabel;
+			m_Chrono.ShowLabel = m_bMemoShowLabel;
+			
+			if(m_Invalidate != null) m_Invalidate();
+		}
         private void btnOK_Click(object sender, EventArgs e)
         {
-            // Nothing more to do. The chrono has been updated already.
-            m_bManualClose = true;
+            UnhookEvents();
+			m_bManualClose = true;	
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
-        	// Fall back to memorized decoration.
-        	m_Chrono.RecallDecoration();
-        	m_SurfaceScreen.Invalidate();
-            m_bManualClose = true;
+        	UnhookEvents();
+			Revert();
+			m_bManualClose = true;
         }
         private void formConfigureChrono_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!m_bManualClose) 
-            {
-            	m_Chrono.RecallDecoration();
-            	m_SurfaceScreen.Invalidate();
+            if(!m_bManualClose)
+			{
+				UnhookEvents();
+				Revert();
             }
         }
         #endregion 

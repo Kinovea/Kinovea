@@ -87,8 +87,8 @@ namespace Kinovea.ScreenManager
             m_bPreConfigure = false;
             m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
-            m_DrawingType = m_Drawing.DrawingType;
-	        m_Drawing.MemorizeDecoration();            
+            //m_DrawingType = m_Drawing.DrawingType;
+	        //m_Drawing.MemorizeDecoration();            
 	        SetupForm();
         }
         private void SetupForm()
@@ -152,7 +152,8 @@ namespace Kinovea.ScreenManager
                     }
                     else
                     {
-                    	cmbFontSize.Text = ((DrawingText)m_Drawing).FontSize.ToString();
+                    	//cmbFontSize.Text = ((DrawingText)m_Drawing).FontSize.ToString();
+                    	cmbFontSize.Text = "8";
                     }
                     grpConfig.Height = cmbFontSize.Bottom + 20;
                     break;
@@ -187,7 +188,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-            	m_Drawing.UpdateDecoration(m_ColorPicker.PickedColor);
+            	//m_Drawing.UpdateDecoration(m_ColorPicker.PickedColor);
             	m_SurfaceScreen.Invalidate();
             }
             
@@ -201,7 +202,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-            	m_Drawing.UpdateDecoration(stlPicker.PickedStyle);
+            	//m_Drawing.UpdateDecoration(stlPicker.PickedStyle);
             	m_SurfaceScreen.Invalidate();
             }
         }
@@ -214,7 +215,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-            	m_Drawing.UpdateDecoration(int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
+            	//m_Drawing.UpdateDecoration(int.Parse((string)cmbFontSize.Items[cmbFontSize.SelectedIndex]));
             	m_SurfaceScreen.Invalidate();
             }
         }
@@ -245,7 +246,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-            	m_Drawing.RecallDecoration();
+            	//m_Drawing.RecallDecoration();
                 m_SurfaceScreen.Invalidate();
             }
 
@@ -255,7 +256,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_bManualClose && !m_bPreConfigure)
             {
-            	m_Drawing.RecallDecoration();
+            	//m_Drawing.RecallDecoration();
                 m_SurfaceScreen.Invalidate();
             }
         }

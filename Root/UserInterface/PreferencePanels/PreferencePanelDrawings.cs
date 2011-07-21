@@ -112,6 +112,7 @@ namespace Kinovea.Root
 		private void btnGridColor_Click(object sender, EventArgs e)
         {
         	FormColorPicker picker = new FormColorPicker();
+        	ScreenManagerKernel.LocateForm(picker);
         	if(picker.ShowDialog() == DialogResult.OK)
         	{
         		btnGridColor.BackColor = picker.PickedColor;
@@ -123,6 +124,7 @@ namespace Kinovea.Root
         private void btn3DPlaneColor_Click(object sender, EventArgs e)
         {
         	FormColorPicker picker = new FormColorPicker();
+        	ScreenManagerKernel.LocateForm(picker);
         	if(picker.ShowDialog() == DialogResult.OK)
         	{
         		btn3DPlaneColor.BackColor = picker.PickedColor;

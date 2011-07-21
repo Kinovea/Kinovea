@@ -36,9 +36,9 @@ namespace Kinovea.ScreenManager
     public class DrawingCircle : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public DrawingType DrawingType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingType.Circle; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
@@ -59,8 +59,8 @@ namespace Kinovea.ScreenManager
         // Core
         private Point m_Origin;
         private int m_iRadius;
-        private LineStyle m_PenStyle;
-        private LineStyle m_MemoPenStyle;        
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style = new DrawingStyle();
         private InfosFading m_InfosFading;
         private double m_fStretchFactor;
         private Point m_DirectZoomTopLeft;
@@ -71,7 +71,6 @@ namespace Kinovea.ScreenManager
         private Point m_RescaledOrigin;
         private int m_iRescaledRadius;
         private int m_iRescaledDiameter;
-        //private static readonly double m_fDegreesToRadians = Math.PI / 180.0;
         #endregion
 
         #region Constructor
@@ -85,8 +84,14 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
 			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
-            m_PenStyle = new LineStyle(1, LineShape.Simple, Color.Black);
             
+			m_StyleHelper.Color = Color.Black;
+			m_StyleHelper.LineSize = 1;
+			m_Style.Elements.Add("color", new StyleElementColor(m_StyleHelper.Color));
+			m_Style.Elements.Add("pen size", new StyleElementPenSize(m_StyleHelper.LineSize));
+			m_Style.Bind(m_StyleHelper, "Color", "color");
+			m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+			
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
@@ -105,58 +110,14 @@ namespace Kinovea.ScreenManager
                 m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
-                float fPenWidth = (float)((double)m_PenStyle.Size * m_fStretchFactor);
-                if (fPenWidth < 1) fPenWidth = 1;
-
-                Pen penLine = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
+                Pen penLine = m_StyleHelper.GetPen(iPenAlpha, m_fStretchFactor);
+                _canvas.DrawEllipse(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter);
                 
                 if(_bSelected)
                 {
-                	_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 65, 320);
-                	
-                	// 1. Complementary color
-                	_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 65, 320);
-                	Color invertedColor = Color.FromArgb(iPenAlpha, 255 - m_PenStyle.Color.R, 255 - m_PenStyle.Color.G, 255 - m_PenStyle.Color.B);
-					Pen penHandle = new Pen(invertedColor, fPenWidth);
-					_canvas.DrawArc(penHandle, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 25, 40);
-                	penHandle.Dispose();
-                	
-					// 2. With slices.
-                	//_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 65, 320);
-					//Pen penHandle = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
-					//penHandle.CompoundArray = new float[] { 0.0F, 0.33F, 0.66F, 1.0F };
-					//penHandle.CompoundArray = new float[] { 0.0F, 0.20F, 0.40F, 0.60F, 0.80F, 1.0F };
-					//_canvas.DrawArc(penHandle, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 25, 40);
-                	//penHandle.Dispose();
-                	
-                	// 3. As a bigger empty arc.
-                	//_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 55, 340);
-                	//Pen penHandle = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth + 10);
-					//penHandle.CompoundArray = new float[] { 0.0f, 0.2f, 0.8f, 1.0f };
-					//_canvas.DrawArc(penHandle, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 35, 20);
-                	//penHandle.Dispose();
-                	
-					// 3. As perpendicular lines.
-					/*_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 55, 340);
-                	int shiftVert = (int)(Math.Sin(35.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);
-					int shiftHorz = (int)(Math.Cos(35.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);					
-					Point spot1 = new Point(m_RescaledOrigin.X + shiftHorz, m_RescaledOrigin.Y + shiftVert);
-					shiftVert = (int)(Math.Sin(45.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);
-					shiftHorz = (int)(Math.Cos(45.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);					
-					Point spot2 = new Point(m_RescaledOrigin.X + shiftHorz, m_RescaledOrigin.Y + shiftVert);
-					shiftVert = (int)(Math.Sin(55.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);
-					shiftHorz = (int)(Math.Cos(55.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);					
-					Point spot3 = new Point(m_RescaledOrigin.X + shiftHorz, m_RescaledOrigin.Y + shiftVert);
-					
-					Pen penHandle = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
-					_canvas.DrawLine(penHandle, spot1.X - fPenWidth, spot1.Y - fPenWidth, spot1.X + fPenWidth, spot1.Y + fPenWidth);
-					_canvas.DrawLine(penHandle, spot2.X - fPenWidth, spot2.Y - fPenWidth, spot2.X + fPenWidth, spot2.Y + fPenWidth);
-					_canvas.DrawLine(penHandle, spot3.X - fPenWidth, spot3.Y - fPenWidth, spot3.X + fPenWidth, spot3.Y + fPenWidth);
-					penHandle.Dispose();*/
-                }
-                else
-                {
-                	_canvas.DrawEllipse(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter);
+                	// Draw a small arc in complementary color in the lower right part to show resizer.
+                	penLine.Color = Color.FromArgb(iPenAlpha, 255 - m_StyleHelper.Color.R, 255 - m_StyleHelper.Color.G, 255 - m_StyleHelper.Color.B);
+					_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 25, 40);
                 }
                 
                 penLine.Dispose();
@@ -225,34 +186,11 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(m_iRadius.ToString());
             _xmlWriter.WriteEndElement();
 
-            m_PenStyle.ToXml(_xmlWriter);
+            //m_PenStyle.ToXml(_xmlWriter);
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // </Drawing>
             _xmlWriter.WriteEndElement();
-        }
-        #endregion
-        
-        #region IDecorable implementation
-        public void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
         }
         #endregion
         
@@ -272,6 +210,7 @@ namespace Kinovea.ScreenManager
             // Combine all relevant fields with XOR to get the Hash.
             int iHash = m_Origin.GetHashCode();
             iHash ^= m_iRadius.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
         public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
@@ -297,7 +236,7 @@ namespace Kinovea.ScreenManager
                     }
                     else if (_xmlReader.Name == "LineStyle")
                     {
-                        dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
+                        //dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
                     }
                     else if (_xmlReader.Name == "InfosFading")
                     {
@@ -354,7 +293,7 @@ namespace Kinovea.ScreenManager
 			GraphicsPath areaPath = new GraphicsPath();			
 			areaPath.AddArc(m_Origin.X - m_iRadius, m_Origin.Y - m_iRadius, m_iDiameter, m_iDiameter, 25, 40);
 			
-			Pen areaPen = new Pen(Color.Black, m_PenStyle.Size + 10);
+			Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10);
 			areaPath.Widen(areaPen);
 			areaPen.Dispose();
 			
