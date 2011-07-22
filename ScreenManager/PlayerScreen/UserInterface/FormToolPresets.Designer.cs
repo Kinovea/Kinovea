@@ -118,6 +118,7 @@ namespace Kinovea.ScreenManager
 			this.btnApply.TabIndex = 76;
 			this.btnApply.Text = "Apply";
 			this.btnApply.UseVisualStyleBackColor = true;
+			this.btnApply.Click += new System.EventHandler(this.BtnOK_Click);
 			// 
 			// btnCancel
 			// 
@@ -129,6 +130,7 @@ namespace Kinovea.ScreenManager
 			this.btnCancel.TabIndex = 77;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
 			// 
 			// lstPresets
 			// 
@@ -221,9 +223,11 @@ namespace Kinovea.ScreenManager
 			// 
 			// FormToolPresets
 			// 
+			this.AcceptButton = this.btnApply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
+			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(375, 231);
 			this.Controls.Add(this.grpConfig);
 			this.Controls.Add(this.lblToolName);
@@ -237,6 +241,7 @@ namespace Kinovea.ScreenManager
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "FormToolPresets";
 			this.Text = "FormToolPresets";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
 			this.grpConfig.ResumeLayout(false);
 			this.grpConfig.PerformLayout();
 			this.ResumeLayout(false);
