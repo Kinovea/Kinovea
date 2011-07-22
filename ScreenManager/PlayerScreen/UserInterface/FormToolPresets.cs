@@ -33,6 +33,7 @@ namespace Kinovea.ScreenManager
 	public partial class FormToolPresets : Form
 	{
 		#region Members
+		private bool m_bManualClose;
 		private AbstractStyleElement m_firstElement;
 		private AbstractStyleElement m_secondElement;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -57,6 +58,7 @@ namespace Kinovea.ScreenManager
 				if(pair.Value.StylePreset != null && pair.Value.StylePreset.Elements.Count > 0)
 				{
 					lstPresets.Items.Add(new ToolStylePreset(pair.Value));
+					pair.Value.StylePreset.Memorize();
 				}
 			}
 				
@@ -157,6 +159,31 @@ namespace Kinovea.ScreenManager
 			}
 			
 			LoadPresets();
+		}
+		private void Form_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(!m_bManualClose)
+			{
+				Revert();
+			}
+		}
+		private void Revert()
+		{
+			// Revert to memos
+			ToolManager tm = ToolManager.Instance();
+			foreach(KeyValuePair<string, AbstractDrawingTool> pair in tm.Tools)
+			{
+				pair.Value.StylePreset.Revert();	
+			}
+		}
+		private void BtnCancel_Click(object sender, EventArgs e)
+		{	
+			Revert();
+			m_bManualClose = true;
+		}
+		private void BtnOK_Click(object sender, EventArgs e)
+		{
+			m_bManualClose = true;	
 		}
 		#endregion
 		
