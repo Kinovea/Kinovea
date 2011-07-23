@@ -187,6 +187,7 @@
     <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementPenSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementTrackShape.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolStylePreset.cs" />

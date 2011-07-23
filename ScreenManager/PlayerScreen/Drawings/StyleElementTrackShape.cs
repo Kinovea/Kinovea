@@ -27,42 +27,42 @@ using System.Xml;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// Style element to represent line width.
+	/// Style element to represent track line shape.
 	/// Editor: owner drawn combo box.
-	/// Very similar to StyleElementPenSize, just the rendering changes. (lines vs circles)
 	/// </summary>
-	public class StyleElementLineSize : AbstractStyleElement
+	public class StyleElementTrackShape : AbstractStyleElement
 	{
 		#region Properties
 		public override object Value
 		{
-			get { return m_iPenSize; }
+			get { return m_TrackShape; }
 			set 
 			{ 
-				m_iPenSize = (value is int) ? (int)value : m_iDefaultSize;
+				m_TrackShape = (value is TrackShape) ? (TrackShape)value : TrackShape.Solid;
 				RaiseValueChanged();
 			}
 		}
 		public override Bitmap Icon
 		{
-			get { return Properties.Drawings.linesize;}
+			get { return Properties.Drawings.trackshape;}
 		}
 		public override string DisplayName
 		{
-			get { return "Line size :";}
+			get { return "Track shape :";}
 		}
 		#endregion
 		
 		#region Members
-		private static readonly int[] m_Options = { 2, 3, 4, 5, 7, 9, 11, 13 };
-		private static readonly int m_iDefaultSize = 3;
-		private int m_iPenSize;
+		private TrackShape m_TrackShape;
+		private static readonly int m_iLineWidth = 3;
+		private static readonly TrackShape[] m_Options = { TrackShape.Solid, TrackShape.Dash, TrackShape.SolidSteps, TrackShape.DashSteps };
 		#endregion
 		
 		#region Constructor
-		public StyleElementLineSize(int _default)
+		public StyleElementTrackShape() : this(TrackShape.Solid){}
+		public StyleElementTrackShape(TrackShape _default)
 		{
-			m_iPenSize = (Array.IndexOf(m_Options, _default) >= 0) ? _default : m_iDefaultSize;
+			m_TrackShape = (Array.IndexOf(m_Options, _default) >= 0) ? _default : TrackShape.Solid;
 		}
 		#endregion
 		
@@ -71,17 +71,17 @@ namespace Kinovea.ScreenManager
 		{
 			ComboBox editor = new ComboBox();
 			editor.DropDownStyle = ComboBoxStyle.DropDownList;
-			editor.ItemHeight = m_Options[m_Options.Length-1] + 4;
+			editor.ItemHeight = 15;
 			editor.DrawMode = DrawMode.OwnerDrawFixed;
-			foreach(int i in m_Options) editor.Items.Add(new object());
-			editor.SelectedIndex = Array.IndexOf(m_Options, m_iPenSize);
+			for(int i=0;i<m_Options.Length;i++) editor.Items.Add(new object());
+			editor.SelectedIndex = Array.IndexOf(m_Options, m_TrackShape);
 			editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
 			return editor;
 		}
 		public override AbstractStyleElement Clone()
 		{
-			AbstractStyleElement clone = new StyleElementLineSize(m_iPenSize);
+			AbstractStyleElement clone = new StyleElementTrackShape(m_TrackShape);
 			clone.Bind(this);
 			return clone;
 		}
@@ -100,9 +100,26 @@ namespace Kinovea.ScreenManager
 		{
 			if(e.Index >= 0 && e.Index < m_Options.Length)
 			{
-				int itemPenSize = m_Options[e.Index];
-				int top = (e.Bounds.Height - itemPenSize) / 2;
-				e.Graphics.FillRectangle(Brushes.Black, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Width, itemPenSize);
+				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+				
+				Pen p = new Pen(Color.Black, m_iLineWidth);
+				p.DashStyle = m_Options[e.Index].DashStyle;
+				
+				int top = e.Bounds.Height / 2;
+				
+				e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+				
+				if(m_Options[e.Index].ShowSteps)
+				{
+					Pen stepPen = new Pen(Color.Black, 2);
+	            	int margin = (int)(m_iLineWidth * 1.5);
+	            	int diameter = margin *2;
+	            	int left = e.Bounds.Width / 2;
+	            	e.Graphics.DrawEllipse(stepPen, e.Bounds.Left + left - margin, e.Bounds.Top + top - margin, diameter, diameter);
+	            	stepPen.Dispose();
+				}
+				
+				p.Dispose();
 			}
 		}
 		private void editor_SelectedIndexChanged(object sender, EventArgs e)
@@ -110,7 +127,7 @@ namespace Kinovea.ScreenManager
 			int index = ((ComboBox)sender).SelectedIndex;
 			if( index >= 0 && index < m_Options.Length)
 			{
-				m_iPenSize = m_Options[index];
+				m_TrackShape = m_Options[index];
 				RaiseValueChanged();
 			}
 		}

@@ -87,8 +87,11 @@ namespace Kinovea.ScreenManager
 			get { return m_Bicolor; }
 			set { m_Bicolor = value; }
 		}
-		//public LineShape m_LineShape;
-		//public MarkerShape m_MarkerShape;
+		public TrackShape TrackShape
+		{
+			get { return m_TrackShape; }
+			set { m_TrackShape = value;}
+		}
 		#endregion
 		
 		#region Members
@@ -96,13 +99,11 @@ namespace Kinovea.ScreenManager
 		private int m_iLineSize;
 		private Font m_Font = new Font("Arial", 12, FontStyle.Regular);
 		private Bicolor m_Bicolor;
-		private LineEnding m_LineEnding = new LineEnding(LineCap.Round, LineCap.Round);
+		private LineEnding m_LineEnding = LineEnding.None;
+		private TrackShape m_TrackShape = TrackShape.Solid;
 		
 		// Internal only
 		private static readonly int[] m_AllowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
-		
-		//private static readonly string m_FontName = "Arial";
-		//private static readonly FontStyle m_FontStyle = FontStyle.Regular;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -144,9 +145,14 @@ namespace Kinovea.ScreenManager
 			if (fPenWidth < 1) fPenWidth = 1;
 			
 			Pen p = new Pen(c, fPenWidth);
+			p.LineJoin = LineJoin.Round;
+			
+			// Line endings
 			p.StartCap = m_LineEnding.StartCap;
         	p.EndCap = m_LineEnding.EndCap;
-        	p.LineJoin = LineJoin.Round;
+        	
+			// Line shape
+			p.DashStyle = m_TrackShape.DashStyle;
 			
 			return p;
 		}
@@ -288,6 +294,16 @@ namespace Kinovea.ScreenManager
 						
 						break;
 					}
+				case "TrackShape":
+					{
+						if(_value is TrackShape)
+						{
+							m_TrackShape = (TrackShape)_value;
+							imported = true;
+						}
+						
+						break;
+					}
 				case "Font":
 					{
 						if(_value is int)
@@ -353,6 +369,15 @@ namespace Kinovea.ScreenManager
 						if(_targetValue is LineEnding)
 						{
 							_targetValue = m_LineEnding;
+							converted = true;
+						}
+						break;
+					}
+				case "TrackShape":
+					{
+						if(_targetValue is TrackShape)
+						{
+							_targetValue = m_TrackShape;
 							converted = true;
 						}
 						break;
@@ -468,6 +493,41 @@ namespace Kinovea.ScreenManager
 		public static LineEnding DoubleArrow
 		{
 			get { return new LineEnding(LineCap.ArrowAnchor, LineCap.ArrowAnchor);}
+		}
+		#endregion
+	}
+	
+	/// <summary>
+	/// A simple wrapper around a dash style and the presence of time ticks.
+	/// Used to describe line shape for tracks.
+	/// </summary>
+	public struct TrackShape
+	{
+		public readonly DashStyle DashStyle;
+		public readonly bool ShowSteps;
+		
+		public TrackShape(DashStyle _style, bool _steps)
+		{
+			DashStyle = _style;
+			ShowSteps = _steps;
+		}
+		
+		#region Predefined static values
+		public static TrackShape Solid
+		{
+			get { return new TrackShape(DashStyle.Solid, false);}
+		}
+		public static TrackShape Dash
+		{
+			get { return new TrackShape(DashStyle.Dash, false);}
+		}
+		public static TrackShape SolidSteps
+		{
+			get { return new TrackShape(DashStyle.Solid, true);}
+		}
+		public static TrackShape DashSteps
+		{
+			get { return new TrackShape(DashStyle.Dash, true);}
 		}
 		#endregion
 	}

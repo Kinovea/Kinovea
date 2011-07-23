@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
 			get { return m_LineEnding; }
 			set 
 			{ 
-				m_LineEnding = (value is LineEnding) ? (LineEnding)value : new LineEnding(LineCap.Round, LineCap.Round);
+				m_LineEnding = (value is LineEnding) ? (LineEnding)value : LineEnding.None;
 				RaiseValueChanged();
 			}
 		}
@@ -109,6 +109,7 @@ namespace Kinovea.ScreenManager
 				int top = e.Bounds.Height / 2;
 				
 				e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
+				p.Dispose();
 			}
 		}
 		private void editor_SelectedIndexChanged(object sender, EventArgs e)

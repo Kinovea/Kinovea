@@ -174,8 +174,7 @@ namespace Kinovea.ScreenManager
 			m_Style.RaiseValueChanged();
 			
 			// Update main UI.
-			if(m_Invalidate != null)
-				m_Invalidate();
+			if(m_Invalidate != null) m_Invalidate();
 		}
 		private void BtnCancel_Click(object sender, EventArgs e)
 		{	

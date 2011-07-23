@@ -222,6 +222,15 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap linesize
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("linesize", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap measure
 		{
 			get
@@ -272,6 +281,15 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("trackingplay", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap trackshape
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("trackshape", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}
