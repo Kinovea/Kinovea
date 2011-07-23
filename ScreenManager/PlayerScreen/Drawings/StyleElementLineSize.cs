@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private static readonly int[] m_Sizes = { 2, 3, 4, 5, 7, 9, 11, 13 };
+		private static readonly int[] m_Options = { 2, 3, 4, 5, 7, 9, 11, 13 };
 		private static readonly int m_iDefaultSize = 3;
 		private int m_iPenSize;
 		#endregion
@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
 		#region Constructor
 		public StyleElementLineSize(int _default)
 		{
-			m_iPenSize = (_default >= m_Sizes[0] && _default <= m_Sizes[m_Sizes.Length-1]) ? _default : m_iDefaultSize;
+			m_iPenSize = (Array.IndexOf(m_Options, _default) >= 0) ? _default : m_iDefaultSize;
 		}
 		#endregion
 		
@@ -71,22 +71,12 @@ namespace Kinovea.ScreenManager
 		{
 			ComboBox editor = new ComboBox();
 			editor.DropDownStyle = ComboBoxStyle.DropDownList;
-			editor.ItemHeight = m_Sizes[m_Sizes.Length-1] + 4;
-			//editor.Size = new Size(70, editor.ItemHeight);
+			editor.ItemHeight = m_Options[m_Options.Length-1] + 4;
 			editor.DrawMode = DrawMode.OwnerDrawFixed;
-			foreach(int i in m_Sizes) editor.Items.Add(new object());
+			foreach(int i in m_Options) editor.Items.Add(new object());
+			editor.SelectedIndex = Array.IndexOf(m_Options, m_iPenSize);
 			editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
-			
-			// Set current value
-			int index = -1;
-			for(int i=0;i<m_Sizes.Length;i++)
-			{
-				if(m_iPenSize == m_Sizes[i])
-					index = i;
-			}
-			editor.SelectedIndex = index;
-			
 			return editor;
 		}
 		public override AbstractStyleElement Clone()
@@ -108,9 +98,9 @@ namespace Kinovea.ScreenManager
 		#region Private Methods
 		private void editor_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			if(e.Index >= 0 && e.Index < m_Sizes.Length)
+			if(e.Index >= 0 && e.Index < m_Options.Length)
 			{
-				int itemPenSize = m_Sizes[e.Index];
+				int itemPenSize = m_Options[e.Index];
 				int top = (e.Bounds.Height - itemPenSize) / 2;
 				e.Graphics.FillRectangle(Brushes.Black, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Width, itemPenSize);
 			}
@@ -118,9 +108,9 @@ namespace Kinovea.ScreenManager
 		private void editor_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			int index = ((ComboBox)sender).SelectedIndex;
-			if( index >= 0 && index < m_Sizes.Length)
+			if( index >= 0 && index < m_Options.Length)
 			{
-				m_iPenSize = m_Sizes[index];
+				m_iPenSize = m_Options[index];
 				RaiseValueChanged();
 			}
 		}

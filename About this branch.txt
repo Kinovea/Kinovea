@@ -1,4 +1,18 @@
+--------------------------------------------------------------------------------
+2011-07-22
+Styling framework:
 
+1. Full dynamic layout for the drawing configuration dialog and tool preset dialog. Each drawing / tool can now have any number of style elements. Lift the restriction to two.
+2. Implementation of LineEnding wrapper, to describe a line's line endings.
+3. Implementation of StyleElementLineEnding a mini editor for arrow endings.
+4. Usage of Line ending in Style helper and binding to the mini editor in Line tool.
+5. Fixed tool preset cancellation.
+
+Still broken:
+- Serialization
+- Track shapes.
+
+--------------------------------------------------------------------------------
 2011-07-21
 Continuation of the implementation of the new styling framework.
 

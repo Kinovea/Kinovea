@@ -56,13 +56,13 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private int m_iFontSize;
 		private static readonly int m_iDefaultFontSize = 10;
-		private static readonly string[] AllowedFontSizes = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
+		private static readonly string[] m_Options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
 		#endregion
 		
 		#region Constructor
 		public StyleElementFontSize(int _default)
 		{
-			m_iFontSize = _default;
+			m_iFontSize = (Array.IndexOf(m_Options, _default.ToString()) >= 0) ? _default : m_iDefaultFontSize;
 		}
 		#endregion
 
@@ -71,8 +71,8 @@ namespace Kinovea.ScreenManager
 		{
 			ComboBox editor = new ComboBox();
 			editor.DropDownStyle = ComboBoxStyle.DropDownList;
-			editor.Items.AddRange(AllowedFontSizes);
-			editor.Text = m_iFontSize.ToString();
+			editor.Items.AddRange(m_Options);
+			editor.SelectedIndex = Array.IndexOf(m_Options, m_iFontSize.ToString());
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
 			return editor;
 		}

@@ -89,6 +89,14 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Private Methods
+		private void editor_Paint(object sender, PaintEventArgs e)
+		{
+			using(SolidBrush b = new SolidBrush(m_Color))
+			{
+				e.Graphics.FillRectangle(b, e.ClipRectangle);
+				e.Graphics.DrawRectangle(Pens.LightGray, e.ClipRectangle.Left, e.ClipRectangle.Top, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);	
+			}
+		}
 		private void editor_Click(object sender, EventArgs e)
 		{
 			FormColorPicker picker = new FormColorPicker();
@@ -101,14 +109,6 @@ namespace Kinovea.ScreenManager
 			}
 			picker.Dispose();
 		}	
-		private void editor_Paint(object sender, PaintEventArgs e)
-		{
-			using(SolidBrush b = new SolidBrush(m_Color))
-			{
-				e.Graphics.FillRectangle(b, e.ClipRectangle);
-				e.Graphics.DrawRectangle(Pens.LightGray, e.ClipRectangle.Left, e.ClipRectangle.Top, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);	
-			}
-		}
 		#endregion
 	}
 }

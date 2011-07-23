@@ -35,10 +35,9 @@ namespace Kinovea.ScreenManager
 	{
 		#region Members
 		private DrawingStyle m_Style;
-		private AbstractStyleElement m_firstElement;
-		private AbstractStyleElement m_secondElement;
 		private DelegateScreenInvalidate m_Invalidate;
 		private bool m_bManualClose;
+		private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -50,78 +49,12 @@ namespace Kinovea.ScreenManager
 			m_Style.Memorize();
 			m_Invalidate = _invalidate;
 			InitializeComponent();
-			SetupForm();
 			LocalizeForm();
+			SetupForm();
 		}
 		#endregion
 		
 		#region Private Methods
-		private void SetupForm()
-		{
-			// Layout depends on the list of style elements.
-			// Currently we only support 2 editable style elements.
-			// Example: pencil tool has a color picker and a pen size picker.
-			
-			foreach(KeyValuePair<string, AbstractStyleElement> styleElement in m_Style.Elements)
-			{
-				if(m_firstElement == null)
-				{
-					m_firstElement = styleElement.Value;
-				}
-				else if(m_secondElement == null)
-				{
-					m_secondElement = styleElement.Value;
-				}
-				else
-				{
-					log.DebugFormat("Discarding style element: \"{0}\". (Only 2 style elements supported).", styleElement.Key);
-				}
-			}
-			
-			// Configure editor line for each element.
-			// The style element is responsible for updating the internal value and the editor appearance.
-			// The element internal value might also be bound to a style helper property so that the underlying drawing will get updated.
-			if(m_firstElement != null)
-			{
-				btnFirstElement.BackColor = Color.Transparent;
-				btnFirstElement.Image = m_firstElement.Icon;
-				lblFirstElement.Text = m_firstElement.DisplayName;
-				
-				m_firstElement.ValueChanged += element_ValueChanged;
-				
-				int editorsLeft = 150; // works in High DPI ?
-				
-				Control firstEditor = m_firstElement.GetEditor();
-				firstEditor.Size = new Size(50, 20);
-				firstEditor.Location = new Point(editorsLeft, btnFirstElement.Top);
-				grpConfig.Controls.Add(firstEditor);
-				
-				if(m_secondElement != null)
-				{
-					btnSecondElement.BackColor = Color.Transparent;
-					btnSecondElement.Image = m_secondElement.Icon;
-					lblSecondElement.Text = m_secondElement.DisplayName;
-
-					m_secondElement.ValueChanged += element_ValueChanged;
-					
-					Control secondEditor = m_secondElement.GetEditor();
-					secondEditor.Size = new Size(50, 20);
-					secondEditor.Location = new Point(editorsLeft, btnSecondElement.Top);
-					grpConfig.Controls.Add(secondEditor);
-				}
-				else
-				{
-					btnSecondElement.Visible = false;
-					lblSecondElement.Visible = false;
-				}
-			}
-			else
-			{
-				// Shouldn't happen. Only ask for the dialog if style.Elements.Count > 0.
-				btnFirstElement.Visible = false;
-				lblFirstElement.Visible = false;
-			}
-		}
 		private void LocalizeForm()
 		{
 			this.Text = "   " + ScreenManagerLang.dlgConfigureDrawing_Title;
@@ -129,11 +62,95 @@ namespace Kinovea.ScreenManager
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
 		}
+		private void SetupForm()
+		{
+			// Dynamic layout:
+			// Any number of mini editor lines. (must scale vertically)
+			// High dpi vs normal dpi (scales vertically and horizontally)
+			// Verbose languages (scales horizontally)
+			
+			// Clean up
+			grpConfig.Controls.Clear();
+			Graphics helper = grpConfig.CreateGraphics();
+			
+			Size editorSize = new Size(60,20);
+			// Initialize the horizontal layout with a minimal value, 
+			// it will be fixed later if some of the entries have long text.
+			int minimalWidth = btnOK.Width + btnCancel.Width + 10;
+			int editorsLeft = minimalWidth - 20 - editorSize.Width;
+			
+			int lastEditorBottom = 10;
+			
+			foreach(KeyValuePair<string, AbstractStyleElement> pair in m_Style.Elements)
+			{
+				AbstractStyleElement styleElement = pair.Value;
+				m_Elements.Add(styleElement);
+				
+				styleElement.ValueChanged += element_ValueChanged;
+				
+				Button btn = new Button();
+				btn.Image = styleElement.Icon;
+				btn.Size = new Size(20,20);
+				btn.Location = new Point(10, lastEditorBottom + 15);
+				btn.FlatStyle = FlatStyle.Flat;
+				btn.FlatAppearance.BorderSize = 0;
+				btn.BackColor = Color.Transparent;
+				
+				Label lbl = new Label();
+				lbl.Text = styleElement.DisplayName;
+				lbl.AutoSize = true;
+				lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
+				
+				SizeF labelSize = helper.MeasureString(lbl.Text, lbl.Font);
+				
+				if(lbl.Left + labelSize.Width + 25 > editorsLeft)
+				{
+					// dynamic horizontal layout for high dpi and verbose languages.
+					editorsLeft = (int)(lbl.Left + labelSize.Width + 25);
+				}
+				
+				Control miniEditor = styleElement.GetEditor();
+				miniEditor.Size = editorSize;
+				miniEditor.Location = new Point(editorsLeft, btn.Top);
+				
+				lastEditorBottom = miniEditor.Bottom;
+				
+				grpConfig.Controls.Add(btn);
+				grpConfig.Controls.Add(lbl);
+				grpConfig.Controls.Add(miniEditor);
+			}
+			
+			helper.Dispose();
+			
+			// Recheck all mini editors for the left positionning.
+			foreach(Control c in grpConfig.Controls)
+			{
+				if(!(c is Label) && !(c is Button))
+				{
+					if(c.Left < editorsLeft) c.Left = editorsLeft;
+				}
+			}
+			
+			grpConfig.Height = lastEditorBottom + 20;
+			grpConfig.Width = editorsLeft + editorSize.Width + 20;
+			
+			btnOK.Top = grpConfig.Bottom + 10;
+			btnOK.Left = grpConfig.Right - (btnCancel.Width + 10 + btnOK.Width);
+			btnCancel.Top = btnOK.Top;
+			btnCancel.Left = btnOK.Right + 10;
+			
+			int borderLeft = this.Width - this.ClientRectangle.Width;
+			this.Width = borderLeft + btnCancel.Right + 10;
+			
+			int borderTop = this.Height - this.ClientRectangle.Height;
+			this.Height = borderTop + btnOK.Bottom + 10;
+		}
 		private void element_ValueChanged()
 		{
-			if(m_Invalidate != null)
-				m_Invalidate();
+			if(m_Invalidate != null) m_Invalidate();
 		}
+		
+		#region Closing
 		private void Form_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if(!m_bManualClose)
@@ -145,14 +162,9 @@ namespace Kinovea.ScreenManager
 		private void UnhookEvents()
 		{
 			// Unhook event handlers
-			if(m_firstElement != null)
+			foreach(AbstractStyleElement element in m_Elements)
 			{
-				m_firstElement.ValueChanged -= element_ValueChanged;
-			}
-			
-			if(m_secondElement != null)
-			{
-				m_secondElement.ValueChanged -= element_ValueChanged;
+				element.ValueChanged -= element_ValueChanged;
 			}
 		}
 		private void Revert()
@@ -176,6 +188,8 @@ namespace Kinovea.ScreenManager
 			UnhookEvents();
 			m_bManualClose = true;	
 		}
+		#endregion
+		
 		#endregion
 		
 		

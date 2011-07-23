@@ -55,6 +55,11 @@ namespace Kinovea.ScreenManager
 			get { return m_iLineSize; }
 			set { m_iLineSize = value;}
 		}
+		public LineEnding LineEnding
+		{
+			get { return m_LineEnding; }
+			set { m_LineEnding = value;}
+		}
 		public Font Font
 		{
 			get { return m_Font; }
@@ -91,6 +96,7 @@ namespace Kinovea.ScreenManager
 		private int m_iLineSize;
 		private Font m_Font = new Font("Arial", 12, FontStyle.Regular);
 		private Bicolor m_Bicolor;
+		private LineEnding m_LineEnding = new LineEnding(LineCap.Round, LineCap.Round);
 		
 		// Internal only
 		private static readonly int[] m_AllowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
@@ -121,12 +127,12 @@ namespace Kinovea.ScreenManager
 		{
 			Color c = (_iAlpha >= 0 && _iAlpha < 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;			
 			
-        	return FixedPen(new Pen(c, 1.0f));
+        	return NormalPen(new Pen(c, 1.0f));
 		}
 
 		/// <summary>
 		/// Returns a Pen object suitable to draw a line or contour.
-		/// The pen object will integrate the color and line size properties.
+		/// The pen object will integrate the color, line size, and line endings properties.
 		/// </summary>
 		/// <param name="_iAlpha">Alpha value to multiply the color with</param>
 		/// <param name="_fStretchFactor">zoom value to multiply the line size with</param>
@@ -137,7 +143,12 @@ namespace Kinovea.ScreenManager
 			float fPenWidth = (float)((double)m_iLineSize * _fStretchFactor);
 			if (fPenWidth < 1) fPenWidth = 1;
 			
-			return FixedPen(new Pen(c, fPenWidth));
+			Pen p = new Pen(c, fPenWidth);
+			p.StartCap = m_LineEnding.StartCap;
+        	p.EndCap = m_LineEnding.EndCap;
+        	p.LineJoin = LineJoin.Round;
+			
+			return p;
 		}
 		
 		/// <summary>
@@ -215,7 +226,7 @@ namespace Kinovea.ScreenManager
 		public Pen GetForegroundPen(int _iAlpha)
 		{
 			Color c = GetForegroundColor(_iAlpha);
-			return FixedPen(new Pen(c, 1.0f));
+			return NormalPen(new Pen(c, 1.0f));
 		}
 		public Color GetBackgroundColor(int _iAlpha)
 		{
@@ -230,7 +241,7 @@ namespace Kinovea.ScreenManager
 		public Pen GetBackgroundPen(int _iAlpha)
 		{
 			Color c = GetBackgroundColor(_iAlpha);
-			return FixedPen(new Pen(c, 1.0f));
+			return NormalPen(new Pen(c, 1.0f));
 		}
 		#endregion
 		
@@ -262,6 +273,16 @@ namespace Kinovea.ScreenManager
 						if(_value is int)
 						{
 							m_iLineSize = (int)_value;
+							imported = true;
+						}
+						
+						break;
+					}
+				case "LineEnding":
+					{
+						if(_value is LineEnding)
+						{
+							m_LineEnding = (LineEnding)_value;
 							imported = true;
 						}
 						
@@ -325,7 +346,15 @@ namespace Kinovea.ScreenManager
 							_targetValue = m_iLineSize;
 							converted = true;
 						}
-						
+						break;
+					}
+				case "LineEnding":
+					{
+						if(_targetValue is LineEnding)
+						{
+							_targetValue = m_LineEnding;
+							converted = true;
+						}
 						break;
 					}
 				case "Font":
@@ -357,8 +386,6 @@ namespace Kinovea.ScreenManager
 			{
 				log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , _sourceProperty, _targetValue);
 			}
-			
-			//return convertedValue;
 		}
 		private float GetRescaledFontSize(float _fStretchFactor)
 		{
@@ -369,7 +396,7 @@ namespace Kinovea.ScreenManager
 			if(fFontSize < 8) fFontSize = 8;
 			return fFontSize;
 		}
-		private Pen FixedPen(Pen _p)
+		private Pen NormalPen(Pen _p)
 		{
 			_p.StartCap = LineCap.Round;
         	_p.EndCap = LineCap.Round;
@@ -409,4 +436,40 @@ namespace Kinovea.ScreenManager
 			m_Foreground = _backColor.GetBrightness() >= 0.5  ? Color.Black : Color.White;
 		}
 	}
+	
+	/// <summary>
+	/// A simple wrapper around two Line cap values.
+	/// Used to describe arrow endings and possibly other endings.
+	/// </summary>
+	public struct LineEnding
+	{
+		public readonly LineCap StartCap;
+		public readonly LineCap EndCap;
+		
+		public LineEnding(LineCap _start, LineCap _end)
+		{
+			StartCap = _start;
+			EndCap = _end;
+		}
+		
+		#region Predefined static values
+		public static LineEnding None
+		{
+			get { return new LineEnding(LineCap.Round, LineCap.Round);}
+		}
+		public static LineEnding StartArrow
+		{
+			get { return new LineEnding(LineCap.ArrowAnchor, LineCap.Round);}
+		}
+		public static LineEnding EndArrow
+		{
+			get { return new LineEnding(LineCap.Round, LineCap.ArrowAnchor);}
+		}
+		public static LineEnding DoubleArrow
+		{
+			get { return new LineEnding(LineCap.ArrowAnchor, LineCap.ArrowAnchor);}
+		}
+		#endregion
+	}
+		
 }
