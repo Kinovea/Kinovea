@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        #region Construction & Initialization
+        #region Construction
         public formConfigureChrono(DrawingChrono _chrono, DelegateScreenInvalidate _invalidate)
         {
             InitializeComponent();
@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Public Methods
+        #region Private Methods
         private void SetupForm()
         {
         	foreach(KeyValuePair<string, AbstractStyleElement> styleElement in m_Chrono.DrawingStyle.Elements)

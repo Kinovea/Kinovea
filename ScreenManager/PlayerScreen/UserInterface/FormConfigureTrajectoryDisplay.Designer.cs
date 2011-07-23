@@ -31,10 +31,6 @@ namespace Kinovea.ScreenManager
         	this.btnOK = new System.Windows.Forms.Button();
         	this.btnCancel = new System.Windows.Forms.Button();
         	this.grpAppearance = new System.Windows.Forms.GroupBox();
-        	this.btnLineStyle = new System.Windows.Forms.Button();
-        	this.lblStyle = new System.Windows.Forms.Label();
-        	this.lblColor = new System.Windows.Forms.Label();
-        	this.btnTextColor = new System.Windows.Forms.Button();
         	this.tbLabel = new System.Windows.Forms.TextBox();
         	this.lblLabel = new System.Windows.Forms.Label();
         	this.grpConfig = new System.Windows.Forms.GroupBox();
@@ -46,7 +42,6 @@ namespace Kinovea.ScreenManager
         	this.radioLabel = new System.Windows.Forms.RadioButton();
         	this.radioFocus = new System.Windows.Forms.RadioButton();
         	this.radioComplete = new System.Windows.Forms.RadioButton();
-        	this.grpAppearance.SuspendLayout();
         	this.grpConfig.SuspendLayout();
         	this.SuspendLayout();
         	// 
@@ -54,7 +49,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-        	this.btnOK.Location = new System.Drawing.Point(170, 341);
+        	this.btnOK.Location = new System.Drawing.Point(170, 390);
         	this.btnOK.Name = "btnOK";
         	this.btnOK.Size = new System.Drawing.Size(99, 24);
         	this.btnOK.TabIndex = 45;
@@ -66,7 +61,7 @@ namespace Kinovea.ScreenManager
         	// 
         	this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        	this.btnCancel.Location = new System.Drawing.Point(275, 341);
+        	this.btnCancel.Location = new System.Drawing.Point(275, 390);
         	this.btnCancel.Name = "btnCancel";
         	this.btnCancel.Size = new System.Drawing.Size(99, 24);
         	this.btnCancel.TabIndex = 50;
@@ -78,63 +73,12 @@ namespace Kinovea.ScreenManager
         	// 
         	this.grpAppearance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.grpAppearance.Controls.Add(this.btnLineStyle);
-        	this.grpAppearance.Controls.Add(this.lblStyle);
-        	this.grpAppearance.Controls.Add(this.lblColor);
-        	this.grpAppearance.Controls.Add(this.btnTextColor);
         	this.grpAppearance.Location = new System.Drawing.Point(12, 255);
         	this.grpAppearance.Name = "grpAppearance";
-        	this.grpAppearance.Size = new System.Drawing.Size(362, 72);
+        	this.grpAppearance.Size = new System.Drawing.Size(362, 129);
         	this.grpAppearance.TabIndex = 29;
         	this.grpAppearance.TabStop = false;
         	this.grpAppearance.Text = "Generic_Appearance";
-        	// 
-        	// btnLineStyle
-        	// 
-        	this.btnLineStyle.BackColor = System.Drawing.Color.White;
-        	this.btnLineStyle.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnLineStyle.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
-        	this.btnLineStyle.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-        	this.btnLineStyle.FlatAppearance.MouseOverBackColor = System.Drawing.Color.White;
-        	this.btnLineStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnLineStyle.Location = new System.Drawing.Point(253, 24);
-        	this.btnLineStyle.Name = "btnLineStyle";
-        	this.btnLineStyle.Size = new System.Drawing.Size(84, 25);
-        	this.btnLineStyle.TabIndex = 44;
-        	this.btnLineStyle.UseVisualStyleBackColor = false;
-        	this.btnLineStyle.Paint += new System.Windows.Forms.PaintEventHandler(this.btnLineStyle_Paint);
-        	this.btnLineStyle.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnLineStyle_MouseClick);
-        	// 
-        	// lblStyle
-        	// 
-        	this.lblStyle.AutoSize = true;
-        	this.lblStyle.Location = new System.Drawing.Point(191, 30);
-        	this.lblStyle.Name = "lblStyle";
-        	this.lblStyle.Size = new System.Drawing.Size(36, 13);
-        	this.lblStyle.TabIndex = 37;
-        	this.lblStyle.Text = "Style :";
-        	// 
-        	// lblColor
-        	// 
-        	this.lblColor.AutoSize = true;
-        	this.lblColor.Location = new System.Drawing.Point(21, 30);
-        	this.lblColor.Name = "lblColor";
-        	this.lblColor.Size = new System.Drawing.Size(37, 13);
-        	this.lblColor.TabIndex = 36;
-        	this.lblColor.Text = "Color :";
-        	// 
-        	// btnTextColor
-        	// 
-        	this.btnTextColor.BackColor = System.Drawing.Color.Black;
-        	this.btnTextColor.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnTextColor.FlatAppearance.BorderSize = 0;
-        	this.btnTextColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnTextColor.Location = new System.Drawing.Point(80, 24);
-        	this.btnTextColor.Name = "btnTextColor";
-        	this.btnTextColor.Size = new System.Drawing.Size(83, 25);
-        	this.btnTextColor.TabIndex = 10;
-        	this.btnTextColor.UseVisualStyleBackColor = false;
-        	this.btnTextColor.Click += new System.EventHandler(this.btnTextColor_Click);
         	// 
         	// tbLabel
         	// 
@@ -277,7 +221,7 @@ namespace Kinovea.ScreenManager
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackColor = System.Drawing.Color.White;
-        	this.ClientSize = new System.Drawing.Size(386, 377);
+        	this.ClientSize = new System.Drawing.Size(386, 426);
         	this.Controls.Add(this.grpConfig);
         	this.Controls.Add(this.grpAppearance);
         	this.Controls.Add(this.btnOK);
@@ -290,9 +234,7 @@ namespace Kinovea.ScreenManager
         	this.ShowInTaskbar = false;
         	this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
         	this.Text = "   Configure Trajectory Display";
-        	this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formConfigureTrajectoryDisplay_FormClosing);
-        	this.grpAppearance.ResumeLayout(false);
-        	this.grpAppearance.PerformLayout();
+        	this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
         	this.grpConfig.ResumeLayout(false);
         	this.grpConfig.PerformLayout();
         	this.ResumeLayout(false);
@@ -306,16 +248,12 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.RadioButton radioLabel;
         private System.Windows.Forms.RadioButton radioFocus;
         private System.Windows.Forms.RadioButton radioComplete;
-        private System.Windows.Forms.Button btnLineStyle;
 
         #endregion
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox grpConfig;
-        private System.Windows.Forms.Label lblStyle;
-        private System.Windows.Forms.Label lblColor;
-        private System.Windows.Forms.Button btnTextColor;
         private System.Windows.Forms.TextBox tbLabel;
         private System.Windows.Forms.Label lblLabel;
 

@@ -1,3 +1,13 @@
+2011-07-23
+
+Porting the styling to tracks line. 
+- Implementation of trackshape wrapper to describe the track line formatting (line dash style + presence of time ticks).
+- Implementation of StyleElementTrackShape, a mini editor for track shapes.
+
+Still broken:
+- Serialization
+- Keyframe labels
+
 --------------------------------------------------------------------------------
 2011-07-22
 Styling framework:

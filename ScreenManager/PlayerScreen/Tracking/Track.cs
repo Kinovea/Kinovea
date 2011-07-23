@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
     /// In Edit state: dragging the target moves the point's coordinates.
     /// In Interactive state: dragging the target moves to the next point (in time).
     /// </summary>
-    public class Track : AbstractDrawing
+    public class Track : AbstractDrawing, IDecorable
     {
     	#region Enums
         public enum TrackView
@@ -102,26 +102,18 @@ namespace Kinovea.ScreenManager
         {
             get { return m_iEndTimeStamp; }
         }
+        public DrawingStyle DrawingStyle
+        {
+        	get { return m_Style;}
+        }
         public Color MainColor
         {    
-        	get { return m_LineStyle.Color; }
+        	get { return m_StyleHelper.Color; }
         	set 
         	{ 
-        		m_LineStyle.Update(value);
-        		m_MainLabel.TextDecoration.Update(m_LineStyle.Color);
+        		m_StyleHelper.Color = value;
+        		m_MainLabel.TextDecoration.Update(value);
         	}
-        }
-        public LineStyle TrajectoryStyle
-        {
-        	// Consider modifying this so we don't expose a reference.
-        	// (encapsulation hole)
-            get { return m_LineStyle; }
-            set 
-            { 
-				// This is used to update the line shape and not its color.
-				// Hence we don't update m_MainLabel here.
-				m_LineStyle.Update(value, false, true, true);
-            }
         }
         public string Label
         {
@@ -189,7 +181,8 @@ namespace Kinovea.ScreenManager
         private int m_iCurrentPoint;
 
         // Decoration
-        private LineStyle m_LineStyle = LineStyle.DefaultValue; 
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
         private KeyframeLabel m_MainLabel = new KeyframeLabel(Color.Black);
         private string m_MainLabelText = "Label";
         private InfosFading m_InfosFading = new InfosFading(long.MaxValue, 1);
@@ -200,7 +193,6 @@ namespace Kinovea.ScreenManager
         
         // Memorization poul
         private TrackView m_MemoTrackView;
-        private LineStyle m_MemoLineStyle;
         private string m_MemoLabel;
         private Metadata m_ParentMetadata;
         
@@ -259,6 +251,18 @@ namespace Kinovea.ScreenManager
 	            // Computed
 	            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             }
+            
+            // Decoration
+            m_Style = new DrawingStyle();
+            m_Style.Elements.Add("color", new StyleElementColor(Color.SeaGreen));
+			m_Style.Elements.Add("line size", new StyleElementLineSize(3));
+			m_Style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
+            m_StyleHelper.Color = Color.Black;
+            m_StyleHelper.LineSize = 3;
+            m_StyleHelper.TrackShape = TrackShape.Dash;
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+            m_Style.Bind(m_StyleHelper, "LineSize", "line size");
+            m_Style.Bind(m_StyleHelper, "TrackShape", "track shape");
         }
         #endregion
 
@@ -345,7 +349,7 @@ namespace Kinovea.ScreenManager
 	            	// Tracking algorithm visualization.
                     if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
                     {
-                        m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint], _DirectZoomTopLeft, m_fStretchFactor, m_LineStyle.Color, fOpacityFactor);
+                        m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint], _DirectZoomTopLeft, m_fStretchFactor, m_StyleHelper.Color, fOpacityFactor);
 					}
                     
                     // Main label.
@@ -504,9 +508,22 @@ namespace Kinovea.ScreenManager
             if (points.Length > 1)
             {
             	// Tension parameter is at 0.5f for bezier effect (smooth curve).
-            	Pen tempPen = GetTrackPen(m_LineStyle, m_TrackStatus, _fFadingFactor, _before);
-            	_canvas.DrawCurve(tempPen, points, 0.5f);
-            	tempPen.Dispose();
+            	Pen trackPen = GetTrackPen(m_TrackStatus, _fFadingFactor, _before);
+            	_canvas.DrawCurve(trackPen, points, 0.5f);
+            	
+            	if(m_StyleHelper.TrackShape.ShowSteps)
+            	{
+            		Pen stepPen = new Pen(trackPen.Color, 2);
+	            	int margin = (int)(trackPen.Width * 1.5);
+	            	int diameter = margin *2;
+	            	foreach(Point p in points)
+	            	{
+	            		_canvas.DrawEllipse(stepPen, p.X - margin, p.Y - margin, diameter, diameter);
+	            	}
+	            	stepPen.Dispose();
+            	}
+            	
+            	trackPen.Dispose();
             }
         }
         private void DrawMarker(Graphics _canvas,  double _fFadingFactor)
@@ -516,7 +533,7 @@ namespace Kinovea.ScreenManager
         	if(m_TrackStatus == TrackStatus.Edit)
         	{
         		// Just a little cross.
-        		Pen p = new Pen(Color.FromArgb((int)(255.0f * _fFadingFactor), m_LineStyle.Color));
+        		Pen p = new Pen(Color.FromArgb((int)(255.0f * _fFadingFactor), m_StyleHelper.Color));
         		_canvas.DrawLine(p, m_RescaledPositions[m_iCurrentPoint].X, m_RescaledPositions[m_iCurrentPoint].Y - radius, 
         		                	m_RescaledPositions[m_iCurrentPoint].X, m_RescaledPositions[m_iCurrentPoint].Y + radius);
 
@@ -588,7 +605,7 @@ namespace Kinovea.ScreenManager
                 m_MainLabel.Draw(_canvas, m_fStretchFactor, m_DirectZoomTopLeft, _fFadingFactor);
             }
         }
-        private Pen GetTrackPen(LineStyle _style, TrackStatus _status, double _fFadingFactor, bool _before)
+        private Pen GetTrackPen(TrackStatus _status, double _fFadingFactor, bool _before)
         {
         	int iAlpha = 0;
         	
@@ -619,7 +636,7 @@ namespace Kinovea.ScreenManager
         		}
             }
         	
-            return _style.GetInternalPen(iAlpha);
+            return m_StyleHelper.GetPen(iAlpha, 1.0);
         }
         #endregion
 
@@ -1100,10 +1117,10 @@ namespace Kinovea.ScreenManager
             {
                 if (_xmlReader.IsStartElement())
                 {
-                    if (_xmlReader.Name == "LineStyle")
+                    /*if (_xmlReader.Name == "LineStyle")
                     {
                     	_track.m_LineStyle = LineStyle.FromXml(_xmlReader);
-                    }
+                    }*/
                 }
                 else if (_xmlReader.Name == "TrackLine")
                 {
@@ -1239,12 +1256,12 @@ namespace Kinovea.ScreenManager
         }
         private void TrackLineToXml(XmlTextWriter _xmlWriter)
         {
-            _xmlWriter.WriteStartElement("TrackLine");
+            //_xmlWriter.WriteStartElement("TrackLine");
            
-            m_LineStyle.ToXml(_xmlWriter);
+            //m_LineStyle.ToXml(_xmlWriter);
 
             // </trackline>
-            _xmlWriter.WriteEndElement();
+            //_xmlWriter.WriteEndElement();
         }
         private void TrackPointsToXml(XmlTextWriter _xmlWriter)
         {
@@ -1380,7 +1397,7 @@ namespace Kinovea.ScreenManager
             }
 
             iHash ^= m_iDefaultCrossRadius.GetHashCode();
-            iHash ^= m_LineStyle.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             iHash ^= m_MainLabel.GetHashCode();
 
             foreach (KeyframeLabel kfl in m_KeyframesLabels)
@@ -1393,15 +1410,13 @@ namespace Kinovea.ScreenManager
         public void MemorizeState()
         {
         	// Used by formConfigureTrajectory to be able to modify the trajectory in real time.
-        	m_MemoLineStyle = m_LineStyle.Clone();
         	m_MemoTrackView = m_TrackView;
         	m_MemoLabel = m_MainLabel.Text;
         }
         public void RecallState()
         {
         	// Used when the user cancels his modifications on formConfigureTrajectory.
-        	m_LineStyle = m_MemoLineStyle.Clone();
-        	m_MainLabel.TextDecoration.Update(m_LineStyle.Color);
+        	m_MainLabel.TextDecoration.Update(m_StyleHelper.Color);
         	m_TrackView = m_MemoTrackView;
         	m_MainLabel.Text = m_MemoLabel;
         }
