@@ -87,6 +87,15 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap arrows
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("arrows", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap chrono
 		{
 			get

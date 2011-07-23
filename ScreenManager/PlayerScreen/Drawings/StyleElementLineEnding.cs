@@ -27,42 +27,42 @@ using System.Xml;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// Style element to represent a pen size.
+	/// Style element to represent line endings (for arrows).
 	/// Editor: owner drawn combo box.
-	/// Very similar to StyleElementLineStyle, just the rendering changes. (lines vs circles)
 	/// </summary>
-	public class StyleElementPenSize : AbstractStyleElement
+	public class StyleElementLineEnding : AbstractStyleElement
 	{
 		#region Properties
 		public override object Value
 		{
-			get { return m_iPenSize; }
+			get { return m_LineEnding; }
 			set 
 			{ 
-				m_iPenSize = (value is int) ? (int)value : m_iDefaultSize;
+				m_LineEnding = (value is LineEnding) ? (LineEnding)value : new LineEnding(LineCap.Round, LineCap.Round);
 				RaiseValueChanged();
 			}
 		}
 		public override Bitmap Icon
 		{
-			get { return Properties.Drawings.editorpen;}
+			get { return Properties.Drawings.arrows;}
 		}
 		public override string DisplayName
 		{
-			get { return "Pen size :";}
+			get { return "Arrows :";}
 		}
 		#endregion
 		
 		#region Members
-		private static readonly int[] m_Options = { 2, 3, 4, 5, 7, 9, 11, 13, 16, 19, 22, 25 };
-		private static readonly int m_iDefaultSize = 3;
-		private int m_iPenSize;
+		private LineEnding m_LineEnding;
+		private static readonly int m_iLineWidth = 6;
+		private static readonly LineEnding[] m_Options = { LineEnding.None, LineEnding.StartArrow, LineEnding.EndArrow, LineEnding.DoubleArrow };
 		#endregion
 		
 		#region Constructor
-		public StyleElementPenSize(int _default)
+		public StyleElementLineEnding() : this(LineEnding.None){}
+		public StyleElementLineEnding(LineEnding _default)
 		{
-			m_iPenSize = (Array.IndexOf(m_Options, _default) >= 0) ? _default : m_iDefaultSize;
+			m_LineEnding = (Array.IndexOf(m_Options, _default) >= 0) ? _default : LineEnding.None;
 		}
 		#endregion
 		
@@ -71,17 +71,17 @@ namespace Kinovea.ScreenManager
 		{
 			ComboBox editor = new ComboBox();
 			editor.DropDownStyle = ComboBoxStyle.DropDownList;
-			editor.ItemHeight = m_Options[m_Options.Length-1] + 2;
+			editor.ItemHeight = 15;
 			editor.DrawMode = DrawMode.OwnerDrawFixed;
-			foreach(int i in m_Options) editor.Items.Add(new object());
-			editor.SelectedIndex = Array.IndexOf(m_Options, m_iPenSize);
+			for(int i=0;i<m_Options.Length;i++) editor.Items.Add(new object());
+			editor.SelectedIndex = Array.IndexOf(m_Options, m_LineEnding);
 			editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
 			return editor;
 		}
 		public override AbstractStyleElement Clone()
 		{
-			AbstractStyleElement clone = new StyleElementPenSize(m_iPenSize);
+			AbstractStyleElement clone = new StyleElementLineEnding(m_LineEnding);
 			clone.Bind(this);
 			return clone;
 		}
@@ -101,10 +101,14 @@ namespace Kinovea.ScreenManager
 			if(e.Index >= 0 && e.Index < m_Options.Length)
 			{
 				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-				int itemPenSize = m_Options[e.Index];
-				int left = (e.Bounds.Width - itemPenSize) / 2;
-				int top = (e.Bounds.Height - itemPenSize) / 2;
-				e.Graphics.FillEllipse(Brushes.Black, e.Bounds.Left + left, e.Bounds.Top + top, itemPenSize, itemPenSize);
+				
+				Pen p = new Pen(Color.Black, m_iLineWidth);
+				p.StartCap = m_Options[e.Index].StartCap;
+				p.EndCap = m_Options[e.Index].EndCap;
+				
+				int top = e.Bounds.Height / 2;
+				
+				e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Left + e.Bounds.Width, e.Bounds.Top + top);
 			}
 		}
 		private void editor_SelectedIndexChanged(object sender, EventArgs e)
@@ -112,7 +116,7 @@ namespace Kinovea.ScreenManager
 			int index = ((ComboBox)sender).SelectedIndex;
 			if( index >= 0 && index < m_Options.Length)
 			{
-				m_iPenSize = m_Options[index];
+				m_LineEnding = m_Options[index];
 				RaiseValueChanged();
 			}
 		}

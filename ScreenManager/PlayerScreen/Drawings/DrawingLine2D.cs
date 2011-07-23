@@ -123,6 +123,7 @@ namespace Kinovea.ScreenManager
             m_StyleHelper.LineSize = 1;
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "line size");
+            m_Style.Bind(m_StyleHelper, "LineEnding", "arrows");
             
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
@@ -161,15 +162,14 @@ namespace Kinovea.ScreenManager
                 if (_bSelected) 
                     penEdges.Width++;
 
-                //if(m_PenStyle.Shape == LineShape.Simple)
+                if(m_StyleHelper.LineEnding.StartCap != LineCap.ArrowAnchor)
                 {
                 	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(1));
+                }
+                if(m_StyleHelper.LineEnding.EndCap != LineCap.ArrowAnchor)
+                {
                 	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(2));
                 }
-                /*else if(m_PenStyle.Shape == LineShape.EndArrow)
-                {
-                	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(1));
-                }*/
                 
                 penEdges.Dispose();
                 

@@ -180,9 +180,11 @@
     <Compile Include="PlayerScreen\Drawings\InfosTextDecoration.cs" />
     <Compile Include="PlayerScreen\Drawings\IXMLSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
+    <Compile Include="PlayerScreen\Drawings\LineShape.cs" />
     <Compile Include="PlayerScreen\Drawings\LineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementPenSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleHelper.cs" />
