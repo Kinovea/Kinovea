@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager
     		//return DrawingToolType.Pointer;
     		return DrawingToolType.Line2D;
     	}
-    	public override Cursor GetCursor(Color _color, int _iSize)
+    	public override Cursor GetCursor(double _fStretchFactor)
     	{
     		return Cursors.Cross;
     	}

@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
         	set 
         	{ 
         		m_StyleHelper.Color = value;
-        		m_MainLabel.TextDecoration.Update(value);
+        		m_MainLabel.BackColor = value;
         	}
         }
         public string Label
@@ -263,6 +263,8 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "line size");
             m_Style.Bind(m_StyleHelper, "TrackShape", "track shape");
+            
+            m_StyleHelper.ValueChanged += mainStyle_ValueChanged;
         }
         #endregion
 
@@ -1416,7 +1418,8 @@ namespace Kinovea.ScreenManager
         public void RecallState()
         {
         	// Used when the user cancels his modifications on formConfigureTrajectory.
-        	m_MainLabel.TextDecoration.Update(m_StyleHelper.Color);
+        	// m_StyleHelper has been reverted already as part of style elements framework.
+        	// This in turn triggered mainStyle_ValueChanged() event handler so the m_MainLabel has been reverted already too.
         	m_TrackView = m_MemoTrackView;
         	m_MainLabel.Text = m_MemoLabel;
         }
@@ -1461,6 +1464,10 @@ namespace Kinovea.ScreenManager
             }
 
             return iClosest;
+        }
+        private void mainStyle_ValueChanged()
+        {
+        	m_MainLabel.BackColor = m_StyleHelper.Color;	
         }
         #endregion
     }

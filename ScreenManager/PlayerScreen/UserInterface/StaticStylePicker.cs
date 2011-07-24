@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
 	/// <summary>
 	/// Allow the user to choose a Line Style.
@@ -13,10 +13,10 @@ namespace Kinovea.ScreenManager
     public partial class StaticStylePicker : UserControl
     {
         #region Properties
-        public LineStyle PickedStyle
+        /*public LineStyle PickedStyle
         {
             get { return m_PickedStyle; }
-        }
+        }*/
         /// <summary>
         /// DrawingType is used to configure the Style Picker display.
         /// See ConfigureStyleButtons to see the possible values.
@@ -33,9 +33,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Events
-        public delegate void DelegateStylePicked(object sender, EventArgs e);
-        [Category("Action"), Browsable(true)]
-        public event DelegateStylePicked StylePicked;
+        //public delegate void DelegateStylePicked(object sender, EventArgs e);
+        //[Category("Action"), Browsable(true)]
+        //public event DelegateStylePicked StylePicked;
 
         public delegate void DelegateMouseLeft(object sender, EventArgs e);
         [Category("Mouse"), Browsable(true)]
@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private LineStyle m_PickedStyle;
+        //private LineStyle m_PickedStyle;
         //private DrawingType m_DrawingType;
         private int m_iRows = 3;
         private int m_iCols = 4;
@@ -66,10 +66,10 @@ namespace Kinovea.ScreenManager
 
         private void ConfigureStyleButtons()
         {
-            m_PickedStyle = LineStyle.DefaultValue;
+            /*m_PickedStyle = LineStyle.DefaultValue;
 
             this.SuspendLayout();
-            /*switch(m_DrawingType)
+            switch(m_DrawingType)
             {
             	case DrawingType.Circle:
                 case DrawingType.Pencil:
@@ -231,14 +231,14 @@ namespace Kinovea.ScreenManager
         #region Buttons common event handlers
         private void btn_Click(object sender, EventArgs e)
         {
-            if (sender is Button)
+            /*if (sender is Button)
             {
                 m_PickedStyle = (LineStyle) ((Button)sender).Tag;
                 if (StylePicked != null)
                 {
                     StylePicked(this, EventArgs.Empty);
                 }
-            }
+            }*/
         }
         private void btn_MouseEnter(object sender, EventArgs e)
         {

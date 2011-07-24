@@ -73,7 +73,6 @@ namespace Kinovea.ScreenManager
 		private DrawingToolType m_ActiveTool;
 		private AbstractDrawingTool[] m_DrawingTools;
 		private DrawingToolPointer m_PointerTool;
-		private ColorProfile m_ColorProfile = new ColorProfile();
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
 		
@@ -139,7 +138,6 @@ namespace Kinovea.ScreenManager
 			
 			InitializeCaptureFiles();
 			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
-			m_ColorProfile.Load(PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder") + "\\current.xml");
 			
 			// Delegates
 			m_InitDecodingSize = new InitDecodingSize(InitDecodingSize_Invoked);
@@ -598,7 +596,7 @@ namespace Kinovea.ScreenManager
 			if (m_ActiveTool != DrawingToolType.Pencil)
 			{
 				m_ActiveTool = DrawingToolType.Pointer;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, -1));
+				SetCursor(m_PointerTool.GetCursor(-1));
 			}
 
 			// 3. Dock Keyf panel if nothing to see.
@@ -618,7 +616,7 @@ namespace Kinovea.ScreenManager
 			if (m_ActiveTool != DrawingToolType.Pencil)
 			{
 				m_ActiveTool = DrawingToolType.Pointer;
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+				SetCursor(m_PointerTool.GetCursor(0));
 			}
 		}
 		private void ShowBorder(bool _bShow)
@@ -635,7 +633,7 @@ namespace Kinovea.ScreenManager
 		private void DisablePlayAndDraw()
 		{
 			m_ActiveTool = DrawingToolType.Pointer;
-			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+			SetCursor(m_PointerTool.GetCursor(0));
 			DisableMagnifier();
 			UnzoomDirectZoom();
 		}
@@ -1016,7 +1014,7 @@ namespace Kinovea.ScreenManager
 								bool bDrawingHit = false;
 							
 								// Show the grabbing hand cursor.
-								SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 1));
+								SetCursor(m_PointerTool.GetCursor(1));
 							
 								if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect)
 								{
@@ -1044,13 +1042,6 @@ namespace Kinovea.ScreenManager
 									m_FrameServer.Metadata[0].AddDrawing(ad);
 									m_FrameServer.Metadata.SelectedDrawingFrame = 0;
 									m_FrameServer.Metadata.SelectedDrawing = 0;
-									
-									// Color
-									IDecorable decorableDrawing = ad as IDecorable;
-									if(decorableDrawing != null)
-									{
-										m_ColorProfile.SetupDrawing(decorableDrawing);
-									}
 									
 									// Special preparation.
 									if(ad is DrawingLine2D)
@@ -1099,7 +1090,6 @@ namespace Kinovea.ScreenManager
 										panelCenter.Controls.Add(dt.EditBox);
 										dt.EditBox.BringToFront();
 										dt.EditBox.Focus();
-										m_ColorProfile.SetupDrawing(dt as IDecorable);
 									}
 								}
 							}
@@ -1180,14 +1170,11 @@ namespace Kinovea.ScreenManager
 						}
 						else if(m_ActiveTool != DrawingToolType.Pointer)
 						{
-							// Launch Preconfigure dialog.
-							// = Updates the tool's entry of the main color profile.
-							/*formConfigureDrawing fcd = new formConfigureDrawing(m_DrawingTools[(int)m_ActiveTool].DrawingType, m_ColorProfile);*/
-							FormToolPresets ftp = new FormToolPresets();
+							// Launch FormToolPreset.
+							FormToolPresets ftp = new FormToolPresets(m_DrawingTools[(int)m_ActiveTool].InternalName);
 							ScreenManagerKernel.LocateForm(ftp);
 							ftp.ShowDialog();
 							ftp.Dispose();
-							
 							UpdateCursor();
 						}
 						else
@@ -1300,7 +1287,7 @@ namespace Kinovea.ScreenManager
 				
 				if (m_ActiveTool == DrawingToolType.Pointer)
 				{
-					SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
+					SetCursor(m_PointerTool.GetCursor(0));
 					m_PointerTool.OnMouseUp();
 				
 					// If we were resizing an SVG drawing, trigger a render.
@@ -1531,7 +1518,7 @@ namespace Kinovea.ScreenManager
 		{
 			OnPoke();
 			m_ActiveTool = DrawingToolType.Pointer;
-			SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(Color.Empty, 0));
+			SetCursor(m_PointerTool.GetCursor(0));
 		}
 		private void btnDrawingTool_Click(object sender, EventArgs e)
 		{
@@ -1570,7 +1557,7 @@ namespace Kinovea.ScreenManager
 					UnzoomDirectZoom();
 					m_FrameServer.Magnifier.Mode = MagnifierMode.NotVisible;
 					btnMagnifier.BackgroundImage = Resources.magnifier2;
-					SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
+					SetCursor(m_PointerTool.GetCursor(0));
 					pbSurfaceScreen.Invalidate();
 				}
 				else
@@ -1600,34 +1587,17 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateCursor()
 		{
-			// The current cursor must be updated.
-
-			AbstractDrawingTool drawingTool = m_DrawingTools[(int)m_ActiveTool];
-			Color cursorColor = Color.Black; //m_ColorProfile.GetColor(drawingTool.DrawingType);
-				
-			// Get the cursor and use it.
-			if (m_ActiveTool == DrawingToolType.Pencil)
+			if(m_ActiveTool == DrawingToolType.Pointer)
 			{
-				int iCircleSize = (int)((double)m_ColorProfile.StylePencil.Size * m_FrameServer.CoordinateSystem.Stretch);
-				Cursor c = drawingTool.GetCursor(cursorColor, iCircleSize);
-				SetCursor(c);
+				SetCursor(m_PointerTool.GetCursor(0));
 			}
 			else
 			{
-				SetCursor(drawingTool.GetCursor(cursorColor, 0));	
+				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_FrameServer.CoordinateSystem.Stretch));
 			}
 		}
 		private void SetCursor(Cursor _cur)
 		{
-			if (m_ActiveTool != DrawingToolType.Pointer)
-			{
-				panelCenter.Cursor = _cur;
-			}
-			else
-			{
-				panelCenter.Cursor = Cursors.Default;
-			}
-
 			pbSurfaceScreen.Cursor = _cur;
 		}
 		#endregion
@@ -1640,13 +1610,13 @@ namespace Kinovea.ScreenManager
 			if(m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
 				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
-				if(decorableDrawing != null)
+				if(decorableDrawing != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
 				{
-					formConfigureDrawing fcd = new formConfigureDrawing(decorableDrawing, pbSurfaceScreen);
+					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
 					ScreenManagerKernel.LocateForm(fcd);
 					fcd.ShowDialog();
 					fcd.Dispose();
-					pbSurfaceScreen.Invalidate();
+					DoInvalidate();
 					this.ContextMenuStrip = popMenu;
 				}
 			}
@@ -1736,7 +1706,7 @@ namespace Kinovea.ScreenManager
 			// Revert to no magnification.
 			m_FrameServer.Magnifier.Mode = MagnifierMode.NotVisible;
 			btnMagnifier.BackgroundImage = Resources.magnifier2;
-			SetCursor(m_PointerTool.GetCursor(Color.Empty, 0));
+			SetCursor(m_PointerTool.GetCursor(0));
 		}
 		#endregion
 

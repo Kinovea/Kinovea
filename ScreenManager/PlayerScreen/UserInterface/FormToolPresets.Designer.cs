@@ -212,6 +212,7 @@ namespace Kinovea.ScreenManager
 			this.Controls.Add(this.btnLoadProfile);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "FormToolPresets";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "FormToolPresets";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
 			this.grpConfig.ResumeLayout(false);

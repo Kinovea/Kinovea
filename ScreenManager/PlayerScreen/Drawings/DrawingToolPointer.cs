@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
             ExtraDrawing,
             Grid,
             Plane
-        }    	
+        }
     	#endregion
     	
     	#region Properties
@@ -122,31 +122,23 @@ namespace Kinovea.ScreenManager
             m_UserAction = UserAction.None;
             return DrawingToolType.Pointer;
         }
-        public override Cursor GetCursor(Color _color, int _iSize)
+        public override Cursor GetCursor(double _fStretchFactor)
         {
-            // Very special case for the Pointer tool cursor.
-            // We use _iSize values to define the type of cursor:
+        	throw new NotImplementedException();
+        }
+        public Cursor GetCursor(int _type)
+        {
             // 0: Open hand, 1: Closed hand, -1: same as last time.
             
-            Cursor cur;
-            int iType = 0;
-            if (_iSize == -1)
+            Cursor cur = m_curHandOpen;
+            switch(_type)
             {
-                iType = m_iLastCursorType;
-            }
-            else
-            {
-                iType = _iSize;
-            }
-            m_iLastCursorType = iType;
-
-            if (iType == 0)
-            {
-                cur = m_curHandOpen;
-            }
-            else
-            {
-                cur = m_curHandClose;
+            	case -1:
+            		cur = (m_iLastCursorType == 0)?m_curHandOpen:m_curHandClose;
+            		break;
+            	case 1:
+            		cur = m_curHandClose;
+					break;
             }
 
             return cur;

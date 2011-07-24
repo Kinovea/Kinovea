@@ -64,10 +64,6 @@ namespace Kinovea.ScreenManager
 			get { return m_TopLeft;}
 			set { m_TopLeft = value;}
 		}
-		public InfosTextDecoration TextDecoration
-        {
-        	get { return m_TextDecoration;}
-        }
 		public long Timestamp
         {
         	get { return m_iTimestamp; }
@@ -77,6 +73,11 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_iAttachIndex; }
 			set { m_iAttachIndex = value; }
+		}
+		public Color BackColor
+		{
+			get { return m_StyleHelper.Bicolor.Background; }
+			set { m_StyleHelper.Bicolor = new Bicolor(value); }
 		}
         #endregion
 
@@ -95,22 +96,20 @@ namespace Kinovea.ScreenManager
         private Point m_AttachLocation = new Point(0,0);			// The point we are attached to (image coordinates).
         private Point m_AttachLocationRescaled = new Point(0,0);	// The point we are attached to (scaled coordinates).
         
-        private InfosTextDecoration m_TextDecoration;
+        private StyleHelper m_StyleHelper = new StyleHelper();
         
         #endregion
 
         #region Construction
-        public KeyframeLabel(Color _color)
-        	: this(new Point(0,0), _color)
-        {
-        }
+        public KeyframeLabel(Color _color) : this(new Point(0,0), _color){}
         public KeyframeLabel(Point _attachPoint, Color _color)
         {
         	m_AttachLocation = _attachPoint;
         	m_TopLeft = new Point(_attachPoint.X - 20, _attachPoint.Y - 50);
         	
         	m_Text = "Label";
-        	m_TextDecoration = new InfosTextDecoration("Arial", 8, FontStyle.Bold, Color.White, Color.FromArgb(160, _color));
+        	m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
+        	m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, _color));
         	m_fStretchFactor = 1.0;
         }
         #endregion
@@ -133,7 +132,7 @@ namespace Kinovea.ScreenManager
         {
             int iHash = 0;
             
-            iHash ^= m_TextDecoration.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             iHash ^= m_TopLeft.GetHashCode();
             
             return iHash;
@@ -150,7 +149,7 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(m_iTimestamp.ToString());
             _xmlWriter.WriteEndElement();
 
-            m_TextDecoration.ToXml(_xmlWriter);
+            //m_TextDecoration.ToXml(_xmlWriter);
 
             // </KeyframeLabel>
             _xmlWriter.WriteEndElement();
@@ -187,10 +186,10 @@ namespace Kinovea.ScreenManager
                         // Time was stored absolute.
                         kfl.m_iTimestamp = long.Parse(_xmlReader.ReadString());
                     }
-                    else if (_xmlReader.Name == "TextDecoration")
+                    /*else if (_xmlReader.Name == "TextDecoration")
                     {
                     	kfl.m_TextDecoration = InfosTextDecoration.FromXml(_xmlReader);
-                    }
+                    }*/
                     else
                     {
                         // forward compatibility : ignore new fields. 
@@ -214,27 +213,26 @@ namespace Kinovea.ScreenManager
         	
             // Draw background rounded rectangle.
             // all sizes are based on font size.
-            Font f = m_TextDecoration.GetInternalFont((float)m_fStretchFactor);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString( " " + m_Text + " ", f);
             int radius = (int)(f.Size / 2);
             
             RescaleCoordinates(m_fStretchFactor, _DirectZoomTopLeft);
         	
         	// Small dot and connector.        	
-        	Color fadingColor = m_TextDecoration.GetFadingBackColor(_fOpacityFactor);
-            Color moreFadingColor = m_TextDecoration.GetFadingBackColor(_fOpacityFactor/4);
-            SolidBrush fillBrush = new SolidBrush(fadingColor);
-            Pen p = new Pen(moreFadingColor); 
+        	SolidBrush fillBrush = m_StyleHelper.GetBackgroundBrush((int)(_fOpacityFactor*255));
+        	Pen p = m_StyleHelper.GetBackgroundPen((int)(_fOpacityFactor*64));
+            
             _canvas.FillEllipse(fillBrush, m_AttachLocationRescaled.X - 2, m_AttachLocationRescaled.Y - 2, 4, 4);
             _canvas.DrawLine(p, m_AttachLocationRescaled.X, m_AttachLocationRescaled.Y, m_LabelBackground.Location.X + m_BackgroundSize.Width / 2, m_LabelBackground.Location.Y + m_BackgroundSize.Height / 2);
             p.Dispose();
             fillBrush.Dispose();
             
             // Background
-        	m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextDecoration.BackColor);
+        	m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
         	
         	// Text
-        	SolidBrush fontBrush = new SolidBrush(m_TextDecoration.GetFadingForeColor(_fOpacityFactor));
+        	SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor*255));
         	_canvas.DrawString(" " + m_Text, f, fontBrush, m_LabelBackground.TextLocation);
         	fontBrush.Dispose();
         	f.Dispose();

@@ -1,4 +1,4 @@
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
     partial class formConfigureDrawing
     {
@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
             this.grpConfig = new System.Windows.Forms.GroupBox();
             this.cmbFontSize = new System.Windows.Forms.ComboBox();
             this.lblFontSize = new System.Windows.Forms.Label();
-            this.stlPicker = new Kinovea.ScreenManager.StaticStylePicker();
+            this.stlPicker = new Kinovea.ScreenManager.Obsolete.StaticStylePicker();
             this.grpConfig.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
             this.stlPicker.Name = "stlPicker";
             this.stlPicker.Size = new System.Drawing.Size(162, 77);
             this.stlPicker.TabIndex = 15;
-            this.stlPicker.StylePicked += new Kinovea.ScreenManager.StaticStylePicker.DelegateStylePicked(this.stlPicker_StylePicked);
+            //this.stlPicker.StylePicked += new Kinovea.ScreenManager.Obsolete.StaticStylePicker.DelegateStylePicked(this.stlPicker_StylePicked);
             // 
             // formConfigureDrawing
             // 
