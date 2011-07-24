@@ -36,12 +36,15 @@ namespace Kinovea.ScreenManager
 		private bool m_bManualClose;
 		private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
 		private int m_iEditorsLeft;
+		private string m_Preselect;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public FormToolPresets()
+		public FormToolPresets():this(null){}
+		public FormToolPresets(string _preselect)
 		{
+			m_Preselect = _preselect;
 			InitializeComponent();
 			LoadPresets();
 		}
@@ -64,85 +67,25 @@ namespace Kinovea.ScreenManager
 				
 			if(lstPresets.Items.Count > 0)
 			{
-				lstPresets.SelectedIndex = 0;
-			}
-		}
-		private void LoadPreset(ToolStylePreset _preset)
-		{
-			// Load a single preset
-			// The layout is dynamic. The groupbox and the whole form is resized when needed on a GrowOnly basis.
-			/*btnToolIcon.BackColor = Color.Transparent;
-			btnToolIcon.Image = _preset.ToolIcon;
-			lblToolName.Text = _preset.ToolDisplayName;
-			
-			// Layout depends on the list of style elements.
-			// Currently we only support 2 editable style elements.
-			// Example: pencil tool has a color picker and a pen size picker.
-			
-			m_firstElement = null;
-			m_secondElement = null;
-			
-			foreach(KeyValuePair<string, AbstractStyleElement> styleElement in _preset.Style.Elements)
-			{
-				if(m_firstElement == null)
+				if(!string.IsNullOrEmpty(m_Preselect))
 				{
-					m_firstElement = styleElement.Value;
-				}
-				else if(m_secondElement == null)
-				{
-					m_secondElement = styleElement.Value;
+					for(int i = 0; i<lstPresets.Items.Count;i++)
+					{
+						ToolStylePreset tsp = lstPresets.Items[i] as ToolStylePreset;
+						if(tsp != null && tsp.ToolInternalName == m_Preselect)
+						{
+							lstPresets.SelectedIndex = i;
+							break;
+						}
+					}
 				}
 				else
 				{
-					log.DebugFormat("Discarding style element: \"{0}\". (Only 2 style elements supported).", styleElement.Key);
+					lstPresets.SelectedIndex = 0;
 				}
 			}
-			
-			// Configure editor line for each element.
-			// The style element is responsible for updating the internal value and the editor appearance.
-			// The element internal value might also be bound to a style helper property so that the underlying drawing will get updated.
-			
-			// Clean up
-			btnFirstElement.Visible = false;
-			lblFirstElement.Visible = false;
-			grpConfig.Controls.RemoveByKey("firstEditor");
-			btnSecondElement.Visible = false;
-			lblSecondElement.Visible = false;
-			grpConfig.Controls.RemoveByKey("secondEditor");
-			
-			if(m_firstElement != null)
-			{
-				btnFirstElement.BackColor = Color.Transparent;
-				btnFirstElement.Image = m_firstElement.Icon;
-				btnFirstElement.Visible = true;
-				lblFirstElement.Text = m_firstElement.DisplayName;
-				lblFirstElement.Visible = true;
-				
-				int editorsLeft = 150; // works in High DPI ?
-				
-				Control firstEditor = m_firstElement.GetEditor();
-				firstEditor.Size = new Size(50, 20);
-				firstEditor.Location = new Point(editorsLeft, btnFirstElement.Top);
-				firstEditor.Name = "firstEditor";
-				grpConfig.Controls.Add(firstEditor);
-				
-				if(m_secondElement != null)
-				{
-					btnSecondElement.BackColor = Color.Transparent;
-					btnSecondElement.Image = m_secondElement.Icon;
-					btnSecondElement.Visible = true;
-					lblSecondElement.Text = m_secondElement.DisplayName;
-					lblSecondElement.Visible = true;
-
-					Control secondEditor = m_secondElement.GetEditor();
-					secondEditor.Size = new Size(50, 20);
-					secondEditor.Location = new Point(editorsLeft, btnSecondElement.Top);
-					secondEditor.Name = "secondEditor";
-					grpConfig.Controls.Add(secondEditor);
-				}
-			}*/
 		}
-		private void LoadPreset2(ToolStylePreset _preset)
+		private void LoadPreset(ToolStylePreset _preset)
 		{
 			// Load a single preset
 			// The layout is dynamic. The groupbox and the whole form is resized when needed on a "GrowOnly" basis.
@@ -312,7 +255,7 @@ namespace Kinovea.ScreenManager
 			ToolStylePreset preset = lstPresets.SelectedItem as ToolStylePreset;
 			if(preset != null)
 			{
-				LoadPreset2(preset);
+				LoadPreset(preset);
 			}
 		}
 		private void BtnDefaultClick(object sender, EventArgs e)

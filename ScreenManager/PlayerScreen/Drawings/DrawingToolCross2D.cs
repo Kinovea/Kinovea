@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
     	{
     		return DrawingToolType.Cross2D; // After placed, we keep using the Cross2D tool.
     	}
-    	public override Cursor GetCursor(Color _color, int _iSize)
+    	public override Cursor GetCursor(double _fStretchFactor)
     	{
     		// Draw custom cursor: cross inside a semi transparent circle (same as drawing).
     		Color c = (Color)m_StylePreset.Elements["back color"].Value;

@@ -1,4 +1,4 @@
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
     partial class StaticStylePicker
     {

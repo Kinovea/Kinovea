@@ -26,7 +26,7 @@ using System.Xml;
 
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
 	/// <summary>
 	/// Class to hold a set of decorations informations for the various tools.
@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         // Folowing properties are used in formColorProfile to set up current values.
-        public Color ColorAngle2D
+        /*public Color ColorAngle2D
         {
             get { return m_DecorationAngle2D.BackColor; }
         }
@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
         {
             get { return m_DecorationPencil.Color; }
         }
-        public Color ColorText
+        /*public Color ColorText
         {
             get { return m_DecorationText.BackColor; }
         }
@@ -79,24 +79,24 @@ namespace Kinovea.ScreenManager
         {
             get { return m_DecorationCircle; }
         }
-        public int FontSizeText
+        /*public int FontSizeText
         {
         	get { return m_DecorationText.FontSize; }
         }
         public int FontSizeChrono
         {
         	get { return m_DecorationChrono.FontSize; }
-        }
+        }*/
         #endregion
 
         #region Members
-        private InfosTextDecoration m_DecorationAngle2D;
-        private InfosTextDecoration m_DecorationChrono;
-        private LineStyle m_DecorationCross2D;
+        //private InfosTextDecoration m_DecorationAngle2D;
+        //private InfosTextDecoration m_DecorationChrono;
+        /*private LineStyle m_DecorationCross2D;
         private LineStyle m_DecorationLine2D;
         private LineStyle m_DecorationPencil;
-        private LineStyle m_DecorationCircle;
-        private InfosTextDecoration m_DecorationText;
+        private LineStyle m_DecorationCircle;*/
+        //private InfosTextDecoration m_DecorationText;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -105,13 +105,13 @@ namespace Kinovea.ScreenManager
         public ColorProfile()
         {
             // Default values
-            m_DecorationAngle2D = new InfosTextDecoration(12, Color.DarkOliveGreen);
+            /*m_DecorationAngle2D = new InfosTextDecoration(12, Color.DarkOliveGreen);
             m_DecorationChrono = new InfosTextDecoration(12, Color.Black);
             m_DecorationCross2D = new LineStyle(1, LineShape.Simple, Color.CornflowerBlue);
             m_DecorationLine2D = new LineStyle(3, LineShape.Simple, Color.LightGreen);
             m_DecorationPencil = new LineStyle(9, LineShape.Simple, Color.SeaGreen);
             m_DecorationCircle = new LineStyle(3, LineShape.Simple, Color.CadetBlue);
-            m_DecorationText = new InfosTextDecoration(12, Color.CornflowerBlue);
+            m_DecorationText = new InfosTextDecoration(12, Color.CornflowerBlue);*/
         }
 		#endregion
         
@@ -121,7 +121,7 @@ namespace Kinovea.ScreenManager
             try
             {
                 // Save to XML file
-                XmlTextWriter PreferencesWriter = new XmlTextWriter(_filePath, null);
+                /*XmlTextWriter PreferencesWriter = new XmlTextWriter(_filePath, null);
                 PreferencesWriter.Formatting = Formatting.Indented;
                 PreferencesWriter.WriteStartDocument();
                 PreferencesWriter.WriteStartElement("KinoveaColorProfile");
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
                 PreferencesWriter.WriteEndElement();// </KinoveaColorProfile>
                 PreferencesWriter.WriteEndDocument();
                 PreferencesWriter.Flush();
-                PreferencesWriter.Close();
+                PreferencesWriter.Close();*/
                
                 #region Old 1.1 format
                 /*
@@ -239,7 +239,7 @@ namespace Kinovea.ScreenManager
                                 {
                                 	// TODO: Do not try to read from older format (1.1)
                                 	
-                                	switch (reader.Name)
+                                	/*switch (reader.Name)
                                     {
                                 		case "Angle2D":
                                 			m_DecorationAngle2D = ParseTextDecorationEntry(reader, reader.Name);
@@ -266,7 +266,7 @@ namespace Kinovea.ScreenManager
                                             // DrawingTool from a newer file format...
                                             // We don't have a holder variable for it: ignore.
                                             break;
-                                	}
+                                	}*/
                                 	
                                 	#region old format 1.1
                                 	/*
@@ -334,7 +334,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private LineStyle ParseLineStyleEntry(XmlReader _reader, string _element)
+        /*private LineStyle ParseLineStyleEntry(XmlReader _reader, string _element)
         {
         	LineStyle ls = new LineStyle();
         	
@@ -358,8 +358,8 @@ namespace Kinovea.ScreenManager
         	}
         	
         	return ls;
-        }
-        private InfosTextDecoration ParseTextDecorationEntry(XmlReader _reader, string _element)
+        }*/
+        /*private InfosTextDecoration ParseTextDecorationEntry(XmlReader _reader, string _element)
         {
         	InfosTextDecoration itd = new InfosTextDecoration();
         	
@@ -383,8 +383,8 @@ namespace Kinovea.ScreenManager
         	}
         	
         	return itd;
-        }
-        public void Load(ColorProfile _origin)
+        }*/
+        /*public void Load(ColorProfile _origin)
         {
             log.Debug("Loading color profile from object.");
             
@@ -395,7 +395,7 @@ namespace Kinovea.ScreenManager
             this.m_DecorationPencil = _origin.m_DecorationPencil.Clone();
             this.m_DecorationCircle = _origin.m_DecorationCircle.Clone();
             this.m_DecorationText = _origin.m_DecorationText.Clone();
-        }
+        }*/
         /*public void UpdateData(DrawingType _tool, Color _color)
         {
         	// Update a ColorProfile entry from specified color.

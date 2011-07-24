@@ -24,7 +24,7 @@ using System.Xml;
 
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
 	/// <summary>
 	/// A class to encapsulate all text decoration informations

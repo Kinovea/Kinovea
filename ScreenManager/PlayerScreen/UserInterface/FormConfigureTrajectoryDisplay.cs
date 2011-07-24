@@ -219,9 +219,9 @@ namespace Kinovea.ScreenManager
         private void Revert()
 		{
 			// Revert to memo and re-update data.
-			m_Track.RecallState();
 			m_Track.DrawingStyle.Revert();
 			m_Track.DrawingStyle.RaiseValueChanged();
+			m_Track.RecallState();
 			if(m_Invalidate != null) m_Invalidate();
 		}
         private void btnOK_Click(object sender, EventArgs e)

@@ -28,7 +28,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
 	/// <summary>
 	/// The dialog lets the user configure the whole color profile.
@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         {
         	m_ColorProfile = _colorProfile;
         	m_TempColorProfile = new ColorProfile();
-        	m_TempColorProfile.Load(m_ColorProfile);
+        	//m_TempColorProfile.Load(m_ColorProfile);
 
             InitializeComponent();
             m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
         private void SetupForm()
         {
         	// Initialize font size combo.
-        	cmbTextSize.Items.Clear();
+        	/*cmbTextSize.Items.Clear();
         	cmbChronoSize.Items.Clear();
             foreach(int size in InfosTextDecoration.AllowedFontSizes)
             {
@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
 				cmbChronoSize.Items.Add(size.ToString());
             }
         	
-        	UpdateColorsAndStyles();
+        	UpdateColorsAndStyles();*/
 
             // Size Picker Control
             //m_StylePicker = new StaticStylePicker(DrawingType.Line);
@@ -236,7 +236,7 @@ namespace Kinovea.ScreenManager
             // Load profile data to controls
             
             // Colors
-            btnTextColor.BackColor = m_TempColorProfile.ColorText;
+            /*btnTextColor.BackColor = m_TempColorProfile.ColorText;
             btnPencilColor.BackColor = m_TempColorProfile.ColorPencil;
             btnLineColor.BackColor = m_TempColorProfile.ColorLine2D;
             btnCircleColor.BackColor = m_TempColorProfile.ColorCircle;
@@ -255,7 +255,7 @@ namespace Kinovea.ScreenManager
             cmbChronoSize.Text = m_TempColorProfile.FontSizeChrono.ToString();
             
             // Update window.
-            this.Invalidate();
+            this.Invalidate();*/
         }
         private void FixColors()
         {
@@ -333,8 +333,8 @@ namespace Kinovea.ScreenManager
         private void btnDefaults_Click(object sender, EventArgs e)
         {
         	// Reload the built-in default profile.
-            m_TempColorProfile.Load(new ColorProfile());
-            UpdateColorsAndStyles();
+            //m_TempColorProfile.Load(new ColorProfile());
+            //UpdateColorsAndStyles();
         }
         #endregion
         
@@ -342,7 +342,7 @@ namespace Kinovea.ScreenManager
         private void btnApply_Click(object sender, EventArgs e)
         {
         	// Comit the changes to the main color profile.
-            m_ColorProfile.Load(m_TempColorProfile);
+            //m_ColorProfile.Load(m_TempColorProfile);
             
             // Serialize it to file.
             string folder = PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");

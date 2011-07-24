@@ -96,10 +96,9 @@ namespace Kinovea.ScreenManager
     	/// <summary>
     	/// Retrieve the cursor we should dispaly when this tool is the active tool.
     	/// </summary>
-    	/// <param name="_color">The current color of the tool</param>
-    	/// <param name="_iSize">The current size of the tool</param>
-    	/// <returns>A cursor object to be used while this tool is active</returns>
-    	public abstract Cursor GetCursor(Color _color, int _iSize);
+    	/// <param name="_fStretchFactor">Current stretchfactor (including zoom)</param>
+    	/// <returns>The cursor to use</returns>
+    	public abstract Cursor GetCursor(double _fStretchFactor);
     	
     	public void ResetToDefaultStyle()
     	{

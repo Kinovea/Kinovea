@@ -24,7 +24,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
-{
+{	
 	/// <summary>
 	/// A class to encapsulate the various styling primitive a drawing may need for rendering, 
 	/// and provide some utility functions to get a Pen, Brush, Font or Color object according to client opacity or zoom.
@@ -42,6 +42,16 @@ namespace Kinovea.ScreenManager
 		#region Exposed function delegates
 		public DelegateBindWrite BindWrite;
 		public DelegateBindRead BindRead;
+		
+		/// <summary>
+		/// Event raised when the value is changed dynamically through binding.
+		/// This may be useful if the Drawing has several StyleHelper that must be linked somehow.
+		/// An example use is when we change the main color of the track, we need to propagate the change
+		/// to the small label attached (for the Label following mode).
+		/// </summary>
+		/// <remarks>The event is not raised when the value is changed manually</remarks>
+		public event DelegateValueChanged ValueChanged;
+		
 		#endregion
 		
 		#region Properties
@@ -102,6 +112,7 @@ namespace Kinovea.ScreenManager
 		private LineEnding m_LineEnding = LineEnding.None;
 		private TrackShape m_TrackShape = TrackShape.Solid;
 		
+		
 		// Internal only
 		private static readonly int[] m_AllowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -133,7 +144,7 @@ namespace Kinovea.ScreenManager
 
 		/// <summary>
 		/// Returns a Pen object suitable to draw a line or contour.
-		/// The pen object will integrate the color, line size, and line endings properties.
+		/// The pen object will integrate the color, line size, line shape, and line endings properties.
 		/// </summary>
 		/// <param name="_iAlpha">Alpha value to multiply the color with</param>
 		/// <param name="_fStretchFactor">zoom value to multiply the line size with</param>
@@ -253,7 +264,16 @@ namespace Kinovea.ScreenManager
 		
 		public override int GetHashCode()
 		{
-			return m_Color.GetHashCode() ^ m_iLineSize.GetHashCode() ^ m_Font.GetHashCode();
+			int iHash = 0;
+            
+			iHash ^= m_Color.GetHashCode();
+            iHash ^= m_iLineSize.GetHashCode();
+			iHash ^= m_Font.GetHashCode();
+            iHash ^= m_Bicolor.GetHashCode();
+			iHash ^= m_LineEnding.GetHashCode();
+			iHash ^= m_TrackShape.GetHashCode();
+			
+			return iHash;
 		}
 		
 		#endregion
@@ -333,10 +353,15 @@ namespace Kinovea.ScreenManager
 					}
 			}
 			
-			if(!imported)
+			if(imported)
+			{
+				if(ValueChanged != null) ValueChanged();
+			}
+			else
 			{
 				log.DebugFormat("Could not import value \"{0}\" to property \"{1}\"." , _value.ToString(), _targetProperty);
 			}
+			
 		}
 		private void DoBindRead(string _sourceProperty, ref object _targetValue)
 		{

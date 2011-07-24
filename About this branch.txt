@@ -1,5 +1,16 @@
 2011-07-23
 
+1. Usage of style helper in Keyframe labels.
+2. Event to signal when the value is modified through the binding process.
+This is used when a specific drawing has several StyleHelper that need to maintain coherence. This is the case of Track with its main color and the mini label attached.
+3. Moved unused classes to a new namespace ScreenManager.Obsolete.
+
+Still broken:
+- Serialization
+
+--------------------------------------------------------------------------------
+2011-07-23
+
 Porting the styling to tracks line. 
 - Implementation of trackshape wrapper to describe the track line formatting (line dash style + presence of time ticks).
 - Implementation of StyleElementTrackShape, a mini editor for track shapes.

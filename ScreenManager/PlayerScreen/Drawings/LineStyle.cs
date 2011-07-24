@@ -24,7 +24,7 @@ using System.Xml;
 
 using Kinovea.Services;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Obsolete
 {
 	/// <summary>
 	/// Class that holds the style information for lines, including size, shape and color.
