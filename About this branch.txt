@@ -1,3 +1,14 @@
+2011-07-25
+
+Replacement of the list of btnDrawingToolXXX by a ToolStrip.
+This allows to add a tool button to the UI with just one line. (It will also help when we implement multi tools buttons)
+Icon and tooltip are handled through the AbstractDrawingTool interface.
+Merged pointer tool and other tools event handlers (magnifier still has its own).
+
+Creation of DrawingTool wrapper classes for Magnifier and Grid, to use them in the UI like other tools.
+
+
+--------------------------------------------------------------------------------
 2011-07-24
 
 - More flexibility on the list of tools as seen by the screens.

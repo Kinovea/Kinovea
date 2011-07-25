@@ -196,7 +196,10 @@ namespace Kinovea.ScreenManager
 			// Revert to memos
 			foreach(AbstractDrawingTool tool in ToolManager.Tools.Values)
 			{
-				tool.StylePreset.Revert();
+				if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
+				{
+					tool.StylePreset.Revert();
+				}
 			}
 		}
 		private void BtnCancel_Click(object sender, EventArgs e)
