@@ -744,24 +744,6 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
-		internal static System.Drawing.Bitmap magnifier2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("magnifier2", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
-		internal static System.Drawing.Bitmap magnifierActive2
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("magnifierActive2", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-		
 		internal static System.Drawing.Bitmap MenuFileNewIcon
 		{
 			get

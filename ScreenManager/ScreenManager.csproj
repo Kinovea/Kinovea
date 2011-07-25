@@ -175,6 +175,8 @@
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\InfosTextDecoration.cs" />

@@ -186,6 +186,15 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap grid
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("grid", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap handclose24b
 		{
 			get
@@ -254,6 +263,24 @@ namespace Kinovea.ScreenManager.Properties
 			get
 			{
 				object obj = ResourceManager.GetObject("linesize", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap magnifier
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("magnifier", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap magnifieractive
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("magnifieractive", resourceCulture);
 				return ((System.Drawing.Bitmap)(obj));
 			}
 		}

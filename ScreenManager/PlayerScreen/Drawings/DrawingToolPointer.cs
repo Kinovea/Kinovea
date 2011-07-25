@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
     	}
 		public override bool Attached
         {
-        	get { throw new NotImplementedException(); }
+        	get { return false; }
         }
 		public override bool KeepTool
     	{

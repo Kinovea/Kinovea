@@ -76,6 +76,14 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolText)Tools["Label"]; }
 		}
+		public static DrawingToolPlane Plane
+		{
+			get { return (DrawingToolPlane)Tools["Plane"]; }
+		}
+		public static DrawingToolMagnifier Magnifier
+		{
+			get { return (DrawingToolMagnifier)Tools["Magnifier"]; }
+		}
 		#endregion
 		
 		#region Members
@@ -89,7 +97,7 @@ namespace Kinovea.ScreenManager
         	
         	// The core drawing tools are loaded statically.
         	// Maybe in the future we can have a plug-in system with .dll containing extensions tools.
-        	// Note that the pointer "tool" is not listed here.
+        	// Note that the pointer "tool" is not listed, as each screen must have its own.
         	m_Tools.Add("Angle", new DrawingToolAngle2D());
         	m_Tools.Add("Chrono", new DrawingToolChrono());
         	m_Tools.Add("Circle", new DrawingToolCircle());
@@ -97,15 +105,8 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Line", new DrawingToolLine2D());
         	m_Tools.Add("Pencil", new DrawingToolPencil());
         	m_Tools.Add("Label", new DrawingToolText());
-        	
-        	// some more to test the dynamics.
-        	/*m_Tools.Add("Angle 2", new DrawingToolAngle2D());
-        	m_Tools.Add("Arrow", new DrawingToolChrono());
-        	m_Tools.Add("LowerBody", new DrawingToolCircle());
-        	m_Tools.Add("WireBody", new DrawingToolCross2D());
-        	m_Tools.Add("MultiLine", new DrawingToolLine2D());
-        	m_Tools.Add("Rotation", new DrawingToolPencil());
-        	m_Tools.Add("Cadence", new DrawingToolText());*/
+        	m_Tools.Add("Plane", new DrawingToolPlane());
+        	m_Tools.Add("Magnifier", new DrawingToolMagnifier());
         }
         #endregion
 	}

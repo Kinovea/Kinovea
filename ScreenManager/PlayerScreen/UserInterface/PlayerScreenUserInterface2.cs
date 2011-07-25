@@ -343,6 +343,10 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuGridsHide = new ToolStripMenuItem();
 		#endregion
 
+		ToolStripButton m_btnAddKeyFrame;
+		ToolStripButton m_btnShowComments;
+		ToolStripButton m_btnToolPresets;
+		
 		// Debug
 		private bool m_bShowInfos;
 		private Stopwatch m_Stopwatch = new Stopwatch();
@@ -1048,25 +1052,61 @@ namespace Kinovea.ScreenManager
 			m_PointerTool = new DrawingToolPointer();
 			m_ActiveTool = m_PointerTool;
 			
-			// Map tools with buttons.
-			btnDrawingToolPointer.Tag = m_PointerTool;
-			btnDrawingToolLine2D.Tag = ToolManager.Line;
-			btnDrawingToolCross2D.Tag = ToolManager.CrossMark;
-			btnDrawingToolAngle2D.Tag = ToolManager.Angle;
-			btnDrawingToolPencil.Tag = ToolManager.Pencil;
-			btnDrawingToolText.Tag = ToolManager.Label;
-			btnDrawingToolChrono.Tag = ToolManager.Chrono;
-			btnDrawingToolCircle.Tag = ToolManager.Circle;
+			stripDrawingTools.Left = 3;
+			EventHandler handler = new EventHandler(drawingTool_Click);
 			
-			// Todo: keep the list of tools buttons in a list and treat them all in batch.
-			btnDrawingToolPointer.Image = m_PointerTool.Icon;
-			btnDrawingToolLine2D.Image = ToolManager.Line.Icon;
-			btnDrawingToolCross2D.Image = ToolManager.CrossMark.Icon;
-			btnDrawingToolAngle2D.Image = ToolManager.Angle.Icon;
-			btnDrawingToolPencil.Image = ToolManager.Pencil.Icon;
-			btnDrawingToolText.Image = ToolManager.Label.Icon;
-			btnDrawingToolChrono.Image = ToolManager.Chrono.Icon;
-			btnDrawingToolCircle.Image = ToolManager.Circle.Icon;
+			// Special button: Add key image
+			m_btnAddKeyFrame = CreateToolButton();
+        	m_btnAddKeyFrame.Image = Resources.page_white_go;
+        	m_btnAddKeyFrame.Click += new EventHandler(btnAddKeyframe_Click);
+        	m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
+        	stripDrawingTools.Items.Add(m_btnAddKeyFrame);
+        	
+			AddToolButton(m_PointerTool, handler);
+			stripDrawingTools.Items.Add(new ToolStripSeparator());
+			
+			// Special button: Key image comments
+			m_btnShowComments = CreateToolButton();
+        	m_btnShowComments.Image = Resources.comments2;
+        	m_btnShowComments.Click += new EventHandler(btnShowComments_Click);
+        	m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
+        	stripDrawingTools.Items.Add(m_btnShowComments);
+        	
+			AddToolButton(ToolManager.Label, handler);
+			AddToolButton(ToolManager.Pencil, handler);
+			AddToolButton(ToolManager.Line, handler);
+			AddToolButton(ToolManager.Circle, handler);
+			AddToolButton(ToolManager.CrossMark, handler);
+			AddToolButton(ToolManager.Angle, handler);
+			AddToolButton(ToolManager.Chrono, handler);
+			AddToolButton(ToolManager.Plane, handler);
+			AddToolButton(ToolManager.Magnifier, new EventHandler(btnMagnifier_Click));
+						
+			// Tool presets
+			m_btnToolPresets = CreateToolButton();
+        	m_btnToolPresets.Image = Resources.SwatchIcon3;
+        	m_btnToolPresets.Click += new EventHandler(btnColorProfile_Click);
+        	m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
+        	stripDrawingTools.Items.Add(m_btnToolPresets);
+		}
+		private ToolStripButton CreateToolButton()
+		{
+			ToolStripButton btn = new ToolStripButton();
+			btn.AutoSize = false;
+        	btn.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        	btn.ImageScaling = ToolStripItemImageScaling.None;
+        	btn.Size = new Size(25, 25);
+        	btn.AutoToolTip = false;
+        	return btn;
+		}
+		private void AddToolButton(AbstractDrawingTool _tool, EventHandler _handler)
+		{
+			ToolStripButton btn = CreateToolButton();
+        	btn.Image = _tool.Icon;
+        	btn.Tag = _tool;
+        	btn.Click += _handler;
+        	btn.ToolTipText = _tool.DisplayName;
+        	stripDrawingTools.Items.Add(btn);
 		}
 		private void ResetData()
 		{
@@ -2788,20 +2828,21 @@ namespace Kinovea.ScreenManager
 			sldrSpeed.ToolTip = ScreenManagerLang.ToolTip_sldrSpeed;
 
 			// Drawing tools
-			toolTips.SetToolTip(btnAddKeyframe, ScreenManagerLang.ToolTip_AddKeyframe);
-			toolTips.SetToolTip(btnDrawingToolPointer, ScreenManagerLang.ToolTip_DrawingToolPointer);
-			toolTips.SetToolTip(btnDrawingToolText, ScreenManagerLang.ToolTip_DrawingToolText);
-			toolTips.SetToolTip(btnDrawingToolPencil, ScreenManagerLang.ToolTip_DrawingToolPencil);
-			toolTips.SetToolTip(btnDrawingToolLine2D, ScreenManagerLang.ToolTip_DrawingToolLine2D);
-			toolTips.SetToolTip(btnDrawingToolCross2D, ScreenManagerLang.ToolTip_DrawingToolCross2D);
-			toolTips.SetToolTip(btnDrawingToolCircle, ScreenManagerLang.ToolTip_DrawingToolCircle);
-			toolTips.SetToolTip(btnDrawingToolAngle2D, ScreenManagerLang.ToolTip_DrawingToolAngle2D);
-			toolTips.SetToolTip(btnShowComments, ScreenManagerLang.ToolTip_ShowComments);
-			toolTips.SetToolTip(btnColorProfile, ScreenManagerLang.ToolTip_ColorProfile);
-			toolTips.SetToolTip(btnDrawingToolChrono, ScreenManagerLang.ToolTip_DrawingToolChrono);
-			toolTips.SetToolTip(btnMagnifier, ScreenManagerLang.ToolTip_Magnifier);
-			toolTips.SetToolTip(btn3dplane, ScreenManagerLang.mnu3DPlane);
-
+			foreach(ToolStripItem tsi in stripDrawingTools.Items)
+			{
+				if(tsi is ToolStripButton)
+				{
+					AbstractDrawingTool tool = tsi.Tag as AbstractDrawingTool;
+					if(tool != null)
+					{
+						tsi.ToolTipText = tool.DisplayName;
+					}
+				}
+			}
+			
+			m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
+			m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
+			m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
 		}
 		#endregion
 
@@ -4022,27 +4063,51 @@ namespace Kinovea.ScreenManager
 				DockKeyframePanel(true);
 			}
 		}
-		private void btnDrawingTool_Click(object sender, EventArgs e)
+		private void drawingTool_Click(object sender, EventArgs e)
 		{
-			// User clicked on a drawing tool button. We find which with its Tag property.
-			// Deactivate magnifier if not commited.
+			// User clicked on a drawing tool button. A reference to the tool is stored in .Tag
 			// Set this tool as the active tool (waiting for the actual use) and set the cursor accordingly.
+			
+			// Deactivate magnifier if not commited.
 			if(m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
 			{
-				m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
-				btnMagnifier.Image = Resources.magnifier2;
-				DoInvalidate();
+				DisableMagnifier();
 			}
 			
 			OnPoke();
-			m_ActiveTool = (AbstractDrawingTool)((Button)sender).Tag;
+			
+			AbstractDrawingTool tool = ((ToolStripItem)sender).Tag as AbstractDrawingTool;
+			if(tool != null)
+			{
+				if(tool == ToolManager.Plane)
+				{
+					m_ActiveTool = m_PointerTool;
+					m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
+				}
+				else
+				{
+					m_ActiveTool = tool;
+				}
+			}
+			else
+			{
+				m_ActiveTool = m_PointerTool;
+			}
+			
+			
 			UpdateCursor();
 			
 			// Ensure there's a key image at this position, unless the tool creates unattached drawings.
-			if(m_ActiveTool.Attached)
+			if(m_ActiveTool == m_PointerTool && m_FrameServer.Metadata.Count < 1)
+			{
+				DockKeyframePanel(true);
+			}
+			else if(m_ActiveTool.Attached)
 			{
 				PrepareKeyframesDock();
 			}
+			
+			pbSurfaceScreen.Invalidate();
 		}
 		private void btnMagnifier_Click(object sender, EventArgs e)
 		{
@@ -4056,7 +4121,7 @@ namespace Kinovea.ScreenManager
 				{
 					UnzoomDirectZoom();
 					m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
-					btnMagnifier.Image = Resources.magnifierActive2;
+					//btnMagnifier.Image = Drawings.magnifieractive;
 					SetCursor(Cursors.Cross);
 				}
 				else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
@@ -4064,7 +4129,7 @@ namespace Kinovea.ScreenManager
 					// Revert to no magnification.
 					UnzoomDirectZoom();
 					m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
-					btnMagnifier.Image = Resources.magnifier2;
+					//btnMagnifier.Image = Drawings.magnifier;
 					SetCursor(m_PointerTool.GetCursor(0));
 					DoInvalidate();
 				}
@@ -4074,13 +4139,6 @@ namespace Kinovea.ScreenManager
 					DoInvalidate();
 				}
 			}
-		}
-		private void btn3dplane_Click(object sender, EventArgs e)
-		{
-			m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
-			m_ActiveTool = m_PointerTool;
-			OnPoke();
-			DoInvalidate();
 		}
 		private void btnShowComments_Click(object sender, EventArgs e)
 		{
@@ -4542,7 +4600,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Revert to no magnification.
 			m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
-			btnMagnifier.Image = Resources.magnifier2;
+			//btnMagnifier.Image = Drawings.magnifier;
 			SetCursor(m_PointerTool.GetCursor(0));
 		}
 		#endregion
@@ -4740,19 +4798,10 @@ namespace Kinovea.ScreenManager
 		}
 		private void EnableDisableDrawingTools(bool _bEnable)
 		{
-			btnShowComments.Enabled = _bEnable;
-			btn3dplane.Enabled = _bEnable;
-			btnDrawingToolAngle2D.Enabled = _bEnable;
-			btnDrawingToolChrono.Enabled = _bEnable;
-			btnDrawingToolCross2D.Enabled = _bEnable;
-			btnDrawingToolLine2D.Enabled = _bEnable;
-			btnDrawingToolPencil.Enabled = _bEnable;
-			btnDrawingToolCircle.Enabled = _bEnable;
-			btnDrawingToolPointer.Enabled = _bEnable;
-			btnDrawingToolText.Enabled = _bEnable;
-			btnMagnifier.Enabled = _bEnable;
-			btnColorProfile.Enabled = _bEnable;
-			btnAddKeyframe.Enabled = _bEnable;
+			foreach(ToolStripItem tsi in stripDrawingTools.Items)
+			{
+				tsi.Enabled = _bEnable;
+			}
 		}
 		#endregion
 		
