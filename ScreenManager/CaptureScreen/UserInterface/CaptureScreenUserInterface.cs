@@ -70,8 +70,7 @@ namespace Kinovea.ScreenManager
 		private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
 		
 		// Keyframes, Drawings, etc.
-		private DrawingToolType m_ActiveTool;
-		private AbstractDrawingTool[] m_DrawingTools;
+		private AbstractDrawingTool m_ActiveTool;
 		private DrawingToolPointer m_PointerTool;
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
@@ -454,28 +453,25 @@ namespace Kinovea.ScreenManager
 		}
 		private void InitializeDrawingTools()
         {
-			// Create Drawing Tools, map with buttons.
-			// Note that there is no chrono tool, which just means the spot [DrawingToolType.Chrono] of the associative array will stay empty.
-			m_DrawingTools = new AbstractDrawingTool[(int)DrawingToolType.NumberOfDrawingTools];
+			m_PointerTool = new DrawingToolPointer();
+			m_ActiveTool = m_PointerTool;
 			
-			m_DrawingTools[(int)DrawingToolType.Pointer] = new DrawingToolPointer();
-			m_DrawingTools[(int)DrawingToolType.Line2D] = new DrawingToolLine2D();
-			m_DrawingTools[(int)DrawingToolType.Cross2D] = new DrawingToolCross2D();
-			m_DrawingTools[(int)DrawingToolType.Angle2D] = new DrawingToolAngle2D();
-			m_DrawingTools[(int)DrawingToolType.Pencil] = new DrawingToolPencil();
-			m_DrawingTools[(int)DrawingToolType.Text] = new DrawingToolText();
-			m_DrawingTools[(int)DrawingToolType.Circle] = new DrawingToolCircle();
+			// Map tools with buttons.
+			btnDrawingToolPointer.Tag = m_PointerTool;
+			btnDrawingToolLine2D.Tag = ToolManager.Line;
+			btnDrawingToolCross2D.Tag = ToolManager.CrossMark;
+			btnDrawingToolAngle2D.Tag = ToolManager.Angle;
+			btnDrawingToolPencil.Tag = ToolManager.Pencil;
+			btnDrawingToolText.Tag = ToolManager.Label;
+			btnDrawingToolCircle.Tag = ToolManager.Circle;
 			
-			btnDrawingToolPointer.Tag = DrawingToolType.Pointer;
-			btnDrawingToolLine2D.Tag = DrawingToolType.Line2D;
-			btnDrawingToolCross2D.Tag = DrawingToolType.Cross2D;
-			btnDrawingToolAngle2D.Tag = DrawingToolType.Angle2D;
-			btnDrawingToolPencil.Tag = DrawingToolType.Pencil;
-			btnDrawingToolText.Tag = DrawingToolType.Text;
-			btnDrawingToolCircle.Tag = DrawingToolType.Circle;
-			
-			m_PointerTool = (DrawingToolPointer)m_DrawingTools[(int)DrawingToolType.Pointer];
-			m_ActiveTool = DrawingToolType.Pointer;
+			btnDrawingToolPointer.BackgroundImage = m_PointerTool.Icon;
+			btnDrawingToolLine2D.Image = ToolManager.Line.Icon;
+			btnDrawingToolCross2D.Image = ToolManager.CrossMark.Icon;
+			btnDrawingToolAngle2D.Image = ToolManager.Angle.Icon;
+			btnDrawingToolPencil.Image = ToolManager.Pencil.Icon;
+			btnDrawingToolText.Image = ToolManager.Label.Icon;
+			btnDrawingToolCircle.Image = ToolManager.Circle.Icon;
         }
 		private void InitializeMetadata()
 		{
@@ -589,17 +585,13 @@ namespace Kinovea.ScreenManager
 			
 			m_ScreenUIHandler.ScreenUI_SetAsActiveScreen();
 			
-			// 1. Ensure no DrawingText is in edit mode.
 			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-
-			// 2. Return to the pointer tool, except if Pencil
-			if (m_ActiveTool != DrawingToolType.Pencil)
+			m_ActiveTool = m_ActiveTool.KeepToolFrameChanged ? m_ActiveTool : m_PointerTool;
+			if(m_ActiveTool == m_PointerTool)
 			{
-				m_ActiveTool = DrawingToolType.Pointer;
 				SetCursor(m_PointerTool.GetCursor(-1));
 			}
 
-			// 3. Dock Keyf panel if nothing to see.
 			if (m_FrameServer.RecentlyCapturedVideos.Count < 1)
 			{
 				DockKeyframePanel(true);
@@ -611,12 +603,10 @@ namespace Kinovea.ScreenManager
 			// this function is called after we undo a drawing action.
 			// Called from CommandAddDrawing.Unexecute() through a delegate.
 			//--------------------------------------------------------
-
-			// Return to the pointer tool unless we were drawing.
-			if (m_ActiveTool != DrawingToolType.Pencil)
+			m_ActiveTool = m_ActiveTool.KeepToolFrameChanged ? m_ActiveTool : m_PointerTool;
+			if(m_ActiveTool == m_PointerTool)
 			{
-				m_ActiveTool = DrawingToolType.Pointer;
-				SetCursor(m_PointerTool.GetCursor(0));
+				SetCursor(m_PointerTool.GetCursor(-1));
 			}
 		}
 		private void ShowBorder(bool _bShow)
@@ -632,7 +622,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void DisablePlayAndDraw()
 		{
-			m_ActiveTool = DrawingToolType.Pointer;
+			m_ActiveTool = m_PointerTool;
 			SetCursor(m_PointerTool.GetCursor(0));
 			DisableMagnifier();
 			UnzoomDirectZoom();
@@ -987,7 +977,7 @@ namespace Kinovea.ScreenManager
 				{
 					if (m_FrameServer.IsConnected)
 					{
-						if ( (m_ActiveTool == DrawingToolType.Pointer)      &&
+						if ( (m_ActiveTool == m_PointerTool)      &&
 						    (m_FrameServer.Magnifier.Mode != MagnifierMode.NotVisible) &&
 						    (m_FrameServer.Magnifier.IsOnObject(e)))
 						{
@@ -1007,7 +997,7 @@ namespace Kinovea.ScreenManager
 							// 1. Pass all DrawingText to normal mode
 							m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 						
-							if (m_ActiveTool == DrawingToolType.Pointer)
+							if (m_ActiveTool == m_PointerTool)
 							{
 								// 1. Manipulating an object or Magnifier
 								bool bMovingMagnifier = false;
@@ -1033,11 +1023,11 @@ namespace Kinovea.ScreenManager
 								//-----------------------
 								// Creating a new Drawing
 								//-----------------------
-								if (m_ActiveTool != DrawingToolType.Text)
+								if (m_ActiveTool != ToolManager.Label)
 								{
 									// Add an instance of a drawing from the active tool to the current keyframe.
 									// The drawing is initialized with the current mouse coordinates.
-									AbstractDrawing ad = m_DrawingTools[(int)m_ActiveTool].GetNewDrawing(descaledMouse, 0, 1);
+									AbstractDrawing ad = m_ActiveTool.GetNewDrawing(descaledMouse, 0, 1);
 									
 									m_FrameServer.Metadata[0].AddDrawing(ad);
 									m_FrameServer.Metadata.SelectedDrawingFrame = 0;
@@ -1078,7 +1068,7 @@ namespace Kinovea.ScreenManager
 									// If we are not on an existing textbox : create new DrawingText.
 									if (!bEdit)
 									{
-										m_FrameServer.Metadata[0].AddDrawing(m_DrawingTools[(int)m_ActiveTool].GetNewDrawing(descaledMouse, 0, 1));
+										m_FrameServer.Metadata[0].AddDrawing(m_ActiveTool.GetNewDrawing(descaledMouse, 0, 1));
 										m_FrameServer.Metadata.SelectedDrawingFrame = 0;
 										m_FrameServer.Metadata.SelectedDrawing = 0;
 										
@@ -1168,10 +1158,10 @@ namespace Kinovea.ScreenManager
 						{
 							panelCenter.ContextMenuStrip = popMenuMagnifier;
 						}
-						else if(m_ActiveTool != DrawingToolType.Pointer)
+						else if(m_ActiveTool != m_PointerTool)
 						{
 							// Launch FormToolPreset.
-							FormToolPresets ftp = new FormToolPresets(m_DrawingTools[(int)m_ActiveTool].InternalName);
+							FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
 							ScreenManagerKernel.LocateForm(ftp);
 							ftp.ShowDialog();
 							ftp.Dispose();
@@ -1205,7 +1195,7 @@ namespace Kinovea.ScreenManager
 				}
 				else if (e.Button == MouseButtons.Left)
 				{
-					if (m_ActiveTool != DrawingToolType.Pointer)
+					if (m_ActiveTool != m_PointerTool)
 					{
 						// Currently setting the second point of a Drawing.
 						IInitializable initializableDrawing = m_FrameServer.Metadata[0].Drawings[0] as IInitializable;
@@ -1222,7 +1212,7 @@ namespace Kinovea.ScreenManager
 							bMovingMagnifier = m_FrameServer.Magnifier.OnMouseMove(e);
 						}
 						
-						if (!bMovingMagnifier && m_ActiveTool == DrawingToolType.Pointer)
+						if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
 						{
 							// Moving an object.
 							
@@ -1258,7 +1248,7 @@ namespace Kinovea.ScreenManager
 			
 			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left)
 			{
-				if (m_ActiveTool == DrawingToolType.Pointer)
+				if (m_ActiveTool == m_PointerTool)
 				{
 					OnPoke();
 				}
@@ -1266,7 +1256,7 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.Magnifier.OnMouseUp(e);
 				
 				// Memorize the action we just finished to enable undo.
-				if (m_ActiveTool != DrawingToolType.Pointer)
+				if (m_ActiveTool != m_PointerTool)
 				{
 					// Record the adding unless we are editing a text box.
 					if (!m_bTextEdit)
@@ -1283,9 +1273,9 @@ namespace Kinovea.ScreenManager
 				}
 				
 				// The fact that we stay on this tool or fall back to pointer tool, depends on the tool.
-				m_ActiveTool = m_DrawingTools[(int)m_ActiveTool].OnMouseUp();
+				m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
 				
-				if (m_ActiveTool == DrawingToolType.Pointer)
+				if (m_ActiveTool == m_PointerTool)
 				{
 					SetCursor(m_PointerTool.GetCursor(0));
 					m_PointerTool.OnMouseUp();
@@ -1319,7 +1309,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left && m_ActiveTool == DrawingToolType.Pointer)
+			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left && m_ActiveTool == m_PointerTool)
 			{
 				OnPoke();
 				
@@ -1339,7 +1329,7 @@ namespace Kinovea.ScreenManager
 					if (ad is DrawingText)
 					{
 						((DrawingText)ad).EditMode = true;
-						m_ActiveTool = DrawingToolType.Text;
+						m_ActiveTool = ToolManager.Label;
 						m_bTextEdit = true;
 					}
 					else if(ad is DrawingSVG || ad is DrawingBitmap)
@@ -1517,7 +1507,7 @@ namespace Kinovea.ScreenManager
 		private void btnDrawingToolPointer_Click(object sender, EventArgs e)
 		{
 			OnPoke();
-			m_ActiveTool = DrawingToolType.Pointer;
+			m_ActiveTool = m_PointerTool;
 			SetCursor(m_PointerTool.GetCursor(0));
 		}
 		private void btnDrawingTool_Click(object sender, EventArgs e)
@@ -1533,14 +1523,14 @@ namespace Kinovea.ScreenManager
 			}
 			
 			OnPoke();
-			m_ActiveTool = (DrawingToolType)((Button)sender).Tag;
+			m_ActiveTool = (AbstractDrawingTool)((Button)sender).Tag;
 			UpdateCursor();
 		}
 		private void btnMagnifier_Click(object sender, EventArgs e)
 		{
 			if (m_FrameServer.IsConnected)
 			{
-				m_ActiveTool = DrawingToolType.Pointer;
+				m_ActiveTool = m_PointerTool;
 
 				// Magnifier is half way between a persisting tool (like trackers and chronometers).
 				// and a mode like grid and 3dplane.
@@ -1570,7 +1560,7 @@ namespace Kinovea.ScreenManager
 		private void btn3dplane_Click(object sender, EventArgs e)
 		{
 			m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
-			m_ActiveTool = DrawingToolType.Pointer;
+			m_ActiveTool = m_PointerTool;
 			OnPoke();
 			pbSurfaceScreen.Invalidate();
 		}
@@ -1580,6 +1570,7 @@ namespace Kinovea.ScreenManager
 
 			// Load, save or modify current profile.
 			FormToolPresets ftp = new FormToolPresets();
+			ScreenManagerKernel.LocateForm(ftp);
 			ftp.ShowDialog();
 			ftp.Dispose();
 
@@ -1587,13 +1578,13 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateCursor()
 		{
-			if(m_ActiveTool == DrawingToolType.Pointer)
+			if(m_ActiveTool == m_PointerTool)
 			{
 				SetCursor(m_PointerTool.GetCursor(0));
 			}
 			else
 			{
-				SetCursor(m_DrawingTools[(int)m_ActiveTool].GetCursor(m_FrameServer.CoordinateSystem.Stretch));
+				SetCursor(m_ActiveTool.GetCursor(m_FrameServer.CoordinateSystem.Stretch));
 			}
 		}
 		private void SetCursor(Cursor _cur)

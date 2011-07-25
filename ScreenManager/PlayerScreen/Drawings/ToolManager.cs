@@ -25,42 +25,68 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Host of the list of tools. 
-	/// This singleton class exposes the list of tools as AbstractDrawingTools.
-	/// The class itself is not dependant on specifc tools, except for loading of the core tools.
 	/// </summary>
 	public class ToolManager
 	{
 		#region Properties
-		public Dictionary<string, AbstractDrawingTool> Tools
+		/// <summary>
+		///   Returns the cached list of tools.
+		/// </summary>
+		public static Dictionary<string, AbstractDrawingTool> Tools
 		{
-			get { return m_Tools; }
+			get 
+			{
+				if (object.ReferenceEquals(m_Tools, null))
+				{
+					Initialize();
+				}
+				
+				return m_Tools; 
+			}
+		}
+		
+		// Maybe we could find a way to generate this list of properties automatically.
+		// A custom tool in the vein of the ResXFileCodeGenerator that would take an XML file in,
+		// and creates a set of accessor properties.
+		public static DrawingToolAngle2D Angle
+		{
+			get { return (DrawingToolAngle2D)Tools["Angle"]; }
+		}
+		public static DrawingToolChrono Chrono
+		{
+			get { return (DrawingToolChrono)Tools["Chrono"]; }
+		}
+		public static DrawingToolCircle Circle
+		{
+			get { return (DrawingToolCircle)Tools["Circle"]; }
+		}
+		public static DrawingToolCross2D CrossMark
+		{
+			get { return (DrawingToolCross2D)Tools["CrossMark"]; }
+		}
+		public static DrawingToolLine2D Line
+		{
+			get { return (DrawingToolLine2D)Tools["Line"]; }
+		}
+		public static DrawingToolPencil Pencil
+		{
+			get { return (DrawingToolPencil)Tools["Pencil"]; }
+		}
+		public static DrawingToolText Label
+		{
+			get { return (DrawingToolText)Tools["Label"]; }
 		}
 		#endregion
 		
 		#region Members
-		private static ToolManager m_instance = null;
-		private Dictionary<string, AbstractDrawingTool> m_Tools = new Dictionary<string, AbstractDrawingTool>();
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static Dictionary<string, AbstractDrawingTool> m_Tools = null;
 		#endregion
         
-		#region Constructor & Singleton
-		public static ToolManager Instance()
-        {
-            if (m_instance == null)
-            {
-                m_instance = new ToolManager();
-            }
-            return m_instance;
-        }
-        private ToolManager()
-        {
-            LoadTools();
-        }
-        #endregion
-        
         #region Private Methods
-        private void LoadTools()
+        private static void Initialize()
         {
+        	m_Tools = new Dictionary<string, AbstractDrawingTool>();
+        	
         	// The core drawing tools are loaded statically.
         	// Maybe in the future we can have a plug-in system with .dll containing extensions tools.
         	// Note that the pointer "tool" is not listed here.
@@ -73,15 +99,14 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Label", new DrawingToolText());
         	
         	// some more to test the dynamics.
-        	m_Tools.Add("Angle 2", new DrawingToolAngle2D());
+        	/*m_Tools.Add("Angle 2", new DrawingToolAngle2D());
         	m_Tools.Add("Arrow", new DrawingToolChrono());
         	m_Tools.Add("LowerBody", new DrawingToolCircle());
         	m_Tools.Add("WireBody", new DrawingToolCross2D());
         	m_Tools.Add("MultiLine", new DrawingToolLine2D());
         	m_Tools.Add("Rotation", new DrawingToolPencil());
-        	m_Tools.Add("Cadence", new DrawingToolText());
+        	m_Tools.Add("Cadence", new DrawingToolText());*/
         }
         #endregion
-        
 	}
 }

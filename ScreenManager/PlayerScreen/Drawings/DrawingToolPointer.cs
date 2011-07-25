@@ -48,22 +48,26 @@ namespace Kinovea.ScreenManager
     	#endregion
     	
     	#region Properties
-    	public override string InternalName
-		{
-			get { return "pointer"; }
-		}
     	public override string DisplayName
     	{
     		get { return ScreenManagerLang.ToolTip_DrawingToolPointer; }
     	}
     	public override Bitmap Icon
     	{
-    		get { throw new NotImplementedException(); }
+    		get { return Kinovea.ScreenManager.Properties.Drawings.handtool; }
     	}
 		public override bool Attached
         {
         	get { throw new NotImplementedException(); }
         }
+		public override bool KeepTool
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepToolFrameChanged
+    	{
+    		get { return true; }
+    	}
     	public override DrawingStyle StylePreset
 		{
 			get	{ throw new NotImplementedException(); }
@@ -117,35 +121,17 @@ namespace Kinovea.ScreenManager
         {
             return null;
         }
-        public override DrawingToolType OnMouseUp()
-        {
-            m_UserAction = UserAction.None;
-            return DrawingToolType.Pointer;
-        }
         public override Cursor GetCursor(double _fStretchFactor)
         {
         	throw new NotImplementedException();
         }
-        public Cursor GetCursor(int _type)
-        {
-            // 0: Open hand, 1: Closed hand, -1: same as last time.
-            
-            Cursor cur = m_curHandOpen;
-            switch(_type)
-            {
-            	case -1:
-            		cur = (m_iLastCursorType == 0)?m_curHandOpen:m_curHandClose;
-            		break;
-            	case 1:
-            		cur = m_curHandClose;
-					break;
-            }
-
-            return cur;
-        }
         #endregion
 
         #region Public Interface
+        public void OnMouseUp()
+        {
+            m_UserAction = UserAction.None;
+        }
         public bool OnMouseDown(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
         {
             //--------------------------------------------------------------------------------------
@@ -281,6 +267,23 @@ namespace Kinovea.ScreenManager
         public void SetZoomLocation(Point _point)
         {
         	m_DirectZoomTopLeft = new Point(_point.X, _point.Y);	
+        }
+        public Cursor GetCursor(int _type)
+        {
+            // 0: Open hand, 1: Closed hand, -1: same as last time.
+            
+            Cursor cur = m_curHandOpen;
+            switch(_type)
+            {
+            	case -1:
+            		cur = (m_iLastCursorType == 0)?m_curHandOpen:m_curHandClose;
+            		break;
+            	case 1:
+            		cur = m_curHandClose;
+					break;
+            }
+
+            return cur;
         }
         #endregion
         
@@ -429,10 +432,10 @@ namespace Kinovea.ScreenManager
         private void SetupHandCursors()
         {
         	// Hand cursor.
-        	Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Resources.handopen24c;
+        	Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Drawings.handopen24c;
             m_curHandOpen = new Cursor(bmpOpen.GetHicon());
             
-            Bitmap bmpClose = Kinovea.ScreenManager.Properties.Resources.handclose24b;
+            Bitmap bmpClose = Kinovea.ScreenManager.Properties.Drawings.handclose24b;
             m_curHandClose = new Cursor(bmpClose.GetHicon());
 
             m_iLastCursorType = 0;

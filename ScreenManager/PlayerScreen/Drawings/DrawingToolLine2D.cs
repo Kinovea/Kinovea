@@ -28,12 +28,7 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolLine2D : AbstractDrawingTool
     {
-    	
     	#region Properties
-    	public override string InternalName
-		{
-			get { return "line"; }
-		}
     	public override string DisplayName
     	{
     		get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
@@ -43,6 +38,14 @@ namespace Kinovea.ScreenManager
     		get { return Properties.Drawings.line; }
     	}
     	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepTool
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepToolFrameChanged
     	{
     		get { return true; }
     	}
@@ -82,11 +85,6 @@ namespace Kinovea.ScreenManager
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
     		return new DrawingLine2D(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
-    	}
-    	public override DrawingToolType OnMouseUp()
-    	{
-    		//return DrawingToolType.Pointer;
-    		return DrawingToolType.Line2D;
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{
