@@ -1418,7 +1418,8 @@ namespace Kinovea.ScreenManager
         public static void LocateForm(Form _form)
 		{
 			// A helper function to locate the dialog box right under the mouse, or center of screen.
-			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width)
+			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width || 
+			    Cursor.Position.Y + _form.Height >= SystemInformation.PrimaryMonitorSize.Height)
 			{
 				_form.StartPosition = FormStartPosition.CenterScreen;
 			}
@@ -4113,18 +4114,7 @@ namespace Kinovea.ScreenManager
 		Sandbox,
 		NumberOfVideoFilters
 	};
-	public enum DrawingToolType
-	{
-		Pointer,
-		Line2D,
-		Cross2D,
-		Angle2D,
-		Pencil,
-		Text,
-		Chrono,
-		Circle,
-		NumberOfDrawingTools
-	};
+	
 	public enum ExtraDrawingType
 	{
 		Grid,

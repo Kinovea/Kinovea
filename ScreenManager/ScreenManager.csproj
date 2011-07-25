@@ -189,7 +189,6 @@
     <Compile Include="PlayerScreen\Drawings\StyleElementTrackShape.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
-    <Compile Include="PlayerScreen\Drawings\ToolStylePreset.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
     <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />

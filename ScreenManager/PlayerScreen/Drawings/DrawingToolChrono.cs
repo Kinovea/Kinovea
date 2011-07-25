@@ -28,10 +28,6 @@ namespace Kinovea.ScreenManager
     public class DrawingToolChrono : AbstractDrawingTool
     {
     	#region Properties
-    	public override string InternalName
-    	{
-    		get { return "chrono"; }
-    	}
     	public override string DisplayName
     	{
     		get { return ScreenManagerLang.ToolTip_DrawingToolChrono; }
@@ -41,6 +37,14 @@ namespace Kinovea.ScreenManager
     		get { return Properties.Drawings.chrono; }
     	}
     	public override bool Attached
+    	{
+    		get { return false; }
+    	}
+    	public override bool KeepTool
+    	{
+    		get { return false; }
+    	}
+    	public override bool KeepToolFrameChanged
     	{
     		get { return false; }
     	}
@@ -73,11 +77,6 @@ namespace Kinovea.ScreenManager
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
     		return new DrawingChrono(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
-    	}
-    	public override DrawingToolType OnMouseUp()
-    	{
-    		// Fall back to Pointer tool.
-    		return DrawingToolType.Pointer;
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{

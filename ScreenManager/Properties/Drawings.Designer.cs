@@ -186,6 +186,33 @@ namespace Kinovea.ScreenManager.Properties
 			}
 		}
 		
+		internal static System.Drawing.Bitmap handclose24b
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("handclose24b", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap handopen24c
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("handopen24c", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
+		internal static System.Drawing.Bitmap handtool
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("handtool", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap hide
 		{
 			get

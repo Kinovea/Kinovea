@@ -1148,7 +1148,7 @@ namespace Kinovea.ScreenManager
         	this.btnDrawingToolPointer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnDrawingToolPointer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.btnDrawingToolPointer.ForeColor = System.Drawing.Color.White;
-        	this.btnDrawingToolPointer.Image = global::Kinovea.ScreenManager.Properties.Resources.handtool;
+        	this.btnDrawingToolPointer.Image = global::Kinovea.ScreenManager.Properties.Drawings.handtool;
         	this.btnDrawingToolPointer.Location = new System.Drawing.Point(30, 2);
         	this.btnDrawingToolPointer.Name = "btnDrawingToolPointer";
         	this.btnDrawingToolPointer.Size = new System.Drawing.Size(25, 25);

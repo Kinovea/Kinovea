@@ -29,10 +29,6 @@ namespace Kinovea.ScreenManager
     public class DrawingToolPencil : AbstractDrawingTool
     {
     	#region Properties
-    	public override string InternalName
-		{
-			get { return "pencil"; }
-		}
     	public override string DisplayName
     	{
     		get { return ScreenManagerLang.ToolTip_DrawingToolPencil; }
@@ -42,6 +38,14 @@ namespace Kinovea.ScreenManager
     		get { return Properties.Drawings.pencil; }
     	}
     	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepTool
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepToolFrameChanged
     	{
     		get { return true; }
     	}
@@ -74,10 +78,6 @@ namespace Kinovea.ScreenManager
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
     		return new DrawingPencil(_Origin.X, _Origin.Y, _Origin.X + 1, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
-    	}
-    	public override DrawingToolType OnMouseUp()
-    	{
-    		return DrawingToolType.Pencil;
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{

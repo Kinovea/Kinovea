@@ -27,15 +27,6 @@ namespace Kinovea.ScreenManager
     public abstract class AbstractDrawingTool
     {
     	#region Properties
-    	
-    	/// <summary>
-    	/// Name of the tool. MUST BE UNIQUE as it's used to match the tool when importing style presets.
-    	/// </summary>
-    	public abstract string InternalName
-    	{
-    		get;
-    	}
-    	
     	/// <summary>
         /// The display name of the tool. Used for tooltips and in tool presets config.
         /// </summary>
@@ -61,6 +52,22 @@ namespace Kinovea.ScreenManager
     	}
     	
     	/// <summary>
+    	/// Whether we should stay on the same tool after the drawing has been added.
+    	/// </summary>
+    	public abstract bool KeepTool
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
+    	/// Whether we should stay on the same tool when the video moves forward.
+    	/// </summary>
+    	public abstract bool KeepToolFrameChanged
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
     	/// Current style preset
     	/// </summary>
     	public abstract DrawingStyle StylePreset
@@ -68,6 +75,7 @@ namespace Kinovea.ScreenManager
     		get;
     		set;
     	}
+    	
     	/// <summary>
     	/// Default style preset
     	/// </summary>
@@ -76,8 +84,8 @@ namespace Kinovea.ScreenManager
     		get;
     	}
     	#endregion
-    		
-    	#region Public Methods
+    	
+    	#region Public Interface
     	/// <summary>
     	/// Generate a new artefact from this tool.
     	/// </summary>
@@ -88,23 +96,22 @@ namespace Kinovea.ScreenManager
     	public abstract AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame);
 
     	/// <summary>
-    	/// Called upon release of the second point of initial setup of the tool.
-    	/// </summary>
-    	/// <returns>The tool that we should fall back to after the operation. Typically same tool or pointer tool.</returns>
-    	public abstract DrawingToolType OnMouseUp();
-
-    	/// <summary>
     	/// Retrieve the cursor we should dispaly when this tool is the active tool.
     	/// </summary>
     	/// <param name="_fStretchFactor">Current stretchfactor (including zoom)</param>
     	/// <returns>The cursor to use</returns>
     	public abstract Cursor GetCursor(double _fStretchFactor);
+    	#endregion
     	
+    	#region Public Concrete Methods
     	public void ResetToDefaultStyle()
     	{
     		StylePreset = DefaultStylePreset.Clone();
     	}
-    	
+    	public override string ToString()
+    	{
+    		return DisplayName;
+    	}
     	#endregion
     }
 }

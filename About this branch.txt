@@ -1,3 +1,16 @@
+2011-07-24
+
+- More flexibility on the list of tools as seen by the screens.
+The core tools can be accessed via static properties of ToolManager.
+This allows to directly use these properties instead of the DrawingToolType enum in the screens.
+The array of tools is removed in the screens as it's not needed anymore, we just map the buttons with the correct tool.
+For the few cases where we need to know the type of the current tool (i.e: text or chrono) we can compare the ref with the static prop of the ToolManager.
+
+- DrawingToolType enum is removed.
+- ToolStylePreset is removed. We can directly use AbstractDrawingTool.
+- InternalName of AbstractDrawingTool is removed as not needed (at least for now).
+
+--------------------------------------------------------------------------------
 2011-07-23
 
 1. Usage of style helper in Keyframe labels.

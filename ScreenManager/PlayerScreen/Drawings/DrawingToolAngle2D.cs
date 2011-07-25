@@ -30,10 +30,6 @@ namespace Kinovea.ScreenManager
     {
     	
     	#region Properties
-    	public override string InternalName
-		{
-			get { return "angle"; }
-		}
 		public override string DisplayName
 		{
 			get { return ScreenManagerLang.ToolTip_DrawingToolAngle2D; }
@@ -45,6 +41,14 @@ namespace Kinovea.ScreenManager
     	public override bool Attached
     	{
     		get { return true; }
+    	}
+		public override bool KeepTool
+    	{
+    		get { return false; }
+    	}
+    	public override bool KeepToolFrameChanged
+    	{
+    		get { return false; }
     	}
 		public override DrawingStyle StylePreset
 		{
@@ -75,10 +79,6 @@ namespace Kinovea.ScreenManager
 		{
 			return new DrawingAngle2D(_Origin.X, _Origin.Y, _Origin.X + 50, _Origin.Y, _Origin.X, _Origin.Y - 50, 
 			                          _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
-		}
-		public override DrawingToolType OnMouseUp()
-		{
-			return DrawingToolType.Pointer; // Instantly fall back to Pointer Tool after setup.
 		}
 		public override Cursor GetCursor(double _fStretchFactor)
 		{
