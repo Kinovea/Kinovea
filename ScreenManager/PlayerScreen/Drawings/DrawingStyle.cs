@@ -47,6 +47,15 @@ namespace Kinovea.ScreenManager
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
+		#region Constructor
+		public DrawingStyle(){}
+		public DrawingStyle(XmlReader _xmlReader)
+		{
+			ReadXml(_xmlReader);
+		}
+		#endregion
+		
+		#region Public Methods
 		public DrawingStyle Clone()
 		{
 			DrawingStyle clone = new DrawingStyle();
@@ -56,13 +65,58 @@ namespace Kinovea.ScreenManager
 			}
 			return clone;
 		}
+		public void ReadXml(XmlReader _xmlReader)
+		{			
+			m_StyleElements.Clear();
+			
+			_xmlReader.ReadStartElement();	// <ToolPreset Key="ToolName"> or <DrawingStyle>
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				AbstractStyleElement styleElement = null;
+				string key = _xmlReader.GetAttribute("Key");
+				
+				switch(_xmlReader.Name)
+				{
+					case "Color":
+						styleElement = new StyleElementColor(_xmlReader);
+						break;
+					case "FontSize":
+						styleElement = new StyleElementFontSize(_xmlReader);
+						break;
+					case "PenSize":
+						styleElement = new StyleElementPenSize(_xmlReader);
+						break;
+					case "LineSize":
+						styleElement = new StyleElementLineSize(_xmlReader);
+						break;
+					case "Arrows":
+						styleElement = new StyleElementLineEnding(_xmlReader);
+						break;
+					default:
+						log.ErrorFormat("Could not import style element \"{0}\"", _xmlReader.Name);
+						log.ErrorFormat("Content was: {0}", _xmlReader.ReadOuterXml());
+						break;
+				}
+				
+				if(styleElement != null)
+				{
+					m_StyleElements.Add(key, styleElement);
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+		}
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
 			foreach(KeyValuePair<string, AbstractStyleElement> element in m_StyleElements)
 			{
+				_xmlWriter.WriteStartElement(element.Value.XmlName);
+				_xmlWriter.WriteAttributeString("Key", element.Key);
 				element.Value.WriteXml(_xmlWriter);
+				_xmlWriter.WriteEndElement();
 			}
 		}
+		
 		/// <summary>
 		/// Binds a property in the style helper to an editable style element.
 		/// Once bound, each time the element is edited in the UI, the property is updated,
@@ -108,6 +162,17 @@ namespace Kinovea.ScreenManager
 				m_Memo.Add(element.Key, element.Value.Clone());
 			}
 		}
+		public void Memorize(DrawingStyle _memo)
+		{
+			// This is used when the whole DrawingStyle has been recreated and we want it to 
+			// remember its state before the recreation.
+			// Used for style presets to carry the memo after XML load.
+			m_Memo.Clear();
+			foreach(KeyValuePair<string, AbstractStyleElement> element in _memo.Elements)
+			{
+				m_Memo.Add(element.Key, element.Value.Clone());
+			}
+		}
 		public void Revert()
 		{
 			m_StyleElements.Clear();
@@ -122,7 +187,12 @@ namespace Kinovea.ScreenManager
 			{
 				log.DebugFormat("{0}: {1}", element.Key, element.Value.ToString());
 			}
+			
+			foreach(KeyValuePair<string, AbstractStyleElement> element in m_Memo)
+			{
+				log.DebugFormat("Memo: {0}: {1}", element.Key, element.Value.ToString());
+			}
 		}
-		
+		#endregion
 	}
 }

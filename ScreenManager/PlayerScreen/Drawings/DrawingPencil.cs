@@ -33,7 +33,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingPencil : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
+    public class DrawingPencil : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
         public DrawingStyle DrawingStyle
@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-		#region IXMLSerializable implementation
+		#region IKvaSerializable implementation
         public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
@@ -170,7 +170,11 @@ namespace Kinovea.ScreenManager
             }
             _xmlWriter.WriteEndElement();
 
-            //m_PenStyle.ToXml(_xmlWriter);
+            // Drawing style
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+            
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // </Drawing>
@@ -210,7 +214,7 @@ namespace Kinovea.ScreenManager
             m_PointList.Add(_coordinates);
             m_RescaledPointList.Add(RescalePoint(_coordinates, m_fStretchFactor));
         }
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
+        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
         {
             DrawingPencil dp = new DrawingPencil();
 
@@ -248,7 +252,7 @@ namespace Kinovea.ScreenManager
             dp.RescaleCoordinates(dp.m_fStretchFactor, dp.m_DirectZoomTopLeft);
             return dp;
         }
-        private static void ParsePointList(DrawingPencil _dp, XmlTextReader _xmlReader, PointF _scale)
+        private static void ParsePointList(DrawingPencil _dp, XmlReader _xmlReader, PointF _scale)
         {
             _dp.m_PointList.Clear();
             _dp.m_RescaledPointList.Clear();

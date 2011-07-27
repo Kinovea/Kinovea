@@ -20,6 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -88,14 +92,99 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private static Dictionary<string, AbstractDrawingTool> m_Tools = null;
-		#endregion
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
         
+        public static void SavePresets()
+        {
+        	string folder = PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");
+        	SavePresets(folder + "\\current.xml");
+        }
+		public static void SavePresets(string _file)
+		{			
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.Indent = true;
+			settings.CloseOutput = true;
+			
+			using(XmlWriter w = XmlWriter.Create(_file, settings))
+			{
+				w.WriteStartElement("KinoveaColorProfile");
+				w.WriteElementString("FormatVersion", "3.0");
+				foreach(KeyValuePair<string, AbstractDrawingTool> tool in Tools)
+	            {
+	            	DrawingStyle preset = tool.Value.StylePreset;
+	            	if(preset != null && preset.Elements.Count > 0)
+	            	{
+	            		w.WriteStartElement("ToolPreset");
+	            		w.WriteAttributeString("Key", tool.Key);
+	            		preset.WriteXml(w);
+				        w.WriteEndElement();
+	            	}
+	            }
+				
+				w.WriteEndElement();
+			}
+		}
+		public static void LoadPresets()
+		{
+			string folder = PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");
+			LoadPresets(folder + "\\current.xml");
+		}
+		public static void LoadPresets(string _file)
+		{
+			if(!File.Exists(_file))
+				return;
+			
+			XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+            
+            using(XmlReader r = XmlReader.Create(_file, settings))
+            {
+            	try
+            	{
+	            	r.MoveToContent();
+	            	r.ReadStartElement();
+	            	string version = r.ReadElementContentAsString("FormatVersion", "");
+	            	if(version == "3.0")
+	            	{
+	            		while(r.NodeType == XmlNodeType.Element && r.Name == "ToolPreset")
+						{
+	            			string key = r.GetAttribute("Key");
+	            			DrawingStyle preset = new DrawingStyle(r);
+	            			
+	            			// Find the tool with this key and replace its preset style with the one we just read.
+	            			AbstractDrawingTool tool;
+	            			bool found = Tools.TryGetValue(key, out tool);
+	            			if(found)
+	            			{
+	            				// Carry on the memo so we can still do cancel and retrieve the old values.
+	            				DrawingStyle memo = tool.StylePreset.Clone();
+	            				tool.StylePreset = preset;
+	            				tool.StylePreset.Memorize(memo);
+	            			}
+	            		}
+	            	}
+	            	else
+	            	{
+	            		log.ErrorFormat("Unsupported format ({0}) for tool presets", version);
+	            	}
+            	}
+            	catch(Exception)
+            	{
+            		log.Error("An error happened during the parsing of the tool presets file");
+            	}
+            }
+		}
+		
         #region Private Methods
         private static void Initialize()
         {
         	m_Tools = new Dictionary<string, AbstractDrawingTool>();
         	
-        	// The core drawing tools are loaded statically.
+        	// The core drawing tools are hard wired.
         	// Maybe in the future we can have a plug-in system with .dll containing extensions tools.
         	// Note that the pointer "tool" is not listed, as each screen must have its own.
         	m_Tools.Add("Angle", new DrawingToolAngle2D());

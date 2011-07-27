@@ -27,6 +27,6 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public interface IMetadataParser
 	{
-		void Parse(XmlTextReader _xmlReader, Metadata _metadata);
+		void Parse(XmlReader _xmlReader, Metadata _metadata);
 	}
 }

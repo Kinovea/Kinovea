@@ -34,7 +34,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingCross2D : AbstractDrawing, IXMLSerializable, IDecorable
+    public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
         public DrawingStyle DrawingStyle
@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-		#region IXMLSerializable implementation
+		#region IKvaSerializable implementation
         public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
@@ -222,7 +222,11 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteEndElement();
 
             // Color, style, fading.
+            // Drawing style
+            _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+            
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // Show coords.
@@ -250,7 +254,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
+        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
         {
             DrawingCross2D dc = new DrawingCross2D(0,0,0,0, null);
 

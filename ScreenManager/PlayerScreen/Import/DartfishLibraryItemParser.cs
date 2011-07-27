@@ -26,11 +26,11 @@ namespace Kinovea.ScreenManager
 {
 	public class DartfishLibraryItemParser : IMetadataParser
     {
-        private XmlTextReader m_XmlReader;
+        private XmlReader m_XmlReader;
         private Metadata m_Metadata;
         private int m_iDepth;
 
-        public  void Parse(XmlTextReader _xmlReader, Metadata _metadata)
+        public  void Parse(XmlReader _xmlReader, Metadata _metadata)
         {
         	//-------------------------------------------------------
             // The .dartclip file will contain Keyframes data.
@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
             // This is a whole new XML stream.
             
             StringReader reader = new StringReader(_xmlString);
-            XmlTextReader xmlKeyPositionReader = new XmlTextReader(reader);
+            XmlReader xmlKeyPositionReader = XmlReader.Create(reader);
 
             if ((xmlKeyPositionReader.IsStartElement()) && (xmlKeyPositionReader.Name == "ODKeyPosition"))
             {

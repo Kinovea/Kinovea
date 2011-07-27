@@ -91,6 +91,7 @@ namespace Kinovea.ScreenManager
 			this.btnSaveProfile.TabIndex = 17;
 			this.btnSaveProfile.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.btnSaveProfile.UseVisualStyleBackColor = true;
+			this.btnSaveProfile.Click += new System.EventHandler(this.BtnSaveProfileClick);
 			// 
 			// btnLoadProfile
 			// 
@@ -105,6 +106,7 @@ namespace Kinovea.ScreenManager
 			this.btnLoadProfile.TabIndex = 16;
 			this.btnLoadProfile.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.btnLoadProfile.UseVisualStyleBackColor = true;
+			this.btnLoadProfile.Click += new System.EventHandler(this.BtnLoadProfileClick);
 			// 
 			// btnApply
 			// 

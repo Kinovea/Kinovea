@@ -26,7 +26,7 @@ namespace Kinovea.ScreenManager
 	/// <summary>
 	/// Defines methods to export and import a drawing's data to KVA XML format.
 	/// </summary>
-	public interface IXMLSerializable
+	public interface IKvaSerializable
 	{
 		void ToXmlString(XmlTextWriter _xmlXriter);
 	}

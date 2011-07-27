@@ -19,11 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -51,6 +53,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return ScreenManagerLang.Generic_ColorPicker;}
 		}
+		public override string XmlName
+		{
+			get { return "Color";}
+		}
 		#endregion
 		
 		#region Members
@@ -61,6 +67,10 @@ namespace Kinovea.ScreenManager
 		public StyleElementColor(Color _default)
 		{
 			m_Color = _default;
+		}
+		public StyleElementColor(XmlReader _xmlReader)
+		{
+			ReadXML(_xmlReader);
 		}
 		#endregion
 		
@@ -80,11 +90,33 @@ namespace Kinovea.ScreenManager
 		}
 		public override void ReadXML(XmlReader _xmlReader)
 		{
-			throw new NotImplementedException();
+			_xmlReader.ReadStartElement();
+			string s = _xmlReader.ReadElementContentAsString("Value", "");
+			
+			Color value = Color.Black;
+			try
+			{
+				TypeConverter colorConverter = TypeDescriptor.GetConverter(typeof(Color));
+				value = (Color)colorConverter.ConvertFromString(s);
+				
+				if(value.A == 0)
+					value = Color.Black;
+			}
+			catch(Exception)
+			{
+				// The input XML couldn't be parsed. Keep the default value.
+			}
+			
+			m_Color = value;
+			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)
 		{
-			throw new NotImplementedException();
+			// Note: we don't use the .NET color converter at writing time.
+			// The color would be translated to its display name (DarkOliveGreen, CadetBlue, etc.), which is not portable.
+			// We do use a compatible format to be able to use the converter at reading time though.
+			string s = String.Format("{0};{1};{2};{3}", m_Color.A, m_Color.R, m_Color.G, m_Color.B);
+			_xmlWriter.WriteElementString("Value", s);
 		}
 		#endregion
 		

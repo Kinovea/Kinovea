@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -50,6 +51,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return "Arrows :";}
 		}
+		public override string XmlName
+		{
+			get { return "Arrows";}
+		}
 		#endregion
 		
 		#region Members
@@ -59,10 +64,13 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Constructor
-		public StyleElementLineEnding() : this(LineEnding.None){}
 		public StyleElementLineEnding(LineEnding _default)
 		{
 			m_LineEnding = (Array.IndexOf(m_Options, _default) >= 0) ? _default : LineEnding.None;
+		}
+		public StyleElementLineEnding(XmlReader _xmlReader)
+		{
+			ReadXML(_xmlReader);
 		}
 		#endregion
 		
@@ -87,11 +95,30 @@ namespace Kinovea.ScreenManager
 		}
 		public override void ReadXML(XmlReader _xmlReader)
 		{
-			throw new NotImplementedException();
+			_xmlReader.ReadStartElement();
+			string s = _xmlReader.ReadElementContentAsString("Value", "");
+			
+			LineEnding value = LineEnding.None;
+			try
+			{
+				TypeConverter lineEndingConverter = TypeDescriptor.GetConverter(typeof(LineEnding));
+				value = (LineEnding)lineEndingConverter.ConvertFromString(s);
+			}
+			catch(Exception)
+			{
+				// The input XML couldn't be parsed. Keep the default value.
+			}
+			
+			// Restrict to the actual list of "athorized" values.
+			m_LineEnding = (Array.IndexOf(m_Options, value) >= 0) ? value : LineEnding.None;
+			
+			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)
 		{
-			throw new NotImplementedException();
+			TypeConverter converter = TypeDescriptor.GetConverter(m_LineEnding);
+			string s = converter.ConvertToString(m_LineEnding);
+			_xmlWriter.WriteElementString("Value", s);
 		}
 		#endregion
 		

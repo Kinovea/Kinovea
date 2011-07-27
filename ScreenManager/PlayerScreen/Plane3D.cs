@@ -171,15 +171,15 @@ namespace Kinovea.ScreenManager
                 RedefineHomography();
             }
             
-            PreferencesManager pm = PreferencesManager.Instance();
+            //PreferencesManager pm = PreferencesManager.Instance();
             if (m_bSupport3D)
             {
-                m_PenEdges = new Pen(pm.Plane3DColor, 1);
+            	m_PenEdges = new Pen((Color)ToolManager.Plane.StylePreset.Elements["color"].Value, 1);
                 m_PenEdges.DashStyle = DashStyle.Dash;
             }
             else
             {
-                m_PenEdges = new Pen(pm.GridColor, 1);
+                m_PenEdges = new Pen((Color)ToolManager.Plane.StylePreset.Elements["color"].Value, 1);
                 m_PenEdges.DashStyle = DashStyle.Dash;
             }
             

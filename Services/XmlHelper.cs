@@ -20,11 +20,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Drawing;
+using System.Xml;
 
 namespace Kinovea.Services
 {
     public static class XmlHelper
     {
+    	// FIXME: this class should not be needed. Use the TypeConverter framework instead.
+    	
     	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public static Point PointParse(string _sPoint, char _delim)

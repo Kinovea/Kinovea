@@ -19,10 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -51,6 +54,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return "Line size :";}
 		}
+		public override string XmlName
+		{
+			get { return "LineSize";}
+		}
 		#endregion
 		
 		#region Members
@@ -63,6 +70,10 @@ namespace Kinovea.ScreenManager
 		public StyleElementLineSize(int _default)
 		{
 			m_iPenSize = (Array.IndexOf(m_Options, _default) >= 0) ? _default : m_iDefaultSize;
+		}
+		public StyleElementLineSize(XmlReader _xmlReader)
+		{
+			ReadXML(_xmlReader);
 		}
 		#endregion
 		
@@ -87,11 +98,28 @@ namespace Kinovea.ScreenManager
 		}
 		public override void ReadXML(XmlReader _xmlReader)
 		{
-			throw new NotImplementedException();
+			_xmlReader.ReadStartElement();
+			string s = _xmlReader.ReadElementContentAsString("Value", "");
+			
+			int value = m_iDefaultSize;
+			try
+			{
+				TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
+				value = (int)intConverter.ConvertFromString(s);
+			}
+			catch(Exception)
+			{
+				// The input XML couldn't be parsed. Keep the default value.
+			}
+			
+			// Restrict to the actual list of "athorized" values.
+			m_iPenSize = (Array.IndexOf(m_Options, value) >= 0) ? value : m_iDefaultSize;
+			
+			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)
 		{
-			throw new NotImplementedException();
+			_xmlWriter.WriteElementString("Value", m_iPenSize.ToString());
 		}
 		#endregion
 		

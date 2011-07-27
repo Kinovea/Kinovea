@@ -1,3 +1,11 @@
+2011-07-27
+- Implementation of XML serialization on style elements.
+- Loading and saving tool presets.
+
+Broken:
+- Serialization of the KVA file format has to be refactored globally to streamline the code.
+
+--------------------------------------------------------------------------------
 2011-07-25
 
 Replacement of the list of btnDrawingToolXXX by a ToolStrip.

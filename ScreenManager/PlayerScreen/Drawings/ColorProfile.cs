@@ -223,7 +223,7 @@ namespace Kinovea.ScreenManager.Obsolete
         {
             log.Debug("Loading color profile from xml file.");
             
-            XmlReader reader = new XmlTextReader(_filePath);
+            XmlReader reader = XmlReader.Create(_filePath);
 
             if (reader != null)
             {

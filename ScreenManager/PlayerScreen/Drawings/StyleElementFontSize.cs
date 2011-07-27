@@ -19,11 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -51,6 +53,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return ScreenManagerLang.Generic_FontSizePicker;}
 		}
+		public override string XmlName
+		{
+			get { return "FontSize";}
+		}
 		#endregion
 		
 		#region Members
@@ -63,6 +69,10 @@ namespace Kinovea.ScreenManager
 		public StyleElementFontSize(int _default)
 		{
 			m_iFontSize = (Array.IndexOf(m_Options, _default.ToString()) >= 0) ? _default : m_iDefaultFontSize;
+		}
+		public StyleElementFontSize(XmlReader _xmlReader)
+		{
+			ReadXML(_xmlReader);
 		}
 		#endregion
 
@@ -84,11 +94,28 @@ namespace Kinovea.ScreenManager
 		}
 		public override void ReadXML(XmlReader _xmlReader)
 		{
-			throw new NotImplementedException();
+			_xmlReader.ReadStartElement();
+			string s = _xmlReader.ReadElementContentAsString("Value", "");
+			
+			int value = m_iDefaultFontSize;
+			try
+			{
+				TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
+				value = (int)intConverter.ConvertFromString(s);
+			}
+			catch(Exception)
+			{
+				// The input XML couldn't be parsed. Keep the default value.
+			}
+			
+			// Restrict to the actual list of "athorized" values.
+			m_iFontSize = (Array.IndexOf(m_Options, value.ToString()) >= 0) ? value : m_iDefaultFontSize;
+			
+			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)
 		{
-			throw new NotImplementedException();
+			_xmlWriter.WriteElementString("Value", m_iFontSize.ToString());
 		}
 		#endregion
 		

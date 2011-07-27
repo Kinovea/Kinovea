@@ -1044,7 +1044,7 @@ namespace Kinovea.ScreenManager
             // </Track>
             _xmlWriter.WriteEndElement();
         }
-        public static Track FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback, Size _imageSize)
+        public static Track FromXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback, Size _imageSize)
         {
             Track trk = new Track(0,0,0, null, _imageSize);
             trk.m_TrackStatus = TrackStatus.Interactive;
@@ -1113,7 +1113,7 @@ namespace Kinovea.ScreenManager
             
             return trk;
         }
-        private void ParseTrackLine(XmlTextReader _xmlReader, Track _track)
+        private void ParseTrackLine(XmlReader _xmlReader, Track _track)
         {
             while (_xmlReader.Read())
             {
@@ -1134,7 +1134,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void ParseTrackPositionList(XmlTextReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        private void ParseTrackPositionList(XmlReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
             _track.m_Positions.Clear();
             _track.m_RescaledPositions.Clear();
@@ -1173,7 +1173,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void ParseMainLabel(XmlTextReader _xmlReader, Track _track)
+        private void ParseMainLabel(XmlReader _xmlReader, Track _track)
         {
             while (_xmlReader.Read())
             {
@@ -1198,7 +1198,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void ParseKeyframeLabelList(XmlTextReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        private void ParseKeyframeLabelList(XmlReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
             _track.m_KeyframesLabels.Clear();
 
@@ -1235,7 +1235,7 @@ namespace Kinovea.ScreenManager
                 }
             }  
         }
-        private void ParseLabel(XmlTextReader _xmlReader, Track _track)
+        private void ParseLabel(XmlReader _xmlReader, Track _track)
         {
             while (_xmlReader.Read())
             {
