@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager.Obsolete
             }
 			
 			#region old format
-			/*private static void ParseBackgroundBrush(XmlTextReader _xmlReader, KeyframeLabel _kfl)
+			/*private static void ParseBackgroundBrush(XmlReader _xmlReader, KeyframeLabel _kfl)
 	        {
 	            while (_xmlReader.Read())
 	            {
@@ -181,7 +181,7 @@ namespace Kinovea.ScreenManager.Obsolete
 	            }
 	
 	        }*/
-	        /*private static void ParseFont(XmlTextReader _xmlReader, KeyframeLabel _kfl)
+	        /*private static void ParseFont(XmlReader _xmlReader, KeyframeLabel _kfl)
 	        {
 	            while (_xmlReader.Read())
 	            {

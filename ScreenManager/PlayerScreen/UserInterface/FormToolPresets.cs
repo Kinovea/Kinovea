@@ -23,6 +23,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
@@ -46,12 +49,12 @@ namespace Kinovea.ScreenManager
 		{
 			m_Preselect = _preselect;
 			InitializeComponent();
-			LoadPresets();
+			LoadPresets(true);
 		}
 		#endregion
 		
 		#region Private Methods
-		private void LoadPresets()
+		private void LoadPresets(bool _memorize)
 		{
 			// Load the list
 			lstPresets.Items.Clear();
@@ -61,7 +64,8 @@ namespace Kinovea.ScreenManager
 				if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
 				{
 					lstPresets.Items.Add(tool);
-					tool.StylePreset.Memorize();
+					if(_memorize)
+						tool.StylePreset.Memorize();
 					if(tool == m_Preselect) preselected = lstPresets.Items.Count - 1;
 				}
 			}
@@ -177,10 +181,53 @@ namespace Kinovea.ScreenManager
 			// Reset all tools to their default preset.
 			foreach(AbstractDrawingTool tool in ToolManager.Tools.Values)
 			{
-				tool.ResetToDefaultStyle();
+				if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
+				{
+					DrawingStyle memo = tool.StylePreset.Clone();
+					tool.ResetToDefaultStyle();
+					tool.StylePreset.Memorize(memo);
+				}
 			}
 			
-			LoadPresets();
+			LoadPresets(false);
+		}
+		private void BtnLoadProfileClick(object sender, EventArgs e)
+		{
+			// load file to working copy of the profile
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_LoadProfile;
+            openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.InitialDirectory = PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                if (filePath.Length > 0)
+                {
+                    ToolManager.LoadPresets(filePath);
+                    LoadPresets(false);
+                }
+            }
+		}
+		private void BtnSaveProfileClick(object sender, EventArgs e)
+		{
+            // Save current working copy to file
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile;
+            saveFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.InitialDirectory = Application.StartupPath + "\\" + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+                if (filePath.Length > 0)
+                {
+                    ToolManager.SavePresets(filePath);
+                }
+            }
 		}
 		
 		#region Form closing
@@ -208,14 +255,12 @@ namespace Kinovea.ScreenManager
 			m_bManualClose = true;
 		}
 		private void BtnOK_Click(object sender, EventArgs e)
-			
 		{
+			ToolManager.SavePresets();
 			m_bManualClose = true;	
 		}
 		#endregion
 		
 		#endregion
-		
-		
 	}
 }

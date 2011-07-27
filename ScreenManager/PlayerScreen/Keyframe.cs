@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
                 _xmlWriter.WriteStartElement("Drawings");
                 foreach (AbstractDrawing drawing in m_Drawings)
                 {
-                	IXMLSerializable serializableDrawing = drawing as IXMLSerializable;
+                	IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
                 	if(serializableDrawing != null)
                 	{
                 		serializableDrawing.ToXmlString(_xmlWriter);	

@@ -50,6 +50,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return "Track shape :";}
 		}
+		public override string XmlName
+		{
+			get { return "TrackShape";}
+		}
 		#endregion
 		
 		#region Members

@@ -35,7 +35,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingText : AbstractDrawing, IXMLSerializable, IDecorable
+    public class DrawingText : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
         public DrawingStyle DrawingStyle
@@ -232,7 +232,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-		#region IXMLSerializable implementation
+		#region IKvaSerializable implementation
         public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
@@ -248,7 +248,11 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(m_TopLeft.X.ToString() + ";" + m_TopLeft.Y.ToString());
             _xmlWriter.WriteEndElement();
 
-            //m_TextStyle.ToXml(_xmlWriter);
+            // Drawing style
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+            
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // </Drawing>
@@ -270,7 +274,7 @@ namespace Kinovea.ScreenManager
             return iHash;
         }
 
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
+        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
         {
             DrawingText dt = new DrawingText(0,0,0,0,0,0, null);
 

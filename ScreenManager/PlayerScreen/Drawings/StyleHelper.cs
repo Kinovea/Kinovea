@@ -19,8 +19,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
+using System.ComponentModel.Design.Serialization;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
@@ -488,9 +491,10 @@ namespace Kinovea.ScreenManager
 	}
 	
 	/// <summary>
-	/// A simple wrapper around two Line cap values.
+	/// A simple wrapper around two LineCap values.
 	/// Used to describe arrow endings and possibly other endings.
 	/// </summary>
+	[TypeConverter(typeof(LineEndingConverter))]
 	public struct LineEnding
 	{
 		public readonly LineCap StartCap;
@@ -520,6 +524,71 @@ namespace Kinovea.ScreenManager
 			get { return new LineEnding(LineCap.ArrowAnchor, LineCap.ArrowAnchor);}
 		}
 		#endregion
+	}
+	
+	public class LineEndingConverter : TypeConverter
+	{
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		{
+			if (sourceType == typeof(string))
+			{
+				return true;
+			}	
+			else
+			{
+				return base.CanConvertFrom(context, sourceType);
+			}
+		}
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+		{
+			if(destinationType == typeof(string))
+			{
+				return true;
+			}
+			else
+			{
+				return base.CanConvertTo(context, destinationType);
+			}
+		}	
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		{
+			if(value is string)
+			{
+				string stringValue = value as string;
+				
+				if (stringValue.Length == 0)
+					return LineEnding.None;
+				
+				string[] split = stringValue.Split(new Char[] { ';' });
+				
+				if(split.Length != 2)
+					return LineEnding.None;
+				
+				TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
+				LineCap start = (LineCap)enumConverter.ConvertFromString(context, culture, split[0]);
+				LineCap end = (LineCap)enumConverter.ConvertFromString(context, culture, split[1]);
+				
+				return new LineEnding(start, end);
+			}
+			else
+			{
+				return base.ConvertFrom(context, culture, value);
+			}
+		}
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		{
+			if (destinationType == typeof(string))
+			{
+				LineEnding lineEnding = (LineEnding)value;
+				TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
+				string result = String.Format("{0};{1}", 
+				                              enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.StartCap), 
+				                              enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.EndCap));
+				return result;
+			}
+
+			return base.ConvertTo(context, culture, value, destinationType);
+		}
 	}
 	
 	/// <summary>

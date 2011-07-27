@@ -33,7 +33,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingCircle : AbstractDrawing, IXMLSerializable, IDecorable, IInitializable
+    public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
         public DrawingStyle DrawingStyle
@@ -169,7 +169,7 @@ namespace Kinovea.ScreenManager
         }        
         #endregion
         
-        #region IXMLSerializable implementation
+        #region IKvaSerializable implementation
         public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Drawing");
@@ -185,7 +185,11 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteString(m_iRadius.ToString());
             _xmlWriter.WriteEndElement();
 
-            //m_PenStyle.ToXml(_xmlWriter);
+            // Drawing style
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+            
             m_InfosFading.ToXml(_xmlWriter, false);
 
             // </Drawing>
@@ -212,7 +216,7 @@ namespace Kinovea.ScreenManager
             iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
+        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
         {
         	// _scale.X and _scale.Y are used to map drawings that were set in one video,
         	// to a destination video with different dimensions.

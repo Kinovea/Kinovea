@@ -247,21 +247,25 @@ namespace Kinovea.ScreenManager
         public static Metadata FromXmlString(String _xmlString, int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
         {
             Metadata md = new Metadata(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback);
-
-    		string xmlString = ConvertFormat(_xmlString);
-            
-            StringReader reader = new StringReader(xmlString);
-            XmlTextReader xmlReader = new XmlTextReader(reader);
-
-            // We must set the Image Size for scaling computations.
             md.m_ImageSize.Width = _iWidth;
             md.m_ImageSize.Height = _iHeight;
             md.AverageTimeStampsPerFrame = _iAverageTimestampPerFrame;
             md.m_FullPath = _FullPath;
+            
+    		string xmlString = ConvertFormat(_xmlString);
+            StringReader reader = new StringReader(xmlString);
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = false;
 
-            md.FromXml(xmlReader);
-
-            if (md.m_Keyframes.Count > 0)
+            using(XmlReader r = XmlReader.Create(reader, settings))
+            {
+                md.FromXml(r);    
+            }
+            
+            if(md.m_Keyframes.Count > 0)
             {
             	md.UpdateTrajectoriesForKeyframes();
             }
@@ -370,16 +374,36 @@ namespace Kinovea.ScreenManager
 
             ResetCoreContent();
             m_FullPath = _file;
-            XmlTextReader xmlReader = new XmlTextReader(_file);
-            FromXml(xmlReader);
+            
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = true;
+
+            using(XmlReader r = XmlReader.Create(_file, settings))
+            {
+                FromXml(r);
+            }
+            
             UpdateTrajectoriesForKeyframes();
         }
         public void LoadFromString(String _xmlString)
         {
             ResetCoreContent();
             StringReader reader = new StringReader(_xmlString);
-            XmlTextReader xmlReader = new XmlTextReader(reader);
-            FromXml(xmlReader);
+            
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreComments = true;
+            settings.IgnoreProcessingInstructions = true;
+            settings.IgnoreWhitespace = true;
+            settings.CloseInput = false;
+
+            using(XmlReader r = XmlReader.Create(reader, settings))
+            {
+                FromXml(r);
+            }
+            
             UpdateTrajectoriesForKeyframes();
             SetLocations(m_ImageSize, 1.0, new Point(0, 0));
         }
@@ -907,7 +931,7 @@ namespace Kinovea.ScreenManager
             
             _xmlWriter.WriteEndElement();
         }
-        private void FromXml(XmlTextReader _xmlReader)
+        private void FromXml(XmlReader _xmlReader)
         {
         	
         	// TODO:Metadata from xml
@@ -1024,7 +1048,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Parse Kinovea Analysis
-        private void ParseAnalysis(XmlTextReader _xmlReader)
+        private void ParseAnalysis(XmlReader _xmlReader)
         {
             while (_xmlReader.Read())
             {
@@ -1094,7 +1118,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void ParseCalibrationHelp(XmlTextReader _xmlReader)
+        private void ParseCalibrationHelp(XmlReader _xmlReader)
         {       
         	while (_xmlReader.Read())
             {
@@ -1126,7 +1150,7 @@ namespace Kinovea.ScreenManager
                 }
             }	
         }
-        private void ParseKeyframes(XmlTextReader _xmlReader)
+        private void ParseKeyframes(XmlReader _xmlReader)
         {
             while (_xmlReader.Read())
             {
@@ -1149,7 +1173,7 @@ namespace Kinovea.ScreenManager
             }
 
         }
-        private Keyframe ParseKeyframe(XmlTextReader _xmlReader)
+        private Keyframe ParseKeyframe(XmlReader _xmlReader)
         {
         	// This will not create a fully functionnal Keyframe.
         	// Must be followed by a call to PostImportMetadata()
@@ -1192,14 +1216,14 @@ namespace Kinovea.ScreenManager
 
             return kf;
         }
-        private void ParsePosition(XmlTextReader _xmlReader, Keyframe _keyframe)
+        private void ParsePosition(XmlReader _xmlReader, Keyframe _keyframe)
         {
             int iInputPosition = int.Parse(_xmlReader.ReadString());
 
             _keyframe.Position = DoRemapTimestamp(iInputPosition, false);
 
         }
-        private void ParseComments(XmlTextReader _xmlReader, Keyframe _keyframe)
+        private void ParseComments(XmlReader _xmlReader, Keyframe _keyframe)
         {
         	// TO BE REMOVED AT SOME POINT.
         	// This is just to keep compatibility with the old format where comments were stored as a series of lines.
@@ -1230,7 +1254,7 @@ namespace Kinovea.ScreenManager
         	
         	_keyframe.CommentRtf += "}";
         }
-        private void ParseDrawings(XmlTextReader _xmlReader, Keyframe _keyframe)
+        private void ParseDrawings(XmlReader _xmlReader, Keyframe _keyframe)
         {
             while (_xmlReader.Read())
             {
@@ -1257,7 +1281,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private AbstractDrawing ParseDrawing(XmlTextReader _xmlReader)
+        private AbstractDrawing ParseDrawing(XmlReader _xmlReader)
         {
             // The drawings will be scaled to the new image size
             PointF scaling = new PointF();
@@ -1299,7 +1323,7 @@ namespace Kinovea.ScreenManager
 
             return ad;
         }
-        private void ParseChronos(XmlTextReader _xmlReader)
+        private void ParseChronos(XmlReader _xmlReader)
         {
             while (_xmlReader.Read())
             {
@@ -1325,7 +1349,7 @@ namespace Kinovea.ScreenManager
             }
 
         }
-        private void ParseTracks(XmlTextReader _xmlReader)
+        private void ParseTracks(XmlReader _xmlReader)
         {
             while (_xmlReader.Read())
             {

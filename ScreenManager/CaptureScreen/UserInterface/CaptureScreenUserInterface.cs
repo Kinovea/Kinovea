@@ -1607,6 +1607,7 @@ namespace Kinovea.ScreenManager
 			ftp.Dispose();
 
 			UpdateCursor();
+			DoInvalidate();
 		}
 		private void UpdateCursor()
 		{

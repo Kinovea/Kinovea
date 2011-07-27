@@ -180,7 +180,7 @@
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\InfosTextDecoration.cs" />
-    <Compile Include="PlayerScreen\Drawings\IXMLSerializable.cs" />
+    <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
     <Compile Include="PlayerScreen\Drawings\LineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />

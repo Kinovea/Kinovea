@@ -70,6 +70,14 @@ namespace Kinovea.ScreenManager
 		}
 		
 		/// <summary>
+		/// The type of the property for serialization.
+		/// </summary>
+		public abstract string XmlName
+		{
+			get;
+		}
+		
+		/// <summary>
 		/// Event raised when the value is changed. (call RaiseValueChanged() to trigger)
 		/// The mini editor container will hook to this and update main screen accordingly to enable real time update.
 		/// </summary>
@@ -86,6 +94,7 @@ namespace Kinovea.ScreenManager
 		public abstract AbstractStyleElement Clone();
 		public abstract void WriteXml(XmlWriter _xmlWriter);
 		public abstract void ReadXML(XmlReader _xmlReader);
+		
 		public void Bind(StyleHelper _target, string _targetProperty)
 		{
 			m_BindTarget = _target;

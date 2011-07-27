@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
             // </KeyframeLabel>
             _xmlWriter.WriteEndElement();
         }
-        public static KeyframeLabel FromXml(XmlTextReader _xmlReader, bool _relative, PointF _scale)
+        public static KeyframeLabel FromXml(XmlReader _xmlReader, bool _relative, PointF _scale)
         {
             // Read all tags between <KeyframeLabel> and </KeyframeLabel> and fills up an object.
 

@@ -25,7 +25,7 @@ namespace Kinovea.ScreenManager
 {
 	public class DartfishStoryboardParser : IMetadataParser
     {
-        public void Parse(XmlTextReader _xmlReader, Metadata _metadata)
+        public void Parse(XmlReader _xmlReader, Metadata _metadata)
         {
             // We will try to parse the Data from the storyboard,
             // and fill our Metadata class as best as we can.
@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void ParseData(XmlTextReader _xmlReader, Metadata _metadata)
+        private void ParseData(XmlReader _xmlReader, Metadata _metadata)
         {
             while (_xmlReader.Read())
             {
@@ -74,7 +74,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void ParseODProject(XmlTextReader _xmlReader, Metadata _metadata)
+        private void ParseODProject(XmlReader _xmlReader, Metadata _metadata)
         {
             while (_xmlReader.Read())
             {

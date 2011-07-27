@@ -34,7 +34,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingChrono : AbstractDrawing, IDecorable, IXMLSerializable
+    public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Enums
         /// <summary>
@@ -150,10 +150,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingChrono()
-        	: this(0, 0, 0, 1, new DrawingStyle())
-        {
-        }
+        public DrawingChrono() : this(0, 0, 0, 1, null){}
         public DrawingChrono(int x, int y, long start, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
@@ -167,11 +164,13 @@ namespace Kinovea.ScreenManager
 
             m_Text = "error";
             
-            m_Style = _preset.Clone();
             m_StyleHelper.Bicolor = new Bicolor(Color.Black);
             m_StyleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
-            m_Style.Bind(m_StyleHelper, "Bicolor", "color");
-            m_Style.Bind(m_StyleHelper, "Font", "font size");
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
             
             m_Label = "";
             m_bShowLabel = true;
@@ -285,7 +284,7 @@ namespace Kinovea.ScreenManager
             return iHash;
         }
 		
-		#region IXMLSerializable implementation
+		#region IKvaSerializable implementation
 		public void ToXmlString(XmlTextWriter _xmlWriter)
         {
             _xmlWriter.WriteStartElement("Chrono");
@@ -356,8 +355,10 @@ namespace Kinovea.ScreenManager
             // </values>
             _xmlWriter.WriteEndElement();
 
-            // Colors and font
-            //m_TextStyle.ToXml(_xmlWriter);
+            // Drawing style
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
             
             // Label
             _xmlWriter.WriteStartElement("Label");
@@ -420,7 +421,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region FromXml
-        public static DrawingChrono FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        public static DrawingChrono FromXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
             DrawingChrono dc = new DrawingChrono();
 
@@ -466,7 +467,7 @@ namespace Kinovea.ScreenManager
 
             return dc;
         }
-        private void ParseWorkingValues(XmlTextReader _xmlReader, DrawingChrono _drawing, DelegateRemapTimestamp _remapTimestampCallback)
+        private void ParseWorkingValues(XmlReader _xmlReader, DrawingChrono _drawing, DelegateRemapTimestamp _remapTimestampCallback)
         {
             if (_remapTimestampCallback != null)
             {
@@ -556,7 +557,7 @@ namespace Kinovea.ScreenManager
             }
 
         }
-        private void ParseLabel(XmlTextReader _xmlReader, DrawingChrono _drawing)
+        private void ParseLabel(XmlReader _xmlReader, DrawingChrono _drawing)
         {
             while (_xmlReader.Read())
             {
@@ -584,6 +585,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Bicolor", "color");
+            m_Style.Bind(m_StyleHelper, "Font", "font size");    
+        }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
