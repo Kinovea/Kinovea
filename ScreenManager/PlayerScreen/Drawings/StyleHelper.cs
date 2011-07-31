@@ -140,7 +140,7 @@ namespace Kinovea.ScreenManager
 		/// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
 		public Pen GetPen(int _iAlpha)
 		{
-			Color c = (_iAlpha >= 0 && _iAlpha < 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;			
+			Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;			
 			
         	return NormalPen(new Pen(c, 1.0f));
 		}
@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
 		/// <returns>Pen object initialized with the current value of color and line size properties</returns>
 		public Pen GetPen(int _iAlpha, double _fStretchFactor)
 		{
-			Color c = (_iAlpha >= 0 && _iAlpha < 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
+			Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
 			float fPenWidth = (float)((double)m_iLineSize * _fStretchFactor);
 			if (fPenWidth < 1) fPenWidth = 1;
 			
@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
 		/// <returns>Brush object initialized with the current value of color property</returns>
 		public SolidBrush GetBrush(int _iAlpha)
 		{
-			Color c = (_iAlpha >= 0 && _iAlpha < 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
+			Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
 			return new SolidBrush(c);
 		}
 		#endregion
@@ -235,7 +235,7 @@ namespace Kinovea.ScreenManager
 		#region Bicolor property
 		public Color GetForegroundColor(int _iAlpha)
 		{
-			Color c = (_iAlpha >= 0 && _iAlpha < 255) ? Color.FromArgb(_iAlpha, m_Bicolor.Foreground) : m_Bicolor.Foreground;
+			Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Bicolor.Foreground) : m_Bicolor.Foreground;
 			return c;
 		}
 		public SolidBrush GetForegroundBrush(int _iAlpha)
@@ -250,7 +250,7 @@ namespace Kinovea.ScreenManager
 		}
 		public Color GetBackgroundColor(int _iAlpha)
 		{
-			Color c = (_iAlpha >= 0 && _iAlpha < 255) ? Color.FromArgb(_iAlpha, m_Bicolor.Background) : m_Bicolor.Background;
+			Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Bicolor.Background) : m_Bicolor.Background;
 			return c;
 		}
 		public SolidBrush GetBackgroundBrush(int _iAlpha)
@@ -526,6 +526,10 @@ namespace Kinovea.ScreenManager
 		#endregion
 	}
 	
+	/// <summary>
+	/// Converter class for LineEnding. 
+	/// Support: string.
+	/// </summary>
 	public class LineEndingConverter : TypeConverter
 	{
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
@@ -595,6 +599,7 @@ namespace Kinovea.ScreenManager
 	/// A simple wrapper around a dash style and the presence of time ticks.
 	/// Used to describe line shape for tracks.
 	/// </summary>
+	[TypeConverter(typeof(TrackShapeConverter))]
 	public struct TrackShape
 	{
 		public readonly DashStyle DashStyle;
@@ -625,5 +630,76 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 	}
+	
+	/// <summary>
+	/// Converter class for TrackShape.
+	/// Support: string.
+	/// </summary>
+	public class TrackShapeConverter : TypeConverter
+	{
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		{
+			if (sourceType == typeof(string))
+			{
+				return true;
+			}	
+			else
+			{
+				return base.CanConvertFrom(context, sourceType);
+			}
+		}
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+		{
+			if(destinationType == typeof(string))
+			{
+				return true;
+			}
+			else
+			{
+				return base.CanConvertTo(context, destinationType);
+			}
+		}	
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		{
+			if(value is string)
+			{
+				string stringValue = value as string;
+				
+				if (stringValue.Length == 0)
+					return TrackShape.Solid;
+				
+				string[] split = stringValue.Split(new Char[] { ';' });
+				
+				if(split.Length != 2)
+					return TrackShape.Solid;
+				
+				TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
+				DashStyle dash = (DashStyle)enumConverter.ConvertFromString(context, culture, split[0]);
+				
+				TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+				bool steps = (bool)boolConverter.ConvertFromString(context, culture, split[1]);
+				
+				return new TrackShape(dash, steps);
+			}
+			else
+			{
+				return base.ConvertFrom(context, culture, value);
+			}
+		}
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		{
+			if (destinationType == typeof(string))
+			{
+				TrackShape trackShape = (TrackShape)value;
+				TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
+				string result = String.Format("{0};{1}",
+				                              enumConverter.ConvertToString(context, culture, (DashStyle)trackShape.DashStyle), 
+				                              trackShape.ShowSteps?"true":"false");
+				return result;
+			}
+
+			return base.ConvertTo(context, culture, value, destinationType);
+		}
+	}	
 		
 }

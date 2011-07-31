@@ -75,8 +75,6 @@ namespace Kinovea.ScreenManager
         {
             get;
         }
-        
-        
         #endregion
     	
         #region Methods

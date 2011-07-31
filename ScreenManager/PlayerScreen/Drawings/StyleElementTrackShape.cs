@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -63,10 +64,13 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Constructor
-		public StyleElementTrackShape() : this(TrackShape.Solid){}
 		public StyleElementTrackShape(TrackShape _default)
 		{
 			m_TrackShape = (Array.IndexOf(m_Options, _default) >= 0) ? _default : TrackShape.Solid;
+		}
+		public StyleElementTrackShape(XmlReader _xmlReader)
+		{
+			ReadXML(_xmlReader);
 		}
 		#endregion
 		
@@ -91,11 +95,30 @@ namespace Kinovea.ScreenManager
 		}
 		public override void ReadXML(XmlReader _xmlReader)
 		{
-			throw new NotImplementedException();
+			_xmlReader.ReadStartElement();
+			string s = _xmlReader.ReadElementContentAsString("Value", "");
+			
+			TrackShape value = TrackShape.Solid;
+			try
+			{
+				TypeConverter trackShapeConverter = TypeDescriptor.GetConverter(typeof(TrackShape));
+				value = (TrackShape)trackShapeConverter.ConvertFromString(s);
+			}
+			catch(Exception)
+			{
+				// The input XML couldn't be parsed. Keep the default value.
+			}
+			
+			// Restrict to the actual list of "athorized" values.
+			m_TrackShape = (Array.IndexOf(m_Options, value) >= 0) ? value : TrackShape.Solid;
+			
+			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)
 		{
-			throw new NotImplementedException();
+			TypeConverter converter = TypeDescriptor.GetConverter(m_TrackShape);
+			string s = converter.ConvertToString(m_TrackShape);
+			_xmlWriter.WriteElementString("Value", s);
 		}
 		#endregion
 		

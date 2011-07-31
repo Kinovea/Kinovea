@@ -1,3 +1,13 @@
+
+2011-07-30
+- Re-Implementation of XML serialization/deserialization for all drawings and general info in the KVA to conform to a cleaner pattern.
+- The KVA format itself is changed slightly to streamline it, making it incompatible with current version (1.5) of the format.
+- Creation of the XML Schema for the old format (1.5) and new format (2.0).
+- The XML Schema is split in two files, one for the generic data, and one just for the drawings.
+- Files created by Kinovea validates against the Schema.
+- Fixed bug 255 - Comments not saved if the comment box is not closed or reopened manually
+
+--------------------------------------------------------------------------------
 2011-07-27
 - Implementation of XML serialization on style elements.
 - Loading and saving tool presets.
@@ -8,7 +18,7 @@ Broken:
 --------------------------------------------------------------------------------
 2011-07-25
 
-Replacement of the list of btnDrawingToolXXX by a ToolStrip.
+UI : Replacement of the list of btnDrawingToolXXX by a ToolStrip.
 This allows to add a tool button to the UI with just one line. (It will also help when we implement multi tools buttons)
 Icon and tooltip are handled through the AbstractDrawingTool interface.
 Merged pointer tool and other tools event handlers (magnifier still has its own).

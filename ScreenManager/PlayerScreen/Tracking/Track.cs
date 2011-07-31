@@ -22,12 +22,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -133,6 +136,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_bUntrackable; }
 		}
+        public bool Invalid 
+        {
+            get { return m_Invalid;}
+        }
 		// Fading is not modifiable from outside.
         public override InfosFading  infosFading
         {
@@ -156,6 +163,7 @@ namespace Kinovea.ScreenManager
         private TrackStatus m_TrackStatus = TrackStatus.Edit;
         private TrackExtraData m_TrackExtraData = TrackExtraData.None;
         private int m_iMovingHandler = -1;
+        private bool m_Invalid;                                 // Used for XML import.
         	
         // Tracker tool.
         private AbstractTracker m_Tracker;
@@ -183,7 +191,7 @@ namespace Kinovea.ScreenManager
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
-        private KeyframeLabel m_MainLabel = new KeyframeLabel(Color.Black);
+        private KeyframeLabel m_MainLabel = new KeyframeLabel();
         private string m_MainLabelText = "Label";
         private InfosFading m_InfosFading = new InfosFading(long.MaxValue, 1);
         private static readonly int m_iBaseAlpha = 224;				// alpha of track in most cases.
@@ -260,11 +268,14 @@ namespace Kinovea.ScreenManager
             m_StyleHelper.Color = Color.Black;
             m_StyleHelper.LineSize = 3;
             m_StyleHelper.TrackShape = TrackShape.Dash;
-            m_Style.Bind(m_StyleHelper, "Color", "color");
-            m_Style.Bind(m_StyleHelper, "LineSize", "line size");
-            m_Style.Bind(m_StyleHelper, "TrackShape", "track shape");
+            BindStyle();
             
             m_StyleHelper.ValueChanged += mainStyle_ValueChanged;
+        }
+        public Track(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback, Size _imageSize)
+            : this(0,0,0, null, _imageSize)
+        {
+            ReadXml(_xmlReader, _scale, _remapTimestampCallback);
         }
         #endregion
 
@@ -1014,264 +1025,49 @@ namespace Kinovea.ScreenManager
 		#endregion
         
         #region XML import/export
-        public void ToXmlString(XmlTextWriter _xmlWriter)
-        {
-            _xmlWriter.WriteStartElement("Track");
-
-            _xmlWriter.WriteStartElement("TimePosition");
-            _xmlWriter.WriteString(m_iBeginTimeStamp.ToString());
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("Mode");
-            _xmlWriter.WriteString(((int)m_TrackView).ToString());
-            _xmlWriter.WriteEndElement();
-
+        public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteElementString("TimePosition", m_iBeginTimeStamp.ToString());
+		    
+		    TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
+            string xmlMode = enumConverter.ConvertToString(m_TrackView);
+            _xmlWriter.WriteElementString("Mode", xmlMode);
+            
+            enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
+            string xmlExtraData = enumConverter.ConvertToString(m_TrackExtraData);
+            _xmlWriter.WriteElementString("ExtraData", xmlExtraData);
+            
             TrackPointsToXml(_xmlWriter);
-            TrackLineToXml(_xmlWriter);
-            KeyframesLabelsToXml(_xmlWriter);
-
-            _xmlWriter.WriteStartElement("ExtraData");
-            _xmlWriter.WriteString(((int)m_TrackExtraData).ToString());
+            
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
-            // Global Label
-            _xmlWriter.WriteStartElement("Label");
-            _xmlWriter.WriteStartElement("Text");
-            _xmlWriter.WriteString(m_MainLabelText);
-            _xmlWriter.WriteEndElement();
+            _xmlWriter.WriteStartElement("MainLabel");
+            _xmlWriter.WriteAttributeString("Text", m_MainLabelText);
+            m_MainLabel.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
 
-            // </Track>
-            _xmlWriter.WriteEndElement();
-        }
-        public static Track FromXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback, Size _imageSize)
-        {
-            Track trk = new Track(0,0,0, null, _imageSize);
-            trk.m_TrackStatus = TrackStatus.Interactive;
-            
-            if (_remapTimestampCallback != null)
+            if (m_KeyframesLabels.Count > 0)
             {
-                while (_xmlReader.Read())
+                _xmlWriter.WriteStartElement("KeyframeLabelList");
+                _xmlWriter.WriteAttributeString("Count", m_KeyframesLabels.Count.ToString());
+
+                foreach (KeyframeLabel kfl in m_KeyframesLabels)
                 {
-                    if (_xmlReader.IsStartElement())
-                    {
-                        if (_xmlReader.Name == "TimePosition")
-                        {
-                            trk.m_iBeginTimeStamp = _remapTimestampCallback(long.Parse(_xmlReader.ReadString()), false);
-                        }
-                        else if (_xmlReader.Name == "Mode")
-                        {
-                            trk.m_TrackView = (TrackView)int.Parse(_xmlReader.ReadString());
-                        }
-                        else if (_xmlReader.Name == "TrackPositionList")
-                        {
-                            trk.ParseTrackPositionList(_xmlReader, trk, _scale, _remapTimestampCallback);
-                        }
-                        else if (_xmlReader.Name == "TrackLine")
-                        {
-                            trk.ParseTrackLine(_xmlReader, trk);
-                        }
-                        else if (_xmlReader.Name == "MainLabel")
-                        {
-                            trk.ParseMainLabel(_xmlReader, trk);
-                        }
-                        else if (_xmlReader.Name == "KeyframeLabelList")
-                        {
-                            trk.ParseKeyframeLabelList(_xmlReader, trk, _scale, _remapTimestampCallback);
-                        }
-                        else if (_xmlReader.Name == "ExtraData")
-                        {
-                            trk.m_TrackExtraData = (TrackExtraData)int.Parse(_xmlReader.ReadString());
-                        }
-                        else if (_xmlReader.Name == "Label")
-                        {
-                            trk.ParseLabel(_xmlReader, trk);
-                        }
-                        else
-                        {
-                            // forward compatibility : ignore new fields.
-                        }
-                    }
-                    else if (_xmlReader.Name == "Track")
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        // Fermeture d'un tag interne.
-                    }
+                    _xmlWriter.WriteStartElement("KeyframeLabel");
+                    kfl.WriteXml(_xmlWriter);
+                    _xmlWriter.WriteEndElement();    
                 }
 
-                if (trk.m_Positions.Count > 0)
-                {
-                    trk.m_iEndTimeStamp = trk.m_Positions[trk.m_Positions.Count - 1].T + trk.m_iBeginTimeStamp;
-                    trk.m_MainLabel.AttachLocation = trk.m_Positions[0].ToPoint();
-                    trk.m_MainLabel.Text = trk.Label;
-                }
-                trk.RescaleCoordinates(trk.m_fStretchFactor, trk.m_DirectZoomTopLeft);
+                _xmlWriter.WriteEndElement();
             }
-            
-            return trk;
-        }
-        private void ParseTrackLine(XmlReader _xmlReader, Track _track)
+		}
+        private void TrackPointsToXml(XmlWriter _xmlWriter)
         {
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    /*if (_xmlReader.Name == "LineStyle")
-                    {
-                    	_track.m_LineStyle = LineStyle.FromXml(_xmlReader);
-                    }*/
-                }
-                else if (_xmlReader.Name == "TrackLine")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-        }
-        private void ParseTrackPositionList(XmlReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
-        {
-            _track.m_Positions.Clear();
-            _track.m_RescaledPositions.Clear();
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "TrackPosition")
-                    {
-                    	// We don't know the concrete tracker that was used to match the points.
-                        AbstractTrackPoint tp = m_Tracker.CreateOrphanTrackPoint(0, 0, 0);
-                        tp.FromXml(_xmlReader);
-						
-                        // time was stored in relative value, we still need to adjust it.
-                        AbstractTrackPoint adapted = m_Tracker.CreateOrphanTrackPoint(	
-                                                                 	(int)((float)tp.X * _scale.X),
-                                                                	(int)((float)tp.Y * _scale.Y),
-                                                                	_remapTimestampCallback(tp.T, true));
-
-                        _track.m_Positions.Add(adapted);
-                        _track.m_RescaledPositions.Add(adapted.ToPoint()); // (not really scaled but must be added anyway so both array stay parallel.)
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "TrackPositionList")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-        }
-        private void ParseMainLabel(XmlReader _xmlReader, Track _track)
-        {
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "KeyframeLabel")
-                    {
-                        _track.m_MainLabel = KeyframeLabel.FromXml(_xmlReader, true, new PointF(1.0f, 1.0f));
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "MainLabel")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-        }
-        private void ParseKeyframeLabelList(XmlReader _xmlReader, Track _track, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
-        {
-            _track.m_KeyframesLabels.Clear();
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "KeyframeLabel")
-                    {
-                        KeyframeLabel kfl = KeyframeLabel.FromXml(_xmlReader, false, _scale);
-
-                        if (kfl != null && _track.m_Positions.Count > 0)
-                        {
-                            // Match with TrackPositions previously found.
-                            int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, _track.m_Positions, _track.m_iBeginTimeStamp);
-                            kfl.AttachIndex = iMatchedTrackPosition;
-                            
-                            kfl.AttachLocation = _track.m_Positions[iMatchedTrackPosition].ToPoint();
-                            m_KeyframesLabels.Add(kfl);
-                        }
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "KeyframeLabelList")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }  
-        }
-        private void ParseLabel(XmlReader _xmlReader, Track _track)
-        {
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Text")
-                    {
-                        _track.m_MainLabelText = _xmlReader.ReadString();
-                    }
-                }
-                else if (_xmlReader.Name == "Label")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-        }
-        private void TrackLineToXml(XmlTextWriter _xmlWriter)
-        {
-            //_xmlWriter.WriteStartElement("TrackLine");
-           
-            //m_LineStyle.ToXml(_xmlWriter);
-
-            // </trackline>
-            //_xmlWriter.WriteEndElement();
-        }
-        private void TrackPointsToXml(XmlTextWriter _xmlWriter)
-        {
-            _xmlWriter.WriteStartElement("TrackPositionList");
+            _xmlWriter.WriteStartElement("TrackPointList");
             _xmlWriter.WriteAttributeString("Count", m_Positions.Count.ToString());
-            
             _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
-            // todo: user unit time.
             
             // The coordinate system defaults to the first point,
             // but can be specified by user.
@@ -1289,31 +1085,165 @@ namespace Kinovea.ScreenManager
             {
             	foreach (AbstractTrackPoint tp in m_Positions)
             	{
-            		tp.ToXml(_xmlWriter, m_ParentMetadata, coordOrigin);
+            	    _xmlWriter.WriteStartElement("TrackPoint");
+            	    
+            	    // Data in user units.
+                    // - The origin of the coordinates system is given as parameter.
+                    // - X goes left (same than internal), Y goes up (opposite than internal).
+                    double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
+                    double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
+                    string userT = m_ParentMetadata.m_TimeStampsToTimecodeCallback(tp.T, TimeCodeFormat.Unknown, false);
+        			
+                    _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
+                    _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userX));
+                    _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", userY));
+                    _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userY));
+                    _xmlWriter.WriteAttributeString("UserTime", userT);
+            
+            		tp.WriteXml(_xmlWriter);
+            		
+            		_xmlWriter.WriteEndElement();
             	}	
             }
             _xmlWriter.WriteEndElement();
         }
-        private void KeyframesLabelsToXml(XmlTextWriter _xmlWriter)
+        public void ReadXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
-            // 1. Main label
-            _xmlWriter.WriteStartElement("MainLabel");
-            m_MainLabel.ToXml(_xmlWriter, m_iBeginTimeStamp);
-            _xmlWriter.WriteEndElement();
-
-            // 2. Keyframes labels.
-            if (m_KeyframesLabels.Count > 0)
+            m_Invalid = true;
+                
+            if (_remapTimestampCallback == null)
             {
-                _xmlWriter.WriteStartElement("KeyframeLabelList");
-                _xmlWriter.WriteAttributeString("Count", m_KeyframesLabels.Count.ToString());
-
-                foreach (KeyframeLabel kfl in m_KeyframesLabels)
-                {
-                    kfl.ToXml(_xmlWriter, m_iBeginTimeStamp);
-                }
-
-                _xmlWriter.WriteEndElement();
+                string unparsed = _xmlReader.ReadOuterXml();
+                log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                return;
             }
+            
+            _xmlReader.ReadStartElement();
+			
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "TimePosition":
+				        m_iBeginTimeStamp = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        break;
+					case "Mode":
+                        {
+                            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackView));
+						    m_TrackView = (TrackView)enumConverter.ConvertFromString(_xmlReader.ReadElementContentAsString());
+						    break;
+                        }
+				    case "ExtraData":
+						{
+    						TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(TrackExtraData));
+    						m_TrackExtraData = (TrackExtraData)enumConverter.ConvertFromString(_xmlReader.ReadElementContentAsString());
+    						break;
+						}
+					case "TrackPointList":
+                        ParseTrackPointList(_xmlReader, _scale, _remapTimestampCallback);
+						break;
+				    case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+                    case "MainLabel":
+						{
+						    m_MainLabelText = _xmlReader.GetAttribute("Text");
+						    m_MainLabel = new KeyframeLabel(_xmlReader, _scale);
+                            break;
+						}
+		            case "KeyframeLabelList":
+						ParseKeyframeLabelList(_xmlReader, _scale);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			if (m_Positions.Count > 0)
+            {
+                m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
+                m_MainLabel.AttachLocation = m_Positions[0].ToPoint();
+                m_MainLabel.Text = Label;
+                
+                
+                if(m_Positions.Count > 1 || 
+                   m_Positions[0].X != 0 || 
+                   m_Positions[0].Y != 0 || 
+                   m_Positions[0].T != 0)
+                {
+                    m_Invalid = false;
+                }
+            }
+            			
+			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public void ParseTrackPointList(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        {
+            m_Positions.Clear();
+            m_RescaledPositions.Clear();
+            
+            _xmlReader.ReadStartElement();
+            
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+                if(_xmlReader.Name == "TrackPoint")
+				{
+                    AbstractTrackPoint tp = m_Tracker.CreateOrphanTrackPoint(0, 0, 0);
+                    tp.ReadXml(_xmlReader);
+                    
+                    // time was stored in relative value, we still need to adjust it.
+                    AbstractTrackPoint adapted = m_Tracker.CreateOrphanTrackPoint(	
+                                                             	(int)((float)tp.X * _scale.X),
+                                                            	(int)((float)tp.Y * _scale.Y),
+                                                            	_remapTimestampCallback(tp.T, true));
+
+                    m_Positions.Add(adapted);
+                    m_RescaledPositions.Add(adapted.ToPoint()); // (not really scaled but must be added anyway so both array stay parallel.)
+                }
+                else
+                {
+                    string unparsed = _xmlReader.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+        }
+        public void ParseKeyframeLabelList(XmlReader _xmlReader, PointF _scale)
+        {
+            m_KeyframesLabels.Clear();
+
+            _xmlReader.ReadStartElement();
+            
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+                if(_xmlReader.Name == "KeyframeLabel")
+				{
+                    KeyframeLabel kfl = new KeyframeLabel(_xmlReader, _scale);
+                    
+                    if (m_Positions.Count > 0)
+                    {
+                        // Match with TrackPositions previously found.
+                        int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, m_Positions, m_iBeginTimeStamp);
+                        kfl.AttachIndex = iMatchedTrackPosition;
+                        
+                        kfl.AttachLocation = m_Positions[iMatchedTrackPosition].ToPoint();
+                        m_KeyframesLabels.Add(kfl);
+                    }
+                }
+                else
+                {
+                    string unparsed = _xmlReader.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
         }
         #endregion
         
@@ -1357,7 +1287,7 @@ namespace Kinovea.ScreenManager
                     else
                     {
                         // Unknown Keyframe, Configure and add it to list.
-                        KeyframeLabel kfl = new KeyframeLabel(Color.Black);
+                        KeyframeLabel kfl = new KeyframeLabel();
                         kfl.AttachIndex = FindClosestPoint(m_ParentMetadata[i].Position);
                         kfl.MoveTo(m_Positions[kfl.AttachIndex].ToPoint());
                         kfl.Timestamp = m_Positions[kfl.AttachIndex].T + m_iBeginTimeStamp;                        
@@ -1468,6 +1398,12 @@ namespace Kinovea.ScreenManager
         private void mainStyle_ValueChanged()
         {
         	m_MainLabel.BackColor = m_StyleHelper.Color;	
+        }
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+            m_Style.Bind(m_StyleHelper, "LineSize", "line size");
+            m_Style.Bind(m_StyleHelper, "TrackShape", "track shape");
         }
         #endregion
     }

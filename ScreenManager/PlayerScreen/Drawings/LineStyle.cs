@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager.Obsolete
 	                    }
 	                    else if (_xmlReader.Name == "ColorRGB")
 	                    {
-	                    	col = XmlHelper.ColorParse(_xmlReader.ReadString(), ';');	
+	                    	col = XmlHelper.ParseColor(_xmlReader.ReadString());	
 	                    }
 	                    else
 	                    {

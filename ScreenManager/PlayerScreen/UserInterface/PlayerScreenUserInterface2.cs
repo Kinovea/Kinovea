@@ -34,6 +34,8 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
+
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
@@ -571,7 +573,7 @@ namespace Kinovea.ScreenManager
 						LookForLinkedAnalysis();
 					}
 					
-					// Do the post import whether the data come from external file or included xml.
+					// Do the post import whether the data come from external file or included .
 					if (m_FrameServer.Metadata.HasData)
 					{
 						PostImportMetadata();
@@ -1154,15 +1156,33 @@ namespace Kinovea.ScreenManager
 			
 			if (metadata != null)
 			{
-				// TODO - save previous metadata for undo.
-				m_FrameServer.Metadata = Metadata.FromXmlString(	metadata,
-				                                                m_FrameServer.VideoFile.Infos.iDecodingWidth,
-				                                                m_FrameServer.VideoFile.Infos.iDecodingHeight,
-				                                                m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame,
-				                                                m_FrameServer.VideoFile.FilePath,
-				                                                new GetTimeCode(TimeStampsToTimecode),
-				                                                new ShowClosestFrame(OnShowClosestFrame));
-				UpdateFramesMarkers();
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.IgnoreComments = true;
+                settings.IgnoreProcessingInstructions = true;
+                settings.IgnoreWhitespace = true;
+                settings.CloseInput = true;
+
+                StringReader reader = new StringReader(metadata);
+                
+                using(XmlReader r = XmlReader.Create(reader, settings))
+                {
+                    try
+                    {
+                        m_FrameServer.Metadata = new Metadata(r, 
+                                                              m_FrameServer.VideoFile.Infos.iDecodingWidth,
+				                                              m_FrameServer.VideoFile.Infos.iDecodingHeight,
+				                                              m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame,
+				                                              m_FrameServer.VideoFile.FilePath,
+				                                              new GetTimeCode(TimeStampsToTimecode),
+				                                              new ShowClosestFrame(OnShowClosestFrame));
+                    }
+                    catch(Exception)
+                    {
+                        log.Error("An error happened during the parsing of the kva stream");
+                    }
+                }
+                
+                UpdateFramesMarkers();
 				OrganizeKeyframes();
 			}
 		}
@@ -3744,7 +3764,10 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				m_KeyframeCommentsHub.Visible = false;
+			    if(m_KeyframeCommentsHub.Visible)
+                    m_KeyframeCommentsHub.CommitChanges();
+				
+			    m_KeyframeCommentsHub.Visible = false;
 			}
 		}
 		private void EnableDisableKeyframes()
@@ -4178,6 +4201,7 @@ namespace Kinovea.ScreenManager
 				else
 				{
 					m_KeyframeCommentsHub.UserActivated = false;
+					m_KeyframeCommentsHub.CommitChanges();
 					m_KeyframeCommentsHub.Visible = false;
 				}
 				
@@ -4244,17 +4268,23 @@ namespace Kinovea.ScreenManager
 		private void mnuConfigureDrawing_Click(object sender, EventArgs e)
 		{
 			// Generic menu for all drawings with the Color or ColorSize capability.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
+			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && 
+			   m_FrameServer.Metadata.SelectedDrawing >= 0 &&
+			   m_FrameServer.Metadata.Count > m_FrameServer.Metadata.SelectedDrawingFrame)
 			{
-				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
-				if(decorableDrawing != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
-				{
-					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
-					ScreenManagerKernel.LocateForm(fcd);
-					fcd.ShowDialog();
-					fcd.Dispose();
-					DoInvalidate();
-				}
+			    Keyframe kf = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame];
+			    if(kf.Drawings.Count > m_FrameServer.Metadata.SelectedDrawing)
+			    {
+			        IDecorable decorableDrawing = kf.Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
+    				if(decorableDrawing != null && decorableDrawing.DrawingStyle != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
+    				{
+    					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
+    					ScreenManagerKernel.LocateForm(fcd);
+    					fcd.ShowDialog();
+    					fcd.Dispose();
+    					DoInvalidate();
+    				}
+			    }
 			}
 		}
 		private void mnuConfigureFading_Click(object sender, EventArgs e)

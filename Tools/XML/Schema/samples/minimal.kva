@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<KinoveaVideoAnalysis>
+  <FormatVersion>2.0</FormatVersion>
+  <Producer>Kinovea.0.8.16</Producer>
+  <OriginalFilename>test.avi</OriginalFilename>
+  <ImageSize>640;480</ImageSize>
+  <AverageTimeStampsPerFrame>1</AverageTimeStampsPerFrame>
+  <FirstTimeStamp>0</FirstTimeStamp>
+  <SelectionStart>0</SelectionStart>
+</KinoveaVideoAnalysis>
