@@ -28,6 +28,7 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public interface IKvaSerializable
 	{
-		void ToXmlString(XmlTextWriter _xmlXriter);
+		void WriteXml(XmlWriter _xmlWriter);
+		//void ReadXml(XmlReader _xmlReader);
 	}
 }

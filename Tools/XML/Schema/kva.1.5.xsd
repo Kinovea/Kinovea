@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="KinoveaVideoAnalysis">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FormatVersion" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="Producer" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="OriginalFilename" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="GlobalTitle" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="ImageSize" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="AverageTimeStampsPerFrame" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="FirstTimeStamp" minOccurs="1" maxOccurs="1" type="xsd:unsignedLong" />
+                <xsd:element name="SelectionStart" minOccurs="1" maxOccurs="1" type="xsd:unsignedLong" />
+                <xsd:element name="DuplicationFactor" minOccurs="0" maxOccurs="1" type="xsd:unsignedInt" />
+                <xsd:element ref="CalibrationHelp" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Keyframes" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Tracks" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Chronos" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CalibrationHelp">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="PixelToUnit" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="LengthUnit" minOccurs="1" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <xsd:attribute name="UserUnitLength" type="xsd:string" />
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="CoordinatesOrigin" minOccurs="1" maxOccurs="1" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Keyframes">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Keyframe" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Keyframe">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Position" minOccurs="1" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <xsd:attribute name="UserTime" type="xsd:string" />
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Title" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Comment" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Drawings" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Drawings">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Drawing" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Drawing">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Text" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Position" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Origin" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Radius" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="CenterPoint" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="PointO" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="PointA" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="PointB" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="m_StartPoint" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="m_EndPoint" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="TextboxColor" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="ColorRGB" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="PointList" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Point" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                        <xsd:attribute name="Count" type="xsd:string" use="required"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element ref="TextDecoration" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="LineStyle" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="InfosFading" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="CoordinatesVisible" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="MeasureIsVisible" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Coordinates" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:attribute name="UserX" type="xsd:string" />
+                        <xsd:attribute name="UserXInvariant" type="xsd:string" />
+                        <xsd:attribute name="UserY" type="xsd:string" />
+                        <xsd:attribute name="UserYInvariant" type="xsd:string" />
+                        <xsd:attribute name="UserUnitLength" type="xsd:string" />
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Measure" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:attribute name="UserLength" type="xsd:string" />
+                        <xsd:attribute name="UserLengthInvariant" type="xsd:string" />
+                        <xsd:attribute name="UserUnitLength" type="xsd:string" />
+                        <xsd:attribute name="UserAngle" type="xsd:string" />
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="Type" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Tracks">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Track" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Track">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="TimePosition" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="Mode" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="TrackPositionList" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="TrackLine" minOccurs="0" maxOccurs="1">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element ref="LineStyle" minOccurs="1" maxOccurs="1" />
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                <xsd:element name="MainLabel" minOccurs="0" maxOccurs="1">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="KeyframeLabel" minOccurs="1" maxOccurs="1"/>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                <xsd:element ref="KeyframeLabelList" minOccurs="0" maxOccurs="1"/>
+                <xsd:element name="ExtraData" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Label" minOccurs="0" maxOccurs="1"> <!-- This shouldn't have been output! -->
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Text" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="TrackPositionList" >
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="TrackPosition" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="Count" type="xsd:string" use="required"/>
+            <xsd:attribute name="UserUnitLength" type="xsd:string" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="TrackPosition" >
+        <xsd:complexType>
+            <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                    <xsd:attribute name="UserX" type="xsd:string" />
+                    <xsd:attribute name="UserXInvariant" type="xsd:string" />
+                    <xsd:attribute name="UserY" type="xsd:string" />
+                    <xsd:attribute name="UserYInvariant" type="xsd:string" />
+                    <xsd:attribute name="UserTime" type="xsd:string" />
+                </xsd:extension>
+            </xsd:simpleContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="KeyframeLabelList" >
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="KeyframeLabel" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="Count" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="KeyframeLabel">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="SpacePosition" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="TimePosition" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element ref="TextDecoration" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Chronos">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Chrono" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Chrono">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Position" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="Values" minOccurs="1" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Visible" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="StartCounting" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="StopCounting" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="Invisible" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="Countdown" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                            <xsd:element name="UserDuration" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element ref="TextDecoration" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Label" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Text" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="Show" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="Type" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="InfosFading">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Enabled" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="Frames" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="AlwaysVisible" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="UseDefault" type="xsd:string" minOccurs="1" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="TextDecoration">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FontName" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="FontSize" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="ForeColor" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="BackColor" type="xsd:string" minOccurs="1" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="LineStyle">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Size" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="LineShape" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="ColorRGB" type="xsd:string" minOccurs="1" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</xsd:schema>

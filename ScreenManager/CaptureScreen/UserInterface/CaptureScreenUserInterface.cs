@@ -1634,7 +1634,7 @@ namespace Kinovea.ScreenManager
 			if(m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
 				IDecorable decorableDrawing = m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
-				if(decorableDrawing != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
+				if(decorableDrawing != null &&  decorableDrawing.DrawingStyle != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
 				{
 					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
 					ScreenManagerKernel.LocateForm(fcd);

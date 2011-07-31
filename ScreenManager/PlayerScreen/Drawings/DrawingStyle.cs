@@ -28,10 +28,6 @@ namespace Kinovea.ScreenManager
 	/// Represents the styling elements of a drawing or drawing tool preset.
 	/// Host a list of style elements needed to decorate the drawing.
 	/// </summary>
-	/// <remarks>
-	/// Currently the UI will only allow for at most 2 elements to be edited per style.
-	/// Use composite style elements when several style properties must be edited at once.
-	/// </remarks>
 	public class DrawingStyle
 	{
 		#region Properties
@@ -92,6 +88,9 @@ namespace Kinovea.ScreenManager
 					case "Arrows":
 						styleElement = new StyleElementLineEnding(_xmlReader);
 						break;
+					case "TrackShape":
+						styleElement = new StyleElementTrackShape(_xmlReader);
+						break;	
 					default:
 						log.ErrorFormat("Could not import style element \"{0}\"", _xmlReader.Name);
 						log.ErrorFormat("Content was: {0}", _xmlReader.ReadOuterXml());
@@ -130,12 +129,13 @@ namespace Kinovea.ScreenManager
 		/// <param name="_source">The style element that will push its change to the property</param>
 		public void Bind(StyleHelper _target, string _targetProperty, string _source)
 		{
-			AbstractStyleElement elem = m_StyleElements[_source];
-			if(elem != null)
-			{
-				elem.Bind(_target, _targetProperty);
-			}
-			else
+		    AbstractStyleElement elem;
+		    bool found = m_StyleElements.TryGetValue(_source, out elem);
+		    if(found && elem != null)
+		    {
+                elem.Bind(_target, _targetProperty);
+		    }
+		    else
 			{
 				log.ErrorFormat("The element \"{0}\" was not found.", _source);
 			}

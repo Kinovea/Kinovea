@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -192,8 +193,6 @@
     <Compile Include="PlayerScreen\Drawings\StyleHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
-    <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
-    <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingAngle2D.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCross2D.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingLine2D.cs" />
@@ -207,7 +206,6 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolPencil.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
-    <Compile Include="PlayerScreen\Import\IMetadataParser.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />

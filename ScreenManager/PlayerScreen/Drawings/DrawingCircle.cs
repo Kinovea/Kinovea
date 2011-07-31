@@ -27,12 +27,14 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    [XmlType ("Circle")]
     public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
@@ -71,6 +73,8 @@ namespace Kinovea.ScreenManager
         private Point m_RescaledOrigin;
         private int m_iRescaledRadius;
         private int m_iRescaledDiameter;
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
@@ -85,14 +89,21 @@ namespace Kinovea.ScreenManager
             m_DirectZoomTopLeft = new Point(0, 0);
 			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             
-			m_Style = _preset.Clone();
 			m_StyleHelper.Color = Color.Empty;
 			m_StyleHelper.LineSize = 1;
-			m_Style.Bind(m_StyleHelper, "Color", "color");
-			m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+			if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
 			
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public DrawingCircle(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0,0,0,0,0, null)
+        {
+            ReadXml(_xmlReader, _scale);
         }
         #endregion
 
@@ -169,30 +180,53 @@ namespace Kinovea.ScreenManager
         }        
         #endregion
         
-        #region IKvaSerializable implementation
-        public void ToXmlString(XmlTextWriter _xmlWriter)
+        #region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingCircle");
-
-            // Origin
-            _xmlWriter.WriteStartElement("Origin");
-            _xmlWriter.WriteString(m_Origin.X.ToString() + ";" + m_Origin.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Radius
-            _xmlWriter.WriteStartElement("Radius");
-            _xmlWriter.WriteString(m_iRadius.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Drawing style
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Origin":
+				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_Origin = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				        break;
+					case "Radius":
+				        int radius = _xmlReader.ReadElementContentAsInt();
+                        m_iRadius = (int)((double)radius * _scale.X);
+                        break;
+					case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			m_iDiameter = m_iRadius * 2;
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public void WriteXml(XmlWriter _xmlWriter)
+		{
+            _xmlWriter.WriteElementString("Origin", String.Format("{0};{1}", m_Origin.X, m_Origin.Y));
+            _xmlWriter.WriteElementString("Radius", m_iRadius.ToString());
+            
             _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // </Drawing>
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
         }
         #endregion
@@ -216,56 +250,13 @@ namespace Kinovea.ScreenManager
             iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
-        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
-        {
-        	// _scale.X and _scale.Y are used to map drawings that were set in one video,
-        	// to a destination video with different dimensions.
-        	// For the radius, we arbitrarily choose to scale on X.
-        	DrawingCircle dc = new DrawingCircle(0,0,0,0,0, new DrawingStyle());
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Origin")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        dc.m_Origin = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "Radius")
-                    {
-                        int radius = int.Parse(_xmlReader.ReadString());
-                        dc.m_iRadius = (int)((double)radius * _scale.X);
-                    }
-                    else if (_xmlReader.Name == "LineStyle")
-                    {
-                        //dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dc.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility: ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // closing internal tag.
-                }
-            }
-
-            dc.m_iDiameter = dc.m_iRadius * 2;
-            dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);
-            return dc;
-        }
         
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+			m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+        }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
         	m_RescaledOrigin = new Point((int)((double)(m_Origin.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_Origin.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));

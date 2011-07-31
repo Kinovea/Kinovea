@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="2.0">
+<xsd:include schemaLocation="drawings.xsd"/>
+
+    <xsd:element name="KinoveaVideoAnalysis">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="FormatVersion" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="Producer" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="OriginalFilename" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="GlobalTitle" minOccurs="0" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="ImageSize" minOccurs="1" maxOccurs="1" type="xsd:string" />
+                <xsd:element name="AverageTimeStampsPerFrame" minOccurs="1" maxOccurs="1" type="xsd:long" />
+                <xsd:element name="FirstTimeStamp" minOccurs="1" maxOccurs="1" type="xsd:long" />
+                <xsd:element name="SelectionStart" minOccurs="1" maxOccurs="1" type="xsd:long" />
+                <xsd:element name="DuplicationFactor" minOccurs="0" maxOccurs="1" type="xsd:unsignedInt" />
+                <xsd:element ref="CalibrationHelp" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Keyframes" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Chronos" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Tracks" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CalibrationHelp">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="PixelToUnit" minOccurs="1" maxOccurs="1" type="xsd:double" />
+                <xsd:element name="LengthUnit" minOccurs="1" maxOccurs="1">
+                    <xsd:complexType> 
+                        <xsd:simpleContent>
+                            <xsd:extension base="LengthUnit">
+                                <xsd:attribute name="UserUnitLength" type="xsd:string"/>
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType> 
+                </xsd:element>
+                <xsd:element name="CoordinatesOrigin" minOccurs="1" maxOccurs="1" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:simpleType name="LengthUnit">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Centimeters"/>
+            <xsd:enumeration value="Meters"/>
+            <xsd:enumeration value="Inches"/>
+            <xsd:enumeration value="Feet"/>
+            <xsd:enumeration value="Yards"/>
+            <xsd:enumeration value="Pixels"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="Keyframes">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Keyframe" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Keyframe">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Position" minOccurs="1" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:long">
+                                <xsd:attribute name="UserTime" type="xsd:string" />
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Title" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Comment" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Drawings" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Drawings">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:any minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Tracks">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="Track" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="Chronos">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:any minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

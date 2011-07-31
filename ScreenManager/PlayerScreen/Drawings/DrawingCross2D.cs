@@ -28,12 +28,14 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    [XmlType ("CrossMark")]
     public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
@@ -108,6 +110,8 @@ namespace Kinovea.ScreenManager
         
         // Context menu
         private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
@@ -119,9 +123,12 @@ namespace Kinovea.ScreenManager
             m_DirectZoomTopLeft = new Point(0, 0);
             
             // Decoration & binding with editors
-            m_Style = _preset.Clone();
             m_StyleHelper.Color = Color.CornflowerBlue;
-            m_Style.Bind(m_StyleHelper, "Color", "back color");
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
                         
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             
@@ -133,6 +140,12 @@ namespace Kinovea.ScreenManager
             // Context menu
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
 			mnuShowCoordinates.Image = Properties.Drawings.measure;
+        }
+        public DrawingCross2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0,0,0,0, null)
+        {
+            ReadXml(_xmlReader, _scale);
+            m_ParentMetadata = _parent;
         }
         #endregion
 
@@ -210,33 +223,57 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-		#region IKvaSerializable implementation
-        public void ToXmlString(XmlTextWriter _xmlWriter)
+		#region Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingCross2D");
-
-            // CenterPoint
-            _xmlWriter.WriteStartElement("CenterPoint");
-            _xmlWriter.WriteString(m_CenterPoint.X.ToString() + ";" + m_CenterPoint.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Color, style, fading.
-            // Drawing style
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "CenterPoint":
+				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_CenterPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				        break;
+					case "CoordinatesVisible":
+				        m_bShowCoordinates = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+                    case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			m_LabelCoordinates.MoveTo(CenterPoint);
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteElementString("CenterPoint", String.Format("{0};{1}", m_CenterPoint.X, m_CenterPoint.Y));
+            _xmlWriter.WriteElementString("CoordinatesVisible", m_bShowCoordinates ? "true" : "false");
+            
             _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // Show coords.
-            _xmlWriter.WriteStartElement("CoordinatesVisible");
-            _xmlWriter.WriteString(m_bShowCoordinates.ToString());
-            _xmlWriter.WriteEndElement();
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement(); 
             
             if(m_bShowCoordinates)
             {
-            	// This is only for spreadsheet export support. These values are not read at import.
+            	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Coordinates");
             	
             	PointF coords = m_ParentMetadata.CalibrationHelper.GetPointInUserUnit(m_CenterPoint);
@@ -248,56 +285,9 @@ namespace Kinovea.ScreenManager
             	
             	_xmlWriter.WriteEndElement();
             }
-            
-            // </Drawing>
-            _xmlWriter.WriteEndElement();
-        }
+		}
         #endregion
         
-        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
-        {
-            DrawingCross2D dc = new DrawingCross2D(0,0,0,0, null);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "CenterPoint")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        dc.m_CenterPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "LineStyle")
-                    {
-                        //dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dc.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else if(_xmlReader.Name == "CoordinatesVisible")
-                    {
-                    	dc.m_bShowCoordinates = bool.Parse(_xmlReader.ReadString());
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            dc.m_LabelCoordinates.MoveTo(dc.CenterPoint);
-            dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);
-            return dc;
-        }
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
@@ -325,6 +315,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Color", "back color");
+        }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             RescaledCenterPoint = new Point((int)((double)(m_CenterPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_CenterPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));

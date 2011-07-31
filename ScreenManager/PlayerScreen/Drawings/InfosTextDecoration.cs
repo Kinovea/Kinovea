@@ -137,11 +137,11 @@ namespace Kinovea.ScreenManager.Obsolete
                     }
                     else if (_xmlReader.Name == "ForeColor")
                     {
-                        result.m_ForeColor = XmlHelper.ColorParse(_xmlReader.ReadString(), ';');
+                        result.m_ForeColor = XmlHelper.ParseColor(_xmlReader.ReadString());
                     }
                     else if (_xmlReader.Name == "BackColor")
                     {
-                        result.m_BackColor = XmlHelper.ColorParse(_xmlReader.ReadString(), ';');
+                        result.m_BackColor = XmlHelper.ParseColor(_xmlReader.ReadString());
                     }
                 }
                 else if (_xmlReader.Name == "TextDecoration")

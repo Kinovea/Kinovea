@@ -29,12 +29,14 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    [XmlType ("Label")]
     public class DrawingText : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
@@ -124,6 +126,8 @@ namespace Kinovea.ScreenManager
         
         private TextBox m_TextBox;
         private PictureBox m_ContainerScreen;
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
@@ -134,11 +138,13 @@ namespace Kinovea.ScreenManager
             m_BackgroundSize = new SizeF(100, 20);
             
             // Decoration & binding with editors
-            m_Style = _preset.Clone();
             m_StyleHelper.Bicolor = new Bicolor(Color.Black);
             m_StyleHelper.Font = new Font("Arial", m_iDefaultFontSize, FontStyle.Bold);
-            m_Style.Bind(m_StyleHelper, "Bicolor", "back color");
-            m_Style.Bind(m_StyleHelper, "Font", "font size");
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
             
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             m_bEditMode = false;
@@ -156,6 +162,11 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public DrawingText(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0,0,0,0,0,0, null)
+        {
+            ReadXml(_xmlReader, _scale);
         }
         #endregion
 
@@ -232,32 +243,54 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-		#region IKvaSerializable implementation
-        public void ToXmlString(XmlTextWriter _xmlWriter)
+		#region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingText");
-
-            // Text
-            _xmlWriter.WriteStartElement("Text");
-            _xmlWriter.WriteString(m_Text);
-            _xmlWriter.WriteEndElement();
-
-            // Background StartPoint
-            _xmlWriter.WriteStartElement("Position");
-            _xmlWriter.WriteString(m_TopLeft.X.ToString() + ";" + m_TopLeft.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Drawing style
-            _xmlWriter.WriteStartElement("DrawingStyle");
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Text":
+				        m_Text = _xmlReader.ReadElementContentAsString();
+                        break;
+					case "Position":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				        break;
+                    case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            AutoSizeTextbox();
+        }
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteElementString("Text", m_Text);
+            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_TopLeft.X, m_TopLeft.Y));
+            
+		    _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // </Drawing>
-            _xmlWriter.WriteEndElement();
-        }
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement(); 
+		}
         #endregion
         
         public override string ToString()
@@ -274,54 +307,6 @@ namespace Kinovea.ScreenManager
             return iHash;
         }
 
-        public static AbstractDrawing FromXml(XmlReader _xmlReader, PointF _scale)
-        {
-            DrawingText dt = new DrawingText(0,0,0,0,0,0, null);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Text")
-                    {
-                        dt.m_Text = _xmlReader.ReadString();
-                    }
-                    else if (_xmlReader.Name == "Position")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        //dt.Background.Location = new Point(plotGrid.X, plotGrid.Y);
-
-                        // Adapt to new Image size.
-                        dt.m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    /*else if (_xmlReader.Name == "TextDecoration")
-                    {
-                    	dt.m_TextStyle = InfosTextDecoration.FromXml(_xmlReader);
-                    }*/
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dt.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-            
-            dt.RescaleCoordinates(dt.m_fStretchFactor, dt.m_DirectZoomTopLeft);
-            dt.AutoSizeTextbox();
-
-            return dt;
-        }
         public void RelocateEditbox(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             m_fStretchFactor = _fStretchFactor;
@@ -332,6 +317,11 @@ namespace Kinovea.ScreenManager
         }
 
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Bicolor", "back color");
+            m_Style.Bind(m_StyleHelper, "Font", "font size");
+        }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             m_Text = m_TextBox.Text;
