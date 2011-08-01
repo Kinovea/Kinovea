@@ -103,10 +103,6 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuMagnifier250 = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
-
-		private ContextMenuStrip popMenuGrids = new ContextMenuStrip();
-		private ToolStripMenuItem mnuGridsConfigure = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuGridsHide = new ToolStripMenuItem();
 		#endregion
 
 		ToolStripButton m_btnToolPresets;
@@ -547,16 +543,6 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierQuit.Image = Properties.Resources.hide;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { mnuMagnifier150, mnuMagnifier175, mnuMagnifier200, mnuMagnifier225, mnuMagnifier250, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 			
-			// 6. Grids
-			mnuGridsConfigure.Click += new EventHandler(mnuGridsConfigure_Click);
-			mnuGridsConfigure.Image = Properties.Drawings.configure;
-			mnuGridsHide.Click += new EventHandler(mnuGridsHide_Click);
-			mnuGridsHide.Image = Properties.Drawings.hide;
-			popMenuGrids.Items.AddRange(new ToolStripItem[] { mnuGridsConfigure, mnuGridsHide });
-			
-			// Default :
-			//this.ContextMenuStrip = popMenu;
-			
 			// The right context menu and its content will be choosen upon MouseDown.
 			panelCenter.ContextMenuStrip = popMenu;
 			
@@ -822,10 +808,6 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
 				pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
 				ReplaceResizers();
-				
-				// Redefine grids.
-				Size imageSize = new Size(imgSize.Width, imgSize.Height);
-				m_FrameServer.Metadata.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 			}
 		}
 		private void ReplaceResizers()
@@ -952,10 +934,6 @@ namespace Kinovea.ScreenManager
 			mnuMagnifier250.Text = ScreenManagerLang.mnuMagnifier250;
 			mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;	
 			mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
-				
-			// 6. Grids
-			mnuGridsConfigure.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;	
-			mnuGridsHide.Text = ScreenManagerLang.mnuGridsHide;
 		}
 		private void ReloadTooltipsCulture()
 		{
@@ -1016,7 +994,6 @@ namespace Kinovea.ScreenManager
 							// Action begins:
 							// Move or set magnifier
 							// Move or set Drawing
-							// Move Grids
 							//-------------------------------------
 						
 							Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
@@ -1041,7 +1018,7 @@ namespace Kinovea.ScreenManager
 								if (!bMovingMagnifier)
 								{
 									// Magnifier wasn't hit or is not in use,
-									// try drawings (including chronos, grids, etc.)
+									// try drawings (including chronos and other extra drawings)
 									bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, 0, descaledMouse, 0, m_PrefManager.DefaultFading.Enabled);
 								}
 							}
@@ -1060,7 +1037,7 @@ namespace Kinovea.ScreenManager
 									m_FrameServer.Metadata.SelectedDrawingFrame = 0;
 									m_FrameServer.Metadata.SelectedDrawing = 0;
 									
-									// Special preparation.
+									// Post creation hacks.
 									if(ad is DrawingLine2D)
 									{
 										((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
@@ -1070,6 +1047,10 @@ namespace Kinovea.ScreenManager
 									{
 										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
 										((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
+									}
+                                    else if(ad is Plane3D)
+									{
+									    ((Plane3D)ad).SetLocations(m_FrameServer.ImageSize, 1.0, new Point(0,0));
 									}
 								}
 								else
@@ -1116,14 +1097,13 @@ namespace Kinovea.ScreenManager
 				else if (e.Button == MouseButtons.Right)
 				{
 					// Show the right Pop Menu depending on context.
-					// (Drawing, Grids, Magnifier, Nothing)
+					// (Drawing, Magnifier, Nothing)
 					
 					Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 					
 					if (m_FrameServer.IsConnected)
 					{
 						m_FrameServer.Metadata.UnselectAll();
-						AbstractDrawing hitDrawing = null;
 						
 						if (m_FrameServer.Metadata.IsOnDrawing(0, descaledMouse, 0))
 						{
@@ -1174,13 +1154,6 @@ namespace Kinovea.ScreenManager
 								panelCenter.ContextMenuStrip = popMenuDrawings;
 							}
 						}
-						else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(descaledMouse, 0)) != null)
-						{
-							if(hitDrawing is Plane3D)
-							{
-								panelCenter.ContextMenuStrip = popMenuGrids;
-							}
-						}
 						else if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Magnifier.IsOnObject(e))
 						{
 							panelCenter.ContextMenuStrip = popMenuMagnifier;
@@ -1208,7 +1181,7 @@ namespace Kinovea.ScreenManager
 		private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
 		{
 			// We must keep the same Z order.
-			// 1:Magnifier, 2:Drawings, 3:Chronos/Tracks, 4:Grids.
+			// 1:Magnifier, 2:Drawings, 3:Chronos/Tracks
 			// When creating a drawing, the active tool will stay on this drawing until its setup is over.
 			// After the drawing is created, we either fall back to Pointer tool or stay on the same tool.
 
@@ -1343,7 +1316,6 @@ namespace Kinovea.ScreenManager
 				Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 				m_FrameServer.Metadata.UnselectAll();
-				AbstractDrawing hitDrawing = null;
 				
 				//------------------------------------------------------------------------------------
 				// - If on text, switch to edit mode.
@@ -1366,13 +1338,6 @@ namespace Kinovea.ScreenManager
 					else
 					{
 						mnuConfigureDrawing_Click(null, EventArgs.Empty);
-					}
-				}
-				else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(descaledMouse, 0)) != null)
-				{
-					if(hitDrawing is Plane3D)
-					{
-						mnuGridsConfigure_Click(null, EventArgs.Empty);
 					}
 				}
 				else
@@ -1547,15 +1512,7 @@ namespace Kinovea.ScreenManager
 			AbstractDrawingTool tool = ((ToolStripItem)sender).Tag as AbstractDrawingTool;
 			if(tool != null)
 			{
-				if(tool == ToolManager.Plane)
-				{
-					m_ActiveTool = m_PointerTool;
-					m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
-				}
-				else
-				{
-					m_ActiveTool = tool;
-				}
+				m_ActiveTool = tool;
 			}
 			else
 			{
@@ -1571,8 +1528,6 @@ namespace Kinovea.ScreenManager
 			{
 				m_ActiveTool = m_PointerTool;
 
-				// Magnifier is half way between a persisting tool (like trackers and chronometers).
-				// and a mode like grid and 3dplane.
 				if (m_FrameServer.Magnifier.Mode == MagnifierMode.NotVisible)
 				{
 					UnzoomDirectZoom();
@@ -1731,36 +1686,6 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Magnifier.Mode = MagnifierMode.NotVisible;
 			//btnMagnifier.BackgroundImage = Drawings.magnifier;
 			SetCursor(m_PointerTool.GetCursor(0));
-		}
-		#endregion
-
-		#region Grids Menus
-		private void mnuGridsConfigure_Click(object sender, EventArgs e)
-		{
-			Plane3D grid = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Plane3D;
-			if(grid != null)
-			{
-				formConfigureGrids fcg;
-				grid.Selected = false;
-				fcg = new formConfigureGrids(grid, pbSurfaceScreen);
-				ScreenManagerKernel.LocateForm(fcg);
-				fcg.ShowDialog();
-				fcg.Dispose();
-			}
-			
-			DoInvalidate();
-		}
-		private void mnuGridsHide_Click(object sender, EventArgs e)
-		{
-			Plane3D grid = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Plane3D;
-			if(grid != null)
-			{
-				grid.Visible = false;	
-				DoInvalidate();
-
-				// Triggers an update to the main menu.
-				OnPoke();
-			}
 		}
 		#endregion
 

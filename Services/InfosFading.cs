@@ -121,37 +121,6 @@ namespace Kinovea.Services
             this.AverageTimeStampsPerFrame = _origin.AverageTimeStampsPerFrame;
             this.MasterFactor = _origin.MasterFactor;
         }
-        public void ToXml(XmlTextWriter _xmlWriter, bool _bMainDefault)
-        {
-            // Persist this particular Fading infos to xml.
-            // if _bMainDefault is true, this is the preferences object.
-            // then we don't need to persist everything.
-
-            _xmlWriter.WriteStartElement("InfosFading");
-            
-            _xmlWriter.WriteStartElement("Enabled");
-            _xmlWriter.WriteString(m_bEnabled.ToString());
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("Frames");
-            _xmlWriter.WriteString(m_iFadingFrames.ToString());
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("AlwaysVisible");
-            _xmlWriter.WriteString(m_bAlwaysVisible.ToString());
-            _xmlWriter.WriteEndElement();
-            
-            if (!_bMainDefault)
-            {
-                _xmlWriter.WriteStartElement("UseDefault");
-                _xmlWriter.WriteString(m_bUseDefault.ToString());
-                _xmlWriter.WriteEndElement();
-                // We shouldn't have to write the reference timestamp and avg fpts...
-            }
-
-            // </InfosFading>
-            _xmlWriter.WriteEndElement();
-        }
         public void WriteXml(XmlWriter _xmlWriter)
         {
             _xmlWriter.WriteElementString("Enabled", m_bEnabled ? "true" : "false");

@@ -23,24 +23,25 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	public class Plane3D : AbstractDrawing
+    [XmlType ("Plane")]
+	public class Plane3D : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Properties
+        public DrawingStyle DrawingStyle
+        {
+        	get { return m_Style;}
+        }
 		public override InfosFading infosFading
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
+			get { return m_InfosFading; }
+            set { m_InfosFading = value; }
 		}
 		public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -48,44 +49,27 @@ namespace Kinovea.ScreenManager
 		}
 		public override Capabilities Caps
 		{
-			get { return Capabilities.ConfigureColorSize; }
+			get { return Capabilities.ConfigureColor | Capabilities.Fading; }
 		}
-        public bool Visible
-        {
-            get { return m_bVisible; }
-            set { m_bVisible = value; }
-        }
         public int Divisions
         {
             get { return m_iDivisions; }
             set { m_iDivisions = value; }
-        }
-        public Color GridColor
-        {
-            get { return m_PenEdges.Color; }
-            set { m_PenEdges = new Pen(value, 1);}
-        }
-        public bool Support3D
-        {
-            get { return m_bSupport3D; }
-            set { m_bSupport3D = value;}
-        }
-        public bool Selected
-        {
-            get { return m_bSelected; }
-            set { m_bSelected = value; }
         }
         #endregion
 
         #region Members
         private double m_fStretchFactor = 1.0;
         private Point m_DirectZoomTopLeft;
-        private bool m_bVisible = false;
-
+        
         private float m_fSideLength;
         private int m_iDivisions;
         private bool m_bSupport3D;
-        private Pen m_PenEdges;
+        
+        private InfosFading m_InfosFading;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
+        private Pen m_PenEdges = Pens.White;
 
         private Point[] m_SourceCorners;            // unscaled quadrilateral.
         private Point[] m_RescaledSourceCorners;    // rescaled quadrilateral.
@@ -101,10 +85,11 @@ namespace Kinovea.ScreenManager
         private static readonly int m_iMaximumDivisions = 20;
 
         private Size m_ImageSize;
-        private bool m_bSelected = false;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public Plane3D(float _sidelength, int _divisions, bool _support3D)
+        #region Constructor
+        public Plane3D(float _sidelength, int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_fStretchFactor = 1.0f;
             m_DirectZoomTopLeft = new Point(0, 0);
@@ -113,8 +98,19 @@ namespace Kinovea.ScreenManager
             m_iDivisions = _divisions;
             if (m_iDivisions == 0) m_iDivisions = m_iDefaultDivisions;
             
+            // Decoration
+            m_StyleHelper.Color = Color.Empty;
+            if(_preset != null)
+            {
+			    m_Style = _preset.Clone();
+			    BindStyle();
+            }
+			
+			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+			m_InfosFading.UseDefault = false;
+            m_InfosFading.AlwaysVisible = true;
+			
             m_bSupport3D = _support3D;
-            m_PenEdges = Pens.White;
 
             m_fShift = 0;
 
@@ -134,13 +130,17 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             RedefineHomography();
         }
-
+        public Plane3D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(500, m_iDefaultDivisions, false, 0, 0, null)
+        {
+            ReadXml(_xmlReader, _scale);
+        }
+        #endregion
+        
+        
         public void Reset()
         {
             // Used on metadata over load.
-
-            m_bVisible = false;
-
             m_iDivisions = m_iDefaultDivisions;
             m_fShift = 0.0F;
             m_bValidPlane = true;
@@ -158,10 +158,7 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing implementation
         public override void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
 		{
-        	if(!m_bVisible)
-        	{
-        		return;
-        	}
+        	double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
         	
 			if (m_fStretchFactor != _fStretchFactor || _DirectZoomTopLeft.X != m_DirectZoomTopLeft.X || _DirectZoomTopLeft.Y != m_DirectZoomTopLeft.Y)
             {
@@ -171,17 +168,7 @@ namespace Kinovea.ScreenManager
                 RedefineHomography();
             }
             
-            //PreferencesManager pm = PreferencesManager.Instance();
-            if (m_bSupport3D)
-            {
-            	m_PenEdges = new Pen((Color)ToolManager.Plane.StylePreset.Elements["color"].Value, 1);
-                m_PenEdges.DashStyle = DashStyle.Dash;
-            }
-            else
-            {
-                m_PenEdges = new Pen((Color)ToolManager.Plane.StylePreset.Elements["color"].Value, 1);
-                m_PenEdges.DashStyle = DashStyle.Dash;
-            }
+			m_PenEdges = m_StyleHelper.GetPen((int)(fOpacityFactor * 255), 1.0);
             
             // Draw handlers as small filled circle.
             SolidBrush br = new SolidBrush(m_PenEdges.Color);
@@ -260,8 +247,9 @@ namespace Kinovea.ScreenManager
             // (in original image coords).
             //-----------------------------------------------------
             int iHitResult = -1;
-
-            if(m_bVisible)
+            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            
+            if(fOpacityFactor > 0)
             {
 	            // On a corner ?
 	            for (int i = 0; i < m_SourceCorners.Length; i++)
@@ -441,6 +429,129 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 	
+		#region KVA Serialization
+		private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        {
+            _xmlReader.ReadStartElement();
+            
+            Reset();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "PointUpperLeft":
+				        {
+				            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            m_SourceCorners[0] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				            break;
+				        }
+				    case "PointUpperRight":
+				        {
+    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            m_SourceCorners[1] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+    				        break;
+				        }
+				    case "PointLowerRight":
+				        {
+    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            m_SourceCorners[2] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+    				        break;
+				        }
+				    case "PointLowerLeft":
+				        {
+    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            m_SourceCorners[3] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+    				        break;
+				        }
+				    case "Divisions":
+				        m_iDivisions = _xmlReader.ReadElementContentAsInt();
+                        break;
+                    case "Perspective":
+                        m_bSupport3D = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+					case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			// TODO: Sanity check for rectangular constraint if m_bSupport3D is false.
+			
+			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            RedefineHomography();
+        }
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format("{0};{1}", m_SourceCorners[0].X, m_SourceCorners[0].Y));
+		    _xmlWriter.WriteElementString("PointUpperRight", String.Format("{0};{1}", m_SourceCorners[1].X, m_SourceCorners[1].Y));
+		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", m_SourceCorners[2].X, m_SourceCorners[2].Y));
+		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", m_SourceCorners[3].X, m_SourceCorners[3].Y));
+		    
+            _xmlWriter.WriteElementString("Divisions", m_iDivisions.ToString());
+            _xmlWriter.WriteElementString("Perspective", m_bSupport3D ? "true" : "false");
+            
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+        }
+		
+		#endregion
+		
+		public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
+        {
+            // Initialize corners positions
+            
+            m_fStretchFactor = _fStretchFactor;
+            m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            RedefineHomography();
+
+            if (!m_bInitialized)
+            {
+                m_bInitialized = true;
+
+                m_ImageSize = new Size(_ImageSize.Width, _ImageSize.Height);
+                
+                int horzTenth = (int)(((double)_ImageSize.Width) / 10);
+                int vertTenth = (int)(((double)_ImageSize.Height) / 10);
+
+                if (m_bSupport3D)
+                {
+                    // initialize with a faked perspective.
+                    m_SourceCorners[0] = new Point(3 * horzTenth, 4 * vertTenth);
+                    m_SourceCorners[1] = new Point(7 * horzTenth, 4 * vertTenth);
+                    m_SourceCorners[2] = new Point(9 * horzTenth, 8 * vertTenth);
+                    m_SourceCorners[3] = new Point(1 * horzTenth, 8 * vertTenth);
+                }
+                else
+                {
+                    // initialize with a rectangle.
+                    m_SourceCorners[0] = new Point(2 * horzTenth, 2 * vertTenth);
+                    m_SourceCorners[1] = new Point(8 * horzTenth, 2 * vertTenth);
+                    m_SourceCorners[2] = new Point(8 * horzTenth, 8 * vertTenth);
+                    m_SourceCorners[3] = new Point(2 * horzTenth, 8 * vertTenth);
+                }
+                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                RedefineHomography();
+                m_fShift = 0.0F;
+            }
+        }
+
         private Rectangle GetHandleRectangle(int _iHandleId)
         {
             //----------------------------------------------------------------------------
@@ -481,47 +592,12 @@ namespace Kinovea.ScreenManager
             
             return bIsPointInObject;
         }
-
-        public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
+        private void BindStyle()
         {
-            // Initialize corners positions
-            
-            m_fStretchFactor = _fStretchFactor;
-            m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            RedefineHomography();
-
-            if (!m_bInitialized)
-            {
-                m_bInitialized = true;
-
-                m_ImageSize = new Size(_ImageSize.Width, _ImageSize.Height);
-                
-                int horzTenth = (int)(((double)_ImageSize.Width) / 10);
-                int vertTenth = (int)(((double)_ImageSize.Height) / 10);
-
-                if (m_bSupport3D)
-                {
-                    // initialize with a faked perspective.
-                    m_SourceCorners[0] = new Point(3 * horzTenth, 4 * vertTenth);
-                    m_SourceCorners[1] = new Point(7 * horzTenth, 4 * vertTenth);
-                    m_SourceCorners[2] = new Point(9 * horzTenth, 8 * vertTenth);
-                    m_SourceCorners[3] = new Point(1 * horzTenth, 8 * vertTenth);
-                }
-                else
-                {
-                    // initialize with a rectangle.
-                    m_SourceCorners[0] = new Point(2 * horzTenth, 2 * vertTenth);
-                    m_SourceCorners[1] = new Point(8 * horzTenth, 2 * vertTenth);
-                    m_SourceCorners[2] = new Point(8 * horzTenth, 8 * vertTenth);
-                    m_SourceCorners[3] = new Point(2 * horzTenth, 8 * vertTenth);
-                }
-                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-                RedefineHomography();
-                m_fShift = 0.0F;
-            }
+            m_Style.Bind(m_StyleHelper, "Color", "color");
         }
-
+            
+        
         #region Scaling
         private Point RescalePoint(Point _point, double _fStretchFactor, Point _DirectZoomTopLeft)
         {

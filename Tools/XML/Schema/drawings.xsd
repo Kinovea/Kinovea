@@ -97,6 +97,21 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="Plane">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="PointUpperLeft" type="Point" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="PointUpperRight" type="Point" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="PointLowerRight" type="Point" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="PointLowerLeft" type="Point" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="Divisions" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+                <xsd:element name="Perspective" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+                <xsd:element ref="DrawingStyle" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="InfosFading" minOccurs="0" maxOccurs="1" />
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+
     <!-- Chrono tools -->
     <xsd:element name="Chrono">
         <xsd:complexType>

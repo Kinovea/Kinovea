@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.btnDefault = new System.Windows.Forms.Button();
 			this.btnSaveProfile = new System.Windows.Forms.Button();
 			this.btnLoadProfile = new System.Windows.Forms.Button();
@@ -59,6 +60,7 @@ namespace Kinovea.ScreenManager
 			this.grpConfig = new System.Windows.Forms.GroupBox();
 			this.lblFirstElement = new System.Windows.Forms.Label();
 			this.btnFirstElement = new System.Windows.Forms.Button();
+			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
 			this.grpConfig.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -222,6 +224,7 @@ namespace Kinovea.ScreenManager
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolTip toolTips;
 		private System.Windows.Forms.GroupBox grpConfig;
 		private System.Windows.Forms.Button btnFirstElement;
 		private System.Windows.Forms.Label lblFirstElement;

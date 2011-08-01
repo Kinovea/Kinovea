@@ -27,18 +27,18 @@ using Kinovea.ScreenManager.Languages;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// A 3D grid.
+	/// A 2D grid.
 	/// </summary>
-	public class DrawingToolPlane : AbstractDrawingTool
+	public class DrawingToolGrid : AbstractDrawingTool
 	{
 		#region Properties
 		public override string DisplayName
 		{
-			get { return ScreenManagerLang.mnu3DPlane; }
+			get { return ScreenManagerLang.mnuGrid; }
 		}
 		public override Bitmap Icon
 		{
-			get { return Properties.Drawings.plane; }
+			get { return Properties.Drawings.grid; }
 		}
 		public override bool Attached
 		{
@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
     	private DrawingStyle m_StylePreset;
     	#endregion
     	
-		public DrawingToolPlane()
+		public DrawingToolGrid()
 		{
 			m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CornflowerBlue));
     		m_StylePreset = m_DefaultStylePreset.Clone();
@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
 		#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    	    return new Plane3D(500, 8, true, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+    		return new Plane3D(500, 8, false, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{

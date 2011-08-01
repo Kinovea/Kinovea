@@ -168,7 +168,6 @@
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
-    <Compile Include="PlayerScreen\Drawings\ColorProfile.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
@@ -176,14 +175,13 @@
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
-    <Compile Include="PlayerScreen\Drawings\InfosTextDecoration.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
-    <Compile Include="PlayerScreen\Drawings\LineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
@@ -258,29 +256,11 @@
     <Compile Include="PlayerScreen\UserInterface\FormConfigureFading.Designer.cs">
       <DependentUpon>FormConfigureFading.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureGrids.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureGrids.Designer.cs">
-      <DependentUpon>FormConfigureGrids.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.Designer.cs">
       <DependentUpon>FormConfigureChrono.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing.Designer.cs">
-      <DependentUpon>FormConfigureDrawing.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormColorProfile.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormColorProfile.Designer.cs">
-      <DependentUpon>FormColorProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigurePdf.cs">
       <SubType>Form</SubType>
@@ -345,12 +325,6 @@
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\Magnifier.cs">
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.Designer.cs">
-      <DependentUpon>StaticStylePicker.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\KeyframeBox.cs">
       <SubType>UserControl</SubType>
@@ -589,21 +563,9 @@
       <DependentUpon>FormConfigureFading.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureGrids.resx">
-      <DependentUpon>FormConfigureGrids.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureChrono.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureChrono.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing.resx">
-      <DependentUpon>FormConfigureDrawing.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormColorProfile.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormColorProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigurePdf.resx">
       <SubType>Designer</SubType>
@@ -640,10 +602,6 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FrequencyViewer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\StaticStylePicker.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>StaticStylePicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\ThumbListView.resx">
       <SubType>Designer</SubType>

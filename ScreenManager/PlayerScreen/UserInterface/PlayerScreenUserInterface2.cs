@@ -339,10 +339,6 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuMagnifier250 = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
-
-		private ContextMenuStrip popMenuGrids = new ContextMenuStrip();
-		private ToolStripMenuItem mnuGridsConfigure = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuGridsHide = new ToolStripMenuItem();
 		#endregion
 
 		ToolStripButton m_btnAddKeyFrame;
@@ -1064,6 +1060,7 @@ namespace Kinovea.ScreenManager
         	m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
         	stripDrawingTools.Items.Add(m_btnAddKeyFrame);
         	
+        	// Pointer tool button
 			AddToolButton(m_PointerTool, handler);
 			stripDrawingTools.Items.Add(new ToolStripSeparator());
 			
@@ -1074,6 +1071,7 @@ namespace Kinovea.ScreenManager
         	m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
         	stripDrawingTools.Items.Add(m_btnShowComments);
         	
+        	// All other tools
 			AddToolButton(ToolManager.Label, handler);
 			AddToolButton(ToolManager.Pencil, handler);
 			AddToolButton(ToolManager.Line, handler);
@@ -1084,7 +1082,7 @@ namespace Kinovea.ScreenManager
 			AddToolButton(ToolManager.Plane, handler);
 			AddToolButton(ToolManager.Magnifier, new EventHandler(btnMagnifier_Click));
 						
-			// Tool presets
+			// Special button: Tool presets
 			m_btnToolPresets = CreateToolButton();
         	m_btnToolPresets.Image = Resources.SwatchIcon3;
         	m_btnToolPresets.Click += new EventHandler(btnColorProfile_Click);
@@ -1333,13 +1331,6 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierQuit.Click += new EventHandler(mnuMagnifierQuit_Click);
 			mnuMagnifierQuit.Image = Properties.Resources.hide;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { mnuMagnifier150, mnuMagnifier175, mnuMagnifier200, mnuMagnifier225, mnuMagnifier250, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
-			
-			// 6. Grids
-			mnuGridsConfigure.Click += new EventHandler(mnuGridsConfigure_Click);
-			mnuGridsConfigure.Image = Properties.Drawings.configure;
-			mnuGridsHide.Click += new EventHandler(mnuGridsHide_Click);
-			mnuGridsHide.Image = Properties.Drawings.hide;
-			popMenuGrids.Items.AddRange(new ToolStripItem[] { mnuGridsConfigure, mnuGridsHide });
 			
 			// The right context menu and its content will be choosen upon MouseDown.
 			panelCenter.ContextMenuStrip = popMenu;
@@ -2228,11 +2219,6 @@ namespace Kinovea.ScreenManager
 				pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
 				pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
 				ReplaceResizers();
-				
-				// Redefine grids.
-				Size imageSize = new Size(m_FrameServer.VideoFile.Infos.iDecodingWidth, m_FrameServer.VideoFile.Infos.iDecodingHeight);
-				
-				m_FrameServer.Metadata.SetLocations(imageSize, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Location);
 			}
 		}
 		private void ReplaceResizers()
@@ -2803,10 +2789,6 @@ namespace Kinovea.ScreenManager
 			mnuMagnifier250.Text = ScreenManagerLang.mnuMagnifier250;
 			mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
 			mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
-			
-			// 6. Grids
-			mnuGridsConfigure.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
-			mnuGridsHide.Text = ScreenManagerLang.mnuGridsHide;
 		}
 		private void ReloadTooltipsCulture()
 		{
@@ -2878,9 +2860,6 @@ namespace Kinovea.ScreenManager
 					if (e.Button == MouseButtons.Left)
 					{
 						// Magnifier can be moved even when the video is playing.
-						// TODO - Grids should be able to do the same.
-						// But the z order in the PointerTool MouseDown would have to be taken care of.
-						
 						bool bWasPlaying = false;
 						
 						if (m_bIsCurrentlyPlaying)
@@ -2910,7 +2889,6 @@ namespace Kinovea.ScreenManager
 							// Move or set magnifier
 							// Move or set Drawing
 							// Move or set Chrono / Track
-							// Move Grids
 							//-------------------------------------
 							
 							m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
@@ -2974,6 +2952,7 @@ namespace Kinovea.ScreenManager
 									m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
 									m_FrameServer.Metadata.SelectedDrawing = 0;
 									
+									// Post creation hacks.
 									if(ad is DrawingLine2D)
 									{
 										((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
@@ -2983,6 +2962,10 @@ namespace Kinovea.ScreenManager
 									{
 										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
 										((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
+									}
+									else if(ad is Plane3D)
+									{
+									    ((Plane3D)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, new Point(0,0));
 									}
 								}
 								else
@@ -3027,7 +3010,7 @@ namespace Kinovea.ScreenManager
 					else if (e.Button == MouseButtons.Right)
 					{
 						// Show the right Pop Menu depending on context.
-						// (Drawing, Trajectory, Chronometer, Grids, Magnifier, Nothing)
+						// (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
 						
 						m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 						
@@ -3112,10 +3095,6 @@ namespace Kinovea.ScreenManager
 									mnuChronoCountdown.Checked = ((DrawingChrono)hitDrawing).CountDown;
 									panelCenter.ContextMenuStrip = popMenuChrono;
 								}
-								else if(hitDrawing is Plane3D)
-								{
-									panelCenter.ContextMenuStrip = popMenuGrids;
-								}
 								else if(hitDrawing is Track)
 								{
 									if (((Track)hitDrawing).Status == Track.TrackStatus.Edit)
@@ -3170,7 +3149,7 @@ namespace Kinovea.ScreenManager
 		private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
 		{
 			// We must keep the same Z order.
-			// 1:Magnifier, 2:Drawings, 3:Chronos/Tracks, 4:Grids.
+			// 1:Magnifier, 2:Drawings, 3:Chronos/Tracks
 			// When creating a drawing, the active tool will stay on this drawing until its setup is over.
 			// After the drawing is created, we either fall back to Pointer tool or stay on the same tool.
 
@@ -3371,10 +3350,6 @@ namespace Kinovea.ScreenManager
 					if(hitDrawing is DrawingChrono)
 					{
 						mnuChronoConfigure_Click(null, EventArgs.Empty);	
-					}
-					else if(hitDrawing is Plane3D)
-					{
-						mnuGridsConfigure_Click(null, EventArgs.Empty);
 					}
 					else if(hitDrawing is Track)
 					{
@@ -4102,15 +4077,7 @@ namespace Kinovea.ScreenManager
 			AbstractDrawingTool tool = ((ToolStripItem)sender).Tag as AbstractDrawingTool;
 			if(tool != null)
 			{
-				if(tool == ToolManager.Plane)
-				{
-					m_ActiveTool = m_PointerTool;
-					m_FrameServer.Metadata.Plane.Visible = !m_FrameServer.Metadata.Plane.Visible;
-				}
-				else
-				{
-					m_ActiveTool = tool;
-				}
+				m_ActiveTool = tool;
 			}
 			else
 			{
@@ -4138,8 +4105,6 @@ namespace Kinovea.ScreenManager
 			{
 				m_ActiveTool = m_PointerTool;
 
-				// Magnifier is half way between a persisting tool (like trackers and chronometers).
-				// and a mode like grid and 3dplane.
 				if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.NotVisible)
 				{
 					UnzoomDirectZoom();
@@ -4633,36 +4598,6 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.NotVisible;
 			//btnMagnifier.Image = Drawings.magnifier;
 			SetCursor(m_PointerTool.GetCursor(0));
-		}
-		#endregion
-
-		#region Grids Menus
-		private void mnuGridsConfigure_Click(object sender, EventArgs e)
-		{
-			Plane3D grid = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Plane3D;
-			if(grid != null)
-			{
-				formConfigureGrids fcg;
-				grid.Selected = false;
-				fcg = new formConfigureGrids(grid, pbSurfaceScreen);
-				ScreenManagerKernel.LocateForm(fcg);
-				fcg.ShowDialog();
-				fcg.Dispose();
-			}
-			
-			DoInvalidate();
-		}
-		private void mnuGridsHide_Click(object sender, EventArgs e)
-		{
-			Plane3D grid = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Plane3D;
-			if(grid != null)
-			{
-				grid.Visible = false;	
-				DoInvalidate();
-
-				// Triggers an update to the main menu.
-				OnPoke();
-			}
 		}
 		#endregion
 
