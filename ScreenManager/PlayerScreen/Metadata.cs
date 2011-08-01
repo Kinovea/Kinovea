@@ -516,8 +516,8 @@ namespace Kinovea.ScreenManager
         #region Reading
         public void LoadFromFile(string _file)
         {
-            ResetCoreContent();
-            m_FullPath = _file;
+            StopAllTracking();
+            UnselectAll();
             
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
@@ -746,7 +746,31 @@ namespace Kinovea.ScreenManager
 			
 			r.ReadEndElement();
             
-            m_Keyframes.Add(kf);
+			// Merge: insert key frame at the right place or merge drawings if there's already a keyframe.
+			bool merged = false;
+			for(int i = 0; i<m_Keyframes.Count; i++)
+			{
+			    if(kf.Position < m_Keyframes[i].Position)
+			    {
+			        m_Keyframes.Insert(i, kf);
+			        merged = true;
+			        break;
+			    }
+			    else if(kf.Position == m_Keyframes[i].Position)
+			    {
+			        foreach(AbstractDrawing ad in kf.Drawings)
+			        {
+			            m_Keyframes[i].Drawings.Add(ad);
+			        }
+			        merged = true;
+			        break;
+			    }
+			}
+			
+			if(!merged)
+			{
+			    m_Keyframes.Add(kf);
+			}
         }
         private void ParseDrawings(XmlReader r, Keyframe _keyframe)
         {
@@ -1117,18 +1141,10 @@ namespace Kinovea.ScreenManager
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
             m_Keyframes.Clear();
             StopAllTracking();
-            ClearExtraDrawings();
-            //m_Grid.Reset();
-            //m_Plane.Reset();
+            m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
             m_Magnifier.ResetData();
             m_Mirrored = false;
             UnselectAll();
-        }
-        private void ClearExtraDrawings()
-        {
-        	// Clear all drawings that are dynamically added to the non attached list.
-        	// keep stuff like grid, magnifier, but remove Chronos, Tracks.
-        	m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
         {
