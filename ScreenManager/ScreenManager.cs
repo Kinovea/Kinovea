@@ -2127,15 +2127,7 @@ namespace Kinovea.ScreenManager
             {
                 if (m_ActiveScreen is PlayerScreen)
                 {
-                    if (((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.HasData)
-                    {
-                        // TODO : Merge mechanics.
-                        LoadAnalysis();
-                    }
-                    else
-                    {
-                        LoadAnalysis();
-                    }
+                    LoadAnalysis();
                 }
             }
         }
@@ -2153,8 +2145,8 @@ namespace Kinovea.ScreenManager
                 string filePath = openFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                    ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.LoadFromFile(filePath);
-                    ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();
+                   ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.LoadFromFile(filePath);
+                   ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();    
                 }
             }
         }
