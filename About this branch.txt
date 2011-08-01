@@ -1,4 +1,16 @@
+--------------------------------------------------------------------------------
+2011-01-08
+- Instead of trying to force the Grid and Plane tools to work with the new framework while staying unique per screen, they are turned into regular drawings.
+- Hence grid and plane can be added multiple times
+- Grids menus under image removed.
+- Implemented serialization to KVA file for the plane class.
+- Updated XML Schema.
 
+Broken:
+- It is now difficult to display the flat grid.
+- Number of division is not displayed on the style form, can only be changed with the keyboard shortcut.
+
+--------------------------------------------------------------------------------
 2011-07-30
 - Re-Implementation of XML serialization/deserialization for all drawings and general info in the KVA to conform to a cleaner pattern.
 - The KVA format itself is changed slightly to streamline it, making it incompatible with current version (1.5) of the format.

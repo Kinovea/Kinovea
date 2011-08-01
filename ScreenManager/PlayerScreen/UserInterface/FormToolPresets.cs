@@ -49,11 +49,24 @@ namespace Kinovea.ScreenManager
 		{
 			m_Preselect = _preselect;
 			InitializeComponent();
+			LocalizeForm();
 			LoadPresets(true);
 		}
 		#endregion
 		
 		#region Private Methods
+		private void LocalizeForm()
+        {
+            // Window & Controls
+            this.Text = "   " + ScreenManagerLang.dlgColorProfile_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnApply.Text = ScreenManagerLang.Generic_Apply;
+
+            // ToolTips
+            toolTips.SetToolTip(btnLoadProfile, ScreenManagerLang.dlgColorProfile_ToolTip_LoadProfile);
+            toolTips.SetToolTip(btnSaveProfile, ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile);
+            toolTips.SetToolTip(btnDefault, ScreenManagerLang.dlgColorProfile_ToolTip_DefaultProfile);
+        }
 		private void LoadPresets(bool _memorize)
 		{
 			// Load the list

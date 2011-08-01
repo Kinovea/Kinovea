@@ -80,6 +80,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolText)Tools["Label"]; }
 		}
+		public static DrawingToolGrid Grid
+		{
+			get { return (DrawingToolGrid)Tools["Grid"]; }
+		}
 		public static DrawingToolPlane Plane
 		{
 			get { return (DrawingToolPlane)Tools["Plane"]; }
@@ -154,7 +158,7 @@ namespace Kinovea.ScreenManager
 						{
 	            			string key = r.GetAttribute("Key");
 	            			DrawingStyle preset = new DrawingStyle(r);
-	            			
+	            			    
 	            			// Find the tool with this key and replace its preset style with the one we just read.
 	            			AbstractDrawingTool tool;
 	            			bool found = Tools.TryGetValue(key, out tool);
@@ -164,6 +168,10 @@ namespace Kinovea.ScreenManager
 	            				DrawingStyle memo = tool.StylePreset.Clone();
 	            				tool.StylePreset = preset;
 	            				tool.StylePreset.Memorize(memo);
+	            			}
+	            			else
+	            			{
+	            			    log.ErrorFormat("The tool \"{0}\" was not found. Preset not imported.", key);
 	            			}
 	            		}
 	            	}
@@ -194,8 +202,11 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Line", new DrawingToolLine2D());
         	m_Tools.Add("Pencil", new DrawingToolPencil());
         	m_Tools.Add("Label", new DrawingToolText());
+        	m_Tools.Add("Grid", new DrawingToolGrid());
         	m_Tools.Add("Plane", new DrawingToolPlane());
         	m_Tools.Add("Magnifier", new DrawingToolMagnifier());
+        	
+        	LoadPresets();
         }
         #endregion
 	}

@@ -104,8 +104,8 @@ namespace Kinovea.ScreenManager
             	bool hasData =  
             		(m_Keyframes.Count != 0) ||
             		(m_ExtraDrawings.Count > m_iStaticExtraDrawings) || 
-            		m_Plane.Visible || 
-            		m_Grid.Visible || 
+            		//m_Plane.Visible || 
+            		//m_Grid.Visible || 
             		(m_Magnifier.Mode != MagnifierMode.NotVisible);
             	return hasData;
             }
@@ -129,23 +129,11 @@ namespace Kinovea.ScreenManager
 			get { return m_iSelectedExtraDrawing; }
 			set { m_iSelectedExtraDrawing = value; }
 		}
-        
-        #region Accessors to Fixed extra drawings  
-        public Plane3D Plane
-        {
-            get { return m_Plane; }
-        }
-        public Plane3D Grid
-        {
-            get { return m_Grid; }
-        }
         public Magnifier Magnifier
         {
         	get { return m_Magnifier;}
         	set { m_Magnifier = value;}
         }
-        #endregion
-        
         public bool Mirrored
         {
             get { return m_Mirrored; }
@@ -189,13 +177,9 @@ namespace Kinovea.ScreenManager
         // Drawings not attached to any key image.
         private List<AbstractDrawing> m_ExtraDrawings = new List<AbstractDrawing>();
         private int m_iSelectedExtraDrawing = -1;
-        private int m_iStaticExtraDrawings;			// TODO: will be removed when even Chronos and tracks are represented by a single manager object.
+        private int m_iStaticExtraDrawings;			// TODO: might be removed when even Chronos and tracks are represented by a single manager object.
 
         private Magnifier m_Magnifier = new Magnifier();
-        
-        // Grid and plane must be known individually because of the main menu access. (visibility toggle).
-        private Plane3D m_Plane = new Plane3D(500, 8, true);
-        private Plane3D m_Grid = new Plane3D(500, 8, false);
         
         private bool m_Mirrored;
         
@@ -291,11 +275,6 @@ namespace Kinovea.ScreenManager
         		}
         	}
         	return hasTrack;
-        }
-        public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
-        {
-        	m_Grid.SetLocations(_ImageSize, _fStretchFactor, _DirectZoomTopLeft);
-        	m_Plane.SetLocations(_ImageSize, _fStretchFactor, _DirectZoomTopLeft);
         }
         
         public void Reset()
@@ -531,7 +510,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #endregion
-      
         
         #region Serialization
         
@@ -587,7 +565,6 @@ namespace Kinovea.ScreenManager
             }
             
             UpdateTrajectoriesForKeyframes();
-            SetLocations(m_ImageSize, 1.0, new Point(0, 0));
         }
         private void ReadXml(XmlReader r)
 		{
@@ -806,18 +783,24 @@ namespace Kinovea.ScreenManager
                     object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
                     if(attributes.Length > 0 && ((XmlTypeAttribute)attributes[0]).TypeName == r.Name)
                     {
-                        PointF scaling = new PointF();
-                        scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
-                        scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
-                    
-                        // Instanciate the drawing.
-                        object[] parameters = new object[]{r, scaling, this};
-	                    drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
-	                    
-	                    if(drawing != null)
-	                       drawingRead = true;
+                        // Verify that the drawing has a constructor with the right parameter list.
+                        ConstructorInfo ci = t.GetConstructor(new[] {typeof(XmlReader), typeof(PointF), this.GetType()});
                         
-	                    break;
+                        if(ci != null)
+                        {
+                            PointF scaling = new PointF();
+                            scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
+                            scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
+                    
+                            // Instanciate the drawing.
+                            object[] parameters = new object[]{r, scaling, this};
+	                        drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
+	                    
+    	                    if(drawing != null)
+    	                       drawingRead = true;
+                        }
+	                   
+                        break;
                     }
                 }
             }
@@ -1046,79 +1029,9 @@ namespace Kinovea.ScreenManager
 
             w.WriteEndElement();
         }
-        /*private void WriteAnalysisInfos(XmlTextWriter _xmlWriter)
-        {
-            // Format version
-            _xmlWriter.WriteStartElement("FormatVersion");
-            _xmlWriter.WriteString("1.5");
-            _xmlWriter.WriteEndElement();
-
-            // Application Version
-            _xmlWriter.WriteStartElement("Producer");
-            _xmlWriter.WriteString("Kinovea." + PreferencesManager.ReleaseVersion);
-            _xmlWriter.WriteEndElement();
-
-            // Original Filename 
-            _xmlWriter.WriteStartElement("OriginalFilename");
-            _xmlWriter.WriteString(Path.GetFileNameWithoutExtension(m_FullPath));
-            _xmlWriter.WriteEndElement();
-
-            // General Title (?)
-            _xmlWriter.WriteStartElement("GlobalTitle");
-            _xmlWriter.WriteString(m_GlobalTitle);
-            _xmlWriter.WriteEndElement();
-
-            // ImageSize
-            _xmlWriter.WriteStartElement("ImageSize");
-            _xmlWriter.WriteString(m_ImageSize.Width + ";" + m_ImageSize.Height);
-            _xmlWriter.WriteEndElement();
-
-            // AverageTimeStampPerFrame
-            _xmlWriter.WriteStartElement("AverageTimeStampsPerFrame");
-            _xmlWriter.WriteString(m_iAverageTimeStampsPerFrame.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // FirstTimeStamp
-            _xmlWriter.WriteStartElement("FirstTimeStamp");
-            _xmlWriter.WriteString(m_iFirstTimeStamp.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // SelectionStart
-            _xmlWriter.WriteStartElement("SelectionStart");
-            _xmlWriter.WriteString(m_iSelectionStart.ToString());
-            _xmlWriter.WriteEndElement();
-            
-            // Duplication factor (for extreme slow motion).
-            if(m_iDuplicateFactor > 1)
-            {
-            	_xmlWriter.WriteStartElement("DuplicationFactor");
-	            _xmlWriter.WriteString(m_iDuplicateFactor.ToString());
-	            _xmlWriter.WriteEndElement();
-            }
-            
-            // Calibration
-            _xmlWriter.WriteStartElement("CalibrationHelp");
-            
-            _xmlWriter.WriteStartElement("PixelToUnit");
-            _xmlWriter.WriteString(m_CalibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("LengthUnit");
-            _xmlWriter.WriteAttributeString("UserUnitLength", m_CalibrationHelper.GetLengthAbbreviation());
-            _xmlWriter.WriteString(((int)m_CalibrationHelper.CurrentLengthUnit).ToString());
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("CoordinatesOrigin");
-            _xmlWriter.WriteString(m_CalibrationHelper.CoordinatesOrigin.X + ";" + m_CalibrationHelper.CoordinatesOrigin.Y);
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteEndElement();
-        }*/
-        
         #endregion
         
         #endregion
-        
         
         #region Lower level Helpers
         public long DoRemapTimestamp(long _iInputTimestamp, bool bRelative)
@@ -1205,8 +1118,8 @@ namespace Kinovea.ScreenManager
             m_Keyframes.Clear();
             StopAllTracking();
             ClearExtraDrawings();
-            m_Grid.Reset();
-            m_Plane.Reset();
+            //m_Grid.Reset();
+            //m_Plane.Reset();
             m_Magnifier.ResetData();
             m_Mirrored = false;
             UnselectAll();
@@ -1215,7 +1128,7 @@ namespace Kinovea.ScreenManager
         {
         	// Clear all drawings that are dynamically added to the non attached list.
         	// keep stuff like grid, magnifier, but remove Chronos, Tracks.
-        	m_ExtraDrawings.RemoveRange(2, m_ExtraDrawings.Count - 2);
+        	m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
         {
@@ -1322,22 +1235,16 @@ namespace Kinovea.ScreenManager
         {
         	// Add the static extra drawing tools to the list of drawings.
         	// These drawings are unique and not attached to any particular key image.
-        	// It can be truly unique drawings like Grids, or it can be proxy drawings, like SpotlightManager.
+        	// It could be proxy drawings, like SpotlightManager.
         	
-        	// /!\ Must be in the same order as the enum ExtraDrawingType (defined in ScreenManager.cs)
-        	// This enum is then used to quickly identify an extra drawing without resorting to Reflection.
-        	// For example, use m_ExtraDrawings[ExtraDrawingType.Grid] to access the grid directly.
+        	// [0.8.16] - This function currently doesn't do anything as the Grids have been moved to attached drawings.
+        	// It is kept nevertheless because it will be needed for SpotlightManager and others.
         	
-            m_ExtraDrawings.Add(m_Grid);
-            m_ExtraDrawings.Add(m_Plane);
+            //m_ExtraDrawings.Add(m_Plane);
             m_iStaticExtraDrawings = m_ExtraDrawings.Count;
         }
 		#endregion
         
-        #region Parse Kinovea Analysis
-        
-        #endregion
-
     	#region XSLT Export
     	public void Export(string _filePath, MetadataExportFormat _format)
     	{
