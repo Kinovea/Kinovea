@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
             m_TextBox.BackColor = Color.White;
             m_TextBox.BorderStyle = BorderStyle.None;
             m_TextBox.Text = m_Text;
-            m_TextBox.Font = m_StyleHelper.GetFont(1.0f);
+            m_TextBox.Font = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize);
             m_TextBox.Multiline = true;
             m_TextBox.TextChanged += new EventHandler(TextBox_TextChanged);
             
