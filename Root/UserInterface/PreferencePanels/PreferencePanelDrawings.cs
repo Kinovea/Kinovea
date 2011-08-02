@@ -49,8 +49,6 @@ namespace Kinovea.Root
 		#endregion
 		
 		#region Members
-        private Color m_GridColor;
-        private Color m_PerspectiveGridColor;
         private InfosFading m_DefaultFading;
         private bool m_bDrawOnPlay;
         
@@ -74,27 +72,19 @@ namespace Kinovea.Root
 		private void ImportPreferences()
         {
 			m_bDrawOnPlay = m_prefManager.DrawOnPlay;
-			m_GridColor = m_prefManager.GridColor;
-            m_PerspectiveGridColor = m_prefManager.Plane3DColor;
             m_DefaultFading = new InfosFading(0, 0);
 		}
 		private void InitPage()
 		{
 			tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
 			chkDrawOnPlay.Text = RootLang.dlgPreferences_chkDrawOnPlay;
-			grpColors.Text = RootLang.dlgPreferences_GroupColors;
-            lblGrid.Text = RootLang.dlgPreferences_LabelGrid;
-            lblPlane3D.Text = RootLang.dlgPreferences_LabelPlane3D;	
-            
-            tabPersistence.Text = RootLang.dlgPreferences_grpPersistence;
+			
+			tabPersistence.Text = RootLang.dlgPreferences_grpPersistence;
             chkEnablePersistence.Text = RootLang.dlgPreferences_chkEnablePersistence;
 			chkAlwaysVisible.Text = RootLang.dlgPreferences_chkAlwaysVisible;
 			
 			chkDrawOnPlay.Checked = m_bDrawOnPlay;
-			btnGridColor.BackColor = m_GridColor;
-            btn3DPlaneColor.BackColor = m_PerspectiveGridColor;
-            FixColors();
-            chkEnablePersistence.Checked = m_DefaultFading.Enabled;
+			chkEnablePersistence.Checked = m_DefaultFading.Enabled;
             trkFading.Maximum = m_prefManager.MaxFading;
             trkFading.Value = Math.Min(m_DefaultFading.FadingFrames, trkFading.Maximum);
             chkAlwaysVisible.Checked = m_DefaultFading.AlwaysVisible;
@@ -108,30 +98,6 @@ namespace Kinovea.Root
 		private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
         {
             m_bDrawOnPlay = chkDrawOnPlay.Checked;
-        }
-		private void btnGridColor_Click(object sender, EventArgs e)
-        {
-        	FormColorPicker picker = new FormColorPicker();
-        	ScreenManagerKernel.LocateForm(picker);
-        	if(picker.ShowDialog() == DialogResult.OK)
-        	{
-        		btnGridColor.BackColor = picker.PickedColor;
-                m_GridColor = picker.PickedColor;
-                FixColors();
-        	}
-        	picker.Dispose();
-        }
-        private void btn3DPlaneColor_Click(object sender, EventArgs e)
-        {
-        	FormColorPicker picker = new FormColorPicker();
-        	ScreenManagerKernel.LocateForm(picker);
-        	if(picker.ShowDialog() == DialogResult.OK)
-        	{
-        		btn3DPlaneColor.BackColor = picker.PickedColor;
-                m_PerspectiveGridColor = picker.PickedColor;
-                FixColors();
-        	}
-        	picker.Dispose();
         }
 		#endregion
 		
@@ -154,32 +120,6 @@ namespace Kinovea.Root
         #endregion
 		#endregion
 		
-		private void FixColors()
-        {
-            // Put a black frame around white rectangles.
-            // set the mouse over color to the same color.
-
-            btnGridColor.FlatAppearance.MouseOverBackColor = btnGridColor.BackColor;
-            if (Color.Equals(btnGridColor.BackColor, Color.FromArgb(255, 255, 255)) || Color.Equals(btnGridColor.BackColor, Color.White))
-            {
-                btnGridColor.FlatAppearance.BorderSize = 1;
-            }
-            else
-            {
-                btnGridColor.FlatAppearance.BorderSize = 0;
-            }
-
-            btn3DPlaneColor.FlatAppearance.MouseOverBackColor = btn3DPlaneColor.BackColor;
-            if (Color.Equals(btn3DPlaneColor.BackColor, Color.FromArgb(255, 255, 255)) || Color.Equals(btn3DPlaneColor.BackColor, Color.White))
-            {
-                btn3DPlaneColor.FlatAppearance.BorderSize = 1;
-            }
-            else
-            {
-                btn3DPlaneColor.FlatAppearance.BorderSize = 0;
-            }
-
-        }
 		private void EnableDisableFadingOptions()
         {
             trkFading.Enabled = chkEnablePersistence.Checked;
@@ -190,8 +130,6 @@ namespace Kinovea.Root
 		public void CommitChanges()
 		{
 			m_prefManager.DrawOnPlay = m_bDrawOnPlay;
-			m_prefManager.GridColor = m_GridColor;
-            m_prefManager.Plane3DColor = m_PerspectiveGridColor;
 			m_prefManager.DefaultFading.FromInfosFading(m_DefaultFading);
 		}
 	}
