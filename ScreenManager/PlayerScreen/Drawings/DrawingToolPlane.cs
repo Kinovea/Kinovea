@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override bool Attached
 		{
-			get { return false; }
+			get { return true; }
 		}
 		public override bool KeepTool
 		{
