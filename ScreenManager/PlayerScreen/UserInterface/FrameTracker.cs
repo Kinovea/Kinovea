@@ -383,52 +383,52 @@ namespace Kinovea.ScreenManager
 	       			}
 	       		}
 	       		
-	       		// Chronos
+	       		// ExtraDrawings
+	       		// We will store the range coords in a Point object, to get a couple of ints structure.
+		        // X will be the left coordinate, Y the width.
 	       		m_ChronosMarks.Clear();
-	       		foreach(DrawingChrono dc in m_Metadata.Chronos)
+	       		m_TracksMarks.Clear();
+	       		foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
 	       		{
-	       			if(dc.TimeStart != long.MaxValue && dc.TimeStop != long.MaxValue)
+					DrawingChrono dc = ad as DrawingChrono;
+					Track trk = ad as Track;
+					
+					if(dc != null)
 					{
-	       				// todo: currently doesn't support the chrono without end.
-	       			
-		       			// We will store the range coords in a Point object, to get a couple of ints structure.
-		       			// X will be the left coordinate, Y the width.
-						// Only display chronometers that have at least something in the selection.
-		       			if(dc.TimeStart <= m_iMaximum && dc.TimeStop >= m_iMinimum)
-	       				{
-		       				long startTs = Math.Max(dc.TimeStart, m_iMinimum);
-	       					long stopTs = Math.Min(dc.TimeStop, m_iMaximum);
-	       				
+						if(dc.TimeStart != long.MaxValue && dc.TimeStop != long.MaxValue)
+						{
+							// todo: currently doesn't support the chrono without end.
+		       			 	// Only display chronometers that have at least something in the selection.
+			       			if(dc.TimeStart <= m_iMaximum && dc.TimeStop >= m_iMinimum)
+		       				{
+			       				long startTs = Math.Max(dc.TimeStart, m_iMinimum);
+		       					long stopTs = Math.Min(dc.TimeStop, m_iMaximum);
+		       				
+				       			int start = GetCoordFromTimestamp(startTs);
+				       			int stop = GetCoordFromTimestamp(stopTs);
+				       			
+				       			Point p = new Point(start, stop - start);
+			
+				       			m_ChronosMarks.Add(p);
+							}	
+						}
+	       			}
+					else if(trk != null)
+					{
+		       			if(trk.BeginTimeStamp <= m_iMaximum && trk.EndTimeStamp >= m_iMinimum)
+		       			{
+		       				long startTs = Math.Max(trk.BeginTimeStamp, m_iMinimum);
+		       				long stopTs = Math.Min(trk.EndTimeStamp, m_iMaximum);
+		       				
 			       			int start = GetCoordFromTimestamp(startTs);
 			       			int stop = GetCoordFromTimestamp(stopTs);
 			       			
 			       			Point p = new Point(start, stop - start);
 		
-			       			m_ChronosMarks.Add(p);
-						}
-	       			}
+				       		m_TracksMarks.Add(p);
+		       			}	
+					}
 	       		}
-	       		
-	       		// Tracks
-	       		m_TracksMarks.Clear();
-	       		foreach(Track t in m_Metadata.Tracks)
-	       		{
-	       			// We will store the range coords in a Point object, to get a couple of ints structure.
-	       			// X will be the left coordinate, Y the width.
-	       			if(t.BeginTimeStamp <= m_iMaximum && t.EndTimeStamp >= m_iMinimum)
-	       			{
-	       				long startTs = Math.Max(t.BeginTimeStamp, m_iMinimum);
-	       				long stopTs = Math.Min(t.EndTimeStamp, m_iMaximum);
-	       				
-		       			int start = GetCoordFromTimestamp(startTs);
-		       			int stop = GetCoordFromTimestamp(stopTs);
-		       			
-		       			Point p = new Point(start, stop - start);
-	
-			       		m_TracksMarks.Add(p);
-	       			}
-	       		}
-	       		
        		}
        		
             // Sync point

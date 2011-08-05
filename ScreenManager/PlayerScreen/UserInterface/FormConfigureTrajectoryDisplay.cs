@@ -18,13 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -37,47 +39,82 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureTrajectoryDisplay : Form
     {
     	#region Members
-    	// Generic
     	private bool m_bManualClose = false;
-    	
-    	// Specific to the configure page.
-    	private PictureBox m_SurfaceScreen; 		// Used to update the image while configuring.
+    	private DelegateScreenInvalidate m_Invalidate;
         private Track m_Track;
-        private StaticStylePicker m_StlPicker;
+        private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
         #endregion
         
-        #region Construction & Initialization
-        public formConfigureTrajectoryDisplay(Track _track, PictureBox _SurfaceScreen)
+        #region Construction
+        public formConfigureTrajectoryDisplay(Track _track, DelegateScreenInvalidate _invalidate)
         {
             InitializeComponent();
-            m_SurfaceScreen = _SurfaceScreen;
+            m_Invalidate = _invalidate;
             m_Track = _track;
-            
-            // Save the current state in case we need to recall it later.
+            m_Track.DrawingStyle.ReadValue();
+			
+            // Save the current state in case of cancel.
             m_Track.MemorizeState();
+            m_Track.DrawingStyle.Memorize();
             
             InitExtraDataCombo();
-            InitStylePickerControl();
+            SetupStyleControls();
             SetCurrentOptions();
             InitCulture();
         }
- 		private void InitStylePickerControl()
-        {
-        	// Style Picker Control
-            m_StlPicker = new StaticStylePicker();
-            m_StlPicker.ToolType = DrawingToolType.Cross2D; // This actually means Track for the style picker.
-            m_StlPicker.MouseLeft += new StaticStylePicker.DelegateMouseLeft(StylePicker_MouseLeft);
-            m_StlPicker.StylePicked += new StaticStylePicker.DelegateStylePicked(StylePicker_StylePicked);
-            m_StlPicker.Visible = false;
-            this.Controls.Add(m_StlPicker);
-            m_StlPicker.BringToFront();
-        }
- 		private void InitExtraDataCombo()
+        #endregion
+        
+        #region Init
+        private void InitExtraDataCombo()
  		{
  			// Combo must be filled in the order of the enum.
  			cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_None);
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_TotalDistance);
             cmbExtraData.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_ExtraData_Speed);
+ 		}
+ 		private void SetupStyleControls()
+ 		{
+ 			// Dynamic loading of track styles but only semi dynamic UI (restricted to 3) for simplicity.
+ 			// Styles should be Color, LineSize and TrackShape.
+ 			foreach(KeyValuePair<string, AbstractStyleElement> pair in m_Track.DrawingStyle.Elements)
+			{
+ 				m_Elements.Add(pair.Value);
+ 			}
+ 			
+ 			if(m_Elements.Count == 3)
+ 			{
+ 				int editorsLeft = 200;
+ 				int lastEditorBottom = 10;
+ 				Size editorSize = new Size(60,20);
+ 				
+ 				foreach(AbstractStyleElement styleElement in m_Elements)
+ 				{
+ 					styleElement.ValueChanged += element_ValueChanged;
+ 					
+ 					Button btn = new Button();
+					btn.Image = styleElement.Icon;
+					btn.Size = new Size(20,20);
+					btn.Location = new Point(10, lastEditorBottom + 15);
+					btn.FlatStyle = FlatStyle.Flat;
+					btn.FlatAppearance.BorderSize = 0;
+					btn.BackColor = Color.Transparent;
+				
+					Label lbl = new Label();
+					lbl.Text = styleElement.DisplayName;
+					lbl.AutoSize = true;
+					lbl.Location = new Point(btn.Right + 10, lastEditorBottom + 20);
+					
+					Control miniEditor = styleElement.GetEditor();
+					miniEditor.Size = editorSize;
+					miniEditor.Location = new Point(editorsLeft, btn.Top);
+					
+					lastEditorBottom = miniEditor.Bottom;
+				
+					grpAppearance.Controls.Add(btn);
+					grpAppearance.Controls.Add(lbl);
+					grpAppearance.Controls.Add(miniEditor);
+ 				}
+ 			}
  		}
  		private void SetCurrentOptions()
         {
@@ -99,11 +136,6 @@ namespace Kinovea.ScreenManager
         	}
         	tbLabel.Text = m_Track.Label;
         	cmbExtraData.SelectedIndex = (int)m_Track.ExtraData;
-        	
-        	// Color & style
-            btnTextColor.BackColor = m_Track.MainColor;
-            FixColors();
-            btnLineStyle.Invalidate();
         }
         private void InitCulture()
         {
@@ -116,15 +148,12 @@ namespace Kinovea.ScreenManager
             lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
 			grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
-            lblColor.Text = ScreenManagerLang.Generic_ColorPicker;
-            lblStyle.Text = ScreenManagerLang.dlgConfigureTrajectory_Style;
-            
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         #endregion
         
-        #region General
+        #region Event handlers
         private void btnComplete_Click(object sender, EventArgs e)
         {
         	radioComplete.Checked = true;	
@@ -152,103 +181,59 @@ namespace Kinovea.ScreenManager
         		m_Track.View = Track.TrackView.Label;
         	}
         	
-        	m_SurfaceScreen.Invalidate();
+        	if(m_Invalidate != null) m_Invalidate();
         }
         private void tbLabel_TextChanged(object sender, EventArgs e)
         {
             m_Track.Label = tbLabel.Text;
-            m_SurfaceScreen.Invalidate();
+            if(m_Invalidate != null) m_Invalidate();
         }
         private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
         {
         	m_Track.ExtraData = (Track.TrackExtraData)cmbExtraData.SelectedIndex;
-        	m_SurfaceScreen.Invalidate();
+        	if(m_Invalidate != null) m_Invalidate();
         }
-        #endregion
-        
-        #region Color and Style
-        
-        #region ColorPicker Handling
-        private void btnTextColor_Click(object sender, EventArgs e)
-        {
-        	FormColorPicker picker = new FormColorPicker();
-        	if(picker.ShowDialog() == DialogResult.OK)
-        	{
-        		btnTextColor.BackColor = picker.PickedColor;
-            	m_Track.MainColor = picker.PickedColor;
-            	FixColors();
-            	m_SurfaceScreen.Invalidate();
-        	}
-        	picker.Dispose();
-        }
-        private void FixColors()
-        {
-            // Over Back Color should be the same
-            btnTextColor.FlatAppearance.MouseOverBackColor = btnTextColor.BackColor;
-
-            // Put a black frame around white rectangles.
-            if (Color.Equals(btnTextColor.BackColor, Color.FromArgb(255, 255, 255)) || Color.Equals(btnTextColor.BackColor, Color.White))
-            {
-                btnTextColor.FlatAppearance.BorderSize = 1;
-            }
-            else
-            {
-                btnTextColor.FlatAppearance.BorderSize = 0;
-            }
-        }
-        #endregion
-
-        #region Style Handling
-        private void btnLineStyle_MouseClick(object sender, MouseEventArgs e)
-        {
-        	// Show the style picker
-        	m_StlPicker.Top = grpAppearance.Top + btnLineStyle.Top - (m_StlPicker.Height / 2);
-            m_StlPicker.Left = grpAppearance.Left + btnLineStyle.Left  - (m_StlPicker.Width);
-            m_StlPicker.Visible = true;
-        }
-        private void StylePicker_StylePicked(object sender, EventArgs e)
-        {
-        	// The user clicked on a style from the style picker.
-        	// This will only update the line shape / size. 
-        	m_Track.TrajectoryStyle = m_StlPicker.PickedStyle;
-        	m_StlPicker.Visible = false;
-        	btnLineStyle.Invalidate();
-        	m_SurfaceScreen.Invalidate();
-        }
-        private void StylePicker_MouseLeft(object sender, EventArgs e)
-        {
-        	// The user left the area of the control without clicking on a style.
-        	m_StlPicker.Visible = false;
-        }
-        private void btnLineStyle_Paint(object sender, PaintEventArgs e)
-        {
-        	// Show how the selected style looks like.
-        	m_Track.TrajectoryStyle.Draw(e.Graphics, false, Color.Black);
-        }
-        #endregion
-		
+        private void element_ValueChanged()
+		{
+			if(m_Invalidate != null) m_Invalidate();
+		}
         #endregion
         
         #region OK/Cancel/Closing
+        private void Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+        	if (!m_bManualClose) 
+            {
+            	UnhookEvents();
+				Revert();
+            }
+        }
+        private void UnhookEvents()
+		{
+			// Unhook style event handlers
+			foreach(AbstractStyleElement element in m_Elements)
+			{
+				element.ValueChanged -= element_ValueChanged;
+			}
+		}
+        private void Revert()
+		{
+			// Revert to memo and re-update data.
+			m_Track.DrawingStyle.Revert();
+			m_Track.DrawingStyle.RaiseValueChanged();
+			m_Track.RecallState();
+			if(m_Invalidate != null) m_Invalidate();
+		}
         private void btnOK_Click(object sender, EventArgs e)
         {
-            // Nothing more to do. The track has been updated already.
+            UnhookEvents();
             m_bManualClose = true;
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // Fall back to memorized decoration.
-            m_Track.RecallState();
-            m_SurfaceScreen.Invalidate();
+            UnhookEvents();
+			Revert();
             m_bManualClose = true;
-        }
-        private void formConfigureTrajectoryDisplay_FormClosing(object sender, FormClosingEventArgs e)
-        {
-        	if (!m_bManualClose) 
-            {
-            	m_Track.RecallState();
-            	m_SurfaceScreen.Invalidate();
-            }
         }
         #endregion
     }

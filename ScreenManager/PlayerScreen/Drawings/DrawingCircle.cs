@@ -18,38 +18,51 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
+
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingCircle : AbstractDrawing
+    [XmlType ("Circle")]
+    public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingToolType.Circle; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
             get{ return m_InfosFading;}
             set{ m_InfosFading = value;}
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         #endregion
 
         #region Members
         // Core
         private Point m_Origin;
         private int m_iRadius;
-        private LineStyle m_PenStyle;
-        private LineStyle m_MemoPenStyle;        
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
         private double m_fStretchFactor;
         private Point m_DirectZoomTopLeft;
@@ -60,11 +73,12 @@ namespace Kinovea.ScreenManager
         private Point m_RescaledOrigin;
         private int m_iRescaledRadius;
         private int m_iRescaledDiameter;
-        //private static readonly double m_fDegreesToRadians = Math.PI / 180.0;
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingCircle(int Ox, int Oy, int radius, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingCircle(int Ox, int Oy, int radius, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
             m_Origin = new Point(Ox, Oy);
@@ -74,10 +88,22 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
 			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
-            m_PenStyle = new LineStyle(1, LineShape.Simple, Color.Black);
             
+			m_StyleHelper.Color = Color.Empty;
+			m_StyleHelper.LineSize = 1;
+			if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
+			
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public DrawingCircle(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0,0,0,0,0, null)
+        {
+            ReadXml(_xmlReader, _scale);
         }
         #endregion
 
@@ -94,64 +120,20 @@ namespace Kinovea.ScreenManager
                 m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
-                float fPenWidth = (float)((double)m_PenStyle.Size * m_fStretchFactor);
-                if (fPenWidth < 1) fPenWidth = 1;
-
-                Pen penLine = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
+                Pen penLine = m_StyleHelper.GetPen(iPenAlpha, m_fStretchFactor);
+                _canvas.DrawEllipse(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter);
                 
                 if(_bSelected)
                 {
-                	_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 65, 320);
-                	
-                	// 1. Complementary color
-                	_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 65, 320);
-                	Color invertedColor = Color.FromArgb(iPenAlpha, 255 - m_PenStyle.Color.R, 255 - m_PenStyle.Color.G, 255 - m_PenStyle.Color.B);
-					Pen penHandle = new Pen(invertedColor, fPenWidth);
-					_canvas.DrawArc(penHandle, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 25, 40);
-                	penHandle.Dispose();
-                	
-					// 2. With slices.
-                	//_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 65, 320);
-					//Pen penHandle = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
-					//penHandle.CompoundArray = new float[] { 0.0F, 0.33F, 0.66F, 1.0F };
-					//penHandle.CompoundArray = new float[] { 0.0F, 0.20F, 0.40F, 0.60F, 0.80F, 1.0F };
-					//_canvas.DrawArc(penHandle, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 25, 40);
-                	//penHandle.Dispose();
-                	
-                	// 3. As a bigger empty arc.
-                	//_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 55, 340);
-                	//Pen penHandle = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth + 10);
-					//penHandle.CompoundArray = new float[] { 0.0f, 0.2f, 0.8f, 1.0f };
-					//_canvas.DrawArc(penHandle, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 35, 20);
-                	//penHandle.Dispose();
-                	
-					// 3. As perpendicular lines.
-					/*_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 55, 340);
-                	int shiftVert = (int)(Math.Sin(35.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);
-					int shiftHorz = (int)(Math.Cos(35.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);					
-					Point spot1 = new Point(m_RescaledOrigin.X + shiftHorz, m_RescaledOrigin.Y + shiftVert);
-					shiftVert = (int)(Math.Sin(45.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);
-					shiftHorz = (int)(Math.Cos(45.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);					
-					Point spot2 = new Point(m_RescaledOrigin.X + shiftHorz, m_RescaledOrigin.Y + shiftVert);
-					shiftVert = (int)(Math.Sin(55.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);
-					shiftHorz = (int)(Math.Cos(55.0 * m_fDegreesToRadians) * (double)m_iRescaledRadius);					
-					Point spot3 = new Point(m_RescaledOrigin.X + shiftHorz, m_RescaledOrigin.Y + shiftVert);
-					
-					Pen penHandle = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
-					_canvas.DrawLine(penHandle, spot1.X - fPenWidth, spot1.Y - fPenWidth, spot1.X + fPenWidth, spot1.Y + fPenWidth);
-					_canvas.DrawLine(penHandle, spot2.X - fPenWidth, spot2.Y - fPenWidth, spot2.X + fPenWidth, spot2.Y + fPenWidth);
-					_canvas.DrawLine(penHandle, spot3.X - fPenWidth, spot3.Y - fPenWidth, spot3.X + fPenWidth, spot3.Y + fPenWidth);
-					penHandle.Dispose();*/
-                }
-                else
-                {
-                	_canvas.DrawEllipse(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter);
+                	// Draw a small arc in complementary color in the lower right part to show resizer.
+                	penLine.Color = Color.FromArgb(iPenAlpha, 255 - m_StyleHelper.Color.R, 255 - m_StyleHelper.Color.G, 255 - m_StyleHelper.Color.B);
+					_canvas.DrawArc(penLine, m_RescaledOrigin.X - m_iRescaledRadius, m_RescaledOrigin.Y - m_iRescaledRadius, m_iRescaledDiameter, m_iRescaledDiameter, 25, 40);
                 }
                 
                 penLine.Dispose();
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // _point is mouse coordinates already descaled.
             // User is dragging the outline of the circle, figure out the new radius at this point.
@@ -164,7 +146,7 @@ namespace Kinovea.ScreenManager
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             m_Origin.X += _deltaX;
@@ -196,27 +178,65 @@ namespace Kinovea.ScreenManager
             }
             return iHitResult;
         }        
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+        
+        #region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingCircle");
-
-            // Origin
-            _xmlWriter.WriteStartElement("Origin");
-            _xmlWriter.WriteString(m_Origin.X.ToString() + ";" + m_Origin.Y.ToString());
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Origin":
+				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_Origin = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				        break;
+					case "Radius":
+				        int radius = _xmlReader.ReadElementContentAsInt();
+                        m_iRadius = (int)((double)radius * _scale.X);
+                        break;
+					case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			m_iDiameter = m_iRadius * 2;
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public void WriteXml(XmlWriter _xmlWriter)
+		{
+            _xmlWriter.WriteElementString("Origin", String.Format("{0};{1}", m_Origin.X, m_Origin.Y));
+            _xmlWriter.WriteElementString("Radius", m_iRadius.ToString());
+            
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
-
-            // Radius
-            _xmlWriter.WriteStartElement("Radius");
-            _xmlWriter.WriteString(m_iRadius.ToString());
-            _xmlWriter.WriteEndElement();
-
-            m_PenStyle.ToXml(_xmlWriter);
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // </Drawing>
+            
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
         }
+        #endregion
+        
+        #region IInitializable implementation
+        public void ContinueSetup(Point point)
+		{
+			MoveHandle(point, 2);
+		}
+        #endregion
         
         public override string ToString()
         {
@@ -227,81 +247,16 @@ namespace Kinovea.ScreenManager
             // Combine all relevant fields with XOR to get the Hash.
             int iHash = m_Origin.GetHashCode();
             iHash ^= m_iRadius.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
         
-        public override void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public override void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
-        
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
-        {
-        	// _scale.X and _scale.Y are used to map drawings that were set in one video,
-        	// to a destination video with different dimensions.
-        	// For the radius, we arbitrarily choose to scale on X.
-            DrawingCircle dc = new DrawingCircle(0,0,0,0,0);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Origin")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        dc.m_Origin = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "Radius")
-                    {
-                        int radius = int.Parse(_xmlReader.ReadString());
-                        dc.m_iRadius = (int)((double)radius * _scale.X);
-                    }
-                    else if (_xmlReader.Name == "LineStyle")
-                    {
-                        dc.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dc.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility: ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // closing internal tag.
-                }
-            }
-
-            dc.m_iDiameter = dc.m_iRadius * 2;
-            dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);
-            return dc;
-        }
-        #endregion
-        
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+			m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+        }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
         	m_RescaledOrigin = new Point((int)((double)(m_Origin.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_Origin.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
@@ -332,7 +287,7 @@ namespace Kinovea.ScreenManager
 			GraphicsPath areaPath = new GraphicsPath();			
 			areaPath.AddArc(m_Origin.X - m_iRadius, m_Origin.Y - m_iRadius, m_iDiameter, m_iDiameter, 25, 40);
 			
-			Pen areaPen = new Pen(Color.Black, m_PenStyle.Size + 10);
+			Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10);
 			areaPath.Widen(areaPen);
 			areaPen.Dispose();
 			

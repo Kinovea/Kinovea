@@ -19,12 +19,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
@@ -34,19 +36,19 @@ namespace Kinovea.ScreenManager
     public class DrawingBitmap : AbstractDrawing
     {
         #region Properties
-        public override DrawingToolType ToolType
-        {
-        	get
-        	{ 
-        		// invalid, this drawing is not created by a drawing tool.
-        		return DrawingToolType.Pointer;
-        	}
-        }
         public override InfosFading infosFading
         {
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.Opacity; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         #endregion
 
         #region Members
@@ -133,7 +135,7 @@ namespace Kinovea.ScreenManager
 			m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 			
 			PreferencesManager pm = PreferencesManager.Instance();
-			m_PenBoundingBox = new Pen(Color.FromArgb(255, pm.GridColor.R, pm.GridColor.G, pm.GridColor.B), 1);
+			m_PenBoundingBox = new Pen(Color.White, 1);
 		 	m_PenBoundingBox.DashStyle = DashStyle.Dash;
 		 	m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);        	
         }
@@ -176,7 +178,34 @@ namespace Kinovea.ScreenManager
 				}
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        {
+            // _point is mouse coordinates descaled.
+            // Hit Result: -1: miss, 0: on object.
+              
+            int iHitResult = -1;
+            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            if (fOpacityFactor > 0)
+            {
+            	// On handles ?
+            	for (int i = 0; i < 4; i++)
+	            {
+	                if (GetHandleRectangle(i+1).Contains(_point))
+	                {
+	                    iHitResult = i+1;
+	                }
+	            }
+            	
+            	// On main drawing ?
+            	if(iHitResult == -1 && IsPointOnDrawing(_point.X, _point.Y))
+            	{
+                    iHitResult = 0;
+                }
+            }
+            
+            return iHitResult;
+        }
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // _point is new coordinates of the handle, already descaled.
             
@@ -268,7 +297,7 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             // Move the rendering window around, does not change the scale of the drawing.
@@ -280,33 +309,8 @@ namespace Kinovea.ScreenManager
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
-        {
-            // _point is mouse coordinates descaled.
-            // Hit Result: -1: miss, 0: on object.
-              
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0)
-            {
-            	// On handles ?
-            	for (int i = 0; i < 4; i++)
-	            {
-	                if (GetHandleRectangle(i+1).Contains(_point))
-	                {
-	                    iHitResult = i+1;
-	                }
-	            }
-            	
-            	// On main drawing ?
-            	if(iHitResult == -1 && IsPointOnDrawing(_point.X, _point.Y))
-            	{
-                    iHitResult = 0;
-                }
-            }
-            
-            return iHitResult;
-        }
+        #endregion
+        
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
@@ -317,39 +321,6 @@ namespace Kinovea.ScreenManager
             // Should not trigger meta data changes.
             return 0;
         }
-        
-        #region Not implemented
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
-        {
-            return null;
-        }
-        public override void UpdateDecoration(Color _color)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void MemorizeDecoration()
-        {
-        	// Not implemented.
-        }
-        public override void RecallDecoration()
-        {
-        	// Not implemented.
-        }
-        #endregion
-        
-        #endregion
 
         #region Lower level helpers
         private Rectangle GetHandleRectangle(int _handle)

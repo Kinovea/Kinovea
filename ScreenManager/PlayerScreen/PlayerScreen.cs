@@ -243,24 +243,6 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
-        public bool ShowGrid
-        {
-            get { return m_FrameServer.Metadata.Grid.Visible; }
-            set
-            {
-                m_FrameServer.Metadata.Grid.Visible = value;
-                RefreshImage();
-            }
-        }
-        public bool Show3DPlane
-        {
-            get { return m_FrameServer.Metadata.Plane.Visible; }
-            set
-            {
-                m_FrameServer.Metadata.Plane.Visible = value;
-                RefreshImage();
-            }
-        }
         public int DrawtimeFilterType
         {
         	get {return m_PlayerScreenUI.DrawtimeFilterType;}

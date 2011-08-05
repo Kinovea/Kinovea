@@ -22,27 +22,66 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public class DrawingToolCircle : AbstractDrawingTool
     {
-        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-        {
-            return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame);
-        }
-        public override void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates)
-        {
-            _Keyframe.Drawings[0].MoveHandleTo(_MouseCoordinates, 2);
-        }
-        public override DrawingToolType OnMouseUp()
-        {
-            //return DrawingToolType.Pointer;
-            return DrawingToolType.Circle;
-        }
-        public override Cursor GetCursor(Color _color, int _iSize)
-        {
-            return Cursors.Cross;
-        }
+    	#region Properties
+    	public override string DisplayName
+    	{
+    		get { return ScreenManagerLang.ToolTip_DrawingToolCircle; }
+    	}
+    	public override Bitmap Icon
+    	{
+    		get { return Properties.Drawings.circle; }
+    	}
+    	public override bool Attached
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepTool
+    	{
+    		get { return true; }
+    	}
+    	public override bool KeepToolFrameChanged
+    	{
+    		get { return false; }
+    	}
+    	public override DrawingStyle StylePreset
+		{
+			get { return m_StylePreset;}
+			set { m_StylePreset = value;}
+		}
+		public override DrawingStyle DefaultStylePreset
+		{
+			get { return m_DefaultStylePreset;}
+		}
+    	#endregion
+		
+    	#region Members
+    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+    	private DrawingStyle m_StylePreset;
+    	#endregion
+    	
+    	public DrawingToolCircle()
+    	{
+			m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CadetBlue));
+			m_DefaultStylePreset.Elements.Add("pen size", new StyleElementPenSize(3));
+			m_StylePreset = m_DefaultStylePreset.Clone();
+    	}
+    	
+    	#region Public Methods
+    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+    	{
+    		return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+    	}
+    	public override Cursor GetCursor(double _fStretchFactor)
+    	{
+    		return Cursors.Cross;
+    	}
+    	#endregion
     }
 }
 

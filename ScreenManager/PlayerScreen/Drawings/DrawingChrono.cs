@@ -19,8 +19,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
@@ -28,11 +29,15 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
+
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingChrono : AbstractDrawing
+    [XmlType ("Chrono")]
+    public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Enums
         /// <summary>
@@ -48,10 +53,24 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingToolType.Chrono; }
+        	get { return m_Style;}
         }
+        public override InfosFading  infosFading
+        {
+        	// Fading is not modifiable from outside for chrono.
+            get { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
+            set { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
+        }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         public Metadata ParentMetadata
         {
             get { return m_ParentMetadata; }    // unused.
@@ -87,30 +106,13 @@ namespace Kinovea.ScreenManager
         	// This is used to know if we can toggle to countdown or not.
         	get{ return (m_iStopCountingTimestamp != long.MaxValue);}
         }
-        // Fading is not modifiable from outside for chrono.
-        public override InfosFading  infosFading
-        {
-            get { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
-            set { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
-        }
         
         // The following properties are used from the formConfigureChrono.
-        // However for decorations (BackgroundColor and FontSize), 
-        // the update is done through the UpdateDecoration methods. 
-        public Color BackgroundColor
-        {
-            get { return m_TextStyle.BackColor;}
-        }
-        public int FontSize
-        {
-            get { return m_TextStyle.FontSize;}
-        }
         public string Label
         {
             get { return m_Label; }
             set { m_Label = value; }
         }
-        
         public bool ShowLabel
         {
             get { return m_bShowLabel; }
@@ -125,14 +127,12 @@ namespace Kinovea.ScreenManager
         private long m_iStopCountingTimestamp;          	// chrono stops counting. 
         private long m_iVisibleTimestamp;               	// chrono becomes visible.
         private long m_iInvisibleTimestamp;             	// chrono stops being visible.
-        private bool m_bCountdown;						// chrono works backwards. (Must have a stop)
+        private bool m_bCountdown;							// chrono works backwards. (Must have a stop)
 		
         // Data
         private string m_Text;							  	// Actual text displayed.
         private string m_Label;
         private bool m_bShowLabel;
-        private string m_MemoLabel;					  	// Used when configuring.
-        private bool m_bMemoShowLabel;				  	// Used when configuring.
         
         // Position
         private Point m_TopLeft;                         	// position (in image coords).
@@ -140,9 +140,9 @@ namespace Kinovea.ScreenManager
         private Point m_DirectZoomTopLeft;
         
         // Decoration
-        private InfosTextDecoration m_TextStyle;		  	// Style infos (font, font size, colors)
-        private InfosTextDecoration m_MemoTextStyle;	  	// Used when configuring.
-		private InfosFading m_InfosFading;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
+        private InfosFading m_InfosFading;
 		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
 
         private Metadata m_ParentMetadata;
@@ -150,14 +150,12 @@ namespace Kinovea.ScreenManager
         // Computed
 		private LabelBackground m_LabelBackground = new LabelBackground();
         private SizeF m_BackgroundSize;				  	// Size of the background rectangle (scaled).
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingChrono()
-        	: this(0, 0, 0, 1)
-        {
-        }
-        public DrawingChrono(int x, int y, long start, long _AverageTimeStampsPerFrame)
+        public DrawingChrono(int x, int y, long start, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
             m_TopLeft = new Point(x, y);
@@ -170,8 +168,14 @@ namespace Kinovea.ScreenManager
 
             m_Text = "error";
             
-            m_TextStyle = new InfosTextDecoration("Arial", 16, FontStyle.Bold, Color.White, Color.Black);
-
+            m_StyleHelper.Bicolor = new Bicolor(Color.Black);
+            m_StyleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
+            
             m_Label = "";
             m_bShowLabel = true;
             
@@ -187,6 +191,11 @@ namespace Kinovea.ScreenManager
 
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public DrawingChrono(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+            : this(0, 0, 0, 1, null)
+        {
+            ReadXml(_xmlReader, _scale, _remapTimestampCallback);
         }
         #endregion
 
@@ -218,15 +227,14 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // Invisible handler to change font size.
             // Compare wanted mouse position with current bottom right.
             int wantedHeight = point.Y - m_TopLeft.Y;
-            int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
-            UpdateDecoration(newFontSize);
+            m_StyleHelper.ForceFontSize(wantedHeight, m_Text);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // Note: _delatX and _delatY are mouse delta already descaled.            
             m_TopLeft.X += _deltaX;
@@ -262,92 +270,8 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
-        {
-            _xmlWriter.WriteStartElement("Chrono");
-            _xmlWriter.WriteAttributeString("Type", "DrawingChrono");
-
-            // Space Position
-            _xmlWriter.WriteStartElement("Position");
-            _xmlWriter.WriteString(m_TopLeft.X.ToString() + ";" + m_TopLeft.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Values
-            _xmlWriter.WriteStartElement("Values");
-            _xmlWriter.WriteStartElement("Visible");
-            if (m_iVisibleTimestamp == long.MaxValue)
-            {
-                _xmlWriter.WriteString("-1");
-            }
-            else
-            {
-                _xmlWriter.WriteString(m_iVisibleTimestamp.ToString());
-            }
-            _xmlWriter.WriteEndElement();
-            _xmlWriter.WriteStartElement("StartCounting");
-            if (m_iStartCountingTimestamp == long.MaxValue)
-            {
-                _xmlWriter.WriteString("-1");
-            }
-            else
-            {
-                _xmlWriter.WriteString(m_iStartCountingTimestamp.ToString());
-            }
-            _xmlWriter.WriteEndElement();
-            _xmlWriter.WriteStartElement("StopCounting");
-            if (m_iStopCountingTimestamp == long.MaxValue)
-            {
-                _xmlWriter.WriteString("-1");
-            }
-            else
-            {
-                _xmlWriter.WriteString(m_iStopCountingTimestamp.ToString());
-            }
-            _xmlWriter.WriteEndElement();
-            _xmlWriter.WriteStartElement("Invisible");
-            if(m_iInvisibleTimestamp == long.MaxValue)
-            {
-                _xmlWriter.WriteString("-1");
-            }
-            else
-            {
-                _xmlWriter.WriteString(m_iInvisibleTimestamp.ToString());
-            }
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("Countdown");
-            _xmlWriter.WriteString(m_bCountdown.ToString());
-            _xmlWriter.WriteEndElement();
-            
-            // User duration is for XSLT export only.
-            _xmlWriter.WriteStartElement("UserDuration");
-            string userDuration = "0";
-            if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
-            {
-             	userDuration = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeCodeFormat.Unknown, false);
-            }
-            _xmlWriter.WriteString(userDuration);
-            _xmlWriter.WriteEndElement();
-            
-            // </values>
-            _xmlWriter.WriteEndElement();
-
-            // Colors and font
-            m_TextStyle.ToXml(_xmlWriter);
-            
-            // Label
-            _xmlWriter.WriteStartElement("Label");
-            _xmlWriter.WriteStartElement("Text");
-            _xmlWriter.WriteString( m_Label);
-            _xmlWriter.WriteEndElement();
-            _xmlWriter.WriteStartElement("Show");
-            _xmlWriter.WriteString(m_bShowLabel.ToString());
-            _xmlWriter.WriteEndElement();
-            _xmlWriter.WriteEndElement();
-
-            // </Drawing>
-            _xmlWriter.WriteEndElement();
-        }
+        #endregion
+        
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
@@ -362,37 +286,162 @@ namespace Kinovea.ScreenManager
             iHash ^= m_iVisibleTimestamp.GetHashCode();
             iHash ^= m_iInvisibleTimestamp.GetHashCode();
             iHash ^= m_bCountdown.GetHashCode();
-            iHash ^= m_TextStyle.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             iHash ^= m_Label.GetHashCode();
             iHash ^= m_bShowLabel.GetHashCode();
 
             return iHash;
         }
-        
-        public override void UpdateDecoration(Color _color)
+		
+		#region KVA Serialization
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_TopLeft.X, m_TopLeft.Y));
+            
+		    _xmlWriter.WriteStartElement("Values");
+		    _xmlWriter.WriteElementString("Visible", (m_iVisibleTimestamp == long.MaxValue) ? "-1" : m_iVisibleTimestamp.ToString());
+            _xmlWriter.WriteElementString("StartCounting", (m_iStartCountingTimestamp == long.MaxValue) ? "-1" : m_iStartCountingTimestamp.ToString());
+		    _xmlWriter.WriteElementString("StopCounting", (m_iStopCountingTimestamp == long.MaxValue) ? "-1" : m_iStopCountingTimestamp.ToString());
+            _xmlWriter.WriteElementString("Invisible", (m_iInvisibleTimestamp == long.MaxValue) ? "-1" : m_iInvisibleTimestamp.ToString());
+            _xmlWriter.WriteElementString("Countdown", m_bCountdown ? "true" : "false");
+            
+            // Spreadsheet support
+            string userDuration = "0";
+            if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
+            {
+             	userDuration = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeCodeFormat.Unknown, false);
+            }
+            _xmlWriter.WriteElementString("UserDuration", userDuration);
+            
+            // </values>
+            _xmlWriter.WriteEndElement();
+            
+            // Label
+            _xmlWriter.WriteStartElement("Label");
+            _xmlWriter.WriteElementString("Text", m_Label);
+            _xmlWriter.WriteElementString("Show", m_bShowLabel ? "true" : "false");
+            _xmlWriter.WriteEndElement();
+            
+		    _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+		}
+		private void ReadXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
         {
-        	m_TextStyle.Update(_color);
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Position":
+				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        break;
+					case "Values":
+						ParseWorkingValues(_xmlReader, _remapTimestampCallback);
+						break;
+					case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "Label":
+						ParseLabel(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void UpdateDecoration(LineStyle _style)
+        private void ParseWorkingValues(XmlReader _xmlReader, DelegateRemapTimestamp _remapTimestampCallback)
         {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));	
+            if(_remapTimestampCallback == null)
+            {
+                _xmlReader.ReadOuterXml();
+                return;                
+            }
+            
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Visible":
+				        m_iVisibleTimestamp = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        break;
+					case "StartCounting":
+                        long start = _xmlReader.ReadElementContentAsLong(); 
+                        m_iStartCountingTimestamp = (start == -1) ? long.MaxValue : _remapTimestampCallback(start, false);
+						break;
+					case "StopCounting":
+						long stop = _xmlReader.ReadElementContentAsLong();
+						m_iStopCountingTimestamp = (stop == -1) ? long.MaxValue : _remapTimestampCallback(stop, false);
+						break;
+				    case "Invisible":
+						long hide = _xmlReader.ReadElementContentAsLong();
+                        m_iInvisibleTimestamp = (hide == -1) ? long.MaxValue : _remapTimestampCallback(hide, false);                        
+						break;
+					case "Countdown":
+						m_bCountdown = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+            // Sanity check values.
+            if (m_iVisibleTimestamp < 0) m_iVisibleTimestamp = 0;
+            if (m_iStartCountingTimestamp < 0) m_iStartCountingTimestamp = 0;
+            if (m_iStopCountingTimestamp < 0) m_iStopCountingTimestamp = 0;
+            if (m_iInvisibleTimestamp < 0) m_iInvisibleTimestamp = 0;
+
+            if (m_iVisibleTimestamp > m_iStartCountingTimestamp)
+            {
+                m_iVisibleTimestamp = m_iStartCountingTimestamp;
+            }
+
+            if (m_iStopCountingTimestamp < m_iStartCountingTimestamp)
+            {
+                m_iStopCountingTimestamp = long.MaxValue;
+            }
+
+            if (m_iInvisibleTimestamp < m_iStopCountingTimestamp)
+            {
+                m_iInvisibleTimestamp = long.MaxValue;
+            }
         }
-        public override void UpdateDecoration(int _iFontSize)
+        private void ParseLabel(XmlReader _xmlReader)
         {
-        	m_TextStyle.Update(_iFontSize);
-        }
-        public override void MemorizeDecoration()
-        {
-        	// Here we actually store more than decoration.
-        	m_MemoTextStyle = m_TextStyle.Clone();
-        	m_MemoLabel = m_Label;
-        	m_bMemoShowLabel = m_bShowLabel;
-        }
-        public override void RecallDecoration()
-        {
-        	m_TextStyle = m_MemoTextStyle.Clone();
-        	m_Label = m_MemoLabel;
-        	m_bShowLabel = m_bMemoShowLabel;
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Text":
+				        m_Label = _xmlReader.ReadElementContentAsString();
+                        break;
+					case "Show":
+                        m_bShowLabel = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
         }
 		#endregion
 
@@ -441,171 +490,12 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region FromXml
-        public static DrawingChrono FromXml(XmlTextReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
-        {
-            DrawingChrono dc = new DrawingChrono();
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Position")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-
-                        // Adapt to new Image size.
-                        dc.m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "TextDecoration")
-                    {
-                    	dc.m_TextStyle = InfosTextDecoration.FromXml(_xmlReader);
-                    }
-                    else if (_xmlReader.Name == "Values")
-                    {
-                        dc.ParseWorkingValues(_xmlReader, dc, _remapTimestampCallback);
-                    }
-                    else if (_xmlReader.Name == "Label")
-                    {
-                        dc.ParseLabel(_xmlReader, dc);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Chrono")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            dc.RescaleCoordinates(dc.m_fStretchFactor, dc.m_DirectZoomTopLeft);
-
-            return dc;
-        }
-        private void ParseWorkingValues(XmlTextReader _xmlReader, DrawingChrono _drawing, DelegateRemapTimestamp _remapTimestampCallback)
-        {
-            if (_remapTimestampCallback != null)
-            {
-                while (_xmlReader.Read())
-                {
-                    if (_xmlReader.IsStartElement())
-                    {
-                        if (_xmlReader.Name == "Visible")
-                        {
-                            m_iVisibleTimestamp = _remapTimestampCallback(long.Parse(_xmlReader.ReadString()), false);
-                        }
-                        else if (_xmlReader.Name == "StartCounting")
-                        {
-                            long start = long.Parse(_xmlReader.ReadString()); 
-                            if (start == -1)
-                            {
-                                m_iStartCountingTimestamp = long.MaxValue;
-                            }
-                            else
-                            {
-                                m_iStartCountingTimestamp = _remapTimestampCallback(start, false);
-                            }
-                        }
-                        else if (_xmlReader.Name == "StopCounting")
-                        {
-                            long stop = long.Parse(_xmlReader.ReadString());
-                            if (stop == -1)
-                            {
-                                m_iStopCountingTimestamp = long.MaxValue;
-                            }
-                            else
-                            {
-                                m_iStopCountingTimestamp = _remapTimestampCallback(stop, false);
-                            }
-                        }
-                        else if (_xmlReader.Name == "Invisible")
-                        {
-                            long hide = long.Parse(_xmlReader.ReadString());
-                            if (hide == -1)
-                            {
-                                m_iInvisibleTimestamp = long.MaxValue;
-                            }
-                            else
-                            {
-                                m_iInvisibleTimestamp = _remapTimestampCallback(hide, false);
-                            }
-                        }
-                        else if(_xmlReader.Name == "Countdown")
-                        {
-                        	m_bCountdown = bool.Parse(_xmlReader.ReadString());
-                        }
-                        else
-                        {
-                            // forward compatibility : ignore new fields. 
-                        }
-                    }
-                    else if (_xmlReader.Name == "Values")
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        // Fermeture d'un tag interne.
-                    }
-                }
-
-                // Cohérence
-                if (m_iVisibleTimestamp < 0) m_iVisibleTimestamp = 0;
-                if (m_iStartCountingTimestamp < 0) m_iStartCountingTimestamp = 0;
-                if (m_iStopCountingTimestamp < 0) m_iStopCountingTimestamp = 0;
-                if (m_iInvisibleTimestamp < 0) m_iInvisibleTimestamp = 0;
-
-                if (m_iVisibleTimestamp > m_iStartCountingTimestamp)
-                {
-                    m_iVisibleTimestamp = m_iStartCountingTimestamp;
-                }
-
-                if (m_iStopCountingTimestamp < m_iStartCountingTimestamp)
-                {
-                    m_iStopCountingTimestamp = long.MaxValue;
-                }
-
-                if (m_iInvisibleTimestamp < m_iStopCountingTimestamp)
-                {
-                    m_iInvisibleTimestamp = long.MaxValue;
-                }
-            }
-
-        }
-        private void ParseLabel(XmlTextReader _xmlReader, DrawingChrono _drawing)
-        {
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Text")
-                    {
-                        _drawing.m_Label = _xmlReader.ReadString();
-                    }
-                    else if (_xmlReader.Name == "Show")
-                    {
-                        _drawing.m_bShowLabel = bool.Parse(_xmlReader.ReadString());
-                    }
-                }
-                else if (_xmlReader.Name == "Label")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-        }
-        #endregion
-
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Bicolor", "color");
+            m_Style.Bind(m_StyleHelper, "Font", "font size");    
+        }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
@@ -618,37 +508,38 @@ namespace Kinovea.ScreenManager
         {
             // Draw background rounded rectangle.
             // The radius for rounding is based on font size.
-            Font f = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
             int radius = (int)(f.Size / 2);
             f.Dispose();
             
-            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextStyle.BackColor);
+            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
         }
         private void DrawLabel(Graphics _canvas, double _fOpacityFactor)
         {
             // Label background and size is relative to the main chrono.
-            double fMainFontSize = (double)m_TextStyle.GetRescaledFontSize((float)m_fStretchFactor);
-            int radius = (int)(fMainFontSize / 4);
-            Font fontText = m_TextStyle.GetInternalFont(0.5f);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
+            int radius = (int)(f.Size / 4);
+            f.Dispose();
+            Font fontText = m_StyleHelper.GetFont(0.5f);
             SizeF labelSize = _canvas.MeasureString(m_Label + " ", fontText);
             
 			// the label background starts at the end of the rounded angle of the main background.
             Rectangle RescaledBackground = new Rectangle(m_LabelBackground.Location.X + radius, m_LabelBackground.Location.Y - (int)labelSize.Height - 1, (int)labelSize.Width + 11, (int)labelSize.Height);
 
             LabelBackground labelBG = new LabelBackground(RescaledBackground.Location, true, 11, 0);
-            labelBG.Draw(_canvas, _fOpacityFactor, radius, (int)labelSize.Width, (int)labelSize.Height, m_TextStyle.GetFadingBackColor(0.5f));
+            labelBG.Draw(_canvas, _fOpacityFactor, radius, (int)labelSize.Width, (int)labelSize.Height, m_StyleHelper.GetBackgroundColor(128));
             
             // Label text
-            SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor(_fOpacityFactor));
+            SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor * 255));
             _canvas.DrawString(m_Label, fontText, fontBrush, new Point(RescaledBackground.X+4, RescaledBackground.Y+1));
             fontBrush.Dispose();
             fontText.Dispose();
         }
         private void DrawText(Graphics _canvas, double _fOpacityFactor)
         {
-        	Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
-        	SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor((float)_fOpacityFactor));
+        	Font fontText = m_StyleHelper.GetFont((float)m_fStretchFactor);
+        	SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor * 255));
         	_canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
         	fontBrush.Dispose();
         	fontText.Dispose();

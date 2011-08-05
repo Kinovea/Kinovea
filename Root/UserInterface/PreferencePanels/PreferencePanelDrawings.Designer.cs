@@ -50,11 +50,6 @@ namespace Kinovea.Root
 		{
 			this.tabSubPages = new System.Windows.Forms.TabControl();
 			this.tabGeneral = new System.Windows.Forms.TabPage();
-			this.grpColors = new System.Windows.Forms.GroupBox();
-			this.lblPlane3D = new System.Windows.Forms.Label();
-			this.lblGrid = new System.Windows.Forms.Label();
-			this.btn3DPlaneColor = new System.Windows.Forms.Button();
-			this.btnGridColor = new System.Windows.Forms.Button();
 			this.chkDrawOnPlay = new System.Windows.Forms.CheckBox();
 			this.tabPersistence = new System.Windows.Forms.TabPage();
 			this.chkAlwaysVisible = new System.Windows.Forms.CheckBox();
@@ -63,7 +58,6 @@ namespace Kinovea.Root
 			this.chkEnablePersistence = new System.Windows.Forms.CheckBox();
 			this.tabSubPages.SuspendLayout();
 			this.tabGeneral.SuspendLayout();
-			this.grpColors.SuspendLayout();
 			this.tabPersistence.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trkFading)).BeginInit();
 			this.SuspendLayout();
@@ -81,7 +75,6 @@ namespace Kinovea.Root
 			// 
 			// tabGeneral
 			// 
-			this.tabGeneral.Controls.Add(this.grpColors);
 			this.tabGeneral.Controls.Add(this.chkDrawOnPlay);
 			this.tabGeneral.Location = new System.Drawing.Point(4, 22);
 			this.tabGeneral.Name = "tabGeneral";
@@ -90,67 +83,6 @@ namespace Kinovea.Root
 			this.tabGeneral.TabIndex = 0;
 			this.tabGeneral.Text = "General";
 			this.tabGeneral.UseVisualStyleBackColor = true;
-			// 
-			// grpColors
-			// 
-			this.grpColors.Controls.Add(this.lblPlane3D);
-			this.grpColors.Controls.Add(this.lblGrid);
-			this.grpColors.Controls.Add(this.btn3DPlaneColor);
-			this.grpColors.Controls.Add(this.btnGridColor);
-			this.grpColors.Location = new System.Drawing.Point(6, 62);
-			this.grpColors.Name = "grpColors";
-			this.grpColors.Size = new System.Drawing.Size(405, 74);
-			this.grpColors.TabIndex = 53;
-			this.grpColors.TabStop = false;
-			this.grpColors.Text = "Colors";
-			// 
-			// lblPlane3D
-			// 
-			this.lblPlane3D.AutoSize = true;
-			this.lblPlane3D.Location = new System.Drawing.Point(11, 51);
-			this.lblPlane3D.Name = "lblPlane3D";
-			this.lblPlane3D.Size = new System.Drawing.Size(57, 13);
-			this.lblPlane3D.TabIndex = 13;
-			this.lblPlane3D.Text = "3D Plane :";
-			// 
-			// lblGrid
-			// 
-			this.lblGrid.AutoSize = true;
-			this.lblGrid.Location = new System.Drawing.Point(11, 23);
-			this.lblGrid.Name = "lblGrid";
-			this.lblGrid.Size = new System.Drawing.Size(32, 13);
-			this.lblGrid.TabIndex = 11;
-			this.lblGrid.Text = "Grid :";
-			// 
-			// btn3DPlaneColor
-			// 
-			this.btn3DPlaneColor.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.btn3DPlaneColor.BackColor = System.Drawing.Color.Black;
-			this.btn3DPlaneColor.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.btn3DPlaneColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
-			this.btn3DPlaneColor.FlatAppearance.BorderSize = 0;
-			this.btn3DPlaneColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btn3DPlaneColor.Location = new System.Drawing.Point(323, 44);
-			this.btn3DPlaneColor.Name = "btn3DPlaneColor";
-			this.btn3DPlaneColor.Size = new System.Drawing.Size(60, 20);
-			this.btn3DPlaneColor.TabIndex = 25;
-			this.btn3DPlaneColor.UseVisualStyleBackColor = false;
-			this.btn3DPlaneColor.Click += new System.EventHandler(this.btn3DPlaneColor_Click);
-			// 
-			// btnGridColor
-			// 
-			this.btnGridColor.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.btnGridColor.BackColor = System.Drawing.Color.Black;
-			this.btnGridColor.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.btnGridColor.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
-			this.btnGridColor.FlatAppearance.BorderSize = 0;
-			this.btnGridColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnGridColor.Location = new System.Drawing.Point(323, 16);
-			this.btnGridColor.Name = "btnGridColor";
-			this.btnGridColor.Size = new System.Drawing.Size(60, 20);
-			this.btnGridColor.TabIndex = 20;
-			this.btnGridColor.UseVisualStyleBackColor = false;
-			this.btnGridColor.Click += new System.EventHandler(this.btnGridColor_Click);
 			// 
 			// chkDrawOnPlay
 			// 
@@ -232,8 +164,6 @@ namespace Kinovea.Root
 			this.tabSubPages.ResumeLayout(false);
 			this.tabGeneral.ResumeLayout(false);
 			this.tabGeneral.PerformLayout();
-			this.grpColors.ResumeLayout(false);
-			this.grpColors.PerformLayout();
 			this.tabPersistence.ResumeLayout(false);
 			this.tabPersistence.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trkFading)).EndInit();
@@ -242,11 +172,6 @@ namespace Kinovea.Root
 		private System.Windows.Forms.TabControl tabSubPages;
 		private System.Windows.Forms.TabPage tabGeneral;
 		private System.Windows.Forms.TabPage tabPersistence;
-		private System.Windows.Forms.Button btnGridColor;
-		private System.Windows.Forms.Button btn3DPlaneColor;
-		private System.Windows.Forms.Label lblGrid;
-		private System.Windows.Forms.Label lblPlane3D;
-		private System.Windows.Forms.GroupBox grpColors;
 		private System.Windows.Forms.CheckBox chkEnablePersistence;
 		private System.Windows.Forms.TrackBar trkFading;
 		private System.Windows.Forms.Label lblFading;

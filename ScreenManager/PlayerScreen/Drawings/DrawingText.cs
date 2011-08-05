@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
@@ -28,23 +29,34 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingText : AbstractDrawing
+    [XmlType ("Label")]
+    public class DrawingText : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingToolType.Text; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         public TextBox EditBox
         {
             get { return m_TextBox; }
@@ -92,22 +104,15 @@ namespace Kinovea.ScreenManager
                 } 
             }
         }
-        
-        // The following property is used by formConfigureDrawing to show current value.
-        // the update is done through the UpdateDecoration methods. 
-        public int FontSize
-        {
-            get { return m_TextStyle.FontSize; }
-        }
         #endregion
 
         #region Members
         private string m_Text;							// Actual text displayed.
-        private Color m_TextboxColor;					// Color of the textbox (?)
         
-      	private InfosTextDecoration m_TextStyle;		// Style infos (font, font size, colors)
-        private InfosTextDecoration m_MemoTextStyle;	// Used when configuring.
-      	private InfosFading m_InfosFading;
+      	private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
+      	
+        private InfosFading m_InfosFading;
         
       	private bool m_bEditMode;
       	private static readonly int m_iDefaultFontSize = 16;    		// will also be used for the text box.
@@ -121,34 +126,47 @@ namespace Kinovea.ScreenManager
         
         private TextBox m_TextBox;
         private PictureBox m_ContainerScreen;
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingText(int x, int y, int width, int height, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingText(int x, int y, int width, int height, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_Text = " ";
-            m_TextboxColor = Color.White; // Color.LightSteelBlue;
             m_TopLeft = new Point(x, y);
             m_BackgroundSize = new SizeF(100, 20);
             
-            m_TextStyle = new InfosTextDecoration("Arial", m_iDefaultFontSize, FontStyle.Bold, Color.White, Color.CornflowerBlue);
-
+            // Decoration & binding with editors
+            m_StyleHelper.Bicolor = new Bicolor(Color.Black);
+            m_StyleHelper.Font = new Font("Arial", m_iDefaultFontSize, FontStyle.Bold);
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
+            
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             m_bEditMode = false;
 
             // Textbox initialization.
             m_TextBox = new TextBox();
             m_TextBox.Visible = false;
-            m_TextBox.BackColor = m_TextboxColor;
+            m_TextBox.BackColor = Color.White;
             m_TextBox.BorderStyle = BorderStyle.None;
             m_TextBox.Text = m_Text;
-            m_TextBox.Font = m_TextStyle.GetInternalFont();
+            m_TextBox.Font = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize);
             m_TextBox.Multiline = true;
             m_TextBox.TextChanged += new EventHandler(TextBox_TextChanged);
             
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public DrawingText(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0,0,0,0,0,0, null)
+        {
+            ReadXml(_xmlReader, _scale);
         }
         #endregion
 
@@ -169,11 +187,12 @@ namespace Kinovea.ScreenManager
                 if (!m_bEditMode)
                 {
                     DrawBackground(_canvas, fOpacityFactor);
-                    SolidBrush fontBrush = new SolidBrush(m_TextStyle.GetFadingForeColor(fOpacityFactor));
-                    Font fontText = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
-                   _canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
-                   fontBrush.Dispose();
-                   fontText.Dispose();
+                    
+                    SolidBrush textBrush = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255));
+                    Font fontText = m_StyleHelper.GetFont((float)m_fStretchFactor);
+                   	_canvas.DrawString(m_Text, fontText, textBrush, m_LabelBackground.TextLocation);
+                   	textBrush.Dispose();
+                   	fontText.Dispose();
                 }
             }
         }
@@ -198,15 +217,16 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {	
         	// Invisible handler to change font size.
             // Compare wanted mouse position with current bottom right.
             int wantedHeight = point.Y - m_TopLeft.Y;
-            int newFontSize = m_TextStyle.ReverseFontSize(wantedHeight, m_Text);
-            UpdateDecoration(newFontSize);
+            m_StyleHelper.ForceFontSize(wantedHeight, m_Text);
+            
+            //AutoSizeTextbox();
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // Note: _delatX and _delatY are mouse delta already descaled.            
             m_TopLeft.X += _deltaX;
@@ -221,123 +241,72 @@ namespace Kinovea.ScreenManager
             // Update scaled coordinates accordingly.
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
-        {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingText");
+        #endregion
 
-            // Text
-            _xmlWriter.WriteStartElement("Text");
-            _xmlWriter.WriteString(m_Text);
-            _xmlWriter.WriteEndElement();
-
-            // Background StartPoint
-            _xmlWriter.WriteStartElement("Position");
-            _xmlWriter.WriteString(m_TopLeft.X.ToString() + ";" + m_TopLeft.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Textbox Color
-            _xmlWriter.WriteStartElement("TextboxColor");
-            _xmlWriter.WriteStartElement("ColorRGB");
-            _xmlWriter.WriteString(m_TextboxColor.R.ToString() + ";" + m_TextboxColor.G.ToString() + ";" + m_TextboxColor.B.ToString());
-            _xmlWriter.WriteEndElement();
-            _xmlWriter.WriteEndElement();
-
-            m_TextStyle.ToXml(_xmlWriter);
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // </Drawing>
-            _xmlWriter.WriteEndElement();
-        }
-        
-        public override void UpdateDecoration(Color _color)
+		#region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-        	m_TextStyle.Update(_color);
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Text":
+				        m_Text = _xmlReader.ReadElementContentAsString();
+                        break;
+					case "Position":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				        break;
+                    case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            AutoSizeTextbox();
         }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));	
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	m_TextStyle.Update(_iFontSize);
-        	AutoSizeTextbox();
-        }
-        public override void MemorizeDecoration()
-        {
-        	m_MemoTextStyle = m_TextStyle.Clone();
-        }
-        public override void RecallDecoration()
-        {
-        	m_TextStyle = m_MemoTextStyle.Clone();
-        	AutoSizeTextbox();
-        }
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteElementString("Text", m_Text);
+            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_TopLeft.X, m_TopLeft.Y));
+            
+		    _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement(); 
+		}
+        #endregion
         
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolText", Thread.CurrentThread.CurrentUICulture);
+            return ScreenManagerLang.ToolTip_DrawingToolText;
         }
         public override int GetHashCode()
         {
             // Combine all relevant fields with XOR to get the Hash.
             int iHash = m_Text.GetHashCode();
-            iHash ^= m_TextboxColor.GetHashCode();
             iHash ^= m_TopLeft.GetHashCode();
-            iHash ^= m_TextStyle.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
-        #endregion
 
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
-        {
-            DrawingText dt = new DrawingText(0,0,0,0,0,0);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Text")
-                    {
-                        dt.m_Text = _xmlReader.ReadString();
-                    }
-                    else if (_xmlReader.Name == "Position")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        //dt.Background.Location = new Point(plotGrid.X, plotGrid.Y);
-
-                        // Adapt to new Image size.
-                        dt.m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "TextDecoration")
-                    {
-                    	dt.m_TextStyle = InfosTextDecoration.FromXml(_xmlReader);
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dt.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-            
-            dt.RescaleCoordinates(dt.m_fStretchFactor, dt.m_DirectZoomTopLeft);
-            dt.AutoSizeTextbox();
-
-            return dt;
-        }
         public void RelocateEditbox(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             m_fStretchFactor = _fStretchFactor;
@@ -348,6 +317,11 @@ namespace Kinovea.ScreenManager
         }
 
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Bicolor", "back color");
+            m_Style.Bind(m_StyleHelper, "Font", "font size");
+        }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             m_Text = m_TextBox.Text;
@@ -383,7 +357,7 @@ namespace Kinovea.ScreenManager
             Graphics g = but.CreateGraphics();
            
             // Size of textbox, we don't use the actual font size (far too big)
-            Font f = m_TextStyle.GetInternalFontDefault(m_iDefaultFontSize);
+            Font f = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize);
             SizeF edSize = g.MeasureString(m_Text + " ", f);
             m_TextBox.Size = new Size((int)edSize.Width + 8, (int)edSize.Height);
             f.Dispose();
@@ -393,12 +367,12 @@ namespace Kinovea.ScreenManager
         {
             // Draw background (Rounded rectangle)
             // The radius for rounding is based on font size.
-            Font f = m_TextStyle.GetInternalFont((float)m_fStretchFactor);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
             int radius = (int)(f.Size / 2);
             f.Dispose();
             
-            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextStyle.BackColor);
+            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
         }
         
         private Rectangle GetHandleRectangle()
@@ -409,6 +383,5 @@ namespace Kinovea.ScreenManager
             return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
         }
         #endregion
-
     }
 }

@@ -26,16 +26,92 @@ namespace Kinovea.ScreenManager
 {
     public abstract class AbstractDrawingTool
     {
-        // Return an object of the type of this tool.
-        public abstract AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame);
+    	#region Properties
+    	/// <summary>
+        /// The display name of the tool. Used for tooltips and in tool presets config.
+        /// </summary>
+    	public abstract string DisplayName
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
+        /// The image representing the tool. Used on buttons.
+        /// </summary>
+    	public abstract Bitmap Icon
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
+    	/// Return true if this tool creates drawings attached to a particular key image.
+    	/// </summary>
+    	public abstract bool Attached
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
+    	/// Whether we should stay on the same tool after the drawing has been added.
+    	/// </summary>
+    	public abstract bool KeepTool
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
+    	/// Whether we should stay on the same tool when the video moves forward.
+    	/// </summary>
+    	public abstract bool KeepToolFrameChanged
+    	{
+    		get;
+    	}
+    	
+    	/// <summary>
+    	/// Current style preset
+    	/// </summary>
+    	public abstract DrawingStyle StylePreset
+    	{
+    		get;
+    		set;
+    	}
+    	
+    	/// <summary>
+    	/// Default style preset
+    	/// </summary>
+    	public abstract DrawingStyle DefaultStylePreset
+    	{
+    		get;
+    	}
+    	#endregion
+    	
+    	#region Public Interface
+    	/// <summary>
+    	/// Generate a new artefact from this tool.
+    	/// </summary>
+    	/// <param name="_Origin">The image coordinates the drawing should be initialized with</param>
+    	/// <param name="_iTimestamp">The time position where the drawing is added</param>
+    	/// <param name="_AverageTimeStampsPerFrame"></param>
+    	/// <returns>A new drawing object</returns>
+    	public abstract AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame);
 
-        // Only used during initial setup. Last Drawing will have been inserted at [0].
-        public abstract void OnMouseMove(Keyframe _Keyframe, Point _MouseCoordinates);
-        
-        // Only used at first MouseUp after initial setup.
-        public abstract DrawingToolType OnMouseUp();
-
-        // Get this tool's cursor
-        public abstract Cursor GetCursor(Color _color, int _iSize);
+    	/// <summary>
+    	/// Retrieve the cursor we should dispaly when this tool is the active tool.
+    	/// </summary>
+    	/// <param name="_fStretchFactor">Current stretchfactor (including zoom)</param>
+    	/// <returns>The cursor to use</returns>
+    	public abstract Cursor GetCursor(double _fStretchFactor);
+    	#endregion
+    	
+    	#region Public Concrete Methods
+    	public void ResetToDefaultStyle()
+    	{
+    		StylePreset = DefaultStylePreset.Clone();
+    	}
+    	public override string ToString()
+    	{
+    		return DisplayName;
+    	}
+    	#endregion
     }
 }

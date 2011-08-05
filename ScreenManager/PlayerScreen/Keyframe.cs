@@ -18,14 +18,16 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
+
 using AForge.Imaging.Filters;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -158,40 +160,44 @@ namespace Kinovea.ScreenManager
             // insert to the top of z-order
             m_Drawings.Insert(0, obj);
         }
-        public void ToXmlString(XmlTextWriter _xmlWriter)
+        public void WriteXml(XmlWriter w)
         {
-            _xmlWriter.WriteStartElement("Keyframe");
-
-            // Position
-            _xmlWriter.WriteStartElement("Position");
+            w.WriteStartElement("Position");
             string userTime = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_Position, TimeCodeFormat.Unknown, false);
-            _xmlWriter.WriteAttributeString("UserTime", userTime);
-            _xmlWriter.WriteString(m_Position.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Title
-            _xmlWriter.WriteStartElement("Title");
-            _xmlWriter.WriteString(Title);
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("Comment");
-            _xmlWriter.WriteString(m_CommentRtf);
-            _xmlWriter.WriteEndElement();
-
-            // Drawings
+            w.WriteAttributeString("UserTime", userTime);
+            w.WriteString(m_Position.ToString());
+            w.WriteEndElement();
+            
+            if(!string.IsNullOrEmpty(Title))
+                w.WriteElementString("Title", Title);
+            
+            if(!string.IsNullOrEmpty(m_CommentRtf))
+                w.WriteElementString("Comment", m_CommentRtf);
+            
             if (m_Drawings.Count > 0)
             {
-                _xmlWriter.WriteStartElement("Drawings");
+                w.WriteStartElement("Drawings");
                 foreach (AbstractDrawing drawing in m_Drawings)
                 {
-                    drawing.ToXmlString(_xmlWriter);
+                	IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
+                	if(serializableDrawing != null)
+                	{
+                	    // The XML name for this drawing should be stored in its [XMLType] C# attribute.
+                	    Type t = serializableDrawing.GetType();
+                        object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
+                    
+                        if(attributes.Length > 0)
+                        {
+                            string xmlName = ((XmlTypeAttribute)attributes[0]).TypeName;
+                            
+                            w.WriteStartElement(xmlName);
+                            serializableDrawing.WriteXml(w);
+                            w.WriteEndElement();
+                        }
+                	}
                 }
-                _xmlWriter.WriteEndElement();
+                w.WriteEndElement();
             }
-
-
-            // </Keyframe>
-            _xmlWriter.WriteEndElement();
         }
         public override int GetHashCode()
         {

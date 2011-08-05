@@ -19,50 +19,40 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Xml;
 
 namespace Kinovea.Services
 {
     public static class XmlHelper
     {
     	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly TypeConverter pointConverter = TypeDescriptor.GetConverter(typeof(Point));
+        private static readonly TypeConverter colorConverter = TypeDescriptor.GetConverter(typeof(Color));
         
-        public static Point PointParse(string _sPoint, char _delim)
+        
+        public static Point ParsePoint(string _sPoint)
         {
-            Point point = new Point(0, 0);
-
-            string[] split = _sPoint.Split(new Char[] { _delim });
+            Point point = Point.Empty;
             try
             {
-                point.X = int.Parse(split[0]);
-                point.Y = int.Parse(split[1]);
+                point = (Point)pointConverter.ConvertFromString(_sPoint);
             }
             catch (Exception)
             {
-                // Conversion issue
-                // return : (0, 0).
                 log.Error(String.Format("An error happened while parsing Point value. ({0}).", _sPoint));
             }
 
             return point;
         }
-        public static Color ColorParse(string _sColor, char _delim)
+        public static Color ParseColor(string _sColor)
         {
-            Color output = Color.White;
+            Color output = Color.Black;
 
-            string[] split = _sColor.Split(new Char[] { _delim });
             try
             {
-            	if(split.Length == 3)
-            	{
-            		// R;G;B
-	                output = Color.FromArgb(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]));
-            	}
-            	else if(split.Length == 4)
-            	{
-            		// A;R;G;B.
-	                output = Color.FromArgb(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), int.Parse(split[3]));
-            	}
+                output = (Color)colorConverter.ConvertFromString(_sColor);
             }
             catch (Exception)
             {
@@ -70,6 +60,13 @@ namespace Kinovea.Services
             }
 
             return output;
+        }
+        public static bool ParseBoolean(string _str)
+        {
+            // This function helps fix the discrepancy between:
+            // - Boolean.ToString() which returns "False" or "True",
+            // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" otherwise throws an exception.
+            return (_str != "false" && _str != "False" && _str != "0");
         }
     }
 }

@@ -39,7 +39,6 @@ namespace Kinovea.ScreenManager
         private DelegateDrawingUndrawn m_DoUndrawn;
         private Metadata m_Metadata;
         private DrawingChrono m_Chrono;
-        private int m_iTotalChronos;
 
         #region constructor
         public CommandAddChrono(DelegateScreenInvalidate _invalidate, DelegateDrawingUndrawn _undrawn, Metadata _Metadata)
@@ -47,43 +46,29 @@ namespace Kinovea.ScreenManager
             m_DoInvalidate = _invalidate;
         	m_DoUndrawn = _undrawn;
             m_Metadata = _Metadata;
-            m_iTotalChronos = m_Metadata.Chronos.Count;
-            
-            // Chrono (as all Drawings) are added to the list in reverse order.
-            m_Chrono = m_Metadata.Chronos[0];
+            m_Chrono = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingChrono;
         }
         #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
         public void Execute()
         {
-            // We need to differenciate between two cases :
-            // First execution : Work has already been done in the PlayerScreen (interactively).
-            // Redo : We need to bring back the drawing to life.
-
-            if (m_Metadata.Chronos.Count == m_iTotalChronos)
-            {
-                // first exec.
-                // Nothing to do.
-            }
-            else if (m_Metadata.Chronos.Count == m_iTotalChronos - 1)
-            {
-                //Redo.
-                m_Metadata.Chronos.Insert(0, m_Chrono);
-                m_DoInvalidate();
-            }
+        	// In the case of the first execution, the Chrono has already been added to the extra drawings list.
+        	if(m_Chrono != null)
+        	{
+        		if(m_Metadata.ExtraDrawings.IndexOf(m_Chrono) == -1)
+        		{
+        			m_Metadata.AddChrono(m_Chrono);
+        			m_DoInvalidate();
+        		}
+        	}
         }
         public void Unexecute()
         {
-            // Delete the last added chrono.
-            
-            // 1. Look for the keyframe
-            if (m_Metadata.Chronos.Count > 0)
+            // Delete this chrono.
+            if(m_Chrono != null)
             {
-                m_Metadata.Chronos.RemoveAt(0);
-                m_DoUndrawn();
+            	m_Metadata.ExtraDrawings.Remove(m_Chrono);
+            	m_DoUndrawn();
                 m_DoInvalidate();
             }
         }

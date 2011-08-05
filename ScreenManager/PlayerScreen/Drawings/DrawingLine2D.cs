@@ -21,40 +21,67 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingLine2D : AbstractDrawing
+    [XmlType ("Line")]
+    public class DrawingLine2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingToolType.Line2D; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get 
+			{
+        		// Rebuild the menu to get the localized text.
+				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+        		
+				mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
+				mnuShowMeasure.Checked = m_bShowMeasure;
+        		mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
+        		
+        		contextMenu.Add(mnuShowMeasure);
+        		contextMenu.Add(mnuSealMeasure);
+        		
+				return contextMenu; 
+			}
+		}
         public Metadata ParentMetadata
         {
             // get => unused.
             set { m_ParentMetadata = value; }
         }
-		public bool ShowMeasure 
-		{
-			get { return m_bShowMeasure; }
-			set { m_bShowMeasure = value; }
-		}
+        public bool ShowMeasure
+        {
+        	get { return m_bShowMeasure;}
+        	set { m_bShowMeasure = value;}
+        }
         #endregion
 
         #region Members
@@ -73,23 +100,37 @@ namespace Kinovea.ScreenManager
         private InfosFading m_InfosFading;
         
         // Decoration
-        private LineStyle m_PenStyle;
-        private LineStyle m_MemoPenStyle;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
         private KeyframeLabel m_LabelMeasure;
         private bool m_bShowMeasure;
         private Metadata m_ParentMetadata;
+        
+        // Context menu
+        private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame)
+        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
             m_StartPoint = new Point(x1, y1);
             m_EndPoint = new Point(x2, y2);
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
-            m_PenStyle = new LineStyle(1, LineShape.Simple, Color.DarkSlateGray);
-
+            
+            // Decoration
+            m_StyleHelper.Color = Color.DarkSlateGray;
+            m_StyleHelper.LineSize = 1;
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
+            
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             
@@ -97,6 +138,18 @@ namespace Kinovea.ScreenManager
             
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            
+            // Context menu
+            mnuShowMeasure.Click += new EventHandler(mnuShowMeasure_Click);
+			mnuShowMeasure.Image = Properties.Drawings.measure;
+			mnuSealMeasure.Click += new EventHandler(mnuSealMeasure_Click);
+			mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
+        }
+        public DrawingLine2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0,0,0,0,0,0, null)
+        {
+            ReadXml(_xmlReader, _scale);
+            m_ParentMetadata = _parent;
         }
         #endregion
 
@@ -112,8 +165,7 @@ namespace Kinovea.ScreenManager
                 m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
-                Pen penEdges = m_PenStyle.GetInternalPen(iPenAlpha);
-                
+                Pen penEdges = m_StyleHelper.GetPen(iPenAlpha, m_fStretchFactor);
                 _canvas.DrawLine(penEdges, m_RescaledStartPoint.X, m_RescaledStartPoint.Y, m_RescaledEndPoint.X, m_RescaledEndPoint.Y);
 
                 // Handlers
@@ -122,14 +174,13 @@ namespace Kinovea.ScreenManager
                 if (_bSelected) 
                     penEdges.Width++;
 
-                if(m_PenStyle.Shape == LineShape.Simple)
+                if(m_StyleHelper.LineEnding.StartCap != LineCap.ArrowAnchor)
                 {
                 	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(1));
-                	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(2));
                 }
-                else if(m_PenStyle.Shape == LineShape.EndArrow)
+                if(m_StyleHelper.LineEnding.EndCap != LineCap.ArrowAnchor)
                 {
-                	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(1));
+                	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(2));
                 }
                 
                 penEdges.Dispose();
@@ -145,7 +196,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
             // Move the specified handle to the specified coordinates.
             // In Line2D, handles are directly mapped to the endpoints of the line.
@@ -169,7 +220,7 @@ namespace Kinovea.ScreenManager
 
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             m_StartPoint.X += _deltaX;
@@ -214,33 +265,68 @@ namespace Kinovea.ScreenManager
             }
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
+        #endregion
+
+		#region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingLine2D");
+            _xmlReader.ReadStartElement();
             
-            // m_StartPoint
-            _xmlWriter.WriteStartElement("m_StartPoint");
-            _xmlWriter.WriteString(m_StartPoint.X.ToString() + ";" + m_StartPoint.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // m_EndPoint
-            _xmlWriter.WriteStartElement("m_EndPoint");
-            _xmlWriter.WriteString(m_EndPoint.X.ToString() + ";" + m_EndPoint.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            // Color, Style, Fading.
-            m_PenStyle.ToXml(_xmlWriter);
-            m_InfosFading.ToXml(_xmlWriter, false);
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Start":
+				        {
+				            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+				            m_StartPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            break;
+				        }
+					case "End":
+				        {
+    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            m_EndPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            break;
+				        }
+                    case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+				    case "MeasureVisible":
+				        m_bShowMeasure = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+				        break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
             
-            // Show measure.
-            _xmlWriter.WriteStartElement("MeasureIsVisible");
-            _xmlWriter.WriteString(m_bShowMeasure.ToString());
+			m_LabelMeasure.MoveTo(GetMiddlePoint());
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+            _xmlWriter.WriteElementString("Start", String.Format("{0};{1}", m_StartPoint.X, m_StartPoint.Y));
+            _xmlWriter.WriteElementString("End", String.Format("{0};{1}", m_EndPoint.X, m_EndPoint.Y));
+            _xmlWriter.WriteElementString("MeasureVisible", m_bShowMeasure ? "true" : "false");
+            
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();  
 
             if(m_bShowMeasure)
             {
-            	// This is only for spreadsheet export support. These values are not read at import.
+            	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Measure");
             	
             	double len = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit(m_StartPoint, m_EndPoint);
@@ -253,79 +339,15 @@ namespace Kinovea.ScreenManager
             	
             	_xmlWriter.WriteEndElement();
             }
-            
-            _xmlWriter.WriteEndElement();// </Drawing>
-        }
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
-        {
-            DrawingLine2D dl = new DrawingLine2D(0,0,0,0,0,0);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "m_StartPoint")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        dl.m_StartPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "m_EndPoint")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        dl.m_EndPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                    }
-                    else if (_xmlReader.Name == "LineStyle")
-                    {
-                        dl.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dl.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else if(_xmlReader.Name == "MeasureIsVisible")
-                    {
-                    	dl.m_bShowMeasure = bool.Parse(_xmlReader.ReadString());
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            dl.m_LabelMeasure.MoveTo(dl.GetMiddlePoint());
-            dl.RescaleCoordinates(dl.m_fStretchFactor, dl.m_DirectZoomTopLeft);
-            return dl;
-        }
+		}
+        #endregion
         
-        public override void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public override void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
+        #region IInitializable implementation
+        public void ContinueSetup(Point point)
+		{
+			MoveHandle(point, 2);
+		}
+        #endregion
         
         public override string ToString()
         {
@@ -338,13 +360,60 @@ namespace Kinovea.ScreenManager
             // Combine all relevant fields with XOR to get the Hash.
             int iHash = m_StartPoint.GetHashCode();
             iHash ^= m_EndPoint.GetHashCode();
-            iHash ^= m_PenStyle.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
 
             return iHash;
         }
+        
+        #region Context menu
+        private void mnuShowMeasure_Click(object sender, EventArgs e)
+		{
+			// Enable / disable the display of the measure for this line.
+			m_bShowMeasure = !m_bShowMeasure;
+			
+			// Use this setting as the default value for new lines.
+			DrawingToolLine2D.ShowMeasure = m_bShowMeasure;
+			
+			CallInvalidateFromMenu(sender);
+		}
+        private void mnuSealMeasure_Click(object sender, EventArgs e)
+		{
+			// display a dialog that let the user specify how many real-world-units long is this line.
+			
+			if(m_StartPoint.X != m_EndPoint.X || m_StartPoint.Y != m_EndPoint.Y)
+			{
+				if(!m_bShowMeasure)
+					m_bShowMeasure = true;
+				
+				DrawingToolLine2D.ShowMeasure = true;
+				
+				DelegatesPool dp = DelegatesPool.Instance();
+				if (dp.DeactivateKeyboardHandler != null)
+					dp.DeactivateKeyboardHandler();
+	
+				formConfigureMeasure fcm = new formConfigureMeasure(m_ParentMetadata, this);
+				ScreenManagerKernel.LocateForm(fcm);
+				fcm.ShowDialog();
+				fcm.Dispose();
+				
+				// Update traj for distance and speed after calibration.
+				m_ParentMetadata.UpdateTrajectoriesForKeyframes();
+				
+				CallInvalidateFromMenu(sender);
+				
+				if (dp.ActivateKeyboardHandler != null)
+					dp.ActivateKeyboardHandler();
+			}
+		}
         #endregion
-
+        
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+            m_Style.Bind(m_StyleHelper, "LineSize", "line size");
+            m_Style.Bind(m_StyleHelper, "LineEnding", "arrows");
+        }
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
             m_RescaledStartPoint = new Point((int)((double)(m_StartPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_StartPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));

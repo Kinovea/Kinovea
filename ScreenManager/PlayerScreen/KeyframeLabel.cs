@@ -22,6 +22,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -64,10 +65,6 @@ namespace Kinovea.ScreenManager
 			get { return m_TopLeft;}
 			set { m_TopLeft = value;}
 		}
-		public InfosTextDecoration TextDecoration
-        {
-        	get { return m_TextDecoration;}
-        }
 		public long Timestamp
         {
         	get { return m_iTimestamp; }
@@ -77,6 +74,11 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_iAttachIndex; }
 			set { m_iAttachIndex = value; }
+		}
+		public Color BackColor
+		{
+			get { return m_StyleHelper.Bicolor.Background; }
+			set { m_StyleHelper.Bicolor = new Bicolor(value); }
 		}
         #endregion
 
@@ -95,23 +97,26 @@ namespace Kinovea.ScreenManager
         private Point m_AttachLocation = new Point(0,0);			// The point we are attached to (image coordinates).
         private Point m_AttachLocationRescaled = new Point(0,0);	// The point we are attached to (scaled coordinates).
         
-        private InfosTextDecoration m_TextDecoration;
-        
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction
-        public KeyframeLabel(Color _color)
-        	: this(new Point(0,0), _color)
-        {
-        }
+        public KeyframeLabel() : this(Point.Empty, Color.Black){}
         public KeyframeLabel(Point _attachPoint, Color _color)
         {
         	m_AttachLocation = _attachPoint;
         	m_TopLeft = new Point(_attachPoint.X - 20, _attachPoint.Y - 50);
         	
         	m_Text = "Label";
-        	m_TextDecoration = new InfosTextDecoration("Arial", 8, FontStyle.Bold, Color.White, Color.FromArgb(160, _color));
+        	m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
+        	m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, _color));
         	m_fStretchFactor = 1.0;
+        }
+        public KeyframeLabel(XmlReader _xmlReader, PointF _scale)
+            : this(Point.Empty, Color.Black)
+        {
+            ReadXml(_xmlReader, _scale);
         }
         #endregion
 
@@ -133,108 +138,37 @@ namespace Kinovea.ScreenManager
         {
             int iHash = 0;
             
-            iHash ^= m_TextDecoration.GetHashCode();
+            iHash ^= m_StyleHelper.GetHashCode();
             iHash ^= m_TopLeft.GetHashCode();
             
             return iHash;
         }
-        public void ToXml(XmlTextWriter _xmlWriter, long _iBeginTimeStamp)
-        {
-            _xmlWriter.WriteStartElement("KeyframeLabel");
-
-            _xmlWriter.WriteStartElement("SpacePosition");
-            _xmlWriter.WriteString(m_TopLeft.X.ToString() + ";" + m_TopLeft.Y.ToString());
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("TimePosition");
-            _xmlWriter.WriteString(m_iTimestamp.ToString());
-            _xmlWriter.WriteEndElement();
-
-            m_TextDecoration.ToXml(_xmlWriter);
-
-            // </KeyframeLabel>
-            _xmlWriter.WriteEndElement();
-        }
-        public static KeyframeLabel FromXml(XmlTextReader _xmlReader, bool _relative, PointF _scale)
-        {
-            // Read all tags between <KeyframeLabel> and </KeyframeLabel> and fills up an object.
-
-            KeyframeLabel kfl = new KeyframeLabel(Color.Black);
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "SpacePosition")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-                        
-                        if(p.X < 0 || p.Y < 0)
-                        {
-                        	// Older version with relative positionning of the mini label.
-                        	kfl.TopLeft = new Point(0,0);
-                        }
-                        else
-                        {
-                        	Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-                        
-                        	// We set the top left, and we will set the attach point later.
-                        	kfl.TopLeft = adapted;
-                        }
-                    }
-                    else if (_xmlReader.Name == "TimePosition")
-                    {
-                        // Time was stored absolute.
-                        kfl.m_iTimestamp = long.Parse(_xmlReader.ReadString());
-                    }
-                    else if (_xmlReader.Name == "TextDecoration")
-                    {
-                    	kfl.m_TextDecoration = InfosTextDecoration.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "KeyframeLabel")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            return kfl;
-        }		
         public void Draw(Graphics _canvas, double _fStretchFactor, Point _DirectZoomTopLeft, double _fOpacityFactor)
         {
         	m_fStretchFactor = _fStretchFactor;
         	
             // Draw background rounded rectangle.
             // all sizes are based on font size.
-            Font f = m_TextDecoration.GetInternalFont((float)m_fStretchFactor);
+            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
             m_BackgroundSize = _canvas.MeasureString( " " + m_Text + " ", f);
             int radius = (int)(f.Size / 2);
             
             RescaleCoordinates(m_fStretchFactor, _DirectZoomTopLeft);
         	
         	// Small dot and connector.        	
-        	Color fadingColor = m_TextDecoration.GetFadingBackColor(_fOpacityFactor);
-            Color moreFadingColor = m_TextDecoration.GetFadingBackColor(_fOpacityFactor/4);
-            SolidBrush fillBrush = new SolidBrush(fadingColor);
-            Pen p = new Pen(moreFadingColor); 
+        	SolidBrush fillBrush = m_StyleHelper.GetBackgroundBrush((int)(_fOpacityFactor*255));
+        	Pen p = m_StyleHelper.GetBackgroundPen((int)(_fOpacityFactor*64));
+            
             _canvas.FillEllipse(fillBrush, m_AttachLocationRescaled.X - 2, m_AttachLocationRescaled.Y - 2, 4, 4);
             _canvas.DrawLine(p, m_AttachLocationRescaled.X, m_AttachLocationRescaled.Y, m_LabelBackground.Location.X + m_BackgroundSize.Width / 2, m_LabelBackground.Location.Y + m_BackgroundSize.Height / 2);
             p.Dispose();
             fillBrush.Dispose();
             
             // Background
-        	m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_TextDecoration.BackColor);
+        	m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
         	
         	// Text
-        	SolidBrush fontBrush = new SolidBrush(m_TextDecoration.GetFadingForeColor(_fOpacityFactor));
+        	SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor*255));
         	_canvas.DrawString(" " + m_Text, f, fontBrush, m_LabelBackground.TextLocation);
         	fontBrush.Dispose();
         	f.Dispose();
@@ -257,6 +191,35 @@ namespace Kinovea.ScreenManager
         public void MoveLabel(int dx, int dy)
         {
         	m_TopLeft = new Point(m_TopLeft.X + dx, m_TopLeft.Y + dy);
+        }
+        public void WriteXml(XmlWriter _xmlWriter)
+        {
+            _xmlWriter.WriteElementString("SpacePosition", String.Format("{0};{1}", m_TopLeft.X, m_TopLeft.Y));
+            _xmlWriter.WriteElementString("TimePosition", m_iTimestamp.ToString());
+        }
+        public void ReadXml(XmlReader _xmlReader, PointF _scale)
+        {
+             _xmlReader.ReadStartElement();
+             
+             while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "SpacePosition":
+				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+				        m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        break;
+					case "TimePosition":
+                        m_iTimestamp = _xmlReader.ReadElementContentAsLong();
+                        break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+             
+            _xmlReader.ReadEndElement();
         }
         #endregion
         
