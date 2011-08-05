@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -166,17 +167,30 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
-    <Compile Include="PlayerScreen\ColorProfile.cs" />
+    <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
+    <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
+    <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
+    <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementLineSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementPenSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleElementTrackShape.cs" />
+    <Compile Include="PlayerScreen\Drawings\StyleHelper.cs" />
+    <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
-    <Compile Include="PlayerScreen\Import\DartfishLibraryItemParser.cs" />
-    <Compile Include="PlayerScreen\Import\DartfishStoryboardParser.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingAngle2D.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCross2D.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingLine2D.cs" />
@@ -190,13 +204,10 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolPencil.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
-    <Compile Include="PlayerScreen\Import\IMetadataParser.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
     <Compile Include="PlayerScreen\CalibrationHelper.cs" />
-    <Compile Include="PlayerScreen\LineStyle.cs">
-    </Compile>
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
     <Compile Include="PlayerScreen\Plane3D.cs" />
@@ -217,6 +228,14 @@
     <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
+      <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
+      <DependentUpon>FormToolPresets.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
@@ -237,29 +256,11 @@
     <Compile Include="PlayerScreen\UserInterface\FormConfigureFading.Designer.cs">
       <DependentUpon>FormConfigureFading.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureGrids.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureGrids.Designer.cs">
-      <DependentUpon>FormConfigureGrids.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.Designer.cs">
       <DependentUpon>FormConfigureChrono.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing.Designer.cs">
-      <DependentUpon>FormConfigureDrawing.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormColorProfile.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormColorProfile.Designer.cs">
-      <DependentUpon>FormColorProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigurePdf.cs">
       <SubType>Form</SubType>
@@ -325,12 +326,6 @@
     </Compile>
     <Compile Include="PlayerScreen\Magnifier.cs">
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\StaticStylePicker.Designer.cs">
-      <DependentUpon>StaticStylePicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\KeyframeBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -349,6 +344,9 @@
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
+    <Compile Include="Properties\Drawings.Designer.cs">
+      <DependentUpon>Drawings.resx</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\ColorPicker.cs" />
     <Compile Include="UserInterface\ColorPicker.Designer.cs">
       <DependentUpon>ColorPicker.cs</DependentUpon>
@@ -444,6 +442,9 @@
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.tr.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.zh-CHS.resx" />
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing2.resx">
+      <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
     </EmbeddedResource>
@@ -456,8 +457,17 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
       <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormToolPresets.resx">
+      <DependentUpon>FormToolPresets.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Drawings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
+      <DependentUpon>FormColorPicker.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -527,93 +537,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\closegrey.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\sync5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\swap4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqnext6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqfirst7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqprev5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqlast5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqsync3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqplay16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\activepencil.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqbackdock.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqbumperleft.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqbumperright.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqcursor.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqhandlerleft2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqhandlerright3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqmiddlebar.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqpause6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\liqplay17.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\playmulti3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\playonce4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\primselec_locked3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\primselec_unlocked3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\resizer4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkBack5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkCursor7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkDecrease2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SpeedTrkIncrease2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MenuFileNewIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Languages\ScreenManagerLang.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -640,21 +563,9 @@
       <DependentUpon>FormConfigureFading.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureGrids.resx">
-      <DependentUpon>FormConfigureGrids.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureChrono.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureChrono.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing.resx">
-      <DependentUpon>FormConfigureDrawing.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormColorProfile.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormColorProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigurePdf.resx">
       <SubType>Designer</SubType>
@@ -692,10 +603,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>FrequencyViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\StaticStylePicker.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>StaticStylePicker.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\ThumbListView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListView.cs</DependentUpon>
@@ -704,114 +611,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\close15x15.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\comment20x20.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\TextToolIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\dock16x16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\undock16x16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\comments2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\angle5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\line6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\move.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\screencap5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\snaprafale.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\outward4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\filesave.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\folder_new.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SwatchIcon3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\import6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\diaporama.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\pdfexport.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handlersetright.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handlersetleft.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\chrono.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Spectrum.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Spectrum2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifier2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifierActive2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\chrono5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layout1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layoutB.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layoutC2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\layoutD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\missing3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\plane4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cross5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handopen24b.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\handclose24c.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\resettimescale.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

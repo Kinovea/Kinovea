@@ -60,34 +60,13 @@ namespace Kinovea.ScreenManager
         #endregion
         
 		#region Concrete Public Methods
-		public void ToXml(XmlTextWriter _xmlWriter, Metadata _ParentMetadata, Point _origin)
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+			_xmlWriter.WriteString(String.Format("{0};{1};{2}", X, Y, T));
+		}
+		public void ReadXml(XmlReader _xmlReader)
         {
-        	// In addition to the native data (the one that will be used when reading back the trajectory.)
-        	// we also add the data in user units as attributes.
-        	// This will be used when exporting to spreadsheet.
-        	
-            _xmlWriter.WriteStartElement("TrackPosition");
-        	
-            // Data in user units.
-            // - The origin of the coordinates system is given as parameter.
-            // - X goes left (same than internal), Y goes up (opposite than internal).
-            double userX = _ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)X - (double)_origin.X);
-            double userY = _ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)_origin.Y - (double)Y);
-            string userT = _ParentMetadata.m_TimeStampsToTimecodeCallback(T, TimeCodeFormat.Unknown, false);
-			
-            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
-            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userX));
-            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", userY));
-            _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userY));
-            _xmlWriter.WriteAttributeString("UserTime", userT);
-            
-			// Native data.
-			_xmlWriter.WriteString(X.ToString() + ";" + Y.ToString() + ";" + T.ToString());
-            _xmlWriter.WriteEndElement();
-        }
-		public void FromXml(XmlReader _xmlReader)
-        {
-            string xmlString = _xmlReader.ReadString();
+            string xmlString = _xmlReader.ReadElementContentAsString();
 
             string[] split = xmlString.Split(new Char[] { ';' });
             try
@@ -99,7 +78,7 @@ namespace Kinovea.ScreenManager
             catch (Exception)
             {
                 // Conversion issue
-                // will be : (0, 0, 0).
+                // will default to {0,0,0}.
             }
         }
 		public Point ToPoint()

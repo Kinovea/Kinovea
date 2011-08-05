@@ -427,22 +427,14 @@ namespace Kinovea.ScreenManager
 		private void FlushDrawingsOnGraphics(Graphics _canvas)
 		{
 			// Commit drawings on image.
-			// In capture mode, all drawings are gathered in a virtual key image at m_Metadata[0].
-			
 			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
 
-			// 1. 2D Grid
-			if (m_Metadata.Grid.Visible)
+			foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
 			{
-				m_Metadata.Grid.Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, m_CoordinateSystem.Location);
+				ad.Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, false, 0, m_CoordinateSystem.Location);
 			}
-
-			// 2. 3D Plane
-			if (m_Metadata.Plane.Visible)
-			{
-				m_Metadata.Plane.Draw(_canvas, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, m_CoordinateSystem.Location);
-			}
-
+			
+			// In capture mode, all drawings are gathered in a virtual key image at m_Metadata[0].
 			// Draw all drawings in reverse order to get first object on the top of Z-order.
 			for (int i = m_Metadata[0].Drawings.Count - 1; i >= 0; i--)
 			{

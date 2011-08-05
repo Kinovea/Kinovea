@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -106,12 +107,6 @@
     </Compile>
     <Compile Include="UserInterface\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserInterface\FormPreferences.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserInterface\FormPreferences.Designer.cs">
-      <DependentUpon>FormPreferences.cs</DependentUpon>
     </Compile>
     <Compile Include="Languages\RootLang.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -320,10 +315,6 @@
       <DependentUpon>FormAbout.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\FormPreferences.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormPreferences.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\%24this.Icon.ico" />
     <EmbeddedResource Include="UserInterface\SupervisorUserInterface.resx">
       <DependentUpon>SupervisorUserInterface.cs</DependentUpon>
@@ -387,9 +378,9 @@
     <None Include="Resources\videos.png" />
   </ItemGroup>
   <ItemGroup>
-	<!-- List of extra files to copy to output dir -->
+    <!-- List of extra files to copy to output dir -->
     <SVGItem Include="$(MSBuildProjectDirectory)\..\Tools\svg\*.svg" />
-	<XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\xsl transforms\Kva to Spreadsheets\*.xsl" />
+    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\xsl transforms\Kva to Spreadsheets\*.xsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -398,13 +389,13 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-	<!-- Clean the svg and xslt directories, and copy files over -->
-	<RemoveDir Directories="$(OutputPath)\guides" />
-  	<MakeDir Directories = "$(OutputPath)\guides" Condition = "!Exists('$(OutputPath)\guides')" />
+    <!-- Clean the svg and xslt directories, and copy files over -->
+    <RemoveDir Directories="$(OutputPath)\guides" />
+    <MakeDir Directories="$(OutputPath)\guides" Condition="!Exists('$(OutputPath)\guides')" />
     <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)\guides" />
 	
-  	<RemoveDir Directories="$(OutputPath)\xslt" />
-  	<MakeDir Directories = "$(OutputPath)\xslt" Condition = "!Exists('$(OutputPath)\xslt')" />
+    <RemoveDir Directories="$(OutputPath)\xslt" />
+    <MakeDir Directories="$(OutputPath)\xslt" Condition="!Exists('$(OutputPath)\xslt')" />
     <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)\xslt" />
   </Target>
 </Project>

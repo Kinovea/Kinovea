@@ -29,7 +29,6 @@ namespace Kinovea.ScreenManager
 {
     public class CommandDeleteChrono : IUndoableCommand
     {
-
         public string FriendlyName
         {
         	get { return ScreenManagerLang.mnuChronoDelete; }
@@ -37,45 +36,33 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreenUserInterface m_psui;
         private Metadata m_Metadata;
-        private int m_iTotalChronos;
         private DrawingChrono m_Chrono;
-        private int m_iChronoIndex;
 
         #region constructor
         public CommandDeleteChrono(PlayerScreenUserInterface _psui, Metadata _Metadata)
         {
             m_psui = _psui;
             m_Metadata = _Metadata;
-            m_iChronoIndex = m_Metadata.SelectedChrono;
-            m_iTotalChronos = m_Metadata.Chronos.Count;
-            m_Chrono = m_Metadata.Chronos[m_iChronoIndex];
+            m_Chrono = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingChrono;
         }
         #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
         public void Execute()
         {
-            // It should work because all add/delete actions modify the undo stack.
-            // When we come back here for a redo, we should be in the exact same state
-            // as the first time.
-            // Even if drawings were added in between, we can't come back here
-            // before all those new drawings have been unstacked from the m_CommandStack stack.
-
-            m_Metadata.Chronos.RemoveAt(m_iChronoIndex);
-            m_Metadata.SelectedChrono = -1;
-            m_psui.pbSurfaceScreen.Invalidate();
+            if(m_Chrono != null)
+            {
+            	m_Metadata.ExtraDrawings.Remove(m_Chrono);
+            	m_psui.pbSurfaceScreen.Invalidate();
+            }
         }
         public void Unexecute()
         {
             // Recreate the drawing.
-
-            // 1. Look for the keyframe
-            // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
-            // We must still be able to undo any Add action that where performed before.
-            m_Metadata.Chronos.Insert(m_iChronoIndex, m_Chrono);
-            m_psui.pbSurfaceScreen.Invalidate();
+			if(m_Chrono != null)
+            {
+            	m_Metadata.ExtraDrawings.Add(m_Chrono);
+            	m_psui.pbSurfaceScreen.Invalidate();
+            }
         }
     }
 }

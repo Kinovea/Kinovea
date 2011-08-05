@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<KinoveaVideoAnalysis>
+  <FormatVersion>2.0</FormatVersion>
+  <Producer>Kinovea.0.8.16</Producer>
+  <OriginalFilename>testdrawings</OriginalFilename>
+  <GlobalTitle> </GlobalTitle>
+  <ImageSize>512;384</ImageSize>
+  <AverageTimeStampsPerFrame>1</AverageTimeStampsPerFrame>
+  <FirstTimeStamp>0</FirstTimeStamp>
+  <SelectionStart>0</SelectionStart>
+  <CalibrationHelp>
+    <PixelToUnit>1</PixelToUnit>
+    <LengthUnit UserUnitLength="px">Pixels</LengthUnit>
+    <CoordinatesOrigin>-1;-1</CoordinatesOrigin>
+  </CalibrationHelp>
+  <Keyframes>
+    <Keyframe>
+      <Position UserTime="0:00:00:00">0</Position>
+      <Title>0:00:00:00</Title>
+      <Drawings>
+        <Angle>
+          <PointO>224;205</PointO>
+          <PointA>298;256</PointA>
+          <PointB>224;155</PointB>
+          <DrawingStyle>
+            <Color Key="line color">
+              <Value>255;255;0;0</Value>
+            </Color>
+          </DrawingStyle>
+          <Measure UserAngle="124" />
+        </Angle>
+      </Drawings>
+    </Keyframe>
+  </Keyframes>
+</KinoveaVideoAnalysis>

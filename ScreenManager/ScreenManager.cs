@@ -131,8 +131,6 @@ namespace Kinovea.ScreenManager
         public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
         public ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
         public ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuGrid = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuGridPerspective = new ToolStripMenuItem();
         public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
         
         public ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
@@ -484,23 +482,6 @@ namespace Kinovea.ScreenManager
 
             BuildSvgMenu();
             
-            // Grid
-            mnuGrid.Tag = new ItemResourceInfo(resManager, "mnuGrid");
-            mnuGrid.Text = ((ItemResourceInfo)mnuGrid.Tag).resManager.GetString(((ItemResourceInfo)mnuGrid.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuGrid.Image = Properties.Resources.grid2;
-            mnuGrid.Checked = false;
-            mnuGrid.ShortcutKeys = Keys.Control | Keys.G;
-            mnuGrid.Click += new EventHandler(mnuGrid_OnClick);
-            mnuGrid.MergeAction = MergeAction.Append;
-
-            // 3D Plane
-            mnuGridPerspective.Tag = new ItemResourceInfo(resManager, "mnu3DPlane");
-            mnuGridPerspective.Text = ((ItemResourceInfo)mnuGridPerspective.Tag).resManager.GetString(((ItemResourceInfo)mnuGridPerspective.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuGridPerspective.Checked = false;
-            mnuGridPerspective.ShortcutKeys = Keys.Control | Keys.P;
-            mnuGridPerspective.Click += new EventHandler(mnu3DPlane_OnClick);
-            mnuGridPerspective.MergeAction = MergeAction.Append;
-            
              // Coordinate Axis
             mnuCoordinateAxis.Tag = new ItemResourceInfo(resManager, "dlgConfigureTrajectory_SetOrigin");
             mnuCoordinateAxis.Text = ((ItemResourceInfo)mnuCoordinateAxis.Tag).resManager.GetString(((ItemResourceInfo)mnuCoordinateAxis.Tag).strText, Thread.CurrentThread.CurrentUICulture);
@@ -526,8 +507,6 @@ namespace Kinovea.ScreenManager
                                                    		//m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
                                                    		//new ToolStripSeparator(), 
                                                    		mnuSVGTools,
-                                                   		mnuGrid,
-                                                   		mnuGridPerspective,
                                                    		mnuCoordinateAxis
                                                  		});
             #endregion
@@ -1415,6 +1394,19 @@ namespace Kinovea.ScreenManager
         		
 			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
+        public static void LocateForm(Form _form)
+		{
+			// A helper function to locate the dialog box right under the mouse, or center of screen.
+			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width || 
+			    Cursor.Position.Y + _form.Height >= SystemInformation.PrimaryMonitorSize.Height)
+			{
+				_form.StartPosition = FormStartPosition.CenterScreen;
+			}
+			else
+			{
+				_form.Location = new Point(Cursor.Position.X - (_form.Width / 2), Cursor.Position.Y - 20);
+			}
+		}
         
         #region Menu organization
         public void OrganizeMenus()
@@ -1528,21 +1520,17 @@ namespace Kinovea.ScreenManager
                     mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
-                    mnuExportTEXT.Enabled = player.FrameServer.Metadata.Tracks.Count > 0;
+                    mnuExportTEXT.Enabled = player.FrameServer.Metadata.HasTrack();
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Image
                     mnuDeinterlace.Enabled = true;
                     mnuMirror.Enabled = true;
                     mnuSVGTools.Enabled = m_bHasSvgFiles;
-                    mnuGrid.Enabled = true;
-                    mnuGridPerspective.Enabled = true;
                     mnuCoordinateAxis.Enabled = true;
                   	
                     mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Checked = player.Mirrored;
-                    mnuGrid.Checked = player.ShowGrid;
-                    mnuGridPerspective.Checked = player.Show3DPlane;
                     
                     if(!player.IsSingleFrame)
                     {
@@ -1576,15 +1564,11 @@ namespace Kinovea.ScreenManager
                     mnuDeinterlace.Enabled = false;
                     mnuMirror.Enabled = false;
                     mnuSVGTools.Enabled = m_bHasSvgFiles;
-                    mnuGrid.Enabled = true;
-                    mnuGridPerspective.Enabled = true;
                     mnuCoordinateAxis.Enabled = false;
                   	
                     mnuDeinterlace.Checked = false;
                     mnuMirror.Checked = false;
-                    mnuGrid.Checked = cs.ShowGrid;
-                    mnuGridPerspective.Checked = cs.Show3DPlane;
-                    
+                   
                     ConfigureImageFormatMenus(cs);
                     
                     // Motion
@@ -1619,14 +1603,10 @@ namespace Kinovea.ScreenManager
                 mnuDeinterlace.Enabled = false;
 				mnuMirror.Enabled = false;
 				mnuSVGTools.Enabled = false;
-				mnuGrid.Enabled = false;
-				mnuGridPerspective.Enabled = false;
 				mnuCoordinateAxis.Enabled = false;
 				mnuDeinterlace.Checked = false;
 				mnuMirror.Checked = false;
-                mnuGrid.Checked = false;
-                mnuGridPerspective.Checked = false;
-				
+                
 				ConfigureImageFormatMenus(null);
 				
 				// Motion
@@ -2147,15 +2127,7 @@ namespace Kinovea.ScreenManager
             {
                 if (m_ActiveScreen is PlayerScreen)
                 {
-                    if (((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.HasData)
-                    {
-                        // TODO : Merge mechanics.
-                        LoadAnalysis();
-                    }
-                    else
-                    {
-                        LoadAnalysis();
-                    }
+                    LoadAnalysis();
                 }
             }
         }
@@ -2173,8 +2145,8 @@ namespace Kinovea.ScreenManager
                 string filePath = openFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                    ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.LoadFromFile(filePath);
-                    ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();
+                   ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.LoadFromFile(filePath);
+                   ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();    
                 }
             }
         }
@@ -2837,36 +2809,6 @@ namespace Kinovea.ScreenManager
     		{
     			m_ActiveScreen.AddImageDrawing(_filePath, _bIsSVG);
     		}	
-        }
-        private void mnuGrid_OnClick(object sender, EventArgs e)
-        {
-        	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
-        	{
-        		mnuGrid.Checked = !mnuGrid.Checked;
-        		if(m_ActiveScreen is PlayerScreen)
-        		{
-        			((PlayerScreen)m_ActiveScreen).ShowGrid = mnuGrid.Checked;
-        		}
-        		else if(m_ActiveScreen is CaptureScreen)
-        		{
-        			((CaptureScreen)m_ActiveScreen).ShowGrid = mnuGrid.Checked;
-        		}
-        	}
-        }
-        private void mnu3DPlane_OnClick(object sender, EventArgs e)
-        {
-        	if (m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
-        	{
-        		mnuGridPerspective.Checked = !mnuGridPerspective.Checked;
-        		if(m_ActiveScreen is PlayerScreen)
-        		{
-        			((PlayerScreen)m_ActiveScreen).Show3DPlane = mnuGridPerspective.Checked;
-        		}
-        		else if(m_ActiveScreen is CaptureScreen)
-        		{
-        			((CaptureScreen)m_ActiveScreen).Show3DPlane = mnuGridPerspective.Checked;
-        		}
-        	}
         }
         private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
         {
@@ -4100,19 +4042,6 @@ namespace Kinovea.ScreenManager
 		Reverse,
 		Sandbox,
 		NumberOfVideoFilters
-	};	
-	
-	public enum DrawingToolType
-	{
-		Pointer,
-		Line2D,
-		Cross2D,
-		Angle2D,
-		Pencil,
-		Text,
-		Chrono,
-		Circle,
-		NumberOfDrawingTools
 	};
     #endregion
 

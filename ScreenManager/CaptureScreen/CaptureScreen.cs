@@ -76,17 +76,7 @@ namespace Kinovea.ScreenManager
 			get { return m_FrameServer.AspectRatio; }
 			set { m_FrameServer.AspectRatio = value; }
 		}
-		public bool ShowGrid
-        {
-            get { return m_FrameServer.Metadata.Grid.Visible; }
-            set { m_FrameServer.Metadata.Grid.Visible = value;}
-        }
-        public bool Show3DPlane
-        {
-            get { return m_FrameServer.Metadata.Plane.Visible; }
-            set { m_FrameServer.Metadata.Plane.Visible = value;}
-        }
-        public FrameServerCapture FrameServer
+		public FrameServerCapture FrameServer
 		{
 			get { return m_FrameServer; }
 			set { m_FrameServer = value; }

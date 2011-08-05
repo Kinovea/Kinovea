@@ -77,6 +77,7 @@ namespace Kinovea.Services
         private long m_iReferenceTimestamp;
         private long m_iAverageTimeStampsPerFrame;
         private float m_fMasterFactor = 1.0f;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Construction
@@ -120,75 +121,43 @@ namespace Kinovea.Services
             this.AverageTimeStampsPerFrame = _origin.AverageTimeStampsPerFrame;
             this.MasterFactor = _origin.MasterFactor;
         }
-        public void ToXml(XmlTextWriter _xmlWriter, bool _bMainDefault)
+        public void WriteXml(XmlWriter _xmlWriter)
         {
-            // Persist this particular Fading infos to xml.
-            // if _bMainDefault is true, this is the preferences object.
-            // then we don't need to persist everything.
-
-            _xmlWriter.WriteStartElement("InfosFading");
-            
-            _xmlWriter.WriteStartElement("Enabled");
-            _xmlWriter.WriteString(m_bEnabled.ToString());
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("Frames");
-            _xmlWriter.WriteString(m_iFadingFrames.ToString());
-            _xmlWriter.WriteEndElement();
-
-            _xmlWriter.WriteStartElement("AlwaysVisible");
-            _xmlWriter.WriteString(m_bAlwaysVisible.ToString());
-            _xmlWriter.WriteEndElement();
-            
-            if (!_bMainDefault)
-            {
-                _xmlWriter.WriteStartElement("UseDefault");
-                _xmlWriter.WriteString(m_bUseDefault.ToString());
-                _xmlWriter.WriteEndElement();
-                // We shouldn't have to write the reference timestamp and avg fpts...
-            }
-
-            // </InfosFading>
-            _xmlWriter.WriteEndElement();
+            _xmlWriter.WriteElementString("Enabled", m_bEnabled ? "true" : "false");
+            _xmlWriter.WriteElementString("Frames", m_iFadingFrames.ToString());
+            _xmlWriter.WriteElementString("AlwaysVisible", m_bAlwaysVisible ? "true" : "false");
+            _xmlWriter.WriteElementString("UseDefault", m_bUseDefault ? "true" : "false");
         }
-        public void FromXml(XmlReader _xmlReader)
+        public void ReadXml(XmlReader _xmlReader)
         {
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Enabled")
-                    {
-                        m_bEnabled = bool.Parse(_xmlReader.ReadString());
-                    }
-                    else if (_xmlReader.Name == "Frames")
-                    {
-                        m_iFadingFrames = int.Parse(_xmlReader.ReadString());
-                    }
-                    else if (_xmlReader.Name == "UseDefault")
-                    {
-                        m_bUseDefault = bool.Parse(_xmlReader.ReadString());
-                    }
-                    else if (_xmlReader.Name == "AlwaysVisible")
-                    {
-                        m_bAlwaysVisible = bool.Parse(_xmlReader.ReadString());
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "InfosFading")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            // Sanity check.
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Enabled":
+				        m_bEnabled = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+					case "Frames":
+				        m_iFadingFrames = _xmlReader.ReadElementContentAsInt();
+                        break;
+					case "UseDefault":
+				        m_bUseDefault = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+                    case "AlwaysVisible":
+						m_bAlwaysVisible = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+						break;
+				    default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+			
+			// Sanity check.
             if (m_iFadingFrames < 1) m_iFadingFrames = 1;
         }
         #endregion

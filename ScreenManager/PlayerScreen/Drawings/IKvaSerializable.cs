@@ -1,5 +1,6 @@
+#region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright © Joan Charmant 2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,18 +16,19 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
+#endregion
 using System;
 using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// Interface for all metadata parsers.
+	/// Defines methods to export and import a drawing's data to KVA XML format.
 	/// </summary>
-	public interface IMetadataParser
+	public interface IKvaSerializable
 	{
-		void Parse(XmlTextReader _xmlReader, Metadata _metadata);
+		void WriteXml(XmlWriter _xmlWriter);
+		//void ReadXml(XmlReader _xmlReader);
 	}
 }

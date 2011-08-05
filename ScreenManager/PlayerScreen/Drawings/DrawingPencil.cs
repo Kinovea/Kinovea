@@ -25,45 +25,55 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Serialization;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingPencil : AbstractDrawing
+    [XmlType ("Pencil")]
+    public class DrawingPencil : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
-
         #region Properties
-        public override DrawingToolType ToolType
+        public DrawingStyle DrawingStyle
         {
-        	get { return DrawingToolType.Pencil; }
+        	get { return m_Style;}
         }
         public override InfosFading infosFading
         {
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
+        public override Capabilities Caps
+		{
+			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+		}
+        public override List<ToolStripMenuItem> ContextMenu
+		{
+			get { return null; }
+		}
         #endregion
 
         #region Members
         
         // Core & decoration
         private List<Point> m_PointList;
-        private LineStyle m_PenStyle;
-        private LineStyle m_MemoPenStyle;
+        private StyleHelper m_StyleHelper = new StyleHelper();
+        private DrawingStyle m_Style;
         private double m_fStretchFactor;
         private InfosFading m_InfosFading;
         private Point m_DirectZoomTopLeft;
         // Computed
         private List<Point> m_RescaledPointList;
+        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingPencil() : this(0, 0, 0, 0, 0, 0)
-        {
-        }
-        public DrawingPencil(int x1, int y1, int x2, int y2, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        public DrawingPencil(int x1, int y1, int x2, int y2, long _iTimestamp, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_PointList = new List<Point>();
             m_PointList.Add(new Point(x1, y1));
@@ -73,7 +83,13 @@ namespace Kinovea.ScreenManager
             m_fStretchFactor = 1.0;
             m_DirectZoomTopLeft = new Point(0, 0);
             
-            m_PenStyle = new LineStyle(1, LineShape.Simple, Color.Black);
+            m_StyleHelper.Color = Color.Black;
+            m_StyleHelper.LineSize = 1;
+            if(_preset != null)
+            {
+                m_Style = _preset.Clone();
+                BindStyle();
+            }
             
             // Computed
             m_RescaledPointList = new List<Point>();
@@ -81,6 +97,11 @@ namespace Kinovea.ScreenManager
             m_RescaledPointList.Add(RescalePoint(new Point(x2, y2), m_fStretchFactor));
 
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        public DrawingPencil(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+            : this(0, 0, 0, 0, 0, 0, null)
+        {
+            ReadXml(_xmlReader, _scale);
         }
         #endregion
 
@@ -97,25 +118,21 @@ namespace Kinovea.ScreenManager
                 m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
                 RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 
-                float fPenWidth = (float)((double)m_PenStyle.Size * m_fStretchFactor);
-                if (fPenWidth < 1) fPenWidth = 1;
-
-                Pen penLine = m_PenStyle.GetInternalPen(iPenAlpha, fPenWidth);
-                
                 Point[] points = new Point[m_RescaledPointList.Count];
                 for (int i = 0; i < points.Length; i++)
                 {
                     points[i] = new Point(m_RescaledPointList[i].X, m_RescaledPointList[i].Y);
                 }
-                _canvas.DrawCurve(penLine, points, 0.5f);
                 
+                Pen penLine = m_StyleHelper.GetPen(iPenAlpha, m_fStretchFactor);
+                _canvas.DrawCurve(penLine, points, 0.5f);
                 penLine.Dispose();
             }
         }
-        public override void MoveHandleTo(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber)
         {
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY)
+        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             // _delatX and _delatY are mouse delta already descaled.
             for(int i=0;i<m_PointList.Count;i++)
@@ -144,33 +161,87 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void ToXmlString(XmlTextWriter _xmlWriter)
-        {
-            _xmlWriter.WriteStartElement("Drawing");
-            _xmlWriter.WriteAttributeString("Type", "DrawingPencil");
+        #endregion
 
-            // Points
-            _xmlWriter.WriteStartElement("PointList");
+		#region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        {
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "PointList":
+				        ParsePointList(_xmlReader, _scale);
+                        break;
+					case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+					default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+            
+            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+        }
+        private void ParsePointList(XmlReader _xmlReader, PointF _scale)
+        {
+            m_PointList.Clear();
+            m_RescaledPointList.Clear();
+            
+            _xmlReader.ReadStartElement();
+            
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+                if(_xmlReader.Name == "Point")
+				{
+                    Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                    Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                    m_PointList.Add(adapted);
+                    m_RescaledPointList.Add(adapted);
+                }
+                else
+                {
+                    string unparsed = _xmlReader.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+        }
+		public void WriteXml(XmlWriter _xmlWriter)
+		{
+		    _xmlWriter.WriteStartElement("PointList");
             _xmlWriter.WriteAttributeString("Count", m_PointList.Count.ToString());
             foreach (Point p in m_PointList)
             {
-                _xmlWriter.WriteStartElement("Point");
-                _xmlWriter.WriteString(p.X.ToString() + ";" + p.Y.ToString());
-                _xmlWriter.WriteEndElement();
+                _xmlWriter.WriteElementString("Point", String.Format("{0};{1}", p.X, p.Y));
             }
             _xmlWriter.WriteEndElement();
-
-            m_PenStyle.ToXml(_xmlWriter);
-            m_InfosFading.ToXml(_xmlWriter, false);
-
-            // </Drawing>
+            
+		    _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
-        }
+            
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement(); 
+		}
+        #endregion
+        
         public override string ToString()
         {
             // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolPencil", Thread.CurrentThread.CurrentUICulture);
+            return ScreenManagerLang.ToolTip_DrawingToolPencil;
         }
         public override int GetHashCode()
         {
@@ -182,112 +253,30 @@ namespace Kinovea.ScreenManager
                 iHashCode ^= p.GetHashCode();
             }
 
-            iHashCode ^= m_PenStyle.GetHashCode();
+            iHashCode ^= m_StyleHelper.GetHashCode();
 
             return iHashCode;
         }
-       
-        public override void UpdateDecoration(Color _color)
-        {
-        	m_PenStyle.Update(_color);
-        }
-        public override void UpdateDecoration(LineStyle _style)
-        {
-        	m_PenStyle.Update(_style, false, true, true);
-        }
-        public override void UpdateDecoration(int _iFontSize)
-        {
-        	throw new Exception(String.Format("{0}, The method or operation is not implemented.", this.ToString()));
-        }
-        public override void MemorizeDecoration()
-        {
-        	m_MemoPenStyle = m_PenStyle.Clone();
-        }
-        public override void RecallDecoration()
-        {
-        	m_PenStyle = m_MemoPenStyle.Clone();
-        }
-        #endregion
 
+        #region IInitializable implementation
+        public void ContinueSetup(Point point)
+		{
+			AddPoint(point);
+		}
+        #endregion
+        
         public void AddPoint(Point _coordinates)
         {
             m_PointList.Add(_coordinates);
             m_RescaledPointList.Add(RescalePoint(_coordinates, m_fStretchFactor));
         }
-        public static AbstractDrawing FromXml(XmlTextReader _xmlReader, PointF _scale)
-        {
-            DrawingPencil dp = new DrawingPencil();
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "PointList")
-                    {
-                        ParsePointList(dp, _xmlReader, _scale);
-                    }
-                    else if (_xmlReader.Name == "LineStyle")
-                    {
-                        dp.m_PenStyle = LineStyle.FromXml(_xmlReader);   
-                    }
-                    else if (_xmlReader.Name == "InfosFading")
-                    {
-                        dp.m_InfosFading.FromXml(_xmlReader);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "Drawing")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-
-            dp.RescaleCoordinates(dp.m_fStretchFactor, dp.m_DirectZoomTopLeft);
-            return dp;
-        }
-        private static void ParsePointList(DrawingPencil _dp, XmlTextReader _xmlReader, PointF _scale)
-        {
-            _dp.m_PointList.Clear();
-            _dp.m_RescaledPointList.Clear();
-
-            while (_xmlReader.Read())
-            {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Point")
-                    {
-                        Point p = XmlHelper.PointParse(_xmlReader.ReadString(), ';');
-
-                        Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-
-                        _dp.m_PointList.Add(adapted);
-                        _dp.m_RescaledPointList.Add(adapted);
-                    }
-                    else
-                    {
-                        // forward compatibility : ignore new fields. 
-                    }
-                }
-                else if (_xmlReader.Name == "PointList")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-            }
-        }
-     
 
         #region Lower level helpers
+        private void BindStyle()
+        {
+            m_Style.Bind(m_StyleHelper, "Color", "color");
+            m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+        }
         private Point RescalePoint(Point _point, double _fStretchFactor)
         {
             return new Point((int)((double)_point.X * _fStretchFactor), (int)((double)_point.Y * _fStretchFactor));
@@ -313,7 +302,7 @@ namespace Kinovea.ScreenManager
             }
             areaPath.AddCurve(points, 0.5f);
 
-            Pen areaPen = new Pen(Color.Black, m_PenStyle.Size + 7);
+            Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
             areaPen.StartCap = LineCap.Round;
             areaPen.EndCap = LineCap.Round;
             areaPen.LineJoin = LineJoin.Round;
