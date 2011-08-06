@@ -99,7 +99,7 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public DrawingPencil(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0, 0, 0, 0, 0, 0, null)
+            : this(0, 0, 0, 0, 0, 0, ToolManager.Pencil.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }

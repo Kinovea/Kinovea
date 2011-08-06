@@ -1154,32 +1154,14 @@ namespace Kinovea.ScreenManager
 			
 			if (metadata != null)
 			{
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreProcessingInstructions = true;
-                settings.IgnoreWhitespace = true;
-                settings.CloseInput = true;
-
-                StringReader reader = new StringReader(metadata);
-                
-                using(XmlReader r = XmlReader.Create(reader, settings))
-                {
-                    try
-                    {
-                        m_FrameServer.Metadata = new Metadata(r, 
-                                                              m_FrameServer.VideoFile.Infos.iDecodingWidth,
-				                                              m_FrameServer.VideoFile.Infos.iDecodingHeight,
-				                                              m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame,
-				                                              m_FrameServer.VideoFile.FilePath,
-				                                              new GetTimeCode(TimeStampsToTimecode),
-				                                              new ShowClosestFrame(OnShowClosestFrame));
-                    }
-                    catch(Exception)
-                    {
-                        log.Error("An error happened during the parsing of the kva stream");
-                    }
-                }
-                
+			    m_FrameServer.Metadata = new Metadata(metadata, 
+                                                      m_FrameServer.VideoFile.Infos.iDecodingWidth,
+		                                              m_FrameServer.VideoFile.Infos.iDecodingHeight,
+		                                              m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame,
+		                                              m_FrameServer.VideoFile.FilePath,
+		                                              new GetTimeCode(TimeStampsToTimecode),
+		                                              new ShowClosestFrame(OnShowClosestFrame));
+			    
                 UpdateFramesMarkers();
 				OrganizeKeyframes();
 			}
@@ -1242,7 +1224,7 @@ namespace Kinovea.ScreenManager
 			
 			if (File.Exists(kvaFile))
 			{
-				m_FrameServer.Metadata.LoadFromFile(kvaFile);
+				m_FrameServer.Metadata.Load(kvaFile, true);
 			}
 		}
 		private void UpdateFilenameLabel()

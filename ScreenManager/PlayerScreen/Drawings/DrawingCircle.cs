@@ -92,16 +92,16 @@ namespace Kinovea.ScreenManager
 			m_StyleHelper.Color = Color.Empty;
 			m_StyleHelper.LineSize = 1;
 			if(_preset != null)
-            {
+			{
                 m_Style = _preset.Clone();
                 BindStyle();
-            }
-			
+			}
+            
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public DrawingCircle(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0,0, null)
+            : this(0,0,0,0,0, ToolManager.Circle.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }

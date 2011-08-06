@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
 			mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCross2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0, null)
+            : this(0,0,0,0, ToolManager.CrossMark.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
             m_ParentMetadata = _parent;

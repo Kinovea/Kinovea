@@ -381,6 +381,7 @@
     <!-- List of extra files to copy to output dir -->
     <SVGItem Include="$(MSBuildProjectDirectory)\..\Tools\svg\*.svg" />
     <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Spreadsheets\*.xsl" />
+    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Kva\*.xsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

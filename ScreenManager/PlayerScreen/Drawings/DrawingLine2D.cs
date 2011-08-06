@@ -146,7 +146,7 @@ namespace Kinovea.ScreenManager
 			mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingLine2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0,0,0, null)
+            : this(0,0,0,0,0,0, ToolManager.Line.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
             m_ParentMetadata = _parent;

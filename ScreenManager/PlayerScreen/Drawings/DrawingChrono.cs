@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public DrawingChrono(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
-            : this(0, 0, 0, 1, null)
+            : this(0, 0, 0, 1, ToolManager.Chrono.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
         }
