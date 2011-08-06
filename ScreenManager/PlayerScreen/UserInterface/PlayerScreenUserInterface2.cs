@@ -569,9 +569,18 @@ namespace Kinovea.ScreenManager
 						LookForLinkedAnalysis();
 					}
 					
+					// Check if there is a startup kva
+					string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
+                    string startupFile = folder + "\\playback.kva";
+                    if(File.Exists(startupFile))
+                    {
+                        m_FrameServer.Metadata.Load(startupFile, true);
+                    }
+					
 					// Do the post import whether the data come from external file or included .
 					if (m_FrameServer.Metadata.HasData)
 					{
+					    m_FrameServer.Metadata.CleanupHash();
 						PostImportMetadata();
 					}
 

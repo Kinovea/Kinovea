@@ -566,7 +566,7 @@ namespace Kinovea.ScreenManager
                 kvaDoc.LoadXml(_kva);
             
     		string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
-        	string tempFile = folder + "\\temp.xml";
+        	string tempFile = folder + "\\temp.kva";
         	XmlWriterSettings settings = new XmlWriterSettings();
 			settings.Indent = true;
             
@@ -728,9 +728,12 @@ namespace Kinovea.ScreenManager
                 // on a similar model than for attached drawings. (see ParseDrawing())
                 if(r.Name == "Chrono")
 				{
-                    PointF scaling = new PointF();
-                    scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
-                    scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
+                    PointF scaling = new PointF(1.0f, 1.0f);
+                    if(!m_ImageSize.IsEmpty && m_InputImageSize.Width != 0 && m_InputImageSize.Height != 0)
+                    {
+                        scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
+                        scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;    
+                    }
                     
                     DrawingChrono dc = new DrawingChrono(r, scaling, new DelegateRemapTimestamp(DoRemapTimestamp));
                     
@@ -867,9 +870,12 @@ namespace Kinovea.ScreenManager
                         
                         if(ci != null)
                         {
-                            PointF scaling = new PointF();
-                            scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
-                            scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
+                            PointF scaling = new PointF(1.0f, 1.0f);
+                            if(!m_ImageSize.IsEmpty && m_InputImageSize.Width != 0 && m_InputImageSize.Height != 0)
+                            {
+                                scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
+                                scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;    
+                            }
                     
                             // Instanciate the drawing.
                             object[] parameters = new object[]{r, scaling, this};
