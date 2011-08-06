@@ -206,13 +206,17 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importeren van frames…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Verschijning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Sluiten</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuratie</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
+   
    <data name="Generic_Opacity" xml:space="preserve"><value>Doorzichtigheid</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
+   
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Bewaar afbeelding</value></data>
