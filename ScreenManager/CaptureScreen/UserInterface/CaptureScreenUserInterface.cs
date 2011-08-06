@@ -501,6 +501,21 @@ namespace Kinovea.ScreenManager
 			Keyframe kf = new Keyframe(m_FrameServer.Metadata);
 			kf.Position = 0;
 			m_FrameServer.Metadata.Add(kf);
+			
+			// Check if there is a startup kva.
+			// For capture, the kva will only work if the drawings are on a frame at position 0.
+			string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
+            string startupFile = folder + "\\capture.kva";
+            if(File.Exists(startupFile))
+            {
+                m_FrameServer.Metadata.Load(startupFile, true);
+            }
+            
+            // Strip extra keyframes, as there can only be one for capture.
+            if(m_FrameServer.Metadata.Count > 1)
+            {
+                m_FrameServer.Metadata.Keyframes.RemoveRange(1, m_FrameServer.Metadata.Keyframes.Count - 1);
+            }
 		}
 		private void ShowHideResizers(bool _bShow)
 		{

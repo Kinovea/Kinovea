@@ -519,6 +519,7 @@ namespace Kinovea.ScreenManager
 				m_ImageSize = new Size(_size.Width, newHeight);
 				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
 				m_Container.DoInitDecodingSize();
+				m_Metadata.ImageSize = m_ImageSize;
 				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
 			}
 		}
