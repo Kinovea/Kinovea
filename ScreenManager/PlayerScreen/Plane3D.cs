@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
             RedefineHomography();
         }
         public Plane3D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(500, m_iDefaultDivisions, false, 0, 0, null)
+            : this(500, m_iDefaultDivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }

@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public DrawingText(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0,0,0, null)
+            : this(0,0,0,0,0,0, ToolManager.Label.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }

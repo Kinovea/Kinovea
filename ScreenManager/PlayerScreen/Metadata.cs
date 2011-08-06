@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing new Metadata object.");
             CleanupHash();
         }
-        public Metadata(XmlReader _xmlReader,  int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
+        public Metadata(string _kvaString,  int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
 		{
             // Deserialization constructor
@@ -222,7 +222,7 @@ namespace Kinovea.ScreenManager
             AverageTimeStampsPerFrame = _iAverageTimestampPerFrame;
             m_FullPath = _FullPath;
                 
-			ReadXml(_xmlReader);
+            Load(_kvaString, false);
 		}
         #endregion
 
@@ -514,10 +514,13 @@ namespace Kinovea.ScreenManager
         #region Serialization
         
         #region Reading
-        public void LoadFromFile(string _file)
+        public void Load(string _kva, bool _bIsFile)
         {
+            // _kva parameter can either be a file or a string.
             StopAllTracking();
             UnselectAll();
+            
+            string kva = ConvertIfNeeded(_kva, _bIsFile);
             
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
@@ -525,46 +528,99 @@ namespace Kinovea.ScreenManager
             settings.IgnoreWhitespace = true;
             settings.CloseInput = true;
 
-            using(XmlReader r = XmlReader.Create(_file, settings))
+            XmlReader reader = null;
+            if(_bIsFile)
             {
-                try
-                {
-                   ReadXml(r);
-                }
-                catch(Exception e)
-                {
-                    log.Error("An error happened during the parsing of the kva file");
-                    log.Error(e);
-                }
+                reader = XmlReader.Create(kva, settings);
+            }
+            else
+            {
+               reader = XmlReader.Create(new StringReader(kva), settings);
+            }
+            
+            try
+            {
+                ReadXml(reader);
+            }
+            catch(Exception e)
+            {
+                log.Error("An error happened during the parsing of the KVA metadata");
+                log.Error(e);
+            }
+            finally
+            {
+                if(reader != null) reader.Close();
             }
             
             UpdateTrajectoriesForKeyframes();
         }
-        public void LoadFromString(String _xmlString)
+        private string ConvertIfNeeded(string _kva, bool _bIsFile)
         {
-            ResetCoreContent();
-
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            settings.CloseInput = true;
+            // _kva parameter can either be a filepath or the xml string. We return the same kind of string as passed in.
+            string result = _kva;
             
-            StringReader reader = new StringReader(_xmlString);
-
-            using(XmlReader r = XmlReader.Create(reader, settings))
-            {
-                try
-                {
-                   ReadXml(r);
-                }
-                catch(Exception)
-                {
-                    log.Error("An error happened during the parsing of the kva file");
-                }
-            }
+            XmlDocument kvaDoc = new XmlDocument();
+            if(_bIsFile)
+                kvaDoc.Load(_kva);
+            else
+                kvaDoc.LoadXml(_kva);
             
-            UpdateTrajectoriesForKeyframes();
+    		string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
+        	string tempFile = folder + "\\temp.xml";
+        	XmlWriterSettings settings = new XmlWriterSettings();
+			settings.Indent = true;
+            
+    		XmlNode formatNode = kvaDoc.DocumentElement.SelectSingleNode("descendant::FormatVersion");
+            double format;
+    		bool read = double.TryParse(formatNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
+    		if(read)
+    		{
+                if(format < 2.0 && format >= 1.3)
+                {
+                    log.DebugFormat("Older format detected ({0}). Starting conversion", format); 
+                    
+                    try
+    			    {
+                        XslCompiledTransform xslt = new XslCompiledTransform();
+                        string stylesheet = Application.StartupPath + "\\xslt\\kva-1.5to2.0.xsl";
+                        xslt.Load(stylesheet);
+                        
+                        if(_bIsFile)
+                        {
+                            using (XmlWriter xw = XmlWriter.Create(tempFile, settings))
+                            {
+                                xslt.Transform(kvaDoc, xw);
+                            } 
+                            result = tempFile;
+                        }
+                        else
+                        {
+                            StringBuilder builder = new StringBuilder();
+                            using(XmlWriter xw = XmlWriter.Create(builder, settings))
+			                {    
+                                xslt.Transform(kvaDoc, xw);
+                            }
+                            result = builder.ToString();
+                        }
+                        
+                        log.DebugFormat("Older format converted.");
+        			}
+        			catch(Exception)
+        			{
+        			    log.ErrorFormat("An error occurred during KVA conversion. Conversion aborted.", format.ToString());
+        			}
+                }
+                else if(format <= 1.2)
+                {
+                    log.ErrorFormat("Format too old ({0}). No conversion will be attempted.", format.ToString());
+                }
+    		}
+    		else
+    		{
+    		    log.ErrorFormat("The format couldn't be read. No conversion will be attempted. Read:{0}", formatNode.InnerText);
+    		}
+    		
+    		return result;
         }
         private void ReadXml(XmlReader r)
 		{
@@ -1046,211 +1102,7 @@ namespace Kinovea.ScreenManager
         
         #endregion
         
-        #region Lower level Helpers
-        public long DoRemapTimestamp(long _iInputTimestamp, bool bRelative)
-        {
-            //-----------------------------------------------------------------------------------------
-            // In the general case:
-            // The Input position was stored as absolute position, in the context of the original video.
-            // It must be adapted in several ways:
-            //
-            // 1. Timestamps (TS) of first frames may differ.
-            // 2. A selection might have been in place, 
-            //      in that case we use relative TS if different file and absolute TS if same file.
-            // 3. TS might be expressed in completely different timebase.
-            //
-            // In the specific case of trajectories, the individual positions are stored relative to 
-            // the start of the trajectory.
-            //-----------------------------------------------------------------------------------------
-
-            // Vérifier qu'en arrivant ici on a bien : 
-            // le nom du fichier courant, 
-            // (on devrait aussi avoir le first ts courant mais on ne l'a pas.
-
-            // le nom du fichier d'origine, le first ts d'origine, le ts de début  de selection d'origine.
-
-            long iOutputTimestamp = 0;
-
-            if (m_iInputAverageTimeStampsPerFrame != 0)
-            {
-                if ((m_iInputFirstTimeStamp != m_iFirstTimeStamp) ||
-                      (m_iInputAverageTimeStampsPerFrame != m_iAverageTimeStampsPerFrame) ||
-                      (m_InputFileName != Path.GetFileNameWithoutExtension(m_FullPath)))
-                {
-                    //----------------------------------------------------
-                    // Different contexts or different files.
-                    // We use the relative positions and adapt the context
-                    //----------------------------------------------------
-
-                    // 1. Translate the input position into frame number (subject to rounding error)
-                    // 2. Translate the frame number back into output position.
-                    int iFrameNumber;
-
-                    if (bRelative)
-                    {
-                        iFrameNumber = (int)(_iInputTimestamp / m_iInputAverageTimeStampsPerFrame);
-                        iFrameNumber *= m_iDuplicateFactor;
-                        iOutputTimestamp = (int)(iFrameNumber * m_iAverageTimeStampsPerFrame);
-                    }
-                    else
-                    {
-                        if (m_iInputSelectionStart - m_iInputFirstTimeStamp > 0)
-                        {
-                            // There was a selection.
-                            iFrameNumber = (int)((_iInputTimestamp - m_iInputSelectionStart) / m_iInputAverageTimeStampsPerFrame);
-                            iFrameNumber *= m_iDuplicateFactor;
-                        }
-                        else
-                        {
-                            iFrameNumber = (int)((_iInputTimestamp - m_iInputFirstTimeStamp) / m_iInputAverageTimeStampsPerFrame);
-                            iFrameNumber *= m_iDuplicateFactor;
-                        }
-                        
-                        iOutputTimestamp = (int)(iFrameNumber * m_iAverageTimeStampsPerFrame) + m_iFirstTimeStamp;
-                    }
-                }
-                else
-                {
-                    //--------------------
-                    // Same context.
-                    //--------------------
-                    iOutputTimestamp = _iInputTimestamp;
-                }
-            }
-            else
-            {
-                // hmmm ?
-                iOutputTimestamp = _iInputTimestamp;
-            }
-            
-            return iOutputTimestamp;
-        }
-        private void ResetCoreContent()
-        {
-            // Semi reset: we keep Image size and AverageTimeStampsPerFrame
-            m_Keyframes.Clear();
-            StopAllTracking();
-            m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
-            m_Magnifier.ResetData();
-            m_Mirrored = false;
-            UnselectAll();
-        }
-        private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
-        {
-            //----------------------------------------------------------
-            // Look for a hit in all drawings of a particular Key Frame.
-            // The drawing being hit becomes Selected.
-            //----------------------------------------------------------
-            bool bDrawingHit = false;
-            Keyframe kf = m_Keyframes[_iKeyFrameIndex];
-            int hitRes = -1;
-            int iCurrentDrawing = 0;
-
-            while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
-            {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseLocation, _iTimestamp);
-                if (hitRes >= 0)
-                {
-                    bDrawingHit = true;
-                    m_iSelectedDrawing = iCurrentDrawing;
-                    m_iSelectedDrawingFrame = _iKeyFrameIndex;
-                }
-                else
-                {
-                    iCurrentDrawing++;
-                }
-            }
-
-            return bDrawingHit;
-        }
-        private int ActiveKeyframes()
-        {
-            int iTotalActive = m_Keyframes.Count;
-
-            for (int i = 0; i < m_Keyframes.Count; i++)
-            {
-                if (m_Keyframes[i].Disabled)
-                    iTotalActive--;
-            }
-
-            return iTotalActive;
-        }
-        private int GetKeyframesHashCode()
-        {
-            // Keyframes hashcodes are XORed with one another. 
-            int iHashCode = 0;
-            foreach (Keyframe kf in m_Keyframes)
-            {
-                iHashCode ^= kf.GetHashCode();
-            }
-            return iHashCode;    
-        }
-        private int GetExtraDrawingsHashCode()
-        {
-        	int iHashCode = 0;
-            foreach (AbstractDrawing ad in m_ExtraDrawings)
-            {
-                iHashCode ^= ad.GetHashCode();
-            }
-            return iHashCode;
-        }
-		private static string ConvertFormat(string _xmlString)
-        {
-        	string result;
-        	
-        	XmlDocument mdDoc = new XmlDocument();
-			mdDoc.LoadXml(_xmlString);
-
-    		XmlNode rootNode = mdDoc.DocumentElement;
-    		XmlNode formatNode = rootNode.SelectSingleNode("descendant::FormatVersion");
-
-    		double format = double.Parse(formatNode.InnerText, CultureInfo.InvariantCulture);
-    		
-    		if(format <= 1.2)
-    		{
-    			log.Debug(String.Format("Old format detected ({0}). Converting to new format.", formatNode.InnerText));
-    			
-    			try
-    			{
-	    			// Convert from 1.2 to 1.3.
-					XslCompiledTransform xslt = new XslCompiledTransform();
-					string stylesheet = Application.StartupPath + "\\xslt\\kva-1.2to1.3.xsl";
-					xslt.Load(stylesheet);
-					
-					StringWriter writer = new StringWriter();
-					XmlTextWriter xmlWriter = new XmlTextWriter(writer);
-	
-					xslt.Transform(mdDoc, xmlWriter);
-	    			
-					result = writer.ToString();
-    			}
-    			catch(Exception)
-    			{
-    				result = _xmlString;
-    			}
-    		}
-    		else
-    		{
-    			result = _xmlString;
-    		}
-    		
-        	return result;
-        }
-        private void InitExtraDrawingTools()
-        {
-        	// Add the static extra drawing tools to the list of drawings.
-        	// These drawings are unique and not attached to any particular key image.
-        	// It could be proxy drawings, like SpotlightManager.
-        	
-        	// [0.8.16] - This function currently doesn't do anything as the Grids have been moved to attached drawings.
-        	// It is kept nevertheless because it will be needed for SpotlightManager and others.
-        	
-            //m_ExtraDrawings.Add(m_Plane);
-            m_iStaticExtraDrawings = m_ExtraDrawings.Count;
-        }
-		#endregion
-        
-    	#region XSLT Export
+        #region XSLT Export
     	public void Export(string _filePath, MetadataExportFormat _format)
     	{
     		// Get current data as kva XML.
@@ -1476,6 +1328,168 @@ namespace Kinovea.ScreenManager
 			log.Error(ex.StackTrace);
     	}
     	#endregion
+   
+        #region Lower level Helpers
+        public long DoRemapTimestamp(long _iInputTimestamp, bool bRelative)
+        {
+            //-----------------------------------------------------------------------------------------
+            // In the general case:
+            // The Input position was stored as absolute position, in the context of the original video.
+            // It must be adapted in several ways:
+            //
+            // 1. Timestamps (TS) of first frames may differ.
+            // 2. A selection might have been in place, 
+            //      in that case we use relative TS if different file and absolute TS if same file.
+            // 3. TS might be expressed in completely different timebase.
+            //
+            // In the specific case of trajectories, the individual positions are stored relative to 
+            // the start of the trajectory.
+            //-----------------------------------------------------------------------------------------
+
+            // Vérifier qu'en arrivant ici on a bien : 
+            // le nom du fichier courant, 
+            // (on devrait aussi avoir le first ts courant mais on ne l'a pas.
+
+            // le nom du fichier d'origine, le first ts d'origine, le ts de début  de selection d'origine.
+
+            long iOutputTimestamp = 0;
+
+            if (m_iInputAverageTimeStampsPerFrame != 0)
+            {
+                if ((m_iInputFirstTimeStamp != m_iFirstTimeStamp) ||
+                      (m_iInputAverageTimeStampsPerFrame != m_iAverageTimeStampsPerFrame) ||
+                      (m_InputFileName != Path.GetFileNameWithoutExtension(m_FullPath)))
+                {
+                    //----------------------------------------------------
+                    // Different contexts or different files.
+                    // We use the relative positions and adapt the context
+                    //----------------------------------------------------
+
+                    // 1. Translate the input position into frame number (subject to rounding error)
+                    // 2. Translate the frame number back into output position.
+                    int iFrameNumber;
+
+                    if (bRelative)
+                    {
+                        iFrameNumber = (int)(_iInputTimestamp / m_iInputAverageTimeStampsPerFrame);
+                        iFrameNumber *= m_iDuplicateFactor;
+                        iOutputTimestamp = (int)(iFrameNumber * m_iAverageTimeStampsPerFrame);
+                    }
+                    else
+                    {
+                        if (m_iInputSelectionStart - m_iInputFirstTimeStamp > 0)
+                        {
+                            // There was a selection.
+                            iFrameNumber = (int)((_iInputTimestamp - m_iInputSelectionStart) / m_iInputAverageTimeStampsPerFrame);
+                            iFrameNumber *= m_iDuplicateFactor;
+                        }
+                        else
+                        {
+                            iFrameNumber = (int)((_iInputTimestamp - m_iInputFirstTimeStamp) / m_iInputAverageTimeStampsPerFrame);
+                            iFrameNumber *= m_iDuplicateFactor;
+                        }
+                        
+                        iOutputTimestamp = (int)(iFrameNumber * m_iAverageTimeStampsPerFrame) + m_iFirstTimeStamp;
+                    }
+                }
+                else
+                {
+                    //--------------------
+                    // Same context.
+                    //--------------------
+                    iOutputTimestamp = _iInputTimestamp;
+                }
+            }
+            else
+            {
+                // hmmm ?
+                iOutputTimestamp = _iInputTimestamp;
+            }
+            
+            return iOutputTimestamp;
+        }
+        private void ResetCoreContent()
+        {
+            // Semi reset: we keep Image size and AverageTimeStampsPerFrame
+            m_Keyframes.Clear();
+            StopAllTracking();
+            m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
+            m_Magnifier.ResetData();
+            m_Mirrored = false;
+            UnselectAll();
+        }
+        private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
+        {
+            //----------------------------------------------------------
+            // Look for a hit in all drawings of a particular Key Frame.
+            // The drawing being hit becomes Selected.
+            //----------------------------------------------------------
+            bool bDrawingHit = false;
+            Keyframe kf = m_Keyframes[_iKeyFrameIndex];
+            int hitRes = -1;
+            int iCurrentDrawing = 0;
+
+            while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
+            {
+                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseLocation, _iTimestamp);
+                if (hitRes >= 0)
+                {
+                    bDrawingHit = true;
+                    m_iSelectedDrawing = iCurrentDrawing;
+                    m_iSelectedDrawingFrame = _iKeyFrameIndex;
+                }
+                else
+                {
+                    iCurrentDrawing++;
+                }
+            }
+
+            return bDrawingHit;
+        }
+        private int ActiveKeyframes()
+        {
+            int iTotalActive = m_Keyframes.Count;
+
+            for (int i = 0; i < m_Keyframes.Count; i++)
+            {
+                if (m_Keyframes[i].Disabled)
+                    iTotalActive--;
+            }
+
+            return iTotalActive;
+        }
+        private int GetKeyframesHashCode()
+        {
+            // Keyframes hashcodes are XORed with one another. 
+            int iHashCode = 0;
+            foreach (Keyframe kf in m_Keyframes)
+            {
+                iHashCode ^= kf.GetHashCode();
+            }
+            return iHashCode;    
+        }
+        private int GetExtraDrawingsHashCode()
+        {
+        	int iHashCode = 0;
+            foreach (AbstractDrawing ad in m_ExtraDrawings)
+            {
+                iHashCode ^= ad.GetHashCode();
+            }
+            return iHashCode;
+        }
+        private void InitExtraDrawingTools()
+        {
+        	// Add the static extra drawing tools to the list of drawings.
+        	// These drawings are unique and not attached to any particular key image.
+        	// It could be proxy drawings, like SpotlightManager.
+        	
+        	// [0.8.16] - This function currently doesn't do anything as the Grids have been moved to attached drawings.
+        	// It is kept nevertheless because it will be needed for SpotlightManager and others.
+        	
+            //m_ExtraDrawings.Add(m_Plane);
+            m_iStaticExtraDrawings = m_ExtraDrawings.Count;
+        }
+		#endregion
     }
 
 	public enum MetadataExportFormat

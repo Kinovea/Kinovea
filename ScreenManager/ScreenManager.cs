@@ -2145,7 +2145,7 @@ namespace Kinovea.ScreenManager
                 string filePath = openFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                   ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.LoadFromFile(filePath);
+                   ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.Load(filePath, true);
                    ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();    
                 }
             }
@@ -4014,7 +4014,7 @@ namespace Kinovea.ScreenManager
 	            	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
 	            	if(ps != null)
 	            	{
-	                	ps.FrameServer.Metadata.LoadFromString(_OldScreen.MetadataString);
+	                	ps.FrameServer.Metadata.Load(_OldScreen.MetadataString, false);
 	                	ps.m_PlayerScreenUI.PostImportMetadata();
 	            	}
 	            }
