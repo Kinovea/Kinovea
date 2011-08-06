@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Άνοιγμα Φακέλου Ημερολογίου…</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Σύνταξη</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Αρχείο</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Βοήθεια</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Βοήθεια Kinovea…</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Πρόσφατα</value></data>

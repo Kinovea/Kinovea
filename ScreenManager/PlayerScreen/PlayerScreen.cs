@@ -342,6 +342,10 @@ namespace Kinovea.ScreenManager
         {
         	m_PlayerScreenUI.AddImageDrawing(_bmp);
         }
+        public override void FullScreen(bool _bFullScreen)
+        {
+            m_PlayerScreenUI.FullScreen(_bFullScreen);
+        }
         #endregion
         
         #region Other public methods called from the ScreenManager

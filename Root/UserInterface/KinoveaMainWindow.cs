@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Kinovea.Root
@@ -32,11 +33,29 @@ namespace Kinovea.Root
             get { return sui; }
             set { sui = value;}
         }
+        public bool FullScreen
+        {
+            get { return m_bFullScreen; }
+        }
+        protected override CreateParams CreateParams 
+        {
+            // Fix flickering of controls during resize.
+            // Ref. http://social.msdn.microsoft.com/forums/en-US/winforms/thread/aaed00ce-4bc9-424e-8c05-c30213171c2c/
+            get 
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
+                return cp;
+            }
+        }
         #endregion
 
         #region Members
         private RootKernel mRootKernel;
         private SupervisorUserInterface sui;
+        private bool m_bFullScreen;
+        private Rectangle m_MemoBounds;
+        private FormWindowState m_MemoWindowState;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -56,23 +75,53 @@ namespace Kinovea.Root
             SupervisorControl.Dock = DockStyle.Fill;
             SupervisorControl.BringToFront();
 
-            //log.Debug("Register Application Idle handler");
-            //Application.Idle += new EventHandler(Application_Idle);
+            
         }
         #endregion
 
-        #region EventHandlers
-        /*private void Application_Idle(object sender, EventArgs e)
+        public void ToggleFullScreen()
         {
-            log.Debug("Application is Idle.");
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.CompilePlayerScreen != null)
+            // TOTEST: Does this work for multiple monitors ?
+            
+            this.SuspendLayout();
+            
+            m_bFullScreen = !m_bFullScreen;
+            
+            if(m_bFullScreen)
             {
-                dp.CompilePlayerScreen();
+                // TODO: find a nice way to hide the task bar in all cases (but not if the user configured it for Always Show).
+                // FormWindowState.Maximized doesn't seem to work each time.
+                // screen.Bounds neither.
+                
+                m_MemoBounds = this.Bounds;
+                m_MemoWindowState = this.WindowState;
+                
+                // Go full screen. We switch to normal state first, otherwise it doesn't work each time.
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.WindowState = FormWindowState.Normal;
+                Screen screen = Screen.FromControl(this);
+                this.Bounds = screen.Bounds;
+                
+                this.menuStrip.Visible = false;    
+                this.toolStrip.Visible = false;
+                this.statusStrip.Visible = false;
             }
-            Application.Idle -= new EventHandler(Application_Idle);
-            log.Debug("We should be ready to get user input.");
-        }*/
+            else
+            {
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+                this.WindowState = m_MemoWindowState;
+                this.Bounds = m_MemoBounds;
+                
+                this.menuStrip.Visible = true;
+                this.toolStrip.Visible = true;
+                this.statusStrip.Visible = true;
+            }
+            
+            this.ResumeLayout();
+        }
+        
+        
+        #region EventHandlers
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
             mRootKernel.CloseSubModules();

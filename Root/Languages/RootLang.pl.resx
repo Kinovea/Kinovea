@@ -131,6 +131,7 @@
    
    <data name="mnuEdit" xml:space="preserve"><value>Edytuj</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Plik</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Pomoc</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea - pomoc</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Ostatnie</value></data>

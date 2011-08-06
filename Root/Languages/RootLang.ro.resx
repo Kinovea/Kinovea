@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Deschide folderul de loguri...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Editează</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Fişier</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Ajutor</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Ajutor Kinovea …</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recent</value></data>

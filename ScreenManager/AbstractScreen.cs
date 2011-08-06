@@ -68,5 +68,6 @@ namespace Kinovea.ScreenManager
         public abstract void RefreshImage();
         public abstract void AddImageDrawing(string _filename, bool _bIsSvg);
         public abstract void AddImageDrawing(Bitmap _bmp);
+        public abstract void FullScreen(bool _bFullScreen);
     }   
 }

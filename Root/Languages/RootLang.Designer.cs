@@ -637,6 +637,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Full screen.
+        /// </summary>
+        internal static string mnuFullScreen {
+            get {
+                return ResourceManager.GetString("mnuFullScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Help.
         /// </summary>
         internal static string mnuHelp {

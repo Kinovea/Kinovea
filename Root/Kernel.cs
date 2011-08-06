@@ -61,7 +61,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuRedo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuView = new ToolStripMenuItem();
         public ToolStripMenuItem mnuToggleFileExplorer = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuToolbar = new ToolStripMenuItem();
+        public ToolStripMenuItem mnuFullScreen = new ToolStripMenuItem();
         private ToolStripMenuItem mnuImage = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
@@ -428,13 +428,15 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
             mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
             mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
-
-            mnuToolbar.Text = "Toolbar";
-            mnuToolbar.Checked = true;
-            mnuToolbar.Click += new EventHandler(mnuToolbar_OnClick);
-			mnuToolbar.Visible = false;
 			
-            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuToolbar, new ToolStripSeparator() });
+            // Full Screen
+            mnuFullScreen.Tag = new ItemResourceInfo(RootResourceManager, "mnuFullScreen");
+            mnuFullScreen.Text = ((ItemResourceInfo)mnuFullScreen.Tag).resManager.GetString(((ItemResourceInfo)mnuFullScreen.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuFullScreen.Image = Properties.Resources.fullscreen;
+            mnuFullScreen.ShortcutKeys = System.Windows.Forms.Keys.F11;
+            mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
+            
+            mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuFullScreen, new ToolStripSeparator() });
             #endregion
 
             #region Image
@@ -794,10 +796,21 @@ namespace Kinovea.Root
                 MainWindow.SupervisorControl.CollapseExplorer();
             }
         }
-        private void mnuToolbar_OnClick(object sender, EventArgs e)
+        private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
-        	MainWindow.toolStrip.Visible = !MainWindow.toolStrip.Visible;
-        	mnuToolbar.Checked = MainWindow.toolStrip.Visible;
+            MainWindow.ToggleFullScreen();
+            
+            if(MainWindow.FullScreen)
+            {
+                MainWindow.SupervisorControl.CollapseExplorer();    
+            }
+            else
+            {
+                MainWindow.SupervisorControl.ExpandExplorer(true);    
+            }
+            
+           // Propagates the call to screens.
+           ScreenManager.FullScreen(MainWindow.FullScreen);
         }
         #endregion
 
