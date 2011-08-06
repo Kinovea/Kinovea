@@ -117,7 +117,6 @@ namespace Kinovea.ScreenManager
 				m_Metadata.FirstTimeStamp = m_VideoFile.Infos.iFirstTimeStamp;
 				
 				log.Debug("Setup metadata.");
-				m_Metadata.CleanupHash();
 			}
 		}
 		public override void Draw(Graphics _canvas)

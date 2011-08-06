@@ -32,15 +32,15 @@
 
   <xsl:call-template name="keyframes-table"/>
   
-  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates) &gt; 0">
+  <xsl:if test="count(Keyframe/Drawings/CrossMark/Coordinates) &gt; 0">
     <xsl:call-template name="points-table"/>
   </xsl:if>
   
-  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure) &gt; 0">
+  <xsl:if test="count(Keyframe/Drawings/Line/Measure) &gt; 0">
     <xsl:call-template name="lines-table"/>
   </xsl:if>
 
-  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingAngle2D']/Measure) &gt; 0">
+  <xsl:if test="count(Keyframe/Drawings/Angle/Measure) &gt; 0">
     <xsl:call-template name="angles-table"/>
   </xsl:if>
 
@@ -76,17 +76,17 @@
 			</tr>
 			<tr>
 				<td class="header">Label:</td>
-				<td class="data left" colspan="2"><xsl:value-of select="Label/Text"/></td>
+				<td class="data left" colspan="2"><xsl:value-of select="MainLabel/@Text"/></td>
 			</tr>
 			<tr>
-				<td class="header" colspan="3">Coordinates (x,y: <xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t: time)</td>
+				<td class="header" colspan="3">Coordinates (x,y: <xsl:value-of select="TrackPointList/@UserUnitLength"/>; t: time)</td>
 			</tr>
 			<tr>
 				<td class="header">x</td>
 				<td class="header">y</td>
         <td class="header">t</td>
 			</tr>
-			<xsl:for-each select="TrackPositionList/TrackPosition">
+			<xsl:for-each select="TrackPointList/TrackPoint">
 				<tr>
           <td class="data right"><xsl:value-of select="@UserX"/></td>
 				  <td class="data right"><xsl:value-of select="@UserY"/></td>
@@ -168,7 +168,6 @@ td {
 	</table>
 </xsl:template>
 
-
 <xsl:template name="points-table">
   <!-- Context node: Keyframes -->
 	<br/>
@@ -182,7 +181,7 @@ td {
 				<td class="header">Time</td>
 				<td class="header">Key Image</td>
     </tr>
-		<xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
+		<xsl:for-each select="Keyframe/Drawings/CrossMark/Coordinates">
       <tr>
         <td class="data right"><xsl:value-of select="@UserX"/></td>
         <td class="data right"><xsl:value-of select="@UserY"/></td>
@@ -205,7 +204,7 @@ td {
 				<td class="header">Time</td>
 				<td class="header">Key Image</td>
     </tr>
-		<xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure">
+		<xsl:for-each select="Keyframe/Drawings/Line/Measure">
       <tr>
         <td class="data right"><xsl:value-of select="@UserLength"/></td>
         <td class="data right"><xsl:value-of select="../../../Position/@UserTime"/></td>
@@ -226,7 +225,7 @@ td {
 				<td class="header">Time</td>
 				<td class="header">Key Image</td>
     </tr>
-		<xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingAngle2D']/Measure">
+		<xsl:for-each select="Keyframe/Drawings/Angle/Measure">
       <tr>
         <td class="data right"><xsl:value-of select="@UserAngle"/></td>
         <td class="data right"><xsl:value-of select="../../../Position/@UserTime"/></td>

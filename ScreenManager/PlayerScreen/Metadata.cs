@@ -629,7 +629,6 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
-            CleanupHash();
         }
         private void ParseCalibrationHelp(XmlReader r)
         {       
@@ -873,17 +872,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Writing
-        public String ToXmlString()
-        {
-            /*StringWriter writer = new StringWriter();
-            
-            // No pretty print here.
-            XmlTextWriter xmlWriter = new XmlTextWriter(writer);
-            ToXml(xmlWriter);
-
-            return writer.ToString();*/
-            return "";
-        }
         public String ToXmlString(int _iDuplicateFactor)
         {
         	// The duplicate factor is used in the context of extreme slow motion (causing the output to be less than 8fps).
@@ -891,29 +879,30 @@ namespace Kinovea.ScreenManager
         	// On input, it will be used to adjust the key images positions.
         	// We change the global variable so it can be used during xml export, but it's only temporary.
         	// It is possible that an already duplicated clip is further slowed down.
-        	/*int originalDuplicateFactor = m_iDuplicateFactor;
+        	int memoDuplicateFactor = m_iDuplicateFactor;
         	m_iDuplicateFactor *= _iDuplicateFactor;
-        	StringWriter writer = new StringWriter();
-            
-            // No pretty print here.
-            XmlTextWriter xmlWriter = new XmlTextWriter(writer);
-            ToXml(xmlWriter);
-            
-            XmlWriterSettings settings = new XmlWriterSettings();
-			settings.Indent = true;
+        	
+        	XmlWriterSettings settings = new XmlWriterSettings();
+			settings.Indent = false;
 			settings.CloseOutput = true;
 			
-			using(XmlWriter w = XmlWriter.Create(_file, settings))
+			StringBuilder builder = new StringBuilder();
+			using(XmlWriter w = XmlWriter.Create(builder, settings))
 			{
-			    
+			    try
+                {
+                   WriteXml(w);
+                }
+                catch(Exception e)
+                {
+                    log.Error("An error happened during the writing of the kva string");
+                    log.Error(e);
+                }
 			}
+			
+			m_iDuplicateFactor = memoDuplicateFactor;
             
-            
-
-            m_iDuplicateFactor = originalDuplicateFactor;
-            
-            return writer.ToString();*/
-        	return "";
+            return builder.ToString();
         }
         public void ToXmlFile(string _file)
         {
@@ -1265,42 +1254,57 @@ namespace Kinovea.ScreenManager
     	public void Export(string _filePath, MetadataExportFormat _format)
     	{
     		// Get current data as kva XML.
-    		string kvaString = ToXmlString();
+    		string kvaString = ToXmlString(1);
+    		
+    		if(string.IsNullOrEmpty(kvaString))
+    		{
+    		    log.Error("Couldn't get metadata string. Aborting export.");
+    		    return;
+    		}
 			
     		// Export the current meta data to spreadsheet doc through XSLT transform.
+    		XslCompiledTransform xslt = new XslCompiledTransform();
+            XmlDocument kvaDoc = new XmlDocument();
+			kvaDoc.LoadXml(kvaString);
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.Indent = true;
+				    
     		switch(_format)
     		{
     			case MetadataExportFormat.ODF:
     			{
-    				ExportODF(_filePath, kvaString);
+    		        xslt.Load(Application.StartupPath + "\\xslt\\kva2odf-en.xsl");
+    		        ExportODF(_filePath, xslt, kvaDoc, settings);
     				break;
     			}
     			case MetadataExportFormat.MSXML:
 				{
-    				ExportMSXML(_filePath, kvaString);
+    		        xslt.Load(Application.StartupPath + "\\xslt\\kva2msxml-en.xsl");
+    		        ExportXSLT(_filePath, xslt, kvaDoc, settings, false);
 					break;
 				}
     			case MetadataExportFormat.XHTML:
 				{
-    				ExportXHTML(_filePath, kvaString);
-					break;
+    		        xslt.Load(Application.StartupPath + "\\xslt\\kva2xhtml-en.xsl");
+				    settings.OmitXmlDeclaration = true;
+				    ExportXSLT(_filePath,  xslt, kvaDoc, settings, false);
+    		        break;
 				}
     			case MetadataExportFormat.TEXT:
 				{
-    				ExportTEXT(_filePath, kvaString);
-					break;
+    		        xslt.Load(Application.StartupPath + "\\xslt\\kva2txt-en.xsl");    
+    				ExportXSLT(_filePath,  xslt, kvaDoc, null, true);
+    		        break;
 				}
     			default:
     				break;
     		}
     	}
-    	private void ExportODF(string _filePath, string _kva)
+    	private void ExportODF(string _filePath, XslCompiledTransform _xslt, XmlDocument _xmlDoc, XmlWriterSettings _settings)
     	{
     		// Transform kva to ODF's content.xml 
     		// and packs it into a proper .ods using zip compression.
-    		string stylesheet = Application.StartupPath + "\\xslt\\kva2odf-en.xsl";
-    		
-			try
+    		try
 			{
 	            // Create archive.
 	            using (ZipOutputStream zos = new ZipOutputStream(File.Create(_filePath)))
@@ -1308,19 +1312,11 @@ namespace Kinovea.ScreenManager
 					zos.UseZip64 = UseZip64.Dynamic;
 					
 					// Content.xml (where the actual content is.)
-					XslCompiledTransform xslt = new XslCompiledTransform();
-		    		xslt.Load(stylesheet);
-	
-	    			XmlDocument mdDoc = new XmlDocument();
-					mdDoc.LoadXml(_kva);
-					
 					MemoryStream ms = new MemoryStream();
-					XmlWriterSettings xws = new XmlWriterSettings();
-					xws.Indent = true;
-					using (XmlWriter xw = XmlWriter.Create(ms, xws))
+					using (XmlWriter xw = XmlWriter.Create(ms, _settings))
 					{
-		   				xslt.Transform(mdDoc, null, xw);
-					}	
+		   				_xslt.Transform(_xmlDoc, xw);
+					}
 					
 					AddODFZipFile(zos, "content.xml", ms.ToArray());
 					
@@ -1447,84 +1443,28 @@ namespace Kinovea.ScreenManager
 			
 			_zos.PutNextEntry(entry);
     	}
-    	private void ExportMSXML(string _filePath, string _kva)
+    	private void ExportXSLT(string _filePath, XslCompiledTransform _xslt, XmlDocument _kvaDoc, XmlWriterSettings _settings, bool _text)
     	{
-    		// Export a file to MS-XML.
-    		string stylesheet = Application.StartupPath + "\\xslt\\kva2msxml-en.xsl";
-			
-    		try
-			{
-				XmlWriterSettings settings = new XmlWriterSettings();
-				settings.Indent = true;
-	            
-				using (XmlWriter xw = XmlWriter.Create(_filePath, settings))
-				{
-					XslCompiledTransform xslt = new XslCompiledTransform();
-	    			xslt.Load(stylesheet);
-	    		
-	    			XmlDocument mdDoc = new XmlDocument();
-					mdDoc.LoadXml(_kva);
-				
-					// 
-	   				xslt.Transform(mdDoc, null, xw);
-				}	
-			}
-			catch(Exception ex)
-			{
-				log.Error("Exception thrown during export to MS-XML.");
-				ReportError(ex);
-			}
-    	}
-    	private void ExportXHTML(string _filePath, string _kva)
-    	{
-    		// Transform kva to XHTML.
-			string stylesheet = Application.StartupPath + "\\xslt\\kva2xhtml-en.xsl";
-			
 			try
 			{
-	    		XmlWriterSettings settings = new XmlWriterSettings();
-				settings.Indent = true;
-				settings.OmitXmlDeclaration = true;
-				
-	            using (XmlWriter xw = XmlWriter.Create(_filePath, settings))
-				{
-	            	XslCompiledTransform xslt = new XslCompiledTransform();
-	    			xslt.Load(stylesheet);
-	   				
-					XmlDocument mdDoc = new XmlDocument();
-					mdDoc.LoadXml(_kva);
-
-	    			xslt.Transform(mdDoc, null, xw);
-				}
+			    if(_text)
+			    {
+			        using(StreamWriter sw = new StreamWriter(_filePath))
+            		{
+    		           	_xslt.Transform(_kvaDoc, null, sw);
+    				}
+			    }
+			    else
+			    {
+			        using (XmlWriter xw = XmlWriter.Create(_filePath, _settings))
+			        {
+			            _xslt.Transform(_kvaDoc, xw);
+    				}    
+			    }
 			}
 			catch(Exception ex)
 			{
-				log.Error("Exception thrown during export to XHTML.");
-				ReportError(ex);
-			}
-    	}
-    	private void ExportTEXT(string _filePath, string _kva)
-    	{
-    		// Transform kva to TEXT.
-    		
-			string stylesheet = Application.StartupPath + "\\xslt\\kva2txt-en.xsl";
-			
-			try
-			{
-        		using(TextWriter tw = new StreamWriter(_filePath))
-        		{
-		           	XslCompiledTransform xslt = new XslCompiledTransform();
-		   			xslt.Load(stylesheet);
-	  				
-					XmlDocument mdDoc = new XmlDocument();
-					mdDoc.LoadXml(_kva);
-
-	   				xslt.Transform(mdDoc, null, tw);
-				}
-			}
-			catch(Exception ex)
-			{
-				log.Error("Exception thrown during export to TEXT.");
+				log.Error("Exception thrown during spreadsheet export.");
 				ReportError(ex);
 			}
     	}

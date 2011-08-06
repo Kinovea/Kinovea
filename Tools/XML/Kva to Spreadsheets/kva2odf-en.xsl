@@ -43,15 +43,15 @@
 
   <xsl:call-template name="keyframes-table"/>    
   
-  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates) &gt; 0">
+  <xsl:if test="count(Keyframe/Drawings/CrossMark/Coordinates) &gt; 0">
     <xsl:call-template name="points-table"/>
   </xsl:if>
   
-  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure) &gt; 0">
+  <xsl:if test="count(Keyframe/Drawings/Line/Measure) &gt; 0">
     <xsl:call-template name="lines-table"/>
   </xsl:if>
 
-  <xsl:if test="count(Keyframe/Drawings/Drawing[@Type='DrawingAngle2D']/Measure) &gt; 0">
+  <xsl:if test="count(Keyframe/Drawings/Angle/Measure) &gt; 0">
     <xsl:call-template name="angles-table"/>
   </xsl:if>
 	
@@ -86,17 +86,17 @@
 		</table:table-row>
 		<table:table-row>
 			<table:table-cell table:style-name="header"><text:p>Label:</text:p></table:table-cell>
-			<table:table-cell table:style-name="data" table:number-columns-spanned="2"><text:p><xsl:value-of select="Label/Text" /></text:p></table:table-cell>
+			<table:table-cell table:style-name="data" table:number-columns-spanned="2"><text:p><xsl:value-of select="MainLabel/@Text" /></text:p></table:table-cell>
 		</table:table-row>
 		<table:table-row>
-			<table:table-cell table:style-name="header" table:number-columns-spanned="3"><text:p>Coordinates (x,y: <xsl:value-of select="TrackPositionList/@UserUnitLength"/>; t:time)</text:p></table:table-cell>
+			<table:table-cell table:style-name="header" table:number-columns-spanned="3"><text:p>Coordinates (x,y: <xsl:value-of select="TrackPointList/@UserUnitLength"/>; t:time)</text:p></table:table-cell>
 		</table:table-row>
 		<table:table-row>
 			<table:table-cell table:style-name="header"><text:p>x</text:p></table:table-cell>
 			<table:table-cell table:style-name="header"><text:p>y</text:p></table:table-cell>
 			<table:table-cell table:style-name="header"><text:p>t</text:p></table:table-cell>
 		</table:table-row>
-		<xsl:for-each select="TrackPositionList/TrackPosition">
+		<xsl:for-each select="TrackPointList/TrackPoint">
 			<table:table-row>
 			
 			    <table:table-cell>
@@ -202,7 +202,7 @@
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
-  <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingCross2D']/Coordinates">
+  <xsl:for-each select="Keyframe/Drawings/CrossMark/Coordinates">
     <table:table-row>
       <!-- Numerical data must be formatted using point as decimal separator. Hence the use of User*Invariant -->
       <table:table-cell>
@@ -238,7 +238,7 @@
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
-  <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingLine2D']/Measure">
+  <xsl:for-each select="Keyframe/Drawings/Line/Measure">
     <table:table-row>
       <!-- Numerical data must be formatted using point as decimal separator. Hence the use of UserLengthInvariant -->
       <table:table-cell>
@@ -266,7 +266,7 @@
     <table:table-cell table:style-name="header"><text:p>Time</text:p></table:table-cell>
     <table:table-cell table:style-name="header"><text:p>Key Image</text:p></table:table-cell>
   </table:table-row>
-  <xsl:for-each select="Keyframe/Drawings/Drawing[@Type='DrawingAngle2D']/Measure">
+  <xsl:for-each select="Keyframe/Drawings/Angle/Measure">
     <table:table-row>
     
       <table:table-cell>

@@ -3627,7 +3627,7 @@ namespace Kinovea.ScreenManager
                     
                     if (state.Loaded)
                     {
-                        state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString();
+                        state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString(1);
                     }
                     else
                     {
