@@ -140,10 +140,13 @@ namespace Kinovea.Services
         {
             // This happens when the command is cancelled while being performed.
             // For example, cancellation of screen closing.
-            m_CommandStack.RemoveAt(m_CommandStack.Count - 1);
-            m_iPlayHead = m_CommandStack.Count - 1;
-            bIsEmpty = (m_CommandStack.Count < 1);
-            UpdateMenus();
+            if(m_CommandStack.Count > 0)
+            {
+                m_CommandStack.RemoveAt(m_CommandStack.Count - 1);
+                m_iPlayHead = m_CommandStack.Count - 1;
+                bIsEmpty = (m_CommandStack.Count < 1);
+                UpdateMenus();    
+            }
         }
         public void BlockRedo()
         {
