@@ -1168,7 +1168,6 @@ namespace Kinovea.ScreenManager
                             }
                     	case Keys.Escape:
                     	case Keys.F6:
-                    	case Keys.F11:
                             {
                     			//---------------------------------------------------
                     			// These keystrokes impact each screen independently.
@@ -1386,7 +1385,14 @@ namespace Kinovea.ScreenManager
         		}
         	}
         }
-        
+        public void FullScreen(bool _bFullScreen)
+        {
+            // Propagate the new mode to screens.
+            foreach (AbstractScreen screen in screenList)
+            {
+                screen.FullScreen(_bFullScreen);
+            }
+        }
         public static void AlertInvalidFileName()
         {
         	string msgTitle = ScreenManagerLang.Error_Capture_InvalidFile_Title;

@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Log klasörünü aç...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Düzenle</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Dosya</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Yardım</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea Yardımı...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Son Kullanılan</value></data>

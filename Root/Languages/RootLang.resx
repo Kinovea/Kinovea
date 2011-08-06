@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Open log folder…</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Edit</value></data>
    <data name="mnuFile" xml:space="preserve"><value>File</value></data>
+   <data name="mnuFullScreen" xml:space="preserve"><value>Full screen</value></data>
    <data name="mnuHelp" xml:space="preserve"><value>Help</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea Help...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recent</value></data>

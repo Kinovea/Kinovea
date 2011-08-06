@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Öppna log mapp...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Redigera</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Fil</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Hjälp</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea hjälp...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Senaste</value></data>

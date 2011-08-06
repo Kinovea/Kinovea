@@ -330,12 +330,6 @@ namespace Kinovea.ScreenManager
 						bWasHandled = true;
 						break;
 					}
-				case Keys.F11:
-					{
-						ToggleStretchMode();
-						bWasHandled = true;
-						break;
-					}
 				case Keys.Delete:
 					{
 						// Remove selected Drawing
@@ -349,6 +343,16 @@ namespace Kinovea.ScreenManager
 			}
 
 			return bWasHandled;
+		}
+		public void FullScreen(bool _bFullScreen)
+		{
+		    if (_bFullScreen && !m_bStretchModeOn)
+			{
+				m_bStretchModeOn = true;
+				StretchSqueezeSurface();
+			    m_FrameServer.Metadata.ResizeFinished();
+			    DoInvalidate();
+			}
 		}
 		public void AddImageDrawing(string _filename, bool _bIsSvg)
 		{

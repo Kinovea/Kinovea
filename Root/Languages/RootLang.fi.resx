@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Avaa lokitiedosto...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Editoi</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Tiedosto</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Apua</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovean apu...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Aikaisemmat</value></data>

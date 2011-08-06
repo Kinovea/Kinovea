@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Open de map met de logs..</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Bewerk</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Bestand</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Help</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea Help…</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recent</value></data>

@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Atverti registro aplanką</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Redaguoti</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Dokumentai</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Pagalba</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Kinovea pagalba...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Naujausi</value></data>

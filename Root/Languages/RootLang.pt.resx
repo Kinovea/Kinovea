@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>Abrir pasta de log...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>Editar</value></data>
    <data name="mnuFile" xml:space="preserve"><value>Arquivo</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>Ajuda</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>Ajuda do Kinovea...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>Recentes</value></data>

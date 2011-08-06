@@ -131,6 +131,7 @@
    <data name="mnuApplicationFolder" xml:space="preserve"><value>上传视频分析...</value></data>
    <data name="mnuEdit" xml:space="preserve"><value>编辑</value></data>
    <data name="mnuFile" xml:space="preserve"><value>文件</value></data>
+   
    <data name="mnuHelp" xml:space="preserve"><value>帮助</value></data>
    <data name="mnuHelpContents" xml:space="preserve"><value>帮助...</value></data>
    <data name="mnuHistory" xml:space="preserve"><value>最近文件...</value></data>
