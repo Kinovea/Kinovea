@@ -25,6 +25,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -52,7 +53,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override string DisplayName
 		{
-			get { return "Pen size :";}
+			get { return ScreenManagerLang.Generic_PenSizePicker;}
 		}
 		public override string XmlName
 		{

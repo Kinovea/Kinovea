@@ -25,6 +25,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -52,7 +53,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override string DisplayName
 		{
-			get { return "Line size :";}
+			get { return ScreenManagerLang.Generic_LineSizePicker;}
 		}
 		public override string XmlName
 		{

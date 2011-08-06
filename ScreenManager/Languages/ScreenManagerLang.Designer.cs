@@ -1312,6 +1312,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrows:.
+        /// </summary>
+        internal static string Generic_ArrowPicker {
+            get {
+                return ResourceManager.GetString("Generic_ArrowPicker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Cancel.
         /// </summary>
         internal static string Generic_Cancel {
@@ -1330,7 +1339,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Color :.
+        ///   Recherche une chaîne localisée semblable à Color:.
         /// </summary>
         internal static string Generic_ColorPicker {
             get {
@@ -1348,7 +1357,7 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Font Size :.
+        ///   Recherche une chaîne localisée semblable à Font size:.
         /// </summary>
         internal static string Generic_FontSizePicker {
             get {
@@ -1366,11 +1375,29 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Width:.
+        /// </summary>
+        internal static string Generic_LineSizePicker {
+            get {
+                return ResourceManager.GetString("Generic_LineSizePicker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Opacity.
         /// </summary>
         internal static string Generic_Opacity {
             get {
                 return ResourceManager.GetString("Generic_Opacity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Size:.
+        /// </summary>
+        internal static string Generic_PenSizePicker {
+            get {
+                return ResourceManager.GetString("Generic_PenSizePicker", resourceCulture);
             }
         }
         
@@ -1389,6 +1416,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string Generic_SaveImage {
             get {
                 return ResourceManager.GetString("Generic_SaveImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Line shape:.
+        /// </summary>
+        internal static string Generic_TrackShapePicker {
+            get {
+                return ResourceManager.GetString("Generic_TrackShapePicker", resourceCulture);
             }
         }
         

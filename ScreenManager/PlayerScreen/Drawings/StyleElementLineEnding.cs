@@ -25,6 +25,8 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
@@ -49,7 +51,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override string DisplayName
 		{
-			get { return "Arrows :";}
+			get { return ScreenManagerLang.Generic_ArrowPicker;}
 		}
 		public override string XmlName
 		{

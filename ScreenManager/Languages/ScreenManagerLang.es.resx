@@ -206,13 +206,17 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importar imagenes...</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Apariencia</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Aplicar</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Anular</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Cerrar</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Color :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuraciòn</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Tamaño de la fuente:</value></data>
+   
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacidad</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Guardar</value></data>
+   
    <data name="Generic_Image" xml:space="preserve"><value>Imagen </value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Guardar la imagen.</value></data>

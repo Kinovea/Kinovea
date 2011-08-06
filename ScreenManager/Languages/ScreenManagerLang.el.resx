@@ -206,13 +206,17 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Εισαγωγή Πλαισίων…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Εμφάνιση</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Εφαρμογή</value></data>
+   
    <data name="Generic_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Κλείσιμο</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Χρώμα :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Διευθέτηση</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Μέγεθος Γραμματοσειράς :</value></data>
+   
    <data name="Generic_Opacity" xml:space="preserve"><value>Αδιαφάνεια</value></data>
+   
    <data name="Generic_Save" xml:space="preserve"><value>Αποθήκευση</value></data>
+   
    <data name="Generic_Image" xml:space="preserve"><value>Εικόνα</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Βίντεο</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Αποθήκευση Εικόνας</value></data>
