@@ -31,7 +31,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Plane")]
-	public class Plane3D : AbstractDrawing, IDecorable, IKvaSerializable
+	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Properties
         public DrawingStyle DrawingStyle
@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Plane3D(float _sidelength, int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingPlane(float _sidelength, int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_fStretchFactor = 1.0f;
             m_DirectZoomTopLeft = new Point(0, 0);
@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             RedefineHomography();
         }
-        public Plane3D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
+        public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
             : this(500, m_iDefaultDivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);

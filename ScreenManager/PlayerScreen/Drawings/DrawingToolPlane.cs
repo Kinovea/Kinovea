@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
 		#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    	    return new Plane3D(500, 8, true, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+    	    return new DrawingPlane(500, 8, true, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{
