@@ -182,6 +182,7 @@
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
@@ -210,7 +211,6 @@
     <Compile Include="PlayerScreen\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
-    <Compile Include="PlayerScreen\Plane3D.cs" />
     <Compile Include="PlayerScreen\SURF\CDVMatrix.cs" />
     <Compile Include="PlayerScreen\SURF\CFastHessian.cs" />
     <Compile Include="PlayerScreen\SURF\COpenSURF.cs" />

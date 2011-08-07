@@ -2958,9 +2958,9 @@ namespace Kinovea.ScreenManager
 										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
 										((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
 									}
-									else if(ad is Plane3D)
+									else if(ad is DrawingPlane)
 									{
-									    ((Plane3D)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, new Point(0,0));
+									    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, new Point(0,0));
 									}
 								}
 								else
