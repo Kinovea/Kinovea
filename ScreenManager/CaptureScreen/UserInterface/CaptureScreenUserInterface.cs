@@ -220,8 +220,8 @@ namespace Kinovea.ScreenManager
 					// Finish the setup
 					box.Left = iPixelsOffset + iPixelsSpacing;
 					box.pbThumbnail.Image = m_FrameServer.RecentlyCapturedVideos[i].Thumbnail;
-					box.CloseThumb += new CapturedVideoBox.CloseThumbHandler(CapturedVideoBox_Close);
-					box.LaunchVideo += new CapturedVideoBox.LaunchVideoHandler(CapturedVideoBox_LaunchVideo);
+					box.CloseThumb += CapturedVideoBox_Close;
+					box.LaunchVideo += CapturedVideoBox_LaunchVideo;
 					
 					iPixelsOffset += (iPixelsSpacing + box.Width);
 					pnlThumbnails.Controls.Add(box);
@@ -450,7 +450,7 @@ namespace Kinovea.ScreenManager
         	sldrDelay.StickyValue = -100;
         	sldrDelay.StickyMark = true;
         	sldrDelay.Value = 0;
-        	sldrDelay.ValueChanged += new Kinovea.ScreenManager.SpeedSlider.ValueChangedHandler(sldrDelay_ValueChanged);
+        	sldrDelay.ValueChanged += sldrDelay_ValueChanged;
         	sldrDelay.KeyDown += new System.Windows.Forms.KeyEventHandler(sldrDelay_KeyDown);
 		}
 		private void InitializeDrawingTools()
@@ -1134,19 +1134,19 @@ namespace Kinovea.ScreenManager
 								popMenuDrawings.Items.Clear();
 								
 								// Generic context menu from drawing capabilities.
-								if((ad.Caps & AbstractDrawing.Capabilities.ConfigureColor) == AbstractDrawing.Capabilities.ConfigureColor)
+								if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
 								{
 								   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
 								   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
 								}
 								   
-								if((ad.Caps & AbstractDrawing.Capabilities.ConfigureColorSize) == AbstractDrawing.Capabilities.ConfigureColorSize)
+								if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
 								{
 									mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 								   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
 								}
 								
-								if((ad.Caps & AbstractDrawing.Capabilities.Opacity) == AbstractDrawing.Capabilities.Opacity)
+								if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
 								{
 									popMenuDrawings.Items.Add(mnuConfigureOpacity);
 								}
@@ -1238,7 +1238,7 @@ namespace Kinovea.ScreenManager
 							Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 							
 							// Magnifier is not being moved or is invisible, try drawings through pointer tool.
-							bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, 0, descaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
+							bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, descaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
 							
 							if (!bMovingObject && m_FrameServer.CoordinateSystem.Zooming)
 							{

@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter w)
         {
             w.WriteStartElement("Position");
-            string userTime = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_Position, TimeCodeFormat.Unknown, false);
+            string userTime = m_ParentMetadata.TimeStampsToTimecode(m_Position, TimeCodeFormat.Unknown, false);
             w.WriteAttributeString("UserTime", userTime);
             w.WriteString(m_Position.ToString());
             w.WriteEndElement();

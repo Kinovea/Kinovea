@@ -40,13 +40,13 @@ namespace Kinovea.ScreenManager
     {
     	#region Members
     	private bool m_bManualClose = false;
-    	private DelegateScreenInvalidate m_Invalidate;
+    	private Action m_Invalidate;
         private Track m_Track;
         private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
         #endregion
         
         #region Construction
-        public formConfigureTrajectoryDisplay(Track _track, DelegateScreenInvalidate _invalidate)
+        public formConfigureTrajectoryDisplay(Track _track, Action _invalidate)
         {
             InitializeComponent();
             m_Invalidate = _invalidate;
@@ -123,13 +123,13 @@ namespace Kinovea.ScreenManager
         	// General
         	switch(m_Track.View)
         	{
-        		case Track.TrackView.Focus:
+        		case TrackView.Focus:
         			radioFocus.Checked = true;
         			break;
-        		case Track.TrackView.Label:
+        		case TrackView.Label:
         			radioLabel.Checked = true;
         			break;
-        		case Track.TrackView.Complete:
+        		case TrackView.Complete:
         		default:
         			radioComplete.Checked = true;
         			break;
@@ -170,15 +170,15 @@ namespace Kinovea.ScreenManager
         {
         	if(radioComplete.Checked)
         	{
-            	m_Track.View = Track.TrackView.Complete;
+            	m_Track.View = TrackView.Complete;
         	}
         	else if(radioFocus.Checked)
         	{
-        		m_Track.View = Track.TrackView.Focus;
+        		m_Track.View = TrackView.Focus;
         	}
         	else
         	{
-        		m_Track.View = Track.TrackView.Label;
+        		m_Track.View = TrackView.Label;
         	}
         	
         	if(m_Invalidate != null) m_Invalidate();
@@ -190,10 +190,10 @@ namespace Kinovea.ScreenManager
         }
         private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
         {
-        	m_Track.ExtraData = (Track.TrackExtraData)cmbExtraData.SelectedIndex;
+        	m_Track.ExtraData = (TrackExtraData)cmbExtraData.SelectedIndex;
         	if(m_Invalidate != null) m_Invalidate();
         }
-        private void element_ValueChanged()
+        private void element_ValueChanged(object sender, EventArgs e)
 		{
 			if(m_Invalidate != null) m_Invalidate();
 		}

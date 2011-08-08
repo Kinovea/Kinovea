@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Concrete Constructor
-        public AbstractTrackPoint()
+        protected AbstractTrackPoint()
         {
         	//not implemented.
         }

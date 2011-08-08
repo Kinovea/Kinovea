@@ -41,9 +41,9 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.Opacity; }
+			get { return DrawingCapabilities.Opacity; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -65,8 +65,7 @@ namespace Kinovea.ScreenManager
         
         private int m_iOriginalWidth;
         private int m_iOriginalHeight;
-        private double m_fOriginalAspectRatio;
-       
+        
         // Decoration
         private InfosFading m_InfosFading;
         private ColorMatrix m_FadingColorMatrix = new ColorMatrix();
@@ -114,7 +113,6 @@ namespace Kinovea.ScreenManager
 	        	m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
 	        }
 	        
-	        m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
 	        m_UnscaledRenderingWindow = new Rectangle((_iWidth - m_iOriginalWidth)/2, (_iHeight - m_iOriginalHeight)/2, m_iOriginalWidth, m_iOriginalHeight);
 			
 			// Everything start unscaled.

@@ -33,21 +33,6 @@ namespace Kinovea.ScreenManager
 	/// </summary>
     public abstract class AbstractDrawing
     {
-    	#region Enum
-    	/// <summary>
-    	/// Describe the various capabilities for generic menus.
-    	/// </summary>
-    	[Flags]
-		public enum Capabilities
-		{
-			None = 0,
-		    ConfigureColor = 1,
-		    ConfigureColorSize = 2,
-		    Fading = 4,
-		    Opacity = 8
-		}
-
-    	#endregion
     	
     	#region Properties
     	/// <summary>
@@ -63,7 +48,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the capabilities of this drawing for the generic part of context menu.
         /// </summary>
-        public abstract Capabilities Caps
+        public abstract DrawingCapabilities Caps
         {
         	get;
         }
@@ -112,14 +97,14 @@ namespace Kinovea.ScreenManager
         /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
         public abstract void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys);
         
-        public void CallInvalidateFromMenu(object sender)
+        public static void CallInvalidateFromMenu(object sender)
         {
         	// The screen invalidate hook was injected inside menus during popMenu attach.
         	// This avoids having an injection hanging in DrawingTool.
 			ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
 			if(tsmi != null)
 			{
-				DelegateScreenInvalidate screenInvalidate = tsmi.Tag as DelegateScreenInvalidate;
+				Action screenInvalidate = tsmi.Tag as Action;
 				if(screenInvalidate != null)
 				{
 					screenInvalidate();
@@ -129,4 +114,17 @@ namespace Kinovea.ScreenManager
         
         #endregion
     }
+
+    /// <summary>
+	/// The various capabilities of a drawing, used to support dynamically adding generic menus.
+	/// </summary>
+	[Flags]
+	public enum DrawingCapabilities
+	{
+		None = 0,
+	    ConfigureColor = 1,
+	    ConfigureColorSize = 2,
+	    Fading = 4,
+	    Opacity = 8
+	}
 }

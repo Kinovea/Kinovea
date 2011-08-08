@@ -53,22 +53,11 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public partial class ThumbListView : UserControl
 	{
-		#region EventDelegates
-		// Types
-		public delegate void DelegateClosing(object sender);
-
-		// Events
+		#region Events
 		[Category("Action"), Browsable(true)]
-		public event DelegateClosing Closing;
+		public event EventHandler Closing;
 		#endregion
 		
-		#region Properties
-		public IScreenManagerUIContainer ScreenManagerUIContainer
-		{
-			set { m_ScreenManagerUIContainer = value; }
-		}
-		#endregion
-
 		#region Members
 		private VideoFile m_VideoFile = new VideoFile();
 
@@ -105,6 +94,10 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		public void SetScreenManagerUIContainer(IScreenManagerUIContainer _value)
+		{
+			m_ScreenManagerUIContainer = _value;
+		}
 		public void RefreshUICulture()
 		{
 			btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
@@ -225,9 +218,9 @@ namespace Kinovea.ScreenManager
 					tlvi.ToolTipHandler = toolTip1;
 					tlvi.SetSize(iColumnWidth - m_iHorzSpacing);
 					tlvi.Location = new Point(0, 0);
-					tlvi.LaunchVideo += new ThumbListViewItem.LaunchVideoHandler(ThumbListViewItem_LaunchVideo);
-					tlvi.VideoSelected += new ThumbListViewItem.VideoSelectedHandler(ThumbListViewItem_VideoSelected);
-					tlvi.FileNameEditing += new ThumbListViewItem.FileNameEditingHandler(ThumbListViewItem_FileNameEditing);
+					tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
+					tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
+					tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
 					
 					// Organize
 					int iRow = i / m_iCurrentSize;
@@ -493,12 +486,12 @@ namespace Kinovea.ScreenManager
 		#region Closing
 		private void btnClose_Click(object sender, EventArgs e)
 		{
-			if (Closing != null) Closing(this);
+			if (Closing != null) Closing(this, EventArgs.Empty);
 		}
 		private void btnShowThumbView_Click(object sender, EventArgs e)
 		{
 			CleanupThumbnails();
-			if (Closing != null) Closing(this);
+			if (Closing != null) Closing(this, EventArgs.Empty);
 		}
 		private void SavePrefs()
 		{

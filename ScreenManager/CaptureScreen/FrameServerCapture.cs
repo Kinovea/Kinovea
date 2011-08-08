@@ -129,6 +129,7 @@ namespace Kinovea.ScreenManager
 		// Threading
 		private Control m_DummyControl = new Control();
 		private readonly object m_Locker = new object();
+		private event EventHandler m_EventFrameGrabbed;
 		
 		// Grabbing frames
 		private AbstractFrameGrabber m_FrameGrabber;
@@ -161,11 +162,6 @@ namespace Kinovea.ScreenManager
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
-		#region Delegates
-		public delegate void FrameGrabbedDelegate();
-		public FrameGrabbedDelegate m_FrameGrabbedDelegate;
-		#endregion
-		
 		#region Constructor
 		public FrameServerCapture()
 		{
@@ -173,7 +169,7 @@ namespace Kinovea.ScreenManager
 			m_AspectRatio = (VideoFiles.AspectRatio)((int)PreferencesManager.Instance().AspectRatio);
 			
 			IntPtr forceHandleCreation = m_DummyControl.Handle; // Needed to show that the main thread "owns" this Control.
-			m_FrameGrabbedDelegate = new FrameGrabbedDelegate(FrameGrabbed_Invoked);
+			m_EventFrameGrabbed = FrameGrabbed_Invoked;
 		}
 		#endregion
 		
@@ -188,7 +184,7 @@ namespace Kinovea.ScreenManager
 			// We are still in the grabbing thread. 
 			// We must return as fast as possible to avoid slowing down the grabbing.
 			// We use a Control object to merge back into the main thread, we'll do the work there.
-			m_DummyControl.BeginInvoke(m_FrameGrabbedDelegate);
+			m_DummyControl.BeginInvoke(m_EventFrameGrabbed);
 		}
 		public void SetImageSize(Size _size)
 		{
@@ -523,7 +519,7 @@ namespace Kinovea.ScreenManager
 				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
 			}
 		}
-		private void FrameGrabbed_Invoked()
+		private void FrameGrabbed_Invoked(object sender, EventArgs e)
 		{
             // We are back in the Main thread.
 

@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
         	string next = "";
         	if(m_PrefManager.CaptureUsePattern)
         	{
-        		throw new Exception("Not implemented when using pattern. Use InitImage or InitVideo");
+        		throw new NotImplementedException("Not implemented when using pattern. Use InitImage or InitVideo");
         	}
         	else if(!string.IsNullOrEmpty(_current))
         	{

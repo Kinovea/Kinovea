@@ -24,43 +24,42 @@ using System.Windows.Forms;
 
 namespace Kinovea.Services
 {
-    //------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------
     // The delegates pool is an area to share services between distant modules.
     // When a module exposes functionnality that will be accessed from an lower level
     // or from a sibling module, it should be done through the delegates pool
     // (instead of dependency injection or delegates tunnels).
     // 
     // The variable is filled by the server module, and called by the consumer.
-    //------------------------------------------------------------------------------
-
-    // Types.
-    public delegate void DelegateOpenVideoFile();
-    public delegate void DelegateLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState);
-    public delegate void DelegateUpdateStatusBar(string _status);
-    //public delegate void DelegateCompilePlayerScreen();
-    public delegate void DelegateStopPlaying();
-    public delegate void DelegateMakeTopMost(Form _form);
-    public delegate void DelegateDeactivateKeyboardHandler();
-    public delegate void DelegateActivateKeyboardHandler();
-    public delegate void DelegateDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow);
-    public delegate void DelegateRefreshFileExplorer(bool _bRefreshThumbnails);
-    public delegate void DelegateVideoProcessingDone(DrawtimeFilterOutput _dfo);
+    //
+    // We don't use the Action<T1, T2, ...> shortcuts for delegate types, as it makes the usage of the delegate 
+    // obscure for the caller. Since the caller doesn't know about the implementer, 
+    // the prototype of the delegate is the only place where he can guess the purpose of the parameters.
+    // 
+    // Exception to this guideline: the simple Action delegate (nothing in, nothing out).
+    // Also, In .NET 2.0 the System namespace only defines Action<T>, so we redefine the simple action manually.
+    //----------------------------------------------------------------------------------------------------------
+    public delegate void Action();
+    
+    public delegate void MovieLoader(string _filePath, int _iForceScreen, bool _bStoreState);
+    public delegate void StatusBarUpdater(string _status);
+    public delegate void TopMostMaker(Form _form);
+    public delegate void ThumbnailsDisplayer(List<String> _fileNames, bool _bRefreshNow);
+    public delegate void FileExplorerRefresher(bool _bRefreshThumbnails);
+    public delegate void PostProcessingAction(DrawtimeFilterOutput _dfo);
     
     public class DelegatesPool
     {
-        #region Exposed Delegates
-        public DelegateOpenVideoFile OpenVideoFile;
-        public DelegateLoadMovieInScreen LoadMovieInScreen;
-        public DelegateUpdateStatusBar UpdateStatusBar;
-        //public DelegateCompilePlayerScreen CompilePlayerScreen;
-        public DelegateStopPlaying StopPlaying;
-        public DelegateMakeTopMost MakeTopMost;
-        public DelegateDeactivateKeyboardHandler DeactivateKeyboardHandler;
-        public DelegateActivateKeyboardHandler ActivateKeyboardHandler;
-        public DelegateDisplayThumbnails DisplayThumbnails;
-        public DelegateRefreshFileExplorer RefreshFileExplorer;
-        public DelegateVideoProcessingDone VideoProcessingDone;
-        #endregion
+        public Action OpenVideoFile;
+        public MovieLoader LoadMovieInScreen;
+        public StatusBarUpdater UpdateStatusBar;
+        public Action StopPlaying;
+        public TopMostMaker MakeTopMost;
+        public Action DeactivateKeyboardHandler;
+        public Action ActivateKeyboardHandler;
+        public ThumbnailsDisplayer DisplayThumbnails;
+        public FileExplorerRefresher RefreshFileExplorer;
+        public PostProcessingAction VideoProcessingDone;
   
         #region Instance & Constructor
         private static DelegatesPool _instance = null;

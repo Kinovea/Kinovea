@@ -37,33 +37,14 @@ namespace Kinovea.ScreenManager
 {
     public class ScreenManagerKernel : IKernel, IScreenHandler, IScreenManagerUIContainer, IMessageFilter
     {
-        #region Imports Win32
-        
-        const int WM_KEYDOWN = 0x100;
-        const int TIME_PERIODIC = 0x01;
-        const int TIME_KILL_SYNCHRONOUS = 0x0100;
-
-        [DllImport("winmm.dll", SetLastError = true)]
-        private static extern uint timeSetEvent(int msDelay, int msResolution, MMTimerEventHandler handler, ref int userCtx, int eventType);
-
-        [DllImport("winmm.dll", SetLastError = true)]
-        private static extern uint timeKillEvent(uint timerEventId);
-        #endregion
-
-        #region enums
-        public enum SyncStep
+        private enum SyncStep
         {
             Initial,
             StartingWait,
             BothPlaying,
             EndingWait
         }
-        #endregion
-
-        #region Internal delegates
-        private delegate void MMTimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
-        #endregion
-
+        
         #region Properties
         public UserControl UI
         {
@@ -147,10 +128,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Synchronization
-        private MMTimerEventHandler m_DelegateMMTimerEventHandler;
-        
-        //private uint    m_IdMultimediaTimer = 0; // Timer servant à contrôler l'état d'avancement de chaque vidéo pour prise de décision d'arrêt/relance.          
-        
         private bool    m_bSynching;
         private bool 	m_bSyncMerging;				// true if blending each other videos. 
         private int     m_iSyncLag; 	            // Sync Lag in Frames, for static sync.
@@ -174,6 +151,7 @@ namespace Kinovea.ScreenManager
         private bool m_bAllowKeyboardHandler;
 
         private List<ScreenManagerState> m_StoredStates  = new List<ScreenManagerState>();
+        private const int WM_KEYDOWN = 0x100;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -185,13 +163,10 @@ namespace Kinovea.ScreenManager
             //Gestion i18n
             resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             
-            // Callbacks du MultimediaTimer.
-            m_DelegateMMTimerEventHandler = new MMTimerEventHandler(MultimediaTimer_Tick);
             m_bAllowKeyboardHandler = true;
 
             UI = new ScreenManagerUserInterface(this);
             
-            PlugDelegates();
             InitializeVideoFilters();
             
             // Registers our exposed functions to the DelegatePool.
@@ -217,11 +192,6 @@ namespace Kinovea.ScreenManager
         	m_SVGFilesChangedInvoker = new MethodInvoker(DoSVGFilesChanged);
         	
         	m_SVGFilesWatcher.EnableRaisingEvents = true;
-        }
-        private void PlugDelegates()
-        {
-            //((ScreenManagerUserInterface)this.UI).m_CallbackDropLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
-            //((ScreenManagerUserInterface)this.UI).m_ThumbsViewer.m_CallBackLoadMovie += new ScreenManagerUserInterface.CallbackDropLoadMovie(DropLoadMovie);
         }
         private void InitializeVideoFilters()
         {
@@ -489,7 +459,7 @@ namespace Kinovea.ScreenManager
             mnuCoordinateAxis.Click += new EventHandler(mnuCoordinateAxis_OnClick);
             mnuCoordinateAxis.MergeAction = MergeAction.Append;
 
-            ConfigureVideoFilterMenus(null, true);
+            ConfigureVideoFilterMenus(null);
 
             //---------------------------------
             //Organisation du sous menu Image
@@ -696,7 +666,6 @@ namespace Kinovea.ScreenManager
         }
         public void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation)
         {
-            // Appelé lors de changement de framerate.
             if (m_bSynching)
             {
             	log.Debug("Speed percentage of one video changed. Force same percentage on the other.");
@@ -716,7 +685,7 @@ namespace Kinovea.ScreenManager
         }
         public void Player_PauseAsked(PlayerScreen _screen)
         {
-        	// An individual player asks for a common pause.
+        	// An individual player asks for a global pause.
         	if (m_bSynching && ((ScreenManagerUserInterface)UI).ComCtrls.Playing)
             {
         		((ScreenManagerUserInterface)UI).ComCtrls.Playing = false;
@@ -848,7 +817,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // Demander un GotoFirst à tout le monde
+                // Ask global GotoFirst.
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen is PlayerScreen)
@@ -873,7 +842,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // Demander un GotoPrev à tout le monde
+                // Ask global GotoPrev.
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
@@ -898,7 +867,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                // Demander un GotoNext à tout le monde
+                // Ask global GotoNext.
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
@@ -1550,7 +1519,7 @@ namespace Kinovea.ScreenManager
                     
                     // Motion
                     mnuHighspeedCamera.Enabled = true;
-                    ConfigureVideoFilterMenus(player, false);
+                    ConfigureVideoFilterMenus(player);
                 }
                 else if(m_ActiveScreen is CaptureScreen)
                 {
@@ -1579,7 +1548,7 @@ namespace Kinovea.ScreenManager
                     
                     // Motion
                     mnuHighspeedCamera.Enabled = false;
-                    ConfigureVideoFilterMenus(null, false);
+                    ConfigureVideoFilterMenus(null);
                 }
                 else
                 {
@@ -1617,7 +1586,7 @@ namespace Kinovea.ScreenManager
 				
 				// Motion
 				mnuHighspeedCamera.Enabled = false;
-				ConfigureVideoFilterMenus(null, true);
+				ConfigureVideoFilterMenus(null);
             }
             #endregion
 
@@ -1746,39 +1715,29 @@ namespace Kinovea.ScreenManager
             #endregion
 
         }
-        private void ConfigureVideoFilterMenus(PlayerScreen _player, bool _bDisableAll)
+        private void ConfigureVideoFilterMenus(PlayerScreen _player)
         {
 			// determines if any given video filter menu should be
 			// visible, enabled, checked...
 			
 			// 1. Visibility
+			// Experimental menus are only visible if we are on experimental release.
 			foreach(AbstractVideoFilter vf in m_VideoFilters)
-        	{
-            	if(vf.Experimental)
-            	{
-            		// Experimental filters = depends on current release type.
-            		vf.Menu.Visible = PreferencesManager.ExperimentalRelease;
-            	}
-            	else
-            	{
-            		// Production filters = always visible.
-            		vf.Menu.Visible = true;
-            	}
-        	}
-			
-			// Dev
+			{
+			    if(vf.Menu != null)
+        	       vf.Menu.Visible = vf.Experimental ? PreferencesManager.ExperimentalRelease : true;
+			}
+        	
+			// Secret menu. Set to true during developpement.
             m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
 			
-            
 			// 2. Enabled, checked
 			if(_player != null)
 			{
 				// Video filters can only be enabled when Analysis mode.
 				foreach(AbstractVideoFilter vf in m_VideoFilters)
-	        	{
-	        		vf.Menu.Enabled = _player.IsInAnalysisMode;
-	        	}		
-				
+				    vf.Menu.Enabled = _player.IsInAnalysisMode;
+	        	
 				if(_player.IsInAnalysisMode)
 	            {
 					// Fixme: Why is this here ?
@@ -1789,18 +1748,11 @@ namespace Kinovea.ScreenManager
 	            	}
 	            }
 				
-				// Checked ?
-				
-				// Reset to all unchecked.
-	        	foreach(AbstractVideoFilter vf in m_VideoFilters)
-	        	{
-	        		vf.Menu.Checked = false;
-	        	}
-        	
-        		if(_player.DrawtimeFilterType > -1)
-        		{
-        			m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;
-        		}
+				foreach(AbstractVideoFilter vf in m_VideoFilters)
+	        	    vf.Menu.Checked = false;
+	        
+        		if(_player.DrawtimeFilterType > -1) 
+        		    m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;
 			}
 			else
 			{
@@ -2023,7 +1975,7 @@ namespace Kinovea.ScreenManager
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
         }
-        private void dualSave_CancelAsked(object sender)
+        private void dualSave_CancelAsked(object sender, EventArgs e)
 		{
 			// This will simply set BgWorker.CancellationPending to true,
 			// which we check periodically in the saving loop.
@@ -2096,36 +2048,6 @@ namespace Kinovea.ScreenManager
                 
                 DoActivateKeyboardHandler();
             }
-        }
-        private void mnuExportToPDFOnClick(object sender, EventArgs e)
-        {
-            /*if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen is PlayerScreen)
-                {
-                    if (((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.HasData)
-                    {
-                        DoStopPlaying();
-
-                        SaveFileDialog saveFileDialog = new SaveFileDialog();
-                        saveFileDialog.Title = m_resManager.GetString("dlgExportToPDF_Title", Thread.CurrentThread.CurrentUICulture);
-                        saveFileDialog.RestoreDirectory = true;
-                        saveFileDialog.Filter = m_resManager.GetString("dlgExportToPDF_Filter", Thread.CurrentThread.CurrentUICulture);
-                        saveFileDialog.FilterIndex = 1;
-                        saveFileDialog.FileName = Path.GetFileNameWithoutExtension(((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata.FullPath);
-
-                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            string filePath = saveFileDialog.FileName;
-                            if (filePath.Length > 0)
-                            {
-                                AnalysisExporterPDF aepdf = new AnalysisExporterPDF();
-                                aepdf.Export(filePath, ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.Metadata);
-                            }
-                        }
-                    }
-                }
-            }*/
         }
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
@@ -3254,10 +3176,6 @@ namespace Kinovea.ScreenManager
         {
         	m_bDynamicSynching = false;
         }
-        private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
-        {
-        	DynamicSync();
-        }
         private void DynamicSync()
         {
         	// This is where the dynamic sync is done.
@@ -4028,27 +3946,4 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
-	
-    #region Namespace wide delegates
-	// To call for a repaint of a screen. Used in various places.
-	public delegate void DelegateScreenInvalidate();
-	
-	// To execute a specific action when we 'undo' an 'add drawing' action. (change cursor, etc.)
-	public delegate void DelegateDrawingUndrawn();
-	#endregion
-    
-	#region Namespace wide enums
-	public enum VideoFilterType
-	{
-		AutoLevels,
-		AutoContrast,
-		Sharpen,
-		EdgesOnly,
-		Mosaic,
-		Reverse,
-		Sandbox,
-		NumberOfVideoFilters
-	};
-    #endregion
-
 }

@@ -43,18 +43,12 @@ namespace Kinovea.ScreenManager
 	public partial class ThumbListViewItem : UserControl
 	{
 		#region Events
-		public delegate void LaunchVideoHandler(object sender, EventArgs e);
-		public delegate void VideoSelectedHandler(object sender, EventArgs e);
-		public delegate void FileNameEditingHandler(object sender, EditingEventArgs e);
-		
 		[Category("Action"), Browsable(true)]
-		public event LaunchVideoHandler LaunchVideo;
-
+		public event EventHandler LaunchVideo;
 		[Category("Action"), Browsable(true)]
-		public event VideoSelectedHandler VideoSelected;
-		
+		public event EventHandler VideoSelected;
 		[Category("Action"), Browsable(true)]
-		public event FileNameEditingHandler FileNameEditing;
+		public event EventHandler<EditingEventArgs> FileNameEditing;
 		#endregion
 		
 		#region Properties
@@ -146,7 +140,6 @@ namespace Kinovea.ScreenManager
 		private bool m_Hovering;
 		private Bitmap bmpKvaAnalysis = Resources.bullet_white;
 		private System.Windows.Forms.Timer tmrThumbs = new System.Windows.Forms.Timer();
-		private ResourceManager m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
 		
 		#region Context menu
 		private ContextMenuStrip  popMenu = new ContextMenuStrip();
@@ -651,16 +644,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class EditingEventArgs : EventArgs
 	{
-    	public bool Editing
-		{
-			get { return m_bEditing; }
-		}
-		
-    	private readonly bool m_bEditing;
+    	public readonly bool Editing;
 
 		public EditingEventArgs( bool _bEditing )
 		{
-			m_bEditing = _bEditing;
+			Editing = _bEditing;
 		}
 	}
     #endregion

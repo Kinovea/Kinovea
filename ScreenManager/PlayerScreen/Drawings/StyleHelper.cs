@@ -43,8 +43,8 @@ namespace Kinovea.ScreenManager
 	public class StyleHelper
 	{
 		#region Exposed function delegates
-		public DelegateBindWrite BindWrite;
-		public DelegateBindRead BindRead;
+		public BindWriter BindWrite;
+		public BindReader BindRead;
 		
 		/// <summary>
 		/// Event raised when the value is changed dynamically through binding.
@@ -52,9 +52,8 @@ namespace Kinovea.ScreenManager
 		/// An example use is when we change the main color of the track, we need to propagate the change
 		/// to the small label attached (for the Label following mode).
 		/// </summary>
-		/// <remarks>The event is not raised when the value is changed manually</remarks>
-		public event DelegateValueChanged ValueChanged;
-		
+		/// <remarks>The event is not raised when the value is changed manually through a property setter</remarks>
+		public event EventHandler ValueChanged;
 		#endregion
 		
 		#region Properties
@@ -358,7 +357,7 @@ namespace Kinovea.ScreenManager
 			
 			if(imported)
 			{
-				if(ValueChanged != null) ValueChanged();
+				if(ValueChanged != null) ValueChanged(null, EventArgs.Empty);
 			}
 			else
 			{
@@ -366,64 +365,65 @@ namespace Kinovea.ScreenManager
 			}
 			
 		}
-		private void DoBindRead(string _sourceProperty, ref object _targetValue)
+		private object DoBindRead(string _sourceProperty, Type _targetType)
 		{
-			// Take the local property and extract something of the required type (the type of _targetValue).
-			// This function is used by style element to stay up to date in case the bound property has been modified externally.
+			// Take the local property and extract something of the required type.
+			// This function is used by style elements to stay up to date in case the bound property has been modified externally.
 			// The style element might be of an entirely different type than the property.
 			bool converted = false;
+			object result = null;
 			switch(_sourceProperty)
 			{
 				case "Color":
 					{
-						if(_targetValue is Color)
+			            if(_targetType == typeof(Color))
 						{
-							_targetValue = m_Color;
+							result = m_Color;
 							converted = true;
 						}
 						break;	
 					}
 				case "LineSize":
 					{
-						if(_targetValue is int)
+			            if(_targetType == typeof(int))
 						{
-							_targetValue = m_iLineSize;
+							result = m_iLineSize;
 							converted = true;
 						}
 						break;
 					}
 				case "LineEnding":
 					{
-						if(_targetValue is LineEnding)
+			            if(_targetType == typeof(LineEnding))
 						{
-							_targetValue = m_LineEnding;
+							result = m_LineEnding;
 							converted = true;
 						}
 						break;
 					}
 				case "TrackShape":
 					{
-						if(_targetValue is TrackShape)
+			            if(_targetType == typeof(TrackShape))
 						{
-							_targetValue = m_TrackShape;
+							result = m_TrackShape;
 							converted = true;
 						}
 						break;
 					}
 				case "Font":
 					{
-						if(_targetValue is int)
+			            if(_targetType == typeof(int))
 						{
-							_targetValue = (int)m_Font.Size;
+							result = (int)m_Font.Size;
 							converted = true;
 						}
 						break;
 					}
 				case "Bicolor":
 					{
-						if(_targetValue is Color)
+			            if(_targetType == typeof(Color))
 						{
-							_targetValue = m_Bicolor.Background;
+							result = m_Bicolor.Background;
 							converted = true;
 						}
 						break;	
@@ -437,8 +437,10 @@ namespace Kinovea.ScreenManager
 			
 			if(!converted)
 			{
-				log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , _sourceProperty, _targetValue);
+			    log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , _sourceProperty, _targetType);
 			}
+			
+			return result;
 		}
 		private float GetRescaledFontSize(float _fStretchFactor)
 		{

@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
 			bool reconnected = false;
 			
 			// Ask the user which device he wants to use or which size/framerate.
-			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice, new PromptDevicePropertyPage(DisplayDevicePropertyPage));
+			formDevicePicker fdp = new formDevicePicker(ListDevices(), m_CurrentVideoDevice, DisplayDevicePropertyPage);
 			
 			if(fdp.ShowDialog() == DialogResult.OK)
 			{
@@ -363,14 +363,14 @@ namespace Kinovea.ScreenManager
 		{
 			Disconnect();
 		}
-		public void DisplayDevicePropertyPage(IntPtr _handle)
+		public void DisplayDevicePropertyPage(IntPtr _windowHandle)
 		{
 			VideoCaptureDevice device = m_VideoSource as VideoCaptureDevice;
 			if(device != null)
 			{
 				try
 				{
-					device.DisplayPropertyPage(_handle);
+					device.DisplayPropertyPage(_windowHandle);
 				}
 				catch(Exception)
 				{

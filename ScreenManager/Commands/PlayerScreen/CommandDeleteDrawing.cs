@@ -38,14 +38,14 @@ namespace Kinovea.ScreenManager
         	}
         }
 
-        private DelegateScreenInvalidate m_DoScreenInvalidate;
+        private Action m_DoScreenInvalidate;
         private long m_iFramePosition;
         private Metadata m_Metadata;
         private AbstractDrawing m_Drawing;
         private int m_iDrawingIndex;
 
         #region constructor
-        public CommandDeleteDrawing(DelegateScreenInvalidate _invalidate, Metadata _Metadata, long _iFramePosition, int _iDrawingIndex)
+        public CommandDeleteDrawing(Action _invalidate, Metadata _Metadata, long _iFramePosition, int _iDrawingIndex)
         {
             m_DoScreenInvalidate = _invalidate;
             m_iFramePosition = _iFramePosition;

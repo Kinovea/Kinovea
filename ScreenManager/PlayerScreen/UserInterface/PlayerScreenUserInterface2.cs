@@ -54,46 +54,9 @@ namespace Kinovea.ScreenManager
 		[DllImport("winmm.dll", SetLastError = true)]
 		private static extern uint timeKillEvent(uint timerEventId);
 
-		const int TIME_PERIODIC         = 0x01;
-		const int TIME_KILL_SYNCHRONOUS = 0x0100;
-
-		[DllImport("user32.dll")]
-		static extern uint GetDoubleClickTime();
-		
-		[DllImport("gdi32.dll")]
-		public static extern bool BitBlt(IntPtr hObject, int nXDest, int nYDest, int nWidth,
-   										int nHeight, IntPtr hObjSource, int nXSrc, int nYSrc,  TernaryRasterOperations dwRop);    
-
-		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
-		static extern IntPtr CreateCompatibleDC(IntPtr hdc);
-		
-		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
-		static extern bool DeleteDC(IntPtr hdc);
-
-		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
-		static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
-		
-		[DllImport("gdi32.dll", ExactSpelling=true, SetLastError=true)]
-		static extern bool DeleteObject(IntPtr hObject);
-
-		public enum TernaryRasterOperations : uint {
-		    SRCCOPY     = 0x00CC0020,
-		    SRCPAINT    = 0x00EE0086,
-		    SRCAND      = 0x008800C6,
-		    SRCINVERT   = 0x00660046,
-		    SRCERASE    = 0x00440328,
-		    NOTSRCCOPY  = 0x00330008,
-		    NOTSRCERASE = 0x001100A6,
-		    MERGECOPY   = 0x00C000CA,
-		    MERGEPAINT  = 0x00BB0226,
-		    PATCOPY     = 0x00F00021,
-		    PATPAINT    = 0x00FB0A09,
-		    PATINVERT   = 0x005A0049,
-		    DSTINVERT   = 0x00550009,
-		    BLACKNESS   = 0x00000042,
-		    WHITENESS   = 0x00FF0062
-		}
-		#endregion
+		private const int TIME_PERIODIC         = 0x01;
+		private const int TIME_KILL_SYNCHRONOUS = 0x0100;
+        #endregion
 
 		#region Internal delegates for async methods
 		private delegate void TimerEventHandler(uint id, uint msg, ref int userCtx, int rsv1, int rsv2);
@@ -293,7 +256,6 @@ namespace Kinovea.ScreenManager
 		
 		// Others
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
-		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		private MessageToaster m_MessageToaster;
 		
@@ -358,7 +320,7 @@ namespace Kinovea.ScreenManager
 			
 			m_PlayerScreenUIHandler = _PlayerScreenUIHandler;
 			m_FrameServer = _FrameServer;
-			m_FrameServer.Metadata = new Metadata(new GetTimeCode(TimeStampsToTimecode), new ShowClosestFrame(OnShowClosestFrame));
+			m_FrameServer.Metadata = new Metadata(TimeStampsToTimecode, OnShowClosestFrame);
 			
 			InitializeComponent();
 			BuildContextMenus();
@@ -1064,41 +1026,40 @@ namespace Kinovea.ScreenManager
 			m_ActiveTool = m_PointerTool;
 			
 			stripDrawingTools.Left = 3;
-			EventHandler handler = new EventHandler(drawingTool_Click);
 			
 			// Special button: Add key image
 			m_btnAddKeyFrame = CreateToolButton();
         	m_btnAddKeyFrame.Image = Resources.page_white_go;
-        	m_btnAddKeyFrame.Click += new EventHandler(btnAddKeyframe_Click);
+        	m_btnAddKeyFrame.Click += btnAddKeyframe_Click;
         	m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
         	stripDrawingTools.Items.Add(m_btnAddKeyFrame);
         	
         	// Pointer tool button
-			AddToolButton(m_PointerTool, handler);
+			AddToolButton(m_PointerTool, drawingTool_Click);
 			stripDrawingTools.Items.Add(new ToolStripSeparator());
 			
 			// Special button: Key image comments
 			m_btnShowComments = CreateToolButton();
         	m_btnShowComments.Image = Resources.comments2;
-        	m_btnShowComments.Click += new EventHandler(btnShowComments_Click);
+        	m_btnShowComments.Click += btnShowComments_Click;
         	m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
         	stripDrawingTools.Items.Add(m_btnShowComments);
         	
         	// All other tools
-			AddToolButton(ToolManager.Label, handler);
-			AddToolButton(ToolManager.Pencil, handler);
-			AddToolButton(ToolManager.Line, handler);
-			AddToolButton(ToolManager.Circle, handler);
-			AddToolButton(ToolManager.CrossMark, handler);
-			AddToolButton(ToolManager.Angle, handler);
-			AddToolButton(ToolManager.Chrono, handler);
-			AddToolButton(ToolManager.Plane, handler);
-			AddToolButton(ToolManager.Magnifier, new EventHandler(btnMagnifier_Click));
+			AddToolButton(ToolManager.Label, drawingTool_Click);
+			AddToolButton(ToolManager.Pencil, drawingTool_Click);
+			AddToolButton(ToolManager.Line, drawingTool_Click);
+			AddToolButton(ToolManager.Circle, drawingTool_Click);
+			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
+			AddToolButton(ToolManager.Angle, drawingTool_Click);
+			AddToolButton(ToolManager.Chrono, drawingTool_Click);
+			AddToolButton(ToolManager.Plane, drawingTool_Click);
+			AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
 						
 			// Special button: Tool presets
 			m_btnToolPresets = CreateToolButton();
         	m_btnToolPresets.Image = Resources.SwatchIcon3;
-        	m_btnToolPresets.Click += new EventHandler(btnColorProfile_Click);
+        	m_btnToolPresets.Click += btnColorProfile_Click;
         	m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
         	stripDrawingTools.Items.Add(m_btnToolPresets);
 		}
@@ -1172,8 +1133,8 @@ namespace Kinovea.ScreenManager
 		                                              m_FrameServer.VideoFile.Infos.iDecodingHeight,
 		                                              m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame,
 		                                              m_FrameServer.VideoFile.FilePath,
-		                                              new GetTimeCode(TimeStampsToTimecode),
-		                                              new ShowClosestFrame(OnShowClosestFrame));
+		                                              TimeStampsToTimecode,
+		                                              OnShowClosestFrame);
 			    
                 UpdateFramesMarkers();
 				OrganizeKeyframes();
@@ -1476,15 +1437,6 @@ namespace Kinovea.ScreenManager
 			}
 
 			return outputTimeCode;
-		}
-		private int TimeStampsToPixels(long _iValue, long _iOldMax, long _iNewMax)
-		{
-			// Rescaling général.
-			return (int)((double)((double)_iValue * (double)_iNewMax) / (double)_iOldMax);
-		}
-		private int PixelsToTimeStamps(long _iValue, long _iOldMax, long _iNewMax)
-		{
-			return (int)(Math.Round((double)((double)_iValue * (double)_iNewMax) / (double)_iOldMax));
 		}
 		private void DoDrawingUndrawn()
 		{
@@ -1962,9 +1914,9 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Frame Tracker
-		private void trkFrame_PositionChanging(object sender, long _iPosition)
+		private void trkFrame_PositionChanging(object sender, PositionChangedEventArgs e)
 		{
-			// Called on user mouse move on frame tracker, if on analysis mode.
+			// This one should only fire during analysis mode.
 			if (m_FrameServer.VideoFile.Loaded)
 			{
 				// Update image but do not touch cursor, as the user is manipulating it.
@@ -1973,17 +1925,10 @@ namespace Kinovea.ScreenManager
 				UpdateCurrentPositionLabel();
 				
 				ActivateKeyframe(m_iCurrentPosition);
-
-				// Update the selection hairline (?)
-				//trkSelection.SelPos = trkFrame.Position;
 			}
 		}
-		private void trkFrame_PositionChanged(object sender, long _iPosition)
+		private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
 		{
-			//---------------------------------------------------
-			// Appelée uniquement lors de déplacement automatique
-			// MouseUp, DoubleClick
-			//---------------------------------------------------
 			if (m_FrameServer.VideoFile.Loaded)
 			{
 				OnPoke();
@@ -1995,7 +1940,7 @@ namespace Kinovea.ScreenManager
 				UpdateCurrentPositionLabel();
 				ActivateKeyframe(m_iCurrentPosition);
 
-				// Mise à jour de l'indicateur sur le frame
+				// Update WorkingZone hairline.
 				trkSelection.SelPos = trkFrame.Position;
 			}
 		}
@@ -2474,7 +2419,7 @@ namespace Kinovea.ScreenManager
 				foreach(AbstractDrawing ad in m_FrameServer.Metadata.ExtraDrawings)
 				{
 					Track t = ad as Track;
-					if( t != null && t.Status == Track.TrackStatus.Edit)
+					if( t != null && t.Status == TrackStatus.Edit)
 					{
 						bTracking = true;
 						break;
@@ -2550,7 +2495,7 @@ namespace Kinovea.ScreenManager
 						foreach(AbstractDrawing ad in m_FrameServer.Metadata.ExtraDrawings)
 						{
 							Track t = ad as Track;
-							if (t != null && t.Status == Track.TrackStatus.Edit)
+							if (t != null && t.Status == TrackStatus.Edit)
 							{
 								t.TrackCurrentPosition(m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage);
 							}
@@ -3030,24 +2975,24 @@ namespace Kinovea.ScreenManager
 									popMenuDrawings.Items.Clear();
 									
 									// Generic context menu from drawing capabilities.
-									if((ad.Caps & AbstractDrawing.Capabilities.ConfigureColor) == AbstractDrawing.Capabilities.ConfigureColor)
+									if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
 									{
 									   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
 									   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
 									}
 									   
-									if((ad.Caps & AbstractDrawing.Capabilities.ConfigureColorSize) == AbstractDrawing.Capabilities.ConfigureColorSize)
+									if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
 									{
 										mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 									   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
 									}
 										
-									if(m_PrefManager.DefaultFading.Enabled && ((ad.Caps & AbstractDrawing.Capabilities.Fading) == AbstractDrawing.Capabilities.Fading))
+									if(m_PrefManager.DefaultFading.Enabled && ((ad.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
 									{
 										popMenuDrawings.Items.Add(mnuConfigureFading);
 									}
 									
-									if((ad.Caps & AbstractDrawing.Capabilities.Opacity) == AbstractDrawing.Capabilities.Opacity)
+									if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
 									{
 										popMenuDrawings.Items.Add(mnuConfigureOpacity);
 									}
@@ -3060,7 +3005,7 @@ namespace Kinovea.ScreenManager
 									{
 										foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
 										{
-											tsmi.Tag = (DelegateScreenInvalidate)DoInvalidate;	// Inject dependency on this screen's invalidate method.
+											tsmi.Tag = (Action)DoInvalidate;	// Inject dependency on this screen's invalidate method.
 											popMenuDrawings.Items.Add(tsmi);
 										}
 									}
@@ -3092,7 +3037,7 @@ namespace Kinovea.ScreenManager
 								}
 								else if(hitDrawing is Track)
 								{
-									if (((Track)hitDrawing).Status == Track.TrackStatus.Edit)
+									if (((Track)hitDrawing).Status == TrackStatus.Edit)
 									{
 										mnuStopTracking.Visible = true;
 										mnuRestartTracking.Visible = false;
@@ -3191,7 +3136,7 @@ namespace Kinovea.ScreenManager
 								
 								// Magnifier is not being moved or is invisible, try drawings through pointer tool.
 								// (including chronos, tracks and grids)
-								bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
+								bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
 								
 								if (!bMovingObject)
 								{
@@ -3663,9 +3608,9 @@ namespace Kinovea.ScreenManager
 					box.Tag = iKeyframeIndex;
 					box.pbThumbnail.SizeMode = PictureBoxSizeMode.StretchImage;
 					
-					box.CloseThumb += new KeyframeBox.CloseThumbHandler(ThumbBoxClose);
-					box.ClickThumb += new KeyframeBox.ClickThumbHandler(ThumbBoxClick);
-					box.ClickInfos += new KeyframeBox.ClickInfosHandler(ThumbBoxInfosClick);
+					box.CloseThumb += ThumbBoxClose;
+					box.ClickThumb += ThumbBoxClick;
+					box.ClickInfos += ThumbBoxInfosClick;
 					
 					// TODO - Titre de la Keyframe en ToolTip.
 					iPixelsOffset += (iPixelsSpacing + box.Width);
@@ -4046,16 +3991,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Drawings Toolbar Events
-		private void btnDrawingToolPointer_Click(object sender, EventArgs e)
-		{
-			OnPoke();
-			m_ActiveTool = m_PointerTool;
-			SetCursor(m_PointerTool.GetCursor(0));
-			if (m_FrameServer.Metadata.Count < 1)
-			{
-				DockKeyframePanel(true);
-			}
-		}
 		private void drawingTool_Click(object sender, EventArgs e)
 		{
 			// User clicked on a drawing tool button. A reference to the tool is stored in .Tag
@@ -4473,20 +4408,20 @@ namespace Kinovea.ScreenManager
 		#region Chronometers Menus
 		private void mnuChronoStart_Click(object sender, EventArgs e)
 		{
-			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, DrawingChrono.ChronoModificationType.TimeStart, m_iCurrentPosition);
+			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.TimeStart, m_iCurrentPosition);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
 		}
 		private void mnuChronoStop_Click(object sender, EventArgs e)
 		{
-			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, DrawingChrono.ChronoModificationType.TimeStop, m_iCurrentPosition);
+			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.TimeStop, m_iCurrentPosition);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
 			UpdateFramesMarkers();
 		}
 		private void mnuChronoHide_Click(object sender, EventArgs e)
 		{
-			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, DrawingChrono.ChronoModificationType.TimeHide, m_iCurrentPosition);
+			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.TimeHide, m_iCurrentPosition);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
 		}
@@ -4495,7 +4430,7 @@ namespace Kinovea.ScreenManager
 			// This menu should only be accessible if we have a "Stop" value.
 			mnuChronoCountdown.Checked = !mnuChronoCountdown.Checked;
 			
-			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, DrawingChrono.ChronoModificationType.Countdown, (mnuChronoCountdown.Checked == true)?1:0);
+			IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.Countdown, (mnuChronoCountdown.Checked == true)?1:0);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cmc);
 			
@@ -4959,7 +4894,11 @@ namespace Kinovea.ScreenManager
 				}
 				
 				// Launch sequence saving configuration dialog
-				formRafaleExport fre = new formRafaleExport(this, m_FrameServer.Metadata, m_FrameServer.VideoFile.FilePath, m_iSelDuration, m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds, m_FrameServer.VideoFile.Infos.fFps);
+				formRafaleExport fre = new formRafaleExport(this, 
+				                                            m_FrameServer.Metadata, 
+				                                            m_FrameServer.VideoFile.FilePath, 
+				                                            m_iSelDuration, 
+				                                            m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds);
 				fre.ShowDialog();
 				fre.Dispose();
 				m_FrameServer.AfterSave();

@@ -193,8 +193,8 @@ namespace Kinovea.ScreenManager
         	this.trkFrame.ReportOnMouseMove = true;
         	this.trkFrame.Size = new System.Drawing.Size(212, 20);
         	this.trkFrame.TabIndex = 14;
-        	this.trkFrame.PositionChanging += new Kinovea.ScreenManager.FrameTracker.PositionChangingHandler(this.trkFrame_PositionChanged);
-        	this.trkFrame.PositionChanged += new Kinovea.ScreenManager.FrameTracker.PositionChangedHandler(this.trkFrame_PositionChanged);
+        	this.trkFrame.PositionChanging += this.trkFrame_PositionChanged;
+        	this.trkFrame.PositionChanged += this.trkFrame_PositionChanged;
         	// 
         	// lblTrkFrameInfos
         	// 

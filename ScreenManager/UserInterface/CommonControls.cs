@@ -226,25 +226,20 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region TrkFrame Handlers
-        private void trkFrame_PositionChanged(object sender, long _iPosition)
+        private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
         {
-            if(_iPosition != m_iOldPosition)
+            if(e.Position != m_iOldPosition)
         	{
-        		m_iOldPosition = _iPosition;
+        		m_iOldPosition = e.Position;
             	if(m_ScreenManagerUIContainer != null)
         		{ 
-            		m_ScreenManagerUIContainer.CommonCtrl_PositionChanged(_iPosition); 
+            		m_ScreenManagerUIContainer.CommonCtrl_PositionChanged(e.Position); 
             	}
         	}
         }
         #endregion
         
         #region Lower level helpers
-        private void UpdateDebug()
-        {
-            lblTrkFrameInfos.Text = "Min : " + trkFrame.Minimum + ", Max : " + trkFrame.Maximum + ", Pos : " + trkFrame.Position;
-            lblTrkFrameInfos.Invalidate();
-        }
         private void RefreshPlayButton()
         {
             if (m_bPlaying)

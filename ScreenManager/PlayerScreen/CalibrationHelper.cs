@@ -33,19 +33,6 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public class CalibrationHelper
 	{
-		/// <summary>
-		/// Standards units for distance, restricted to sports range. (No microscopic or macroscopic).
-		/// </summary>
-		public enum LengthUnits
-		{
-			Centimeters,
-			Meters,
-			Inches,
-			Feet,
-			Yards,
-			Pixels					// Native unit.
-		}
-		
 		#region Properties		
 		public LengthUnits CurrentLengthUnit 
 		{
@@ -327,11 +314,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Private methods
-		
-		private string GetSpeedAbbreviation()
-		{
-			return GetSpeedAbbreviationFromUnit(m_CurrentSpeedUnit);
-		}
 		private double GetSpeedInUserUnit(Point p1, Point p2, int frames, SpeedUnits _SpeedUnit)
 		{
 			// Return the speed in the current user unit.

@@ -51,9 +51,9 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -445,13 +445,6 @@ namespace Kinovea.ScreenManager
             {
                 return new Rectangle(m_RescaledEndPoint.X - 3, m_RescaledEndPoint.Y - 3, 6, 6);
             }
-        }
-        private Rectangle GetShiftedRescaledHandleRectangle(int _handle, int _iLeftShift, int _iTopShift)
-        {
-            Rectangle handle = GetRescaledHandleRectangle(_handle);
-
-            // Hack : we reduce the zone by 1 px each direction because the PDFSharp library will draw too big circles.
-            return new Rectangle(handle.Left + _iLeftShift, handle.Top + _iTopShift + 1, handle.Width - 1, handle.Height - 1);
         }
         private bool IsPointInObject(Point _point)
         {

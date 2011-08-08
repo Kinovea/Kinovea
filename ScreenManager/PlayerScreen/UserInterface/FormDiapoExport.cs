@@ -55,16 +55,14 @@ namespace Kinovea.ScreenManager
     	#endregion
     	
         #region Members
-        private string m_InputFileName;
         private string m_OutputFileName;
         private double m_fFrameInterval;
         private bool m_bDiaporama;
         #endregion
 
         #region Construction and initialization
-        public formDiapoExport(string _InputFileName, bool _diapo)
+        public formDiapoExport(bool _diapo)
         {
-            m_InputFileName = _InputFileName;
             m_bDiaporama = _diapo;
             
             InitializeComponent();

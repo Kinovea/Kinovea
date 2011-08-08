@@ -58,7 +58,6 @@ namespace Kinovea.ScreenManager
         	this.pictureBox1 = new System.Windows.Forms.PictureBox();
         	this.btnDockBottom = new System.Windows.Forms.Button();
         	this.tmrCaptureDeviceDetector = new System.Windows.Forms.Timer(this.components);
-        	this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
         	this.panelTop.SuspendLayout();
         	this.panelVideoControls.SuspendLayout();
         	this.pnlCaptureDock.SuspendLayout();
@@ -318,11 +317,11 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.Name = "panelCenter";
         	this.panelCenter.Size = new System.Drawing.Size(350, 242);
         	this.panelCenter.TabIndex = 2;
-        	this.panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	this.panelCenter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseClick);
         	this.panelCenter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelCenter_MouseDown);
-        	this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
         	this.panelCenter.MouseEnter += new System.EventHandler(this.PanelCenter_MouseEnter);
+        	this.panelCenter.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
+        	this.panelCenter.Resize += new System.EventHandler(this.PanelCenter_Resize);
         	// 
         	// ImageResizerNE
         	// 
@@ -335,8 +334,8 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNE.Name = "ImageResizerNE";
         	this.ImageResizerNE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNE.TabIndex = 9;
-        	this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
         	this.ImageResizerNE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerNE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNE_MouseMove);
         	this.ImageResizerNE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerNW
@@ -350,8 +349,8 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW.Name = "ImageResizerNW";
         	this.ImageResizerNW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerNW.TabIndex = 8;
-        	this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
         	this.ImageResizerNW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerNW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerNW_MouseMove);
         	this.ImageResizerNW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerSW
@@ -365,8 +364,8 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSW.Name = "ImageResizerSW";
         	this.ImageResizerSW.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSW.TabIndex = 7;
-        	this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
         	this.ImageResizerSW.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerSW.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSW_MouseMove);
         	this.ImageResizerSW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// ImageResizerSE
@@ -381,8 +380,8 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.Name = "ImageResizerSE";
         	this.ImageResizerSE.Size = new System.Drawing.Size(6, 6);
         	this.ImageResizerSE.TabIndex = 6;
-        	this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
         	this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
+        	this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
         	this.ImageResizerSE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
         	// 
         	// pbSurfaceScreen
@@ -393,13 +392,13 @@ namespace Kinovea.ScreenManager
         	this.pbSurfaceScreen.Size = new System.Drawing.Size(101, 73);
         	this.pbSurfaceScreen.TabIndex = 2;
         	this.pbSurfaceScreen.TabStop = false;
-        	this.pbSurfaceScreen.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
-        	this.pbSurfaceScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseMove);
+        	this.pbSurfaceScreen.Paint += new System.Windows.Forms.PaintEventHandler(this.SurfaceScreen_Paint);
         	this.pbSurfaceScreen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDoubleClick);
         	this.pbSurfaceScreen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseDown);
-        	this.pbSurfaceScreen.Paint += new System.Windows.Forms.PaintEventHandler(this.SurfaceScreen_Paint);
-        	this.pbSurfaceScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseUp);
         	this.pbSurfaceScreen.MouseEnter += new System.EventHandler(this.SurfaceScreen_MouseEnter);
+        	this.pbSurfaceScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseMove);
+        	this.pbSurfaceScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SurfaceScreen_MouseUp);
+        	this.pbSurfaceScreen.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Common_MouseWheel);
         	// 
         	// stripDrawingTools
         	// 
@@ -458,6 +457,7 @@ namespace Kinovea.ScreenManager
         	this.pnlThumbnails.Size = new System.Drawing.Size(350, 97);
         	this.pnlThumbnails.TabIndex = 3;
         	this.pnlThumbnails.DoubleClick += new System.EventHandler(this.pnlThumbnails_DoubleClick);
+        	this.pnlThumbnails.MouseEnter += new System.EventHandler(this.pnlThumbnails_MouseEnter);
         	// 
         	// pictureBox1
         	// 
@@ -524,7 +524,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Label lblDelay;
         private System.Windows.Forms.Label lblVideoFile;
 		private System.Windows.Forms.Label lblImageFile;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button btnGrab;
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.Button btnSaveImageLocation;

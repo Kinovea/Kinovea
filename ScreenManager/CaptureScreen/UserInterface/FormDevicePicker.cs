@@ -80,10 +80,10 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private DeviceDescriptor m_CurrentDevice;
-		private PromptDevicePropertyPage m_PromptDevicePropertyPage;
+		private PropertyPagePrompter m_PromptDevicePropertyPage;
 		#endregion
 		
-		public formDevicePicker(List<DeviceDescriptor> _devices, DeviceDescriptor _currentDevice, PromptDevicePropertyPage _PromptDevicePropertyPage)
+		public formDevicePicker(List<DeviceDescriptor> _devices, DeviceDescriptor _currentDevice, PropertyPagePrompter _PromptDevicePropertyPage)
 		{
 			m_PromptDevicePropertyPage = _PromptDevicePropertyPage;
 			m_CurrentDevice = _currentDevice;

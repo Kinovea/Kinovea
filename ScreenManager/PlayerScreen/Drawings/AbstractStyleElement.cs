@@ -25,11 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 namespace Kinovea.ScreenManager
-{
-	public delegate void DelegateBindWrite(string _targetProperty, object _value);
-	public delegate void DelegateBindRead(string _sourceProperty, ref object _targetValue);
-	public delegate void DelegateValueChanged();
-        
+{   
 	/// <summary>
 	/// A styling property for a drawing / drawing tool.
 	/// Concrete style elements related to a drawing are then collected in a DrawingStyle object.
@@ -81,7 +77,7 @@ namespace Kinovea.ScreenManager
 		/// Event raised when the value is changed. (call RaiseValueChanged() to trigger)
 		/// The mini editor container will hook to this and update main screen accordingly to enable real time update.
 		/// </summary>
-		public event DelegateValueChanged ValueChanged;
+		public event EventHandler ValueChanged;
 		#endregion
     	
     	#region Members
@@ -118,10 +114,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// 2. Raise event
-			if(ValueChanged != null)
-			{
-				ValueChanged();
-			}
+			if(ValueChanged != null) ValueChanged(null, EventArgs.Empty);
 		}
 		public void ReadValue()
 		{
@@ -129,10 +122,7 @@ namespace Kinovea.ScreenManager
 			// Caveat: affecting Value will raise back BindWrite().
 			if(m_BindTarget != null && m_BindTarget.BindRead != null && !string.IsNullOrEmpty(m_BindTargetProperty))
 			{
-				// Since we can't ref the Value property directly (it's a method after all), we need to use a temporary variable.
-				object temp = Value;
-				m_BindTarget.BindRead(m_BindTargetProperty, ref temp);
-				Value = temp;
+				Value = m_BindTarget.BindRead(m_BindTargetProperty, Value.GetType());
 			}
 		}
 		public override string ToString()
