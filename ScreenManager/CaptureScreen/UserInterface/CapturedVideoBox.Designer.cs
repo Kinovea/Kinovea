@@ -28,11 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-        	this.components = new System.ComponentModel.Container();
         	this.btnClose = new System.Windows.Forms.Button();
         	this.pbThumbnail = new System.Windows.Forms.PictureBox();
         	this.tbTitle = new System.Windows.Forms.TextBox();
-        	this.toolTips = new System.Windows.Forms.ToolTip(this.components);
         	((System.ComponentModel.ISupportInitialize)(this.pbThumbnail)).BeginInit();
         	this.SuspendLayout();
         	// 
@@ -53,8 +51,8 @@
         	this.btnClose.TabIndex = 1;
         	this.btnClose.UseVisualStyleBackColor = false;
         	this.btnClose.Visible = false;
-        	this.btnClose.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+        	this.btnClose.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	// 
         	// pbThumbnail
         	// 
@@ -67,11 +65,11 @@
         	this.pbThumbnail.Size = new System.Drawing.Size(100, 75);
         	this.pbThumbnail.TabIndex = 0;
         	this.pbThumbnail.TabStop = false;
-        	this.pbThumbnail.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
-        	this.pbThumbnail.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbThumbnail_MouseMove);
         	this.pbThumbnail.Click += new System.EventHandler(this.pbThumbnail_Click);
         	this.pbThumbnail.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pbThumbnail_MouseDoubleClick);
         	this.pbThumbnail.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
+        	this.pbThumbnail.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
+        	this.pbThumbnail.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbThumbnail_MouseMove);
         	// 
         	// tbTitle
         	// 
@@ -88,11 +86,9 @@
         	this.tbTitle.Size = new System.Drawing.Size(100, 11);
         	this.tbTitle.TabIndex = 4;
         	this.tbTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-        	this.tbTitle.TextChanged += new System.EventHandler(this.TbTitleTextChanged);
-        	this.tbTitle.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	this.tbTitle.Click += new System.EventHandler(this.pbThumbnail_Click);
-        	this.tbTitle.Enter += new System.EventHandler(this.TbTitleEnter);
         	this.tbTitle.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
+        	this.tbTitle.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	// 
         	// CapturedVideoBox
         	// 
@@ -109,7 +105,6 @@
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
-        private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.TextBox tbTitle;
 
         #endregion

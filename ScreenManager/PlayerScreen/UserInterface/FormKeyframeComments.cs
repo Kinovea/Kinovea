@@ -234,22 +234,6 @@ namespace Kinovea.ScreenManager
         	
         	return bold + italic + underline + strikeout;
         }
-        private void LogCurrentSelection()
-        {
-        	log.Debug(String.Format("Selection font name:{0}", rtbComment.SelectionFont.Name));
-        	log.Debug(String.Format("Selection font size:{0}", rtbComment.SelectionFont.Size));
-        	log.Debug(String.Format("Selection font bold:{0}", rtbComment.SelectionFont.Bold));
-        	log.Debug(String.Format("Selection font italic:{0}", rtbComment.SelectionFont.Italic));
-        	log.Debug(String.Format("Selection font underline:{0}", rtbComment.SelectionFont.Underline));
-        	log.Debug(String.Format("Selection font strikeout:{0}", rtbComment.SelectionFont.Strikeout));
-        	
-        	log.Debug(String.Format("Selection back color: {0}", rtbComment.SelectionBackColor.ToString()));
-        	log.Debug(String.Format("Selection fore color: {0}", rtbComment.SelectionColor.ToString()));
-        	
-        	/*log.Debug(String.Format("regular : {0}, bold : {1}, italic : {2}, underline : {3}, strikeout : {4}", 
-        	                        (int)FontStyle.Regular, (int)FontStyle.Bold, (int)FontStyle.Italic, (int)FontStyle.Underline, (int)FontStyle.Strikeout));
-        	log.Debug(String.Format("style : {0}", rtbComment.SelectionFont.Style));*/
-        }
         #endregion
 
     }

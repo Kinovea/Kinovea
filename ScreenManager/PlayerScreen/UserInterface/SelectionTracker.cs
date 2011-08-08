@@ -188,17 +188,13 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Events Delegates
-        public delegate void SelectionChangingHandler(object sender, EventArgs e);
-        public delegate void SelectionChangedHandler(object sender, EventArgs e);
-        public delegate void TargetAcquiredHandler(object sender, EventArgs e);
-
+        #region Events
         [Category("Action"), Browsable(true)]
-        public event SelectionChangingHandler SelectionChanging;
+        public event EventHandler SelectionChanging;
         [Category("Action"), Browsable(true)]
-        public event SelectionChangedHandler SelectionChanged;
+        public event EventHandler SelectionChanged;
         [Category("Action"), Browsable(true)]
-        public event TargetAcquiredHandler TargetAcquired;
+        public event EventHandler TargetAcquired;
         #endregion
 
         #region Contructor

@@ -35,14 +35,14 @@ namespace Kinovea.ScreenManager
 	{
 		#region Members
 		private DrawingStyle m_Style;
-		private DelegateScreenInvalidate m_Invalidate;
+		private Action m_Invalidate;
 		private bool m_bManualClose;
 		private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public FormConfigureDrawing2(DrawingStyle _style, DelegateScreenInvalidate _invalidate)
+		public FormConfigureDrawing2(DrawingStyle _style, Action _invalidate)
 		{
 			m_Style = _style;
 			m_Style.ReadValue();
@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
 			int borderTop = this.Height - this.ClientRectangle.Height;
 			this.Height = borderTop + btnOK.Bottom + 10;
 		}
-		private void element_ValueChanged()
+		private void element_ValueChanged(object sender, EventArgs e)
 		{
 			if(m_Invalidate != null) m_Invalidate();
 		}

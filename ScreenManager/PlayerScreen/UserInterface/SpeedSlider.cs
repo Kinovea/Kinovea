@@ -177,11 +177,9 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region EventDelegates
-        public delegate void ValueChangedHandler(object sender, EventArgs e);
-        
+        #region Events
         [Category("Action"), Browsable(true)]
-        public event ValueChangedHandler ValueChanged;
+        public event EventHandler ValueChanged;
         #endregion
 
         #region Ctor

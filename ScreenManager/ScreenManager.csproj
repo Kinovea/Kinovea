@@ -158,12 +158,13 @@
     <Compile Include="Commands\ScreenManager\CommandAddPlayerScreen.cs" />
     <Compile Include="Commands\PlayerScreen\CommandLoadMovie.cs" />
     <Compile Include="Commands\ScreenManager\CommandLoadMovieInScreen.cs" />
-    <Compile Include="Commands\PlayerScreen\CommandPlayMovie.cs" />
     <Compile Include="Commands\ScreenManager\CommandRemoveScreen.cs" />
     <Compile Include="Commands\ScreenManager\CommandShowScreens.cs" />
     <Compile Include="Commands\ScreenManager\CommandSwapScreens.cs" />
     <Compile Include="Commands\ScreenManager\CommandToggleCommonControls.cs" />
     <Compile Include="CoordinateSystem.cs" />
+    <Compile Include="Delegates.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
@@ -211,23 +212,11 @@
     <Compile Include="PlayerScreen\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
-    <Compile Include="PlayerScreen\SURF\CDVMatrix.cs" />
-    <Compile Include="PlayerScreen\SURF\CFastHessian.cs" />
-    <Compile Include="PlayerScreen\SURF\COpenSURF.cs" />
-    <Compile Include="PlayerScreen\SURF\IplImage.cs" />
-    <Compile Include="PlayerScreen\SURF\IPoint.cs" />
-    <Compile Include="PlayerScreen\SURF\KDTree.cs" />
-    <Compile Include="PlayerScreen\SURF\Match.cs" />
-    <Compile Include="PlayerScreen\SURF\Surf.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTracker.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTrackPoint.cs" />
-    <Compile Include="PlayerScreen\Tracking\CorrelationTemplateMatching.cs" />
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
-    <Compile Include="PlayerScreen\Tracking\TrackerBlock.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
-    <Compile Include="PlayerScreen\Tracking\TrackerSURF.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
-    <Compile Include="PlayerScreen\Tracking\TrackPointSURF.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
@@ -262,12 +251,6 @@
     <Compile Include="PlayerScreen\UserInterface\FormConfigureChrono.Designer.cs">
       <DependentUpon>FormConfigureChrono.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigurePdf.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigurePdf.Designer.cs">
-      <DependentUpon>FormConfigurePdf.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -301,12 +284,6 @@
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormEventList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormEventList.Designer.cs">
-      <DependentUpon>FormEventList.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.Designer.cs">
@@ -483,7 +460,6 @@
     <Folder Include="CaptureScreen\UserInterface" />
     <Folder Include="Commands\CaptureScreen" />
     <Folder Include="PlayerScreen\Tracking" />
-    <Folder Include="PlayerScreen\SURF" />
     <Folder Include="PlayerScreen\VideoFilters" />
   </ItemGroup>
   <ItemGroup>
@@ -567,10 +543,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureChrono.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigurePdf.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormConfigurePdf.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureTrajectoryDisplay.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormConfigureTrajectoryDisplay.cs</DependentUpon>
@@ -590,10 +562,6 @@
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormRafaleExport.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormEventList.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FormEventList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormVideoExport.resx">
       <SubType>Designer</SubType>

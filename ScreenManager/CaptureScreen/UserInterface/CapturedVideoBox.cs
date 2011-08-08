@@ -38,20 +38,13 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public partial class CapturedVideoBox : UserControl
 	{
-		
-		#region EventDelegates
-        // Déclarations de Types
-        public delegate void CloseThumbHandler(object sender, EventArgs e);
-        public delegate void ClickThumbHandler(object sender, EventArgs e);
-        public delegate void LaunchVideoHandler(object sender, EventArgs e);
-        
-        // Déclarations des évènements
+		#region Events
         [Category("Action"), Browsable(true)]
-        public event CloseThumbHandler CloseThumb;
+        public event EventHandler CloseThumb;
         [Category("Action"), Browsable(true)]
-        public event ClickThumbHandler ClickThumb;
+        public event EventHandler ClickThumb;
         [Category("Action"), Browsable(true)]
-        public event LaunchVideoHandler LaunchVideo;
+        public event EventHandler LaunchVideo;
         #endregion
         
         #region Properties
@@ -63,7 +56,6 @@ namespace Kinovea.ScreenManager
         
 		#region Members
 		private CapturedVideo m_CapturedVideo;
-		private bool m_bAutoUpdatingTitle;
 		
 		#region Context menu
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -86,10 +78,7 @@ namespace Kinovea.ScreenManager
 			InitializeComponent();
 			
             btnClose.Parent = pbThumbnail;
-            
-            m_bAutoUpdatingTitle = true;
             tbTitle.Text = Path.GetFileName(m_CapturedVideo.Filepath);
-            m_bAutoUpdatingTitle = false;
             
             BuildContextMenus();
             ReloadMenusCulture();
@@ -126,7 +115,6 @@ namespace Kinovea.ScreenManager
             if(!pbThumbnail.ClientRectangle.Contains(clientMouse))
             {
                 HideButtons();
-                StopEditing();
             }
         }
         #endregion
@@ -143,20 +131,6 @@ namespace Kinovea.ScreenManager
         private void pbThumbnail_MouseDoubleClick(object sender, MouseEventArgs e)
         {
         	if (LaunchVideo != null) LaunchVideo(this, e);
-        }
-        private void TbTitleTextChanged(object sender, EventArgs e)
-        {
-        	if(!m_bAutoUpdatingTitle)
-        	{
-        		// Update the file
-        		//m_CapturedVideo.RenameFile(tbTitle.Text);
-        		//m_Keyframe.Title = tbTitle.Text;
-        		//UpdateToolTip();
-        	}
-        }
-        private void TbTitleEnter(object sender, EventArgs e)
-        {
-        	//DeactivateKeyboardHandler();
         }
         #endregion
         
@@ -215,47 +189,11 @@ namespace Kinovea.ScreenManager
         }
         private void ShowButtons()
         {
-            //btnClose.Visible = true;
+            btnClose.Visible = true;
         }
         private void HideButtons()
         {
             btnClose.Visible = false;
-        }
-        private void DeactivateKeyboardHandler()
-        {
-            // Mouse enters the box : deactivate the keyboard handling for the screens
-            // so we can use <space>, <return>, etc. here.
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.DeactivateKeyboardHandler != null)
-            {
-                dp.DeactivateKeyboardHandler();
-            }
-        }
-        private void ActivateKeyboardHandler()
-        {
-            // Mouse leave the box : reactivate the keyboard handling for the screens
-            // so we can use <space>, <return>, etc. as player shortcuts
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ActivateKeyboardHandler != null)
-            {
-                dp.ActivateKeyboardHandler();
-            }
-        }
-        private void StopEditing()
-        {
-        	ActivateKeyboardHandler();
-        	
-        	if(tbTitle.Text.Length == 0)
-    		{
-    			// We reseted the title. We should now display the timecode.
-    			//m_bAutoUpdatingTitle = true;
-    			//tbTitle.Text = m_Keyframe.Title;
-    			//m_bAutoUpdatingTitle = false;
-    		}
-        	else
-        	{
-        		//m_CapturedVideo.CommitFileName(tbTitle.Text);
-        	}
         }
         #endregion
 

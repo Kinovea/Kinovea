@@ -159,7 +159,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Let the user configure the diaporama export.
 			
-			formDiapoExport fde = new formDiapoExport(m_VideoFile.FilePath, _diapo);
+			formDiapoExport fde = new formDiapoExport(_diapo);
 			if(fde.ShowDialog() == DialogResult.OK)
 			{
 				DoSave(fde.Filename, 
@@ -324,7 +324,7 @@ namespace Kinovea.ScreenManager
                	MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
-		private void Cancel_Asked(object sender)
+		private void Cancel_Asked(object sender, EventArgs e)
 		{
 			// This will simply set BgWorker.CancellationPending to true,
 			// which we check periodically in VideoFile.ExtractToMemory method.

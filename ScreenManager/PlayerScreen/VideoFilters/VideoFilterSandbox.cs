@@ -32,7 +32,6 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
-using OpenSURF;
 
 namespace Kinovea.ScreenManager
 {
@@ -60,13 +59,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private int m_iOctaves = 1;
-        private int m_iIntervals = 3;
-        private int m_iInitSample = 1;
-        private float m_fThreshold = 0.0001f;
-        private int m_iInterpolationSteps = 10;
-		private bool m_bUpright = false;
-			
 		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -98,93 +90,6 @@ namespace Kinovea.ScreenManager
 			//TestFindSurfFeatures();
 			TestCreateYTSlices();
 			//TestFrameInterpolation();
-		}
-		#endregion
-		
-		#region SURF Features
-		private void TestFindSurfFeatures()
-		{
-			// Find SURF features in each images and draw them on image.
-			// SURF features might be used for optical flow computation later.
-			RefreshParameters();
-			
-			for(int i=0;i<m_FrameList.Count;i++)
-			{
-				m_FrameList[i].BmpImage = FindSurfFeaturesInImage(m_FrameList[i].BmpImage);
-				m_BackgroundWorker.ReportProgress(i, m_FrameList.Count);
-			}
-		}
-		private void RefreshParameters()
-		{
-			PreferencesManager pm = PreferencesManager.Instance();
-			pm.Import();
-			
-			/*m_iOctaves = pm.SurfOctaves;
-	        m_iIntervals = pm.SurfIntervals;
-	        m_iInitSample = pm.SurfInitSample;
-	        m_fThreshold = pm.SurfThreshold;
-	        m_iInterpolationSteps = pm.SurfInterpolationSteps;
-			m_bUpright = pm.SurfUpright;*/
-			
-			
-			log.Debug(String.Format("SURF params : Octaves:{0}, Intervals:{1}, Treshold:{2}", m_iOctaves, m_iIntervals, m_fThreshold));
-		}
-		private Bitmap FindSurfFeaturesInImage(Bitmap _src)
-		{
-			// Scale-space image of the search window.
-			IplImage pIplImage = IplImage.LoadImage(_src);
-            pIplImage = pIplImage.BuildIntegral(null);
-
-            List<Ipoint> ipts = new List<Ipoint>();
-            CFastHessian pCFastHessian = new CFastHessian(pIplImage, ref ipts, m_iOctaves, m_iIntervals, m_iInitSample, m_fThreshold, m_iInterpolationSteps);
-            
-            // Fill the scale-space image with actual data and finds the local extrema.
-            pCFastHessian.getIpoints();
-            
-            // Fill the descriptor field, orientation and laplacian of the feature.
-            Surf pSurf = new Surf(pIplImage, ipts);
-            pSurf.getDescriptors(m_bUpright);
-            
-            log.Debug(String.Format("SURF, number of points found:{0}", ipts.Count));
-           	
-           	// Paint described points on image.
-           	PaintSURFPoints(_src, ipts);
-			
-			return _src;
-		}
-		private void PaintSURFPoints(Bitmap _src, List<Ipoint> _ipts)
-		{	
-            Graphics pgd = null;
-            Pen penPoint = new Pen(Color.Yellow, 2);
-            try
-            {
-                pgd = Graphics.FromImage(_src);
-                
-                if (_ipts == null) 
-                	return;
-
-                foreach (Ipoint pIpoint in _ipts)
-                {
-                    if (pIpoint == null) continue;
-
-                    int xd = (int)pIpoint.x;
-                    int yd = (int)pIpoint.y;
-                    float scale = pIpoint.scale;
-                    float orientation = pIpoint.orientation;
-                    float radius = ((9.0f / 1.2f) * scale) / 3.0f;
-
-                    pgd.DrawEllipse(penPoint, xd - radius, yd - radius, 2 * radius, 2 * radius);
-
-                    double dx = radius * Math.Cos(orientation);
-                    double dy = radius * Math.Sin(orientation);
-                    pgd.DrawLine(penPoint, new Point(xd, yd), new Point((int)(xd+dx),(int)(yd+dy)));
-                }
-            }
-            finally
-            {
-                if (penPoint != null) penPoint.Dispose();
-                if (pgd != null) pgd.Dispose();
-            }
 		}
 		#endregion
 		

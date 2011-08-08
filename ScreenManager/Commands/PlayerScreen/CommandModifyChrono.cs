@@ -36,16 +36,16 @@ namespace Kinovea.ScreenManager
                 string friendlyName = "";
                 switch (m_ModifType)
                 {
-                    case DrawingChrono.ChronoModificationType.TimeStart:
+                    case ChronoModificationType.TimeStart:
                         friendlyName = ScreenManagerLang.mnuChronoStart;
                         break;
-                    case DrawingChrono.ChronoModificationType.TimeStop:
+                    case ChronoModificationType.TimeStop:
                         friendlyName = ScreenManagerLang.mnuChronoStop;
                         break;
-                    case DrawingChrono.ChronoModificationType.TimeHide:
+                    case ChronoModificationType.TimeHide:
                         friendlyName = ScreenManagerLang.mnuChronoHide;
                         break;
-                    case DrawingChrono.ChronoModificationType.Countdown:
+                    case ChronoModificationType.Countdown:
                         friendlyName = ScreenManagerLang.mnuChronoCountdown;
                         break;
                     default:
@@ -61,7 +61,7 @@ namespace Kinovea.ScreenManager
         private DrawingChrono m_Chrono;
         
         // New value
-        private DrawingChrono.ChronoModificationType m_ModifType;
+        private ChronoModificationType m_ModifType;
         private long m_iNewValue;
 
         // Memo
@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
 		#endregion
         
         #region constructor
-        public CommandModifyChrono(PlayerScreenUserInterface _psui, Metadata _Metadata, DrawingChrono.ChronoModificationType _modifType, long _newValue)
+        public CommandModifyChrono(PlayerScreenUserInterface _psui, Metadata _Metadata, ChronoModificationType _modifType, long _newValue)
         {
         	// In the special case of Countdown toggle, the new value will be 0 -> false, true otherwise .
             m_psui = _psui;
@@ -101,16 +101,16 @@ namespace Kinovea.ScreenManager
         	{
         		switch (m_ModifType)
 	            {
-	                case DrawingChrono.ChronoModificationType.TimeStart:
+	                case ChronoModificationType.TimeStart:
 	                    m_Chrono.Start(m_iNewValue);
 	                    break;
-	                case DrawingChrono.ChronoModificationType.TimeStop:
+	                case ChronoModificationType.TimeStop:
 	                    m_Chrono.Stop(m_iNewValue);
 	                    break;
-	                case DrawingChrono.ChronoModificationType.TimeHide:
+	                case ChronoModificationType.TimeHide:
 	                    m_Chrono.Hide(m_iNewValue);
 	                    break;
-	                case DrawingChrono.ChronoModificationType.Countdown:
+	                case ChronoModificationType.Countdown:
 	                    m_Chrono.CountDown = (m_iNewValue != 0);
 	                    break;
 	                default:

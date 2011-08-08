@@ -35,8 +35,7 @@ namespace Kinovea.ScreenManager
 	public partial class formProgressBar : Form
 	{
 		#region Callbacks
-		public delegate void CancelHandler(object sender);
-		public Kinovea.ScreenManager.formProgressBar.CancelHandler Cancel;
+		public EventHandler Cancel;
 		#endregion
 		
 		#region Members
@@ -94,11 +93,7 @@ namespace Kinovea.ScreenManager
 			// User clicked on cancel, trigger the callback that will cancel the ongoing operation.
 			btnCancel.Enabled = false;
 			m_bIsCancelling = true;
-			if(Cancel != null)
-			{
-				Cancel(this);
-			}
-				
+			if(Cancel != null) Cancel(this, EventArgs.Empty);	
 		}
 		#endregion
 		

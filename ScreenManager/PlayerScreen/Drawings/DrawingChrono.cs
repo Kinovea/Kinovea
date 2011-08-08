@@ -39,18 +39,6 @@ namespace Kinovea.ScreenManager
     [XmlType ("Chrono")]
     public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
-        #region Enums
-        /// <summary>
-        /// Enum used in CommandModifyChrono to know what value we are touching.
-        /// </summary>
-        public enum ChronoModificationType
-        {
-            TimeStart,
-            TimeStop,
-            TimeHide,
-            Countdown
-        }
-        #endregion
 
         #region Properties
         public DrawingStyle DrawingStyle
@@ -60,12 +48,12 @@ namespace Kinovea.ScreenManager
         public override InfosFading  infosFading
         {
         	// Fading is not modifiable from outside for chrono.
-            get { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
-            set { throw new Exception("DrawingChrono, The method or operation is not implemented."); }
+            get { throw new NotImplementedException("DrawingChrono, The method or operation is not implemented."); }
+            set { throw new NotImplementedException("DrawingChrono, The method or operation i not implemented."); }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.ConfigureColorSize; }
+			get { return DrawingCapabilities.ConfigureColorSize; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -192,7 +180,7 @@ namespace Kinovea.ScreenManager
             // Computed
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public DrawingChrono(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        public DrawingChrono(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
             : this(0, 0, 0, 1, ToolManager.Chrono.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
@@ -309,7 +297,7 @@ namespace Kinovea.ScreenManager
             string userDuration = "0";
             if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
             {
-             	userDuration = m_ParentMetadata.m_TimeStampsToTimecodeCallback(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeCodeFormat.Unknown, false);
+             	userDuration = m_ParentMetadata.TimeStampsToTimecode(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeCodeFormat.Unknown, false);
             }
             _xmlWriter.WriteElementString("UserDuration", userDuration);
             
@@ -326,7 +314,7 @@ namespace Kinovea.ScreenManager
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
 		}
-		private void ReadXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+		private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
         {
             _xmlReader.ReadStartElement();
             
@@ -358,7 +346,7 @@ namespace Kinovea.ScreenManager
 			_xmlReader.ReadEndElement();
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        private void ParseWorkingValues(XmlReader _xmlReader, DelegateRemapTimestamp _remapTimestampCallback)
+        private void ParseWorkingValues(XmlReader _xmlReader, TimeStampMapper _remapTimestampCallback)
         {
             if(_remapTimestampCallback == null)
             {
@@ -500,10 +488,6 @@ namespace Kinovea.ScreenManager
         {
             m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
         }
-        private void ShiftCoordinates(int _iShiftHorz, int _iShiftVert, double _fStretchFactor)
-        {
-            m_LabelBackground.Location = new Point((int)((double)m_TopLeft.X * _fStretchFactor) + _iShiftHorz, (int)((double)m_TopLeft.Y * _fStretchFactor) + _iShiftVert);
-        }
         private void DrawBackground(Graphics _canvas, double _fOpacityFactor)
         {
             // Draw background rounded rectangle.
@@ -555,7 +539,6 @@ namespace Kinovea.ScreenManager
 
             // Create region from the path
             Region areaRegion = new Region(areaPath);
-
             bool hit = areaRegion.IsVisible(_point);
             return hit;
         }
@@ -604,7 +587,7 @@ namespace Kinovea.ScreenManager
 				}
             }
 
-            return m_ParentMetadata.m_TimeStampsToTimecodeCallback(timestamps, TimeCodeFormat.Unknown, false);
+            return m_ParentMetadata.TimeStampsToTimecode(timestamps, TimeCodeFormat.Unknown, false);
         }
     	private Rectangle GetHandleRectangle()
         {
@@ -614,5 +597,16 @@ namespace Kinovea.ScreenManager
             return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Enum used in CommandModifyChrono to know what value we are touching.
+    /// </summary>
+    public enum ChronoModificationType
+    {
+        TimeStart,
+        TimeStop,
+        TimeHide,
+        Countdown
     }
 }

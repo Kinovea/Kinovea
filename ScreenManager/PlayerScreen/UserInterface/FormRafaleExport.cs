@@ -39,12 +39,11 @@ namespace Kinovea.ScreenManager
         private Int64 m_iSelectionDuration;                                 // in timestamps.
         private double m_fTimestampsPerSeconds;                             // ratio
         private double m_fDurationInSeconds;
-        private double m_fFramesPerSeconds;                                 // only for infos, not used in calculations.
         private ResourceManager m_ResourceManager;
         private int m_iEstimatedTotal;
         #endregion
 
-        public formRafaleExport(PlayerScreenUserInterface _psui, Metadata _metadata, string _FullPath, Int64 _iSelDuration, double _tsps, double _fps)
+        public formRafaleExport(PlayerScreenUserInterface _psui, Metadata _metadata, string _FullPath, Int64 _iSelDuration, double _tsps)
         {
             m_PlayerScreenUserInterface = _psui;
             m_Metadata = _metadata;
@@ -52,7 +51,6 @@ namespace Kinovea.ScreenManager
             m_iSelectionDuration = _iSelDuration;
             m_fTimestampsPerSeconds = _tsps;
             m_fDurationInSeconds = m_iSelectionDuration / m_fTimestampsPerSeconds;
-            m_fFramesPerSeconds = _fps;
             m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_iEstimatedTotal = 0;
 

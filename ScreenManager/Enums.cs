@@ -1,6 +1,6 @@
-#region License
+﻿#region License
 /*
-Copyright � Joan Charmant 2009.
+Copyright © Joan Charmant 2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,24 +19,36 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+    // Some general enums used in this namespace.
+    // Some other enums might be in the file where the most related class is defined.
+    // But avoid declaring enums as nested types inside these classes.
+    
 	/// <summary>
-	/// Work in progress...
+	/// Standards units for distance, restricted to sports range. (No microscopic or macroscopic).
 	/// </summary>
-    public partial class formConfigurePdf : Form
-    {
-        public formConfigurePdf()
-        {
-            InitializeComponent();
-            rtbInfos.Clear();
-            rtbInfos.AppendText("Page Layout 2");
-            rtbInfos.AppendText("Each page will contain 3 Key Image with full comments text on the right.");
-            rtbInfos.AppendText("Use this layout when the comments are important for the reader and you need to compare positions easily");
-        }
+	public enum LengthUnits
+	{
+		Centimeters,
+		Meters,
+		Inches,
+		Feet,
+		Yards,
+		Pixels		  // Native unit.
+	}
 
-       
-    }
+    public enum VideoFilterType
+	{
+		AutoLevels,
+		AutoContrast,
+		Sharpen,
+		EdgesOnly,
+		Mosaic,
+		Reverse,
+		Sandbox,
+		NumberOfVideoFilters
+	}
+    
 }

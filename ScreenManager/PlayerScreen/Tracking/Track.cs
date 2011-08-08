@@ -35,8 +35,6 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public delegate void ShowClosestFrame(Point _mouse, long _iBeginTimestamp, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly);
-    
     /// <summary>
     /// A class to encapsulate track drawings.
     /// Contains the list of points and the list of keyframes markers.
@@ -50,31 +48,10 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class Track : AbstractDrawing, IDecorable
     {
-    	#region Enums
-        public enum TrackView
-        {
-            Complete,
-            Focus,
-            Label
-        }
-        public enum TrackStatus
-        {
-        	Edit,
-        	Interactive
-        }
-        public enum TrackExtraData
-        {
-        	None,
-        	TotalDistance,
-        	Speed,
-        	Acceleration
-        }
-		#endregion
-        
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
         // used when moving the target in direct interactive mode.
-        public ShowClosestFrame m_ShowClosestFrame;     
+        public ClosestFrameAction m_ShowClosestFrame;     
         #endregion
 
         #region Properties
@@ -143,12 +120,12 @@ namespace Kinovea.ScreenManager
 		// Fading is not modifiable from outside.
         public override InfosFading  infosFading
         {
-            get { throw new Exception("Track, The method or operation is not implemented."); }
-            set { throw new Exception("Track, The method or operation is not implemented."); }
+            get { throw new NotImplementedException("Track, The method or operation is not implemented."); }
+            set { throw new NotImplementedException("Track, The method or operation is not implemented."); }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.None; }
+			get { return DrawingCapabilities.None; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -272,7 +249,7 @@ namespace Kinovea.ScreenManager
             
             m_StyleHelper.ValueChanged += mainStyle_ValueChanged;
         }
-        public Track(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback, Size _imageSize)
+        public Track(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, Size _imageSize)
             : this(0,0,0, null, _imageSize)
         {
             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
@@ -1092,7 +1069,7 @@ namespace Kinovea.ScreenManager
                     // - X goes left (same than internal), Y goes up (opposite than internal).
                     double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
                     double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
-                    string userT = m_ParentMetadata.m_TimeStampsToTimecodeCallback(tp.T, TimeCodeFormat.Unknown, false);
+                    string userT = m_ParentMetadata.TimeStampsToTimecode(tp.T, TimeCodeFormat.Unknown, false);
         			
                     _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
                     _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userX));
@@ -1107,7 +1084,7 @@ namespace Kinovea.ScreenManager
             }
             _xmlWriter.WriteEndElement();
         }
-        public void ReadXml(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        public void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
         {
             m_Invalid = true;
                 
@@ -1182,7 +1159,7 @@ namespace Kinovea.ScreenManager
             			
 			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
-        public void ParseTrackPointList(XmlReader _xmlReader, PointF _scale, DelegateRemapTimestamp _remapTimestampCallback)
+        public void ParseTrackPointList(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
         {
             m_Positions.Clear();
             m_RescaledPositions.Clear();
@@ -1395,7 +1372,7 @@ namespace Kinovea.ScreenManager
 
             return iClosest;
         }
-        private void mainStyle_ValueChanged()
+        private void mainStyle_ValueChanged(object sender, EventArgs e)
         {
         	m_MainLabel.BackColor = m_StyleHelper.Color;	
         }
@@ -1407,4 +1384,26 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
+
+    public enum TrackView
+    {
+        Complete,
+        Focus,
+        Label
+    }
+    
+    public enum TrackStatus
+    {
+    	Edit,
+    	Interactive
+    }
+    
+    public enum TrackExtraData
+    {
+    	None,
+    	TotalDistance,
+    	Speed,
+    	Acceleration
+    }
+
 }

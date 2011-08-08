@@ -169,7 +169,7 @@ namespace Kinovea.ScreenManager
 
             return bHit;
         }
-        public bool OnMouseMove(Metadata _Metadata, int _iActiveKeyframeIndex, Point _MouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
+        public bool OnMouseMove(Metadata _Metadata, Point _MouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
         {
             // Note: We work with descaled coordinates.
             // Note: We only get here if left mouse button is down.
@@ -411,7 +411,7 @@ namespace Kinovea.ScreenManager
 	                    	// The handler would have been saved inside the track object.
 	                		m_UserAction = UserAction.Move;	
 	                	}
-	                    else if (trk.Status == Track.TrackStatus.Interactive)
+	                    else if (trk.Status == TrackStatus.Interactive)
 	                    {
 	                    	m_UserAction = UserAction.Resize;
 	                    	m_iResizingHandle = handle;	

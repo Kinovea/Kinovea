@@ -47,9 +47,9 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{

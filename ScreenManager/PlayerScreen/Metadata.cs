@@ -38,14 +38,13 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-
-    public delegate long DelegateRemapTimestamp(long _iInputTimestamp, bool bRelative);
-    public delegate string GetTimeCode(long _iTimestamp, TimeCodeFormat _timeCodeFormat, bool _bSynched);
-
     public class Metadata
     {
         #region Properties
-        
+        public TimeCodeBuilder TimeStampsToTimecode
+        {
+            get { return m_TimeStampsToTimecode; }
+        }
         public bool IsDirty
         {
             get 
@@ -164,8 +163,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        public GetTimeCode m_TimeStampsToTimecodeCallback;      // Public because accessed from DrawingChrono.
-        private ShowClosestFrame m_ShowClosestFrameCallback;
+        private TimeCodeBuilder m_TimeStampsToTimecode;
+        private ClosestFrameAction m_ShowClosestFrameCallback;
         
         private PreferencesManager m_PrefManager = PreferencesManager.Instance();
         private string m_FullPath;
@@ -204,9 +203,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Metadata(GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
+        public Metadata(TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
         { 
-            m_TimeStampsToTimecodeCallback = _TimeStampsToTimecodeCallback;
+            m_TimeStampsToTimecode = _TimeStampsToTimecodeCallback;
             m_ShowClosestFrameCallback = _ShowClosestFrameCallback;
            
             InitExtraDrawingTools();
@@ -214,7 +213,7 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing new Metadata object.");
             CleanupHash();
         }
-        public Metadata(string _kvaString,  int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, GetTimeCode _TimeStampsToTimecodeCallback, ShowClosestFrame _ShowClosestFrameCallback)
+        public Metadata(string _kvaString,  int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
 		{
             // Deserialization constructor
@@ -253,10 +252,10 @@ namespace Kinovea.ScreenManager
         	m_ExtraDrawings.Add(_chrono);
         	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
         }
-        public void AddTrack(Track _track, ShowClosestFrame _showClosestFrame, Color _color)
+        public void AddTrack(Track _track, ClosestFrameAction _showClosestFrame, Color _color)
         {
         	_track.ParentMetadata = this;
-        	_track.Status = Track.TrackStatus.Edit;
+        	_track.Status = TrackStatus.Edit;
         	_track.m_ShowClosestFrame = _showClosestFrame;
         	_track.MainColor = _color;
         	m_ExtraDrawings.Add(_track);
@@ -343,7 +342,7 @@ namespace Kinovea.ScreenManager
         	if(m_iSelectedExtraDrawing > 0)
         	{
         		Track t = m_ExtraDrawings[m_iSelectedExtraDrawing] as Track;
-        		if(t != null && t.Status == Track.TrackStatus.Edit)
+        		if(t != null && t.Status == TrackStatus.Edit)
         		{
         			t.UpdateTrackPoint(_bmp);
         		}
@@ -632,9 +631,8 @@ namespace Kinovea.ScreenManager
         	    return;
             
         	r.ReadStartElement();
-        	string version = r.ReadElementContentAsString("FormatVersion", "");
-            // TODO: switch on version.
-        	
+        	r.ReadElementContentAsString("FormatVersion", "");
+            
             while(r.NodeType == XmlNodeType.Element)
 			{
                 switch(r.Name)
@@ -699,8 +697,8 @@ namespace Kinovea.ScreenManager
 				        m_CalibrationHelper.PixelToUnit = fPixelToUnit;
 						break;
 					case "LengthUnit":
-						TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(CalibrationHelper.LengthUnits));
-                        m_CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)enumConverter.ConvertFromString(r.ReadElementContentAsString());
+						TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
+                        m_CalibrationHelper.CurrentLengthUnit = (LengthUnits)enumConverter.ConvertFromString(r.ReadElementContentAsString());
 						//m_CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)int.Parse(r.ReadElementContentAsString());
 						break;
 					case "CoordinatesOrigin":
@@ -735,7 +733,7 @@ namespace Kinovea.ScreenManager
                         scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;    
                     }
                     
-                    DrawingChrono dc = new DrawingChrono(r, scaling, new DelegateRemapTimestamp(DoRemapTimestamp));
+                    DrawingChrono dc = new DrawingChrono(r, scaling, DoRemapTimestamp);
                     
                     if (dc != null)
                         AddChrono(dc);
@@ -914,12 +912,12 @@ namespace Kinovea.ScreenManager
                     scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
                     scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
                     
-                    Track trk = new Track(_xmlReader, scaling, new DelegateRemapTimestamp(DoRemapTimestamp), m_ImageSize);
+                    Track trk = new Track(_xmlReader, scaling, DoRemapTimestamp, m_ImageSize);
                     
                     if (!trk.Invalid)
                     {
                         AddTrack(trk, m_ShowClosestFrameCallback, trk.MainColor);
-                        trk.Status = Track.TrackStatus.Interactive;
+                        trk.Status = TrackStatus.Interactive;
                     }
                 }
                 else
@@ -1095,8 +1093,8 @@ namespace Kinovea.ScreenManager
             w.WriteStartElement("LengthUnit");
             w.WriteAttributeString("UserUnitLength", m_CalibrationHelper.GetLengthAbbreviation());
             
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(CalibrationHelper.LengthUnits));
-            string unit = enumConverter.ConvertToString((CalibrationHelper.LengthUnits)m_CalibrationHelper.CurrentLengthUnit);
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
+            string unit = enumConverter.ConvertToString((LengthUnits)m_CalibrationHelper.CurrentLengthUnit);
             w.WriteString(unit);
 
             w.WriteEndElement();
@@ -1290,16 +1288,6 @@ namespace Kinovea.ScreenManager
 			
 			_zos.PutNextEntry(entry);
 			_zos.Write(_data, 0, _data.Length);
-    	}
-    	private void AddODFZipDirectory(ZipOutputStream _zos, string _dir)
-    	{
-    		// Creates an entry in the ODF zip for a specific directory.
-    		ZipEntry entry = new ZipEntry(_dir);
-    		entry.Size = 0;
-    		entry.DateTime = DateTime.Now;
-			entry.ExternalFileAttributes = 16;
-			
-			_zos.PutNextEntry(entry);
     	}
     	private void ExportXSLT(string _filePath, XslCompiledTransform _xslt, XmlDocument _kvaDoc, XmlWriterSettings _settings, bool _text)
     	{
@@ -1498,7 +1486,7 @@ namespace Kinovea.ScreenManager
 		#endregion
     }
 
-	public enum MetadataExportFormat
+    public enum MetadataExportFormat
 	{
 		ODF,
 		MSXML,

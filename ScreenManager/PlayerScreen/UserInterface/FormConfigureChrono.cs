@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
     {
     	#region Members
     	private bool m_bManualClose = false;
-    	private DelegateScreenInvalidate m_Invalidate;
+    	private Action m_Invalidate;
     	private DrawingChrono m_Chrono;
     	private string m_MemoLabel;
     	private bool m_bMemoShowLabel;
@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Construction
-        public formConfigureChrono(DrawingChrono _chrono, DelegateScreenInvalidate _invalidate)
+        public formConfigureChrono(DrawingChrono _chrono, Action _invalidate)
         {
             InitializeComponent();
             m_Invalidate = _invalidate;
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
         	lblLabel.Text = ScreenManagerLang.dlgConfigureChrono_Label;
         	chkShowLabel.Text = ScreenManagerLang.dlgConfigureChrono_chkShowLabel;
         }
-        private void element_ValueChanged()
+        private void element_ValueChanged(object sender, EventArgs e)
         {
         	if(m_Invalidate != null) m_Invalidate();
         }

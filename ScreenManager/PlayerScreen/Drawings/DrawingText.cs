@@ -49,9 +49,9 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -131,7 +131,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingText(int x, int y, int width, int height, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingText(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_Text = " ";
             m_TopLeft = new Point(x, y);
@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
             RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public DrawingText(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0,0,0, ToolManager.Label.StylePreset.Clone())
+            : this(0,0,0,0, ToolManager.Label.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -330,10 +330,6 @@ namespace Kinovea.ScreenManager
         private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
         {
         	m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X-_DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y-_DirectZoomTopLeft.Y) * _fStretchFactor));
-        }
-        private void ShiftCoordinates(int _iShiftHorz, int _iShiftVert, double _fStretchFactor)
-        {
-            m_LabelBackground.Location = new Point((int)((double)m_TopLeft.X * _fStretchFactor) + _iShiftHorz, (int)((double)m_TopLeft.Y * _fStretchFactor) + _iShiftVert);
         }
         private bool IsPointInObject(Point _point)
         {

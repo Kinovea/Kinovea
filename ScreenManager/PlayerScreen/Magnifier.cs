@@ -24,13 +24,6 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-    public enum MagnifierMode
-    {
-        NotVisible,               
-        Direct, 		// When the mouse move makes the magnifier move.     
-        Indirect    	// When the user has to click to change the boundaries of the magnifier.
-    }
-        
     public class Magnifier
     {
         private enum Hit
@@ -402,5 +395,12 @@ namespace Kinovea.ScreenManager
             return res;
         }
         
+    }
+
+    public enum MagnifierMode
+    {
+        NotVisible,               
+        Direct, 		// When the mouse move makes the magnifier move.     
+        Indirect    	// When the user has to click to change the boundaries of the magnifier.
     }
 }

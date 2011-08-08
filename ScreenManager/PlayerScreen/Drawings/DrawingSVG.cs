@@ -44,9 +44,9 @@ namespace Kinovea.ScreenManager
             get { return m_InfosFading; }
             set { m_InfosFading = value; }
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.Opacity; }
+			get { return DrawingCapabilities.Opacity; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -61,8 +61,7 @@ namespace Kinovea.ScreenManager
 		private SvgWindow m_SvgWindow;
 		private bool m_bLoaded;
 		private Bitmap m_svgRendered;
-		private Bitmap m_svgHitMap;
-        
+		
         // Position
         // The drawing scale is used to keep track of the user transform on the drawing, outside of the image transform context.
         // The unscale rendering window is used for hit testing.
@@ -79,7 +78,6 @@ namespace Kinovea.ScreenManager
         
         private int m_iOriginalWidth;					// After initial scaling.
         private int m_iOriginalHeight;
-        private double m_fOriginalAspectRatio;
         
         private bool m_bSizeInPercentage;
         
@@ -133,7 +131,6 @@ namespace Kinovea.ScreenManager
 	        m_iOriginalWidth = (int) ((float)m_iOriginalWidth * m_fInitialScale);
 	        m_iOriginalHeight = (int) ((float)m_iOriginalHeight * m_fInitialScale);
 	        
-	        m_fOriginalAspectRatio = (double)m_iOriginalWidth / (double)m_iOriginalHeight;
 	        m_UnscaledRenderingWindow = new Rectangle((_iWidth - m_iOriginalWidth)/2, (_iHeight - m_iOriginalHeight)/2, m_iOriginalWidth, m_iOriginalHeight);
 			
 			// Everything start unscaled.
@@ -387,7 +384,6 @@ namespace Kinovea.ScreenManager
 	        	m_SvgWindow.InnerHeight = m_RescaledRectangle.Height;
 	        	
 	            m_svgRendered = m_Renderer.Render(m_SvgWindow.Document as SvgDocument);
-		        m_svgHitMap = m_Renderer.IdMapRaster;
 		        
 		        log.Debug(String.Format("Rendering SVG ({0};{1}), Initial scaling to fit video: {2:0.00}. User scaling: {3:0.00}. Video image scaling: {4:0.00}, Final transformation: {5:0.00}.",
 		                                m_iOriginalWidth, m_iOriginalHeight, m_fInitialScale, m_fDrawingScale , m_fStretchFactor, m_fDrawingRenderingScale));

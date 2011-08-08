@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
 	{
 		#region Events
         [Category("Action"), Browsable(true)]
-        public event ColorPickedHandler ColorPicked;
+        public event EventHandler ColorPicked;
 		#endregion
         
 		#region Properties
@@ -196,6 +196,4 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 	}
-	
-	public delegate void ColorPickedHandler(object sender, EventArgs e);
 }

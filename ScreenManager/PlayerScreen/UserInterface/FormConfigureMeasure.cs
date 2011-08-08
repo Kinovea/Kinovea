@@ -69,18 +69,18 @@ namespace Kinovea.ScreenManager
             lblRealSize.Text = m_ResourceManager.GetString("dlgConfigureMeasure_lblRealSize", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n");
             
             // Combo Units (MUST be filled in the order of the enum)
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Centimeters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Meters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Inches) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Feet) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(CalibrationHelper.LengthUnits.Yards) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Centimeters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Meters) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Inches) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Feet) + ")");
+            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Yards) + ")");
             
             // Update with current values.
-            if(m_Metadata.CalibrationHelper.CurrentLengthUnit == CalibrationHelper.LengthUnits.Pixels)
+            if(m_Metadata.CalibrationHelper.CurrentLengthUnit == LengthUnits.Pixels)
             {
             	// Default to 50 cm if no unit selected yet.
             	tbMeasure.Text = "50";
-            	cbUnit.SelectedIndex = (int)CalibrationHelper.LengthUnits.Centimeters;
+            	cbUnit.SelectedIndex = (int)LengthUnits.Centimeters;
             }
             else
             {
@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
 	            	if(fRealWorldMeasure > 0 && m_fCurrentLengthReal > 0)
 	            	{
 	                	m_Metadata.CalibrationHelper.PixelToUnit = fRealWorldMeasure / m_fCurrentLengthPixels;
-	                	m_Metadata.CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)cbUnit.SelectedIndex;
+	                	m_Metadata.CalibrationHelper.CurrentLengthUnit = (LengthUnits)cbUnit.SelectedIndex;
 	            	
 	                	log.Debug(String.Format("Selected length:{0:0.00} {1}", fRealWorldMeasure, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
 	            	}

@@ -1,3 +1,4 @@
+using System;
 namespace Kinovea.ScreenManager
 {
     partial class PlayerScreenUserInterface
@@ -363,9 +364,9 @@ namespace Kinovea.ScreenManager
         	this.trkSelection.Size = new System.Drawing.Size(325, 20);
         	this.trkSelection.TabIndex = 17;
         	this.trkSelection.ToolTip = "";
-        	this.trkSelection.SelectionChanged += new Kinovea.ScreenManager.SelectionTracker.SelectionChangedHandler(this.trkSelection_SelectionChanged);
-        	this.trkSelection.SelectionChanging += new Kinovea.ScreenManager.SelectionTracker.SelectionChangingHandler(this.trkSelection_SelectionChanging);
-        	this.trkSelection.TargetAcquired += new Kinovea.ScreenManager.SelectionTracker.TargetAcquiredHandler(this.trkSelection_TargetAcquired);
+        	this.trkSelection.SelectionChanged += this.trkSelection_SelectionChanged;
+        	this.trkSelection.SelectionChanging += this.trkSelection_SelectionChanging;
+        	this.trkSelection.TargetAcquired += this.trkSelection_TargetAcquired;
         	// 
         	// trkFrame
         	// 
@@ -381,8 +382,8 @@ namespace Kinovea.ScreenManager
         	this.trkFrame.ReportOnMouseMove = false;
         	this.trkFrame.Size = new System.Drawing.Size(410, 20);
         	this.trkFrame.TabIndex = 16;
-        	this.trkFrame.PositionChanging += new Kinovea.ScreenManager.FrameTracker.PositionChangingHandler(this.trkFrame_PositionChanging);
-        	this.trkFrame.PositionChanged += new Kinovea.ScreenManager.FrameTracker.PositionChangedHandler(this.trkFrame_PositionChanged);
+        	this.trkFrame.PositionChanging += this.trkFrame_PositionChanging;
+        	this.trkFrame.PositionChanged += this.trkFrame_PositionChanged;
         	// 
         	// btn_HandlersLock
         	// 
@@ -505,7 +506,7 @@ namespace Kinovea.ScreenManager
         	this.sldrSpeed.StickyValue = 100;
         	this.sldrSpeed.TabIndex = 15;
         	this.sldrSpeed.Value = 100;
-        	this.sldrSpeed.ValueChanged += new Kinovea.ScreenManager.SpeedSlider.ValueChangedHandler(this.sldrSpeed_ValueChanged);
+        	this.sldrSpeed.ValueChanged += this.sldrSpeed_ValueChanged;
         	this.sldrSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sldrSpeed_KeyDown);
         	// 
         	// lblSpeedTuner

@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
 	/// <summary>
 	/// Host of the list of tools. 
 	/// </summary>
-	public class ToolManager
+	public static class ToolManager
 	{
 		#region Properties
 		/// <summary>

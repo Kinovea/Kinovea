@@ -47,9 +47,9 @@ namespace Kinovea.ScreenManager
 		{
 			get { return null; }
 		}
-		public override Capabilities Caps
+		public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.ConfigureColor | Capabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading; }
 		}
         public int Divisions
         {
@@ -62,7 +62,6 @@ namespace Kinovea.ScreenManager
         private double m_fStretchFactor = 1.0;
         private Point m_DirectZoomTopLeft;
         
-        private float m_fSideLength;
         private int m_iDivisions;
         private bool m_bSupport3D;
         
@@ -84,17 +83,15 @@ namespace Kinovea.ScreenManager
         private static readonly int m_iDefaultDivisions = 8;
         private static readonly int m_iMaximumDivisions = 20;
 
-        private Size m_ImageSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingPlane(float _sidelength, int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingPlane(int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_fStretchFactor = 1.0f;
             m_DirectZoomTopLeft = new Point(0, 0);
 
-            m_fSideLength = _sidelength;
             m_iDivisions = _divisions;
             if (m_iDivisions == 0) m_iDivisions = m_iDefaultDivisions;
             
@@ -131,7 +128,7 @@ namespace Kinovea.ScreenManager
             RedefineHomography();
         }
         public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(500, m_iDefaultDivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
+            : this(m_iDefaultDivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -525,8 +522,6 @@ namespace Kinovea.ScreenManager
             {
                 m_bInitialized = true;
 
-                m_ImageSize = new Size(_ImageSize.Width, _ImageSize.Height);
-                
                 int horzTenth = (int)(((double)_ImageSize.Width) / 10);
                 int vertTenth = (int)(((double)_ImageSize.Height) / 10);
 

@@ -99,9 +99,5 @@ namespace Kinovea.ScreenManager
             }
             e.Graphics.DrawLine(Pens.Gray, this.Width - 1, 0, this.Width - 1, this.Height);
         }
-        private void FrequencyViewer_Resize(object sender, EventArgs e)
-        {
-            Invalidate();
-        }
     }
 }

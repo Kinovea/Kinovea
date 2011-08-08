@@ -35,13 +35,13 @@ namespace Kinovea.ScreenManager
             get { return ScreenManagerLang.CommandAddChrono_FriendlyName; }
         }
         
-        private DelegateScreenInvalidate m_DoInvalidate;
-        private DelegateDrawingUndrawn m_DoUndrawn;
+        private Action m_DoInvalidate;
+        private Action m_DoUndrawn;
         private Metadata m_Metadata;
         private DrawingChrono m_Chrono;
 
         #region constructor
-        public CommandAddChrono(DelegateScreenInvalidate _invalidate, DelegateDrawingUndrawn _undrawn, Metadata _Metadata)
+        public CommandAddChrono(Action _invalidate, Action _undrawn, Metadata _Metadata)
         {
             m_DoInvalidate = _invalidate;
         	m_DoUndrawn = _undrawn;

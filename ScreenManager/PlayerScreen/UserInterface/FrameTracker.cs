@@ -113,7 +113,6 @@ namespace Kinovea.ScreenManager
         private Bitmap bmpBumperLeft = Resources.liqbumperleft;
        	private Bitmap bmpBumperRight = Resources.liqbumperright;
        	private Bitmap bmpBackground = Resources.liqbackdock;
-       	private Bitmap bmpNavCursorDisabled;
        	
         #region Markers handling
         private Metadata m_Metadata;
@@ -140,13 +139,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Events Delegates
-        public delegate void PositionChangingHandler(object sender, long _iPosition);
-        public delegate void PositionChangedHandler(object sender, long _iPosition);
-
         [Category("Action"), Browsable(true)]
-        public event PositionChangingHandler PositionChanging;
+        public event EventHandler<PositionChangedEventArgs> PositionChanging;
         [Category("Action"), Browsable(true)]
-        public event PositionChangedHandler PositionChanged;
+        public event EventHandler<PositionChangedEventArgs> PositionChanged;
         #endregion
 
         #region Constructor
@@ -162,8 +158,6 @@ namespace Kinovea.ScreenManager
             m_iMinimumPixel = m_iSpacers + (m_iCursorWidth/2);
             m_iMaximumPixel = this.Width - m_iSpacers - (m_iCursorWidth/2);
             m_iMaxWidth = m_iMaximumPixel - m_iMinimumPixel;
-            
-            bmpNavCursorDisabled = Grayscale.CommonAlgorithms.Y.Apply(bmpNavCursor);
         }
 		#endregion
 		
@@ -224,7 +218,7 @@ namespace Kinovea.ScreenManager
 					    if (m_bReportOnMouseMove && PositionChanging != null)
 	                    {
 	        				m_iPosition = GetTimestampFromCoord(m_iPixelPosition + (m_iCursorWidth/2));
-							PositionChanging(this, m_iPosition);
+	        				PositionChanging(this, new PositionChangedEventArgs(m_iPosition));
 	                    }
 	        			else
 	        			{
@@ -250,7 +244,7 @@ namespace Kinovea.ScreenManager
 	                    if (PositionChanged != null)
 			        	{ 
 			            	m_iPosition = GetTimestampFromCoord(m_iPixelPosition + (m_iCursorWidth/2));
-			            	PositionChanged(this, m_iPosition);
+			            	PositionChanged(this, new PositionChangedEventArgs(m_iPosition));
 			        	}
 	                }
 	            }
@@ -461,5 +455,14 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+    }
+    
+    public class PositionChangedEventArgs : EventArgs
+    {
+        public readonly long Position;
+        public PositionChangedEventArgs(long _position)
+        {
+            Position = _position;
+        }
     }
 }

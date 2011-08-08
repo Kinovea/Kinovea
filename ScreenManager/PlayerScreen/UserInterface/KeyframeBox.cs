@@ -32,19 +32,13 @@ namespace Kinovea.ScreenManager
 	/// </summary>
     public partial class KeyframeBox : UserControl
     {
-        #region EventDelegates
-        // Déclarations de Types
-        public delegate void CloseThumbHandler(object sender, EventArgs e);
-        public delegate void ClickThumbHandler(object sender, EventArgs e);
-        public delegate void ClickInfosHandler(object sender, EventArgs e);
-
-        // Déclarations des évènements
+        #region Events
         [Category("Action"), Browsable(true)]
-        public event CloseThumbHandler CloseThumb;
+        public event EventHandler CloseThumb;
         [Category("Action"), Browsable(true)]
-        public event ClickThumbHandler ClickThumb;
+        public event EventHandler ClickThumb;
         [Category("Action"), Browsable(true)]
-        public event ClickInfosHandler ClickInfos;
+        public event EventHandler ClickInfos;
         #endregion
         
 		#region Members

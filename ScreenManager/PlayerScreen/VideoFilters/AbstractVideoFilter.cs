@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Concrete Constructor
-        public AbstractVideoFilter()
+        protected AbstractVideoFilter()
         {
         	m_BackgroundWorker.WorkerReportsProgress = true;
         	m_BackgroundWorker.DoWork += new DoWorkEventHandler(bgWorker_DoWork);

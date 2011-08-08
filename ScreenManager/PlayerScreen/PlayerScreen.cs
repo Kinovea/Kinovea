@@ -326,9 +326,9 @@ namespace Kinovea.ScreenManager
         {
             m_PlayerScreenUI.RefreshUICulture();
         }
-        public override bool OnKeyPress(Keys _keycode)
+        public override bool OnKeyPress(Keys _key)
         {
-        	return m_PlayerScreenUI.OnKeyPress(_keycode);
+        	return m_PlayerScreenUI.OnKeyPress(_key);
         }
         public override void RefreshImage()
         {

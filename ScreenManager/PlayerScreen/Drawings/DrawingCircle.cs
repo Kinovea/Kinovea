@@ -47,9 +47,9 @@ namespace Kinovea.ScreenManager
             get{ return m_InfosFading;}
             set{ m_InfosFading = value;}
         }
-        public override Capabilities Caps
+        public override DrawingCapabilities Caps
 		{
-			get { return Capabilities.ConfigureColorSize | Capabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -275,7 +275,6 @@ namespace Kinovea.ScreenManager
 			areaPath.AddEllipse(m_Origin.X - wideRadius, m_Origin.Y - wideRadius, wideDiameter, wideDiameter);
 			
 			// Create region from the path
-            Region areaRegion = new Region(areaPath);
             bIsPointInObject = new Region(areaPath).IsVisible(_point);
 
             return bIsPointInObject;
@@ -292,9 +291,7 @@ namespace Kinovea.ScreenManager
 			areaPen.Dispose();
 			
 			// Create region from the path
-            Region areaRegion = new Region(areaPath);
             bIsPointOnHandler = new Region(areaPath).IsVisible(_point);
-
             return bIsPointOnHandler;	
         }
         #endregion

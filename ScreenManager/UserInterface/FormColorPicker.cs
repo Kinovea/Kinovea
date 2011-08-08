@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
 			InitializeComponent();
 			m_ColorPicker.Top = 5;
 			m_ColorPicker.Left = 5;
-			m_ColorPicker.ColorPicked += new ColorPickedHandler(colorPicker_ColorPicked);
+			m_ColorPicker.ColorPicked += colorPicker_ColorPicked;
 			
 			Controls.Add(m_ColorPicker);
 			this.Text = "   " + ScreenManagerLang.dlgColorPicker_Title;

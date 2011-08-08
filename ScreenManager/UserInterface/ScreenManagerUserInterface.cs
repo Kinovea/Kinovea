@@ -33,10 +33,7 @@ namespace Kinovea.ScreenManager
     public partial class ScreenManagerUserInterface : UserControl
     {
         #region Delegates
-        //public delegate void CallbackDropLoadMovie(string _FilePath, int _iScreen);
         public delegate void DelegateUpdateTrkFrame(int _iFrame);
-        
-        //public CallbackDropLoadMovie m_CallbackDropLoadMovie;
         public DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
         #endregion
 
@@ -57,7 +54,7 @@ namespace Kinovea.ScreenManager
         	
             InitializeComponent();
             ComCtrls.ScreenManagerUIContainer = m_ScreenManagerUIContainer;
-            m_ThumbsViewer.ScreenManagerUIContainer = m_ScreenManagerUIContainer;
+            m_ThumbsViewer.SetScreenManagerUIContainer(m_ScreenManagerUIContainer);
             
             BackColor = Color.White;
             Dock = DockStyle.Fill;
@@ -67,7 +64,7 @@ namespace Kinovea.ScreenManager
             m_ThumbsViewer.Width = Width;
             m_ThumbsViewer.Height = Height - pbLogo.Height - 10;
             m_ThumbsViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-			m_ThumbsViewer.Closing += new ThumbListView.DelegateClosing(ThumbsViewer_Closing);
+			m_ThumbsViewer.Closing += ThumbsViewer_Closing;
             this.Controls.Add(m_ThumbsViewer);
 
             m_DelegateUpdateTrkFrame = new DelegateUpdateTrkFrame(UpdateTrkFrame);
@@ -224,7 +221,7 @@ namespace Kinovea.ScreenManager
             m_ThumbsViewer.DisplayThumbnails(m_FolderFileNames);
             this.Cursor = Cursors.Default;
         }
-        private void ThumbsViewer_Closing(object sender)
+        private void ThumbsViewer_Closing(object sender, EventArgs e)
         {
             m_ThumbsViewer.Visible = false;
             m_bThumbnailsWereVisible = false;
