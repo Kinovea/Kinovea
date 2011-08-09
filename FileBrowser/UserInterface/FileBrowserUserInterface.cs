@@ -306,7 +306,6 @@ namespace Kinovea.FileBrowser
 			// Launch the OpenFolder common dialog.
 			FolderBrowserDialog fbd = new FolderBrowserDialog();
 			
-			//fbd.Description = m_ResourceManager.GetString("Updater_BrowseFolderDescription", Thread.CurrentThread.CurrentUICulture);
 			fbd.ShowNewFolderButton = true;
 			fbd.RootFolder = Environment.SpecialFolder.Desktop;
 

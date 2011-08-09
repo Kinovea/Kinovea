@@ -24,6 +24,7 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -41,10 +42,9 @@ namespace Kinovea.ScreenManager
     {
         public string FriendlyName
         {
-            get { return Languages.ScreenManagerLang.CommandLoadMovieInScreen_FriendlyName;}
+            get { return ScreenManagerLang.CommandLoadMovieInScreen_FriendlyName;}
         }
 
-        private ResourceManager m_ResManager  = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
         private String filePath;
         private ScreenManagerKernel screenManagerKernel;
         private int ForceScreen;
@@ -93,11 +93,7 @@ namespace Kinovea.ScreenManager
                 bool bLoad = true;
                 if (ps.FrameServer.Metadata.IsDirty)
                 {
-                    DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-                                                      m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
-                                                      MessageBoxButtons.YesNoCancel,
-                                                      MessageBoxIcon.Question);
-
+                    DialogResult dr = ConfirmDirty();
                     if (dr == DialogResult.Yes)
                     {
                         // Launch the save dialog.
@@ -162,11 +158,7 @@ namespace Kinovea.ScreenManager
 	                            bool bLoad = true;
 	                            if (ps.FrameServer.Metadata.IsDirty)
 	                            {
-	                                DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-	                                                                  m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
-	                                                                  MessageBoxButtons.YesNoCancel,
-	                                                                  MessageBoxIcon.Question);
-	
+	                                DialogResult dr = ConfirmDirty();
 	                                if (dr == DialogResult.Yes)
 	                                {
 	                                    // Launch the save dialog.
@@ -273,11 +265,7 @@ namespace Kinovea.ScreenManager
 	                                bool bLoad = true;
 	                                if (ps.FrameServer.Metadata.IsDirty)
 	                                {
-	                                    DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-	                                                                      m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
-	                                                                      MessageBoxButtons.YesNoCancel,
-	                                                                      MessageBoxIcon.Question);
-	
+	                                    DialogResult dr = ConfirmDirty();
 	                                    if (dr == DialogResult.Yes)
 	                                    {
 	                                        // Launch the save dialog.
@@ -343,6 +331,17 @@ namespace Kinovea.ScreenManager
         public void Unexecute()
         {
             screenManagerKernel.RecallState();
+        }
+        
+        private DialogResult ConfirmDirty()
+        {
+            return MessageBox.Show(ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
+                                   ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
+                                   MessageBoxButtons.YesNoCancel,
+                                   MessageBoxIcon.Question);
+            
+            
+            
         }
     }
 }

@@ -25,6 +25,8 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public partial class formFramesExport : Form
@@ -35,7 +37,6 @@ namespace Kinovea.ScreenManager
         private bool m_bBlendDrawings;
         private bool m_bKeyframesOnly;
         private bool m_IsIdle = true;
-        private ResourceManager m_ResourceManager;
         private int m_iEstimatedTotal;
 
         public formFramesExport(PlayerScreenUserInterface _psui, string _FilePath, Int64 _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int _iEstimatedTotal)
@@ -48,11 +49,9 @@ namespace Kinovea.ScreenManager
             m_bBlendDrawings = _bBlendDrawings;
             m_bKeyframesOnly = _bKeyframesOnly;
             m_iEstimatedTotal = _iEstimatedTotal;
-
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-                
-            this.Text = "   " + m_ResourceManager.GetString("FormFramesExport_Title", Thread.CurrentThread.CurrentUICulture);
-            labelInfos.Text = m_ResourceManager.GetString("FormFramesExport_Infos", Thread.CurrentThread.CurrentUICulture) + " 0 / ~?";
+    
+            this.Text = "   " + ScreenManagerLang.FormFramesExport_Title;
+            labelInfos.Text = ScreenManagerLang.FormFramesExport_Infos + " 0 / ~?";
 
             progressBar.Minimum = 0;
             progressBar.Maximum = 100;
@@ -118,7 +117,7 @@ namespace Kinovea.ScreenManager
                 progressBar.Maximum = iTotal;
                 progressBar.Value = iValue;
 
-                labelInfos.Text = m_ResourceManager.GetString("FormFramesExport_Infos", Thread.CurrentThread.CurrentUICulture) + " " + iValue + " / ~" + iTotal;
+                labelInfos.Text = ScreenManagerLang.FormFramesExport_Infos + " " + iValue + " / ~" + iTotal;
             }
         }
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

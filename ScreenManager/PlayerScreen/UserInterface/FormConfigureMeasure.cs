@@ -25,6 +25,8 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
@@ -36,7 +38,6 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureMeasure : Form
     {
     	#region Members
-        private ResourceManager m_ResourceManager;
         private Metadata m_Metadata; 
         private DrawingLine2D m_Line;
         private double m_fCurrentLengthPixels;
@@ -56,24 +57,22 @@ namespace Kinovea.ScreenManager
         	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
         	
             InitializeComponent();
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
             LocalizeForm();
         }
         private void LocalizeForm()
         {
-            this.Text = "   " + m_ResourceManager.GetString("dlgConfigureMeasure_Title", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
-            btnOK.Text = m_ResourceManager.GetString("Generic_Apply", Thread.CurrentThread.CurrentUICulture);
-            grpConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            lblRealSize.Text = m_ResourceManager.GetString("dlgConfigureMeasure_lblRealSize", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n");
+            this.Text = "   " + ScreenManagerLang.dlgConfigureMeasure_Title;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
+            btnOK.Text = ScreenManagerLang.Generic_Apply;
+            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            lblRealSize.Text = ScreenManagerLang.dlgConfigureMeasure_lblRealSize.Replace("\\n", "\n");
             
             // Combo Units (MUST be filled in the order of the enum)
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Centimeters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Centimeters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Meters", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Meters) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Inches", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Inches) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Feet", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Feet) + ")");
-            cbUnit.Items.Add(m_ResourceManager.GetString("LengthUnit_Yards", Thread.CurrentThread.CurrentUICulture) + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Yards) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Centimeters + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Centimeters) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Meters + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Meters) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Inches + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Inches) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Feet + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Feet) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Yards + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Yards) + ")");
             
             // Update with current values.
             if(m_Metadata.CalibrationHelper.CurrentLengthUnit == LengthUnits.Pixels)

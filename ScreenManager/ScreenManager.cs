@@ -53,8 +53,7 @@ namespace Kinovea.ScreenManager
         }
         public ResourceManager resManager
         {
-            get { return m_resManager; }
-            set { m_resManager = value; }
+            get { return new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly()); }
         }
         public bool CancelLastCommand
         {
@@ -65,7 +64,6 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private UserControl _UI;
-        private ResourceManager m_resManager;
         private bool m_bCancelLastCommand;			// true when a RemoveScreen command was canceled by user.
 
         //List of screens ( 0..n )
@@ -166,9 +164,6 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Module Construction : ScreenManager.");
 
-            //Gestion i18n
-            resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
             m_bAllowKeyboardHandler = true;
 
             UI = new ScreenManagerUserInterface(this);
@@ -1977,9 +1972,9 @@ namespace Kinovea.ScreenManager
             DoStopPlaying();
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = m_resManager.GetString("dlgLoadAnalysis_Title", Thread.CurrentThread.CurrentUICulture);
+            openFileDialog.Title = ScreenManagerLang.dlgLoadAnalysis_Title;
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = m_resManager.GetString("dlgLoadAnalysis_Filter", Thread.CurrentThread.CurrentUICulture);
+            openFileDialog.Filter = ScreenManagerLang.dlgLoadAnalysis_Filter;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -2017,9 +2012,9 @@ namespace Kinovea.ScreenManager
                     DoStopPlaying();    
 
 	            	SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Title = m_resManager.GetString("dlgExportSpreadsheet_Title", Thread.CurrentThread.CurrentUICulture);
+                    saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
                     saveFileDialog.RestoreDirectory = true;
-                    saveFileDialog.Filter = m_resManager.GetString("dlgExportSpreadsheet_Filter", Thread.CurrentThread.CurrentUICulture);
+                    saveFileDialog.Filter = ScreenManagerLang.dlgExportSpreadsheet_Filter;
                     
                     saveFileDialog.FilterIndex = ((int)_format) + 1;
                         

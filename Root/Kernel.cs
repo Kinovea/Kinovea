@@ -40,10 +40,12 @@ namespace Kinovea.Root
 {
     public class RootKernel : IKernel 
     {
+        #region Properties
         public ScreenManagerKernel ScreenManager
         {
             get { return m_ScreenManager; }
         }
+        #endregion
         
         #region Members
         private KinoveaMainWindow MainWindow;
@@ -153,7 +155,7 @@ namespace Kinovea.Root
             Application.Run(MainWindow);
         }
         #endregion
-
+        
         #region IKernel Implementation
         public void BuildSubTree()
         {   
@@ -226,6 +228,31 @@ namespace Kinovea.Root
             m_FileBrowser.CloseSubModules();
             m_Updater.CloseSubModules();
             m_ScreenManager.CloseSubModules();    
+        }
+        #endregion
+
+        #region Public methods and Services
+        public string LaunchOpenFileDialog()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = RootLang.dlgOpenFile_Title;
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.Filter = RootLang.dlgOpenFile_Filter;
+            openFileDialog.FilterIndex = 1;
+            string filePath = "";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                filePath = openFileDialog.FileName;
+            }
+            return filePath;
+        }
+        public void DoUpdateStatusBar(string _status)
+        {
+            m_StatusLabel.Text = _status;
+        }
+        public void DoMakeTopMost(Form _form)
+        {
+            _form.Owner = MainWindow;
         }
         #endregion
 
@@ -445,7 +472,6 @@ namespace Kinovea.Root
                 OpenFileFromPath(filePath);
             }
         }
-        
         private void mnuHistoryVideo_OnClick(object sender, EventArgs e)
         {
             ToolStripMenuItem mnu = sender as ToolStripMenuItem;
@@ -650,8 +676,8 @@ namespace Kinovea.Root
         	else
         	{
         		log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
-        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
-                                    m_ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
+        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
+                                    m_ScreenManager.resManager.GetString("LoadMovie_Error"),
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation);
         	}
@@ -671,17 +697,6 @@ namespace Kinovea.Root
         #endregion
 
         #endregion        
-        
-        #region Services
-        public void DoUpdateStatusBar(string _status)
-        {
-            m_StatusLabel.Text = _status;
-        }
-        public void DoMakeTopMost(Form _form)
-        {
-            _form.Owner = MainWindow;
-        }
-        #endregion
         
         #region Lower Level Methods
         private void OpenFileFromPath(string _FilePath)
@@ -706,26 +721,11 @@ namespace Kinovea.Root
             }
             else
             {
-        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
-                                    m_ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Exclamation);
-            
+        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
+                                m_ScreenManager.resManager.GetString("LoadMovie_Error"),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Exclamation);
             }
-        }
-        public string LaunchOpenFileDialog()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = RootLang.dlgOpenFile_Title;
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = RootLang.dlgOpenFile_Filter;
-            openFileDialog.FilterIndex = 1;
-            string filePath = "";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                filePath = openFileDialog.FileName;
-            }
-            return filePath;
         }
         private void PrintInitialConf()
         {
