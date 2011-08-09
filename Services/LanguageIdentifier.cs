@@ -18,26 +18,24 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Kinovea.Services
 {
     public class LanguageIdentifier
     {
-        public string CultureName;
-        public string szLocalizedLanguageName;
+        public readonly string Culture;
+        public readonly string Language;
 
-        public LanguageIdentifier(string _CultureName, string _szLoc)
+        public LanguageIdentifier(string _culture, string _lang)
         {
-            CultureName = _CultureName;
-            szLocalizedLanguageName = _szLoc;
+            Culture = _culture;
+            Language = _lang;
         }
         public override string ToString()
         {
-            return szLocalizedLanguageName;
+            return Language;
         }
     };
 }

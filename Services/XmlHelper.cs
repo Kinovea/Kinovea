@@ -65,7 +65,7 @@ namespace Kinovea.Services
         {
             // This function helps fix the discrepancy between:
             // - Boolean.ToString() which returns "False" or "True",
-            // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" otherwise throws an exception.
+            // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" as per XML spec and throws an exception otherwise.
             return (_str != "false" && _str != "False" && _str != "0");
         }
     }

@@ -72,10 +72,8 @@ namespace Kinovea.FileBrowser
         }
         public void RefreshUICulture()
         {
-            log.Debug("Refresh UI Culture at FileBrowser level."); 
+            log.Debug("Refresh UI Culture at FileBrowser level.");
             m_Fbui.RefreshUICulture();
-            
-            // No sub modules.
         }
         public void CloseSubModules()
         {

@@ -1,3 +1,4 @@
+#region Licence
 /*
 Copyright © Joan Charmant 2008-2009.
 joan.charmant@gmail.com 
@@ -16,11 +17,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
- */
+*/
+#endregion
 
-
-using Kinovea.Root.Languages;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -28,33 +29,33 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
 using Kinovea.FileBrowser;
+using Kinovea.Root.Languages;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
 using Kinovea.Updater;
 
 namespace Kinovea.Root
 {
-
-    //public delegate void DelegateClosingRequest();
-
-
     public class RootKernel : IKernel 
     {
+        public ScreenManagerKernel ScreenManager
+        {
+            get { return m_ScreenManager; }
+        }
+        
         #region Members
         private KinoveaMainWindow MainWindow;
-        private ResourceManager RootResourceManager;
-
-        // Sub Modules
-        public FileBrowserKernel FileBrowser;
-        public UpdaterKernel Updater;
-        public ScreenManagerKernel ScreenManager;
-
-
-        // Menus
+        private FileBrowserKernel m_FileBrowser;
+        private UpdaterKernel m_Updater;
+        private ScreenManagerKernel m_ScreenManager;
+        
+        #region Menus
         private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOpenFile = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHistory = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
         private ToolStripMenuItem mnuQuit = new ToolStripMenuItem();
         private ToolStripMenuItem mnuEdit = new ToolStripMenuItem();
         private ToolStripMenuItem mnuUndo = new ToolStripMenuItem();
@@ -66,41 +67,22 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuMotion = new ToolStripMenuItem();
         private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLanguages = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSpanish = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuEnglish = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuFrench = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuGerman = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPolish = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDutch = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuItalian = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPortuguese = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuRomanian = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuFinnish = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuNorwegian = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTurkish = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuChinese = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuGreek = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuLithuanian = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuSwedish = new ToolStripMenuItem();
+        private Dictionary<string, ToolStripMenuItem> m_LanguageMenus = new Dictionary<string, ToolStripMenuItem>();
         private ToolStripMenuItem mnuPreferences = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecode = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeClassic = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeMilliseconds = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTimecodeHoM = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTimecodeTToH = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTimecodeTimeAndFrames = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelp = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTutorialVideos = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
-
-        // Toolbar
-        public ToolStripButton toolOpenFile = new ToolStripButton();
+        #endregion
         
-        // Status
-        private ToolStripStatusLabel stLabel = new ToolStripStatusLabel();
+        private ToolStripButton m_ToolOpenFile = new ToolStripButton();
+        private ToolStripStatusLabel m_StatusLabel = new ToolStripStatusLabel();
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -126,19 +108,13 @@ namespace Kinovea.Root
             // Previous calls were done on static prioperties, no instanciation. 
             PreferencesManager pm = PreferencesManager.Instance();
             
-            // Get Manager for i18n
-            RootResourceManager = new ResourceManager("Kinovea.Root.Languages.RootLang", Assembly.GetExecutingAssembly());
-            
             // Initialise command line parser and get the arguments.
             CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
             am.InitializeComandLineParser();
             string[] args = Environment.GetCommandLineArgs();
             am.ParseArguments(args);
             
-            log.Debug("Build the modules tree.");
             BuildSubTree();
-            
-            log.Debug("Create main UI window.");
             MainWindow = new KinoveaMainWindow(this);
             
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
@@ -164,11 +140,11 @@ namespace Kinovea.Root
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
-            ScreenManager.Prepare();
+            m_ScreenManager.Prepare();
             PrintInitialConf();
             if(CommandLineArgumentManager.Instance().InputFile != null)
             {
-            	ScreenManager.PrepareScreen();
+            	m_ScreenManager.PrepareScreen();
             }
         }
         public void Launch()
@@ -180,10 +156,11 @@ namespace Kinovea.Root
 
         #region IKernel Implementation
         public void BuildSubTree()
-        {        	
-        	FileBrowser     = new FileBrowserKernel();
-        	Updater         = new UpdaterKernel();
-            ScreenManager   = new ScreenManagerKernel();
+        {   
+            log.Debug("Building the modules tree.");            
+        	m_FileBrowser     = new FileBrowserKernel();
+        	m_Updater         = new UpdaterKernel();
+            m_ScreenManager   = new ScreenManagerKernel();
             log.Debug("Modules tree built.");
         }
         public void ExtendMenu(ToolStrip _menu)
@@ -191,7 +168,6 @@ namespace Kinovea.Root
             _menu.AllowMerge = true;
             GetModuleMenus(_menu);
             GetSubModulesMenus(_menu);
-
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
@@ -205,33 +181,27 @@ namespace Kinovea.Root
             if(_statusbar != null)
             {
                 // This level
-                stLabel = new ToolStripStatusLabel();
-                _statusbar.Items.AddRange(new ToolStripItem[] { stLabel });
+                m_StatusLabel = new ToolStripStatusLabel();
+                _statusbar.Items.AddRange(new ToolStripItem[] { m_StatusLabel });
             }
         }
         public void ExtendUI()
         {
             // Sub Modules
-            FileBrowser.ExtendUI();
-            Updater.ExtendUI();
-            ScreenManager.ExtendUI();
+            m_FileBrowser.ExtendUI();
+            m_Updater.ExtendUI();
+            m_ScreenManager.ExtendUI();
 
             // Integrate the sub modules UI into the main kernel UI.
-            MainWindow.SupervisorControl.splitWorkSpace.Panel1.Controls.Add(FileBrowser.UI);
-            MainWindow.SupervisorControl.splitWorkSpace.Panel2.Controls.Add(ScreenManager.UI);
+            MainWindow.SupervisorControl.splitWorkSpace.Panel1.Controls.Add(m_FileBrowser.UI);
+            MainWindow.SupervisorControl.splitWorkSpace.Panel2.Controls.Add(m_ScreenManager.UI);
             
 			MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
             log.Debug("RefreshUICulture - Reload localized strings for the whole tree.");
-         
-            // Menu
-            foreach (ToolStripItem item in MainWindow.menuStrip.Items)
-            {
-                RefreshSubMenu(item);
-            }
-
+            RefreshCultureMenu();
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
@@ -241,138 +211,60 @@ namespace Kinovea.Root
             CommandManager cm = CommandManager.Instance();
             cm.UpdateMenus();
 
-            // ToolBar
-            foreach (ToolStripItem item in MainWindow.toolStrip.Items)
-            {
-                // If tag is null, non translatable texts.
-                if (item.Tag != null)
-                {
-                    item.Text = ((ItemResourceInfo)item.Tag).resManager.GetString(((ItemResourceInfo)item.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-                    item.ToolTipText = ((ItemResourceInfo)item.Tag).resManager.GetString(((ItemResourceInfo)item.Tag).strToolTipText, Thread.CurrentThread.CurrentUICulture);
-                }
-                // TODO: SubItems (when any)
-            }
-
+            m_ToolOpenFile.ToolTipText = RootLang.mnuOpenFile;
+            
             // Sub Modules
-            FileBrowser.RefreshUICulture();
-            Updater.RefreshUICulture();
-            ScreenManager.RefreshUICulture();
+            m_FileBrowser.RefreshUICulture();
+            m_Updater.RefreshUICulture();
+            m_ScreenManager.RefreshUICulture();
             
             log.Debug("RefreshUICulture - Whole tree culture reloaded.");
         }
         public void CloseSubModules()
         {
             log.Debug("Root is closing. Call close on all sub modules.");
-            FileBrowser.CloseSubModules();
-            Updater.CloseSubModules();
-            ScreenManager.CloseSubModules();    
+            m_FileBrowser.CloseSubModules();
+            m_Updater.CloseSubModules();
+            m_ScreenManager.CloseSubModules();    
         }
         #endregion
 
         #region Extension point helpers
         private void GetModuleMenus(ToolStrip _menu)
         {
-            //----------------------------------------------------------------------------------------------
-            // Note on menus localization:
-            // The refreshing of the UI after a change of language will happen from here, but the localized 
-            // text for a given menu is stored in the resource of the module it comes from.
-            // Thus, each menu must know its own Resource Manager, even if it's in a sub module.
-            // To that end, we store an ItemResourceInfo object directly into the menu.
-            // It contains the string to look up and the ResourceManager to use.
-            //----------------------------------------------------------------------------------------------
-
+            // Affectation of .Text property happens in RefreshCultureMenu
+            
             #region File
-
-            // 1.File Menu
-            mnuFile.Tag = new ItemResourceInfo(RootResourceManager, "mnuFile");
-            mnuFile.Text = ((ItemResourceInfo)mnuFile.Tag).resManager.GetString(((ItemResourceInfo)mnuFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuFile.MergeAction = MergeAction.Append;
-
-            // OpenFile
-            mnuOpenFile.Tag = new ItemResourceInfo(RootResourceManager, "mnuOpenFile");
-            mnuOpenFile.Text = ((ItemResourceInfo)mnuOpenFile.Tag).resManager.GetString(((ItemResourceInfo)mnuOpenFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOpenFile.Image = Properties.Resources.folder;
             mnuOpenFile.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O;
             mnuOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
-
+            mnuHistory.Image = Properties.Resources.time;
             
-            // History
-           	mnuHistory.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistory");
-            mnuHistory.Text = ((ItemResourceInfo)mnuHistory.Tag).resManager.GetString(((ItemResourceInfo)mnuHistory.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuHistory.Image = Properties.Resources.time;
+            int maxHistory = 10;
+            for(int i = 0; i<maxHistory;i++)
+            {
+                ToolStripMenuItem mnu = new ToolStripMenuItem();
+                mnu.MergeAction = MergeAction.Append;
+                mnu.Visible = false;
+                mnu.Tag = i;
+                mnu.Click += mnuHistoryVideo_OnClick;
+                mnuHistory.DropDownItems.Add(mnu);
+            }
             
-            #region History Items
-            ToolStripMenuItem mnuHistoryVideo1 = new ToolStripMenuItem();
-            mnuHistoryVideo1.MergeAction = MergeAction.Append;
-            mnuHistoryVideo1.Visible = false;
-            mnuHistoryVideo1.Click += new EventHandler(mnuHistoryVideo1OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo2 = new ToolStripMenuItem();
-            mnuHistoryVideo2.MergeAction = MergeAction.Append;
-            mnuHistoryVideo2.Visible = false;
-            mnuHistoryVideo2.Click += new EventHandler(mnuHistoryVideo2OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo3 = new ToolStripMenuItem();
-            mnuHistoryVideo3.MergeAction = MergeAction.Append;
-            mnuHistoryVideo3.Visible = false;
-            mnuHistoryVideo3.Click += new EventHandler(mnuHistoryVideo3OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo4 = new ToolStripMenuItem();
-            mnuHistoryVideo4.MergeAction = MergeAction.Append;
-            mnuHistoryVideo4.Visible = false;
-            mnuHistoryVideo4.Click += new EventHandler(mnuHistoryVideo4OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo5 = new ToolStripMenuItem();
-            mnuHistoryVideo5.MergeAction = MergeAction.Append;
-            mnuHistoryVideo5.Visible = false;
-            mnuHistoryVideo5.Click += new EventHandler(mnuHistoryVideo5OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo6 = new ToolStripMenuItem();
-            mnuHistoryVideo6.MergeAction = MergeAction.Append;
-            mnuHistoryVideo6.Visible = false;
-            mnuHistoryVideo6.Click += new EventHandler(mnuHistoryVideo6OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo7 = new ToolStripMenuItem();
-            mnuHistoryVideo7.MergeAction = MergeAction.Append;
-            mnuHistoryVideo7.Visible = false;
-            mnuHistoryVideo7.Click += new EventHandler(mnuHistoryVideo7OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo8 = new ToolStripMenuItem();
-            mnuHistoryVideo8.MergeAction = MergeAction.Append;
-            mnuHistoryVideo8.Visible = false;
-            mnuHistoryVideo8.Click += new EventHandler(mnuHistoryVideo8OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo9 = new ToolStripMenuItem();
-            mnuHistoryVideo9.MergeAction = MergeAction.Append;
-            mnuHistoryVideo9.Visible = false;
-            mnuHistoryVideo9.Click += new EventHandler(mnuHistoryVideo9OnClick);
-
-            ToolStripMenuItem mnuHistoryVideo10 = new ToolStripMenuItem();
-            mnuHistoryVideo10.MergeAction = MergeAction.Append;
-            mnuHistoryVideo10.Visible = false;
-            mnuHistoryVideo10.Click += new EventHandler(mnuHistoryVideo10OnClick);
-
-            #endregion
-
             ToolStripSeparator mnuSepHistory = new ToolStripSeparator();
             mnuSepHistory.Visible = false;
+            mnuHistory.DropDownItems.Add(mnuSepHistory);
 
-            ToolStripMenuItem mnuHistoryReset = new ToolStripMenuItem();
-            mnuHistoryReset.Tag = new ItemResourceInfo(RootResourceManager, "mnuHistoryReset");
-            mnuHistoryReset.Text = ((ItemResourceInfo)mnuHistoryReset.Tag).resManager.GetString(((ItemResourceInfo)mnuHistoryReset.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuHistoryReset.Image = Properties.Resources.bin_empty;
             mnuHistoryReset.MergeAction = MergeAction.Append;
             mnuHistoryReset.Visible = false;
             mnuHistoryReset.Click += new EventHandler(mnuHistoryResetOnClick);
-
-            mnuHistory.DropDownItems.AddRange(new ToolStripItem[] { mnuHistoryVideo1, mnuHistoryVideo2, mnuHistoryVideo3, mnuHistoryVideo4, mnuHistoryVideo5, mnuHistoryVideo6, mnuHistoryVideo7, mnuHistoryVideo8, mnuHistoryVideo9, mnuHistoryVideo10, mnuSepHistory, mnuHistoryReset });
-
+            mnuHistory.DropDownItems.Add(mnuHistoryReset);
+            
             PreferencesManager pm = PreferencesManager.Instance();
             pm.RegisterHistoryMenu(mnuHistory);
 
-            // Quit
-            mnuQuit.Tag = new ItemResourceInfo(RootResourceManager, "Generic_Quit");
-            mnuQuit.Text = ((ItemResourceInfo)mnuQuit.Tag).resManager.GetString(((ItemResourceInfo)mnuQuit.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuQuit.Image = Properties.Resources.quit;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
@@ -386,245 +278,75 @@ namespace Kinovea.Root
             #endregion
 
             #region Edit
-            // 2.Edit Menu
-            mnuEdit.Tag = new ItemResourceInfo(RootResourceManager, "mnuEdit");
-            mnuEdit.Text = ((ItemResourceInfo)mnuEdit.Tag).resManager.GetString(((ItemResourceInfo)mnuEdit.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuEdit.MergeAction = MergeAction.Append;
-
-            //Undo
-            mnuUndo.Tag = new ItemResourceInfo(RootResourceManager, "mnuUndo");
-            mnuUndo.Text = ((ItemResourceInfo)mnuUndo.Tag).resManager.GetString(((ItemResourceInfo)mnuUndo.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuUndo.Tag = RootLang.ResourceManager;
             mnuUndo.Image = Properties.Resources.arrow_undo;
             mnuUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             mnuUndo.Click += new EventHandler(menuUndoOnClick);
             mnuUndo.Enabled = false;
-
-            CommandManager cm = CommandManager.Instance();
-            cm.RegisterUndoMenu(mnuUndo);
-
-            //Redo
-            mnuRedo.Tag = new ItemResourceInfo(RootResourceManager, "mnuRedo");
-            mnuRedo.Text = ((ItemResourceInfo)mnuRedo.Tag).resManager.GetString(((ItemResourceInfo)mnuRedo.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            mnuRedo.Tag = RootLang.ResourceManager;
             mnuRedo.Image = Properties.Resources.arrow_redo;
             mnuRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
             mnuRedo.Click += new EventHandler(menuRedoOnClick);
             mnuRedo.Enabled = false;
 
+            CommandManager cm = CommandManager.Instance();
+            cm.RegisterUndoMenu(mnuUndo);
             cm.RegisterRedoMenu(mnuRedo);
 
             mnuEdit.DropDownItems.AddRange(new ToolStripItem[] { mnuUndo, mnuRedo });
             #endregion
 
             #region View
-            // 3.View
-            mnuView.Tag = new ItemResourceInfo(RootResourceManager, "mnuScreens");
-            mnuView.Text = ((ItemResourceInfo)mnuView.Tag).resManager.GetString(((ItemResourceInfo)mnuView.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            
-            // Toggle File Explorer
-            mnuToggleFileExplorer.Tag = new ItemResourceInfo(RootResourceManager, "mnuToggleFileExplorer");
-            mnuToggleFileExplorer.Text = ((ItemResourceInfo)mnuToggleFileExplorer.Tag).resManager.GetString(((ItemResourceInfo)mnuToggleFileExplorer.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuToggleFileExplorer.Image = Properties.Resources.explorer;
             mnuToggleFileExplorer.Checked = true;
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
             mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
             mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
-			
-            // Full Screen
-            mnuFullScreen.Tag = new ItemResourceInfo(RootResourceManager, "mnuFullScreen");
-            mnuFullScreen.Text = ((ItemResourceInfo)mnuFullScreen.Tag).resManager.GetString(((ItemResourceInfo)mnuFullScreen.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuFullScreen.Image = Properties.Resources.fullscreen;
+			mnuFullScreen.Image = Properties.Resources.fullscreen;
             mnuFullScreen.ShortcutKeys = System.Windows.Forms.Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
             
             mnuView.DropDownItems.AddRange(new ToolStripItem[] { mnuToggleFileExplorer, mnuFullScreen, new ToolStripSeparator() });
             #endregion
 
-            #region Image
-            // 4.Image
-            mnuImage.Tag = new ItemResourceInfo(RootResourceManager, "mnuImage");
-            mnuImage.Text = ((ItemResourceInfo)mnuImage.Tag).resManager.GetString(((ItemResourceInfo)mnuImage.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            #endregion
-
-            #region Motion
-            // 5.Motion
-            mnuMotion.Tag = new ItemResourceInfo(RootResourceManager, "mnuMotion");
-            mnuMotion.Text = ((ItemResourceInfo)mnuMotion.Tag).resManager.GetString(((ItemResourceInfo)mnuMotion.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            #endregion
-
             #region Options
-            // 6.Options
-            mnuOptions.Tag = new ItemResourceInfo(RootResourceManager, "mnuOptions");
-            mnuOptions.Text = ((ItemResourceInfo)mnuOptions.Tag).resManager.GetString(((ItemResourceInfo)mnuOptions.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
-            // Languages
-            mnuLanguages.Tag = new ItemResourceInfo(RootResourceManager, "mnuLanguages");
-            mnuLanguages.Text = ((ItemResourceInfo)mnuLanguages.Tag).resManager.GetString(((ItemResourceInfo)mnuLanguages.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuLanguages.Image = Properties.Resources.international;
+            mnuLanguages.Image = Properties.Resources.international;
+            foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
+            {
+                ToolStripMenuItem mnuLang = new ToolStripMenuItem(lang.Value);
+                mnuLang.Tag = lang.Key;
+                mnuLang.Click += mnuLanguage_OnClick;
+                m_LanguageMenus.Add(lang.Key, mnuLang);
+                mnuLanguages.DropDownItems.Add(mnuLang);
+            }
             
-            #region Languages menus 
-            
-            // [Untranslatables]
-            
-            // German
-            mnuGerman = new ToolStripMenuItem(PreferencesManager.LanguageGerman);
-            mnuGerman.Click += new EventHandler(menuGermanOnClick);
-
-            //English
-            mnuEnglish = new ToolStripMenuItem(PreferencesManager.LanguageEnglish);
-            mnuEnglish.Click += new EventHandler(menuEnglishOnClick);
-
-            // Spanish
-            mnuSpanish = new ToolStripMenuItem(PreferencesManager.LanguageSpanish);
-            mnuSpanish.Click += new EventHandler(menuSpanishOnClick);
-
-            //French
-            mnuFrench = new ToolStripMenuItem(PreferencesManager.LanguageFrench);
-            mnuFrench.Click += new EventHandler(menuFrenchOnClick);
-
-            // Italian
-            mnuItalian = new ToolStripMenuItem(PreferencesManager.LanguageItalian);
-            mnuItalian.Click += new EventHandler(menuItalianOnClick);
-
-            // Dutch
-            mnuDutch = new ToolStripMenuItem(PreferencesManager.LanguageDutch);
-            mnuDutch.Click += new EventHandler(menuDutchOnClick);
-
-            // Polish
-            mnuPolish = new ToolStripMenuItem(PreferencesManager.LanguagePolish);
-            mnuPolish.Click += new EventHandler(menuPolishOnClick);
-
-            // Portuguese
-            mnuPortuguese = new ToolStripMenuItem(PreferencesManager.LanguagePortuguese);
-            mnuPortuguese.Click += new EventHandler(menuPortugueseOnClick);
-
-            // Romanian
-            mnuRomanian = new ToolStripMenuItem(PreferencesManager.LanguageRomanian);
-            mnuRomanian.Click += new EventHandler(menuRomanianOnClick);
-
-            // Finnish
-            mnuFinnish = new ToolStripMenuItem(PreferencesManager.LanguageFinnish);
-            mnuFinnish.Click += new EventHandler(menuFinnishOnClick);
-            
-            // Norwegian
-            mnuNorwegian = new ToolStripMenuItem(PreferencesManager.LanguageNorwegian);
-            mnuNorwegian.Click += new EventHandler(menuNorwegianOnClick);
-            
-            // Turkish
-            mnuTurkish = new ToolStripMenuItem(PreferencesManager.LanguageTurkish);
-            mnuTurkish.Click += new EventHandler(menuTurkishOnClick);
-            
-            // Chinese
-            mnuChinese = new ToolStripMenuItem(PreferencesManager.LanguageChinese);
-            mnuChinese.Click += new EventHandler(menuChineseOnClick);
-            
-            // Greek
-            mnuGreek = new ToolStripMenuItem(PreferencesManager.LanguageGreek);
-            mnuGreek.Click += new EventHandler(menuGreekOnClick);
-            
-            // Lithuanian
-            mnuLithuanian = new ToolStripMenuItem(PreferencesManager.LanguageLithuanian);
-            mnuLithuanian.Click += new EventHandler(menuLithuanianOnClick);
-            
-            // Swedish
-            mnuSwedish = new ToolStripMenuItem(PreferencesManager.LanguageSwedish);
-            mnuSwedish.Click += new EventHandler(menuSwedishOnClick);
-            
-            // Re-Order alphabetically by localized name.
-            mnuLanguages.DropDownItems.AddRange(new ToolStripItem[] { 
-                                                						mnuGerman,
-                                                						mnuGreek,
-                                                						mnuEnglish, 
-                                                						mnuSpanish, 
-                                                						mnuFrench, 
-                                                						mnuItalian,
-                                                						mnuLithuanian,
-                                                						mnuDutch,
-                                                						mnuNorwegian,
-                                                						mnuPolish, 
-                                                						mnuPortuguese, 
-                                                						mnuRomanian, 
-                                                						mnuFinnish,
-                                                						mnuSwedish,
-                                                						mnuTurkish,
-                                                						mnuChinese });
-            #endregion
-
-            // Preferences
-            mnuPreferences.Tag = new ItemResourceInfo(RootResourceManager, "mnuPreferences");
-            mnuPreferences.Text = ((ItemResourceInfo)mnuPreferences.Tag).resManager.GetString(((ItemResourceInfo)mnuPreferences.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuPreferences.Image = Properties.Resources.wrench;
             mnuPreferences.Click += new EventHandler(mnuPreferencesOnClick);
-
-            // Time codes.
-            mnuTimecode.Tag = new ItemResourceInfo(RootResourceManager, "dlgPreferences_LabelTimeFormat");
-            mnuTimecode.Text = ((ItemResourceInfo)mnuTimecode.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecode.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecode.Image = Properties.Resources.time_edit;
             
-            #region Timecode menus.
-            mnuTimecodeClassic.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Classic");
-            mnuTimecodeClassic.Text = ((ItemResourceInfo)mnuTimecodeClassic.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeClassic.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeClassic.Click += new EventHandler(mnuTimecodeClassic_OnClick);
-            
-            mnuTimecodeFrames.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Frames");
-            mnuTimecodeFrames.Text = ((ItemResourceInfo)mnuTimecodeFrames.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeFrames.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeFrames.Click += new EventHandler(mnuTimecodeFrames_OnClick);
-            
-            mnuTimecodeMilliseconds.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_Milliseconds");
-            mnuTimecodeMilliseconds.Text = ((ItemResourceInfo)mnuTimecodeMilliseconds.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeMilliseconds.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeMilliseconds.Click += new EventHandler(mnuTimecodeMilliseconds_OnClick);
-            
-            mnuTimecodeHoM.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_HundredthOfMinutes");
-            mnuTimecodeHoM.Text = ((ItemResourceInfo)mnuTimecodeHoM.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeHoM.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuTimecodeHoM.Click += new EventHandler(mnuTimecodeHoM_OnClick);
-            mnuTimecodeHoM.Visible = false;
-            
-            mnuTimecodeTToH.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_TenThousandthOfHours");
-            mnuTimecodeTToH.Text = ((ItemResourceInfo)mnuTimecodeTToH.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeTToH.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuTimecodeTToH.Click += new EventHandler(mnuTimecodeTToH_OnClick);
-            mnuTimecodeTToH.Visible = false;
-            
-            mnuTimecodeTimeAndFrames.Tag = new ItemResourceInfo(RootResourceManager, "TimeCodeFormat_TimeAndFrames");
-            mnuTimecodeTimeAndFrames.Text = ((ItemResourceInfo)mnuTimecodeTimeAndFrames.Tag).resManager.GetString(((ItemResourceInfo)mnuTimecodeTimeAndFrames.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTimecodeTimeAndFrames.Click += new EventHandler(mnuTimecodeTimeAndFrames_OnClick);
             
-            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeHoM, mnuTimecodeTToH, mnuTimecodeTimeAndFrames});
-            #endregion
+            mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeTimeAndFrames});
             
             mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuLanguages, 
                                               						mnuTimecode, 
                                               						new ToolStripSeparator(), 
-                                              						mnuPreferences});
-                                              						
+                                              						mnuPreferences});                     						
             #endregion
 
             #region Help
-            // 7.Help
-            mnuHelp.Tag = new ItemResourceInfo(RootResourceManager, "mnuHelp");
-            mnuHelp.Text = ((ItemResourceInfo)mnuHelp.Tag).resManager.GetString(((ItemResourceInfo)mnuHelp.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
-            // Manual
-            mnuHelpContents.Tag = new ItemResourceInfo(RootResourceManager, "mnuHelpContents");
-            mnuHelpContents.Text = ((ItemResourceInfo)mnuHelpContents.Tag).resManager.GetString(((ItemResourceInfo)mnuHelpContents.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuHelpContents.Image = Properties.Resources.book_open;
             mnuHelpContents.ShortcutKeys = System.Windows.Forms.Keys.F1;
             mnuHelpContents.Click += new EventHandler(mnuHelpContents_OnClick);
-
-            // Video Tutorial
-            mnuTutorialVideos.Tag = new ItemResourceInfo(RootResourceManager, "mnuTutorialVideos");
-            mnuTutorialVideos.Text = ((ItemResourceInfo)mnuTutorialVideos.Tag).resManager.GetString(((ItemResourceInfo)mnuTutorialVideos.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTutorialVideos.Image = Properties.Resources.film;
             mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
-
-            // Logs Folder
-            mnuApplicationFolder.Tag = new ItemResourceInfo(RootResourceManager, "mnuApplicationFolder");
-            mnuApplicationFolder.Text = ((ItemResourceInfo)mnuApplicationFolder.Tag).resManager.GetString(((ItemResourceInfo)mnuApplicationFolder.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuApplicationFolder.Image = Properties.Resources.bug;
             mnuApplicationFolder.Click += new EventHandler(mnuApplicationFolder_OnClick);
-
-            // About
-            mnuAbout.Tag = new ItemResourceInfo(RootResourceManager, "mnuAbout");
-            mnuAbout.Text = ((ItemResourceInfo)mnuAbout.Tag).resManager.GetString(((ItemResourceInfo)mnuAbout.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuAbout.Image = Properties.Resources.information;
+            mnuAbout.Image = Properties.Resources.information;
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
             mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
@@ -642,50 +364,67 @@ namespace Kinovea.Root
             ThisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(ThisMenuStrip, _menu);
+            
+            // We need to affect the Text properties before merging with submenus.
+            RefreshCultureMenu();
         }
         private void GetSubModulesMenus(ToolStrip _menu)
         {
-            FileBrowser.ExtendMenu(_menu);
-            Updater.ExtendMenu(_menu);
-            ScreenManager.ExtendMenu(_menu);
+            m_FileBrowser.ExtendMenu(_menu);
+            m_Updater.ExtendMenu(_menu);
+            m_ScreenManager.ExtendMenu(_menu);
         }
         private void GetModuleToolBar(ToolStrip _toolbar)
         {
         	// Open.
-        	toolOpenFile.DisplayStyle          = ToolStripItemDisplayStyle.Image;
-            toolOpenFile.Image                 = Properties.Resources.folder;
-            toolOpenFile.ToolTipText           = RootLang.mnuOpenFile;
-            toolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
+        	m_ToolOpenFile.DisplayStyle          = ToolStripItemDisplayStyle.Image;
+            m_ToolOpenFile.Image                 = Properties.Resources.folder;
+            m_ToolOpenFile.ToolTipText           = RootLang.mnuOpenFile;
+            m_ToolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
             
-            _toolbar.Items.Add(toolOpenFile);
+            _toolbar.Items.Add(m_ToolOpenFile);
         }
         private void GetSubModulesToolBars(ToolStrip _toolbar)
         {
-            FileBrowser.ExtendToolBar(_toolbar);
-            Updater.ExtendToolBar(_toolbar);
-            ScreenManager.ExtendToolBar(_toolbar);
+            m_FileBrowser.ExtendToolBar(_toolbar);
+            m_Updater.ExtendToolBar(_toolbar);
+            m_ScreenManager.ExtendToolBar(_toolbar);
         }
-        private void RefreshSubMenu(ToolStripItem item)
+        private void RefreshCultureMenu()
         {
-            //---------------------------------------------------
-            // [Recursive] - Refresh this menu and all sub menus.
-            //---------------------------------------------------
-
-            // Sub items
-            if (item is ToolStripMenuItem)
-            {
-                foreach (ToolStripItem subItem in ((ToolStripMenuItem)item).DropDownItems)
-                {
-                    RefreshSubMenu(subItem);
-                }
-            }
+            // Get the appropriate text (RootLang knows the current Culture)
+            mnuFile.Text = RootLang.mnuFile;
+            mnuOpenFile.Text = RootLang.mnuOpenFile;
+            mnuHistory.Text = RootLang.mnuHistory;
+            mnuHistoryReset.Text = RootLang.mnuHistoryReset;
+            mnuQuit.Text = RootLang.Generic_Quit;
             
-            // This item
-            ItemResourceInfo info = item.Tag as ItemResourceInfo;
-            if (info != null)
-            {
-                item.Text = info.resManager.GetString(info.strText, Thread.CurrentThread.CurrentUICulture);
-            }
+            mnuEdit.Text = RootLang.mnuEdit;
+            mnuUndo.Text = RootLang.mnuUndo;
+            mnuRedo.Text = RootLang.mnuRedo;
+            
+            mnuView.Text = RootLang.mnuScreens;
+            mnuToggleFileExplorer.Text = RootLang.mnuToggleFileExplorer;
+            mnuFullScreen.Text = RootLang.mnuFullScreen;
+            
+            mnuImage.Text = RootLang.mnuImage;
+            mnuMotion.Text = RootLang.mnuMotion;
+            
+            mnuOptions.Text = RootLang.mnuOptions;
+            mnuLanguages.Text = RootLang.mnuLanguages;
+            mnuPreferences.Text = RootLang.mnuPreferences;
+            mnuTimecode.Text = RootLang.dlgPreferences_LabelTimeFormat;
+            mnuTimecodeClassic.Text = RootLang.TimeCodeFormat_Classic;
+            mnuTimecodeFrames.Text = RootLang.TimeCodeFormat_Frames;
+            mnuTimecodeMilliseconds.Text = RootLang.TimeCodeFormat_Milliseconds;
+            mnuTimecodeTimeAndFrames.Text = RootLang.TimeCodeFormat_TimeAndFrames;
+            
+            mnuHelp.Text = RootLang.mnuHelp;
+            mnuHelpContents.Text = RootLang.mnuHelpContents;
+            mnuTutorialVideos.Text = RootLang.mnuTutorialVideos;
+            mnuApplicationFolder.Text = RootLang.mnuApplicationFolder;
+            mnuAbout.Text = RootLang.mnuAbout;
+            mnuHelp.Text = RootLang.mnuHelp;
         }
         #endregion
 
@@ -706,58 +445,17 @@ namespace Kinovea.Root
                 OpenFileFromPath(filePath);
             }
         }
-        #region History sub menus
-        private void mnuHistoryVideo1OnClick(object sender, EventArgs e)
+        
+        private void mnuHistoryVideo_OnClick(object sender, EventArgs e)
         {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(0));
+            ToolStripMenuItem mnu = sender as ToolStripMenuItem;
+            if(mnu != null)
+            {
+                PreferencesManager pm = PreferencesManager.Instance();
+                if(mnu.Tag is int)
+                    OpenFileFromPath(pm.GetFilePathAtIndex((int)mnu.Tag));
+            }
         }
-        private void mnuHistoryVideo2OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(1));
-        }
-        private void mnuHistoryVideo3OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(2));
-        }
-        private void mnuHistoryVideo4OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(3));
-        }
-        private void mnuHistoryVideo5OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(4));
-        }
-        private void mnuHistoryVideo6OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(5));
-        }
-        private void mnuHistoryVideo7OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(6));
-        }
-        private void mnuHistoryVideo8OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(7));
-        }
-        private void mnuHistoryVideo9OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(8));
-        }
-        private void mnuHistoryVideo10OnClick(object sender, EventArgs e)
-        {
-            PreferencesManager pm = PreferencesManager.Instance();
-            OpenFileFromPath(pm.GetFilePathAtIndex(9));
-        }
-        #endregion
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
         {
             PreferencesManager pm = PreferencesManager.Instance();
@@ -766,7 +464,6 @@ namespace Kinovea.Root
         }
         private void menuQuitOnClick(object sender, EventArgs e)
         {
-            //Environment.Exit(1);
             Application.Exit();
         }
         #endregion
@@ -810,74 +507,21 @@ namespace Kinovea.Root
             }
             
            // Propagates the call to screens.
-           ScreenManager.FullScreen(MainWindow.FullScreen);
+           m_ScreenManager.FullScreen(MainWindow.FullScreen);
         }
         #endregion
 
         #region Options
-        private void menuSpanishOnClick(object sender, EventArgs e)
+        private void mnuLanguage_OnClick(object sender, EventArgs e)
         {
-            SwitchCulture("es");
-        }
-        private void menuEnglishOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("en");
-        }
-        private void menuFrenchOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("fr");
-        }
-        private void menuDutchOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("nl");
-        }
-        private void menuGermanOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("de");
-        }
-        private void menuItalianOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("it");
-        }
-        private void menuPortugueseOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("pt");
-        }
-        private void menuRomanianOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("ro");
-        }
-        private void menuPolishOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("pl");
-        }
-        private void menuFinnishOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("fi");
-        }
-        private void menuNorwegianOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("no");
-        }
-        private void menuTurkishOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("tr");
-        }
-        private void menuChineseOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("zh-CHS");
-        }
-        private void menuGreekOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("el");
-        }
-        private void menuLithuanianOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("lt");
-        }
-        private void menuSwedishOnClick(object sender, EventArgs e)
-        {
-            SwitchCulture("sv");
+            ToolStripMenuItem menu = sender as ToolStripMenuItem;
+            if(menu != null)
+            {
+                if(menu.Tag is string)
+                {
+                    SwitchCulture((string)menu.Tag);
+                }
+            }
         }
         private void SwitchCulture(string name)
         {
@@ -887,77 +531,19 @@ namespace Kinovea.Root
         }
         private void CheckLanguageMenu()
         {
-            mnuDutch.Checked = false;
-            mnuGreek.Checked = false;
-            mnuEnglish.Checked = false;
-            mnuFrench.Checked = false;
-            mnuGerman.Checked = false;
-            mnuItalian.Checked = false;
-            mnuPolish.Checked = false;
-            mnuSpanish.Checked = false;
-            mnuPortuguese.Checked = false;
-            mnuRomanian.Checked = false;
-            mnuFinnish.Checked = false;
-            mnuNorwegian.Checked = false;
-			mnuTurkish.Checked = false;
-            mnuChinese.Checked = false;
-            mnuLithuanian.Checked = false;
-            mnuSwedish.Checked = false;
-			
+            foreach(ToolStripMenuItem mnuLang in m_LanguageMenus.Values)
+                mnuLang.Checked = false;
+            
             CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();            
             string cultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
             
-            switch (cultureName)
+            try
             {
-                case "es":
-                    mnuSpanish.Checked = true;
-                    break;
-                case "de":
-                    mnuGerman.Checked = true;
-                    break;
-                case "fr":
-                    mnuFrench.Checked = true;
-                    break;
-                case "nl":
-                    mnuDutch.Checked = true;
-                    break;
-                case "pt":
-                    mnuPortuguese.Checked = true;
-                    break;
-                case "pl":
-                    mnuPolish.Checked = true;
-                    break;
-                case "it":
-                    mnuItalian.Checked = true;
-                    break;
-                case "ro":
-                    mnuRomanian.Checked = true;
-                    break;
-                case "fi":
-                    mnuFinnish.Checked = true;
-                    break;
-                case "no":
-                    mnuNorwegian.Checked = true;
-                    break;
-				case "tr":
-                    mnuTurkish.Checked = true;
-                    break;
-                case "zh-CHS":
-                    mnuChinese.Checked = true;
-                    break;
-                case "el":
-                    mnuGreek.Checked = true;
-                    break;
-                case "lt":
-                    mnuLithuanian.Checked = true;
-                    break;
-                case "sv":
-                    mnuSwedish.Checked = true;
-                    break;
-                case "en":
-                default:
-                    mnuEnglish.Checked = true;
-                    break;
+                m_LanguageMenus[cultureName].Checked = true;    
+            }
+            catch(KeyNotFoundException)
+            {
+                m_LanguageMenus["en"].Checked = true;            
             }
         }
         private void mnuPreferencesOnClick(object sender, EventArgs e)
@@ -989,32 +575,25 @@ namespace Kinovea.Root
         	mnuTimecodeClassic.Checked = false;
         	mnuTimecodeFrames.Checked = false;
         	mnuTimecodeMilliseconds.Checked = false;
-        	mnuTimecodeHoM.Checked = false;
-        	mnuTimecodeTToH.Checked = false;
         	mnuTimecodeTimeAndFrames.Checked = false;
         	
             TimeCodeFormat tf = PreferencesManager.Instance().TimeCodeFormat;
             
             switch (tf)
             {
+                case TimeCodeFormat.ClassicTime:
+                    mnuTimecodeClassic.Checked = true;
+                    break;
                 case TimeCodeFormat.Frames:
                     mnuTimecodeFrames.Checked = true;
                     break;
                 case TimeCodeFormat.Milliseconds:
                     mnuTimecodeMilliseconds.Checked = true;
                     break;
-                case TimeCodeFormat.HundredthOfMinutes:
-                    mnuTimecodeHoM.Checked = true;
-                    break;
-                case TimeCodeFormat.TenThousandthOfHours:
-                    mnuTimecodeTToH.Checked = true;
-                    break;
                 case TimeCodeFormat.TimeAndFrames:
                     mnuTimecodeTimeAndFrames.Checked = true;
                     break; 
-                case TimeCodeFormat.ClassicTime:
                 default:
-                    mnuTimecodeClassic.Checked = true;
                     break;
             }
         }
@@ -1029,14 +608,6 @@ namespace Kinovea.Root
         private void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimeCodeFormat.Milliseconds);
-        }
-        private void mnuTimecodeHoM_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimeCodeFormat.HundredthOfMinutes);
-        }
-        private void mnuTimecodeTToH_OnClick(object sender, EventArgs e)
-        {
-            SwitchTimecode(TimeCodeFormat.TenThousandthOfHours);
         }
         private void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
         {
@@ -1072,15 +643,15 @@ namespace Kinovea.Root
 			string resourceUri = GetLocalizedHelpResource(false);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-	        	IUndoableCommand clmis = new CommandLoadMovieInScreen(ScreenManager, resourceUri, -1, true);
+	        	IUndoableCommand clmis = new CommandLoadMovieInScreen(m_ScreenManager, resourceUri, -1, true);
 	            CommandManager cm = CommandManager.Instance();
 	            cm.LaunchUndoableCommand(clmis);
         	}
         	else
         	{
         		log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
-        		MessageBox.Show(ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
-                                    ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
+        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
+                                    m_ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation);
         	}
@@ -1101,6 +672,17 @@ namespace Kinovea.Root
 
         #endregion        
         
+        #region Services
+        public void DoUpdateStatusBar(string _status)
+        {
+            m_StatusLabel.Text = _status;
+        }
+        public void DoMakeTopMost(Form _form)
+        {
+            _form.Owner = MainWindow;
+        }
+        #endregion
+        
         #region Lower Level Methods
         private void OpenFileFromPath(string _FilePath)
         {
@@ -1111,7 +693,7 @@ namespace Kinovea.Root
                 // elle gère la création du screen si besoin, et demande 
                 // si on veut charger surplace ou dans un nouveau en fonction de l'existant.
                 //--------------------------------------------------------------------------
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(ScreenManager, _FilePath, -1, true);
+                IUndoableCommand clmis = new CommandLoadMovieInScreen(m_ScreenManager, _FilePath, -1, true);
                 CommandManager cm = CommandManager.Instance();
                 cm.LaunchUndoableCommand(clmis);
 
@@ -1119,32 +701,24 @@ namespace Kinovea.Root
                 // Get the video ready to play (normalement inutile ici, car on
                 // l'a déjà fait dans le LoadMovieInScreen.
                 //-------------------------------------------------------------
-                ICommand css = new CommandShowScreens(ScreenManager);
+                ICommand css = new CommandShowScreens(m_ScreenManager);
                 CommandManager.LaunchCommand(css);
             }
             else
             {
-        		MessageBox.Show(ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
-                                    ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
+        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened", Thread.CurrentThread.CurrentUICulture),
+                                    m_ScreenManager.resManager.GetString("LoadMovie_Error", Thread.CurrentThread.CurrentUICulture),
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation);
             
             }
         }
-        public void DoUpdateStatusBar(string _status)
-        {
-            //------------------------------------------------------------------------
-            // Mettre à jour la status bar avec les données du screenmanager
-            // Fonction appelée via la mécanique des delegates depuis le screenmanager 
-            //------------------------------------------------------------------------
-            stLabel.Text = _status;
-        }
         public string LaunchOpenFileDialog()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = RootResourceManager.GetString("dlgOpenFile_Title", Thread.CurrentThread.CurrentUICulture);
+            openFileDialog.Title = RootLang.dlgOpenFile_Title;
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = RootResourceManager.GetString("dlgOpenFile_Filter", Thread.CurrentThread.CurrentUICulture);
+            openFileDialog.Filter = RootLang.dlgOpenFile_Filter;
             openFileDialog.FilterIndex = 1;
             string filePath = "";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -1152,12 +726,6 @@ namespace Kinovea.Root
                 filePath = openFileDialog.FileName;
             }
             return filePath;
-        }
-        public void DoMakeTopMost(Form _form)
-        {
-            // Fonction utilisée pour les minibox de commentaires.
-            // Pour qu'elles ne soient pas modales, quand même globales, etc.
-            _form.Owner = MainWindow;
         }
         private void PrintInitialConf()
         {
@@ -1224,6 +792,5 @@ namespace Kinovea.Root
             return resourceUri;
         }
         #endregion
-
     }
 }

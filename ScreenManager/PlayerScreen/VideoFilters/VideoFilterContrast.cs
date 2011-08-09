@@ -28,6 +28,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using AForge.Imaging.Filters;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -44,10 +45,14 @@ namespace Kinovea.ScreenManager
 	public class VideoFilterContrast : AbstractVideoFilter
 	{
 		#region Properties
-		public override ToolStripMenuItem Menu
+		public override string Name
 		{
-			get { return m_Menu; }
-		}	
+		    get { return ScreenManagerLang.VideoFilterContrast_FriendlyName; }
+		}
+		public override Bitmap Icon
+		{
+		    get { return Properties.Resources.contrast; }
+		}
 		public override List<DecompressedFrame> FrameList
         {
 			set { m_FrameList = value; }
@@ -59,24 +64,8 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region Constructor
-		public VideoFilterContrast()
-		{
-			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
-			// Menu
-            m_Menu = new ToolStripMenuItem();
-            m_Menu.Tag = new ItemResourceInfo(resManager, "VideoFilterContrast_FriendlyName");
-            m_Menu.Text = ((ItemResourceInfo)m_Menu.Tag).resManager.GetString(((ItemResourceInfo)m_Menu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_Menu.Image = Properties.Resources.contrast;
-            m_Menu.Click += new EventHandler(Menu_OnClick);
-            m_Menu.MergeAction = MergeAction.Append;
-		}
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
@@ -84,7 +73,7 @@ namespace Kinovea.ScreenManager
         {
 			// 1. Display preview dialog box.
 			Bitmap preview = GetPreviewImage();
-			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, m_Menu.Text);
+			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, Name);
             if (fpvf.ShowDialog() == DialogResult.OK)
             {
             	// 2. Process filter.

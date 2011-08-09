@@ -44,9 +44,13 @@ namespace Kinovea.ScreenManager
 	public class VideoFilterSandbox : AbstractVideoFilter
 	{
 		#region Properties
-		public override ToolStripMenuItem Menu
+		public override string Name
 		{
-			get { return m_Menu; }
+		    get { return "Sandbox"; }
+		}
+		public override Bitmap Icon
+		{
+		    get { return Properties.Resources.controller; }
 		}	
 		public override List<DecompressedFrame> FrameList
         {
@@ -59,23 +63,8 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region Constructor
-		public VideoFilterSandbox()
-		{
-			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
-			// Menu
-            m_Menu = new ToolStripMenuItem();
-            m_Menu.Text = "Sandbox";
-            m_Menu.Image = Properties.Resources.controller;
-            m_Menu.Click += new EventHandler(Menu_OnClick);
-            m_Menu.MergeAction = MergeAction.Append;
-		}
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
