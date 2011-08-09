@@ -20,11 +20,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -41,9 +43,13 @@ namespace Kinovea.ScreenManager
 	public class VideoFilterReverse : AbstractVideoFilter
 	{
 		#region Properties
-		public override ToolStripMenuItem Menu
+		public override string Name
 		{
-			get { return m_Menu; }
+		    get { return ScreenManagerLang.VideoFilterReverse_FriendlyName; }
+		}
+		public override Bitmap Icon
+		{
+		    get { return Properties.Resources.revert; }
 		}	
 		public override List<DecompressedFrame> FrameList
         {
@@ -56,24 +62,8 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region Constructor
-		public VideoFilterReverse()
-		{
-			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
-			// Menu
-            m_Menu = new ToolStripMenuItem();
-            m_Menu.Tag = new ItemResourceInfo(resManager, "VideoFilterReverse_FriendlyName");
-            m_Menu.Text = ((ItemResourceInfo)m_Menu.Tag).resManager.GetString(((ItemResourceInfo)m_Menu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_Menu.Image = Properties.Resources.revert;
-            m_Menu.Click += new EventHandler(Menu_OnClick);
-            m_Menu.MergeAction = MergeAction.Append;
-		}
 		#endregion
 		
 		#region AbstractVideoFilter Implementation

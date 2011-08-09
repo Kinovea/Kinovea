@@ -90,8 +90,8 @@ namespace Kinovea.ScreenManager
         private bool m_BuildingSVGMenu;
         
         #region Menus
-        public ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCloseFile2 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSave = new ToolStripMenuItem();
  
         private ToolStripMenuItem mnuExportSpreadsheet = new ToolStripMenuItem();
@@ -101,30 +101,36 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuExportTEXT = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuLoadAnalysis = new ToolStripMenuItem();
 
-        public ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuToggleCommonCtrls = new ToolStripMenuItem();
+	    private ToolStripMenuItem mnuOnePlayer = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTwoPlayers = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOneCapture = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTwoCaptures = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
+        
+		private ToolStripMenuItem mnuSwapScreens = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuToggleCommonCtrls = new ToolStripMenuItem();
 
-        public ToolStripMenuItem mnuDeinterlace = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeinterlace = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormat = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormatAuto = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormatForce43 = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFormatForce169 = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
-        public ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuMirror = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuSVGTools = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuImportImage = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCoordinateAxis = new ToolStripMenuItem();
         
-        public ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuHighspeedCamera = new ToolStripMenuItem();
         #endregion
 
         #region Toolbar
-        public ToolStripButton toolHome = new ToolStripButton();
-        public ToolStripButton toolSave = new ToolStripButton();
-        public ToolStripButton toolOnePlayer = new ToolStripButton();
-        public ToolStripButton toolTwoPlayers = new ToolStripButton();
-        public ToolStripButton toolOneCapture = new ToolStripButton();
-        public ToolStripButton toolTwoCaptures = new ToolStripButton();
-        public ToolStripButton toolTwoMixed = new ToolStripButton();
+        private ToolStripButton toolHome = new ToolStripButton();
+        private ToolStripButton toolSave = new ToolStripButton();
+        private ToolStripButton toolOnePlayer = new ToolStripButton();
+        private ToolStripButton toolTwoPlayers = new ToolStripButton();
+        private ToolStripButton toolOneCapture = new ToolStripButton();
+        private ToolStripButton toolTwoCaptures = new ToolStripButton();
+        private ToolStripButton toolTwoMixed = new ToolStripButton();
         #endregion
         
         #region Synchronization
@@ -236,81 +242,45 @@ namespace Kinovea.ScreenManager
             mnuCatchFile.MergeIndex = 0; // (File)
             mnuCatchFile.MergeAction = MergeAction.MatchOnly;
 
-            //Close File (1)
-            mnuCloseFile.Tag = new ItemResourceInfo(resManager, "Generic_Close");
-            mnuCloseFile.Text = ((ItemResourceInfo)mnuCloseFile.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuCloseFile.Image = Properties.Resources.film_close3;
             mnuCloseFile.Enabled = false;
             mnuCloseFile.Click += new EventHandler(mnuCloseFileOnClick);
-
             mnuCloseFile.MergeIndex = 2;
             mnuCloseFile.MergeAction = MergeAction.Insert;
 
-            //Close File (2)
-            mnuCloseFile2.Tag = new ItemResourceInfo(resManager, "Generic_Close");
-            mnuCloseFile2.Text = ((ItemResourceInfo)mnuCloseFile2.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseFile2.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuCloseFile2.Image = Properties.Resources.film_close3;
             mnuCloseFile2.Enabled = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Click += new EventHandler(mnuCloseFile2OnClick);
-
             mnuCloseFile2.MergeIndex = 3;
             mnuCloseFile2.MergeAction = MergeAction.Insert;
 
-            // Save Analysis or Video
-            mnuSave.Tag = new ItemResourceInfo(resManager, "mnuSave");
-            mnuSave.Text = ((ItemResourceInfo)mnuSave.Tag).resManager.GetString(((ItemResourceInfo)mnuSave.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuSave.Image = Properties.Resources.filesave;
             mnuSave.Click += new EventHandler(mnuSaveOnClick);
             mnuSave.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S;
-          
             mnuSave.MergeIndex = 5;
             mnuSave.MergeAction = MergeAction.Insert;
 
-            //Export to Spreadsheet
-            mnuExportSpreadsheet.Tag = new ItemResourceInfo(resManager, "mnuExportSpreadsheet");
-            mnuExportSpreadsheet.Text = ((ItemResourceInfo)mnuExportSpreadsheet.Tag).resManager.GetString(((ItemResourceInfo)mnuExportSpreadsheet.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuExportSpreadsheet.Image = Properties.Resources.table;
             mnuExportSpreadsheet.MergeIndex = 6;
             mnuExportSpreadsheet.MergeAction = MergeAction.Insert;
-            
-            // - Calc (ODF)
-            mnuExportODF.Tag = new ItemResourceInfo(resManager, "mnuExportODF");
-            mnuExportODF.Text = ((ItemResourceInfo)mnuExportODF.Tag).resManager.GetString(((ItemResourceInfo)mnuExportODF.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuExportODF.Image = Properties.Resources.file_ods;
             mnuExportODF.Click += new EventHandler(mnuExportODF_OnClick);
-            
-            // - Microsft Excel (MS-XML)
-            mnuExportMSXML.Tag = new ItemResourceInfo(resManager, "mnuExportMSXML");
-            mnuExportMSXML.Text = ((ItemResourceInfo)mnuExportMSXML.Tag).resManager.GetString(((ItemResourceInfo)mnuExportMSXML.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuExportMSXML.Image = Properties.Resources.file_xls;
             mnuExportMSXML.Click += new EventHandler(mnuExportMSXML_OnClick);
-            
-            // - XHTML
-            mnuExportXHTML.Tag = new ItemResourceInfo(resManager, "mnuExportXHTML");
-            mnuExportXHTML.Text = ((ItemResourceInfo)mnuExportXHTML.Tag).resManager.GetString(((ItemResourceInfo)mnuExportXHTML.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuExportXHTML.Image = Properties.Resources.file_html;
             mnuExportXHTML.Click += new EventHandler(mnuExportXHTML_OnClick);
-            
-            // - TEXT
-            mnuExportTEXT.Tag = new ItemResourceInfo(resManager, "mnuExportTEXT");
-            mnuExportTEXT.Text = ((ItemResourceInfo)mnuExportTEXT.Tag).resManager.GetString(((ItemResourceInfo)mnuExportTEXT.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuExportTEXT.Image = Properties.Resources.file_txt;
             mnuExportTEXT.Click += new EventHandler(mnuExportTEXT_OnClick);
             
             mnuExportSpreadsheet.DropDownItems.AddRange(new ToolStripItem[] { mnuExportODF, mnuExportMSXML, mnuExportXHTML, mnuExportTEXT });
             
             // Load Analysis
-            mnuLoadAnalysis.Tag = new ItemResourceInfo(resManager, "mnuLoadAnalysis");
-            mnuLoadAnalysis.Text = ((ItemResourceInfo)mnuLoadAnalysis.Tag).resManager.GetString(((ItemResourceInfo)mnuLoadAnalysis.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuLoadAnalysis.Image = Properties.Resources.file_kva2;
             mnuLoadAnalysis.Click += new EventHandler(mnuLoadAnalysisOnClick);
             mnuLoadAnalysis.MergeIndex = 7;
             mnuLoadAnalysis.MergeAction = MergeAction.Insert;
 
-            //---------------------------------
-            //Organisation du sous menu File
-            //---------------------------------
             ToolStripItem[] subFile = new ToolStripItem[] { mnuCloseFile, mnuCloseFile2, mnuSave, mnuExportSpreadsheet, mnuLoadAnalysis };
             mnuCatchFile.DropDownItems.AddRange(subFile);
             #endregion
@@ -320,66 +290,33 @@ namespace Kinovea.ScreenManager
             mnuCatchScreens.MergeIndex = 2; // (Screens)
             mnuCatchScreens.MergeAction = MergeAction.MatchOnly;
 
-            // One player
-            ToolStripMenuItem mnuOnePlayer = new ToolStripMenuItem();
-            mnuOnePlayer.Tag = new ItemResourceInfo(resManager, "mnuOnePlayer");
-            mnuOnePlayer.Text = ((ItemResourceInfo)mnuOnePlayer.Tag).resManager.GetString(((ItemResourceInfo)mnuOnePlayer.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOnePlayer.Image = Properties.Resources.television;
             mnuOnePlayer.Click += new EventHandler(mnuOnePlayerOnClick);
             mnuOnePlayer.MergeAction = MergeAction.Append;
-
-            // Two players
-            ToolStripMenuItem mnuTwoPlayers = new ToolStripMenuItem();
-            mnuTwoPlayers.Tag = new ItemResourceInfo(resManager, "mnuTwoPlayers");
-            mnuTwoPlayers.Text = ((ItemResourceInfo)mnuTwoPlayers.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoPlayers.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoPlayers.Image = Properties.Resources.dualplayback;
             mnuTwoPlayers.Click += new EventHandler(mnuTwoPlayersOnClick);
             mnuTwoPlayers.MergeAction = MergeAction.Append;
-
-			// One capture
-            ToolStripMenuItem mnuOneCapture = new ToolStripMenuItem();
-			mnuOneCapture.Tag = new ItemResourceInfo(resManager, "mnuOneCapture");
-            mnuOneCapture.Text = ((ItemResourceInfo)mnuOneCapture.Tag).resManager.GetString(((ItemResourceInfo)mnuOneCapture.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuOneCapture.Image = Properties.Resources.camera_video;
             mnuOneCapture.Click += new EventHandler(mnuOneCaptureOnClick);
             mnuOneCapture.MergeAction = MergeAction.Append;
-            
-            // Two captures
-            ToolStripMenuItem mnuTwoCaptures = new ToolStripMenuItem();
-            mnuTwoCaptures.Tag = new ItemResourceInfo(resManager, "mnuTwoCaptures");
-            mnuTwoCaptures.Text = ((ItemResourceInfo)mnuTwoCaptures.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoCaptures.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuTwoCaptures.Image = Properties.Resources.dualcapture2;
             mnuTwoCaptures.Click += new EventHandler(mnuTwoCapturesOnClick);
             mnuTwoCaptures.MergeAction = MergeAction.Append;
-			            
-            // Two mixed
-            ToolStripMenuItem mnuTwoMixed = new ToolStripMenuItem();
-            mnuTwoMixed.Tag = new ItemResourceInfo(resManager, "mnuTwoMixed");
-            mnuTwoMixed.Text = ((ItemResourceInfo)mnuTwoMixed.Tag).resManager.GetString(((ItemResourceInfo)mnuTwoMixed.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuTwoMixed.Image = Properties.Resources.dualmixed3;
+			mnuTwoMixed.Image = Properties.Resources.dualmixed3;
             mnuTwoMixed.Click += new EventHandler(mnuTwoMixedOnClick);
             mnuTwoMixed.MergeAction = MergeAction.Append;
                         
-            //Swap - activé seulement si DualFull ?
-            mnuSwapScreens.Tag = new ItemResourceInfo(resManager, "mnuSwapScreens");
-            mnuSwapScreens.Text = ((ItemResourceInfo)mnuSwapScreens.Tag).resManager.GetString(((ItemResourceInfo)mnuSwapScreens.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuSwapScreens.Image = Properties.Resources.arrow_swap;
             mnuSwapScreens.Enabled = false;
             mnuSwapScreens.Click += new EventHandler(mnuSwapScreensOnClick);
             mnuSwapScreens.MergeAction = MergeAction.Append;
-
-            //Toggle Common Controls - activé seulement si DualFull.
-            mnuToggleCommonCtrls.Tag = new ItemResourceInfo(resManager, "mnuToggleCommonCtrls");
-            mnuToggleCommonCtrls.Text = ((ItemResourceInfo)mnuToggleCommonCtrls.Tag).resManager.GetString(((ItemResourceInfo)mnuToggleCommonCtrls.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+            
             mnuToggleCommonCtrls.Image = Properties.Resources.common_controls;
             mnuToggleCommonCtrls.Enabled = false;
             mnuToggleCommonCtrls.ShortcutKeys = Keys.F5;
             mnuToggleCommonCtrls.Click += new EventHandler(mnuToggleCommonCtrlsOnClick);
             mnuToggleCommonCtrls.MergeAction = MergeAction.Append;
             
-            //---------------------------------
-            //Organisation du sous menu Screens
-            //---------------------------------
             ToolStripItem[] subScreens = new ToolStripItem[] { 		mnuOnePlayer,
             														mnuTwoPlayers,
             														new ToolStripSeparator(),
@@ -398,52 +335,25 @@ namespace Kinovea.ScreenManager
             mnuCatchImage.MergeIndex = 3; // (Image)
             mnuCatchImage.MergeAction = MergeAction.MatchOnly;
             
-            // Deinterlace
-            mnuDeinterlace.Tag = new ItemResourceInfo(resManager, "mnuDeinterlace");
-            mnuDeinterlace.Text = ((ItemResourceInfo)mnuDeinterlace.Tag).resManager.GetString(((ItemResourceInfo)mnuDeinterlace.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuDeinterlace.Image = Properties.Resources.deinterlace;
             mnuDeinterlace.Checked = false;
             mnuDeinterlace.ShortcutKeys = Keys.Control | Keys.D;
             mnuDeinterlace.Click += new EventHandler(mnuDeinterlaceOnClick);
             mnuDeinterlace.MergeAction = MergeAction.Append;
             
-            #region Formats
-            
-            // Format Auto
-            mnuFormatAuto.Tag = new ItemResourceInfo(resManager, "mnuFormatAuto");
-            mnuFormatAuto.Text = ((ItemResourceInfo)mnuFormatAuto.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatAuto.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuFormatAuto.Checked = true;
             mnuFormatAuto.Click += new EventHandler(mnuFormatAutoOnClick);
             mnuFormatAuto.MergeAction = MergeAction.Append;
-
-            // Format 4:3
-            mnuFormatForce43.Tag = new ItemResourceInfo(resManager, "mnuFormatForce43");
-            mnuFormatForce43.Text = ((ItemResourceInfo)mnuFormatForce43.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatForce43.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuFormatForce43.Image = Properties.Resources.format43;
             mnuFormatForce43.Click += new EventHandler(mnuFormatForce43OnClick);
             mnuFormatForce43.MergeAction = MergeAction.Append;
-
-            // Format 16:9
-            mnuFormatForce169.Tag = new ItemResourceInfo(resManager, "mnuFormatForce169");
-            mnuFormatForce169.Text = ((ItemResourceInfo)mnuFormatForce169.Tag).resManager.GetString(((ItemResourceInfo)mnuFormatForce169.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuFormatForce169.Image = Properties.Resources.format169;
             mnuFormatForce169.Click += new EventHandler(mnuFormatForce169OnClick);
             mnuFormatForce169.MergeAction = MergeAction.Append;
-            
-            ToolStripSeparator mnuSepFormats = new ToolStripSeparator();
-            
-            // Image Format
-            mnuFormat.Tag = new ItemResourceInfo(resManager, "mnuFormat");
-            mnuFormat.Text = ((ItemResourceInfo)mnuFormat.Tag).resManager.GetString(((ItemResourceInfo)mnuFormat.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuFormat.Image = Properties.Resources.shape_formats;
             mnuFormat.MergeAction = MergeAction.Append;
-            mnuFormat.DropDownItems.AddRange(new ToolStripItem[] { mnuFormatAuto, mnuSepFormats, mnuFormatForce43, mnuFormatForce169});
-            
-            #endregion
+            mnuFormat.DropDownItems.AddRange(new ToolStripItem[] { mnuFormatAuto, new ToolStripSeparator(), mnuFormatForce43, mnuFormatForce169});
                         
-            // Mirror
-            mnuMirror.Tag = new ItemResourceInfo(resManager, "mnuMirror");
-            mnuMirror.Text = ((ItemResourceInfo)mnuMirror.Tag).resManager.GetString(((ItemResourceInfo)mnuMirror.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuMirror.Image = Properties.Resources.shape_mirror;
             mnuMirror.Checked = false;
             mnuMirror.ShortcutKeys = Keys.Control | Keys.M;
@@ -452,18 +362,12 @@ namespace Kinovea.ScreenManager
 
             BuildSvgMenu();
             
-             // Coordinate Axis
-            mnuCoordinateAxis.Tag = new ItemResourceInfo(resManager, "dlgConfigureTrajectory_SetOrigin");
-            mnuCoordinateAxis.Text = ((ItemResourceInfo)mnuCoordinateAxis.Tag).resManager.GetString(((ItemResourceInfo)mnuCoordinateAxis.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuCoordinateAxis.Image = Properties.Resources.coordinate_axis;
             mnuCoordinateAxis.Click += new EventHandler(mnuCoordinateAxis_OnClick);
             mnuCoordinateAxis.MergeAction = MergeAction.Append;
 
             ConfigureVideoFilterMenus(null);
 
-            //---------------------------------
-            //Organisation du sous menu Image
-            //---------------------------------
             mnuCatchImage.DropDownItems.AddRange(new ToolStripItem[] 
 													{ 
                                                    		mnuDeinterlace,
@@ -473,9 +377,7 @@ namespace Kinovea.ScreenManager
                                                    		m_VideoFilters[(int)VideoFilterType.AutoLevels].Menu,  
                                                    		m_VideoFilters[(int)VideoFilterType.AutoContrast].Menu,  
                                                    		m_VideoFilters[(int)VideoFilterType.Sharpen].Menu, 
-                                                   		new ToolStripSeparator(), 
-                                                   		//m_VideoFilters[(int)VideoFilterType.EdgesOnly].Menu, 
-                                                   		//new ToolStripSeparator(), 
+                                                   		new ToolStripSeparator(),
                                                    		mnuSVGTools,
                                                    		mnuCoordinateAxis
                                                  		});
@@ -486,10 +388,6 @@ namespace Kinovea.ScreenManager
             mnuCatchMotion.MergeIndex = 4;
             mnuCatchMotion.MergeAction = MergeAction.MatchOnly;
 
-            
-            // High-speed camera
-            mnuHighspeedCamera.Tag = new ItemResourceInfo(resManager, "mnuSetCaptureSpeed");
-            mnuHighspeedCamera.Text = ((ItemResourceInfo)mnuHighspeedCamera.Tag).resManager.GetString(((ItemResourceInfo)mnuHighspeedCamera.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuHighspeedCamera.Image = Properties.Resources.camera_speed;
             mnuHighspeedCamera.Click += new EventHandler(mnuHighspeedCamera_OnClick);
             mnuHighspeedCamera.MergeAction = MergeAction.Append;
@@ -510,7 +408,7 @@ namespace Kinovea.ScreenManager
 
             ToolStripManager.Merge(ThisMenu, _menu);
 
-            // No sub modules.
+            RefreshCultureMenu();
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
@@ -572,31 +470,22 @@ namespace Kinovea.ScreenManager
         }
         public void RefreshUICulture()
         {
-            log.Debug("Refresh UI Culture at ScreenManager level.");
+            RefreshCultureMenu();
             OrganizeMenus();
-            ReloadToolbarCulture();
+            RefreshCultureToolbar();
             UpdateStatusBar();
 
             ((ScreenManagerUserInterface)this.UI).RefreshUICulture();
 
-            // Screens.
             foreach (AbstractScreen screen in screenList)
-            {
                 screen.refreshUICulture();
-            }
 
             ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
-
-            // No submodules.            
         }
         public void CloseSubModules()
         {
-            // No sub modules to close.
-            // Close this module
             foreach (AbstractScreen screen in screenList)
-            {
                 screen.BeforeClose();
-            }
         }
         #endregion
         
@@ -1289,6 +1178,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        #region Public Methods
         public void UpdateStatusBar()
         {
             //------------------------------------------------------------------
@@ -1383,6 +1273,8 @@ namespace Kinovea.ScreenManager
 			}
 		}
         
+        #endregion
+        
         #region Menu organization
         public void OrganizeMenus()
         {
@@ -1390,28 +1282,14 @@ namespace Kinovea.ScreenManager
         }
         private void BuildSvgMenu()
         {
-        	// Look for all files and folders in the guides directory
-        	// And build menus and submenus with svg files found.
-        	// The menu is built on the fly.
-        	
-        	// Top level menu.
-        	mnuSVGTools.Tag = new ItemResourceInfo(resManager, "mnuSVGTools");
-            mnuSVGTools.Text = ((ItemResourceInfo)mnuSVGTools.Tag).resManager.GetString(((ItemResourceInfo)mnuSVGTools.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            mnuSVGTools.Image = Properties.Resources.images;
+        	mnuSVGTools.Image = Properties.Resources.images;
             mnuSVGTools.MergeAction = MergeAction.Append;
-            
-            // Import menu and separator.
-            mnuImportImage.Tag = new ItemResourceInfo(resManager, "mnuImportImage");
-            mnuImportImage.Text = ((ItemResourceInfo)mnuImportImage.Tag).resManager.GetString(((ItemResourceInfo)mnuImportImage.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuImportImage.Image = Properties.Resources.image;
             mnuImportImage.Click += new EventHandler(mnuImportImage_OnClick);
 			mnuImportImage.MergeAction = MergeAction.Append;
-            
 			AddImportImageMenu(mnuSVGTools);
             
-            // Dynamic menus.
         	AddSvgSubMenus(m_SvgPath, mnuSVGTools);
-        	
         }
         private void AddImportImageMenu(ToolStripMenuItem _menu)
         {
@@ -1596,8 +1474,8 @@ namespace Kinovea.ScreenManager
             mnuCloseFile.Enabled  = false;
             mnuCloseFile2.Visible = false;
             mnuCloseFile2.Enabled = false;
-            string strClosingText = ((ItemResourceInfo)mnuCloseFile.Tag).resManager.GetString(((ItemResourceInfo)mnuCloseFile.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-
+            string strClosingText = ScreenManagerLang.Generic_Close;
+            
             bool bAllScreensEmpty = false;
             switch (screenList.Count)
             {
@@ -1622,7 +1500,6 @@ namespace Kinovea.ScreenManager
                     else if(screenList[0] is PlayerScreen)
                     {
                     	// Only screen is an full PlayerScreen.
-                        //strClosingText = strClosingText;// + " - " + ((PlayerScreen)screenList[0]).FileName;
                         mnuCloseFile.Text = strClosingText;
                         mnuCloseFile.Enabled = true;
                         mnuCloseFile.Visible = true;
@@ -1822,8 +1699,8 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        #region Toolbar
-        private void ReloadToolbarCulture()
+        #region Culture
+        private void RefreshCultureToolbar()
         {
         	toolSave.ToolTipText = ScreenManagerLang.mnuSave;
         	toolHome.ToolTipText = ScreenManagerLang.mnuHome;
@@ -1832,6 +1709,42 @@ namespace Kinovea.ScreenManager
             toolOneCapture.ToolTipText = ScreenManagerLang.mnuOneCapture;
             toolTwoCaptures.ToolTipText = ScreenManagerLang.mnuTwoCaptures;
             toolTwoMixed.ToolTipText = ScreenManagerLang.mnuTwoMixed;	
+        }
+        private void RefreshCultureMenu()
+        {
+            mnuCloseFile.Text = ScreenManagerLang.Generic_Close;
+            mnuCloseFile2.Text = ScreenManagerLang.Generic_Close;
+            mnuSave.Text = ScreenManagerLang.mnuSave;
+            mnuExportSpreadsheet.Text = ScreenManagerLang.mnuExportSpreadsheet;
+            mnuExportODF.Text = ScreenManagerLang.mnuExportODF;
+            mnuExportMSXML.Text = ScreenManagerLang.mnuExportMSXML;
+            mnuExportXHTML.Text = ScreenManagerLang.mnuExportXHTML;
+            mnuExportTEXT.Text = ScreenManagerLang.mnuExportTEXT;
+            mnuLoadAnalysis.Text = ScreenManagerLang.mnuLoadAnalysis;
+            
+            mnuOnePlayer.Text = ScreenManagerLang.mnuOnePlayer;
+            mnuTwoPlayers.Text = ScreenManagerLang.mnuTwoPlayers;
+            mnuOneCapture.Text = ScreenManagerLang.mnuOneCapture;
+            mnuTwoCaptures.Text = ScreenManagerLang.mnuTwoCaptures;
+            mnuTwoMixed.Text = ScreenManagerLang.mnuTwoMixed;
+            mnuSwapScreens.Text = ScreenManagerLang.mnuSwapScreens;
+            mnuToggleCommonCtrls.Text = ScreenManagerLang.mnuToggleCommonCtrls;
+            
+            mnuDeinterlace.Text = ScreenManagerLang.mnuDeinterlace;
+            mnuFormatAuto.Text = ScreenManagerLang.mnuFormatAuto;
+            mnuFormatForce43.Text = ScreenManagerLang.mnuFormatForce43;
+            mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
+            mnuFormat.Text = ScreenManagerLang.mnuFormat;
+            mnuMirror.Text = ScreenManagerLang.mnuMirror;
+            mnuCoordinateAxis.Text = ScreenManagerLang.dlgConfigureTrajectory_SetOrigin;
+            
+            mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
+            mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
+            
+            foreach(AbstractVideoFilter avf in m_VideoFilters)
+                avf.Menu.Text = avf.Name;
+            
+            mnuHighspeedCamera.Text = ScreenManagerLang.mnuSetCaptureSpeed;
         }
         #endregion
         
@@ -2764,7 +2677,7 @@ namespace Kinovea.ScreenManager
         #endregion
         #endregion
 
-        #region Delegates called from anywhere, through Services
+        #region Services
         public void DoLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState)
         {
         	if(File.Exists(_filePath))

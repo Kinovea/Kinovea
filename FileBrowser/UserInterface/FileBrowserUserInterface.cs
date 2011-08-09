@@ -41,11 +41,10 @@ namespace Kinovea.FileBrowser
 	public partial class FileBrowserUserInterface : UserControl
 	{
 		#region Members
-		private CShItem m_CurrentExptreeItem;	// Current item in exptree tab.
-		private CShItem m_CurrentShortcutItem;	// Current item in shortcuts tab.
-		private bool m_bExpanding;			// True if the exptree is currently auto expanding. To avoid reentry.
+		private CShItem m_CurrentExptreeItem;	  // Current item in exptree tab.
+		private CShItem m_CurrentShortcutItem;	  // Current item in shortcuts tab.
+		private bool m_bExpanding;                // True if the exptree is currently auto expanding. To avoid reentry.
 		private bool m_bInitializing = true;
-		private ResourceManager m_ResManager = new ResourceManager("Kinovea.FileBrowser.Languages.FileBrowserLang", Assembly.GetExecutingAssembly());
 		private PreferencesManager m_PreferencesManager = PreferencesManager.Instance();
 		
 		#region Context menu
@@ -78,10 +77,6 @@ namespace Kinovea.FileBrowser
 			
 			BuildContextMenu();
 			
-			// Associate with the system icons for files... Is this really needed ?
-			//ExpTreeLib.SystemImageListManager.SetListViewImageList(lvExplorer, false, false);
-			//ExpTreeLib.SystemImageListManager.SetListViewImageList(lvShortcuts, false, false);
-			
 			// Registers our exposed functions to the DelegatePool.
 			DelegatesPool dp = DelegatesPool.Instance();
 			dp.RefreshFileExplorer = DoRefreshFileList;
@@ -98,15 +93,11 @@ namespace Kinovea.FileBrowser
 		private void BuildContextMenu()
 		{
 			// Add an item to shortcuts
-			mnuAddToShortcuts.Tag = new ItemResourceInfo(m_ResManager, "mnuAddToShortcuts");
-			mnuAddToShortcuts.Text = ((ItemResourceInfo)mnuAddToShortcuts.Tag).resManager.GetString(((ItemResourceInfo)mnuAddToShortcuts.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuAddToShortcuts.Image = Properties.Resources.folder_add;
 			mnuAddToShortcuts.Click += new EventHandler(mnuAddToShortcuts_Click);
 			mnuAddToShortcuts.Visible = false;
 			
 			// Delete selected shortcut
-			mnuDeleteShortcut.Tag = new ItemResourceInfo(m_ResManager, "mnuDeleteShortcut");
-			mnuDeleteShortcut.Text = ((ItemResourceInfo)mnuDeleteShortcut.Tag).resManager.GetString(((ItemResourceInfo)mnuDeleteShortcut.Tag).strText, Thread.CurrentThread.CurrentUICulture);
 			mnuDeleteShortcut.Image = Properties.Resources.folder_delete;
 			mnuDeleteShortcut.Click += new EventHandler(mnuDeleteShortcut_Click);
 			mnuDeleteShortcut.Visible = false;
@@ -194,8 +185,8 @@ namespace Kinovea.FileBrowser
 			etShortcuts.RootDisplayName = tabPageShortcuts.Text;
 			
 			// Menus
-			mnuAddToShortcuts.Text = ((ItemResourceInfo)mnuAddToShortcuts.Tag).resManager.GetString(((ItemResourceInfo)mnuAddToShortcuts.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-			mnuDeleteShortcut.Text = ((ItemResourceInfo)mnuDeleteShortcut.Tag).resManager.GetString(((ItemResourceInfo)mnuDeleteShortcut.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+			mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
+			mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
 			
 			// ToolTips
 			ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);

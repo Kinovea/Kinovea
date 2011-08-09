@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -164,35 +165,34 @@ namespace Kinovea.Services
             // This function is public because it accessed by the main kernel when we update preferences.
             if (undoMenu != null)
             {
+                ResourceManager rm = undoMenu.Tag as ResourceManager;
                 if (m_iPlayHead < 0)
                 {
                     undoMenu.Enabled = false;
-
-                    undoMenu.Text = ((ItemResourceInfo)undoMenu.Tag).resManager.GetString(((ItemResourceInfo)undoMenu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+                    if(rm != null) undoMenu.Text = rm.GetString("mnuUndo");
                 }
                 else
                 {
                     undoMenu.Enabled = true;
-                    undoMenu.Text = ((ItemResourceInfo)undoMenu.Tag).resManager.GetString(((ItemResourceInfo)undoMenu.Tag).strText, Thread.CurrentThread.CurrentUICulture) + " : " + m_CommandStack[m_iPlayHead].FriendlyName;
+                    if(rm != null) undoMenu.Text = rm.GetString("mnuUndo")  + " : " + m_CommandStack[m_iPlayHead].FriendlyName;
                 }
             }
 
             if (redoMenu != null)
             {
+                ResourceManager rm = undoMenu.Tag as ResourceManager;
                 if (m_iPlayHead == (m_CommandStack.Count - 1))
                 {
                     redoMenu.Enabled = false;
-                    redoMenu.Text = ((ItemResourceInfo)redoMenu.Tag).resManager.GetString(((ItemResourceInfo)redoMenu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
+                    if(rm != null) redoMenu.Text = rm.GetString("mnuRedo");
                 }
                 else
                 {
                     redoMenu.Enabled = true;
-                    redoMenu.Text = ((ItemResourceInfo)redoMenu.Tag).resManager.GetString(((ItemResourceInfo)redoMenu.Tag).strText, Thread.CurrentThread.CurrentUICulture) + " : " + m_CommandStack[m_iPlayHead + 1].FriendlyName;
+                    if(rm != null) redoMenu.Text = rm.GetString("mnuRedo") + " : " + m_CommandStack[m_iPlayHead + 1].FriendlyName;
                 }
             }
-
         }
         #endregion
-
     }
 }

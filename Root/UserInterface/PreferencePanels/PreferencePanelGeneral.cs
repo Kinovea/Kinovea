@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -88,25 +89,10 @@ namespace Kinovea.Root
 			
 			lblLanguage.Text = RootLang.dlgPreferences_LabelLanguages;
             cmbLanguage.Items.Clear();
-            
-            // Order : Native Alphabetical.
-            // Deutsh, Greek, English, Español, Français, Italiano, Nederlands, Norsk, Polski, Portuges, Romana, Suomi, chinese.
-            cmbLanguage.Items.Add(new LanguageIdentifier("de", PreferencesManager.LanguageGerman));
-            cmbLanguage.Items.Add(new LanguageIdentifier("el", PreferencesManager.LanguageGreek));
-            cmbLanguage.Items.Add(new LanguageIdentifier("en", PreferencesManager.LanguageEnglish));
-            cmbLanguage.Items.Add(new LanguageIdentifier("es", PreferencesManager.LanguageSpanish));
-            cmbLanguage.Items.Add(new LanguageIdentifier("fr", PreferencesManager.LanguageFrench));
-            cmbLanguage.Items.Add(new LanguageIdentifier("it", PreferencesManager.LanguageItalian));
-            cmbLanguage.Items.Add(new LanguageIdentifier("lt", PreferencesManager.LanguageLithuanian));
-            cmbLanguage.Items.Add(new LanguageIdentifier("nl", PreferencesManager.LanguageDutch));
-            cmbLanguage.Items.Add(new LanguageIdentifier("no", PreferencesManager.LanguageNorwegian));
-            cmbLanguage.Items.Add(new LanguageIdentifier("pl", PreferencesManager.LanguagePolish));
-            cmbLanguage.Items.Add(new LanguageIdentifier("pt", PreferencesManager.LanguagePortuguese));
-            cmbLanguage.Items.Add(new LanguageIdentifier("ro", PreferencesManager.LanguageRomanian));
-            cmbLanguage.Items.Add(new LanguageIdentifier("fi", PreferencesManager.LanguageFinnish));
-            cmbLanguage.Items.Add(new LanguageIdentifier("sv", PreferencesManager.LanguageSwedish));
-            cmbLanguage.Items.Add(new LanguageIdentifier("tr", PreferencesManager.LanguageTurkish));
-            cmbLanguage.Items.Add(new LanguageIdentifier("zh-CHS", PreferencesManager.LanguageChinese));
+            foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
+            {
+                cmbLanguage.Items.Add(new LanguageIdentifier(lang.Key, lang.Value));
+            }
             
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
 
@@ -148,7 +134,7 @@ namespace Kinovea.Root
             {
                 LanguageIdentifier li = (LanguageIdentifier)cmbLanguage.Items[i];
                 
-                if (li.CultureName.Equals(m_UICultureName))
+                if (li.Culture.Equals(m_UICultureName))
                 {
                     // Matching
                     cmbLanguage.SelectedIndex = i;            
@@ -202,7 +188,7 @@ namespace Kinovea.Root
 		#region Handlers
 		private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_UICultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).CultureName;
+            m_UICultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).Culture;
         }
         private void cmbHistoryCount_SelectedIndexChanged(object sender, EventArgs e)
         {

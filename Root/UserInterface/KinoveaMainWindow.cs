@@ -62,26 +62,22 @@ namespace Kinovea.Root
         #region Constructor
         public KinoveaMainWindow(RootKernel _RootKernel)
         {
+            log.Debug("Create main UI window.");
+            
             mRootKernel = _RootKernel;
             InitializeComponent();
             
-            // Window title
-            Text = " Kinovea";
-
-
+            this.Text = " Kinovea";
             SupervisorControl = new SupervisorUserInterface(mRootKernel);
             this.Controls.Add(SupervisorControl);
-
             SupervisorControl.Dock = DockStyle.Fill;
             SupervisorControl.BringToFront();
-
-            
         }
         #endregion
 
         public void ToggleFullScreen()
         {
-            // TOTEST: Does this work for multiple monitors ?
+            // TODO: Does this work for multiple monitors ?
             
             this.SuspendLayout();
             
@@ -89,10 +85,6 @@ namespace Kinovea.Root
             
             if(m_bFullScreen)
             {
-                // TODO: find a nice way to hide the task bar in all cases (but not if the user configured it for Always Show).
-                // FormWindowState.Maximized doesn't seem to work each time.
-                // screen.Bounds neither.
-                
                 m_MemoBounds = this.Bounds;
                 m_MemoWindowState = this.WindowState;
                 
@@ -120,8 +112,7 @@ namespace Kinovea.Root
             this.ResumeLayout();
         }
         
-        
-        #region EventHandlers
+        #region Event Handlers
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
             mRootKernel.CloseSubModules();

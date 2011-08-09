@@ -28,6 +28,7 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.VideoFiles;
 
@@ -44,9 +45,13 @@ namespace Kinovea.ScreenManager
 	public class VideoFilterMosaic : AbstractVideoFilter
 	{
 		#region Properties
-		public override ToolStripMenuItem Menu
+		public override string Name
 		{
-			get { return m_Menu; }
+		    get { return ScreenManagerLang.VideoFilterMosaic_FriendlyName; }
+		}
+		public override Bitmap Icon
+		{
+		    get { return Properties.Resources.mosaic; }
 		}	
 		public override List<DecompressedFrame> FrameList
         {
@@ -59,40 +64,21 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private ToolStripMenuItem m_Menu;
 		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region Constructor
-		public VideoFilterMosaic()
-		{
-			ResourceManager resManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            
-			// Menu
-            m_Menu = new ToolStripMenuItem();
-            m_Menu.Tag = new ItemResourceInfo(resManager, "VideoFilterMosaic_FriendlyName");
-            m_Menu.Text = ((ItemResourceInfo)m_Menu.Tag).resManager.GetString(((ItemResourceInfo)m_Menu.Tag).strText, Thread.CurrentThread.CurrentUICulture);
-            m_Menu.Image = Properties.Resources.mosaic;
-            m_Menu.Click += new EventHandler(Menu_OnClick);
-            m_Menu.MergeAction = MergeAction.Append;
-		}
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
 		public override void Menu_OnClick(object sender, EventArgs e)
         {
-			if(m_Menu.Checked)
+			if(Menu.Checked)
 			{
-				// Toggle off filter.
 				DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, false);
 				ProcessingOver(dfo);
 			}
 			else
 			{
-				// 2010-05-19 - Do not display configuration box anymore. 
-				// The user can now directly scroll to change the parameter. (excep for right to left though.)
-				DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
+			    DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
 				dfo.PrivateData = new Parameters(ExtractBitmapList(m_FrameList), 16, false);
 				dfo.Draw = new DelegateDraw(Draw);
 				dfo.IncreaseZoom = new DelegateIncreaseZoom(IncreaseZoom);

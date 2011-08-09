@@ -51,7 +51,11 @@ namespace Kinovea.ScreenManager
 	public abstract class AbstractVideoFilter
 	{
 		#region Abstract Properties
-        public abstract ToolStripMenuItem Menu
+        public abstract string Name
+        {
+        	get;
+        }
+        public abstract Bitmap Icon
         {
         	get;
         }
@@ -70,9 +74,15 @@ namespace Kinovea.ScreenManager
         protected abstract void Process();
         #endregion
         
+        public ToolStripMenuItem Menu
+        {
+            get { return m_Menu;}
+        }
+        
         #region Concrete Members
         protected BackgroundWorker m_BackgroundWorker = new BackgroundWorker();
         private formProgressBar m_FormProgressBar;
+        private ToolStripMenuItem m_Menu = new ToolStripMenuItem();
         #endregion
         
         #region Concrete Constructor
@@ -82,10 +92,19 @@ namespace Kinovea.ScreenManager
         	m_BackgroundWorker.DoWork += new DoWorkEventHandler(bgWorker_DoWork);
         	m_BackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorker_RunWorkerCompleted);
             m_BackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bgWorker_ProgressChanged);
+            
+            m_Menu.Text = Name;
+            m_Menu.Image = Icon;
+            m_Menu.Click += Menu_OnClick;
+            m_Menu.MergeAction = MergeAction.Append;
         }
         #endregion
         
         #region Concrete Methods
+        public void RefreshCultureMenu()
+        {
+            m_Menu.Text = Name;
+        }
         protected void StartProcessing()
         {
         	// This method is called by concrete filters to start applying the filter.

@@ -31,25 +31,9 @@ namespace Kinovea.Updater
 {
     public class UpdaterKernel : IKernel 
     {
-        #region Properties
-        public ResourceManager resManager
-        {
-            get { return _resManager; }
-            set { _resManager = value; }
-        }
-        #endregion
-
         #region Members
-        private ResourceManager _resManager;
+        private ToolStripMenuItem mnuCheckForUpdates = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        #endregion
-
-        #region Constructor
-        public UpdaterKernel()
-        {
-            log.Debug("Module Construction : Updater.");
-            resManager = new ResourceManager("Kinovea.Updater.Languages.UpdaterLang", Assembly.GetExecutingAssembly());
-        }
         #endregion
 
         #region IKernel Implementation
@@ -59,9 +43,8 @@ namespace Kinovea.Updater
         }
         public void ExtendMenu(ToolStrip _menu)
         {
-
-            //Catch Options Menu (5)   
-            ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();
+            //Catch Options Menu (5)  
+            ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();            
             mnuCatchOptions.MergeIndex = 5;
             mnuCatchOptions.MergeAction = MergeAction.MatchOnly;
 
@@ -71,9 +54,6 @@ namespace Kinovea.Updater
             mnuSep.MergeAction = MergeAction.Insert;
 
             //Update
-            ToolStripMenuItem mnuCheckForUpdates = new ToolStripMenuItem();
-            mnuCheckForUpdates.Tag = new ItemResourceInfo(resManager, "mnuCheckForUpdates");
-            mnuCheckForUpdates.Text = ((ItemResourceInfo)mnuCheckForUpdates.Tag).resManager.GetString(((ItemResourceInfo)mnuCheckForUpdates.Tag).strText, Thread.CurrentThread.CurrentUICulture);
             mnuCheckForUpdates.Image = Properties.Resources.software_update;
             mnuCheckForUpdates.Click += new EventHandler(mnuCheckForUpdatesOnClick);
 
@@ -88,7 +68,7 @@ namespace Kinovea.Updater
 
             ToolStripManager.Merge(ThisMenu, _menu);
 
-            // No sub modules.
+            RefreshUICulture();
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
@@ -106,8 +86,7 @@ namespace Kinovea.Updater
         }
         public void RefreshUICulture()
         {
-            // Nothing at this level.
-            // No sub modules.
+            mnuCheckForUpdates.Text = UpdaterLang.mnuCheckForUpdates;
         }
         public void CloseSubModules()
         {
@@ -172,10 +151,7 @@ namespace Kinovea.Updater
             else
             {
                 // Remote connection failed, we are probably firewalled.
-                MessageBox.Show(resManager.GetString("Updater_InternetError", Thread.CurrentThread.CurrentUICulture),
-                                resManager.GetString("Updater_Title", Thread.CurrentThread.CurrentUICulture),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation);
+                MessageBox.Show(UpdaterLang.Updater_InternetError, UpdaterLang.Updater_Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
         #endregion
