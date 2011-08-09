@@ -295,7 +295,6 @@
     <Folder Include="UserInterface\PreferencePanels" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Splash.png" />
     <EmbeddedResource Include="Languages\RootLang.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -371,11 +370,6 @@
     <None Include="LogConf.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\drawings.png" />
-    <None Include="Resources\video.png" />
-    <None Include="Resources\configure.png" />
-    <None Include="Resources\closegrey.png" />
-    <None Include="Resources\videos.png" />
   </ItemGroup>
   <ItemGroup>
     <!-- List of extra files to copy to output dir -->
@@ -394,7 +388,6 @@
     <RemoveDir Directories="$(OutputPath)\guides" />
     <MakeDir Directories="$(OutputPath)\guides" Condition="!Exists('$(OutputPath)\guides')" />
     <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)\guides" />
-	
     <RemoveDir Directories="$(OutputPath)\xslt" />
     <MakeDir Directories="$(OutputPath)\xslt" Condition="!Exists('$(OutputPath)\xslt')" />
     <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)\xslt" />
