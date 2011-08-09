@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -72,12 +73,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserInterface\DownloadGrid.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserInterface\DownloadGrid.Designer.cs">
-      <DependentUpon>DownloadGrid.cs</DependentUpon>
-    </Compile>
     <Compile Include="FileDownloader.cs" />
     <Compile Include="Languages\UpdaterLang.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -125,10 +120,6 @@
     <EmbeddedResource Include="Languages\UpdaterLang.ro.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\DownloadGrid.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>DownloadGrid.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Languages\UpdaterLang.es.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -151,15 +142,6 @@
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Services</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Install.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\manual3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\videos.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
