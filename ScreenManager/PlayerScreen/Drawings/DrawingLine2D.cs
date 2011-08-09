@@ -351,9 +351,7 @@ namespace Kinovea.ScreenManager
         
         public override string ToString()
         {
-            // Return the name of the tool used to draw this drawing.
-            ResourceManager rm = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
-            return rm.GetString("ToolTip_DrawingToolLine2D", Thread.CurrentThread.CurrentUICulture);
+            return ScreenManagerLang.ToolTip_DrawingToolLine2D;
         }
         public override int GetHashCode()
         {

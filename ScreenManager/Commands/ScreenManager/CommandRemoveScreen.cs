@@ -43,13 +43,11 @@ namespace Kinovea.ScreenManager
         }
         private ScreenManagerKernel screenManagerKernel;
         private int iScreenToRemove;
-        private ResourceManager m_ResManager;
         private bool m_bStoreState;
 
         #region constructor
         public CommandRemoveScreen(ScreenManagerKernel _smk, int _iScreenToRemove, bool _bStoreState)
         {
-            m_ResManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             screenManagerKernel = _smk;
             iScreenToRemove = _iScreenToRemove;
             m_bStoreState = _bStoreState;
@@ -87,8 +85,8 @@ namespace Kinovea.ScreenManager
                     bool bRemove = true;
                     if (ps.FrameServer.Metadata.IsDirty)
                     {
-                        DialogResult dr = MessageBox.Show(m_ResManager.GetString("InfoBox_MetadataIsDirty_Text", Thread.CurrentThread.CurrentUICulture).Replace("\\n", "\n"),
-                                                          m_ResManager.GetString("InfoBox_MetadataIsDirty_Title", Thread.CurrentThread.CurrentUICulture),
+                        DialogResult dr = MessageBox.Show(ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
+                                                          ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
                                                           MessageBoxButtons.YesNoCancel,
                                                           MessageBoxIcon.Question);
 

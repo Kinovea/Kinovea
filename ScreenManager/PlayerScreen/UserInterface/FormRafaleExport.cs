@@ -25,6 +25,8 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     public partial class formRafaleExport : Form
@@ -39,7 +41,6 @@ namespace Kinovea.ScreenManager
         private Int64 m_iSelectionDuration;                                 // in timestamps.
         private double m_fTimestampsPerSeconds;                             // ratio
         private double m_fDurationInSeconds;
-        private ResourceManager m_ResourceManager;
         private int m_iEstimatedTotal;
         #endregion
 
@@ -51,28 +52,21 @@ namespace Kinovea.ScreenManager
             m_iSelectionDuration = _iSelDuration;
             m_fTimestampsPerSeconds = _tsps;
             m_fDurationInSeconds = m_iSelectionDuration / m_fTimestampsPerSeconds;
-            m_ResourceManager = new ResourceManager("Kinovea.ScreenManager.Languages.ScreenManagerLang", Assembly.GetExecutingAssembly());
             m_iEstimatedTotal = 0;
 
             InitializeComponent();
-            
-            
-            
-
             SetupUICulture();
             SetupData();
         }
         private void SetupUICulture()
         {
             // Window
-            this.Text = "   " + m_ResourceManager.GetString("dlgRafaleExport_Title", Thread.CurrentThread.CurrentUICulture);
+            this.Text = "   " + ScreenManagerLang.dlgRafaleExport_Title;
             
             // Group Config
-            grpboxConfig.Text = m_ResourceManager.GetString("Generic_Configuration", Thread.CurrentThread.CurrentUICulture);
-            //tooltip = m_ResourceManager.GetString("dlgRafaleExport_Tooltip_FrequencyViewer", Thread.CurrentThread.CurrentUICulture);
-            //tooltip = m_ResourceManager.GetString("dlgRafaleExport_Tooltip_IntervalSlider", Thread.CurrentThread.CurrentUICulture);
-            chkBlend.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelBlend", Thread.CurrentThread.CurrentUICulture);
-            chkKeyframesOnly.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelKeyframesOnly", Thread.CurrentThread.CurrentUICulture);
+            grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
+            chkBlend.Text = ScreenManagerLang.dlgRafaleExport_LabelBlend;
+            chkKeyframesOnly.Text = ScreenManagerLang.dlgRafaleExport_LabelKeyframesOnly;
             if (m_Metadata.Count > 0)
             {
                 chkKeyframesOnly.Enabled = true;
@@ -83,14 +77,14 @@ namespace Kinovea.ScreenManager
             }
             
             // Group Infos
-            grpboxInfos.Text = m_ResourceManager.GetString("dlgRafaleExport_GroupInfos", Thread.CurrentThread.CurrentUICulture);
-            lblInfosTotalFrames.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelTotalFrames", Thread.CurrentThread.CurrentUICulture);
-            lblInfosFileSuffix.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelInfoSuffix", Thread.CurrentThread.CurrentUICulture);
-            lblInfosTotalSeconds.Text = String.Format(m_ResourceManager.GetString("dlgRafaleExport_LabelTotalSeconds", Thread.CurrentThread.CurrentUICulture), m_fDurationInSeconds);
+            grpboxInfos.Text = ScreenManagerLang.dlgRafaleExport_GroupInfos;
+            lblInfosTotalFrames.Text = ScreenManagerLang.dlgRafaleExport_LabelTotalFrames;
+            lblInfosFileSuffix.Text = ScreenManagerLang.dlgRafaleExport_LabelInfoSuffix;
+            lblInfosTotalSeconds.Text = String.Format(ScreenManagerLang.dlgRafaleExport_LabelTotalSeconds, m_fDurationInSeconds);
 
             // Buttons
-            btnOK.Text = m_ResourceManager.GetString("Generic_Save", Thread.CurrentThread.CurrentUICulture);
-            btnCancel.Text = m_ResourceManager.GetString("Generic_Cancel", Thread.CurrentThread.CurrentUICulture);
+            btnOK.Text = ScreenManagerLang.Generic_Save;
+            btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }
         private void SetupData()
         {
@@ -123,15 +117,15 @@ namespace Kinovea.ScreenManager
         {
             // Frequency
             double fInterval = (double)trkInterval.Value / 1000;
-            lblInfosFrequency.Text = m_ResourceManager.GetString("dlgRafaleExport_LabelFrequencyRoot", Thread.CurrentThread.CurrentUICulture) + " ";
+            lblInfosFrequency.Text = ScreenManagerLang.dlgRafaleExport_LabelFrequencyRoot + " ";
             if (fInterval < 1)
             {
                 int iHundredth = (int)(fInterval * 100);
-                lblInfosFrequency.Text += String.Format(m_ResourceManager.GetString("dlgRafaleExport_LabelFrequencyHundredth", Thread.CurrentThread.CurrentUICulture), iHundredth);
+                lblInfosFrequency.Text += String.Format(ScreenManagerLang.dlgRafaleExport_LabelFrequencyHundredth, iHundredth);
             }
             else
             {
-                lblInfosFrequency.Text += String.Format(m_ResourceManager.GetString("dlgRafaleExport_LabelFrequencySeconds", Thread.CurrentThread.CurrentUICulture), fInterval);
+                lblInfosFrequency.Text += String.Format(ScreenManagerLang.dlgRafaleExport_LabelFrequencySeconds, fInterval);
             }
 
             // Number of frames
@@ -146,15 +140,15 @@ namespace Kinovea.ScreenManager
             }
             m_iEstimatedTotal = (int)fTotalFrames;
 
-            lblInfosTotalFrames.Text = String.Format(m_ResourceManager.GetString("dlgRafaleExport_LabelTotalFrames", Thread.CurrentThread.CurrentUICulture), fTotalFrames);
+            lblInfosTotalFrames.Text = String.Format(ScreenManagerLang.dlgRafaleExport_LabelTotalFrames, fTotalFrames);
         }
         private void btnOK_Click(object sender, EventArgs e)
         {
             
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Title = m_ResourceManager.GetString("dlgSaveSequenceTitle", Thread.CurrentThread.CurrentUICulture);
+            saveFileDialog.Title = ScreenManagerLang.dlgSaveSequenceTitle;
             saveFileDialog.RestoreDirectory = true;
-            saveFileDialog.Filter = m_ResourceManager.GetString("dlgSaveFilter", Thread.CurrentThread.CurrentUICulture);
+            saveFileDialog.Filter = ScreenManagerLang.dlgSaveFilter;
             saveFileDialog.FilterIndex = 1;
             saveFileDialog.FileName = Path.GetFileNameWithoutExtension(m_FullPath);
             
