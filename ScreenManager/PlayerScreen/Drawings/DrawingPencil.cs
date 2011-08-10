@@ -301,19 +301,23 @@ namespace Kinovea.ScreenManager
                 points[i] = new Point(m_PointList[i].X, m_PointList[i].Y);
             }
             areaPath.AddCurve(points, 0.5f);
-
-            Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
-            areaPen.StartCap = LineCap.Round;
-            areaPen.EndCap = LineCap.Round;
-            areaPen.LineJoin = LineJoin.Round;
             
-            areaPath.Widen(areaPen);
-			areaPen.Dispose();
-			
-            // Create region from the path
-            Region areaRegion = new Region(areaPath);
-
-            return areaRegion.IsVisible(_point);
+            RectangleF bounds = areaPath.GetBounds();
+            if(bounds.Width != 0 || bounds.Height != 0)
+            {
+                Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
+                areaPen.StartCap = LineCap.Round;
+                areaPen.EndCap = LineCap.Round;
+                areaPen.LineJoin = LineJoin.Round;
+                areaPath.Widen(areaPen);
+    			areaPen.Dispose();
+                Region areaRegion = new Region(areaPath);
+                return areaRegion.IsVisible(_point);
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
     }

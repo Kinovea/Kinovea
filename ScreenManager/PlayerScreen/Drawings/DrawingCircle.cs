@@ -283,15 +283,18 @@ namespace Kinovea.ScreenManager
         {
         	// _point is already descaled.
             bool bIsPointOnHandler = false;
-			GraphicsPath areaPath = new GraphicsPath();			
-			areaPath.AddArc(m_Origin.X - m_iRadius, m_Origin.Y - m_iRadius, m_iDiameter, m_iDiameter, 25, 40);
+            if(m_iRadius > 0)
+            {
+                GraphicsPath areaPath = new GraphicsPath();			
+    			areaPath.AddArc(m_Origin.X - m_iRadius, m_Origin.Y - m_iRadius, m_iDiameter, m_iDiameter, 25, 40);
+    			
+    			Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10);
+    			areaPath.Widen(areaPen);
+    			areaPen.Dispose();
+
+                bIsPointOnHandler = new Region(areaPath).IsVisible(_point);
+            }
 			
-			Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10);
-			areaPath.Widen(areaPen);
-			areaPen.Dispose();
-			
-			// Create region from the path
-            bIsPointOnHandler = new Region(areaPath).IsVisible(_point);
             return bIsPointOnHandler;	
         }
         #endregion
