@@ -922,12 +922,15 @@ namespace Kinovea.ScreenManager
         	// 
             // stripDrawingTools
             // 
+            this.stripDrawingTools.BackColor = System.Drawing.Color.Transparent;
             this.stripDrawingTools.Dock = System.Windows.Forms.DockStyle.None;
+            this.stripDrawingTools.Font = new System.Drawing.Font("Arial", 7.5F);
             this.stripDrawingTools.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.stripDrawingTools.Location = new System.Drawing.Point(33, -1);
             this.stripDrawingTools.Name = "stripDrawingTools";
             this.stripDrawingTools.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.stripDrawingTools.Size = new System.Drawing.Size(102, 25);
+            this.stripDrawingTools.Stretch = true;
             this.stripDrawingTools.TabIndex = 27;
             // 
         	// PlayerScreenUserInterface

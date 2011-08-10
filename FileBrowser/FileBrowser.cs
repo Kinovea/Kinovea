@@ -41,11 +41,6 @@ namespace Kinovea.FileBrowser
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public FileBrowserKernel()
-        {
-        	 log.Debug("Module Construction : FileBrowser.");
-        }
-        
         #region IKernel Implementation
         public void BuildSubTree()
         {
@@ -72,7 +67,6 @@ namespace Kinovea.FileBrowser
         }
         public void RefreshUICulture()
         {
-            log.Debug("Refresh UI Culture at FileBrowser level.");
             m_Fbui.RefreshUICulture();
         }
         public void CloseSubModules()
