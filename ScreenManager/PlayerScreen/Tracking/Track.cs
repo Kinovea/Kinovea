@@ -436,16 +436,14 @@ namespace Kinovea.ScreenManager
 
                             GraphicsPath areaPath = new GraphicsPath();
                             areaPath.AddLines(points);
-                            Pen tempPen = new Pen(Color.Black, 12);
-                            areaPath.Widen(tempPen);
-                            tempPen.Dispose();
-                            
-                            // Create region from the path
-                            Region areaRegion = new Region(areaPath);
-
-                            if (areaRegion.IsVisible(_point))
+                            RectangleF bounds = areaPath.GetBounds();
+                            if(bounds.Height > 0 || bounds.Width > 0)
                             {
-                                iHitResult = 0;
+                                Pen tempPen = new Pen(Color.Black, 12);
+                                areaPath.Widen(tempPen);
+                                tempPen.Dispose();
+                                Region areaRegion = new Region(areaPath);
+                                iHitResult = areaRegion.IsVisible(_point) ? 0 : -1;
                             }
                         }
                         catch (Exception exp)

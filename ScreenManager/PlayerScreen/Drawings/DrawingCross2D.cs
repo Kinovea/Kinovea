@@ -331,8 +331,6 @@ namespace Kinovea.ScreenManager
 
             areaPath.AddLine(m_CenterPoint.X - m_iDefaultRadius, m_CenterPoint.Y, m_CenterPoint.X + m_iDefaultRadius, m_CenterPoint.Y);
             areaPath.Widen(areaPen);
-
-            // Create region from the path
             Region areaRegion = new Region(areaPath);
             areaPen.Dispose();
             

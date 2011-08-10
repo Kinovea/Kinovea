@@ -447,9 +447,10 @@ namespace Kinovea.ScreenManager
         private bool IsPointInObject(Point _point)
         {
             // Create path which contains wide line for easy mouse selection
+            bool isPointInObject = false;
+            
             GraphicsPath areaPath = new GraphicsPath();
-            Pen areaPen = new Pen(Color.Black, 7);
-
+            
             if(m_StartPoint.X == m_EndPoint.X && m_StartPoint.Y == m_EndPoint.Y)
             {
             	// Special case
@@ -458,16 +459,20 @@ namespace Kinovea.ScreenManager
             else
             {
             	areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_EndPoint.X, m_EndPoint.Y);
-            	
             }
             
-            areaPath.Widen(areaPen);
-            areaPen.Dispose();
+            RectangleF bounds = areaPath.GetBounds();
+            if(bounds.Height > 0 || bounds.Width > 0)
+            {
+                Pen areaPen = new Pen(Color.Black, 7);
+                areaPath.Widen(areaPen);
+                areaPen.Dispose();
+                Region areaRegion = new Region(areaPath);
+                isPointInObject = areaRegion.IsVisible(_point);
+            }
             
-            // Create region from the path
-            Region areaRegion = new Region(areaPath);
-
-            return areaRegion.IsVisible(_point);
+            return isPointInObject;
+            
         }
         private Point GetMiddlePoint()
         {
