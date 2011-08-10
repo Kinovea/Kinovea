@@ -1,37 +1,24 @@
 
-/!\ Utiliser NSIS Unicode. Sinon les messages d'erreurs custom pour le framework 2.0 ne s'affichent pas bien (dépend du codepage de la machine en fait).
-/!\ Tous les binaires doivent être en mode Release, PlayerServer.dll a des dépendances sur les libs C Microsoft de Debug si compilée en mode Debug.
-/!\ Ne pas copier les fichiers manuellement, utiliser systématiquement le prepare.py. (le modifier quand il y a de nouveaux fichiers)
-/!\ Ne pas modifier les fichiers dans le dossier de travail (Kinovea.Files\) => modifier les fichiers à la source et relancer prepare.py.
+Last update: 2011-08-10. (0.8.16)
 
-TODO:
+/!\ Use NSIS Unicode.
 
-1. Modifier prepare.py si add/delete fichiers.
-2. Positionner le mode expérimental / production. Voir dans le ctor de RootKernel.
-+ log level
-3. Masquer les fonctions en cours de développement qui ne sont pas terminées.
-4. Mettre à jour le readme.txt
-- n° version, date, révision.
-- Contenu : Voir systématiquement le SVN Changelog. 
+1. Set experimental / release mode in RootKernel constructor.
+2. Check log level in OtherFiles\logConf.xml
+4. Update readme.txt (Refer to SVN changelog)
+5. Rebuild PlayerServer in release mode. (todo: move this to NSIS script)
+6. Update NSIS script.
+    - Version number.
+    - New folders if needed.
+9. kinovea.nsi -> Compile unicode script.
 
-5. Recompiler PlayerServer en mode release.
-5b. Recompiler Kinovea en mode release.
-6. Vider le dossier \Kinovea.Files\
-Exécuter prepare.py.
+Smoke tests:
+- Version number
+- Open a small file, add some drawings, save as new file with drawings muxed in separate stream, reopen and check.
+- Check new stuff.
 
-7. Mettre à jour le script NSIS:
-	- @9 : n° version
-	- Nouvelles dépendances / nouveaux fichiers à installer et désinstaller.
-	- Nouvelles langues à décommenter.
-
-8. Click droit sur kinovea.nsi + Compile unicode script.
-9. Smoke tests sur la machine de dev et sur une machine de test (1 WinXP + 1 Win7).
-	N° version, désactivation des menus qui doivent l'être, enregistrement d'un fichier avec data et réouverture.
-
-10. Une fois tout vérifié, commiter l'état sous svn et tagguer la version.
-11. Une fois la livraison finalisée, copier l'ensemble du répertoire de travail dans un répertoire d'archive au numéro de version correspondant.
-12. Uploader le fichier dans son répertoire sur kinovea.org
-13. Uploader updatebeta.xml
-14. Message d'annonce.
-
-
+10. Archive binary.
+11. Upload on kinovea.org
+12. Upload update.xml or updatebeta.xml
+13. svn tag.
+14. Announce.

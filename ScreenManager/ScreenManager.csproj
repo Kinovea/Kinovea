@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -19,12 +19,12 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <BaseAddress>18153472</BaseAddress>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,22 +34,21 @@
     <BaseAddress>18153472</BaseAddress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>4194304</BaseAddress>
     <DebugType>Full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
     <BaseAddress>18153472</BaseAddress>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>None</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>False</Optimize>
@@ -57,6 +56,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <RegisterForComInterop>False</RegisterForComInterop>
@@ -130,7 +130,9 @@
     <Compile Include="CaptureScreen\FrameServerCapture.cs" />
     <Compile Include="CaptureScreen\ICaptureScreenUIHandler.cs" />
     <Compile Include="CaptureScreen\IFrameServerCaptureContainer.cs" />
-    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs" />
+    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.Designer.cs">
       <DependentUpon>CapturedVideoBox.cs</DependentUpon>
     </Compile>
@@ -140,7 +142,9 @@
     <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.Designer.cs">
       <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.cs" />
+    <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.Designer.cs">
       <DependentUpon>FormDevicePicker.cs</DependentUpon>
     </Compile>
@@ -217,19 +221,27 @@
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
       <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.Designer.cs">
       <DependentUpon>FormConfigureOpacity.cs</DependentUpon>
     </Compile>
@@ -275,7 +287,9 @@
     <Compile Include="PlayerScreen\UserInterface\FormKeyframeComments.Designer.cs">
       <DependentUpon>FormKeyframeComments.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormProgressBar.Designer.cs">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
     </Compile>
@@ -285,7 +299,9 @@
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.Designer.cs">
       <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
     </Compile>
@@ -310,7 +326,9 @@
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
-    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.Designer.cs">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </Compile>
@@ -324,11 +342,15 @@
     <Compile Include="Properties\Drawings.Designer.cs">
       <DependentUpon>Drawings.resx</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\ColorPicker.cs" />
+    <Compile Include="UserInterface\ColorPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserInterface\ColorPicker.Designer.cs">
       <DependentUpon>ColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\FormColorPicker.cs" />
+    <Compile Include="UserInterface\FormColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UserInterface\FormColorPicker.Designer.cs">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
     </Compile>
@@ -456,11 +478,6 @@
       <Project>{0AD99D97-24ED-484D-9430-9905811F8A4F}</Project>
       <Name>SharpVectorRenderingEngine</Name>
     </ProjectReference>
-    <Folder Include="CaptureScreen\FrameGrabbers" />
-    <Folder Include="CaptureScreen\UserInterface" />
-    <Folder Include="Commands\CaptureScreen" />
-    <Folder Include="PlayerScreen\Tracking" />
-    <Folder Include="PlayerScreen\VideoFilters" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlayerScreen\UserInterface\KeyframeBox.resx">
@@ -579,6 +596,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\CaptureScreen\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

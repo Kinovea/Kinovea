@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -21,6 +21,14 @@
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <PublishUrl>C:\Documents and Settings\Administrateur\Mes documents\Dev  Prog\Videa\Sources - Kinovea\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -35,16 +43,10 @@
     <ProductName>Kinovea</ProductName>
     <PublisherName>Joan Charmant</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>0.7.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <NoStdLib>False</NoStdLib>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -114,28 +116,40 @@
       <DependentUpon>RootLang.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="UserInterface\FormPreferences2.cs" />
+    <Compile Include="UserInterface\FormPreferences2.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UserInterface\FormPreferences2.Designer.cs">
       <DependentUpon>FormPreferences2.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\PreferencePanelButtton.cs" />
+    <Compile Include="UserInterface\PreferencePanelButtton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanelButtton.Designer.cs">
       <DependentUpon>PreferencePanelButtton.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\PreferencePanels\IPreferencePanel.cs" />
-    <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelCapture.Designer.cs">
       <DependentUpon>PreferencePanelCapture.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\PreferencePanels\PreferencePanelDrawings.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelDrawings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelDrawings.Designer.cs">
       <DependentUpon>PreferencePanelDrawings.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\PreferencePanels\PreferencePanelGeneral.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelGeneral.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelGeneral.Designer.cs">
       <DependentUpon>PreferencePanelGeneral.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.cs" />
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.Designer.cs">
       <DependentUpon>PreferencePanelPlayer.cs</DependentUpon>
     </Compile>
@@ -262,7 +276,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
-    <None Include="HelpIndex.xml">
+    <None Include="..\Installer\OtherFiles\HelpIndex.xml">
+      <Link>HelpIndex.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
@@ -292,7 +307,6 @@
       <Project>{0A577C03-D217-4540-AAB4-D167A85E32C0}</Project>
       <Name>Updater</Name>
     </ProjectReference>
-    <Folder Include="UserInterface\PreferencePanels" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\RootLang.de.resx">
@@ -321,61 +335,97 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0</ProductName>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
       <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <PublishFile Include="fr\Kinovea.FileBrowser.resources">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
     <PublishFile Include="fr\Kinovea.resources">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
     <PublishFile Include="fr\Kinovea.ScreenManager.resources">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
     <PublishFile Include="fr\Kinovea.Updater.resources">
       <Visible>False</Visible>
+      <PublishState>Include</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Satellite</FileType>
     </PublishFile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
-    <None Include="LogConf.xml">
+    <None Include="..\Installer\OtherFiles\LogConf.xml">
+      <Link>LogConf.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <!-- List of extra files to copy to output dir -->
-    <SVGItem Include="$(MSBuildProjectDirectory)\..\Tools\svg\*.svg" />
-    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Spreadsheets\*.xsl" />
-    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Kva\*.xsl" />
+    <!-- List of extra files to copy to output dir 
+        The Visible element doesn't seem to have any effect.
+        How do we put them under ExtraFiles directory ? -->
+    <SVGItem Include="$(MSBuildProjectDirectory)\..\Tools\svg\*.svg">
+      <Visible>False</Visible>
+      <InProject>false</InProject>
+    </SVGItem>
+    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Spreadsheets\*.xsl">
+      <Visible>False</Visible>
+      <InProject>false</InProject>
+    </XSLTItem>
+    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Kva to Kva\*.xsl">
+      <Visible>False</Visible>
+      <InProject>false</InProject>
+    </XSLTItem>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -385,11 +435,11 @@
   -->
   <Target Name="AfterBuild">
     <!-- Clean the svg and xslt directories, and copy files over -->
-    <RemoveDir Directories="$(OutputPath)\guides" />
-    <MakeDir Directories="$(OutputPath)\guides" Condition="!Exists('$(OutputPath)\guides')" />
-    <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)\guides" />
-    <RemoveDir Directories="$(OutputPath)\xslt" />
-    <MakeDir Directories="$(OutputPath)\xslt" Condition="!Exists('$(OutputPath)\xslt')" />
-    <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)\xslt" />
+    <RemoveDir Directories="$(OutputPath)guides" />
+    <MakeDir Directories="$(OutputPath)guides" Condition="!Exists('$(OutputPath)guides')" />
+    <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)guides" />
+    <RemoveDir Directories="$(OutputPath)xslt" />
+    <MakeDir Directories="$(OutputPath)xslt" Condition="!Exists('$(OutputPath)xslt')" />
+    <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)xslt" />
   </Target>
 </Project>
