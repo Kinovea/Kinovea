@@ -5,20 +5,20 @@ Last update: 2011-08-10. (0.8.16)
 
 1. Set experimental / release mode in RootKernel constructor.
 2. Check log level in OtherFiles\logConf.xml
-4. Update readme.txt (Refer to SVN changelog)
-5. Rebuild PlayerServer in release mode. (todo: move this to NSIS script)
-6. Update NSIS script.
+3. Update readme.txt (Refer to SVN changelog)
+4. Rebuild PlayerServer in release mode. (todo: move this to NSIS script)
+5. Update NSIS script.
     - Version number.
     - New folders if needed.
-9. kinovea.nsi -> Compile unicode script.
+6. kinovea.nsi -> Compile unicode script.
 
 Smoke tests:
 - Version number
 - Open a small file, add some drawings, save as new file with drawings muxed in separate stream, reopen and check.
 - Check new stuff.
 
-10. Archive binary.
-11. Upload on kinovea.org
-12. Upload update.xml or updatebeta.xml
-13. svn tag.
-14. Announce.
+7. Archive binary.
+8. Upload on kinovea.org
+9. Upload update.xml or updatebeta.xml
+10. svn tag.
+11. Announce.
