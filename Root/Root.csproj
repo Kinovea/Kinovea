@@ -236,47 +236,58 @@
     </Compile>
     <BaseApplicationManifest Include="Properties\app.manifest" />
     <None Include="..\Refs\cv200.dll">
+      <Visible>False</Visible>
       <Link>cv200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\cvaux200.dll">
+      <Visible>False</Visible>
       <Link>cvaux200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\cxcore200.dll">
+      <Visible>False</Visible>
       <Link>cxcore200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avcodec-53.dll">
+      <Visible>False</Visible>
       <Link>avcodec-53.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avdevice-53.dll">
+      <Visible>False</Visible>
       <Link>avdevice-53.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avfilter-2.dll">
+      <Visible>False</Visible>
       <Link>avfilter-2.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avformat-53.dll">
+      <Visible>False</Visible>
       <Link>avformat-53.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\avutil-51.dll">
+      <Visible>False</Visible>
       <Link>avutil-51.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\postproc-51.dll">
+      <Visible>False</Visible>
       <Link>postproc-51.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\Refs\FFmpeg\bin\swscale-0.dll">
+      <Visible>False</Visible>
       <Link>swscale-0.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
     <None Include="..\Installer\OtherFiles\HelpIndex.xml">
+      <Visible>False</Visible>
       <Link>HelpIndex.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -406,6 +417,7 @@
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
     <None Include="..\Installer\OtherFiles\LogConf.xml">
+      <Visible>False</Visible>
       <Link>LogConf.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

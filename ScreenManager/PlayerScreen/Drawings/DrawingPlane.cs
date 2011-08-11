@@ -134,26 +134,8 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        
-        public void Reset()
-        {
-            // Used on metadata over load.
-            m_iDivisions = m_iDefaultDivisions;
-            m_fShift = 0.0F;
-            m_bValidPlane = true;
-            m_bInitialized = false;
-
-            m_SourceCorners[0] = new Point(0, 0);
-            m_SourceCorners[1] = new Point(1, 0);
-            m_SourceCorners[2] = new Point(1, 1);
-            m_SourceCorners[3] = new Point(0, 1);
-
-            RescaleCoordinates(1.0, new Point(0, 0));
-            RedefineHomography();
-        }
-
         #region AbstractDrawing implementation
-        public override void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
 		{
         	double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
         	
@@ -546,6 +528,22 @@ namespace Kinovea.ScreenManager
                 m_fShift = 0.0F;
             }
         }
+        public void Reset()
+        {
+            // Used on metadata over load.
+            m_iDivisions = m_iDefaultDivisions;
+            m_fShift = 0.0F;
+            m_bValidPlane = true;
+            m_bInitialized = false;
+
+            m_SourceCorners[0] = new Point(0, 0);
+            m_SourceCorners[1] = new Point(1, 0);
+            m_SourceCorners[2] = new Point(1, 1);
+            m_SourceCorners[3] = new Point(0, 1);
+
+            RescaleCoordinates(1.0, new Point(0, 0));
+            RedefineHomography();
+        }
 
         private Rectangle GetHandleRectangle(int _iHandleId)
         {
@@ -590,8 +588,7 @@ namespace Kinovea.ScreenManager
         private void BindStyle()
         {
             m_Style.Bind(m_StyleHelper, "Color", "color");
-        }
-            
+        }   
         
         #region Scaling
         private Point RescalePoint(Point _point, double _fStretchFactor, Point _DirectZoomTopLeft)

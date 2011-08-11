@@ -3467,11 +3467,11 @@ namespace Kinovea.ScreenManager
 			
 			if ((m_bIsCurrentlyPlaying && m_PrefManager.DrawOnPlay) || !m_bIsCurrentlyPlaying)
 			{
-				FlushDrawingsOnGraphics(g, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
+                FlushDrawingsOnGraphics(g, m_FrameServer.CoordinateSystem, _iKeyFrameIndex, _iPosition, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
 				FlushMagnifierOnGraphics(_sourceImage, g);
 			}
 		}
-		private void FlushDrawingsOnGraphics(Graphics _canvas, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
+		private void FlushDrawingsOnGraphics(Graphics _canvas, CoordinateSystem _transformer, int _iKeyFrameIndex, long _iPosition, double _fStretchFactor, double _fDirectZoomFactor, Point _DirectZoomTopLeft)
 		{
 			// Prepare for drawings
 			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
@@ -3479,7 +3479,8 @@ namespace Kinovea.ScreenManager
 			// 1. Extra (non attached to any key image).
 			for (int i = 0; i < m_FrameServer.Metadata.ExtraDrawings.Count; i++)
 			{
-				m_FrameServer.Metadata.ExtraDrawings[i].Draw(_canvas, 
+				m_FrameServer.Metadata.ExtraDrawings[i].Draw(_canvas,
+                                                             _transformer,
 				                                             _fStretchFactor * _fDirectZoomFactor, 
 				                                             (i == m_FrameServer.Metadata.SelectedExtraDrawing), 
 				                                             _iPosition, 
@@ -3501,7 +3502,7 @@ namespace Kinovea.ScreenManager
 					for (int idr = kf.Drawings.Count - 1; idr >= 0; idr--)
 					{
 						bool bSelected = (zOrder[ikf] == m_FrameServer.Metadata.SelectedDrawingFrame && idr == m_FrameServer.Metadata.SelectedDrawing);
-						kf.Drawings[idr].Draw(_canvas, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
+                        kf.Drawings[idr].Draw(_canvas, _transformer, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
 					}
 				}
 			}
@@ -3512,7 +3513,7 @@ namespace Kinovea.ScreenManager
 				for (int i = m_FrameServer.Metadata[_iKeyFrameIndex].Drawings.Count - 1; i >= 0; i--)
 				{
 					bool bSelected = (_iKeyFrameIndex == m_FrameServer.Metadata.SelectedDrawingFrame && i == m_FrameServer.Metadata.SelectedDrawing);
-					m_FrameServer.Metadata[_iKeyFrameIndex].Drawings[i].Draw(_canvas, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
+                    m_FrameServer.Metadata[_iKeyFrameIndex].Drawings[i].Draw(_canvas, _transformer, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
 				}
 			}
 			else
@@ -5144,12 +5145,14 @@ namespace Kinovea.ScreenManager
 					// And we must clone it before the drawings are flushed on it.
 					rawImage = AForge.Imaging.Image.Clone(_sourceImage);
 				}
-				
+
+                CoordinateSystem temp = m_FrameServer.CoordinateSystem.Identity;
+
 				if (_bKeyframesOnly)
 				{
 					if(iClosestKeyImageDistance == 0)
 					{
-						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
+                        FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0, 0));
 						FlushMagnifierOnGraphics(rawImage, _canvas);
 					}
 				}
@@ -5157,11 +5160,11 @@ namespace Kinovea.ScreenManager
 				{
 					if(iClosestKeyImageDistance == 0)
 					{
-						FlushDrawingsOnGraphics(_canvas, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
+						FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
 					}
 					else
 					{
-						FlushDrawingsOnGraphics(_canvas, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
+						FlushDrawingsOnGraphics(_canvas, temp, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
 					}
 					
 					FlushMagnifierOnGraphics(rawImage, _canvas);
