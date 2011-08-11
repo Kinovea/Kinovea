@@ -30,6 +30,7 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// Describes a generic drawing.
+    /// All drawings must implement rendering and manipulation methods.
 	/// </summary>
     public abstract class AbstractDrawing
     {
@@ -62,17 +63,17 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     	
-        #region Methods
+        #region Abstract Methods
         /// <summary>
-        /// Draws this drawing on the provided canvas.
-        /// The drawing must be drawn at the proper scale and place in the canvas.
+        /// Draw this drawing on the provided canvas.
         /// </summary>
         /// <param name="_canvas">The GDI+ surface on which to draw</param>
+        /// <param name="_transformer">A helper object providing coordinate systems transformation</param>
         /// <param name="_fStretchFactor">The scaling factor between the canvas and the original image size</param>
         /// <param name="_bSelected">Whether the drawing is currently selected</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
         /// <param name="_DirectZoomTopLeft">The position of the zoom window relatively to the top left corner of the original image</param>
-        public abstract void Draw(Graphics _canvas, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft);
+        public abstract void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.
@@ -96,22 +97,24 @@ namespace Kinovea.ScreenManager
         /// <param name="_deltaY">Change in y coordinates</param>
         /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
         public abstract void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys);
-        
+        #endregion
+
+        #region Concrete methods
+        public Rectangle HandleBox(Point _point, int _widen)
+        {
+            return new Rectangle(_point.X - _widen, _point.Y - _widen, _widen * 2, _widen * 2);
+        }
         public static void CallInvalidateFromMenu(object sender)
         {
-        	// The screen invalidate hook was injected inside menus during popMenu attach.
-        	// This avoids having an injection hanging in DrawingTool.
-			ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
-			if(tsmi != null)
-			{
-				Action screenInvalidate = tsmi.Tag as Action;
-				if(screenInvalidate != null)
-				{
-					screenInvalidate();
-				}
-			}
+            // The screen invalidate hook was injected inside menus during popMenu attach.
+            // This avoids having an injection hanging in DrawingTool.
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi != null)
+            {
+                Action screenInvalidate = tsmi.Tag as Action;
+                if (screenInvalidate != null) screenInvalidate();
+            }
         }
-        
         #endregion
     }
 
