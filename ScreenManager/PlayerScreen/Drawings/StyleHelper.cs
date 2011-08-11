@@ -502,30 +502,34 @@ namespace Kinovea.ScreenManager
 		public readonly LineCap StartCap;
 		public readonly LineCap EndCap;
 		
+	    #region Static properties
+		private static LineEnding none = new LineEnding(LineCap.Round, LineCap.Round);
+		public static LineEnding None
+		{
+			get { return none;}
+		}
+		private static LineEnding startArrow = new LineEnding(LineCap.ArrowAnchor, LineCap.Round);
+		public static LineEnding StartArrow
+		{
+			get { return startArrow;}
+		}
+		private static LineEnding endArrow = new LineEnding(LineCap.Round, LineCap.ArrowAnchor);
+		public static LineEnding EndArrow
+		{
+			get { return endArrow;}
+		}
+		private static LineEnding doubleArrow = new LineEnding(LineCap.ArrowAnchor, LineCap.ArrowAnchor);
+		public static LineEnding DoubleArrow
+		{
+			get { return doubleArrow;}
+		}
+		#endregion
+		
 		public LineEnding(LineCap _start, LineCap _end)
 		{
 			StartCap = _start;
 			EndCap = _end;
 		}
-		
-		#region Predefined static values
-		public static LineEnding None
-		{
-			get { return new LineEnding(LineCap.Round, LineCap.Round);}
-		}
-		public static LineEnding StartArrow
-		{
-			get { return new LineEnding(LineCap.ArrowAnchor, LineCap.Round);}
-		}
-		public static LineEnding EndArrow
-		{
-			get { return new LineEnding(LineCap.Round, LineCap.ArrowAnchor);}
-		}
-		public static LineEnding DoubleArrow
-		{
-			get { return new LineEnding(LineCap.ArrowAnchor, LineCap.ArrowAnchor);}
-		}
-		#endregion
 	}
 	
 	/// <summary>
@@ -607,30 +611,34 @@ namespace Kinovea.ScreenManager
 		public readonly DashStyle DashStyle;
 		public readonly bool ShowSteps;
 		
+		#region Static Properties
+		private static TrackShape solid = new TrackShape(DashStyle.Solid, false);
+		public static TrackShape Solid
+		{
+			get { return solid;}
+		}
+		private static TrackShape dash = new TrackShape(DashStyle.Dash, false);
+		public static TrackShape Dash
+		{
+			get { return dash;}
+		}
+		private static TrackShape solidSteps = new TrackShape(DashStyle.Solid, true);
+		public static TrackShape SolidSteps
+		{
+			get { return solidSteps;}
+		}
+		private static TrackShape dashSteps = new TrackShape(DashStyle.Dash, true);
+		public static TrackShape DashSteps
+		{
+			get { return dashSteps;}
+		}
+		#endregion
+		
 		public TrackShape(DashStyle _style, bool _steps)
 		{
 			DashStyle = _style;
 			ShowSteps = _steps;
 		}
-		
-		#region Predefined static values
-		public static TrackShape Solid
-		{
-			get { return new TrackShape(DashStyle.Solid, false);}
-		}
-		public static TrackShape Dash
-		{
-			get { return new TrackShape(DashStyle.Dash, false);}
-		}
-		public static TrackShape SolidSteps
-		{
-			get { return new TrackShape(DashStyle.Solid, true);}
-		}
-		public static TrackShape DashSteps
-		{
-			get { return new TrackShape(DashStyle.Dash, true);}
-		}
-		#endregion
 	}
 	
 	/// <summary>
