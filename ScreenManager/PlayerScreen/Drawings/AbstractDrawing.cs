@@ -100,10 +100,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Concrete methods
-        public Rectangle HandleBox(Point _point, int _widen)
-        {
-            return new Rectangle(_point.X - _widen, _point.Y - _widen, _widen * 2, _widen * 2);
-        }
         public static void CallInvalidateFromMenu(object sender)
         {
             // The screen invalidate hook was injected inside menus during popMenu attach.

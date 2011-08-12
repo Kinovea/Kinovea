@@ -35,11 +35,7 @@ namespace Kinovea.Services
     // We don't use the Action<T1, T2, ...> shortcuts for delegate types, as it makes the usage of the delegate 
     // obscure for the caller. Since the caller doesn't know about the implementer, 
     // the prototype of the delegate is the only place where he can guess the purpose of the parameters.
-    // 
-    // Exception to this guideline: the simple Action delegate (nothing in, nothing out).
-    // Also, In .NET 2.0 the System namespace only defines Action<T>, so we redefine the simple action manually.
     //----------------------------------------------------------------------------------------------------------
-    public delegate void Action();
     
     public delegate void MovieLoader(string _filePath, int _iForceScreen, bool _bStoreState);
     public delegate void StatusBarUpdater(string _status);
