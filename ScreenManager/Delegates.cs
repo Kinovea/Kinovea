@@ -32,12 +32,8 @@ namespace Kinovea.ScreenManager
     // We don't use the Action<T1, T2, ...> shortcuts for delegate types, as it makes the usage of the delegate
     // obscure for the caller. Since the caller doesn't know about the implementer, 
     // the prototype of the delegate is the only place where he can guess the purpose of the parameters.
-    // 
-    // Exception to this guideline: the simple Action delegate (nothing in, nothing out).
-    // Also, In .NET 2.0 the System namespace only defines Action<T>, so we redefine the simple action manually.
+    // Except for the simple Action delegate (nothing in, nothing out).
     //----------------------------------------------------------------------------------------------------------
-    
-    public delegate void Action();
     
     public delegate void PropertyPagePrompter(IntPtr _windowHandle);
     public delegate long TimeStampMapper(long _iInputTimestamp, bool bRelative);
@@ -45,5 +41,4 @@ namespace Kinovea.ScreenManager
     public delegate void ClosestFrameAction(Point _mouse, long _iBeginTimestamp, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly);
     public delegate object BindReader(string _sourceProperty, Type _targetType);
     public delegate void BindWriter(string _targetProperty, object _value);
-	
 }
