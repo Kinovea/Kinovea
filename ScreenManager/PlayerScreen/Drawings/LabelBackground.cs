@@ -56,7 +56,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private Point m_Location;
-		private bool m_bDrop;
+		private bool m_bDropShape;
 		private static readonly int m_iDefaultBackgroundAlpha = 128;
 		private int m_iMarginWidth = 12;//11;
 		private int m_iMarginHeight = 6;//7;
@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
 		{
 			// This constructor is currently only used for the mini label on top of chronometers.
 			m_Location = _location;
-			m_bDrop = _bDrop;
+			m_bDropShape = _bDrop;
 			m_iMarginWidth = _iMarginWidth;
 			m_iMarginHeight = _iMarginHeight;
 		}
@@ -79,9 +79,7 @@ namespace Kinovea.ScreenManager
 		
 		public void Draw(Graphics _canvas, double _fOpacityFactor, int _radius, int _width, int _height, Color _color)
 		{
-			// The rectangle size is computed in the caller, depending the string length.
-			// Margins ?
-				
+			// The rectangle size is computed in the caller.
             int diameter = _radius * 2;
 
             Rectangle RescaledBackground = new Rectangle(m_Location.X, m_Location.Y, _width + m_iMarginWidth, _height + m_iMarginHeight);
@@ -91,7 +89,7 @@ namespace Kinovea.ScreenManager
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();
 
-            if(m_bDrop)
+            if(m_bDropShape)
             {
             	gp.AddLine(RescaledBackground.X, RescaledBackground.Y, RescaledBackground.X + RescaledBackground.Width - diameter, RescaledBackground.Y);
 
@@ -125,5 +123,10 @@ namespace Kinovea.ScreenManager
             _canvas.FillPath(b, gp);
             b.Dispose();
 		}
-	}
+        public void Draw(Graphics _canvas, double _fOpacityFactor, int _radius, SizeF _size, Color _color)
+        {
+            Draw(_canvas, _fOpacityFactor, _radius, (int)_size.Width, (int)_size.Height, _color);   
+        }
+    
+    }
 }

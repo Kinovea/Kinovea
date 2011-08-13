@@ -194,6 +194,7 @@
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
+    <Compile Include="PlayerScreen\Drawings\RoundedRectangle.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
