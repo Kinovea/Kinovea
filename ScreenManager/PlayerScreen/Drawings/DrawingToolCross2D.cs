@@ -82,7 +82,7 @@ namespace Kinovea.ScreenManager
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingCross2D(_Origin.X, _Origin.Y, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+    		return new DrawingCross2D(_Origin, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{

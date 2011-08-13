@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
     	#region Public Methods
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    		return new DrawingCircle(_Origin.X, _Origin.Y, 25, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+    		return new DrawingCircle(_Origin, 25, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{

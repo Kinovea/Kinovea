@@ -88,24 +88,13 @@ namespace Kinovea.ScreenManager
         // Core
         public Point m_StartPoint;            	// Public because also used for the Active Screen Bordering...
         public Point m_EndPoint;				// Idem.
-        
-        private double m_fStretchFactor;
-        private Point m_DirectZoomTopLeft;
-        
-        // Computed
-        private Point m_RescaledStartPoint;
-        private Point m_RescaledEndPoint;
-
-        // Fading
-        private InfosFading m_InfosFading;
-        
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private KeyframeLabel m_LabelMeasure;
         private bool m_bShowMeasure;
         private Metadata m_ParentMetadata;
-        
+        private InfosFading m_InfosFading;
         // Context menu
         private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
@@ -114,13 +103,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructors
-        public DrawingLine2D(int x1, int y1, int x2, int y2, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingLine2D(Point _start, Point _end, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
-            // Core
-            m_StartPoint = new Point(x1, y1);
-            m_EndPoint = new Point(x2, y2);
-            m_fStretchFactor = 1.0;
-            m_DirectZoomTopLeft = new Point(0, 0);
+            m_StartPoint = _start;
+            m_EndPoint = _end;
+            m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black);
             
             // Decoration
             m_StyleHelper.Color = Color.DarkSlateGray;
@@ -130,11 +117,6 @@ namespace Kinovea.ScreenManager
                 m_Style = _preset.Clone();
                 BindStyle();
             }
-            
-            // Computed
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            
-            m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black);
             
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
@@ -146,7 +128,7 @@ namespace Kinovea.ScreenManager
 			mnuSealMeasure.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingLine2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0,0,0, ToolManager.Line.StylePreset.Clone())
+            : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
             m_ParentMetadata = _parent;
@@ -157,51 +139,34 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            int iPenAlpha = (int)((double)255 * fOpacityFactor);
-
-            if (iPenAlpha > 0)
+            if(fOpacityFactor <= 0)
+                return;
+            
+            Point start = _transformer.Transform(m_StartPoint);
+            Point end = _transformer.Transform(m_EndPoint);
+            
+            using(Pen penEdges = m_StyleHelper.GetPen((int)(fOpacityFactor * 255), _transformer.Scale))
             {
-                m_fStretchFactor = _fStretchFactor;
-                m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
-                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-
-                Pen penEdges = m_StyleHelper.GetPen(iPenAlpha, m_fStretchFactor);
-                _canvas.DrawLine(penEdges, m_RescaledStartPoint.X, m_RescaledStartPoint.Y, m_RescaledEndPoint.X, m_RescaledEndPoint.Y);
-
+                _canvas.DrawLine(penEdges, start, end);
+                
                 // Handlers
-                penEdges.Width = 1;
-
-                if (_bSelected) 
-                    penEdges.Width++;
-
+                penEdges.Width = _bSelected ? 2 : 1;
                 if(m_StyleHelper.LineEnding.StartCap != LineCap.ArrowAnchor)
-                {
-                	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(1));
-                }
+                    _canvas.DrawEllipse(penEdges, start.Box(3));
+                
                 if(m_StyleHelper.LineEnding.EndCap != LineCap.ArrowAnchor)
-                {
-                	_canvas.DrawEllipse(penEdges, GetRescaledHandleRectangle(2));
-                }
-                
-                penEdges.Dispose();
-                
-                if(m_bShowMeasure)
-                {
-                	// Text of the measure. (The helpers knows the unit)
-	                string text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);
-	                m_LabelMeasure.Text = text;
-	                
-                    // Draw.
-	                m_LabelMeasure.Draw(_canvas, _fStretchFactor, _DirectZoomTopLeft, fOpacityFactor);
-                }
+                    _canvas.DrawEllipse(penEdges, end.Box(3));
+            }
+
+            if(m_bShowMeasure)
+            {
+            	// Text of the measure. (The helpers knows the unit)
+                m_LabelMeasure.Text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);;
+                m_LabelMeasure.Draw(_canvas, _transformer.Scale, _transformer.Location, fOpacityFactor);
             }
         }
         public override void MoveHandle(Point point, int handleNumber)
         {
-            // Move the specified handle to the specified coordinates.
-            // In Line2D, handles are directly mapped to the endpoints of the line.
-
-            // _point is mouse coordinates already descaled.
             switch(handleNumber)
             {
             	case 1:
@@ -217,12 +182,9 @@ namespace Kinovea.ScreenManager
             		m_LabelMeasure.MoveLabel(point);
             		break;
             }
-
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            // _delatX and _delatY are mouse delta already descaled.
             m_StartPoint.X += _deltaX;
             m_StartPoint.Y += _deltaY;
 
@@ -230,38 +192,21 @@ namespace Kinovea.ScreenManager
             m_EndPoint.Y += _deltaY;
 
             m_LabelMeasure.MoveTo(GetMiddlePoint());
-            
-            // Update scaled coordinates accordingly.
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
-            // _point is mouse coordinates already descaled.
-            // Hit Result: -1: miss, 0: on object, 1+: on handle.
-            
             int iHitResult = -1;
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (fOpacityFactor > 0)
             {
             	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
-            	{
             		iHitResult = 3;
-            	}
-            	else if (GetHandleRectangle(1).Contains(_point))
-                {
+            	else if (m_StartPoint.Box(6).Contains(_point))
                     iHitResult = 1;
-                }
-                else if (GetHandleRectangle(2).Contains(_point))
-                {
+            	else if (m_EndPoint.Box(6).Contains(_point))
                     iHitResult = 2;
-                }
-                else
-                {
-                    if (IsPointInObject(_point))
-                    {
-                        iHitResult = 0;
-                    }
-                }
+                else if (IsPointInObject(_point))
+                    iHitResult = 0;
             }
             return iHitResult;
         }
@@ -308,7 +253,6 @@ namespace Kinovea.ScreenManager
 			_xmlReader.ReadEndElement();
             
 			m_LabelMeasure.MoveTo(GetMiddlePoint());
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
@@ -412,73 +356,25 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "LineSize", "line size");
             m_Style.Bind(m_StyleHelper, "LineEnding", "arrows");
         }
-        private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
-        {
-            m_RescaledStartPoint = new Point((int)((double)(m_StartPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_StartPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
-            m_RescaledEndPoint = new Point((int)((double)(m_EndPoint.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_EndPoint.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
-        }
-        private Rectangle GetHandleRectangle(int _handle)
-        {
-            //----------------------------------------------------------------------------
-            // This function is only used for Hit Testing.
-            // The Rectangle here is bigger than the bounding box of the handlers circles.
-            //----------------------------------------------------------------------------
-            int widen = 6;
-            if (_handle == 1)
-            {
-                return new Rectangle(m_StartPoint.X - widen, m_StartPoint.Y - widen, widen * 2, widen * 2);
-            }
-            else
-            {
-                return new Rectangle(m_EndPoint.X - widen, m_EndPoint.Y - widen, widen * 2, widen * 2);
-            }
-        }
-        private Rectangle GetRescaledHandleRectangle(int _handle)
-        {
-            if (_handle == 1)
-            {
-                return new Rectangle(m_RescaledStartPoint.X - 3, m_RescaledStartPoint.Y - 3, 6, 6);
-            }
-            else
-            {
-                return new Rectangle(m_RescaledEndPoint.X - 3, m_RescaledEndPoint.Y - 3, 6, 6);
-            }
-        }
         private bool IsPointInObject(Point _point)
         {
             // Create path which contains wide line for easy mouse selection
-            bool isPointInObject = false;
-            
             GraphicsPath areaPath = new GraphicsPath();
             
-            if(m_StartPoint.X == m_EndPoint.X && m_StartPoint.Y == m_EndPoint.Y)
-            {
-            	// Special case
-            	areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_EndPoint.X + 2, m_EndPoint.Y + 2);
-            }
+            if(m_StartPoint == m_EndPoint)
+                areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_StartPoint.X + 2, m_StartPoint.Y + 2);
             else
-            {
-            	areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_EndPoint.X, m_EndPoint.Y);
-            }
+            	areaPath.AddLine(m_StartPoint, m_EndPoint);
             
-            RectangleF bounds = areaPath.GetBounds();
-            if(bounds.Height > 0 || bounds.Width > 0)
-            {
-                Pen areaPen = new Pen(Color.Black, 7);
-                areaPath.Widen(areaPen);
-                areaPen.Dispose();
-                Region areaRegion = new Region(areaPath);
-                isPointInObject = areaRegion.IsVisible(_point);
-            }
-            
-            return isPointInObject;
-            
+            Pen areaPen = new Pen(Color.Black, 7);
+            areaPath.Widen(areaPen);
+            areaPen.Dispose();
+            Region areaRegion = new Region(areaPath);
+            return areaRegion.IsVisible(_point);
         }
         private Point GetMiddlePoint()
         {
-        	int ix = m_StartPoint.X + ((m_EndPoint.X - m_StartPoint.X)/2);
-            int iy = m_StartPoint.Y + ((m_EndPoint.Y - m_StartPoint.Y)/2);
-            return new Point(ix, iy);
+        	return new Point((m_StartPoint.X + m_EndPoint.X)/2, (m_StartPoint.Y + m_EndPoint.Y)/2);
         }
         #endregion
     }

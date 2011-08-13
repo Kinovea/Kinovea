@@ -6,6 +6,12 @@ using System.Drawing.Drawing2D;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// A helper class to draw a rounded rectangle for labels.
+    /// The rectangle can have a drop shape (top left and bottom right corners are "pointy").
+    /// It can also have a hidden handler in the bottom right corner.
+    /// Change of size resulting from moving the hidden handler is the responsibility of the caller.
+    /// </summary>
     public class RoundedRectangle
     {
         #region Properties
@@ -28,10 +34,8 @@ namespace Kinovea.ScreenManager
 
         public void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush)
         {
-            //_canvas.FillRectangle(_brush, _rect);
-
             // The rectangle size is computed in the caller.
-            int radius = (int)(_rect.Height / 3);
+            int radius = (int)(_rect.Height / 4);
             int diameter = radius * 2;
 
             GraphicsPath gp = new GraphicsPath();
@@ -86,6 +90,5 @@ namespace Kinovea.ScreenManager
         {
             m_Rectangle = new Rectangle(m_Rectangle.X + _deltaX, m_Rectangle.Y + _deltaY, m_Rectangle.Width, m_Rectangle.Height);
         }
-
     }
 }
