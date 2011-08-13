@@ -143,6 +143,10 @@ namespace Kinovea.ScreenManager
 			
         	return NormalPen(new Pen(c, 1.0f));
 		}
+		public Pen GetPen(double _fOpacity)
+		{
+		    return GetPen((int)(_fOpacity * 255));
+		}
 
 		/// <summary>
 		/// Returns a Pen object suitable to draw a line or contour.
@@ -169,6 +173,10 @@ namespace Kinovea.ScreenManager
 			
 			return p;
 		}
+		public Pen GetPen(double _fOpacity, double _fStretchFactor)
+		{
+		    return GetPen((int)(_fOpacity * 255), _fStretchFactor);
+		}
 		
 		/// <summary>
 		/// Returns a Brush object suitable to draw a background or colored area.
@@ -180,6 +188,10 @@ namespace Kinovea.ScreenManager
 		{
 			Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
 			return new SolidBrush(c);
+		}
+		public SolidBrush GetBrush(double _fOpacity)
+		{
+		    return GetBrush((int)(_fOpacity * 255));
 		}
 		#endregion
 		

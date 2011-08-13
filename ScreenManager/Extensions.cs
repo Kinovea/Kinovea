@@ -17,6 +17,14 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
+        /// Translate a point by x pixels horizontally, y pixels vertically.
+        /// </summary>
+        public static Point Translate(this Point _point, int _x, int _y)
+        {
+            return new Point(_point.X + _x, _point.Y + _y);
+        }
+        
+        /// <summary>
         /// Get the complementary color.
         /// </summary>
         public static Color Invert(this Color _color)
