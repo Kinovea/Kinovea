@@ -3475,6 +3475,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Prepare for drawings
 			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
+            _canvas.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
 			// 1. Extra (non attached to any key image).
 			for (int i = 0; i < m_FrameServer.Metadata.ExtraDrawings.Count; i++)

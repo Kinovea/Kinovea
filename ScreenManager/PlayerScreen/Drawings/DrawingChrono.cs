@@ -39,7 +39,6 @@ namespace Kinovea.ScreenManager
     [XmlType ("Chrono")]
     public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
-
         #region Properties
         public DrawingStyle DrawingStyle
         {
@@ -99,7 +98,11 @@ namespace Kinovea.ScreenManager
         public string Label
         {
             get { return m_Label; }
-            set { m_Label = value; }
+            set 
+            { 
+                m_Label = value;
+                UpdateLabelRectangle();
+            }
         }
         public bool ShowLabel
         {
@@ -109,52 +112,39 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        
         // Core
         private long m_iStartCountingTimestamp;         	// chrono starts counting.
         private long m_iStopCountingTimestamp;          	// chrono stops counting. 
         private long m_iVisibleTimestamp;               	// chrono becomes visible.
         private long m_iInvisibleTimestamp;             	// chrono stops being visible.
         private bool m_bCountdown;							// chrono works backwards. (Must have a stop)
-		
-        // Data
-        private string m_Text;							  	// Actual text displayed.
+        private string m_Timecode;
         private string m_Label;
         private bool m_bShowLabel;
-        
-        // Position
-        private Point m_TopLeft;                         	// position (in image coords).
-		private double m_fStretchFactor;
-        private Point m_DirectZoomTopLeft;
-        
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
 		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
-
-        private Metadata m_ParentMetadata;
-
-        // Computed
-		private LabelBackground m_LabelBackground = new LabelBackground();
-        private SizeF m_BackgroundSize;				  	// Size of the background rectangle (scaled).
+        private RoundedRectangle m_MainBackground = new RoundedRectangle();
+        private RoundedRectangle m_lblBackground = new RoundedRectangle { DropShape = true };
         
+        private Metadata m_ParentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingChrono(int x, int y, long start, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingChrono(Point p, long start, long _AverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             // Core
-            m_TopLeft = new Point(x, y);
-            m_BackgroundSize = new SizeF(100, 20);
             m_iVisibleTimestamp = start;
             m_iStartCountingTimestamp = long.MaxValue;
             m_iStopCountingTimestamp = long.MaxValue;
             m_iInvisibleTimestamp = long.MaxValue;
             m_bCountdown = false;
+            m_MainBackground.Rectangle = new Rectangle(p, Size.Empty);
 
-            m_Text = "error";
+            m_Timecode = "error";
             
             m_StyleHelper.Bicolor = new Bicolor(Color.Black);
             m_StyleHelper.Font = new Font("Arial", 16, FontStyle.Bold);
@@ -167,21 +157,15 @@ namespace Kinovea.ScreenManager
             m_Label = "";
             m_bShowLabel = true;
             
-            m_fStretchFactor = 1.0;
-            m_DirectZoomTopLeft = new Point(0, 0);
-            
             // We use the InfosFading utility to fade the chrono away.
             // The refererence frame will be the frame at which fading start.
             // Must be updated on "Hide" menu.
             m_InfosFading = new InfosFading(m_iInvisibleTimestamp, _AverageTimeStampsPerFrame);
             m_InfosFading.FadingFrames = m_iAllowedFramesOver;
             m_InfosFading.UseDefault = false;
-
-            // Computed
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public DrawingChrono(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
-            : this(0, 0, 0, 1, ToolManager.Chrono.StylePreset.Clone())
+            : this(Point.Empty, 0, 1, ToolManager.Chrono.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
         }
@@ -190,85 +174,86 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
         {
-            if (_iCurrentTimestamp >= m_iVisibleTimestamp)
+            if (_iCurrentTimestamp < m_iVisibleTimestamp)
+                return;
+            
+            double fOpacityFactor = 1.0;
+            if (_iCurrentTimestamp > m_iInvisibleTimestamp)
+                fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+
+            if (fOpacityFactor <= 0)
+                return;
+
+            m_Timecode = GetTimecode(_iCurrentTimestamp);
+
+            // Update unscaled backround size according to timecode text. Needed for hit testing.
+            Font f = m_StyleHelper.GetFont(1F);
+            SizeF totalSize = _canvas.MeasureString(" " + m_Timecode + " ", f);
+            SizeF textSize = _canvas.MeasureString(m_Timecode, f);
+            f.Dispose();
+            m_MainBackground.Rectangle = new Rectangle(m_MainBackground.Rectangle.Location, new Size((int)totalSize.Width, (int)totalSize.Height));
+            
+            using (SolidBrush brushBack = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor * 128)))
+            using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
+            using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
-                m_fStretchFactor = _fStretchFactor;
-                m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
-                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+                Rectangle rect = _transformer.Transform(m_MainBackground.Rectangle);
+                m_MainBackground.Draw(_canvas, rect, brushBack);
 
-                // Compute the fading factor. (Special case from other drawings.)
-                // ref frame is m_iInvisibleTimestamp, and we only fade after it, not before.
-                double fOpacityFactor = 1.0;
-                if (_iCurrentTimestamp > m_iInvisibleTimestamp)
-                {
-                	fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-                }
+                int margin = (int)((totalSize.Width - textSize.Width) / 2);
+                Point textLocation = new Point(rect.X + margin, rect.Y);
+                _canvas.DrawString(m_Timecode, fontText, brushText, textLocation);
 
-                // Update the text before we draw the background because it is used to compute size. 
-                m_Text = GetTextValue(_iCurrentTimestamp);
-
-                DrawBackground(_canvas, fOpacityFactor);
-                DrawText(_canvas, fOpacityFactor);
                 if (m_bShowLabel && m_Label.Length > 0)
                 {
-                    DrawLabel(_canvas, fOpacityFactor);
+                    using (Font fontLabel = m_StyleHelper.GetFont((float)_transformer.Scale * 0.5f))
+                    {
+                        SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel);
+                        Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
+                        m_lblBackground.Draw(_canvas, lblRect, brushBack);
+                        _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
+                    }
                 }
             }
+        }
+        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        {
+            // Convention: miss = -1, object = 0, handle = n.
+            int iHitResult = -1;
+            long iMaxHitTimeStamps = m_iInvisibleTimestamp;
+            if (iMaxHitTimeStamps != long.MaxValue)
+                iMaxHitTimeStamps += (m_iAllowedFramesOver * m_ParentMetadata.AverageTimeStampsPerFrame);
+
+            if (_iCurrentTimestamp >= m_iVisibleTimestamp && _iCurrentTimestamp <= iMaxHitTimeStamps)
+            {
+                iHitResult = m_MainBackground.HitTest(_point, true);
+                if(iHitResult < 0) 
+                    iHitResult = m_lblBackground.HitTest(_point, false);
+            }
+
+            return iHitResult;
         }
         public override void MoveHandle(Point point, int handleNumber)
         {
             // Invisible handler to change font size.
-            // Compare wanted mouse position with current bottom right.
-            int wantedHeight = point.Y - m_TopLeft.Y;
-            m_StyleHelper.ForceFontSize(wantedHeight, m_Text);
+            int wantedHeight = point.Y - m_MainBackground.Rectangle.Location.Y;
+            m_StyleHelper.ForceFontSize(wantedHeight, m_Timecode);
+            UpdateLabelRectangle();
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            // Note: _delatX and _delatY are mouse delta already descaled.            
-            m_TopLeft.X += _deltaX;
-            m_TopLeft.Y += _deltaY;
-
-            // Update scaled coordinates accordingly.
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-        }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
-        {
-            // Note: Coordinates are already descaled.
-            // Hit Result: -1: miss, 0: on object, 1 on handle.
-
-            int iHitResult = -1;
-            
-            long iMaxHitTimeStamps = m_iInvisibleTimestamp;
-            if (iMaxHitTimeStamps != long.MaxValue)
-            {
-                iMaxHitTimeStamps += (m_iAllowedFramesOver * m_ParentMetadata.AverageTimeStampsPerFrame); 
-            }
-
-            if (_iCurrentTimestamp >= m_iVisibleTimestamp && _iCurrentTimestamp <= iMaxHitTimeStamps)
-            {
-            	if(GetHandleRectangle().Contains(_point))
-            	{
-            		iHitResult = 1;	
-            	}
-                else if (IsPointInObject(_point))
-                {
-                    iHitResult = 0;
-                }
-            }
-
-            return iHitResult;
+            m_MainBackground.Move(_deltaX, _deltaY);
+            m_lblBackground.Move(_deltaX, _deltaY);
         }
         #endregion
         
         public override string ToString()
         {
-            // Return the name of the tool used to draw this drawing.
             return ScreenManagerLang.ToolTip_DrawingToolChrono;
         }
         public override int GetHashCode()
         {
-            // Combine all relevant fields with XOR to get the Hash.
-            int iHash = m_TopLeft.GetHashCode();
+            int iHash = m_MainBackground.GetHashCode();
             iHash ^= m_iStartCountingTimestamp.GetHashCode();
             iHash ^= m_iStopCountingTimestamp.GetHashCode();
             iHash ^= m_iVisibleTimestamp.GetHashCode();
@@ -284,7 +269,7 @@ namespace Kinovea.ScreenManager
 		#region KVA Serialization
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-		    _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_TopLeft.X, m_TopLeft.Y));
+            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_MainBackground.Rectangle.Location.X, m_MainBackground.Rectangle.Location.Y));
             
 		    _xmlWriter.WriteStartElement("Values");
 		    _xmlWriter.WriteElementString("Visible", (m_iVisibleTimestamp == long.MaxValue) ? "-1" : m_iVisibleTimestamp.ToString());
@@ -324,7 +309,8 @@ namespace Kinovea.ScreenManager
 				{
 					case "Position":
 				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        Point location = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        m_MainBackground.Rectangle = new Rectangle(location, Size.Empty);
                         break;
 					case "Values":
 						ParseWorkingValues(_xmlReader, _remapTimestampCallback);
@@ -344,7 +330,6 @@ namespace Kinovea.ScreenManager
 			}
 			
 			_xmlReader.ReadEndElement();
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         private void ParseWorkingValues(XmlReader _xmlReader, TimeStampMapper _remapTimestampCallback)
         {
@@ -484,65 +469,25 @@ namespace Kinovea.ScreenManager
             m_Style.Bind(m_StyleHelper, "Bicolor", "color");
             m_Style.Bind(m_StyleHelper, "Font", "font size");    
         }
-        private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
+        private void UpdateLabelRectangle()
         {
-            m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X - _DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
-        }
-        private void DrawBackground(Graphics _canvas, double _fOpacityFactor)
-        {
-            // Draw background rounded rectangle.
-            // The radius for rounding is based on font size.
-            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
-            m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
-            int radius = (int)(f.Size / 2);
-            f.Dispose();
-            
-            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
-        }
-        private void DrawLabel(Graphics _canvas, double _fOpacityFactor)
-        {
-            // Label background and size is relative to the main chrono.
-            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
-            int radius = (int)(f.Size / 4);
-            f.Dispose();
-            Font fontText = m_StyleHelper.GetFont(0.5f);
-            SizeF labelSize = _canvas.MeasureString(m_Label + " ", fontText);
-            
-			// the label background starts at the end of the rounded angle of the main background.
-            Rectangle RescaledBackground = new Rectangle(m_LabelBackground.Location.X + radius, m_LabelBackground.Location.Y - (int)labelSize.Height - 1, (int)labelSize.Width + 11, (int)labelSize.Height);
+            // Update mini label background size. Needed for hit test only.
+            Button but = new Button();
+            Graphics g = but.CreateGraphics();
+            Font fMini = m_StyleHelper.GetFont(0.5F);
 
-            LabelBackground labelBG = new LabelBackground(RescaledBackground.Location, true, 11, 0);
-            labelBG.Draw(_canvas, _fOpacityFactor, radius, (int)labelSize.Width, (int)labelSize.Height, m_StyleHelper.GetBackgroundColor(128));
-            
-            // Label text
-            SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor * 255));
-            _canvas.DrawString(m_Label, fontText, fontBrush, new Point(RescaledBackground.X+4, RescaledBackground.Y+1));
-            fontBrush.Dispose();
-            fontText.Dispose();
-        }
-        private void DrawText(Graphics _canvas, double _fOpacityFactor)
-        {
-        	Font fontText = m_StyleHelper.GetFont((float)m_fStretchFactor);
-        	SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor * 255));
-        	_canvas.DrawString(m_Text, fontText, fontBrush, m_LabelBackground.TextLocation);
-        	fontBrush.Dispose();
-        	fontText.Dispose();
-        }
-        private bool IsPointInObject(Point _point)
-        {
-            // Point coordinates are descaled.
-            // We need to descale the hit area size for coherence.
-            Size descaledSize = new Size((int)((m_BackgroundSize.Width + m_LabelBackground.MarginWidth) / m_fStretchFactor), (int)((m_BackgroundSize.Height + m_LabelBackground.MarginHeight) / m_fStretchFactor));
+            SizeF lblSize = g.MeasureString(m_Label, fMini);
+            m_lblBackground.Rectangle = new Rectangle(
+                    m_MainBackground.Rectangle.Location.X,
+                    m_MainBackground.Rectangle.Location.Y - (int)lblSize.Height,
+                    (int)lblSize.Width + 11,
+                    (int)lblSize.Height);
 
-            GraphicsPath areaPath = new GraphicsPath();
-            areaPath.AddRectangle(new Rectangle(m_TopLeft.X, m_TopLeft.Y, descaledSize.Width, descaledSize.Height));
-
-            // Create region from the path
-            Region areaRegion = new Region(areaPath);
-            bool hit = areaRegion.IsVisible(_point);
-            return hit;
+            fMini.Dispose();
+            g.Dispose();
+            but.Dispose();
         }
-        private string GetTextValue(long _iTimestamp)
+        private string GetTimecode(long _iTimestamp)
         {
             long timestamps;
 
@@ -553,48 +498,23 @@ namespace Kinovea.ScreenManager
                 {
                 	// After start and before stop.
                 	if(m_bCountdown)
-                	{
                 		timestamps = m_iStopCountingTimestamp - _iTimestamp;
-                	}
                 	else
-                	{
                 		timestamps = _iTimestamp - m_iStartCountingTimestamp;                		
-                	}
                 }
                 else
                 {
                     // After stop. Keep max value.
-                    if(m_bCountdown)
-                    {
-                    	timestamps = 0;
-                    }
-                    else
-                    {
-                    	timestamps = m_iStopCountingTimestamp - m_iStartCountingTimestamp;
-                    }
+                    timestamps = m_bCountdown ? 0 : m_iStopCountingTimestamp - m_iStartCountingTimestamp;
                 }
             }
             else
             {
             	// Before start. Keep min value.
-            	if(m_bCountdown)
-            	{
-            		timestamps = m_iStopCountingTimestamp - m_iStartCountingTimestamp;
-            	}
-				else
-				{
-					timestamps = 0;
-				}
+                timestamps = m_bCountdown ? m_iStopCountingTimestamp - m_iStartCountingTimestamp : 0;
             }
 
             return m_ParentMetadata.TimeStampsToTimecode(timestamps, TimeCodeFormat.Unknown, false);
-        }
-    	private Rectangle GetHandleRectangle()
-        {
-            // This function is only used for Hit Testing.
-            Size descaledSize = new Size((int)((m_BackgroundSize.Width + m_LabelBackground.MarginWidth) / m_fStretchFactor), (int)((m_BackgroundSize.Height + m_LabelBackground.MarginHeight) / m_fStretchFactor));
-
-            return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
         }
         #endregion
     }
