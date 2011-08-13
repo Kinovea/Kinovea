@@ -238,6 +238,16 @@ namespace Kinovea.ScreenManager
         {
             return new Rectangle(Transform(_rect.Location), Transform(_rect.Size));
         }
+        
+        public Quadrilateral Transform(Quadrilateral _quad)
+        {
+            return new Quadrilateral() {
+                A=Transform(_quad.A),
+                B=Transform(_quad.B),
+                C=Transform(_quad.C),
+                D=Transform(_quad.D)
+            };
+        }
 		#endregion
 	}
 }
