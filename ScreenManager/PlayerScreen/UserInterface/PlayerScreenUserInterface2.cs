@@ -2922,7 +2922,7 @@ namespace Kinovea.ScreenManager
 											if (hitRes >= 0)
 											{
 												bEdit = true;
-												((DrawingText)ad).EditMode = true;
+												((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
 											}
 										}
 									}
@@ -2937,8 +2937,7 @@ namespace Kinovea.ScreenManager
 										DrawingText dt = (DrawingText)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0];
 										
 										dt.ContainerScreen = pbSurfaceScreen;
-										dt.RelocateEditbox(m_FrameServer.CoordinateSystem.Stretch * m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
-										dt.EditMode = true;
+										dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
 										panelCenter.Controls.Add(dt.EditBox);
 										dt.EditBox.BringToFront();
 										dt.EditBox.Focus();
@@ -3272,7 +3271,7 @@ namespace Kinovea.ScreenManager
 					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
 					if (ad is DrawingText)
 					{
-						((DrawingText)ad).EditMode = true;
+						((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
 						m_ActiveTool = ToolManager.Label;
 						m_bTextEdit = true;
 					}
@@ -4141,7 +4140,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Track the point. No Cross2D was selected.
 			// m_DescaledMouse would have been set during the MouseDown event.
-			Track trk = new Track(m_DescaledMouse.X, m_DescaledMouse.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
+			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
 			m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get from track tool.
 			
 			// Return to the pointer tool.
@@ -4257,7 +4256,7 @@ namespace Kinovea.ScreenManager
 					DrawingCross2D dc = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing] as DrawingCross2D;
 					if(dc != null)
 					{
-						Track trk = new Track(dc.Center.X, dc.Center.Y, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
+						Track trk = new Track(dc.Center, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
 						m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, dc.PenColor);
 						
 						// Suppress the point as a Drawing (?)

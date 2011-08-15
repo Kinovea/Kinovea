@@ -27,6 +27,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -146,18 +147,13 @@ namespace Kinovea.ScreenManager
         private AbstractTracker m_Tracker;
         private bool m_bUntrackable;
         
-        // Rendering coordinates
-        private double m_fStretchFactor = 1.0;
-        private Point m_DirectZoomTopLeft = new Point(0, 0);
-        
         // Hardwired parameters.
-        private static readonly int m_iDefaultCrossRadius = 4;
-        private static readonly int m_iAllowedFramesOver = 12;  	// Number of frames over which the global fading spans (after end point).
-        private static readonly int m_iFocusFadingFrames = 30;		// Number of frames of the focus section. 
+        private const int m_iDefaultCrossRadius = 4;
+        private const int m_iAllowedFramesOver = 12;  	// Number of frames over which the global fading spans (after end point).
+        private const int m_iFocusFadingFrames = 30;	// Number of frames of the focus section. 
        
         // Internal data.
         private List<AbstractTrackPoint> m_Positions = new List<AbstractTrackPoint>();
-        private List<Point> m_RescaledPositions = new List<Point>();
         private List<KeyframeLabel> m_KeyframesLabels = new List<KeyframeLabel>();
 		
         private long m_iBeginTimeStamp;     			// absolute.
@@ -171,10 +167,10 @@ namespace Kinovea.ScreenManager
         private KeyframeLabel m_MainLabel = new KeyframeLabel();
         private string m_MainLabelText = "Label";
         private InfosFading m_InfosFading = new InfosFading(long.MaxValue, 1);
-        private static readonly int m_iBaseAlpha = 224;				// alpha of track in most cases.
-        private static readonly int m_iAfterCurrentAlpha = 64;		// alpha of track after the current point when in normal mode.
-        private static readonly int m_iEditModeAlpha = 128;			// alpha of track when in Edit mode.
-        private static readonly int m_iLabelFollowsTrackAlpha = 80;	// alpha of track when in LabelFollows view.
+        private const int m_iBaseAlpha = 224;				// alpha of track in most cases.
+        private const int m_iAfterCurrentAlpha = 64;		// alpha of track after the current point when in normal mode.
+        private const int m_iEditModeAlpha = 128;			// alpha of track when in Edit mode.
+        private const int m_iLabelFollowsTrackAlpha = 80;	// alpha of track when in LabelFollows view.
         
         // Memorization poul
         private TrackView m_MemoTrackView;
@@ -185,46 +181,37 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Track(int _x, int _y, long _t, Bitmap _CurrentImage, Size _imageSize)
+        public Track(Point _origin, long _t, Bitmap _CurrentImage, Size _imageSize)
         {
             //-----------------------------------------------------------------------------------------
             // t is absolute time.
             // _bmp is the whole picture, if null it means we don't need it.
-            // (Probably because we already have a few points already that we are importing from xml.
+            // (Probably because we already have a few points that we are importing from xml.
             // In this case we'll only need the last frame to reconstruct the last point.)
 			//-----------------------------------------------------------------------------------------
             
             // Create the first point
             if (_CurrentImage != null)
             {
-            	// Init tracker.
             	m_Tracker = new TrackerBlock2(_CurrentImage.Width, _CurrentImage.Height);
-            	
-           		AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _x, _y, 1.0f, 0, _CurrentImage, m_Positions);
+           		AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _origin.X, _origin.Y, 1.0f, 0, _CurrentImage, m_Positions);
            		if(atp != null)
-           		{
            			m_Positions.Add(atp);
-           		}
            		else
-           		{
-           			// TODO:
-           			// Error message the user so he can choose another spot to track.
            			m_bUntrackable = true;
-           		}
             }
             else
             {
             	// Happens when loading Metadata from file or demuxing.
             	m_Tracker = new TrackerBlock2(_imageSize.Width, _imageSize.Height);
-            	m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_x, _y, 0));
+            	m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_origin.X, _origin.Y, 0));
             }
 
             if(!m_bUntrackable)
             {
-            	m_RescaledPositions.Add(RescalePosition(m_Positions[0], m_fStretchFactor, m_DirectZoomTopLeft));
 	            m_iBeginTimeStamp = _t;
-	            m_iEndTimeStamp = m_iBeginTimeStamp;
-	            m_MainLabel.MoveTo(m_Positions[0].ToPoint());
+	            m_iEndTimeStamp = _t;
+	            m_MainLabel.MoveTo(_origin);
 	            
 	            // We use the InfosFading utility to fade the track away.
 	            // The refererence frame will be the last point (at which fading start).
@@ -232,9 +219,6 @@ namespace Kinovea.ScreenManager
 	            m_InfosFading.FadingFrames = m_iAllowedFramesOver;
 	            m_InfosFading.UseDefault = false;
 	            m_InfosFading.Enabled = true;
-	            
-	            // Computed
-	            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             }
             
             // Decoration
@@ -250,7 +234,7 @@ namespace Kinovea.ScreenManager
             m_StyleHelper.ValueChanged += mainStyle_ValueChanged;
         }
         public Track(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, Size _imageSize)
-            : this(0,0,0, null, _imageSize)
+            : this(Point.Empty,0, null, _imageSize)
         {
             ReadXml(_xmlReader, _scale, _remapTimestampCallback);
         }
@@ -259,97 +243,64 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing implementation
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
 		{
-            if (_iCurrentTimestamp >= m_iBeginTimeStamp)
-            {
-                // 0. Compute the fading factor. 
-                // Special case from other drawings:
-                // ref frame is last point, and we only fade after it, not before.
-                double fOpacityFactor = 1.0;
-                if (m_TrackStatus == TrackStatus.Interactive && _iCurrentTimestamp > m_iEndTimeStamp)
-                {
-                	m_InfosFading.ReferenceTimestamp = m_iEndTimeStamp;
-                	fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-                }
-
-                // 1. Find the closest position in the list.
-                m_iCurrentPoint = FindClosestPoint(_iCurrentTimestamp);
-
-                // 2. Rescale.
-                if (_fStretchFactor != m_fStretchFactor || _DirectZoomTopLeft.X != m_DirectZoomTopLeft.X || _DirectZoomTopLeft.Y != m_DirectZoomTopLeft.Y)
-                {
-                    m_fStretchFactor = _fStretchFactor;
-                    m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
-                    RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-                }
-
-                // 3. Boundaries of visibility. 
-                // First and last if complete traj, bounded otherwise.
-                // Note: in edit mode, we also force the bounds otherwise the tracking perf is impaired by drawing time.
-                int iStart = 0;
-                if((m_TrackView != TrackView.Complete || m_TrackStatus == TrackStatus.Edit) && m_iCurrentPoint - m_iFocusFadingFrames > 0)
-            	{
-            		iStart = m_iCurrentPoint - m_iFocusFadingFrames;
-            	}
+            if (_iCurrentTimestamp < m_iBeginTimeStamp)
+                return;
                 
-            	int iEnd = m_RescaledPositions.Count - 1;
-            	if((m_TrackView != TrackView.Complete || m_TrackStatus == TrackStatus.Edit) && m_iCurrentPoint + m_iFocusFadingFrames < m_RescaledPositions.Count - 1)
-            	{
-            		iEnd = m_iCurrentPoint + m_iFocusFadingFrames;
-            	}
-        
-            	// 4. Draw various elements depending on combination of view and status.
-            	// The exact alpha at which the traj will be drawn will be decided in GetTrackPen().
-            	if(m_RescaledPositions.Count > 1)
-            	{
-	            	// Key Images titles.
-	            	if ((m_TrackStatus == TrackStatus.Interactive) &&	
-	            	    (m_TrackView != TrackView.Label) )
-	            	{
-	            		DrawKeyframesTitles(_canvas, fOpacityFactor);	
-	            	}
-	            	
-	            	// Track.
-	            	if ( (m_TrackStatus == TrackStatus.Interactive) && (m_TrackView == TrackView.Complete))
-	            	{
-	            		DrawTrajectory(_canvas, iStart, m_iCurrentPoint, true, fOpacityFactor);	
-	            		DrawTrajectory(_canvas, m_iCurrentPoint, iEnd, false, fOpacityFactor);
-	            	}
-	            	else
-	            	{
-	            		DrawTrajectory(_canvas, iStart, iEnd, false, fOpacityFactor);	
-	            	}
-	            	
-	            	// ExtraData (distance, speed) on main label.
-	            	if(m_TrackStatus == TrackStatus.Interactive && 
-	            	   m_TrackView != TrackView.Label && 
-	            	   m_TrackExtraData != TrackExtraData.None)
-	            	{
-	            		DrawMainLabel(_canvas, m_iCurrentPoint, fOpacityFactor);
-	            	}
-            	}
-            	
-            	if(m_RescaledPositions.Count > 0)
-            	{
-	            	// Target marker.
-	            	if( fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
-                    {
-	            		DrawMarker(_canvas, fOpacityFactor);
-	            	}
-	            	
-	            	// Tracking algorithm visualization.
-                    if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
-                    {
-                        m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint], _DirectZoomTopLeft, m_fStretchFactor, m_StyleHelper.Color, fOpacityFactor);
-					}
-                    
-                    // Main label.
-                    if ((m_TrackStatus == TrackStatus.Interactive) && 
-                        (m_TrackView == TrackView.Label))
-                    {
-                    	DrawMainLabel(_canvas, m_iCurrentPoint, fOpacityFactor);
-                    }
-            	}
+            // 0. Compute the fading factor. 
+            // Special case from other drawings:
+            // ref frame is last point, and we only fade after it, not before.
+            double fOpacityFactor = 1.0;
+            if (m_TrackStatus == TrackStatus.Interactive && _iCurrentTimestamp > m_iEndTimeStamp)
+            {
+            	m_InfosFading.ReferenceTimestamp = m_iEndTimeStamp;
+            	fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             }
+            
+            if(fOpacityFactor <= 0)
+                return;
+
+            m_iCurrentPoint = FindClosestPoint(_iCurrentTimestamp);
+            
+        	
+        	// Draw various elements depending on combination of view and status.
+        	// The exact alpha at which the traj will be drawn will be decided in GetTrackPen().
+        	if(m_Positions.Count > 1)
+        	{
+                // Key Images titles.
+            	if (m_TrackStatus == TrackStatus.Interactive && m_TrackView != TrackView.Label)
+            		DrawKeyframesTitles(_canvas, fOpacityFactor, _transformer);	
+            	
+            	// Track.
+            	int first = GetFirstVisiblePoint();
+                int last = GetLastVisiblePoint();
+            	if (m_TrackStatus == TrackStatus.Interactive && m_TrackView == TrackView.Complete)
+            	{
+            		DrawTrajectory(_canvas, first, m_iCurrentPoint, true, fOpacityFactor, _transformer);	
+            		DrawTrajectory(_canvas, m_iCurrentPoint, last, false, fOpacityFactor, _transformer);
+            	}
+            	else
+            	{
+            		DrawTrajectory(_canvas, first, last, false, fOpacityFactor, _transformer);
+            	}
+        	}
+        	
+        	if(m_Positions.Count > 0)
+        	{
+            	// Track.
+            	if( fOpacityFactor == 1.0 && m_TrackView != TrackView.Label)
+            		DrawMarker(_canvas, fOpacityFactor, _transformer);
+            	
+            	// Search boxes. (only on edit)
+                if ((m_TrackStatus == TrackStatus.Edit) && (fOpacityFactor == 1.0))
+                    m_Tracker.Draw(_canvas, m_Positions[m_iCurrentPoint].Point, _transformer, m_StyleHelper.Color, fOpacityFactor);
+                
+                // Main label.
+                if (m_TrackStatus == TrackStatus.Interactive && m_TrackView == TrackView.Label ||
+                    m_TrackStatus == TrackStatus.Interactive && m_TrackExtraData != TrackExtraData.None)
+                {
+                	DrawMainLabel(_canvas, m_iCurrentPoint, fOpacityFactor, _transformer);
+                }
+        	}
         }
 		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
 		{
@@ -361,7 +312,6 @@ namespace Kinovea.ScreenManager
 	                // Image will be reseted at mouse up. (=> UpdateTrackPoint)
 	                m_Positions[m_iCurrentPoint].X += _deltaX;
 	                m_Positions[m_iCurrentPoint].Y += _deltaY;
-	                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
 				}
             }
 			else
@@ -395,24 +345,17 @@ namespace Kinovea.ScreenManager
             {
                 // We give priority to labels in case a label is on the trajectory,
                 // we need to be able to move it around.
-                // If label attch mode, this will tell if we are on the label.
+                // If label attach mode, this will tell if we are on the label.
                 if (m_TrackStatus == TrackStatus.Interactive)
-                {
                     iHitResult = IsOnKeyframesLabels(_point);
-                }
-
+                    
                 if (iHitResult == -1)
                 {
                 	Rectangle rectangleTarget;
                 	if(m_TrackStatus == TrackStatus.Edit)
-                	{
-                		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].ToPoint());
-                	}
+                		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].Point);
                 	else
-                	{
-                		int widen = 3;
-                    	rectangleTarget = new Rectangle(m_Positions[m_iCurrentPoint].X - m_iDefaultCrossRadius - widen, m_Positions[m_iCurrentPoint].Y - m_iDefaultCrossRadius - widen, (m_iDefaultCrossRadius+widen) * 2, (m_iDefaultCrossRadius+widen) * 2);
-                	}
+                    	rectangleTarget = m_Positions[m_iCurrentPoint].Box(m_iDefaultCrossRadius + 3);
                     
                     if (rectangleTarget.Contains(_point))
                     {
@@ -429,17 +372,15 @@ namespace Kinovea.ScreenManager
                         	// Create path which contains wide line for easy mouse selection
                             int iTotalVisiblePoints = iEnd - iStart;
                         	Point[] points = new Point[iTotalVisiblePoints];
-                            for (int i = 0; i < iTotalVisiblePoints; i++)
-                            {
-                                points[i] = new Point(m_Positions[i+iStart].X, m_Positions[i+iStart].Y);
-                            }
+                            for (int i = iStart; i < iEnd; i++)
+                                points[i-iStart] = m_Positions[i].Point;
 
                             GraphicsPath areaPath = new GraphicsPath();
-                            areaPath.AddLines(points);
+                            areaPath.AddCurve(points, 0.5f);
                             RectangleF bounds = areaPath.GetBounds();
-                            if(bounds.Height > 0 || bounds.Width > 0)
+                            if(!bounds.IsEmpty)
                             {
-                                Pen tempPen = new Pen(Color.Black, 12);
+                                Pen tempPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
                                 areaPath.Widen(tempPen);
                                 tempPen.Dispose();
                                 Region areaRegion = new Region(areaPath);
@@ -476,7 +417,7 @@ namespace Kinovea.ScreenManager
        #endregion
         
         #region Drawing routines
-        private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor)
+        private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor, CoordinateSystem _transformer)
         {
         	// Points are drawn with various alpha values, possibly 0:
         	// In edit mode, all segments are drawn at 64 alpha.
@@ -489,70 +430,53 @@ namespace Kinovea.ScreenManager
         	
         	Point[] points = new Point[_end - _start + 1];
             for (int i = 0; i <= _end - _start; i++)
-            {
-                points[i] = new Point(m_RescaledPositions[_start + i].X, m_RescaledPositions[_start + i].Y);
-            }
-            
+                points[i] = _transformer.Transform(m_Positions[_start + i].Point);
+                
             if (points.Length > 1)
             {
-            	// Tension parameter is at 0.5f for bezier effect (smooth curve).
-            	Pen trackPen = GetTrackPen(m_TrackStatus, _fFadingFactor, _before);
-            	_canvas.DrawCurve(trackPen, points, 0.5f);
-            	
-            	if(m_StyleHelper.TrackShape.ShowSteps)
+            	using(Pen trackPen = GetTrackPen(m_TrackStatus, _fFadingFactor, _before))
             	{
-            		Pen stepPen = new Pen(trackPen.Color, 2);
-	            	int margin = (int)(trackPen.Width * 1.5);
-	            	int diameter = margin *2;
-	            	foreach(Point p in points)
-	            	{
-	            		_canvas.DrawEllipse(stepPen, p.X - margin, p.Y - margin, diameter, diameter);
-	            	}
-	            	stepPen.Dispose();
+                    // Tension parameter is at 0.5f for bezier effect (smooth curve).
+                    _canvas.DrawCurve(trackPen, points, 0.5f);
+                	
+                	if(m_StyleHelper.TrackShape.ShowSteps)
+                	{
+                	    using(Pen stepPen = new Pen(trackPen.Color, 2))
+                	    {
+                            int margin = (int)(trackPen.Width * 1.5);
+        	            	foreach(Point p in points)
+        	            	    _canvas.DrawEllipse(stepPen, p.Box(margin));
+                	    }
+                	}
             	}
-            	
-            	trackPen.Dispose();
             }
         }
-        private void DrawMarker(Graphics _canvas,  double _fFadingFactor)
+        private void DrawMarker(Graphics _canvas,  double _fFadingFactor, CoordinateSystem _transformer)
         { 
         	int radius = m_iDefaultCrossRadius;
+        	Point location = _transformer.Transform(m_Positions[m_iCurrentPoint].Point);
         	
         	if(m_TrackStatus == TrackStatus.Edit)
         	{
-        		// Just a little cross.
-        		Pen p = new Pen(Color.FromArgb((int)(255.0f * _fFadingFactor), m_StyleHelper.Color));
-        		_canvas.DrawLine(p, m_RescaledPositions[m_iCurrentPoint].X, m_RescaledPositions[m_iCurrentPoint].Y - radius, 
-        		                	m_RescaledPositions[m_iCurrentPoint].X, m_RescaledPositions[m_iCurrentPoint].Y + radius);
-
-        		_canvas.DrawLine(p, m_RescaledPositions[m_iCurrentPoint].X - radius, m_RescaledPositions[m_iCurrentPoint].Y, 
-        		                	m_RescaledPositions[m_iCurrentPoint].X + radius, m_RescaledPositions[m_iCurrentPoint].Y);
-        	
-        		p.Dispose();
+        		// Little cross.
+        		using(Pen p = new Pen(Color.FromArgb((int)(_fFadingFactor * 255), m_StyleHelper.Color)))
+        		{
+        		  _canvas.DrawLine(p, location.X, location.Y - radius, location.X, location.Y + radius);
+        		  _canvas.DrawLine(p, location.X - radius, location.Y, location.X + radius, location.Y);
+        		}
         	}
         	else
         	{
-	    		// Draws the target marker (CrashTest Dummy style target)
-	    		int markerAlpha = 255;
-	    		Brush brushBlack = new SolidBrush(Color.FromArgb(markerAlpha, 0,0,0));
-	    		Brush brushWhite = new SolidBrush(Color.FromArgb(markerAlpha, 255, 255, 255));                              
-	    		
-	            _canvas.FillPie(brushBlack, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 0, 90);
-	            _canvas.FillPie(brushWhite, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 90, 90);
-	            _canvas.FillPie(brushBlack, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 180, 90);
-	            _canvas.FillPie(brushWhite, (float)m_RescaledPositions[m_iCurrentPoint].X - radius , (float)m_RescaledPositions[m_iCurrentPoint].Y - radius , (float)radius  * 2, (float)radius  * 2, 270, 90);
-        	
-	            brushBlack.Dispose();
-	            brushWhite.Dispose();
-	            
-	        	// Contour
-	            int ContourRadius = radius  + 2;            
-	            _canvas.DrawEllipse(Pens.White, m_RescaledPositions[m_iCurrentPoint].X - ContourRadius, m_RescaledPositions[m_iCurrentPoint].Y - ContourRadius, ContourRadius * 2, ContourRadius * 2);
+	    		// Crash test dummy style target.
+                int diameter = radius * 2;
+	            _canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 0, 90);
+	            _canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 90, 90);
+	            _canvas.FillPie(Brushes.Black, location.X - radius , location.Y - radius , diameter, diameter, 180, 90);
+	            _canvas.FillPie(Brushes.White, location.X - radius , location.Y - radius , diameter, diameter, 270, 90);
+    		    _canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
         	}
-            
-        	
         }
-        private void DrawKeyframesTitles(Graphics _canvas, double _fFadingFactor)
+        private void DrawKeyframesTitles(Graphics _canvas, double _fFadingFactor, CoordinateSystem _transformer)
         {
             //------------------------------------------------------------
             // Draw the Keyframes labels
@@ -569,17 +493,17 @@ namespace Kinovea.ScreenManager
                 	   m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp, kl.Timestamp, m_iFocusFadingFrames)
                 	  )
                 	{
-                    	kl.Draw(_canvas, m_fStretchFactor, m_DirectZoomTopLeft, _fFadingFactor);
+                    	kl.Draw(_canvas, _transformer.Scale, _transformer.Location, _fFadingFactor);
                 	}
                 }
             }
         }
-        private void DrawMainLabel(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor)
+        private void DrawMainLabel(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor, CoordinateSystem _transformer)
         {
             // Draw the main label and its connector to the current point.
             if (_fFadingFactor == 1.0f)
             {
-                m_MainLabel.MoveTo(m_Positions[_iCurrentPoint].ToPoint());
+                m_MainLabel.MoveTo(m_Positions[_iCurrentPoint].Point);
                 
                 if(m_TrackView == TrackView.Label)
                 {
@@ -590,7 +514,7 @@ namespace Kinovea.ScreenManager
                 	m_MainLabel.Text = GetExtraDataText(_iCurrentPoint);
                 }
                 
-                m_MainLabel.Draw(_canvas, m_fStretchFactor, m_DirectZoomTopLeft, _fFadingFactor);
+                m_MainLabel.Draw(_canvas, _transformer.Scale, _transformer.Location, _fFadingFactor);
             }
         }
         private Pen GetTrackPen(TrackStatus _status, double _fFadingFactor, bool _before)
@@ -607,7 +531,7 @@ namespace Kinovea.ScreenManager
         		{
         			if(_before)
         			{
-        				iAlpha = (int)((double)m_iBaseAlpha * _fFadingFactor);
+        				iAlpha = (int)(_fFadingFactor * m_iBaseAlpha);
         			}
         			else
         			{
@@ -616,11 +540,11 @@ namespace Kinovea.ScreenManager
         		}
         		else if(m_TrackView == TrackView.Focus)
         		{
-        			iAlpha = (int)((double)m_iBaseAlpha * _fFadingFactor);		
+        			iAlpha = (int)(_fFadingFactor * m_iBaseAlpha);		
         		}
         		else if(m_TrackView == TrackView.Label)
         		{
-        			iAlpha = (int)((double)m_iLabelFollowsTrackAlpha * _fFadingFactor);
+        			iAlpha = (int)(_fFadingFactor * m_iLabelFollowsTrackAlpha);
         		}
             }
         	
@@ -664,7 +588,7 @@ namespace Kinovea.ScreenManager
         			double fPixelDistance = 0;
         			for(int i = _p1; i < _p2; i++)
         			{
-        				fPixelDistance += CalibrationHelper.PixelDistance(m_Positions[i].ToPoint(), m_Positions[i+1].ToPoint());
+        				fPixelDistance += CalibrationHelper.PixelDistance(m_Positions[i].Point, m_Positions[i+1].Point);
         			}
         			
 	        		dist = m_ParentMetadata.CalibrationHelper.GetLengthText(fPixelDistance);
@@ -693,12 +617,12 @@ namespace Kinovea.ScreenManager
         		if( _p1 >= 0 && _p1 < m_Positions.Count-1 &&
         	   		_p2 > _p1 && _p2 < m_Positions.Count )
 	        	{
-	        		speed = m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].ToPoint(), m_Positions[_p2].ToPoint(), iFrames);
+	        		speed = m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].Point, m_Positions[_p2].Point, iFrames);
 	        	}
 	        	else
 	        	{
 	        		// not computable, return 0.
-	        		speed = m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[0].ToPoint(), m_Positions[0].ToPoint(), 0);	
+	        		speed = m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[0].Point, m_Positions[0].Point, 0);	
 	        	}
         	}
 
@@ -716,18 +640,13 @@ namespace Kinovea.ScreenManager
                 // Image will be reseted at mouse up. (=> UpdateTrackPoint)
                 m_Positions[m_iCurrentPoint].X += _X;
                 m_Positions[m_iCurrentPoint].Y += _Y;
-                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
             }
             else
             {
-                //----------------------------------------
                 // Move Playhead to closest frame (x,y,t).
-                //----------------------------------------
                 // In this case, _X and _Y are absolute values.
                 if (m_ShowClosestFrame != null && m_Positions.Count > 1)
-                {
                     m_ShowClosestFrame(new Point(_X, _Y), m_iBeginTimeStamp, m_Positions, m_iTotalDistance, false);
-                }
             }
         }
         private void MoveLabelTo(int _deltaX, int _deltaY, int _iLabelNumber)
@@ -755,17 +674,12 @@ namespace Kinovea.ScreenManager
         }
         private int IsOnKeyframesLabels(Point _point)
         {
-        	// Result: 
-            // -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
-            
+            // Convention: -1 = miss, 2 = on main label, 3+ = on keyframe label.
             int iHitResult = -1;
-
             if (m_TrackView == TrackView.Label)
             {
                 if (m_MainLabel.HitTest(_point))
-                {
                     iHitResult = 2;
-                }
             }
             else
             {
@@ -774,16 +688,15 @@ namespace Kinovea.ScreenManager
             	if (m_TrackExtraData != TrackExtraData.None)
 	            {
 	                if (m_MainLabel.HitTest(_point))
-	                {
 	                    iHitResult = 2;
-	                }
 	            }	
             	
                 for (int i = 0; i < m_KeyframesLabels.Count; i++)
                 {
-                	if(m_TrackView == TrackView.Complete ||
-                	   m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp, m_KeyframesLabels[i].Timestamp, m_iFocusFadingFrames)
-                	  )
+                    bool isVisible = m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp, 
+                                                             m_KeyframesLabels[i].Timestamp, 
+                                                             m_iFocusFadingFrames);
+                    if(m_TrackView == TrackView.Complete || isVisible)
                 	{
                 		if (m_KeyframesLabels[i].HitTest(_point))
 	                    {
@@ -798,29 +711,17 @@ namespace Kinovea.ScreenManager
         }
         private int GetFirstVisiblePoint()
         {
-        	// Boundaries of visibility.
-            // First and last if complete traj, bounded otherwise.
-            
-            int iStart = 0;
-            
-            if(m_TrackView != TrackView.Complete && m_iCurrentPoint - m_iFocusFadingFrames > 0)
-        	{
-        		iStart = m_iCurrentPoint - m_iFocusFadingFrames;
-        	}
-            
-            return iStart;
+        	if((m_TrackView != TrackView.Complete || m_TrackStatus == TrackStatus.Edit) && m_iCurrentPoint - m_iFocusFadingFrames > 0)
+        		return m_iCurrentPoint - m_iFocusFadingFrames;
+            else
+                return 0;
         }
         private int GetLastVisiblePoint()
         {
-        	// Boundaries of visibility.
-            // First and last if complete traj, bounded otherwise.
-            int iEnd = m_RescaledPositions.Count - 1;
-        	if(m_TrackView != TrackView.Complete && m_iCurrentPoint + m_iFocusFadingFrames < m_RescaledPositions.Count - 1)
-        	{
-        		iEnd = m_iCurrentPoint + m_iFocusFadingFrames;
-        	}
-            
-            return iEnd;
+        	if((m_TrackView != TrackView.Complete || m_TrackStatus == TrackStatus.Edit) && m_iCurrentPoint + m_iFocusFadingFrames < m_Positions.Count - 1)
+        		return m_iCurrentPoint + m_iFocusFadingFrames;
+            else
+                return m_Positions.Count - 1;
         }
         #endregion
         
@@ -829,31 +730,18 @@ namespace Kinovea.ScreenManager
         {
         	// Delete end of track.
             m_iCurrentPoint = FindClosestPoint(_iCurrentTimestamp);
-
             if (m_iCurrentPoint < m_Positions.Count - 1)
-            {
                 m_Positions.RemoveRange(m_iCurrentPoint + 1, m_Positions.Count - m_iCurrentPoint - 1);
-                m_RescaledPositions.RemoveRange(m_iCurrentPoint + 1, m_RescaledPositions.Count - m_iCurrentPoint - 1);
-            }
 
             m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
-            
             // Todo: we must now refill the last point with a patch image.
         }
         public List<AbstractTrackPoint> GetEndOfTrack(long _iTimestamp)
         {
         	// Called from CommandDeleteEndOfTrack,
         	// We need to keep the old values in case the command is undone.
-        	List<AbstractTrackPoint> endOfTrack = new List<AbstractTrackPoint>();
-        	foreach (AbstractTrackPoint trkpos in m_Positions)
-            {
-                if (trkpos.T >= _iTimestamp - m_iBeginTimeStamp)
-                {
-                    //endOfTrack.Add(new AbstractTrackPoint(trkpos.X, trkpos.Y, trkpos.T));
-                    //endOfTrack.Add(trkpos.Clone());
-                    endOfTrack.Add(trkpos);
-                }
-            }
+        	long ts = _iTimestamp - m_iBeginTimeStamp;
+        	List<AbstractTrackPoint> endOfTrack = m_Positions.SkipWhile(p => p.T >= ts).ToList();
         	return endOfTrack;
         }
         public void AppendPoints(long _iCurrentTimestamp, List<AbstractTrackPoint> _ChoppedPoints)
@@ -862,29 +750,18 @@ namespace Kinovea.ScreenManager
             // revival of the discarded points.
             if (_ChoppedPoints.Count > 0)
             {
-                // Find the append insertion point.
                 // Some points may have been re added already and we don't want to mix the two lists.
+                // Find the append insertion point, remove extra stuff, and append.
                 int iMatchedPoint = m_Positions.Count - 1;
+                
                 while (m_Positions[iMatchedPoint].T >= _ChoppedPoints[0].T && iMatchedPoint > 0)
-                {
                     iMatchedPoint--;
-                }
 
-                // Remove uneeded points.
                 if (iMatchedPoint < m_Positions.Count - 1)
-                {
                     m_Positions.RemoveRange(iMatchedPoint + 1, m_Positions.Count - (iMatchedPoint+1));
-                    m_RescaledPositions.RemoveRange(iMatchedPoint + 1, m_RescaledPositions.Count - (iMatchedPoint+1));
-                }
 
-                // Append
                 foreach (AbstractTrackPoint trkpos in _ChoppedPoints)
-                {
-                    //AbstractTrackPoint append = new AbstractTrackPoint(trkpos.X, trkpos.Y, trkpos.T, trkpos.Image);
-                    //m_Positions.Add(append);
                     m_Positions.Add(trkpos);
-                    m_RescaledPositions.Add(trkpos.ToPoint());
-                }
 
                 m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
             }
@@ -902,29 +779,28 @@ namespace Kinovea.ScreenManager
         #region Tracking
         public void TrackCurrentPosition(long _iCurrentTimestamp, Bitmap _bmpCurrent)
         {
-            // Matches previous point in current image.
+            // Match the previous point in current image.
             // New points to trajectories are always created from here, 
             // the user can only moves existing points.
             
             // A new point needs to be added if we are after the last existing one.
             // Note: the UI will force stop the tracking if the user jumps to more than
             // one frame ahead of the last registered point.
-            if (_iCurrentTimestamp > m_iBeginTimeStamp + m_Positions[m_Positions.Count - 1].T)
+            if (_iCurrentTimestamp > m_iBeginTimeStamp + m_Positions.Last().T)
             {
-            	AbstractTrackPoint p;
+            	AbstractTrackPoint p = null;
             	bool bMatched = m_Tracker.Track(m_Positions, _bmpCurrent, _iCurrentTimestamp - m_iBeginTimeStamp, out p);
                 
             	// We add it to the list even if matching failed (but we'll stop tracking then).
             	if(p != null)
             	{
 					m_Positions.Add(p);
-					m_RescaledPositions.Add(RescalePosition(p, m_fStretchFactor, m_DirectZoomTopLeft));
 	
 					if (!bMatched)
 	                    StopTracking();
 					
 	            	// Adjust internal data.
-					m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
+	            	m_iEndTimeStamp = m_Positions.Last().T + m_iBeginTimeStamp;
 		            ComputeFlatDistance();
 		            IntegrateKeyframes();
             	}
@@ -969,30 +845,22 @@ namespace Kinovea.ScreenManager
         	// The coordinate of the point have already been updated during the mouse move.
             if (m_Positions.Count > 1 && m_iCurrentPoint >= 0)
             {
-            	m_Positions[m_iCurrentPoint].ResetTrackData();
-            	AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, m_Positions[m_iCurrentPoint].X, m_Positions[m_iCurrentPoint].Y, 1.0f, 
-            	                           							m_Positions[m_iCurrentPoint].T,  _CurrentImage, m_Positions);
+                AbstractTrackPoint current = m_Positions[m_iCurrentPoint];
+            
+            	current.ResetTrackData();
+            	AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, current.X, current.Y, 1.0f, current.T,  _CurrentImage, m_Positions);
             	
             	if(atp != null)
-            	{
-            		m_Positions[m_iCurrentPoint] = atp;
-            	}
-            	else
-            	{
-					// TODO.
-            		// Error message to the user, so he can choose another spot to track.
-            	}
+            		current = atp;
             	
             	// Update the mini label (attach, position of label, and text).
             	for (int i = 0; i < m_KeyframesLabels.Count; i++)
             	{
-            		if(m_KeyframesLabels[i].Timestamp == m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp)
+            		if(m_KeyframesLabels[i].Timestamp == current.T + m_iBeginTimeStamp)
             		{
-            			m_KeyframesLabels[i].MoveTo(m_Positions[m_iCurrentPoint].ToPoint());
+            			m_KeyframesLabels[i].MoveTo(current.Point);
 						if(m_TrackExtraData != TrackExtraData.None)
-            			{
             			 	m_KeyframesLabels[i].Text = GetExtraDataText(m_KeyframesLabels[i].AttachIndex);
-            			}
             		}
             	}
             }
@@ -1046,15 +914,10 @@ namespace Kinovea.ScreenManager
             
             // The coordinate system defaults to the first point,
             // but can be specified by user.
-            Point coordOrigin;
+            Point coordOrigin = m_Positions[0].Point;
+
             if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 || m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
-            {
             	coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
-            }
-			else 
-			{
-				coordOrigin = new Point(m_Positions[0].X, m_Positions[0].Y);
-			}
             
             if(m_Positions.Count > 0)
             {
@@ -1142,9 +1005,8 @@ namespace Kinovea.ScreenManager
 			if (m_Positions.Count > 0)
             {
                 m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
-                m_MainLabel.AttachLocation = m_Positions[0].ToPoint();
+                m_MainLabel.AttachLocation = m_Positions[0].Point;
                 m_MainLabel.Text = Label;
-                
                 
                 if(m_Positions.Count > 1 || 
                    m_Positions[0].X != 0 || 
@@ -1154,14 +1016,10 @@ namespace Kinovea.ScreenManager
                     m_Invalid = false;
                 }
             }
-            			
-			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
         }
         public void ParseTrackPointList(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
         {
             m_Positions.Clear();
-            m_RescaledPositions.Clear();
-            
             _xmlReader.ReadStartElement();
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
@@ -1173,12 +1031,11 @@ namespace Kinovea.ScreenManager
                     
                     // time was stored in relative value, we still need to adjust it.
                     AbstractTrackPoint adapted = m_Tracker.CreateOrphanTrackPoint(	
-                                                             	(int)((float)tp.X * _scale.X),
-                                                            	(int)((float)tp.Y * _scale.Y),
+                                                             	(int)(_scale.X * tp.X),
+                                                            	(int)(_scale.Y * tp.Y),
                                                             	_remapTimestampCallback(tp.T, true));
 
                     m_Positions.Add(adapted);
-                    m_RescaledPositions.Add(adapted.ToPoint()); // (not really scaled but must be added anyway so both array stay parallel.)
                 }
                 else
                 {
@@ -1207,7 +1064,7 @@ namespace Kinovea.ScreenManager
                         int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, m_Positions, m_iBeginTimeStamp);
                         kfl.AttachIndex = iMatchedTrackPosition;
                         
-                        kfl.AttachLocation = m_Positions[iMatchedTrackPosition].ToPoint();
+                        kfl.AttachLocation = m_Positions[iMatchedTrackPosition].Point;
                         m_KeyframesLabels.Add(kfl);
                     }
                 }
@@ -1264,7 +1121,7 @@ namespace Kinovea.ScreenManager
                         // Unknown Keyframe, Configure and add it to list.
                         KeyframeLabel kfl = new KeyframeLabel();
                         kfl.AttachIndex = FindClosestPoint(m_ParentMetadata[i].Position);
-                        kfl.MoveTo(m_Positions[kfl.AttachIndex].ToPoint());
+                        kfl.MoveTo(m_Positions[kfl.AttachIndex].Point);
                         kfl.Timestamp = m_Positions[kfl.AttachIndex].T + m_iBeginTimeStamp;                        
                         kfl.Text = m_ParentMetadata[i].Title;
                         
@@ -1299,18 +1156,14 @@ namespace Kinovea.ScreenManager
             int iHash = 0;
             iHash ^= m_TrackView.GetHashCode();
             foreach (AbstractTrackPoint p in m_Positions)
-            {
                 iHash ^= p.GetHashCode();
-            }
 
             iHash ^= m_iDefaultCrossRadius.GetHashCode();
             iHash ^= m_StyleHelper.GetHashCode();
             iHash ^= m_MainLabel.GetHashCode();
 
             foreach (KeyframeLabel kfl in m_KeyframesLabels)
-            {
                 iHash ^= kfl.GetHashCode();
-            }
 
             return iHash;
         }
@@ -1331,22 +1184,6 @@ namespace Kinovea.ScreenManager
         #endregion
 		
 		#region Miscellaneous private methods
-        private Point RescalePosition(AbstractTrackPoint _position, double _fStretchFactor, Point _DirectZoomTopLeft)
-        {
-        	// Extract the 2D coordinates and rescale.
-			// Todo: use the CoordinateSystem helper class?
-        	return new Point(	(int)((double)(_position.X - _DirectZoomTopLeft.X) * _fStretchFactor),
-            					(int)((double)(_position.Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
-        }
-        private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
-        {
-            // Trajectory Points
-            for (int i = 0; i < m_Positions.Count; i++)
-            {
-               m_RescaledPositions[i] = new Point(	(int)((double)(m_Positions[i].X - _DirectZoomTopLeft.X) * _fStretchFactor),
-                                                  	(int)((double)(m_Positions[i].Y - _DirectZoomTopLeft.Y) * _fStretchFactor));
-            }
-        }
         private int FindClosestPoint(long _iCurrentTimestamp)
         {
             return FindClosestPoint(_iCurrentTimestamp, m_Positions, m_iBeginTimeStamp);

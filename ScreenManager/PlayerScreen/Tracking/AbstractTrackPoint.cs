@@ -38,7 +38,12 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public abstract class AbstractTrackPoint
 	{
-		#region Members
+        public Point Point
+        {
+            get { return new Point(X, Y);}
+        }
+        
+        #region Members
 		public int X;
         public int Y;
         public long T;          // timestamp relative to the first time stamp of the track
@@ -81,15 +86,14 @@ namespace Kinovea.ScreenManager
                 // will default to {0,0,0}.
             }
         }
-		public Point ToPoint()
-        {
-        	// Extract to a simple Point.
-        	return new Point(X, Y);
-        }
 		public override int GetHashCode()
         {
             return X.GetHashCode() ^ Y.GetHashCode() ^ T.GetHashCode();
         }
+		public Rectangle Box(int _radius)
+		{
+		    return new Point(X,Y).Box(_radius);
+		}
 		#endregion
 	}
 }

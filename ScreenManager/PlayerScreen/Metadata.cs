@@ -319,9 +319,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractDrawing ad in kf.Drawings)
                 {
                     if (ad is DrawingText)
-                    {
-                        ((DrawingText)ad).EditMode = false;
-                    }
+                        ((DrawingText)ad).SetEditMode(false, null);
                 }
             }
         }
