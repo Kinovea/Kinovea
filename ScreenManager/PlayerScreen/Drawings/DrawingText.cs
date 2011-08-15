@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (fOpacityFactor <= 0 || m_bEditMode)
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
                 Rectangle rect = _transformer.Transform(m_Background.Rectangle);
-                m_Background.Draw(_canvas, rect, brushBack, fontText.Height/4);
+                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false);
                 _canvas.DrawString(m_Text, fontText, brushText, rect.Location);
             }
         }

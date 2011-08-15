@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if(fOpacityFactor <= 0)
@@ -158,20 +158,20 @@ namespace Kinovea.ScreenManager
             
             if(m_bShowCoordinates)
             {
-            	m_LabelCoordinates.Text = m_ParentMetadata.CalibrationHelper.GetPointText(m_Center, true);
-                m_LabelCoordinates.Draw(_canvas, _transformer.Scale, _transformer.Location, fOpacityFactor);
+                m_LabelCoordinates.SetText(m_ParentMetadata.CalibrationHelper.GetPointText(m_Center, true));
+                m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
         public override void MoveHandle(Point point, int handleNumber)
         {
             if(handleNumber == 1)
-                m_LabelCoordinates.MoveLabel(point);
+                m_LabelCoordinates.SetLabel(point);
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
             m_Center.X += _deltaX;
             m_Center.Y += _deltaY;
-            m_LabelCoordinates.MoveTo(m_Center);
+            m_LabelCoordinates.SetAttach(m_Center, true);
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
 				{
 					case "CenterPoint":
 				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_Center = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        m_Center = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
 				        break;
 					case "CoordinatesVisible":
 				        m_bShowCoordinates = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
@@ -221,7 +221,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			_xmlReader.ReadEndElement();
-			m_LabelCoordinates.MoveTo(Center);
+			m_LabelCoordinates.SetAttach(m_Center, true);
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{

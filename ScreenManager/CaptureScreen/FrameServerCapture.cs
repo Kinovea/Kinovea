@@ -427,7 +427,7 @@ namespace Kinovea.ScreenManager
 
 			foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
 			{
-                ad.Draw(_canvas, m_CoordinateSystem, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, false, 0, m_CoordinateSystem.Location);
+                ad.Draw(_canvas, m_CoordinateSystem, false, 0);
 			}
 			
 			// In capture mode, all drawings are gathered in a virtual key image at m_Metadata[0].
@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
 			for (int i = m_Metadata[0].Drawings.Count - 1; i >= 0; i--)
 			{
 				bool bSelected = (i == m_Metadata.SelectedDrawing);
-                m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem, m_CoordinateSystem.Stretch * m_CoordinateSystem.Zoom, bSelected, 0, m_CoordinateSystem.Location);
+                m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem, bSelected, 0);
 			}
 		}
 		#endregion

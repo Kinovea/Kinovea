@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
         private InfosFading m_InfosFading;
 		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle m_MainBackground = new RoundedRectangle();
-        private RoundedRectangle m_lblBackground = new RoundedRectangle { DropShape = true };
+        private RoundedRectangle m_lblBackground = new RoundedRectangle();
         
         private Metadata m_ParentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             if (_iCurrentTimestamp < m_iVisibleTimestamp)
                 return;
@@ -198,7 +198,7 @@ namespace Kinovea.ScreenManager
             using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
                 Rectangle rect = _transformer.Transform(m_MainBackground.Rectangle);
-                m_MainBackground.Draw(_canvas, rect, brushBack, fontText.Height/4);
+                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false);
 
                 int margin = (int)((totalSize.Width - textSize.Width) / 2);
                 Point textLocation = new Point(rect.X + margin, rect.Y);
@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
                     {
                         SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel);
                         Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
-                        m_lblBackground.Draw(_canvas, lblRect, brushBack, fontLabel.Height/2);
+                        RoundedRectangle.Draw(_canvas, lblRect, brushBack, fontLabel.Height/2, true);
                         _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
                     }
                 }
@@ -471,21 +471,17 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateLabelRectangle()
         {
-            // Update mini label background size. Needed for hit test only.
-            Button but = new Button();
-            Graphics g = but.CreateGraphics();
-            Font fMini = m_StyleHelper.GetFont(0.5F);
-
-            SizeF lblSize = g.MeasureString(m_Label, fMini);
-            m_lblBackground.Rectangle = new Rectangle(
-                    m_MainBackground.Rectangle.Location.X,
-                    m_MainBackground.Rectangle.Location.Y - (int)lblSize.Height,
-                    (int)lblSize.Width + 11,
-                    (int)lblSize.Height);
-
-            fMini.Dispose();
-            g.Dispose();
-            but.Dispose();
+            using(Font f = m_StyleHelper.GetFont(0.5F))
+            using(Button but = new Button())
+            using(Graphics g = but.CreateGraphics())
+            {
+                SizeF size = g.MeasureString(m_Label, f);
+                m_lblBackground.Rectangle = new Rectangle(m_MainBackground.X,
+                                                          m_MainBackground.Y - (int)m_lblBackground.Rectangle.Height,
+                                                          (int)size.Width + 11,
+                                                          (int)size.Height);
+                
+            }
         }
         private string GetTimecode(long _iTimestamp)
         {
