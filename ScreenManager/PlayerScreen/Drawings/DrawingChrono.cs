@@ -198,7 +198,7 @@ namespace Kinovea.ScreenManager
             using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
                 Rectangle rect = _transformer.Transform(m_MainBackground.Rectangle);
-                m_MainBackground.Draw(_canvas, rect, brushBack);
+                m_MainBackground.Draw(_canvas, rect, brushBack, fontText.Height/4);
 
                 int margin = (int)((totalSize.Width - textSize.Width) / 2);
                 Point textLocation = new Point(rect.X + margin, rect.Y);
@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
                     {
                         SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel);
                         Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
-                        m_lblBackground.Draw(_canvas, lblRect, brushBack);
+                        m_lblBackground.Draw(_canvas, lblRect, brushBack, fontLabel.Height/2);
                         _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
                     }
                 }

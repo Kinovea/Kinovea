@@ -1087,7 +1087,7 @@ namespace Kinovea.ScreenManager
 											if (hitRes >= 0)
 											{
 												bEdit = true;
-												((DrawingText)ad).EditMode = true;
+												((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
 											}
 										}
 									}
@@ -1102,8 +1102,7 @@ namespace Kinovea.ScreenManager
 										DrawingText dt = (DrawingText)m_FrameServer.Metadata[0].Drawings[0];
 										
 										dt.ContainerScreen = pbSurfaceScreen;
-										dt.RelocateEditbox(m_FrameServer.CoordinateSystem.Stretch * m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Location);
-										dt.EditMode = true;
+										dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
 										panelCenter.Controls.Add(dt.EditBox);
 										dt.EditBox.BringToFront();
 										dt.EditBox.Focus();
@@ -1346,7 +1345,7 @@ namespace Kinovea.ScreenManager
 					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[0].Drawings[m_FrameServer.Metadata.SelectedDrawing];
 					if (ad is DrawingText)
 					{
-						((DrawingText)ad).EditMode = true;
+						((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
 						m_ActiveTool = ToolManager.Label;
 						m_bTextEdit = true;
 					}

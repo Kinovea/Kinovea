@@ -70,72 +70,30 @@ namespace Kinovea.ScreenManager
         public bool EditMode
         {
             get { return m_bEditMode; }
-            set 
-            { 
-                m_bEditMode = value;
-
-                //-----------------------------------------------------------
-                // Activate or deactivate the ScreenManager Keyboard Handler, 
-                // so we can use <space>, <return>, etc.
-                //-----------------------------------------------------------
-                DelegatesPool dp = DelegatesPool.Instance();
-                if (m_bEditMode)
-                {    
-                    if (dp.DeactivateKeyboardHandler != null)
-                    {
-                        dp.DeactivateKeyboardHandler();
-                    }
-
-                    m_TextBox.Text = m_Text;
-                    m_TextBox.Location = new Point(m_ContainerScreen.Left + m_LabelBackground.Location.X + 6, m_ContainerScreen.Top + m_LabelBackground.Location.Y + 3);
-                    AutoSizeTextbox();
-                    m_TextBox.Visible = true;
-                    m_TextBox.Focus();
-                    m_TextBox.Select(m_TextBox.Text.Length, 0);
-                }
-                else
-                {
-                    m_TextBox.Visible = false;
-
-                    if (dp.ActivateKeyboardHandler != null)
-                    {
-                        dp.ActivateKeyboardHandler();
-                    }
-                } 
-            }
         }
         #endregion
 
         #region Members
-        private string m_Text;							// Actual text displayed.
-        
-      	private StyleHelper m_StyleHelper = new StyleHelper();
+        private string m_Text;
+        private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
-      	
         private InfosFading m_InfosFading;
-        
       	private bool m_bEditMode;
-      	private static readonly int m_iDefaultFontSize = 16;    		// will also be used for the text box.
-		
-      	private Point m_TopLeft;                         	// position (in image coords).
-        private double m_fStretchFactor;
-        private Point m_DirectZoomTopLeft;
-        
-        private LabelBackground m_LabelBackground = new LabelBackground();
-        private SizeF m_BackgroundSize;				  	// Size of the background rectangle (scaled).
-        
+      	private CoordinateSystem m_CoordinateSystem;
+      	
+      	private RoundedRectangle m_Background = new RoundedRectangle();
         private TextBox m_TextBox;
-        private PictureBox m_ContainerScreen;
+      	private PictureBox m_ContainerScreen;
         
+        private const int m_iDefaultFontSize = 16;    		// will also be used for the text box.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
-        public DrawingText(int x, int y, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingText(Point p, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
             m_Text = " ";
-            m_TopLeft = new Point(x, y);
-            m_BackgroundSize = new SizeF(100, 20);
+            m_Background.Rectangle = new Rectangle(p, Size.Empty);
             
             // Decoration & binding with editors
             m_StyleHelper.Bicolor = new Bicolor(Color.Black);
@@ -149,22 +107,21 @@ namespace Kinovea.ScreenManager
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
             m_bEditMode = false;
 
-            // Textbox initialization.
-            m_TextBox = new TextBox();
-            m_TextBox.Visible = false;
-            m_TextBox.BackColor = Color.White;
-            m_TextBox.BorderStyle = BorderStyle.None;
-            m_TextBox.Text = m_Text;
-            m_TextBox.Font = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize);
-            m_TextBox.Multiline = true;
+            m_TextBox = new TextBox() { 
+      	         Visible = false, 
+      	         BackColor = Color.White, 
+      	         BorderStyle = BorderStyle.None, 
+      	         Multiline = true,
+      	         Text = m_Text,
+      	         Font = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize)
+            };
+            
             m_TextBox.TextChanged += new EventHandler(TextBox_TextChanged);
             
-            m_fStretchFactor = 1.0;
-            m_DirectZoomTopLeft = new Point(0, 0);
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            UpdateLabelRectangle();
         }
         public DrawingText(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(0,0,0,0, ToolManager.Label.StylePreset.Clone())
+            : this(Point.Empty,0,0, ToolManager.Label.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -174,72 +131,40 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            
-            if (fOpacityFactor > 0)
+            if (fOpacityFactor <= 0 || m_bEditMode)
+                return;
+                
+            using (SolidBrush brushBack = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor * 128)))
+            using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
+            using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
-                // Rescale the points.
-                m_fStretchFactor = _fStretchFactor;
-                m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
-                RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-
-                // This method may be used from worker threads and shouldn't touch UI controls.
-                // -> The textbox will not be modified here.
-                if (!m_bEditMode)
-                {
-                    DrawBackground(_canvas, fOpacityFactor);
-                    
-                    SolidBrush textBrush = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255));
-                    Font fontText = m_StyleHelper.GetFont((float)m_fStretchFactor);
-                   	_canvas.DrawString(m_Text, fontText, textBrush, m_LabelBackground.TextLocation);
-                   	textBrush.Dispose();
-                   	fontText.Dispose();
-                }
+                Rectangle rect = _transformer.Transform(m_Background.Rectangle);
+                m_Background.Draw(_canvas, rect, brushBack, fontText.Height/4);
+                _canvas.DrawString(m_Text, fontText, brushText, rect.Location);
             }
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
-            // _point is mouse coordinates already descaled.
-            // Hit Result: -1: miss, 0: on object.
-
             int iHitResult = -1;
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (fOpacityFactor > 0)
             {
-            	if(GetHandleRectangle().Contains(_point))
-            	{
-            		iHitResult = 1;	
-            	}
-                else if (IsPointInObject(_point))
-                {
-                    iHitResult = 0;
-                }
+                iHitResult = m_Background.HitTest(_point, true);
             }
 
             return iHitResult;
         }
         public override void MoveHandle(Point point, int handleNumber)
         {	
-        	// Invisible handler to change font size.
-            // Compare wanted mouse position with current bottom right.
-            int wantedHeight = point.Y - m_TopLeft.Y;
+            // Invisible handler to change font size.
+            int wantedHeight = point.Y - m_Background.Rectangle.Location.Y;
             m_StyleHelper.ForceFontSize(wantedHeight, m_Text);
-            
-            //AutoSizeTextbox();
+            UpdateLabelRectangle();
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            // Note: _delatX and _delatY are mouse delta already descaled.            
-            m_TopLeft.X += _deltaX;
-            m_TopLeft.Y += _deltaY;
-
-            if (m_bEditMode && m_TextBox != null)
-            {
-                m_TextBox.Top += _deltaY;
-                m_TextBox.Left += _deltaX;
-            }
-            
-            // Update scaled coordinates accordingly.
-            RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
+            m_Background.Move(_deltaX, _deltaY);
+            RelocateEditbox();
         }
         #endregion
 
@@ -257,7 +182,8 @@ namespace Kinovea.ScreenManager
                         break;
 					case "Position":
                         Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_TopLeft = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        Point location = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                        m_Background.Rectangle = new Rectangle(location, Size.Empty);
 				        break;
                     case "DrawingStyle":
 						m_Style = new DrawingStyle(_xmlReader);
@@ -274,14 +200,11 @@ namespace Kinovea.ScreenManager
 			}
 			
 			_xmlReader.ReadEndElement();
-            
-			RescaleCoordinates(m_fStretchFactor, m_DirectZoomTopLeft);
-            AutoSizeTextbox();
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
 		    _xmlWriter.WriteElementString("Text", m_Text);
-            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_TopLeft.X, m_TopLeft.Y));
+            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_Background.Rectangle.X, m_Background.Rectangle.Y));
             
 		    _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
@@ -295,25 +218,47 @@ namespace Kinovea.ScreenManager
         
         public override string ToString()
         {
-            // Return the name of the tool used to draw this drawing.
             return ScreenManagerLang.ToolTip_DrawingToolText;
         }
         public override int GetHashCode()
         {
-            // Combine all relevant fields with XOR to get the Hash.
             int iHash = m_Text.GetHashCode();
-            iHash ^= m_TopLeft.GetHashCode();
+            iHash ^= m_Background.Rectangle.Location.GetHashCode();
             iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
-
-        public void RelocateEditbox(double _fStretchFactor, Point _DirectZoomTopLeft)
+        public void SetEditMode(bool _bEdit, CoordinateSystem _transformer)
         {
-            m_fStretchFactor = _fStretchFactor;
-            m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
+            m_bEditMode = _bEdit;
 
-            RescaleCoordinates(_fStretchFactor, _DirectZoomTopLeft);
-            m_TextBox.Location = new Point(m_ContainerScreen.Left + m_LabelBackground.Location.X + 6, m_ContainerScreen.Top + m_LabelBackground.Location.Y + 3);
+            if(m_CoordinateSystem == null)
+               m_CoordinateSystem = _transformer; 
+
+            // Activate or deactivate the ScreenManager Keyboard Handler, 
+            // so we can use <space>, <return>, etc.
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (m_bEditMode)
+            {    
+                if (dp.DeactivateKeyboardHandler != null)
+                    dp.DeactivateKeyboardHandler();
+
+                RelocateEditbox(); // This is needed because the container top-left corner may have changed 
+            }
+            else
+            {
+                if (dp.ActivateKeyboardHandler != null)
+                    dp.ActivateKeyboardHandler();
+            }
+            
+            m_TextBox.Visible = m_bEditMode;
+        }
+        public void RelocateEditbox()
+        {
+            if(m_CoordinateSystem != null)
+            {
+                Rectangle rect =  m_CoordinateSystem.Transform(m_Background.Rectangle);
+                m_TextBox.Location = rect.Location.Translate(m_ContainerScreen.Left, m_ContainerScreen.Top);
+            }
         }
 
         #region Lower level helpers
@@ -325,58 +270,23 @@ namespace Kinovea.ScreenManager
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             m_Text = m_TextBox.Text;
-            AutoSizeTextbox();
+            UpdateLabelRectangle();
         }
-        private void RescaleCoordinates(double _fStretchFactor, Point _DirectZoomTopLeft)
+        private void UpdateLabelRectangle()
         {
-        	m_LabelBackground.Location = new Point((int)((double)(m_TopLeft.X-_DirectZoomTopLeft.X) * _fStretchFactor), (int)((double)(m_TopLeft.Y-_DirectZoomTopLeft.Y) * _fStretchFactor));
-        }
-        private bool IsPointInObject(Point _point)
-        {
-            // Point coordinates are descaled.
-            // We need to descale the hit area size for coherence.
-            Size descaledSize = new Size((int)((m_BackgroundSize.Width + m_LabelBackground.MarginWidth) / m_fStretchFactor), (int)((m_BackgroundSize.Height + m_LabelBackground.MarginHeight) / m_fStretchFactor));
-
-            GraphicsPath areaPath = new GraphicsPath();
-            areaPath.AddRectangle(new Rectangle(m_TopLeft.X, m_TopLeft.Y, descaledSize.Width, descaledSize.Height));
-
-            // Create region from the path
-            Region areaRegion = new Region(areaPath);
-
-            bool hit = areaRegion.IsVisible(_point);
-            return hit;
-        }
-        private void AutoSizeTextbox()
-        {
-            // We add a space at the end for when there is a new line with no characters in it.
-            Button but = new Button();
-            Graphics g = but.CreateGraphics();
-           
-            // Size of textbox, we don't use the actual font size (far too big)
-            Font f = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize);
-            SizeF edSize = g.MeasureString(m_Text + " ", f);
-            m_TextBox.Size = new Size((int)edSize.Width + 8, (int)edSize.Height);
-            f.Dispose();
-            g.Dispose();
-        }
-        private void DrawBackground(Graphics _canvas, double _fOpacityFactor)
-        {
-            // Draw background (Rounded rectangle)
-            // The radius for rounding is based on font size.
-            Font f = m_StyleHelper.GetFont((float)m_fStretchFactor);
-            m_BackgroundSize = _canvas.MeasureString(m_Text + " ", f);
-            int radius = (int)(f.Size / 2);
-            f.Dispose();
-            
-            m_LabelBackground.Draw(_canvas, _fOpacityFactor, radius, (int)m_BackgroundSize.Width, (int)m_BackgroundSize.Height, m_StyleHelper.Bicolor.Background);
-        }
-        
-        private Rectangle GetHandleRectangle()
-        {
-            // This function is only used for Hit Testing.
-            Size descaledSize = new Size((int)((m_BackgroundSize.Width + m_LabelBackground.MarginWidth) / m_fStretchFactor), (int)((m_BackgroundSize.Height + m_LabelBackground.MarginHeight) / m_fStretchFactor));
-
-            return new Rectangle(m_TopLeft.X + descaledSize.Width - 10, m_TopLeft.Y + descaledSize.Height - 10, 20, 20);
+            // Text changed or font size changed.
+            using(Button but = new Button())
+            using(Graphics g = but.CreateGraphics())
+            using(Font f = m_StyleHelper.GetFont(1F))
+            {
+                SizeF textSize = g.MeasureString(m_Text, f);
+                m_Background.Rectangle = new Rectangle(m_Background.Rectangle.Location, new Size((int)textSize.Width, (int)textSize.Height));
+                
+                // Also update the edit box size. (Use a fixed font though).
+                // The extra space is to account for blank new lines.
+                SizeF boxSize = g.MeasureString(m_Text + " ", m_TextBox.Font);
+                m_TextBox.Size = new Size((int)boxSize.Width + 10, (int)boxSize.Height);
+            }
         }
         #endregion
     }

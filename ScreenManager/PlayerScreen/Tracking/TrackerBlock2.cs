@@ -104,7 +104,7 @@ namespace Kinovea.ScreenManager
 			//---------------------------------------------------------------------
 				
 			TrackPointBlock lastTrackPoint = (TrackPointBlock)_previousPoints[_previousPoints.Count -1];
-			Point lastPoint = lastTrackPoint.ToPoint();
+			Point lastPoint = lastTrackPoint.Point;
 			
 			bool bMatched = false;
 			_currentPoint = null;
@@ -313,44 +313,19 @@ namespace Kinovea.ScreenManager
         	// We'll need to reconstruct it when we have the corresponding image.
         	return new TrackPointBlock(_x, _y, _t);
         }
-		public override void Draw(Graphics _canvas, AbstractTrackPoint _currentPoint, Point _directZoomTopLeft, double _fStretchFactor, Color _color, double _fOpacityFactor)
+		public override void Draw(Graphics _canvas, Point _point, CoordinateSystem _transformer, Color _color, double _fOpacityFactor)
 		{
-			// Draws a visual indication of the algorithm.
-			// This should help the user understand how the algorithm is working.
-			// The visual information may only make sense for dev purposes though.
-			
-			double fX = (((double)_currentPoint.X - (double)_directZoomTopLeft.X)  * _fStretchFactor);
-			double fY = (((double)_currentPoint.Y  - (double)_directZoomTopLeft.Y) * _fStretchFactor);
-			
-			// Current Search window.
-			int iSrchLeft = (int) (fX - (((double)m_SearchWindowSize.Width * _fStretchFactor) / 2));
-			int iSrchTop = (int) (fY - (((double)m_SearchWindowSize.Height * _fStretchFactor) / 2));
-            Rectangle SrchZone = new Rectangle(iSrchLeft, iSrchTop, (int)((double)m_SearchWindowSize.Width * _fStretchFactor), (int)((double)m_SearchWindowSize.Height * _fStretchFactor));
-            Pen tempPen = new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color));
-            _canvas.DrawRectangle(tempPen, SrchZone);
-            tempPen.Dispose();
-            
-            // Current Block.
-            int iTplLeft = (int) (fX - (((double)m_BlockSize.Width * _fStretchFactor) / 2));
-            int iTplTop = (int) (fY - (((double)m_BlockSize.Height * _fStretchFactor) / 2));
-            Rectangle TplZone = new Rectangle(iTplLeft, iTplTop, (int)((double)m_BlockSize.Width * _fStretchFactor), (int)((double)m_BlockSize.Height * _fStretchFactor));
-            Pen p = new Pen(Color.FromArgb((int)(192.0f * _fOpacityFactor), _color));
-            _canvas.DrawRectangle(p, TplZone);
-			p.Dispose();
-			
-			// Current Block's similarity.
-			/*Font f = new Font("Arial", 8, FontStyle.Regular);
-			String s = String.Format("{0:0.000}",((TrackPointBlock)_currentPoint).Similarity);
-			Brush b = new SolidBrush(Color.FromArgb((int)(255.0f * _fOpacityFactor), _color));
-			_canvas.DrawString(s, f, b, new PointF((float)iSrchLeft, (float)iSrchTop));
-			b.Dispose();
-			f.Dispose();*/
+			// Draw the search and template boxes around the point.
+			Point p = _transformer.Transform(_point);
+			using(Pen pen = new Pen(Color.FromArgb((int)(_fOpacityFactor * 192), _color)))
+			{
+                _canvas.DrawRectangle(pen, p.Box(_transformer.Transform(m_SearchWindowSize)));
+                _canvas.DrawRectangle(pen, p.Box(_transformer.Transform(m_BlockSize)));
+			}
 		}
 		public override Rectangle GetEditRectangle(Point _position)
 		{
-			// This is used to get a hit zone for the user to move the template around.
-			return new Rectangle(_position.X - m_SearchWindowSize.Width / 2, _position.Y - m_SearchWindowSize.Height / 2,
-			                     m_SearchWindowSize.Width, m_SearchWindowSize.Height);
+			return _position.Box(m_SearchWindowSize);
 		}
 		#endregion
 	}

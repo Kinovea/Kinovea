@@ -32,11 +32,20 @@ namespace Kinovea.ScreenManager
         private bool m_DropShape;
         #endregion
 
-        public void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush)
+        
+        /// <summary>
+        /// Draw a rounded rectangle on the provided canvas. 
+        /// The rectangle location and size is provided as a parameter, the internal values are not used.
+        /// This method is typically used after applying a transform to the original rectangle.
+        /// </summary>
+        /// <param name="_canvas">The graphics object on which to draw</param>
+        /// <param name="_rect">The rectangle specifications</param>
+        /// <param name="_brush">Brush to draw with</param>
+        /// <param name="_radius">Radius of the rounded corners</param>
+        public void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush, int _radius)
         {
-            // The rectangle size is computed in the caller.
-            int radius = (int)(_rect.Height / 4);
-            int diameter = radius * 2;
+            int radius = _radius;
+            int diameter = _radius * 2;
 
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();

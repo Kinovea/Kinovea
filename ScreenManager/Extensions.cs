@@ -17,6 +17,14 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
+        /// Get a bounding box around a point.
+        /// </summary>
+        public static Rectangle Box(this Point _point, Size _size)
+        {
+            return new Rectangle(_point.X - _size.Width/2, _point.Y - _size.Height/2, _size.Width, _size.Height);
+        }
+        
+        /// <summary>
         /// Translate a point by x pixels horizontally, y pixels vertically.
         /// </summary>
         public static Point Translate(this Point _point, int _x, int _y)
