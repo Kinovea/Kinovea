@@ -136,7 +136,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if(fOpacityFactor <= 0)
@@ -161,8 +161,8 @@ namespace Kinovea.ScreenManager
             if(m_bShowMeasure)
             {
             	// Text of the measure. (The helpers knows the unit)
-                m_LabelMeasure.Text = m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint);;
-                m_LabelMeasure.Draw(_canvas, _transformer.Scale, _transformer.Location, fOpacityFactor);
+            	m_LabelMeasure.SetText(m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint));
+                m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
         public override void MoveHandle(Point point, int handleNumber)
@@ -171,15 +171,15 @@ namespace Kinovea.ScreenManager
             {
             	case 1:
             		m_StartPoint = point;
-                    m_LabelMeasure.MoveTo(GetMiddlePoint());
+                    m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             		break;
             	case 2:
             		m_EndPoint = point;
-                    m_LabelMeasure.MoveTo(GetMiddlePoint());
+                    m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             		break;
             	case 3:
             		// Move the center of the mini label to the mouse coord.
-            		m_LabelMeasure.MoveLabel(point);
+            		m_LabelMeasure.SetLabel(point);
             		break;
             }
         }
@@ -191,7 +191,7 @@ namespace Kinovea.ScreenManager
             m_EndPoint.X += _deltaX;
             m_EndPoint.Y += _deltaY;
 
-            m_LabelMeasure.MoveTo(GetMiddlePoint());
+            m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
@@ -252,7 +252,7 @@ namespace Kinovea.ScreenManager
 			
 			_xmlReader.ReadEndElement();
             
-			m_LabelMeasure.MoveTo(GetMiddlePoint());
+			m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{

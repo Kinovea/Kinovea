@@ -3479,12 +3479,8 @@ namespace Kinovea.ScreenManager
 			// 1. Extra (non attached to any key image).
 			for (int i = 0; i < m_FrameServer.Metadata.ExtraDrawings.Count; i++)
 			{
-				m_FrameServer.Metadata.ExtraDrawings[i].Draw(_canvas,
-                                                             _transformer,
-				                                             _fStretchFactor * _fDirectZoomFactor, 
-				                                             (i == m_FrameServer.Metadata.SelectedExtraDrawing), 
-				                                             _iPosition, 
-				                                             _DirectZoomTopLeft);
+			    bool selected = (i == m_FrameServer.Metadata.SelectedExtraDrawing);
+				m_FrameServer.Metadata.ExtraDrawings[i].Draw(_canvas, _transformer, selected, _iPosition);
 			}
 			
 			// 2. Drawings attached to key images.
@@ -3502,7 +3498,7 @@ namespace Kinovea.ScreenManager
 					for (int idr = kf.Drawings.Count - 1; idr >= 0; idr--)
 					{
 						bool bSelected = (zOrder[ikf] == m_FrameServer.Metadata.SelectedDrawingFrame && idr == m_FrameServer.Metadata.SelectedDrawing);
-                        kf.Drawings[idr].Draw(_canvas, _transformer, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
+                        kf.Drawings[idr].Draw(_canvas, _transformer, bSelected, _iPosition);
 					}
 				}
 			}
@@ -3513,7 +3509,7 @@ namespace Kinovea.ScreenManager
 				for (int i = m_FrameServer.Metadata[_iKeyFrameIndex].Drawings.Count - 1; i >= 0; i--)
 				{
 					bool bSelected = (_iKeyFrameIndex == m_FrameServer.Metadata.SelectedDrawingFrame && i == m_FrameServer.Metadata.SelectedDrawing);
-                    m_FrameServer.Metadata[_iKeyFrameIndex].Drawings[i].Draw(_canvas, _transformer, _fStretchFactor * _fDirectZoomFactor, bSelected, _iPosition, _DirectZoomTopLeft);
+                    m_FrameServer.Metadata[_iKeyFrameIndex].Drawings[i].Draw(_canvas, _transformer, bSelected, _iPosition);
 				}
 			}
 			else

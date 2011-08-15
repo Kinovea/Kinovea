@@ -211,7 +211,7 @@ namespace Kinovea.ScreenManager
             {
 	            m_iBeginTimeStamp = _t;
 	            m_iEndTimeStamp = _t;
-	            m_MainLabel.MoveTo(_origin);
+	            m_MainLabel.SetAttach(_origin, true);
 	            
 	            // We use the InfosFading utility to fade the track away.
 	            // The refererence frame will be the last point (at which fading start).
@@ -241,7 +241,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft)
+        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
 		{
             if (_iCurrentTimestamp < m_iBeginTimeStamp)
                 return;
@@ -493,7 +493,7 @@ namespace Kinovea.ScreenManager
                 	   m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp, kl.Timestamp, m_iFocusFadingFrames)
                 	  )
                 	{
-                    	kl.Draw(_canvas, _transformer.Scale, _transformer.Location, _fFadingFactor);
+                    	kl.Draw(_canvas, _transformer, _fFadingFactor);
                 	}
                 }
             }
@@ -503,18 +503,18 @@ namespace Kinovea.ScreenManager
             // Draw the main label and its connector to the current point.
             if (_fFadingFactor == 1.0f)
             {
-                m_MainLabel.MoveTo(m_Positions[_iCurrentPoint].Point);
+                m_MainLabel.SetAttach(m_Positions[_iCurrentPoint].Point, true);
                 
                 if(m_TrackView == TrackView.Label)
                 {
-                	m_MainLabel.Text = m_MainLabelText;
+                    m_MainLabel.SetText(m_MainLabelText);
                 }
                 else
                 {
-                	m_MainLabel.Text = GetExtraDataText(_iCurrentPoint);
+                    m_MainLabel.SetText(GetExtraDataText(_iCurrentPoint));
                 }
                 
-                m_MainLabel.Draw(_canvas, _transformer.Scale, _transformer.Location, _fFadingFactor);
+                m_MainLabel.Draw(_canvas, _transformer, _fFadingFactor);
             }
         }
         private Pen GetTrackPen(TrackStatus _status, double _fFadingFactor, bool _before)
@@ -858,9 +858,9 @@ namespace Kinovea.ScreenManager
             	{
             		if(m_KeyframesLabels[i].Timestamp == current.T + m_iBeginTimeStamp)
             		{
-            			m_KeyframesLabels[i].MoveTo(current.Point);
+            			m_KeyframesLabels[i].SetAttach(current.Point, true);
 						if(m_TrackExtraData != TrackExtraData.None)
-            			 	m_KeyframesLabels[i].Text = GetExtraDataText(m_KeyframesLabels[i].AttachIndex);
+						    m_KeyframesLabels[i].SetText(GetExtraDataText(m_KeyframesLabels[i].AttachIndex));
             		}
             	}
             }
@@ -1005,8 +1005,8 @@ namespace Kinovea.ScreenManager
 			if (m_Positions.Count > 0)
             {
                 m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
-                m_MainLabel.AttachLocation = m_Positions[0].Point;
-                m_MainLabel.Text = Label;
+                m_MainLabel.SetAttach(m_Positions[0].Point, false);
+                m_MainLabel.SetText(Label);
                 
                 if(m_Positions.Count > 1 || 
                    m_Positions[0].X != 0 || 
@@ -1064,7 +1064,7 @@ namespace Kinovea.ScreenManager
                         int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, m_Positions, m_iBeginTimeStamp);
                         kfl.AttachIndex = iMatchedTrackPosition;
                         
-                        kfl.AttachLocation = m_Positions[iMatchedTrackPosition].Point;
+                        kfl.SetAttach(m_Positions[iMatchedTrackPosition].Point, false);
                         m_KeyframesLabels.Add(kfl);
                     }
                 }
@@ -1114,16 +1114,16 @@ namespace Kinovea.ScreenManager
                     if (iKnown >= 0)
                     {
                         // Known Keyframe, Read text again in case it changed
-                        m_KeyframesLabels[iKnown].Text = m_ParentMetadata[i].Title;
+                        m_KeyframesLabels[iKnown].SetText(m_ParentMetadata[i].Title);
                     }
                     else
                     {
                         // Unknown Keyframe, Configure and add it to list.
                         KeyframeLabel kfl = new KeyframeLabel();
                         kfl.AttachIndex = FindClosestPoint(m_ParentMetadata[i].Position);
-                        kfl.MoveTo(m_Positions[kfl.AttachIndex].Point);
+                        kfl.SetAttach(m_Positions[kfl.AttachIndex].Point, true);
                         kfl.Timestamp = m_Positions[kfl.AttachIndex].T + m_iBeginTimeStamp;                        
-                        kfl.Text = m_ParentMetadata[i].Title;
+                        kfl.SetText(m_ParentMetadata[i].Title);
                         
                         m_KeyframesLabels.Add(kfl);
                     }
@@ -1144,9 +1144,7 @@ namespace Kinovea.ScreenManager
             if(m_TrackExtraData != TrackExtraData.None)
             {
 	            for( int iKfl = 0; iKfl < m_KeyframesLabels.Count; iKfl++)
-	            {
-	            	m_KeyframesLabels[iKfl].Text = GetExtraDataText(m_KeyframesLabels[iKfl].AttachIndex);
-	            }	
+	                m_KeyframesLabels[iKfl].SetText(GetExtraDataText(m_KeyframesLabels[iKfl].AttachIndex));
             }
             
         }
@@ -1171,7 +1169,7 @@ namespace Kinovea.ScreenManager
         {
         	// Used by formConfigureTrajectory to be able to modify the trajectory in real time.
         	m_MemoTrackView = m_TrackView;
-        	m_MemoLabel = m_MainLabel.Text;
+        	m_MemoLabel = m_MainLabelText;
         }
         public void RecallState()
         {
@@ -1179,7 +1177,7 @@ namespace Kinovea.ScreenManager
         	// m_StyleHelper has been reverted already as part of style elements framework.
         	// This in turn triggered mainStyle_ValueChanged() event handler so the m_MainLabel has been reverted already too.
         	m_TrackView = m_MemoTrackView;
-        	m_MainLabel.Text = m_MemoLabel;
+        	m_MainLabelText = m_MemoLabel;
         }
         #endregion
 		

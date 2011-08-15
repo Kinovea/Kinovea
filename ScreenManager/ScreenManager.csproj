@@ -192,7 +192,6 @@
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
-    <Compile Include="PlayerScreen\Drawings\LabelBackground.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\Quadrilateral.cs" />
     <Compile Include="PlayerScreen\Drawings\RoundedRectangle.cs" />

@@ -69,11 +69,9 @@ namespace Kinovea.ScreenManager
         /// </summary>
         /// <param name="_canvas">The GDI+ surface on which to draw</param>
         /// <param name="_transformer">A helper object providing coordinate systems transformation</param>
-        /// <param name="_fStretchFactor">The scaling factor between the canvas and the original image size</param>
         /// <param name="_bSelected">Whether the drawing is currently selected</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
-        /// <param name="_DirectZoomTopLeft">The position of the zoom window relatively to the top left corner of the original image</param>
-        public abstract void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fStretchFactor, bool _bSelected, long _iCurrentTimestamp, Point _DirectZoomTopLeft);
+        public abstract void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.
