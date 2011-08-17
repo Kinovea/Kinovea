@@ -82,27 +82,11 @@ namespace Kinovea.ScreenManager
 			{
 				SizeF bgSize = _canvas.MeasureString(m_Message, m_Font);
 				bgSize = new SizeF(bgSize.Width, bgSize.Height + 3);
-				Point pos = new Point((int)(m_CanvasHolder.Width - bgSize.Width)/2, (int)(m_CanvasHolder.Height - bgSize.Height)/2);
-				
-				// 1. Draw background.
-				Rectangle bg = new Rectangle(pos.X - 5, pos.Y - 5, (int)bgSize.Width + 10, (int)bgSize.Height + 10);
+				PointF location = new PointF((m_CanvasHolder.Width - bgSize.Width)/2, (m_CanvasHolder.Height - bgSize.Height)/2);
+				RectangleF bg = new RectangleF(location.X - 5, location.Y - 5, bgSize.Width + 10, bgSize.Height + 5);
 	            int radius = (int)(m_Font.Size / 2);
-	            
-	            int diameter = radius * 2;
-				GraphicsPath gp = new GraphicsPath();
-	            gp.StartFigure();
-	            gp.AddArc(bg.X, bg.Y, diameter, diameter, 180, 90);
-            	gp.AddLine(bg.X + radius, bg.Y, bg.X + bg.Width - diameter, bg.Y);
-	            gp.AddArc(bg.X + bg.Width - diameter, bg.Y, diameter, diameter, 270, 90);
-	            gp.AddLine(bg.X + bg.Width, bg.Y + radius, bg.X + bg.Width, bg.Y + bg.Height - diameter);
-	            gp.AddArc(bg.X + bg.Width - diameter, bg.Y + bg.Height - diameter, diameter, diameter, 0, 90);
-	            gp.AddLine(bg.X + bg.Width - radius, bg.Y + bg.Height, bg.X + radius, bg.Y + bg.Height);
-	            gp.AddArc(bg.X, bg.Y + bg.Height - diameter, diameter, diameter, 90, 90);
-	            gp.AddLine(bg.X, bg.Y + bg.Height - radius, bg.X, bg.Y + radius);
-	            gp.CloseFigure();
-	            
-	            _canvas.FillPath(m_BackBrush, gp);
-	            _canvas.DrawString(m_Message, m_Font, m_ForeBrush, pos.X, pos.Y);
+	            RoundedRectangle.Draw(_canvas, bg, (SolidBrush)m_BackBrush, radius, false);
+	            _canvas.DrawString(m_Message, m_Font, m_ForeBrush, location.X, location.Y);
 			}
 		}
 		#endregion

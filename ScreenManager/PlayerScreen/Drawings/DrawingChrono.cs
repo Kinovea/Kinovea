@@ -210,7 +210,7 @@ namespace Kinovea.ScreenManager
                     {
                         SizeF lblTextSize = _canvas.MeasureString(m_Label, fontLabel);
                         Rectangle lblRect = new Rectangle(rect.Location.X, rect.Location.Y - (int)lblTextSize.Height, (int)lblTextSize.Width, (int)lblTextSize.Height);
-                        RoundedRectangle.Draw(_canvas, lblRect, brushBack, fontLabel.Height/2, true);
+                        RoundedRectangle.Draw(_canvas, lblRect, brushBack, fontLabel.Height/3, true);
                         _canvas.DrawString(m_Label, fontLabel, brushText, lblRect.Location);
                     }
                 }

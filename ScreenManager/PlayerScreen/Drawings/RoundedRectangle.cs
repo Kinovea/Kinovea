@@ -49,38 +49,29 @@ namespace Kinovea.ScreenManager
         /// <param name="_radius">Radius of the rounded corners</param>
         public static void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush, int _radius, bool _dropShape)
         {
-            int radius = _radius;
-            int diameter = _radius * 2;
-
+            float diameter = 2F * _radius;
+            RectangleF arc = new RectangleF(_rect.Location, new SizeF(diameter, diameter));
+        
             GraphicsPath gp = new GraphicsPath();
             gp.StartFigure();
-
-            if (_dropShape)
-            {
-                gp.AddLine(_rect.X, _rect.Y, _rect.X + _rect.Width - diameter, _rect.Y);
-            }
-            else
-            {
-                gp.AddArc(_rect.X, _rect.Y, diameter, diameter, 180, 90);
-                gp.AddLine(_rect.X + radius, _rect.Y, _rect.X + _rect.Width - diameter, _rect.Y);
-            }
             
-            gp.AddArc(_rect.X + _rect.Width - diameter, _rect.Y, diameter, diameter, 270, 90);
-            gp.AddLine(_rect.X + _rect.Width, _rect.Y + radius, _rect.X + _rect.Width, _rect.Y + _rect.Height);
-
-            if (_dropShape)
-            {
-                gp.AddLine(_rect.X + _rect.Width, _rect.Y + _rect.Height, _rect.X + radius, _rect.Y + _rect.Height);
-            }
+            if(_dropShape)
+                gp.AddLine(arc.Left, arc.Top, arc.Right, arc.Top);
             else
-            {
-                gp.AddArc(_rect.X + _rect.Width - diameter, _rect.Y + _rect.Height - diameter, diameter, diameter, 0, 90);
-                gp.AddLine(_rect.X + _rect.Width - radius, _rect.Y + _rect.Height, _rect.X + radius, _rect.Y + _rect.Height);
-            }
+                gp.AddArc(arc, 180, 90);
             
-            gp.AddArc(_rect.X, _rect.Y + _rect.Height - diameter, diameter, diameter, 90, 90);
-            gp.AddLine(_rect.X, _rect.Y + _rect.Height - radius, _rect.X, _rect.Y);
+            arc.X = _rect.Right - diameter;
+            gp.AddArc(arc, 270, 90);
 
+            arc.Y = _rect.Bottom - diameter;
+             if(_dropShape)
+                gp.AddLine(arc.Right, arc.Top, arc.Right, arc.Bottom);
+            else
+                gp.AddArc(arc, 0, 90);
+            
+            arc.X = _rect.Left;
+            gp.AddArc(arc, 90, 90);
+            
             gp.CloseFigure();
             _canvas.FillPath(_brush, gp);
         }
