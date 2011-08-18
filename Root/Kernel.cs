@@ -35,6 +35,7 @@ using Kinovea.Root.Languages;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
 using Kinovea.Updater;
+using Kinovea.Video;
 
 namespace Kinovea.Root
 {
@@ -116,6 +117,7 @@ namespace Kinovea.Root
             string[] args = Environment.GetCommandLineArgs();
             am.ParseArguments(args);
             
+            VideoTypeManager.LoadVideoReaders();
             BuildSubTree();
             MainWindow = new KinoveaMainWindow(this);
             
