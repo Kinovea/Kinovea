@@ -2657,7 +2657,7 @@ namespace Kinovea.ScreenManager
         	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
         	if (ps != null)
         	{
-        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.VideoReader.Current.Image, ps.FrameServer.Metadata);
+        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.VideoReader.CurrentImage, ps.FrameServer.Metadata);
 				fsto.StartPosition = FormStartPosition.CenterScreen;
 				fsto.ShowDialog();
 				fsto.Dispose();

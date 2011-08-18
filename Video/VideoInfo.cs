@@ -32,8 +32,6 @@ namespace Kinovea.Video
         public string FilePath;
         public Size DecodingSize;
         
-        
-        
         // Timing info
         public long AverageTimeStampsPerFrame;
         public double AverageTimeStampsPerSeconds;
