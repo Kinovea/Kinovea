@@ -68,6 +68,9 @@
     <Reference Include="ExpTreeLib">
       <HintPath>..\Refs\ExpTreeLib.dll</HintPath>
     </Reference>
+    <Reference Include="LinqBridge">
+      <HintPath>..\Refs\LinqBridge.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\log4net.dll</HintPath>
@@ -111,6 +114,10 @@
       <Name>Services</Name>
     </ProjectReference>
     <Folder Include="Commands" />
+    <ProjectReference Include="..\Video\Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\FileBrowserLang.de.resx">

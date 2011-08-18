@@ -31,9 +31,19 @@ namespace Kinovea.Video
     /// </summary>
     public static class VideoTypeManager
     {
+        #region Properties
+        public static IEnumerable<string> SupportedExtensions
+        {
+            get { return m_VideoReaders.Keys; }
+        }
+        #endregion
+        
+        #region Members
         private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
         
+        #region Public methods
         /// <summary>
         /// Find and register types implementing the VideoReader base class.
         /// </summary>
@@ -84,28 +94,28 @@ namespace Kinovea.Video
         /// Instanciate a video reader that supports the target extension.
         /// </summary>
         /// <param name="_extension"></param>
-        public static void GetVideoReader(string _extension)
+        public static VideoReader GetVideoReader(string _extension)
         {
-            // The FFMpeg plugin will support the wildcard extension as a fallback mechanism.
+            // The FFMpeg plugin will support the wildcard as a fallback mechanism.
             VideoReader reader = null;
             Type readerType;
-            bool found = m_VideoReaders.TryGetValue(_extension, readerType);
+            bool found = m_VideoReaders.TryGetValue(_extension, out readerType);
             
             if(!found)
-                found = m_VideoReaders.TryGetValue(".*", readerType);
+                found = m_VideoReaders.TryGetValue("*", out readerType);
             
             if(found)
             {
-                ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
+                ConstructorInfo ci = readerType.GetConstructor(System.Type.EmptyTypes);
                 if(ci != null)
                     reader = (VideoReader)Activator.CreateInstance(readerType, null);
             }
             
             return reader;
         }
+        #endregion
         
-        
-        #region Private Methods
+        #region Private methods
         private static void RegisterExtensions(string[] _extensions, Type _readerType)
         {
             log.DebugFormat("Registering extensions for {0} : {1}", _readerType.Name, string.Join("; ", _extensions));
