@@ -28,8 +28,10 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 using ExpTreeLib;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.FileBrowser
 {
@@ -46,18 +48,9 @@ namespace Kinovea.FileBrowser
 		private bool m_bExpanding;                // True if the exptree is currently auto expanding. To avoid reentry.
 		private bool m_bInitializing = true;
 		private PreferencesManager m_PreferencesManager = PreferencesManager.Instance();
-		
-		#region Context menu
 		private ContextMenuStrip  popMenu = new ContextMenuStrip();
 		private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
-		#endregion
-		
-		private static readonly string[] m_KnownFileTypes = { ".3gp", ".asf", ".avi", ".dv", ".flv", ".f4v", ".m1v", ".m2p", ".m2t",
-			".m2ts", ".mts", ".m2v", ".m4v", ".mkv", ".mod", ".mov", ".moov", ".mpg", ".mpeg", ".tod", ".mxf",
-			".mp4", ".mpv", ".ogg", ".ogm", ".ogv", ".qt", ".rm", ".swf", ".vob", ".webm", ".wmv",
-			".dpa", 
-			".jpg", ".jpeg", ".png", ".bmp", ".gif"	};
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -448,23 +441,7 @@ namespace Kinovea.FileBrowser
 		}
 		private bool IsKnownFileType(string extension)
 		{
-			// Check if the file is of known extension.
-			// All known extensions are kept in a static array.
-			
-			// Todo ?: load the known extensions from a file so we can add to them dynamically
-			// and the user can add or remove depending on his specific config ?
-			bool bIsKnown = false;
-
-			foreach (string known in m_KnownFileTypes)
-			{
-				if(extension.Equals(known, StringComparison.OrdinalIgnoreCase))
-				{
-					bIsKnown = true;
-					break;
-				}
-			}
-
-			return bIsKnown;
+		    return VideoTypeManager.SupportedExtensions.Any(knownExt => knownExt.Equals(extension, StringComparison.OrdinalIgnoreCase));
 		}
 		private void UpdateFileList(CShItem _Folder, ListView _ListView, bool _bRefreshThumbnails)
 		{
@@ -487,17 +464,14 @@ namespace Kinovea.FileBrowser
 				for (int i = 0; i < fileList.Count; i++)
 				{
 					CShItem shellItem = (CShItem)fileList[i];
-					
-					if (IsKnownFileType(Path.GetExtension(shellItem.Path)))
+					string extension = Path.GetExtension(shellItem.Path);
+					if (!string.IsNullOrEmpty(extension) && IsKnownFileType(extension))
 					{
 						ListViewItem lvi = new ListViewItem(shellItem.DisplayName);
 						
 						lvi.Tag = shellItem;
-						//lvi.ImageIndex = ExpTreeLib.SystemImageListManager.GetIconIndex(ref shellItem, false, false);
 						lvi.ImageIndex = 6;
-						
 						_ListView.Items.Add(lvi);
-						
 						fileNames.Add(shellItem.Path);
 					}
 				}
