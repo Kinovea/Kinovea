@@ -26,6 +26,7 @@ using System.Resources;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -71,7 +72,7 @@ namespace Kinovea.ScreenManager
 		{
 			get { return true;}
 		}
-		public override VideoFiles.AspectRatio AspectRatio
+		public override ImageAspectRatio AspectRatio
 		{
 			get { return m_FrameServer.AspectRatio; }
 			set { m_FrameServer.AspectRatio = value; }

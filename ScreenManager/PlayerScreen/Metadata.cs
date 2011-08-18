@@ -35,6 +35,7 @@ using System.Xml.Xsl;
 using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -213,14 +214,13 @@ namespace Kinovea.ScreenManager
             log.Debug("Constructing new Metadata object.");
             CleanupHash();
         }
-        public Metadata(string _kvaString,  int _iWidth, int _iHeight, long _iAverageTimestampPerFrame, String _FullPath, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
+        public Metadata(string _kvaString,  VideoInfo _info, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
 		{
             // Deserialization constructor
-            m_ImageSize = new Size(_iWidth, _iHeight);
-            AverageTimeStampsPerFrame = _iAverageTimestampPerFrame;
-            m_FullPath = _FullPath;
-                
+            m_ImageSize = _info.DecodingSize;
+            AverageTimeStampsPerFrame = _info.AverageTimeStampsPerFrame;
+            m_FullPath = _info.FilePath;
             Load(_kvaString, false);
 		}
         #endregion

@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
 			get { return m_CurrentCaptureFilePath; }
 			set { m_CurrentCaptureFilePath = value; }
 		}
-		public VideoFiles.AspectRatio AspectRatio
+		public ImageAspectRatio AspectRatio
 		{
 			get { return m_AspectRatio; }
 			set 
@@ -135,9 +135,8 @@ namespace Kinovea.ScreenManager
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_ImageToDisplay;
-		//private Bitmap m_PreviousImageDisplayed;
 		private Size m_ImageSize = new Size(720, 576);		
-		private VideoFiles.AspectRatio m_AspectRatio = VideoFiles.AspectRatio.AutoDetect;
+		private ImageAspectRatio m_AspectRatio = ImageAspectRatio.Auto;
 		private int m_iFrameIndex;		// The "age" we pull from, in the circular buffer.
 		private int m_iCurrentBufferFill;
 		
@@ -166,7 +165,7 @@ namespace Kinovea.ScreenManager
 		public FrameServerCapture()
 		{
 			m_FrameGrabber = new FrameGrabberAForge(this, m_FrameBuffer);
-			m_AspectRatio = (VideoFiles.AspectRatio)((int)PreferencesManager.Instance().AspectRatio);
+			m_AspectRatio = PreferencesManager.Instance().AspectRatio;
 			
 			IntPtr forceHandleCreation = m_DummyControl.Handle; // Needed to show that the main thread "owns" this Control.
 			m_EventFrameGrabbed = FrameGrabbed_Invoked;
@@ -490,7 +489,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 	
 		#region Private Methods
-		private void SetAspectRatio(VideoFiles.AspectRatio _aspectRatio, Size _size)
+		private void SetAspectRatio(ImageAspectRatio _aspectRatio, Size _size)
 		{
 			m_AspectRatio = _aspectRatio;
 			
@@ -500,14 +499,14 @@ namespace Kinovea.ScreenManager
 				
 				switch(_aspectRatio)
 				{
-					case AspectRatio.AutoDetect:
+					case ImageAspectRatio.Auto:
 					default:
 						newHeight = _size.Height;
 						break;
-					case AspectRatio.Force43:
+					case ImageAspectRatio.Force43:
 						newHeight = (_size.Width / 4) * 3;
 						break;
-					case AspectRatio.Force169:
+					case ImageAspectRatio.Force169:
 						newHeight = (_size.Width / 16) * 9;
 						break;
 				}

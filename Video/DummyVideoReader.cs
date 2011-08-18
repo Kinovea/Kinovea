@@ -26,8 +26,12 @@ namespace Kinovea.Video
     /// Dummy class to test the file type plugin system.
     /// </summary>
     [SupportedExtensions(new string[] {".avi", ".bmp"})]
-    public class DummyVideoReader : VideoReader
+    public class DummyVideoReader //: VideoReader
     {
+        /*public override bool Loaded
+        {
+            get { return false; }
+        }*/
         
     }
 }

@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager
 		{
 			get 
 			{
-				return (m_FrameServer.VideoFile.Infos.fFrameInterval / (m_fSlowmotionPercentage / 100));
+				return (m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds / (m_fSlowmotionPercentage / 100));
 			}
 		}
 		public double RealtimePercentage
@@ -399,15 +399,10 @@ namespace Kinovea.ScreenManager
 			EnableDisableSnapshot(_bEnable);
 			EnableDisableDrawingTools(_bEnable);
 			
-			if(_bEnable && m_FrameServer.Loaded && m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1)
-			{
-				// If we are in the special case of a one-frame video, disable playback controls.
+			if(_bEnable && m_FrameServer.Loaded && m_FrameServer.VideoReader.SingleFrame)
 				EnableDisableAllPlayingControls(false);
-			}
 			else
-			{
 				EnableDisableAllPlayingControls(_bEnable);				
-			}
 		}
 		public int PostLoadProcess()
 		{
@@ -419,7 +414,7 @@ namespace Kinovea.ScreenManager
 			int iPostLoadResult = 0;
 
 			// By default the filename of metadata will be the one of the video.
-			m_FrameServer.Metadata.FullPath = m_FrameServer.VideoFile.FilePath;
+			m_FrameServer.Metadata.FullPath = m_FrameServer.VideoReader.FilePath;
 			
 			// Try to get MetaData from file.
 			DemuxMetadata();
@@ -476,24 +471,28 @@ namespace Kinovea.ScreenManager
 					// Sans que cela soit répercuté sur iFirstTimeStamp...
 					// On fixe à la main.
 					//-----------------------------------------------------------------------------
-					m_FrameServer.VideoFile.Infos.iFirstTimeStamp = m_iCurrentPosition;
-					m_iStartingPosition = m_iCurrentPosition;
-					m_iTotalDuration = m_FrameServer.VideoFile.Infos.iDurationTimeStamps;
+					//if(m_iCurrentPosition > 0)
+					//   m_FrameServer.VideoReader.ForceFirstTimeStamp(m_iCurrentPosition);
 					
-					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
+					// FIXME: This should be the responsibility of the reader.
+					
+					
+					
+					m_iStartingPosition = m_iCurrentPosition;
+					m_iTotalDuration = m_FrameServer.VideoReader.Info.DurationTimeStamps;
+					
 					m_iSelStart     = m_iStartingPosition;
-					m_iSelEnd       = (long)((double)(m_iTotalDuration + m_iStartingPosition) - fAverageTimeStampsPerFrame);
+					//m_iSelEnd       = m_iStartingPosition + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+					m_iSelEnd = m_FrameServer.VideoReader.Selection.End;
 					m_iSelDuration  = m_iTotalDuration;
 					
-					// TODO Remove following call
-					//trkSelection.UpdateInternalState(m_iSelStart, m_iSelEnd, m_iSelStart, m_iSelEnd, m_iSelStart);
-
 					// Switch to analysis mode if possible.
 					// This will update the selection sentinels (m_iSelStart, m_iSelEnd) with more robust data.
 					ImportSelectionToMemory(false);
 
 					m_iCurrentPosition = m_iSelStart;
-					m_FrameServer.VideoFile.Infos.iFirstTimeStamp = m_iCurrentPosition;
+					// FIXME: This should be the responsibility of the reader.
+					//m_FrameServer.VideoReader.Infos.iFirstTimeStamp = m_iCurrentPosition;
 					m_iStartingPosition = m_iCurrentPosition;
 					m_iTotalDuration = m_iSelDuration;
 					
@@ -574,7 +573,7 @@ namespace Kinovea.ScreenManager
 			{
 				iCurrentKeyframe++;
 
-				if (kf.Position < (m_FrameServer.VideoFile.Infos.iFirstTimeStamp + m_FrameServer.VideoFile.Infos.iDurationTimeStamps))
+				if (kf.Position < (m_FrameServer.VideoReader.Info.FirstTimeStamp + m_FrameServer.VideoReader.Info.DurationTimeStamps))
 				{
 					// Goto frame.
 					m_iFramesToDecode = 1;
@@ -585,7 +584,7 @@ namespace Kinovea.ScreenManager
 
 					// Readjust and complete the Keyframe
 					kf.Position = m_iCurrentPosition;
-					kf.ImportImage(m_FrameServer.VideoFile.CurrentImage);
+					kf.ImportImage(m_FrameServer.VideoReader.Current.Image);
 					kf.GenerateDisabledThumbnail();
 
 					// EditBoxes
@@ -648,7 +647,7 @@ namespace Kinovea.ScreenManager
 			// Common position changed, we get a new frame to jump to.
 			// target frame may be over the total.
 
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				m_iFramesToDecode = 1;
 
@@ -662,7 +661,7 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					m_iCurrentPosition = _iFrame * m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame;
+					m_iCurrentPosition = _iFrame * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
 					m_iCurrentPosition += m_iSelStart;
 					
 					if (m_iCurrentPosition > m_iSelEnd) m_iCurrentPosition = m_iSelEnd;
@@ -684,10 +683,8 @@ namespace Kinovea.ScreenManager
 		public void RefreshImage()
 		{
 			// For cases where surfaceScreen.Invalidate() is not enough.
-			if (m_FrameServer.VideoFile.Loaded)
-			{
+			if (m_FrameServer.Loaded)
 				ShowNextFrame(m_iCurrentPosition, true);
-			}
 		}
 		public void RefreshUICulture()
 		{
@@ -777,7 +774,7 @@ namespace Kinovea.ScreenManager
 			bool bWasHandled = false;
 			
 			// Disabled completely if no video.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				// Method called from the Screen Manager's PreFilterMessage.
 				switch (_keycode)
@@ -905,7 +902,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void UpdateImageSize()
 		{
-			Size imageSize = new Size(m_FrameServer.VideoFile.Infos.iDecodingWidth, m_FrameServer.VideoFile.Infos.iDecodingHeight);
+			Size imageSize = m_FrameServer.VideoReader.Info.DecodingSize;
 			
 			m_FrameServer.Metadata.ImageSize = imageSize;
 			
@@ -930,52 +927,52 @@ namespace Kinovea.ScreenManager
 		{
 			// Add an image drawing from a file.
 			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
+			if(!m_FrameServer.Loaded)
+                return;
+
+            BeforeAddImageDrawing();
+		
+			if(File.Exists(_filename))
 			{
-				BeforeAddImageDrawing();
-			
-				if(File.Exists(_filename))
+				try
 				{
-					try
+					if(_bIsSvg)
 					{
-						if(_bIsSvg)
-						{
-							DrawingSVG dsvg = new DrawingSVG(m_FrameServer.Metadata.ImageSize.Width,
-							                                 m_FrameServer.Metadata.ImageSize.Height, 
-							                                 m_iCurrentPosition, 
-							                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-							                                 _filename);
-						
-    						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
-						}
-						else
-						{
-							DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.Metadata.ImageSize.Width,
-							                                 		m_FrameServer.Metadata.ImageSize.Height, 
-							                                 		m_iCurrentPosition, 
-							                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-							                                 		_filename);
-						
-							m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dbmp);	
-						}
+						DrawingSVG dsvg = new DrawingSVG(m_FrameServer.Metadata.ImageSize.Width,
+						                                 m_FrameServer.Metadata.ImageSize.Height, 
+						                                 m_iCurrentPosition, 
+						                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+						                                 _filename);
+					
+						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
 					}
-					catch
+					else
 					{
-						// An error occurred during the creation.
-						// example : external DTD an no network or invalid svg file.
-						// TODO: inform the user.
+						DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.Metadata.ImageSize.Width,
+						                                 		m_FrameServer.Metadata.ImageSize.Height, 
+						                                 		m_iCurrentPosition, 
+						                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
+						                                 		_filename);
+					
+						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dbmp);	
 					}
 				}
-				
-				AfterAddImageDrawing();
-			}	
+				catch
+				{
+					// An error occurred during the creation.
+					// example : external DTD an no network or invalid svg file.
+					// TODO: inform the user.
+				}
+			}
+			
+			AfterAddImageDrawing();
 		}
 		public void AddImageDrawing(Bitmap _bmp)
 		{
 			// Add an image drawing from a bitmap.
 			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
 			// TODO: use an actual DrawingTool class for this!?
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
+			if(m_FrameServer.Loaded)
 			{
 				BeforeAddImageDrawing();
 			
@@ -1124,18 +1121,10 @@ namespace Kinovea.ScreenManager
 		{
 			// Try to find metadata muxed inside the file and load it.
 			
-			String metadata = m_FrameServer.VideoFile.ReadMetadata();
-			
+			string metadata = m_FrameServer.VideoReader.Metadata;
 			if (metadata != null)
 			{
-			    m_FrameServer.Metadata = new Metadata(metadata, 
-                                                      m_FrameServer.VideoFile.Infos.iDecodingWidth,
-		                                              m_FrameServer.VideoFile.Infos.iDecodingHeight,
-		                                              m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame,
-		                                              m_FrameServer.VideoFile.FilePath,
-		                                              TimeStampsToTimecode,
-		                                              OnShowClosestFrame);
-			    
+			    m_FrameServer.Metadata = new Metadata(metadata, m_FrameServer.VideoReader.Info,  TimeStampsToTimecode, OnShowClosestFrame);
                 UpdateFramesMarkers();
 				OrganizeKeyframes();
 			}
@@ -1143,11 +1132,10 @@ namespace Kinovea.ScreenManager
 		private void SetupPrimarySelectionData()
 		{
 			// Setup data
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
-				double  fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
 				m_iSelStart = m_iStartingPosition;
-				m_iSelEnd = (long)((double)(m_iTotalDuration + m_iStartingPosition) - fAverageTimeStampsPerFrame);
+				m_iSelEnd = m_iStartingPosition + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
 				m_iSelDuration = m_iTotalDuration;
 			}
 			else
@@ -1193,8 +1181,8 @@ namespace Kinovea.ScreenManager
 			// Look for an Anlaysis with the same file name in the same directory.
 
 			// Complete path of hypothetical Analysis.
-			string kvaFile = Path.GetDirectoryName(m_FrameServer.VideoFile.FilePath);
-			kvaFile = kvaFile + "\\" + Path.GetFileNameWithoutExtension(m_FrameServer.VideoFile.FilePath) + ".kva";
+			string kvaFile = Path.GetDirectoryName(m_FrameServer.VideoReader.FilePath);
+			kvaFile = kvaFile + "\\" + Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + ".kva";
 			
 			if (File.Exists(kvaFile))
 			{
@@ -1203,7 +1191,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateFilenameLabel()
 		{
-			lblFileName.Text = Path.GetFileName(m_FrameServer.VideoFile.FilePath);
+			lblFileName.Text = Path.GetFileName(m_FrameServer.VideoReader.FilePath);
 		}
 		private void ShowHideResizers(bool _bShow)
 		{
@@ -1350,6 +1338,9 @@ namespace Kinovea.ScreenManager
 			// Output   : time in a specific format
 			//-------------------------
 
+			if(!m_FrameServer.Loaded)
+                return "0";
+
 			TimeCodeFormat tcf;
 			if (_timeCodeFormat == TimeCodeFormat.Unknown)
 			{
@@ -1371,20 +1362,9 @@ namespace Kinovea.ScreenManager
 			}
 
 			// timestamp to milliseconds. (Needed for most formats)
-			double fSeconds;
-
-			if (m_FrameServer.VideoFile.Loaded)
-				fSeconds = (double)iTimeStamp / m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds;
-			else
-				fSeconds = 0;
-
-			// m_fSlowFactor is different from 1.0f only when user specify that the capture fps
-			// was different than the playing fps. We readjust time.
+			double fSeconds = (double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
 			double fMilliseconds = (fSeconds * 1000) / m_fHighSpeedFactor;
-			
-			// If there are more than 100 frames per seconds, we display milliseconds.
-			// This can happen when the user manually tune the input fps.
-			bool bShowThousandth = (m_fHighSpeedFactor *  m_FrameServer.VideoFile.Infos.fFps >= 100);
+			bool bShowThousandth = m_fHighSpeedFactor *  m_FrameServer.VideoReader.Info.FramesPerSeconds >= 100;
 			
 			string outputTimeCode;
 			switch (tcf)
@@ -1393,14 +1373,7 @@ namespace Kinovea.ScreenManager
 					outputTimeCode = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					break;
 				case TimeCodeFormat.Frames:
-					if (m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
-					{
-						outputTimeCode = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) + 1);
-					}
-					else
-					{
-						outputTimeCode = String.Format("0");
-					}
+					outputTimeCode = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
 					break;
 				case TimeCodeFormat.Milliseconds:
 					outputTimeCode = String.Format("{0}", (int)Math.Round(fMilliseconds));
@@ -1418,9 +1391,9 @@ namespace Kinovea.ScreenManager
 				case TimeCodeFormat.TimeAndFrames:
 					String timeString = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					String frameString;
-					if (m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame != 0)
+					if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
 					{
-						frameString = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) + 1);
+						frameString = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
 					}
 					else
 					{
@@ -1483,17 +1456,17 @@ namespace Kinovea.ScreenManager
 			panelDebug.Visible = true;
 
 			dbgDurationTimeStamps.Text = String.Format("TotalDuration (ts): {0:0}", m_iTotalDuration);
-			dbgFFps.Text = String.Format("Fps Avg (f): {0:0.00}", m_FrameServer.VideoFile.Infos.fFps);
+			dbgFFps.Text = String.Format("Fps Avg (f): {0:0.00}", m_FrameServer.VideoReader.Info.FramesPerSeconds);
 			dbgSelectionStart.Text = String.Format("SelStart (ts): {0:0}", m_iSelStart);
 			dbgSelectionEnd.Text = String.Format("SelEnd (ts): {0:0}", m_iSelEnd);
 			dbgSelectionDuration.Text = String.Format("SelDuration (ts): {0:0}", m_iSelDuration);
 			dbgCurrentPositionAbs.Text = String.Format("CurrentPosition (abs, ts): {0:0}", m_iCurrentPosition);
 			dbgCurrentPositionRel.Text = String.Format("CurrentPosition (rel, ts): {0:0}", m_iCurrentPosition-m_iSelStart);
-			dbgStartOffset.Text = String.Format("StartOffset (ts): {0:0}", m_FrameServer.VideoFile.Infos.iFirstTimeStamp);
+			dbgStartOffset.Text = String.Format("StartOffset (ts): {0:0}", m_FrameServer.VideoReader.Info.FirstTimeStamp);
 			dbgDrops.Text = String.Format("Drops (f): {0:0}", m_iDroppedFrames);
 
-			dbgCurrentFrame.Text = String.Format("CurrentFrame (f): {0}", m_FrameServer.VideoFile.Selection.iCurrentFrame);
-			dbgDurationFrames.Text = String.Format("Duration (f) : {0}", m_FrameServer.VideoFile.Selection.iDurationFrame);
+			//dbgCurrentFrame.Text = String.Format("CurrentFrame (f): {0}", m_FrameServer.VideoReader.Current.t.iCurrentFrame);
+			//dbgDurationFrames.Text = String.Format("Duration (f) : {0}", m_FrameServer.VideoReader.Selection.iDurationFrame);
 
 			panelDebug.Invalidate();
 		}
@@ -1503,8 +1476,7 @@ namespace Kinovea.ScreenManager
 			log.Debug("");
 			log.Debug("Timestamps Full Dump");
 			log.Debug("--------------------");
-			double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
-			log.Debug("Average ts per frame     : " + fAverageTimeStampsPerFrame);
+			log.Debug("Average ts per frame     : " + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 			log.Debug("");
 			log.Debug("m_iStartingPosition      : " + m_iStartingPosition);
 			log.Debug("m_iTotalDuration         : " + m_iTotalDuration);
@@ -1532,7 +1504,7 @@ namespace Kinovea.ScreenManager
 		public void buttonGotoFirst_Click(object sender, EventArgs e)
 		{
 			// Jump to start.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				StopPlaying();
@@ -1549,7 +1521,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void buttonGotoPrevious_Click(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				StopPlaying();
@@ -1598,7 +1570,7 @@ namespace Kinovea.ScreenManager
 			// que l'on gère la NextFrame à afficher en fonction du ralentit,
 			// du mode de bouclage etc...
 			//----------------------------------------------------------------------------
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				OnButtonPlay();
@@ -1606,7 +1578,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void buttonGotoNext_Click(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				StopPlaying();
@@ -1635,7 +1607,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void buttonGotoLast_Click(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				StopPlaying();
@@ -1655,7 +1627,7 @@ namespace Kinovea.ScreenManager
 			// This function is accessed from ScreenManager.
 			// Eventually from a worker thread. (no SetAsActiveScreen here).
 			//--------------------------------------------------------------
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				if (m_bIsCurrentlyPlaying)
 				{
@@ -1729,7 +1701,7 @@ namespace Kinovea.ScreenManager
 		#region Working Zone Selection
 		private void trkSelection_SelectionChanging(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -1747,7 +1719,7 @@ namespace Kinovea.ScreenManager
 		private void trkSelection_SelectionChanged(object sender, EventArgs e)
 		{
 			// Actual update.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				UpdateSelectionDataFromControl();
 				ImportSelectionToMemory(false);
@@ -1758,7 +1730,7 @@ namespace Kinovea.ScreenManager
 		private void trkSelection_TargetAcquired(object sender, EventArgs e)
 		{
 			// User clicked inside selection: Jump to position.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				StopPlaying();
@@ -1779,7 +1751,7 @@ namespace Kinovea.ScreenManager
 		private void btn_HandlersLock_Click(object sender, EventArgs e)
 		{
 			// Lock the selection handlers.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				m_bHandlersLocked = !m_bHandlersLocked;
 				trkSelection.SelLocked = m_bHandlersLocked;
@@ -1800,7 +1772,7 @@ namespace Kinovea.ScreenManager
 		private void btnSetHandlerLeft_Click(object sender, EventArgs e)
 		{
 			// Set the left handler of the selection at the current frame.
-			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
+			if (m_FrameServer.Loaded && !m_bHandlersLocked)
 			{
 				trkSelection.SelStart = m_iCurrentPosition;
 				UpdateSelectionDataFromControl();
@@ -1814,7 +1786,7 @@ namespace Kinovea.ScreenManager
 		private void btnSetHandlerRight_Click(object sender, EventArgs e)
 		{
 			// Set the right handler of the selection at the current frame.
-			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
+			if (m_FrameServer.Loaded && !m_bHandlersLocked)
 			{
 				trkSelection.SelEnd = m_iCurrentPosition;
 				UpdateSelectionDataFromControl();
@@ -1828,7 +1800,7 @@ namespace Kinovea.ScreenManager
 		private void btnHandlersReset_Click(object sender, EventArgs e)
 		{
 			// Reset both selection sentinels to their max values.
-			if (m_FrameServer.VideoFile.Loaded && !m_bHandlersLocked)
+			if (m_FrameServer.Loaded && !m_bHandlersLocked)
 			{
 				trkSelection.Reset();
 				UpdateSelectionDataFromControl();
@@ -1848,10 +1820,10 @@ namespace Kinovea.ScreenManager
 			// jumps to closest sentinel otherwise.
 			//--------------------------------------------------------------
 			
-			if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+			if (m_FrameServer.VideoReader.Caching)
 			{
 				// In analysis mode, we always refresh the current frame.
-				ShowNextFrame(m_FrameServer.VideoFile.Selection.iCurrentFrame, true);
+//ShowNextFrame(m_FrameServer.VideoReader.Selection.iCurrentFrame, true);
 			}
 			else
 			{
@@ -1882,8 +1854,11 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateSelectionLabels()
 		{
-			lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(m_iSelStart - m_iStartingPosition, m_PrefManager.TimeCodeFormat, false);
-			lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(m_iSelDuration, m_PrefManager.TimeCodeFormat, false);
+		    if(m_FrameServer.Loaded)
+		    {
+                lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(m_iSelStart - m_iStartingPosition, m_PrefManager.TimeCodeFormat, false);
+                lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(m_iSelDuration, m_PrefManager.TimeCodeFormat, false);
+		    }
 		}
 		private void UpdateSelectionDataFromControl()
 		{
@@ -1892,8 +1867,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_iSelStart = trkSelection.SelStart;
 				m_iSelEnd = trkSelection.SelEnd;
-				double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
-				m_iSelDuration = m_iSelEnd - m_iSelStart + (long)fAverageTimeStampsPerFrame;
+				m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
 			}
 		}
 		private void AfterSelectionChanged()
@@ -1917,7 +1891,7 @@ namespace Kinovea.ScreenManager
 		private void trkFrame_PositionChanging(object sender, PositionChangedEventArgs e)
 		{
 			// This one should only fire during analysis mode.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				// Update image but do not touch cursor, as the user is manipulating it.
 				// If the position needs to be adjusted to an actual timestamp, it'll be done later.
@@ -1929,7 +1903,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 				StopPlaying();
@@ -1948,27 +1922,22 @@ namespace Kinovea.ScreenManager
 		{
 			// Displays the image corresponding to the current position within working zone.
 			// Trigerred by user (or first load). i.e: cursor moved, show frame.
-			if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 0)
-			{
-				// We may have to decode a few images so show hourglass.
+			if (!m_FrameServer.VideoReader.Caching)
 				this.Cursor = Cursors.WaitCursor;
-			}
 
 			m_iCurrentPosition = trkFrame.Position;
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iCurrentPosition, true);
 
+            // The following may readjust the cursor in case the mouse wasn't on a valid timestamp value.
 			if (_bUpdateNavCursor)
-			{
-				// This may readjust the cursor in case the mouse wasn't on a valid timestamp value.
 				UpdateNavigationCursor();
-			}
-			if (m_bShowInfos) { UpdateDebugInfos(); }
 
-			if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 0)
-			{
+            if (m_bShowInfos)
+                UpdateDebugInfos();
+
+			if (!m_FrameServer.VideoReader.Caching)
 				this.Cursor = Cursors.Default;
-			}
 		}
 		private void UpdateCurrentPositionLabel()
 		{
@@ -1991,7 +1960,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_fSlowmotionPercentage = sldrSpeed.Value > 0 ? sldrSpeed.Value : 1;
 			
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				// Reset timer with new value.
 				if (m_bIsCurrentlyPlaying)
@@ -2009,7 +1978,7 @@ namespace Kinovea.ScreenManager
 		private void sldrSpeed_KeyDown(object sender, KeyEventArgs e)
 		{
 			// Increase/Decrease speed on UP/DOWN Arrows.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				int jumpFactor = 25;
 				if( (ModifierKeys & Keys.Control) == Keys.Control)
@@ -2064,7 +2033,7 @@ namespace Kinovea.ScreenManager
 		private void buttonPlayingMode_Click(object sender, EventArgs e)
 		{
 			// Playback mode ('Once' or 'Loop').
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				OnPoke();
 
@@ -2113,8 +2082,8 @@ namespace Kinovea.ScreenManager
 				// Check if the stretch factor is not going to outsize the panel.
 				// If so, force maximized, unless screen is smaller than video.
 				//---------------------------------------------------------------
-				int iTargetHeight = (int)((double)m_FrameServer.VideoFile.Infos.iDecodingHeight * m_FrameServer.CoordinateSystem.Stretch);
-				int iTargetWidth = (int)((double)m_FrameServer.VideoFile.Infos.iDecodingWidth * m_FrameServer.CoordinateSystem.Stretch);
+				int iTargetHeight = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
+				int iTargetWidth = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
 				
 				if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
 				{
@@ -2124,25 +2093,25 @@ namespace Kinovea.ScreenManager
 					}
 				}
 				
-				if ((m_bStretchModeOn) || (m_FrameServer.VideoFile.Infos.iDecodingWidth > panelCenter.Width) || (m_FrameServer.VideoFile.Infos.iDecodingHeight > panelCenter.Height))
+				if ((m_bStretchModeOn) || (m_FrameServer.VideoReader.Info.DecodingSize.Width > panelCenter.Width) || (m_FrameServer.VideoReader.Info.DecodingSize.Height > panelCenter.Height))
 				{
 					//-------------------------------------------------------------------------------
 					// Maximiser :
 					//Redimensionner l'image selon la dimension la plus proche de la taille du panel.
 					//-------------------------------------------------------------------------------
-					float WidthRatio = (float)m_FrameServer.VideoFile.Infos.iDecodingWidth / panelCenter.Width;
-					float HeightRatio = (float)m_FrameServer.VideoFile.Infos.iDecodingHeight / panelCenter.Height;
+					float WidthRatio = (float)m_FrameServer.VideoReader.Info.DecodingSize.Width / panelCenter.Width;
+					float HeightRatio = (float)m_FrameServer.VideoReader.Info.DecodingSize.Height / panelCenter.Height;
 					
 					if (WidthRatio > HeightRatio)
 					{
 						pbSurfaceScreen.Width = panelCenter.Width;
-						pbSurfaceScreen.Height = (int)((float)m_FrameServer.VideoFile.Infos.iDecodingHeight / WidthRatio);
+						pbSurfaceScreen.Height = (int)((float)m_FrameServer.VideoReader.Info.DecodingSize.Height / WidthRatio);
 						
 						m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
 					}
 					else
 					{
-						pbSurfaceScreen.Width = (int)((float)m_FrameServer.VideoFile.Infos.iDecodingWidth / HeightRatio);
+						pbSurfaceScreen.Width = (int)((float)m_FrameServer.VideoReader.Info.DecodingSize.Width / HeightRatio);
 						pbSurfaceScreen.Height = panelCenter.Height;
 						
 						m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
@@ -2150,9 +2119,8 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					
-					pbSurfaceScreen.Width = (int)((double)m_FrameServer.VideoFile.Infos.iDecodingWidth * m_FrameServer.CoordinateSystem.Stretch);
-					pbSurfaceScreen.Height = (int)((double)m_FrameServer.VideoFile.Infos.iDecodingHeight * m_FrameServer.CoordinateSystem.Stretch);
+					pbSurfaceScreen.Width = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
+					pbSurfaceScreen.Height = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
 				}
 				
 				// Center
@@ -2232,17 +2200,14 @@ namespace Kinovea.ScreenManager
 		}
 		private void ResizeImage(int _iTargetWidth, int _iTargetHeight)
 		{
-			//-------------------------------------------------------------------
-			// Resize at the following condition:
-			// Bigger than original image size, smaller than panel size.
-			//-------------------------------------------------------------------
-			if (_iTargetHeight > m_FrameServer.VideoFile.Infos.iDecodingHeight &&
+			// Resize only if : Bigger than original image size, smaller than panel size.
+			if (_iTargetHeight > m_FrameServer.VideoReader.Info.DecodingSize.Height &&
 			    _iTargetHeight < panelCenter.Height &&
-			    _iTargetWidth > m_FrameServer.VideoFile.Infos.iDecodingWidth &&
+			    _iTargetWidth > m_FrameServer.VideoReader.Info.DecodingSize.Width &&
 			    _iTargetWidth < panelCenter.Width)
 			{
-				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoFile.Infos.iDecodingHeight);
-				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoFile.Infos.iDecodingWidth);
+				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.DecodingSize.Height);
+				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.DecodingSize.Width);
 
 				m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
 				m_bStretchModeOn = false;
@@ -2290,7 +2255,7 @@ namespace Kinovea.ScreenManager
 		private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
 		{
 			// We comes here more often than we should, by bunches.
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				BeginInvoke(m_PlayLoop);
 			}
@@ -2324,7 +2289,7 @@ namespace Kinovea.ScreenManager
 			// Si c'est le cas, on stoppe la lecture pour rewind.
 			// m_iFramesToDecode est toujours strictement positif. (Car on est en Play)
 			//----------------------------------------------------------------------------
-			long iTargetPosition = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
+			long iTargetPosition = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 
 			if ((iTargetPosition > m_iSelEnd) || (iTargetPosition >= (m_iStartingPosition + m_iTotalDuration)))
 			{
@@ -2474,12 +2439,12 @@ namespace Kinovea.ScreenManager
 			//m_Stopwatch.Reset();
 			//m_Stopwatch.Start();
 				
-			ReadResult res = m_FrameServer.VideoFile.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
-			
+//ReadResult res = m_FrameServer.VideoReader.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
+			ReadResult res = ReadResult.FrameNotRead;
 			if (res == ReadResult.Success)
 			{
 				m_iDecodedFrames++;
-				m_iCurrentPosition = m_FrameServer.VideoFile.Selection.iCurrentTimeStamp;
+				m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 				
 				// Compute or stop tracking
 				if (m_FrameServer.Metadata.HasTrack())
@@ -2497,7 +2462,7 @@ namespace Kinovea.ScreenManager
 							Track t = ad as Track;
 							if (t != null && t.Status == TrackStatus.Edit)
 							{
-								t.TrackCurrentPosition(m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage);
+								t.TrackCurrentPosition(m_iCurrentPosition, m_FrameServer.VideoReader.Current.Image);
 							}
 						}
 					}
@@ -2582,7 +2547,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void StopPlaying(bool _bAllowUIUpdate)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				if (m_bIsCurrentlyPlaying)
 				{
@@ -2615,7 +2580,7 @@ namespace Kinovea.ScreenManager
 			// Display the dialog box that let the user specify the capture speed.
 			// Used to adpat time for high speed cameras.
 			//--------------------------------------------------------------------
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				DelegatesPool dp = DelegatesPool.Instance();
 				if (dp.DeactivateKeyboardHandler != null)
@@ -2623,7 +2588,7 @@ namespace Kinovea.ScreenManager
 					dp.DeactivateKeyboardHandler();
 				}
 
-				formConfigureSpeed fcs = new formConfigureSpeed(m_FrameServer.VideoFile.Infos.fFps, m_fHighSpeedFactor);
+				formConfigureSpeed fcs = new formConfigureSpeed(m_FrameServer.VideoReader.Info.FramesPerSeconds, m_fHighSpeedFactor);
 				if (_center)
 				{
 					fcs.StartPosition = FormStartPosition.CenterScreen;
@@ -2651,7 +2616,7 @@ namespace Kinovea.ScreenManager
 				UpdateCurrentPositionLabel();
 				UpdateSpeedLabel();
 				m_PlayerScreenUIHandler.PlayerScreenUI_SpeedChanged(true);
-				m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoFile.Infos.fFps * m_fHighSpeedFactor;
+				m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoReader.Info.FramesPerSeconds * m_fHighSpeedFactor;
 				DoInvalidate();
 			}
 		}
@@ -2659,9 +2624,9 @@ namespace Kinovea.ScreenManager
 		{
 			// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
 			// m_iSlowmotionPercentage must be > 0.
-			if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0 && m_fSlowmotionPercentage > 0)
+			if (m_FrameServer.Loaded && m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds > 0 && m_fSlowmotionPercentage > 0)
 			{
-				return (m_FrameServer.VideoFile.Infos.fFrameInterval / ((double)m_fSlowmotionPercentage / 100.0));
+				return (m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds / ((double)m_fSlowmotionPercentage / 100.0));
 			}
 			else
 			{
@@ -2791,299 +2756,296 @@ namespace Kinovea.ScreenManager
 		#region SurfaceScreen Events
 		private void SurfaceScreen_MouseDown(object sender, MouseEventArgs e)
 		{
-			if(m_FrameServer.VideoFile != null)
+		    if(!m_FrameServer.Loaded)
+                return;
+                
+			m_DeselectionTimer.Stop();
+			
+			if (e.Button == MouseButtons.Left)
 			{
-				if (m_FrameServer.VideoFile.Loaded)
+				// Magnifier can be moved even when the video is playing.
+				bool bWasPlaying = false;
+				
+				if (m_bIsCurrentlyPlaying)
 				{
-					m_DeselectionTimer.Stop();
-					
-					if (e.Button == MouseButtons.Left)
+					if ( (m_ActiveTool == m_PointerTool)      &&
+					    (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible) &&
+					    (m_FrameServer.Metadata.Magnifier.IsOnObject(e)))
 					{
-						// Magnifier can be moved even when the video is playing.
-						bool bWasPlaying = false;
+						m_FrameServer.Metadata.Magnifier.OnMouseDown(e);
+					}
+					else
+					{
+						// MouseDown while playing: Halt the video.
+						StopPlaying();
+						m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+						ActivateKeyframe(m_iCurrentPosition);
+						bWasPlaying = true;
+						ToastPause();
+					}
+				}
+				
+				
+				if (!m_bIsCurrentlyPlaying && !m_bDrawtimeFiltered)
+				{
+					//-------------------------------------
+					// Action begins:
+					// Move or set magnifier
+					// Move or set Drawing
+					// Move or set Chrono / Track
+					//-------------------------------------
+					
+					m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+					
+					// 1. Pass all DrawingText to normal mode
+					m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+					
+					if (m_ActiveTool == m_PointerTool)
+					{
+						// 1. Manipulating an object or Magnifier
+						bool bMovingMagnifier = false;
+						bool bDrawingHit = false;
 						
-						if (m_bIsCurrentlyPlaying)
+						// Show the grabbing hand cursor.
+						SetCursor(m_PointerTool.GetCursor(1));
+						
+						if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
 						{
-							if ( (m_ActiveTool == m_PointerTool)      &&
-							    (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible) &&
-							    (m_FrameServer.Metadata.Magnifier.IsOnObject(e)))
-							{
-								m_FrameServer.Metadata.Magnifier.OnMouseDown(e);
-							}
-							else
-							{
-								// MouseDown while playing: Halt the video.
-								StopPlaying();
-								m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-								ActivateKeyframe(m_iCurrentPosition);
-								bWasPlaying = true;
-								ToastPause();
-							}
+							bMovingMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(e);
 						}
 						
-						
-						if (!m_bIsCurrentlyPlaying && !m_bDrawtimeFiltered)
+						if (!bMovingMagnifier)
 						{
-							//-------------------------------------
-							// Action begins:
-							// Move or set magnifier
-							// Move or set Drawing
-							// Move or set Chrono / Track
-							//-------------------------------------
+							// Magnifier wasn't hit or is not in use,
+							// try drawings (including chronos, grids, etc.)
+							bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
+						}
+						
+						if (!bDrawingHit && !bWasPlaying)
+						{
+							// MouseDown in arbitrary location and we were halted already.
 							
-							m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
-							
-							// 1. Pass all DrawingText to normal mode
-							m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-							
-							if (m_ActiveTool == m_PointerTool)
-							{
-								// 1. Manipulating an object or Magnifier
-								bool bMovingMagnifier = false;
-								bool bDrawingHit = false;
-								
-								// Show the grabbing hand cursor.
-								SetCursor(m_PointerTool.GetCursor(1));
-								
-								if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
-								{
-									bMovingMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(e);
-								}
-								
-								if (!bMovingMagnifier)
-								{
-									// Magnifier wasn't hit or is not in use,
-									// try drawings (including chronos, grids, etc.)
-									bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
-								}
-								
-								if (!bDrawingHit && !bWasPlaying)
-								{
-									// MouseDown in arbitrary location and we were halted already.
-									
-									// We cannot restart the video here because this MouseDown may actually be the start
-									// of a double click. (expand screen)
-								}
-							}
-							else if (m_ActiveTool == ToolManager.Chrono)
-							{
-								// Add a Chrono.
-								DrawingChrono chrono = (DrawingChrono)m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
-								m_FrameServer.Metadata.AddChrono(chrono);
-								m_ActiveTool = m_PointerTool;
-							}
-							else
-							{
-								//-----------------------
-								// Creating a new Drawing
-								//-----------------------
-								m_FrameServer.Metadata.SelectedExtraDrawing = -1;
-								
-								// Add a KeyFrame here if it doesn't exist.
-								AddKeyframe();
-								
-								if (m_ActiveTool != ToolManager.Label)
-								{
-									// Add an instance of a drawing from the active tool to the current keyframe.
-									// The drawing is initialized with the current mouse coordinates.
-									AbstractDrawing ad = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
-									
-									m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(ad);
-									m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
-									m_FrameServer.Metadata.SelectedDrawing = 0;
-									
-									// Post creation hacks.
-									if(ad is DrawingLine2D)
-									{
-										((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
-										((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
-									}
-									else if(ad is DrawingCross2D)
-									{
-										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
-										((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
-									}
-									else if(ad is DrawingPlane)
-									{
-									    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, new Point(0,0));
-									}
-								}
-								else
-								{
-									// We are using the Text Tool. This is a special case because
-									// if we are on an existing Textbox, we just go into edit mode
-									// otherwise, we add and setup a new textbox.
-									bool bEdit = false;
-									foreach (AbstractDrawing ad in m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings)
-									{
-										if (ad is DrawingText)
-										{
-											int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition);
-											if (hitRes >= 0)
-											{
-												bEdit = true;
-												((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
-											}
-										}
-									}
-									
-									// If we are not on an existing textbox : create new DrawingText.
-									if (!bEdit)
-									{
-										m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
-										m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
-										m_FrameServer.Metadata.SelectedDrawing = 0;
-										
-										DrawingText dt = (DrawingText)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0];
-										
-										dt.ContainerScreen = pbSurfaceScreen;
-										dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
-										panelCenter.Controls.Add(dt.EditBox);
-										dt.EditBox.BringToFront();
-										dt.EditBox.Focus();
-									}
-								}
-							}
+							// We cannot restart the video here because this MouseDown may actually be the start
+							// of a double click. (expand screen)
 						}
 					}
-					else if (e.Button == MouseButtons.Right)
+					else if (m_ActiveTool == ToolManager.Chrono)
 					{
-						// Show the right Pop Menu depending on context.
-						// (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
+						// Add a Chrono.
+						DrawingChrono chrono = (DrawingChrono)m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+						m_FrameServer.Metadata.AddChrono(chrono);
+						m_ActiveTool = m_PointerTool;
+					}
+					else
+					{
+						//-----------------------
+						// Creating a new Drawing
+						//-----------------------
+						m_FrameServer.Metadata.SelectedExtraDrawing = -1;
 						
-						m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+						// Add a KeyFrame here if it doesn't exist.
+						AddKeyframe();
 						
-						if (!m_bIsCurrentlyPlaying)
+						if (m_ActiveTool != ToolManager.Label)
 						{
-							m_FrameServer.Metadata.UnselectAll();
-							AbstractDrawing hitDrawing = null;
-								
-							if(m_bDrawtimeFiltered)
+							// Add an instance of a drawing from the active tool to the current keyframe.
+							// The drawing is initialized with the current mouse coordinates.
+							AbstractDrawing ad = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+							
+							m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(ad);
+							m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
+							m_FrameServer.Metadata.SelectedDrawing = 0;
+							
+							// Post creation hacks.
+							if(ad is DrawingLine2D)
 							{
-								mnuDirectTrack.Visible = false;
-								mnuSendPic.Visible = false;
-								panelCenter.ContextMenuStrip = popMenu;
+								((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
+								((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
 							}
-							else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+							else if(ad is DrawingCross2D)
 							{
-								// Rebuild the context menu according to the capabilities of the drawing we are on.
-								
-								AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
-								if(ad != null)
-								{
-									popMenuDrawings.Items.Clear();
-									
-									// Generic context menu from drawing capabilities.
-									if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
-									{
-									   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-									   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
-									}
-									   
-									if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
-									{
-										mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
-									   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
-									}
-										
-									if(m_PrefManager.DefaultFading.Enabled && ((ad.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
-									{
-										popMenuDrawings.Items.Add(mnuConfigureFading);
-									}
-									
-									if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
-									{
-										popMenuDrawings.Items.Add(mnuConfigureOpacity);
-									}
-									
-									popMenuDrawings.Items.Add(mnuSepDrawing);
-
-									// Specific menus. Hosted by the drawing itself.
-									bool hasExtraMenu = (ad.ContextMenu != null && ad.ContextMenu.Count > 0);
-									if(hasExtraMenu)
-									{
-										foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
-										{
-											tsmi.Tag = (Action)DoInvalidate;	// Inject dependency on this screen's invalidate method.
-											popMenuDrawings.Items.Add(tsmi);
-										}
-									}
-									
-									bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
-									if(gotoVisible)
-										popMenuDrawings.Items.Add(mnuGotoKeyframe);
-									
-									if(hasExtraMenu || gotoVisible)
-										popMenuDrawings.Items.Add(mnuSepDrawing2);
-										
-									// Generic delete
-									popMenuDrawings.Items.Add(mnuDeleteDrawing);
-									
-									// Set this menu as the context menu.
-									panelCenter.ContextMenuStrip = popMenuDrawings;
-								}
-							} 
-							else if( (hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
-							{ 
-								// Unlike attached drawings, each extra drawing type has its own context menu for now.
-								
-								if(hitDrawing is DrawingChrono)
-								{
-									// Toggle to countdown is active only if we have a stop time.
-									mnuChronoCountdown.Enabled = ((DrawingChrono)hitDrawing).HasTimeStop;
-									mnuChronoCountdown.Checked = ((DrawingChrono)hitDrawing).CountDown;
-									panelCenter.ContextMenuStrip = popMenuChrono;
-								}
-								else if(hitDrawing is Track)
-								{
-									if (((Track)hitDrawing).Status == TrackStatus.Edit)
-									{
-										mnuStopTracking.Visible = true;
-										mnuRestartTracking.Visible = false;
-									}
-									else
-									{
-										mnuStopTracking.Visible = false;
-										mnuRestartTracking.Visible = true;
-									}	
-									
-									panelCenter.ContextMenuStrip = popMenuTrack;
-								}
-								
+								((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
+								((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
 							}
-							else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(e))
+							else if(ad is DrawingPlane)
 							{
-								panelCenter.ContextMenuStrip = popMenuMagnifier;
-							}
-							else if(m_ActiveTool != m_PointerTool)
-							{
-								// Launch FormToolPreset.
-								FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
-								ScreenManagerKernel.LocateForm(ftp);
-								ftp.ShowDialog();
-								ftp.Dispose();
-								UpdateCursor();
-							}
-							else
-							{
-								// No drawing touched and no tool selected, but not currently playing. Default menu.
-								mnuDirectTrack.Visible = true;
-								mnuSendPic.Visible = m_bSynched;
-								panelCenter.ContextMenuStrip = popMenu;
+							    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, new Point(0,0));
 							}
 						}
 						else
 						{
-							// Currently playing.
-							mnuDirectTrack.Visible = false;
-							mnuSendPic.Visible = false;
-							panelCenter.ContextMenuStrip = popMenu;
+							// We are using the Text Tool. This is a special case because
+							// if we are on an existing Textbox, we just go into edit mode
+							// otherwise, we add and setup a new textbox.
+							bool bEdit = false;
+							foreach (AbstractDrawing ad in m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings)
+							{
+								if (ad is DrawingText)
+								{
+									int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition);
+									if (hitRes >= 0)
+									{
+										bEdit = true;
+										((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
+									}
+								}
+							}
+							
+							// If we are not on an existing textbox : create new DrawingText.
+							if (!bEdit)
+							{
+								m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
+								m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
+								m_FrameServer.Metadata.SelectedDrawing = 0;
+								
+								DrawingText dt = (DrawingText)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0];
+								
+								dt.ContainerScreen = pbSurfaceScreen;
+								dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
+								panelCenter.Controls.Add(dt.EditBox);
+								dt.EditBox.BringToFront();
+								dt.EditBox.Focus();
+							}
 						}
 					}
-					
-					DoInvalidate();
 				}
 			}
+			else if (e.Button == MouseButtons.Right)
+			{
+				// Show the right Pop Menu depending on context.
+				// (Drawing, Trajectory, Chronometer, Magnifier, Nothing)
+				
+				m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+				
+				if (!m_bIsCurrentlyPlaying)
+				{
+					m_FrameServer.Metadata.UnselectAll();
+					AbstractDrawing hitDrawing = null;
+						
+					if(m_bDrawtimeFiltered)
+					{
+						mnuDirectTrack.Visible = false;
+						mnuSendPic.Visible = false;
+						panelCenter.ContextMenuStrip = popMenu;
+					}
+					else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+					{
+						// Rebuild the context menu according to the capabilities of the drawing we are on.
+						
+						AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
+						if(ad != null)
+						{
+							popMenuDrawings.Items.Clear();
+							
+							// Generic context menu from drawing capabilities.
+							if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
+							{
+							   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
+							   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
+							}
+							   
+							if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
+							{
+								mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+							   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
+							}
+								
+							if(m_PrefManager.DefaultFading.Enabled && ((ad.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
+							{
+								popMenuDrawings.Items.Add(mnuConfigureFading);
+							}
+							
+							if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
+							{
+								popMenuDrawings.Items.Add(mnuConfigureOpacity);
+							}
+							
+							popMenuDrawings.Items.Add(mnuSepDrawing);
+
+							// Specific menus. Hosted by the drawing itself.
+							bool hasExtraMenu = (ad.ContextMenu != null && ad.ContextMenu.Count > 0);
+							if(hasExtraMenu)
+							{
+								foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
+								{
+									tsmi.Tag = (Action)DoInvalidate;	// Inject dependency on this screen's invalidate method.
+									popMenuDrawings.Items.Add(tsmi);
+								}
+							}
+							
+							bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
+							if(gotoVisible)
+								popMenuDrawings.Items.Add(mnuGotoKeyframe);
+							
+							if(hasExtraMenu || gotoVisible)
+								popMenuDrawings.Items.Add(mnuSepDrawing2);
+								
+							// Generic delete
+							popMenuDrawings.Items.Add(mnuDeleteDrawing);
+							
+							// Set this menu as the context menu.
+							panelCenter.ContextMenuStrip = popMenuDrawings;
+						}
+					} 
+					else if( (hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
+					{ 
+						// Unlike attached drawings, each extra drawing type has its own context menu for now.
+						
+						if(hitDrawing is DrawingChrono)
+						{
+							// Toggle to countdown is active only if we have a stop time.
+							mnuChronoCountdown.Enabled = ((DrawingChrono)hitDrawing).HasTimeStop;
+							mnuChronoCountdown.Checked = ((DrawingChrono)hitDrawing).CountDown;
+							panelCenter.ContextMenuStrip = popMenuChrono;
+						}
+						else if(hitDrawing is Track)
+						{
+							if (((Track)hitDrawing).Status == TrackStatus.Edit)
+							{
+								mnuStopTracking.Visible = true;
+								mnuRestartTracking.Visible = false;
+							}
+							else
+							{
+								mnuStopTracking.Visible = false;
+								mnuRestartTracking.Visible = true;
+							}	
+							
+							panelCenter.ContextMenuStrip = popMenuTrack;
+						}
+						
+					}
+					else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(e))
+					{
+						panelCenter.ContextMenuStrip = popMenuMagnifier;
+					}
+					else if(m_ActiveTool != m_PointerTool)
+					{
+						// Launch FormToolPreset.
+						FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
+						ScreenManagerKernel.LocateForm(ftp);
+						ftp.ShowDialog();
+						ftp.Dispose();
+						UpdateCursor();
+					}
+					else
+					{
+						// No drawing touched and no tool selected, but not currently playing. Default menu.
+						mnuDirectTrack.Visible = true;
+						mnuSendPic.Visible = m_bSynched;
+						panelCenter.ContextMenuStrip = popMenu;
+					}
+				}
+				else
+				{
+					// Currently playing.
+					mnuDirectTrack.Visible = false;
+					mnuSendPic.Visible = false;
+					panelCenter.ContextMenuStrip = popMenu;
+				}
+			}
+			
+			DoInvalidate();
 		}
 		private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -3092,213 +3054,210 @@ namespace Kinovea.ScreenManager
 			// When creating a drawing, the active tool will stay on this drawing until its setup is over.
 			// After the drawing is created, we either fall back to Pointer tool or stay on the same tool.
 
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded)
+			if(!m_FrameServer.Loaded)
+                return;
+                
+			if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
 			{
-				if (e.Button == MouseButtons.None && m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
+				m_FrameServer.Metadata.Magnifier.MouseX = e.X;
+				m_FrameServer.Metadata.Magnifier.MouseY = e.Y;
+				
+				if (!m_bIsCurrentlyPlaying)
 				{
-					m_FrameServer.Metadata.Magnifier.MouseX = e.X;
-					m_FrameServer.Metadata.Magnifier.MouseY = e.Y;
-					
-					if (!m_bIsCurrentlyPlaying)
-					{
-						DoInvalidate();
-					}
-				}
-				else if (e.Button == MouseButtons.Left)
-				{
-					if (m_ActiveTool != m_PointerTool)
-					{
-						// Tools that are not IInitializable should reset to Pointer tool after creation.
-						if (m_iActiveKeyFrameIndex >= 0 && !m_bIsCurrentlyPlaying)
-						{
-							// Currently setting the second point of a Drawing.
-							IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0] as IInitializable;
-							if(initializableDrawing != null)
-							{
-								initializableDrawing.ContinueSetup(m_FrameServer.CoordinateSystem.Untransform(new Point(e.X, e.Y)));
-							}
-						}
-					}
-					else
-					{
-						bool bMovingMagnifier = false;
-						if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
-						{
-							bMovingMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseMove(e);
-						}
-						
-						if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
-						{
-							if (!m_bIsCurrentlyPlaying)
-							{
-								m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
-								
-								// Magnifier is not being moved or is invisible, try drawings through pointer tool.
-								// (including chronos, tracks and grids)
-								bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
-								
-								if (!bMovingObject)
-								{
-									// User is not moving anything: move the whole image.
-									// This may not have any effect if we try to move outside the original size and not in "free move" mode.
-									
-									// Get mouse deltas (descaled=in image coords).
-									double fDeltaX = (double)m_PointerTool.MouseDelta.X;
-									double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
-									
-									if(m_FrameServer.Metadata.Mirrored)
-									{
-										fDeltaX = -fDeltaX;
-									}
-									
-									m_FrameServer.CoordinateSystem.MoveZoomWindow(fDeltaX, fDeltaY);
-								}
-							}
-						}
-					}
-					
-					if (!m_bIsCurrentlyPlaying)
-					{
-						DoInvalidate();
-					}
+					DoInvalidate();
 				}
 			}
+			else if (e.Button == MouseButtons.Left)
+			{
+				if (m_ActiveTool != m_PointerTool)
+				{
+					// Tools that are not IInitializable should reset to Pointer tool after creation.
+					if (m_iActiveKeyFrameIndex >= 0 && !m_bIsCurrentlyPlaying)
+					{
+						// Currently setting the second point of a Drawing.
+						IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0] as IInitializable;
+						if(initializableDrawing != null)
+						{
+							initializableDrawing.ContinueSetup(m_FrameServer.CoordinateSystem.Untransform(new Point(e.X, e.Y)));
+						}
+					}
+				}
+				else
+				{
+					bool bMovingMagnifier = false;
+					if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect)
+					{
+						bMovingMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseMove(e);
+					}
+					
+					if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
+					{
+						if (!m_bIsCurrentlyPlaying)
+						{
+							m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+							
+							// Magnifier is not being moved or is invisible, try drawings through pointer tool.
+							// (including chronos, tracks and grids)
+							bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
+							
+							if (!bMovingObject)
+							{
+								// User is not moving anything: move the whole image.
+								// This may not have any effect if we try to move outside the original size and not in "free move" mode.
+								
+								// Get mouse deltas (descaled=in image coords).
+								double fDeltaX = (double)m_PointerTool.MouseDelta.X;
+								double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
+								
+								if(m_FrameServer.Metadata.Mirrored)
+								{
+									fDeltaX = -fDeltaX;
+								}
+								
+								m_FrameServer.CoordinateSystem.MoveZoomWindow(fDeltaX, fDeltaY);
+							}
+						}
+					}
+				}
+				
+				if (!m_bIsCurrentlyPlaying)
+				{
+					DoInvalidate();
+				}
+            }
 		}
 		private void SurfaceScreen_MouseUp(object sender, MouseEventArgs e)
 		{
 			// End of an action.
 			// Depending on the active tool we have various things to do.
 			
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded && e.Button == MouseButtons.Left)
-			{
-				if (m_ActiveTool == m_PointerTool)
-				{
-					OnPoke();
-					
-					// Update tracks with current image and pos.
-					m_FrameServer.Metadata.UpdateTrackPoint(m_FrameServer.VideoFile.CurrentImage);
-					
-					// Report for synchro and merge to update image in the other screen.
-					ReportForSyncMerge();
-				}
-				
-				m_FrameServer.Metadata.Magnifier.OnMouseUp(e);
-				
-				// Memorize the action we just finished to enable undo.
-				if(m_ActiveTool == ToolManager.Chrono)
-				{
-					IUndoableCommand cac = new CommandAddChrono(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
-					CommandManager cm = CommandManager.Instance();
-					cm.LaunchUndoableCommand(cac);
-				}
-				else if (m_ActiveTool != m_PointerTool && m_iActiveKeyFrameIndex >= 0)
-				{
-					// Record the adding unless we are editing a text box.
-					if (!m_bTextEdit)
-					{
-						IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
-						CommandManager cm = CommandManager.Instance();
-						cm.LaunchUndoableCommand(cad);
-						
-						// Deselect the drawing we just added.
-						m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-						m_FrameServer.Metadata.SelectedDrawing = -1;
-					}
-					else
-					{
-						m_bTextEdit = false;
-					}
-				}
-				
-				// The fact that we stay on this tool or fall back to pointer tool, depends on the tool.
-				m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
-				
-				if (m_ActiveTool == m_PointerTool)
-				{
-					SetCursor(m_PointerTool.GetCursor(0));
-					m_PointerTool.OnMouseUp();
-					
-					// If we were resizing an SVG drawing, trigger a render.
-					// TODO: this is currently triggered on every mouse up, not only on resize !
-					int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
-					int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
-					if(selectedFrame != -1 && selectedDrawing  != -1)
-					{
-						DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
-						if(d != null)
-						{
-							d.ResizeFinished();
-						}
-					}
-				}
-				
-				if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
-				{
-					m_DeselectionTimer.Start();					
-				}
-				
-				DoInvalidate();
-			}
-		}
-		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if(m_FrameServer.VideoFile != null &&
-			   m_FrameServer.VideoFile.Loaded &&
-			   e.Button == MouseButtons.Left &&
-			   m_ActiveTool == m_PointerTool)
+			if(!m_FrameServer.Loaded || e.Button != MouseButtons.Left)
+                return;
+                
+			if (m_ActiveTool == m_PointerTool)
 			{
 				OnPoke();
 				
-				m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
-				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-				m_FrameServer.Metadata.UnselectAll();
+				// Update tracks with current image and pos.
+				m_FrameServer.Metadata.UpdateTrackPoint(m_FrameServer.VideoReader.Current.Image);
 				
-				AbstractDrawing hitDrawing = null;
-				
-				//------------------------------------------------------------------------------------
-				// - If on text, switch to edit mode.
-				// - If on other drawing, launch the configuration dialog.
-				// - Otherwise -> Maximize/Reduce image.
-				//------------------------------------------------------------------------------------
-				if(m_bDrawtimeFiltered)
+				// Report for synchro and merge to update image in the other screen.
+				ReportForSyncMerge();
+			}
+			
+			m_FrameServer.Metadata.Magnifier.OnMouseUp(e);
+			
+			// Memorize the action we just finished to enable undo.
+			if(m_ActiveTool == ToolManager.Chrono)
+			{
+				IUndoableCommand cac = new CommandAddChrono(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
+				CommandManager cm = CommandManager.Instance();
+				cm.LaunchUndoableCommand(cac);
+			}
+			else if (m_ActiveTool != m_PointerTool && m_iActiveKeyFrameIndex >= 0)
+			{
+				// Record the adding unless we are editing a text box.
+				if (!m_bTextEdit)
 				{
-					ToggleStretchMode();	
-				}
-				else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
-				{
-					// Double click on a drawing:
-					// turn text tool into edit mode, launch config for others, SVG don't have a config.
-					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
-					if (ad is DrawingText)
-					{
-						((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
-						m_ActiveTool = ToolManager.Label;
-						m_bTextEdit = true;
-					}
-					else if(ad is DrawingSVG || ad is DrawingBitmap)
-					{
-						mnuConfigureOpacity_Click(null, EventArgs.Empty);
-					}
-					else
-					{
-						mnuConfigureDrawing_Click(null, EventArgs.Empty);
-					}
-				}
-				else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
-				{
-					if(hitDrawing is DrawingChrono)
-					{
-						mnuChronoConfigure_Click(null, EventArgs.Empty);	
-					}
-					else if(hitDrawing is Track)
-					{
-						mnuConfigureTrajectory_Click(null, EventArgs.Empty);	
-					}
+					IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Position);
+					CommandManager cm = CommandManager.Instance();
+					cm.LaunchUndoableCommand(cad);
+					
+					// Deselect the drawing we just added.
+					m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+					m_FrameServer.Metadata.SelectedDrawing = -1;
 				}
 				else
 				{
-					ToggleStretchMode();
+					m_bTextEdit = false;
 				}
+			}
+			
+			// The fact that we stay on this tool or fall back to pointer tool, depends on the tool.
+			m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
+			
+			if (m_ActiveTool == m_PointerTool)
+			{
+				SetCursor(m_PointerTool.GetCursor(0));
+				m_PointerTool.OnMouseUp();
+				
+				// If we were resizing an SVG drawing, trigger a render.
+				// TODO: this is currently triggered on every mouse up, not only on resize !
+				int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
+				int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
+				if(selectedFrame != -1 && selectedDrawing  != -1)
+				{
+					DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
+					if(d != null)
+					{
+						d.ResizeFinished();
+					}
+				}
+			}
+			
+			if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
+			{
+				m_DeselectionTimer.Start();					
+			}
+			
+			DoInvalidate();
+		}
+		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if(!m_FrameServer.Loaded || e.Button != MouseButtons.Left || m_ActiveTool != m_PointerTool)
+                return;
+                
+			OnPoke();
+			
+			m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+			m_FrameServer.Metadata.UnselectAll();
+			
+			AbstractDrawing hitDrawing = null;
+			
+			//------------------------------------------------------------------------------------
+			// - If on text, switch to edit mode.
+			// - If on other drawing, launch the configuration dialog.
+			// - Otherwise -> Maximize/Reduce image.
+			//------------------------------------------------------------------------------------
+			if(m_bDrawtimeFiltered)
+			{
+				ToggleStretchMode();	
+			}
+			else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
+			{
+				// Double click on a drawing:
+				// turn text tool into edit mode, launch config for others, SVG don't have a config.
+				AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
+				if (ad is DrawingText)
+				{
+					((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
+					m_ActiveTool = ToolManager.Label;
+					m_bTextEdit = true;
+				}
+				else if(ad is DrawingSVG || ad is DrawingBitmap)
+				{
+					mnuConfigureOpacity_Click(null, EventArgs.Empty);
+				}
+				else
+				{
+					mnuConfigureDrawing_Click(null, EventArgs.Empty);
+				}
+			}
+			else if((hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
+			{
+				if(hitDrawing is DrawingChrono)
+				{
+					mnuChronoConfigure_Click(null, EventArgs.Empty);	
+				}
+				else if(hitDrawing is Track)
+				{
+					mnuConfigureTrajectory_Click(null, EventArgs.Empty);	
+				}
+			}
+			else
+			{
+				ToggleStretchMode();
 			}
 		}
 		private void SurfaceScreen_Paint(object sender, PaintEventArgs e)
@@ -3307,64 +3266,60 @@ namespace Kinovea.ScreenManager
 			// We always draw at full SurfaceScreen size.
 			// It is the SurfaceScreen itself that is resized if needed.
 			//-------------------------------------------------------------------
-			if(m_FrameServer.VideoFile != null && m_FrameServer.VideoFile.Loaded && !m_DualSaveInProgress)
+			if(!m_FrameServer.Loaded || m_DualSaveInProgress)
+                return;
+                
+			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 			{
-				if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
+				m_DrawingFilterOutput.Draw(e.Graphics, pbSurfaceScreen.Size, m_DrawingFilterOutput.PrivateData);
+			}
+			else if(m_FrameServer.VideoReader.Current.Image != null)
+			{
+				try
 				{
-					m_DrawingFilterOutput.Draw(e.Graphics, pbSurfaceScreen.Size, m_DrawingFilterOutput.PrivateData);
-				}
-				else if(m_FrameServer.VideoFile.CurrentImage != null)
-				{
-					try
+					//m_Stopwatch.Reset();
+					//m_Stopwatch.Start();
+					
+					// If we are on a keyframe, see if it has any drawing.
+					int iKeyFrameIndex = -1;
+					if (m_iActiveKeyFrameIndex >= 0)
 					{
-						//m_Stopwatch.Reset();
-						//m_Stopwatch.Start();
-						
-						// If we are on a keyframe, see if it has any drawing.
-						int iKeyFrameIndex = -1;
-						if (m_iActiveKeyFrameIndex >= 0)
+						if (m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
 						{
-							if (m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
-							{
-								iKeyFrameIndex = m_iActiveKeyFrameIndex;
-							}
+							iKeyFrameIndex = m_iActiveKeyFrameIndex;
 						}
-						
-						FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
-						
-						if(m_MessageToaster.Enabled)
-						{
-							m_MessageToaster.Draw(e.Graphics);
-						}
-						
-						//m_Stopwatch.Stop();
-            			//log.Debug(String.Format("Paint: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
 					}
-					catch (System.InvalidOperationException)
+					
+					FlushOnGraphics(m_FrameServer.VideoReader.Current.Image, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
+					
+					if(m_MessageToaster.Enabled)
 					{
-						log.Error("Error while painting image. Object is currently in use elsewhere... ATI Drivers ?");
+						m_MessageToaster.Draw(e.Graphics);
 					}
-					catch (Exception exp)
-					{
-						log.Error("Error while painting image.");
-						log.Error(exp.Message);
-						log.Error(exp.StackTrace);
-					}
-					finally
-					{
-						// Nothing more to do.
-					}
+					
+					//m_Stopwatch.Stop();
+        			//log.Debug(String.Format("Paint: {0} ms.", m_Stopwatch.ElapsedMilliseconds));
 				}
-				else
+				catch (System.InvalidOperationException)
 				{
-					log.Debug("Painting screen - no image to display.");
+					log.Error("Error while painting image. Object is currently in use elsewhere... ATI Drivers ?");
 				}
-				
-				// Draw Selection Border if needed.
-				if (m_bShowImageBorder)
+				catch (Exception exp)
 				{
-					DrawImageBorder(e.Graphics);
+					log.Error("Error while painting image.");
+					log.Error(exp.Message);
+					log.Error(exp.StackTrace);
 				}
+			}
+			else
+			{
+				log.Debug("Painting screen - no image to display.");
+			}
+			
+			// Draw Selection Border if needed.
+			if (m_bShowImageBorder)
+			{
+				DrawImageBorder(e.Graphics);
 			}
 		}
 		private void SurfaceScreen_MouseEnter(object sender, EventArgs e)
@@ -3572,7 +3527,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnAddKeyframe_Click(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				AddKeyframe();
 
@@ -3806,7 +3761,7 @@ namespace Kinovea.ScreenManager
 			// Public because called from CommandAddKeyframe.Execute()
 			// Title becomes the current timecode. (relative to sel start or sel minimum ?)
 			
-			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.VideoFile.CurrentImage, m_FrameServer.Metadata);
+			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.VideoReader.Current.Image, m_FrameServer.Metadata);
 			
 			if (_iPosition != m_iCurrentPosition)
 			{
@@ -3818,7 +3773,7 @@ namespace Kinovea.ScreenManager
 				trkSelection.SelPos = trkFrame.Position;
 
 				// Readjust and complete the Keyframe
-				kf.ImportImage(m_FrameServer.VideoFile.CurrentImage);
+				kf.ImportImage(m_FrameServer.VideoReader.Current.Image);
 			}
 
 			m_FrameServer.Metadata.Add(kf);
@@ -3879,7 +3834,7 @@ namespace Kinovea.ScreenManager
 			{
 				if (kf.Position >= m_iSelStart && kf.Position <= m_iSelEnd)
 				{
-					kf.ImportImage(m_FrameServer.VideoFile.FrameList[(int)m_FrameServer.VideoFile.GetFrameNumber(kf.Position)].BmpImage);
+//kf.ImportImage(m_FrameServer.VideoReader.FrameList[(int)m_FrameServer.VideoReader.GetFrameNumber(kf.Position)].BmpImage);
 					kf.GenerateDisabledThumbnail();
 					bAtLeastOne = true;
 				}
@@ -3895,7 +3850,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void pnlThumbnails_DoubleClick(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				// On double click in the thumbs panel : Add a keyframe at current pos.
 				AddKeyframe();
@@ -4028,7 +3983,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void btnMagnifier_Click(object sender, EventArgs e)
 		{
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				m_ActiveTool = m_PointerTool;
 
@@ -4059,7 +4014,7 @@ namespace Kinovea.ScreenManager
 		{
 			OnPoke();
 
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
 				// If the video is currently playing, the comments are not visible.
 				// We stop the video and show them.
@@ -4136,7 +4091,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Track the point. No Cross2D was selected.
 			// m_DescaledMouse would have been set during the MouseDown event.
-			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
+			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Current.Image, m_FrameServer.VideoReader.Current.Image.Size);
 			m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get from track tool.
 			
 			// Return to the pointer tool.
@@ -4148,7 +4103,7 @@ namespace Kinovea.ScreenManager
 		private void mnuSendPic_Click(object sender, EventArgs e)
 		{
 			// Send the current image to the other screen for conversion into an observational reference.
-			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
+			if(m_bSynched && m_FrameServer.VideoReader.Current.Image != null)
 			{
 				Bitmap img = CloneTransformedImage();
 				m_PlayerScreenUIHandler.PlayerScreenUI_SendImage(img);	
@@ -4252,7 +4207,7 @@ namespace Kinovea.ScreenManager
 					DrawingCross2D dc = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing] as DrawingCross2D;
 					if(dc != null)
 					{
-						Track trk = new Track(dc.Center, m_iCurrentPosition, m_FrameServer.VideoFile.CurrentImage, m_FrameServer.VideoFile.CurrentImage.Size);
+						Track trk = new Track(dc.Center, m_iCurrentPosition, m_FrameServer.VideoReader.Current.Image, m_FrameServer.VideoReader.Current.Image.Size);
 						m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, dc.PenColor);
 						
 						// Suppress the point as a Drawing (?)
@@ -4624,7 +4579,7 @@ namespace Kinovea.ScreenManager
 			// We have to re-apply the transformations here, because when drawing in this screen we draw directly on the canvas.
 			// (there is no intermediate image that we could reuse here, this might be a future optimization).
 			// We need to clone it anyway, so we might aswell do the transform.
-			if(m_bSynched && m_FrameServer.VideoFile.CurrentImage != null)
+			if(m_bSynched && m_FrameServer.VideoReader.Current.Image != null)
 			{
 				Bitmap img = CloneTransformedImage();
 				m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
@@ -4632,7 +4587,7 @@ namespace Kinovea.ScreenManager
 		}
 		private Bitmap CloneTransformedImage()
 		{
-			Size imgSize = new Size(m_FrameServer.VideoFile.CurrentImage.Size.Width, m_FrameServer.VideoFile.CurrentImage.Size.Height);
+			Size imgSize = new Size(m_FrameServer.VideoReader.Current.Image.Size.Width, m_FrameServer.VideoReader.Current.Image.Size.Height);
 			Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
 			Graphics g = Graphics.FromImage(img);
 			
@@ -4646,7 +4601,7 @@ namespace Kinovea.ScreenManager
 				rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
 			}
 			
-			g.DrawImage(m_FrameServer.VideoFile.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+			g.DrawImage(m_FrameServer.VideoReader.Current.Image, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
 			return img;
 		}
 		#endregion
@@ -4717,17 +4672,17 @@ namespace Kinovea.ScreenManager
 			//
 			// Public because accessed from PlayerServer.Deinterlace property
 			//-------------------------------------------------------------------------------------
-			if (m_FrameServer.VideoFile.Loaded)
+			if (m_FrameServer.Loaded)
 			{
-				if (m_FrameServer.VideoFile.CanExtractToMemory(m_iSelStart, m_iSelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory))
+				/*if (m_FrameServer.VideoReader.CanExtractToMemory(m_iSelStart, m_iSelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory))
 				{
 					StopPlaying();
 					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 					
-					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoFile, m_iSelStart, m_iSelEnd, _bForceReload);
+					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoReader, m_iSelStart, m_iSelEnd, _bForceReload);
 					ffi.ShowDialog();
 					
-					if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 0)
+					if (m_FrameServer.VideoReader.Selection.iAnalysisMode == 0)
 					{
 						// It didn't work. (Operation canceled, or failed).
 						log.Debug("Extract to memory canceled or failed, reload first frame.");
@@ -4739,20 +4694,20 @@ namespace Kinovea.ScreenManager
 					ffi.Dispose();
 					
 				}
-				else if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				else if (m_FrameServer.VideoReader.Selection.iAnalysisMode == 1)
 				{
 					// Exiting Analysis mode.
 					// TODO - free memory for images now ?
-					m_FrameServer.VideoFile.Selection.iAnalysisMode = 0;
-				}
+					m_FrameServer.VideoReader.Selection.iAnalysisMode = 0;
+				}*/
 
 				// Here, we may have changed mode.
-				if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				/*if (m_FrameServer.VideoReader.Caching)
 				{
 					// We now have solid facts. Update all variables with them.
-					m_iSelStart = m_FrameServer.VideoFile.GetTimeStamp(0);
-					m_iSelEnd = m_FrameServer.VideoFile.GetTimeStamp(m_FrameServer.VideoFile.Selection.iDurationFrame - 1);
-					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
+					m_iSelStart = m_FrameServer.VideoReader.GetTimeStamp(0);
+					m_iSelEnd = m_FrameServer.VideoReader.GetTimeStamp(m_FrameServer.VideoReader.Selection.iDurationFrame - 1);
+					double fAverageTimeStampsPerFrame = m_FrameServer.VideoReader.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoReader.Infos.fFps;
 					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
 
 					if(trkSelection.SelStart != m_iSelStart) trkSelection.SelStart = m_iSelStart;
@@ -4769,24 +4724,12 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					/*
-					m_iSelStart = trkSelection.SelStart;
-					// Hack : If we changed the trkSelection.SelEnd before the trkSelection.SelStart
-					// (As we do when we first load the video), the selstart will not take into account
-					// a possible shift of unreadable first frames.
-					// We make the ad-hoc modif here.
-					if (m_iSelStart < m_iStartingPosition) m_iSelStart = m_iStartingPosition;
-				
-					m_iSelEnd = trkSelection.SelEnd;
-					 */
-					
-					double fAverageTimeStampsPerFrame = m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoFile.Infos.fFps;
-					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
+					m_iSelDuration = m_iSelStart + m_iSelEnd - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
 
 					// Remap frame tracker.
 					trkFrame.Remap(m_iSelStart, m_iSelEnd);
 					trkFrame.ReportOnMouseMove = false;
-				}
+				}*/
 
 				UpdateSelectionLabels();
 				OnPoke();
@@ -4801,7 +4744,7 @@ namespace Kinovea.ScreenManager
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Export the current frame.
-			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
+			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.Current.Image != null))
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -4815,11 +4758,11 @@ namespace Kinovea.ScreenManager
 					
 					if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
 					{
-						dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoFile.FilePath);
+						dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
 					}
 					else
 					{
-						dlgSave.FileName = BuildFilename(m_FrameServer.VideoFile.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+						dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
 					}
 					
 					if (dlgSave.ShowDialog() == DialogResult.OK)
@@ -4879,7 +4822,7 @@ namespace Kinovea.ScreenManager
 			// 4. SaveImageSequence (below) to perform the real work. (saving the pics)
 			//---------------------------------------------------------------------------------
 
-			if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
+			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.Current.Image != null))
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -4893,9 +4836,9 @@ namespace Kinovea.ScreenManager
 				// Launch sequence saving configuration dialog
 				formRafaleExport fre = new formRafaleExport(this, 
 				                                            m_FrameServer.Metadata, 
-				                                            m_FrameServer.VideoFile.FilePath, 
+				                                            m_FrameServer.VideoReader.FilePath, 
 				                                            m_iSelDuration, 
-				                                            m_FrameServer.VideoFile.Infos.fAverageTimeStampsPerSeconds);
+				                                            m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
 				fre.ShowDialog();
 				fre.Dispose();
 				m_FrameServer.AfterSave();
@@ -4976,9 +4919,9 @@ namespace Kinovea.ScreenManager
 					// Build the file name
 					string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
 
-					Size iNewSize = new Size((int)((double)m_FrameServer.VideoFile.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoFile.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
+					Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.Current.Image.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.Current.Image.Height * m_FrameServer.CoordinateSystem.Stretch));
 					Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-					outputImage.SetResolution(m_FrameServer.VideoFile.CurrentImage.HorizontalResolution, m_FrameServer.VideoFile.CurrentImage.VerticalResolution);
+					outputImage.SetResolution(m_FrameServer.VideoReader.Current.Image.HorizontalResolution, m_FrameServer.VideoReader.Current.Image.VerticalResolution);
 					Graphics g = Graphics.FromImage(outputImage);
 
 					if (_bBlendDrawings)
@@ -4989,12 +4932,12 @@ namespace Kinovea.ScreenManager
 							iKeyFrameIndex = m_iActiveKeyFrameIndex;
 						}
 
-						FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+						FlushOnGraphics(m_FrameServer.VideoReader.Current.Image, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 					}
 					else
 					{
 						// image only.
-						g.DrawImage(m_FrameServer.VideoFile.CurrentImage, 0, 0, iNewSize.Width, iNewSize.Height);
+						g.DrawImage(m_FrameServer.VideoReader.Current.Image, 0, 0, iNewSize.Width, iNewSize.Height);
 					}
 
 					// Save the file
@@ -5068,7 +5011,7 @@ namespace Kinovea.ScreenManager
 					                MessageBoxIcon.Exclamation);
 				}
 			}
-			else if ((m_FrameServer.VideoFile.Loaded) && (m_FrameServer.VideoFile.CurrentImage != null))
+			else if (m_FrameServer.Loaded && m_FrameServer.VideoReader.Current.Image != null)
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -5174,9 +5117,9 @@ namespace Kinovea.ScreenManager
 			// Returns an image with all drawings flushed, including
 			// grids, chronos, magnifier, etc.
 			// image should be at same strech factor than the one visible on screen.
-			Size iNewSize = new Size((int)((double)m_FrameServer.VideoFile.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoFile.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
+			Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.Current.Image.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.Current.Image.Height * m_FrameServer.CoordinateSystem.Stretch));
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-			output.SetResolution(m_FrameServer.VideoFile.CurrentImage.HorizontalResolution, m_FrameServer.VideoFile.CurrentImage.VerticalResolution);
+			output.SetResolution(m_FrameServer.VideoReader.Current.Image.HorizontalResolution, m_FrameServer.VideoReader.Current.Image.VerticalResolution);
 			
 			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 			{
@@ -5190,7 +5133,7 @@ namespace Kinovea.ScreenManager
 					iKeyFrameIndex = m_iActiveKeyFrameIndex;
 				}				
 				
-				FlushOnGraphics(m_FrameServer.VideoFile.CurrentImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+				FlushOnGraphics(m_FrameServer.VideoReader.Current.Image, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 			}
 			
 			return output;
