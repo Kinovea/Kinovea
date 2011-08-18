@@ -321,6 +321,10 @@
       <Project>{0A577C03-D217-4540-AAB4-D167A85E32C0}</Project>
       <Name>Updater</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Video\Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\RootLang.de.resx">
