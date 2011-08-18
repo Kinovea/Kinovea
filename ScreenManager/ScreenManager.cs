@@ -1613,11 +1613,17 @@ namespace Kinovea.ScreenManager
 				if(_player.IsInAnalysisMode)
 	            {
 					// Fixme: Why is this here ?
-	            	List<DecompressedFrame> frameList = _player.FrameServer.VideoFile.FrameList;
+					
+// FIXME:
+					// We were using this place to reinject the correct frame list into the filter.
+					// Since there is only one filter of each kind for the whole application, and the filter is 
+					// holding a reference to the list of frames, we needed a place to swap the list.
+					// This should be refactored. 
+	            	/*List<DecompressedFrame> frameList = _player.FrameServer.VideoReader.FrameList;
 	            	foreach(AbstractVideoFilter vf in m_VideoFilters)
 	            	{
 	            		vf.FrameList = frameList;
-	            	}
+	            	}*/
 	            }
 				
 				foreach(AbstractVideoFilter vf in m_VideoFilters)
@@ -1653,13 +1659,13 @@ namespace Kinovea.ScreenManager
         	
 	        	switch(_screen.AspectRatio)
 	        	{
-	        		case VideoFiles.AspectRatio.Force43:
+	        		case ImageAspectRatio.Force43:
 	        			mnuFormatForce43.Checked = true;
 	        			break;
-	        		case VideoFiles.AspectRatio.Force169:
+	        		case ImageAspectRatio.Force169:
 	        			mnuFormatForce169.Checked = true;
 	        			break;
-	        		case VideoFiles.AspectRatio.AutoDetect:
+	        		case ImageAspectRatio.Auto:
 	        		default:
 	        			mnuFormatAuto.Checked = true;
 	        			break;
@@ -2577,17 +2583,17 @@ namespace Kinovea.ScreenManager
         }
         private void mnuFormatAutoOnClick(object sender, EventArgs e)
         {
-        	ChangeAspectRatio(VideoFiles.AspectRatio.AutoDetect);
+        	ChangeAspectRatio(ImageAspectRatio.Auto);
         }
         private void mnuFormatForce43OnClick(object sender, EventArgs e)
         {
-        	ChangeAspectRatio(VideoFiles.AspectRatio.Force43);
+        	ChangeAspectRatio(ImageAspectRatio.Force43);
         }
         private void mnuFormatForce169OnClick(object sender, EventArgs e)
         {
-        	ChangeAspectRatio(VideoFiles.AspectRatio.Force169);
+        	ChangeAspectRatio(ImageAspectRatio.Force169);
         }      
-        private void ChangeAspectRatio(VideoFiles.AspectRatio _aspectRatio)
+        private void ChangeAspectRatio(ImageAspectRatio _aspectRatio)
         {
         	if(m_ActiveScreen != null)
         	{        		
@@ -2596,9 +2602,9 @@ namespace Kinovea.ScreenManager
         			m_ActiveScreen.AspectRatio = _aspectRatio;
         		}	
         		
-        		mnuFormatForce43.Checked = _aspectRatio == AspectRatio.Force43;
-        		mnuFormatForce169.Checked = _aspectRatio == AspectRatio.Force169;
-        		mnuFormatAuto.Checked = _aspectRatio == AspectRatio.AutoDetect;
+        		mnuFormatForce43.Checked = _aspectRatio == ImageAspectRatio.Force43;
+        		mnuFormatForce169.Checked = _aspectRatio == ImageAspectRatio.Force169;
+        		mnuFormatAuto.Checked = _aspectRatio == ImageAspectRatio.Auto;
         	}
         }
         private void mnuMirrorOnClick(object sender, EventArgs e)
@@ -2651,7 +2657,7 @@ namespace Kinovea.ScreenManager
         	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
         	if (ps != null)
         	{
-        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.VideoFile.CurrentImage, ps.FrameServer.Metadata);
+        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.VideoReader.Current.Image, ps.FrameServer.Metadata);
 				fsto.StartPosition = FormStartPosition.CenterScreen;
 				fsto.ShowDialog();
 				fsto.Dispose();
@@ -2957,8 +2963,8 @@ namespace Kinovea.ScreenManager
             // impact : m_iMaxFrame.
             //---------------------------------------------------------------------------------
 			log.Debug("SetSyncLimits() called.");
-            int iLeftMaxFrame = ((PlayerScreen)screenList[0]).LastFrame;
-            int iRightMaxFrame = ((PlayerScreen)screenList[1]).LastFrame;
+            int iLeftMaxFrame = ((PlayerScreen)screenList[0]).SelectionLastTimestamp;
+            int iRightMaxFrame = ((PlayerScreen)screenList[1]).SelectionLastTimestamp;
 
             if (m_iSyncLag > 0)
             {
@@ -3452,19 +3458,11 @@ namespace Kinovea.ScreenManager
 
                 state.UniqueId = screen.UniqueId;
 
-                if (screen is PlayerScreen)
+                if (screen is PlayerScreen && screen.Full)
                 {
-                    state.Loaded = screen.Full;
+                    state.Loaded = true;
                     state.FilePath = ((PlayerScreen)screen).FilePath;
-                    
-                    if (state.Loaded)
-                    {
-                        state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString(1);
-                    }
-                    else
-                    {
-                        state.MetadataString = "";
-                    }
+                    state.MetadataString = ((PlayerScreen)screen).FrameServer.Metadata.ToXmlString(1);
                 }
                 else
                 {

@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override bool Full
         {
-        	get { return m_FrameServer.VideoFile.Loaded; }	
+        	get { return m_FrameServer.Loaded; }	
         }
         public override UserControl UI
         {
@@ -54,9 +54,9 @@ namespace Kinovea.ScreenManager
 		{
 			get 
 			{ 
-				if(m_FrameServer.VideoFile.Loaded)
+				if(m_FrameServer.Loaded)
 				{
-					return Path.GetFileName(m_FrameServer.VideoFile.FilePath);		
+					return Path.GetFileName(m_FrameServer.VideoReader.FilePath);		
 				}
 				else
 				{
@@ -70,23 +70,21 @@ namespace Kinovea.ScreenManager
 		}
 		public override string FilePath
 		{
-			get { return m_FrameServer.VideoFile.FilePath; }
+			get { return m_FrameServer.VideoReader.FilePath; }
 		}
 		public override bool CapabilityDrawings
 		{
 			get { return true;}
 		}
-		public override VideoFiles.AspectRatio AspectRatio
+		public override ImageAspectRatio AspectRatio
         {
-            get { return m_FrameServer.VideoFile.Infos.eAspectRatio; }
+            get { return m_FrameServer.VideoReader.ImageAspectRatio; }
             set
             {
-                m_FrameServer.VideoFile.ChangeAspectRatio(value);
+                m_FrameServer.VideoReader.ImageAspectRatio = value;
                 
-                if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-				{
+                if (m_FrameServer.VideoReader.Caching)
 					m_PlayerScreenUI.ImportSelectionToMemory(true);
-				}
                 
                 m_PlayerScreenUI.UpdateImageSize();
                 RefreshImage();
@@ -101,42 +99,30 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-                if (!m_FrameServer.VideoFile.Loaded)
-                {
+                if (!m_FrameServer.Loaded)
                     return false;
-                }
                 else
-                {
-                    return (m_PlayerScreenUI.IsCurrentlyPlaying);
-                }
+                    return m_PlayerScreenUI.IsCurrentlyPlaying;
             }
         }
         public bool IsSingleFrame
         {
         	get
             {
-                if (!m_FrameServer.VideoFile.Loaded)
-                {
+                if (!m_FrameServer.Loaded)
                     return false;
-                }
                 else
-                {
-                    return (m_FrameServer.VideoFile.Infos.iDurationTimeStamps == 1);
-                }
+                    return m_FrameServer.VideoReader.SingleFrame;
             }	
         }
         public bool IsInAnalysisMode
         {
             get
             {
-                if (!m_FrameServer.VideoFile.Loaded)
-                {
+                if (!m_FrameServer.Loaded)
                     return false;
-                }
                 else
-                {
-                    return (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1);
-                }
+                    return m_FrameServer.VideoReader.Caching;
             }
         }
         public int CurrentFrame
@@ -148,22 +134,14 @@ namespace Kinovea.ScreenManager
                 
                 // Timestamp (relative to selection start).
                 Int64 iCurrentTimestamp = m_PlayerScreenUI.SyncCurrentPosition;
-                return (int)(iCurrentTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame);
+                return (int)(iCurrentTimestamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
-        public int LastFrame
+        public int SelectionLastTimestamp
         {
             get 
             {
-                if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
-                {
-                    return m_FrameServer.VideoFile.Selection.iDurationFrame - 1;
-                }
-                else
-                {
-                    Int64 iDurationTimestamp = m_PlayerScreenUI.SelectionDuration;
-                    return (int)(iDurationTimestamp / m_FrameServer.VideoFile.Infos.iAverageTimeStampsPerFrame) -1;
-                }
+                return (int)m_FrameServer.VideoReader.Selection.End;
             }
         }
         public double FrameInterval
@@ -171,14 +149,10 @@ namespace Kinovea.ScreenManager
             get 
             { 
             	// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
-				if (m_FrameServer.VideoFile.Loaded && m_FrameServer.VideoFile.Infos.fFrameInterval > 0)
-				{
+				if (m_FrameServer.Loaded && m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds > 0)
 					return m_PlayerScreenUI.FrameInterval;
-				}
 				else
-				{
 					return 40;
-				}
 	        }
         }
         public double RealtimePercentage
@@ -200,7 +174,7 @@ namespace Kinovea.ScreenManager
         public Int64 Position
         {
             // Used to feed SyncPosition. 
-            get { return m_FrameServer.VideoFile.Selection.iCurrentTimeStamp - m_FrameServer.VideoFile.Infos.iFirstTimeStamp; }
+            get { return m_FrameServer.VideoReader.Current.Timestamp - m_FrameServer.VideoReader.Info.FirstTimeStamp; }
         }
         public bool SyncMerge
         {
@@ -218,14 +192,14 @@ namespace Kinovea.ScreenManager
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
         {
-            get { return m_FrameServer.VideoFile.Infos.bDeinterlaced; }
+            get { return m_FrameServer.VideoReader.Deinterlace; }
             set
             {
-                m_FrameServer.VideoFile.Infos.bDeinterlaced = value;
+                m_FrameServer.VideoReader.Deinterlace = value;
                 
                 // If there was a selection it must be imported again.
 				// (This means we'll loose color adjustments.)
-				if (m_FrameServer.VideoFile.Selection.iAnalysisMode == 1)
+				if (m_FrameServer.VideoReader.Caching)
 				{
 					m_PlayerScreenUI.ImportSelectionToMemory(true);
 				}

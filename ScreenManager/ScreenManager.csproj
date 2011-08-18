@@ -484,6 +484,10 @@
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Video\Video.csproj">
+      <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
+      <Name>Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="PlayerScreen\UserInterface\KeyframeBox.resx">

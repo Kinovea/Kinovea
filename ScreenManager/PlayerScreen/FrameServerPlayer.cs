@@ -18,12 +18,15 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.Services;
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
@@ -36,10 +39,10 @@ namespace Kinovea.ScreenManager
 	public class FrameServerPlayer : AbstractFrameServer
 	{
 		#region Properties
-		public VideoFile VideoFile
+		public VideoReader VideoReader
 		{
-			get { return m_VideoFile; }
-			set { m_VideoFile = value; }
+			get { return m_VideoReader; }
+			set { m_VideoReader = value; }
 		}
 		public Metadata Metadata
 		{
@@ -52,21 +55,13 @@ namespace Kinovea.ScreenManager
 		}
 		public bool Loaded
 		{
-			get 
-			{ 
-				bool loaded = false;
-				if(m_VideoFile != null && m_VideoFile.Loaded)
-				{
-					loaded = true;
-				}
-				return loaded;
-			}
+		    get { return m_VideoReader != null && m_VideoReader.Loaded; }
 		}
 		#endregion
 		
 		#region Members
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private VideoFile m_VideoFile = new VideoFile();
+		private VideoReader m_VideoReader;
 		private Metadata m_Metadata;
 		
 		// Saving process (globals because the bgWorker is split in several methods)
@@ -90,31 +85,46 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public
-		public LoadResult Load(string _FilePath)
+		public OpenVideoResult Load(string _FilePath)
 		{
 			// Set global settings.
 			PreferencesManager pm = PreferencesManager.Instance();
-			m_VideoFile.SetDefaultSettings((int)pm.AspectRatio, pm.DeinterlaceByDefault);
-			return m_VideoFile.Load(_FilePath);
+			
+			// Instanciate appropriate video reader class depending on extension.
+			string extension = Path.GetExtension(_FilePath);
+			m_VideoReader = VideoTypeManager.GetVideoReader(extension);
+			if(m_VideoReader != null)
+			{
+			    m_VideoReader.Options = new VideoOptions {
+                    ImageAspectRatio = pm.AspectRatio,
+                    Deinterlace = pm.DeinterlaceByDefault
+			    };
+                return m_VideoReader.Open(_FilePath);
+			}
+			else
+			{
+                return OpenVideoResult.NotSupported;
+			}
 		}
 		public void Unload()
 		{
 			// Prepare the FrameServer for a new video by resetting everything.
-			m_VideoFile.Unload();
+			if(m_VideoReader != null && m_VideoReader.Loaded)
+                m_VideoReader.Close();
 			if(m_Metadata != null) m_Metadata.Reset();
 		}
 		public void SetupMetadata()
 		{
 			// Setup Metadata global infos in case we want to flush it to a file (or mux).
 			
-			if(m_Metadata != null)
+			if(m_Metadata != null && m_VideoReader != null)
 			{
-				Size imageSize = new Size(m_VideoFile.Infos.iDecodingWidth, m_VideoFile.Infos.iDecodingHeight);
+				Size imageSize = m_VideoReader.Info.DecodingSize;
 						
 				m_Metadata.ImageSize = imageSize;
-				m_Metadata.AverageTimeStampsPerFrame = m_VideoFile.Infos.iAverageTimeStampsPerFrame;
-				m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoFile.Infos.fFps;
-				m_Metadata.FirstTimeStamp = m_VideoFile.Infos.iFirstTimeStamp;
+				m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
+				m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoReader.Info.FramesPerSeconds;
+				m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
 				
 				log.Debug("Setup metadata.");
 			}
@@ -129,7 +139,7 @@ namespace Kinovea.ScreenManager
 			// Let the user select what he wants to save exactly.
 			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
 			
-			formVideoExport fve = new formVideoExport(m_VideoFile.FilePath, m_Metadata, _fSlowmotionPercentage);
+			formVideoExport fve = new formVideoExport(m_VideoReader.FilePath, m_Metadata, _fSlowmotionPercentage);
             
 			if(fve.Spawn() == DialogResult.OK)
             {
@@ -142,7 +152,7 @@ namespace Kinovea.ScreenManager
             	{
             		DoSave(fve.Filename, 
     						fve.MuxDrawings ? m_Metadata : null,
-    						fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoFile.Infos.fFrameInterval,
+    						fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoReader.Info.FrameIntervalMilliseconds,
     						_iSelStart,
     						_iSelEnd,
     						fve.BlendDrawings,
@@ -214,7 +224,7 @@ namespace Kinovea.ScreenManager
             bgWorkerSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerSave_RunWorkerCompleted);
 
             // Attach the bgWorker to the VideoFile object so it can report progress.
-            m_VideoFile.BgWorker = bgWorkerSave;
+//m_VideoReader.BgWorker = bgWorkerSave;
             
             // Create the progress bar and launch the worker.
             m_FormProgressBar = new formProgressBar(true);
@@ -238,7 +248,7 @@ namespace Kinovea.ScreenManager
         	
         	try
         	{
-        		m_SaveResult = m_VideoFile.Save(	m_SaveFile, 
+        		/*m_SaveResult = m_VideoReader.Save(	m_SaveFile, 
 	        	                                	m_fSaveFramesInterval, 
 	        	                                	m_iSaveStart, 
 	        	                                	m_iSaveEnd, 
@@ -246,7 +256,7 @@ namespace Kinovea.ScreenManager
 	        	                                	m_bSaveFlushDrawings, 
 	        	                                	m_bSaveKeyframesOnly,
 	        	                                	m_bSavePausedVideo,
-	        	                                	m_SaveDelegateOutputBitmap);
+	        	                                	m_SaveDelegateOutputBitmap);*/
         		if(m_SaveMetadata != null)
         		{
         			m_SaveMetadata.CleanupHash();
@@ -330,7 +340,7 @@ namespace Kinovea.ScreenManager
 			// which we check periodically in VideoFile.ExtractToMemory method.
 	        // This will also end the bgWorker immediately,
 	        // maybe before we check for the cancellation in the other thread. 
-	        m_VideoFile.BgWorker.CancelAsync();
+//m_VideoReader.BgWorker.CancelAsync();
 	        
 	        // m_FormProgressBar.Dispose();
 		}

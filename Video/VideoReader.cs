@@ -20,14 +20,52 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using Kinovea.Services;
 
 namespace Kinovea.Video
 {
-    /// <summary>
-    /// A base class for all video decoders implementations.
-    /// </summary>
-    public abstract class VideoReader
-    {
+	/// <summary>
+	/// A base class for all video decoders implementations.
+	/// 
+	/// Concrete implementations should add a SupportedExtensions attribute listing the extensions
+	/// supported by this particular reader, as an array of string.
+	/// Ex: [SupportedExtensions(new string[] {".avi", ".bmp"})]
+	/// </summary>
+	public abstract class VideoReader
+	{
+		public abstract bool Loaded { get; }
+		public abstract VideoInfo Info { get; }
         
-    }
+		public abstract bool Caching { get; }
+		public abstract VideoSection Selection { get; }
+		public abstract VideoFrame Current { get; }
+		public abstract OpenVideoResult Open(string _FilePath);
+		public abstract void Close();
+
+		//----
+		public string FilePath {
+			get { return Info.FilePath; }
+		}
+		public bool SingleFrame { 
+		    get { return Info.DurationTimeStamps == 1;}
+        }
+		
+		public VideoOptions Options {
+			get { return m_VideoOptions; }
+			set { m_VideoOptions = value; }
+		}
+		public ImageAspectRatio ImageAspectRatio {
+			get { return Options.ImageAspectRatio; }
+			set { m_VideoOptions.ImageAspectRatio = value; }
+		}
+		public bool Deinterlace {
+			get { return Options.Deinterlace; }
+			set { m_VideoOptions.Deinterlace = value; }
+		}
+		public virtual string Metadata {
+			get { return null; }
+		}
+
+		private VideoOptions m_VideoOptions;
+	}
 }

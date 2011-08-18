@@ -22,6 +22,9 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.Services;
+using Kinovea.Video;
+
 namespace Kinovea.ScreenManager
 {
     public abstract class AbstractScreen
@@ -55,7 +58,7 @@ namespace Kinovea.ScreenManager
         {
         	get;
         }
-        public abstract VideoFiles.AspectRatio AspectRatio
+        public abstract ImageAspectRatio AspectRatio
         {
         	get;
         	set;
