@@ -439,10 +439,6 @@ namespace Kinovea.FileBrowser
 			// Discard keyboard event as they interfere with player functions
 			e.Handled = true;
 		}
-		private bool IsKnownFileType(string extension)
-		{
-		    return VideoTypeManager.SupportedExtensions.Any(knownExt => knownExt.Equals(extension, StringComparison.OrdinalIgnoreCase));
-		}
 		private void UpdateFileList(CShItem _Folder, ListView _ListView, bool _bRefreshThumbnails)
 		{
 			// Update a file list with the given folder.
@@ -465,7 +461,7 @@ namespace Kinovea.FileBrowser
 				{
 					CShItem shellItem = (CShItem)fileList[i];
 					string extension = Path.GetExtension(shellItem.Path);
-					if (!string.IsNullOrEmpty(extension) && IsKnownFileType(extension))
+					if (!string.IsNullOrEmpty(extension) && VideoTypeManager.IsSupported(extension))
 					{
 						ListViewItem lvi = new ListViewItem(shellItem.DisplayName);
 						

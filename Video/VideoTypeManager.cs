@@ -27,19 +27,12 @@ using System.Windows.Forms;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// Load and provide access to the list of video readers/writers.
+    /// Load and provide access to the list of video readers.
     /// </summary>
     public static class VideoTypeManager
     {
-        #region Properties
-        public static IEnumerable<string> SupportedExtensions
-        {
-            get { return m_VideoReaders.Keys; }
-        }
-        #endregion
-        
         #region Members
-        private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>();
+        private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -113,6 +106,12 @@ namespace Kinovea.Video
             
             return reader;
         }
+        
+        public static bool IsSupported(string _extension)
+        {
+            return m_VideoReaders.ContainsKey(_extension);
+        }
+        
         #endregion
         
         #region Private methods
