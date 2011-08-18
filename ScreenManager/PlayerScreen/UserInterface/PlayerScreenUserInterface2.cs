@@ -584,7 +584,7 @@ namespace Kinovea.ScreenManager
 
 					// Readjust and complete the Keyframe
 					kf.Position = m_iCurrentPosition;
-					kf.ImportImage(m_FrameServer.VideoReader.Current.Image);
+					kf.ImportImage(m_FrameServer.VideoReader.CurrentImage);
 					kf.GenerateDisabledThumbnail();
 
 					// EditBoxes
@@ -2426,6 +2426,15 @@ namespace Kinovea.ScreenManager
 		}
 		private ReadResult ShowNextFrame(Int64 _iSeekTarget, bool _bAllowUIUpdate)
 		{
+		    bool read = false;
+		    //if(_iSeekTarget == -1)
+                read = m_FrameServer.VideoReader.MoveNext();
+		    /*else
+                 read = m_FrameServer.VideoReader.MoveTo(_iSeekTarget);*/
+		    
+            ReadResult res = ReadResult.Success;
+		
+		
 			//---------------------------------------------------------------------------
 			// Demande au PlayerServer de remplir la bmp avec la prochaine frame requise.
 			// 2 paramètres, dépendant du contexte.
@@ -2440,7 +2449,6 @@ namespace Kinovea.ScreenManager
 			//m_Stopwatch.Start();
 				
 //ReadResult res = m_FrameServer.VideoReader.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
-			ReadResult res = ReadResult.FrameNotRead;
 			if (res == ReadResult.Success)
 			{
 				m_iDecodedFrames++;
@@ -2462,7 +2470,7 @@ namespace Kinovea.ScreenManager
 							Track t = ad as Track;
 							if (t != null && t.Status == TrackStatus.Edit)
 							{
-								t.TrackCurrentPosition(m_iCurrentPosition, m_FrameServer.VideoReader.Current.Image);
+								t.TrackCurrentPosition(m_iCurrentPosition, m_FrameServer.VideoReader.CurrentImage);
 							}
 						}
 					}
@@ -3139,7 +3147,7 @@ namespace Kinovea.ScreenManager
 				OnPoke();
 				
 				// Update tracks with current image and pos.
-				m_FrameServer.Metadata.UpdateTrackPoint(m_FrameServer.VideoReader.Current.Image);
+				m_FrameServer.Metadata.UpdateTrackPoint(m_FrameServer.VideoReader.CurrentImage);
 				
 				// Report for synchro and merge to update image in the other screen.
 				ReportForSyncMerge();
@@ -3273,7 +3281,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_DrawingFilterOutput.Draw(e.Graphics, pbSurfaceScreen.Size, m_DrawingFilterOutput.PrivateData);
 			}
-			else if(m_FrameServer.VideoReader.Current.Image != null)
+			else if(m_FrameServer.VideoReader.CurrentImage != null)
 			{
 				try
 				{
@@ -3290,7 +3298,7 @@ namespace Kinovea.ScreenManager
 						}
 					}
 					
-					FlushOnGraphics(m_FrameServer.VideoReader.Current.Image, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
+					FlushOnGraphics(m_FrameServer.VideoReader.CurrentImage, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
 					
 					if(m_MessageToaster.Enabled)
 					{
@@ -3761,7 +3769,7 @@ namespace Kinovea.ScreenManager
 			// Public because called from CommandAddKeyframe.Execute()
 			// Title becomes the current timecode. (relative to sel start or sel minimum ?)
 			
-			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.VideoReader.Current.Image, m_FrameServer.Metadata);
+			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.VideoReader.CurrentImage, m_FrameServer.Metadata);
 			
 			if (_iPosition != m_iCurrentPosition)
 			{
@@ -3773,7 +3781,7 @@ namespace Kinovea.ScreenManager
 				trkSelection.SelPos = trkFrame.Position;
 
 				// Readjust and complete the Keyframe
-				kf.ImportImage(m_FrameServer.VideoReader.Current.Image);
+				kf.ImportImage(m_FrameServer.VideoReader.CurrentImage);
 			}
 
 			m_FrameServer.Metadata.Add(kf);
@@ -4091,7 +4099,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Track the point. No Cross2D was selected.
 			// m_DescaledMouse would have been set during the MouseDown event.
-			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.Current.Image, m_FrameServer.VideoReader.Current.Image.Size);
+			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.VideoReader.CurrentImage, m_FrameServer.VideoReader.CurrentImage.Size);
 			m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get from track tool.
 			
 			// Return to the pointer tool.
@@ -4103,7 +4111,7 @@ namespace Kinovea.ScreenManager
 		private void mnuSendPic_Click(object sender, EventArgs e)
 		{
 			// Send the current image to the other screen for conversion into an observational reference.
-			if(m_bSynched && m_FrameServer.VideoReader.Current.Image != null)
+			if(m_bSynched && m_FrameServer.VideoReader.CurrentImage != null)
 			{
 				Bitmap img = CloneTransformedImage();
 				m_PlayerScreenUIHandler.PlayerScreenUI_SendImage(img);	
@@ -4207,7 +4215,7 @@ namespace Kinovea.ScreenManager
 					DrawingCross2D dc = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing] as DrawingCross2D;
 					if(dc != null)
 					{
-						Track trk = new Track(dc.Center, m_iCurrentPosition, m_FrameServer.VideoReader.Current.Image, m_FrameServer.VideoReader.Current.Image.Size);
+						Track trk = new Track(dc.Center, m_iCurrentPosition, m_FrameServer.VideoReader.CurrentImage, m_FrameServer.VideoReader.CurrentImage.Size);
 						m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, dc.PenColor);
 						
 						// Suppress the point as a Drawing (?)
@@ -4579,7 +4587,7 @@ namespace Kinovea.ScreenManager
 			// We have to re-apply the transformations here, because when drawing in this screen we draw directly on the canvas.
 			// (there is no intermediate image that we could reuse here, this might be a future optimization).
 			// We need to clone it anyway, so we might aswell do the transform.
-			if(m_bSynched && m_FrameServer.VideoReader.Current.Image != null)
+			if(m_bSynched && m_FrameServer.VideoReader.CurrentImage != null)
 			{
 				Bitmap img = CloneTransformedImage();
 				m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
@@ -4587,7 +4595,7 @@ namespace Kinovea.ScreenManager
 		}
 		private Bitmap CloneTransformedImage()
 		{
-			Size imgSize = new Size(m_FrameServer.VideoReader.Current.Image.Size.Width, m_FrameServer.VideoReader.Current.Image.Size.Height);
+			Size imgSize = new Size(m_FrameServer.VideoReader.CurrentImage.Size.Width, m_FrameServer.VideoReader.CurrentImage.Size.Height);
 			Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
 			Graphics g = Graphics.FromImage(img);
 			
@@ -4601,7 +4609,7 @@ namespace Kinovea.ScreenManager
 				rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
 			}
 			
-			g.DrawImage(m_FrameServer.VideoReader.Current.Image, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+			g.DrawImage(m_FrameServer.VideoReader.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
 			return img;
 		}
 		#endregion
@@ -4744,7 +4752,7 @@ namespace Kinovea.ScreenManager
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Export the current frame.
-			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.Current.Image != null))
+			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.CurrentImage != null))
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -4822,7 +4830,7 @@ namespace Kinovea.ScreenManager
 			// 4. SaveImageSequence (below) to perform the real work. (saving the pics)
 			//---------------------------------------------------------------------------------
 
-			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.Current.Image != null))
+			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.CurrentImage != null))
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -4919,9 +4927,9 @@ namespace Kinovea.ScreenManager
 					// Build the file name
 					string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
 
-					Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.Current.Image.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.Current.Image.Height * m_FrameServer.CoordinateSystem.Stretch));
+					Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
 					Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-					outputImage.SetResolution(m_FrameServer.VideoReader.Current.Image.HorizontalResolution, m_FrameServer.VideoReader.Current.Image.VerticalResolution);
+					outputImage.SetResolution(m_FrameServer.VideoReader.CurrentImage.HorizontalResolution, m_FrameServer.VideoReader.CurrentImage.VerticalResolution);
 					Graphics g = Graphics.FromImage(outputImage);
 
 					if (_bBlendDrawings)
@@ -4932,12 +4940,12 @@ namespace Kinovea.ScreenManager
 							iKeyFrameIndex = m_iActiveKeyFrameIndex;
 						}
 
-						FlushOnGraphics(m_FrameServer.VideoReader.Current.Image, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+						FlushOnGraphics(m_FrameServer.VideoReader.CurrentImage, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 					}
 					else
 					{
 						// image only.
-						g.DrawImage(m_FrameServer.VideoReader.Current.Image, 0, 0, iNewSize.Width, iNewSize.Height);
+						g.DrawImage(m_FrameServer.VideoReader.CurrentImage, 0, 0, iNewSize.Width, iNewSize.Height);
 					}
 
 					// Save the file
@@ -5011,7 +5019,7 @@ namespace Kinovea.ScreenManager
 					                MessageBoxIcon.Exclamation);
 				}
 			}
-			else if (m_FrameServer.Loaded && m_FrameServer.VideoReader.Current.Image != null)
+			else if (m_FrameServer.Loaded && m_FrameServer.VideoReader.CurrentImage != null)
 			{
 				StopPlaying();
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
@@ -5117,9 +5125,9 @@ namespace Kinovea.ScreenManager
 			// Returns an image with all drawings flushed, including
 			// grids, chronos, magnifier, etc.
 			// image should be at same strech factor than the one visible on screen.
-			Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.Current.Image.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.Current.Image.Height * m_FrameServer.CoordinateSystem.Stretch));
+			Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-			output.SetResolution(m_FrameServer.VideoReader.Current.Image.HorizontalResolution, m_FrameServer.VideoReader.Current.Image.VerticalResolution);
+			output.SetResolution(m_FrameServer.VideoReader.CurrentImage.HorizontalResolution, m_FrameServer.VideoReader.CurrentImage.VerticalResolution);
 			
 			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
 			{
@@ -5133,7 +5141,7 @@ namespace Kinovea.ScreenManager
 					iKeyFrameIndex = m_iActiveKeyFrameIndex;
 				}				
 				
-				FlushOnGraphics(m_FrameServer.VideoReader.Current.Image, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+				FlushOnGraphics(m_FrameServer.VideoReader.CurrentImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
 			}
 			
 			return output;

@@ -20,6 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+
 using Kinovea.Services;
 
 namespace Kinovea.Video
@@ -39,17 +41,35 @@ namespace Kinovea.Video
 		public abstract bool Caching { get; }
 		public abstract VideoSection Selection { get; }
 		public abstract VideoFrame Current { get; }
+		
+		
 		public abstract OpenVideoResult Open(string _FilePath);
 		public abstract void Close();
+		
+		/// <summary>
+		/// Set the "Current" property to hold the next video frame.
+		/// This function should be super fast. 
+		/// For buffered readers, if the frame is not available right now, call it a drop.
+		/// Decoding should happen in a separate thread.
+		/// If we are on the last frame and Options.AutoRewind is false, just stay there.
+		/// </summary>
+		public abstract bool MoveNext();
+		
+		/// <summary>
+		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
+		/// </summary>
+		public abstract bool MoveTo(long _timestamp);
 
-		//----
+		#region Concrete Properties
 		public string FilePath {
 			get { return Info.FilePath; }
 		}
 		public bool SingleFrame { 
 		    get { return Info.DurationTimeStamps == 1;}
         }
-		
+        public Bitmap CurrentImage { 
+		    get { return (Current != null) ? Current.Image : null; }
+        }
 		public VideoOptions Options {
 			get { return m_VideoOptions; }
 			set { m_VideoOptions = value; }
@@ -65,6 +85,7 @@ namespace Kinovea.Video
 		public virtual string Metadata {
 			get { return null; }
 		}
+		#endregion
 
 		private VideoOptions m_VideoOptions;
 	}
