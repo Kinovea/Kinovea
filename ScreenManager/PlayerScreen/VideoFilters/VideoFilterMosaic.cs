@@ -30,6 +30,7 @@ using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
@@ -45,26 +46,15 @@ namespace Kinovea.ScreenManager
 	public class VideoFilterMosaic : AbstractVideoFilter
 	{
 		#region Properties
-		public override string Name
-		{
+		public override string Name {
 		    get { return ScreenManagerLang.VideoFilterMosaic_FriendlyName; }
 		}
-		public override Bitmap Icon
-		{
+		public override Bitmap Icon {
 		    get { return Properties.Resources.mosaic; }
-		}	
-		public override List<DecompressedFrame> FrameList
-        {
-			set { m_FrameList = value; }
-        }
-		public override bool Experimental 
-		{
-			get { return false; }
 		}
 		#endregion
 		
 		#region Members
-		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -79,7 +69,7 @@ namespace Kinovea.ScreenManager
 			else
 			{
 			    DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
-				dfo.PrivateData = new Parameters(ExtractBitmapList(m_FrameList), 16, false);
+			    dfo.PrivateData = new Parameters(FrameCache.ToBitmapList(), 16, false);
 				dfo.Draw = new DelegateDraw(Draw);
 				dfo.IncreaseZoom = new DelegateIncreaseZoom(IncreaseZoom);
 				dfo.DecreaseZoom = new DelegateDecreaseZoom(DecreaseZoom);
@@ -216,18 +206,6 @@ namespace Kinovea.ScreenManager
 			}
 			
 			return inputFrames;
-		}
-		private List<Bitmap> ExtractBitmapList(List<DecompressedFrame> _frameList)
-		{
-			// Simply create a list of bitmaps from the list of decompressed frames.
-			
-			List<Bitmap> inputFrames = new List<Bitmap>();
-			for(int i=0;i<_frameList.Count;i++)
-			{
-				inputFrames.Add(_frameList[i].BmpImage);
-			}
-			
-			return inputFrames;	
 		}
 		private static int GetFontSize(int _iThumbWidth)
 		{

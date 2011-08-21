@@ -9,6 +9,7 @@
     <AssemblyName>Video</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SourceAnalysisOverrideSettingsFile>C:\Users\Joan\AppData\Roaming\ICSharpCode/SharpDevelop4.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -30,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinqBridge">
+      <HintPath>..\Refs\LinqBridge.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
@@ -39,12 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base.cs" />
     <Compile Include="DummyVideoReader.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Fraction.cs" />
     <Compile Include="GIFVideoReader.cs" />
+    <Compile Include="SavingSettings.cs" />
     <Compile Include="SupportedExtensionsAttribute.cs" />
     <Compile Include="VideoFrame.cs" />
+    <Compile Include="VideoFrameCache.cs" />
     <Compile Include="VideoInfo.cs" />
     <Compile Include="VideoOptions.cs" />
     <Compile Include="VideoReader.cs" />

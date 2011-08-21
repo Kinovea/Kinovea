@@ -24,6 +24,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
+using Kinovea.Base;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -60,27 +61,21 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private VideoReader m_VideoReader;
 		private Metadata m_Metadata;
-		
-		// Saving process (globals because the bgWorker is split in several methods)
 		private formProgressBar m_FormProgressBar;
-		private long m_iSaveStart;
-		private long m_iSaveEnd;
-        private string m_SaveFile;
-        private Metadata m_SaveMetadata;
-        private double m_fSaveFramesInterval;
-        private bool m_bSaveFlushDrawings;
-        private bool m_bSaveKeyframesOnly;
-        private bool m_bSavePausedVideo;
-        private DelegateGetOutputBitmap m_SaveDelegateOutputBitmap;
+		private BackgroundWorker m_BgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult m_SaveResult;
+        private bool m_SavingMetada;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
 		#region Constructor
 		public FrameServerPlayer()
 		{
+            m_BgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
+            m_BgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
+            m_BgWorkerSave.DoWork += bgWorkerSave_DoWork;
 		}
 		#endregion
 		
@@ -134,27 +129,21 @@ namespace Kinovea.ScreenManager
 			// Draw the current image on canvas according to conf.
 			// This is called back from screen paint method.
 		}
-		public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap)	
+		public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, ImageRetriever _DelegateOutputBitmap)	
 		{
 			// Let the user select what he wants to save exactly.
-			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from local members.
-			
 			formVideoExport fve = new formVideoExport(m_VideoReader.FilePath, m_Metadata, _fSlowmotionPercentage);
-            
-			if(fve.Spawn() == DialogResult.OK)
+            if(fve.Spawn() == DialogResult.OK)
             {
             	if(fve.SaveAnalysis)
             	{
-            		// Save analysis.
             		m_Metadata.ToXmlFile(fve.Filename);
             	}
             	else
             	{
             		DoSave(fve.Filename, 
-    						fve.MuxDrawings ? m_Metadata : null,
+    						fve.MuxDrawings,
     						fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoReader.Info.FrameIntervalMilliseconds,
-    						_iSelStart,
-    						_iSelEnd,
     						fve.BlendDrawings,
     						false,
     						false,
@@ -165,7 +154,7 @@ namespace Kinovea.ScreenManager
 			// Release configuration form.
             fve.Dispose();
 		}
-		public void SaveDiaporama(Int64 _iSelStart, Int64 _iSelEnd, DelegateGetOutputBitmap _DelegateOutputBitmap, bool _diapo)
+		public void SaveDiaporama(ImageRetriever _DelegateOutputBitmap, bool _diapo)
 		{
 			// Let the user configure the diaporama export.
 			
@@ -173,21 +162,23 @@ namespace Kinovea.ScreenManager
 			if(fde.ShowDialog() == DialogResult.OK)
 			{
 				DoSave(fde.Filename, 
-				       	null, 
-				       	fde.FrameInterval, 
-				       	_iSelStart, 
-				       	_iSelEnd, 
+				       	false, 
+				       	fde.FrameInterval,
 				       	true, 
 				       	fde.PausedVideo ? false : true,
 				       	fde.PausedVideo,
 				       	_DelegateOutputBitmap);
 			}
-			
-			// Release configuration form.
 			fde.Dispose();
 		}
 		public void AfterSave()
 		{
+		    if(m_SavingMetada)
+		    {
+		        Metadata.CleanupHash();
+		        m_SavingMetada = false;
+		    }
+		        
 			// Ask the Explorer tree to refresh itself, (but not the thumbnails pane.)
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.RefreshFileExplorer != null)
@@ -198,69 +189,48 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Saving processing
-		private void DoSave(String _FilePath, Metadata _Metadata, double _fPlaybackFrameInterval, Int64 _iSelStart, Int64 _iSelEnd, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap _DelegateOutputBitmap)
+		private void DoSave(string _FilePath, bool _saveMetadata, double _frameInterval, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, ImageRetriever _DelegateOutputBitmap)
         {
-			// Save video.
-    		// We use a bgWorker and a Progress Bar.
-    		
-			// Memorize the parameters, they will be used later in bgWorkerSave_DoWork.
-			// Note: _iSelStart, _iSelEnd, _Metadata, should ultimately be taken from the local members.
-			m_iSaveStart = _iSelStart;
-            m_iSaveEnd = _iSelEnd;
-            m_SaveMetadata = _Metadata;
-            m_SaveFile = _FilePath;
-            m_fSaveFramesInterval = _fPlaybackFrameInterval;
-            m_bSaveFlushDrawings = _bFlushDrawings;
-            m_bSaveKeyframesOnly = _bKeyframesOnly;
-            m_bSavePausedVideo = _bPausedVideo;
-            m_SaveDelegateOutputBitmap = _DelegateOutputBitmap;
-            
-            // Instanciate and configure the bgWorker.
-            BackgroundWorker bgWorkerSave = new BackgroundWorker();
-            bgWorkerSave.WorkerReportsProgress = true;
-        	bgWorkerSave.WorkerSupportsCancellation = true;
-            bgWorkerSave.DoWork += new DoWorkEventHandler(bgWorkerSave_DoWork);
-        	bgWorkerSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerSave_ProgressChanged);
-            bgWorkerSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerSave_RunWorkerCompleted);
+		    SavingSettings s = new SavingSettings();
+		    s.Section = m_VideoReader.WorkingZone;
+			s.File = _FilePath;
+			s.FrameInterval = _frameInterval;
+			s.FlushDrawings = _bFlushDrawings;
+			s.KeyframesOnly = _bKeyframesOnly;
+			s.PausedVideo = _bPausedVideo;
+			s.ImageRetriever = _DelegateOutputBitmap;
+			
+			m_SavingMetada = _saveMetadata;
+        	if(m_SavingMetada)
+        	{
+        		// If frame duplication is going to occur (saving at less than 8fps)
+        		// We have to store this in the xml output to be able to match frames with timestamps later.
+        		int iDuplicateFactor = (int)Math.Ceiling(_frameInterval / 125.0);
+        		s.Metadata = m_Metadata.ToXmlString(iDuplicateFactor);
+        	}
 
-            // Attach the bgWorker to the VideoFile object so it can report progress.
-//m_VideoReader.BgWorker = bgWorkerSave;
-            
-            // Create the progress bar and launch the worker.
             m_FormProgressBar = new formProgressBar(true);
             m_FormProgressBar.Cancel = Cancel_Asked;
-        	bgWorkerSave.RunWorkerAsync();
+        	m_BgWorkerSave.RunWorkerAsync(s);
         	m_FormProgressBar.ShowDialog();
 		}
+		
+		#region Background worker event handlers
 		private void bgWorkerSave_DoWork(object sender, DoWorkEventArgs e)
         {
         	// This is executed in Worker Thread space. (Do not call any UI methods)
-        	
-        	string metadata = "";
-        	if(m_SaveMetadata != null)
+        	BackgroundWorker bgWorker = sender as BackgroundWorker;
+        	if(!(e.Argument is SavingSettings) || bgWorker == null)
         	{
-        		// Get the metadata as XML string.
-        		// If frame duplication is going to occur (when saving in slow motion at less than 8fps)
-        		// We have to store this in the xml output to be able to match frames with timestamps later.
-        		int iDuplicateFactor = (int)Math.Ceiling(m_fSaveFramesInterval / 125.0);
-        		metadata = m_SaveMetadata.ToXmlString(iDuplicateFactor);
+        	    m_SaveResult = SaveResult.UnknownError;
+        	    e.Result = 0;
+        	    return;
         	}
         	
         	try
         	{
-        		/*m_SaveResult = m_VideoReader.Save(	m_SaveFile, 
-	        	                                	m_fSaveFramesInterval, 
-	        	                                	m_iSaveStart, 
-	        	                                	m_iSaveEnd, 
-	        	                                	metadata, 
-	        	                                	m_bSaveFlushDrawings, 
-	        	                                	m_bSaveKeyframesOnly,
-	        	                                	m_bSavePausedVideo,
-	        	                                	m_SaveDelegateOutputBitmap);*/
-        		if(m_SaveMetadata != null)
-        		{
-        			m_SaveMetadata.CleanupHash();
-        		}
+        	    VideoFileWriter w = new VideoFileWriter();
+        	    w.Save((SavingSettings)e.Argument, m_VideoReader, bgWorker);
         	}
         	catch (Exception exp)
 			{
@@ -273,13 +243,14 @@ namespace Kinovea.ScreenManager
         }
 		private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-        	// This method should be called back from the VideoFile when a frame has been processed.
-        	// call snippet : m_BackgroundWorker.ReportProgress(iCurrentValue, iMaximum);
+        	// This method should be called back from the writer when a frame has been processed.
+        	// call snippet : bgWorker.ReportProgress(iCurrentValue, iMaximum);
         	
         	int iValue = (int)e.ProgressPercentage;
         	int iMaximum = (int)e.UserState;
             
-            if (iValue > iMaximum) { iValue = iMaximum; }
+            if (iValue > iMaximum) 
+                iValue = iMaximum;
         	
             m_FormProgressBar.Update(iValue, iMaximum, true);
         }
@@ -289,15 +260,13 @@ namespace Kinovea.ScreenManager
         	m_FormProgressBar.Dispose();
         	
         	if(m_SaveResult != SaveResult.Success)
-            {
             	ReportError(m_SaveResult);
-            }
         	else
-        	{
         		AfterSave();
-        	}
         }
-		private void ReportError(SaveResult _err)
+        #endregion
+		
+        private void ReportError(SaveResult _err)
         {
         	switch(_err)
         	{
@@ -336,13 +305,9 @@ namespace Kinovea.ScreenManager
         }
 		private void Cancel_Asked(object sender, EventArgs e)
 		{
-			// This will simply set BgWorker.CancellationPending to true,
-			// which we check periodically in VideoFile.ExtractToMemory method.
-	        // This will also end the bgWorker immediately,
-	        // maybe before we check for the cancellation in the other thread. 
-//m_VideoReader.BgWorker.CancelAsync();
-	        
-	        // m_FormProgressBar.Dispose();
+			// User cancelled from progress form.
+			m_BgWorkerSave.CancelAsync();
+	        m_FormProgressBar.Dispose();
 		}
 		#endregion
 	}

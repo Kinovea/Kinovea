@@ -26,10 +26,18 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
+    
+    // [2011-08-20] - This sub system will be subject of a deep refactoring later on.
+    // 1. Turn into a proper plugin system.
+    // [done] 2. Adjustment filters are purely "map" higher level functions, should be handled as such.
+    // [done] 3. More stuff in the base class.
+    
+    
 	/// <summary>
 	/// AbstractVideoFilter define the way all Video Filters should behave.
 	/// A VideoFilter is an entity that can be used to modify a subset (or all)
@@ -50,22 +58,15 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public abstract class AbstractVideoFilter
 	{
-		#region Abstract Properties
-        public abstract string Name
-        {
+		#region Properties
+        public abstract string Name {
         	get;
         }
-        public abstract Bitmap Icon
-        {
-        	get;
-        }
-        public abstract List<DecompressedFrame> FrameList
-        {
-        	set;
-        }
-        public abstract bool Experimental
-        {
-        	get;
+        public virtual Bitmap Icon {
+		    get { return null; }
+		}
+        public virtual bool Experimental {
+            get { return false; }
         }
         #endregion
         
@@ -78,8 +79,10 @@ namespace Kinovea.ScreenManager
         {
             get { return m_Menu;}
         }
+        public VideoFrameCache FrameCache { get; set; }
         
         #region Concrete Members
+        //private  List<DecompressedFrame> m_FrameList;
         protected BackgroundWorker m_BackgroundWorker = new BackgroundWorker();
         private formProgressBar m_FormProgressBar;
         private ToolStripMenuItem m_Menu = new ToolStripMenuItem();

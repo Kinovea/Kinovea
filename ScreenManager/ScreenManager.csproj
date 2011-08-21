@@ -336,6 +336,7 @@
       <DependentUpon>KeyframeBox.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\VideoFilters\AbstractVideoFilter.cs" />
+    <Compile Include="PlayerScreen\VideoFilters\AdjustmentFilter.cs" />
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.cs">
       <SubType>Form</SubType>
     </Compile>

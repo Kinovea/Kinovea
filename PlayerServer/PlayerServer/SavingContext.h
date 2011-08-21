@@ -20,6 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 #pragma once
 
+using namespace System::Drawing;
+
+
+
 namespace Kinovea
 {
 	namespace VideoFiles

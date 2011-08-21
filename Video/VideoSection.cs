@@ -23,11 +23,40 @@ using System;
 namespace Kinovea.Video
 {
     /// <summary>
-    /// Description of VideoSection.
+    /// A section of the video, defined by sentinel timestamps.
+    /// Can be used to describe the whole video, the working zone, the cache segment or any other section.
     /// </summary>
-    public struct VideoSection
+    public struct VideoSection : IComparable
     {
-        public long Start;
-        public long End;
+        public readonly long Start;
+        public readonly long End;
+        public VideoSection(long _start, long _end)
+        {
+            Start = _start;
+            End = _end;
+        }
+        
+        public int CompareTo(object _other)
+        {
+            if (_other is VideoSection)
+            {
+                VideoSection other = (VideoSection)_other;
+                
+                if(this.Start == other.Start && this.End == other.End) 
+                    return 0;
+                else if(this.Start >= other.Start && this.End <= other.End)
+                    return -1;
+                else
+                    return 1;
+            }
+            else 
+            {
+                throw new ArgumentException();
+            }
+        }
+        public bool Contains(long _timestamp)
+        {
+            return _timestamp >= Start && _timestamp <= End;
+        }
     }
 }

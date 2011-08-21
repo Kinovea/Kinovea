@@ -31,22 +31,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 #pragma once
 
-using namespace System;
-using namespace System::Collections::Generic;				
-using namespace System::ComponentModel;
-using namespace System::Diagnostics;
-using namespace System::Drawing;
-using namespace System::IO;
-using namespace System::Reflection;
-using namespace System::Text;
-using namespace System::Threading;
-using namespace System::Windows::Forms;
-
-//------------------------
-#define OUTPUT_MUXER_MKV 0
-#define OUTPUT_MUXER_MP4 1
-#define OUTPUT_MUXER_AVI 2
-
 extern "C" 
 {
 #define __STDC_CONSTANT_MACROS
@@ -61,9 +45,24 @@ extern "C"
 #include "SavingContext.h"
 #include "VideoFile.h"    // <- remove. SaveResult should be declared here.
 
-namespace Kinovea
-{
-namespace VideoFiles
+using namespace System;
+using namespace System::Collections::Generic;				
+using namespace System::ComponentModel;
+using namespace System::Diagnostics;
+using namespace System::Drawing;
+using namespace System::IO;
+using namespace System::Reflection;
+using namespace System::Text;
+using namespace System::Threading;
+using namespace System::Windows::Forms;
+using namespace Kinovea::Video;
+
+//------------------------
+#define OUTPUT_MUXER_MKV 0
+#define OUTPUT_MUXER_MP4 1
+#define OUTPUT_MUXER_AVI 2
+
+namespace Kinovea { namespace VideoFiles
 {
 	public ref class VideoFileWriter
 	{
@@ -86,7 +85,8 @@ namespace VideoFiles
 #pragma region Public Methods
 	public:
 		
-		SaveResult OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, double _fFramesInterval, bool _bHasMetadata);
+		SaveResult Save(SavingSettings _settings, VideoReader^ _reader, BackgroundWorker^ _worker);
+		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval, bool _bHasMetadata);
 		SaveResult CloseSavingContext(bool _bEncodingSuccess);
 		SaveResult SaveFrame(Bitmap^ _image);
 		SaveResult SaveMetadata(String^ _Metadata);

@@ -20,6 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 #pragma once
 
+using namespace System;
+using namespace System::Collections::Generic;
+using namespace System::Drawing;
+
 namespace Kinovea
 {
 	namespace VideoFiles
@@ -33,6 +37,8 @@ namespace Kinovea
 			ForceSquarePixels	// The program forces square pixels to overcome a video-specific bug.
 		};
 
+
+		// OBSOLETE. Use VideoInfo from Kinovea::Video namespace.
 		public ref class InfosVideo
 		{
 			// Info structure for a video.
