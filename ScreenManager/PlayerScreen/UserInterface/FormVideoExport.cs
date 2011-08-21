@@ -122,6 +122,9 @@ namespace Kinovea.ScreenManager
 			if(!m_Metadata.HasData && m_fSlowmotionPercentage == 100)
 			{
 				// Directly ask for a filename.
+				m_bBlendDrawings = true;
+				m_bMuxDrawings = false;
+                m_bUseSlowMotion = false;
 				return DoSaveVideo();
 			}
 			else
@@ -140,13 +143,22 @@ namespace Kinovea.ScreenManager
 
             Hide();
 			DialogResult dr;
+			
+			m_bBlendDrawings = false;
+            m_bMuxDrawings = false;
+            m_bSaveAnalysis = false;
+            m_bUseSlowMotion = false;
             
             if(radioSaveAnalysis.Checked)
             {
-            	dr = DoSaveAnalysis();	
+                m_bSaveAnalysis = true;
+                dr = DoSaveAnalysis();
             }
             else
             {
+                m_bBlendDrawings = radioSaveBlended.Checked;
+                m_bMuxDrawings = radioSaveMuxed.Checked;
+                m_bUseSlowMotion = checkSlowMotion.Checked;
             	dr = DoSaveVideo();	
             }
             
@@ -223,14 +235,8 @@ namespace Kinovea.ScreenManager
                 filePath = saveFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                	// Commit to output props.
-                	m_bSaveAnalysis = false;
                 	m_Filename = filePath;                	
-                	m_bBlendDrawings = radioSaveBlended.Checked;
-					m_bMuxDrawings = radioSaveMuxed.Checked;             	
-             		m_bUseSlowMotion = checkSlowMotion.Checked;
-             		
-					DialogResult = DialogResult.OK;
+                	DialogResult = DialogResult.OK;
 					result = DialogResult.OK;
                 }
         	}
@@ -261,7 +267,6 @@ namespace Kinovea.ScreenManager
                     
                     // Commit output props
                     m_Filename = filePath;
-                    m_bSaveAnalysis = true;
                     DialogResult = DialogResult.OK;
                     result = DialogResult.OK;
                 }

@@ -27,6 +27,6 @@ namespace Kinovea.Video
     {
         public ImageAspectRatio ImageAspectRatio;  
         public bool Deinterlace;
-        public bool AutoRewind;        
+        public bool AutoRewind;
     }
 }

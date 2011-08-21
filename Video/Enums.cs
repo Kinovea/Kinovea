@@ -35,4 +35,24 @@ namespace Kinovea.Video
 		CodecNotSupported,
 		Cancelled
     }
+    
+    [Flags]
+	public enum VideoReaderFlags
+	{
+		None = 0,
+		
+		/// <summary>
+		/// True if this reader always extract the full content of the file to the cache.
+		/// In this case the reader can assume that the working zone is always locked on full file,
+		/// and not implement support for working zone size change.
+		/// </summary>
+		AlwaysCaching = 1,
+		
+		/// <summary>
+		/// May depend on file. True if the operations that change the aspect ratio of the images are supported.
+		/// </summary>
+		SupportsAspectRatio = 2,
+		
+		SupportsDeinterlace = 4
+	}
 }

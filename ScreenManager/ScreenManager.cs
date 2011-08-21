@@ -29,8 +29,10 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
@@ -80,7 +82,7 @@ namespace Kinovea.ScreenManager
         private formProgressBar m_DualSaveProgressBar;
 
         // Video Filters
-        private AbstractVideoFilter[] m_VideoFilters;
+        private List<AbstractVideoFilter> m_VideoFilters = new List<AbstractVideoFilter>();
         private bool m_bHasSvgFiles;
         private string m_SvgPath;
         private FileSystemWatcher m_SVGFilesWatcher = new FileSystemWatcher();
@@ -197,15 +199,14 @@ namespace Kinovea.ScreenManager
         private void InitializeVideoFilters()
         {
         	// Creates Video Filters
-        	m_VideoFilters = new AbstractVideoFilter[(int)VideoFilterType.NumberOfVideoFilters];
-        	
-        	m_VideoFilters[(int)VideoFilterType.AutoLevels] = new VideoFilterAutoLevels();
-        	m_VideoFilters[(int)VideoFilterType.AutoContrast] = new VideoFilterContrast();
-        	m_VideoFilters[(int)VideoFilterType.Sharpen] = new VideoFilterSharpen();
-        	m_VideoFilters[(int)VideoFilterType.EdgesOnly] = new VideoFilterEdgesOnly();
-			m_VideoFilters[(int)VideoFilterType.Mosaic] = new VideoFilterMosaic();
-        	m_VideoFilters[(int)VideoFilterType.Reverse] = new VideoFilterReverse();
-        	m_VideoFilters[(int)VideoFilterType.Sandbox] = new VideoFilterSandbox();
+        	// This will be moved out in a separate sub system.
+        	m_VideoFilters.Add(new VideoFilterAutoLevels());
+        	m_VideoFilters.Add(new VideoFilterContrast());
+        	m_VideoFilters.Add(new VideoFilterSharpen());
+        	//m_VideoFilters.Add(new VideoFilterEdgesOnly());
+        	//m_VideoFilters.Add(new VideoFilterMosaic());
+        	m_VideoFilters.Add(new VideoFilterReverse());
+        	//m_VideoFilters.Add(new VideoFilterSandbox());
         }
         public void PrepareScreen()
         {
@@ -363,19 +364,22 @@ namespace Kinovea.ScreenManager
 
             ConfigureVideoFilterMenus(null);
 
-            mnuCatchImage.DropDownItems.AddRange(new ToolStripItem[] 
-													{ 
-                                                   		mnuDeinterlace,
-                                                   		mnuFormat,
-                                                   		mnuMirror,
-                                                   		new ToolStripSeparator(), 
-                                                   		m_VideoFilters[(int)VideoFilterType.AutoLevels].Menu,  
-                                                   		m_VideoFilters[(int)VideoFilterType.AutoContrast].Menu,  
-                                                   		m_VideoFilters[(int)VideoFilterType.Sharpen].Menu, 
-                                                   		new ToolStripSeparator(),
-                                                   		mnuSVGTools,
-                                                   		mnuCoordinateAxis
-                                                 		});
+            mnuCatchImage.DropDownItems.Add(mnuDeinterlace);
+            mnuCatchImage.DropDownItems.Add(mnuFormat);
+            mnuCatchImage.DropDownItems.Add(mnuMirror);
+            mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
+            
+            // Temporary hack for including filters sub menus until a full plugin system is in place.
+            // We just check on their type. Ultimately each plugin will have a category or a submenu property.
+            foreach(AbstractVideoFilter f in m_VideoFilters)
+            {
+                if(f is AdjustmentFilter)
+                    mnuCatchImage.DropDownItems.Add(f.Menu);
+            }
+            
+            mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
+            mnuCatchImage.DropDownItems.Add(mnuSVGTools);
+            mnuCatchImage.DropDownItems.Add(mnuCoordinateAxis);
             #endregion
 
             #region Motion
@@ -387,14 +391,13 @@ namespace Kinovea.ScreenManager
             mnuHighspeedCamera.Click += new EventHandler(mnuHighspeedCamera_OnClick);
             mnuHighspeedCamera.MergeAction = MergeAction.Append;
             
-            mnuCatchMotion.DropDownItems.AddRange(new ToolStripItem[] 
-                                                  {  
-                                                  		mnuHighspeedCamera,
-                                                  		new ToolStripSeparator(),
-                                                  		m_VideoFilters[(int)VideoFilterType.Mosaic].Menu,
-                                                  		m_VideoFilters[(int)VideoFilterType.Reverse].Menu,
-                                                  		m_VideoFilters[(int)VideoFilterType.Sandbox].Menu});
-            
+            mnuCatchMotion.DropDownItems.Add(mnuHighspeedCamera);
+            mnuCatchMotion.DropDownItems.Add(new ToolStripSeparator());
+            foreach(AbstractVideoFilter f in m_VideoFilters)
+            {
+                if(!(f is AdjustmentFilter))
+                    mnuCatchMotion.DropDownItems.Add(f.Menu);
+            }
             #endregion
             
             MenuStrip ThisMenu = new MenuStrip();
@@ -523,7 +526,7 @@ namespace Kinovea.ScreenManager
         		{
         			// We need to make sure this is the active screen for the DrawingFilter menu action to be properly routed.
         			Screen_SetActiveScreen(_SenderScreen);
-        			m_VideoFilters[iDrawtimeFilterType].Menu_OnClick(this, EventArgs.Empty);
+//m_VideoFilters[iDrawtimeFilterType].Menu_OnClick(this, EventArgs.Empty);
         			return;
         		}
         	}
@@ -1364,7 +1367,7 @@ namespace Kinovea.ScreenManager
                 	// File
                     mnuSave.Enabled = true;
                     toolSave.Enabled = true;
-                   	mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
+                    mnuExportSpreadsheet.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportODF.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportMSXML.Enabled = player.FrameServer.Metadata.HasData;
                     mnuExportXHTML.Enabled = player.FrameServer.Metadata.HasData;
@@ -1372,7 +1375,7 @@ namespace Kinovea.ScreenManager
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Image
-                    mnuDeinterlace.Enabled = true;
+                    mnuDeinterlace.Enabled = (player.FrameServer.VideoReader.Flags & VideoReaderFlags.SupportsDeinterlace) != 0;
                     mnuMirror.Enabled = true;
                     mnuSVGTools.Enabled = m_bHasSvgFiles;
                     mnuCoordinateAxis.Enabled = true;
@@ -1601,16 +1604,16 @@ namespace Kinovea.ScreenManager
 			}
         	
 			// Secret menu. Set to true during developpement.
-            m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
+//m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
 			
 			// 2. Enabled, checked
 			if(_player != null)
 			{
 				// Video filters can only be enabled when Analysis mode.
 				foreach(AbstractVideoFilter vf in m_VideoFilters)
-				    vf.Menu.Enabled = _player.IsInAnalysisMode;
+				    vf.Menu.Enabled = _player.IsCaching;
 	        	
-				if(_player.IsInAnalysisMode)
+				if(_player.IsCaching)
 	            {
 					// Fixme: Why is this here ?
 					
@@ -1624,13 +1627,18 @@ namespace Kinovea.ScreenManager
 	            	{
 	            		vf.FrameList = frameList;
 	            	}*/
+	            	
+	            	foreach(AbstractVideoFilter vf in m_VideoFilters)
+	            	{
+	            		vf.FrameCache = _player.FrameServer.VideoReader.Cache;
+	            	}
 	            }
 				
 				foreach(AbstractVideoFilter vf in m_VideoFilters)
 	        	    vf.Menu.Checked = false;
 	        
-        		if(_player.DrawtimeFilterType > -1) 
-        		    m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;
+/*if(_player.DrawtimeFilterType > -1) 
+        		    m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;*/
 			}
 			else
 			{
@@ -1644,42 +1652,42 @@ namespace Kinovea.ScreenManager
         private void ConfigureImageFormatMenus(AbstractScreen _screen)
         {
 			// Set the enable and check prop of the image formats menu according of current screen state.
+			if(_screen == null || !_screen.Full)
+			{
+			    mnuFormat.Enabled = false;
+			    return;
+			}
 			
-        	if(_screen != null)
+			
+            if(_screen is PlayerScreen && 
+			   (((PlayerScreen)_screen).FrameServer.VideoReader.Flags & VideoReaderFlags.SupportsAspectRatio) == 0)
+    	    {
+    	        mnuFormat.Enabled = false;
+    	        return;
+    	    }
+			
+        	mnuFormat.Enabled = true;
+			mnuFormatAuto.Enabled = true;
+			mnuFormatForce43.Enabled = true;
+			mnuFormatForce169.Enabled = true;
+			
+			// Reset all checks before setting the right one.
+    		mnuFormatAuto.Checked = false;
+        	mnuFormatForce43.Checked = false;
+        	mnuFormatForce169.Checked = false;
+    	
+        	switch(_screen.AspectRatio)
         	{
-        		mnuFormat.Enabled = true;
-				mnuFormatAuto.Enabled = true;
-				mnuFormatForce43.Enabled = true;
-				mnuFormatForce169.Enabled = true;
-				
-				// Reset all checks before setting the right one.
-        		mnuFormatAuto.Checked = false;
-	        	mnuFormatForce43.Checked = false;
-	        	mnuFormatForce169.Checked = false;
-        	
-	        	switch(_screen.AspectRatio)
-	        	{
-	        		case ImageAspectRatio.Force43:
-	        			mnuFormatForce43.Checked = true;
-	        			break;
-	        		case ImageAspectRatio.Force169:
-	        			mnuFormatForce169.Checked = true;
-	        			break;
-	        		case ImageAspectRatio.Auto:
-	        		default:
-	        			mnuFormatAuto.Checked = true;
-	        			break;
-	        	}
-        	}
-        	else
-        	{
-        		mnuFormat.Enabled = false;
-        		mnuFormatAuto.Enabled = false;
-				mnuFormatForce43.Enabled = false;
-				mnuFormatForce169.Enabled = false;
-        		mnuFormatAuto.Checked = false;
-	        	mnuFormatForce43.Checked = false;
-	        	mnuFormatForce169.Checked = false;
+        		case ImageAspectRatio.Force43:
+        			mnuFormatForce43.Checked = true;
+        			break;
+        		case ImageAspectRatio.Force169:
+        			mnuFormatForce169.Checked = true;
+        			break;
+        		case ImageAspectRatio.Auto:
+        		default:
+        			mnuFormatAuto.Checked = true;
+        			break;
         	}
         }
         private void OnSVGFilesChanged(object source, FileSystemEventArgs e)
@@ -1758,108 +1766,95 @@ namespace Kinovea.ScreenManager
         	// If blending is activated, only get the image from left screen, since it already contains both images.
         	log.Debug("Saving side by side video.");
         	
-        	if (m_bSynching && screenList.Count == 2)
-            {
-       			PlayerScreen ps1 = screenList[0] as PlayerScreen;
-       			PlayerScreen ps2 = screenList[1] as PlayerScreen;
-       			if(ps1 != null && ps2 != null)
-       			{
-       				// Todo: get frame interval from one of the videos.
-       				
-       				// Get first frame outside the loop, to be able to set video size.
-       				m_iCurrentFrame = 0;
-       				OnCommonPositionChanged(m_iCurrentFrame, false);
-       				
-       				Bitmap img1 = ps1.GetFlushedImage();
-       				Bitmap img2 = null;
-       				Bitmap composite;
-       				if(!m_bSyncMerging)
-       				{
-       					img2 = ps2.GetFlushedImage();
-       					composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
-       				}
-       				else
-       				{
-       					composite = img1;
-       				}
-       					
-       				log.Debug(String.Format("Composite size: {0}.", composite.Size));
-       				
-       				// Configure a fake InfoVideo to setup image size.
-       				InfosVideo iv = new InfosVideo();
-       				iv.iWidth = composite.Width;
-       				iv.iHeight = composite.Height;
-       	
-					SaveResult result = m_VideoFileWriter.OpenSavingContext(m_DualSaveFileName, iv, -1, false);
+            if (!m_bSynching || screenList.Count != 2)
+                return;
+            
+            PlayerScreen ps1 = screenList[0] as PlayerScreen;
+			PlayerScreen ps2 = screenList[1] as PlayerScreen;
+			if(ps1 == null && ps2 == null)
+			    return;
 			
-					if(result == SaveResult.Success)
-					{
-						m_VideoFileWriter.SaveFrame(composite);
-						
-						img1.Dispose();
-						if(!m_bSyncMerging)
-	       				{
-		       			   	img2.Dispose();
-					       	composite.Dispose();
-	       				}
-				       	
-				       	m_bgWorkerDualSave.ReportProgress(1, m_iMaxFrame);
-						
-						// Loop all remaining frames in static sync mode, but without refreshing the UI.
-	       				while(m_iCurrentFrame < m_iMaxFrame && !m_bDualSaveCancelled)
-	       				{
-	       					m_iCurrentFrame++;
-	       					
-	       					if(m_bgWorkerDualSave.CancellationPending)
-	       					{
-	       						e.Result = 1;
-								m_bDualSaveCancelled = true;
-	       						break;
-	       					}
-	       					else
-	       					{
-	       						// Move both playheads and get the composite image.
-	       						OnCommonPositionChanged(-1, false);
-	       						img1 = ps1.GetFlushedImage();				       			
-	       						if(!m_bSyncMerging)
-	       						{
-	       							img2 = ps2.GetFlushedImage();
-	       							composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
-	       						}
-	       						else
-	       						{
-	       							composite = img1;
-	       						}
-				       			
-				       			// Save to file.
-				       			m_VideoFileWriter.SaveFrame(composite);
-				       			
-				       			// Clean up and report progress.
-				       			img1.Dispose();
-				       			if(!m_bSyncMerging)
-	       						{
-				       				img2.Dispose();
-				       				composite.Dispose();
-				       			}
-				       			
-				       			m_bgWorkerDualSave.ReportProgress(m_iCurrentFrame+1, m_iMaxFrame);
-	       					}
-	       				}
-	       				
-	       				if(!m_bDualSaveCancelled)
-	       				{
-	       					e.Result = 0;
-	       				}
-					}
-					else
-					{
-						// Saving context couldn't be opened.
-						e.Result = 2;
-					}
-       			}
-        	}
-        	
-        	
+			// Todo: get frame interval from one of the videos.
+				
+			// Get first frame outside the loop, to be able to set video size.
+			m_iCurrentFrame = 0;
+			OnCommonPositionChanged(m_iCurrentFrame, false);
+			
+			Bitmap img1 = ps1.GetFlushedImage();
+			Bitmap img2 = null;
+			Bitmap composite;
+			if(!m_bSyncMerging)
+			{
+				img2 = ps2.GetFlushedImage();
+				composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
+			}
+			else
+			{
+				composite = img1;
+			}
+				
+			log.Debug(String.Format("Composite size: {0}.", composite.Size));
+			
+			// Configure a fake InfoVideo to setup image size.
+			VideoInfo vi = new VideoInfo { OriginalSize = composite.Size };
+			SaveResult result = m_VideoFileWriter.OpenSavingContext(m_DualSaveFileName, vi, -1, false);
+	
+			if(result != SaveResult.Success)
+			{
+			    e.Result = 2;
+			    return;
+			}
+			
+			m_VideoFileWriter.SaveFrame(composite);
+			
+			img1.Dispose();
+			if(!m_bSyncMerging)
+			{
+                img2.Dispose();
+	       	composite.Dispose();
+			}
+	       	
+       	m_bgWorkerDualSave.ReportProgress(1, m_iMaxFrame);
+		
+            // Loop all remaining frames in static sync mode, but without refreshing the UI.
+			while(m_iCurrentFrame < m_iMaxFrame && !m_bDualSaveCancelled)
+			{
+				m_iCurrentFrame++;
+				
+				if(m_bgWorkerDualSave.CancellationPending)
+				{
+					e.Result = 1;
+				    m_bDualSaveCancelled = true;
+					break;
+				}
+				
+				
+				// Move both playheads and get the composite image.
+				OnCommonPositionChanged(-1, false);
+				img1 = ps1.GetFlushedImage();
+                composite = img1;				
+				if(!m_bSyncMerging)
+				{
+					img2 = ps2.GetFlushedImage();
+					composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
+				}
+				
+   			// Save to file.
+   			m_VideoFileWriter.SaveFrame(composite);
+   			
+   			// Clean up and report progress.
+   			img1.Dispose();
+   			if(!m_bSyncMerging)
+				{
+   				img2.Dispose();
+   				composite.Dispose();
+   			}
+   			
+   			m_bgWorkerDualSave.ReportProgress(m_iCurrentFrame+1, m_iMaxFrame);
+			}
+			
+			if(!m_bDualSaveCancelled)
+				e.Result = 0;
         }
         private void bgWorkerDualSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -2715,10 +2710,10 @@ namespace Kinovea.ScreenManager
         {
             m_bAllowKeyboardHandler = true;
         }
-        public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
+public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         {
         	// Disable draw time filter in player.
-        	if(_dfo != null)
+        	/*if(_dfo != null)
         	{
     			m_VideoFilters[_dfo.VideoFilterType].Menu.Checked = _dfo.Active;
     			
@@ -2727,7 +2722,7 @@ namespace Kinovea.ScreenManager
 	        	{
 	        		player.SetDrawingtimeFilterOutput(_dfo);
 	        	}
-        	}
+        	}*/
         	
         	m_ActiveScreen.RefreshImage();
         }

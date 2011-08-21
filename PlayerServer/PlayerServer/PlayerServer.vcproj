@@ -199,12 +199,21 @@
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Refs\AForge.Imaging.dll"
-			AssemblyName="AForge.Imaging, Version=2.1.1.0, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL"
+			AssemblyName="AForge.Imaging, Version=2.2.0.0, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL"
 			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Refs\log4net.dll"
 			AssemblyName="log4net, Version=1.2.10.0, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
+			MinFrameworkVersion="131072"
+		/>
+		<AssemblyReference
+			RelativePath="..\..\Video\bin\Debug\Video.dll"
+			AssemblyName="Video, Version=1.0.0.19465, processorArchitecture=IA64"
+			CopyLocal="false"
+			CopyLocalDependencies="false"
+			UseDependenciesInBuild="false"
+			CopyLocalSatelliteAssemblies="false"
 			MinFrameworkVersion="131072"
 		/>
 	</References>

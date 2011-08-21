@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2009.
+Copyright © Joan Charmant 2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,30 +19,19 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
-using System.Resources;
+using Kinovea.Base;
 
-using Kinovea.ScreenManager.Languages;
-using Kinovea.VideoFiles;
-
-namespace Kinovea.ScreenManager
+namespace Kinovea.Video
 {
-	public class VideoFilterReverse : AbstractVideoFilter
-	{
-		public override string Name {
-		    get { return ScreenManagerLang.VideoFilterReverse_FriendlyName; }
-		}
-		public override Bitmap Icon {
-		    get { return Properties.Resources.revert; }
-		}
-		public override void Menu_OnClick(object sender, EventArgs e)
-        {
-			Process();
-        }
-		protected override void Process()
-		{
-		    FrameCache.Revert();
-			ProcessingOver();
-		}
-	}
+    public struct SavingSettings
+    {
+        public VideoSection Section;
+        public string Metadata;
+        public string File;
+        public double FrameInterval;
+        public bool FlushDrawings;
+        public bool KeyframesOnly;
+        public bool PausedVideo;
+        public ImageRetriever ImageRetriever; 
+    }
 }

@@ -52,10 +52,6 @@ namespace Kinovea.ScreenManager
 		{
 		    get { return Properties.Resources.controller; }
 		}	
-		public override List<DecompressedFrame> FrameList
-        {
-			set { m_FrameList = value; }
-        }
 		public override bool Experimental 
 		{
 			get { return true; }
@@ -63,7 +59,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private List<DecompressedFrame> m_FrameList;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -77,13 +72,13 @@ namespace Kinovea.ScreenManager
 			// Method called back from AbstractVideoFilter after a call to StartProcessing().
 
 			//TestFindSurfFeatures();
-			TestCreateYTSlices();
+			//TestCreateYTSlices();
 			//TestFrameInterpolation();
 		}
 		#endregion
 		
 		#region YTSlices
-		private void TestCreateYTSlices()
+		/*private void TestCreateYTSlices()
 		{
 			// Create a number of YT-Slice images.
 			// I call YT-Slice the image created over time by a specific column of pixel at X coordinate in the video.
@@ -100,10 +95,10 @@ namespace Kinovea.ScreenManager
 		    }
 			
 			// Get column of each image and output it in the resulting image.
-			int imgHeight = m_FrameList[0].BmpImage.Height;
-			int imgWidth = m_FrameList[0].BmpImage.Width;
-			int iTotalImages = m_FrameList.Count;
-			iTotalImages = Math.Min(100, m_FrameList.Count);
+			int imgHeight = FrameList[0].BmpImage.Height;
+			int imgWidth = FrameList[0].BmpImage.Width;
+			int iTotalImages = FrameList.Count;
+			iTotalImages = Math.Min(100, FrameList.Count);
 			for(int iCurrentX=0;iCurrentX<imgWidth;iCurrentX++)
 			{
 				CreateYTSlice(iCurrentX, iTotalImages, imgHeight, imgWidth, testDirectory);
@@ -122,9 +117,9 @@ namespace Kinovea.ScreenManager
 				{
 					// Black out image.
 				}
-			}*/
-		}
-		private Bitmap CreateYTSlice(int iCurrentX, int iTotalImages, int imgHeight, int imgWidth, string testDirectory)
+			}* /
+		}*/
+		/*private Bitmap CreateYTSlice(int iCurrentX, int iTotalImages, int imgHeight, int imgWidth, string testDirectory)
 		{
 			// Create the lateral image.
 			// Gather the same column in all images and paint it on a new image.
@@ -143,7 +138,7 @@ namespace Kinovea.ScreenManager
 				Rectangle rSrc = new Rectangle(iCurrentX, 0, 1, imgHeight);
 	       		Rectangle rDst = new Rectangle(i, 0, 1, imgHeight);
 	       		g.DrawImage(m_FrameList[i].BmpImage, rDst, rSrc, GraphicsUnit.Pixel);
-	       	}*/
+	       	}* /
 			
 			
 			// 2. Mode full output.
@@ -158,17 +153,17 @@ namespace Kinovea.ScreenManager
 	       		//Rectangle rDst = new Rectangle(i, 0, 1, imgHeight);
 				Rectangle rSrc = new Rectangle(iCurrentX, 0, 1, imgHeight);
 	       		Rectangle rDst = new Rectangle(i, 0, 1, imgHeight);
-	       		g.DrawImage(m_FrameList[i].BmpImage, rDst, rSrc, GraphicsUnit.Pixel);
+	       		g.DrawImage(FrameList[i].BmpImage, rDst, rSrc, GraphicsUnit.Pixel);
 	       	}
 		       			
 	        ytImage.Save(testDirectory + String.Format("test-X{0:000}", iCurrentX) + ".bmp");
 		        
 	        return ytImage;
-		}
+		}*/
 		#endregion
 		
 		#region Frame Interpolation
-		private void TestFrameInterpolation()
+		/*private void TestFrameInterpolation()
 		{
 			int imgStart = 60;
 			int range = 10;
@@ -176,16 +171,16 @@ namespace Kinovea.ScreenManager
 			List<Bitmap> interpolatedList = new List<Bitmap>();
 			for(int i=imgStart;i<imgStart + range;i++)
 			{
-				Bitmap bmp = ELAVertInterpolation(m_FrameList[i].BmpImage, m_FrameList[i+1].BmpImage, 5);
+				Bitmap bmp = ELAVertInterpolation(FrameList[i].BmpImage, FrameList[i+1].BmpImage, 5);
 				interpolatedList.Add(bmp);
 				m_BackgroundWorker.ReportProgress(i-imgStart, range);
 			}
 			
 			// Interleave.
 			List<Bitmap> interleavedList = new List<Bitmap>();
-			for(int i=0;i<m_FrameList.Count;i++)
+			for(int i=0;i<FrameList.Count;i++)
 			{
-				interleavedList.Add(m_FrameList[i].BmpImage);
+				interleavedList.Add(FrameList[i].BmpImage);
 				if(i>=imgStart && i<imgStart + range)
 				{
 					interleavedList.Add(interpolatedList[i-imgStart]);
@@ -193,18 +188,18 @@ namespace Kinovea.ScreenManager
 			}
 				
 			// Reconstruct original list.
-			int totalImages = m_FrameList.Count;
-			for(int i=0;i<m_FrameList.Count;i++)
+			int totalImages = FrameList.Count;
+			for(int i=0;i<FrameList.Count;i++)
 			{
-				m_FrameList[i].BmpImage = interleavedList[i];
+				FrameList[i].BmpImage = interleavedList[i];
 			}
 			
 			// Dispose the extra images.
-			for(int i=m_FrameList.Count;i<interleavedList.Count;i++)
+			for(int i=FrameList.Count;i<interleavedList.Count;i++)
 			{
 				interleavedList[i].Dispose();
 			}
-		}
+		}*/
 		private static unsafe Bitmap ELAVertInterpolation(Bitmap _src1, Bitmap _src2, int _aperture)
 		{
 			//----------------------------------------------------

@@ -1,3 +1,4 @@
+#region Licence
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -17,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
-
+#endregion
 
 using Kinovea.ScreenManager.Languages;
 using System;
@@ -115,7 +116,7 @@ namespace Kinovea.ScreenManager
                     return m_FrameServer.VideoReader.SingleFrame;
             }	
         }
-        public bool IsInAnalysisMode
+        public bool IsCaching
         {
             get
             {
@@ -141,7 +142,7 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                return (int)m_FrameServer.VideoReader.Selection.End;
+                return (int)m_FrameServer.VideoReader.WorkingZone.End;
             }
         }
         public double FrameInterval
@@ -200,9 +201,7 @@ namespace Kinovea.ScreenManager
                 // If there was a selection it must be imported again.
 				// (This means we'll loose color adjustments.)
 				if (m_FrameServer.VideoReader.Caching)
-				{
 					m_PlayerScreenUI.ImportSelectionToMemory(true);
-				}
                 
 				RefreshImage();
             }

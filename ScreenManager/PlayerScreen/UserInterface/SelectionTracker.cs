@@ -128,16 +128,9 @@ namespace Kinovea.ScreenManager
             }
         }
         [Category("Behavior"), Browsable(true)]
-        public bool SelLocked
-        {
-            get
-            {
-                return m_bSelLocked;
-            }
-            set
-            {
-                m_bSelLocked = value;
-            }
+        public bool SelLocked {
+            get { return m_bSelLocked; }
+            set { m_bSelLocked = value; }
         }
         [Category("Misc"), Browsable(true)]
         public string ToolTip
@@ -244,11 +237,14 @@ namespace Kinovea.ScreenManager
         #region Interaction Events - Pixels to timestamps.
         private void SelectionTracker_MouseDown(object sender, MouseEventArgs e)
         {
+            if(m_bSelLocked || !m_bEnabled)
+                return;
+            
         	m_bDraggingLeft = false;
         	m_bDraggingRight = false;
         	m_bDraggingTarget = false;
 
-        	if (m_bEnabled && e.Button == MouseButtons.Left)
+        	if (e.Button == MouseButtons.Left)
             {
         		if(e.X >= m_iStartPixel - m_iHandlerWidth && e.X < m_iStartPixel)
         		{
@@ -281,8 +277,10 @@ namespace Kinovea.ScreenManager
         }
         private void SelectionTracker_MouseMove(object sender, MouseEventArgs e)
         {
-        	if (m_bEnabled && 
-        	    (e.Button == MouseButtons.Left) &&
+            if(m_bSelLocked || !m_bEnabled)
+                return;
+            
+        	if (e.Button == MouseButtons.Left &&
         	    (m_bDraggingLeft || m_bDraggingRight || m_bDraggingTarget))
             {
     			if(m_bDraggingLeft)
@@ -320,8 +318,11 @@ namespace Kinovea.ScreenManager
         }
         private void SelectionTracker_MouseUp(object sender, MouseEventArgs e)
         {
+             if(m_bSelLocked || !m_bEnabled)
+                return;
+             
         	// This is when the validation of the change occur.
-        	if (m_bEnabled && e.Button == MouseButtons.Left)
+        	if (e.Button == MouseButtons.Left)
             {
         		if(m_bDraggingTarget)
         		{

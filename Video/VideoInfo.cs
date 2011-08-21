@@ -42,13 +42,19 @@ namespace Kinovea.Video
         public long LastTimeStamp;
         public long DurationTimeStamps;
         
+        // Saving support.
+        public Size OriginalSize;
+        public double PixelAspectRatio;
+        public Fraction SampleAspectRatio;
+        public bool IsCodecMpeg2;
+        
         /*public long	FileSize;
         
         public Size OutputSize;
            
         public double DecodingStretchFactor;			// Used to set the output size of image.
         
-        public Fraction SampleAspectRatio;      
+              
         public double PixelAspectRatio;
         
                               // Should be a fraction ?

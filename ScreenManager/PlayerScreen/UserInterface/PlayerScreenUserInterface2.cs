@@ -39,6 +39,7 @@ using System.Xml;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 #endregion
@@ -211,8 +212,6 @@ namespace Kinovea.ScreenManager
 		private bool m_bSeekToStart;
 		private uint m_IdMultimediaTimer;
 		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
-		private int m_iDroppedFrames;                  // For debug purposes only.
-		private int m_iDecodedFrames;
 		private double m_fSlowmotionPercentage = 100.0f;	// Always between 1 and 200 : this specific value is not impacted by high speed cameras.
 		private bool m_bIsIdle = true;
 		
@@ -483,12 +482,14 @@ namespace Kinovea.ScreenManager
 					
 					m_iSelStart     = m_iStartingPosition;
 					//m_iSelEnd       = m_iStartingPosition + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-					m_iSelEnd = m_FrameServer.VideoReader.Selection.End;
+					m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
 					m_iSelDuration  = m_iTotalDuration;
 					
 					// Switch to analysis mode if possible.
 					// This will update the selection sentinels (m_iSelStart, m_iSelEnd) with more robust data.
 					ImportSelectionToMemory(false);
+					if((m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) != 0)
+					    EnableDisableWorkingZoneControls(false);
 
 					m_iCurrentPosition = m_iSelStart;
 					// FIXME: This should be the responsibility of the reader.
@@ -503,8 +504,6 @@ namespace Kinovea.ScreenManager
 					//---------------------------------------------------
 					// 2. Other various infos.
 					//---------------------------------------------------
-					m_iDecodedFrames = 1;
-					m_iDroppedFrames = 0;
 					m_bSeekToStart = false;
 					
 					m_FrameServer.SetupMetadata();
@@ -526,9 +525,7 @@ namespace Kinovea.ScreenManager
 					// check if there is an brother analysis file in the directory
 					//------------------------------------------------------------
 					if (!m_FrameServer.Metadata.HasData)
-					{
 						LookForLinkedAnalysis();
-					}
 					
 					// Check if there is a startup kva
 					string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
@@ -1463,7 +1460,6 @@ namespace Kinovea.ScreenManager
 			dbgCurrentPositionAbs.Text = String.Format("CurrentPosition (abs, ts): {0:0}", m_iCurrentPosition);
 			dbgCurrentPositionRel.Text = String.Format("CurrentPosition (rel, ts): {0:0}", m_iCurrentPosition-m_iSelStart);
 			dbgStartOffset.Text = String.Format("StartOffset (ts): {0:0}", m_FrameServer.VideoReader.Info.FirstTimeStamp);
-			dbgDrops.Text = String.Format("Drops (f): {0:0}", m_iDroppedFrames);
 
 			//dbgCurrentFrame.Text = String.Format("CurrentFrame (f): {0}", m_FrameServer.VideoReader.Current.t.iCurrentFrame);
 			//dbgDurationFrames.Text = String.Format("Duration (f) : {0}", m_FrameServer.VideoReader.Selection.iDurationFrame);
@@ -1737,8 +1733,6 @@ namespace Kinovea.ScreenManager
 				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 				m_iFramesToDecode = 1;
 
-				//ShowNextFrame(trkSelection.SelTarget, true);
-				//m_iCurrentPosition = trkSelection.SelTarget + trkSelection.Minimum;
 				ShowNextFrame(trkSelection.SelPos, true);
 				m_iCurrentPosition = trkSelection.SelPos + trkSelection.Minimum;
 				
@@ -1823,7 +1817,8 @@ namespace Kinovea.ScreenManager
 			if (m_FrameServer.VideoReader.Caching)
 			{
 				// In analysis mode, we always refresh the current frame.
-//ShowNextFrame(m_FrameServer.VideoReader.Selection.iCurrentFrame, true);
+                //ShowNextFrame(m_FrameServer.VideoReader.Selection.iCurrentFrame, true);
+                ShowNextFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
 			}
 			else
 			{
@@ -2394,8 +2389,6 @@ namespace Kinovea.ScreenManager
 				if (!bTracking)
 				{
 					m_iFramesToDecode++;
-					m_iDroppedFrames++;
-					//log.Debug(String.Format("Dropping. Total :{0} frames.", m_iDroppedFrames));
 				}
 				
 				//-------------------------------------------------------------------------------
@@ -2427,13 +2420,14 @@ namespace Kinovea.ScreenManager
 		private ReadResult ShowNextFrame(Int64 _iSeekTarget, bool _bAllowUIUpdate)
 		{
 		    bool read = false;
-		    //if(_iSeekTarget == -1)
-                read = m_FrameServer.VideoReader.MoveNext();
-		    /*else
-                 read = m_FrameServer.VideoReader.MoveTo(_iSeekTarget);*/
-		    
-            ReadResult res = ReadResult.Success;
-		
+		    if(_iSeekTarget < 0)
+		        read = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode);
+		    else
+		        read = m_FrameServer.VideoReader.MoveTo(_iSeekTarget);
+                
+		    ReadResult res = read ? ReadResult.Success : ReadResult.FrameNotRead;
+            
+            #region old code
 		
 			//---------------------------------------------------------------------------
 			// Demande au PlayerServer de remplir la bmp avec la prochaine frame requise.
@@ -2443,15 +2437,18 @@ namespace Kinovea.ScreenManager
 			// Sinon, utilise directement _iSeekTarget.
 			// m_iFramesToDecode peut être négatif quand on recule.
 			//---------------------------------------------------------------------------
-			m_bIsIdle = false;
+			/*m_bIsIdle = false;
 			
 			//m_Stopwatch.Reset();
 			//m_Stopwatch.Start();
 				
-//ReadResult res = m_FrameServer.VideoReader.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);
-			if (res == ReadResult.Success)
+            ReadResult res = m_FrameServer.VideoReader.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);*/
+            #endregion
+			
+            
+            //if (res == ReadResult.Success)
+            if(read)
 			{
-				m_iDecodedFrames++;
 				m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 				
 				// Compute or stop tracking
@@ -2460,7 +2457,7 @@ namespace Kinovea.ScreenManager
 					if (_iSeekTarget >= 0 || m_iFramesToDecode > 1)
 					{
 						// Tracking works frame to frame.
-						// If playhead jumped several frames at once or moved back, we force-stop tracking.
+						// If playhead jumped several frames at once, we force-stop tracking.
 						m_FrameServer.Metadata.StopAllTracking();
 					}
 					else
@@ -2477,14 +2474,23 @@ namespace Kinovea.ScreenManager
 					UpdateFramesMarkers();
 				}
 				
-				// Display image
-				if(_bAllowUIUpdate) DoInvalidate();
+				if(_bAllowUIUpdate) 
+				    DoInvalidate();
 				
-				// Report image for synchro and merge.
 				ReportForSyncMerge();
 			}
 			else
 			{
+			    m_iCurrentPosition = m_iSelEnd;
+				if(_bAllowUIUpdate)
+				{
+					trkSelection.SelPos = m_iCurrentPosition;
+					DoInvalidate();
+				}
+
+				m_FrameServer.Metadata.StopAllTracking();
+
+				/*
 				switch (res)
 				{
 					case ReadResult.MovieNotLoaded:
@@ -2544,7 +2550,7 @@ namespace Kinovea.ScreenManager
 							
 							break;
 						}
-				}
+				}*/
 				
 			}
 			
@@ -4620,10 +4626,10 @@ namespace Kinovea.ScreenManager
 			// Disable playback controls and some other controls for the case
 			// of a one-frame rendering. (mosaic, single image)
 			
-			btnSetHandlerLeft.Enabled = _bEnable;
-			btnSetHandlerRight.Enabled = _bEnable;
-			btnHandlersReset.Enabled = _bEnable;
-			btn_HandlersLock.Enabled = _bEnable;
+			if(m_FrameServer.Loaded && (m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) != 0)
+                EnableDisableWorkingZoneControls(false);
+			else
+                EnableDisableWorkingZoneControls(_bEnable);
 			
 			buttonGotoFirst.Enabled = _bEnable;
 			buttonGotoLast.Enabled = _bEnable;
@@ -4634,7 +4640,7 @@ namespace Kinovea.ScreenManager
 			
 			lblSpeedTuner.Enabled = _bEnable;
 			trkFrame.EnableDisable(_bEnable);
-			trkSelection.EnableDisable(_bEnable);
+			
 			sldrSpeed.EnableDisable(_bEnable);
 			trkFrame.Enabled = _bEnable;
 			trkSelection.Enabled = _bEnable;
@@ -4647,6 +4653,14 @@ namespace Kinovea.ScreenManager
 			
 			mnuPlayPause.Visible = _bEnable;
 			mnuDirectTrack.Visible = _bEnable;
+		}
+		private void EnableDisableWorkingZoneControls(bool _bEnable)
+		{
+            btnSetHandlerLeft.Enabled = _bEnable;
+			btnSetHandlerRight.Enabled = _bEnable;
+			btnHandlersReset.Enabled = _bEnable;
+			btn_HandlersLock.Enabled = _bEnable;
+			trkSelection.EnableDisable(_bEnable);
 		}
 		private void EnableDisableSnapshot(bool _bEnable)
 		{
@@ -4678,7 +4692,7 @@ namespace Kinovea.ScreenManager
 			// - the timestamps may not be linear so the mapping with the trkSelection isn't perfect.
 			// We check and fix these discrepancies.
 			//
-			// Public because accessed from PlayerServer.Deinterlace property
+			// Public because accessed from PlayerScreen when user changes deinterlace or image aspect ratio.
 			//-------------------------------------------------------------------------------------
 			if (m_FrameServer.Loaded)
 			{
@@ -4710,19 +4724,22 @@ namespace Kinovea.ScreenManager
 				}*/
 
 				// Here, we may have changed mode.
-				/*if (m_FrameServer.VideoReader.Caching)
+				if (m_FrameServer.VideoReader.Caching)
 				{
 					// We now have solid facts. Update all variables with them.
-					m_iSelStart = m_FrameServer.VideoReader.GetTimeStamp(0);
-					m_iSelEnd = m_FrameServer.VideoReader.GetTimeStamp(m_FrameServer.VideoReader.Selection.iDurationFrame - 1);
-					double fAverageTimeStampsPerFrame = m_FrameServer.VideoReader.Infos.fAverageTimeStampsPerSeconds / m_FrameServer.VideoReader.Infos.fFps;
-					m_iSelDuration = (long)((double)(m_iSelEnd - m_iSelStart) + fAverageTimeStampsPerFrame);
-
-					if(trkSelection.SelStart != m_iSelStart) trkSelection.SelStart = m_iSelStart;
-					if(trkSelection.SelEnd != m_iSelEnd) trkSelection.SelEnd = m_iSelEnd;
+					m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
+					m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
+					m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
 					
-					// Remap frame tracker with solid data.
+					if(trkSelection.SelStart != m_iSelStart)
+					    trkSelection.SelStart = m_iSelStart;
+					
+					if(trkSelection.SelEnd != m_iSelEnd)
+					    trkSelection.SelEnd = m_iSelEnd;
+					
 					trkFrame.Remap(m_iSelStart, m_iSelEnd);
+					
+					// Enable direct frame browsing.
 					trkFrame.ReportOnMouseMove = true;
 
 					// Display first frame.
@@ -4732,18 +4749,19 @@ namespace Kinovea.ScreenManager
 				}
 				else
 				{
-					m_iSelDuration = m_iSelStart + m_iSelEnd - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+					m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
 
 					// Remap frame tracker.
 					trkFrame.Remap(m_iSelStart, m_iSelEnd);
 					trkFrame.ReportOnMouseMove = false;
-				}*/
+				}
 
 				UpdateSelectionLabels();
 				OnPoke();
 
 				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(true);
-				if (m_bShowInfos) { UpdateDebugInfos(); }
+				if (m_bShowInfos) 
+				    UpdateDebugInfos();
 			}
 		}
 		#endregion
@@ -5030,7 +5048,7 @@ namespace Kinovea.ScreenManager
 					dp.DeactivateKeyboardHandler();
 				}
 				
-				m_FrameServer.SaveDiaporama(m_iSelStart, m_iSelEnd, new DelegateGetOutputBitmap(GetOutputBitmap), bDiapo);
+				m_FrameServer.SaveDiaporama(GetOutputBitmap, bDiapo);
 
 				if (dp.ActivateKeyboardHandler != null)
 				{
@@ -5044,12 +5062,7 @@ namespace Kinovea.ScreenManager
 			// Eventually, this call should be done directly by PlayerScreen, without passing through the UI.
 			// This will be possible when m_FrameServer.Metadata, m_iSelStart, m_iSelEnd are encapsulated in m_FrameServer
 			// and when PlaybackFrameInterval, m_iSlowmotionPercentage, GetOutputBitmap are available publically.
-			
-			m_FrameServer.Save(	GetPlaybackFrameInterval(),
-			                   m_fSlowmotionPercentage,
-			                   m_iSelStart,
-			                   m_iSelEnd,
-			                   new DelegateGetOutputBitmap(GetOutputBitmap));
+			m_FrameServer.Save(GetPlaybackFrameInterval(), m_fSlowmotionPercentage, GetOutputBitmap);
 		}
 		public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{

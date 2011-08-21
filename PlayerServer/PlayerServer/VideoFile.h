@@ -34,22 +34,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 #pragma once
 
-using namespace System;
-using namespace System::Collections::Generic;				
-using namespace System::ComponentModel;
-using namespace System::Diagnostics;
-using namespace System::Drawing;
-using namespace System::IO;
-using namespace System::Reflection;
-using namespace System::Text;
-using namespace System::Threading;
-using namespace System::Windows::Forms;
-
-//------------------------
-#define OUTPUT_MUXER_MKV 0
-#define OUTPUT_MUXER_MP4 1
-#define OUTPUT_MUXER_AVI 2
-
 extern "C" 
 {
 #define __STDC_CONSTANT_MACROS
@@ -64,14 +48,27 @@ extern "C"
 #include "InfosVideo.h"
 #include "SavingContext.h"
 
+using namespace System;
+using namespace System::Collections::Generic;				
+using namespace System::ComponentModel;
+using namespace System::Diagnostics;
+using namespace System::Drawing;
+using namespace System::IO;
+using namespace System::Reflection;
+using namespace System::Text;
+using namespace System::Threading;
+using namespace System::Windows::Forms;
+using namespace Kinovea::Base;
+
+//------------------------
+#define OUTPUT_MUXER_MKV 0
+#define OUTPUT_MUXER_MP4 1
+#define OUTPUT_MUXER_AVI 2
+
 namespace Kinovea
 {
 namespace VideoFiles
 {
-
-#pragma region Namespace wide delegates
-	public delegate int64_t DelegateGetOutputBitmap(Graphics^ _canvas, Bitmap^ _sourceImage, int64_t _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly);
-#pragma endregion
 
 #pragma region Namespace wide enums
 	public enum class ImportStrategy
@@ -227,8 +224,7 @@ namespace VideoFiles
 
 		void	ChangeAspectRatio(AspectRatio _aspectRatio);
 
-		SaveResult Save( String^ _FilePath, double _fFramesInterval, int64_t _iSelStart, int64_t _iSelEnd, String^ _Metadata, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, DelegateGetOutputBitmap^ _delegateGetOutputBitmap);
-
+		
 		void Unload();
 
 		int64_t GetTimeStamp(int64_t _iPosition);

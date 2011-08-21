@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
@@ -93,11 +94,8 @@ namespace Kinovea.ScreenManager
   			// FIXME: The FileWriter will currently only use the original size due to some problems.
 			// Most notably, DV video passed into 16:9 (720x405) crashes swscale().
 			// TODO: Check if this is due to non even height.
-			InfosVideo iv = new InfosVideo();
-			iv.iWidth = _FrameSize.Width;
-			iv.iHeight = _FrameSize.Height;
-			
-			SaveResult result = m_VideoFileWriter.OpenSavingContext(_filepath, iv, _interval, false);
+			VideoInfo vi = new VideoInfo { OriginalSize = _FrameSize};
+			SaveResult result = m_VideoFileWriter.OpenSavingContext(_filepath, vi, _interval, false);
 			
 			if(result == SaveResult.Success)
 			{

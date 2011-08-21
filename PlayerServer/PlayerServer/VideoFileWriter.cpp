@@ -29,10 +29,9 @@ using namespace System::Drawing::Drawing2D;
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 
-namespace Kinovea
+namespace Kinovea { namespace VideoFiles 
 {
-namespace VideoFiles 
-{
+
 VideoFileWriter::VideoFileWriter()
 {
 	log->Debug("Constructing VideoFileWriter.");
@@ -55,11 +54,273 @@ VideoFileWriter::!VideoFileWriter()
 
 }
 
+SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoReader^ _reader, BackgroundWorker^ _worker)
+{
+	//------------------------------------------------------------------------------------
+	// Input parameters depending on type of save:
+	// Classic save : 
+	//		_fFramesInterval = used for all frames 
+	//		_bFlushDrawings = true or false
+	//		_bKeyframesOnly = false.
+	// Diaporama : 
+	//		_fFramesInterval = used for keyframes. Other frames aren't saved anyway.
+	//		_bFlushDrawings = true.
+	//		_bKeyframesOnly = true.
+	// Paused Video : 
+	//		_fFramesInterval = used for keyframes only, other frames at original interval. 
+	//		_bFlushDrawings = true.
+	//		_bKeyframesOnly = false.
+	//	In this last case, _fFramesInterval must be a multiple of original interval.
+	//------------------------------------------------------------------------------------
+
+
+	log->Debug(String::Format("Saving selection [{0}]->[{1}] to: {2}", _settings.Section.Start, _settings.Section.End, Path::GetFileName(_settings.File)));
+
+	SaveResult result = SaveResult::Success;
+	
+	do
+	{
+		// Refact: Check this in caller.
+		/*if(!m_bIsLoaded) 
+		{
+			result = SaveResult::MovieNotLoaded;
+			break;
+		}*/
+	
+		if(_settings.ImageRetriever == nullptr)
+		{
+			result = SaveResult::UnknownError;
+			break;
+		}		
+		
+		// 1. Get required parameters for opening the saving context.
+		bool bHasMetadata = !String::IsNullOrEmpty(_settings.Metadata);
+		double fFramesInterval = 40;
+		int iDuplicateFactor = 1;
+
+		if(_settings.FrameInterval > 0) 
+		{
+			if(_settings.PausedVideo)
+			{
+				// bPausedVideo is a mode where the video runs at the same speed as the original
+				// except for the key images which are paused for _fFramesInterval.
+				// In this case, _fFramesInterval should be a multiple of the original frame interval.
+						
+				iDuplicateFactor = (int)(_settings.FrameInterval / _reader->Info.FrameIntervalMilliseconds);
+				fFramesInterval = _reader->Info.FrameIntervalMilliseconds;
+			}
+			else
+			{
+				// In normal mode, the frame interval can not go down indefinitely.
+				// We can't save at less than 8 fps, so we duplicate frames when necessary.
+				
+				iDuplicateFactor = (int)Math::Ceiling(_settings.FrameInterval / 125.0);
+				fFramesInterval = _settings.FrameInterval  / iDuplicateFactor;	
+				log->Debug(String::Format("fFramesInterval:{0}, iDuplicateFactor:{1}", fFramesInterval, iDuplicateFactor));
+			}			
+		}
+
+		// 2. Open the saving context.
+		result = OpenSavingContext(	_settings.File, _reader->Info, fFramesInterval, bHasMetadata);
+		if(result != SaveResult::Success)
+		{
+			log->Error("Saving context not opened.");
+			break;
+		}
+
+		// 3. Write metadata if needed.
+		if(bHasMetadata)
+		{
+			if((result = SaveMetadata(_settings.Metadata)) != SaveResult::Success)
+			{
+				log->Error("Metadata not saved.");
+				break;
+			}
+		}
+
+		// 4. Loop through input frames and save them.
+		// We use two different loop depending if frames are already available or not.
+		if(_reader->Caching)
+		{
+			log->Debug("Analysis mode: looping through images already extracted in memory.");
+			int i = 0;
+			for each (VideoFrame^ vf in _reader->Cache)
+			{
+				Bitmap^ InputBitmap = AForge::Imaging::Image::Clone(vf->Image, vf->Image->PixelFormat);
+
+				// following block is duplicated in both analysis mode loop and normal mode loop.
+
+				// Commit drawings on image if needed.
+				// The function returns the distance to the closest kf.
+				int64_t iKeyImageDistance = _settings.ImageRetriever(Graphics::FromImage(InputBitmap), 
+																	InputBitmap, 
+																	vf->Timestamp,
+																	_settings.FlushDrawings, 
+																	_settings.KeyframesOnly);
+				
+				if(iKeyImageDistance == 0 || !_settings.KeyframesOnly)
+				{
+					if(_settings.PausedVideo && iKeyImageDistance != 0)
+					{
+						// Normal images in paused video mode are played at normal speed.
+						// In paused video mode duplicate factor only applies to the key images.
+						result = SaveFrame(InputBitmap);
+						if(result != SaveResult::Success)
+							log->Error("Frame not saved.");
+					}
+					else
+					{
+						for(int iDuplicate=0;iDuplicate<iDuplicateFactor;iDuplicate++)
+						{
+							result = SaveFrame(InputBitmap);
+							if(result != SaveResult::Success)
+								log->Error("Frame not saved.");
+						}
+					}
+				}
+				
+				delete InputBitmap;
+
+				// Report progress.
+				if(_worker != nullptr)
+				{
+					if(_worker->CancellationPending)
+						result = SaveResult::Cancelled;
+					else
+						_worker->ReportProgress(i+1, _reader->Cache->Count);
+				}
+
+				if(result != SaveResult::Success)
+					break;
+				
+				i++;
+			}
+		}
+		else
+		{
+			ReadResult res = ReadResult::Success;
+			bool read = false;
+			
+			log->Debug("Normal mode: looping to read images from the file.");
+			
+			bool bFirstFrame = true;
+			bool done = false;
+			do
+			{
+				if(bFirstFrame)
+				{
+					// Reading the first frame individually as we need to ensure we are reading the right one.
+					// (some codecs go too far on the initial seek.)
+					//res = ReadFrame(_settings.Section.Start, 1);
+					//log->Debug(String::Format("After first frame ts: {0}", m_PrimarySelection->iCurrentTimeStamp));
+					read = _reader->MoveFirst();
+					log->Debug(String::Format("After first frame ts: {0}", _reader->Cache->Current->Timestamp));
+					bFirstFrame = false;
+				}
+				else
+				{
+					//res = ReadFrame(-1, 1);
+// MoveNext(true) : must read synchronously for this.
+					read = _reader->MoveNext();
+				}
+
+				//if(res == ReadResult::Success)
+				if(read)
+				{
+					VideoFrame^ vf = _reader->Cache->Current;
+
+					// Get a bitmap version.
+					Bitmap^ InputBitmap = AForge::Imaging::Image::Clone(vf->Image, vf->Image->PixelFormat);
+
+					// Commit drawings on image if needed.
+					// The function returns the distance to the closest kf.
+					int64_t iKeyImageDistance = _settings.ImageRetriever(Graphics::FromImage(InputBitmap), 
+																		InputBitmap, 
+																		vf->Timestamp, 
+																		_settings.FlushDrawings, 
+																		_settings.KeyframesOnly);
+					if(!_settings.KeyframesOnly || iKeyImageDistance == 0)
+					{
+						if(_settings.PausedVideo && iKeyImageDistance != 0)
+						{
+							// Normal images in paused video mode are played at normal speed.
+							// In paused video mode duplicate factor only applies to the key images.
+							result = SaveFrame(InputBitmap);
+							if(result != SaveResult::Success)
+								log->Error("Frame not saved.");
+						}
+						else
+						{
+							for(int iDuplicate=0;iDuplicate<iDuplicateFactor;iDuplicate++)
+							{
+								result = SaveFrame(InputBitmap);
+								if(result != SaveResult::Success)
+								{
+									log->Error("Frame not saved.");
+									done = true;
+								}
+							}
+						}
+					}
+
+					delete InputBitmap;
+
+					// Report progress.
+					if(_worker != nullptr)
+						_worker->ReportProgress((int)(vf->Timestamp - _settings.Section.Start), (int)(_settings.Section.End - _settings.Section.Start));
+					
+					if(vf->Timestamp >= _settings.Section.End)
+						done = true;
+				}
+				else
+				{
+					// This can be normal as when the file is over we get an FrameNotRead error.
+					//if(res != ReadResult::FrameNotRead)
+// instead : if(last read ->timestamp < _settings.Section.End).
+					//	result = SaveResult::ReadingError;
+					
+					done = true;
+				}
+
+				// Check for cancellation
+				if(_worker != nullptr && _worker->CancellationPending)
+				{
+					// Stop all operations and delete file.
+					result = SaveResult::Cancelled;
+					done = true;
+				}
+
+			}
+			while(!done);
+		}
+		
+		// Close the saving context.
+		CloseSavingContext(true);
+	
+	}
+	while(false);
+
+
+	if(result == SaveResult::Cancelled)
+	{
+		// Delete the file.
+		log->Debug("Saving cancelled by user, deleting temporary file.");
+		if(File::Exists(_settings.File))
+			File::Delete(_settings.File);
+	}
+
+	return result;
+}
+
+
+
+
+
 ///<summary>
 /// VideoFileWriter::OpenSavingContext
 /// Open a saving context and configure it with default parameters.
 ///</summary>
-SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _infosVideo, double _fFramesInterval, bool _bHasMetadata)
+SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval, bool _bHasMetadata)
 {
 	//---------------------------------------------------------------------------------------------------
 	// Set the saving context.
@@ -94,18 +355,34 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, InfosVideo^ _in
 
 	m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_FilePath).ToPointer());
 	
-	if(_infosVideo != nullptr)
+	/*if(_infosVideo != nullptr)
 	{
-		// Apparently not all output size are ok, some crashes sws_scale.
-		// We will keep the input size and use the input pixel aspect ratio for maximum compatibility.	
 		m_SavingContext->outputSize = Size(_infosVideo->iWidth, _infosVideo->iHeight);
-		if(_infosVideo->fPixelAspectRatio > 0) m_SavingContext->fPixelAspectRatio = _infosVideo->fPixelAspectRatio;
+		if(_infosVideo->fPixelAspectRatio > 0) 
+			m_SavingContext->fPixelAspectRatio = _infosVideo->fPixelAspectRatio;
 		m_SavingContext->bInputWasMpeg2 = _infosVideo->bIsCodecMpeg2;
 		m_SavingContext->iSampleAspectRatioNumerator = _infosVideo->iSampleAspectRatioNumerator;
 		m_SavingContext->iSampleAspectRatioDenominator = _infosVideo->iSampleAspectRatioDenominator;
-	}
+	}*/
+
+	// Apparently not all output size are ok, some crash sws_scale.
+	// We will keep the input size and use the input pixel aspect ratio for maximum compatibility.
+	// [2011-08-21] - Check if the issue with output size is related to odd number of rows.
+	if(!_info.OriginalSize.IsEmpty)
+		m_SavingContext->outputSize = _info.OriginalSize;
 	
-	if(_fFramesInterval > 0) m_SavingContext->fFramesInterval = _fFramesInterval;
+	if(_info.PixelAspectRatio > 0)
+		m_SavingContext->fPixelAspectRatio = _info.PixelAspectRatio;
+
+	m_SavingContext->bInputWasMpeg2 = _info.IsCodecMpeg2;
+	if(!_info.SampleAspectRatio.IsEmpty)
+	{
+		m_SavingContext->iSampleAspectRatioNumerator = _info.SampleAspectRatio.Numerator;
+		m_SavingContext->iSampleAspectRatioDenominator = _info.SampleAspectRatio.Denominator;
+	}
+
+	if(_fFramesInterval > 0) 
+		m_SavingContext->fFramesInterval = _fFramesInterval;
 	
 	do
 	{

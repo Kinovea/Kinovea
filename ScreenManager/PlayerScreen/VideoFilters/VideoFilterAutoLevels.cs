@@ -35,74 +35,20 @@ using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// VideoFilterAutoLevels.
-	/// - Input			: All images.
-	/// - Output		: All images, same size.
-	/// - Operation 	: Remap channels histograms. 
-	/// - Type 			: Work on each frame separately.
-	/// - Previewable 	: Yes.
-	/// </summary>
-	public class VideoFilterAutoLevels : AbstractVideoFilter
+	public class VideoFilterAutoLevels : AdjustmentFilter
 	{
 		#region Properties
-		public override string Name
-		{
+		public override string Name {
 		    get { return ScreenManagerLang.VideoFilterAutoLevels_FriendlyName; }
 		}
-		public override Bitmap Icon
-		{
+		public override Bitmap Icon {
 		    get { return Properties.Resources.chart_bar; }
 		}
-		public override List<DecompressedFrame> FrameList
-        {
-			set { m_FrameList = value; }
-        }
-		public override bool Experimental 
-		{
-			get { return false; }
+		public override ImageProcessor ImageProcessor {
+		    get { return ProcessSingleImage; }
 		}
 		#endregion
 		
-		#region Members
-		private List<DecompressedFrame> m_FrameList;
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region AbstractVideoFilter Implementation
-		public override void Menu_OnClick(object sender, EventArgs e)
-        {
-			// 1. Display preview dialog box.
-			Bitmap preview = GetPreviewImage();
-			formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, Name);
-            if (fpvf.ShowDialog() == DialogResult.OK)
-            {
-            	// 2. Process filter.
-            	StartProcessing();
-            }
-            fpvf.Dispose();
-            preview.Dispose();
-        }
-		protected override void Process()
-		{
-			// Method called back from AbstractVideoFilter after a call to StartProcessing().
-			// Use StartProcessing() to get progress bar and threading support.
-			
-			for(int i=0;i<m_FrameList.Count;i++)
-            {
-				m_FrameList[i].BmpImage = ProcessSingleImage(m_FrameList[i].BmpImage);
-            	m_BackgroundWorker.ReportProgress(i, m_FrameList.Count);
-            }
-		}
-		#endregion
-		
-		#region Private methods
-		private Bitmap GetPreviewImage()
-		{
-			// Deep clone an image then pass it to the filter.
-			Bitmap bmp = CloneTo24bpp(m_FrameList[(m_FrameList.Count-1)/2].BmpImage);
-			return ProcessSingleImage(bmp);			
-		}
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
 			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
@@ -125,7 +71,6 @@ namespace Kinovea.ScreenManager
             
 			return _src;
 		}
-		#endregion
 	}
 }
 
