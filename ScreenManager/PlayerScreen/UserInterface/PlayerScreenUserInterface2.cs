@@ -4778,9 +4778,8 @@ namespace Kinovea.ScreenManager
 				}
 
 				m_FrameServer.VideoReader.WorkingZone = new VideoSection(m_iSelStart, m_iSelEnd);
-				bool wasWrapped = m_FrameServer.VideoReader.Cache.Segment.Wrapped;
-				bool contraction = m_FrameServer.VideoReader.Cache.SetWorkingZoneSentinels(m_FrameServer.VideoReader.WorkingZone);
-				if(contraction)
+				bool reset = m_FrameServer.VideoReader.Cache.SetWorkingZoneSentinels(m_FrameServer.VideoReader.WorkingZone);
+				if(reset)
                     ShowNextFrame(m_iSelStart, true);
 
 				trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);

@@ -134,9 +134,14 @@ namespace Kinovea.Video
 		public bool MoveBy(int _frames)
 		{
 		    if(_frames == 1)
+		    {
 		        return MoveNext(false);
-            else
-                return MoveTo(Current.Timestamp + (Info.AverageTimeStampsPerFrame * _frames));
+		    }
+		    else
+		    {
+		        long currentTimestamp = Current == null ? 0 : Current.Timestamp;
+		        return MoveTo(currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames));
+		    }
 		}
 		#endregion
 		
