@@ -207,7 +207,7 @@ namespace Kinovea.Video
         /// <returns>true if the current frame had to be moved</returns>
         public bool SetWorkingZoneSentinels(VideoSection _newZone)
         {
-            bool invalidatedCurrent = false;
+            bool reset = false;
             
             if(_newZone.Start >= _newZone.End || _newZone == m_WorkingZone)
                 return false;
@@ -223,44 +223,61 @@ namespace Kinovea.Video
             if(_newZone < m_WorkingZone)
             {
                 m_WorkingZone = _newZone;
-                
-                // Dispose outsiders.
-                int removedAtLeft = 0;
-                foreach(int i in SortedFrames())
+
+                if(FullZone)
                 {
-                    if(m_Cache[i].Timestamp < m_WorkingZone.Start || m_Cache[i].Timestamp > m_WorkingZone.End)
+                    // Dispose outsiders.
+                    int removedAtLeft = 0;
+                    foreach(int i in SortedFrames())
                     {
-                        if(m_Cache[i].Timestamp < m_WorkingZone.Start)
-                            removedAtLeft++;
-                        
-                        DisposeFrame(m_Cache[i]);
-                        m_Cache[i] = null;
-                        
-                        if(i==m_CurrentIndex)
-                            invalidatedCurrent = true;
+                        if(m_Cache[i].Timestamp < _newZone.Start || m_Cache[i].Timestamp > _newZone.End)
+                        {
+                            if(m_Cache[i].Timestamp < _newZone.Start)
+                                removedAtLeft++;
+                            
+                            DisposeFrame(m_Cache[i]);
+                            m_Cache[i] = null;
+                            
+                            if(i==m_CurrentIndex)
+                                reset = true;
+                        }
                     }
+                    
+                    if(!reset)
+                        m_CurrentIndex-=removedAtLeft;
+                    
+                    m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
+                    UpdateSegment();
                 }
-                
-                if(!invalidatedCurrent)
-                    m_CurrentIndex-=removedAtLeft;
-                
-                m_Cache.RemoveAll( frame => object.ReferenceEquals(null, frame));
-                UpdateSegment();
+                else
+                {
+                    // At this point we don't attempt to keep what could be kept.
+                    // Many complications arise when the segment is wrapped, or 
+                    // when the working zone is re-expanded and the wrapped segment
+                    // is not contiguous anymore.
+                    
+                    Clear();
+                    reset = true;
+                }
             }
             else if(_newZone > m_WorkingZone)
             {
                 // Expansion.
-                //m_WorkingZone = _newZone;
-                //EnsureContiguous();
+                m_WorkingZone = _newZone;
+                if(!FullZone)
+                {
+                    Clear();
+                    reset = true;
+                }
             }
             
-            if(m_Current != null && m_Cache.Count > 0 && invalidatedCurrent)
+            if(reset && m_Current != null && m_Cache.Count > 0)
             {
                 m_CurrentIndex = 0;
                 m_Current = m_Cache[0];
             }
 
-            return invalidatedCurrent;
+            return reset;
         }
         
         
