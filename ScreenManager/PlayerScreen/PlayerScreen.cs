@@ -30,7 +30,6 @@ using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 using Kinovea.Services;
-using Kinovea.VideoFiles;
 
 [assembly: CLSCompliant(false)]
 namespace Kinovea.ScreenManager

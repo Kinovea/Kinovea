@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
-using Kinovea.VideoFiles;
+using Kinovea.Video.FFMpeg; // <- remove when the thumbs come from the VideoReader abstract class.
 
 namespace Kinovea.ScreenManager
 {
@@ -59,7 +59,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private VideoFile m_VideoFile = new VideoFile();
+		private VideoReaderFFMpeg m_VideoReader = new VideoReaderFFMpeg();
 
 		private int m_iLeftMargin = 30;
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
@@ -150,7 +150,7 @@ namespace Kinovea.ScreenManager
 				SetupPlaceHolders(_fileNames);
 
 				// Create the new loader and launch it.
-				ThumbListLoader tll = new ThumbListLoader(_fileNames, splitResizeBar.Panel2, m_VideoFile);
+				ThumbListLoader tll = new ThumbListLoader(_fileNames, splitResizeBar.Panel2, m_VideoReader);
 				m_Loaders.Add(tll);
 				tll.Launch();
 			}

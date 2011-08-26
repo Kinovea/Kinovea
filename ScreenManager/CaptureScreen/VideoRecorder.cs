@@ -24,7 +24,7 @@ using System.Drawing;
 using System.Threading;
 
 using Kinovea.Video;
-using Kinovea.VideoFiles;
+using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {

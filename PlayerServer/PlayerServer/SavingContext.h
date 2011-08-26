@@ -24,50 +24,47 @@ using namespace System::Drawing;
 
 
 
-namespace Kinovea
+namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	namespace VideoFiles
+	/// <summary>
+	/// Encapsulate informations needed to save frames to file.
+	/// This is a mixed type (contains unmannaged members).
+	/// </summary>
+	public ref class SavingContext
 	{
-		/// <summary>
-		/// Encapsulate informations needed to save frames to file.
-		/// This is a mixed type (contains unmannaged members).
-		/// </summary>
-		public ref class SavingContext
+
+	public:
+
+		// FFMpeg context
+		AVOutputFormat*	pOutputFormat;			// Muxer general infos. (mime, extensions, supported codecs, etc.)
+		AVFormatContext* pOutputFormatContext;	// Muxer parameters.
+		AVCodec* pOutputCodec;					// Encoder general infos. (codec_id, etc.)
+		AVCodecContext* pOutputCodecContext;	// Encoder parameters.
+		AVStream* pOutputVideoStream;			// Ouput stream for frames.
+		AVStream* pOutputDataStream;			// Output stream for meta data.
+		AVFrame* pInputFrame;					// The current incoming frame.
+		
+		double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
+		bool bInputWasMpeg2;					
+		int iSampleAspectRatioNumerator;
+		int iSampleAspectRatioDenominator;
+
+		// User parameters
+		char* pFilePath;
+		double fFramesInterval;				
+		int iBitrate;				
+		Size outputSize;
+
+		// Control
+		bool bEncoderOpened;
+
+		SavingContext::SavingContext()
 		{
-
-		public:
-
-			// FFMpeg context
-			AVOutputFormat*	pOutputFormat;			// Muxer general infos. (mime, extensions, supported codecs, etc.)
-			AVFormatContext* pOutputFormatContext;	// Muxer parameters.
-			AVCodec* pOutputCodec;					// Encoder general infos. (codec_id, etc.)
-			AVCodecContext* pOutputCodecContext;	// Encoder parameters.
-			AVStream* pOutputVideoStream;			// Ouput stream for frames.
-			AVStream* pOutputDataStream;			// Output stream for meta data.
-			AVFrame* pInputFrame;					// The current incoming frame.
-			
-			double fPixelAspectRatio;				// Used to adapt pixel aspect ratio.
-			bool bInputWasMpeg2;					
-			int iSampleAspectRatioNumerator;
-			int iSampleAspectRatioDenominator;
-
-			// User parameters
-			char* pFilePath;
-			double fFramesInterval;				
-			int iBitrate;				
-			Size outputSize;
-
-			// Control
-			bool bEncoderOpened;
-
-			SavingContext::SavingContext()
-			{
-				bInputWasMpeg2 = false;
-				fFramesInterval = 40;			// Default speed : 25 fps.
-				iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
-				fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
-				outputSize = Size(720, 576);
-			}
-		};
-	}
-}
+			bInputWasMpeg2 = false;
+			fFramesInterval = 40;			// Default speed : 25 fps.
+			iBitrate = 25000000;			// Default bitrate : 25 Mb/s. (DV)
+			fPixelAspectRatio = 1.0;		// Default aspect : square pixels.
+			outputSize = Size(720, 576);
+		}
+	};
+}}}

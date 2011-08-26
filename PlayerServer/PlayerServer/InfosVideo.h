@@ -24,7 +24,7 @@ using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Drawing;
 
-namespace Kinovea { namespace VideoFiles
+namespace Kinovea { namespace Video
 {
 		// OBSOLETE. Use VideoInfo from Kinovea::Video namespace.
 		public ref class InfosVideo

@@ -31,7 +31,6 @@ using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
-using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {

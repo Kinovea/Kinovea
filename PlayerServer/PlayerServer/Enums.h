@@ -21,7 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #pragma once
 
 // Note: might be moved somewhere else, in Kinovea.Video assembly for example.
-namespace Kinovea { namespace VideoFiles
+namespace Kinovea { namespace Video
 {
 
 	public enum class AspectRatio
