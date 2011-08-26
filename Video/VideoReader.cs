@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 using Kinovea.Services;
 
@@ -49,24 +50,24 @@ namespace Kinovea.Video
 		
 		/// <summary>
 		/// Set the "Current" property to hold the next video frame.
-		/// This function should be super fast. 
+		/// This function should be super fast.
 		/// For async readers, if the frame is not available right now, call it a drop.
 		/// (Decoding should happen in a separate thread and fill a buffer).
-		/// If we are on the last frame and Options.AutoRewind is false, just stay there.
+		/// _synchronous will be true only during saving operation. In this case, don't drop anything.
 		/// </summary>
-		public abstract bool MoveNext();
+		public abstract bool MoveNext(bool _synchronous);
 		
 		/// <summary>
 		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
-		/// This function may take longer than MoveNext. 
+		/// Unlike MoveNext(), this function is always synchronous. 
 		/// Don't return until you have found the frame and updated "Current" with it.
 		/// </summary>
 		public abstract bool MoveTo(long _timestamp);
-
 		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
+		public abstract string ReadMetadata();
 		
 		/// <summary>
-		/// Request for caching.
+		/// Request for caching the entire working zone.
 		/// </summary>
 		/// <param name="_start"></param>
 		/// <param name="_end"></param>
@@ -78,6 +79,7 @@ namespace Kinovea.Video
 		
 		#region Concrete Properties
 		public VideoFrameCache Cache { get; protected set; }
+		public VideoOptions Options { get; set; }
 		public VideoFrame Current {
 		    get { 
 		        if(Cache == null) return null;
@@ -96,30 +98,25 @@ namespace Kinovea.Video
 		        else return Cache.Current.Image;
 		    }
         }
-		public VideoOptions Options {
-			get { return m_VideoOptions; }
-			set { m_VideoOptions = value; }
-		}
 		public ImageAspectRatio ImageAspectRatio {
-			get { return m_VideoOptions.ImageAspectRatio; }
+			get { return Options.ImageAspectRatio; }
 			set { 
 			    if((Flags & VideoReaderFlags.SupportsAspectRatio) != 0)
-			        m_VideoOptions.ImageAspectRatio = value;
+			    {
+			        Options = new VideoOptions(value, Options.Deinterlace);
+			    }
 			}
 		}
 		public bool Deinterlace {
-			get { return m_VideoOptions.Deinterlace; }
+			get { return Options.Deinterlace; }
 			set { 
 			    if((Flags & VideoReaderFlags.SupportsDeinterlace) != 0)
-			        m_VideoOptions.Deinterlace = value;
+			        Options = new VideoOptions(Options.ImageAspectRatio, value);
 			}
-		}
-		public virtual string Metadata {
-			get { return null; }
 		}
 		#endregion
 
-		private VideoOptions m_VideoOptions;
+		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
 		
 		#region Concrete Methods
 		public bool MovePrev()
@@ -137,11 +134,12 @@ namespace Kinovea.Video
 		public bool MoveBy(int _frames)
 		{
 		    if(_frames == 1)
-		        return MoveNext();
+		        return MoveNext(false);
             else
                 return MoveTo(Current.Timestamp + (Info.AverageTimeStampsPerFrame * _frames));
 		}
 		#endregion
+		
 		
 		
 	}

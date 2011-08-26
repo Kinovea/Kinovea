@@ -22,22 +22,8 @@ using System;
 
 namespace Kinovea.Video
 {
-    public enum OpenVideoResult
-    {
-        Success,
-        UnknownError,
-        NotSupported,
-        FileNotOpenned,
-		StreamInfoNotFound,
-		VideoStreamNotFound,
-		CodecNotFound,
-		CodecNotOpened,
-		CodecNotSupported,
-		Cancelled
-    }
-    
     [Flags]
-	public enum VideoReaderFlags
+    public enum VideoReaderFlags : int
 	{
 		None = 0,
 		
@@ -54,5 +40,53 @@ namespace Kinovea.Video
 		SupportsAspectRatio = 2,
 		
 		SupportsDeinterlace = 4
+	}
+    
+    public enum OpenVideoResult
+    {
+        Success,
+        UnknownError,
+        NotSupported,
+        FileNotOpenned,
+		StreamInfoNotFound,
+		VideoStreamNotFound,
+		CodecNotFound,
+		CodecNotOpened,
+		CodecNotSupported,
+		Cancelled
+    }
+    
+    // OBSOLETE ?
+    // Should be able to use only true/false from the point of view of the renderer/controller.
+    public enum ReadResult
+	{
+		Success,
+		MovieNotLoaded,
+		MemoryNotAllocated,
+		ImageNotConverted,
+		FrameNotRead
+	}
+    
+    public enum SaveResult
+	{
+		Success,
+		MuxerNotFound,
+		MuxerParametersNotAllocated,
+		MuxerParametersNotSet,
+		VideoStreamNotCreated,
+		EncoderNotFound,
+		EncoderParametersNotAllocated,
+		EncoderParametersNotSet,
+		EncoderNotOpened,
+		FileNotOpened,
+		FileHeaderNotWritten,
+		InputFrameNotAllocated,
+		MetadataStreamNotCreated,
+		MetadataNotWritten,
+		ReadingError,
+		UnknownError,
+		MovieNotLoaded,
+		TranscodeNotFinished,
+		Cancelled
 	}
 }

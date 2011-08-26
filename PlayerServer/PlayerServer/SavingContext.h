@@ -22,13 +22,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using namespace System::Drawing;
 
-
-
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
 	/// <summary>
 	/// Encapsulate informations needed to save frames to file.
-	/// This is a mixed type (contains unmannaged members).
 	/// </summary>
 	public ref class SavingContext
 	{

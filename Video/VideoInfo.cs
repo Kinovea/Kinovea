@@ -48,6 +48,45 @@ namespace Kinovea.Video
         public Fraction SampleAspectRatio;
         public bool IsCodecMpeg2;
         
+        public static VideoInfo Empty {
+            get { 
+                return new VideoInfo {
+                    FilePath = "",
+                    DecodingSize = Size.Empty,
+                    AverageTimeStampsPerFrame = 0,
+                    AverageTimeStampsPerSeconds = 0,
+                    FramesPerSeconds = 0,
+                    FrameIntervalMilliseconds = 0,
+                    FirstTimeStamp = 0,
+                    LastTimeStamp = 0,
+                    DurationTimeStamps = 0,
+                    OriginalSize = Size.Empty,
+                    PixelAspectRatio = 1.0F,
+                    SampleAspectRatio = new Fraction(),
+                    IsCodecMpeg2 = false
+                };
+            }
+        }
+        
+        /*
+         * m_InfosVideo->iFileSize = 0;
+	m_InfosVideo->iWidth = 320;
+	m_InfosVideo->iHeight = 240;
+	m_InfosVideo->fPixelAspectRatio = 1.0f;
+	m_InfosVideo->fFps = 1.0f;
+	m_InfosVideo->bFpsIsReliable = false;
+	m_InfosVideo->fFrameInterval = 40;
+	m_InfosVideo->iDurationTimeStamps = 1;
+	m_InfosVideo->iFirstTimeStamp = 0;
+	m_InfosVideo->fAverageTimeStampsPerSeconds = 1.0f;
+	
+	// Read / Write
+	m_InfosVideo->iDecodingWidth = 320;
+	m_InfosVideo->iDecodingHeight = 240;
+	m_InfosVideo->fDecodingStretchFactor = 1.0f;
+	m_InfosVideo->iDecodingFlag = SWS_FAST_BILINEAR;
+	m_InfosVideo->bDeinterlaced = false;
+	*/
         /*public long	FileSize;
         
         public Size OutputSize;

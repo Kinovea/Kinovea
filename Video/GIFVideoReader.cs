@@ -47,9 +47,6 @@ namespace Kinovea.Video.Gif
         public override bool Caching {
             get { return true; }
         }
-        /*public override VideoFrameCache Cache {
-            get { return m_FrameCache; }
-        }*/
         #endregion
         
         #region Members
@@ -88,7 +85,7 @@ namespace Kinovea.Video.Gif
         {
             // Nothing to do.
         }
-        public override bool MoveNext()
+        public override bool MoveNext(bool _synchrounous)
         {
             return Cache.MoveNext();
         }
@@ -126,6 +123,10 @@ namespace Kinovea.Video.Gif
             
             m_Gif.Dispose();
             return summary;
+        }
+        public override string ReadMetadata()
+        {
+            return "";
         }
         #endregion
         

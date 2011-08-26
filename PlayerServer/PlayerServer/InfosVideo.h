@@ -44,7 +44,6 @@ namespace Kinovea { namespace Video
 				AspectRatio eAspectRatio;				// Image format the user forces (auto, 4:3, 16:9).
 
 				double  fFps;
-				bool    bFpsIsReliable;					
 				double	fFrameInterval;					// in Milliseconds.
 				int64_t iDurationTimeStamps;			// Duration between first and last. Not between 0 and last.
 				int64_t iFirstTimeStamp;				// The first frame timestamp. (not always 0) 
@@ -61,6 +60,8 @@ namespace Kinovea { namespace Video
 		// Other helper classes.
 		// TODO: merge into VideoFile or extract to a special .h
 
+
+		// OBSOLETE. Use VideoOptions.
 		// Should be a value struct !
 		public ref class DefaultSettings
 		{
@@ -69,7 +70,7 @@ namespace Kinovea { namespace Video
 				bool		bDeinterlace;				// If frames should be deinterlaced.
 		};
 		
-		// Replace with Section (?)
+		// Replace with Section + timestamp info.
 		public ref class PrimarySelection
 		{
 			// Structure d'information sur la sélection primaire.
@@ -88,6 +89,8 @@ namespace Kinovea { namespace Video
 				// Selection
 				int		iDurationFrame;		// (Pour mode Analyse).
 		};
+
+		
 
 		// Replace with VideoFrame.
 		public ref class DecompressedFrame

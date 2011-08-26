@@ -90,10 +90,7 @@ namespace Kinovea.ScreenManager
 			m_VideoReader = VideoTypeManager.GetVideoReader(extension);
 			if(m_VideoReader != null)
 			{
-			    m_VideoReader.Options = new VideoOptions {
-                    ImageAspectRatio = pm.AspectRatio,
-                    Deinterlace = pm.DeinterlaceByDefault
-			    };
+			    m_VideoReader.Options = new VideoOptions(pm.AspectRatio, pm.DeinterlaceByDefault);
                 return m_VideoReader.Open(_FilePath);
 			}
 			else
