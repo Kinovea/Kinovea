@@ -45,6 +45,7 @@ extern "C"
 }
 
 #include <stdio.h>
+#include "Enums.h"
 #include "InfosVideo.h"
 #include "SavingContext.h"
 
@@ -65,64 +66,8 @@ using namespace Kinovea::Base;
 #define OUTPUT_MUXER_MP4 1
 #define OUTPUT_MUXER_AVI 2
 
-namespace Kinovea
+namespace Kinovea { namespace VideoFiles
 {
-namespace VideoFiles
-{
-
-#pragma region Namespace wide enums
-	public enum class ImportStrategy
-	{
-		Complete,
-		Reduction,
-		InsertionBefore,
-		InsertionAfter
-	};
-	public enum class LoadResult
-	{
-		Success,
-		FileNotOpenned,
-		StreamInfoNotFound,
-		VideoStreamNotFound,
-		CodecNotFound,
-		CodecNotOpened,
-		CodecNotSupported,
-		Cancelled,
-		FrameCountError
-	};
-	public enum class ReadResult
-	{
-		Success,
-		MovieNotLoaded,
-		MemoryNotAllocated,
-		ImageNotConverted,
-		FrameNotRead
-	};
-	public enum class SaveResult
-	{
-		Success,
-		MuxerNotFound,
-		MuxerParametersNotAllocated,
-		MuxerParametersNotSet,
-		VideoStreamNotCreated,
-		EncoderNotFound,
-		EncoderParametersNotAllocated,
-		EncoderParametersNotSet,
-		EncoderNotOpened,
-		FileNotOpened,
-		FileHeaderNotWritten,
-		InputFrameNotAllocated,
-		MetadataStreamNotCreated,
-		MetadataNotWritten,
-		ReadingError,
-		UnknownError,
-
-		MovieNotLoaded,
-		TranscodeNotFinished,
-		Cancelled
-	};
-#pragma endregion
-
 	public ref class VideoFile
 	{
 
@@ -229,9 +174,6 @@ namespace VideoFiles
 
 		int64_t GetTimeStamp(int64_t _iPosition);
 		int64_t GetFrameNumber(int64_t _iPosition);
-
-		void RenderToGraphics(Graphics^ _canvas, IntPtr _targetHDC);
-		
 #pragma endregion
 
 #pragma region Private Methods

@@ -209,7 +209,7 @@
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Video\bin\Debug\Video.dll"
-			AssemblyName="Video, Version=1.0.0.19465, processorArchitecture=IA64"
+			AssemblyName="Video, Version=1.0.0.36690, processorArchitecture=IA64"
 			CopyLocal="false"
 			CopyLocalDependencies="false"
 			UseDependenciesInBuild="false"
@@ -241,6 +241,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Enums.h"
+				>
+			</File>
 			<File
 				RelativePath=".\InfosVideo.h"
 				>
