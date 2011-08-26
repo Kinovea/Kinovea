@@ -33,7 +33,7 @@ using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
-using Kinovea.VideoFiles;
+using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {

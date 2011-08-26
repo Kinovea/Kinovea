@@ -23,7 +23,6 @@ using System.Drawing;
 using System.Resources;
 
 using Kinovea.ScreenManager.Languages;
-using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {

@@ -60,16 +60,15 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Windows::Forms;
 using namespace Kinovea::Base;
-using namespace Kinovea::Video;
 
 //------------------------
 #define OUTPUT_MUXER_MKV 0
 #define OUTPUT_MUXER_MP4 1
 #define OUTPUT_MUXER_AVI 2
 
-namespace Kinovea { namespace VideoFiles
+namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	public ref class VideoFile
+	public ref class VideoReaderFFMpeg
 	{
 
 #pragma region Properties
@@ -145,10 +144,10 @@ namespace Kinovea { namespace VideoFiles
 
 #pragma region Construction/Destruction
 	public:
-		VideoFile();
-		~VideoFile();
+		VideoReaderFFMpeg();
+		~VideoReaderFFMpeg();
 	protected:
-		!VideoFile();
+		!VideoReaderFFMpeg();
 #pragma endregion
 
 #pragma region Public Methods
@@ -205,5 +204,4 @@ namespace Kinovea { namespace VideoFiles
 #pragma endregion
 			
 	};
-}
-}
+}}}

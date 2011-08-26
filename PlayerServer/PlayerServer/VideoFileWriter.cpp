@@ -29,7 +29,7 @@ using namespace System::Drawing::Drawing2D;
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 
-namespace Kinovea { namespace VideoFiles 
+namespace Kinovea { namespace Video { namespace FFMpeg
 {
 
 VideoFileWriter::VideoFileWriter()
@@ -1109,5 +1109,5 @@ int VideoFileWriter::GreatestCommonDenominator(int a, int b)
      else
         return GreatestCommonDenominator(a, b % a);
 }
-}	
-}
+
+}}}

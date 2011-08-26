@@ -40,7 +40,6 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 using Kinovea.Video;
-using Kinovea.VideoFiles;
 
 #endregion
 

@@ -88,6 +88,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Refs\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Kinovea.Video.FFMpeg">
+      <HintPath>..\PlayerServer\bin\Kinovea.Video.FFMpeg.dll</HintPath>
+    </Reference>
     <Reference Include="LinqBridge">
       <HintPath>..\Refs\LinqBridge.dll</HintPath>
     </Reference>
@@ -96,9 +99,6 @@
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="PlayerServer">
-      <HintPath>..\PlayerServer\bin\PlayerServer.dll</HintPath>
-    </Reference>
     <Reference Include="SharpVectorBindings">
       <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
     </Reference>

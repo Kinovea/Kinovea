@@ -31,7 +31,6 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
-using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {

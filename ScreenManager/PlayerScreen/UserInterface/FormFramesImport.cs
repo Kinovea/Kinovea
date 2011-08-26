@@ -25,7 +25,8 @@ using System.ComponentModel;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-using Kinovea.VideoFiles;
+
+using Kinovea.Video.FFMpeg;     // <- remove when possible to use the base Reader class.
 
 namespace Kinovea.ScreenManager
 {
@@ -39,7 +40,7 @@ namespace Kinovea.ScreenManager
     	#endregion
     	
     	#region Members
-        private VideoFile m_VideoFile      = null;
+        private VideoReaderFFMpeg m_VideoReader      = null;
         private long m_iSelStart;
         private long m_iSelEnd;
         private bool m_IsIdle = true;
@@ -48,11 +49,11 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public formFramesImport(VideoFile _videoFile, long _iSelStart, long _iSelEnd, bool _bForceReload)
+        public formFramesImport(VideoReaderFFMpeg _videoReader, long _iSelStart, long _iSelEnd, bool _bForceReload)
         {
             InitializeComponent();
 
-            m_VideoFile = _videoFile;
+            m_VideoReader = _videoReader;
             m_iSelStart = _iSelStart;
             m_iSelEnd = _iSelEnd;
             m_bForceReload = _bForceReload;
@@ -99,10 +100,10 @@ namespace Kinovea.ScreenManager
             // Les appels ici sont synchrones mais on peut remonter de 
             // l'information par bgWorker_ProgressChanged().
             //-------------------------------------------------------------
-            m_VideoFile.BgWorker = bgWorker;
+            m_VideoReader.BgWorker = bgWorker;
             try
             {
-            	m_VideoFile.ExtractToMemory(m_iSelStart, m_iSelEnd, m_bForceReload);
+            	m_VideoReader.ExtractToMemory(m_iSelStart, m_iSelEnd, m_bForceReload);
             }
             catch(Exception exp)
             {

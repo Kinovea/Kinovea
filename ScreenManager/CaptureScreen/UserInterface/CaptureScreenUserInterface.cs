@@ -40,7 +40,6 @@ using AForge.Video.DirectShow;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
-using Kinovea.VideoFiles;
 
 #endregion
 

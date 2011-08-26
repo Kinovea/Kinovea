@@ -20,7 +20,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #pragma endregion
 
-
 //-----------------------------------------------------------------------------
 // VideoFileWriter - a class to write a set of frames to a file.
 //
@@ -55,14 +54,13 @@ using namespace System::Reflection;
 using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Windows::Forms;
-using namespace Kinovea::Video;
 
 //------------------------
 #define OUTPUT_MUXER_MKV 0
 #define OUTPUT_MUXER_MP4 1
 #define OUTPUT_MUXER_AVI 2
 
-namespace Kinovea { namespace VideoFiles
+namespace Kinovea { namespace Video { namespace FFMpeg
 {
 	public ref class VideoFileWriter
 	{
@@ -107,5 +105,4 @@ namespace Kinovea { namespace VideoFiles
 
 #pragma endregion
 	};
-}
-}
+}}}

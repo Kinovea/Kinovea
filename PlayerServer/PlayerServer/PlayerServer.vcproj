@@ -61,6 +61,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="avformat.lib avdevice.lib avcodec.lib avfilter.lib avutil.lib swscale.lib postproc.lib Gdi32.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\Kinovea.Video.FFMpeg.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Refs\FFmpeg\lib"
 				GenerateDebugInformation="true"
@@ -208,12 +209,9 @@
 			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
-			RelativePath="..\..\Video\bin\Debug\Video.dll"
-			AssemblyName="Video, Version=1.0.0.36690, processorArchitecture=IA64"
-			CopyLocal="false"
-			CopyLocalDependencies="false"
+			RelativePath="..\..\Video\bin\Kinovea.Video.dll"
+			AssemblyName="Kinovea.Video, Version=1.0.0.22324, processorArchitecture=IA64"
 			UseDependenciesInBuild="false"
-			CopyLocalSatelliteAssemblies="false"
 			MinFrameworkVersion="131072"
 		/>
 	</References>
@@ -228,11 +226,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\VideoFile.cpp"
+				RelativePath=".\VideoFileWriter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\VideoFileWriter.cpp"
+				RelativePath=".\VideoReaderFFMpeg.cpp"
 				>
 			</File>
 		</Filter>
@@ -254,11 +252,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\VideoFile.h"
+				RelativePath=".\VideoFileWriter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\VideoFileWriter.h"
+				RelativePath=".\VideoReaderFFMpeg.h"
 				>
 			</File>
 			<Filter

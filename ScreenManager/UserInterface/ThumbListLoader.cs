@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 using Kinovea.Services;
 using Kinovea.Video;
-using Kinovea.VideoFiles;
+using Kinovea.Video.FFMpeg; // <- remove when the thumbs come from the VideoReader abstract class.
 
 namespace Kinovea.ScreenManager
 {
@@ -53,17 +53,17 @@ namespace Kinovea.ScreenManager
         private List<VideoSummary> m_VideoSummaryQueue;
         private int m_iLastFilled = -1;
         private SplitterPanel m_Panel;
-        private VideoFile m_VideoFile;
+        private VideoReaderFFMpeg m_VideoReader;
         private int m_iTotalFilesToLoad = 0;    // only for debug info
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public ThumbListLoader(List<String> _fileNames, SplitterPanel _panel, VideoFile _PlayerServer)
+        public ThumbListLoader(List<String> _fileNames, SplitterPanel _panel, VideoReaderFFMpeg _reader)
         {
             m_FileNames = _fileNames;
             m_Panel = _panel;
-            m_VideoFile = _PlayerServer;
+            m_VideoReader = _reader;
 
             m_iTotalFilesToLoad = _fileNames.Count;
             m_VideoSummaryQueue = new List<VideoSummary>();
@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
                 {
                     try
                     {
-                        VideoSummary summary = m_VideoFile.ExtractSummary(fileNames[i], 5, 200);
+                        VideoSummary summary = m_VideoReader.ExtractSummary(fileNames[i], 5, 200);
                         m_VideoSummaryQueue.Insert(0, summary);
                     }
                     catch (Exception exp)

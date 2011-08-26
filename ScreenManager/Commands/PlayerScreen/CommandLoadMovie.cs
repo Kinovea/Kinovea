@@ -26,7 +26,6 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using Kinovea.Services;
-using Kinovea.VideoFiles;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager

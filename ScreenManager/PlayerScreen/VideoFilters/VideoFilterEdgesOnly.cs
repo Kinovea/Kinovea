@@ -25,7 +25,6 @@ using System.Resources;
 
 using AForge.Imaging.Filters;
 using Kinovea.ScreenManager.Languages;
-using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
