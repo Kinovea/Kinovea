@@ -24,20 +24,8 @@ using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Drawing;
 
-namespace Kinovea
+namespace Kinovea { namespace VideoFiles
 {
-	namespace VideoFiles
-	{
-
-		public enum class AspectRatio
-		{
-			AutoDetect,			// The program will detect square pixels or anamorphic and load it as such.
-			Force43,			// The user wants 4:3, used by user when Auto doesn't work as expected.
-			Force169,			// The user wants 16:9
-			ForceSquarePixels	// The program forces square pixels to overcome a video-specific bug.
-		};
-
-
 		// OBSOLETE. Use VideoInfo from Kinovea::Video namespace.
 		public ref class InfosVideo
 		{
@@ -72,12 +60,16 @@ namespace Kinovea
 		
 		// Other helper classes.
 		// TODO: merge into VideoFile or extract to a special .h
+
+		// Should be a value struct !
 		public ref class DefaultSettings
 		{
 			public:
 				AspectRatio eAspectRatio;				// Image format the user forces (auto, 4:3, 16:9).
 				bool		bDeinterlace;				// If frames should be deinterlaced.
 		};
+		
+		// Move to Kinovea.Video
 		public ref class InfosThumbnail
 		{
 			public:
@@ -87,6 +79,8 @@ namespace Kinovea
 				bool HasKva;
 				bool IsImage;
 		};
+		
+		// Replace with Section (?)
 		public ref class PrimarySelection
 		{
 			// Structure d'information sur la sélection primaire.
@@ -105,6 +99,8 @@ namespace Kinovea
 				// Selection
 				int		iDurationFrame;		// (Pour mode Analyse).
 		};
+
+		// Replace with VideoFrame.
 		public ref class DecompressedFrame
 		{
 			public:

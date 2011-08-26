@@ -42,8 +42,8 @@ extern "C"
 }
 
 #include <stdio.h>
+#include "Enums.h"
 #include "SavingContext.h"
-#include "VideoFile.h"    // <- remove. SaveResult should be declared here.
 
 using namespace System;
 using namespace System::Collections::Generic;				
