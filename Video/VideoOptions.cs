@@ -25,8 +25,13 @@ namespace Kinovea.Video
 {
     public struct VideoOptions
     {
-        public ImageAspectRatio ImageAspectRatio;  
-        public bool Deinterlace;
-        public bool AutoRewind;
+        public readonly ImageAspectRatio ImageAspectRatio;  
+        public readonly bool Deinterlace;
+        
+        public VideoOptions(ImageAspectRatio _ratio, bool _deint)
+        {
+            ImageAspectRatio = _ratio;
+            Deinterlace = _deint;
+        }
     }
 }

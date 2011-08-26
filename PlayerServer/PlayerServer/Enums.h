@@ -23,7 +23,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 // Note: might be moved somewhere else, in Kinovea.Video assembly for example.
 namespace Kinovea { namespace Video
 {
-
+	// DUPLICATE in Kinovea.Services.
 	public enum class AspectRatio
 	{
 		AutoDetect,			// The program will detect square pixels or anamorphic and load it as such.
@@ -32,6 +32,7 @@ namespace Kinovea { namespace Video
 		ForceSquarePixels	// The program forces square pixels to overcome a video-specific bug.
 	};
 
+	// Should be private to VideoFrameCache ?
 	public enum class ImportStrategy
 	{
 		Complete,
@@ -39,51 +40,4 @@ namespace Kinovea { namespace Video
 		InsertionBefore,
 		InsertionAfter
 	};
-	public enum class LoadResult
-	{
-		Success,
-		FileNotOpenned,
-		StreamInfoNotFound,
-		VideoStreamNotFound,
-		CodecNotFound,
-		CodecNotOpened,
-		CodecNotSupported,
-		Cancelled,
-		FrameCountError
-	};
-	public enum class ReadResult
-	{
-		Success,
-		MovieNotLoaded,
-		MemoryNotAllocated,
-		ImageNotConverted,
-		FrameNotRead
-	};
-	public enum class SaveResult
-	{
-		Success,
-		MuxerNotFound,
-		MuxerParametersNotAllocated,
-		MuxerParametersNotSet,
-		VideoStreamNotCreated,
-		EncoderNotFound,
-		EncoderParametersNotAllocated,
-		EncoderParametersNotSet,
-		EncoderNotOpened,
-		FileNotOpened,
-		FileHeaderNotWritten,
-		InputFrameNotAllocated,
-		MetadataStreamNotCreated,
-		MetadataNotWritten,
-		ReadingError,
-		UnknownError,
-
-		MovieNotLoaded,
-		TranscodeNotFinished,
-		Cancelled
-	};
-
-
-
-}
-}
+}}

@@ -22,19 +22,5 @@ using System;
 
 namespace Kinovea.Video
 {
-    public struct Fraction
-    {
-        public readonly long Numerator;
-        public readonly long Denominator;
-        
-        public bool IsEmpty {
-            get { return Numerator == 0 || Denominator == 0; }
-        }
-        
-        public Fraction(long _num, long _den)
-        {
-            Numerator = _num;
-            Denominator = _den;
-        }
-    }
+    public delegate void VideoFrameDisposer(VideoFrame _frame);
 }

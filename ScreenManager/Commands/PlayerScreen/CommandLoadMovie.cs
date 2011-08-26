@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
                             case -1:
                                 {
                                     // Loading the first frame failed.
-                                   	m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
+                                    m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
                                     DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_InconsistantMovieError);
                                     break;
                                 }

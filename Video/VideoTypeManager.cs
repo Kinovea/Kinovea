@@ -39,6 +39,7 @@ namespace Kinovea.Video
         #region Public methods
         /// <summary>
         /// Find and register types implementing the VideoReader base class.
+        /// The readers are not instanciated at this phase.
         /// </summary>
         public static void LoadVideoReaders()
         {
@@ -50,19 +51,12 @@ namespace Kinovea.Video
             if(Directory.Exists(dir))
             {
                 foreach (string fileName in Directory.GetFiles(dir, "*.dll"))
-                {
-                    Assembly pluginAssembly = null;
-                    try
-                    {
-                        pluginAssembly = Assembly.LoadFrom(fileName);
-                        assemblies.Add(pluginAssembly);
-                    }
-                    catch (Exception)
-                    {
-                        log.ErrorFormat("Could not load assembly {0} for file types plugin", fileName);
-                    }
-                }
+                    AddAssembly(fileName, assemblies);
             }
+            
+            // Also import from the FFMpeg assembly separately since it doesn't live in the plug-in folder.
+            string ffmpeg = Path.GetDirectoryName(Application.ExecutablePath) + "\\Kinovea.Video.FFMpeg.dll";
+            AddAssembly(ffmpeg, assemblies);
             
             // Register the VideoReaders implementations with the extensions they support.
             foreach (Assembly a in assemblies)
@@ -89,11 +83,11 @@ namespace Kinovea.Video
         /// <param name="_extension"></param>
         public static VideoReader GetVideoReader(string _extension)
         {
-            // The FFMpeg plugin will support the wildcard as a fallback mechanism.
             VideoReader reader = null;
             Type readerType;
             bool found = m_VideoReaders.TryGetValue(_extension, out readerType);
             
+            // The FFMpeg plugin will support the wildcard as a fallback mechanism.
             if(!found)
                 found = m_VideoReaders.TryGetValue("*", out readerType);
             
@@ -115,6 +109,18 @@ namespace Kinovea.Video
         #endregion
         
         #region Private methods
+        private static void AddAssembly(string _filename, List<Assembly> _list)
+        {
+            try
+            {
+                Assembly pluginAssembly = Assembly.LoadFrom(_filename);
+                _list.Add(pluginAssembly);
+            }
+            catch (Exception)
+            {
+                log.ErrorFormat("Could not load assembly {0} for file types plugin", _filename);
+            }
+        }
         private static void RegisterExtensions(string[] _extensions, Type _readerType)
         {
             log.DebugFormat("Registering extensions for {0} : {1}", _readerType.Name, string.Join("; ", _extensions));

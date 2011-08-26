@@ -29,8 +29,8 @@ using namespace System::Drawing::Drawing2D;
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 
-namespace Kinovea { namespace Video { namespace FFMpeg
-{
+using namespace Kinovea::Video;
+using namespace Kinovea::Video::FFMpeg;
 
 VideoFileWriter::VideoFileWriter()
 {
@@ -219,9 +219,7 @@ SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoReader^ _reader,
 				}
 				else
 				{
-					//res = ReadFrame(-1, 1);
-// MoveNext(true) : must read synchronously for this.
-					read = _reader->MoveNext();
+					read = _reader->MoveNext(true);
 				}
 
 				//if(res == ReadResult::Success)
@@ -377,8 +375,8 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 	m_SavingContext->bInputWasMpeg2 = _info.IsCodecMpeg2;
 	if(!_info.SampleAspectRatio.IsEmpty)
 	{
-		m_SavingContext->iSampleAspectRatioNumerator = _info.SampleAspectRatio.Numerator;
-		m_SavingContext->iSampleAspectRatioDenominator = _info.SampleAspectRatio.Denominator;
+		m_SavingContext->iSampleAspectRatioNumerator = (int)_info.SampleAspectRatio.Numerator;
+		m_SavingContext->iSampleAspectRatioDenominator = (int)_info.SampleAspectRatio.Denominator;
 	}
 
 	if(_fFramesInterval > 0) 
@@ -1109,5 +1107,3 @@ int VideoFileWriter::GreatestCommonDenominator(int a, int b)
      else
         return GreatestCommonDenominator(a, b % a);
 }
-
-}}}

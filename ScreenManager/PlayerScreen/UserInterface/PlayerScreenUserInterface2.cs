@@ -472,16 +472,21 @@ namespace Kinovea.ScreenManager
 					//if(m_iCurrentPosition > 0)
 					//   m_FrameServer.VideoReader.ForceFirstTimeStamp(m_iCurrentPosition);
 					
+					//if(m_iCurrentPosition
+					//m_FrameServer.VideoReader.WorkingZone.
+					
+					
+					
+					
 					// FIXME: This should be the responsibility of the reader.
 					
 					
 					
 					m_iStartingPosition = m_iCurrentPosition;
 					m_iTotalDuration = m_FrameServer.VideoReader.Info.DurationTimeStamps;
-					
 					m_iSelStart     = m_iStartingPosition;
 					//m_iSelEnd       = m_iStartingPosition + m_iTotalDuration - m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-					m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
+                    m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
 					m_iSelDuration  = m_iTotalDuration;
 					
 					// Switch to analysis mode if possible.
@@ -543,8 +548,12 @@ namespace Kinovea.ScreenManager
 
 					UpdateFramesMarkers();
 					
+					//if((m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) == 0)
+					    //VideoReader.StartDecoding();
+					
 					// Debug
-					if (m_bShowInfos) { UpdateDebugInfos(); }
+					if (m_bShowInfos) 
+					    UpdateDebugInfos();
 				}
 			}
 			
@@ -616,6 +625,10 @@ namespace Kinovea.ScreenManager
 			{
 				DockKeyframePanel(false);
 			}
+			
+			// This operation has corrupted the cache.
+			if((m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) == 0)
+                m_FrameServer.VideoReader.Cache.Clear();
 			
 			// Goto selection start and refresh.
 			m_iFramesToDecode = 1;
@@ -1116,11 +1129,10 @@ namespace Kinovea.ScreenManager
 		private void DemuxMetadata()
 		{
 			// Try to find metadata muxed inside the file and load it.
-			
-			string metadata = m_FrameServer.VideoReader.Metadata;
-			if (metadata != null)
+			string kva = m_FrameServer.VideoReader.ReadMetadata();
+			if (!string.IsNullOrEmpty(kva))
 			{
-			    m_FrameServer.Metadata = new Metadata(metadata, m_FrameServer.VideoReader.Info,  TimeStampsToTimecode, OnShowClosestFrame);
+			    m_FrameServer.Metadata = new Metadata(kva, m_FrameServer.VideoReader.Info,  TimeStampsToTimecode, OnShowClosestFrame);
                 UpdateFramesMarkers();
 				OrganizeKeyframes();
 			}
@@ -1596,7 +1608,8 @@ namespace Kinovea.ScreenManager
 
 				UpdateNavigationCursor();
 				ActivateKeyframe(m_iCurrentPosition);
-				if (m_bShowInfos) { UpdateDebugInfos(); }
+				if (m_bShowInfos) 
+				    UpdateDebugInfos();
 			}
 			
 		}
@@ -2324,7 +2337,7 @@ namespace Kinovea.ScreenManager
 				if (m_bSeekToStart)
 				{
 					// Rewind to begining.
-					if (ShowNextFrame(m_iSelStart, true) == 0)
+					if (ShowNextFrame(m_iSelStart, true) == ReadResult.Success)
 					{
 						if(m_bSynched)
 						{
@@ -2413,11 +2426,13 @@ namespace Kinovea.ScreenManager
 		}
 		private void IdleDetector(object sender, EventArgs e)
 		{
-			//log.Debug("back to idle");
 			m_bIsIdle = true;
 		}
 		private ReadResult ShowNextFrame(Int64 _iSeekTarget, bool _bAllowUIUpdate)
 		{
+		    if(!m_FrameServer.VideoReader.Loaded)
+		        return ReadResult.MovieNotLoaded;
+		    
 		    bool read = false;
 		    if(_iSeekTarget < 0)
 		        read = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode);
@@ -2473,8 +2488,15 @@ namespace Kinovea.ScreenManager
 					UpdateFramesMarkers();
 				}
 				
+				
 				if(_bAllowUIUpdate) 
+				{
+				    // Test
+				    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+				
 				    DoInvalidate();
+				}
+				    
 				
 				ReportForSyncMerge();
 			}
@@ -4755,6 +4777,14 @@ namespace Kinovea.ScreenManager
 					trkFrame.ReportOnMouseMove = false;
 				}
 
+				m_FrameServer.VideoReader.WorkingZone = new VideoSection(m_iSelStart, m_iSelEnd);
+				bool wasWrapped = m_FrameServer.VideoReader.Cache.Segment.Wrapped;
+				bool contraction = m_FrameServer.VideoReader.Cache.SetWorkingZoneSentinels(m_FrameServer.VideoReader.WorkingZone);
+				if(contraction)
+                    ShowNextFrame(m_iSelStart, true);
+
+				trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+				
 				UpdateSelectionLabels();
 				OnPoke();
 

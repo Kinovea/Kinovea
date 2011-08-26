@@ -376,12 +376,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ScreenManagerLang.resx</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesImport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormFramesImport.Designer.cs">
-      <DependentUpon>FormFramesImport.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FrameTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -509,10 +503,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ScreenManagerLang.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormFramesImport.resx">
-      <DependentUpon>FormFramesImport.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FrameTracker.resx">
       <DependentUpon>FrameTracker.cs</DependentUpon>
