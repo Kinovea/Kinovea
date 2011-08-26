@@ -56,7 +56,9 @@ namespace Kinovea.Video.Gif
         private bool m_Loaded;
         private VideoInfo m_VideoInfo;
         private int m_Count;
-        //private VideoFrameCache m_FrameCache = new VideoFrameCache();
+        private Image m_Gif;
+        private FrameDimension m_FrameDimension;
+        		
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -68,57 +70,19 @@ namespace Kinovea.Video.Gif
         #endregion
         
         #region Public Methods
-        public override OpenVideoResult Open(string _FilePath)
+        public override OpenVideoResult Open(string _filePath)
         {
-            OpenVideoResult result = OpenVideoResult.UnknownError;
-            
-            if(m_Loaded) 
+            if(m_Loaded)
                 Close();
                 
-            do 
-            {
-                Image gif = Image.FromFile(_FilePath);
-                if(gif == null)
-                {
-                    result = OpenVideoResult.FileNotOpenned;
-                    log.ErrorFormat("The file could not be openned.");
-                    break;
-                }
-                
-                m_VideoInfo.FirstTimeStamp = 0;
-                m_VideoInfo.AverageTimeStampsPerSeconds = 100;
-                m_VideoInfo.FilePath = _FilePath;
-                
-                // Duration in frames
-        		FrameDimension fd = new FrameDimension(gif.FrameDimensionsList[0]);
-        		m_Count = gif.GetFrameCount(fd);
-        		    
-                // Duration of first interval. (PropertyTagFrameDelay)
-                // The byte array returned by the Value property contains 32bits integers for each frame interval (in 1/100th).
-                PropertyItem pi = gif.GetPropertyItem(0x5100);
-		        int interval = BitConverter.ToInt32(pi.Value, 0);
-		        if(interval <= 0)
-		            interval = 5;
-                m_VideoInfo.DurationTimeStamps = m_Count * interval;
-		        m_VideoInfo.FrameIntervalMilliseconds = interval * 10;
-        		
-                m_VideoInfo.FramesPerSeconds = 100D/interval;
-        		m_VideoInfo.AverageTimeStampsPerFrame = interval;
-
-                m_VideoInfo.DecodingSize = gif.Size;
-                m_VideoInfo.OriginalSize = gif.Size;
-        		
-                // Immediately feed the cache.
-                LoadCache(gif);
-                gif.Dispose();
-                
-        		DumpInfo();
-        		m_Loaded = true;
-                result = OpenVideoResult.Success;
-            }
-            while(false);
-
-            return result;
+            m_VideoInfo.FirstTimeStamp = 0;
+            m_VideoInfo.AverageTimeStampsPerSeconds = 100;
+            m_VideoInfo.FilePath = _filePath;
+            
+            OpenVideoResult res = LoadFile(_filePath, true);
+            m_Gif.Dispose();
+            DumpInfo();
+            return res;
         }
         public override void Close()
         {
@@ -132,33 +96,107 @@ namespace Kinovea.Video.Gif
         {
             return Cache.MoveTo(_timestamp);
         }
-        /*public override bool Cache(long _start, long _end, int _maxSeconds, int _maxMemory)
+        public override VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width)
         {
-            // Nothing more to do as this reader is cache only.
-            return true;
-        }*/
+            // NOT TESTED - NOT USED for now.
+            VideoSummary summary = null;
+           
+            OpenVideoResult res = LoadFile(_filePath, true);
+            
+            if(res == OpenVideoResult.Success)
+            {
+                string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(m_VideoInfo.FilePath), Path.GetFileNameWithoutExtension(m_VideoInfo.FilePath));
+                bool hasKva = File.Exists(kvaFile);
+                bool isImage = m_Count == 1;
+                int durationMillisecs = (int)((double)m_Count * m_VideoInfo.FrameIntervalMilliseconds);
+                
+                List<Bitmap> thumbs = new List<Bitmap>();
+                if(_thumbs > 0)
+                {
+                    int step = (int)Math.Ceiling(m_Count / (double)_thumbs);
+                    for(int i = 0; i<m_Count; i+=step)
+                        thumbs.Add(GetFrameAt(i));
+                }
+                
+                summary = new VideoSummary(isImage, hasKva, m_VideoInfo.OriginalSize, durationMillisecs, thumbs);
+            }
+            
+            if(m_Loaded)
+                Close();
+            
+            m_Gif.Dispose();
+            return summary;
+        }
         #endregion
         
         #region Private Methods
-        private void LoadCache(Image _gif)
+        private OpenVideoResult LoadFile(string _filePath, bool _cache)
+        {
+            OpenVideoResult result = OpenVideoResult.UnknownError;
+            
+            do
+            {
+                if(m_Gif != null)
+                    m_Gif.Dispose();
+                
+                m_Gif = Image.FromFile(_filePath);
+                if(m_Gif == null)
+                {
+                    result = OpenVideoResult.FileNotOpenned;
+                    log.ErrorFormat("The file could not be openned.");
+                    break;
+                }
+                
+                // Duration in frames
+        		m_FrameDimension = new FrameDimension(m_Gif.FrameDimensionsList[0]);
+        		m_Count = m_Gif.GetFrameCount(m_FrameDimension);
+        		    
+                // Duration of first interval. (PropertyTagFrameDelay)
+                // The byte array returned by the Value property contains 32bits integers for each frame interval (in 1/100th).
+                PropertyItem pi = m_Gif.GetPropertyItem(0x5100);
+		        int interval = BitConverter.ToInt32(pi.Value, 0);
+		        if(interval <= 0)
+		            interval = 5;
+                m_VideoInfo.DurationTimeStamps = m_Count * interval;
+		        m_VideoInfo.FrameIntervalMilliseconds = interval * 10;
+        		
+                m_VideoInfo.FramesPerSeconds = 100D/interval;
+        		m_VideoInfo.AverageTimeStampsPerFrame = interval;
+
+                m_VideoInfo.DecodingSize = m_Gif.Size;
+                m_VideoInfo.OriginalSize = m_Gif.Size;
+        		
+                if(_cache)
+                    LoadCache();
+                
+        		m_Loaded = true;
+                result = OpenVideoResult.Success;
+            }
+            while(false);
+
+            return result;
+        }
+        private void LoadCache()
         {
             Cache.Clear();
             Cache.FullZone = true;
-            FrameDimension fd = new FrameDimension(_gif.FrameDimensionsList[0]);
             for(int i = 0; i<m_Count; i++)
             {
-                _gif.SelectActiveFrame(fd, i);
-
                 VideoFrame vf = new VideoFrame();
                 vf.Timestamp = i * m_VideoInfo.AverageTimeStampsPerFrame;
-                vf.Image = new Bitmap(m_VideoInfo.DecodingSize.Width, m_VideoInfo.DecodingSize.Height, PixelFormat.Format32bppPArgb);
-		        Graphics g = Graphics.FromImage(vf.Image);
-                g.DrawImage(_gif, 0, 0, m_VideoInfo.DecodingSize.Width, m_VideoInfo.DecodingSize.Height); 
-		    
+                vf.Image = GetFrameAt(i);
                 Cache.Add(vf);
             }
             
             Cache.SetWorkingZoneSentinels(Cache.Segment);
+        }
+        private Bitmap GetFrameAt(int _target)
+        {
+            m_Gif.SelectActiveFrame(m_FrameDimension, _target);
+            Bitmap bmp = new Bitmap(m_VideoInfo.DecodingSize.Width, m_VideoInfo.DecodingSize.Height, PixelFormat.Format32bppPArgb);
+            Graphics g = Graphics.FromImage(bmp);
+            g.DrawImage(m_Gif, 0, 0, m_VideoInfo.DecodingSize.Width, m_VideoInfo.DecodingSize.Height);
+            return bmp;
         }
         private void DumpInfo()
         {

@@ -44,7 +44,7 @@ namespace Kinovea.Video
 		#endregion
 		
 		#region Methods
-		public abstract OpenVideoResult Open(string _FilePath);
+		public abstract OpenVideoResult Open(string _filePath);
 		public abstract void Close();
 		
 		/// <summary>
@@ -63,6 +63,8 @@ namespace Kinovea.Video
 		/// </summary>
 		public abstract bool MoveTo(long _timestamp);
 
+		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
+		
 		/// <summary>
 		/// Request for caching.
 		/// </summary>

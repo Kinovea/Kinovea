@@ -60,6 +60,7 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Windows::Forms;
 using namespace Kinovea::Base;
+using namespace Kinovea::Video;
 
 //------------------------
 #define OUTPUT_MUXER_MKV 0
@@ -153,25 +154,28 @@ namespace Kinovea { namespace VideoFiles
 #pragma region Public Methods
 	public:
 
+		LoadResult Load(String^ _FilePath);
+		void Unload();
+
+		// Only expose MoveTo and MoveNext.
+		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode);
+
+
+		// Needed ?
 		void SetDefaultSettings(int _AspectRatio, bool _bDeinterlaceByDefault);
 
-		LoadResult Load(String^ _FilePath);
 		
-		InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth, int _iMaxThumbnails);
+		//InfosThumbnail^ GetThumbnail(String^ _FilePath, int _iPicWidth, int _iMaxThumbnails);
+		VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, int _width);
 		
+
 		String^	ReadMetadata();
 		
 		void	ExtractToMemory(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, bool _bForceReload);
-		
 		bool	CanExtractToMemory(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, int _maxSeconds, int _maxMemory);
-		
-		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode);
-
 		void	ChangeAspectRatio(AspectRatio _aspectRatio);
 
-		
-		void Unload();
-
+		// Shouldn't be needed.
 		int64_t GetTimeStamp(int64_t _iPosition);
 		int64_t GetFrameNumber(int64_t _iPosition);
 #pragma endregion
