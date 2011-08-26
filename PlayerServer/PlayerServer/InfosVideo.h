@@ -69,17 +69,6 @@ namespace Kinovea { namespace VideoFiles
 				bool		bDeinterlace;				// If frames should be deinterlaced.
 		};
 		
-		// Move to Kinovea.Video
-		public ref class InfosThumbnail
-		{
-			public:
-				List <Bitmap^>^ Thumbnails;
-				int64_t iDurationMilliseconds;
-				Size^ imageSize;
-				bool HasKva;
-				bool IsImage;
-		};
-		
 		// Replace with Section (?)
 		public ref class PrimarySelection
 		{

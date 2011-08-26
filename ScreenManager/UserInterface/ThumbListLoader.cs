@@ -26,10 +26,14 @@ using System.Threading;
 using System.Windows.Forms;
 
 using Kinovea.Services;
+using Kinovea.Video;
 using Kinovea.VideoFiles;
 
 namespace Kinovea.ScreenManager
 {
+    // TODO:
+    // - Use an actual Queue object.
+    // - Make thread safe.
     public class ThumbListLoader
     {
         #region Properties
@@ -46,7 +50,7 @@ namespace Kinovea.ScreenManager
 
         BackgroundWorker m_bgThumbsLoader;
         private bool m_bIsIdle = false;
-        private List<InfosThumbnail> m_InfosThumbnailQueue;
+        private List<VideoSummary> m_VideoSummaryQueue;
         private int m_iLastFilled = -1;
         private SplitterPanel m_Panel;
         private VideoFile m_VideoFile;
@@ -62,7 +66,7 @@ namespace Kinovea.ScreenManager
             m_VideoFile = _PlayerServer;
 
             m_iTotalFilesToLoad = _fileNames.Count;
-            m_InfosThumbnailQueue = new List<InfosThumbnail>();
+            m_VideoSummaryQueue = new List<VideoSummary>();
 
             m_bgThumbsLoader = new BackgroundWorker();
             m_bgThumbsLoader.WorkerReportsProgress = true;
@@ -99,30 +103,31 @@ namespace Kinovea.ScreenManager
         }
         private void bgThumbsLoader_DoWork(object sender, DoWorkEventArgs e)
         {
-            //-------------------------------------------------------------
             // /!\ This is WORKER THREAD space. Do not update UI.
-            //-------------------------------------------------------------
             Thread.CurrentThread.Name = String.Format("Thumbnail Loader ({0})", Thread.CurrentThread.ManagedThreadId);
             List<String> fileNames = (List<String>)e.Argument;
-            m_InfosThumbnailQueue.Clear();
+            m_VideoSummaryQueue.Clear();
             m_iLastFilled = -1;
 
+            BackgroundWorker bgWorker = sender as BackgroundWorker;
             e.Cancel = false;
 
             for (int i = 0; i < fileNames.Count; i++)
             {
-                if (!m_bgThumbsLoader.CancellationPending)
+                if (!bgWorker.CancellationPending)
                 {
                     try
                     {
-                    	InfosThumbnail it = m_VideoFile.GetThumbnail(fileNames[i], 200, 5);
-                        m_InfosThumbnailQueue.Insert(0, it);
+                        VideoSummary summary = m_VideoFile.ExtractSummary(fileNames[i], 5, 200);
+                        m_VideoSummaryQueue.Insert(0, summary);
                     }
-                    catch (Exception)
+                    catch (Exception exp)
                     {
-                        m_InfosThumbnailQueue.Insert(0, null);
+                        log.Error("Error while extracting video summary");
+                        log.Error(exp);
+                        m_VideoSummaryQueue.Insert(0, null);
                     }
-                    m_bgThumbsLoader.ReportProgress(i, null);
+                    bgWorker.ReportProgress(i, null);
                 }
                 else
                 {
@@ -135,9 +140,7 @@ namespace Kinovea.ScreenManager
         }
         private void bgThumbsLoader_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            //-------------------------------------------------
-            // This is not Worker Thread space. Update UI here.
-            //-------------------------------------------------
+            // Back into main thread. Update UI here.
             //Console.WriteLine("[ProgressChanged] - queue:{0}, total:{1}", m_BitmapQueue.Count, m_iTotalFilesToLoad);
             
             if (m_bIsIdle && !m_bgThumbsLoader.CancellationPending && (m_iLastFilled + 1 < m_Panel.Controls.Count))
@@ -145,16 +148,14 @@ namespace Kinovea.ScreenManager
                 m_bIsIdle = false;
 
                 // Copy the queue, because it is still being filled by the bg worker.
-                List<InfosThumbnail> tmpQueue = new List<InfosThumbnail>();
-                foreach (InfosThumbnail it in m_InfosThumbnailQueue)
-                {
-                    tmpQueue.Add(it);
-                }
+                List<VideoSummary> tmpQueue = new List<VideoSummary>();
+                foreach (VideoSummary summary in m_VideoSummaryQueue)
+                    tmpQueue.Add(summary);
 
                 // bg worker can start re fueling now, if a bitmap was queued during the copy, don't clear it.
-                m_InfosThumbnailQueue.RemoveRange(m_InfosThumbnailQueue.Count - tmpQueue.Count, tmpQueue.Count);
+                m_VideoSummaryQueue.RemoveRange(m_VideoSummaryQueue.Count - tmpQueue.Count, tmpQueue.Count);
 
-                PopulateControls(tmpQueue);                
+                PopulateControls(tmpQueue);
             }
             else
             {
@@ -167,18 +168,18 @@ namespace Kinovea.ScreenManager
             // Check if the queue has been completely flushed.
             // (in case the last thumbs loaded couldn't be added because we weren't idle.
             //---------------------------------------------------------------------------
-            if (m_InfosThumbnailQueue.Count > 0 && !e.Cancelled)
+            if (m_VideoSummaryQueue.Count > 0 && !e.Cancelled)
             {
-                PopulateControls(m_InfosThumbnailQueue);
+                PopulateControls(m_VideoSummaryQueue);
             }
 
             Application.Idle -= new EventHandler(this.IdleDetector);
             m_bUnused = true;
         }
-        private void PopulateControls(List<InfosThumbnail> _infosThumbQueue)
+        private void PopulateControls(List<VideoSummary> _summariesQueue)
         {
             // Unqueue bitmaps and populate the controls
-            for (int i = _infosThumbQueue.Count - 1; i >= 0; i--)
+            for (int i = _summariesQueue.Count - 1; i >= 0; i--)
             {
                 // Double check.
                 if (m_iLastFilled + 1 < m_Panel.Controls.Count)
@@ -187,23 +188,23 @@ namespace Kinovea.ScreenManager
                     ThumbListViewItem tlvi = m_Panel.Controls[m_iLastFilled] as ThumbListViewItem;
                     if(tlvi != null)
                     {
-	                    if (_infosThumbQueue[i] != null)
+	                    if (_summariesQueue[i] != null)
 	                    {
-	                    	if(_infosThumbQueue[i].Thumbnails.Count > 0)
+	                    	if(_summariesQueue[i].Thumbs.Count > 0)
 	                    	{
-		                    	tlvi.Thumbnails = _infosThumbQueue[i].Thumbnails;
-		                    	if(_infosThumbQueue[i].IsImage)
+		                    	tlvi.Thumbnails = _summariesQueue[i].Thumbs;
+		                    	if(_summariesQueue[i].IsImage)
 		                    	{
 		                    		tlvi.IsImage = true;
 		                    		tlvi.Duration = "0";
 		                    	}
 		                    	else
 		                    	{
-		                    		tlvi.Duration = TimeHelper.MillisecondsToTimecode((double)_infosThumbQueue[i].iDurationMilliseconds, false, true);
+		                    		tlvi.Duration = TimeHelper.MillisecondsToTimecode((double)_summariesQueue[i].DurationMilliseconds, false, true);
 		                    	}
 		                    	
-		                    	tlvi.ImageSize = (Size)_infosThumbQueue[i].imageSize;
-		                    	tlvi.HasKva = _infosThumbQueue[i].HasKva;
+		                    	tlvi.ImageSize = _summariesQueue[i].ImageSize;
+		                    	tlvi.HasKva = _summariesQueue[i].HasKva;
 		                    }
 	                    	else
 	                    	{
@@ -226,7 +227,7 @@ namespace Kinovea.ScreenManager
                     	m_Panel.Controls[m_iLastFilled].Visible = true;
                     }
                     
-                    _infosThumbQueue.RemoveAt(i);
+                    _summariesQueue.RemoveAt(i);
                     
                 }
             }
