@@ -66,8 +66,7 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerNW = new System.Windows.Forms.Label();
         	this.ImageResizerSW = new System.Windows.Forms.Label();
         	this.ImageResizerSE = new System.Windows.Forms.Label();
-        	this.panelDebug = new System.Windows.Forms.Panel();
-        	this.dbgAvailableRam = new System.Windows.Forms.Label();
+            this.dbgAvailableRam = new System.Windows.Forms.Label();
         	this.dbgDurationFrames = new System.Windows.Forms.Label();
         	this.dbgCurrentFrame = new System.Windows.Forms.Label();
         	this.dbgCurrentPositionRel = new System.Windows.Forms.Label();
@@ -91,7 +90,6 @@ namespace Kinovea.ScreenManager
         	this.panel1.SuspendLayout();
         	this.groupBoxSpeedTuner.SuspendLayout();
         	this.panelCenter.SuspendLayout();
-        	this.panelDebug.SuspendLayout();
         	((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).BeginInit();
         	this.splitKeyframes.Panel1.SuspendLayout();
         	this.splitKeyframes.Panel2.SuspendLayout();
@@ -602,7 +600,6 @@ namespace Kinovea.ScreenManager
         	this.panelCenter.Controls.Add(this.ImageResizerNW);
         	this.panelCenter.Controls.Add(this.ImageResizerSW);
         	this.panelCenter.Controls.Add(this.ImageResizerSE);
-        	this.panelCenter.Controls.Add(this.panelDebug);
         	this.panelCenter.Controls.Add(this.pbSurfaceScreen);
         	this.panelCenter.Dock = System.Windows.Forms.DockStyle.Fill;
         	this.panelCenter.Location = new System.Drawing.Point(0, 0);
@@ -675,30 +672,6 @@ namespace Kinovea.ScreenManager
         	this.ImageResizerSE.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageResizerSE_MouseMove);
         	this.ImageResizerSE.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseDoubleClick);
         	this.ImageResizerSE.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Resizers_MouseUp);
-        	// 
-        	// panelDebug
-        	// 
-        	this.panelDebug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-        	this.panelDebug.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        	this.panelDebug.Controls.Add(this.dbgAvailableRam);
-        	this.panelDebug.Controls.Add(this.dbgDurationFrames);
-        	this.panelDebug.Controls.Add(this.dbgCurrentFrame);
-        	this.panelDebug.Controls.Add(this.dbgCurrentPositionRel);
-        	this.panelDebug.Controls.Add(this.dbgStartOffset);
-        	this.panelDebug.Controls.Add(this.dbgCurrentPositionAbs);
-        	this.panelDebug.Controls.Add(this.dbgDrops);
-        	this.panelDebug.Controls.Add(this.dbgSelectionDuration);
-        	this.panelDebug.Controls.Add(this.dbgSelectionEnd);
-        	this.panelDebug.Controls.Add(this.dbgSelectionStart);
-        	this.panelDebug.Controls.Add(this.dbgFFps);
-        	this.panelDebug.Controls.Add(this.groupBoxSpeedTuner);
-        	this.panelDebug.Controls.Add(this.dbgDurationTimeStamps);
-        	this.panelDebug.Location = new System.Drawing.Point(240, 15);
-        	this.panelDebug.Name = "panelDebug";
-        	this.panelDebug.Size = new System.Drawing.Size(100, 174);
-        	this.panelDebug.TabIndex = 1;
-        	this.panelDebug.Visible = false;
-        	this.panelDebug.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panelDebug_MouseDoubleClick);
         	// 
         	// dbgAvailableRam
         	// 
@@ -951,8 +924,6 @@ namespace Kinovea.ScreenManager
         	this.panel1.ResumeLayout(false);
         	this.groupBoxSpeedTuner.ResumeLayout(false);
         	this.panelCenter.ResumeLayout(false);
-        	this.panelDebug.ResumeLayout(false);
-        	this.panelDebug.PerformLayout();
         	((System.ComponentModel.ISupportInitialize)(this.pbSurfaceScreen)).EndInit();
         	this.splitKeyframes.Panel1.ResumeLayout(false);
         	this.splitKeyframes.Panel2.ResumeLayout(false);
@@ -975,7 +946,6 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.Button buttonGotoFirst;
         private System.Windows.Forms.Button buttonGotoPrevious;
         private System.Windows.Forms.Button buttonGotoNext;
-        private System.Windows.Forms.Panel panelDebug;
         public System.Windows.Forms.Label dbgDrops;
         private System.Windows.Forms.Button buttonPlayingMode;
         private System.Windows.Forms.Button PrimarySelection;

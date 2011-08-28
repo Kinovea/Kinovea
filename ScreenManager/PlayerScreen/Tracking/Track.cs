@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -777,39 +778,33 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Tracking
-        public void TrackCurrentPosition(long _iCurrentTimestamp, Bitmap _bmpCurrent)
+        public void TrackCurrentPosition(VideoFrame _current)
         {
             // Match the previous point in current image.
             // New points to trajectories are always created from here, 
             // the user can only moves existing points.
             
-            // A new point needs to be added if we are after the last existing one.
-            // Note: the UI will force stop the tracking if the user jumps to more than
-            // one frame ahead of the last registered point.
-            if (_iCurrentTimestamp > m_iBeginTimeStamp + m_Positions.Last().T)
-            {
-            	AbstractTrackPoint p = null;
-            	bool bMatched = m_Tracker.Track(m_Positions, _bmpCurrent, _iCurrentTimestamp - m_iBeginTimeStamp, out p);
+            if (_current.Timestamp <= m_iBeginTimeStamp + m_Positions.Last().T)
+                return;
+            
+            AbstractTrackPoint p = null;
+            bool bMatched = m_Tracker.Track(m_Positions, _current.Image, _current.Timestamp - m_iBeginTimeStamp, out p);
                 
-            	// We add it to the list even if matching failed (but we'll stop tracking then).
-            	if(p != null)
-            	{
-					m_Positions.Add(p);
-	
-					if (!bMatched)
-	                    StopTracking();
-					
-	            	// Adjust internal data.
-	            	m_iEndTimeStamp = m_Positions.Last().T + m_iBeginTimeStamp;
-		            ComputeFlatDistance();
-		            IntegrateKeyframes();
-            	}
-            	else
-            	{
-            		// Untrackable point. Error message the user.
-            		StopTracking();
-            	}
+            if(p==null)
+            {
+                StopTracking();
+                return;
             }
+        	
+            m_Positions.Add(p);
+
+			if (!bMatched)
+                StopTracking();
+			
+        	// Adjust internal data.
+        	m_iEndTimeStamp = m_Positions.Last().T + m_iBeginTimeStamp;
+            ComputeFlatDistance();
+            IntegrateKeyframes();
         }
 		private void ComputeFlatDistance()
         {
