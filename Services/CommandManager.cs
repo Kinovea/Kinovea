@@ -25,7 +25,6 @@ using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 
-[assembly: CLSCompliant(true)]
 namespace Kinovea.Services
 {
     /// <summary>

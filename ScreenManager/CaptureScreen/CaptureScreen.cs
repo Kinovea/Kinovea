@@ -18,7 +18,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -26,7 +25,7 @@ using System.Resources;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
-using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {

@@ -29,6 +29,7 @@ using Kinovea.Root.Languages;
 using Kinovea.Root.Properties;
 using Kinovea.ScreenManager;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.Root
 {

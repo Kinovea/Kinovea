@@ -26,9 +26,10 @@ namespace Kinovea.Video
     public sealed class SupportedExtensionsAttribute : Attribute
     {
         public string[] Extensions;
-        public SupportedExtensionsAttribute(string[] _extensions)
+        public SupportedExtensionsAttribute(string _extensions)
         {
-            Extensions = _extensions;
+            
+            Extensions = _extensions.Split(new char[] { ';', '\t', ' '}, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

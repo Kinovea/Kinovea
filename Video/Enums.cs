@@ -42,6 +42,14 @@ namespace Kinovea.Video
 		SupportsDeinterlace = 4
 	}
     
+    public enum ImageAspectRatio
+    {
+    	Auto,
+    	Force43,
+    	Force169,
+    	ForcedSquarePixels
+    }
+    
     public enum OpenVideoResult
     {
         Success,

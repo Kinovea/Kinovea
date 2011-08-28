@@ -85,11 +85,27 @@ namespace Kinovea.Video
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
+        #region Construction & Disposal
         public VideoFrameCache(){}
         public VideoFrameCache(VideoFrameDisposer _disposeDelegate)
         {
             m_DisposeBitmap = _disposeDelegate;
         }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+		}
+        ~VideoFrameCache()
+        {
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                Clear();
+        }
+        #endregion
         
         #region Public methods
         public bool MoveNext()
@@ -131,7 +147,9 @@ namespace Kinovea.Video
                 }
             }
             
-            m_Current = m_Cache[m_CurrentIndex];
+            if(m_CurrentIndex >= 0 && m_CurrentIndex <= m_Cache.Count - 1)
+                m_Current = m_Cache[m_CurrentIndex];
+            
             RemembranceCheck();
             
             return true;
@@ -384,23 +402,6 @@ namespace Kinovea.Video
                 m_CurrentIndex -= framesToForget;
                 m_Segment = new VideoSection(m_Cache[0].Timestamp, m_Segment.End);
             }
-        }
-        #endregion
-        
-        #region Disposal
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-		}
-        ~VideoFrameCache()
-        {
-            Dispose(false);
-        }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-                Clear();
         }
         #endregion
     }

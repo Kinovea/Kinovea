@@ -67,56 +67,5 @@ namespace Kinovea.Video
                 };
             }
         }
-        
-        /*
-         * m_InfosVideo->iFileSize = 0;
-	m_InfosVideo->iWidth = 320;
-	m_InfosVideo->iHeight = 240;
-	m_InfosVideo->fPixelAspectRatio = 1.0f;
-	m_InfosVideo->fFps = 1.0f;
-	m_InfosVideo->bFpsIsReliable = false;
-	m_InfosVideo->fFrameInterval = 40;
-	m_InfosVideo->iDurationTimeStamps = 1;
-	m_InfosVideo->iFirstTimeStamp = 0;
-	m_InfosVideo->fAverageTimeStampsPerSeconds = 1.0f;
-	
-	// Read / Write
-	m_InfosVideo->iDecodingWidth = 320;
-	m_InfosVideo->iDecodingHeight = 240;
-	m_InfosVideo->fDecodingStretchFactor = 1.0f;
-	m_InfosVideo->iDecodingFlag = SWS_FAST_BILINEAR;
-	m_InfosVideo->bDeinterlaced = false;
-	*/
-        /*public long	FileSize;
-        
-        public Size OutputSize;
-           
-        public double DecodingStretchFactor;			// Used to set the output size of image.
-        
-              
-        public double PixelAspectRatio;
-        
-                              // Should be a fraction ?
-        public bool FpsIsReliable;					
-        
-        
-        				// The first frame timestamp. (not always 0)
-        
-        
-        
-        */
-        
-        
-        
-        
-        
-        // Old fields:
-        //public ImageAspectRatio ImageAspectRatio;
-        //public int SampleAspectRatioNumerator;
-        //public int SampleAspectRatioDenominator;
-        //bool	bIsCodecMpeg2;					// Used to adapt pixel ratio on output.
-        
-        //int		iDecodingFlag;					// Quality of scaling during format conversion.
-        //bool	bDeinterlaced;					// If frames should be deinterlaced, this is the setting as set by the user.
     }
 }
