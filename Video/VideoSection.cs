@@ -33,6 +33,9 @@ namespace Kinovea.Video
         public static VideoSection Empty {
             get { return new VideoSection(-1,-1); }
         }
+        public bool IsEmpty {
+            get { return Start < 0 || End < 0; }
+        }
         public bool Wrapped {
             get { return End < Start;}
         }
@@ -46,7 +49,7 @@ namespace Kinovea.Video
         }
         public bool Contains(long _timestamp)
         {
-            return _timestamp >= Start && _timestamp <= End;
+            return !IsEmpty && _timestamp >= Start && _timestamp <= End;
         }
         public override string ToString()
         {

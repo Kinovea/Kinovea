@@ -298,7 +298,6 @@ namespace Kinovea.Video
             return reset;
         }
         
-        
         #region Debug
         public void DumpToDisk()
         {
@@ -334,8 +333,6 @@ namespace Kinovea.Video
         private void UpdateSegment()
         {
             m_Segment = new VideoSection(m_Cache[0].Timestamp, m_Cache[m_Cache.Count - 1].Timestamp);
-            log.DebugFormat("Segment updated to {0}", m_Segment);
-            
         }
         private void EnsureContiguous()
         {

@@ -1,3 +1,4 @@
+#region License
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -17,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Xsl;
+using System.Linq;
 
 using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip;
@@ -100,15 +103,16 @@ namespace Kinovea.ScreenManager
             	// This is used to know if there is anything to burn on the images when saving.
             	// All kind of objects should be taken into account here, even those
             	// that we currently don't save to the .kva but only draw on the image.
-            	// (grids, magnifier).
-            	bool hasData =  
-            		(m_Keyframes.Count != 0) ||
-            		(m_ExtraDrawings.Count > m_iStaticExtraDrawings) || 
-            		//m_Plane.Visible || 
-            		//m_Grid.Visible || 
-            		(m_Magnifier.Mode != MagnifierMode.NotVisible);
-            	return hasData;
+                return m_Keyframes.Count > 0 ||
+                        m_ExtraDrawings.Count > m_iStaticExtraDrawings ||
+                        m_Magnifier.Mode != MagnifierMode.NotVisible;
             }
+        }
+        public bool IsTracking {
+            get { return Tracks().Any(t => t.Status == TrackStatus.Edit); }
+        }
+        public bool HasTrack {
+            get { return m_ExtraDrawings.Any(drawing => drawing is Track); }
         }
         public int SelectedDrawingFrame
         {
@@ -246,6 +250,39 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        #region Filtered iterators
+        public IEnumerable<Track> Tracks()
+        {
+            foreach (AbstractDrawing drawing in m_ExtraDrawings)
+                if(drawing is Track)
+                    yield return (Track)drawing;
+        }
+        public IEnumerable<AbstractDrawing> AttachedDrawings()
+        {
+            foreach (Keyframe kf in m_Keyframes)
+                foreach (AbstractDrawing drawing in kf.Drawings)
+                    yield return drawing;
+        }
+        public IEnumerable<DrawingText> Labels()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingText)
+                    yield return (DrawingText)drawing;
+        }
+        public IEnumerable<DrawingSVG> SVGs()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingSVG)
+                    yield return (DrawingSVG)drawing;
+        }
+        /*public IEnumerable<T> DrawingFilter<T>(T _type)
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is T)
+                    yield return (T)drawing;
+        }*/
+        #endregion
+        
         public void AddChrono(DrawingChrono _chrono)
         {
         	_chrono.ParentMetadata = this;
@@ -261,21 +298,6 @@ namespace Kinovea.ScreenManager
         	m_ExtraDrawings.Add(_track);
         	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
         }
-        public bool HasTrack()
-        {
-        	// Used for file menu to know if we can export to text.
-        	bool hasTrack = false;
-        	foreach(AbstractDrawing ad in m_ExtraDrawings)
-        	{
-        		if(ad is Track)
-        		{
-        			hasTrack = true;
-        			break;
-        		}
-        	}
-        	return hasTrack;
-        }
-        
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
@@ -284,13 +306,7 @@ namespace Kinovea.ScreenManager
             m_GlobalTitle = "";
             m_ImageSize = new Size(0, 0);
             m_InputImageSize = new Size(0, 0);
-            if (m_FullPath != null)
-            {
-                if (m_FullPath.Length > 0)
-                {
-                    m_FullPath = "";
-                }
-            }
+            m_FullPath = "";
             m_iAverageTimeStampsPerFrame = 1;
             m_iFirstTimeStamp = 0;
             m_iInputAverageTimeStampsPerFrame = 0;
@@ -302,37 +318,24 @@ namespace Kinovea.ScreenManager
         public void UpdateTrajectoriesForKeyframes()
         {
             // Called when keyframe added, removed or title changed
-            // => Updates the trajectories.
-            foreach (AbstractDrawing ad in m_ExtraDrawings)
-            {
-            	Track t = ad as Track;
-            	if(t != null)
-            	{
-            		t.IntegrateKeyframes();
-            	}
-            }
+            foreach(Track t in Tracks())
+                t.IntegrateKeyframes();
         }
         public void AllDrawingTextToNormalMode()
         {
-            foreach (Keyframe kf in m_Keyframes)
-            {
-                foreach (AbstractDrawing ad in kf.Drawings)
-                {
-                    if (ad is DrawingText)
-                        ((DrawingText)ad).SetEditMode(false, null);
-                }
-            }
+            foreach (DrawingText label in Labels())
+                label.SetEditMode(false, null);
+        }
+        public void PerformTracking(VideoFrame _current)
+        {
+            foreach(Track t in Tracks())
+                if (t.Status == TrackStatus.Edit)
+                    t.TrackCurrentPosition(_current);
         }
         public void StopAllTracking()
         {
-           foreach (AbstractDrawing ad in m_ExtraDrawings)
-            {
-            	Track t = ad as Track;
-            	if(t != null)
-            	{
-            		t.StopTracking();
-            	}
-            }
+            foreach(Track t in Tracks())
+                t.StopTracking();
         }
         public void UpdateTrackPoint(Bitmap _bmp)
         {
@@ -354,36 +357,20 @@ namespace Kinovea.ScreenManager
         public override int GetHashCode()
         {
             // Combine all fields hashes, using XOR operator.
-            //int iHashCode = GetKeyframesHashCode() ^ GetChronometersHashCode() ^ GetTracksHashCode();
             int iHashCode = GetKeyframesHashCode() ^ GetExtraDrawingsHashCode();
             return iHashCode;
         }
         public List<Bitmap> GetFullImages()
         {
-        	List<Bitmap> images = new List<Bitmap>();
-        	foreach(Keyframe kf in m_Keyframes)
-        	{
-        		images.Add(kf.FullFrame);
-        	}
-        	return images;
+            return m_Keyframes.Select(kf => kf.FullFrame).ToList();
         }
         
         public void ResizeFinished()
         {
-        	// This function is used to trigger an update to drawings and guides that do not 
+        	// This function can be used to trigger an update to drawings that do not 
         	// render in the same way when the user is resizing the window or not.
-        	// This is typically used for SVG Drawing, which take a long time to render themselves.
-        	foreach(Keyframe kf in m_Keyframes)
-        	{
-        		foreach(AbstractDrawing d in kf.Drawings)
-        		{
-        			DrawingSVG svg = d as DrawingSVG;
-        			if(svg != null)
-        			{
-        				svg.ResizeFinished();
-        			}
-        		}
-        	}
+            foreach(DrawingSVG svg in SVGs())
+                svg.ResizeFinished();
         }
         
         #region Objects Hit Tests
@@ -447,8 +434,9 @@ namespace Kinovea.ScreenManager
         }
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
-            // Get the Z ordering of Keyframes for hit tests & draw.
+            // TODO: turn this into an iterator.
             
+            // Get the Z ordering of Keyframes for hit tests & draw.
             int[] zOrder = new int[m_Keyframes.Count];
 
             if (m_Keyframes.Count > 0)
@@ -1440,15 +1428,7 @@ namespace Kinovea.ScreenManager
         }
         private int ActiveKeyframes()
         {
-            int iTotalActive = m_Keyframes.Count;
-
-            for (int i = 0; i < m_Keyframes.Count; i++)
-            {
-                if (m_Keyframes[i].Disabled)
-                    iTotalActive--;
-            }
-
-            return iTotalActive;
+            return m_Keyframes.Count(kf => !kf.Disabled);
         }
         private int GetKeyframesHashCode()
         {
