@@ -19,15 +19,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using Kinovea.Services;
 
 namespace Kinovea.Video
 {
-    public struct VideoOptions
+    public class VideoOptions
     {
-        public readonly ImageAspectRatio ImageAspectRatio;  
-        public readonly bool Deinterlace;
-        
+        public ImageAspectRatio ImageAspectRatio { get; set; }
+        public bool Deinterlace { get; set; }
+
         public VideoOptions(ImageAspectRatio _ratio, bool _deint)
         {
             ImageAspectRatio = _ratio;

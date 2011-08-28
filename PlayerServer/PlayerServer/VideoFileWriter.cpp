@@ -18,14 +18,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-#include <string.h>
-#include <stdlib.h>
 #include "VideoFileWriter.h"
 
 using namespace System::Diagnostics;
 using namespace System::Drawing;
 using namespace System::Drawing::Drawing2D;
-//using namespace System::Drawing::Imaging; // We can't use it because System::Drawing::Imaging::PixelFormat clashes with FFMpeg.
 using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 

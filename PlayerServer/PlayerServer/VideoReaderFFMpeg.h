@@ -55,7 +55,6 @@ extern "C" {
 #include <swscale.h> 
 }
 
-#include <stdio.h>
 #include "Enums.h"
 #include "TimestampInfo.h"
 #include "InfosVideo.h"			// <-- will be removed eventually.
@@ -83,20 +82,20 @@ using namespace Kinovea::Video;
 
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
-	[SupportedExtensions(gcnew array<String^> {
-			".3gp", ".asf", ".avi", ".dv", ".flv", ".f4v", ".m1v", ".m2p", ".m2t", ".m2ts", ".mts",
-			".m2v", ".m4v", ".mkv", ".mod", ".mov", ".moov", ".mpg", ".mpeg", ".tod", ".mxf",
-			".mp4", ".mpv", ".ogg", ".ogm", ".ogv", ".qt", ".rm", ".swf", ".vob", ".webm", ".wmv",
-			".jpg", ".jpeg", ".png", ".bmp",
-			"*"
-	})]
+	[SupportedExtensions(
+        ".3gp;.asf;.avi;.dv;.flv;.f4v;.m1v;.m2p;.m2t;.m2ts;.mts;\
+        .m2v;.m4v;.mkv;.mod;.mov;.moov;.mpg;.mpeg;.tod;.mxf;\
+		.mp4;.mpv;.ogg;.ogm;.ogv;.qt;.rm;.swf;.vob;.webm;.wmv;\
+		.jpg;.jpeg;.png;.bmp;\
+		*"
+	)]
 	public ref class VideoReaderFFMpeg : VideoReader
 	{
 	// Properties (VideoReader implementation).
 	public: 
 		virtual property VideoReaderFlags Flags {
 			VideoReaderFlags get() override { 
-				return	VideoReaderFlags::SupportsAspectRatio & 
+				return	VideoReaderFlags::SupportsAspectRatio | 
 						VideoReaderFlags::SupportsDeinterlace; 
 			}
         }
@@ -122,6 +121,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual bool MoveTo(int64_t _timestamp) override;
 		virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, int _width) override;
 		virtual String^ ReadMetadata() override;
+		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
+		virtual bool ChangeDeinterlace(bool _deint) override;
 
 	// Construction / Destruction.
 	public:
@@ -158,7 +159,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		static void DisposeFrame(VideoFrame^ _frame);
 		static int GetFirstStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
-		
+		void SetDecodingSize(ImageAspectRatio _ratio);
+
 		void DumpInfo();
 		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);
 		static void DumpFrameType(int _type);
@@ -180,8 +182,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		uint8_t* m_Buffer;						// decoded frame data.
 
 		
-		void	ChangeAspectRatio(AspectRatio _aspectRatio);
-		void	SetImageGeometry(void);
+		//void	ChangeAspectRatio(AspectRatio _aspectRatio);
+		
 
 		int64_t GetFrameNumber(int64_t _iPosition);		
 		ImportStrategy	PrepareSelection(int64_t% _iStartTimeStamp, int64_t% _iEndTimeStamp, bool _bForceReload);

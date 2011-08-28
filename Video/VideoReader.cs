@@ -23,8 +23,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-using Kinovea.Services;
-
 namespace Kinovea.Video
 {
 	/// <summary>
@@ -98,22 +96,6 @@ namespace Kinovea.Video
 		        else return Cache.Current.Image;
 		    }
         }
-		public ImageAspectRatio ImageAspectRatio {
-			get { return Options.ImageAspectRatio; }
-			set { 
-			    if((Flags & VideoReaderFlags.SupportsAspectRatio) != 0)
-			    {
-			        Options = new VideoOptions(value, Options.Deinterlace);
-			    }
-			}
-		}
-		public bool Deinterlace {
-			get { return Options.Deinterlace; }
-			set { 
-			    if((Flags & VideoReaderFlags.SupportsDeinterlace) != 0)
-			        Options = new VideoOptions(Options.ImageAspectRatio, value);
-			}
-		}
 		#endregion
 
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
@@ -143,9 +125,24 @@ namespace Kinovea.Video
 		        return MoveTo(currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames));
 		    }
 		}
+		/// <summary>
+		/// Force a specific aspect ratio.
+		/// </summary>
+		/// <returns>returns true if the cache has been invalidated by the operation</returns>
+		public virtual bool ChangeAspectRatio(ImageAspectRatio _ratio)
+		{
+            // Does nothing by default. Override to implement.
+            return false;
+		}
+		/// <summary>
+		/// Set deinterlace on or off.
+		/// </summary>
+		/// <returns>returns true if the cache has been invalidated by the operation</returns>
+		public virtual bool ChangeDeinterlace(bool _deint)
+		{
+		    // Does nothing by default. Override to implement.
+            return false;
+		}
 		#endregion
-		
-		
-		
 	}
 }

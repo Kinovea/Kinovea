@@ -51,14 +51,6 @@ namespace Kinovea.Services
     	String,
     	Time
     }
-    
-    public enum ImageAspectRatio
-    {
-    	Auto,
-    	Force43,
-    	Force169,
-    	ForcedSquarePixels
-    }
 	
 	public enum ActiveFileBrowserTab
     {

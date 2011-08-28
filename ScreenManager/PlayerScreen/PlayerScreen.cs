@@ -29,9 +29,10 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
-using Kinovea.Services;
 
-[assembly: CLSCompliant(false)]
+using Kinovea.Services;
+using Kinovea.Video;
+
 namespace Kinovea.ScreenManager
 {
     public class PlayerScreen : AbstractScreen, IPlayerScreenUIHandler
@@ -78,14 +79,14 @@ namespace Kinovea.ScreenManager
 		}
 		public override ImageAspectRatio AspectRatio
         {
-            get { return m_FrameServer.VideoReader.ImageAspectRatio; }
+            get { return m_FrameServer.VideoReader.Options.ImageAspectRatio; }
             set
             {
-                m_FrameServer.VideoReader.ImageAspectRatio = value;
+                bool uncached = m_FrameServer.VideoReader.ChangeAspectRatio(value);
                 
-                if (m_FrameServer.VideoReader.Caching)
-					m_PlayerScreenUI.ImportSelectionToMemory(true);
-                
+                if (uncached && m_FrameServer.VideoReader.Caching)
+                    m_PlayerScreenUI.ImportSelectionToMemory(true);
+                    
                 m_PlayerScreenUI.UpdateImageSize();
                 RefreshImage();
             }
@@ -192,14 +193,12 @@ namespace Kinovea.ScreenManager
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
         {
-            get { return m_FrameServer.VideoReader.Deinterlace; }
+            get { return m_FrameServer.VideoReader.Options.Deinterlace; }
             set
             {
-                m_FrameServer.VideoReader.Deinterlace = value;
+                bool uncached = m_FrameServer.VideoReader.ChangeDeinterlace(value);
                 
-                // If there was a selection it must be imported again.
-				// (This means we'll loose color adjustments.)
-				if (m_FrameServer.VideoReader.Caching)
+                if (uncached && m_FrameServer.VideoReader.Caching)
 					m_PlayerScreenUI.ImportSelectionToMemory(true);
                 
 				RefreshImage();

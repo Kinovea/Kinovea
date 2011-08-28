@@ -23,7 +23,6 @@ using System;
 using System.Windows.Forms;
 using Kinovea.Services;
 
-[assembly: CLSCompliant(true)]
 namespace Kinovea.FileBrowser
 {
     public class FileBrowserKernel : IKernel

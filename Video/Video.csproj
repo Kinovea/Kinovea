@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="Base.cs" />
     <Compile Include="Delegates.cs" />
-    <Compile Include="DummyVideoReader.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Fraction.cs" />
     <Compile Include="GIFVideoReader.cs" />
@@ -68,12 +67,6 @@
     <Compile Include="VideoSection.cs" />
     <Compile Include="VideoSummary.cs" />
     <Compile Include="VideoTypeManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Services\Services.csproj">
-      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
-      <Name>Services</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

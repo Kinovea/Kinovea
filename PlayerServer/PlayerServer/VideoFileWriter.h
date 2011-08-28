@@ -40,7 +40,6 @@ extern "C"
 #include <swscale.h> 
 }
 
-#include <stdio.h>
 #include "Enums.h"
 #include "SavingContext.h"
 

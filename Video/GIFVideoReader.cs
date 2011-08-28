@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace Kinovea.Video.Gif
 {
-    [SupportedExtensions(new string[] {".gif"})]
+    [SupportedExtensions(".gif")]
     public class GIFVideoReader : VideoReader
     {
         #region Properties

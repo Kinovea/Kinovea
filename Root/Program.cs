@@ -23,8 +23,6 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-[assembly: CLSCompliant(false)]
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "LogConf.xml", Watch = true)]
 namespace Kinovea.Root
 {
     static class Program

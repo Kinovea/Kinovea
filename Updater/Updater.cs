@@ -26,7 +26,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Kinovea.Services;
 
-[assembly: CLSCompliant(true)]
 namespace Kinovea.Updater
 {
     public class UpdaterKernel : IKernel 
