@@ -2459,9 +2459,7 @@ namespace Kinovea.ScreenManager
             ReadResult res = m_FrameServer.VideoReader.ReadFrame((long)_iSeekTarget, m_iFramesToDecode);*/
             #endregion
 			
-            
-            //if (res == ReadResult.Success)
-            if(read)
+            if(read && m_FrameServer.VideoReader.Current != null)
 			{
 				m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 				
