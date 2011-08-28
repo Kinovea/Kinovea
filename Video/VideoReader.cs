@@ -122,7 +122,10 @@ namespace Kinovea.Video
 		    else
 		    {
 		        long currentTimestamp = Current == null ? 0 : Current.Timestamp;
-		        return MoveTo(currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames));
+		        long target = currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames);
+		        if(target < 0)
+		            target = 0;
+		        return MoveTo(target);
 		    }
 		}
 		/// <summary>
