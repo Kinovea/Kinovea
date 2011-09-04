@@ -153,12 +153,12 @@ namespace Kinovea.ScreenManager
 				buttonPlayingMode.Enabled = !m_bSynched;
 			}
 		}
-		public Int64 SelectionDuration
+		public long SelectionDuration
 		{
 			// The duration of the selection in ts.
 			get { return m_iSelDuration; }	
 		}
-		public Int64 SyncPosition
+		public long SyncPosition
 		{
 			// The absolute ts of the sync point for this video.
 			get { return m_iSyncPosition; }
@@ -169,7 +169,7 @@ namespace Kinovea.ScreenManager
 				UpdateCurrentPositionLabel();
 			}
 		}
-		public Int64 SyncCurrentPosition
+		public long SyncCurrentPosition
 		{
 			// The current ts, relative to the selection.
 			get { return m_iCurrentPosition - m_iSelStart; }
@@ -215,7 +215,7 @@ namespace Kinovea.ScreenManager
 		
 		// Synchronisation
 		private bool m_bSynched;
-		private Int64 m_iSyncPosition;
+		private long m_iSyncPosition;
 		private bool m_bSyncMerge;
 		private Bitmap m_SyncMergeImage;
 		private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
@@ -229,12 +229,12 @@ namespace Kinovea.ScreenManager
 		
 		// Selection (All values in TimeStamps)
 		// trkSelection.minimum and maximum are also in absolute timestamps.
-		private Int64 m_iTotalDuration = 100;
-		private Int64 m_iSelStart;          	// Valeur absolue, par défaut égale à m_iStartingPosition. (pas 0)
-		private Int64 m_iSelEnd = 99;          // Value absolue
-		private Int64 m_iSelDuration = 100;
-		private Int64 m_iCurrentPosition;    	// Valeur absolue dans l'ensemble des timestamps.
-		private Int64 m_iStartingPosition;   	// Valeur absolue correspond au timestamp de la première frame.
+		private long m_iTotalDuration = 100;
+		private long m_iSelStart;          	// Valeur absolue, par défaut égale à m_iStartingPosition. (pas 0)
+		private long m_iSelEnd = 99;          // Value absolue
+		private long m_iSelDuration = 100;
+		private long m_iCurrentPosition;    	// Valeur absolue dans l'ensemble des timestamps.
+		private long m_iStartingPosition;   	// Valeur absolue correspond au timestamp de la première frame.
 		private bool m_bHandlersLocked;
 		
 		// Keyframes, Drawings, etc.
@@ -641,7 +641,7 @@ namespace Kinovea.ScreenManager
 		{
 			StopPlaying(true);
 		}
-		public void SyncSetCurrentFrame(Int64 _iFrame, bool _bAllowUIUpdate)
+		public void SyncSetCurrentFrame(long _iFrame, bool _bAllowUIUpdate)
 		{
 			// Called during static sync.
 			// Common position changed, we get a new frame to jump to.
@@ -4729,7 +4729,7 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
-		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, Int64 _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
+		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, long _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
 		{
 			//---------------------------------------------------------------
 			// Save image sequence.
@@ -5013,7 +5013,7 @@ namespace Kinovea.ScreenManager
 			
 			return output;
 		}
-		private string BuildFilename(string _FilePath, Int64 _position, TimeCodeFormat _timeCodeFormat)
+		private string BuildFilename(string _FilePath, long _position, TimeCodeFormat _timeCodeFormat)
 		{
 			//-------------------------------------------------------
 			// Build a file name, including extension

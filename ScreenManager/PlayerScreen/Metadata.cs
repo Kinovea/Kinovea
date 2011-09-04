@@ -145,17 +145,17 @@ namespace Kinovea.ScreenManager
         }
         
         // General infos
-        public Int64 AverageTimeStampsPerFrame
+        public long AverageTimeStampsPerFrame
         {
             get { return m_iAverageTimeStampsPerFrame; }
             set { m_iAverageTimeStampsPerFrame = value;}
         }
-        public Int64 FirstTimeStamp
+        public long FirstTimeStamp
         {
             //get { return m_iFirstTimeStamp; }
             set { m_iFirstTimeStamp = value; }
         }
-        public Int64 SelectionStart
+        public long SelectionStart
         {
             //get { return m_iSelectionStart; }
             set { m_iSelectionStart = value; }
@@ -189,9 +189,9 @@ namespace Kinovea.ScreenManager
         
         private string m_GlobalTitle = " ";
         private Size m_ImageSize = new Size(0,0);
-        private Int64 m_iAverageTimeStampsPerFrame = 1;
-        private Int64 m_iFirstTimeStamp;
-        private Int64 m_iSelectionStart;
+        private long m_iAverageTimeStampsPerFrame = 1;
+        private long m_iFirstTimeStamp;
+        private long m_iSelectionStart;
         private int m_iDuplicateFactor = 1;
         private int m_iLastCleanHash;
         private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
@@ -199,9 +199,9 @@ namespace Kinovea.ScreenManager
         
         // Read from XML, used for adapting the data to the current video
         private Size m_InputImageSize = new Size(0, 0);
-        private Int64 m_iInputAverageTimeStampsPerFrame;    // The one read from the XML
-        private Int64 m_iInputFirstTimeStamp;
-        private Int64 m_iInputSelectionStart;
+        private long m_iInputAverageTimeStampsPerFrame;    // The one read from the XML
+        private long m_iInputFirstTimeStamp;
+        private long m_iInputSelectionStart;
         private string m_InputFileName;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

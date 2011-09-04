@@ -33,13 +33,13 @@ namespace Kinovea.ScreenManager
     {
         private PlayerScreenUserInterface m_psui;
         private string m_FilePath;
-        private Int64 m_iIntervalTimeStamps;
+        private long m_iIntervalTimeStamps;
         private bool m_bBlendDrawings;
         private bool m_bKeyframesOnly;
         private bool m_IsIdle = true;
         private int m_iEstimatedTotal;
 
-        public formFramesExport(PlayerScreenUserInterface _psui, string _FilePath, Int64 _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int _iEstimatedTotal)
+        public formFramesExport(PlayerScreenUserInterface _psui, string _FilePath, long _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int _iEstimatedTotal)
         {
             InitializeComponent();
 

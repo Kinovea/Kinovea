@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
                 // Only as accurate as the framerate is stable regarding to the timebase.
                 
                 // Timestamp (relative to selection start).
-                Int64 iCurrentTimestamp = m_PlayerScreenUI.SyncCurrentPosition;
+                long iCurrentTimestamp = m_PlayerScreenUI.SyncCurrentPosition;
                 return (int)(iCurrentTimestamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
@@ -166,13 +166,13 @@ namespace Kinovea.ScreenManager
             //get { return m_PlayerScreenUI.m_bSynched; }
             set { m_PlayerScreenUI.Synched = value;}
         }
-        public Int64 SyncPosition
+        public long SyncPosition
         {
             // Reference timestamp for synchronization, expressed in local timebase.
             get { return m_PlayerScreenUI.SyncPosition; }
             set { m_PlayerScreenUI.SyncPosition = value; }
         }
-        public Int64 Position
+        public long Position
         {
             // Used to feed SyncPosition. 
             get { return m_FrameServer.VideoReader.Current.Timestamp - m_FrameServer.VideoReader.Info.FirstTimeStamp; }

@@ -38,13 +38,13 @@ namespace Kinovea.ScreenManager
         private PlayerScreenUserInterface m_PlayerScreenUserInterface;      // parent
         private Metadata m_Metadata;
         private string m_FullPath;
-        private Int64 m_iSelectionDuration;                                 // in timestamps.
+        private long m_iSelectionDuration;                                 // in timestamps.
         private double m_fTimestampsPerSeconds;                             // ratio
         private double m_fDurationInSeconds;
         private int m_iEstimatedTotal;
         #endregion
 
-        public formRafaleExport(PlayerScreenUserInterface _psui, Metadata _metadata, string _FullPath, Int64 _iSelDuration, double _tsps)
+        public formRafaleExport(PlayerScreenUserInterface _psui, Metadata _metadata, string _FullPath, long _iSelDuration, double _tsps)
         {
             m_PlayerScreenUserInterface = _psui;
             m_Metadata = _metadata;
@@ -158,7 +158,7 @@ namespace Kinovea.ScreenManager
                 string filePath = saveFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-                    Int64 iIntervalTimeStamps = (Int64)(((double)trkInterval.Value / 1000) * m_fTimestampsPerSeconds);
+                    long iIntervalTimeStamps = (long)(((double)trkInterval.Value / 1000) * m_fTimestampsPerSeconds);
 
                     // Launch the Progress bar dialog that will trigger the export.
                     // it will call the real function (in PlayerServerUI)
