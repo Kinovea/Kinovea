@@ -481,7 +481,7 @@ namespace Kinovea.ScreenManager
 					
 					// Switch to analysis mode if possible.
 					// This will update the selection sentinels (m_iSelStart, m_iSelEnd) with more robust data.
-					ImportSelectionToMemory(false);
+					OnUpdateWorkingZone(false);
 					if((m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) != 0)
 					    EnableDisableWorkingZoneControls(false);
 
@@ -625,75 +625,47 @@ namespace Kinovea.ScreenManager
 
 			DoInvalidate();
 		}
-        public void ImportSelectionToMemory(bool _bForceReload)
+        public void OnUpdateWorkingZone(bool _bForceReload)
         {
-            //-------------------------------------------------------------------------------------
-            // Switch the current selection to memory if possible.
-            // Called at video load after first frame load, recalling a screen memo on undo,
-            // and when the user manually modifies the selection.
-            // At this point the selection sentinels (m_iSelStart and m_iSelEnd) must be good.
-            // They would have been positionned from file data or from trkSelection pixel mapping.
-            // The internal data of the trkSelection should also already have been updated.
-            //
-            // Importing the selection may actually change the sentinels values:
-            // - duration may have been misadvertised in the file,
-            // - the timestamps may not be linear so the mapping with the trkSelection isn't perfect.
-            //
-            // Public because accessed from PlayerScreen when user changes deinterlace or image aspect ratio.
-            //-------------------------------------------------------------------------------------
             if (!m_FrameServer.Loaded)
                 return;
             
+            StopPlaying();
+            m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+            
             VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-            bool canExtract = m_FrameServer.VideoReader.CanCacheWorkingZone(newZone, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory);
+            m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
             
-            if(canExtract)
-            {
-                StopPlaying();
-                m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-
-                bool needed = m_FrameServer.VideoReader.BeforeFullZoneCaching(newZone);
-                if(needed)
-                {
-                    formProgressBar2 fpb = new formProgressBar2(true, false, m_FrameServer.VideoReader.CacheWorkingZone);
-                    fpb.ShowDialog();
-                    fpb.Dispose();
-                }
-                
-                m_FrameServer.VideoReader.AfterFullZoneCaching(newZone);
-                
-                if(m_FrameServer.VideoReader.Caching)
-                {
-                    // We now have solid facts. Update UI variables with them.
-                    m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
-                    m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
-                    
-                    if(trkSelection.SelStart != m_iSelStart)
-                        trkSelection.SelStart = m_iSelStart;
-
-                    if(trkSelection.SelEnd != m_iSelEnd)
-                    trkSelection.SelEnd = m_iSelEnd;
-                }
-            }
-            else if (m_FrameServer.VideoReader.Caching)
-            {
-                m_FrameServer.VideoReader.ExitFullZoneCaching(newZone);
-            }
-            
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, true);
-            
+            // Reupdate back the locals as the reader uses the actual values.
+            m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
+            m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            
+            if(trkSelection.SelStart != m_iSelStart)
+                trkSelection.SelStart = m_iSelStart;
+
+            if(trkSelection.SelEnd != m_iSelEnd)
+                trkSelection.SelEnd = m_iSelEnd;
+                    
             trkFrame.Remap(m_iSelStart, m_iSelEnd);
             trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.Caching;
             trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+            
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
             
             UpdateNavigationCursor();
             UpdateSelectionLabels();
             OnPoke();
             m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(true);
 		}
-		public void DisplayAsActiveScreen(bool _bActive)
+        private void ProgressWorker(DoWorkEventHandler _doWork)
+        {
+            formProgressBar2 fpb = new formProgressBar2(true, false, _doWork);
+            fpb.ShowDialog();
+            fpb.Dispose();
+        }
+        public void DisplayAsActiveScreen(bool _bActive)
 		{
 			// Called from ScreenManager.
 			ShowBorder(_bActive);
@@ -1715,7 +1687,7 @@ namespace Kinovea.ScreenManager
 			if (m_FrameServer.Loaded)
 			{
 				UpdateSelectionDataFromControl();
-				ImportSelectionToMemory(false);
+				OnUpdateWorkingZone(false);
 
 				AfterSelectionChanged();
 			}
@@ -1768,7 +1740,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionDataFromControl();
 				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
-				ImportSelectionToMemory(false);
+				OnUpdateWorkingZone(false);
 				
 				AfterSelectionChanged();
 			}
@@ -1782,7 +1754,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionDataFromControl();
 				UpdateSelectionLabels();
 				trkFrame.Remap(m_iSelStart,m_iSelEnd);
-				ImportSelectionToMemory(false);
+				OnUpdateWorkingZone(false);
 				
 				AfterSelectionChanged();
 			}
@@ -1796,7 +1768,7 @@ namespace Kinovea.ScreenManager
 				UpdateSelectionDataFromControl();
 				
 				// We need to force the reloading of all frames.
-				ImportSelectionToMemory(true);
+				OnUpdateWorkingZone(true);
 				
 				AfterSelectionChanged();
 			}
@@ -4585,9 +4557,6 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		#region Importing selection to memory
-		#endregion
-		
 		#region Export video and frames
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
@@ -5036,7 +5005,7 @@ namespace Kinovea.ScreenManager
 			m_iSelEnd = _memo.SelEnd;
 
 			// Undo all adjustments made on this portion.
-			ImportSelectionToMemory(true);
+			OnUpdateWorkingZone(true);
 			UpdateKeyframes();
 
 			// Reset to the current selection.

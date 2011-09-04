@@ -68,10 +68,6 @@ using namespace Kinovea::Video;
 
 //#define INSTRUMENTATION // <-- Extra logging.
 
-#define OUTPUT_MUXER_MKV 0
-#define OUTPUT_MUXER_MP4 1
-#define OUTPUT_MUXER_AVI 2
-
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
 	[SupportedExtensions(
@@ -97,15 +93,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual property VideoInfo Info {
 			VideoInfo get() override { return m_VideoInfo; }
         }
-        virtual property bool Caching {
-            bool get() override { return m_bIsCaching; }
-        }
-		virtual property VideoSection WorkingZone {
-            VideoSection get() override { return m_WorkingZone; }
-            void set(VideoSection value) override { 
-				m_WorkingZone = value;
-				Cache->SetWorkingZoneSentinels(value);
-			}
+        virtual property VideoSection WorkingZone {
+            VideoSection get() override { return Cache->WorkingZone; }
+            void set(VideoSection value) override { Cache->WorkingZone = value;	}
         }
 
 	// Public Methods (VideoReader subclassing).
@@ -119,10 +109,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
 		virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory) override;
-		virtual void ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
-		virtual void AfterFullZoneCaching(VideoSection _newZone) override;
-		virtual void ExitFullZoneCaching(VideoSection _newZone) override;
-
+		virtual bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
+		
 	// Construction / Destruction.
 	public:
 		VideoReaderFFMpeg();
@@ -134,10 +122,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	private:
 		// General
 		bool m_bIsLoaded;
-		bool m_bIsCaching;
 		VideoInfo m_VideoInfo;
-		VideoSection m_WorkingZone;
-		
+
 		// FFMpeg specifics
 		int m_iVideoStream;
 		int m_iAudioStream;

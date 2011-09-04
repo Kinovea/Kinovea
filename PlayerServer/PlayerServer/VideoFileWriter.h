@@ -54,11 +54,6 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Windows::Forms;
 
-//------------------------
-#define OUTPUT_MUXER_MKV 0
-#define OUTPUT_MUXER_MP4 1
-#define OUTPUT_MUXER_AVI 2
-
 namespace Kinovea { namespace Video { namespace FFMpeg
 {
 	public ref class VideoFileWriter

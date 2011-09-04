@@ -36,10 +36,10 @@ namespace Kinovea.ScreenManager
 	{
 		#region Members
 		private bool m_Idle;
-		private bool m_Cancelling;
 		private bool m_AsPercentage;
 		private EventHandler m_IdleDetector;
 		private BackgroundWorker m_bgWorker = new BackgroundWorker();
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		public formProgressBar2(bool _cancellable, bool _asPercentage, DoWorkEventHandler _doWork)
@@ -56,7 +56,6 @@ namespace Kinovea.ScreenManager
             m_bgWorker.DoWork += _doWork;
             m_bgWorker.ProgressChanged += ProgressChanged;
             m_bgWorker.RunWorkerCompleted += WorkCompleted;
-            
             this.Load += (s,e) => m_bgWorker.RunWorkerAsync();
             
             this.Text = "   " + ScreenManagerLang.FormProgressBar_Title;
@@ -65,7 +64,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-		    if (!m_Idle || m_Cancelling)
+		    if (!m_Idle)
 		        return;
 		    
             m_Idle = false;
@@ -84,7 +83,6 @@ namespace Kinovea.ScreenManager
 		private void WorkCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 		    this.Close();
-		    // run a post load function in the caller.
 		}
 		private void formProgressBar_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -92,10 +90,10 @@ namespace Kinovea.ScreenManager
 		}
 		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
+		    // This will switch to the UI thread but it will still be freezed as it's a modal dialog.
+		    // Any cleanup must be done directly in the background thread upon detecting cancellation.
 			btnCancel.Enabled = false;
-			m_Cancelling = true;
 			m_bgWorker.CancelAsync();
-			this.Close();
 		}
 	}
 }
