@@ -466,18 +466,11 @@ namespace Kinovea.ScreenManager
 					// Sans que cela soit répercuté sur iFirstTimeStamp...
 					// On fixe à la main.
 					//-----------------------------------------------------------------------------
+					
+					// Should we force the working zone set in the reader with the actual timestamp after first frame decode ?
+					
 					//if(m_iCurrentPosition > 0)
 					//   m_FrameServer.VideoReader.ForceFirstTimeStamp(m_iCurrentPosition);
-					
-					//if(m_iCurrentPosition
-					//m_FrameServer.VideoReader.WorkingZone.
-					
-					
-					
-					
-					// FIXME: This should be the responsibility of the reader.
-					
-					
 					
 					m_iStartingPosition = m_iCurrentPosition;
 					m_iTotalDuration = m_FrameServer.VideoReader.Info.DurationTimeStamps;
@@ -537,8 +530,8 @@ namespace Kinovea.ScreenManager
 					// Do the post import whether the data come from external file or included .
 					if (m_FrameServer.Metadata.HasData)
 					{
+					    PostImportMetadata();
 					    m_FrameServer.Metadata.CleanupHash();
-						PostImportMetadata();
 					}
 
 					UpdateFramesMarkers();
@@ -617,8 +610,8 @@ namespace Kinovea.ScreenManager
 				DockKeyframePanel(false);
 			}
 			
-			// This operation has corrupted the cache.
-			if((m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) == 0)
+			// This operation may have corrupted the cache.
+			if(!m_FrameServer.VideoReader.Caching)
                 m_FrameServer.VideoReader.Cache.Clear();
 			
 			// Goto selection start and refresh.
@@ -631,6 +624,74 @@ namespace Kinovea.ScreenManager
 			m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 
 			DoInvalidate();
+		}
+        public void ImportSelectionToMemory(bool _bForceReload)
+        {
+            //-------------------------------------------------------------------------------------
+            // Switch the current selection to memory if possible.
+            // Called at video load after first frame load, recalling a screen memo on undo,
+            // and when the user manually modifies the selection.
+            // At this point the selection sentinels (m_iSelStart and m_iSelEnd) must be good.
+            // They would have been positionned from file data or from trkSelection pixel mapping.
+            // The internal data of the trkSelection should also already have been updated.
+            //
+            // Importing the selection may actually change the sentinels values:
+            // - duration may have been misadvertised in the file,
+            // - the timestamps may not be linear so the mapping with the trkSelection isn't perfect.
+            //
+            // Public because accessed from PlayerScreen when user changes deinterlace or image aspect ratio.
+            //-------------------------------------------------------------------------------------
+            if (!m_FrameServer.Loaded)
+                return;
+            
+            VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
+            bool canExtract = m_FrameServer.VideoReader.CanCacheWorkingZone(newZone, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory);
+            
+            if(canExtract)
+            {
+                StopPlaying();
+                m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+
+                bool needed = m_FrameServer.VideoReader.BeforeFullZoneCaching(newZone);
+                if(needed)
+                {
+                    formProgressBar2 fpb = new formProgressBar2(true, false, m_FrameServer.VideoReader.CacheWorkingZone);
+                    fpb.ShowDialog();
+                    fpb.Dispose();
+                }
+                
+                m_FrameServer.VideoReader.AfterFullZoneCaching(newZone);
+                
+                if(m_FrameServer.VideoReader.Caching)
+                {
+                    // We now have solid facts. Update UI variables with them.
+                    m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
+                    m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
+                    
+                    if(trkSelection.SelStart != m_iSelStart)
+                        trkSelection.SelStart = m_iSelStart;
+
+                    if(trkSelection.SelEnd != m_iSelEnd)
+                    trkSelection.SelEnd = m_iSelEnd;
+                }
+            }
+            else if (m_FrameServer.VideoReader.Caching)
+            {
+                m_FrameServer.VideoReader.ExitFullZoneCaching(newZone);
+            }
+            
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, true);
+            
+            m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
+            trkFrame.Remap(m_iSelStart, m_iSelEnd);
+            trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.Caching;
+            trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+            
+            UpdateNavigationCursor();
+            UpdateSelectionLabels();
+            OnPoke();
+            m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(true);
 		}
 		public void DisplayAsActiveScreen(bool _bActive)
 		{
@@ -4525,171 +4586,77 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Importing selection to memory
-		public void ImportSelectionToMemory(bool _bForceReload)
-		{
-			//-------------------------------------------------------------------------------------
-			// Switch the current selection to memory if possible.
-			// Called at video load after first frame load, recalling a screen memo on undo,
-			// and when the user manually modifies the selection.
-			// At this point the selection sentinels (m_iSelStart and m_iSelEnd) must be good.
-			// They would have been positionned from file data or from trkSelection pixel mapping.
-			// The internal data of the trkSelection should also already have been updated.
-			//
-			// After the selection is imported, we may have different values than before
-			// regarding selection sentinels because:
-			// - the video ending timestamp may have been misadvertised in the file,
-			// - the timestamps may not be linear so the mapping with the trkSelection isn't perfect.
-			// We check and fix these discrepancies.
-			//
-			// Public because accessed from PlayerScreen when user changes deinterlace or image aspect ratio.
-			//-------------------------------------------------------------------------------------
-			if (m_FrameServer.Loaded)
-			{
-				/*if (m_FrameServer.VideoReader.CanExtractToMemory(m_iSelStart, m_iSelEnd, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory))
-				{
-					StopPlaying();
-					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-					
-					formFramesImport ffi = new formFramesImport(m_FrameServer.VideoReader, m_iSelStart, m_iSelEnd, _bForceReload);
-					ffi.ShowDialog();
-					
-					if (m_FrameServer.VideoReader.Selection.iAnalysisMode == 0)
-					{
-						// It didn't work. (Operation canceled, or failed).
-						log.Debug("Extract to memory canceled or failed, reload first frame.");
-						m_iFramesToDecode = 1;
-						ShowNextFrame(m_iSelStart, true);
-						UpdateNavigationCursor();
-					}
-					
-					ffi.Dispose();
-					
-				}
-				else if (m_FrameServer.VideoReader.Selection.iAnalysisMode == 1)
-				{
-					// Exiting Analysis mode.
-					// TODO - free memory for images now ?
-					m_FrameServer.VideoReader.Selection.iAnalysisMode = 0;
-				}*/
-
-				// Here, we may have changed mode.
-				if (m_FrameServer.VideoReader.Caching)
-				{
-					// We now have solid facts. Update all variables with them.
-					m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
-					m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
-					m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-					
-					if(trkSelection.SelStart != m_iSelStart)
-					    trkSelection.SelStart = m_iSelStart;
-					
-					if(trkSelection.SelEnd != m_iSelEnd)
-					    trkSelection.SelEnd = m_iSelEnd;
-					
-					trkFrame.Remap(m_iSelStart, m_iSelEnd);
-					
-					// Enable direct frame browsing.
-					trkFrame.ReportOnMouseMove = true;
-
-					// Display first frame.
-					m_iFramesToDecode = 1;
-					ShowNextFrame(m_iSelStart, true);
-					UpdateNavigationCursor();
-				}
-				else
-				{
-					m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
-
-					// Remap frame tracker.
-					trkFrame.Remap(m_iSelStart, m_iSelEnd);
-					trkFrame.ReportOnMouseMove = false;
-				}
-
-				m_FrameServer.VideoReader.WorkingZone = new VideoSection(m_iSelStart, m_iSelEnd);
-				bool reset = m_FrameServer.VideoReader.Cache.SetWorkingZoneSentinels(m_FrameServer.VideoReader.WorkingZone);
-				if(reset)
-                    ShowNextFrame(m_iSelStart, true);
-
-				trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
-				
-				UpdateSelectionLabels();
-				OnPoke();
-
-				m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(true);
-			}
-		}
 		#endregion
 		
 		#region Export video and frames
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Export the current frame.
-			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.CurrentImage != null))
+			if (!m_FrameServer.Loaded || m_FrameServer.VideoReader.CurrentImage == null)
+			    return;
+			
+			StopPlaying();
+			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+			try
 			{
-				StopPlaying();
-				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-				try
+				SaveFileDialog dlgSave = new SaveFileDialog();
+				dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
+				dlgSave.RestoreDirectory = true;
+				dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
+				dlgSave.FilterIndex = 1;
+				
+				if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
 				{
-					SaveFileDialog dlgSave = new SaveFileDialog();
-					dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-					dlgSave.RestoreDirectory = true;
-					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-					dlgSave.FilterIndex = 1;
-					
-					if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
+					dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
+				}
+				else
+				{
+					dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+				}
+				
+				if (dlgSave.ShowDialog() == DialogResult.OK)
+				{
+					// 1. Reconstruct the extension.
+					// If the user let "file.00.00" as a filename, the extension is not appended automatically.
+					string strImgNameLower = dlgSave.FileName.ToLower();
+					string strImgName;
+					if (strImgNameLower.EndsWith("jpg") || strImgNameLower.EndsWith("jpeg") || strImgNameLower.EndsWith("bmp") || strImgNameLower.EndsWith("png"))
 					{
-						dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
+						// Ok, the user added the extension himself or he did not use the preformatting.
+						strImgName = dlgSave.FileName;
 					}
 					else
 					{
-						dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+						// Get the extension
+						string extension;
+						switch (dlgSave.FilterIndex)
+						{
+							case 1:
+								extension = ".jpg";
+								break;
+							case 2:
+								extension = ".png";
+								break;
+							case 3:
+								extension = ".bmp";
+								break;
+							default:
+								extension = ".jpg";
+								break;
+						}
+						strImgName = dlgSave.FileName + extension;
 					}
-					
-					if (dlgSave.ShowDialog() == DialogResult.OK)
-					{
-						
-						// 1. Reconstruct the extension.
-						// If the user let "file.00.00" as a filename, the extension is not appended automatically.
-						string strImgNameLower = dlgSave.FileName.ToLower();
-						string strImgName;
-						if (strImgNameLower.EndsWith("jpg") || strImgNameLower.EndsWith("jpeg") || strImgNameLower.EndsWith("bmp") || strImgNameLower.EndsWith("png"))
-						{
-							// Ok, the user added the extension himself or he did not use the preformatting.
-							strImgName = dlgSave.FileName;
-						}
-						else
-						{
-							// Get the extension
-							string extension;
-							switch (dlgSave.FilterIndex)
-							{
-								case 1:
-									extension = ".jpg";
-									break;
-								case 2:
-									extension = ".png";
-									break;
-								case 3:
-									extension = ".bmp";
-									break;
-								default:
-									extension = ".jpg";
-									break;
-							}
-							strImgName = dlgSave.FileName + extension;
-						}
 
-						//2. Get image and save it to the file.
-						Bitmap outputImage = GetFlushedImage();
-						ImageHelper.Save(strImgName, outputImage);						
-						outputImage.Dispose();
-						m_FrameServer.AfterSave();
-					}
+					//2. Get image and save it to the file.
+					Bitmap outputImage = GetFlushedImage();
+					ImageHelper.Save(strImgName, outputImage);						
+					outputImage.Dispose();
+					m_FrameServer.AfterSave();
 				}
-				catch (Exception exp)
-				{
-					log.Error(exp.StackTrace);
-				}
+			}
+			catch (Exception exp)
+			{
+				log.Error(exp.StackTrace);
 			}
 		}
 		private void btnRafale_Click(object sender, EventArgs e)
@@ -4702,31 +4669,31 @@ namespace Kinovea.ScreenManager
 			// 4. SaveImageSequence (below) to perform the real work. (saving the pics)
 			//---------------------------------------------------------------------------------
 
-			if ((m_FrameServer.Loaded) && (m_FrameServer.VideoReader.CurrentImage != null))
+			if (!m_FrameServer.Loaded || m_FrameServer.VideoReader.CurrentImage == null)
+			    return;
+			
+			StopPlaying();
+			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DeactivateKeyboardHandler != null)
 			{
-				StopPlaying();
-				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+				dp.DeactivateKeyboardHandler();
+			}
+			
+			// Launch sequence saving configuration dialog
+			formRafaleExport fre = new formRafaleExport(this, 
+			                                            m_FrameServer.Metadata, 
+			                                            m_FrameServer.VideoReader.FilePath, 
+			                                            m_iSelDuration, 
+			                                            m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
+			fre.ShowDialog();
+			fre.Dispose();
+			m_FrameServer.AfterSave();
 
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DeactivateKeyboardHandler != null)
-				{
-					dp.DeactivateKeyboardHandler();
-				}
-				
-				// Launch sequence saving configuration dialog
-				formRafaleExport fre = new formRafaleExport(this, 
-				                                            m_FrameServer.Metadata, 
-				                                            m_FrameServer.VideoReader.FilePath, 
-				                                            m_iSelDuration, 
-				                                            m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
-				fre.ShowDialog();
-				fre.Dispose();
-				m_FrameServer.AfterSave();
-
-				if (dp.ActivateKeyboardHandler != null)
-				{
-					dp.ActivateKeyboardHandler();
-				}
+			if (dp.ActivateKeyboardHandler != null)
+			{
+				dp.ActivateKeyboardHandler();
 			}
 		}
 		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, long _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
@@ -4912,10 +4879,6 @@ namespace Kinovea.ScreenManager
 		}
 		public void Save()
 		{
-			// Todo:
-			// Eventually, this call should be done directly by PlayerScreen, without passing through the UI.
-			// This will be possible when m_FrameServer.Metadata, m_iSelStart, m_iSelEnd are encapsulated in m_FrameServer
-			// and when PlaybackFrameInterval, m_iSlowmotionPercentage, GetOutputBitmap are available publically.
 			m_FrameServer.Save(GetPlaybackFrameInterval(), m_fSlowmotionPercentage, GetOutputBitmap);
 		}
 		public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
@@ -4942,48 +4905,49 @@ namespace Kinovea.ScreenManager
 
 			// 2. Invalidate the distance if we wanted only key images, and we are not on one.
 			// Or if there is no key image at all.
-			if ( (_bKeyframesOnly && iClosestKeyImageDistance != 0) || (iClosestKeyImageDistance == long.MaxValue))
+			if ( _bKeyframesOnly && iClosestKeyImageDistance != 0 || iClosestKeyImageDistance == long.MaxValue)
 			{
 				iClosestKeyImageDistance = -1;
 			}
 			
 			// 3. Flush drawings if needed.
-			if(_bFlushDrawings)
+			if(!_bFlushDrawings)
+			    return iClosestKeyImageDistance;
+			
+			Bitmap rawImage = null;
+			
+			if(m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
 			{
-				Bitmap rawImage = null;
-				
-				if(m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
+				// For the magnifier, we must clone the image since the graphics object has been 
+				// extracted from the image itself (painting fails if we reuse the uncloned image).
+				// And we must clone it before the drawings are flushed on it.
+				rawImage = AForge.Imaging.Image.Clone(_sourceImage);
+			}
+
+            CoordinateSystem temp = m_FrameServer.CoordinateSystem.Identity;
+
+			if (_bKeyframesOnly)
+			{
+				if(iClosestKeyImageDistance == 0)
 				{
-					// For the magnifier, we must clone the image since the graphics object has been 
-					// extracted from the image itself (painting fails if we reuse the uncloned image).
-					// And we must clone it before the drawings are flushed on it.
-					rawImage = AForge.Imaging.Image.Clone(_sourceImage);
+                    FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0, 0));
+					FlushMagnifierOnGraphics(rawImage, _canvas);
 				}
-
-                CoordinateSystem temp = m_FrameServer.CoordinateSystem.Identity;
-
-				if (_bKeyframesOnly)
+			}
+			else
+			{
+				if(iClosestKeyImageDistance == 0)
 				{
-					if(iClosestKeyImageDistance == 0)
-					{
-                        FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0, 0));
-						FlushMagnifierOnGraphics(rawImage, _canvas);
-					}
+					FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
 				}
 				else
 				{
-					if(iClosestKeyImageDistance == 0)
-					{
-						FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
-					}
-					else
-					{
-						FlushDrawingsOnGraphics(_canvas, temp, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
-					}
-					
-					FlushMagnifierOnGraphics(rawImage, _canvas);
-				}	
-			}
+					FlushDrawingsOnGraphics(_canvas, temp, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
+				}
+				
+				FlushMagnifierOnGraphics(rawImage, _canvas);
+			}	
+			
 
 			return iClosestKeyImageDistance;
 		}

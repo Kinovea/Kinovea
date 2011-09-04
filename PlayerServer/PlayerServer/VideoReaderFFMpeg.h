@@ -57,19 +57,11 @@ extern "C" {
 
 #include "Enums.h"
 #include "TimestampInfo.h"
-#include "InfosVideo.h"			// <-- will be removed eventually.
 #include "SavingContext.h"
 
 using namespace System;
-using namespace System::Collections::Generic;				
 using namespace System::ComponentModel;
-using namespace System::Diagnostics;
-using namespace System::Drawing;
-using namespace System::IO;
 using namespace System::Reflection;
-using namespace System::Text;
-using namespace System::Threading;
-using namespace System::Windows::Forms;
 
 using namespace Kinovea::Base;
 using namespace Kinovea::Video;
@@ -91,7 +83,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	)]
 	public ref class VideoReaderFFMpeg : VideoReader
 	{
-	// Properties (VideoReader implementation).
+	// Properties (VideoReader subclassing).
 	public: 
 		virtual property VideoReaderFlags Flags {
 			VideoReaderFlags get() override { 
@@ -110,10 +102,13 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         }
 		virtual property VideoSection WorkingZone {
             VideoSection get() override { return m_WorkingZone; }
-            void set(VideoSection value) override { m_WorkingZone = value;}
+            void set(VideoSection value) override { 
+				m_WorkingZone = value;
+				Cache->SetWorkingZoneSentinels(value);
+			}
         }
 
-	// Public Methods (VideoReader implementation).
+	// Public Methods (VideoReader subclassing).
 	public:
 		virtual OpenVideoResult Open(String^ _filePath) override;
 		virtual void Close() override;
@@ -123,6 +118,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual String^ ReadMetadata() override;
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
+		virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory) override;
+		virtual void ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
+		virtual void AfterFullZoneCaching(VideoSection _newZone) override;
+		virtual void ExitFullZoneCaching(VideoSection _newZone) override;
 
 	// Construction / Destruction.
 	public:
@@ -154,6 +153,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 	// Private methods
 	private:
+		void DataInit();
 		OpenVideoResult Load(String^ _filePath);
 		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
 		void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
@@ -165,33 +165,5 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		void DumpInfo();
 		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);
 		static void DumpFrameType(int _type);
-		
-
-
-	//----------------------------------------------------------------
-	// Old methods and members. For compilation only - may be removed.
-	//----------------------------------------------------------------
-	private:
-		PrimarySelection^ m_PrimarySelection;
-		DefaultSettings^ m_DefaultSettings;
-		List <DecompressedFrame ^>^	m_FrameList;
-		BackgroundWorker^ m_bgWorker;
-		InfosVideo^ m_InfosVideo;
-		
-		Bitmap^ m_BmpImage;
-		AVFrame* m_pCurrentDecodedFrameBGR;		// decoded frame as an AVFrame.  <----- Remove. The AVFrame can be local to the decoding fn.
-		uint8_t* m_Buffer;						// decoded frame data.
-
-		
-		//void	ChangeAspectRatio(AspectRatio _aspectRatio);
-		
-
-		int64_t GetFrameNumber(int64_t _iPosition);		
-		ImportStrategy	PrepareSelection(int64_t% _iStartTimeStamp, int64_t% _iEndTimeStamp, bool _bForceReload);
-		int		EstimateNumberOfFrames( int64_t _iStartTimeStamp, int64_t _iEndTimeStamp); 
-		void	DeleteFrameList(void);
-		void	ExtractToMemory(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, bool _bForceReload);
-		bool	CanExtractToMemory(int64_t _iStartTimeStamp, int64_t _iEndTimeStamp, int _maxSeconds, int _maxMemory);
-		
 	};
 }}}
