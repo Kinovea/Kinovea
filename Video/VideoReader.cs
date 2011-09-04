@@ -20,8 +20,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace Kinovea.Video
 {
@@ -63,17 +65,9 @@ namespace Kinovea.Video
 		public abstract bool MoveTo(long _timestamp);
 		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
 		public abstract string ReadMetadata();
-		
-		/// <summary>
-		/// Request for caching the entire working zone.
-		/// </summary>
-		/// <param name="_start"></param>
-		/// <param name="_end"></param>
-		/// <param name="_maxSeconds"></param>
-		/// <param name="_maxMemory"></param>
-		/// <returns></returns>
-		//public abstract bool Cache(long _start, long _end, int _maxSeconds, int _maxMemory);
-        #endregion
+		public abstract bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory);
+		public abstract void ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend);
+		#endregion
 		
 		#region Concrete Properties
 		public VideoFrameCache Cache { get; protected set; }
@@ -99,6 +93,12 @@ namespace Kinovea.Video
 		#endregion
 
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
+		
+		#region Members
+		private bool m_Prepend;
+		private VideoSection m_SectionToCache;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
 		
 		#region Concrete Methods
 		public bool MovePrev()
@@ -146,6 +146,62 @@ namespace Kinovea.Video
 		    // Does nothing by default. Override to implement.
             return false;
 		}
+		
+		/// <summary>
+		/// Figures out what section of the video needs to be imported to cache.
+		/// </summary>
+		/// <returns>returns false if caching process is not necessary</returns>
+		public virtual bool BeforeFullZoneCaching(VideoSection _newZone)
+		{
+            bool needed = true;
+            m_Prepend = false;
+            
+            if((Flags & VideoReaderFlags.AlwaysCaching) != 0)
+                return false;
+            
+            if(!Caching)
+            {
+                Cache.Clear();
+                m_SectionToCache = _newZone;
+            }
+            else
+            {
+                if(_newZone < WorkingZone || _newZone == WorkingZone)
+                {
+                    // New zone is within the bounds of the old one.
+                    // update the bounds directly, this will dispose outsiders.
+                    m_SectionToCache = VideoSection.Empty;
+                    WorkingZone = _newZone;
+                    needed = false;
+                }
+                else if(_newZone.Start < WorkingZone.Start)
+                {
+                    m_SectionToCache = new VideoSection(_newZone.Start, WorkingZone.Start);
+                    m_Prepend = true;
+                }
+                else
+                {
+                    m_SectionToCache = new VideoSection(WorkingZone.End, _newZone.End);
+                }
+            }
+            return needed;
+		}
+		public virtual void CacheWorkingZone(object sender, DoWorkEventArgs e)
+        {
+            Thread.CurrentThread.Name = "Caching";
+		    log.DebugFormat("Caching section {0}.", m_SectionToCache);
+		    ReadMany((BackgroundWorker)sender, m_SectionToCache, m_Prepend);
+        }
+		public virtual void AfterFullZoneCaching(VideoSection _newZone)
+		{
+		    // Nothing by default. Override to implement.
+		}
+		public virtual void ExitFullZoneCaching(VideoSection _newZone)
+		{
+		    // Nothing by default. Override to implement.
+		}
 		#endregion
 	}
+	
+	
 }

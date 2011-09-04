@@ -75,6 +75,8 @@ namespace Kinovea.Video
         private List<VideoFrame> m_Cache = new List<VideoFrame>();
         private int m_Capacity = 25;
         private int m_RemembranceCapacity = 20;
+        private bool m_PrependingBlock;
+        private int m_InsertIndex;
         private VideoSection m_Segment;
         private VideoSection m_WorkingZone;
         private int m_CurrentIndex = -1;
@@ -180,7 +182,11 @@ namespace Kinovea.Video
             }
             else
             {
-                m_Cache.Add(_frame);
+                if(m_PrependingBlock)
+                    m_Cache.Insert(m_InsertIndex++, _frame);
+                else
+                    m_Cache.Add(_frame);
+                
                 UpdateSegment();
                 
                 if(FullZone)
@@ -216,7 +222,18 @@ namespace Kinovea.Video
             FullZone = false;
             m_Segment = VideoSection.Empty;
         }
-        
+        public void SetPrependBlock(bool _prepend)
+        {
+            m_PrependingBlock = _prepend;
+            m_InsertIndex = 0;
+        }
+        public void AfterFullZoneCache(bool _success)
+        {
+            FullZone = _success;
+            
+            if(_success)
+                m_WorkingZone = m_Segment;
+        }
         /// <summary>
         /// Change working zone start and end.
         /// If the new boundaries cross the existing segment some clean up is needed.
@@ -227,7 +244,7 @@ namespace Kinovea.Video
         {
             bool reset = false;
             
-            if(_newZone.Start >= _newZone.End || _newZone == m_WorkingZone)
+            if(_newZone.Wrapped || _newZone == m_WorkingZone)
                 return false;
             
             if(m_Cache.Count == 0)
@@ -248,17 +265,17 @@ namespace Kinovea.Video
                     int removedAtLeft = 0;
                     foreach(int i in SortedFrames())
                     {
-                        if(m_Cache[i].Timestamp < _newZone.Start || m_Cache[i].Timestamp > _newZone.End)
-                        {
-                            if(m_Cache[i].Timestamp < _newZone.Start)
-                                removedAtLeft++;
+                        if(_newZone.Contains(m_Cache[i].Timestamp))
+                            continue;
+                        
+                        if(m_Cache[i].Timestamp < _newZone.Start)
+                            removedAtLeft++;
                             
-                            DisposeFrame(m_Cache[i]);
-                            m_Cache[i] = null;
-                            
-                            if(i==m_CurrentIndex)
-                                reset = true;
-                        }
+                        DisposeFrame(m_Cache[i]);
+                        m_Cache[i] = null;
+                        
+                        if(i==m_CurrentIndex)
+                            reset = true;
                     }
                     
                     if(!reset)
@@ -269,24 +286,14 @@ namespace Kinovea.Video
                 }
                 else
                 {
-                    // At this point we don't attempt to keep what could be kept.
-                    // Many complications arise when the segment is wrapped, or 
-                    // when the working zone is re-expanded and the wrapped segment
-                    // is not contiguous anymore.
-                    
                     Clear();
                     reset = true;
                 }
             }
-            else if(_newZone > m_WorkingZone)
+            else if(_newZone > m_WorkingZone && !FullZone && m_Segment.Wrapped)
             {
-                // Expansion.
-                m_WorkingZone = _newZone;
-                if(!FullZone)
-                {
-                    Clear();
-                    reset = true;
-                }
+                Clear();
+                reset = true;
             }
             
             if(reset && m_Current != null && m_Cache.Count > 0)

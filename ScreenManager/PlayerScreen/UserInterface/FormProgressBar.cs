@@ -18,12 +18,14 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.ScreenManager.Languages;
 using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
+using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
@@ -41,16 +43,18 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private bool m_IsIdle;
 		private bool m_bIsCancelling;
+		private bool m_bAsPercentage;
 		#endregion
 		
 		#region Constructor
-		public formProgressBar(bool _IsCancellable)
+		public formProgressBar(bool _cancellable) : this(_cancellable, true){}
+		public formProgressBar(bool _cancellable, bool _asPercentage)
 		{
-			InitializeComponent();
-			Application.Idle += new EventHandler(IdleDetector);
-			btnCancel.Visible = _IsCancellable;
-			
-            // Culture
+		    m_bAsPercentage = _asPercentage;
+		    
+		    InitializeComponent();
+			Application.Idle += IdleDetector;
+			btnCancel.Visible = _cancellable;
             this.Text = "   " + ScreenManagerLang.FormProgressBar_Title;
 			labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " 0 / ~?";
 			btnCancel.Text = ScreenManagerLang.Generic_Cancel;
@@ -64,13 +68,13 @@ namespace Kinovea.ScreenManager
         }
 		public void Update(int _iValue, int _iMaximum, bool _bAsPercentage)
 		{
-			if (m_IsIdle && !m_bIsCancelling)
+            if (m_IsIdle && !m_bIsCancelling)
             {
                 m_IsIdle = false;
-                
+
                 progressBar.Maximum = _iMaximum;
                 progressBar.Value = _iValue > 0 ? _iValue : 0;
-                
+
                 if(_bAsPercentage)
                 {
                 	labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " " + (int)((_iValue * 100) / _iMaximum) + "%";

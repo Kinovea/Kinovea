@@ -210,7 +210,7 @@
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Video\bin\Kinovea.Video.dll"
-			AssemblyName="Kinovea.Video, Version=1.0.0.21000, processorArchitecture=IA64"
+			AssemblyName="Kinovea.Video, Version=1.0.0.19719, processorArchitecture=IA64"
 			UseDependenciesInBuild="false"
 			MinFrameworkVersion="131072"
 		/>
@@ -241,10 +241,6 @@
 			>
 			<File
 				RelativePath=".\Enums.h"
-				>
-			</File>
-			<File
-				RelativePath=".\InfosVideo.h"
 				>
 			</File>
 			<File

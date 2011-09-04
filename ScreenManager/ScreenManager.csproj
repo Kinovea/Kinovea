@@ -237,6 +237,10 @@
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.Designer.cs">
+      <DependentUpon>FormProgressBar2.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormToolPresets.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -457,6 +461,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar.resx">
       <DependentUpon>FormProgressBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar2.resx">
+      <DependentUpon>FormProgressBar2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
       <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>

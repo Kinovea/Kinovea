@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -128,6 +129,14 @@ namespace Kinovea.Video.Gif
         {
             return "";
         }
+        public override bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory)
+        {
+            return true;
+        }
+        public override void ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend)
+        {
+             // TODO: put the code of Load here.
+        }
         #endregion
         
         #region Private Methods
@@ -179,6 +188,9 @@ namespace Kinovea.Video.Gif
         }
         private void LoadCache()
         {
+            // Use cache mechanics.
+            // Set the sentinels first, then add.
+            
             Cache.Clear();
             Cache.FullZone = true;
             for(int i = 0; i<m_Count; i++)
