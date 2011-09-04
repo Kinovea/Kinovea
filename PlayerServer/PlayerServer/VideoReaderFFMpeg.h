@@ -154,11 +154,12 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 	// Private methods
 	private:
-		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode);
+		OpenVideoResult Load(String^ _filePath);
+		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
 		void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
 		bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		static void DisposeFrame(VideoFrame^ _frame);
-		static int GetFirstStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
+		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
 		void SetDecodingSize(ImageAspectRatio _ratio);
 
 		void DumpInfo();

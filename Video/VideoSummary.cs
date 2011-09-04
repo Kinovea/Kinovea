@@ -32,6 +32,8 @@ namespace Kinovea.Video
         public long DurationMilliseconds { get; private set; }
         public List<Bitmap> Thumbs { get; private set; }
         
+        private static readonly VideoSummary m_Invalid = new VideoSummary(false, false, Size.Empty, 0, null);
+        
         public VideoSummary(bool _isImage, bool _hasKva, Size _imageSize, long _durationMs, List<Bitmap> _thumbs)
         {
             IsImage = _isImage;
@@ -39,6 +41,10 @@ namespace Kinovea.Video
             ImageSize = _imageSize;
             DurationMilliseconds = _durationMs;
             Thumbs = _thumbs;
+        }
+        
+        public static VideoSummary Invalid {
+            get { return m_Invalid; }
         }
     }
 }
