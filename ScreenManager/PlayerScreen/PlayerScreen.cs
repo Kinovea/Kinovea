@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
                 bool uncached = m_FrameServer.VideoReader.ChangeAspectRatio(value);
                 
                 if (uncached && m_FrameServer.VideoReader.Caching)
-                    m_PlayerScreenUI.ImportSelectionToMemory(true);
+                    m_PlayerScreenUI.OnUpdateWorkingZone(true);
                     
                 m_PlayerScreenUI.UpdateImageSize();
                 RefreshImage();
@@ -199,7 +199,7 @@ namespace Kinovea.ScreenManager
                 bool uncached = m_FrameServer.VideoReader.ChangeDeinterlace(value);
                 
                 if (uncached && m_FrameServer.VideoReader.Caching)
-					m_PlayerScreenUI.ImportSelectionToMemory(true);
+					m_PlayerScreenUI.OnUpdateWorkingZone(true);
                 
 				RefreshImage();
             }

@@ -45,9 +45,6 @@ namespace Kinovea.Video.Gif
             get { return Cache.Segment; }
             set {}
         }
-        public override bool Caching {
-            get { return true; }
-        }
         #endregion
         
         #region Members
@@ -133,9 +130,10 @@ namespace Kinovea.Video.Gif
         {
             return true;
         }
-        public override void ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend)
+        public override bool ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend)
         {
              // TODO: put the code of Load here.
+             return true;
         }
         #endregion
         
@@ -188,11 +186,11 @@ namespace Kinovea.Video.Gif
         }
         private void LoadCache()
         {
-            // Use cache mechanics.
+            // TODO: Use base class cache mechanics.
             // Set the sentinels first, then add.
             
             Cache.Clear();
-            Cache.FullZone = true;
+            Cache.DisableCapacityCheck();
             for(int i = 0; i<m_Count; i++)
             {
                 VideoFrame vf = new VideoFrame();
@@ -200,8 +198,8 @@ namespace Kinovea.Video.Gif
                 vf.Image = GetFrameAt(i);
                 Cache.Add(vf);
             }
-            
-            Cache.SetWorkingZoneSentinels(Cache.Segment);
+            Caching = true;
+            Cache.WorkingZone = Cache.Segment;
         }
         private Bitmap GetFrameAt(int _target)
         {

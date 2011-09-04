@@ -55,6 +55,10 @@ namespace Kinovea.Video
         public bool Empty {
             get { return m_Current == null; }
         }
+        public VideoSection WorkingZone { 
+            get { return m_WorkingZone; }
+            set { m_WorkingZone = value;}
+        }
         
         /// <summary>
         /// Returns an arbitrary image suitable for demo-ing the effect of a filter.
@@ -63,25 +67,22 @@ namespace Kinovea.Video
         public Bitmap Representative {
             get { return m_Cache[(m_Cache.Count / 2) - 1].Image; }
         }
-       
-        /// <summary>
-        /// True when the cache work with the whole working zone at once.
-        /// In this mode remembrance capacity is considered unlimited so we never dequeue images.
-        /// </summary>
-        public bool FullZone { get; set; }
         #endregion
         
         #region Members
         private List<VideoFrame> m_Cache = new List<VideoFrame>();
-        private int m_Capacity = 25;
-        private int m_RemembranceCapacity = 20;
-        private bool m_PrependingBlock;
-        private int m_InsertIndex;
         private VideoSection m_Segment;
         private VideoSection m_WorkingZone;
         private int m_CurrentIndex = -1;
-        private int m_Drops;
         private VideoFrame m_Current;
+        
+        private int m_DefaultCapacity = 25;
+        private int m_DefaultRemembranceCapacity = 20;
+        private int m_Capacity = 25;
+        private int m_RemembranceCapacity = 20; // Capacity and Remembrance will be taken from Prefs.
+        private bool m_PrependingBlock;
+        private int m_InsertIndex;
+        private int m_Drops;
         private VideoFrameDisposer m_DisposeBitmap;
         private Stopwatch m_Stopwatch = new Stopwatch();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -176,7 +177,7 @@ namespace Kinovea.Video
         }
         public void Add(VideoFrame _frame)
         {
-            if(!FullZone && m_Cache.Count >= m_Capacity)
+            if(m_Cache.Count >= m_Capacity)
             {
                 // TODO: Block thread.
             }
@@ -188,12 +189,6 @@ namespace Kinovea.Video
                     m_Cache.Add(_frame);
                 
                 UpdateSegment();
-                
-                if(FullZone)
-                {
-                    m_RemembranceCapacity = m_Cache.Count;
-                    m_Capacity = m_Cache.Count;
-                }
             }
         }
         public List<Bitmap> ToBitmapList()
@@ -219,90 +214,54 @@ namespace Kinovea.Video
             m_Cache.Clear();
             m_CurrentIndex = -1;
             m_Drops = 0;
-            FullZone = false;
             m_Segment = VideoSection.Empty;
+            m_Capacity = m_DefaultCapacity;
+            m_RemembranceCapacity = m_DefaultRemembranceCapacity;
+        }
+        
+        /// <summary>
+        /// Remove all items that are outside the working zone.
+        /// </summary>
+        public void PurgeOutsiders()
+        {
+            int removedAtLeft = 0;
+            foreach(int i in SortedFrames())
+            {
+                if(m_WorkingZone.Contains(m_Cache[i].Timestamp))
+                    continue;
+                
+                if(m_Cache[i].Timestamp < m_WorkingZone.Start)
+                    removedAtLeft++;
+                    
+                DisposeFrame(m_Cache[i]);
+                m_Cache[i] = null;
+                
+                if(i==m_CurrentIndex)
+                    m_CurrentIndex = -1;
+            }
+            
+            if(m_CurrentIndex >= removedAtLeft)
+                m_CurrentIndex-=removedAtLeft;
+            
+            m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
+            UpdateSegment();
+        }
+        public void DisableCapacityCheck()
+        {
+            m_Capacity = int.MaxValue;
+            m_RemembranceCapacity = int.MaxValue;
         }
         public void SetPrependBlock(bool _prepend)
         {
             m_PrependingBlock = _prepend;
             m_InsertIndex = 0;
         }
-        public void AfterFullZoneCache(bool _success)
+        public bool IsRolloverJump(long _timestamp)
         {
-            FullZone = _success;
-            
-            if(_success)
-                m_WorkingZone = m_Segment;
-        }
-        /// <summary>
-        /// Change working zone start and end.
-        /// If the new boundaries cross the existing segment some clean up is needed.
-        /// </summary>
-        /// <param name="_wz">The new working zone section</param>
-        /// <returns>true if the current frame had to be moved</returns>
-        public bool SetWorkingZoneSentinels(VideoSection _newZone)
-        {
-            bool reset = false;
-            
-            if(_newZone.Wrapped || _newZone == m_WorkingZone)
-                return false;
-            
-            if(m_Cache.Count == 0)
-            {
-                m_WorkingZone = _newZone;
-                return false;
-            }
-            
-            log.DebugFormat("Working Zone change. Going from {0} to {1}. Current segment: {2}", m_WorkingZone, _newZone, m_Segment);
-            
-            if(_newZone < m_WorkingZone)
-            {
-                m_WorkingZone = _newZone;
-
-                if(FullZone)
-                {
-                    // Dispose outsiders.
-                    int removedAtLeft = 0;
-                    foreach(int i in SortedFrames())
-                    {
-                        if(_newZone.Contains(m_Cache[i].Timestamp))
-                            continue;
-                        
-                        if(m_Cache[i].Timestamp < _newZone.Start)
-                            removedAtLeft++;
-                            
-                        DisposeFrame(m_Cache[i]);
-                        m_Cache[i] = null;
-                        
-                        if(i==m_CurrentIndex)
-                            reset = true;
-                    }
-                    
-                    if(!reset)
-                        m_CurrentIndex-=removedAtLeft;
-                    
-                    m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
-                    UpdateSegment();
-                }
-                else
-                {
-                    Clear();
-                    reset = true;
-                }
-            }
-            else if(_newZone > m_WorkingZone && !FullZone && m_Segment.Wrapped)
-            {
-                Clear();
-                reset = true;
-            }
-            
-            if(reset && m_Current != null && m_Cache.Count > 0)
-            {
-                m_CurrentIndex = 0;
-                m_Current = m_Cache[0];
-            }
-
-            return reset;
+            // A rollover (back to begining after end of working zone),
+            // is an out of segment jump that will still be contiguous after the jump.
+            // In this special case the cache need not be cleared.
+            return _timestamp == m_WorkingZone.Start && Contains(m_WorkingZone.End);
         }
         
         #region Debug
@@ -318,8 +277,8 @@ namespace Kinovea.Video
         #region Private methods
         private IEnumerable<int> SortedFrames()
         {
-            // This function returns an iterator on the cache in the order of timestamps.
-            // Can be used to loop over the frames without bothering about potential wrapping.
+            // Returns an iterator on the cache in the order of timestamps.
+            // Can be used to loop over the frames without bothering about wrapping.
             // todo: keep track of the wrap index outside here.
             int wrapIndex = GetWrapIndex();
             for(int i = 0; i<m_Cache.Count; i++)
@@ -340,44 +299,7 @@ namespace Kinovea.Video
         private void UpdateSegment()
         {
             m_Segment = new VideoSection(m_Cache[0].Timestamp, m_Cache[m_Cache.Count - 1].Timestamp);
-        }
-        private void EnsureContiguous()
-        {
-            // Ensure the segment has contiguous frames,
-            long min = m_Cache.Min(frame => frame.Timestamp);
-            long max = m_Cache.Max(frame => frame.Timestamp);
-            if(m_Segment.Wrapped && (max < m_WorkingZone.End || min > m_WorkingZone.Start))
-            {
-                // We have expanded on a wrapped segment. 
-                // One part of the segment must be deleted to keep contiguous frames.
-                // Only keep the segment where the current frame lives.
-                int wrapIndex = GetWrapIndex();
-                if(m_CurrentIndex < wrapIndex)
-                {
-                    // Current frame lives in the first part of the buffer, 
-                    // which is the second block of the wrapped segment.
-                    // Remove backwards until the break.
-                    for(int i=m_Cache.Count-1;i>=wrapIndex;i--)
-                    {
-                        DisposeFrame(m_Cache[i]);
-                        m_Cache[i] = null;
-                    }
-                    
-                }
-                else
-                {
-                    // Current frame lives in the second part of the buffer.
-                    for(int i=0;i<wrapIndex;i++)
-                    {
-                        DisposeFrame(m_Cache[i]);
-                        m_Cache[i] = null;
-                    }
-                    m_CurrentIndex -= wrapIndex;
-                }
-               
-                m_Cache.RemoveAll( frame => object.ReferenceEquals(null, frame));
-                m_Segment = new VideoSection(m_Cache[0].Timestamp, m_Cache[m_Cache.Count - 1].Timestamp);
-            }
+            //log.DebugFormat("Segment:{0}, WZ:{1}", m_Segment, m_WorkingZone);
         }
         private int GetWrapIndex()
         {
@@ -393,9 +315,8 @@ namespace Kinovea.Video
         }
         private void RemembranceCheck()
         {
-            // Forget oldest frame(s) if needed.
-            // This should unblock the decoding thread.
-            if(!FullZone && m_CurrentIndex >= m_RemembranceCapacity)
+            // Forget oldest frame(s) if needed. This should unblock the decoding thread.
+            if(m_CurrentIndex >= m_RemembranceCapacity)
             {
                 int framesToForget = m_CurrentIndex - m_RemembranceCapacity + 1; 
                 

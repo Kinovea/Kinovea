@@ -25,7 +25,7 @@ namespace Kinovea.Video
     /// <summary>
     /// A section of the video, defined by sentinel timestamps.
     /// Can be used to describe the whole video, the working zone, the cache segment or any other section.
-    /// Note that the [0;0] section is valid. It describe a 1-frame segment of timestamp 0.
+    /// Note that the [0;0] section is valid. It describes a 1-frame segment of timestamp 0.
     /// Negative timestamps are invalid and used to denote uninitialized section.
     /// </summary>
     public struct VideoSection : IComparable, IEquatable<VideoSection>
@@ -50,6 +50,10 @@ namespace Kinovea.Video
         public bool Contains(long _timestamp)
         {
             return !IsEmpty && _timestamp >= Start && _timestamp <= End;
+        }
+        public bool Contains(VideoSection _other)
+        {
+            return _other < this || _other == this;
         }
         public override string ToString()
         {

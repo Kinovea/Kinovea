@@ -40,7 +40,6 @@ namespace Kinovea.Video
 	    public abstract VideoReaderFlags Flags { get; }
 	    public abstract bool Loaded { get; }
 		public abstract VideoInfo Info { get; }
-		public abstract bool Caching { get; }
 		public abstract VideoSection WorkingZone { get; set; }
 		#endregion
 		
@@ -50,28 +49,37 @@ namespace Kinovea.Video
 		
 		/// <summary>
 		/// Set the "Current" property to hold the next video frame.
-		/// This function should be super fast.
 		/// For async readers, if the frame is not available right now, call it a drop.
-		/// (Decoding should happen in a separate thread and fill a buffer).
-		/// _synchronous will be true only during saving operation. In this case, don't drop anything.
+		/// (Decoding should happen in a separate thread).
+		/// _synchronous will be true for some scenarios like saving. In this case return only after the frame has been set in Current.
 		/// </summary>
 		public abstract bool MoveNext(bool _synchronous);
 		
 		/// <summary>
 		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
-		/// Unlike MoveNext(), this function is always synchronous. 
+		/// Unlike MoveNext(), this function is always synchronous.
 		/// Don't return until you have found the frame and updated "Current" with it.
 		/// </summary>
 		public abstract bool MoveTo(long _timestamp);
 		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
 		public abstract string ReadMetadata();
 		public abstract bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory);
-		public abstract void ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend);
+		
+		/// <summary>
+		/// Import several frames in sequence to cache.
+		/// Used in the context of analysis mode (full working zone to cache)
+		/// </summary>
+		/// <param name="_bgWorker">Hosting background worker, for cancellation and progress</param>
+		/// <param name="_section">The section to import</param>
+		/// <param name="_prepend">true if the section is before what's currently in the cache, used to configure Cache.Add.</param>
+		/// <returns>true if all went fine</returns>
+		public abstract bool ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend);
 		#endregion
 		
 		#region Concrete Properties
 		public VideoFrameCache Cache { get; protected set; }
 		public VideoOptions Options { get; set; }
+		public bool Caching { get; protected set; }
 		public VideoFrame Current {
 		    get { 
 		        if(Cache == null) return null;
@@ -95,8 +103,6 @@ namespace Kinovea.Video
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
 		
 		#region Members
-		private bool m_Prepend;
-		private VideoSection m_SectionToCache;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 		
@@ -148,60 +154,63 @@ namespace Kinovea.Video
 		}
 		
 		/// <summary>
-		/// Figures out what section of the video needs to be imported to cache.
+		/// Updates the internal working zone. Import whole zone to cache if possible.
 		/// </summary>
-		/// <returns>returns false if caching process is not necessary</returns>
-		public virtual bool BeforeFullZoneCaching(VideoSection _newZone)
-		{
-            bool needed = true;
-            m_Prepend = false;
-            
+		/// <param name="_progressWorker">A function that will start a background thread for the actual import</param>
+		public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+        {
             if((Flags & VideoReaderFlags.AlwaysCaching) != 0)
-                return false;
+                return;
             
-            if(!Caching)
+            if(_workerFn == null)
+                throw new ArgumentNullException("workerFn");
+            
+            VideoSection oldZone = WorkingZone;
+            WorkingZone = _newZone;
+            
+            if(!CanCacheWorkingZone(_newZone, _maxSeconds, _maxMemory))
             {
+                Caching = false;
                 Cache.Clear();
-                m_SectionToCache = _newZone;
+                return;
+            }
+            
+            VideoSection sectionToCache = VideoSection.Empty;
+            bool prepend = false;
+            
+            if(!Caching || _forceReload)
+            {
+                // Just entering the cached mode, import everything.
+                Cache.Clear();
+                sectionToCache = _newZone;
+            }
+            else if(oldZone.Contains(_newZone))
+            {
+                Cache.PurgeOutsiders();
+            }
+            else if(_newZone.Start < oldZone.Start && _newZone.End > oldZone.End)
+            {
+                // Special case of both prepend and append. Clear and import all for simplicity.
+                Cache.Clear();
+                sectionToCache = _newZone;
+            }
+            else if(_newZone.Start < oldZone.Start)
+            {
+                // Prepending.
+                sectionToCache = new VideoSection(_newZone.Start, oldZone.Start);
+                prepend = true;
             }
             else
             {
-                if(_newZone < WorkingZone || _newZone == WorkingZone)
-                {
-                    // New zone is within the bounds of the old one.
-                    // update the bounds directly, this will dispose outsiders.
-                    m_SectionToCache = VideoSection.Empty;
-                    WorkingZone = _newZone;
-                    needed = false;
-                }
-                else if(_newZone.Start < WorkingZone.Start)
-                {
-                    m_SectionToCache = new VideoSection(_newZone.Start, WorkingZone.Start);
-                    m_Prepend = true;
-                }
-                else
-                {
-                    m_SectionToCache = new VideoSection(WorkingZone.End, _newZone.End);
-                }
+                // Appending.
+                sectionToCache = new VideoSection(oldZone.End, _newZone.End);
             }
-            return needed;
-		}
-		public virtual void CacheWorkingZone(object sender, DoWorkEventArgs e)
-        {
-            Thread.CurrentThread.Name = "Caching";
-		    log.DebugFormat("Caching section {0}.", m_SectionToCache);
-		    ReadMany((BackgroundWorker)sender, m_SectionToCache, m_Prepend);
-        }
-		public virtual void AfterFullZoneCaching(VideoSection _newZone)
-		{
-		    // Nothing by default. Override to implement.
-		}
-		public virtual void ExitFullZoneCaching(VideoSection _newZone)
-		{
-		    // Nothing by default. Override to implement.
+            
+            if(sectionToCache != VideoSection.Empty)
+            {
+                _workerFn((s,e) => Caching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
+            }
 		}
 		#endregion
 	}
-	
-	
 }

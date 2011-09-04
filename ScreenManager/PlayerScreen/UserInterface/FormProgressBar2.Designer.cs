@@ -74,7 +74,6 @@ namespace Kinovea.ScreenManager
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Location = new System.Drawing.Point(270, 42);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(85, 22);
@@ -97,7 +96,7 @@ namespace Kinovea.ScreenManager
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "formProgressBar2";
-			this.Opacity = 0.9;
+			this.Opacity = 0.9D;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

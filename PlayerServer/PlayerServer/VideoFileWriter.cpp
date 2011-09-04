@@ -31,24 +31,13 @@ using namespace Kinovea::Video::FFMpeg;
 
 VideoFileWriter::VideoFileWriter()
 {
-	log->Debug("Constructing VideoFileWriter.");
-
-	// FFMpeg init.
 	av_register_all();
-	avcodec_init();
-	avcodec_register_all();
-
 }
 VideoFileWriter::~VideoFileWriter()
 {
-
 }
-///<summary>
-/// Finalizer. Attempt to free resources and perform other cleanup operations before the Object is reclaimed by garbage collection.
-///</summary>
 VideoFileWriter::!VideoFileWriter()
 {
-
 }
 
 SaveResult VideoFileWriter::Save(SavingSettings _settings, VideoReader^ _reader, BackgroundWorker^ _worker)
@@ -350,16 +339,6 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 
 	m_SavingContext->pFilePath = static_cast<char*>(Marshal::StringToHGlobalAnsi(_FilePath).ToPointer());
 	
-	/*if(_infosVideo != nullptr)
-	{
-		m_SavingContext->outputSize = Size(_infosVideo->iWidth, _infosVideo->iHeight);
-		if(_infosVideo->fPixelAspectRatio > 0) 
-			m_SavingContext->fPixelAspectRatio = _infosVideo->fPixelAspectRatio;
-		m_SavingContext->bInputWasMpeg2 = _infosVideo->bIsCodecMpeg2;
-		m_SavingContext->iSampleAspectRatioNumerator = _infosVideo->iSampleAspectRatioNumerator;
-		m_SavingContext->iSampleAspectRatioDenominator = _infosVideo->iSampleAspectRatioDenominator;
-	}*/
-
 	// Apparently not all output size are ok, some crash sws_scale.
 	// We will keep the input size and use the input pixel aspect ratio for maximum compatibility.
 	// [2011-08-21] - Check if the issue with output size is related to odd number of rows.
