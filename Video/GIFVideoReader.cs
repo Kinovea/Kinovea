@@ -83,7 +83,7 @@ namespace Kinovea.Video.Gif
         }
         public override void Close()
         {
-            // Nothing to do.
+            Cache.Clear();
         }
         public override bool MoveNext(bool _synchrounous)
         {
