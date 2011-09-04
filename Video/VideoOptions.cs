@@ -32,5 +32,9 @@ namespace Kinovea.Video
             ImageAspectRatio = _ratio;
             Deinterlace = _deint;
         }
+        
+        public static VideoOptions Default {
+            get { return new VideoOptions(ImageAspectRatio.Auto, false);}
+        }
     }
 }
