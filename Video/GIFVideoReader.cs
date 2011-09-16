@@ -45,6 +45,9 @@ namespace Kinovea.Video.Gif
             get { return Cache.Segment; }
             set {}
         }
+        public override bool IsAsyncDecoding { 
+            get { return false;} 
+        }
         #endregion
         
         #region Members

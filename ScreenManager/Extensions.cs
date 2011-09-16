@@ -39,5 +39,19 @@ namespace Kinovea.ScreenManager
         {
             return Color.FromArgb(_color.A, 255 - _color.R, 255 - _color.G, 255 - _color.B);
         }
+        
+        /// <summary>
+        /// Deep clone of a bitmap.
+        /// </summary>
+        public static Bitmap CloneDeep(this Bitmap _bmp)
+        {
+            if(object.ReferenceEquals(_bmp, null))
+                return null;
+            
+            Bitmap clone = new Bitmap(_bmp.Width, _bmp.Height, _bmp.PixelFormat);
+            Graphics g = Graphics.FromImage(clone);
+            g.DrawImageUnscaled(_bmp, 0, 0);
+			return clone;
+        }
     }
 }

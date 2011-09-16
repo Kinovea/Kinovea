@@ -81,7 +81,6 @@ namespace Kinovea.ScreenManager
         public VideoFrameCache FrameCache { get; set; }
         
         #region Concrete Members
-        //private  List<DecompressedFrame> m_FrameList;
         protected BackgroundWorker m_BackgroundWorker = new BackgroundWorker();
         private formProgressBar m_FormProgressBar;
         private ToolStripMenuItem m_Menu = new ToolStripMenuItem();
@@ -154,13 +153,6 @@ namespace Kinovea.ScreenManager
                 dp.VideoProcessingDone(_dfo);
             }
         }
-        protected Bitmap CloneTo24bpp(Bitmap _src)
-		{
-			Bitmap bmp = new Bitmap(_src.Width, _src.Height, PixelFormat.Format24bppRgb);
-			Graphics g = Graphics.FromImage(bmp);
-			g.DrawImageUnscaled(_src, 0, 0);
-			return bmp;
-		}
         #endregion
 	}
 }

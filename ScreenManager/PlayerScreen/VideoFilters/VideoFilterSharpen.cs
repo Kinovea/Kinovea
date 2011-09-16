@@ -34,19 +34,12 @@ namespace Kinovea.ScreenManager
 		public override ImageProcessor ImageProcessor {
 		    get { return ProcessSingleImage; }
 		}
+	    
+	    private Sharpen m_Filter = new Sharpen();
+	    
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
-			Sharpen sharpenFilter = new Sharpen();
-			sharpenFilter.ApplyInPlace(img);
-			
-			if(_src.PixelFormat != PixelFormat.Format24bppRgb)
-			{
-            	Graphics g = Graphics.FromImage(_src);
-            	g.DrawImageUnscaled(img, 0, 0);
-            	img.Dispose();
-            }
-			
+			m_Filter.ApplyInPlace(_src);
 			return _src;
 		}
 	}

@@ -206,7 +206,6 @@ namespace Kinovea.ScreenManager
 		// Playback current state
 		private bool m_bIsCurrentlyPlaying;
 		private int m_iFramesToDecode = 1;
-		private int m_iFramesToRender;
 		private uint m_IdMultimediaTimer;
 		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private double m_fSlowmotionPercentage = 100.0f;	// Always between 1 and 200 : this specific value is not impacted by high speed cameras.
@@ -251,8 +250,8 @@ namespace Kinovea.ScreenManager
 		private DrawtimeFilterOutput m_DrawingFilterOutput;
 		
 		// Others
-		private const int MaxRenderingDrops = 6;
-		private const int MaxDecodingDrops = 6;
+		private const int m_MaxRenderingDrops = 6;
+		private const int m_MaxDecodingDrops = 6;
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		private MessageToaster m_MessageToaster;
@@ -306,6 +305,7 @@ namespace Kinovea.ScreenManager
 		ToolStripButton m_btnToolPresets;
 		
 		private Stopwatch m_Stopwatch = new Stopwatch();
+		private Stopwatch m_RenderingWatch = new Stopwatch();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -489,7 +489,9 @@ namespace Kinovea.ScreenManager
 
 			UpdateFramesMarkers();
 			
-            m_FrameServer.VideoReader.StartPrefetching();
+			if(!m_FrameServer.VideoReader.Caching)
+                m_FrameServer.VideoReader.StartAsyncDecoding();
+			
 			return 0;
 		}
 		public void PostImportMetadata()
@@ -503,7 +505,8 @@ namespace Kinovea.ScreenManager
 			//----------------------------------------------------------
 
 			// TODO - progress bar ?
-
+			m_FrameServer.VideoReader.BeforeFrameOperation();
+			
 			int iOutOfRange = -1;
 			int iCurrentKeyframe = -1;
 
@@ -551,17 +554,15 @@ namespace Kinovea.ScreenManager
 				// Some keyframes were out of range. remove them.
 				m_FrameServer.Metadata.Keyframes.RemoveRange(iOutOfRange, m_FrameServer.Metadata.Keyframes.Count - iOutOfRange);
 			}
-
-			UpdateFilenameLabel();
+			
+            m_FrameServer.VideoReader.AfterFrameOperation();
+			
+            UpdateFilenameLabel();
 			OrganizeKeyframes();
 			if(m_FrameServer.Metadata.Count > 0)
 			{
 				DockKeyframePanel(false);
 			}
-			
-			// This operation may have corrupted the cache.
-			if(!m_FrameServer.VideoReader.Caching)
-                m_FrameServer.VideoReader.Cache.Clear();
 			
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iSelStart, true);
@@ -580,11 +581,14 @@ namespace Kinovea.ScreenManager
             
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+            m_FrameServer.VideoReader.BeforeFrameOperation();
             
             VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
             m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
             
-            // Reupdate back the locals as the reader uses the actual values.
+            m_FrameServer.VideoReader.AfterFrameOperation();
+            
+            // Reupdate back the locals as the reader uses more precise values.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
             m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
             m_iSelDuration = m_iSelEnd - m_iSelStart + m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame;
@@ -597,7 +601,6 @@ namespace Kinovea.ScreenManager
                     
             trkFrame.Remap(m_iSelStart, m_iSelEnd);
             trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.Caching;
-            trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -2139,12 +2142,14 @@ namespace Kinovea.ScreenManager
             ActivateKeyframe(-1);
             int userCtx = 0;
 			m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
+			
 			log.Debug("Player timer started.");
 		}
 		private void StopMultimediaTimer()
 		{
 			if (m_IdMultimediaTimer != 0)
 				timeKillEvent(m_IdMultimediaTimer);
+			m_IdMultimediaTimer = 0;
 			
 			log.Debug("Player timer stopped.");
 		}
@@ -2155,120 +2160,94 @@ namespace Kinovea.ScreenManager
 		}
 		private void PlayLoop_Invoked()
 		{
-			//--------------------------------------------------------------
-			// Function called by main timer event handler, on each tick.
 			// Runs in the UI thread.
-			//--------------------------------------------------------------
 			
-			//-----------------------------------------------------------------------------
-			// Attention, comme la fonction est assez longue et qu'elle met à jour l'UI,
-			// Il y a un risque de UI unresponsive si les BeginInvokes sont trop fréquents.
-			// tout le temps sera passé ici, et on ne pourra plus répondre aux évents
-			// 
-			// Solution : n'effectuer le traitement long que si la form est idle.
-			// ca va dropper des frames, mais on pourra toujours utiliser l'appli.
-			// Par contre on doit quand même mettre à jour NextFrame.
-			//-----------------------------------------------------------------------------
-
-			// How does form idle work, aren't we supposed to be in the same thread ?
-			
-			bool stoppedOnLast = false;
-			bool seekToFirst = false;
+			m_Stopwatch.Reset();
+		    m_Stopwatch.Start();
+		    log.Debug("Playloop invoked");
+		    
 			long estimateNext = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-			//if (estimateNext > m_iSelEnd || estimateNext >= m_iStartingPosition + m_iTotalDuration)
 			if (estimateNext > m_iSelEnd)
 			{
-				log.Debug("End of video reached");
-				if (m_ePlayingMode == PlayingMode.Once)
-				{
-					StopPlaying();
-					stoppedOnLast = true;
-				}
-				else
-				{
-				    // If auto rewind, only stops timer,
-					// playback will restart automatically if everything is ok.
-					if(m_bSynched)
-						StopPlaying();
-					else
-						StopMultimediaTimer();
-					seekToFirst = true;
-				}
-
-				m_FrameServer.Metadata.StopAllTracking();
+			    EndOfFile();
 			}
-
-			// Moving playhead mechanics.
-			if (m_bIsIdle || seekToFirst || stoppedOnLast)
-			{
-				if (seekToFirst)
-				{
-					if (ShowNextFrame(m_iSelStart, true))
-					{
-						if(!m_bSynched)
-						    StartMultimediaTimer((int)GetPlaybackFrameInterval());
-					}
-					else
-					{
-						log.Debug("Error while decoding first frame after auto rewind.");
-						StopPlaying();
-					}
-				}
-				else if (!stoppedOnLast)
-				{
-				    // Regular loop.
-				    // This will return instantly as the frame should have been buffered.
-                    ShowNextFrame(-1, true);
-                    
-                    // Failsafe mechanism for decoder.
-                    if(m_FrameServer.VideoReader.Drops > MaxDecodingDrops)
-                    {
-                        log.DebugFormat("Failsafe triggered on Decoding Drops ({0}) ---------------------", m_FrameServer.VideoReader.Drops);
-                        ForceSlowdown();
-                    }
-				}
-
-				UpdateNavigationCursor();
+			else if(m_bIsIdle)
+            {
+			    m_bIsIdle = false;
+			    
+                // Regular loop.
+                ShowNextFrame(-1, true);
+                
+                if(m_FrameServer.VideoReader.Drops > m_MaxDecodingDrops)
+                {
+                    log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
+                    ForceSlowdown();
+                }
+                
+                UpdateNavigationCursor();
 				m_iFramesToDecode = 1;
-			}
+            }
 			else
 			{
-				// Not Idle. Increase drop count.
-				if (!m_FrameServer.Metadata.IsTracking)
+			    // The BeginInvoke in timer tick was posted before the frame became idle.
+			    // Not really the proper way to figure out if we are dropping.
+			    if (!m_FrameServer.Metadata.IsTracking)
 				{
 					m_iFramesToDecode++;
 					log.DebugFormat("Rendering Drops: {0}.", m_iFramesToDecode-1);
 				}
                 
-				// Failsafe mechanism.
-				if (m_iFramesToDecode > MaxRenderingDrops)
+				if (m_iFramesToDecode > m_MaxRenderingDrops)
 				{
-				    log.DebugFormat("Failsafe triggered on Rendering Drops ({0}) ---------------------", m_iFramesToDecode-1);
+				    log.DebugFormat("Failsafe triggered on Rendering Drops ({0})", m_iFramesToDecode-1);
 				    ForceSlowdown();
 				}
 			}
+			
+			log.Debug("Exiting playloop.");
+		}
+		private void EndOfFile()
+		{
+		    m_FrameServer.Metadata.StopAllTracking();
+
+            if(m_bSynched)
+            {
+                StopPlaying();
+                ShowNextFrame(m_iSelStart, true);
+            }
+            else if(m_ePlayingMode == PlayingMode.Loop)
+            {
+                StopMultimediaTimer();
+                bool rewound = ShowNextFrame(m_iSelStart, true);
+                
+                if(rewound)
+                    StartMultimediaTimer((int)GetPlaybackFrameInterval());
+                else
+                    StopPlaying();
+            }
+            else
+            {
+                StopPlaying();
+            }
+            
+            UpdateNavigationCursor();
+			m_iFramesToDecode = 1;
+		}
+		private void ForceSlowdown()
+		{
+		    m_FrameServer.VideoReader.SkipDrops();
+		    m_iFramesToDecode = 0;
+            sldrSpeed.ForceValue(sldrSpeed.Value - sldrSpeed.LargeChange);
 		}
 		private void IdleDetector(object sender, EventArgs e)
 		{
 			m_bIsIdle = true;
-			log.Debug("idle true");
-			
-			/*if (m_iFramesToRender > 0)
-			{
-                m_iFramesToRender = 1;
-			    DoInvalidate();
-			}*/
-			
 		}
 		private bool ShowNextFrame(long _iSeekTarget, bool _bAllowUIUpdate)
 		{
 		    if(!m_FrameServer.VideoReader.Loaded)
 		        return false;
 		    
-		    m_Stopwatch.Reset();
-		    m_Stopwatch.Start();
-		    
-		    m_bIsIdle = false;
 		    bool hasMore = false;
 		    
 		    if(_iSeekTarget < 0)
@@ -2298,7 +2277,7 @@ namespace Kinovea.ScreenManager
 				if(_bAllowUIUpdate) 
 				{
 				    // <test>
-				    //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+				    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
 				    // </test>
 				    
 				    //m_iFramesToRender++;
@@ -2417,7 +2396,6 @@ namespace Kinovea.ScreenManager
 				DoInvalidate();
 			}
 		}
-		
 		private void mnuSetCaptureSpeed_Click(object sender, EventArgs e)
 		{
 			DisplayConfigureSpeedBox(false);
@@ -2486,7 +2464,6 @@ namespace Kinovea.ScreenManager
 				return 40;
 			}
 		}
-		
 		private void DeselectionTimer_OnTick(object sender, EventArgs e) 
 		{
 			// Deselect the currently selected drawing.
@@ -2498,12 +2475,6 @@ namespace Kinovea.ScreenManager
 			log.Debug("Deselection timer fired.");
 			m_DeselectionTimer.Stop();
 			DoInvalidate();
-		}
-		private void ForceSlowdown()
-		{
-		    m_FrameServer.VideoReader.SkipDrops();
-		    m_iFramesToDecode = 0;
-            sldrSpeed.ForceValue(sldrSpeed.Value - sldrSpeed.LargeChange);
 		}
 		#endregion
 		
@@ -3135,7 +3106,7 @@ namespace Kinovea.ScreenManager
 			{
 				try
 				{
-				    log.DebugFormat("in paint - {0}", m_Stopwatch.ElapsedMilliseconds);
+				    log.DebugFormat("play loop to paint: {0}", m_Stopwatch.ElapsedMilliseconds);
 					
 					// If we are on a keyframe, see if it has any drawing.
 					int iKeyFrameIndex = -1;
@@ -3151,11 +3122,8 @@ namespace Kinovea.ScreenManager
 					
 					if(m_MessageToaster.Enabled)
 						m_MessageToaster.Draw(e.Graphics);
-
-                    //m_iFramesToRender--;
-					
-        			log.DebugFormat("exiting paint - {0}, to render:{1}", m_Stopwatch.ElapsedMilliseconds, m_iFramesToRender);
-					
+                   
+        			log.DebugFormat("play loop to end of paint: {0}/{1}", m_Stopwatch.ElapsedMilliseconds, m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds);
 				}
 				catch (System.InvalidOperationException)
 				{
@@ -3343,8 +3311,10 @@ namespace Kinovea.ScreenManager
 		{
 			// This function should be the single point where we call for rendering.
 			// Here we can decide to render directly on the surface or go through the Windows message pump.
+			
+			// Invalidate is asynchronous and several Invalidate calls will be grouped together. (Only one repaint will be done).
 			pbSurfaceScreen.Invalidate();
-			pbSurfaceScreen.Update();
+			//pbSurfaceScreen.Update();
 		}
 		#endregion
 

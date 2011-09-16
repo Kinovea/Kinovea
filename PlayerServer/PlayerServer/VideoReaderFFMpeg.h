@@ -100,6 +100,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             VideoSection get() override { return Cache->WorkingZone; }
             void set(VideoSection value) override { Cache->WorkingZone = value;	}
         }
+		virtual property bool IsAsyncDecoding {
+			bool get() override { return m_DecodingThread != nullptr && m_DecodingThread->IsAlive; }
+		}
 
 	// Public Methods (VideoReader subclassing).
 	public:
@@ -113,7 +116,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual bool ChangeDeinterlace(bool _deint) override;
 		virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory) override;
 		virtual bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
-		virtual void StartPrefetching() override;
+		virtual void StartAsyncDecoding() override;
+		virtual void CancelAsyncDecoding() override;
 
 	// Construction / Destruction.
 	public:
@@ -128,6 +132,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		bool m_bIsLoaded;
 		VideoInfo m_VideoInfo;
 		Object^ m_Locker;
+		ThreadCanceler^ m_ThreadCanceler;
+        
 
 		// FFMpeg specifics
 		int m_iVideoStream;
