@@ -265,6 +265,9 @@ namespace Kinovea.Video
                 Cache.Clear();
             }
 		}
+		/// <summary>
+		/// Should be called after non-playback decoding operations.
+		/// </summary>
 		public virtual void AfterFrameOperation()
 		{
             if(!Caching)

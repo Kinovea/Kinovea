@@ -489,9 +489,6 @@ namespace Kinovea.ScreenManager
 
 			UpdateFramesMarkers();
 			
-			if(!m_FrameServer.VideoReader.Caching)
-                m_FrameServer.VideoReader.StartAsyncDecoding();
-			
 			return 0;
 		}
 		public void PostImportMetadata()
@@ -555,7 +552,7 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.Metadata.Keyframes.RemoveRange(iOutOfRange, m_FrameServer.Metadata.Keyframes.Count - iOutOfRange);
 			}
 			
-            m_FrameServer.VideoReader.AfterFrameOperation();
+			m_FrameServer.VideoReader.AfterFrameOperation();
 			
             UpdateFilenameLabel();
 			OrganizeKeyframes();
@@ -587,6 +584,12 @@ namespace Kinovea.ScreenManager
             m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
             
             m_FrameServer.VideoReader.AfterFrameOperation();
+            
+            // Generally the decoding thread is restarted automatically.
+            // In the special case of exiting the Caching mode, we have to restart it manually.
+            // This is also where it will be started for the first time.
+            if(!m_FrameServer.VideoReader.Caching && !m_FrameServer.VideoReader.IsAsyncDecoding)
+               m_FrameServer.VideoReader.StartAsyncDecoding();
             
             // Reupdate back the locals as the reader uses more precise values.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
@@ -2140,6 +2143,15 @@ namespace Kinovea.ScreenManager
 		private void StartMultimediaTimer(int _interval)
 		{
             ActivateKeyframe(-1);
+            
+            // Just in case something wrong happened, make sure the decoding thread is alive.
+            // Normally it should always be running (unless the whole zone is cached).
+            if(!m_FrameServer.VideoReader.Caching && !m_FrameServer.VideoReader.IsAsyncDecoding)
+            {
+                log.Error("Forcing async decoding thread to restart.");
+                m_FrameServer.VideoReader.StartAsyncDecoding();
+            }
+
             int userCtx = 0;
 			m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 			
@@ -4497,6 +4509,7 @@ namespace Kinovea.ScreenManager
 			
 			StopPlaying();
 			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+			
 			try
 			{
 				SaveFileDialog dlgSave = new SaveFileDialog();
@@ -4506,50 +4519,14 @@ namespace Kinovea.ScreenManager
 				dlgSave.FilterIndex = 1;
 				
 				if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
-				{
 					dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
-				}
 				else
-				{
 					dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
-				}
 				
 				if (dlgSave.ShowDialog() == DialogResult.OK)
 				{
-					// 1. Reconstruct the extension.
-					// If the user let "file.00.00" as a filename, the extension is not appended automatically.
-					string strImgNameLower = dlgSave.FileName.ToLower();
-					string strImgName;
-					if (strImgNameLower.EndsWith("jpg") || strImgNameLower.EndsWith("jpeg") || strImgNameLower.EndsWith("bmp") || strImgNameLower.EndsWith("png"))
-					{
-						// Ok, the user added the extension himself or he did not use the preformatting.
-						strImgName = dlgSave.FileName;
-					}
-					else
-					{
-						// Get the extension
-						string extension;
-						switch (dlgSave.FilterIndex)
-						{
-							case 1:
-								extension = ".jpg";
-								break;
-							case 2:
-								extension = ".png";
-								break;
-							case 3:
-								extension = ".bmp";
-								break;
-							default:
-								extension = ".jpg";
-								break;
-						}
-						strImgName = dlgSave.FileName + extension;
-					}
-
-					//2. Get image and save it to the file.
-					Bitmap outputImage = GetFlushedImage();
-					ImageHelper.Save(strImgName, outputImage);						
+				    Bitmap outputImage = GetFlushedImage();
+					ImageHelper.Save(dlgSave.FileName, outputImage);
 					outputImage.Dispose();
 					m_FrameServer.AfterSave();
 				}
@@ -4574,12 +4551,11 @@ namespace Kinovea.ScreenManager
 			
 			StopPlaying();
 			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+			m_FrameServer.VideoReader.BeforeFrameOperation();
 
 			DelegatesPool dp = DelegatesPool.Instance();
 			if (dp.DeactivateKeyboardHandler != null)
-			{
 				dp.DeactivateKeyboardHandler();
-			}
 			
 			// Launch sequence saving configuration dialog
 			formRafaleExport fre = new formRafaleExport(this, 
@@ -4590,126 +4566,84 @@ namespace Kinovea.ScreenManager
 			fre.ShowDialog();
 			fre.Dispose();
 			m_FrameServer.AfterSave();
-
+			
 			if (dp.ActivateKeyboardHandler != null)
-			{
 				dp.ActivateKeyboardHandler();
+			
+			m_FrameServer.VideoReader.AfterFrameOperation();
+			m_iFramesToDecode = 1;
+			ShowNextFrame(m_iSelStart, true);
+			ActivateKeyframe(m_iCurrentPosition, true);
+		}
+		public void SaveImageSequence(BackgroundWorker _bgWorker, string _filepath, long _interval, bool _bBlendDrawings, bool _bKeyframesOnly, int _total)
+		{
+			int total = _bKeyframesOnly ? m_FrameServer.Metadata.Keyframes.Count : _total;
+            int iCurrent = 0;
+            
+		    // Use an abstracted enumerator on the frames we are interested in.
+			// Either the keyframes or arbitrary frames at regular interval.
+			IEnumerable<VideoFrame> frames = _bKeyframesOnly ? m_FrameServer.Metadata.EnabledKeyframes() : VideoFrameEnumerator(_interval);
+			
+			foreach(VideoFrame vf in frames)
+            {
+                int iKeyFrameIndex = -1;
+                if(!m_PrefManager.DefaultFading.Enabled)
+                    iKeyFrameIndex = GetKeyframeIndex(vf.Timestamp);
+
+                string fileName = string.Format("{0}\\{1}{2}",
+                    Path.GetDirectoryName(_filepath), 
+                    BuildFilename(_filepath, vf.Timestamp, m_PrefManager.TimeCodeFormat), 
+                    Path.GetExtension(_filepath));
+                
+                Size s = new Size((int)(m_FrameServer.CoordinateSystem.Stretch * vf.Image.Width), 
+                                  (int)(m_FrameServer.CoordinateSystem.Stretch * vf.Image.Height) );
+                    
+                using(Bitmap result = new Bitmap(s.Width, s.Height, PixelFormat.Format24bppRgb))
+                {
+                    result.SetResolution(vf.Image.HorizontalResolution, vf.Image.VerticalResolution);
+                    Graphics g = Graphics.FromImage(result);
+                    FlushOnGraphics(vf.Image, g, s, iKeyFrameIndex, vf.Timestamp);
+                    ImageHelper.Save(fileName, result);
+                }
+
+                _bgWorker.ReportProgress(iCurrent++, total);
 			}
 		}
-		public void SaveImageSequence(BackgroundWorker bgWorker, string _FilePath, long _iIntervalTimeStamps, bool _bBlendDrawings, bool _bKeyframesOnly, int iEstimatedTotal)
+		private int GetKeyframeIndex(long _timestamp)
 		{
-			//---------------------------------------------------------------
-			// Save image sequence.
-			// (Method called back from the FormRafaleExport dialog box)
-			//
-			// We start at the first frame and use the interval in timestamps.
-			// We append the timecode between the filename and the extension.
-			//---------------------------------------------------------------
-			
-			if (_bKeyframesOnly)
+		    // Get the index of the kf we are on, if any.
+            int index = -1;
+            for(int i = 0;i<m_FrameServer.Metadata.Count;i++)
+            {
+                if (m_FrameServer.Metadata[i].Position == _timestamp)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+		}
+		private IEnumerable<VideoFrame> VideoFrameEnumerator(long _interval)
+		{
+            m_iFramesToDecode = 1;
+            ShowNextFrame(m_iSelStart, false);
+            yield return m_FrameServer.VideoReader.Current;
+            
+			bool done = false;
+			do
 			{
-				int iCurrent = 0;
-				int iTotal = m_FrameServer.Metadata.Keyframes.Count;
-				foreach(Keyframe kf in m_FrameServer.Metadata.Keyframes)
+				if (m_iCurrentPosition + _interval <= m_iSelEnd)
 				{
-					if (kf.Position >= m_iSelStart && kf.Position <= m_iSelEnd)
-					{
-						// Build the file name
-						string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, kf.Position, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
-						
-						// Get the image
-						Size iNewSize = new Size((int)((double)kf.FullFrame.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)kf.FullFrame.Height * m_FrameServer.CoordinateSystem.Stretch));
-						Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-						outputImage.SetResolution(kf.FullFrame.HorizontalResolution, kf.FullFrame.VerticalResolution);
-						Graphics g = Graphics.FromImage(outputImage);
-
-						if (_bBlendDrawings)
-						{
-							FlushOnGraphics(kf.FullFrame, g, iNewSize, iCurrent, kf.Position);
-						}
-						else
-						{
-							// image only.
-							g.DrawImage(kf.FullFrame, 0, 0, iNewSize.Width, iNewSize.Height);
-						}
-
-						// Save the file
-						ImageHelper.Save(fileName, outputImage);
-						outputImage.Dispose();
-					}
-					
-					// Report to Progress Bar
-					iCurrent++;
-					bgWorker.ReportProgress(iCurrent, iTotal);
+					m_iFramesToDecode = 1;
+					ShowNextFrame(m_iCurrentPosition + _interval, false);
+					yield return m_FrameServer.VideoReader.Current;
+				}
+				else
+				{
+					done = true;
 				}
 			}
-			else
-			{
-				// We are in the worker thread space.
-				// We'll move the playhead and check for rafale period.
-
-				m_iFramesToDecode = 1;
-				ShowNextFrame(m_iSelStart, false);
-
-				bool done = false;
-				int iCurrent = 0;
-				do
-				{
-					ActivateKeyframe(m_iCurrentPosition, false);
-
-					// Build the file name
-					string fileName = Path.GetDirectoryName(_FilePath) + "\\" + BuildFilename(_FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat) + Path.GetExtension(_FilePath);
-
-					Size iNewSize = new Size((int)((double)m_FrameServer.VideoReader.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.VideoReader.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
-					Bitmap outputImage = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
-					outputImage.SetResolution(m_FrameServer.VideoReader.CurrentImage.HorizontalResolution, m_FrameServer.VideoReader.CurrentImage.VerticalResolution);
-					Graphics g = Graphics.FromImage(outputImage);
-
-					if (_bBlendDrawings)
-					{
-						int iKeyFrameIndex = -1;
-						if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.Count > 0)
-						{
-							iKeyFrameIndex = m_iActiveKeyFrameIndex;
-						}
-
-						FlushOnGraphics(m_FrameServer.VideoReader.CurrentImage, g, iNewSize, iKeyFrameIndex, m_iCurrentPosition);
-					}
-					else
-					{
-						// image only.
-						g.DrawImage(m_FrameServer.VideoReader.CurrentImage, 0, 0, iNewSize.Width, iNewSize.Height);
-					}
-
-					// Save the file
-					ImageHelper.Save(fileName, outputImage);
-					outputImage.Dispose();
-
-					// Report to Progress Bar
-					iCurrent++;
-					bgWorker.ReportProgress(iCurrent, iEstimatedTotal);
-
-
-					// Go to next timestamp.
-					if (m_iCurrentPosition + _iIntervalTimeStamps < m_iSelEnd)
-					{
-						m_iFramesToDecode = 1;
-						ShowNextFrame(m_iCurrentPosition + _iIntervalTimeStamps, false);
-					}
-					else
-					{
-						done = true;
-					}
-				}
-				while (!done);
-
-				// Replace at selection start.
-				m_iFramesToDecode = 1;
-				ShowNextFrame(m_iSelStart, false);
-				ActivateKeyframe(m_iCurrentPosition, false);
-			}
-
-			DoInvalidate();
+			while (!done);
 		}
 		private void btnVideo_Click(object sender, EventArgs e)
 		{

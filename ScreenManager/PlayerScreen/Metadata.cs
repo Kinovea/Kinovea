@@ -251,6 +251,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Filtered iterators
+        public IEnumerable<VideoFrame> EnabledKeyframes()
+        {
+            return m_Keyframes.Where(kf => !kf.Disabled).Select(kf => new VideoFrame(kf.Position, kf.FullFrame));
+        }
         public IEnumerable<Track> Tracks()
         {
             foreach (AbstractDrawing drawing in m_ExtraDrawings)
@@ -275,12 +279,6 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingSVG)
                     yield return (DrawingSVG)drawing;
         }
-        /*public IEnumerable<T> DrawingFilter<T>(T _type)
-        {
-            foreach (AbstractDrawing drawing in AttachedDrawings())
-                if (drawing is T)
-                    yield return (T)drawing;
-        }*/
         #endregion
         
         public void AddChrono(DrawingChrono _chrono)
@@ -364,7 +362,6 @@ namespace Kinovea.ScreenManager
         {
             return m_Keyframes.Select(kf => kf.FullFrame).ToList();
         }
-        
         public void ResizeFinished()
         {
         	// This function can be used to trigger an update to drawings that do not 
@@ -989,14 +986,11 @@ namespace Kinovea.ScreenManager
             if (ActiveKeyframes() > 0)
             {
                 w.WriteStartElement("Keyframes");
-                foreach (Keyframe kf in m_Keyframes)
+                foreach (Keyframe kf in m_Keyframes.Where(kf => !kf.Disabled))
                 {
-                    if (!kf.Disabled)
-                    {
-                        w.WriteStartElement("Keyframe");
-                        kf.WriteXml(w);
-                        w.WriteEndElement();
-                    }
+                    w.WriteStartElement("Keyframe");
+                    kf.WriteXml(w);
+                    w.WriteEndElement();
                 }
                 w.WriteEndElement();
             }
