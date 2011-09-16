@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Enums.cs" />

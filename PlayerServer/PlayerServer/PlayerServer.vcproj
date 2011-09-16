@@ -199,18 +199,13 @@
 			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
-			RelativePath="..\..\Refs\AForge.Imaging.dll"
-			AssemblyName="AForge.Imaging, Version=2.2.0.0, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL"
-			MinFrameworkVersion="131072"
-		/>
-		<AssemblyReference
 			RelativePath="..\..\Refs\log4net.dll"
 			AssemblyName="log4net, Version=1.2.10.0, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
 			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
 			RelativePath="..\..\Video\bin\Kinovea.Video.dll"
-			AssemblyName="Kinovea.Video, Version=1.0.0.19719, processorArchitecture=IA64"
+			AssemblyName="Kinovea.Video, Version=1.0.0.26134, processorArchitecture=IA64"
 			UseDependenciesInBuild="false"
 			MinFrameworkVersion="131072"
 		/>
