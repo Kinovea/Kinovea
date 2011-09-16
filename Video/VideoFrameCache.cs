@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 
 namespace Kinovea.Video
 {
@@ -32,28 +33,30 @@ namespace Kinovea.Video
     /// The cache segment lives inside the working zone boundaries.
     /// It is a contiguous set of frames, however it may wrap over the end of the working zone.
     /// </summary>
+    /// <remarks>
+    /// Thread safety:
+    /// Locking is necessary around all access to m_Cache as it is read and written by both the UI and the decoding thread.
+    /// Assumedly there is no need to lock around access to m_Current.
+    /// This is because m_Cache is only accessed for add by the decoding thread and this has no impact on m_Current reference.
+    /// The only thing that alter the reference to m_Current are MoveNext, MoveTo, PurgeOutsiders, Clear.
+    /// All these are initiated by the UI thread itself, so it will not be using m_Current simultaneously.
+    ///</remarks>
     public class VideoFrameCache : IEnumerable, IDisposable
     {
         #region Properties
-        public VideoFrame Current {
-            get { return m_Current; }
-        }
-        public VideoSection Segment {
-            get { return m_Segment;}
-        }
-        public int Count {
-            get { return m_Cache.Count; }
-        }
+        public VideoFrame Current { get { return m_Current; } }
+        public VideoSection Segment { get { return m_Segment;} }
+        public int Count { get { lock(m_Locker) return m_Cache.Count; } }
+        public bool Empty { get { return m_Current == null; } }
+        public int Drops { get { return m_Drops; } }
+        
         public bool HasNext {
-            get { 
+            get {
                 if(m_Current == null)
                     return false;
                 else
-                    return m_CurrentIndex < m_Cache.Count - 1;
+                    lock(m_Locker) return m_CurrentIndex < m_Cache.Count - 1;
             }
-        }
-        public bool Empty {
-            get { return m_Current == null; }
         }
         public VideoSection WorkingZone { 
             get { return m_WorkingZone; }
@@ -65,7 +68,7 @@ namespace Kinovea.Video
         /// Currently returns the image at the middle of the buffer.
         /// </summary>
         public Bitmap Representative {
-            get { return m_Cache[(m_Cache.Count / 2) - 1].Image; }
+            get { lock(m_Locker) return m_Cache[(m_Cache.Count / 2) - 1].Image; }
         }
         #endregion
         
@@ -75,11 +78,12 @@ namespace Kinovea.Video
         private VideoSection m_WorkingZone;
         private int m_CurrentIndex = -1;
         private VideoFrame m_Current;
+        private readonly object m_Locker = new object();
         
-        private int m_DefaultCapacity = 25;
-        private int m_DefaultRemembranceCapacity = 20;
-        private int m_Capacity = 25;
-        private int m_RemembranceCapacity = 20; // Capacity and Remembrance will be taken from Prefs.
+        private int m_DefaultCapacity = 20;
+        private int m_DefaultRemembranceCapacity = 10;
+        private int m_Capacity = 20;
+        private int m_RemembranceCapacity = 10; // Capacity and Remembrance will later be taken from Prefs.
         private bool m_PrependingBlock;
         private int m_InsertIndex;
         private int m_Drops;
@@ -114,20 +118,22 @@ namespace Kinovea.Video
         public bool MoveNext()
         {
             bool read = false;
-            if(m_CurrentIndex + m_Drops >= m_Cache.Count - 1)
+            lock(m_Locker)
             {
-                // The frame is not available, call it a drop and move to newest available.
-                m_Drops = m_Cache.Count - m_CurrentIndex - m_Drops;
-                m_CurrentIndex = m_Cache.Count - 1;
+                if(m_CurrentIndex + m_Drops >= m_Cache.Count - 1)
+                {
+                    m_Drops++;
+                    log.DebugFormat("Decoding Drops: {0}.", m_Drops);
+                }
+                else
+                {
+                    m_CurrentIndex = m_CurrentIndex + m_Drops + 1;
+                    read = true;
+                }
+                
+                if(m_CurrentIndex >= 0 && m_CurrentIndex <= m_Cache.Count - 1)
+                    m_Current = m_Cache[m_CurrentIndex];
             }
-            else
-            {
-                m_CurrentIndex = m_CurrentIndex + m_Drops + 1;
-                read = true;
-            }
-            
-            if(m_CurrentIndex >= 0 && m_CurrentIndex <= m_Cache.Count - 1)
-                m_Current = m_Cache[m_CurrentIndex];
             
             RemembranceCheck();
             
@@ -135,31 +141,65 @@ namespace Kinovea.Video
         }
         public bool MoveTo(long _timestamp)
         {
+            m_Drops = 0;
+                
             if(!Contains(_timestamp))
                 return false;
             
-            if( m_Current!=null && _timestamp == m_Current.Timestamp)
+            if( m_Current != null && _timestamp == m_Current.Timestamp)
                 return true;
 
-            foreach(int i in SortedFrames())
+            lock(m_Locker)
             {
-                if(m_Cache[i].Timestamp >= _timestamp)
+                foreach(int i in SortedFrames())
                 {
-                    m_CurrentIndex = i;
-                    break;
+                    if(m_Cache[i].Timestamp >= _timestamp)
+                    {
+                        m_CurrentIndex = i;
+                        break;
+                    }
                 }
-            }
             
-            if(m_CurrentIndex >= 0 && m_CurrentIndex <= m_Cache.Count - 1)
-                m_Current = m_Cache[m_CurrentIndex];
+                if(m_CurrentIndex >= 0 && m_CurrentIndex <= m_Cache.Count - 1)
+                    m_Current = m_Cache[m_CurrentIndex];
+            }
             
             RemembranceCheck();
             
             return true;
         }
+        public void SkipDrops()
+        {
+            m_Drops = 0;
+        }
+        
+        public void Add(VideoFrame _frame)
+        {
+            lock(m_Locker)
+            {
+                //log.DebugFormat("Add - Pushing frame to cache. {0}/{1} ({2}).", m_Cache.Count+1, m_Capacity, m_RemembranceCapacity);
+                
+                if(m_PrependingBlock)
+                    m_Cache.Insert(m_InsertIndex++, _frame);
+                else
+                    m_Cache.Add(_frame);
+                
+                UpdateSegment();
+                
+                while (m_Cache.Count >= m_Capacity)
+                {
+                    // Will release its lock and block until there is a pulse.
+                    // We do this after the actual Add so the decoding thread can 
+                    // check for cancellation *before* pushing another frame.
+                    Monitor.Wait(m_Locker);
+                }
+            }
+        }
         
         public IEnumerator GetEnumerator()
         {
+            // This one is not thread safe and can't be made so easily. 
+            // Check if we could use a copy of the list instead.
             return m_Cache.GetEnumerator();
         }
         public bool Contains(long _timestamp)
@@ -175,48 +215,59 @@ namespace Kinovea.Video
                 return m_Segment.Contains(_timestamp);
             }
         }
-        public void Add(VideoFrame _frame)
-        {
-            if(m_Cache.Count >= m_Capacity)
-            {
-                // TODO: Block thread.
-            }
-            else
-            {
-                if(m_PrependingBlock)
-                    m_Cache.Insert(m_InsertIndex++, _frame);
-                else
-                    m_Cache.Add(_frame);
-                
-                UpdateSegment();
-            }
-        }
         public List<Bitmap> ToBitmapList()
         {
-            return m_Cache.Select(frame => frame.Image).ToList();
+            lock(m_Locker) 
+                return m_Cache.Select(frame => frame.Image).ToList();
         }
         public void Revert()
         {
-            for(int i = 0; i<m_Cache.Count/2; i++)
+            lock(m_Locker)
             {
-                Bitmap tmp = m_Cache[i].Image;
-                m_Cache[i].Image = m_Cache[m_Cache.Count -1 - i].Image;
-                m_Cache[m_Cache.Count -1 - i].Image = tmp;
+                for(int i = 0; i<m_Cache.Count/2; i++)
+                {
+                    Bitmap tmp = m_Cache[i].Image;
+                    m_Cache[i].Image = m_Cache[m_Cache.Count -1 - i].Image;
+                    m_Cache[m_Cache.Count -1 - i].Image = tmp;
+                }
             }
         }
         public void Clear()
         {
-            m_Current = null;
+            lock(m_Locker)
+            {
+                m_Current = null;
+                
+                foreach(VideoFrame vf in m_Cache)
+                    DisposeFrame(vf);
+                
+                m_Cache.Clear();
+                m_CurrentIndex = -1;
+                m_Drops = 0;
+                m_Segment = VideoSection.Empty;
+                m_Capacity = m_DefaultCapacity;
+                m_RemembranceCapacity = m_DefaultRemembranceCapacity;
+                
+                log.DebugFormat("Clear : Pulse to wake decoder.");
+                Monitor.PulseAll(m_Locker);
+            }
+        }
+        public void RemoveOldest()
+        {
+            // This may be used to unblock the decoding thread.
             
-            foreach(VideoFrame vf in m_Cache)
-                DisposeFrame(vf);
+            if(m_Cache.Count < 1)
+                return;
             
-            m_Cache.Clear();
-            m_CurrentIndex = -1;
-            m_Drops = 0;
-            m_Segment = VideoSection.Empty;
-            m_Capacity = m_DefaultCapacity;
-            m_RemembranceCapacity = m_DefaultRemembranceCapacity;
+            lock(m_Locker)
+            {
+                DisposeFrame(m_Cache[0]);
+                m_Cache.RemoveAt(0);
+                m_CurrentIndex--;
+                UpdateSegment();
+                log.DebugFormat("RemoveOldest : Pulse to wake decoder.");
+                Monitor.PulseAll(m_Locker);
+            }
         }
         
         /// <summary>
@@ -224,27 +275,35 @@ namespace Kinovea.Video
         /// </summary>
         public void PurgeOutsiders()
         {
-            int removedAtLeft = 0;
-            foreach(int i in SortedFrames())
+            lock(m_Locker)
             {
-                if(m_WorkingZone.Contains(m_Cache[i].Timestamp))
-                    continue;
-                
-                if(m_Cache[i].Timestamp < m_WorkingZone.Start)
-                    removedAtLeft++;
+                int removedAtLeft = 0;
+                foreach(int i in SortedFrames())
+                {
+                    if(m_WorkingZone.Contains(m_Cache[i].Timestamp))
+                        continue;
                     
-                DisposeFrame(m_Cache[i]);
-                m_Cache[i] = null;
+                    if(m_Cache[i].Timestamp < m_WorkingZone.Start)
+                        removedAtLeft++;
+                        
+                    DisposeFrame(m_Cache[i]);
+                    m_Cache[i] = null;
+                    
+                    if(i==m_CurrentIndex)
+                        m_CurrentIndex = -1;
+                }
                 
-                if(i==m_CurrentIndex)
-                    m_CurrentIndex = -1;
+                if(m_CurrentIndex >= removedAtLeft)
+                    m_CurrentIndex-=removedAtLeft;
+                
+                m_Current = m_Cache[m_CurrentIndex];
+                
+                m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
+                UpdateSegment();
+                
+                log.DebugFormat("PurgeOutsiders : Pulse to wake decoder.");
+                Monitor.PulseAll(m_Locker);
             }
-            
-            if(m_CurrentIndex >= removedAtLeft)
-                m_CurrentIndex-=removedAtLeft;
-            
-            m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
-            UpdateSegment();
         }
         public void DisableCapacityCheck()
         {
@@ -261,14 +320,16 @@ namespace Kinovea.Video
             // A rollover (back to begining after end of working zone),
             // is an out of segment jump that will still be contiguous after the jump.
             // In this special case the cache need not be cleared.
+            log.DebugFormat("Is roll over: target:[{0}], wz start:[{1}], has wz end : {2}", _timestamp, m_WorkingZone.Start, Contains(m_WorkingZone.End));
             return _timestamp == m_WorkingZone.Start && Contains(m_WorkingZone.End);
         }
         
         #region Debug
         public void DumpToDisk()
         {
-            foreach(VideoFrame vf in m_Cache)
-                vf.Image.Save(String.Format("{0}.bmp", vf.Timestamp));
+            lock(m_Locker)
+                foreach(VideoFrame vf in m_Cache)
+                    vf.Image.Save(String.Format("{0}.bmp", vf.Timestamp));
         }
         #endregion
         
@@ -277,6 +338,8 @@ namespace Kinovea.Video
         #region Private methods
         private IEnumerable<int> SortedFrames()
         {
+            // /!\ Should only be called from inside a lock construct.
+            
             // Returns an iterator on the cache in the order of timestamps.
             // Can be used to loop over the frames without bothering about wrapping.
             // todo: keep track of the wrap index outside here.
@@ -315,17 +378,26 @@ namespace Kinovea.Video
         }
         private void RemembranceCheck()
         {
-            // Forget oldest frame(s) if needed. This should unblock the decoding thread.
-            if(m_CurrentIndex >= m_RemembranceCapacity)
+            //log.DebugFormat("Remembrance Check:{0}/{1}", m_CurrentIndex, m_RemembranceCapacity);
+            
+            // Forget oldest frame(s) if needed and unblock the decoding thread.
+            if(m_CurrentIndex < m_RemembranceCapacity)
+                return;
+
+            //log.DebugFormat("Before lock in Remembrance check.");
+            
+            lock(m_Locker)
             {
-                int framesToForget = m_CurrentIndex - m_RemembranceCapacity + 1; 
+                int framesToForget = m_CurrentIndex - m_RemembranceCapacity + 1;
                 
                 for(int i=0;i<framesToForget;i++)
                     DisposeFrame(m_Cache[i]);
 
                 m_Cache.RemoveRange(0, framesToForget);
                 m_CurrentIndex -= framesToForget;
-                m_Segment = new VideoSection(m_Cache[0].Timestamp, m_Segment.End);
+                UpdateSegment();
+                //log.DebugFormat("RemembranceCheck : Pulse to wake decoder.");
+                Monitor.PulseAll(m_Locker);
             }
         }
         #endregion

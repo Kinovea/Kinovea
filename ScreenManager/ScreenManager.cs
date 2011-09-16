@@ -157,7 +157,7 @@ namespace Kinovea.ScreenManager
         private bool m_bAllowKeyboardHandler;
 
         private List<ScreenManagerState> m_StoredStates  = new List<ScreenManagerState>();
-        private const int WM_KEYDOWN = 0x100;
+        private const int WM_KEYDOWN = 0x0100;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -991,185 +991,188 @@ namespace Kinovea.ScreenManager
             bool bWasHandled = false;
 			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
             	
-			if (m_bAllowKeyboardHandler && smui != null)
+			if (!m_bAllowKeyboardHandler || smui == null || m.Msg != WM_KEYDOWN)
+			{
+			    //log.DebugFormat("MSG:0x{0:x4}", m.Msg);
+			    return false;
+			}
+			
+			bool bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
+            bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
+			
+            if ((screenList.Count == 0 || m_ActiveScreen == null) && !bThumbnailsViewerVisible)
+                return false;
+            
+            Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
+
+            switch (keyCode)
             {
-                bool bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
-                bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
-
-                if ( (m.Msg == WM_KEYDOWN)  &&
-                     ((screenList.Count > 0 && m_ActiveScreen != null) || (bThumbnailsViewerVisible)))
-                {
-                    Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
-
-                    switch (keyCode)
+            	case Keys.Delete:
+            	case Keys.Add:
+            	case Keys.Subtract:
+            	case Keys.F2:
+            	case Keys.F7:
                     {
-                    	case Keys.Delete:
-                    	case Keys.Add:
-                    	case Keys.Subtract:
-                    	case Keys.F2:
-                    	case Keys.F7:
-                            {
-                    			//------------------------------------------------
-                    			// These keystrokes impact only the active screen.
-                    			//------------------------------------------------
-                    			if(!bThumbnailsViewerVisible)
-                    			{       
-									bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);
-                    			}
-								else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
-                    			}
-                    			break;
-                            }
-                    	case Keys.Escape:
-                    	case Keys.F6:
-                            {
-                    			//---------------------------------------------------
-                    			// These keystrokes impact each screen independently.
-                    			//---------------------------------------------------
-                    			if(!bThumbnailsViewerVisible)
-                    			{
-	                                foreach (AbstractScreen abScreen in screenList)
-	                                {
-	                                    bWasHandled = abScreen.OnKeyPress(keyCode);
-	                                }
-                    			}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
-                    			}
-                                break;
-                            }
-                    	case Keys.Down:
-                    	case Keys.Up:
-                    		{
-                    			//-----------------------------------------------------------------------
-                    			// These keystrokes impact only one screen, because it will automatically 
-                    			// trigger the same change in the other screen.
-                    			//------------------------------------------------------------------------
-                    			if(!bThumbnailsViewerVisible)
-                    			{
-                    				if(screenList.Count > 0)
-                    				{
-                    					bWasHandled = screenList[0].OnKeyPress(keyCode);
-                    				}
-                    			}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
-                    			}
-                                break;}
-                        case Keys.Space:
-                    	case Keys.Return:
-                    	case Keys.Left:
-                    	case Keys.Right:
-                    	case Keys.End:
-                    	case Keys.Home:
-                            {
-                                //---------------------------------------------------
-                    			// These keystrokes impact both screens as a whole.
-                    			//---------------------------------------------------
-                               	if(!bThumbnailsViewerVisible)
-                    			{
-                               		if (screenList.Count == 2)
-	                                {
-                               			if(bCommonControlsVisible)
-                               			{
-                               				bWasHandled = OnKeyPress(keyCode);
-                               			}
-                               			else
-                               			{
-                               				bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
-                               			}
-	                                }
-	                                else if(screenList.Count == 1)
-	                                {
-	                                	bWasHandled = screenList[0].OnKeyPress(keyCode);
-	                                }	
-                               	}
-                    			else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-                                break;
-                            }
-                    	//-------------------------------------------------
-                    	// All the remaining keystrokes impact both screen, 
-                    	// even if the common controls aren't visible.
-                    	//-------------------------------------------------
-                    	case Keys.Tab:
-                    	    {
-                    			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-								{
-	                    			// Change active screen.
-	                    			if(!bThumbnailsViewerVisible)
-	                    			{
-	                    				if(screenList.Count == 2)
-	                               		{
-	                    					ActivateOtherScreen();
-	                    					bWasHandled = true;
-	                    				}
-	                    			}
-	                    			else
-	                    			{
-	                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-	                    			}
-                    			}
-                    			break;
-                    		}
-                        case Keys.F8:
-                        	{
-	                            // Go to sync frame. 
-	                            if(!bThumbnailsViewerVisible)
-	                    		{
-	                            	if(m_bSynching)
-                               		{
-		                                if (m_iSyncLag > 0)
-		                                {
-		                                    m_iCurrentFrame = m_iRightSyncFrame;
-		                                }
-		                                else
-		                                {
-		                                    m_iCurrentFrame = m_iLeftSyncFrame;
-		                                }
-		
-		                                // Update
-		                                OnCommonPositionChanged(m_iCurrentFrame, true);
-		                                smui.UpdateTrkFrame(m_iCurrentFrame);
-		                                bWasHandled = true;
-	                            	}
-	                            }
-	                            else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-	                            break;
-                        	}
-                        case Keys.F9:
-                            {
-                                //---------------------------------------
-                                // Fonctions associées : 
-                                // Resynchroniser après déplacement individuel
-                                //---------------------------------------
-                               	if(!bThumbnailsViewerVisible)
-                                {
-                               		if(m_bSynching)
-                               		{
-                               			SyncCatch();
-                               			bWasHandled = true;
-                               		}
-                                }
-                               	else
-                    			{
-                    				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
-                    			}
-                                break;
-                            }
-                        default:
-                            break;
+            			//------------------------------------------------
+            			// These keystrokes impact only the active screen.
+            			//------------------------------------------------
+            			if(!bThumbnailsViewerVisible)
+            			{       
+							bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);
+            			}
+						else
+            			{
+            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+            			}
+            			break;
                     }
-                }
+            	case Keys.Escape:
+            	case Keys.F6:
+                    {
+            			//---------------------------------------------------
+            			// These keystrokes impact each screen independently.
+            			//---------------------------------------------------
+            			if(!bThumbnailsViewerVisible)
+            			{
+                            foreach (AbstractScreen abScreen in screenList)
+                            {
+                                bWasHandled = abScreen.OnKeyPress(keyCode);
+                            }
+            			}
+            			else
+            			{
+            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+            			}
+                        break;
+                    }
+            	case Keys.Down:
+            	case Keys.Up:
+            		{
+            			//-----------------------------------------------------------------------
+            			// These keystrokes impact only one screen, because it will automatically 
+            			// trigger the same change in the other screen.
+            			//------------------------------------------------------------------------
+            			if(!bThumbnailsViewerVisible)
+            			{
+            				if(screenList.Count > 0)
+            				{
+            					bWasHandled = screenList[0].OnKeyPress(keyCode);
+            				}
+            			}
+            			else
+            			{
+            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+            			}
+                        break;
+                    }
+                case Keys.Space:
+            	case Keys.Return:
+            	case Keys.Left:
+            	case Keys.Right:
+            	case Keys.End:
+            	case Keys.Home:
+                    {
+                        //---------------------------------------------------
+            			// These keystrokes impact both screens as a whole.
+            			//---------------------------------------------------
+                       	if(!bThumbnailsViewerVisible)
+            			{
+                       		if (screenList.Count == 2)
+                            {
+                       			if(bCommonControlsVisible)
+                       			{
+                       				bWasHandled = OnKeyPress(keyCode);
+                       			}
+                       			else
+                       			{
+                       				bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
+                       			}
+                            }
+                            else if(screenList.Count == 1)
+                            {
+                            	bWasHandled = screenList[0].OnKeyPress(keyCode);
+                            }	
+                       	}
+            			else
+            			{
+            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+            			}
+                        break;
+                    }
+            	//-------------------------------------------------
+            	// All the remaining keystrokes impact both screen, 
+            	// even if the common controls aren't visible.
+            	//-------------------------------------------------
+            	case Keys.Tab:
+            	    {
+            			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+						{
+                			// Change active screen.
+                			if(!bThumbnailsViewerVisible)
+                			{
+                				if(screenList.Count == 2)
+                           		{
+                					ActivateOtherScreen();
+                					bWasHandled = true;
+                				}
+                			}
+                			else
+                			{
+                				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                			}
+            			}
+            			break;
+            		}
+                case Keys.F8:
+                	{
+                        // Go to sync frame. 
+                        if(!bThumbnailsViewerVisible)
+                		{
+                        	if(m_bSynching)
+                       		{
+                                if (m_iSyncLag > 0)
+                                {
+                                    m_iCurrentFrame = m_iRightSyncFrame;
+                                }
+                                else
+                                {
+                                    m_iCurrentFrame = m_iLeftSyncFrame;
+                                }
+
+                                // Update
+                                OnCommonPositionChanged(m_iCurrentFrame, true);
+                                smui.UpdateTrkFrame(m_iCurrentFrame);
+                                bWasHandled = true;
+                        	}
+                        }
+                        else
+            			{
+            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+            			}
+                        break;
+                	}
+                case Keys.F9:
+                    {
+                        //---------------------------------------
+                        // Fonctions associées : 
+                        // Resynchroniser après déplacement individuel
+                        //---------------------------------------
+                       	if(!bThumbnailsViewerVisible)
+                        {
+                       		if(m_bSynching)
+                       		{
+                       			SyncCatch();
+                       			bWasHandled = true;
+                       		}
+                        }
+                       	else
+            			{
+            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+            			}
+                        break;
+                    }
+                default:
+                    break;
             }
 
             return bWasHandled;

@@ -55,6 +55,8 @@ extern "C" {
 #include <swscale.h> 
 }
 
+
+
 #include "Enums.h"
 #include "TimestampInfo.h"
 #include "SavingContext.h"
@@ -62,6 +64,7 @@ extern "C" {
 using namespace System;
 using namespace System::ComponentModel;
 using namespace System::Reflection;
+using namespace System::Threading;
 
 using namespace Kinovea::Base;
 using namespace Kinovea::Video;
@@ -102,15 +105,16 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	public:
 		virtual OpenVideoResult Open(String^ _filePath) override;
 		virtual void Close() override;
-		virtual bool MoveNext(bool _synchrounous) override;
-		virtual bool MoveTo(int64_t _timestamp) override;
+		virtual bool MoveNext(bool _async) override;
+		virtual bool MoveTo(int64_t _timestamp, bool _async) override;
 		virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, int _width) override;
 		virtual String^ ReadMetadata() override;
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
 		virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory) override;
 		virtual bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
-		
+		virtual void StartPrefetching() override;
+
 	// Construction / Destruction.
 	public:
 		VideoReaderFFMpeg();
@@ -123,6 +127,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		// General
 		bool m_bIsLoaded;
 		VideoInfo m_VideoInfo;
+		Object^ m_Locker;
 
 		// FFMpeg specifics
 		int m_iVideoStream;
@@ -133,8 +138,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		TimestampInfo m_TimestampInfo;
 		static const enum PixelFormat m_PixelFormatFFmpeg = PIX_FMT_BGRA;
 		static const int DecodingQuality = SWS_FAST_BILINEAR;
-		
+
 		// Others
+		Thread^ m_DecodingThread;
 		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
 	// Private methods
@@ -147,6 +153,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		static void DisposeFrame(VideoFrame^ _frame);
 		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
 		void SetDecodingSize(ImageAspectRatio _ratio);
+		void Prefetch(Object^ _canceler);
 
 		void DumpInfo();
 		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);

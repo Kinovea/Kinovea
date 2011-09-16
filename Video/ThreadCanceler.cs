@@ -22,13 +22,27 @@ using System;
 
 namespace Kinovea.Video
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class SupportedExtensionsAttribute : Attribute
+    public class ThreadCanceler
     {
-        public string[] Extensions;
-        public SupportedExtensionsAttribute(string _extensions)
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
+        public bool CancellationPending {
+            get { lock(m_Locker) return m_CancelRequest; }
+        }
+        
+        private object m_Locker = new object();
+        private bool m_CancelRequest;
+        
+        public void Cancel()
         {
-            Extensions = _extensions.Split(new char[] { ';', '\t', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            log.Debug("Cancelling thread");
+            lock(m_Locker)
+                m_CancelRequest = true;
+        }
+        public void Reset()
+        {
+            lock(m_Locker)
+                m_CancelRequest = false;
         }
     }
 }

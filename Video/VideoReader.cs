@@ -51,29 +51,18 @@ namespace Kinovea.Video
 		/// Set the "Current" property to hold the next video frame.
 		/// For async readers, if the frame is not available right now, call it a drop.
 		/// (Decoding should happen in a separate thread).
-		/// _synchronous will be true for some scenarios like saving. In this case return only after the frame has been set in Current.
+		/// _async will be false for some scenarios like saving, next button, etc. 
+		/// In these cases return only after the frame has been pushed to .Current.
 		/// </summary>
-		public abstract bool MoveNext(bool _synchronous);
+		/// <returns>false if the end of file has been reached</returns>
+		public abstract bool MoveNext(bool _async);
 		
 		/// <summary>
 		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
-		/// Unlike MoveNext(), this function is always synchronous.
-		/// Don't return until you have found the frame and updated "Current" with it.
 		/// </summary>
-		public abstract bool MoveTo(long _timestamp);
+		/// <returns>false if the end of file has been reached</returns>
+		public abstract bool MoveTo(long _timestamp, bool _async);
 		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
-		public abstract string ReadMetadata();
-		public abstract bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory);
-		
-		/// <summary>
-		/// Import several frames in sequence to cache.
-		/// Used in the context of analysis mode (full working zone to cache)
-		/// </summary>
-		/// <param name="_bgWorker">Hosting background worker, for cancellation and progress</param>
-		/// <param name="_section">The section to import</param>
-		/// <param name="_prepend">true if the section is before what's currently in the cache, used to configure Cache.Add.</param>
-		/// <returns>true if all went fine</returns>
-		public abstract bool ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend);
 		#endregion
 		
 		#region Concrete Properties
@@ -84,6 +73,12 @@ namespace Kinovea.Video
 		    get { 
 		        if(Cache == null) return null;
 		        else return Cache.Current;
+		    }
+		}
+		public int Drops {
+		    get {
+		        if(Cache == null) return 0;
+		        else return Cache.Drops;
 		    }
 		}
 		public string FilePath {
@@ -103,27 +98,31 @@ namespace Kinovea.Video
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
 		
 		#region Members
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		protected ThreadCanceler m_ThreadCanceler = new ThreadCanceler();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 		
 		#region Concrete Methods
+		
+		#region Move playhead
 		public bool MovePrev()
 		{
-		    return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame);
+		    return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame, false);
 		}
 		public bool MoveFirst()
 		{
-		    return MoveTo(WorkingZone.Start);
+		    return MoveTo(WorkingZone.Start, false);
 		}
 		public bool MoveLast()
 		{
-		    return MoveTo(WorkingZone.End);
+		    return MoveTo(WorkingZone.End, false);
 		}
-		public bool MoveBy(int _frames)
+		public bool MoveBy(int _frames, bool _async)
 		{
 		    if(_frames == 1)
 		    {
-		        return MoveNext(false);
+		        log.Debug("MoveBy -> MoveNext");
+		        return MoveNext(_async);
 		    }
 		    else
 		    {
@@ -131,9 +130,12 @@ namespace Kinovea.Video
 		        long target = currentTimestamp + (Info.AverageTimeStampsPerFrame * _frames);
 		        if(target < 0)
 		            target = 0;
-		        return MoveTo(target);
+		        log.Debug("MoveBy -> MoveTo");
+		        return MoveTo(target, _async);
 		    }
 		}
+		#endregion
+		
 		/// <summary>
 		/// Force a specific aspect ratio.
 		/// </summary>
@@ -151,6 +153,10 @@ namespace Kinovea.Video
 		{
 		    // Does nothing by default. Override to implement.
             return false;
+		}
+		public virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory)
+		{
+		    return false;
 		}
 		
 		/// <summary>
@@ -174,6 +180,8 @@ namespace Kinovea.Video
                 Cache.Clear();
                 return;
             }
+            
+            m_ThreadCanceler.Cancel();
             
             VideoSection sectionToCache = VideoSection.Empty;
             bool prepend = false;
@@ -210,6 +218,35 @@ namespace Kinovea.Video
             {
                 _workerFn((s,e) => Caching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
             }
+		}
+		/// <summary>
+		/// Import several frames in sequence to cache.
+		/// Used in the context of analysis mode (full working zone to cache)
+		/// </summary>
+		/// <param name="_bgWorker">Hosting background worker, for cancellation and progress</param>
+		/// <param name="_section">The section to import</param>
+		/// <param name="_prepend">true if the section is before what's currently in the cache, used to configure Cache.Add.</param>
+		/// <returns>true if all went fine</returns>
+		public virtual bool ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend)
+		{
+		    return false;
+		}
+		public virtual string ReadMetadata()
+		{
+		    return "";
+		}
+		public virtual void StartPrefetching()
+		{
+		    // Does nothing by default. Override to implement.
+		}
+		public virtual void SkipDrops()
+		{
+		    if(Cache != null)
+		        Cache.SkipDrops();
+		}
+		public virtual void CancelAsyncDecode()
+		{
+		    m_ThreadCanceler.Cancel();
 		}
 		#endregion
 	}

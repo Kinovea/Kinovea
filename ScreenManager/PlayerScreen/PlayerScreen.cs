@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
                 bool uncached = m_FrameServer.VideoReader.ChangeAspectRatio(value);
                 
                 if (uncached && m_FrameServer.VideoReader.Caching)
-                    m_PlayerScreenUI.OnUpdateWorkingZone(true);
+                    m_PlayerScreenUI.UpdateWorkingZone(true);
                     
                 m_PlayerScreenUI.UpdateImageSize();
                 RefreshImage();
@@ -199,7 +199,7 @@ namespace Kinovea.ScreenManager
                 bool uncached = m_FrameServer.VideoReader.ChangeDeinterlace(value);
                 
                 if (uncached && m_FrameServer.VideoReader.Caching)
-					m_PlayerScreenUI.OnUpdateWorkingZone(true);
+					m_PlayerScreenUI.UpdateWorkingZone(true);
                 
 				RefreshImage();
             }
@@ -291,7 +291,12 @@ namespace Kinovea.ScreenManager
             // Note: We shouldn't call ResetToEmptyState here because we will want
             // the close screen routine to detect if there is something left in the 
             // metadata and alerts the user.
-            m_PlayerScreenUI.StopPlaying();
+            if(m_FrameServer.Loaded)
+            {
+                m_PlayerScreenUI.StopPlaying();
+                m_FrameServer.VideoReader.CancelAsyncDecode();
+            }
+            
         }
         public override void refreshUICulture()
         {
