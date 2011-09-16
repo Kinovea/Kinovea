@@ -1,3 +1,4 @@
+#region License
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -17,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
-
+#endregion
 
 using System;
 using System.Windows.Forms;
@@ -27,7 +28,6 @@ namespace Kinovea.FileBrowser
 {
     public class FileBrowserKernel : IKernel
     {
-
         #region Properties
         public UserControl UI
         {

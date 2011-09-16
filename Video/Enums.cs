@@ -64,17 +64,6 @@ namespace Kinovea.Video
 		Cancelled
     }
     
-    // OBSOLETE ?
-    // Should be able to use only true/false from the point of view of the renderer/controller.
-    public enum ReadResult
-	{
-		Success,
-		MovieNotLoaded,
-		MemoryNotAllocated,
-		ImageNotConverted,
-		FrameNotRead
-	}
-    
     public enum SaveResult
 	{
 		Success,

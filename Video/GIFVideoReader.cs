@@ -83,11 +83,11 @@ namespace Kinovea.Video.Gif
         {
             Cache.Clear();
         }
-        public override bool MoveNext(bool _synchrounous)
+        public override bool MoveNext(bool _async)
         {
             return Cache.MoveNext();
         }
-        public override bool MoveTo(long _timestamp)
+        public override bool MoveTo(long _timestamp, bool _async)
         {
             return Cache.MoveTo(_timestamp);
         }
@@ -121,19 +121,6 @@ namespace Kinovea.Video.Gif
             
             m_Gif.Dispose();
             return summary;
-        }
-        public override string ReadMetadata()
-        {
-            return "";
-        }
-        public override bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory)
-        {
-            return true;
-        }
-        public override bool ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend)
-        {
-             // TODO: put the code of Load here.
-             return true;
         }
         #endregion
         
@@ -186,9 +173,6 @@ namespace Kinovea.Video.Gif
         }
         private void LoadCache()
         {
-            // TODO: Use base class cache mechanics.
-            // Set the sentinels first, then add.
-            
             Cache.Clear();
             Cache.DisableCapacityCheck();
             for(int i = 0; i<m_Count; i++)
