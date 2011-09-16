@@ -30,13 +30,13 @@ namespace Kinovea.Services
 	/// </summary>
 	public static class ImageHelper
 	{
-		public static void Save(string _fileName, Bitmap _image)
+	    public static void Save(string _fileName, Bitmap _image)
 		{
 			string filenameToLower = _fileName.ToLower();
 			
 			if (filenameToLower.EndsWith("jpg") || filenameToLower.EndsWith("jpeg"))
 			{
-				Bitmap jpgImage = ImageHelper.ConvertToJPG(_image);
+				Bitmap jpgImage = ImageHelper.ConvertToJPG(_image, 100);
 				jpgImage.Save(_fileName, ImageFormat.Jpeg);
 				jpgImage.Dispose();
 			}
@@ -55,12 +55,12 @@ namespace Kinovea.Services
 				// We force format to jpg and we change back the extension to ".jpg".
 				string fileName = Path.GetDirectoryName(_fileName) + "\\" + Path.GetFileNameWithoutExtension(_fileName) + ".jpg";
 
-				Bitmap jpgImage = ImageHelper.ConvertToJPG(_image);
+				Bitmap jpgImage = ImageHelper.ConvertToJPG(_image, 100);
 				jpgImage.Save(fileName, ImageFormat.Jpeg);
 				jpgImage.Dispose();
 			}
 		}
-		public static Bitmap ConvertToJPG(Bitmap _image)
+		public static Bitmap ConvertToJPG(Bitmap _image, long _quality)
 		{
 			// Intermediate MemoryStream for the conversion.
 			MemoryStream memStr = new MemoryStream();
@@ -82,7 +82,7 @@ namespace Kinovea.Services
 			{
 				//Create a collection of encoder parameters (we only need one in the collection)
 				EncoderParameters ep = new EncoderParameters();
-				ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)100);
+				ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)_quality);
 
 				_image.Save(memStr, ici, ep);
 			}

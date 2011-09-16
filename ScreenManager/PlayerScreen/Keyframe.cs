@@ -140,7 +140,7 @@ namespace Kinovea.ScreenManager
         	m_Position = _position;
         	m_Timecode = _timecode;
             m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_FullFrame = ConvertToJPG(_image);
+            m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
         	m_ParentMetadata = _ParentMetadata;
         }
         #endregion
@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
         public void ImportImage(Bitmap _image)
         {
             m_Thumbnail = new Bitmap(_image, 100, 75);
-            m_FullFrame = ConvertToJPG(_image);
+            m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
         }
         public void GenerateDisabledThumbnail()
         {
@@ -240,42 +240,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region LowerLevel Helpers
-        public Bitmap ConvertToJPG(Bitmap _image)
-        {
-            // Intermediate MemoryStream for the conversion.
-            MemoryStream memStr = new MemoryStream();
-
-            //Get the list of available encoders
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-
-            //find the encoder with the image/jpeg mime-type
-            ImageCodecInfo ici = null;
-            foreach (ImageCodecInfo codec in codecs)
-            {
-                if (codec.MimeType == "image/jpeg")
-                {
-                    ici = codec;
-                }
-            }
-
-            if (ici != null)
-            {
-                //Create a collection of encoder parameters (we only need one in the collection)
-                EncoderParameters ep = new EncoderParameters();
-
-                //We'll store images at 90% quality as compared with the original
-                ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)90);
-
-                _image.Save(memStr, ici, ep);
-            }
-            else
-            {
-                // No JPG encoder found (is that common ?) Use default system.
-                _image.Save(memStr, ImageFormat.Jpeg);
-            }
-
-            return new Bitmap(memStr);
-        }
+        
         #endregion
     }
 }

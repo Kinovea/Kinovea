@@ -27,5 +27,12 @@ namespace Kinovea.Video
     {
         public long Timestamp;
         public Bitmap Image;
+        
+        public VideoFrame(){}
+        public VideoFrame(long _ts, Bitmap _img)
+        {
+            Timestamp = _ts;
+            Image = _img;
+        }
     }
 }
