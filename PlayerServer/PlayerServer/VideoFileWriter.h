@@ -23,7 +23,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 //-----------------------------------------------------------------------------
 // VideoFileWriter - a class to write a set of frames to a file.
 //
-// call OpenSavingContext() -> SaveFrame() -> CloseSavingContext().
+// call OpenSavingContext() -> SaveFrame()* -> CloseSavingContext().
 // Typically SaveFrame is called as frames become available,
 // either from capture device, or from reading module.
 //-----------------------------------------------------------------------------
@@ -58,45 +58,36 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 {
 	public ref class VideoFileWriter
 	{
-
-#pragma region Members
-	private :
-		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
-		
-		SavingContext^ m_SavingContext;
-#pragma endregion
-
-#pragma region Construction/Destruction
+	// Construction/Destruction
 	public:
 		VideoFileWriter();
 		~VideoFileWriter();
 	protected:
 		!VideoFileWriter();
-#pragma endregion
 
-#pragma region Public Methods
+	// Public Methods
 	public:
-		
-		SaveResult Save(SavingSettings _settings, VideoReader^ _reader, BackgroundWorker^ _worker);
+		SaveResult Save(SavingSettings _settings,  VideoInfo _info, IEnumerable<Bitmap^>^ _frames, BackgroundWorker^ _worker);
 		SaveResult OpenSavingContext(String^ _FilePath, VideoInfo _info, double _fFramesInterval, bool _bHasMetadata);
 		SaveResult CloseSavingContext(bool _bEncodingSuccess);
 		SaveResult SaveFrame(Bitmap^ _image);
 		SaveResult SaveMetadata(String^ _Metadata);
-		
-#pragma endregion
-
-#pragma region Private Methods
+	
+	// Private Methods
 	private:
 		static AVOutputFormat* GuessOutputFormat(String^ _FilePath, bool _bHasMetadata);
-		bool	SetupMuxer(SavingContext^ _SavingContext);
-		bool	SetupEncoder(SavingContext^ _SavingContext);
+		bool SetupMuxer(SavingContext^ _SavingContext);
+		bool SetupEncoder(SavingContext^ _SavingContext);
 		
-		bool    WriteMetadata(SavingContext^ _SavingContext, String^ _Metadata);
-		bool	EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap);
-		bool	WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
-		void	SanityCheck(AVFormatContext* s);
+		bool WriteMetadata(SavingContext^ _SavingContext, String^ _Metadata);
+		bool EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bitmap^ _InputBitmap);
+		bool WriteFrame(int _iEncodedSize, SavingContext^ _SavingContext, uint8_t* _pOutputVideoBuffer, bool _bForceKeyframe);
+		void SanityCheck(AVFormatContext* s);
 		static int GreatestCommonDenominator(int a, int b);
-
-#pragma endregion
+	
+	// Members
+	private :
+		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
+		SavingContext^ m_SavingContext;
 	};
 }}}

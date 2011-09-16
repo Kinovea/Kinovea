@@ -3315,9 +3315,7 @@ namespace Kinovea.ScreenManager
 			// Note: the Graphics object must not be the one extracted from the image itself.
 			// If needed, clone the image.
 			if (_sourceImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
-			{
 				m_FrameServer.Metadata.Magnifier.Draw(_sourceImage, g, m_FrameServer.CoordinateSystem.Stretch, m_FrameServer.Metadata.Mirrored);
-			}
 		}
 		private void DoInvalidate()
 		{
@@ -4652,6 +4650,7 @@ namespace Kinovea.ScreenManager
 			
 			StopPlaying();
 			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+			
 			DelegatesPool dp = DelegatesPool.Instance();
 			if (dp.DeactivateKeyboardHandler != null)
 				dp.DeactivateKeyboardHandler();
@@ -4660,61 +4659,56 @@ namespace Kinovea.ScreenManager
 			
 			if (dp.ActivateKeyboardHandler != null)
 				dp.ActivateKeyboardHandler();
+			
+			m_iFramesToDecode = 1;
+			ShowNextFrame(m_iSelStart, true);
+			ActivateKeyframe(m_iCurrentPosition, true);
 		}
 		private void btnDiaporama_Click(object sender, EventArgs e)
 		{
-			bool bDiapo = sender == btnDiaporama;
+		    if (!m_FrameServer.Loaded || m_FrameServer.VideoReader.CurrentImage == null)
+		        return;
+		        
+			bool diaporama = sender == btnDiaporama;
+			
+			StopPlaying();
+			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 			
 			if(m_FrameServer.Metadata.Keyframes.Count < 1)
 			{
-				if(bDiapo)
-				{
-					MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
-					                ScreenManagerLang.Error_SaveDiaporama,
-					                MessageBoxButtons.OK,
-					                MessageBoxIcon.Exclamation);
-				}
-				else
-				{
-					MessageBox.Show(ScreenManagerLang.Error_SavePausedVideo_NoKeyframes.Replace("\\n", "\n"),
-					                ScreenManagerLang.Error_SavePausedVideo,
-					                MessageBoxButtons.OK,
-					                MessageBoxIcon.Exclamation);
-				}
+			    string error = diaporama ? ScreenManagerLang.Error_SavePausedVideo : ScreenManagerLang.Error_SavePausedVideo;
+				MessageBox.Show(ScreenManagerLang.Error_SaveDiaporama_NoKeyframes.Replace("\\n", "\n"),
+                                error,
+					            MessageBoxButtons.OK,
+					            MessageBoxIcon.Exclamation);
+			    return;
 			}
-			else if (m_FrameServer.Loaded && m_FrameServer.VideoReader.CurrentImage != null)
-			{
-				StopPlaying();
-				m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+			
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DeactivateKeyboardHandler != null)
+				dp.DeactivateKeyboardHandler();
 				
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DeactivateKeyboardHandler != null)
-				{
-					dp.DeactivateKeyboardHandler();
-				}
-				
-				m_FrameServer.SaveDiaporama(GetOutputBitmap, bDiapo);
+			m_FrameServer.SaveDiaporama(GetOutputBitmap, diaporama);
 
-				if (dp.ActivateKeyboardHandler != null)
-				{
-					dp.ActivateKeyboardHandler();
-				}
-			}
+			if (dp.ActivateKeyboardHandler != null)
+				dp.ActivateKeyboardHandler();
+			
+			m_iFramesToDecode = 1;
+			ShowNextFrame(m_iSelStart, true);
+			ActivateKeyframe(m_iCurrentPosition, true);
 		}
 		public void Save()
 		{
 			m_FrameServer.Save(GetPlaybackFrameInterval(), m_fSlowmotionPercentage, GetOutputBitmap);
 		}
-		public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
+		public long GetOutputBitmap(Graphics _canvas, Bitmap _source, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
-			// Used by the VideoFile for SaveMovie.
-			// The image to save was already retrieved (from stream or analysis array)
-			// This image is already drawn on _canvas.
+			// Used by various methods to paint the drawings on an already retrieved raw image.
+			// The source image is already drawn on _canvas.
 			// Here we we flush the drawings on it if needed.
 			// We return the distance to the closest key image.
-			// This can then be used by the caller.
 
-			// 1. Look for the closest key image.
+			// Look for the closest key image.
 			long iClosestKeyImageDistance = long.MaxValue;	
 			int iKeyFrameIndex = -1;
 			for(int i=0; i<m_FrameServer.Metadata.Keyframes.Count;i++)
@@ -4727,26 +4721,20 @@ namespace Kinovea.ScreenManager
 				}
 			}
 
-			// 2. Invalidate the distance if we wanted only key images, and we are not on one.
-			// Or if there is no key image at all.
-			if ( _bKeyframesOnly && iClosestKeyImageDistance != 0 || iClosestKeyImageDistance == long.MaxValue)
-			{
+			// Invalidate the distance if we wanted only key images, and we are not on one.
+			if (_bKeyframesOnly && iClosestKeyImageDistance != 0 || iClosestKeyImageDistance == long.MaxValue)
 				iClosestKeyImageDistance = -1;
-			}
 			
-			// 3. Flush drawings if needed.
 			if(!_bFlushDrawings)
 			    return iClosestKeyImageDistance;
 			
+			// For magnifier we must clone the image since the graphics object has been
+			// extracted from the image itself (painting fails if we reuse the uncloned image).
+			// And we must clone it before the drawings are flushed on it.
+			bool magnifier = m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible;
 			Bitmap rawImage = null;
-			
-			if(m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
-			{
-				// For the magnifier, we must clone the image since the graphics object has been 
-				// extracted from the image itself (painting fails if we reuse the uncloned image).
-				// And we must clone it before the drawings are flushed on it.
-				rawImage = AForge.Imaging.Image.Clone(_sourceImage);
-			}
+			if(magnifier)
+			    rawImage = _source.CloneDeep();
 
             CoordinateSystem temp = m_FrameServer.CoordinateSystem.Identity;
 
@@ -4754,25 +4742,25 @@ namespace Kinovea.ScreenManager
 			{
 				if(iClosestKeyImageDistance == 0)
 				{
-                    FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0, 0));
-					FlushMagnifierOnGraphics(rawImage, _canvas);
+                    FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, Point.Empty);
+                    if(magnifier)
+                        FlushMagnifierOnGraphics(rawImage, _canvas);
 				}
 			}
 			else
 			{
 				if(iClosestKeyImageDistance == 0)
-				{
-					FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, new Point(0,0));	
-				}
+				    FlushDrawingsOnGraphics(_canvas, temp, iKeyFrameIndex, _iTimestamp, 1.0f, 1.0f, Point.Empty);
 				else
-				{
-					FlushDrawingsOnGraphics(_canvas, temp, -1, _iTimestamp, 1.0f, 1.0f, new Point(0,0));
-				}
+					FlushDrawingsOnGraphics(_canvas, temp, -1, _iTimestamp, 1.0f, 1.0f, Point.Empty);
 				
-				FlushMagnifierOnGraphics(rawImage, _canvas);
+				if(magnifier)
+                    FlushMagnifierOnGraphics(rawImage, _canvas);
 			}	
-			
 
+            if(magnifier)
+                rawImage.Dispose();
+			
 			return iClosestKeyImageDistance;
 		}
 		public Bitmap GetFlushedImage()

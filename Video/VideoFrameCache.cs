@@ -200,6 +200,10 @@ namespace Kinovea.Video
         
         public IEnumerator GetEnumerator()
         {
+            // Provided to support foreach construct.
+            // Should be removed in favor of Reader.FrameEnumerator.
+            
+            
             // This one is not thread safe and can't be made so easily. 
             // Check if we could use a copy of the list instead.
             return m_Cache.GetEnumerator();
@@ -250,7 +254,6 @@ namespace Kinovea.Video
                 m_Capacity = m_DefaultCapacity;
                 m_RemembranceCapacity = m_DefaultRemembranceCapacity;
                 
-                log.DebugFormat("Clear : Pulse to wake decoder.");
                 Monitor.PulseAll(m_Locker);
             }
         }
@@ -267,7 +270,7 @@ namespace Kinovea.Video
                 m_Cache.RemoveAt(0);
                 m_CurrentIndex--;
                 UpdateSegment();
-                log.DebugFormat("RemoveOldest : Pulse to wake decoder.");
+                
                 Monitor.PulseAll(m_Locker);
             }
         }
@@ -303,7 +306,6 @@ namespace Kinovea.Video
                 m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
                 UpdateSegment();
                 
-                log.DebugFormat("PurgeOutsiders : Pulse to wake decoder.");
                 Monitor.PulseAll(m_Locker);
             }
         }
@@ -322,7 +324,6 @@ namespace Kinovea.Video
             // A rollover (back to begining after end of working zone),
             // is an out of segment jump that will still be contiguous after the jump.
             // In this special case the cache need not be cleared.
-            log.DebugFormat("Is roll over: target:[{0}], wz start:[{1}], has wz end : {2}", _timestamp, m_WorkingZone.Start, Contains(m_WorkingZone.End));
             return _timestamp == m_WorkingZone.Start && Contains(m_WorkingZone.End);
         }
         

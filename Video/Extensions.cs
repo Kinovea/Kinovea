@@ -18,25 +18,29 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+
 using System;
-using Kinovea.Base;
+using System.Collections.Generic;
+using System.Text;
+using System.Drawing;
+using System.Runtime.CompilerServices;
 
 namespace Kinovea.Video
 {
-    public struct SavingSettings
+    public static class Extensions
     {
-        public VideoSection Section;
-        public string Metadata;
-        public string File;
-        public double InputFrameInterval;
-        public double OutputFrameInterval;
-        public int Duplication;
-        public int KeyframeDuplication;
-        public bool FlushDrawings;
-        public bool KeyframesOnly;
-        public bool PausedVideo;
-        public ImageRetriever ImageRetriever;
-        public long EstimatedTotal;
-        
+        /// <summary>
+        /// Deep clone of a bitmap.
+        /// </summary>
+        public static Bitmap CloneDeep(this Bitmap _bmp)
+        {
+            if(object.ReferenceEquals(_bmp, null))
+                return null;
+            
+            Bitmap clone = new Bitmap(_bmp.Width, _bmp.Height, _bmp.PixelFormat);
+            Graphics g = Graphics.FromImage(clone);
+            g.DrawImageUnscaled(_bmp, 0, 0);
+			return clone;
+        }
     }
 }

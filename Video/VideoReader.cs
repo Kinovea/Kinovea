@@ -68,7 +68,6 @@ namespace Kinovea.Video
 		
 		#region Concrete Properties
 		public VideoFrameCache Cache { get; protected set; }
-		//protected VideoFrameCache Cache { get; set; }
 		public VideoOptions Options { get; set; }
 		public bool Caching { get; protected set; }
 		public VideoFrame Current {
@@ -95,6 +94,12 @@ namespace Kinovea.Video
 		        else return Cache.Current.Image;
 		    }
         }
+		public long EstimatedFrames {
+		    get {
+		        long duration = WorkingZone.End - WorkingZone.Start;
+		        return (duration / Info.AverageTimeStampsPerFrame) + 1;
+		    }
+		}
 		#endregion
 
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
@@ -160,6 +165,28 @@ namespace Kinovea.Video
 		{
 		    return false;
 		}
+		
+        /// <summary>
+        /// Provide a lazy enumerator on each frame of the Working Zone.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<VideoFrame> FrameEnumerator()
+        {
+            // Note: this should be called only after async decode deactivation.
+
+            bool hasMore =  MoveFirst();
+            yield return Current;
+            
+            while(hasMore)
+            {
+                hasMore = MoveNext(false);
+                yield return Current;
+                
+                // Clean up continuously to avoid clogging the cache.
+                if(!Caching)
+                    Cache.Clear();
+            }
+        }
 		
 		/// <summary>
 		/// Updates the internal working zone. Import whole zone to cache if possible.

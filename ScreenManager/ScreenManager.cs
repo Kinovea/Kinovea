@@ -1921,19 +1921,15 @@ namespace Kinovea.ScreenManager
         #region File
         private void mnuCloseFileOnClick(object sender, EventArgs e)
         {
-            // In this event handler, we always close the first ([0]) screen.
-            RemoveScreen(0, true);
-            
-            ICommand css = new CommandShowScreens(this);
-            CommandManager.LaunchCommand(css);
-
-            OrganizeCommonControls();
-            OrganizeMenus();
+            CloseFile(0);
         }
         private void mnuCloseFile2OnClick(object sender, EventArgs e)
         {
-            // In this event handler, we always close the first ([1]) screen.
-            RemoveScreen(1, true);
+            CloseFile(1);
+        }
+        private void CloseFile(int screenIndex)
+        {
+            RemoveScreen(screenIndex, true);
             
             ICommand css = new CommandShowScreens(this);
             CommandManager.LaunchCommand(css);
@@ -1943,33 +1939,21 @@ namespace Kinovea.ScreenManager
         }
         public void mnuSaveOnClick(object sender, EventArgs e)
         {
-        	//---------------------------------------------------------------------------
-            // Launch the dialog box where the user can choose to save the video,
-            // the metadata or both.
-            // Public because accessed from the closing command when we realize there are 
+        	// Public because accessed from the closing command when we realize there are 
             // unsaved modified data.
-            //---------------------------------------------------------------------------
-            
             PlayerScreen ps = m_ActiveScreen as PlayerScreen;
-            if (ps != null)
-            {
-            	DoStopPlaying();
-                DoDeactivateKeyboardHandler();
-            	
-                ps.Save();
-                
-                DoActivateKeyboardHandler();
-            }
+            if (ps == null)
+                return;
+            
+            DoStopPlaying();
+            DoDeactivateKeyboardHandler();
+            ps.Save();
+            DoActivateKeyboardHandler();
         }
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
-            if (m_ActiveScreen != null)
-            {
-                if (m_ActiveScreen is PlayerScreen)
-                {
-                    LoadAnalysis();
-                }
-            }
+            if (m_ActiveScreen != null && m_ActiveScreen is PlayerScreen)
+                LoadAnalysis();
         }
         private void LoadAnalysis()
         {
@@ -2041,27 +2025,27 @@ namespace Kinovea.ScreenManager
         private void mnuHome_OnClick(object sender, EventArgs e)
         {
         	// Remove all screens.
-        	if(screenList.Count > 0)
-        	{
-		    	if(RemoveScreen(0, true))
-		        {
-		        	m_bSynching = false;
-		        	
-		        	if(screenList.Count > 0)
-		        	{
-		        		// Second screen is now in [0] spot.
-		        		RemoveScreen(0, true);
-		        	}
-		        }
-		          
-		        // Display the new list.
-		        CommandManager cm = CommandManager.Instance();
-		        ICommand css = new CommandShowScreens(this);
-		        CommandManager.LaunchCommand(css);
-		        
-		        OrganizeCommonControls();
-		        OrganizeMenus();
-        	}
+        	if(screenList.Count <= 0)
+        	    return;
+        	
+        	if(RemoveScreen(0, true))
+	        {
+	        	m_bSynching = false;
+	        	
+	        	if(screenList.Count > 0)
+	        	{
+	        		// Second screen is now in [0] spot.
+	        		RemoveScreen(0, true);
+	        	}
+	        }
+	          
+	        // Display the new list.
+	        CommandManager cm = CommandManager.Instance();
+	        ICommand css = new CommandShowScreens(this);
+	        CommandManager.LaunchCommand(css);
+	        
+	        OrganizeCommonControls();
+	        OrganizeMenus();
         }
         private void mnuOnePlayerOnClick(object sender, EventArgs e)
         {
@@ -2593,17 +2577,15 @@ namespace Kinovea.ScreenManager
         }      
         private void ChangeAspectRatio(ImageAspectRatio _aspectRatio)
         {
-        	if(m_ActiveScreen != null)
-        	{        		
-        		if(m_ActiveScreen.AspectRatio != _aspectRatio)
-        		{
-        			m_ActiveScreen.AspectRatio = _aspectRatio;
-        		}	
-        		
-        		mnuFormatForce43.Checked = _aspectRatio == ImageAspectRatio.Force43;
-        		mnuFormatForce169.Checked = _aspectRatio == ImageAspectRatio.Force169;
-        		mnuFormatAuto.Checked = _aspectRatio == ImageAspectRatio.Auto;
-        	}
+        	if(m_ActiveScreen == null)
+        	    return;
+		
+    		if(m_ActiveScreen.AspectRatio != _aspectRatio)
+    			m_ActiveScreen.AspectRatio = _aspectRatio;
+    		
+    		mnuFormatForce43.Checked = _aspectRatio == ImageAspectRatio.Force43;
+    		mnuFormatForce169.Checked = _aspectRatio == ImageAspectRatio.Force169;
+    		mnuFormatAuto.Checked = _aspectRatio == ImageAspectRatio.Auto;
         }
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
@@ -2616,24 +2598,24 @@ namespace Kinovea.ScreenManager
         }
         private void mnuImportImage_OnClick(object sender, EventArgs e)
         {
+            if(m_ActiveScreen == null || !m_ActiveScreen.CapabilityDrawings)
+                return;
+            
         	// Display file open dialog and launch the drawing.
         	OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = ScreenManagerLang.dlgImportReference_Title;
             openFileDialog.Filter = ScreenManagerLang.dlgImportReference_Filter;
             openFileDialog.FilterIndex = 1;
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(openFileDialog.FileName))
             {
-                if (openFileDialog.FileName.Length > 0 && m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
-                {
-                	LoadDrawing(openFileDialog.FileName, Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg");
-                }
+                bool svg = Path.GetExtension(openFileDialog.FileName).ToLower() == ".svg";
+                LoadDrawing(openFileDialog.FileName, svg);
             }
         }
         private void mnuSVGDrawing_OnClick(object sender, EventArgs e)
         {
         	// One of the dynamically added SVG tools menu has been clicked.
-
         	// Add a drawing of the right type to the active screen.
         	ToolStripMenuItem menu = sender as ToolStripMenuItem;
         	if(menu != null)
@@ -2641,7 +2623,6 @@ namespace Kinovea.ScreenManager
         		string svgFile = menu.Tag as string;
         		LoadDrawing(svgFile, true);
         	}
-        	
         }
         private void LoadDrawing(string _filePath, bool _bIsSVG)
         {
@@ -2669,9 +2650,7 @@ namespace Kinovea.ScreenManager
         {
         	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
         	if (ps != null)
-        	{
         		ps.ConfigureHighSpeedCamera();
-        	}
         }
         #endregion
         #endregion
@@ -2696,9 +2675,7 @@ namespace Kinovea.ScreenManager
             foreach (AbstractScreen screen in screenList)
             {
                 if (screen is PlayerScreen)
-                {
                     ((PlayerScreen)screen).StopPlaying();
-                }
             }
 
             // 2. Stop the common timer.
@@ -2785,17 +2762,13 @@ public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         }
         private void ActivateOtherScreen()
         {
-        	if (screenList.Count == 2)
-            {
-                if (m_ActiveScreen == screenList[0])
-                {
-                    Screen_SetActiveScreen(screenList[1]);
-                }
-                else
-                {
-                    Screen_SetActiveScreen(screenList[0]);
-                }
-            }	
+        	if (screenList.Count != 2)
+        	    return;
+            
+            if (m_ActiveScreen == screenList[0])
+                Screen_SetActiveScreen(screenList[1]);
+            else
+                Screen_SetActiveScreen(screenList[0]);
         }
         #endregion
 
@@ -3069,15 +3042,14 @@ public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         }
         public void SwapSync()
         {
-        	if (m_bSynching && screenList.Count == 2)
-        	{
-	        	int iTemp = m_iLeftSyncFrame;
-	            m_iLeftSyncFrame = m_iRightSyncFrame;
-	            m_iRightSyncFrame = iTemp;
-	
-	            // Reset dynamic sync flags
-	            ResetDynamicSyncFlags();
-        	}
+            if (!m_bSynching || screenList.Count != 2)
+        	    return;
+            
+            int temp = m_iLeftSyncFrame;
+            m_iLeftSyncFrame = m_iRightSyncFrame;
+            m_iRightSyncFrame = temp;
+
+            ResetDynamicSyncFlags();
         }
         private void StartDynamicSync()
         {
@@ -3828,25 +3800,25 @@ public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         }
         private void ReloadScreen(ScreenState _OldScreen, int _iNewPosition)
         {
-        	if(File.Exists(_OldScreen.FilePath))
+        	if(!File.Exists(_OldScreen.FilePath))
+        	    return;
+            
+        	// We instantiate and launch it like a simple command (not undoable).
+            ICommand clmis = new CommandLoadMovieInScreen(this, _OldScreen.FilePath, _iNewPosition, false);
+            CommandManager.LaunchCommand(clmis);
+            
+            // Check that everything went well 
+            // Potential problem : the video was deleted between do and undo.
+            // _iNewPosition should always point to a valid position here.
+            if (screenList[_iNewPosition-1].Full)
             {
-        		// We instantiate and launch it like a simple command (not undoable).
-	            ICommand clmis = new CommandLoadMovieInScreen(this, _OldScreen.FilePath, _iNewPosition, false);
-	            CommandManager.LaunchCommand(clmis);
-	
-	            // Check that everything went well 
-	            // Potential problem : the video was deleted between do and undo.
-	            // _iNewPosition should always point to a valid position here.
-	            if (screenList[_iNewPosition-1].Full)
-	            {
-	            	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
-	            	if(ps != null)
-	            	{
-	                	ps.FrameServer.Metadata.Load(_OldScreen.MetadataString, false);
-	                	ps.m_PlayerScreenUI.PostImportMetadata();
-	            	}
-	            }
-        	}
+            	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+            	if(ps != null)
+            	{
+                	ps.FrameServer.Metadata.Load(_OldScreen.MetadataString, false);
+                	ps.m_PlayerScreenUI.PostImportMetadata();
+            	}
+            }
         }
         #endregion
     }
