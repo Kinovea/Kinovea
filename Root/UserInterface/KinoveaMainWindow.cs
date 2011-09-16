@@ -37,17 +37,19 @@ namespace Kinovea.Root
         {
             get { return m_bFullScreen; }
         }
-        protected override CreateParams CreateParams 
+        /*protected override CreateParams CreateParams 
         {
             // Fix flickering of controls during resize.
             // Ref. http://social.msdn.microsoft.com/forums/en-US/winforms/thread/aaed00ce-4bc9-424e-8c05-c30213171c2c/
-            get 
+            // Unfortunately this seems not too reliable. 
+            // It induce 100% CPU load from time to time, and flickering of the splitters.
+            get
             {
                 CreateParams cp = base.CreateParams;
                 cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
                 return cp;
             }
-        }
+        }*/
         #endregion
 
         #region Members
