@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
 	/// All adjustment filters :
 	/// - Input        : All images.
 	/// - Output       : All images, same size.
-	/// - Type         : Work on each frame separately.
+	/// - Type         : Work on each frame separately - the filter must be applied in place.
 	/// - Previewable  : Yes.
 	/// </summary>
     public abstract class AdjustmentFilter : AbstractVideoFilter
@@ -45,9 +45,8 @@ namespace Kinovea.ScreenManager
 		    if(ImageProcessor == null || FrameCache.Count < 1)
 		        return;
 
-		    using(Bitmap bmp = CloneTo24bpp(FrameCache.Representative))
-			using(Bitmap preview = ImageProcessor(bmp))
-			using(formPreviewVideoFilter fpvf = new formPreviewVideoFilter(preview, Name))
+		    using(Bitmap bmp = FrameCache.Representative.CloneDeep())
+			using(formPreviewVideoFilter fpvf = new formPreviewVideoFilter(ImageProcessor(bmp), Name))
 			{
                 if (fpvf.ShowDialog() == DialogResult.OK)
                     StartProcessing();
@@ -62,7 +61,7 @@ namespace Kinovea.ScreenManager
 			int i = 0;
 			foreach(VideoFrame vf in FrameCache)
 			{
-			    vf.Image = ImageProcessor(vf.Image);
+			    ImageProcessor(vf.Image);
 			    m_BackgroundWorker.ReportProgress(i++, FrameCache.Count);
 			}
 		}

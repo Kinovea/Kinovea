@@ -294,9 +294,8 @@ namespace Kinovea.ScreenManager
             if(m_FrameServer.Loaded)
             {
                 m_PlayerScreenUI.StopPlaying();
-                m_FrameServer.VideoReader.CancelAsyncDecode();
+                m_FrameServer.VideoReader.Close();
             }
-            
         }
         public override void refreshUICulture()
         {

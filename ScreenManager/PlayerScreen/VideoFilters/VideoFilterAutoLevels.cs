@@ -50,25 +50,15 @@ namespace Kinovea.ScreenManager
 		
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
-			
-			ImageStatistics stats = new ImageStatistics(img);
-        	
-			LevelsLinear levelsLinear = new LevelsLinear();
-        	levelsLinear.InRed   = stats.Red.GetRange( 0.87 );
-            levelsLinear.InGreen = stats.Green.GetRange( 0.87 );
-            levelsLinear.InBlue  = stats.Blue.GetRange( 0.87 );
+            ImageStatistics stats = new ImageStatistics(_src);
+            LevelsLinear levelsLinear = new LevelsLinear {
+                InRed = stats.Red.GetRange( 0.87 ),
+                InGreen = stats.Green.GetRange( 0.87 ),
+                InBlue  = stats.Blue.GetRange( 0.87 )
+            };
             
-            levelsLinear.ApplyInPlace(img);
-			
-            if(_src.PixelFormat != PixelFormat.Format24bppRgb)
-			{
-            	Graphics g = Graphics.FromImage(_src);
-            	g.DrawImageUnscaled(img, 0, 0);
-            	img.Dispose();
-            }
-            
-			return _src;
+            levelsLinear.ApplyInPlace(_src);
+            return _src;
 		}
 	}
 }

@@ -40,6 +40,7 @@ namespace Kinovea.Video
     /// This is because m_Cache is only accessed for add by the decoding thread and this has no impact on m_Current reference.
     /// The only thing that alter the reference to m_Current are MoveNext, MoveTo, PurgeOutsiders, Clear.
     /// All these are initiated by the UI thread itself, so it will not be using m_Current simultaneously.
+    /// Similarly, drop count is only updated in move* so only from the UI thread.
     ///</remarks>
     public class VideoFrameCache : IEnumerable, IDisposable
     {
@@ -128,6 +129,7 @@ namespace Kinovea.Video
                 else
                 {
                     m_CurrentIndex = m_CurrentIndex + m_Drops + 1;
+                    m_Drops = 0;
                     read = true;
                 }
                 

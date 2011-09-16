@@ -1,0 +1,84 @@
+Index: Sources/Imaging/Filters/Color Filters/Grayscale.cs
+===================================================================
+--- Sources/Imaging/Filters/Color Filters/Grayscale.cs	(revision 1538)
++++ Sources/Imaging/Filters/Color Filters/Grayscale.cs	(working copy)
+@@ -159,6 +159,7 @@
+             formatTranslations[PixelFormat.Format24bppRgb]  = PixelFormat.Format8bppIndexed;
+             formatTranslations[PixelFormat.Format32bppRgb]  = PixelFormat.Format8bppIndexed;
+             formatTranslations[PixelFormat.Format32bppArgb] = PixelFormat.Format8bppIndexed;
++            formatTranslations[PixelFormat.Format32bppPArgb] = PixelFormat.Format8bppIndexed;
+             formatTranslations[PixelFormat.Format48bppRgb]  = PixelFormat.Format16bppGrayScale;
+             formatTranslations[PixelFormat.Format64bppArgb] = PixelFormat.Format16bppGrayScale;
+         }
+@@ -180,7 +181,8 @@
+             if (
+                 ( srcPixelFormat == PixelFormat.Format24bppRgb ) ||
+                 ( srcPixelFormat == PixelFormat.Format32bppRgb ) ||
+-                ( srcPixelFormat == PixelFormat.Format32bppArgb ) )
++                ( srcPixelFormat == PixelFormat.Format32bppArgb ) ||
++                ( srcPixelFormat == PixelFormat.Format32bppPArgb ))
+             {
+                 int pixelSize = ( srcPixelFormat == PixelFormat.Format24bppRgb ) ? 3 : 4;
+                 int srcOffset = sourceData.Stride - width * pixelSize;
+Index: Sources/Imaging/Filters/Color Filters/LevelsLinear.cs
+===================================================================
+--- Sources/Imaging/Filters/Color Filters/LevelsLinear.cs	(revision 1538)
++++ Sources/Imaging/Filters/Color Filters/LevelsLinear.cs	(working copy)
+@@ -226,6 +226,7 @@
+             formatTranslations[PixelFormat.Format24bppRgb]    = PixelFormat.Format24bppRgb;
+             formatTranslations[PixelFormat.Format32bppRgb]    = PixelFormat.Format32bppRgb;
+             formatTranslations[PixelFormat.Format32bppArgb]   = PixelFormat.Format32bppArgb;
++            formatTranslations[PixelFormat.Format32bppPArgb]  = PixelFormat.Format32bppPArgb;
+         }
+ 
+         /// <summary>
+Index: Sources/Imaging/Filters/Convolution/Convolution.cs
+===================================================================
+--- Sources/Imaging/Filters/Convolution/Convolution.cs	(revision 1538)
++++ Sources/Imaging/Filters/Convolution/Convolution.cs	(working copy)
+@@ -175,6 +175,7 @@
+             formatTranslations[PixelFormat.Format24bppRgb]       = PixelFormat.Format24bppRgb;
+             formatTranslations[PixelFormat.Format32bppRgb]       = PixelFormat.Format32bppRgb;
+             formatTranslations[PixelFormat.Format32bppArgb]      = PixelFormat.Format32bppArgb;
++            formatTranslations[PixelFormat.Format32bppPArgb]      = PixelFormat.Format32bppPArgb;
+             formatTranslations[PixelFormat.Format48bppRgb]       = PixelFormat.Format48bppRgb;
+             formatTranslations[PixelFormat.Format64bppArgb]      = PixelFormat.Format64bppArgb;
+         }
+Index: Sources/Imaging/Filters/HSL Filters/ContrastCorrection.cs
+===================================================================
+--- Sources/Imaging/Filters/HSL Filters/ContrastCorrection.cs	(revision 1538)
++++ Sources/Imaging/Filters/HSL Filters/ContrastCorrection.cs	(working copy)
+@@ -110,6 +110,7 @@
+             formatTranslations[PixelFormat.Format24bppRgb]  = PixelFormat.Format24bppRgb;
+             formatTranslations[PixelFormat.Format32bppRgb]  = PixelFormat.Format32bppRgb;
+             formatTranslations[PixelFormat.Format32bppArgb] = PixelFormat.Format32bppArgb;
++            formatTranslations[PixelFormat.Format32bppPArgb] = PixelFormat.Format32bppPArgb;
+         }
+ 
+         /// <summary>
+Index: Sources/Imaging/Filters/HSL Filters/HSLLinear.cs
+===================================================================
+--- Sources/Imaging/Filters/HSL Filters/HSLLinear.cs	(revision 1538)
++++ Sources/Imaging/Filters/HSL Filters/HSLLinear.cs	(working copy)
+@@ -122,6 +122,7 @@
+             formatTranslations[PixelFormat.Format24bppRgb]  = PixelFormat.Format24bppRgb;
+             formatTranslations[PixelFormat.Format32bppRgb]  = PixelFormat.Format32bppRgb;
+             formatTranslations[PixelFormat.Format32bppArgb] = PixelFormat.Format32bppArgb;
++            formatTranslations[PixelFormat.Format32bppPArgb] = PixelFormat.Format32bppPArgb;
+         }
+ 
+         /// <summary>
+Index: Sources/Imaging/ImageStatistics.cs
+===================================================================
+--- Sources/Imaging/ImageStatistics.cs	(revision 1538)
++++ Sources/Imaging/ImageStatistics.cs	(working copy)
+@@ -627,7 +627,8 @@
+                 ( pixelFormat != PixelFormat.Format8bppIndexed ) &&
+                 ( pixelFormat != PixelFormat.Format24bppRgb ) &&
+                 ( pixelFormat != PixelFormat.Format32bppRgb ) &&
+-                ( pixelFormat != PixelFormat.Format32bppArgb ) )
++                ( pixelFormat != PixelFormat.Format32bppArgb ) && 
++                ( pixelFormat != PixelFormat.Format32bppPArgb ) )
+             {
+                 throw new UnsupportedImageFormatException( "Source pixel format is not supported." );
+             }

@@ -41,6 +41,7 @@ namespace Kinovea.Video
 	    public abstract bool Loaded { get; }
 		public abstract VideoInfo Info { get; }
 		public abstract VideoSection WorkingZone { get; set; }
+		public abstract bool IsAsyncDecoding { get; }
 		#endregion
 		
 		#region Methods
@@ -67,6 +68,7 @@ namespace Kinovea.Video
 		
 		#region Concrete Properties
 		public VideoFrameCache Cache { get; protected set; }
+		//protected VideoFrameCache Cache { get; set; }
 		public VideoOptions Options { get; set; }
 		public bool Caching { get; protected set; }
 		public VideoFrame Current {
@@ -98,8 +100,8 @@ namespace Kinovea.Video
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
 		
 		#region Members
-		protected ThreadCanceler m_ThreadCanceler = new ThreadCanceler();
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private bool m_bWasAsyncDecoding;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 		
 		#region Concrete Methods
@@ -181,8 +183,6 @@ namespace Kinovea.Video
                 return;
             }
             
-            m_ThreadCanceler.Cancel();
-            
             VideoSection sectionToCache = VideoSection.Empty;
             bool prepend = false;
             
@@ -235,7 +235,11 @@ namespace Kinovea.Video
 		{
 		    return "";
 		}
-		public virtual void StartPrefetching()
+		public virtual void StartAsyncDecoding()
+		{
+		    // Does nothing by default. Override to implement.
+		}
+		public virtual void CancelAsyncDecoding()
 		{
 		    // Does nothing by default. Override to implement.
 		}
@@ -244,9 +248,33 @@ namespace Kinovea.Video
 		    if(Cache != null)
 		        Cache.SkipDrops();
 		}
-		public virtual void CancelAsyncDecode()
+		
+		/// <summary>
+		/// Must be called before every operation that would conflict with async decoding.
+		/// For example, loading key images or saving image sequence, saving videos.
+		/// These operations need the playhead to repeatedly move to non contiguous frames, which
+		/// would induce unecessary decoding each time we move.
+		/// the async decode thread should be stopped temporarily and restarted after the operation.
+		/// </summary>
+		public virtual void BeforeFrameOperation()
 		{
-		    m_ThreadCanceler.Cancel();
+            m_bWasAsyncDecoding = IsAsyncDecoding;
+            if(m_bWasAsyncDecoding)
+            {
+                CancelAsyncDecoding();
+                Cache.Clear();
+            }
+		}
+		public virtual void AfterFrameOperation()
+		{
+            if(!Caching)
+            {
+                // The operation may have corrupted the cache with non contiguous frames.
+                Cache.Clear();
+                
+                if(m_bWasAsyncDecoding)
+                    StartAsyncDecoding();
+            }
 		}
 		#endregion
 	}

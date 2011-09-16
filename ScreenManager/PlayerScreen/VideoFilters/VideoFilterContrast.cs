@@ -42,22 +42,12 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		private ContrastCorrection m_Filter = new ContrastCorrection(1.6F);
+		
 		private Bitmap ProcessSingleImage(Bitmap _src)
 		{
-			float fValue = 1.6F;
-			Bitmap img = (_src.PixelFormat == PixelFormat.Format24bppRgb) ? _src : CloneTo24bpp(_src);
-			
-			ContrastCorrection filter = new ContrastCorrection(fValue);	
-			filter.ApplyInPlace(img);
-			
-			if(_src.PixelFormat != PixelFormat.Format24bppRgb)
-			{
-            	Graphics g = Graphics.FromImage(_src);
-            	g.DrawImageUnscaled(img, 0, 0);
-            	img.Dispose();
-            }
-			
-			return _src;
-		}
+            m_Filter.ApplyInPlace(_src);
+            return _src;
+        }
 	}
 }
