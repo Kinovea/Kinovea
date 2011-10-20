@@ -98,7 +98,7 @@ namespace Kinovea.Services
         #endregion
 
         #region Implementation
-        public void InitializeComandLineParser()
+        public void InitializeCommandLineParser()
         {
         	// Define parameters and switches. (All optional).
         	
