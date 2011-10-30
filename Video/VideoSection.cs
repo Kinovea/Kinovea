@@ -37,7 +37,7 @@ namespace Kinovea.Video
             get { return Start < 0 || End < 0; }
         }
         public bool Wrapped {
-            get { return End < Start;}
+            get { return !IsEmpty && End < Start;}
         }
         public readonly long Start;
         public readonly long End;
@@ -49,11 +49,12 @@ namespace Kinovea.Video
         }
         public bool Contains(long _timestamp)
         {
+            // Not really defined if wrapping.
             return !IsEmpty && _timestamp >= Start && _timestamp <= End;
         }
         public bool Contains(VideoSection _other)
         {
-            return _other < this || _other == this;
+            return !IsEmpty && (_other < this || _other == this);
         }
         public override string ToString()
         {
@@ -66,22 +67,19 @@ namespace Kinovea.Video
         #region Equality and comparison
         public int CompareTo(object _other)
         {
-            // Comparison is done on duration.
-            if (_other is VideoSection)
-            {
-                VideoSection other = (VideoSection)_other;
-                
-                if(this.Start == other.Start && this.End == other.End) 
-                    return 0;
-                else if(this.Start >= other.Start && this.End <= other.End)
-                    return -1;
-                else
-                    return 1;
-            }
-            else 
-            {
+            if (!(_other is VideoSection))
                 throw new ArgumentException();
-            }
+            
+            // To be "less than", a section must be entirely enclosed in another and smaller.
+            
+            VideoSection other = (VideoSection)_other;
+            
+            if(this.Start == other.Start && this.End == other.End) 
+                return 0;
+            else if(this.Start >= other.Start && this.End <= other.End)
+                return -1;
+            else
+                return 1;
         }
         public static bool operator < (VideoSection v1, VideoSection v2)
         {
@@ -99,7 +97,7 @@ namespace Kinovea.Video
         }
         public bool Equals(VideoSection other)
         {
-            return Start == other.Start && End == other.End;
+            return !IsEmpty && Start == other.Start && End == other.End;
         }
         public static bool operator ==(VideoSection v1, VideoSection v2)
         {
