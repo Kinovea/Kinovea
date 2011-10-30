@@ -85,7 +85,6 @@ namespace Kinovea.ScreenManager
         private bool m_bHasSvgFiles;
         private string m_SvgPath;
         private FileSystemWatcher m_SVGFilesWatcher = new FileSystemWatcher();
-        private MethodInvoker m_SVGFilesChangedInvoker;
         private bool m_BuildingSVGMenu;
         private List<ToolStripMenuItem> m_filterMenus = new List<ToolStripMenuItem>();
         
@@ -179,7 +178,6 @@ namespace Kinovea.ScreenManager
             dp.StopPlaying = DoStopPlaying;
             dp.DeactivateKeyboardHandler = DoDeactivateKeyboardHandler;
             dp.ActivateKeyboardHandler = DoActivateKeyboardHandler;
-            dp.VideoProcessingDone = DoVideoProcessingDone;
             
             // Watch for changes in the guides directory.
             m_SvgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
@@ -204,6 +202,27 @@ namespace Kinovea.ScreenManager
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
+        }
+        private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
+        {
+            ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
+            menu.MergeAction = MergeAction.Append;
+            menu.Tag = _filter;
+            menu.Click += (s,e) => {
+                PlayerScreen screen = m_ActiveScreen as PlayerScreen;
+                if(screen == null || !screen.IsCaching)
+                    return;
+                AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
+                filter.Activate(screen.FrameServer.VideoReader.Cache, SetInteractiveEffect);
+                screen.RefreshImage();
+            };
+            return menu;
+        }
+        public void SetInteractiveEffect(InteractiveEffect _effect)
+        {
+            PlayerScreen player = m_ActiveScreen as PlayerScreen;
+        	if(player != null)
+        		player.SetInteractiveEffect(_effect);
         }
         public void PrepareScreen()
         {
@@ -405,20 +424,7 @@ namespace Kinovea.ScreenManager
 
             RefreshCultureMenu();
         }
-        private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
-        {
-            ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
-            menu.MergeAction = MergeAction.Append;
-            menu.Tag = _filter;
-            menu.Click += (s,e) => {
-                PlayerScreen screen = m_ActiveScreen as PlayerScreen;
-                if(screen == null || !screen.IsCaching)
-                    return;
-                AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
-                filter.Activate(screen.FrameServer.VideoReader.Cache);
-            };
-            return menu;
-        }
+        
         public void ExtendToolBar(ToolStrip _toolbar)
         {
         	// Save
@@ -527,34 +533,24 @@ namespace Kinovea.ScreenManager
 
             OrganizeMenus();
         }
-        public void Screen_CloseAsked(AbstractScreen _SenderScreen)
+        public void Screen_CloseAsked(AbstractScreen _sender)
         {
         	// If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
-// TODO: Revisit this.
-        	if(_SenderScreen is PlayerScreen)
+        	if(_sender is PlayerScreen && ((PlayerScreen)_sender).InteractiveFiltering)
         	{
-        		int iDrawtimeFilterType = ((PlayerScreen)_SenderScreen).DrawtimeFilterType;
-        		if(iDrawtimeFilterType > -1)
-        		{
-        			// We need to make sure this is the active screen for the DrawingFilter menu action to be properly routed.
-        			Screen_SetActiveScreen(_SenderScreen);
-                    //m_VideoFilters[iDrawtimeFilterType].Menu_OnClick(this, EventArgs.Empty);
-        			return;
-        		}
+        	    Screen_SetActiveScreen(_sender);
+        	    ((PlayerScreen)_sender).DeactivateInteractiveEffect();
+        	    return;
         	}
         	
-            _SenderScreen.BeforeClose();
+            _sender.BeforeClose();
             
             // Reorganise screens.
             // We leverage the fact that screens are always well ordered relative to menus.
-            if (screenList.Count > 0 && _SenderScreen == screenList[0])
-            {
-                mnuCloseFileOnClick(null, EventArgs.Empty);
-            }
+            if (screenList.Count > 0 && _sender == screenList[0])
+                CloseFile(0);
             else
-            {
-                mnuCloseFile2OnClick(null, EventArgs.Empty);
-            }
+                CloseFile(1);
             
             UpdateCaptureBuffers();
             PrepareSync(false);
@@ -565,22 +561,16 @@ namespace Kinovea.ScreenManager
         }
         public void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation)
         {
-            if (m_bSynching)
-            {
-            	log.Debug("Speed percentage of one video changed. Force same percentage on the other.");
-            	if(screenList.Count == 2)
-            	{
-            		int otherScreen = 1;
-            		if(_screen == screenList[1])
-            		{
-            			otherScreen = 0;
-            		}
-            		
-            		((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)_screen).RealtimePercentage;
-            	
-            		SetSyncPoint(true);
-            	}
-            }
+            if (!m_bSynching || screenList.Count != 2)
+                return;
+            
+            // TODO: this is problematic when one of the video is a high speed camera and not the other.
+            
+            log.Debug("Speed percentage of one video changed. Force same percentage on the other.");
+            int otherScreen = _screen == screenList[0] ? 1 : 0;
+            ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)_screen).RealtimePercentage;
+            
+            SetSyncPoint(true);
         }
         public void Player_PauseAsked(PlayerScreen _screen)
         {
@@ -635,7 +625,7 @@ namespace Kinovea.ScreenManager
         {
         	// A screen was reset. (ex: a video was reloded in place).
         	// We need to also reset all the sync states.
-        	PrepareSync(true);        	
+        	PrepareSync(true);
         }
         public void Capture_FileSaved(CaptureScreen _screen)
         {
@@ -702,7 +692,7 @@ namespace Kinovea.ScreenManager
         	}
 			
 			return effects;
-       	}
+        }
         public void CommonCtrl_GotoFirst()
         {
         	DoStopPlaying();
@@ -863,10 +853,10 @@ namespace Kinovea.ScreenManager
         		((PlayerScreen)screenList[1]).SyncMerge = m_bSyncMerging;
         	}
         }
-       	public void CommonCtrl_PositionChanged(long _iPosition)
-       	{
-       		// Manual static sync.
-       		if (m_bSynching)
+   	public void CommonCtrl_PositionChanged(long _iPosition)
+   	{
+            // Manual static sync.
+            if (m_bSynching)
             {
                 StopDynamicSync();
                 
@@ -878,110 +868,110 @@ namespace Kinovea.ScreenManager
                 m_iCurrentFrame = (int)_iPosition;
                 OnCommonPositionChanged(m_iCurrentFrame, true);
             }	
-       	}
-       	public void CommonCtrl_Snapshot()
-       	{
-       		// Retrieve current images and create a composite out of them.
-       		if (m_bSynching && screenList.Count == 2)
-            {
-       			PlayerScreen ps1 = screenList[0] as PlayerScreen;
-       			PlayerScreen ps2 = screenList[1] as PlayerScreen;
-       			if(ps1 != null && ps2 != null)
-       			{
-       				DoStopPlaying();
-       				
-       				// get a copy of the images with drawings flushed on.
-       				Bitmap leftImage = ps1.GetFlushedImage();
-       				Bitmap rightImage = ps2.GetFlushedImage();
-       				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
-       				
-       				// Configure Save dialog.
-       				SaveFileDialog dlgSave = new SaveFileDialog();
-					dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-					dlgSave.RestoreDirectory = true;
-					dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-					dlgSave.FilterIndex = 1;
-					dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
-					
-					// Launch the dialog and save image.
-					if (dlgSave.ShowDialog() == DialogResult.OK)
-					{
-						ImageHelper.Save(dlgSave.FileName, composite);
-					}
-
-					composite.Dispose();
-					leftImage.Dispose();
-					rightImage.Dispose();
-					
-					DelegatesPool dp = DelegatesPool.Instance();
-            		if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
-       			}
-       		}
-       	}
-       	public void CommonCtrl_DualVideo()
-       	{
-       		// Create and save a composite video with side by side synchronized images.
-       		// If merge is active, just save one video.
-       		
-       		if (m_bSynching && screenList.Count == 2)
-            {
-       			PlayerScreen ps1 = screenList[0] as PlayerScreen;
-       			PlayerScreen ps2 = screenList[1] as PlayerScreen;
-       			if(ps1 != null && ps2 != null)
-       			{
-       				DoStopPlaying();
-       				
-       				// Get file name from user.
-       				SaveFileDialog dlgSave = new SaveFileDialog();
-		            dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
-		            dlgSave.RestoreDirectory = true;
-		            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
-		            dlgSave.FilterIndex = 1;
-		            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
-					
-       				if (dlgSave.ShowDialog() == DialogResult.OK)
-		            {
-	                	int iCurrentFrame = m_iCurrentFrame;
-   						m_bDualSaveCancelled = false;
-   						m_DualSaveFileName = dlgSave.FileName;
+        }
+   	public void CommonCtrl_Snapshot()
+   	{
+   		// Retrieve current images and create a composite out of them.
+   		if (m_bSynching && screenList.Count == 2)
+        {
+   			PlayerScreen ps1 = screenList[0] as PlayerScreen;
+   			PlayerScreen ps2 = screenList[1] as PlayerScreen;
+   			if(ps1 != null && ps2 != null)
+   			{
+   				DoStopPlaying();
    				
-	                	// Instanciate and configure the bgWorker.
-			            m_bgWorkerDualSave = new BackgroundWorker();
-			            m_bgWorkerDualSave.WorkerReportsProgress = true;
-			        	m_bgWorkerDualSave.WorkerSupportsCancellation = true;
-			            m_bgWorkerDualSave.DoWork += new DoWorkEventHandler(bgWorkerDualSave_DoWork);
-			        	m_bgWorkerDualSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerDualSave_ProgressChanged);
-			            m_bgWorkerDualSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerDualSave_RunWorkerCompleted);
-			
-			            // Make sure none of the screen will try to update itself.
-       					// Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
-			            m_bDualSaveInProgress = true;
-			            ps1.DualSaveInProgress = true;
-       					ps2.DualSaveInProgress = true;
-			            
-       					// Create the progress bar and launch the worker.
-			            m_DualSaveProgressBar = new formProgressBar(true);
-			            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
-			            m_bgWorkerDualSave.RunWorkerAsync();
-			            m_DualSaveProgressBar.ShowDialog();
-			        	
-			            // If cancelled, delete temporary file.
-			            if(m_bDualSaveCancelled)
-	    				{
-			            	DeleteTemporaryFile(m_DualSaveFileName);
-	    				}
-	    				
-			            // Reset to where we were.
-	       				m_bDualSaveInProgress = false;
-			            ps1.DualSaveInProgress = false;
-       					ps2.DualSaveInProgress = false;
-			            m_iCurrentFrame = iCurrentFrame;
-	       				OnCommonPositionChanged(m_iCurrentFrame, true);
-		        	}       				
-       			}
-       		}
-       	}
-       	#endregion
+   				// get a copy of the images with drawings flushed on.
+   				Bitmap leftImage = ps1.GetFlushedImage();
+   				Bitmap rightImage = ps2.GetFlushedImage();
+   				Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
+   				
+   				// Configure Save dialog.
+   				SaveFileDialog dlgSave = new SaveFileDialog();
+				dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
+				dlgSave.RestoreDirectory = true;
+				dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
+				dlgSave.FilterIndex = 1;
+				dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
+				
+				// Launch the dialog and save image.
+				if (dlgSave.ShowDialog() == DialogResult.OK)
+				{
+					ImageHelper.Save(dlgSave.FileName, composite);
+				}
+
+				composite.Dispose();
+				leftImage.Dispose();
+				rightImage.Dispose();
+				
+				DelegatesPool dp = DelegatesPool.Instance();
+        		if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
+   			}
+   		}
+   	}
+   	public void CommonCtrl_DualVideo()
+   	{
+   		// Create and save a composite video with side by side synchronized images.
+   		// If merge is active, just save one video.
+   		
+   		if (m_bSynching && screenList.Count == 2)
+        {
+   			PlayerScreen ps1 = screenList[0] as PlayerScreen;
+   			PlayerScreen ps2 = screenList[1] as PlayerScreen;
+   			if(ps1 != null && ps2 != null)
+   			{
+   				DoStopPlaying();
+   				
+   				// Get file name from user.
+   				SaveFileDialog dlgSave = new SaveFileDialog();
+	            dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
+	            dlgSave.RestoreDirectory = true;
+	            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+	            dlgSave.FilterIndex = 1;
+	            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
+				
+   				if (dlgSave.ShowDialog() == DialogResult.OK)
+	            {
+                	int iCurrentFrame = m_iCurrentFrame;
+						m_bDualSaveCancelled = false;
+						m_DualSaveFileName = dlgSave.FileName;
+				
+                	// Instanciate and configure the bgWorker.
+		            m_bgWorkerDualSave = new BackgroundWorker();
+		            m_bgWorkerDualSave.WorkerReportsProgress = true;
+		        	m_bgWorkerDualSave.WorkerSupportsCancellation = true;
+		            m_bgWorkerDualSave.DoWork += new DoWorkEventHandler(bgWorkerDualSave_DoWork);
+		        	m_bgWorkerDualSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerDualSave_ProgressChanged);
+		            m_bgWorkerDualSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerDualSave_RunWorkerCompleted);
+		
+		            // Make sure none of the screen will try to update itself.
+   					// Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
+		            m_bDualSaveInProgress = true;
+		            ps1.DualSaveInProgress = true;
+   					ps2.DualSaveInProgress = true;
+		            
+   					// Create the progress bar and launch the worker.
+		            m_DualSaveProgressBar = new formProgressBar(true);
+		            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
+		            m_bgWorkerDualSave.RunWorkerAsync();
+		            m_DualSaveProgressBar.ShowDialog();
+		        	
+		            // If cancelled, delete temporary file.
+		            if(m_bDualSaveCancelled)
+    				{
+		            	DeleteTemporaryFile(m_DualSaveFileName);
+    				}
+    				
+		            // Reset to where we were.
+       				m_bDualSaveInProgress = false;
+		            ps1.DualSaveInProgress = false;
+   					ps2.DualSaveInProgress = false;
+		            m_iCurrentFrame = iCurrentFrame;
+       				OnCommonPositionChanged(m_iCurrentFrame, true);
+	        	}       				
+   			}
+   		}
+   	}
+   	#endregion
         
         #region IMessageFilter Implementation
         public bool PreFilterMessage(ref Message m)
@@ -2665,22 +2655,6 @@ namespace Kinovea.ScreenManager
         public void DoActivateKeyboardHandler()
         {
             m_bAllowKeyboardHandler = true;
-        }
-public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
-        {
-        	// Disable draw time filter in player.
-        	/*if(_dfo != null)
-        	{
-    			m_VideoFilters[_dfo.VideoFilterType].Menu.Checked = _dfo.Active;
-    			
-        		PlayerScreen player = m_ActiveScreen as PlayerScreen;
-	        	if(player != null)
-	        	{
-	        		player.SetDrawingtimeFilterOutput(_dfo);
-	        	}
-        	}*/
-        	
-        	m_ActiveScreen.RefreshImage();
         }
         #endregion
 

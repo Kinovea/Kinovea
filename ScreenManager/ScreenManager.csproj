@@ -349,6 +349,7 @@
     <Compile Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.Designer.cs">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\VideoFilters\InteractiveEffect.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterAutoLevels.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterContrast.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterSandbox.cs" />

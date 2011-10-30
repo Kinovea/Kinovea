@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
-		public override void Activate(VideoFrameCache _cache)
+		public override void Activate(VideoFrameCache _cache, Action<InteractiveEffect> _setInteractiveEffect)
 		{
 			StartProcessing();
         }

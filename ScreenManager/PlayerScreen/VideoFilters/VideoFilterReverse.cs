@@ -36,11 +36,11 @@ namespace Kinovea.ScreenManager
         public override Bitmap Icon {
             get { return Properties.Resources.revert; }
         }
-        public override void Activate(VideoFrameCache _cache)
+        public override void Activate(VideoFrameCache _cache, Action<InteractiveEffect> _setInteractiveEffect)
 		{
+            // Should be quick so we don't go through the background thread.
             if(_cache != null)
                 _cache.Revert();
-            ProcessingOver();
         }
         protected override void Process(object sender, DoWorkEventArgs e)
         {

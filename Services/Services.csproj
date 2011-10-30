@@ -87,7 +87,6 @@
     <Compile Include="CommandLineArgumentParser.cs" />
     <Compile Include="DeviceCapability.cs" />
     <Compile Include="DeviceConfiguration.cs" />
-    <Compile Include="DrawtimeFilterOutput.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="CommandManager.cs" />

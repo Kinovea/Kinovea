@@ -73,28 +73,14 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Properties
-		public bool IsCurrentlyPlaying
-		{
+		public bool IsCurrentlyPlaying {
 			get { return m_bIsCurrentlyPlaying; }
 		}
-		public int DrawtimeFilterType
-		{
-			get
-			{
-				if(m_bDrawtimeFiltered)
-				{
-					return m_DrawingFilterOutput.VideoFilterType;
-				}
-				else
-				{
-					return -1;
-				}
-			}
+		public bool InteractiveFiltering {
+		    get { return m_InteractiveEffect != null && m_InteractiveEffect.Draw != null && m_FrameServer.VideoReader.Caching; }
 		}
-		public double FrameInterval
-		{
-			get 
-			{
+		public double FrameInterval {
+			get {
 				return (m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds / (m_fSlowmotionPercentage / 100));
 			}
 		}
@@ -245,11 +231,9 @@ namespace Kinovea.ScreenManager
 		private bool m_bTextEdit;
 		private Point m_DescaledMouse;
 
-		// Video Filters Management
-		private bool m_bDrawtimeFiltered;
-		private DrawtimeFilterOutput m_DrawingFilterOutput;
-		
 		// Others
+		private InteractiveEffect m_InteractiveEffect;
+		private const float m_MaxZoomFactor = 6.0F;
 		private const int m_MaxRenderingDrops = 6;
 		private const int m_MaxDecodingDrops = 6;
 		private Double m_fHighSpeedFactor = 1.0f;           	// When capture fps is different from Playing fps.
@@ -704,41 +688,27 @@ namespace Kinovea.ScreenManager
 			// Refresh image to update timecode in chronos, grids colors, default fading, etc.
 			DoInvalidate();
 		}
-		public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
+		public void SetInteractiveEffect(InteractiveEffect _effect)
 		{
-			// A video filter just finished and is passing us its output object.
-			// It is used as a communication channel between the filter and the player.
-			// Depending on the filter type, we may need to switch to a special mode,
-			// keep track of old pre-filter parameters,
-			// delegate the draw to the filter, etc...
-			
-			if(_dfo.Active)
-			{
-				m_bDrawtimeFiltered = true;
-				m_DrawingFilterOutput = _dfo;
-				
-				// Disable playing and drawing.
-				DisablePlayAndDraw();
-				
-				// Disable all player controls
-				EnableDisableAllPlayingControls(false);
-				EnableDisableDrawingTools(false);
-				
-				// TODO: memorize current state (keyframe docked) and recall it when quiting filtered mode.
-				DockKeyframePanel(true);
-				m_bStretchModeOn = true;
-				StretchSqueezeSurface();
-			}
-			else
-			{
-				m_bDrawtimeFiltered = false;
-				m_DrawingFilterOutput = null;
-
-				EnableDisableAllPlayingControls(true);
-				EnableDisableDrawingTools(true);
-				
-				// TODO:recall saved state.
-			}
+		    if(_effect == null)
+		        return;
+		    
+		    m_InteractiveEffect = _effect;
+		    
+		    DisablePlayAndDraw();
+		    EnableDisableAllPlayingControls(false);
+			EnableDisableDrawingTools(false);
+			DockKeyframePanel(true);
+			m_bStretchModeOn = true;
+			StretchSqueezeSurface();
+			DoInvalidate();
+		}
+		public void DeactivateInteractiveEffect()
+		{
+		    m_InteractiveEffect = null;
+			EnableDisableAllPlayingControls(true);
+			EnableDisableDrawingTools(true);
+			DoInvalidate();
 		}
 		public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
 		{
@@ -1069,7 +1039,7 @@ namespace Kinovea.ScreenManager
 			m_iFramesToDecode = 1;
 			
 			m_fSlowmotionPercentage = 100.0;
-			m_bDrawtimeFiltered = false;
+			DeactivateInteractiveEffect();
 			m_bIsCurrentlyPlaying = false;
 			m_ePlayingMode = PlayingMode.Loop;
 			m_bStretchModeOn = false;
@@ -1095,8 +1065,6 @@ namespace Kinovea.ScreenManager
 			m_bTextEdit = false;
 			DrawingToolLine2D.ShowMeasure = false;
 			DrawingToolCross2D.ShowCoordinates = false;
-			
-			m_bDrawtimeFiltered = false;
 			
 			m_fHighSpeedFactor = 1.0f;
 			UpdateSpeedLabel();
@@ -1575,45 +1543,36 @@ namespace Kinovea.ScreenManager
 			// MouseWheel was recorded on one of the controls.
 			int iScrollOffset = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
 
+			if(InteractiveFiltering)
+			{
+                if(m_InteractiveEffect.MouseWheel != null)
+                {
+                    m_InteractiveEffect.MouseWheel(iScrollOffset);
+                    DoInvalidate();
+                }
+                return;
+			}
+			
 			if ((ModifierKeys & Keys.Control) == Keys.Control)
 			{
 				if (iScrollOffset > 0)
-				{
 					IncreaseDirectZoom();
-				}
 				else
-				{
 					DecreaseDirectZoom();
-				}
 			}
 			else
 			{
 				if (iScrollOffset > 0)
 				{
-					if(m_bDrawtimeFiltered)
-					{
-						IncreaseDirectZoom();
-					}
-					else
-					{
-						buttonGotoNext_Click(null, EventArgs.Empty);
-					}
+					buttonGotoNext_Click(null, EventArgs.Empty);
 				}
 				else
 				{
-					if(m_bDrawtimeFiltered)
-					{
-						DecreaseDirectZoom();
-					}
-					else if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
-					{
-						// Shift + Left on first = loop backward.
+                    // Shift + Left on first => loop backward.
+				    if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
 						buttonGotoLast_Click(null, EventArgs.Empty);
-					}
 					else
-					{
 						buttonGotoPrevious_Click(null, EventArgs.Empty);
-					}
 				}
 			}
 		}
@@ -2627,7 +2586,7 @@ namespace Kinovea.ScreenManager
 				}
 				
 				
-				if (!m_bIsCurrentlyPlaying && !m_bDrawtimeFiltered)
+				if (!m_bIsCurrentlyPlaying && !InteractiveFiltering)
 				{
 					//-------------------------------------
 					// Action begins:
@@ -2763,7 +2722,7 @@ namespace Kinovea.ScreenManager
 					m_FrameServer.Metadata.UnselectAll();
 					AbstractDrawing hitDrawing = null;
 						
-					if(m_bDrawtimeFiltered)
+					if(InteractiveFiltering)
 					{
 						mnuDirectTrack.Visible = false;
 						mnuSendPic.Visible = false;
@@ -3061,7 +3020,7 @@ namespace Kinovea.ScreenManager
 			// - If on other drawing, launch the configuration dialog.
 			// - Otherwise -> Maximize/Reduce image.
 			//------------------------------------------------------------------------------------
-			if(m_bDrawtimeFiltered)
+			if(InteractiveFiltering)
 			{
 				ToggleStretchMode();	
 			}
@@ -3110,9 +3069,9 @@ namespace Kinovea.ScreenManager
 			if(!m_FrameServer.Loaded || m_DualSaveInProgress)
                 return;
                 
-			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
+			if(InteractiveFiltering)
 			{
-				m_DrawingFilterOutput.Draw(e.Graphics, pbSurfaceScreen.Size, m_DrawingFilterOutput.PrivateData);
+			    m_InteractiveEffect.Draw(e.Graphics, m_FrameServer.VideoReader.Cache);
 			}
 			else if(m_FrameServer.VideoReader.CurrentImage != null)
 			{
@@ -4332,58 +4291,34 @@ namespace Kinovea.ScreenManager
 		private void IncreaseDirectZoom()
 		{
 			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.NotVisible)
-			{
 				DisableMagnifier();
-			}
 
-			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.IncreaseZoom != null)
-			{
-				m_DrawingFilterOutput.IncreaseZoom(m_DrawingFilterOutput.PrivateData);
-			}
-			else
-			{
-				// Max zoom : 600%
-				if (m_FrameServer.CoordinateSystem.Zoom < 6.0f)
-				{
-					m_FrameServer.CoordinateSystem.Zoom += 0.10f;
-					RelocateDirectZoom();
-					m_FrameServer.Metadata.ResizeFinished();
-					ToastZoom();
-					ReportForSyncMerge();
-				}	
-			}
+			m_FrameServer.CoordinateSystem.Zoom += 0.10f;
+			if (m_FrameServer.CoordinateSystem.Zoom > m_MaxZoomFactor)
+			    m_FrameServer.CoordinateSystem.Zoom = m_MaxZoomFactor;
 			
-			DoInvalidate();
+			AfterZoomChange();
 		}
 		private void DecreaseDirectZoom()
 		{
-			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.DecreaseZoom != null)
-			{
-				m_DrawingFilterOutput.DecreaseZoom(m_DrawingFilterOutput.PrivateData);
-			}
-			else if (m_FrameServer.CoordinateSystem.Zooming)
-			{
-				if (m_FrameServer.CoordinateSystem.Zoom > 1.1f)
-				{
-					m_FrameServer.CoordinateSystem.Zoom -= 0.10f;
-				}
-				else
-				{
-					m_FrameServer.CoordinateSystem.Zoom = 1.0f;	
-				}
+			if (!m_FrameServer.CoordinateSystem.Zooming)
+			    return;
 
-				RelocateDirectZoom();
-				m_FrameServer.Metadata.ResizeFinished();
-				ToastZoom();
-				ReportForSyncMerge();
-			}
-			
-			DoInvalidate();
+			m_FrameServer.CoordinateSystem.Zoom -= 0.10f;
+			if (m_FrameServer.CoordinateSystem.Zoom < 1.0f)
+                m_FrameServer.CoordinateSystem.Zoom = 1.0f;
+				
+			AfterZoomChange();
 		}
-		private void RelocateDirectZoom()
+		private void AfterZoomChange()
 		{
-			m_FrameServer.CoordinateSystem.RelocateZoomWindow();
+		    m_FrameServer.CoordinateSystem.RelocateZoomWindow();
 			m_PointerTool.SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+			
+			m_FrameServer.Metadata.ResizeFinished();
+			ToastZoom();
+			ReportForSyncMerge();
+			DoInvalidate();
 		}
 		#endregion
 		
@@ -4516,7 +4451,7 @@ namespace Kinovea.ScreenManager
 				dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
 				dlgSave.FilterIndex = 1;
 				
-				if(m_bDrawtimeFiltered && m_DrawingFilterOutput != null)
+				if(InteractiveFiltering)
 					dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
 				else
 					dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
@@ -4772,9 +4707,9 @@ namespace Kinovea.ScreenManager
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
 			output.SetResolution(m_FrameServer.VideoReader.CurrentImage.HorizontalResolution, m_FrameServer.VideoReader.CurrentImage.VerticalResolution);
 			
-			if(m_bDrawtimeFiltered && m_DrawingFilterOutput.Draw != null)
+			if(InteractiveFiltering)
 			{
-				m_DrawingFilterOutput.Draw(Graphics.FromImage(output), iNewSize, m_DrawingFilterOutput.PrivateData);
+			    m_InteractiveEffect.Draw(Graphics.FromImage(output), m_FrameServer.VideoReader.Cache);
 			}
 			else
 			{
