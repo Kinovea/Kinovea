@@ -86,11 +86,11 @@ namespace Kinovea.Video.Gif
         {
             Cache.Clear();
         }
-        public override bool MoveNext(bool _async)
+        public override bool MoveNext(bool _decodeIfNecessary)
         {
             return Cache.MoveNext();
         }
-        public override bool MoveTo(long _timestamp, bool _async)
+        public override bool MoveTo(long _timestamp, bool _decodeIfNecessary)
         {
             return Cache.MoveTo(_timestamp);
         }

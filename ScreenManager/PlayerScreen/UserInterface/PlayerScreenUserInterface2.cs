@@ -2222,9 +2222,9 @@ namespace Kinovea.ScreenManager
 		    bool hasMore = false;
 		    
 		    if(_iSeekTarget < 0)
-		        hasMore = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode, m_bIsCurrentlyPlaying);
+		        hasMore = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode, !m_bIsCurrentlyPlaying);
 		    else
-		        hasMore = m_FrameServer.VideoReader.MoveTo(_iSeekTarget, false);
+		        hasMore = m_FrameServer.VideoReader.MoveTo(_iSeekTarget, true);
 		    
             if(m_FrameServer.VideoReader.Current != null)
 			{

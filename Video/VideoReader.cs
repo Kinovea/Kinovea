@@ -52,17 +52,17 @@ namespace Kinovea.Video
 		/// Set the "Current" property to hold the next video frame.
 		/// For async readers, if the frame is not available right now, call it a drop.
 		/// (Decoding should happen in a separate thread).
-		/// _async will be false for some scenarios like saving, next button, etc. 
+		/// decodeIfNecessary will be true for some scenarios like saving, next button, etc. 
 		/// In these cases return only after the frame has been pushed to .Current.
 		/// </summary>
 		/// <returns>false if the end of file has been reached</returns>
-		public abstract bool MoveNext(bool _async);
+		public abstract bool MoveNext(bool _decodeIfNecessary);
 		
 		/// <summary>
 		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
 		/// </summary>
 		/// <returns>false if the end of file has been reached</returns>
-		public abstract bool MoveTo(long _timestamp, bool _async);
+		public abstract bool MoveTo(long _timestamp, bool _decodeIfNecessary);
 		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
 		#endregion
 		
@@ -114,22 +114,22 @@ namespace Kinovea.Video
 		#region Move playhead
 		public bool MovePrev()
 		{
-		    return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame, false);
+		    return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame, true);
 		}
 		public bool MoveFirst()
 		{
-		    return MoveTo(WorkingZone.Start, false);
+		    return MoveTo(WorkingZone.Start, true);
 		}
 		public bool MoveLast()
 		{
-		    return MoveTo(WorkingZone.End, false);
+		    return MoveTo(WorkingZone.End, true);
 		}
-		public bool MoveBy(int _frames, bool _async)
+		public bool MoveBy(int _frames, bool _decodeIfNecessary)
 		{
 		    if(_frames == 1)
 		    {
 		        log.Debug("MoveBy -> MoveNext");
-		        return MoveNext(_async);
+		        return MoveNext(_decodeIfNecessary);
 		    }
 		    else
 		    {
@@ -138,7 +138,7 @@ namespace Kinovea.Video
 		        if(target < 0)
 		            target = 0;
 		        log.Debug("MoveBy -> MoveTo");
-		        return MoveTo(target, _async);
+		        return MoveTo(target, _decodeIfNecessary);
 		    }
 		}
 		#endregion
@@ -179,7 +179,7 @@ namespace Kinovea.Video
             
             while(hasMore)
             {
-                hasMore = MoveNext(false);
+                hasMore = MoveNext(true);
                 yield return Current;
                 
                 // Clean up continuously to avoid clogging the cache.

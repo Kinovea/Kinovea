@@ -27,6 +27,12 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// An autonomous video effect. 
     /// It is self contained and user interactions are tunelled to it.
+    /// 
+    /// Usage:
+    /// Create an instance of this class and assign the properties with delegates or lambdas.
+    /// Pass the created object to setInteractiveEffect before returning from Activate().
+    /// The object will live in the PlayerScreen. If the methods need to share common data,
+    /// consider defining the delegates as closures that would each capture the shared data from outer scope (see VideoFilterMosaic).
     /// </summary>
     public class InteractiveEffect
     {
