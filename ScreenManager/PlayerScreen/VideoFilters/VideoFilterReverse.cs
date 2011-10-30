@@ -19,29 +19,31 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Resources;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-	public class VideoFilterReverse : AbstractVideoFilter
-	{
-		public override string Name {
-		    get { return ScreenManagerLang.VideoFilterReverse_FriendlyName; }
-		}
-		public override Bitmap Icon {
-		    get { return Properties.Resources.revert; }
-		}
-		public override void Menu_OnClick(object sender, EventArgs e)
-        {
-			Process();
+    public class VideoFilterReverse : AbstractVideoFilter
+    {
+        public override string Name {
+            get { return ScreenManagerLang.VideoFilterReverse_FriendlyName; }
         }
-		protected override void Process()
+        public override Bitmap Icon {
+            get { return Properties.Resources.revert; }
+        }
+        public override void Activate(VideoFrameCache _cache)
 		{
-		    FrameCache.Revert();
-			ProcessingOver();
-		}
-	}
+            if(_cache != null)
+                _cache.Revert();
+            ProcessingOver();
+        }
+        protected override void Process(object sender, DoWorkEventArgs e)
+        {
+        }
+    }
 }

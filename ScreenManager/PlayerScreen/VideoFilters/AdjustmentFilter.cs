@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -40,29 +41,27 @@ namespace Kinovea.ScreenManager
 	{
         public abstract ImageProcessor ImageProcessor { get ; }
         
-		public override void Menu_OnClick(object sender, EventArgs e)
-        {
-		    if(ImageProcessor == null || FrameCache.Count < 1)
+        public override void Activate(VideoFrameCache _cache)
+		{
+		    if(ImageProcessor == null || _cache == null || _cache.Count < 1)
 		        return;
 
-		    using(Bitmap bmp = FrameCache.Representative.CloneDeep())
+		    FrameCache = _cache;
+		    
+		    using(Bitmap bmp = _cache.Representative.CloneDeep())
 			using(formPreviewVideoFilter fpvf = new formPreviewVideoFilter(ImageProcessor(bmp), Name))
 			{
                 if (fpvf.ShowDialog() == DialogResult.OK)
                     StartProcessing();
 			}
-        }
-		protected override void Process()
+		}
+		protected override void Process(object sender, DoWorkEventArgs e)
 		{
-			// Method called back from AbstractVideoFilter after a call to StartProcessing().
-			if(ImageProcessor == null)
-		        return;
-			
 			int i = 0;
 			foreach(VideoFrame vf in FrameCache)
 			{
 			    ImageProcessor(vf.Image);
-			    m_BackgroundWorker.ReportProgress(i++, FrameCache.Count);
+			    ((BackgroundWorker)sender).ReportProgress(++i, FrameCache.Count);
 			}
 		}
 	}

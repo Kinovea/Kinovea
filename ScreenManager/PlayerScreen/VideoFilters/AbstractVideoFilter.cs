@@ -67,64 +67,37 @@ namespace Kinovea.ScreenManager
         public virtual bool Experimental {
             get { return false; }
         }
+		public VideoFrameCache FrameCache { get; set; }
         #endregion
         
         #region Abstract Methods
-        public abstract void Menu_OnClick(object sender, EventArgs e);
-        protected abstract void Process();
+        public abstract void Activate(VideoFrameCache _frames);
+        protected abstract void Process(object sender, DoWorkEventArgs e);
         #endregion
-        
-        public ToolStripMenuItem Menu
-        {
-            get { return m_Menu;}
-        }
-        public VideoFrameCache FrameCache { get; set; }
         
         #region Concrete Members
-        protected BackgroundWorker m_BackgroundWorker = new BackgroundWorker();
         private formProgressBar m_FormProgressBar;
-        private ToolStripMenuItem m_Menu = new ToolStripMenuItem();
-        #endregion
-        
-        #region Concrete Constructor
-        protected AbstractVideoFilter()
-        {
-        	m_BackgroundWorker.WorkerReportsProgress = true;
-        	m_BackgroundWorker.DoWork += new DoWorkEventHandler(bgWorker_DoWork);
-        	m_BackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorker_RunWorkerCompleted);
-            m_BackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bgWorker_ProgressChanged);
-            
-            m_Menu.Text = Name;
-            m_Menu.Image = Icon;
-            m_Menu.Click += Menu_OnClick;
-            m_Menu.MergeAction = MergeAction.Append;
-        }
         #endregion
         
         #region Concrete Methods
-        public void RefreshCultureMenu()
-        {
-            m_Menu.Text = Name;
-        }
         protected void StartProcessing()
         {
-        	// This method is called by concrete filters to start applying the filter.
-        	// It should be called whenever the filter takes time to process.
-        	m_FormProgressBar = new formProgressBar(false);
-        	m_BackgroundWorker.RunWorkerAsync();
-        	m_FormProgressBar.ShowDialog();
-        }
-        private void bgWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-        	// This is executed in Worker Thread space. 
-        	// (Do not call any UI methods)
-        	Process();
+            // Spawn a new thread for the computation, and a modal dialog for progress bar.
+            // This function is not mandatory, if the effect is really quick,
+            // a VideoFilter may proceed within Activate() directly.
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += Process;
+            worker.ProgressChanged += bgWorker_ProgressChanged;
+            worker.RunWorkerCompleted += bgWorker_RunWorkerCompleted;
+            worker.RunWorkerAsync();
+            
+            m_FormProgressBar = new formProgressBar(false);
+            m_FormProgressBar.ShowDialog();
         }
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-        	// This method should be called by concrete filters to update progress bar.
-        	// call snippet : m_BackgroundWorker.ReportProgress(iCurrentValue, iMaximum);
-        	
+        	// Should be called by concrete filters to update progress bar.
         	int iMaximum = (int)e.UserState;
             int iValue = (int)e.ProgressPercentage;
 
@@ -140,18 +113,13 @@ namespace Kinovea.ScreenManager
         }
         protected void ProcessingOver()
         {
-        	// This method will be automatically called if StartProcessing() was used.
-        	// (asynchronous + progress bar) 
         	ProcessingOver(null);
         }
         protected void ProcessingOver(DrawtimeFilterOutput _dfo)
         {
-        	// Notify the ScreenManager that we are done.
-        	DelegatesPool dp = DelegatesPool.Instance();
-        	if (dp.VideoProcessingDone != null)
-            {
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.VideoProcessingDone != null)
                 dp.VideoProcessingDone(_dfo);
-            }
         }
         #endregion
 	}
