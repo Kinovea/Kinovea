@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -37,11 +38,11 @@ namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// VideoFilterMosaic.
-	/// - Input			: Subset of all images (or all key images (?)).
-	/// - Output		: One image, same size.
-	/// - Operation 	: Combine input images into a single view.
-	/// - Type 			: Called at draw time.
-	/// - Previewable 	: No.
+	/// - Input        : all images.
+	/// - Output       : One image, same size.
+	/// - Operation    : Compose a sample of the images in a grid view.
+	/// - Type         : Interactive.
+	/// - Previewable  : No.
 	/// </summary>
 	public class VideoFilterMosaic : AbstractVideoFilter
 	{
@@ -54,182 +55,98 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		#region Members
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
 		#region AbstractVideoFilter Implementation
-		public override void Activate(VideoFrameCache _cache)
+		public override void Activate(VideoFrameCache _cache, Action<InteractiveEffect> _setInteractiveEffect)
 		{
-			/*if(Menu.Checked)
-			{
-				DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, false);
-				ProcessingOver(dfo);
-			}
-			else
-			{
-			    DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, true);
-			    dfo.PrivateData = new Parameters(FrameCache.ToBitmapList(), 16, false);
-				dfo.Draw = new DelegateDraw(Draw);
-				dfo.IncreaseZoom = new DelegateIncreaseZoom(IncreaseZoom);
-				dfo.DecreaseZoom = new DelegateDecreaseZoom(DecreaseZoom);
-				ProcessingOver(dfo);
-			}*/
+		    InteractiveEffect effect = new InteractiveEffect();
+		    
+		    // Usage of closures to capture internal state for the effect.
+		    // The Parameter object will be shared between the delegates, but scoped to this InteractiveEffect instance.
+		    Parameters p = new Parameters();
+		    effect.Draw = (canvas, cache) => Draw(canvas, cache, p);
+		    effect.MouseWheel = (scroll) => MouseWheel(scroll, p);
+		    
+		    _setInteractiveEffect(effect);
         }
 		protected override void Process(object sender, DoWorkEventArgs e)
 		{
-			// Not implemented.
-			// This filter process its imput frames at draw time only. See Draw().
 		}
 		#endregion
 		
-		#region DrawtimeFilterOutput Implementation
-		public static void Draw(Graphics g, Size _iNewSize, object _privateData)
+		#region Interactive Effect methods
+		private void Draw(Graphics _canvas, VideoFrameCache _cache, Parameters _parameters)
 		{
-			//-----------------------------------------------------------------------------------
-			// This method will be called by a player screen at draw time.
-			// static: the DrawingtimeFilterObject contains all that is needed to use the method.
-			// Most notably, the _privateData parameters contains references to the frames
-			// to be combined, the zoom level and if the composite is right to left or not.
-			//-----------------------------------------------------------------------------------
+		    if(_parameters == null)
+		        return;
+		    
+            List<Bitmap> selectedFrames = GetImages(_cache, _parameters.Spots);	
 			
-			Stopwatch sw = new Stopwatch();
-			sw.Start();
+            if(selectedFrames == null || selectedFrames.Count < 1)
+                return;
+            
+			_canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+			_canvas.CompositingQuality = CompositingQuality.HighSpeed;
+			_canvas.InterpolationMode = InterpolationMode.Bilinear;
+			_canvas.SmoothingMode = SmoothingMode.HighQuality;
 			
-			Parameters parameters = _privateData as Parameters;
+			// We reserve n² placeholders, so we have exactly as many images on width than on height.
+			// Example: 32 images as input -> 6x6 images with the last 4 not filled.
+			// + each image must be scaled down by a factor of 1/6.
 			
-			if(parameters != null)
-			{
-				// We recompute the image at each draw time.
-				// We could have only computed it on first creation and on resize, 
-				// but in the end it doesn't matter.
-				List<Bitmap> selectedFrames = GetInputFrames(parameters.FrameList, parameters.FramesToExtract);	
-				
-				if(selectedFrames != null && selectedFrames.Count > 0)
-				{
-					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-					g.CompositingQuality = CompositingQuality.HighSpeed;
-					g.InterpolationMode = InterpolationMode.Bilinear;
-					g.SmoothingMode = SmoothingMode.HighQuality;
-					
-					//---------------------------------------------------------------------------
-					// We reserve n² placeholders, so we have exactly as many images on width than on height.
-					// Example: 
-					// - 32 images as input.
-					// - We get up to next square root : 36. iSide is thus 6.
-					// - This will be 6x6 images (with the last 4 not filled)
-					// - Each image must be scaled down by a factor of 1/6.
-					//---------------------------------------------------------------------------
-					
-					// to test:
-					// 1. Lock all images and get all BitmapData in an array.
-					// 2. Loop on final image pixels, and fill in by interpolating from the source images.
-					// This should get down to a few ms instead of more than 500 ms for HD vids.
-					
-					int iSide = (int)Math.Ceiling(Math.Sqrt((double)selectedFrames.Count));
-					int iThumbWidth = _iNewSize.Width / iSide;
-					int iThumbHeight = _iNewSize.Height / iSide;
+			int n = (int)Math.Sqrt(_parameters.Spots);
+			int thumbWidth = (int)_canvas.ClipBounds.Width / n;
+			int thumbHeight = (int)_canvas.ClipBounds.Height / n;
 						
-					Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
+			Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
+            Font f = new Font("Arial", GetFontSize(thumbWidth), FontStyle.Bold);
 			
-					// Configure font for image numbers.
-					Font f = new Font("Arial", GetFontSize(iThumbWidth), FontStyle.Bold);
+			for(int i=0;i<n;i++)
+			{
+				for(int j=0;j<n;j++)
+				{
+					int iImageIndex = j*n + i;
+					if(iImageIndex >= selectedFrames.Count || selectedFrames[iImageIndex] == null)
+					    continue;
 					
-					for(int i=0;i<iSide;i++)
-					{
-						for(int j=0;j<iSide;j++)
-						{
-							int iImageIndex = j*iSide + i;
-							if(iImageIndex < selectedFrames.Count && selectedFrames[iImageIndex] != null)
-							{
-								// compute left coord depending on "RightToLeft" status.
-								int iLeft;
-								if(parameters.RightToLeft)
-								{
-									iLeft = (iSide - 1 - i)*iThumbWidth;
-								}
-								else
-								{
-									iLeft = i*iThumbWidth;
-								}
-								
-								Rectangle rDst = new Rectangle(iLeft, j*iThumbHeight, iThumbWidth, iThumbHeight);
-								g.DrawImage(selectedFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
-								
-								// Draw the image number.
-								DrawImageNumber(g, iImageIndex, rDst, f);
-							}
-						}
-					}
+					Rectangle rDst = new Rectangle(i*thumbWidth, j*thumbHeight, thumbWidth, thumbHeight);
 					
-					f.Dispose();
-				}					
+					_canvas.DrawImage(selectedFrames[iImageIndex], rDst, rSrc, GraphicsUnit.Pixel);
+					DrawImageNumber(_canvas, iImageIndex, rDst, f);
+				}
 			}
 			
-			sw.Stop();
-			log.Debug(String.Format("Mosaic Draw : {0} ms.", sw.ElapsedMilliseconds));
+			f.Dispose();
 		}
-		public static void IncreaseZoom(object _privateData)
+		private void MouseWheel(int _scroll, Parameters _parameters)
 		{
-			Parameters parameters = _privateData as Parameters;
-			if(parameters != null)
-			{
-				parameters.ChangeFrameCount(true);
-			}
-		}
-		public static void DecreaseZoom(object _privateData)
-		{
-			Parameters parameters = _privateData as Parameters;
-			if(parameters != null)
-			{
-				parameters.ChangeFrameCount(false);
-			}
+		    // Change the number of frames to use for the composite.
+            int n = (int)Math.Sqrt((double)_parameters.Spots);
+            n = _scroll > 0 ? Math.Min(10, n + 1) : Math.Max(2, n - 1);
+            _parameters.Spots = n*n;
 		}
 		#endregion
 		
 		#region Private methods
-		private static List<Bitmap> GetInputFrames(List<Bitmap> _frameList, int _iFramesToExtract)
+		private List<Bitmap> GetImages(VideoFrameCache _cache, int _spots)
 		{
-			// Get the subset of images we will be using for the mosaic.
-			
-		 	List<Bitmap> inputFrames = new List<Bitmap>();
-			double fExtractStep = (double)_frameList.Count / _iFramesToExtract;
-
-			int iExtracted = 0;
-			for(int i=0;i<_frameList.Count;i++)
-			{
-				if(i >= iExtracted * fExtractStep)
-				{
-					inputFrames.Add(_frameList[i]);
-					iExtracted++;
-				}
-			}
-			
-			return inputFrames;
+			float step = (float)_cache.Count / _spots;
+			return _cache.ToBitmapList().Where((bmp, i) => i % step < 1).ToList();
 		}
-		private static int GetFontSize(int _iThumbWidth)
+		private int GetFontSize(int width)
 		{
 			// Return the font size for the image number based on the thumb width.
-			int fontSize = 18;
-			
-			if(_iThumbWidth >= 200)
-			{
+			int fontSize = 10;
+
+			if(width >= 200)
 				fontSize = 18;
-			}
-			else if(_iThumbWidth >= 150)
-			{
+			else if(width >= 150)
 				fontSize = 14;
-			}
-			else
-			{
-				fontSize = 10;
-			}
 			
 			return fontSize;
 		}
-		private static void DrawImageNumber(Graphics _canvas, int _iImageIndex, Rectangle _rDst, Font _font)
+		private void DrawImageNumber(Graphics _canvas, int _index, Rectangle _rDst, Font _font)
 		{
-			string number = String.Format(" {0}", _iImageIndex + 1);
+			string number = String.Format(" {0}", _index + 1);
 			SizeF bgSize = _canvas.MeasureString(number, _font);
 			bgSize = new SizeF(bgSize.Width + 6, bgSize.Height + 2);
             
@@ -248,53 +165,15 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		/// <summary>
-		/// Class to hold the private parameters needed to draw the image.
-		/// </summary>
 		private class Parameters
 		{
-			#region Properties
-			public List<Bitmap> FrameList
-			{
-				get { return m_FrameList; }
-			}
-			public int FramesToExtract
-			{
-				// This value is always side². (4, 9, 16, 25, 49, etc.)
-				get { return m_iFramesToExtract; }
-			}
-			public bool RightToLeft
-			{
-				get { return m_bRightToLeft; }
-			}
-			#endregion
-			
-			#region Members
-			private bool m_bRightToLeft;
-			private List<Bitmap> m_FrameList;
-			private int m_iFramesToExtract;
-
-			#endregion
-			
-			public Parameters(List<Bitmap> _frameList, int _iFramesToExtract, bool _bRightToLeft)
-			{
-				m_FrameList = _frameList;
-				m_iFramesToExtract = _iFramesToExtract;
-				m_bRightToLeft = _bRightToLeft;
-			}
-			
-			public void ChangeFrameCount(bool _bIncrease)
-			{
-				// Increase the number of frames to take into account for the mosaic.
-				int side = (int)Math.Sqrt((double)m_iFramesToExtract);
-				side = _bIncrease ? Math.Min(10, side + 1) : Math.Max(2, side - 1);
-				m_iFramesToExtract = side * side;
-			}
+		    public int Spots {
+		        get {return m_Spots; }
+		        set {m_Spots = value;}
+		    }
+		    private int m_Spots = 16;
 		}
 	}
-	
-	
-	
 }
 
 

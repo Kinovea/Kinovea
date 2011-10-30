@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
 	{
         public abstract ImageProcessor ImageProcessor { get ; }
         
-        public override void Activate(VideoFrameCache _cache)
+        public override void Activate(VideoFrameCache _cache, Action<InteractiveEffect> _setInteractiveEffect)
 		{
 		    if(ImageProcessor == null || _cache == null || _cache.Count < 1)
 		        return;

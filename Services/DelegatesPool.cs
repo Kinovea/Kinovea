@@ -42,7 +42,6 @@ namespace Kinovea.Services
     public delegate void TopMostMaker(Form _form);
     public delegate void ThumbnailsDisplayer(List<String> _fileNames, bool _bRefreshNow);
     public delegate void FileExplorerRefresher(bool _bRefreshThumbnails);
-    public delegate void PostProcessingAction(DrawtimeFilterOutput _dfo);
     
     public class DelegatesPool
     {
@@ -55,7 +54,6 @@ namespace Kinovea.Services
         public Action ActivateKeyboardHandler;
         public ThumbnailsDisplayer DisplayThumbnails;
         public FileExplorerRefresher RefreshFileExplorer;
-        public PostProcessingAction VideoProcessingDone;
   
         #region Instance & Constructor
         private static DelegatesPool _instance = null;

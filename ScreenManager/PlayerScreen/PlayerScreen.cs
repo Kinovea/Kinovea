@@ -214,9 +214,8 @@ namespace Kinovea.ScreenManager
                 RefreshImage();
             }
         }
-        public int DrawtimeFilterType
-        {
-        	get {return m_PlayerScreenUI.DrawtimeFilterType;}
+        public bool InteractiveFiltering {
+        	get {return m_PlayerScreenUI.InteractiveFiltering;}
         }
         #endregion
 
@@ -344,11 +343,13 @@ namespace Kinovea.ScreenManager
         {
             return m_PlayerScreenUI.GetMemo();
         }
-        public void SetDrawingtimeFilterOutput(DrawtimeFilterOutput _dfo)
+        public void SetInteractiveEffect(InteractiveEffect _effect)
         {
-        	// A video filter just finished and is passing us its output object.
-        	// It is used as a communication channel between the filter and the player.
-        	m_PlayerScreenUI.SetDrawingtimeFilterOutput(_dfo);
+            m_PlayerScreenUI.SetInteractiveEffect(_effect);
+        }
+        public void DeactivateInteractiveEffect()
+        {
+            m_PlayerScreenUI.DeactivateInteractiveEffect();
         }
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
 		{

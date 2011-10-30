@@ -30,13 +30,6 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-    
-    // [2011-08-20] - This sub system will be subject of a deep refactoring later on.
-    // 1. Turn into a proper plugin system.
-    // [done] 2. Adjustment filters are purely "map" higher level functions, should be handled as such.
-    // [done] 3. More stuff in the base class.
-    
-    
 	/// <summary>
 	/// AbstractVideoFilter define the way all Video Filters should behave.
 	/// A VideoFilter is an entity that can be used to modify a subset (or all)
@@ -67,15 +60,15 @@ namespace Kinovea.ScreenManager
         public virtual bool Experimental {
             get { return false; }
         }
-		public VideoFrameCache FrameCache { get; set; }
-        #endregion
+		public VideoFrameCache FrameCache {get;set;}
+		#endregion
         
         #region Abstract Methods
-        public abstract void Activate(VideoFrameCache _frames);
+        public abstract void Activate(VideoFrameCache _frames, Action<InteractiveEffect> _setInteractiveEffect);
         protected abstract void Process(object sender, DoWorkEventArgs e);
         #endregion
         
-        #region Concrete Members
+        #region Members
         private formProgressBar m_FormProgressBar;
         #endregion
         
@@ -109,17 +102,6 @@ namespace Kinovea.ScreenManager
         {
         	m_FormProgressBar.Close();
         	m_FormProgressBar.Dispose();
-        	ProcessingOver();
-        }
-        protected void ProcessingOver()
-        {
-        	ProcessingOver(null);
-        }
-        protected void ProcessingOver(DrawtimeFilterOutput _dfo)
-        {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.VideoProcessingDone != null)
-                dp.VideoProcessingDone(_dfo);
         }
         #endregion
 	}
