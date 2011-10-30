@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -58,9 +59,9 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
-		public override void Menu_OnClick(object sender, EventArgs e)
-        {
-			if(Menu.Checked)
+		public override void Activate(VideoFrameCache _cache)
+		{
+			/*if(Menu.Checked)
 			{
 				DrawtimeFilterOutput dfo = new DrawtimeFilterOutput((int)VideoFilterType.Mosaic, false);
 				ProcessingOver(dfo);
@@ -73,9 +74,9 @@ namespace Kinovea.ScreenManager
 				dfo.IncreaseZoom = new DelegateIncreaseZoom(IncreaseZoom);
 				dfo.DecreaseZoom = new DelegateDecreaseZoom(DecreaseZoom);
 				ProcessingOver(dfo);
-			}
+			}*/
         }
-		protected override void Process()
+		protected override void Process(object sender, DoWorkEventArgs e)
 		{
 			// Not implemented.
 			// This filter process its imput frames at draw time only. See Draw().

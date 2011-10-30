@@ -82,12 +82,12 @@ namespace Kinovea.ScreenManager
         private formProgressBar m_DualSaveProgressBar;
 
         // Video Filters
-        private List<AbstractVideoFilter> m_VideoFilters = new List<AbstractVideoFilter>();
         private bool m_bHasSvgFiles;
         private string m_SvgPath;
         private FileSystemWatcher m_SVGFilesWatcher = new FileSystemWatcher();
         private MethodInvoker m_SVGFilesChangedInvoker;
         private bool m_BuildingSVGMenu;
+        private List<ToolStripMenuItem> m_filterMenus = new List<ToolStripMenuItem>();
         
         #region Menus
         private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
@@ -187,26 +187,23 @@ namespace Kinovea.ScreenManager
             m_SVGFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
         	m_SVGFilesWatcher.Filter = "*.svg";
         	m_SVGFilesWatcher.IncludeSubdirectories = true;
-        	m_SVGFilesWatcher.Changed += new FileSystemEventHandler(OnSVGFilesChanged);
-        	m_SVGFilesWatcher.Created += new FileSystemEventHandler(OnSVGFilesChanged);
-        	m_SVGFilesWatcher.Deleted += new FileSystemEventHandler(OnSVGFilesChanged);
-        	m_SVGFilesWatcher.Renamed += new RenamedEventHandler(OnSVGFilesChanged);
-        	
-        	m_SVGFilesChangedInvoker = new MethodInvoker(DoSVGFilesChanged);
-        	
         	m_SVGFilesWatcher.EnableRaisingEvents = true;
+        	
+        	m_SVGFilesWatcher.Changed += OnSVGFilesChanged;
+        	m_SVGFilesWatcher.Created += OnSVGFilesChanged;
+        	m_SVGFilesWatcher.Deleted += OnSVGFilesChanged;
+        	m_SVGFilesWatcher.Renamed += OnSVGFilesChanged;
+        	
         }
         private void InitializeVideoFilters()
         {
-        	// Creates Video Filters
-        	// This will be moved out in a separate sub system.
-        	m_VideoFilters.Add(new VideoFilterAutoLevels());
-        	m_VideoFilters.Add(new VideoFilterContrast());
-        	m_VideoFilters.Add(new VideoFilterSharpen());
-        	//m_VideoFilters.Add(new VideoFilterEdgesOnly());
-        	//m_VideoFilters.Add(new VideoFilterMosaic());
-        	m_VideoFilters.Add(new VideoFilterReverse());
-        	//m_VideoFilters.Add(new VideoFilterSandbox());
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterAutoLevels()));
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterContrast()));
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterSharpen()));
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
+            m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
         }
         public void PrepareScreen()
         {
@@ -371,10 +368,10 @@ namespace Kinovea.ScreenManager
             
             // Temporary hack for including filters sub menus until a full plugin system is in place.
             // We just check on their type. Ultimately each plugin will have a category or a submenu property.
-            foreach(AbstractVideoFilter f in m_VideoFilters)
+            foreach(ToolStripMenuItem menu in m_filterMenus)
             {
-                if(f is AdjustmentFilter)
-                    mnuCatchImage.DropDownItems.Add(f.Menu);
+                if(menu.Tag is AdjustmentFilter)
+                    mnuCatchImage.DropDownItems.Add(menu);
             }
             
             mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
@@ -393,10 +390,10 @@ namespace Kinovea.ScreenManager
             
             mnuCatchMotion.DropDownItems.Add(mnuHighspeedCamera);
             mnuCatchMotion.DropDownItems.Add(new ToolStripSeparator());
-            foreach(AbstractVideoFilter f in m_VideoFilters)
+            foreach(ToolStripMenuItem menu in m_filterMenus)
             {
-                if(!(f is AdjustmentFilter))
-                    mnuCatchMotion.DropDownItems.Add(f.Menu);
+                if(!(menu.Tag is AdjustmentFilter))
+                    mnuCatchMotion.DropDownItems.Add(menu);
             }
             #endregion
             
@@ -407,6 +404,20 @@ namespace Kinovea.ScreenManager
             ToolStripManager.Merge(ThisMenu, _menu);
 
             RefreshCultureMenu();
+        }
+        private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
+        {
+            ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
+            menu.MergeAction = MergeAction.Append;
+            menu.Tag = _filter;
+            menu.Click += (s,e) => {
+                PlayerScreen screen = m_ActiveScreen as PlayerScreen;
+                if(screen == null || !screen.IsCaching)
+                    return;
+                AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
+                filter.Activate(screen.FrameServer.VideoReader.Cache);
+            };
+            return menu;
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
@@ -519,6 +530,7 @@ namespace Kinovea.ScreenManager
         public void Screen_CloseAsked(AbstractScreen _SenderScreen)
         {
         	// If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
+// TODO: Revisit this.
         	if(_SenderScreen is PlayerScreen)
         	{
         		int iDrawtimeFilterType = ((PlayerScreen)_SenderScreen).DrawtimeFilterType;
@@ -526,7 +538,7 @@ namespace Kinovea.ScreenManager
         		{
         			// We need to make sure this is the active screen for the DrawingFilter menu action to be properly routed.
         			Screen_SetActiveScreen(_SenderScreen);
-//m_VideoFilters[iDrawtimeFilterType].Menu_OnClick(this, EventArgs.Empty);
+                    //m_VideoFilters[iDrawtimeFilterType].Menu_OnClick(this, EventArgs.Empty);
         			return;
         		}
         	}
@@ -1595,61 +1607,18 @@ namespace Kinovea.ScreenManager
         }
         private void ConfigureVideoFilterMenus(PlayerScreen _player)
         {
-			// determines if any given video filter menu should be
-			// visible, enabled, checked...
-			
-			// 1. Visibility
-			// Experimental menus are only visible if we are on experimental release.
-			foreach(AbstractVideoFilter vf in m_VideoFilters)
+			foreach(ToolStripMenuItem menu in m_filterMenus)
 			{
-			    if(vf.Menu != null)
-        	       vf.Menu.Visible = vf.Experimental ? PreferencesManager.ExperimentalRelease : true;
-			}
-        	
-			// Secret menu. Set to true during developpement.
-//m_VideoFilters[(int)VideoFilterType.Sandbox].Menu.Visible = false;
-			
-			// 2. Enabled, checked
-			if(_player != null)
-			{
-				// Video filters can only be enabled when Analysis mode.
-				foreach(AbstractVideoFilter vf in m_VideoFilters)
-				    vf.Menu.Enabled = _player.IsCaching;
-	        	
-				if(_player.IsCaching)
-	            {
-					// Fixme: Why is this here ?
-					
-// FIXME:
-					// We were using this place to reinject the correct frame list into the filter.
-					// Since there is only one filter of each kind for the whole application, and the filter is 
-					// holding a reference to the list of frames, we needed a place to swap the list.
-					// This should be refactored. 
-	            	/*List<DecompressedFrame> frameList = _player.FrameServer.VideoReader.FrameList;
-	            	foreach(AbstractVideoFilter vf in m_VideoFilters)
-	            	{
-	            		vf.FrameList = frameList;
-	            	}*/
-	            	
-	            	foreach(AbstractVideoFilter vf in m_VideoFilters)
-	            	{
-	            		vf.FrameCache = _player.FrameServer.VideoReader.Cache;
-	            	}
-	            }
-				
-				foreach(AbstractVideoFilter vf in m_VideoFilters)
-	        	    vf.Menu.Checked = false;
-	        
-/*if(_player.DrawtimeFilterType > -1) 
-        		    m_VideoFilters[_player.DrawtimeFilterType].Menu.Checked = true;*/
-			}
-			else
-			{
-				foreach(AbstractVideoFilter vf in m_VideoFilters)
-	        	{
-	        		vf.Menu.Enabled = false;
-					vf.Menu.Checked = false;
-	        	}
+			    AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
+			    if(filter == null)
+			        continue;
+			    
+			    menu.Visible = filter.Experimental ? PreferencesManager.ExperimentalRelease : true;
+			    
+			    if(_player == null)
+			        menu.Enabled = false;
+			    else
+                    menu.Enabled = _player.IsCaching;
 			}
         }
         private void ConfigureImageFormatMenus(AbstractScreen _screen)
@@ -1660,7 +1629,6 @@ namespace Kinovea.ScreenManager
 			    mnuFormat.Enabled = false;
 			    return;
 			}
-			
 			
             if(_screen is PlayerScreen && 
 			   (((PlayerScreen)_screen).FrameServer.VideoReader.Flags & VideoReaderFlags.SupportsAspectRatio) == 0)
@@ -1700,7 +1668,7 @@ namespace Kinovea.ScreenManager
         	if(!m_BuildingSVGMenu)
         	{
 				m_BuildingSVGMenu = true;
-        		((ScreenManagerUserInterface)UI).BeginInvoke(m_SVGFilesChangedInvoker);
+				((ScreenManagerUserInterface)UI).BeginInvoke((MethodInvoker) delegate {DoSVGFilesChanged();});
         	}
 	    }
         public void DoSVGFilesChanged()
@@ -1752,12 +1720,20 @@ namespace Kinovea.ScreenManager
             
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;
-            
-            foreach(AbstractVideoFilter avf in m_VideoFilters)
-                avf.Menu.Text = avf.Name;
-            
+            RefreshCultureMenuFilters();
             mnuHighspeedCamera.Text = ScreenManagerLang.mnuSetCaptureSpeed;
         }
+            
+        private void RefreshCultureMenuFilters()
+        {
+            foreach(ToolStripMenuItem menu in m_filterMenus)
+            {
+                AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
+			    if(filter != null)
+                    menu.Text = filter.Name;
+            }
+        }
+                
         #endregion
         
         #region Side by side saving
@@ -2716,48 +2692,47 @@ public void DoVideoProcessingDone(DrawtimeFilterOutput _dfo)
         	// screen manager's responsibility.
         	// And only when the common controls are actually visible.
         	//---------------------------------------------------------
-        	bool bWasHandled = false;
         	ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
-            	
-			if (smui != null)
-            {
-	        	switch (_keycode)
-				{
-	        		case Keys.Space:
-	        		case Keys.Return:
-	        			{
-	                       	smui.ComCtrls.buttonPlay_Click(null, EventArgs.Empty);
-	                        bWasHandled = true;
-	                    	break;
-	        			}
-	        		case Keys.Left:
-	        			{
-							smui.ComCtrls.buttonGotoPrevious_Click(null, EventArgs.Empty);
-                        	bWasHandled = true;
-	        				break;
-	        			}
-	        		case Keys.Right:
-	        			{
-                           	smui.ComCtrls.buttonGotoNext_Click(null, EventArgs.Empty);
-                       		bWasHandled = true;
-							break;
-	        			}
-	        		case Keys.End:
-                        {
-	        				smui.ComCtrls.buttonGotoLast_Click(null, EventArgs.Empty);
-	        				bWasHandled = true;
-							break;
-	        			}
-	        		case Keys.Home:
-	        			{
-	        				smui.ComCtrls.buttonGotoFirst_Click(null, EventArgs.Empty);
-                            bWasHandled = true;
-                            break;
-	        			}
-	        		default:
-	        			break;
-	        	}
-			}
+			if (smui == null)
+			    return false;
+
+			bool bWasHandled = false;
+			switch (_keycode)
+			{
+        		case Keys.Space:
+        		case Keys.Return:
+        			{
+                        smui.ComCtrls.buttonPlay_Click(null, EventArgs.Empty);
+                        bWasHandled = true;
+                    	break;
+        			}
+        		case Keys.Left:
+        			{
+						smui.ComCtrls.buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    	bWasHandled = true;
+        				break;
+        			}
+        		case Keys.Right:
+        			{
+                       	smui.ComCtrls.buttonGotoNext_Click(null, EventArgs.Empty);
+                   		bWasHandled = true;
+						break;
+        			}
+        		case Keys.End:
+                    {
+        				smui.ComCtrls.buttonGotoLast_Click(null, EventArgs.Empty);
+        				bWasHandled = true;
+						break;
+        			}
+        		case Keys.Home:
+        			{
+        				smui.ComCtrls.buttonGotoFirst_Click(null, EventArgs.Empty);
+                        bWasHandled = true;
+                        break;
+        			}
+        		default:
+        			break;
+        	}
         	return bWasHandled;
         }
         private void ActivateOtherScreen()

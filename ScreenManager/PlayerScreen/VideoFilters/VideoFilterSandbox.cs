@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -31,6 +32,7 @@ using System.Windows.Forms;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -62,11 +64,11 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
-		public override void Menu_OnClick(object sender, EventArgs e)
-        {
+		public override void Activate(VideoFrameCache _cache)
+		{
 			StartProcessing();
         }
-		protected override void Process()
+		protected override void Process(object sender, DoWorkEventArgs e)
 		{
 			// Method called back from AbstractVideoFilter after a call to StartProcessing().
 
