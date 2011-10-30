@@ -22,24 +22,21 @@ using System;
 
 namespace Kinovea.Video
 {
+    /// <summary>
+    /// Flags indicating the capabilities of the specific file loaded by the reader.
+    /// </summary>
     [Flags]
-    public enum VideoReaderFlags : int
+    public enum VideoCapabilities : int
 	{
 		None = 0,
 		
 		/// <summary>
-		/// True if this reader always extract the full content of the file to the cache.
-		/// In this case the reader can assume that the working zone is always locked on full file,
-		/// and not implement support for working zone size change.
+		/// False if the entire video is extracted to cache during load and not touched afterwards.
+		/// In this case the working zone is also locked.
 		/// </summary>
-		AlwaysCaching = 1,
-		
-		/// <summary>
-		/// May depend on file. True if the operations that change the aspect ratio of the images are supported.
-		/// </summary>
-		SupportsAspectRatio = 2,
-		
-		SupportsDeinterlace = 4
+		DynamicCache = 1,
+		AspectRatio = 2,
+		Deinterlacing = 4
 	}
     
     public enum ImageAspectRatio

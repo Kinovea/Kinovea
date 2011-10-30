@@ -28,12 +28,13 @@ using System.Linq;
 
 namespace Kinovea.Video.Gif
 {
+    // A video reader for animated GIFs.
     [SupportedExtensions(".gif")]
     public class GIFVideoReader : VideoReader
     {
         #region Properties
-        public override VideoReaderFlags Flags {
-            get { return VideoReaderFlags.AlwaysCaching; }
+        public override VideoCapabilities Flags {
+            get { return VideoCapabilities.None; }
         }
         public override bool Loaded {
             get { return m_Loaded; }
@@ -77,6 +78,8 @@ namespace Kinovea.Video.Gif
             m_VideoInfo.AverageTimeStampsPerSeconds = 100;
             m_VideoInfo.FilePath = _filePath;
             
+            // This reader can only function in frozen cache mode,
+            // so we systematically load the cache during opening.
             OpenVideoResult res = LoadFile(_filePath, true);
             m_Gif.Dispose();
             DumpInfo();
@@ -99,6 +102,7 @@ namespace Kinovea.Video.Gif
             // NOT TESTED - NOT USED for now.
             VideoSummary summary = null;
            
+            // TODO: here we'll need to prevent the systematic full caching (lengthy).
             OpenVideoResult res = LoadFile(_filePath, true);
             
             if(res == OpenVideoResult.Success)

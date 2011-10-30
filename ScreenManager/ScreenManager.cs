@@ -1380,7 +1380,7 @@ namespace Kinovea.ScreenManager
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Image
-                    mnuDeinterlace.Enabled = (player.FrameServer.VideoReader.Flags & VideoReaderFlags.SupportsDeinterlace) != 0;
+                    mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanDeinterlace;
                     mnuMirror.Enabled = true;
                     mnuSVGTools.Enabled = m_bHasSvgFiles;
                     mnuCoordinateAxis.Enabled = true;
@@ -1614,18 +1614,13 @@ namespace Kinovea.ScreenManager
         private void ConfigureImageFormatMenus(AbstractScreen _screen)
         {
 			// Set the enable and check prop of the image formats menu according of current screen state.
-			if(_screen == null || !_screen.Full)
+			if(_screen == null || 
+			   !_screen.Full ||
+			  (_screen is PlayerScreen && !((PlayerScreen)_screen).FrameServer.VideoReader.CanAspectRatio))
 			{
 			    mnuFormat.Enabled = false;
 			    return;
 			}
-			
-            if(_screen is PlayerScreen && 
-			   (((PlayerScreen)_screen).FrameServer.VideoReader.Flags & VideoReaderFlags.SupportsAspectRatio) == 0)
-    	    {
-    	        mnuFormat.Enabled = false;
-    	        return;
-    	    }
 			
         	mnuFormat.Enabled = true;
 			mnuFormatAuto.Enabled = true;
