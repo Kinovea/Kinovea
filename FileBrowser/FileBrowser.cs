@@ -24,6 +24,9 @@ using System;
 using System.Windows.Forms;
 using Kinovea.Services;
 
+// Note: this assembly is only about the side panel for explorer tree and shortcuts tree.
+// The visual explorer with animated icons is part of ScreenManager assembly.
+
 namespace Kinovea.FileBrowser
 {
     public class FileBrowserKernel : IKernel

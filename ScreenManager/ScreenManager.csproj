@@ -237,7 +237,9 @@
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.Designer.cs">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormProgressBar2.Designer.cs">
       <DependentUpon>FormProgressBar2.cs</DependentUpon>
     </Compile>
