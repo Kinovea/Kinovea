@@ -111,17 +111,17 @@ namespace Kinovea.ScreenManager
 		{
 			// Setup Metadata global infos in case we want to flush it to a file (or mux).
 			
-			if(m_Metadata != null && m_VideoReader != null)
-			{
-				Size imageSize = m_VideoReader.Info.DecodingSize;
-						
-				m_Metadata.ImageSize = imageSize;
-				m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
-				m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoReader.Info.FramesPerSeconds;
-				m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
-				
-				log.Debug("Setup metadata.");
-			}
+			if(m_Metadata == null || m_VideoReader == null)
+			    return;
+			
+			Size imageSize = m_VideoReader.Info.DecodingSize;
+					
+			m_Metadata.ImageSize = imageSize;
+			m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
+			m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoReader.Info.FramesPerSeconds;
+			m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
+			
+			log.Debug("Setup metadata.");
 		}
 		public override void Draw(Graphics _canvas)
 		{
@@ -156,19 +156,19 @@ namespace Kinovea.ScreenManager
 		public void SaveDiaporama(ImageRetriever _DelegateOutputBitmap, bool _diapo)
 		{
 			// Let the user configure the diaporama export.
-			
-			formDiapoExport fde = new formDiapoExport(_diapo);
-			if(fde.ShowDialog() == DialogResult.OK)
+			using(formDiapoExport fde = new formDiapoExport(_diapo))
 			{
-				DoSave(fde.Filename, 
-				       	false, 
-				       	fde.FrameInterval,
-				       	true, 
-				       	fde.PausedVideo ? false : true,
-				       	fde.PausedVideo,
-				       	_DelegateOutputBitmap);
+			    if(fde.ShowDialog() == DialogResult.OK)
+    			{
+    				DoSave(fde.Filename, 
+    				       	false, 
+    				       	fde.FrameInterval,
+    				       	true, 
+    				       	fde.PausedVideo ? false : true,
+    				       	fde.PausedVideo,
+    				       	_DelegateOutputBitmap);
+    			}
 			}
-			fde.Dispose();
 		}
 		public void AfterSave()
 		{
