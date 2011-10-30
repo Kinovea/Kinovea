@@ -84,10 +84,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	{
 	// Properties (VideoReader subclassing).
 	public: 
-		virtual property VideoReaderFlags Flags {
-			VideoReaderFlags get() override { 
-				return	VideoReaderFlags::SupportsAspectRatio | 
-						VideoReaderFlags::SupportsDeinterlace; 
+		virtual property VideoCapabilities Flags {
+			VideoCapabilities get() override { 
+				return	m_Capabilities; 
 			}
         }
         virtual property bool Loaded {
@@ -129,7 +128,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	// Members
 	private:
 		// General
+		VideoCapabilities m_Capabilities;
 		bool m_bIsLoaded;
+		bool m_bIsVeryShort;
 		VideoInfo m_VideoInfo;
 		Object^ m_Locker;
 		ThreadCanceler^ m_ThreadCanceler;
@@ -152,7 +153,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	// Private methods
 	private:
 		void DataInit();
-		OpenVideoResult Load(String^ _filePath);
+		OpenVideoResult Load(String^ _filePath, bool _forSummary);
 		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
 		void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
 		bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);

@@ -37,7 +37,7 @@ namespace Kinovea.Video
 	public abstract class VideoReader
 	{
 	    #region Properties
-	    public abstract VideoReaderFlags Flags { get; }
+	    public abstract VideoCapabilities Flags { get; }
 	    public abstract bool Loaded { get; }
 		public abstract VideoInfo Info { get; }
 		public abstract VideoSection WorkingZone { get; set; }
@@ -100,6 +100,15 @@ namespace Kinovea.Video
 		        return (duration / Info.AverageTimeStampsPerFrame) + 1;
 		    }
 		}
+		public bool CanDynamicCache {
+		    get { return (Flags & VideoCapabilities.DynamicCache) != 0; }
+		}
+		public bool CanAspectRatio {
+		    get { return (Flags & VideoCapabilities.AspectRatio) != 0; }
+		}
+		public bool CanDeinterlace {
+		    get { return (Flags & VideoCapabilities.Deinterlacing) != 0; }
+		}
 		#endregion
 
 		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
@@ -128,7 +137,7 @@ namespace Kinovea.Video
 		{
 		    if(_frames == 1)
 		    {
-		        log.Debug("MoveBy -> MoveNext");
+		        //log.Debug("MoveBy -> MoveNext");
 		        return MoveNext(_decodeIfNecessary);
 		    }
 		    else
@@ -183,7 +192,7 @@ namespace Kinovea.Video
                 yield return Current;
                 
                 // Clean up continuously to avoid clogging the cache.
-                if(!Caching)
+                if(CanDynamicCache && !Caching)
                     Cache.Clear();
             }
         }
@@ -191,10 +200,10 @@ namespace Kinovea.Video
 		/// <summary>
 		/// Updates the internal working zone. Import whole zone to cache if possible.
 		/// </summary>
-		/// <param name="_progressWorker">A function that will start a background thread for the actual import</param>
+		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
 		public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
         {
-            if((Flags & VideoReaderFlags.AlwaysCaching) != 0)
+            if(!CanDynamicCache)
                 return;
             
             if(_workerFn == null)
@@ -297,7 +306,7 @@ namespace Kinovea.Video
 		/// </summary>
 		public virtual void AfterFrameOperation()
 		{
-            if(!Caching)
+            if(CanDynamicCache && !Caching)
             {
                 // The operation may have corrupted the cache with non contiguous frames.
                 Cache.Clear();

@@ -428,9 +428,9 @@ namespace Kinovea.ScreenManager
 			m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
 			m_iSelDuration  = m_iTotalDuration;
 			
-			UpdateWorkingZone(false);
+            UpdateWorkingZone(false);
 			
-			if((m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) != 0)
+			if(!m_FrameServer.VideoReader.CanDynamicCache)
 			    EnableDisableWorkingZoneControls(false);
 
 			m_iCurrentPosition = m_iSelStart;
@@ -562,16 +562,15 @@ namespace Kinovea.ScreenManager
             
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-            m_FrameServer.VideoReader.BeforeFrameOperation();
-            
             VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-            m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
             
+            m_FrameServer.VideoReader.BeforeFrameOperation();
+            m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
             m_FrameServer.VideoReader.AfterFrameOperation();
             
             // Generally the decoding thread is restarted automatically.
             // In the special case of exiting the Caching mode, we have to restart it manually.
-            // This is also where it will be started for the first time.
+            // This is also where it will be started for the first time if the whole video doesn't fit in the cache.
             if(!m_FrameServer.VideoReader.Caching && !m_FrameServer.VideoReader.IsAsyncDecoding)
                m_FrameServer.VideoReader.StartAsyncDecoding();
             
@@ -4384,7 +4383,7 @@ namespace Kinovea.ScreenManager
 			// Disable playback controls and some other controls for the case
 			// of a one-frame rendering. (mosaic, single image)
 			
-			if(m_FrameServer.Loaded && (m_FrameServer.VideoReader.Flags & VideoReaderFlags.AlwaysCaching) != 0)
+			if(m_FrameServer.Loaded && !m_FrameServer.VideoReader.CanDynamicCache)
                 EnableDisableWorkingZoneControls(false);
 			else
                 EnableDisableWorkingZoneControls(_bEnable);

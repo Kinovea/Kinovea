@@ -36,11 +36,11 @@ namespace Kinovea.Video
     /// <remarks>
     /// Thread safety:
     /// Locking is necessary around all access to m_Cache as it is read and written by both the UI and the decoding thread.
-    /// Assumedly there is no need to lock around access to m_Current.
+    /// Assumedly, there is no need to lock around access to m_Current.
     /// This is because m_Cache is only accessed for add by the decoding thread and this has no impact on m_Current reference.
-    /// The only thing that alter the reference to m_Current are MoveNext, MoveTo, PurgeOutsiders, Clear.
+    /// The only thing that alters the reference to m_Current are: MoveNext, MoveTo, PurgeOutsiders, Clear.
     /// All these are initiated by the UI thread itself, so it will not be using m_Current simultaneously.
-    /// Similarly, drop count is only updated in move* so only from the UI thread.
+    /// Similarly, drop count is only updated in MoveNext and MoveTo, so only from the UI thread.
     ///</remarks>
     public class VideoFrameCache : IEnumerable, IDisposable
     {
@@ -50,6 +50,7 @@ namespace Kinovea.Video
         public int Count { get { lock(m_Locker) return m_Cache.Count; } }
         public bool Empty { get { return m_Current == null; } }
         public int Drops { get { return m_Drops; } }
+        public int Capacity { get { return m_Capacity; }}
         
         public bool HasNext {
             get {
@@ -69,7 +70,12 @@ namespace Kinovea.Video
         /// Currently returns the image at the middle of the buffer.
         /// </summary>
         public Bitmap Representative {
-            get { lock(m_Locker) return m_Cache[(m_Cache.Count / 2) - 1].Image; }
+            get { 
+                lock(m_Locker) 
+                {
+                    return m_Cache[(m_Cache.Count / 2)].Image; 
+                }
+            }
         }
         #endregion
         
@@ -311,6 +317,7 @@ namespace Kinovea.Video
         }
         public void DisableCapacityCheck()
         {
+            // This may be used to load a whole video initially in the cache.
             m_Capacity = int.MaxValue;
             m_RemembranceCapacity = int.MaxValue;
         }
