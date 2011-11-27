@@ -81,6 +81,9 @@ namespace Kinovea.Video
 		public bool CanDeinterlace {
 		    get { return (Flags & VideoCapabilities.Deinterlacing) != 0; }
 		}
+		public bool CanChangeWorkingZone {
+		    get { return (Flags & VideoCapabilities.ChangeWorkingZone) != 0; }
+		}
 		#endregion
 
 		#region Members
@@ -211,10 +214,18 @@ namespace Kinovea.Video
 		/// </summary>
 		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
 		public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+		{
+		    // does nothing by default.
+		    
+		    // This should be abstract at this level and each reader would provide its own implementation.
+		}
+		
+		//void VideoReaderFFMpeg UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+        /*public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
         {
-		    // TODO: we shouldn't assume the reader is using a specific frame container.
-		    
-		    
+            // TODO: we shouldn't assume the reader is using a specific frame container.
+            
+            
             /*if(!CanPreBuffer)
                 return;*/
             
@@ -265,8 +276,8 @@ namespace Kinovea.Video
             if(sectionToCache != VideoSection.Empty)
             {
                 _workerFn((s,e) => IsCaching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
-            }*/
-		}
+            }
+        }*/
 		/// <summary>
 		/// Import several frames in sequence to cache.
 		/// Used in the context of analysis mode (full working zone to cache)

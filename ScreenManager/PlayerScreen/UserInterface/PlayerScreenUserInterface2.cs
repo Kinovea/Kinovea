@@ -435,7 +435,7 @@ namespace Kinovea.ScreenManager
 			
             UpdateWorkingZone(false);
 			
-			if(!m_FrameServer.VideoReader.CanPreBuffer)
+			if(!m_FrameServer.VideoReader.CanChangeWorkingZone)
 			    EnableDisableWorkingZoneControls(false);
 
 			m_iCurrentPosition = m_iSelStart;
@@ -3139,6 +3139,10 @@ namespace Kinovea.ScreenManager
 					log.Error("Error while painting image.");
 					log.Error(exp.Message);
 					log.Error(exp.StackTrace);
+				    
+					#if DEBUG
+				    throw new Exception();
+					#endif
 				}
 			}
 			else
@@ -4453,7 +4457,7 @@ namespace Kinovea.ScreenManager
 			// Disable playback controls and some other controls for the case
 			// of a one-frame rendering. (mosaic, single image)
 			
-			if(m_FrameServer.Loaded && !m_FrameServer.VideoReader.CanPreBuffer)
+			if(m_FrameServer.Loaded && !m_FrameServer.VideoReader.CanChangeWorkingZone)
                 EnableDisableWorkingZoneControls(false);
 			else
                 EnableDisableWorkingZoneControls(_bEnable);
