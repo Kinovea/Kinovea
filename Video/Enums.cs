@@ -35,7 +35,8 @@ namespace Kinovea.Video
 		/// </summary>
 		PreBuffer = 1,
 		AspectRatio = 2,
-		Deinterlacing = 4
+		Deinterlacing = 4,
+		ChangeWorkingZone = 8
 	}
     
     public enum ImageAspectRatio

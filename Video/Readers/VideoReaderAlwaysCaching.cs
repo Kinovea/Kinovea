@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 
 namespace Kinovea.Video
 {
@@ -65,6 +66,9 @@ namespace Kinovea.Video
         {
             m_Cache.Clear();
         }
+        public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+		{
+		}
         public override void BeforeFrameEnumeration()
         {
         }

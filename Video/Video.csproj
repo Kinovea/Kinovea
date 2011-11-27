@@ -68,7 +68,10 @@
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="FrameContainers\SingleFrame.cs" />
     <Compile Include="FrameContainers\VideoFrameCache.cs" />
+    <Compile Include="Readers\Generators\FrameGeneratorImageFile.cs" />
+    <Compile Include="Readers\Generators\IFrameGenerator.cs" />
     <Compile Include="Readers\VideoReaderAlwaysCaching.cs" />
+    <Compile Include="Readers\VideoReaderGenerator.cs" />
     <Compile Include="Readers\VideoReaderGif.cs" />
     <Compile Include="Readers\VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
@@ -89,6 +92,7 @@
     <Folder Include="Base" />
     <Folder Include="FrameContainers" />
     <Folder Include="Readers" />
+    <Folder Include="Readers\Generators" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
