@@ -24,8 +24,6 @@ namespace Kinovea.Video
 {
     public class ThreadCanceler
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
         public bool CancellationPending {
             get { lock(m_Locker) return m_CancelRequest; }
         }
@@ -35,7 +33,6 @@ namespace Kinovea.Video
         
         public void Cancel()
         {
-            log.Debug("Cancelling thread");
             lock(m_Locker)
                 m_CancelRequest = true;
         }

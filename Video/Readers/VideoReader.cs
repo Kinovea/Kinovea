@@ -35,6 +35,11 @@ namespace Kinovea.Video
 	/// supported by this particular reader, as an array of string.
 	/// Ex: [SupportedExtensions(new string[] {".avi", ".bmp"})]
 	/// 
+	/// Concrete implementation is responsible for the frames storage method. 
+	/// (Some advanced storage classes are provided: Cache, Prebuffer).
+	/// 
+	/// Images should be decoded in the Format32bppPArgb pixel format.
+	/// 
 	/// Implementers: you may consider subclassing a more specific abstract class like VideoReaderAlwaysCaching,
 	/// as they provide some boilerplate code for functions irrelevant to some video readers.
 	/// </summary>
@@ -47,11 +52,14 @@ namespace Kinovea.Video
 	    public abstract VideoCapabilities Flags { get; }
 		public abstract VideoInfo Info { get; }
 	    public abstract bool Loaded { get; }
-		public abstract VideoSection WorkingZone { get; set; }
+		public abstract VideoSection WorkingZone { get;}
 		public abstract VideoDecodingMode DecodingMode { get; }
 		
 		public virtual IWorkingZoneFramesContainer WorkingZoneFrames {
 		    get { return null;}
+		}
+		public virtual VideoSection PreBufferingSegment {
+		    get { return VideoSection.Empty; }
 		}
 		public virtual int PreBufferingDrops {
 		    get {return 0; }
@@ -72,6 +80,7 @@ namespace Kinovea.Video
 		    }
 		}
 		
+		// Shorcuts for capabilities.
 		public bool CanDecodeOnDemand {
 		    get { return (Flags & VideoCapabilities.CanDecodeOnDemand) != 0; }
 		}
@@ -122,6 +131,10 @@ namespace Kinovea.Video
 		public abstract void AfterFrameEnumerationStep();
 		public abstract void CompletedFrameEnumeration();
 		
+		/// <summary>
+		/// Called after load and before the first decode request.
+		/// </summary>
+		public abstract void PostLoad();
 		
 		#region Move playhead
 		public bool MovePrev()
@@ -153,6 +166,27 @@ namespace Kinovea.Video
 		    }
 		}
 		#endregion
+		
+		public virtual bool CanSwitchDecodingMode(VideoDecodingMode _mode)
+		{
+		    switch(_mode)
+		    {
+		        case VideoDecodingMode.NotInitialized:
+		            return true;
+		        case VideoDecodingMode.OnDemand:
+		            return CanDecodeOnDemand;
+		        case VideoDecodingMode.PreBuffering:
+		            return CanPreBuffer;
+		        case VideoDecodingMode.Caching:
+		            return CanCache;
+		        default:
+		            return false;
+		    }
+		}
+		public virtual bool HasMoreFrames()
+		{
+		    return Current != null && Current.Timestamp < WorkingZone.End;
+		}
 		
 		public virtual void BeforePlayloop()
 		{

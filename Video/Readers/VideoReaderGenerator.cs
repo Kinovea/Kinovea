@@ -53,7 +53,6 @@ namespace Kinovea.Video
         }
 		public override VideoSection WorkingZone { 
             get { return m_WorkingZone; }
-            set {}
         }
         public override VideoDecodingMode DecodingMode { 
             get { return m_Initialized ? VideoDecodingMode.OnDemand : VideoDecodingMode.NotInitialized; }
@@ -89,6 +88,7 @@ namespace Kinovea.Video
             // TODO: return a summary with a single frame inside.
             throw new NotImplementedException();
         }
+        public override void PostLoad(){}
         public override bool MoveNext(int _skip, bool _decodeIfNecessary)
         {
             return UpdateCurrent(Current.Timestamp + m_VideoInfo.AverageTimeStampsPerFrame);
