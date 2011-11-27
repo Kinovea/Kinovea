@@ -34,7 +34,7 @@ namespace Kinovea.Video.Gif
     {
         #region Properties
         public override VideoCapabilities Flags {
-            get { return VideoCapabilities.None; }
+            get { return VideoCapabilities.CanCache; }
         }
         public override bool Loaded {
             get { return m_Loaded; }
@@ -42,6 +42,9 @@ namespace Kinovea.Video.Gif
         public override VideoInfo Info {
             get { return m_VideoInfo; }
         }
+        public override VideoDecodingMode DecodingMode { 
+            get { return m_Loaded ? VideoDecodingMode.Caching : VideoDecodingMode.NotInitialized; }
+		}
         #endregion
         
         #region Members
@@ -164,7 +167,6 @@ namespace Kinovea.Video.Gif
                 vf.Image = GetFrameAt(_dimension, i);
                 Cache.Add(vf);
             }
-            IsCaching = true;
         }
         private Bitmap GetFrameAt(FrameDimension _dimension, int _target)
         {

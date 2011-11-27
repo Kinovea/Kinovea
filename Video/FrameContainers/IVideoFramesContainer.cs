@@ -22,8 +22,10 @@ using System;
 
 namespace Kinovea.Video
 {
-    public interface ICurrentFrameContainer
+    public interface IVideoFramesContainer
     {
         VideoFrame CurrentFrame { get; }
+        void Add(VideoFrame _frame);
+        void Clear();
     }
 }

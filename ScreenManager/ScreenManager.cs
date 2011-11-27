@@ -205,6 +205,8 @@ namespace Kinovea.ScreenManager
         }
         private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
         {
+            // TODO: test if we can directly use a copy of the argument in the closure.
+            // would avoid passing through .Tag and multiple casts.
             ToolStripMenuItem menu = new ToolStripMenuItem(_filter.Name, _filter.Icon);
             menu.MergeAction = MergeAction.Append;
             menu.Tag = _filter;
@@ -1379,7 +1381,7 @@ namespace Kinovea.ScreenManager
                     mnuLoadAnalysis.Enabled = true;
                     
                     // Image
-                    mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanDeinterlace;
+                    mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
                     mnuMirror.Enabled = true;
                     mnuSVGTools.Enabled = m_bHasSvgFiles;
                     mnuCoordinateAxis.Enabled = true;
@@ -1596,18 +1598,15 @@ namespace Kinovea.ScreenManager
         }
         private void ConfigureVideoFilterMenus(PlayerScreen _player)
         {
-			foreach(ToolStripMenuItem menu in m_filterMenus)
+            bool hasVideo = _player != null && _player.Full;
+            foreach(ToolStripMenuItem menu in m_filterMenus)
 			{
 			    AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
 			    if(filter == null)
 			        continue;
 			    
 			    menu.Visible = filter.Experimental ? PreferencesManager.ExperimentalRelease : true;
-			    
-			    if(_player == null)
-			        menu.Enabled = false;
-			    else
-                    menu.Enabled = _player.IsCaching;
+			    menu.Enabled = hasVideo ? _player.IsCaching : false;
 			}
         }
         private void ConfigureImageFormatMenus(AbstractScreen _screen)
@@ -1615,7 +1614,7 @@ namespace Kinovea.ScreenManager
 			// Set the enable and check prop of the image formats menu according of current screen state.
 			if(_screen == null || 
 			   !_screen.Full ||
-			  (_screen is PlayerScreen && !((PlayerScreen)_screen).FrameServer.VideoReader.CanAspectRatio))
+			  (_screen is PlayerScreen && !((PlayerScreen)_screen).FrameServer.VideoReader.CanChangeAspectRatio))
 			{
 			    mnuFormat.Enabled = false;
 			    return;

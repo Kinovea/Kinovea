@@ -41,7 +41,7 @@ namespace Kinovea.Base
         {
             get {
                 double loopTime = m_Time / m_Loops;
-                return string.Format("Average loop time: {0:0.000}", loopTime);
+                return string.Format("Average loop time: {0:0.000}ms", loopTime);
             }
         }
         public void Restart()

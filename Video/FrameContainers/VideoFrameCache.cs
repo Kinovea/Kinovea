@@ -43,13 +43,12 @@ namespace Kinovea.Video
     /// All these are initiated by the UI thread itself, so it will not be using m_Current simultaneously.
     /// Similarly, drop count is only updated in MoveNext and MoveTo, so only from the UI thread.
     ///</remarks>
-    public class VideoFrameCache : IEnumerable, IDisposable, ICurrentFrameContainer
+    public class VideoFrameCache : IDisposable, IVideoFramesContainer
     {
         #region Properties
         public VideoFrame CurrentFrame { get { return m_Current; } }
         public VideoSection Segment { get { return m_Segment;} }
         public int Count { get { lock(m_Locker) return m_Cache.Count; } }
-        public bool Empty { get { return m_Current == null; } }
         public int Drops { get { return m_Drops; } }
         public int Capacity { get { return m_Capacity; }}
         
@@ -206,17 +205,6 @@ namespace Kinovea.Video
                     Monitor.Wait(m_Locker);
                 }
             }
-        }
-        
-        public IEnumerator GetEnumerator()
-        {
-            // Provided to support foreach construct.
-            // Should be removed in favor of Reader.FrameEnumerator.
-            
-            
-            // This one is not thread safe and can't be made so easily. 
-            // Check if we could use a copy of the list instead.
-            return m_Cache.GetEnumerator();
         }
         public bool Contains(long _timestamp)
         {

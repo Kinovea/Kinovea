@@ -20,12 +20,59 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 
-namespace Kinovea.Video.FrameContainers
+namespace Kinovea.Video
 {
-    public class SingleFrame : ICurrentFrameContainer
+    public class SingleFrame : IVideoFramesContainer
     {
         public VideoFrame CurrentFrame {
-            get { return null; }
+            get { return m_Current; }
+        }
+        
+        #region Construction / Destruction
+        public SingleFrame(){}
+        public SingleFrame(VideoFrameDisposer _disposer)
+        {
+            m_Disposer = _disposer;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+		}
+        ~SingleFrame()
+        {
+            Dispose(false);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+                Clear();
+        }
+        #endregion
+        
+        #region Members
+        private VideoFrame m_Current = new VideoFrame();
+        private VideoFrameDisposer m_Disposer;
+        #endregion
+        
+        public void Add(VideoFrame _frame)
+        {
+            Clear();
+            m_Current.Image = _frame.Image;
+            m_Current.Timestamp = _frame.Timestamp;
+        }
+        public void Clear()
+        {
+            if(m_Current.Image != null)
+            {
+                if(m_Disposer != null)
+                    m_Disposer(m_Current);
+                else
+                    m_Current.Image.Dispose();
+            }
+            
+            m_Current.Image = null;
+            m_Current.Timestamp = 0;
         }
     }
 }
