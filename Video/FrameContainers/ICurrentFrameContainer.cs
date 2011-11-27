@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2009.
+Copyright © Joan Charmant 2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,27 +19,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Resources;
 
-using AForge.Imaging.Filters;
-using Kinovea.ScreenManager.Languages;
-
-namespace Kinovea.ScreenManager
+namespace Kinovea.Video
 {
-	public class VideoFilterContrast : AdjustmentFilter
-	{
-		public override string Name {
-		    get { return ScreenManagerLang.VideoFilterContrast_FriendlyName; }
-		}
-		public override Bitmap Icon {
-		    get { return Properties.Resources.contrast; }
-		}
-		public override ImageProcessor ImageProcessor {
-		    get { return m_Filter.ApplyInPlace; }
-		}
-		
-		private ContrastCorrection m_Filter = new ContrastCorrection(1.6F);
-	}
+    public interface ICurrentFrameContainer
+    {
+        VideoFrame CurrentFrame { get; }
+    }
 }

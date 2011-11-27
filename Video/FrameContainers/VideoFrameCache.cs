@@ -43,10 +43,10 @@ namespace Kinovea.Video
     /// All these are initiated by the UI thread itself, so it will not be using m_Current simultaneously.
     /// Similarly, drop count is only updated in MoveNext and MoveTo, so only from the UI thread.
     ///</remarks>
-    public class VideoFrameCache : IEnumerable, IDisposable
+    public class VideoFrameCache : IEnumerable, IDisposable, ICurrentFrameContainer
     {
         #region Properties
-        public VideoFrame Current { get { return m_Current; } }
+        public VideoFrame CurrentFrame { get { return m_Current; } }
         public VideoSection Segment { get { return m_Segment;} }
         public int Count { get { lock(m_Locker) return m_Cache.Count; } }
         public bool Empty { get { return m_Current == null; } }
@@ -69,19 +69,15 @@ namespace Kinovea.Video
             get { return m_WorkingZone; }
             set { m_WorkingZone = value;}
         }
-        
-        /// <summary>
-        /// Returns an arbitrary image suitable for demo-ing the effect of a filter.
-        /// Currently returns the image at the middle of the buffer.
-        /// </summary>
-        public Bitmap Representative {
+        public bool HasMore {
             get { 
-                lock(m_Locker) 
-                {
-                    return m_Cache[(m_Cache.Count / 2)].Image; 
-                }
+                if(m_Cache.Count < 1)
+                    return false;
+                
+                return (m_Current == null || m_CurrentIndex < 0) || (m_Current.Timestamp < m_WorkingZone.End);
             }
         }
+        
         #endregion
         
         #region Members
@@ -233,23 +229,6 @@ namespace Kinovea.Video
             else
             {
                 return m_Segment.Contains(_timestamp);
-            }
-        }
-        public List<Bitmap> ToBitmapList()
-        {
-            lock(m_Locker) 
-                return m_Cache.Select(frame => frame.Image).ToList();
-        }
-        public void Revert()
-        {
-            lock(m_Locker)
-            {
-                for(int i = 0; i<m_Cache.Count/2; i++)
-                {
-                    Bitmap tmp = m_Cache[i].Image;
-                    m_Cache[i].Image = m_Cache[m_Cache.Count -1 - i].Image;
-                    m_Cache[m_Cache.Count -1 - i].Image = tmp;
-                }
             }
         }
         public void Clear()

@@ -32,15 +32,9 @@ namespace Kinovea.ScreenManager
 		    get { return ScreenManagerLang.VideoFilterSharpen_FriendlyName; }
 		}
 		public override ImageProcessor ImageProcessor {
-		    get { return ProcessSingleImage; }
+		    get { return m_Filter.ApplyInPlace; }
 		}
 	    
 	    private Sharpen m_Filter = new Sharpen();
-	    
-		private Bitmap ProcessSingleImage(Bitmap _src)
-		{
-			m_Filter.ApplyInPlace(_src);
-			return _src;
-		}
 	}
 }

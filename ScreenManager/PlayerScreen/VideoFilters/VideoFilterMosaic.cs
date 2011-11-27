@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -56,14 +57,14 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractVideoFilter Implementation
-		public override void Activate(VideoFrameCache _cache, Action<InteractiveEffect> _setInteractiveEffect)
+		public override void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect)
 		{
 		    InteractiveEffect effect = new InteractiveEffect();
 		    
 		    // Usage of closures to capture internal state for the effect.
 		    // The Parameter object will be shared between the delegates, but scoped to this InteractiveEffect instance.
 		    Parameters p = new Parameters();
-		    effect.Draw = (canvas, cache) => Draw(canvas, cache, p);
+		    effect.Draw = (canvas, frames) => Draw(canvas, frames, p);
 		    effect.MouseWheel = (scroll) => MouseWheel(scroll, p);
 		    
 		    _setInteractiveEffect(effect);
@@ -74,12 +75,12 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Interactive Effect methods
-		private void Draw(Graphics _canvas, VideoFrameCache _cache, Parameters _parameters)
+		private void Draw(Graphics _canvas, IWorkingZoneFramesContainer _framesContainer, Parameters _parameters)
 		{
-		    if(_parameters == null)
+		    if(_parameters == null || _framesContainer == null || _framesContainer.Frames == null || _framesContainer.Frames.Count < 1)
 		        return;
 		    
-            List<Bitmap> selectedFrames = GetImages(_cache, _parameters.Spots);	
+            List<Bitmap> selectedFrames = GetImages(_framesContainer, _parameters.Spots);	
 			
             if(selectedFrames == null || selectedFrames.Count < 1)
                 return;
@@ -127,10 +128,11 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Private methods
-		private List<Bitmap> GetImages(VideoFrameCache _cache, int _spots)
+		private List<Bitmap> GetImages( IWorkingZoneFramesContainer _framesContainer, int _spots)
 		{
-			float step = (float)_cache.Count / _spots;
-			return _cache.ToBitmapList().Where((bmp, i) => i % step < 1).ToList();
+			float step = (float)_framesContainer.Frames.Count / _spots;
+			List<Bitmap> bitmaps = _framesContainer.Frames.Select(f => f.Image).ToList();
+			return bitmaps.Where((bmp, i) => i % step < 1).ToList();
 		}
 		private int GetFontSize(int width)
 		{

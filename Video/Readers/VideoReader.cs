@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -33,38 +34,37 @@ namespace Kinovea.Video
 	/// Concrete implementations should add a SupportedExtensions attribute listing the extensions
 	/// supported by this particular reader, as an array of string.
 	/// Ex: [SupportedExtensions(new string[] {".avi", ".bmp"})]
+	/// 
+	/// Implementers: you may consider subclassing a more specific abstract class like VideoReaderAlwaysCaching,
+	/// as they provide some boilerplate code for functions irrelevant to some video readers.
 	/// </summary>
 	public abstract class VideoReader
 	{
 	    public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
 	    
 	    #region Properties
+	    public abstract VideoFrame Current { get; }
 	    public abstract VideoCapabilities Flags { get; }
 		public abstract VideoInfo Info { get; }
 	    public abstract bool Loaded { get; }
 		public abstract VideoSection WorkingZone { get; set; }
 		public abstract bool IsPreBuffering { get; }
-		
-		public VideoFrameCache Cache { get; protected set; }
+		public virtual IWorkingZoneFramesContainer WorkingZoneFrames {
+		    get { return null;}
+		}
 		public VideoOptions Options { get; set; }
 		public bool IsCaching { get; protected set; }
-		public VideoFrame Current {
-		    get { return Cache == null ? null : Cache.Current;}
+		public virtual int PreBufferingDrops {
+		    get {return 0; }
+            //get { return Cache == null ? 0 : Cache.Drops;}
 		}
-		public int Drops {
-		    get { return Cache == null ? 0 : Cache.Drops;}
-		}
+		
+		
 		public string FilePath {
 			get { return Info.FilePath; }
 		}
 		public bool IsSingleFrame { 
 		    get { return Info.DurationTimeStamps == 1;}
-        }
-        public Bitmap CurrentImage { 
-		    get { 
-		        if(Cache == null || Cache.Current == null) return null;
-		        else return Cache.Current.Image;
-		    }
         }
 		public long EstimatedFrames {
 		    get {
@@ -108,6 +108,11 @@ namespace Kinovea.Video
 		/// </summary>
 		/// <returns>false if the end of file has been reached</returns>
 		public abstract bool MoveTo(long _timestamp, bool _decodeIfNecessary);
+		
+		public abstract void BeforeFrameEnumeration();
+		public abstract void AfterFrameEnumerationStep();
+		public abstract void CompletedFrameEnumeration();
+		
 		
 		#region Move playhead
 		public bool MovePrev()
@@ -181,9 +186,10 @@ namespace Kinovea.Video
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<VideoFrame> FrameEnumerator()
+        public virtual IEnumerable<VideoFrame> FrameEnumerator()
         {
+            // TODO: how to provide this function without assuming container ?
+            
             if(IsPreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
             
@@ -194,10 +200,9 @@ namespace Kinovea.Video
             {
                 hasMore = MoveNext(0, true);
                 yield return Current;
-                
-                // Clean up continuously to avoid clogging the cache.
-                if(CanPreBuffer && !IsCaching)
-                    Cache.Clear();
+                // next line should not be needed. 
+                // we should be in single frame mode or in full cache mode.
+                AfterFrameEnumerationStep();
             }
         }
 		
@@ -207,10 +212,13 @@ namespace Kinovea.Video
 		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
 		public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
         {
-            if(!CanPreBuffer)
-                return;
+		    // TODO: we shouldn't assume the reader is using a specific frame container.
+		    
+		    
+            /*if(!CanPreBuffer)
+                return;*/
             
-            if(_workerFn == null)
+            /*if(_workerFn == null)
                 throw new ArgumentNullException("workerFn");
             
             VideoSection oldZone = WorkingZone;
@@ -257,7 +265,7 @@ namespace Kinovea.Video
             if(sectionToCache != VideoSection.Empty)
             {
                 _workerFn((s,e) => IsCaching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
-            }
+            }*/
 		}
 		/// <summary>
 		/// Import several frames in sequence to cache.
@@ -289,8 +297,10 @@ namespace Kinovea.Video
 		}
 		public virtual void SkipDrops()
 		{
-		    if(Cache != null)
-		        Cache.SkipDrops();
+		    //TODO: do not assume prebuffering or specific container.
+		    
+		    /*if(Cache != null)
+		        Cache.SkipDrops();*/
 		}
 		
 		/// <summary>
@@ -303,26 +313,28 @@ namespace Kinovea.Video
 		public virtual void BeforeFrameOperation()
 		{
 		    // TODO: this will be replaced by a switch to NotBuffering mode.
-            m_bWasPreBuffering = IsPreBuffering;
+            /*m_bWasPreBuffering = IsPreBuffering;
             if(m_bWasPreBuffering)
             {
                 StopPreBuffering();
                 Cache.Clear();
-            }
+            }*/
 		}
 		/// <summary>
 		/// Should be called after non-playback decoding operations.
 		/// </summary>
 		public virtual void AfterFrameOperation()
 		{
-            if(CanPreBuffer && !IsCaching)
+		    // TODO: will change when frame containers are better split.
+		    
+            /*if(CanPreBuffer && !IsCaching)
             {
                 // The operation may have corrupted the cache with non contiguous frames.
                 Cache.Clear();
                 
                 if(m_bWasPreBuffering)
                     StartPreBuffering();
-            }
+            }*/
 		}
 		#endregion
 	}
