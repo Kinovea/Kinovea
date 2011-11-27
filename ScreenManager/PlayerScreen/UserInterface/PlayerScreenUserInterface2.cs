@@ -567,20 +567,25 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
-            StopPlaying();
-            m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-            VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-            
-            m_FrameServer.VideoReader.BeforeFrameOperation();
-            m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
-            m_FrameServer.VideoReader.AfterFrameOperation();
-            
-            // Generally the decoding thread is restarted automatically.
-            // In the special case of exiting the Caching mode, we have to restart it manually.
-            // This is also where it will be started for the first time if the whole video doesn't fit in the cache.
-            // Actually this should be called initialize or something.
-            //if(!m_FrameServer.VideoReader.IsCaching && !m_FrameServer.VideoReader.IsPreBuffering)
-            //   m_FrameServer.VideoReader.StartPreBuffering();
+            if(m_FrameServer.VideoReader.CanChangeWorkingZone)
+            {
+                StopPlaying();
+                m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+                VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
+                
+                //m_FrameServer.VideoReader.BeforeFrameOperation();
+                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
+                //m_FrameServer.VideoReader.AfterFrameOperation();
+                
+                // Generally the decoding thread is restarted automatically.
+                // In the special case of exiting the Caching mode, we have to restart it manually.
+                // This is also where it will be started for the first time if the whole video doesn't fit in the cache.
+                // Actually this should be called initialize or something.
+                //if(!m_FrameServer.VideoReader.IsCaching && !m_FrameServer.VideoReader.IsPreBuffering)
+                //   m_FrameServer.VideoReader.StartPreBuffering();
+                
+                log.DebugFormat("After updating working zone. Asked:{0}, got: {1}", newZone, m_FrameServer.VideoReader.WorkingZone);
+            }
             
             // Reupdate back the locals as the reader uses more precise values.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
@@ -1699,7 +1704,10 @@ namespace Kinovea.ScreenManager
 			
 			if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
 			{
-                ShowNextFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
+			    if(m_FrameServer.VideoReader.Current == null)
+			        ShowNextFrame(m_iSelStart, true);
+			    else
+                    ShowNextFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
 			}
 			else if (m_iCurrentPosition < m_iSelStart || m_iCurrentPosition > m_iSelEnd)
 			{

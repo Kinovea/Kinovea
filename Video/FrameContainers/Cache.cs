@@ -123,6 +123,39 @@ namespace Kinovea.Video
             m_Frames.Clear();
             m_WorkingZone = VideoSection.Empty;
         }
+        /// <summary>
+        /// Remove all items that are outside the working zone.
+        /// </summary>
+        public void ReduceWorkingZone(VideoSection _newZone)
+        {
+            m_WorkingZone = _newZone;
+            
+            int removedAtLeft = 0;
+            for(int i = 0; i<m_Frames.Count;i++)
+            {
+                if(m_WorkingZone.Contains(m_Frames[i].Timestamp))
+                    continue;
+                    
+                if(m_Frames[i].Timestamp < m_WorkingZone.Start)
+                    removedAtLeft++;
+                        
+                DisposeFrame(m_Frames[i]);
+                m_Frames[i] = null;
+                
+                if(i==m_CurrentIndex)
+                    m_CurrentIndex = -1;
+            }
+            
+            if(m_CurrentIndex >= removedAtLeft)
+                m_CurrentIndex-=removedAtLeft;
+            
+            m_Frames.RemoveAll(frame => object.ReferenceEquals(null, frame));
+            
+            m_CurrentIndex = Math.Max(0, m_CurrentIndex);
+            m_Current = m_Frames[m_CurrentIndex];
+            
+            UpdateWorkingZone();
+        }
         
         /// <summary>
         /// Enable or disable insertion mode for Add operations.
