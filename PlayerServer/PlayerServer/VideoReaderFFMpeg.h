@@ -109,7 +109,18 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual property VideoSection WorkingZone {
 			// Return the internal working zone.
 			VideoSection get() override { return m_WorkingZone; }
-			void set(VideoSection value) override { }
+        }
+		virtual property VideoSection PreBufferingSegment {
+			VideoSection get() override {
+				if(m_DecodingMode == VideoDecodingMode::PreBuffering)
+				{
+					VideoSection t = m_PreBuffer->Segment;
+					return t;
+					//return m_PreBuffer->Segment;
+				}
+				else 
+					return VideoSection::Empty; 
+			}
         }
 		virtual property VideoFrame^ Current {
 			VideoFrame^ get() override { 
@@ -124,6 +135,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
 		virtual bool MoveTo(int64_t _timestamp, bool _decodeIfNecessary) override;
 		virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, int _width) override;
+		virtual void PostLoad() override;
 		virtual String^ ReadMetadata() override;
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
@@ -158,7 +170,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		// Frame containers
 		IVideoFramesContainer^ m_FramesContainer;
 		SingleFrame^ m_SingleFrameContainer;
-		VideoFrameCache^ m_PreBuffer;
+		PreBuffer^ m_PreBuffer;
 		Cache^ m_Cache;
 		
         
@@ -183,16 +195,17 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		void DataInit();
 		OpenVideoResult Load(String^ _filePath, bool _forSummary);
 		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
+		int SeekTo(int64_t _target);
 		void SetTimestampFromPacket(int64_t _dts, int64_t _pts, bool _bDecoded);
 		bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		static void DisposeFrame(VideoFrame^ _frame);
 		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
 		void SetDecodingSize(ImageAspectRatio _ratio);
-		void Prefetch(Object^ _canceler);
+		void PreBufferingWorker(Object^ _canceler);
 		bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);
 		bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
 		void SwitchDecodingMode(VideoDecodingMode _mode);
-		void ExitCaching();
+		void SwitchToBestAfterCaching();
 		void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
 
 		void DumpInfo();

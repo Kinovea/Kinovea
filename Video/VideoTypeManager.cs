@@ -123,7 +123,7 @@ namespace Kinovea.Video
         }
         private static void RegisterExtensions(string[] _extensions, Type _readerType)
         {
-            log.DebugFormat("Registering extensions for {0} : {1}", _readerType.Name, string.Join("; ", _extensions));
+            log.InfoFormat("Registering extensions for {0} : {1}", _readerType.Name, string.Join("; ", _extensions));
             
             foreach(string extension in _extensions)
             {

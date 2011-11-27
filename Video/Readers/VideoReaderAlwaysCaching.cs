@@ -38,7 +38,6 @@ namespace Kinovea.Video
 		}
         public override VideoSection WorkingZone {
             get { return m_Cache.WorkingZone; }
-            set {}
         }
         public override IWorkingZoneFramesContainer WorkingZoneFrames {
 		    get { return m_Cache;}
@@ -63,18 +62,12 @@ namespace Kinovea.Video
         {
             m_Cache.Clear();
         }
-        public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
-		{
-		}
-        public override void BeforeFrameEnumeration()
-        {
-        }
-        public override void AfterFrameEnumerationStep()
-        {
-        }
-        public override void CompletedFrameEnumeration()
-        {
-        }
+        
+        public override void PostLoad(){}
+        public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn){}
+        public override void BeforeFrameEnumeration(){}
+        public override void AfterFrameEnumerationStep(){}
+        public override void CompletedFrameEnumeration(){}
         #endregion
     }
 }

@@ -437,16 +437,16 @@ namespace Kinovea.ScreenManager
 			m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
 			m_iSelDuration  = m_iTotalDuration;
 			
-            UpdateWorkingZone(false);
+            //UpdateWorkingZone(false);
 			
 			if(!m_FrameServer.VideoReader.CanChangeWorkingZone)
 			    EnableDisableWorkingZoneControls(false);
 
-			m_iCurrentPosition = m_iSelStart;
+			//m_iCurrentPosition = m_iSelStart;
 			// FIXME: This should be the responsibility of the reader.
 			//m_FrameServer.VideoReader.Infos.iFirstTimeStamp = m_iCurrentPosition;
-			m_iStartingPosition = m_iCurrentPosition;
-			m_iTotalDuration = m_iSelDuration;
+			//m_iStartingPosition = m_iCurrentPosition;
+			//m_iTotalDuration = m_iSelDuration;
 			
 			// Update the control.
 			// FIXME - already done in ImportSelectionToMemory ?
@@ -479,7 +479,11 @@ namespace Kinovea.ScreenManager
 			    PostImportMetadata();
 			    m_FrameServer.Metadata.CleanupHash();
 			}
+			
+			m_FrameServer.VideoReader.PostLoad();
 
+			UpdateWorkingZone(false);
+			
 			UpdateFramesMarkers();
 			
 			return 0;
@@ -509,6 +513,10 @@ namespace Kinovea.ScreenManager
 					// Goto frame.
 					m_iFramesToDecode = 1;
 					ShowNextFrame(kf.Position, true);
+					
+					if(m_FrameServer.CurrentImage == null)
+					    continue;
+					
 					UpdatePositionUI();
 
 					// Readjust and complete the Keyframe
@@ -572,19 +580,8 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
                 VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-                
-                //m_FrameServer.VideoReader.BeforeFrameOperation();
                 m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
-                //m_FrameServer.VideoReader.AfterFrameOperation();
-                
-                // Generally the decoding thread is restarted automatically.
-                // In the special case of exiting the Caching mode, we have to restart it manually.
-                // This is also where it will be started for the first time if the whole video doesn't fit in the cache.
-                // Actually this should be called initialize or something.
-                //if(!m_FrameServer.VideoReader.IsCaching && !m_FrameServer.VideoReader.IsPreBuffering)
-                //   m_FrameServer.VideoReader.StartPreBuffering();
-                
-                log.DebugFormat("After updating working zone. Asked:{0}, got: {1}", newZone, m_FrameServer.VideoReader.WorkingZone);
+                //log.DebugFormat("After updating working zone. Asked:{0}, got: {1}", newZone, m_FrameServer.VideoReader.WorkingZone);
             }
             
             // Reupdate back the locals as the reader uses more precise values.
@@ -1819,7 +1816,8 @@ namespace Kinovea.ScreenManager
 			
 			//trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
 			trkFrame.Position = m_iCurrentPosition;
-            trkFrame.Invalidate();
+            trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
+			trkFrame.Invalidate();
             trkSelection.SelPos = m_iCurrentPosition;
 			trkSelection.Invalidate();
 			UpdateCurrentPositionLabel();
@@ -2150,7 +2148,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     m_RenderingDrops++;
-                    log.Debug("[Timer] - UI is busy rendering. Rendering drop.");
+                    //log.Debug("[Timer] - UI is busy rendering. Rendering drop.");
                     m_DropWatcher.AddDropStatus(true);
                 }
             }
@@ -2203,6 +2201,7 @@ namespace Kinovea.ScreenManager
                     // Update UI. For speed purposes, we don't update Selection Tracker hairline.
                     //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
                     trkFrame.Position = m_iCurrentPosition;
+                    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
                     trkFrame.Invalidate();
                     UpdateCurrentPositionLabel();
                     
@@ -3142,7 +3141,7 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				log.Debug("Painting screen - no image to display.");
+				log.Error("Painting screen - no image to display.");
 			}
 			
 			// Draw Selection Border if needed.

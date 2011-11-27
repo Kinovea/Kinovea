@@ -213,8 +213,11 @@ namespace Kinovea.ScreenManager
 		}
 		public void UpdateCacheSegmentMarker(VideoSection _section)
 		{
-		    m_CacheSegment = _section;
-            UpdateCacheSegmentMarkerPosition();
+		    if(!_section.IsEmpty)
+		    {
+    		    m_CacheSegment = _section;
+                UpdateCacheSegmentMarkerPosition();
+		    }
 		}
 		#endregion
         
@@ -296,7 +299,7 @@ namespace Kinovea.ScreenManager
         	_canvas.DrawImageUnscaled(bmpBumperLeft, 10, 0);
         	_canvas.DrawImageUnscaled(bmpBumperRight, Width-20, 0);
         	
-        	m_DebugDisplay = false;
+        	m_DebugDisplay = true;
         	
         	if(!m_bEnabled)
         	    return;
