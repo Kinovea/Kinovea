@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -34,34 +35,38 @@ namespace Kinovea.ScreenManager
 	/// All adjustment filters :
 	/// - Input        : All images.
 	/// - Output       : All images, same size.
-	/// - Type         : Work on each frame separately - the filter must be applied in place.
+	/// - Type         : Work on each frame separately - the filter MUST be applied in place.
 	/// - Previewable  : Yes.
 	/// </summary>
     public abstract class AdjustmentFilter : AbstractVideoFilter
 	{
         public abstract ImageProcessor ImageProcessor { get ; }
+        private ReadOnlyCollection<VideoFrame> m_Frames;
         
-        public override void Activate(VideoFrameCache _cache, Action<InteractiveEffect> _setInteractiveEffect)
+        public override void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect)
 		{
-		    if(ImageProcessor == null || _cache == null || _cache.Count < 1)
+            if(ImageProcessor == null || _framesContainer == null || _framesContainer.Frames == null || _framesContainer.Frames.Count < 1)
 		        return;
 
-		    FrameCache = _cache;
+		    m_Frames = _framesContainer.Frames;
 		    
-		    using(Bitmap bmp = _cache.Representative.CloneDeep())
-			using(formPreviewVideoFilter fpvf = new formPreviewVideoFilter(ImageProcessor(bmp), Name))
-			{
-                if (fpvf.ShowDialog() == DialogResult.OK)
-                    StartProcessing();
-			}
+		    using(Bitmap bmp = _framesContainer.Representative.CloneDeep())
+		    {
+		        ImageProcessor(bmp);
+    			using(formPreviewVideoFilter fpvf = new formPreviewVideoFilter(bmp, Name))
+    			{
+                    if (fpvf.ShowDialog() == DialogResult.OK)
+                        StartProcessing();
+    			}
+		    }
 		}
 		protected override void Process(object sender, DoWorkEventArgs e)
 		{
 			int i = 0;
-			foreach(VideoFrame vf in FrameCache)
+			foreach(VideoFrame vf in m_Frames)
 			{
 			    ImageProcessor(vf.Image);
-			    ((BackgroundWorker)sender).ReportProgress(++i, FrameCache.Count);
+			    ((BackgroundWorker)sender).ReportProgress(++i, m_Frames.Count);
 			}
 		}
 	}

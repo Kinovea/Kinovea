@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -60,11 +61,10 @@ namespace Kinovea.ScreenManager
         public virtual bool Experimental {
             get { return false; }
         }
-		public VideoFrameCache FrameCache {get;set;}
 		#endregion
         
         #region Abstract Methods
-        public abstract void Activate(VideoFrameCache _frames, Action<InteractiveEffect> _setInteractiveEffect);
+        public abstract void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect);
         protected abstract void Process(object sender, DoWorkEventArgs e);
         #endregion
         

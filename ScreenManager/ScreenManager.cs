@@ -213,7 +213,7 @@ namespace Kinovea.ScreenManager
                 if(screen == null || !screen.IsCaching)
                     return;
                 AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
-                filter.Activate(screen.FrameServer.VideoReader.Cache, SetInteractiveEffect);
+                filter.Activate(screen.FrameServer.VideoReader.WorkingZoneFrames, SetInteractiveEffect);
                 screen.RefreshImage();
             };
             return menu;
@@ -2596,7 +2596,7 @@ namespace Kinovea.ScreenManager
         	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
         	if (ps != null)
         	{
-        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.VideoReader.CurrentImage, ps.FrameServer.Metadata);
+        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.CurrentImage, ps.FrameServer.Metadata);
 				fsto.StartPosition = FormStartPosition.CenterScreen;
 				fsto.ShowDialog();
 				fsto.Dispose();

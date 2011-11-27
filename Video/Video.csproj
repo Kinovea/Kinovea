@@ -62,7 +62,13 @@
     <Compile Include="Base\LoopWatcher.cs" />
     <Compile Include="Base\TimeWatcher.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FrameContainers\Cache.cs" />
+    <Compile Include="FrameContainers\ICurrentFrameContainer.cs" />
+    <Compile Include="FrameContainers\IWorkingZoneContainer.cs" />
+    <Compile Include="FrameContainers\PreBuffer.cs" />
+    <Compile Include="FrameContainers\SingleFrame.cs" />
     <Compile Include="FrameContainers\VideoFrameCache.cs" />
+    <Compile Include="Readers\VideoReaderAlwaysCaching.cs" />
     <Compile Include="Readers\VideoReaderGif.cs" />
     <Compile Include="Readers\VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />

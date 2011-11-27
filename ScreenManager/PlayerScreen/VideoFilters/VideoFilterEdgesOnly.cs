@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
 		
 		private DifferenceEdgeDetector m_Filter = new DifferenceEdgeDetector();
 		
-		private Bitmap ProcessSingleImage(Bitmap _src)
+		private void ProcessSingleImage(Bitmap _src)
 		{
 		    using(Bitmap gray = Grayscale.CommonAlgorithms.BT709.Apply(_src))
 		    using(Bitmap tmp = m_Filter.Apply(gray))
@@ -56,8 +56,6 @@ namespace Kinovea.ScreenManager
                 Graphics g = Graphics.FromImage(_src);
                 g.DrawImage(tmp, 0, 0);
 		    }
-			
-			return _src;
 		}
 	}
 }

@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		private Bitmap ProcessSingleImage(Bitmap _src)
+		private void ProcessSingleImage(Bitmap _src)
 		{
             ImageStatistics stats = new ImageStatistics(_src);
             LevelsLinear levelsLinear = new LevelsLinear {
@@ -58,7 +58,6 @@ namespace Kinovea.ScreenManager
             };
             
             levelsLinear.ApplyInPlace(_src);
-            return _src;
 		}
 	}
 }

@@ -41,5 +41,6 @@ namespace Kinovea.ScreenManager
     public delegate void ClosestFrameAction(Point _mouse, long _iBeginTimestamp, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly);
     public delegate object BindReader(string _sourceProperty, Type _targetType);
     public delegate void BindWriter(string _targetProperty, object _value);
-    public delegate Bitmap ImageProcessor(Bitmap _src);
+    //public delegate Bitmap ImageProcessor(Bitmap _src);
+    public delegate void ImageProcessor(Bitmap _src);
 }

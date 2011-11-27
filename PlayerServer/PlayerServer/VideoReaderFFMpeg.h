@@ -97,11 +97,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 			VideoInfo get() override { return m_VideoInfo; }
         }
         virtual property VideoSection WorkingZone {
-            VideoSection get() override { return Cache->WorkingZone; }
-            void set(VideoSection value) override { Cache->WorkingZone = value;	}
+            VideoSection get() override { return m_Cache->WorkingZone; }
+            void set(VideoSection value) override { m_Cache->WorkingZone = value;	}
         }
 		virtual property bool IsPreBuffering {
 			bool get() override { return m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive; }
+		}
+		virtual property VideoFrame^ Current {
+		    VideoFrame^ get() override { return m_Cache->CurrentFrame; }
 		}
 
 	// Public Methods (VideoReader subclassing).
@@ -118,6 +121,10 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
 		virtual void StartPreBuffering() override;
 		virtual void StopPreBuffering() override;
+		virtual void BeforeFrameEnumeration() override;
+		virtual void AfterFrameEnumerationStep() override;
+		virtual void CompletedFrameEnumeration() override;
+
 
 	// Construction / Destruction.
 	public:
@@ -135,6 +142,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		VideoInfo m_VideoInfo;
 		Object^ m_Locker;
 		ThreadCanceler^ m_ThreadCanceler;
+		VideoFrameCache^ m_Cache;
         
 
 		// FFMpeg specifics

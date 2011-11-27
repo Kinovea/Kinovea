@@ -22,24 +22,27 @@ using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
 
-using Kinovea.Video;
-
-namespace Kinovea.ScreenManager
+namespace Kinovea.Video
 {
     /// <summary>
-    /// An autonomous video effect. 
-    /// It is self contained and user interactions are tunelled to it.
-    /// 
-    /// Usage (see VideoFilterMosaic):
-    /// Create an instance of this class and assign the properties with delegates or lambdas.
-    /// Pass the instance to SetInteractiveEffect() inside the Activate() method of the wrapper effect.
-    /// The object will live in the PlayerScreen. 
-    /// If the methods need to share common data, consider defining the delegates 
-    /// as closures that would each capture the shared data from outer scope.
+    /// The list of frames in the working zone as seen by video filters.
     /// </summary>
-    public class InteractiveEffect
+    public interface IWorkingZoneFramesContainer
     {
-        public Action<Graphics, IWorkingZoneFramesContainer> Draw {get;set;}
-        public Action<int> MouseWheel {get;set;}
+        /// <summary>
+        /// The raw collection of video frames, but as read only.
+        /// </summary>
+        ReadOnlyCollection<VideoFrame> Frames { get; }
+        
+        /// <summary>
+        /// An arbitrary image suitable for demonstrating the effect of a filter.
+        /// </summary>
+        Bitmap Representative { get; }
+            
+        /// <summary>
+        /// Revert in place all the images of the working zone.
+        /// This is specifically to support the "Revert" video effect.
+        /// </summary>
+        void Revert();
     }
 }

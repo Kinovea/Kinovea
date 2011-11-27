@@ -60,6 +60,14 @@ namespace Kinovea.ScreenManager
 		{
 		    get { return m_VideoReader != null && m_VideoReader.Loaded; }
 		}
+		public Bitmap CurrentImage {
+		    get { 
+		        if(m_VideoReader == null || !m_VideoReader.Loaded || m_VideoReader.Current == null)
+		            return null;
+		        else
+		            return m_VideoReader.Current.Image;
+		    }
+		}
 		#endregion
 		
 		#region Members
@@ -271,10 +279,12 @@ namespace Kinovea.ScreenManager
                 
                 log.DebugFormat("interval:{0}, duplication:{1}, kf duplication:{2}", settings.OutputFrameInterval, settings.Duplication, settings.KeyframeDuplication);
                 
+                m_VideoReader.BeforeFrameEnumeration();
                 IEnumerable<Bitmap> images = FrameEnumerator(settings);
 
                 VideoFileWriter w = new VideoFileWriter();
                 m_SaveResult = w.Save(settings, m_VideoReader.Info, images, bgWorker);
+                m_VideoReader.CompletedFrameEnumeration();
         	}
         	catch (Exception exp)
 			{
