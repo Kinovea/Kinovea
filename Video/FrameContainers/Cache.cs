@@ -31,7 +31,7 @@ namespace Kinovea.Video
     /// All methods run in the UI thread.
     /// Play head moves are synchronous and instantaneous.
     /// </summary>
-    public class Cache : ICurrentFrameContainer, IWorkingZoneFramesContainer
+    public class Cache : IVideoFramesContainer, IWorkingZoneFramesContainer
     {
         #region Properties
         public VideoFrame CurrentFrame {

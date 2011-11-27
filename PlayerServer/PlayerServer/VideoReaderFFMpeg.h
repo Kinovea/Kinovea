@@ -55,8 +55,6 @@ extern "C" {
 #include <swscale.h> 
 }
 
-
-
 #include "Enums.h"
 #include "TimestampInfo.h"
 #include "SavingContext.h"
@@ -78,7 +76,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         ".3gp;.asf;.avi;.dv;.flv;.f4v;.m1v;.m2p;.m2t;.m2ts;.mts;\
         .m2v;.m4v;.mkv;.mod;.mov;.moov;.mpg;.mpeg;.tod;.mxf;\
 		.mp4;.mpv;.ogg;.ogm;.ogv;.qt;.rm;.swf;.vob;.webm;.wmv;\
-		.jpg;.jpeg;.png;.bmp;\
 		*"
 	)]
 	public ref class VideoReaderFFMpeg : VideoReader
@@ -90,21 +87,30 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 				return	m_Capabilities; 
 			}
         }
+		virtual property VideoDecodingMode DecodingMode {
+			VideoDecodingMode get() override { 
+				return	m_DecodingMode; 
+			}
+        }
         virtual property bool Loaded {
             bool get() override { return m_bIsLoaded; }
         }
         virtual property VideoInfo Info {
 			VideoInfo get() override { return m_VideoInfo; }
         }
-        virtual property VideoSection WorkingZone {
+        /*virtual property VideoSection WorkingZone {
             VideoSection get() override { return m_Cache->WorkingZone; }
             void set(VideoSection value) override { m_Cache->WorkingZone = value;	}
+        }*/
+		virtual property VideoSection WorkingZone {
+			// Return the internal working zone.
+			VideoSection get() override { return m_WorkingZone; }
+			void set(VideoSection value) override { }
         }
-		virtual property bool IsPreBuffering {
-			bool get() override { return m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive; }
-		}
 		virtual property VideoFrame^ Current {
-		    VideoFrame^ get() override { return m_Cache->CurrentFrame; }
+			VideoFrame^ get() override { 
+				return m_FramesContainer != nullptr ? m_FramesContainer->CurrentFrame : nullptr; 
+			}
 		}
 
 	// Public Methods (VideoReader subclassing).
@@ -124,8 +130,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual void BeforeFrameEnumeration() override;
 		virtual void AfterFrameEnumerationStep() override;
 		virtual void CompletedFrameEnumeration() override;
-
-
+		virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
+		
 	// Construction / Destruction.
 	public:
 		VideoReaderFFMpeg();
@@ -137,14 +143,19 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 	private:
 		// General
 		VideoCapabilities m_Capabilities;
+		VideoDecodingMode m_DecodingMode;
 		bool m_bIsLoaded;
 		bool m_bIsVeryShort;
 		VideoInfo m_VideoInfo;
+		VideoSection m_WorkingZone;
 		Object^ m_Locker;
-		ThreadCanceler^ m_ThreadCanceler;
+		ThreadCanceler^ m_PreBufferingThreadCanceler;
+		
+		// Frame containers
+		IVideoFramesContainer^ m_FramesContainer;
 		VideoFrameCache^ m_Cache;
+		SingleFrame^ m_SingleFrameContainer;
         
-
 		// FFMpeg specifics
 		int m_iVideoStream;
 		int m_iAudioStream;
@@ -171,6 +182,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
 		void SetDecodingSize(ImageAspectRatio _ratio);
 		void Prefetch(Object^ _canceler);
+		void SwitchDecodingMode(VideoDecodingMode _mode);
 
 		void DumpInfo();
 		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);

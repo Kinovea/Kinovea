@@ -29,15 +29,27 @@ namespace Kinovea.Video
     public enum VideoCapabilities : int
 	{
 		None = 0,
-		
-		/// <summary>
-		/// If PreBuffer is not set, the reader must load all images in the cache when opened and never touch them until closed.
-		/// </summary>
-		PreBuffer = 1,
-		AspectRatio = 2,
-		Deinterlacing = 4,
-		ChangeWorkingZone = 8
+		CanDecodeOnDemand = 1,
+		CanPreBuffer = 2,
+		CanCache = 4,
+		CanChangeWorkingZone = 8,
+		CanChangeAspectRatio = 16,
+		CanChangeDeinterlacing = 32,
+		CanChangeVideoDuration = 64,
+		CanChangeFrameRate = 128,
+		CanChangeOriginalSize = 256
 	}
+    
+    /// <summary>
+    /// The current decoding mode the video reader is in.
+    /// </summary>
+    public enum VideoDecodingMode
+    {
+        NotInitialized, // The video is just opening or has closed and the reader is not fully initialized.
+        OnDemand,       // each frame is decoded on the fly when the player needs it.
+        PreBuffering,   // frames are decoded in a separate thread and pushed to a small buffer.
+        Caching         // All the frames of the working zone have been loaded to a large buffer.
+    }
     
     public enum ImageAspectRatio
     {

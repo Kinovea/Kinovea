@@ -78,7 +78,11 @@ namespace Kinovea.ScreenManager
 			get { return m_bIsCurrentlyPlaying; }
 		}
 		public bool InteractiveFiltering {
-		    get { return m_InteractiveEffect != null && m_InteractiveEffect.Draw != null && m_FrameServer.VideoReader.IsCaching; }
+		    get { 
+		        return m_InteractiveEffect != null && 
+		               m_InteractiveEffect.Draw != null && 
+		               m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching; 
+		    }
 		}
 		public double FrameInterval {
 			get {
@@ -562,7 +566,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_FrameServer.Loaded)
                 return;
-            
+
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
             VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
@@ -575,8 +579,8 @@ namespace Kinovea.ScreenManager
             // In the special case of exiting the Caching mode, we have to restart it manually.
             // This is also where it will be started for the first time if the whole video doesn't fit in the cache.
             // Actually this should be called initialize or something.
-            if(!m_FrameServer.VideoReader.IsCaching && !m_FrameServer.VideoReader.IsPreBuffering)
-               m_FrameServer.VideoReader.StartPreBuffering();
+            //if(!m_FrameServer.VideoReader.IsCaching && !m_FrameServer.VideoReader.IsPreBuffering)
+            //   m_FrameServer.VideoReader.StartPreBuffering();
             
             // Reupdate back the locals as the reader uses more precise values.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
@@ -590,7 +594,7 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelEnd = m_iSelEnd;
                     
             trkFrame.Remap(m_iSelStart, m_iSelEnd);
-            trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.IsCaching;
+            trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -1689,38 +1693,21 @@ namespace Kinovea.ScreenManager
 		{
 			//--------------------------------------------------------------
 			// Update the visible image to reflect the new selection.
-			// Cheks that the previous current frame is still within selection,
+			// Checks that the previous current frame is still within selection,
 			// jumps to closest sentinel otherwise.
 			//--------------------------------------------------------------
 			
-			if (m_FrameServer.VideoReader.IsCaching)
+			if (m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
 			{
-				// In analysis mode, we always refresh the current frame.
-                //ShowNextFrame(m_FrameServer.VideoReader.Selection.iCurrentFrame, true);
                 ShowNextFrame(m_FrameServer.VideoReader.Current.Timestamp, true);
 			}
-			else
+			else if (m_iCurrentPosition < m_iSelStart || m_iCurrentPosition > m_iSelEnd)
 			{
-				if ((m_iCurrentPosition >= m_iSelStart) && (m_iCurrentPosition <= m_iSelEnd))
-				{
-					// Nothing more to do.
-				}
+				m_iFramesToDecode = 1;
+				if (m_iCurrentPosition < m_iSelStart)
+					ShowNextFrame(m_iSelStart, true);
 				else
-				{
-					m_iFramesToDecode = 1;
-
-					// Currently visible frame is not in selection, force refresh.
-					if (m_iCurrentPosition < m_iSelStart)
-					{
-						// Was before start: goto start.
-						ShowNextFrame(m_iSelStart, true);
-					}
-					else
-					{
-						// Was after end: goto end.
-						ShowNextFrame(m_iSelEnd, true);
-					}
-				}
+					ShowNextFrame(m_iSelEnd, true);
 			}
 
 			UpdatePositionUI();
@@ -1797,7 +1784,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Displays the image corresponding to the current position within working zone.
 			// Trigerred by user (or first load). i.e: cursor moved, show frame.
-			if (!m_FrameServer.VideoReader.IsCaching)
+			if (m_FrameServer.VideoReader.DecodingMode != VideoDecodingMode.Caching)
 				this.Cursor = Cursors.WaitCursor;
 
 			m_iCurrentPosition = trkFrame.Position;
@@ -1808,7 +1795,7 @@ namespace Kinovea.ScreenManager
 			if (_bUpdateNavCursor)
 				UpdatePositionUI();
 
-			if (!m_FrameServer.VideoReader.IsCaching)
+			if (m_FrameServer.VideoReader.DecodingMode != VideoDecodingMode.Caching)
 				this.Cursor = Cursors.Default;
 		}
 		private void UpdateCurrentPositionLabel()

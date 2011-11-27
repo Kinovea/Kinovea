@@ -1,5 +1,6 @@
+﻿#region License
 /*
-Copyright � Joan Charmant 2011.
+Copyright © Joan Charmant 2011.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,20 +16,22 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
+#endregion
+using System;
 
-#pragma once
-
-namespace Kinovea { namespace Video { namespace FFMpeg
+namespace Kinovea.Video
 {
-	public enum class ReadResult
-	{
-		Success,
-		MovieNotLoaded,
-		FrameContainerNotSet,
-		MemoryNotAllocated,
-		ImageNotConverted,
-		FrameNotRead
-	};
-}}}
+    public class CapabilityNotSupportedException : Exception
+    {
+        public CapabilityNotSupportedException()
+            : base("CapabilityNotSupportedException: Unknown")
+        {
+        }
+
+        public CapabilityNotSupportedException(string errorMessage)
+            : base(errorMessage)
+        {
+        }
+    }
+}

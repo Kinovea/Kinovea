@@ -43,7 +43,7 @@ namespace Kinovea.Video
             get { return m_Current; }
         }
 	    public override VideoCapabilities Flags { 
-            get { return VideoCapabilities.ChangeWorkingZone;}
+            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone;}
         }
         public override VideoInfo Info { 
             get { return m_VideoInfo;} 
@@ -55,9 +55,9 @@ namespace Kinovea.Video
             get { return m_WorkingZone; }
             set {}
         }
-        public override bool IsPreBuffering { 
-            get {return false;} 
-        }
+        public override VideoDecodingMode DecodingMode { 
+            get { return m_Initialized ? VideoDecodingMode.OnDemand : VideoDecodingMode.NotInitialized; }
+		}
         #endregion
         
         #region Members
@@ -153,6 +153,9 @@ namespace Kinovea.Video
         }
         private bool UpdateCurrent(long _timestamp)
         {
+            // We can generate at any timestamp, but we still need to report when the
+            // end of the working zone is reached. Otherwise frame enumerators like
+            // in video save would just go on for ever.
             if(m_Generator == null || !m_WorkingZone.Contains(_timestamp))
                 return false;
             

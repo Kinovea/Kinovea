@@ -48,17 +48,16 @@ namespace Kinovea.Video
 		public abstract VideoInfo Info { get; }
 	    public abstract bool Loaded { get; }
 		public abstract VideoSection WorkingZone { get; set; }
-		public abstract bool IsPreBuffering { get; }
+		public abstract VideoDecodingMode DecodingMode { get; }
+		
 		public virtual IWorkingZoneFramesContainer WorkingZoneFrames {
 		    get { return null;}
 		}
-		public VideoOptions Options { get; set; }
-		public bool IsCaching { get; protected set; }
 		public virtual int PreBufferingDrops {
 		    get {return 0; }
             //get { return Cache == null ? 0 : Cache.Drops;}
 		}
-		
+		public VideoOptions Options { get; set; }
 		
 		public string FilePath {
 			get { return Info.FilePath; }
@@ -72,17 +71,24 @@ namespace Kinovea.Video
 		        return (duration / Info.AverageTimeStampsPerFrame) + 1;
 		    }
 		}
+		
+		public bool CanDecodeOnDemand {
+		    get { return (Flags & VideoCapabilities.CanDecodeOnDemand) != 0; }
+		}
 		public bool CanPreBuffer {
-		    get { return (Flags & VideoCapabilities.PreBuffer) != 0; }
+		    get { return (Flags & VideoCapabilities.CanPreBuffer) != 0; }
 		}
-		public bool CanAspectRatio {
-		    get { return (Flags & VideoCapabilities.AspectRatio) != 0; }
+		public bool CanCache {
+		    get { return (Flags & VideoCapabilities.CanCache) != 0; }
 		}
-		public bool CanDeinterlace {
-		    get { return (Flags & VideoCapabilities.Deinterlacing) != 0; }
+		public bool CanChangeAspectRatio {
+		    get { return (Flags & VideoCapabilities.CanChangeAspectRatio) != 0; }
+		}
+		public bool CanChangeDeinterlacing {
+		    get { return (Flags & VideoCapabilities.CanChangeDeinterlacing) != 0; }
 		}
 		public bool CanChangeWorkingZone {
-		    get { return (Flags & VideoCapabilities.ChangeWorkingZone) != 0; }
+		    get { return (Flags & VideoCapabilities.CanChangeWorkingZone) != 0; }
 		}
 		#endregion
 
@@ -150,7 +156,9 @@ namespace Kinovea.Video
 		
 		public virtual void BeforePlayloop()
 		{
-            if(!IsCaching && !IsPreBuffering && CanPreBuffer)
+            //if(!IsCaching && !IsPreBuffering && CanPreBuffer)
+            if(DecodingMode != VideoDecodingMode.Caching &&
+               (CanPreBuffer && DecodingMode != VideoDecodingMode.PreBuffering))
             {
                 // Just in case something wrong happened, make sure the decoding thread is alive.
                 // Normally it should always be running (unless the whole zone is cached).
@@ -193,7 +201,7 @@ namespace Kinovea.Video
         {
             // TODO: how to provide this function without assuming container ?
             
-            if(IsPreBuffering)
+            if(DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
             
             bool hasMore = MoveFirst();
@@ -213,12 +221,7 @@ namespace Kinovea.Video
 		/// Updates the internal working zone. Import whole zone to cache if possible.
 		/// </summary>
 		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-		public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
-		{
-		    // does nothing by default.
-		    
-		    // This should be abstract at this level and each reader would provide its own implementation.
-		}
+		public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
 		
 		//void VideoReaderFFMpeg UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
         /*public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)

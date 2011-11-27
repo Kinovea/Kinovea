@@ -41,7 +41,7 @@ namespace Kinovea.Video
     /// Similarly, drop count is only updated in MoveNext and MoveTo, so only from the UI thread.
     ///</remarks>
     
-    public class PreBuffer : ICurrentFrameContainer
+    public class PreBuffer
     {
         public VideoFrame CurrentFrame {
             get { return null; }

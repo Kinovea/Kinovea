@@ -33,9 +33,6 @@ namespace Kinovea.Video
     public abstract class VideoReaderAlwaysCaching : VideoReader
     {
         #region Properties
-        public override bool IsPreBuffering { 
-            get { return false;} 
-        }
         public override VideoFrame Current {
 		    get { return m_Cache.CurrentFrame;}
 		}
