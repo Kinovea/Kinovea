@@ -38,17 +38,4 @@ namespace Kinovea.ScreenManager
 		Yards,
 		Pixels		  // Native unit.
 	}
-
-    public enum VideoFilterType
-	{
-		AutoLevels,
-		AutoContrast,
-		Sharpen,
-		EdgesOnly,
-		Mosaic,
-		Reverse,
-		Sandbox,
-		NumberOfVideoFilters
-	}
-    
 }

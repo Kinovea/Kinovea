@@ -30,7 +30,7 @@ namespace Kinovea.Video.Gif
 {
     // A video reader for animated GIFs.
     [SupportedExtensions(".gif")]
-    public class GIFVideoReader : VideoReader
+    public class VideoReaderGif : VideoReader
     {
         #region Properties
         public override VideoCapabilities Flags {
@@ -46,7 +46,7 @@ namespace Kinovea.Video.Gif
             get { return Cache.Segment; }
             set {}
         }
-        public override bool IsAsyncDecoding { 
+        public override bool IsPreBuffering { 
             get { return false;} 
         }
         #endregion
@@ -62,7 +62,7 @@ namespace Kinovea.Video.Gif
         #endregion
         
         #region Constructor
-        public GIFVideoReader()
+        public VideoReaderGif()
         {
             Cache = new VideoFrameCache();
         }
@@ -89,9 +89,9 @@ namespace Kinovea.Video.Gif
         {
             Cache.Clear();
         }
-        public override bool MoveNext(bool _decodeIfNecessary)
+        public override bool MoveNext(int _skip, bool _decodeIfNecessary)
         {
-            return Cache.MoveNext();
+            return Cache.MoveNext(_skip);
         }
         public override bool MoveTo(long _timestamp, bool _decodeIfNecessary)
         {
@@ -189,7 +189,7 @@ namespace Kinovea.Video.Gif
                 vf.Image = GetFrameAt(i);
                 Cache.Add(vf);
             }
-            Caching = true;
+            IsCaching = true;
             Cache.WorkingZone = Cache.Segment;
         }
         private Bitmap GetFrameAt(int _target)

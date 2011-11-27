@@ -57,24 +57,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base.cs" />
+    <Compile Include="Base\Base.cs" />
+    <Compile Include="Base\DropWatcher.cs" />
+    <Compile Include="Base\LoopWatcher.cs" />
+    <Compile Include="Base\TimeWatcher.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FrameContainers\VideoFrameCache.cs" />
+    <Compile Include="Readers\VideoReaderGif.cs" />
+    <Compile Include="Readers\VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Fraction.cs" />
-    <Compile Include="GIFVideoReader.cs" />
     <Compile Include="SavingSettings.cs" />
     <Compile Include="SupportedExtensionsAttribute.cs" />
     <Compile Include="VideoFrame.cs" />
-    <Compile Include="VideoFrameCache.cs" />
     <Compile Include="VideoInfo.cs" />
     <Compile Include="VideoOptions.cs" />
-    <Compile Include="VideoReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VideoSection.cs" />
     <Compile Include="VideoSummary.cs" />
     <Compile Include="VideoTypeManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Base" />
+    <Folder Include="FrameContainers" />
+    <Folder Include="Readers" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

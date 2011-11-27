@@ -990,15 +990,14 @@ namespace Kinovea.ScreenManager
             // DeactivateKeyboardHandler et ActivateKeyboardHandler
             //----------------------------------------------------------------------------
 			
-            bool bWasHandled = false;
-			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
-            	
-			if (!m_bAllowKeyboardHandler || smui == null || m.Msg != WM_KEYDOWN)
-			{
-			    //log.DebugFormat("MSG:0x{0:x4}", m.Msg);
+            if ( m.Msg != WM_KEYDOWN || !m_bAllowKeyboardHandler)
 			    return false;
-			}
 			
+			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
+			if(smui == null)
+			    return false;
+			
+			bool bWasHandled = false;
 			bool bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
             bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
 			

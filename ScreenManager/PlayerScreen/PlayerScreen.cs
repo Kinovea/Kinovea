@@ -84,7 +84,7 @@ namespace Kinovea.ScreenManager
             {
                 bool uncached = m_FrameServer.VideoReader.ChangeAspectRatio(value);
                 
-                if (uncached && m_FrameServer.VideoReader.Caching)
+                if (uncached && m_FrameServer.VideoReader.IsCaching)
                     m_PlayerScreenUI.UpdateWorkingZone(true);
                     
                 m_PlayerScreenUI.UpdateImageSize();
@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
                 if (!m_FrameServer.Loaded)
                     return false;
                 else
-                    return m_FrameServer.VideoReader.SingleFrame;
+                    return m_FrameServer.VideoReader.IsSingleFrame;
             }	
         }
         public bool IsCaching
@@ -123,7 +123,7 @@ namespace Kinovea.ScreenManager
                 if (!m_FrameServer.Loaded)
                     return false;
                 else
-                    return m_FrameServer.VideoReader.Caching;
+                    return m_FrameServer.VideoReader.IsCaching;
             }
         }
         public int CurrentFrame
@@ -198,7 +198,7 @@ namespace Kinovea.ScreenManager
             {
                 bool uncached = m_FrameServer.VideoReader.ChangeDeinterlace(value);
                 
-                if (uncached && m_FrameServer.VideoReader.Caching)
+                if (uncached && m_FrameServer.VideoReader.IsCaching)
 					m_PlayerScreenUI.UpdateWorkingZone(true);
                 
 				RefreshImage();

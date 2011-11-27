@@ -24,6 +24,9 @@ using System.Drawing;
 
 namespace Kinovea.Video
 {
+    /// <summary>
+    /// Summary of the video. Provides support for animated thumbnails in the integrated explorer.
+    /// </summary>
     public class VideoSummary
     {
         public bool IsImage { get; private set; }

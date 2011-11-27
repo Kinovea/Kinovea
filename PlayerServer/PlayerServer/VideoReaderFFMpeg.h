@@ -65,6 +65,7 @@ using namespace System;
 using namespace System::ComponentModel;
 using namespace System::Reflection;
 using namespace System::Threading;
+using namespace System::Diagnostics;
 
 using namespace Kinovea::Base;
 using namespace Kinovea::Video;
@@ -99,15 +100,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
             VideoSection get() override { return Cache->WorkingZone; }
             void set(VideoSection value) override { Cache->WorkingZone = value;	}
         }
-		virtual property bool IsAsyncDecoding {
-			bool get() override { return m_DecodingThread != nullptr && m_DecodingThread->IsAlive; }
+		virtual property bool IsPreBuffering {
+			bool get() override { return m_PreBufferingThread != nullptr && m_PreBufferingThread->IsAlive; }
 		}
 
 	// Public Methods (VideoReader subclassing).
 	public:
 		virtual OpenVideoResult Open(String^ _filePath) override;
 		virtual void Close() override;
-		virtual bool MoveNext(bool _decodeIfNecessary) override;
+		virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
 		virtual bool MoveTo(int64_t _timestamp, bool _decodeIfNecessary) override;
 		virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, int _width) override;
 		virtual String^ ReadMetadata() override;
@@ -115,8 +116,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual bool ChangeDeinterlace(bool _deint) override;
 		virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory) override;
 		virtual bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
-		virtual void StartAsyncDecoding() override;
-		virtual void CancelAsyncDecoding() override;
+		virtual void StartPreBuffering() override;
+		virtual void StopPreBuffering() override;
 
 	// Construction / Destruction.
 	public:
@@ -147,7 +148,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		static const int DecodingQuality = SWS_FAST_BILINEAR;
 
 		// Others
-		Thread^ m_DecodingThread;
+		Stopwatch^ m_Stopwatch;
+		Thread^ m_PreBufferingThread;
 		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 
 	// Private methods

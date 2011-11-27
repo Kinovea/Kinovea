@@ -36,6 +36,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.Base;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
@@ -77,7 +78,7 @@ namespace Kinovea.ScreenManager
 			get { return m_bIsCurrentlyPlaying; }
 		}
 		public bool InteractiveFiltering {
-		    get { return m_InteractiveEffect != null && m_InteractiveEffect.Draw != null && m_FrameServer.VideoReader.Caching; }
+		    get { return m_InteractiveEffect != null && m_InteractiveEffect.Draw != null && m_FrameServer.VideoReader.IsCaching; }
 		}
 		public double FrameInterval {
 			get {
@@ -196,6 +197,9 @@ namespace Kinovea.ScreenManager
 		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private double m_fSlowmotionPercentage = 100.0f;	// Always between 1 and 200 : this specific value is not impacted by high speed cameras.
 		private bool m_bIsIdle = true;
+		private bool m_bIsBusyRendering;
+		private int m_RenderingDrops;
+		private object m_TimingSync = new object();
 		
 		// Synchronisation
 		private bool m_bSynched;
@@ -288,8 +292,9 @@ namespace Kinovea.ScreenManager
 		ToolStripButton m_btnShowComments;
 		ToolStripButton m_btnToolPresets;
 		
-		private Stopwatch m_Stopwatch = new Stopwatch();
-		private Stopwatch m_RenderingWatch = new Stopwatch();
+		private DropWatcher m_DropWatcher = new DropWatcher();
+		private TimeWatcher m_TimeWatcher = new TimeWatcher();
+		private LoopWatcher m_LoopWatcher = new LoopWatcher();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -375,7 +380,7 @@ namespace Kinovea.ScreenManager
 			EnableDisableSnapshot(_bEnable);
 			EnableDisableDrawingTools(_bEnable);
 			
-			if(_bEnable && m_FrameServer.Loaded && m_FrameServer.VideoReader.SingleFrame)
+			if(_bEnable && m_FrameServer.Loaded && m_FrameServer.VideoReader.IsSingleFrame)
 				EnableDisableAllPlayingControls(false);
 			else
 				EnableDisableAllPlayingControls(_bEnable);				
@@ -392,7 +397,7 @@ namespace Kinovea.ScreenManager
 			
 			DemuxMetadata();
 			ShowNextFrame(-1, true);
-			UpdateNavigationCursor();
+			UpdatePositionUI();
 
 			if (m_FrameServer.VideoReader.Current == null)
 			{
@@ -430,7 +435,7 @@ namespace Kinovea.ScreenManager
 			
             UpdateWorkingZone(false);
 			
-			if(!m_FrameServer.VideoReader.CanDynamicCache)
+			if(!m_FrameServer.VideoReader.CanPreBuffer)
 			    EnableDisableWorkingZoneControls(false);
 
 			m_iCurrentPosition = m_iSelStart;
@@ -500,9 +505,7 @@ namespace Kinovea.ScreenManager
 					// Goto frame.
 					m_iFramesToDecode = 1;
 					ShowNextFrame(kf.Position, true);
-					UpdateNavigationCursor();
-					UpdateCurrentPositionLabel();
-					trkSelection.SelPos = trkFrame.Position;
+					UpdatePositionUI();
 
 					// Readjust and complete the Keyframe
 					kf.Position = m_iCurrentPosition;
@@ -547,7 +550,7 @@ namespace Kinovea.ScreenManager
 			
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iSelStart, true);
-			UpdateNavigationCursor();
+			UpdatePositionUI();
 			ActivateKeyframe(m_iCurrentPosition);
 
 			m_FrameServer.SetupMetadata();
@@ -571,8 +574,9 @@ namespace Kinovea.ScreenManager
             // Generally the decoding thread is restarted automatically.
             // In the special case of exiting the Caching mode, we have to restart it manually.
             // This is also where it will be started for the first time if the whole video doesn't fit in the cache.
-            if(!m_FrameServer.VideoReader.Caching && !m_FrameServer.VideoReader.IsAsyncDecoding)
-               m_FrameServer.VideoReader.StartAsyncDecoding();
+            // Actually this should be called initialize or something.
+            if(!m_FrameServer.VideoReader.IsCaching && !m_FrameServer.VideoReader.IsPreBuffering)
+               m_FrameServer.VideoReader.StartPreBuffering();
             
             // Reupdate back the locals as the reader uses more precise values.
             m_iSelStart = m_FrameServer.VideoReader.WorkingZone.Start;
@@ -586,12 +590,12 @@ namespace Kinovea.ScreenManager
                 trkSelection.SelEnd = m_iSelEnd;
                     
             trkFrame.Remap(m_iSelStart, m_iSelEnd);
-            trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.Caching;
+            trkFrame.ReportOnMouseMove = m_FrameServer.VideoReader.IsCaching;
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             
-            UpdateNavigationCursor();
+            UpdatePositionUI();
             UpdateSelectionLabels();
             OnPoke();
             m_PlayerScreenUIHandler.PlayerScreenUI_SelectionChanged(true);
@@ -641,10 +645,8 @@ namespace Kinovea.ScreenManager
 
 				if(_bAllowUIUpdate)
 				{
-					UpdateNavigationCursor();
-					UpdateCurrentPositionLabel();
+					UpdatePositionUI();
 					ActivateKeyframe(m_iCurrentPosition);
-					trkSelection.SelPos = trkFrame.Position;
 				}
 			}
 		}
@@ -665,9 +667,7 @@ namespace Kinovea.ScreenManager
 			UpdateSelectionLabels();
 			UpdateCurrentPositionLabel();
 			
-			lblSpeedTuner.Left = lblTimeCode.Left + lblTimeCode.Width + 8;
-			sldrSpeed.Left = lblSpeedTuner.Left + lblSpeedTuner.Width + 8;
-			
+			RepositionSpeedControl();			
 			ReloadTooltipsCulture();
 			ReloadMenusCulture();
 			m_KeyframeCommentsHub.RefreshUICulture();
@@ -1407,7 +1407,7 @@ namespace Kinovea.ScreenManager
 				m_iFramesToDecode = 1;
 				ShowNextFrame(m_iSelStart, true);
 				
-				UpdateNavigationCursor();
+				UpdatePositionUI();
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 		}
@@ -1447,7 +1447,7 @@ namespace Kinovea.ScreenManager
 					m_iFramesToDecode = 1;
 				}
 				
-				UpdateNavigationCursor();
+				UpdatePositionUI();
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 			
@@ -1489,7 +1489,7 @@ namespace Kinovea.ScreenManager
 					ShowNextFrame(-1, true);
 				}
 
-				UpdateNavigationCursor();
+				UpdatePositionUI();
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 			
@@ -1505,7 +1505,7 @@ namespace Kinovea.ScreenManager
 				m_iFramesToDecode = 1;
 				ShowNextFrame(m_iSelEnd, true);
 
-				UpdateNavigationCursor();
+				UpdatePositionUI();
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 		}
@@ -1523,7 +1523,6 @@ namespace Kinovea.ScreenManager
 					StopPlaying();
 					m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 					buttonPlay.Image = Resources.liqplay17;
-					m_bIsCurrentlyPlaying = false;
 					ActivateKeyframe(m_iCurrentPosition);
 					ToastPause();
 				}
@@ -1531,9 +1530,7 @@ namespace Kinovea.ScreenManager
 				{
 					// Go into Play mode
 					buttonPlay.Image = Resources.liqpause6;
-					Application.Idle += IdleDetector;
 					StartMultimediaTimer((int)GetPlaybackFrameInterval());
-					m_bIsCurrentlyPlaying = true;
 				}
 			}
 		}
@@ -1617,7 +1614,7 @@ namespace Kinovea.ScreenManager
 				ShowNextFrame(trkSelection.SelPos, true);
 				m_iCurrentPosition = trkSelection.SelPos + trkSelection.Minimum;
 				
-				UpdateNavigationCursor();
+				UpdatePositionUI();
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 			
@@ -1694,7 +1691,7 @@ namespace Kinovea.ScreenManager
 			// jumps to closest sentinel otherwise.
 			//--------------------------------------------------------------
 			
-			if (m_FrameServer.VideoReader.Caching)
+			if (m_FrameServer.VideoReader.IsCaching)
 			{
 				// In analysis mode, we always refresh the current frame.
                 //ShowNextFrame(m_FrameServer.VideoReader.Selection.iCurrentFrame, true);
@@ -1724,7 +1721,7 @@ namespace Kinovea.ScreenManager
 				}
 			}
 
-			UpdateNavigationCursor();
+			UpdatePositionUI();
 		}
 		private void UpdateSelectionLabels()
 		{
@@ -1789,14 +1786,15 @@ namespace Kinovea.ScreenManager
 				ActivateKeyframe(m_iCurrentPosition);
 
 				// Update WorkingZone hairline.
-				trkSelection.SelPos = trkFrame.Position;
+				trkSelection.SelPos =  m_iCurrentPosition;
+				trkSelection.Invalidate();
 			}
 		}
 		private void UpdateFrameCurrentPosition(bool _bUpdateNavCursor)
 		{
 			// Displays the image corresponding to the current position within working zone.
 			// Trigerred by user (or first load). i.e: cursor moved, show frame.
-			if (!m_FrameServer.VideoReader.Caching)
+			if (!m_FrameServer.VideoReader.IsCaching)
 				this.Cursor = Cursors.WaitCursor;
 
 			m_iCurrentPosition = trkFrame.Position;
@@ -1805,24 +1803,29 @@ namespace Kinovea.ScreenManager
 
             // The following may readjust the cursor in case the mouse wasn't on a valid timestamp value.
 			if (_bUpdateNavCursor)
-				UpdateNavigationCursor();
+				UpdatePositionUI();
 
-			if (!m_FrameServer.VideoReader.Caching)
+			if (!m_FrameServer.VideoReader.IsCaching)
 				this.Cursor = Cursors.Default;
 		}
 		private void UpdateCurrentPositionLabel()
 		{
+		    // Note: among other places, this is run inside the playloop.
 			// Position is relative to working zone.
 			string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched);
-			lblTimeCode.Text = ScreenManagerLang.lblTimeCode_Text + " : " + timecode;
-			lblTimeCode.Invalidate();
+			lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
 		}
-		private void UpdateNavigationCursor()
+		private void UpdatePositionUI()
 		{
-			// Update cursor position after Resize, ShowNextFrame, Working Zone change.
+			// Update markers and label for position.
+			
+			//trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
 			trkFrame.Position = m_iCurrentPosition;
-			trkSelection.SelPos = trkFrame.Position;
+            trkFrame.Invalidate();
+            trkSelection.SelPos = m_iCurrentPosition;
+			trkSelection.Invalidate();
 			UpdateCurrentPositionLabel();
+			RepositionSpeedControl();
 		}
 		#endregion
 
@@ -1897,6 +1900,11 @@ namespace Kinovea.ScreenManager
 					lblSpeedTuner.Text = String.Format("{0} {1:0.00}%", ScreenManagerLang.lblSpeedTuner_Text, m_fSlowmotionPercentage);
 				}
 			}			
+		}
+		private void RepositionSpeedControl()
+		{
+            lblSpeedTuner.Left = lblTimeCode.Left + lblTimeCode.Width + 8;
+            sldrSpeed.Left = lblSpeedTuner.Left + lblSpeedTuner.Width + 8;
 		}
 		#endregion
 
@@ -2101,18 +2109,15 @@ namespace Kinovea.ScreenManager
 		private void StartMultimediaTimer(int _interval)
 		{
             ActivateKeyframe(-1);
+            m_DropWatcher.Restart();
+            m_LoopWatcher.Restart();
             
-            // Just in case something wrong happened, make sure the decoding thread is alive.
-            // Normally it should always be running (unless the whole zone is cached).
-            if(!m_FrameServer.VideoReader.Caching && !m_FrameServer.VideoReader.IsAsyncDecoding)
-            {
-                log.Error("Forcing async decoding thread to restart.");
-                m_FrameServer.VideoReader.StartAsyncDecoding();
-            }
+            Application.Idle += Application_Idle;
+            m_FrameServer.VideoReader.BeforePlayloop();
 
             int userCtx = 0;
 			m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
-			
+			m_bIsCurrentlyPlaying = true;
 			log.Debug("Player timer started.");
 		}
 		private void StopMultimediaTimer()
@@ -2120,21 +2125,108 @@ namespace Kinovea.ScreenManager
 			if (m_IdMultimediaTimer != 0)
 				timeKillEvent(m_IdMultimediaTimer);
 			m_IdMultimediaTimer = 0;
+			m_bIsCurrentlyPlaying = false;
+			Application.Idle -= Application_Idle;
 			
 			log.Debug("Player timer stopped.");
+			log.Debug(m_DropWatcher.Ratio);
+			log.Debug(m_LoopWatcher.Average);
 		}
 		private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
 		{
-			if (m_FrameServer.Loaded)
-				BeginInvoke((Action) delegate {PlayLoop_Invoked();});
+		    if(!m_FrameServer.Loaded)
+                return;
+            
+            // We cannot change the pointer to current here in case the UI is painting it,
+            // so we will pass the number of drops along to the rendering.
+            // The rendering will then ask for an update of the pointer to current, skipping as
+            // many frames we missed during the interval.
+            lock(m_TimingSync)
+            {
+                if(!m_bIsBusyRendering)
+                {
+                    int drops = m_RenderingDrops;
+                    BeginInvoke((Action) delegate {Rendering_Invoked(drops);});
+                    m_DropWatcher.AddDropStatus(false);
+                }
+                else
+                {
+                    m_RenderingDrops++;
+                    log.Debug("[Timer] - UI is busy rendering. Rendering drop.");
+                    m_DropWatcher.AddDropStatus(true);
+                }
+            }
+		}
+		private void Rendering_Invoked(int _missedFrames)
+		{
+		    // This is in UI thread space.
+		    // Rendering in the context of continuous playback (play loop).
+		    
+            lock(m_TimingSync)
+		    {
+		        m_bIsBusyRendering = true;
+		        m_RenderingDrops = 0;
+		    }
+            
+            m_TimeWatcher.Restart();
+
+            int skip = m_FrameServer.Metadata.IsTracking ? 0 : _missedFrames;
+            
+		    long estimateNext = m_iCurrentPosition + ((skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+			if (estimateNext > m_iSelEnd)
+			{
+			    EndOfFile();
+			}
+			else
+			{
+			    // This may be slow (several ms) due to delete call when dequeuing the cache. To investigate.
+                bool hasMore = m_FrameServer.VideoReader.MoveNext(skip, false);
+                //m_TimeWatcher.LogTime("Moved to next frame.");
+                
+                // In case the frame wasn't available in the cache, don't render anything.
+                // This means if we missed the previous frame because the UI was busy, we won't 
+                // render it now either. On the other hand, it means we will have less chance to
+                // miss the next frame while trying to render an already outdated one.
+                if(m_FrameServer.VideoReader.Drops > 0)
+                {
+                    if(m_FrameServer.VideoReader.Drops > m_MaxDecodingDrops)
+                    {
+                        log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
+                        ForceSlowdown();
+                    }
+                }
+                else if(m_FrameServer.VideoReader.Current != null)
+                {
+                    DoInvalidate();
+                    m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
+                    ComputeOrStopTracking(skip == 0);
+                    
+                    // This causes Invalidates and will postpone the idle event.
+                    // Update UI. For speed purposes, we don't update Selection Tracker hairline.
+                    //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
+                    trkFrame.Position = m_iCurrentPosition;
+                    trkFrame.Invalidate();
+                    UpdateCurrentPositionLabel();
+                    
+                    ReportForSyncMerge();
+                    //m_TimeWatcher.LogTime("All rendiring operations posted.");
+                }
+                
+                /*if (skip > m_MaxRenderingDrops)
+				{
+				    log.DebugFormat("Failsafe triggered on Rendering Drops ({0})", skip);
+				    ForceSlowdown();
+				}*/
+			}
+			//m_TimeWatcher.LogTime("Exiting Rendering_Invodked.");
 		}
 		private void PlayLoop_Invoked()
 		{
+		    // DEPRECATED.
+		    // Kept for documentation purpose for a while.
+		    
 			// Runs in the UI thread.
-			
-			m_Stopwatch.Reset();
-		    m_Stopwatch.Start();
-		    log.Debug("Playloop invoked");
+			m_TimeWatcher.LogTime("Playloop invoked");
 		    
 			long estimateNext = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
 			if (estimateNext > m_iSelEnd)
@@ -2154,12 +2246,12 @@ namespace Kinovea.ScreenManager
                     ForceSlowdown();
                 }
                 
-                UpdateNavigationCursor();
+                UpdatePositionUI();
 				m_iFramesToDecode = 1;
             }
 			else
 			{
-			    // The BeginInvoke in timer tick was posted before the frame became idle.
+			    // The BeginInvoke in timer tick was posted before the form became idle.
 			    // Not really the proper way to figure out if we are dropping.
 			    if (!m_FrameServer.Metadata.IsTracking)
 				{
@@ -2200,7 +2292,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
             }
             
-            UpdateNavigationCursor();
+            UpdatePositionUI();
 			m_iFramesToDecode = 1;
 		}
 		private void ForceSlowdown()
@@ -2209,19 +2301,48 @@ namespace Kinovea.ScreenManager
 		    m_iFramesToDecode = 0;
             sldrSpeed.ForceValue(sldrSpeed.Value - sldrSpeed.LargeChange);
 		}
-		private void IdleDetector(object sender, EventArgs e)
+		private void ComputeOrStopTracking(bool _contiguous)
 		{
-			m_bIsIdle = true;
+		    if (m_FrameServer.Metadata.HasTrack)
+            {
+                // Fixme: Tracking only supports contiguous frames,
+                // but this should be the responsibility of the track tool anyway.
+                if (!_contiguous)
+                    m_FrameServer.Metadata.StopAllTracking();
+                else
+                    m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
+
+                UpdateFramesMarkers();
+            }
+		}
+		private void Application_Idle(object sender, EventArgs e)
+		{
+		    // This event fires when the window has consumed all its messages.
+		    // Forcing the rendering to synchronize with this event allows
+		    // the UI to have a chance to process non-rendering related events like
+		    // button clicks, mouse move, etc.
+		    m_bIsIdle = true;
+			lock(m_TimingSync)
+		        m_bIsBusyRendering = false;
+
+			m_TimeWatcher.LogTime("Back to idleness");
+			m_TimeWatcher.DumpTimes();
+			m_LoopWatcher.AddLoopTime(m_TimeWatcher.RawTime("Back to idleness"));
 		}
 		private bool ShowNextFrame(long _iSeekTarget, bool _bAllowUIUpdate)
 		{
+		    // TODO: More refactoring needed.
+		    // Eradicate the scheme where we use the _iSeekTarget parameter to mean two things.
+		    if(m_bIsCurrentlyPlaying)
+		        throw new ThreadStateException("ShowNextFrame called while play loop.");
+		    
 		    if(!m_FrameServer.VideoReader.Loaded)
 		        return false;
 		    
 		    bool hasMore = false;
 		    
 		    if(_iSeekTarget < 0)
-		        hasMore = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode, !m_bIsCurrentlyPlaying);
+		        hasMore = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode, true);
 		    else
 		        hasMore = m_FrameServer.VideoReader.MoveTo(_iSeekTarget, true);
 		    
@@ -2229,42 +2350,13 @@ namespace Kinovea.ScreenManager
 			{
 				m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 				
-				// Compute or stop tracking
-				if (m_FrameServer.Metadata.HasTrack)
-				{
-					if (_iSeekTarget >= 0 || m_iFramesToDecode > 1)
-					{
-						// Tracking only supports contiguous frames.
-						m_FrameServer.Metadata.StopAllTracking();
-					}
-					else
-					{
-					    m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
-					}
-					UpdateFramesMarkers();
-				}
+				bool contiguous = _iSeekTarget < 0 && m_iFramesToDecode <= 1;
+				ComputeOrStopTracking(contiguous);
 				
 				if(_bAllowUIUpdate) 
 				{
-				    // <test>
 				    trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
-				    // </test>
-				    
-				    //m_iFramesToRender++;
-				    //log.DebugFormat("After move, frame to render : {0}", m_iFramesToRender);
-				    //if(m_bIsIdle)
-				    {
-				       // m_bIsIdle = false;
-                        //log.DebugFormat("Asking for paint - {0}", m_Stopwatch.ElapsedMilliseconds);
-            		    DoInvalidate();
-            		    //log.DebugFormat("Asked for paint - {0}", m_Stopwatch.ElapsedMilliseconds);
-				    }
-				    
-				    /*if(m_iFramesToRender > MaxRenderingDrops)
-				    {
-				        log.DebugFormat("Failsafe triggered on Rendering Drops ({0}) ---------------------", m_iFramesToDecode-1);
-				        ForceSlowdown();
-				    }*/
+				    DoInvalidate();
 				}
 				
 				ReportForSyncMerge();
@@ -2272,6 +2364,7 @@ namespace Kinovea.ScreenManager
             
             if(!hasMore)
 			{
+                // End of working zone reached.
 			    m_iCurrentPosition = m_iSelEnd;
 				if(_bAllowUIUpdate)
 				{
@@ -2280,69 +2373,6 @@ namespace Kinovea.ScreenManager
 				}
 
 				m_FrameServer.Metadata.StopAllTracking();
-
-				/*
-				switch (res)
-				{
-					case ReadResult.MovieNotLoaded:
-						{
-							// This will be a silent error.
-							break;
-						}
-					case ReadResult.MemoryNotAllocated:
-						{
-							// SHOW_NEXT_FRAME_ALLOC_ERROR
-							StopPlaying(_bAllowUIUpdate);
-							
-							// This will be a silent error.
-							// It is very low level and seem to always come in pair with another error
-							// for which we'll show the dialog.
-							break;
-						}
-					case ReadResult.FrameNotRead:
-						{
-							//------------------------------------------------------------------------------------
-							// SHOW_NEXT_FRAME_READFRAME_ERROR
-							// Frame bloquante ou fin de fichier.
-							// On fait une demande de jump jusqu'à la fin de la selection.
-							// Au prochain tick du timer, on prendra la décision d'arrêter la vidéo
-							// ou pas en fonction du PlayingMode. (et on se replacera en début de selection)
-							//
-							// Possibilité que cette même frame ne soit plus bloquante lors des passages suivants.
-							//------------------------------------------------------------------------------------
-							m_iCurrentPosition = m_iSelEnd;
-							if(_bAllowUIUpdate)
-							{
-								trkSelection.SelPos = m_iCurrentPosition;
-								DoInvalidate();
-							}
-							//Close Tracks
-							m_FrameServer.Metadata.StopAllTracking();
-							
-							break;
-						}
-					case ReadResult.ImageNotConverted:
-						{
-							//-------------------------------------
-							// SHOW_NEXT_FRAME_IMAGE_CONVERT_ERROR
-							// La Bitmap n'a pas pu être créé à partir des octets
-							// (format d'image non standard.)
-							//-------------------------------------
-							StopPlaying(_bAllowUIUpdate);
-							break;
-						}
-					default:
-						{
-							//------------------------------------------------
-							// Erreur imprévue (donc grave) :
-							// on reverse le compteur et on arrète la lecture.
-							//------------------------------------------------
-							StopPlaying(_bAllowUIUpdate);
-							
-							break;
-						}
-				}*/
-				
 			}
 			
 			//m_Stopwatch.Stop();
@@ -2356,14 +2386,17 @@ namespace Kinovea.ScreenManager
 			    return;
 			
 			StopMultimediaTimer();
-			m_bIsCurrentlyPlaying = false;
-			Application.Idle -= IdleDetector;
+
+			lock(m_TimingSync)
+		        m_bIsBusyRendering = false;
+
 			m_iFramesToDecode = 0;
 			
 			if (_bAllowUIUpdate)
 			{
 				buttonPlay.Image = Resources.liqplay17;
 				DoInvalidate();
+				UpdatePositionUI();
 			}
 		}
 		private void mnuSetCaptureSpeed_Click(object sender, EventArgs e)
@@ -3067,7 +3100,9 @@ namespace Kinovea.ScreenManager
 			//-------------------------------------------------------------------
 			if(!m_FrameServer.Loaded || m_DualSaveInProgress)
                 return;
-                
+            
+			m_TimeWatcher.LogTime("Actual start of paint");
+			
 			if(InteractiveFiltering)
 			{
 			    m_InteractiveEffect.Draw(e.Graphics, m_FrameServer.VideoReader.Cache);
@@ -3076,9 +3111,7 @@ namespace Kinovea.ScreenManager
 			{
 				try
 				{
-				    log.DebugFormat("play loop to paint: {0}", m_Stopwatch.ElapsedMilliseconds);
-					
-					// If we are on a keyframe, see if it has any drawing.
+				    // If we are on a keyframe, see if it has any drawing.
 					int iKeyFrameIndex = -1;
 					if (m_iActiveKeyFrameIndex >= 0)
 					{
@@ -3093,7 +3126,7 @@ namespace Kinovea.ScreenManager
 					if(m_MessageToaster.Enabled)
 						m_MessageToaster.Draw(e.Graphics);
                    
-        			log.DebugFormat("play loop to end of paint: {0}/{1}", m_Stopwatch.ElapsedMilliseconds, m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds);
+        			//log.DebugFormat("play loop to end of paint: {0}/{1}", m_Stopwatch.ElapsedMilliseconds, m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds);
 				}
 				catch (System.InvalidOperationException)
 				{
@@ -3116,6 +3149,8 @@ namespace Kinovea.ScreenManager
 			{
 				DrawImageBorder(e.Graphics);
 			}
+			
+			m_TimeWatcher.LogTime("Finished painting.");
 		}
 		private void SurfaceScreen_MouseEnter(object sender, EventArgs e)
 		{
@@ -3157,29 +3192,66 @@ namespace Kinovea.ScreenManager
 			// - Using unmanaged BitBlt or StretchBlt doesn't seem to do much... (!?)
 			// - the scaling and interpolation better be done directly from ffmpeg. (cut on memory usage too)
 			// - furthermore ffmpeg has a mode called 'FastBilinear' that seems more promising.
+			// - Drawing unscaled avoid the interpolation altogether and provide ~8x perfs.
 			
 			// 1. Image
 			g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-			g.CompositingQuality = CompositingQuality.HighSpeed;
-			g.InterpolationMode = InterpolationMode.Bilinear;
-			g.SmoothingMode = SmoothingMode.None;
+			//g.CompositingQuality = CompositingQuality.HighSpeed;
+			//g.InterpolationMode = InterpolationMode.Bilinear;
+			//g.InterpolationMode = InterpolationMode.NearestNeighbor;
+			//g.SmoothingMode = SmoothingMode.None;
 			
-			// TODO - matrix transform.
-			// - Rotate 90°/-90°
-			// - Mirror
 			
-			Rectangle rDst;
-			if(m_FrameServer.Metadata.Mirrored)
+			/*if(!m_FrameServer.CoordinateSystem.Zooming && !m_FrameServer.Metadata.Mirrored)
 			{
-				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+			    // If bigger than the image and not dual screen, bypass the rescaling.
+			    //Bitmap rescaledImage;
+			    if(m_FrameServer.CoordinateSystem.Scale > 1.0 || m_bSynched)
+			    {
+			        g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+                    //ResizeNearestNeighbor filter = new ResizeNearestNeighbor( _iNewSize.Width, _iNewSize.Height);
+                    //rescaledImage = filter.Apply(_sourceImage);
+			    }
+			    else
+			    {
+			        //rescaledImage = _sourceImage;
+			        g.DrawImageUnscaled(rescaledImage, 0,0);
+			    }
+                
+			    //g.DrawImageUnscaled(rescaledImage, 0,0);
+			}
+            else
+            {
+                Rectangle rDst;
+    			if(m_FrameServer.Metadata.Mirrored)
+    				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+    			else
+    				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+                
+    			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+            }*/
+			
+			m_TimeWatcher.LogTime("Before DrawImage");
+			if((m_FrameServer.CoordinateSystem.Scale == 1.0 && !m_FrameServer.Metadata.Mirrored))
+			{
+			    g.DrawImageUnscaled(_sourceImage, 0,0);
 			}
 			else
 			{
-				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+    			Rectangle rDst;
+    			if(m_FrameServer.Metadata.Mirrored)
+    				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+    			else
+    				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+			    
+    			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
 			}
 			
-			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
-			
+			//TextureBrush myBrush = new TextureBrush(_sourceImage);
+			//g.FillRectangle(myBrush, 0,0,_iNewSize.Width, _iNewSize.Height);
+			    
+			m_TimeWatcher.LogTime("After DrawImage");
+            
 			// Testing Key images overlay.
 			// Creates a ghost image of the last keyframe superposed with the current image.
 			// We can only do it in analysis mode to get the key image bitmap.
@@ -3278,11 +3350,10 @@ namespace Kinovea.ScreenManager
 		private void DoInvalidate()
 		{
 			// This function should be the single point where we call for rendering.
-			// Here we can decide to render directly on the surface or go through the Windows message pump.
+			// Here we can decide to render directly on the surface, go through the Windows message pump, force the refresh, etc.
 			
 			// Invalidate is asynchronous and several Invalidate calls will be grouped together. (Only one repaint will be done).
 			pbSurfaceScreen.Invalidate();
-			//pbSurfaceScreen.Update();
 		}
 		#endregion
 
@@ -3565,8 +3636,7 @@ namespace Kinovea.ScreenManager
 				// Should only happen when Undoing a DeleteKeyframe.
 				m_iFramesToDecode = 1;
 				ShowNextFrame(_iPosition, true);
-				UpdateNavigationCursor();
-				trkSelection.SelPos = trkFrame.Position;
+				UpdatePositionUI();
 
 				// Readjust and complete the Keyframe
 				kf.ImportImage(m_FrameServer.VideoReader.CurrentImage);
@@ -3678,7 +3748,7 @@ namespace Kinovea.ScreenManager
 			ShowNextFrame(iTargetPosition, true);
 			m_iCurrentPosition = iTargetPosition;
 
-			UpdateNavigationCursor();
+			UpdatePositionUI();
 
 			// On active sur la position réelle, au cas où on ne soit pas sur la frame demandée.
 			// par ex, si la kf cliquée est hors zone
@@ -3962,8 +4032,7 @@ namespace Kinovea.ScreenManager
 
 				m_iFramesToDecode = 1;
 				ShowNextFrame(iPosition, true);
-				UpdateNavigationCursor();
-				trkSelection.SelPos = trkFrame.Position;
+				UpdatePositionUI();
 				ActivateKeyframe(m_iCurrentPosition);
 			}
 		}
@@ -4147,8 +4216,7 @@ namespace Kinovea.ScreenManager
 			// move to corresponding timestamp.
 			m_iFramesToDecode = 1;
 			ShowNextFrame(_positions[iClosestPoint].T + _iBeginTimestamp, true);
-			UpdateNavigationCursor();
-			trkSelection.SelPos = trkFrame.Position;
+			UpdatePositionUI();
 		}
 		#endregion
 
@@ -4383,7 +4451,7 @@ namespace Kinovea.ScreenManager
 			// Disable playback controls and some other controls for the case
 			// of a one-frame rendering. (mosaic, single image)
 			
-			if(m_FrameServer.Loaded && !m_FrameServer.VideoReader.CanDynamicCache)
+			if(m_FrameServer.Loaded && !m_FrameServer.VideoReader.CanPreBuffer)
                 EnableDisableWorkingZoneControls(false);
 			else
                 EnableDisableWorkingZoneControls(_bEnable);

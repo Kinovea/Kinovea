@@ -323,6 +323,10 @@ namespace Kinovea.ScreenManager
         #region Paint / Resize
         private void SpeedSlider_Paint(object sender, PaintEventArgs e)
         {
+            // TODO: Draw background stretched, not tiled.
+            // Draw unscaled where possible.
+            
+            
         	// When we land in this function, m_iPixelPosition should have been set already.
         	// It is the only member variable we'll use here.
         	
