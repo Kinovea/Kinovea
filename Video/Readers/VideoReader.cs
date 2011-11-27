@@ -186,14 +186,6 @@ namespace Kinovea.Video
             return false;
 		}
 		
-		/// <summary>
-		/// Return true if the whole working zone would fit in the Cache.
-		/// </summary>
-		public virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory)
-		{
-		    return false;
-		}
-		
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
         /// </summary>
@@ -222,77 +214,7 @@ namespace Kinovea.Video
 		/// </summary>
 		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
 		public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
-		
-		//void VideoReaderFFMpeg UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
-        /*public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
-        {
-            // TODO: we shouldn't assume the reader is using a specific frame container.
-            
-            
-            /*if(!CanPreBuffer)
-                return;*/
-            
-            /*if(_workerFn == null)
-                throw new ArgumentNullException("workerFn");
-            
-            VideoSection oldZone = WorkingZone;
-            WorkingZone = _newZone;
-            
-            if(!CanCacheWorkingZone(_newZone, _maxSeconds, _maxMemory))
-            {
-                IsCaching = false;
-                Cache.Clear();
-                return;
-            }
-            
-            VideoSection sectionToCache = VideoSection.Empty;
-            bool prepend = false;
-            
-            if(!IsCaching || _forceReload)
-            {
-                // Just entering the cached mode, import everything.
-                Cache.Clear();
-                sectionToCache = _newZone;
-            }
-            else if(oldZone.Contains(_newZone))
-            {
-                Cache.PurgeOutsiders();
-            }
-            else if(_newZone.Start < oldZone.Start && _newZone.End > oldZone.End)
-            {
-                // Special case of both prepend and append. Clear all and import all for simplicity.
-                Cache.Clear();
-                sectionToCache = _newZone;
-            }
-            else if(_newZone.Start < oldZone.Start)
-            {
-                // Prepending.
-                sectionToCache = new VideoSection(_newZone.Start, oldZone.Start);
-                prepend = true;
-            }
-            else
-            {
-                // Appending.
-                sectionToCache = new VideoSection(oldZone.End, _newZone.End);
-            }
-            
-            if(sectionToCache != VideoSection.Empty)
-            {
-                _workerFn((s,e) => IsCaching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
-            }
-        }*/
-		/// <summary>
-		/// Import several frames in sequence to cache.
-		/// Used in the context of analysis mode (full working zone to cache)
-		/// </summary>
-		/// <param name="_bgWorker">Hosting background worker, for cancellation and progress</param>
-		/// <param name="_section">The section to import</param>
-		/// <param name="_prepend">true if the section is before what's currently in the cache, used to configure Cache.Add.</param>
-		/// <returns>true if all went fine</returns>
-		public virtual bool ReadMany(BackgroundWorker _bgWorker, VideoSection _section, bool _prepend)
-		{
-		    return false;
-		}
+
 		public virtual string ReadMetadata()
 		{
 		    return "";

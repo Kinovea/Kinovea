@@ -317,34 +317,32 @@ namespace Kinovea.ScreenManager
         }
         private void SelectionTracker_MouseUp(object sender, MouseEventArgs e)
         {
-             if(m_bSelLocked || !m_bEnabled)
+             if(m_bSelLocked || !m_bEnabled || e.Button != MouseButtons.Left)
                 return;
              
         	// This is when the validation of the change occur.
-        	if (e.Button == MouseButtons.Left)
+        	if(m_bDraggingTarget)
             {
-        		if(m_bDraggingTarget)
-        		{
-        			// Handle the special case of simple click to change position.
-        			// (mouseMove is not triggered in this case.)
-        			if(e.X >= m_iStartPixel && e.X < m_iEndPixel)
-    				{
-        				m_iPositionPixel = e.X;
-        				Invalidate();
-        			}
-        			
-        			// Update values and report to container.
-        			m_iSelPos = GetTimestampFromCoord(m_iPositionPixel);
-					if (TargetAcquired != null) { TargetAcquired(this, EventArgs.Empty); }
-        		}
-        		else if(m_bDraggingLeft || m_bDraggingRight)
-        		{
-        			// Update values and report to container.
-	        		m_iSelStart = GetTimestampFromCoord(m_iStartPixel);
-	        		m_iSelEnd = GetTimestampFromCoord(m_iEndPixel);
-	        		if (SelectionChanged != null) { SelectionChanged(this, EventArgs.Empty); }
-        		}
-        	}
+            	// Handle the special case of simple click to change position.
+            	// (mouseMove is not triggered in this case.)
+            	if(e.X >= m_iStartPixel && e.X < m_iEndPixel)
+            	{
+            		m_iPositionPixel = e.X;
+            		Invalidate();
+            	}
+            	
+            	// Update values and report to container.
+            	m_iSelPos = GetTimestampFromCoord(m_iPositionPixel);
+            	if (TargetAcquired != null) { TargetAcquired(this, EventArgs.Empty); }
+            }
+            else if(m_bDraggingLeft || m_bDraggingRight)
+            {
+            	// Update values and report to container.
+            	m_iSelStart = GetTimestampFromCoord(m_iStartPixel);
+            	m_iSelEnd = GetTimestampFromCoord(m_iEndPixel);
+            	if (SelectionChanged != null)
+            	    SelectionChanged(this, EventArgs.Empty);
+            }
         }
         #endregion
         
@@ -359,7 +357,7 @@ namespace Kinovea.ScreenManager
         	Draw(e.Graphics);
         	
         	m_TimeWatcher.LogTime("Selection tracker, end of paint.");
-        	m_TimeWatcher.DumpTimes();
+        	//m_TimeWatcher.DumpTimes();
         }
         private void Draw(Graphics _canvas)
         {

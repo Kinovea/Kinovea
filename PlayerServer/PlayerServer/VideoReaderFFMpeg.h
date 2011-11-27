@@ -98,10 +98,14 @@ namespace Kinovea { namespace Video { namespace FFMpeg
         virtual property VideoInfo Info {
 			VideoInfo get() override { return m_VideoInfo; }
         }
-        /*virtual property VideoSection WorkingZone {
-            VideoSection get() override { return m_Cache->WorkingZone; }
-            void set(VideoSection value) override { m_Cache->WorkingZone = value;	}
-        }*/
+        virtual property IWorkingZoneFramesContainer^ WorkingZoneFrames {
+		    IWorkingZoneFramesContainer^ get() override { 
+				if(m_DecodingMode == VideoDecodingMode::Caching)
+					return m_Cache;
+				else 
+					return nullptr;
+			}
+		}
 		virtual property VideoSection WorkingZone {
 			// Return the internal working zone.
 			VideoSection get() override { return m_WorkingZone; }
@@ -123,8 +127,6 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual String^ ReadMetadata() override;
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
-		virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory) override;
-		virtual bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend) override;
 		virtual void StartPreBuffering() override;
 		virtual void StopPreBuffering() override;
 		virtual void BeforeFrameEnumeration() override;
@@ -150,11 +152,15 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		VideoSection m_WorkingZone;
 		Object^ m_Locker;
 		ThreadCanceler^ m_PreBufferingThreadCanceler;
-		
+		VideoSection m_SectionToCache;
+		bool m_Prepend;
+
 		// Frame containers
 		IVideoFramesContainer^ m_FramesContainer;
-		VideoFrameCache^ m_Cache;
 		SingleFrame^ m_SingleFrameContainer;
+		VideoFrameCache^ m_PreBuffer;
+		Cache^ m_Cache;
+		
         
 		// FFMpeg specifics
 		int m_iVideoStream;
@@ -173,6 +179,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 	// Private methods
 	private:
+
 		void DataInit();
 		OpenVideoResult Load(String^ _filePath, bool _forSummary);
 		ReadResult ReadFrame(int64_t _iTimeStampToSeekTo, int _iFramesToDecode, bool _approximate);
@@ -182,7 +189,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
 		void SetDecodingSize(ImageAspectRatio _ratio);
 		void Prefetch(Object^ _canceler);
+		bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);
+		bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
 		void SwitchDecodingMode(VideoDecodingMode _mode);
+		void ExitCaching();
+		void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
 
 		void DumpInfo();
 		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);
