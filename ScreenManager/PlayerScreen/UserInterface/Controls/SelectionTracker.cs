@@ -19,11 +19,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 
-using Kinovea.ScreenManager.Properties;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+
+using Kinovea.Base;
+using Kinovea.ScreenManager.Properties;
 
 namespace Kinovea.ScreenManager
 {
@@ -114,16 +116,12 @@ namespace Kinovea.ScreenManager
             }
             set
             {
+                m_TimeWatcher.Restart();
             	m_iSelPos = value;
-                if (m_iSelPos < m_iSelStart) 
-                {
-                	m_iSelPos = m_iSelStart;
-                }
-                else if (m_iSelPos > m_iSelEnd) 
-                {
-                	m_iSelPos = m_iSelEnd;
-                }
+                if (m_iSelPos < m_iSelStart) m_iSelPos = m_iSelStart;
+                else if (m_iSelPos > m_iSelEnd) m_iSelPos = m_iSelEnd;
                 
+                m_TimeWatcher.LogTime("Selection tracker, Update appearance asked.");
                 UpdateAppearence();
             }
         }
@@ -164,20 +162,21 @@ namespace Kinovea.ScreenManager
 		
         // Graphics
         private static readonly Bitmap bmpBumperLeft = Resources.liqbumperleft;
-       	private static readonly Bitmap bmpBumperRight = Resources.liqbumperright;
-       	private static readonly Bitmap bmpBackground = Resources.liqbackdock;
-       	private static readonly Bitmap bmpHandlerLeft = Resources.liqhandlerleft2;
+        private static readonly Bitmap bmpBumperRight = Resources.liqbumperright;
+        private static readonly Bitmap bmpBackground = Resources.liqbackdock;
+        private static readonly Bitmap bmpHandlerLeft = Resources.liqhandlerleft2;
         private static readonly Bitmap bmpHandlerRight = Resources.liqhandlerright3;
-       	private static readonly Bitmap bmpMiddleBar = Resources.liqmiddlebar;
-       	private static readonly int m_iSpacerWidth = 10;
-       	private static readonly int m_iBumperWidth = bmpBumperLeft.Width;
-       	private static readonly int m_iHandlerWidth = bmpHandlerLeft.Width;
-		
-       	// Interaction
-       	private bool m_bDraggingLeft;
-       	private bool m_bDraggingRight;
-       	private bool m_bDraggingTarget;
-       	
+        private static readonly Bitmap bmpMiddleBar = Resources.liqmiddlebar;
+        private static readonly int m_iSpacerWidth = 10;
+        private static readonly int m_iBumperWidth = bmpBumperLeft.Width;
+        private static readonly int m_iHandlerWidth = bmpHandlerLeft.Width;
+        
+        // Interaction
+        private bool m_bDraggingLeft;
+        private bool m_bDraggingRight;
+        private bool m_bDraggingTarget;
+        
+        private TimeWatcher m_TimeWatcher = new TimeWatcher();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -355,16 +354,29 @@ namespace Kinovea.ScreenManager
         	// Draw the control.
         	// All the position variables must have been set already.
         	
-        	// Draw background.
+        	m_TimeWatcher.LogTime("Selection tracker, actual start of paint.");
+        	
+        	Draw(e.Graphics);
+        	
+        	m_TimeWatcher.LogTime("Selection tracker, end of paint.");
+        	m_TimeWatcher.DumpTimes();
+        }
+        private void Draw(Graphics _canvas)
+        {
+            // TODO: 
+            // - draw the background stretched, not tiled.
+            // - use draw unscaled where possible.
+            
+            // Draw background.
         	// (we draw it first to be able to cover the extra tiling)
         	for(int i=m_iMinimumPixel; i<m_iMaximumPixel; i+=bmpBackground.Width)
         	{
-        		e.Graphics.DrawImage(bmpBackground, i, 0);
+        		_canvas.DrawImage(bmpBackground, i, 0);
         	}
         	
         	// Draw bumpers
-        	e.Graphics.DrawImage(bmpBumperLeft, m_iSpacerWidth, 0);
-        	e.Graphics.DrawImage(bmpBumperRight, m_iMaximumPixel, 0);
+        	_canvas.DrawImage(bmpBumperLeft, m_iSpacerWidth, 0);
+        	_canvas.DrawImage(bmpBumperRight, m_iMaximumPixel, 0);
         	
         	// Draw content.
         	if(m_bEnabled)
@@ -373,15 +385,15 @@ namespace Kinovea.ScreenManager
 	    		// (we draw it first to be able to cover the extra tiling)
 	            for(int i=m_iStartPixel;i<m_iEndPixel;i+=bmpMiddleBar.Width)
 	        	{
-	            	e.Graphics.DrawImage(bmpMiddleBar, i, 0);
+	            	_canvas.DrawImage(bmpMiddleBar, i, 0);
 	        	}
 	            
 	            // Draw handlers
-	            e.Graphics.DrawImage(bmpHandlerLeft, m_iStartPixel - m_iHandlerWidth, 0);
-	            e.Graphics.DrawImage(bmpHandlerRight, m_iEndPixel, 0);
+	            _canvas.DrawImage(bmpHandlerLeft, m_iStartPixel - m_iHandlerWidth, 0);
+	            _canvas.DrawImage(bmpHandlerRight, m_iEndPixel, 0);
 	            
-	    		// Draw hairline.
-	   			e.Graphics.DrawLine(Pens.Black, m_iPositionPixel, 4, m_iPositionPixel, Height - 10);
+                // Draw hairline.
+                _canvas.DrawLine(Pens.Black, m_iPositionPixel, 4, m_iPositionPixel, Height - 10);
         	}
         }
         private void SelectionTracker_Resize(object sender, EventArgs e)
@@ -401,10 +413,10 @@ namespace Kinovea.ScreenManager
         	// This method updates the appearence of the control only, it doesn't raise the events back.
             if (m_iMaximum - m_iMinimum > 0)
             {
-            	m_iStartPixel = GetCoordFromTimestamp(m_iSelStart);
-               	m_iEndPixel = GetCoordFromTimestamp(m_iSelEnd);
-              	m_iPositionPixel = GetCoordFromTimestamp(m_iSelPos);
-              	Invalidate();
+                m_iStartPixel = GetCoordFromTimestamp(m_iSelStart);
+                m_iEndPixel = GetCoordFromTimestamp(m_iSelEnd);
+                m_iPositionPixel = GetCoordFromTimestamp(m_iSelPos);
+                Invalidate();
             }
         }
         private int GetCoordFromTimestamp(long _ts)

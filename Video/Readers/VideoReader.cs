@@ -36,56 +36,28 @@ namespace Kinovea.Video
 	/// </summary>
 	public abstract class VideoReader
 	{
+	    public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
+	    
 	    #region Properties
 	    public abstract VideoCapabilities Flags { get; }
-	    public abstract bool Loaded { get; }
 		public abstract VideoInfo Info { get; }
+	    public abstract bool Loaded { get; }
 		public abstract VideoSection WorkingZone { get; set; }
-		public abstract bool IsAsyncDecoding { get; }
-		#endregion
+		public abstract bool IsPreBuffering { get; }
 		
-		#region Methods
-		public abstract OpenVideoResult Open(string _filePath);
-		public abstract void Close();
-		
-		/// <summary>
-		/// Set the "Current" property to hold the next video frame.
-		/// For async readers, if the frame is not available right now, call it a drop.
-		/// (Decoding should happen in a separate thread).
-		/// decodeIfNecessary will be true for some scenarios like saving, next button, etc. 
-		/// In these cases return only after the frame has been pushed to .Current.
-		/// </summary>
-		/// <returns>false if the end of file has been reached</returns>
-		public abstract bool MoveNext(bool _decodeIfNecessary);
-		
-		/// <summary>
-		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
-		/// </summary>
-		/// <returns>false if the end of file has been reached</returns>
-		public abstract bool MoveTo(long _timestamp, bool _decodeIfNecessary);
-		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
-		#endregion
-		
-		#region Concrete Properties
 		public VideoFrameCache Cache { get; protected set; }
 		public VideoOptions Options { get; set; }
-		public bool Caching { get; protected set; }
+		public bool IsCaching { get; protected set; }
 		public VideoFrame Current {
-		    get { 
-		        if(Cache == null) return null;
-		        else return Cache.Current;
-		    }
+		    get { return Cache == null ? null : Cache.Current;}
 		}
 		public int Drops {
-		    get {
-		        if(Cache == null) return 0;
-		        else return Cache.Drops;
-		    }
+		    get { return Cache == null ? 0 : Cache.Drops;}
 		}
 		public string FilePath {
 			get { return Info.FilePath; }
 		}
-		public bool SingleFrame { 
+		public bool IsSingleFrame { 
 		    get { return Info.DurationTimeStamps == 1;}
         }
         public Bitmap CurrentImage { 
@@ -100,8 +72,8 @@ namespace Kinovea.Video
 		        return (duration / Info.AverageTimeStampsPerFrame) + 1;
 		    }
 		}
-		public bool CanDynamicCache {
-		    get { return (Flags & VideoCapabilities.DynamicCache) != 0; }
+		public bool CanPreBuffer {
+		    get { return (Flags & VideoCapabilities.PreBuffer) != 0; }
 		}
 		public bool CanAspectRatio {
 		    get { return (Flags & VideoCapabilities.AspectRatio) != 0; }
@@ -111,14 +83,31 @@ namespace Kinovea.Video
 		}
 		#endregion
 
-		public const PixelFormat DecodingPixelFormat = PixelFormat.Format32bppPArgb;
-		
 		#region Members
-		private bool m_bWasAsyncDecoding;
+		private bool m_bWasPreBuffering;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 		
-		#region Concrete Methods
+		#region Methods
+		public abstract OpenVideoResult Open(string _filePath);
+		public abstract void Close();
+		public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
+		
+		/// <summary>
+		/// Set the "Current" property to hold the next video frame.
+		/// <para>For async readers, if the frame is not available right now, call it a drop.</para>
+		/// <para>(Decoding should happen in a separate thread).</para>
+		/// <para>decodeIfNecessary will be true for some scenarios like saving, next button, etc.</para>
+		/// <para>In these cases return only after the frame has been pushed to .Current.</para>
+		/// </summary>
+		/// <returns>false if the end of file has been reached</returns>
+		public abstract bool MoveNext(int _skip, bool _decodeIfNecessary);
+		
+		/// <summary>
+		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
+		/// </summary>
+		/// <returns>false if the end of file has been reached</returns>
+		public abstract bool MoveTo(long _timestamp, bool _decodeIfNecessary);
 		
 		#region Move playhead
 		public bool MovePrev()
@@ -137,8 +126,7 @@ namespace Kinovea.Video
 		{
 		    if(_frames == 1)
 		    {
-		        //log.Debug("MoveBy -> MoveNext");
-		        return MoveNext(_decodeIfNecessary);
+		        return MoveNext(0, _decodeIfNecessary);
 		    }
 		    else
 		    {
@@ -151,6 +139,17 @@ namespace Kinovea.Video
 		    }
 		}
 		#endregion
+		
+		public virtual void BeforePlayloop()
+		{
+            if(!IsCaching && !IsPreBuffering && CanPreBuffer)
+            {
+                // Just in case something wrong happened, make sure the decoding thread is alive.
+                // Normally it should always be running (unless the whole zone is cached).
+                log.Error("Forcing PreBuffering thread to restart.");
+                StartPreBuffering();
+            }
+		}
 		
 		/// <summary>
 		/// Force a specific aspect ratio.
@@ -170,6 +169,10 @@ namespace Kinovea.Video
 		    // Does nothing by default. Override to implement.
             return false;
 		}
+		
+		/// <summary>
+		/// Return true if the whole working zone would fit in the Cache.
+		/// </summary>
 		public virtual bool CanCacheWorkingZone(VideoSection _newZone, int _maxSeconds, int _maxMemory)
 		{
 		    return false;
@@ -181,18 +184,19 @@ namespace Kinovea.Video
         /// <returns></returns>
         public IEnumerable<VideoFrame> FrameEnumerator()
         {
-            // Note: this should be called only after async decode deactivation.
-
-            bool hasMore =  MoveFirst();
+            if(IsPreBuffering)
+                throw new ThreadStateException("Frame enumerator called while prebuffering");
+            
+            bool hasMore = MoveFirst();
             yield return Current;
             
             while(hasMore)
             {
-                hasMore = MoveNext(true);
+                hasMore = MoveNext(0, true);
                 yield return Current;
                 
                 // Clean up continuously to avoid clogging the cache.
-                if(CanDynamicCache && !Caching)
+                if(CanPreBuffer && !IsCaching)
                     Cache.Clear();
             }
         }
@@ -203,7 +207,7 @@ namespace Kinovea.Video
 		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
 		public virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
         {
-            if(!CanDynamicCache)
+            if(!CanPreBuffer)
                 return;
             
             if(_workerFn == null)
@@ -214,7 +218,7 @@ namespace Kinovea.Video
             
             if(!CanCacheWorkingZone(_newZone, _maxSeconds, _maxMemory))
             {
-                Caching = false;
+                IsCaching = false;
                 Cache.Clear();
                 return;
             }
@@ -222,7 +226,7 @@ namespace Kinovea.Video
             VideoSection sectionToCache = VideoSection.Empty;
             bool prepend = false;
             
-            if(!Caching || _forceReload)
+            if(!IsCaching || _forceReload)
             {
                 // Just entering the cached mode, import everything.
                 Cache.Clear();
@@ -234,7 +238,7 @@ namespace Kinovea.Video
             }
             else if(_newZone.Start < oldZone.Start && _newZone.End > oldZone.End)
             {
-                // Special case of both prepend and append. Clear and import all for simplicity.
+                // Special case of both prepend and append. Clear all and import all for simplicity.
                 Cache.Clear();
                 sectionToCache = _newZone;
             }
@@ -252,7 +256,7 @@ namespace Kinovea.Video
             
             if(sectionToCache != VideoSection.Empty)
             {
-                _workerFn((s,e) => Caching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
+                _workerFn((s,e) => IsCaching = ReadMany((BackgroundWorker)s, sectionToCache, prepend));
             }
 		}
 		/// <summary>
@@ -271,11 +275,15 @@ namespace Kinovea.Video
 		{
 		    return "";
 		}
-		public virtual void StartAsyncDecoding()
+		public virtual void StartPreBuffering()
 		{
+		    // This should be used to initialize any variable or 
+		    // enter any state necessary to sustain the play loop.
+		    // Typically used to start a background thread for decoding.
+		    
 		    // Does nothing by default. Override to implement.
 		}
-		public virtual void CancelAsyncDecoding()
+		public virtual void StopPreBuffering()
 		{
 		    // Does nothing by default. Override to implement.
 		}
@@ -294,10 +302,11 @@ namespace Kinovea.Video
 		/// </summary>
 		public virtual void BeforeFrameOperation()
 		{
-            m_bWasAsyncDecoding = IsAsyncDecoding;
-            if(m_bWasAsyncDecoding)
+		    // TODO: this will be replaced by a switch to NotBuffering mode.
+            m_bWasPreBuffering = IsPreBuffering;
+            if(m_bWasPreBuffering)
             {
-                CancelAsyncDecoding();
+                StopPreBuffering();
                 Cache.Clear();
             }
 		}
@@ -306,13 +315,13 @@ namespace Kinovea.Video
 		/// </summary>
 		public virtual void AfterFrameOperation()
 		{
-            if(CanDynamicCache && !Caching)
+            if(CanPreBuffer && !IsCaching)
             {
                 // The operation may have corrupted the cache with non contiguous frames.
                 Cache.Clear();
                 
-                if(m_bWasAsyncDecoding)
-                    StartAsyncDecoding();
+                if(m_bWasPreBuffering)
+                    StartPreBuffering();
             }
 		}
 		#endregion

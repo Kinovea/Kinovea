@@ -31,10 +31,9 @@ namespace Kinovea.Video
 		None = 0,
 		
 		/// <summary>
-		/// False if the entire video is extracted to cache during load and not touched afterwards.
-		/// In this case the working zone is also locked.
+		/// If PreBuffer is not set, the reader must load all images in the cache when opened and never touch them until closed.
 		/// </summary>
-		DynamicCache = 1,
+		PreBuffer = 1,
 		AspectRatio = 2,
 		Deinterlacing = 4
 	}

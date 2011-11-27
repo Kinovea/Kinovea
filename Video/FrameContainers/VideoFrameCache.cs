@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using Kinovea.Base;
 
 namespace Kinovea.Video
 {
@@ -52,12 +53,16 @@ namespace Kinovea.Video
         public int Drops { get { return m_Drops; } }
         public int Capacity { get { return m_Capacity; }}
         
-        public bool HasNext {
-            get {
-                if(m_Current == null)
-                    return false;
-                else
-                    lock(m_Locker) return m_CurrentIndex < m_Cache.Count - 1;
+        public bool HasNext(int _skip) 
+        {
+            if(m_Current == null)
+            {
+                return false;
+            }
+            else
+            {
+                lock(m_Locker) 
+                    return m_CurrentIndex + m_Drops + _skip < m_Cache.Count - 1;
             }
         }
         public VideoSection WorkingZone { 
@@ -87,15 +92,15 @@ namespace Kinovea.Video
         private VideoFrame m_Current;
         private readonly object m_Locker = new object();
         
-        private int m_DefaultCapacity = 20;
-        private int m_DefaultRemembranceCapacity = 10;
-        private int m_Capacity = 20;
-        private int m_RemembranceCapacity = 10; // Capacity and Remembrance will later be taken from Prefs.
+        private int m_DefaultCapacity = 25;
+        private int m_Capacity = 25;
+        private int m_DefaultRemembranceCapacity = 8;
+        private int m_RemembranceCapacity = 8; // Capacity and Remembrance will later be taken from Prefs.
         private bool m_PrependingBlock;
         private int m_InsertIndex;
         private int m_Drops;
         private VideoFrameDisposer m_DisposeBitmap;
-        private Stopwatch m_Stopwatch = new Stopwatch();
+        private TimeWatcher m_TimeWatcher = new TimeWatcher();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -122,29 +127,32 @@ namespace Kinovea.Video
         #endregion
         
         #region Public methods
-        public bool MoveNext()
+        public bool MoveNext(int _skip)
         {
+            m_TimeWatcher.Restart();
             bool read = false;
             lock(m_Locker)
             {
-                if(m_CurrentIndex + m_Drops >= m_Cache.Count - 1)
+                int lastIndex = m_Cache.Count - 1;
+                int expectedIndex = m_CurrentIndex + m_Drops + _skip;
+            
+                if(expectedIndex < lastIndex)
+                {
+                    m_CurrentIndex = expectedIndex + 1;
+                    m_Drops = 0;
+                    read = true;
+                }
+                else
                 {
                     m_Drops++;
                     log.DebugFormat("Decoding Drops: {0}.", m_Drops);
                 }
-                else
-                {
-                    m_CurrentIndex = m_CurrentIndex + m_Drops + 1;
-                    m_Drops = 0;
-                    read = true;
-                }
-                
-                if(m_CurrentIndex >= 0 && m_CurrentIndex <= m_Cache.Count - 1)
+            
+                if(m_CurrentIndex >= 0 && m_CurrentIndex <= lastIndex)
                     m_Current = m_Cache[m_CurrentIndex];
             }
-            
             RemembranceCheck();
-            
+            m_TimeWatcher.DumpTimes();
             return read;
         }
         public bool MoveTo(long _timestamp)
@@ -260,7 +268,7 @@ namespace Kinovea.Video
                 m_Capacity = m_DefaultCapacity;
                 m_RemembranceCapacity = m_DefaultRemembranceCapacity;
                 
-                Monitor.PulseAll(m_Locker);
+                Monitor.Pulse(m_Locker);
             }
         }
         public void RemoveOldest()
@@ -277,7 +285,7 @@ namespace Kinovea.Video
                 m_CurrentIndex--;
                 UpdateSegment();
                 
-                Monitor.PulseAll(m_Locker);
+                Monitor.Pulse(m_Locker);
             }
         }
         
@@ -307,12 +315,13 @@ namespace Kinovea.Video
                 if(m_CurrentIndex >= removedAtLeft)
                     m_CurrentIndex-=removedAtLeft;
                 
+                m_CurrentIndex = Math.Max(0, m_CurrentIndex);
                 m_Current = m_Cache[m_CurrentIndex];
                 
                 m_Cache.RemoveAll(frame => object.ReferenceEquals(null, frame));
                 UpdateSegment();
                 
-                Monitor.PulseAll(m_Locker);
+                Monitor.Pulse(m_Locker);
             }
         }
         public void DisableCapacityCheck()
@@ -372,7 +381,6 @@ namespace Kinovea.Video
         private void UpdateSegment()
         {
             m_Segment = new VideoSection(m_Cache[0].Timestamp, m_Cache[m_Cache.Count - 1].Timestamp);
-            //log.DebugFormat("Segment:{0}, WZ:{1}", m_Segment, m_WorkingZone);
         }
         private int GetWrapIndex()
         {
@@ -388,14 +396,10 @@ namespace Kinovea.Video
         }
         private void RemembranceCheck()
         {
-            //log.DebugFormat("Remembrance Check:{0}/{1}", m_CurrentIndex, m_RemembranceCapacity);
-            
             // Forget oldest frame(s) if needed and unblock the decoding thread.
             if(m_CurrentIndex < m_RemembranceCapacity)
                 return;
 
-            //log.DebugFormat("Before lock in Remembrance check.");
-            
             lock(m_Locker)
             {
                 int framesToForget = m_CurrentIndex - m_RemembranceCapacity + 1;
@@ -405,9 +409,10 @@ namespace Kinovea.Video
 
                 m_Cache.RemoveRange(0, framesToForget);
                 m_CurrentIndex -= framesToForget;
+                
                 UpdateSegment();
-                //log.DebugFormat("RemembranceCheck : Pulse to wake decoder.");
-                Monitor.PulseAll(m_Locker);
+                
+                Monitor.Pulse(m_Locker);
             }
         }
         #endregion

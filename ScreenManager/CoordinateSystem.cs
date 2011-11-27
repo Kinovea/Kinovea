@@ -45,15 +45,24 @@ namespace Kinovea.ScreenManager
 	public class CoordinateSystem
 	{
 		#region Properties
-        public double Scale
+        /// <summary>
+        /// The total scale at which to render the image. Combines stretching and zooming.
+        /// </summary>
+		public double Scale
         {
             get { return m_fStretch * m_fZoom; }
         }
+		/// <summary>
+		/// The stretching to apply to the image. Not taking zoom into account.
+		/// </summary>
 		public double Stretch
 		{
 			get { return m_fStretch; }
 			set { m_fStretch = value; }
 		}
+		/// <summary>
+		/// The zoom factor to apply to the image.
+		/// </summary>
 		public double Zoom
 		{
 			get { return m_fZoom; }

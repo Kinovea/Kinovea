@@ -23,9 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using AForge.Imaging.Filters;
+using Kinovea.Base;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Video;
 
@@ -45,7 +47,7 @@ namespace Kinovea.ScreenManager
 	/// - (At initialization for example)
 	/// - The public properties setters are provided, they doesn't raise the events back.
 	/// </summary>
-    public partial class FrameTracker : UserControl
+	public partial class FrameTracker : UserControl
     {
         #region Properties
         [Category("Behavior"), Browsable(true)]
@@ -80,11 +82,10 @@ namespace Kinovea.ScreenManager
             get{return m_iPosition;}
             set
             {
-            	m_iPosition  = value;
+                m_iPosition  = value;
                 if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
                 if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
 				UpdateCursorPosition();
-				Invalidate();
             }
         }
         [Category("Behavior"), Browsable(true)]
@@ -168,6 +169,9 @@ namespace Kinovea.ScreenManager
             m_iMinimumPixel = m_iSpacers + m_iHalfCursorWidth;
             m_iMaximumPixel = this.Width - m_iSpacers - m_iHalfCursorWidth;
             m_iMaxWidthPixel = m_iMaximumPixel - m_iMinimumPixel;
+            
+            // Prepare the images resources for faster painting.
+            //bmpBumperLeft = Resources.liqbumperleft..to32bppPArgb();
         }
 		#endregion
 		
@@ -198,19 +202,19 @@ namespace Kinovea.ScreenManager
 			
 			m_Metadata = _metadata;
             UpdateMarkersPositions();
-			Invalidate();
+            UpdateCacheSegmentMarkerPosition();
+			//Invalidate();
 		}
 		public void UpdateSyncPointMarker(long _marker)
 		{
 			m_SyncPointTimestamp = _marker;
-			UpdateMarkersPositions();
-			Invalidate();
+			UpdateSyncPointMarkerPosition();
+			//Invalidate();
 		}
 		public void UpdateCacheSegmentMarker(VideoSection _section)
 		{
 		    m_CacheSegment = _section;
-            UpdateMarkersPositions();
-            Invalidate();
+            UpdateCacheSegmentMarkerPosition();
 		}
 		#endregion
         
@@ -219,52 +223,46 @@ namespace Kinovea.ScreenManager
         {
         	// Note: also raised on mouse down.
         	// User wants to jump to position. Update the cursor and optionnaly the image.
-        	if(m_bEnabled && !m_bInvalidateAsked)
-        	{
-	        	if (e.Button == MouseButtons.Left)
-	            {
-	        		Point mouseCoords = this.PointToClient(Cursor.Position);
-	        		
-	        		if ((mouseCoords.X > m_iMinimumPixel) && (mouseCoords.X < m_iMaximumPixel))
-	                {
-	        			m_iPixelPosition = mouseCoords.X - m_iHalfCursorWidth;
-					    Invalidate();
-					    m_bInvalidateAsked = true;
-					    
-					    if (m_bReportOnMouseMove && PositionChanging != null)
-	                    {
-	        				m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
-	        				PositionChanging(this, new PositionChangedEventArgs(m_iPosition));
-	                    }
-	        			else
-	        			{
-	        				Invalidate();
-	        			}
-	        		}
-	        	}
-        	}
+        	if(!m_bEnabled || m_bInvalidateAsked || e.Button != MouseButtons.Left)
+        	    return;
+        	
+        	Point mouseCoords = this.PointToClient(Cursor.Position);
+            
+            if ((mouseCoords.X > m_iMinimumPixel) && (mouseCoords.X < m_iMaximumPixel))
+            {
+                m_iPixelPosition = mouseCoords.X - m_iHalfCursorWidth;
+                Invalidate();
+                m_bInvalidateAsked = true;
+            
+                if (m_bReportOnMouseMove && PositionChanging != null)
+                {
+                	m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
+                	PositionChanging(this, new PositionChangedEventArgs(m_iPosition));
+                }
+                else
+                {
+                	Invalidate();
+                }
+            }
         }
         private void FrameTracker_MouseUp(object sender, MouseEventArgs e)
         {
         	// End of a mouse move, jump to position.
-        	if(m_bEnabled)
-        	{
-	        	if (e.Button == MouseButtons.Left)
-	            {
-	                Point mouseCoords = this.PointToClient(Cursor.Position);
-	                
-	                if ((mouseCoords.X > m_iMinimumPixel) && (mouseCoords.X < m_iMaximumPixel))
-	                {
-	                    m_iPixelPosition = mouseCoords.X - m_iHalfCursorWidth;
-			            Invalidate();
-	                    if (PositionChanged != null)
-			        	{ 
-			            	m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
-			            	PositionChanged(this, new PositionChangedEventArgs(m_iPosition));
-			        	}
-	                }
-	            }
-        	}
+        	if(!m_bEnabled || e.Button != MouseButtons.Left)
+        	    return;
+        	
+        	Point mouseCoords = this.PointToClient(Cursor.Position);
+            
+            if ((mouseCoords.X > m_iMinimumPixel) && (mouseCoords.X < m_iMaximumPixel))
+            {
+                m_iPixelPosition = mouseCoords.X - m_iHalfCursorWidth;
+                Invalidate();
+                if (PositionChanged != null)
+                { 
+                    m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
+                    PositionChanged(this, new PositionChangedEventArgs(m_iPosition));
+            	}
+	        }
         }
         private void FrameTracker_Resize(object sender, EventArgs e)
         {
@@ -282,48 +280,52 @@ namespace Kinovea.ScreenManager
         {
         	// When we land in this function, m_iPixelPosition should have been set already.
         	// It is the only member variable we'll use here.
-        	
-        	// Draw tiled background
-        	for(int i=10;i<Width-20;i+=bmpBackground.Width)
-        	{
-        		e.Graphics.DrawImage(bmpBackground, i, 0);
-        	}
-        	
-        	// Draw slider ends.
-        	e.Graphics.DrawImage(bmpBumperLeft, 10, 0);
-        	e.Graphics.DrawImage(bmpBumperRight, Width-20, 0);
-        	
-        	m_DebugDisplay = true;
-        	
-        	if(m_bEnabled)
-        	{
-                if(m_DebugDisplay)
-                {
-                    foreach(Point mark in m_CacheSegmentMarks)
-                        DrawMark(e.Graphics, Pens.LightSlateGray, Brushes.LightSteelBlue, mark);
-
-                    DrawAllFrames(e.Graphics, Pens.Black);
-                    int pixPos =  GetCoordFromTimestamp(m_iPosition);
-                    e.Graphics.DrawLine(Pens.Red, pixPos, 5, pixPos, 13);
-                }
-        	    else
-        	    {
-                    foreach (int mark in m_KeyframesMarks)
-                        DrawMark(e.Graphics, m_PenKeyBorder, m_PenKeyInside, mark);
-
-                    foreach (Point mark in m_ChronosMarks)
-                        DrawMark(e.Graphics, m_PenChronoBorder, m_BrushChrono, mark);
-
-                    foreach (Point mark in m_TracksMarks)
-                        DrawMark(e.Graphics, m_PenTrackBorder, m_BrushTrack, mark);
-
-                    DrawMark(e.Graphics, m_PenSyncBorder, m_PenSyncInside, m_SyncPointMark);
-
-                    e.Graphics.DrawImage(bmpNavCursor, m_iPixelPosition, 0);
-                }
-        	}
+        	Graphics g = e.Graphics;
+        	g.PixelOffsetMode = PixelOffsetMode.Half; // <-- fix stretch.
+			g.InterpolationMode = InterpolationMode.NearestNeighbor;
+        	Draw(g);
         	
         	m_bInvalidateAsked = false;
+        }
+        private void Draw(Graphics _canvas)
+        {
+        	// Background. (Note: it's faster to draw stretched than multiple tiles).
+            _canvas.DrawImage(bmpBackground, 22, 0, Width-40, bmpBackground.Height-1);
+        	
+        	// Bumpers.
+        	_canvas.DrawImageUnscaled(bmpBumperLeft, 10, 0);
+        	_canvas.DrawImageUnscaled(bmpBumperRight, Width-20, 0);
+        	
+        	m_DebugDisplay = false;
+        	
+        	if(!m_bEnabled)
+        	    return;
+        	
+        	if(m_DebugDisplay)
+            {
+                foreach(Point mark in m_CacheSegmentMarks)
+                    DrawMark(_canvas, Pens.LightSlateGray, Brushes.LightSteelBlue, mark);
+
+                DrawAllFrames(_canvas, Pens.Black);
+                int pixPos =  GetCoordFromTimestamp(m_iPosition);
+                _canvas.DrawLine(Pens.Red, pixPos, 5, pixPos, 13);
+            }
+    	    else
+    	    {
+                foreach (int mark in m_KeyframesMarks)
+                    DrawMark(_canvas, m_PenKeyBorder, m_PenKeyInside, mark);
+
+                foreach (Point mark in m_ChronosMarks)
+                    DrawMark(_canvas, m_PenChronoBorder, m_BrushChrono, mark);
+
+                foreach (Point mark in m_TracksMarks)
+                    DrawMark(_canvas, m_PenTrackBorder, m_BrushTrack, mark);
+
+                if(m_SyncPointMark != 0)
+                    DrawMark(_canvas, m_PenSyncBorder, m_PenSyncInside, m_SyncPointMark);
+
+                _canvas.DrawImageUnscaled(bmpNavCursor, m_iPixelPosition, 0);
+            }
         }
         private void DrawAllFrames(Graphics _canvas, Pen _pen)
         {
@@ -369,16 +371,14 @@ namespace Kinovea.ScreenManager
         	if(iLeft < m_iMinimumPixel) iLeft = m_iMinimumPixel;
 			if(iLeft + iWidth > m_iMaximumPixel) iWidth = m_iMaximumPixel - iLeft;
         	
+			_canvas.FillRectangle(_bInside, iLeft, iTop, iWidth, iHeight);
 			_canvas.DrawRectangle(_pBorder, iLeft, iTop, iWidth, iHeight );
-			_canvas.FillRectangle(_bInside, iLeft + 1, iTop+1, iWidth-1, iHeight-1 );
         }
         #endregion
         
         #region Binding UI to Data
         private void UpdateCursorPosition()
         {
-        	// This method updates the appearence of the control only, it doesn't raise the events back.
-        	// Should be called every time m_iPosition has been updated. 
             m_iPixelPosition = GetCoordFromTimestamp(m_iPosition) - m_iHalfCursorWidth;
         }
         private void UpdateMarkersPositions()
@@ -386,46 +386,53 @@ namespace Kinovea.ScreenManager
             // Translate timestamps into control coordinates and store the coordinates of the
             // markers to draw them later.
             // Should only be called when either the timestamps or the control size changed.
-            if(m_Metadata != null)
-            {
-            	// Key frames
-            	m_KeyframesMarks.Clear();
-            	foreach(Keyframe kf in m_Metadata.Keyframes)
-            	{
-            		// Only display Key image that are in the selection.
-            		if(kf.Position >= m_iMinimum && kf.Position <= m_iMaximum)
-            		{
-            			m_KeyframesMarks.Add(GetCoordFromTimestamp(kf.Position));
-            		}
-            	}
-            	
-            	// ExtraDrawings
-            	// We will store the range coords in a Point object, to get a couple of ints structure.
-                // X will be the left coordinate, Y the width.
-            	m_ChronosMarks.Clear();
-            	m_TracksMarks.Clear();
-            	foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
-            	{
-                    DrawingChrono chrono = ad as DrawingChrono;
-                    Track trk = ad as Track;
-                    if(chrono != null)
-                    {
-                    	if(chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
-                    	{
-                    		// Only chronos that have an end and something inside the selection.
-                			if(chrono.TimeStart <= m_iMaximum && chrono.TimeStop >= m_iMinimum)
-                			    m_ChronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
-                    	}
-            		}
-                    else if(trk != null)
-                    {
-                        if(trk.BeginTimeStamp <= m_iMaximum && trk.EndTimeStamp >= m_iMinimum)
-                            m_TracksMarks.Add(GetMarkerRange(trk.BeginTimeStamp, trk.EndTimeStamp));
-                    }
-            	}
-            }
-       	
-            //Cache segment (debug only ?)
+            if(m_Metadata == null)
+                return;
+            
+            // Key frames
+        	m_KeyframesMarks.Clear();
+        	foreach(Keyframe kf in m_Metadata.Keyframes)
+        	{
+        		// Only display Key image that are in the selection.
+        		if(kf.Position >= m_iMinimum && kf.Position <= m_iMaximum)
+        		{
+        			m_KeyframesMarks.Add(GetCoordFromTimestamp(kf.Position));
+        		}
+        	}
+        	
+        	// ExtraDrawings
+        	// We will store the range coords in a Point object, to get a couple of ints structure.
+            // X will be the left coordinate, Y the width.
+        	m_ChronosMarks.Clear();
+        	m_TracksMarks.Clear();
+        	foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
+        	{
+                DrawingChrono chrono = ad as DrawingChrono;
+                Track trk = ad as Track;
+                if(chrono != null)
+                {
+                	if(chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
+                	{
+                		// Only chronos that have an end and something inside the selection.
+            			if(chrono.TimeStart <= m_iMaximum && chrono.TimeStop >= m_iMinimum)
+            			    m_ChronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
+                	}
+        		}
+                else if(trk != null)
+                {
+                    if(trk.BeginTimeStamp <= m_iMaximum && trk.EndTimeStamp >= m_iMinimum)
+                        m_TracksMarks.Add(GetMarkerRange(trk.BeginTimeStamp, trk.EndTimeStamp));
+                }
+        	}
+        }
+        private void UpdateSyncPointMarkerPosition()
+        {
+            m_SyncPointMark = 0;
+            if(m_SyncPointTimestamp != 0 && m_SyncPointTimestamp >= m_iMinimum && m_SyncPointTimestamp <= m_iMaximum)
+            	m_SyncPointMark = GetCoordFromTimestamp(m_SyncPointTimestamp);
+        }
+        private void UpdateCacheSegmentMarkerPosition()
+        {
             m_CacheSegmentMarks.Clear();
             if(m_CacheSegment.Wrapped)
             {
@@ -436,11 +443,6 @@ namespace Kinovea.ScreenManager
             {
                 m_CacheSegmentMarks.Add(GetMarkerRange(m_CacheSegment.Start, m_CacheSegment.End));
             }
-            
-            // Sync point
-            m_SyncPointMark = 0;
-            if(m_SyncPointTimestamp != 0 && m_SyncPointTimestamp >= m_iMinimum && m_SyncPointTimestamp <= m_iMaximum)
-            	m_SyncPointMark = GetCoordFromTimestamp(m_SyncPointTimestamp);
         }
         private Point GetMarkerRange(long _start, long _stop)
         {
