@@ -93,7 +93,7 @@ namespace Kinovea.Video
         {
             return UpdateCurrent(Current.Timestamp + m_VideoInfo.AverageTimeStampsPerFrame);
         }
-        public override bool MoveTo(long _timestamp, bool _decodeIfNecessary)
+        public override bool MoveTo(long _timestamp)
         {
             return UpdateCurrent(_timestamp);
         }
@@ -136,8 +136,7 @@ namespace Kinovea.Video
             m_VideoInfo.FirstTimeStamp = 0;
             
             // Testing: 10 seconds @ 25fps.
-            m_VideoInfo.DurationTimeStamps = 250;
-            //m_VideoInfo.DurationTimeStamps = 1;
+            m_VideoInfo.DurationTimeStamps = 251;
             m_VideoInfo.FramesPerSeconds = 25;
             m_VideoInfo.FrameIntervalMilliseconds = 1000 / m_VideoInfo.FramesPerSeconds;
             m_VideoInfo.AverageTimeStampsPerSeconds = m_VideoInfo.FramesPerSeconds * m_VideoInfo.AverageTimeStampsPerFrame;

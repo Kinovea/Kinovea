@@ -38,11 +38,9 @@ namespace Kinovea.Base
             if(drop)
                 m_Drops++;
         }
-        public string Ratio
-        {
+        public double Ratio {
             get {
-                double ratio = (double)m_Drops / m_Total;
-                return string.Format("Drop ratio: {0:0.00}", ratio);
+                return (double)m_Drops / m_Total;
             }
         }
         public void Restart()

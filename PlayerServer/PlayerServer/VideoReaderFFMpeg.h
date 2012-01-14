@@ -134,7 +134,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual OpenVideoResult Open(String^ _filePath) override;
 		virtual void Close() override;
 		virtual bool MoveNext(int _skip, bool _decodeIfNecessary) override;
-		virtual bool MoveTo(int64_t _timestamp, bool _decodeIfNecessary) override;
+		virtual bool MoveTo(int64_t _timestamp) override;
 		virtual VideoSummary^ ExtractSummary(String^ _filePath, int _thumbs, int _width) override;
 		virtual void PostLoad() override;
 		virtual String^ ReadMetadata() override;
@@ -186,7 +186,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 
 		// Others
 		bool m_WasPrebuffering;
-		Stopwatch^ m_Stopwatch;
+		LoopWatcher^ m_LoopWatcher;
 		Thread^ m_PreBufferingThread;
 		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
 

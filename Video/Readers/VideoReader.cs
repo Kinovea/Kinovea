@@ -124,7 +124,7 @@ namespace Kinovea.Video
 		/// Set the "Current" property to hold an arbitrary video frame, based on timestamp.
 		/// </summary>
 		/// <returns>false if the end of file has been reached</returns>
-		public abstract bool MoveTo(long _timestamp, bool _decodeIfNecessary);
+		public abstract bool MoveTo(long _timestamp);
 		
 		public abstract void BeforeFrameEnumeration();
 		public abstract void AfterFrameEnumeration();
@@ -143,15 +143,15 @@ namespace Kinovea.Video
 		#region Move playhead
 		public bool MovePrev()
 		{
-		    return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame, true);
+		    return MoveTo(Current.Timestamp - Info.AverageTimeStampsPerFrame);
 		}
 		public bool MoveFirst()
 		{
-		    return MoveTo(WorkingZone.Start, true);
+		    return MoveTo(WorkingZone.Start);
 		}
 		public bool MoveLast()
 		{
-		    return MoveTo(WorkingZone.End, true);
+		    return MoveTo(WorkingZone.End);
 		}
 		public bool MoveBy(int _frames, bool _decodeIfNecessary)
 		{
@@ -166,7 +166,7 @@ namespace Kinovea.Video
 		        if(target < 0)
 		            target = 0;
 		        log.Debug("MoveBy -> MoveTo");
-		        return MoveTo(target, _decodeIfNecessary);
+		        return MoveTo(target);
 		    }
 		}
 		#endregion
@@ -234,7 +234,7 @@ namespace Kinovea.Video
                 if(_interval == 0)
                     hasMore = MoveNext(0, true);
                 else
-                    hasMore = MoveTo(Current.Timestamp + _interval, true);
+                    hasMore = MoveTo(Current.Timestamp + _interval);
                 
                 yield return Current;
             }
