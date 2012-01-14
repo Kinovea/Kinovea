@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace Kinovea.Video
 {
@@ -29,16 +30,18 @@ namespace Kinovea.Video
     /// </summary>
     public class VideoSummary
     {
+        public string Filename { get; private set; }
         public bool IsImage { get; private set; }
         public bool HasKva { get; private set; }
         public Size ImageSize { get; private set; }
         public long DurationMilliseconds { get; private set; }
         public List<Bitmap> Thumbs { get; private set; }
         
-        private static readonly VideoSummary m_Invalid = new VideoSummary(false, false, Size.Empty, 0, null);
+        private static readonly VideoSummary m_Invalid = new VideoSummary("", false, false, Size.Empty, 0, null);
         
-        public VideoSummary(bool _isImage, bool _hasKva, Size _imageSize, long _durationMs, List<Bitmap> _thumbs)
+        public VideoSummary(string _fileName, bool _isImage, bool _hasKva, Size _imageSize, long _durationMs, List<Bitmap> _thumbs)
         {
+            Filename = _fileName;
             IsImage = _isImage;
             HasKva = _hasKva;
             ImageSize = _imageSize;
@@ -48,6 +51,15 @@ namespace Kinovea.Video
         
         public static VideoSummary Invalid {
             get { return m_Invalid; }
+        }
+        public static VideoSummary GetInvalid(string _fileName)
+        {
+            return new VideoSummary(_fileName, false, false, Size.Empty, 0, null);
+        }
+        public static bool HasCompanionKva(string _filename)
+        {
+            string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
+            return File.Exists(kvaFile);
         }
     }
 }

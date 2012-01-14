@@ -74,17 +74,14 @@ namespace Kinovea.Video.Gif
         }
         public override VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width)
         {
-            return null;
-            // NOT TESTED - NOT USED for now.
-            /*VideoSummary summary = null;
+           VideoSummary summary = null;
            
-            // TODO: here we'll need to prevent the systematic full caching (lengthy).
-            OpenVideoResult res = LoadFile(_filePath, true);
+            OpenVideoResult res = LoadFile(_filePath, false);
+            FrameDimension dimension = new FrameDimension(m_Gif.FrameDimensionsList[0]);
             
             if(res == OpenVideoResult.Success)
             {
-                string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(m_VideoInfo.FilePath), Path.GetFileNameWithoutExtension(m_VideoInfo.FilePath));
-                bool hasKva = File.Exists(kvaFile);
+                bool hasKva = VideoSummary.HasCompanionKva(_filePath);
                 bool isImage = m_Count == 1;
                 int durationMillisecs = (int)((double)m_Count * m_VideoInfo.FrameIntervalMilliseconds);
                 
@@ -93,17 +90,21 @@ namespace Kinovea.Video.Gif
                 {
                     int step = (int)Math.Ceiling(m_Count / (double)_thumbs);
                     for(int i = 0; i<m_Count; i+=step)
-                        thumbs.Add(GetFrameAt(i));
+                        thumbs.Add(GetFrameAt(dimension, i));
                 }
                 
-                summary = new VideoSummary(isImage, hasKva, m_VideoInfo.OriginalSize, durationMillisecs, thumbs);
+                summary = new VideoSummary(_filePath, isImage, hasKva, m_VideoInfo.OriginalSize, durationMillisecs, thumbs);
+            }
+            else
+            {
+                summary = VideoSummary.GetInvalid(_filePath);
             }
             
             if(m_Loaded)
                 Close();
             
             m_Gif.Dispose();
-            return summary;*/
+            return summary;
         }
         #endregion
         

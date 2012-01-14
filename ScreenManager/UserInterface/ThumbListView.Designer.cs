@@ -30,14 +30,12 @@ namespace Kinovea.ScreenManager
         {
         	this.components = new System.ComponentModel.Container();
         	this.splitResizeBar = new System.Windows.Forms.SplitContainer();
+        	this.pbFiles = new System.Windows.Forms.ProgressBar();
         	this.btnLarge = new System.Windows.Forms.Button();
         	this.btnMedium = new System.Windows.Forms.Button();
         	this.btnSmall = new System.Windows.Forms.Button();
         	this.btnExtraLarge = new System.Windows.Forms.Button();
         	this.btnExtraSmall = new System.Windows.Forms.Button();
-        	this.btnHideThumbView = new System.Windows.Forms.Button();
-        	this.lblZoomTuner = new System.Windows.Forms.Label();
-        	this.btnClose = new System.Windows.Forms.Button();
         	this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
         	this.bgThumbsLoader = new System.ComponentModel.BackgroundWorker();
         	this.splitResizeBar.Panel1.SuspendLayout();
@@ -58,14 +56,12 @@ namespace Kinovea.ScreenManager
         	// splitResizeBar.Panel1
         	// 
         	this.splitResizeBar.Panel1.BackColor = System.Drawing.Color.White;
+        	this.splitResizeBar.Panel1.Controls.Add(this.pbFiles);
         	this.splitResizeBar.Panel1.Controls.Add(this.btnLarge);
         	this.splitResizeBar.Panel1.Controls.Add(this.btnMedium);
         	this.splitResizeBar.Panel1.Controls.Add(this.btnSmall);
         	this.splitResizeBar.Panel1.Controls.Add(this.btnExtraLarge);
         	this.splitResizeBar.Panel1.Controls.Add(this.btnExtraSmall);
-        	this.splitResizeBar.Panel1.Controls.Add(this.btnHideThumbView);
-        	this.splitResizeBar.Panel1.Controls.Add(this.lblZoomTuner);
-        	this.splitResizeBar.Panel1.Controls.Add(this.btnClose);
         	// 
         	// splitResizeBar.Panel2
         	// 
@@ -73,11 +69,20 @@ namespace Kinovea.ScreenManager
         	this.splitResizeBar.Panel2.BackColor = System.Drawing.Color.White;
         	this.splitResizeBar.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel2Paint);
         	this.splitResizeBar.Panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel2MouseDown);
-        	this.splitResizeBar.Panel2.Resize += new System.EventHandler(this.splitResizeBar_Panel2_Resize);
         	this.splitResizeBar.Panel2.MouseEnter += new System.EventHandler(this.Panel2MouseEnter);
+        	this.splitResizeBar.Panel2.Resize += new System.EventHandler(this.splitResizeBar_Panel2_Resize);
         	this.splitResizeBar.Size = new System.Drawing.Size(661, 406);
         	this.splitResizeBar.SplitterDistance = 30;
         	this.splitResizeBar.TabIndex = 0;
+        	// 
+        	// pbFiles
+        	// 
+        	this.pbFiles.ForeColor = System.Drawing.Color.LightSteelBlue;
+        	this.pbFiles.Location = new System.Drawing.Point(146, 9);
+        	this.pbFiles.Name = "pbFiles";
+        	this.pbFiles.Size = new System.Drawing.Size(104, 15);
+        	this.pbFiles.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+        	this.pbFiles.TabIndex = 18;
         	// 
         	// btnLarge
         	// 
@@ -94,7 +99,7 @@ namespace Kinovea.ScreenManager
         	this.btnLarge.Size = new System.Drawing.Size(20, 15);
         	this.btnLarge.TabIndex = 17;
         	this.btnLarge.UseVisualStyleBackColor = false;
-        	this.btnLarge.Click += new System.EventHandler(this.btnLarge_Click);
+        	this.btnLarge.Click += new System.EventHandler(this.btnSize_Click);
         	// 
         	// btnMedium
         	// 
@@ -111,7 +116,7 @@ namespace Kinovea.ScreenManager
         	this.btnMedium.Size = new System.Drawing.Size(16, 12);
         	this.btnMedium.TabIndex = 16;
         	this.btnMedium.UseVisualStyleBackColor = false;
-        	this.btnMedium.Click += new System.EventHandler(this.btnMedium_Click);
+        	this.btnMedium.Click += new System.EventHandler(this.btnSize_Click);
         	// 
         	// btnSmall
         	// 
@@ -128,7 +133,7 @@ namespace Kinovea.ScreenManager
         	this.btnSmall.Size = new System.Drawing.Size(12, 9);
         	this.btnSmall.TabIndex = 15;
         	this.btnSmall.UseVisualStyleBackColor = false;
-        	this.btnSmall.Click += new System.EventHandler(this.btnSmall_Click);
+        	this.btnSmall.Click += new System.EventHandler(this.btnSize_Click);
         	// 
         	// btnExtraLarge
         	// 
@@ -145,7 +150,7 @@ namespace Kinovea.ScreenManager
         	this.btnExtraLarge.Size = new System.Drawing.Size(24, 18);
         	this.btnExtraLarge.TabIndex = 14;
         	this.btnExtraLarge.UseVisualStyleBackColor = false;
-        	this.btnExtraLarge.Click += new System.EventHandler(this.btnExtraLarge_Click);
+        	this.btnExtraLarge.Click += new System.EventHandler(this.btnSize_Click);
         	// 
         	// btnExtraSmall
         	// 
@@ -162,62 +167,7 @@ namespace Kinovea.ScreenManager
         	this.btnExtraSmall.Size = new System.Drawing.Size(8, 6);
         	this.btnExtraSmall.TabIndex = 13;
         	this.btnExtraSmall.UseVisualStyleBackColor = false;
-        	this.btnExtraSmall.Click += new System.EventHandler(this.btnExtraSmall_Click);
-        	// 
-        	// btnHideThumbView
-        	// 
-        	this.btnHideThumbView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.btnHideThumbView.AutoSize = true;
-        	this.btnHideThumbView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-        	this.btnHideThumbView.BackColor = System.Drawing.Color.Transparent;
-        	this.btnHideThumbView.Cursor = System.Windows.Forms.Cursors.Hand;
-        	this.btnHideThumbView.FlatAppearance.BorderSize = 0;
-        	this.btnHideThumbView.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
-        	this.btnHideThumbView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnHideThumbView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.btnHideThumbView.ForeColor = System.Drawing.Color.SteelBlue;
-        	this.btnHideThumbView.Location = new System.Drawing.Point(518, 4);
-        	this.btnHideThumbView.Name = "btnHideThumbView";
-        	this.btnHideThumbView.Size = new System.Drawing.Size(109, 24);
-        	this.btnHideThumbView.TabIndex = 12;
-        	this.btnHideThumbView.Text = "Hide Thumbnails";
-        	this.btnHideThumbView.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-        	this.btnHideThumbView.UseVisualStyleBackColor = false;
-        	this.btnHideThumbView.Click += new System.EventHandler(this.btnShowThumbView_Click);
-        	// 
-        	// lblZoomTuner
-        	// 
-        	this.lblZoomTuner.AutoSize = true;
-        	this.lblZoomTuner.BackColor = System.Drawing.Color.White;
-        	this.lblZoomTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.lblZoomTuner.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        	this.lblZoomTuner.ForeColor = System.Drawing.Color.Black;
-        	this.lblZoomTuner.Location = new System.Drawing.Point(219, 14);
-        	this.lblZoomTuner.Margin = new System.Windows.Forms.Padding(0);
-        	this.lblZoomTuner.Name = "lblZoomTuner";
-        	this.lblZoomTuner.Size = new System.Drawing.Size(78, 14);
-        	this.lblZoomTuner.TabIndex = 11;
-        	this.lblZoomTuner.Text = "Zoom : 100 %";
-        	this.lblZoomTuner.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-        	this.lblZoomTuner.Visible = false;
-        	// 
-        	// btnClose
-        	// 
-        	this.btnClose.Anchor = System.Windows.Forms.AnchorStyles.Right;
-        	this.btnClose.BackColor = System.Drawing.Color.Transparent;
-        	this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-        	this.btnClose.FlatAppearance.BorderSize = 0;
-        	this.btnClose.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-        	this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.btnClose.Image = global::Kinovea.ScreenManager.Properties.Resources.closegrey;
-        	this.btnClose.Location = new System.Drawing.Point(630, 3);
-        	this.btnClose.Name = "btnClose";
-        	this.btnClose.Size = new System.Drawing.Size(20, 20);
-        	this.btnClose.TabIndex = 4;
-        	this.btnClose.UseVisualStyleBackColor = false;
-        	this.btnClose.Visible = false;
-        	this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+        	this.btnExtraSmall.Click += new System.EventHandler(this.btnSize_Click);
         	// 
         	// bgThumbsLoader
         	// 
@@ -233,17 +183,14 @@ namespace Kinovea.ScreenManager
         	this.Name = "ThumbListView";
         	this.Size = new System.Drawing.Size(661, 406);
         	this.splitResizeBar.Panel1.ResumeLayout(false);
-        	this.splitResizeBar.Panel1.PerformLayout();
         	this.splitResizeBar.ResumeLayout(false);
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.ProgressBar pbFiles;
 
         #endregion
 
         private System.Windows.Forms.SplitContainer splitResizeBar;
-        private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Label lblZoomTuner;
-        private System.Windows.Forms.Button btnHideThumbView;
         private System.Windows.Forms.Button btnExtraSmall;
         private System.Windows.Forms.Button btnLarge;
         private System.Windows.Forms.Button btnMedium;

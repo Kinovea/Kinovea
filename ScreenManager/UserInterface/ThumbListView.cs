@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
-using Kinovea.Video.FFMpeg; // <- remove when the thumbs come from the VideoReader abstract class.
+using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
 	/// Each thumbnail will be presented in a ThumbListViewItem.
 	/// We first position and initialize the ThumbListViewItem,
 	/// and then load them with the video data. (thumbnail from ffmpeg)
-	/// through the help of the ThumbListLoader who is responsible for this.
+	/// through the help of the SummaryLoader who is responsible for this.
 	/// </summary>
 	public partial class ThumbListView : UserControl
 	{
@@ -59,19 +59,19 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private VideoReaderFFMpeg m_VideoReader = new VideoReaderFFMpeg();
-
 		private int m_iLeftMargin = 30;
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
 		private int m_iTopMargin = 5;
 		private int m_iHorzSpacing = 20;   	// Right placed and respected even for the last column.
 		private int m_iVertSpacing = 20;
-		private int m_iCurrentSize = (int)ExplorerThumbSizes.Large;
+		private int m_Columns = (int)ExplorerThumbSizes.Large;
 		private static readonly Brush m_GradientBrush = new LinearGradientBrush(new Point(33, 0), new Point(350, 0), Color.LightSteelBlue, Color.White);
     	private static readonly Pen m_GradientPen = new Pen(m_GradientBrush);
+    	private object m_Locker = new object();
 
-		private List<ThumbListLoader> m_Loaders = new List<ThumbListLoader>();
-		private ThumbListViewItem m_SelectedVideo;
+		private List<SummaryLoader> m_Loaders = new List<SummaryLoader>();
+		private List<ThumbListViewItem> m_Thumbnails = new List<ThumbListViewItem>();
+		private ThumbListViewItem m_SelectedThumbnail;
 				
 		private bool m_bEditMode;
 		private IScreenManagerUIContainer m_ScreenManagerUIContainer;
@@ -85,10 +85,10 @@ namespace Kinovea.ScreenManager
 			log.Debug("Constructing ThumbListView");
 			
 			InitializeComponent();
-
+			InitSizingButtons();
 			RefreshUICulture();
 
-			m_iCurrentSize = (int)m_PreferencesManager.ExplorerThumbsSize;
+			m_Columns = (int)m_PreferencesManager.ExplorerThumbsSize;
 			DeselectAllSizingButtons();
 			SelectSizingButton();
 		}
@@ -100,17 +100,10 @@ namespace Kinovea.ScreenManager
 		}
 		public void RefreshUICulture()
 		{
-			btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
+			//btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
 			
-			// Refresh all thumbnails.
-			for (int i = 0; i < splitResizeBar.Panel2.Controls.Count; i++)
-			{
-				ThumbListViewItem tlvi = splitResizeBar.Panel2.Controls[i] as ThumbListViewItem;
-				if(tlvi != null)
-				{
-					tlvi.RefreshUICulture();
-				}
-			}
+			foreach(ThumbListViewItem tlvi in m_Thumbnails)
+			    tlvi.RefreshUICulture();
 		}
 		
 		#region RAM Monitoring
@@ -134,237 +127,192 @@ namespace Kinovea.ScreenManager
 		#region Organize and Display
 		public void DisplayThumbnails(List<String> _fileNames)
 		{
-			// Remove loaders that completed loading or cancellation.
+		    pbFiles.Visible = false;
+		    pbFiles.Value = 0;
+		    
 			CleanupLoaders();
-			log.Debug(String.Format("New set of files asked, currently having {0} loaders", m_Loaders.Count));
-
-			// Cancel remaining ones.
-			foreach (ThumbListLoader loader in m_Loaders)
-			{
-				loader.Cancel();
-			}
-
+			CleanupThumbnails();
+			
 			if (_fileNames.Count > 0)
 			{
-				// Reset display for new files.
-				SetupPlaceHolders(_fileNames);
-
-				// Create the new loader and launch it.
-				ThumbListLoader tll = new ThumbListLoader(_fileNames, splitResizeBar.Panel2, m_VideoReader);
-				m_Loaders.Add(tll);
-				tll.Launch();
+				CreateThumbs(_fileNames);
+				UpdateView();
+				
+				SummaryLoader sl = new SummaryLoader(_fileNames);
+				sl.SummaryLoaded += SummaryLoader_SummaryLoaded;
+				m_Loaders.Add(sl);
+				pbFiles.Visible = true;
+				sl.Run();
+			}
+		}
+		private void CleanupLoaders()
+		{
+			for(int i=m_Loaders.Count-1;i>=0;i--)
+			{
+			    m_Loaders[i].SummaryLoaded -= SummaryLoader_SummaryLoaded;
+			    
+				if (m_Loaders[i].IsAlive)
+					m_Loaders[i].Cancel();
+				else
+				    m_Loaders.RemoveAt(i);
 			}
 		}
 		public void CleanupThumbnails()
 		{
-			// Remove the controls and deallocate any ressources used.
-			for (int iCtrl = splitResizeBar.Panel2.Controls.Count - 1; iCtrl >= 0; iCtrl--)
-			{
-				ThumbListViewItem tlvi = splitResizeBar.Panel2.Controls[iCtrl] as ThumbListViewItem;
-				if(tlvi != null)
-				{
-					Image bmp = tlvi.picBox.BackgroundImage;
-					splitResizeBar.Panel2.Controls.RemoveAt(iCtrl);
-					
-					if (!tlvi.ErrorImage)
-					{
-						if(bmp != null)
-							bmp.Dispose();
-					}
-				}
-			}
-
-			m_SelectedVideo = null;
+		    m_SelectedThumbnail = null;
+		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
+		        tlvi.DisposeImages();
+		    m_Thumbnails.Clear();
+		    splitResizeBar.Panel2.Controls.Clear();
 		}
 		
-		private void CleanupLoaders()
+		
+		private void CreateThumbs(List<String> _fileNames)
 		{
-			// Remove loaders that completed loading or cancellation.
-			for(int i= m_Loaders.Count-1;i>=0;i--)
+		    foreach(string file in _fileNames)
 			{
-				if (m_Loaders[i].Unused)
-				{
-					m_Loaders.RemoveAt(i);
-				}
-			}
+			    ThumbListViewItem tlvi = new ThumbListViewItem(file);
+				tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
+				tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
+				tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
+				m_Thumbnails.Add(tlvi);
+				splitResizeBar.Panel2.Controls.Add(tlvi);
+		    }
 		}
-		private void SetupPlaceHolders(List<String> _fileNames)
+		private void SummaryLoader_SummaryLoaded(object sender, SummaryLoadedEventArgs e)
 		{
-			//-----------------------------------------------------------
-			// Creates a list of thumb boxes to hold this folder's thumbs
-			// They will be turned visible only when
-			// they are loaded with their respective thumbnail.
-			//-----------------------------------------------------------
-			
-			log.Debug("Organizing placeholders.");
-			
-			CleanupThumbnails();
-
-			if (_fileNames.Count > 0)
-			{
-				ToggleButtonsVisibility(true);
-
-				int iColumnWidth = (splitResizeBar.Panel2.Width - m_iLeftMargin - m_iRightMargin) / m_iCurrentSize;
-
-				m_iHorzSpacing = iColumnWidth / 20;
-				m_iVertSpacing = m_iHorzSpacing;
-			
-				for (int i = 0; i < _fileNames.Count; i++)
-				{
-					ThumbListViewItem tlvi = new ThumbListViewItem();
-
-					tlvi.FileName = _fileNames[i];
-					tlvi.Tag = i;
-					tlvi.ToolTipHandler = toolTip1;
-					tlvi.SetSize(iColumnWidth - m_iHorzSpacing);
-					tlvi.Location = new Point(0, 0);
-					tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
-					tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
-					tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
-					
-					// Organize
-					int iRow = i / m_iCurrentSize;
-					int iCol = i - (iRow * m_iCurrentSize);
-					tlvi.Location = new Point(m_iLeftMargin + (iCol * (tlvi.Size.Width + m_iHorzSpacing)), m_iTopMargin + (iRow * (tlvi.Size.Height + m_iVertSpacing)));
-					
-					tlvi.Visible = false;
-					splitResizeBar.Panel2.Controls.Add(tlvi);
-				}
-			}
-			else
-			{
-				ToggleButtonsVisibility(false);
-			}
-			
-			log.Debug("Placeholders organized.");
+		    if(e.Summary == null)
+		        return;
+		 
+		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
+		    {
+		        if(tlvi.FileName == e.Summary.Filename)
+		        {
+		            tlvi.Populate(e.Summary);
+		            tlvi.Invalidate();
+		        }
+		    }
+		    
+		    int done = e.Progress+1;
+		    
+		    log.DebugFormat("progress: {0}/{1}", done, m_Thumbnails.Count);
+		    pbFiles.Value = (int)(((float)done / m_Thumbnails.Count) * 100);
+		    
+		    if(done == m_Thumbnails.Count)
+		        pbFiles.Visible = false;
 		}
 		private void ToggleButtonsVisibility(bool bVisible)
 		{
-			btnHideThumbView.Visible = bVisible;
+			//btnHideThumbView.Visible = bVisible;
 			btnExtraSmall.Visible = bVisible;
 			btnSmall.Visible = bVisible;
 			btnMedium.Visible = bVisible;
 			btnLarge.Visible = bVisible;
 			btnExtraLarge.Visible = bVisible;
 		}
-		private void OrganizeThumbnailsByColumns(int iTotalCols)
-		{
-			// Resize and Organize thumbs to match a given number of columns
-			if (splitResizeBar.Panel2.Controls.Count > 0 && !IsLoading())
-			{
-				log.Debug("Reorganizing thumbnails.");
-			
-				int iColumnWidth = (splitResizeBar.Panel2.Width - m_iLeftMargin - m_iRightMargin) / iTotalCols;
-				m_iHorzSpacing = iColumnWidth / 20;
-				m_iVertSpacing = m_iHorzSpacing;
-				
-				// Scroll up before relocating controls.
-				splitResizeBar.Panel2.ScrollControlIntoView(splitResizeBar.Panel2.Controls[0]);
-
-				splitResizeBar.Panel2.SuspendLayout();
-
-				for (int i = 0; i < splitResizeBar.Panel2.Controls.Count; i++)
-				{
-					ThumbListViewItem tlvi = splitResizeBar.Panel2.Controls[i] as ThumbListViewItem;
-					if(tlvi != null)
-					{
-						int iRow = i / iTotalCols;
-						int iCol = i - (iRow * iTotalCols);
-	
-						tlvi.SetSize(iColumnWidth - m_iHorzSpacing);
-	
-						Point loc = new Point();
-						loc.X = m_iLeftMargin + (iCol * (tlvi.Size.Width + m_iHorzSpacing));
-						loc.Y = m_iTopMargin + (iRow * (tlvi.Size.Height + m_iVertSpacing));
-						tlvi.Location = loc;
-					}
-				}
-
-				splitResizeBar.Panel2.ResumeLayout();
-				
-				log.Debug("Thumbnails reorganized.");
-			}
-			
-		}
 		private void UpSizeThumbs()
 		{
 			DeselectAllSizingButtons();
 
-			switch (m_iCurrentSize)
+			switch (m_Columns)
 			{
 				case (int)ExplorerThumbSizes.ExtraSmall:
-					m_iCurrentSize = (int)ExplorerThumbSizes.Small;
+					m_Columns = (int)ExplorerThumbSizes.Small;
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.Small:
-					m_iCurrentSize = (int)ExplorerThumbSizes.Medium;
+					m_Columns = (int)ExplorerThumbSizes.Medium;
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.Medium:
-					m_iCurrentSize = (int)ExplorerThumbSizes.Large;
+					m_Columns = (int)ExplorerThumbSizes.Large;
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.Large:
 				default:
-					m_iCurrentSize = (int)ExplorerThumbSizes.ExtraLarge;
+					m_Columns = (int)ExplorerThumbSizes.ExtraLarge;
 					btnExtraLarge.BackColor = Color.LightSteelBlue;
 					break;
 			}
 
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
 			splitResizeBar.Panel2.Invalidate();
 		}
 		private void DownSizeThumbs()
 		{
 			DeselectAllSizingButtons();
 
-			switch (m_iCurrentSize)
+			switch (m_Columns)
 			{
 				case (int)ExplorerThumbSizes.Small:
-					m_iCurrentSize = (int)ExplorerThumbSizes.ExtraSmall;
+					m_Columns = (int)ExplorerThumbSizes.ExtraSmall;
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.Medium:
-					m_iCurrentSize = (int)ExplorerThumbSizes.Small;
+					m_Columns = (int)ExplorerThumbSizes.Small;
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.Large:
-					m_iCurrentSize = (int)ExplorerThumbSizes.Medium;
+					m_Columns = (int)ExplorerThumbSizes.Medium;
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.ExtraLarge:
-					m_iCurrentSize = (int)ExplorerThumbSizes.Large;
+					m_Columns = (int)ExplorerThumbSizes.Large;
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSizes.ExtraSmall:
 				default:
-					m_iCurrentSize = (int)ExplorerThumbSizes.ExtraSmall;
+					m_Columns = (int)ExplorerThumbSizes.ExtraSmall;
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
 			}
 
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
+			//OrganizeThumbnailsByColumns(m_Columns);
 			splitResizeBar.Panel2.Invalidate();
 		}
 		private void splitResizeBar_Panel2_Resize(object sender, EventArgs e)
 		{
 			if(this.Visible)
-			{
-				OrganizeThumbnailsByColumns(m_iCurrentSize);
-			}
+				UpdateView();
 		}
 		private bool IsLoading()
 		{
-			bool bLoading = false;
-			foreach (ThumbListLoader loader in m_Loaders)
+			foreach (SummaryLoader loader in m_Loaders)
 			{
-				if(!loader.Unused)
-				{
-					bLoading = true;
-					break;
-				}
+				if(loader.IsAlive)
+					return true;
 			}
-			return bLoading;
+			return false;
+		}
+		private void UpdateView()
+		{
+		    // Set location and size of each thumbnails depending on available width and options.
+		    int columns = m_Columns;
+		    int colWidth = (splitResizeBar.Panel2.Width - m_iLeftMargin - m_iRightMargin) / columns;
+            int horzSpacing = colWidth / 20;
+		    int vertSpacing = horzSpacing;
+            
+            int thumbWidth = colWidth - horzSpacing;
+            int thumbHeight = (thumbWidth * 3 / 4) + 15;
+				
+            int current = 0;
+            splitResizeBar.Panel2.SuspendLayout();
+		    foreach(ThumbListViewItem tlvi in SortedAndFilteredThumbs())
+		    {
+		        tlvi.SetSize(thumbWidth, thumbHeight);
+		        
+		        int row = current / columns;
+                int col = current - (row * columns);
+                int left = col * colWidth + m_iLeftMargin;
+				int top = m_iTopMargin + (row * (thumbHeight + m_iVertSpacing));
+				tlvi.Location = new Point(left, top);
+				current++;
+		    }
+		    splitResizeBar.Panel2.ResumeLayout();
+		}
+		private IEnumerable<ThumbListViewItem> SortedAndFilteredThumbs()
+		{
+		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
+		        yield return tlvi;
 		}
 		#endregion
 
@@ -374,7 +322,7 @@ namespace Kinovea.ScreenManager
 			CancelEditMode();
 			ThumbListViewItem tlvi = sender as ThumbListViewItem;
 			
-			if (tlvi != null && !tlvi.ErrorImage)
+			if (tlvi != null && !tlvi.IsError)
 			{
 				m_ScreenManagerUIContainer.DropLoadMovie(tlvi.FileName, -1);
 			}
@@ -386,12 +334,12 @@ namespace Kinovea.ScreenManager
 			
 			if(tlvi != null)
 			{
-				if (m_SelectedVideo != null && m_SelectedVideo != tlvi )
+				if (m_SelectedThumbnail != null && m_SelectedThumbnail != tlvi )
 				{
-					m_SelectedVideo.SetUnselected();
+					m_SelectedThumbnail.SetUnselected();
 				}
 			
-				m_SelectedVideo = tlvi;
+				m_SelectedThumbnail = tlvi;
 			}
 		}
 		private void ThumbListViewItem_FileNameEditing(object sender, EditingEventArgs e)
@@ -404,6 +352,14 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Sizing Buttons
+		private void InitSizingButtons()
+		{
+		    btnExtraSmall.Tag = 14;
+			btnSmall.Tag = 10;
+			btnMedium.Tag = 7;
+			btnLarge.Tag = 5;
+			btnExtraLarge.Tag = 4;
+		}
 		private void DeselectAllSizingButtons()
 		{
 			btnExtraSmall.BackColor = Color.SteelBlue;
@@ -414,7 +370,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SelectSizingButton()
 		{
-			switch (m_iCurrentSize)
+			switch (m_Columns)
 			{
 				case (int)ExplorerThumbSizes.Small:
 					btnSmall.BackColor = Color.LightSteelBlue;
@@ -436,58 +392,23 @@ namespace Kinovea.ScreenManager
 			}
 	
 		}
-		private void btnExtraSmall_Click(object sender, EventArgs e)
+		private void btnSize_Click(object sender, EventArgs e)
 		{
-			m_iCurrentSize = 14;
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
-			DeselectAllSizingButtons();
-			btnExtraSmall.BackColor = Color.LightSteelBlue;
-			splitResizeBar.Panel2.Invalidate();
-			SavePrefs();
-		}
-		private void btnSmall_Click(object sender, EventArgs e)
-		{
-			m_iCurrentSize = 10;
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
-			DeselectAllSizingButtons();
-			btnSmall.BackColor = Color.LightSteelBlue;
-			splitResizeBar.Panel2.Invalidate();
-			SavePrefs();
-		}
-		private void btnMedium_Click(object sender, EventArgs e)
-		{
-			m_iCurrentSize = 7;
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
-			DeselectAllSizingButtons();
-			btnMedium.BackColor = Color.LightSteelBlue;
-			splitResizeBar.Panel2.Invalidate();
-			SavePrefs();
-		}
-		private void btnLarge_Click(object sender, EventArgs e)
-		{
-			m_iCurrentSize = 5;
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
-			DeselectAllSizingButtons();
-			btnLarge.BackColor = Color.LightSteelBlue;
-			splitResizeBar.Panel2.Invalidate();
-			SavePrefs();
-		}
-		private void btnExtraLarge_Click(object sender, EventArgs e)
-		{
-			m_iCurrentSize = 4;
-			OrganizeThumbnailsByColumns(m_iCurrentSize);
-			DeselectAllSizingButtons();
-			btnExtraLarge.BackColor = Color.LightSteelBlue;
-			splitResizeBar.Panel2.Invalidate();
-			SavePrefs();
+		    Button btn = sender as Button;
+		    if(btn != null)
+		    {
+		        m_Columns = (int)btn.Tag;
+		        //OrganizeThumbnailsByColumns(m_iThumbWidth);
+		        UpdateView();
+    			DeselectAllSizingButtons();
+    			SelectSizingButton();
+    			splitResizeBar.Panel2.Invalidate();
+    			SavePrefs();
+		    }
 		}
 		#endregion
 
 		#region Closing
-		private void btnClose_Click(object sender, EventArgs e)
-		{
-			if (Closing != null) Closing(this, EventArgs.Empty);
-		}
 		private void btnShowThumbView_Click(object sender, EventArgs e)
 		{
 			CleanupThumbnails();
@@ -495,7 +416,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SavePrefs()
 		{
-			m_PreferencesManager.ExplorerThumbsSize = (ExplorerThumbSizes)m_iCurrentSize;
+			m_PreferencesManager.ExplorerThumbsSize = (ExplorerThumbSizes)m_Columns;
 			m_PreferencesManager.Export();
 		}
 		#endregion
@@ -513,15 +434,15 @@ namespace Kinovea.ScreenManager
 				{
 					case Keys.Left:
 						{
-							if (m_SelectedVideo == null)
+							if (m_SelectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedVideo.Tag;
-								int iRow = index / m_iCurrentSize;
-								int iCol = index - (iRow * m_iCurrentSize);
+								int index = (int)m_SelectedThumbnail.Tag;
+								int iRow = index / m_Columns;
+								int iCol = index - (iRow * m_Columns);
 
 								if (iCol > 0)
 								{
@@ -532,17 +453,17 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.Right:
 						{
-							if (m_SelectedVideo == null)
+							if (m_SelectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedVideo.Tag;
-								int iRow = index / m_iCurrentSize;
-								int iCol = index - (iRow * m_iCurrentSize);
+								int index = (int)m_SelectedThumbnail.Tag;
+								int iRow = index / m_Columns;
+								int iCol = index - (iRow * m_Columns);
 
-								if (iCol < m_iCurrentSize - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
+								if (iCol < m_Columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
 								{
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
 								}
@@ -551,78 +472,66 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.Up:
 						{
-							if (m_SelectedVideo == null)
+							if (m_SelectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedVideo.Tag;
-								int iRow = index / m_iCurrentSize;
-								int iCol = index - (iRow * m_iCurrentSize);
+								int index = (int)m_SelectedThumbnail.Tag;
+								int iRow = index / m_Columns;
+								int iCol = index - (iRow * m_Columns);
 
 								if (iRow > 0)
 								{
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - m_iCurrentSize]).SetSelected();
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - m_Columns]).SetSelected();
 								}
 							}
-							splitResizeBar.Panel2.ScrollControlIntoView(m_SelectedVideo);
+							splitResizeBar.Panel2.ScrollControlIntoView(m_SelectedThumbnail);
 							break;
 						}
 					case Keys.Down:
 						{
-							if (m_SelectedVideo == null)
+							if (m_SelectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedVideo.Tag;
-								int iRow = index / m_iCurrentSize;
-								int iCol = index - (iRow * m_iCurrentSize);
+								int index = (int)m_SelectedThumbnail.Tag;
+								int iRow = index / m_Columns;
+								int iCol = index - (iRow * m_Columns);
 
-								if ((iRow < splitResizeBar.Panel2.Controls.Count / m_iCurrentSize) && index + m_iCurrentSize  < splitResizeBar.Panel2.Controls.Count)
+								if ((iRow < splitResizeBar.Panel2.Controls.Count / m_Columns) && index + m_Columns  < splitResizeBar.Panel2.Controls.Count)
 								{
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + m_iCurrentSize]).SetSelected();
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + m_Columns]).SetSelected();
 								}
 							}
-							splitResizeBar.Panel2.ScrollControlIntoView(m_SelectedVideo);
+							splitResizeBar.Panel2.ScrollControlIntoView(m_SelectedThumbnail);
 							break;
 						}
 					case Keys.Return:
 						{
-							if (m_SelectedVideo != null)
-							{
-								if (!m_SelectedVideo.ErrorImage)
-								{
-									m_ScreenManagerUIContainer.DropLoadMovie(m_SelectedVideo.FileName, -1);
-								}
-							}
+							if (m_SelectedThumbnail != null && !m_SelectedThumbnail.IsError)
+								m_ScreenManagerUIContainer.DropLoadMovie(m_SelectedThumbnail.FileName, -1);
 							break;
 						}
 					case Keys.Add:
 						{
 							if ((ModifierKeys & Keys.Control) == Keys.Control)
-							{
 								UpSizeThumbs();
-							}
 							break;
 						}
 					case Keys.Subtract:
 						{
 							if ((ModifierKeys & Keys.Control) == Keys.Control)
-							{
 								DownSizeThumbs();
-							}
 							break;
 						}
 					case Keys.F2:
 						{
-							if(m_SelectedVideo != null)
-							{
-								if(!m_SelectedVideo.ErrorImage)
-									m_SelectedVideo.StartRenaming();
-							}
+							if(m_SelectedThumbnail != null && !m_SelectedThumbnail.IsError)
+								m_SelectedThumbnail.StartRenaming();
 							break;
 						}
 					default:
@@ -635,16 +544,13 @@ namespace Kinovea.ScreenManager
 		
         private void Panel2MouseDown(object sender, MouseEventArgs e)
         {
-        	// Clicked nowhere.
-        	
-        	// 1. Deselect all videos.
-        	if(m_SelectedVideo != null)
+        	// Clicked off nowhere.
+        	if(m_SelectedThumbnail != null)
         	{
-        		m_SelectedVideo.SetUnselected();
-        		m_SelectedVideo = null;
+        		m_SelectedThumbnail.SetUnselected();
+        		m_SelectedThumbnail = null;
         	}
         	
-        	// 2. Toggle off edit mode.
         	CancelEditMode();
         }
         private void CancelEditMode()
@@ -656,18 +562,14 @@ namespace Kinovea.ScreenManager
 			{
 				ThumbListViewItem tlvi = splitResizeBar.Panel2.Controls[i] as ThumbListViewItem;
 				if(tlvi != null)
-				{
 					tlvi.CancelEditMode();
-				}
 			}	
         }
         private void Panel2MouseEnter(object sender, EventArgs e)
         {
         	// Give focus to enbale mouse scroll
         	if(!m_bEditMode)
-        	{
         		splitResizeBar.Panel2.Focus();
-        	}
         }
         
         private void Panel2Paint(object sender, PaintEventArgs e)

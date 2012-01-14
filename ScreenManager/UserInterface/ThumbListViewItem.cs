@@ -32,6 +32,7 @@ using System.Windows.Forms;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
+using Kinovea.Video;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Kinovea.ScreenManager
@@ -52,83 +53,27 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Properties
-		public string FileName
-		{
+		
+		public string FileName {
 			get { return m_FileName; }
-			set 
-			{ 
-				m_FileName = value;
-				lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
-				if(m_ToolTipHandler != null)
-				{
-					m_ToolTipHandler.SetToolTip(picBox, Path.GetFileNameWithoutExtension(m_FileName));
-				}
-			}
 		}
-		public ToolTip ToolTipHandler
+		public bool IsError {
+		    get { return m_IsError;}
+		}
+		/*public ToolTip ToolTipHandler
 		{
 			get { return m_ToolTipHandler; }
 			set { m_ToolTipHandler = value; }
 		}
-		public bool ErrorImage
-		{
-			get { return m_bErrorImage; }
-			set { m_bErrorImage = value; }
-		}
-		public List<Bitmap> Thumbnails
-		{
-			get { return m_Bitmaps; }	// unused.
-			set
-			{
-				m_Bitmaps = value;
-				if(m_Bitmaps != null)
-				{
-					if(m_Bitmaps.Count > 0)
-					{
-						m_iCurrentThumbnailIndex = 0;
-						m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
-						
-					}
-				}
-				
-				SetSize(this.Width);
-			}
-		}
-		public Bitmap Thumbnail
-		{
-			get { return m_CurrentThumbnail; }	// unused.
-			set
-			{
-				m_CurrentThumbnail = value;
-				SetSize(this.Width);
-			}
-		}
-		public string Duration
-		{
-			get { return m_DurationText;}	// unused.
-			set { m_DurationText = value;}
-		}
-		public Size ImageSize
-		{
-			set { m_ImageSize = String.Format("{0}×{1}", value.Width, value.Height);}
-		}
-		public bool IsImage
-		{
-			get { return m_bIsImage; }
-			set { m_bIsImage = value; }
-		}
-		public bool HasKva
-		{
-			get { return m_bHasKva; }
-			set { m_bHasKva = value; }
-		}
+		*/
 		#endregion
 		
 		#region Members
 		private String m_FileName;
-		private ToolTip m_ToolTipHandler;
+		private bool m_Loaded;
+		//private ToolTip m_ToolTipHandler;
 		private bool m_bIsSelected = false;
-		private bool m_bErrorImage = false;
+		private bool m_IsError;
 		private List<Bitmap> m_Bitmaps;
 		private Bitmap m_CurrentThumbnail;
 		private string m_DurationText = "0:00:00";
@@ -164,29 +109,33 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Construction & initialization
-		public ThumbListViewItem()
+		public ThumbListViewItem(string _fileName)
 		{
-			InitializeComponent();
-			BackColor = Color.White;
-			picBox.BackgroundImage = null;
-			
-			// Setup timer
-			tmrThumbs.Interval = m_iTimerInterval;
-			tmrThumbs.Tick += new EventHandler(tmrThumbs_Tick);
-			m_iCurrentThumbnailIndex = 0;
-			
+		    InitializeComponent();
+		    
+		    m_FileName = _fileName;
 			m_PenDuration.StartCap = LineCap.Round;
 			m_PenDuration.Width = 14;
 			
-			// Make the editbox follow the same layout pattern than the label.
+			SetupTimer();
+			SetupTextbox();
+			BuildContextMenus();
+			RefreshUICulture();
+		}
+		private void SetupTimer()
+		{
+		    tmrThumbs.Interval = m_iTimerInterval;
+			tmrThumbs.Tick += tmrThumbs_Tick;
+			m_iCurrentThumbnailIndex = 0;
+		}
+		private void SetupTextbox()
+		{
+		    // Make the editbox follow the same layout pattern than the label.
 			// except that its minimal height is depending on font.
 			tbFileName.Left = lblFileName.Left;
 			tbFileName.Width = lblFileName.Width;
 			tbFileName.Top = this.Height - tbFileName.Height;
 			tbFileName.Anchor = lblFileName.Anchor;
-			
-			BuildContextMenus();
-			RefreshUICulture();
 		}
 		private void BuildContextMenus()
 		{
@@ -202,13 +151,47 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public interface
-		public void SetSize(int iWidth)
+		public void Populate(VideoSummary _summary)
 		{
-			// Called at init step and on resize..
+		    m_Loaded = true;
+		    
+		    if (_summary == null || _summary.Thumbs == null || _summary.Thumbs.Count < 1)
+            {
+		        DisplayAsError();
+		    }
+		    else
+		    {
+            	m_Bitmaps = _summary.Thumbs;
+				if(m_Bitmaps != null && m_Bitmaps.Count > 0)
+				{
+					m_iCurrentThumbnailIndex = 0;
+					m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
+				}
+				
+            	if(_summary.IsImage)
+            	{
+            		m_bIsImage = true;
+            		m_DurationText = "0";
+            	}
+            	else
+            	{
+            		m_DurationText = TimeHelper.MillisecondsToTimecode((double)_summary.DurationMilliseconds, false, true);
+            	}
+            	
+            	m_ImageSize = String.Format("{0}×{1}", _summary.ImageSize.Width, _summary.ImageSize.Height);
+            	m_bHasKva = _summary.HasKva;
+            	
+            	SetSize(this.Width, this.Height);
+            }
+		}
+		public void SetSize(int _width, int _height)
+		{
+			// Called at init step and on resize.
+			// Represent the size of the whole control, not just the image.
 			
 			// Width changed due to screen resize or thumbview mode change.
-			this.Width = iWidth;
-			this.Height = ((this.Width * 3) / 4) + 15;
+			this.Width = _width;
+			this.Height = _height;
 			
 			// picBox is ratio strecthed.
 			if(m_CurrentThumbnail != null)
@@ -244,13 +227,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void DisplayAsError()
 		{
-			// Called only at init step.
-			picBox.BackColor = Color.WhiteSmoke;
-			lblFileName.ForeColor = Color.Silver;
-			picBox.BackgroundImage = Properties.Resources.missing3;
-			picBox.BackgroundImageLayout = ImageLayout.Center;
-			picBox.Cursor = Cursors.No;
-			m_bErrorImage = true;
+			m_IsError = true;
 			mnuLaunch.Visible = false;
 			mnuSep.Visible = false;
 		}
@@ -287,7 +264,9 @@ namespace Kinovea.ScreenManager
 		}
 		public void RefreshUICulture()
 		{
-			mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
+			lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
+		    
+		    mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
 			mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
 			mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
 			
@@ -298,191 +277,209 @@ namespace Kinovea.ScreenManager
 			
 			picBox.Invalidate();
 		}
+		public void DisposeImages()
+		{
+		    if(m_IsError || m_Bitmaps == null)
+		        return;
+		    
+		    foreach(Bitmap bmp in m_Bitmaps)
+		        bmp.Dispose();
+		    
+		    m_Bitmaps.Clear();
+		}
+		public void Animate(bool _animate)
+		{
+		    if(_animate)
+		        tmrThumbs.Start();
+		    else
+		        tmrThumbs.Stop();
+		}
 		#endregion
 		
 		#region UI Event Handlers
-		private void ThumbListViewItem_DoubleClick(object sender, EventArgs e)
+		private void AllControls_DoubleClick(object sender, EventArgs e)
 		{
-			// this event handler is actually shared by all controls 
-			if (LaunchVideo != null)
-			{
-				this.Cursor = Cursors.WaitCursor;
-				LaunchVideo(this, EventArgs.Empty);
-				this.Cursor = Cursors.Default;
-			}
+			if (LaunchVideo == null)
+                return;
+			
+			this.Cursor = Cursors.WaitCursor;
+			LaunchVideo(this, EventArgs.Empty);
+			this.Cursor = Cursors.Default;
 		}
-		private void ThumbListViewItem_Click(object sender, EventArgs e)
+		private void AllControls_Click(object sender, EventArgs e)
 		{
-			// this event handler is actually shared by all controls.
-			// (except for lblFilename)
-			if(!m_bErrorImage)
-			{
+			if(!m_IsError)
 				SetSelected();
-			}
 		}
 		private void LblFileNameClick(object sender, EventArgs e)
         {
-			if(!m_bErrorImage)
+			if(!m_IsError)
 			{
 				if(!m_bIsSelected)
-				{
 					SetSelected();
-				}
 				else
-				{
 					StartRenaming();
-				}
 			}
         }
 		private void lblFileName_TextChanged(object sender, EventArgs e)
 		{
 			// Re check if we need to elid it.
 			if (lblFileName.Text.Length > m_iFilenameMaxCharacters)
-			{
 				lblFileName.Text = lblFileName.Text.Substring(0, m_iFilenameMaxCharacters) + "...";
-			}
 		}
 		private void PicBoxPaint(object sender, PaintEventArgs e)
 		{
-			// Draw picture, border and duration.
-			if(!m_bErrorImage && m_CurrentThumbnail != null)
+			// Configure for speed. These are thumbnails anyway.
+			e.Graphics.PixelOffsetMode = PixelOffsetMode.None; //PixelOffsetMode.HighSpeed;
+			e.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
+			e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+			e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
+			
+			if(m_Loaded)
 			{
-				// configure for speed. These are thumbnails anyway.
-				e.Graphics.PixelOffsetMode = PixelOffsetMode.None; //PixelOffsetMode.HighSpeed;
-				e.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
-				e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-				e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
-				
-				// Draw picture. We always draw to the whole container.
-				// it is the picBox that is ratio stretched, see SetSize().
-				e.Graphics.DrawImage(m_CurrentThumbnail, 0, 0, picBox.Width, picBox.Height);
-				
-				// Draw border.
-				Pen p = m_bIsSelected?m_PenSelected:m_PenUnselected;
-				e.Graphics.DrawRectangle(p, 1, 1, picBox.Width-2, picBox.Height-2);
-				e.Graphics.DrawRectangle(Pens.White, 2, 2, picBox.Width-5, picBox.Height-5);
-				
-				// Draw quick preview rectangles.
-				if(m_Hovering && m_Bitmaps != null && m_Bitmaps.Count > 1)
-				{
-					int rectWidth = picBox.Width / m_Bitmaps.Count;
-					int rectHeight = 20;
-					for(int i=0;i<m_Bitmaps.Count;i++)
-					{
-						if(i == m_iCurrentThumbnailIndex)
-						{
-							e.Graphics.FillRectangle(m_BrushQuickPreviewActive, rectWidth * i, picBox.Height - 20, rectWidth, rectHeight);	
-						}
-						else
-						{
-							e.Graphics.FillRectangle(m_BrushQuickPreviewInactive, rectWidth * i, picBox.Height - 20, rectWidth, rectHeight);	
-						}						
-					}
-				}
-				
-				// Draw duration text in the corner + background.
-				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-				if(m_bIsImage)
-				{
-					// MeasureString doesn't support trailing spaces.
-					// We used # as placeholders, remove them just before drawing.
-					SizeF bgSize = e.Graphics.MeasureString(m_ImageText, m_FontDuration);
-					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
-					e.Graphics.DrawString(m_ImageText.Replace('#', ' '), m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
-				}
-				else
-				{
-					SizeF bgSize = e.Graphics.MeasureString(m_DurationText, m_FontDuration);
-					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
-					e.Graphics.DrawString(m_DurationText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
-				}
-				
-				// Draw image size				
-				SizeF bgSize2 = e.Graphics.MeasureString(m_ImageSize, m_FontDuration);
-				int sizeTop = 29;
-				e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - bgSize2.Width - 1, sizeTop, (float)picBox.Width - 4, sizeTop);
-				e.Graphics.DrawString(m_ImageSize, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize2.Width - 3, sizeTop - 7);
-				
-				// Draw KVA file indicator
-				if(m_bHasKva)
-				{
-					e.Graphics.DrawLine(m_PenDuration, (float)picBox.Width - 20, 45, (float)picBox.Width - 4, 45);
-					e.Graphics.DrawImage(bmpKvaAnalysis, picBox.Width - 25, 38);
-				}
+			    if(m_IsError)
+			    {
+			       DrawPlaceHolder(e.Graphics);
+                   DrawError(e.Graphics);			       
+			    }
+			    else
+			    {
+			        DrawImage(e.Graphics);
+    			    DrawBorder(e.Graphics);
+    			    DrawPreviewRectangles(e.Graphics);
+    			    DrawDuration(e.Graphics);
+    			    DrawImageSize(e.Graphics);
+    			    DrawKVAHint(e.Graphics);
+			    }
 			}
+			else
+			{
+			    DrawPlaceHolder(e.Graphics);
+			}
+		}
+		private void DrawImage(Graphics _canvas)
+		{
+		    // We always draw to the whole container,
+			// it is the picBox that is ratio stretched, see SetSize().
+			if(m_CurrentThumbnail != null)
+                _canvas.DrawImage(m_CurrentThumbnail, 0, 0, picBox.Width, picBox.Height);
+		}
+		private void DrawBorder(Graphics _canvas)
+		{
+			Pen p = m_bIsSelected ? m_PenSelected : m_PenUnselected;
+			_canvas.DrawRectangle(p, 1, 1, picBox.Width-2, picBox.Height-2);
+			_canvas.DrawRectangle(Pens.White, 2, 2, picBox.Width-5, picBox.Height-5);
+		}
+		private void DrawPreviewRectangles(Graphics _canvas)
+		{
+		    // Draw quick preview rectangles.
+			if(!m_Hovering || m_Bitmaps == null || m_Bitmaps.Count < 2)
+			    return;
+
+			int rectWidth = picBox.Width / m_Bitmaps.Count;
+			int rectHeight = 20;
+			for(int i=0;i<m_Bitmaps.Count;i++)
+			{
+			    SolidBrush b = i == m_iCurrentThumbnailIndex ? m_BrushQuickPreviewActive : m_BrushQuickPreviewInactive;
+				_canvas.FillRectangle(b, rectWidth * i, picBox.Height - rectHeight, rectWidth, rectHeight);	
+			}
+		}
+		private void DrawDuration(Graphics _canvas)
+		{
+		    // MeasureString doesn't support trailing spaces.
+			// We used # as placeholders, remove them just before drawing.
+			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
+			SizeF bgSize = bgSize = _canvas.MeasureString(m_bIsImage ? m_ImageText : m_DurationText, m_FontDuration);;
+			string actualText = m_bIsImage ? m_ImageText.Replace('#', ' ') : m_DurationText;
+			_canvas.DrawLine(m_PenDuration, (float)picBox.Width - bgSize.Width - 1, 12, (float)picBox.Width - 4, 12);
+			_canvas.DrawString(actualText, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize.Width - 3, 5);
+		}
+		private void DrawImageSize(Graphics _canvas)
+		{
+		    SizeF bgSize2 = _canvas.MeasureString(m_ImageSize, m_FontDuration);
+			int sizeTop = 29;
+			_canvas.DrawLine(m_PenDuration, (float)picBox.Width - bgSize2.Width - 1, sizeTop, (float)picBox.Width - 4, sizeTop);
+			_canvas.DrawString(m_ImageSize, m_FontDuration, Brushes.White, (float)picBox.Width - bgSize2.Width - 3, sizeTop - 7);
+		}
+		private void DrawKVAHint(Graphics _canvas)
+		{
+		    if(!m_bHasKva)
+			    return;
+			
+			_canvas.DrawLine(m_PenDuration, (float)picBox.Width - 20, 45, (float)picBox.Width - 4, 45);
+			_canvas.DrawImage(bmpKvaAnalysis, picBox.Width - 25, 38);
+		}
+		private void DrawPlaceHolder(Graphics _canvas)
+		{
+		    _canvas.DrawRectangle(Pens.Gainsboro, 0, 0, picBox.Width-1, picBox.Height-1);
+		}
+		private void DrawError(Graphics _canvas)
+		{
+		    Bitmap bmp = Properties.Resources.film_error2;
+		    int left = (picBox.Width - bmp.Width) / 2;
+		    int top = (picBox.Height - bmp.Height) / 2;
+		    _canvas.DrawImage(bmp, left, top);
 		}
 		private void PicBoxMouseMove(object sender, MouseEventArgs e)
         {
-        	if(!m_bErrorImage && m_Bitmaps != null)
-        	{
-        		if(m_Bitmaps.Count > 0)
-        		{
-        			if(e.Y > picBox.Height - 20)
-		        	{
-		        		tmrThumbs.Stop();
-		        		int index = e.X / (picBox.Width / m_Bitmaps.Count);
-		        		m_iCurrentThumbnailIndex = Math.Max(Math.Min(index, m_Bitmaps.Count - 1), 0);
-			  			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
-			  			picBox.Invalidate();
-		        	}
-		        	else
-		        	{
-			  			tmrThumbs.Start();
-		        	}
-        		}
-        	}
+        	if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 1)
+        	    return;
         	
+        	if(e.Y > picBox.Height - 20)
+        	{
+        		tmrThumbs.Stop();
+        		int index = e.X / (picBox.Width / m_Bitmaps.Count);
+        		m_iCurrentThumbnailIndex = Math.Max(Math.Min(index, m_Bitmaps.Count - 1), 0);
+	  			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
+	  			picBox.Invalidate();
+        	}
+        	else
+        	{
+	  			tmrThumbs.Start();
+        	}
         }
 		private void ThumbListViewItemPaint(object sender, PaintEventArgs e)
 		{
 			// Draw the shadow
-			e.Graphics.DrawLine(m_PenShadow, picBox.Left + picBox.Width + 1, picBox.Top + m_PenShadow.Width, picBox.Left + picBox.Width + 1, picBox.Top + picBox.Height + m_PenShadow.Width);
-			e.Graphics.DrawLine(m_PenShadow, picBox.Left + m_PenShadow.Width, picBox.Top + picBox.Height + 1, picBox.Left + m_PenShadow.Width + picBox.Width, picBox.Top + picBox.Height + 1);
+			if(m_Loaded && !m_IsError)
+			{
+                e.Graphics.DrawLine(m_PenShadow, picBox.Left + picBox.Width + 1, picBox.Top + m_PenShadow.Width, picBox.Left + picBox.Width + 1, picBox.Top + picBox.Height + m_PenShadow.Width);
+                e.Graphics.DrawLine(m_PenShadow, picBox.Left + m_PenShadow.Width, picBox.Top + picBox.Height + 1, picBox.Left + m_PenShadow.Width + picBox.Width, picBox.Top + picBox.Height + 1);
+			}
 		}
 		private void tmrThumbs_Tick(object sender, EventArgs e) 
 		{
-			// This event occur when the user has been staying for a while on the same thumbnail.
-			// Loop between all stored images.
-			if(!m_bErrorImage && m_Bitmaps != null)
-			{
-				if(m_Bitmaps.Count > 1)
-				{
-		  			// Change the thumbnail displayed.
-		  			m_iCurrentThumbnailIndex++;
-		  			if(m_iCurrentThumbnailIndex >= m_Bitmaps.Count)
-		  			{
-		  				m_iCurrentThumbnailIndex = 0;
-		  			}
-		  			
-	  				m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
-	  				picBox.Invalidate();
-	  			}
-			}
+			// This event occur when the user has been staying for a while on the same thumbnail. Loop between all stored images.
+			if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 2)
+        	    return;
+			
+			m_iCurrentThumbnailIndex++;
+  			if(m_iCurrentThumbnailIndex >= m_Bitmaps.Count)
+  				m_iCurrentThumbnailIndex = 0;
+  			
+			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
+			picBox.Invalidate();
 		}
 		private void PicBoxMouseEnter(object sender, EventArgs e)
         {
 			m_Hovering = true;
 		
-			if(!m_bErrorImage && m_Bitmaps != null)
-			{
-				if(m_Bitmaps.Count > 1)
-		  		{
-					// Instantly change image
-		  			m_iCurrentThumbnailIndex = 1;
-		  			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
-		  			picBox.Invalidate();
+			if(m_IsError || m_Bitmaps == null || m_Bitmaps.Count < 2)
+        	    return;
+			
+			// Instantly change image
+  			m_iCurrentThumbnailIndex = 1;
+  			m_CurrentThumbnail = m_Bitmaps[m_iCurrentThumbnailIndex];
+  			picBox.Invalidate();
 
-		  			// Then start timer to slideshow.
-		  			tmrThumbs.Start();
-		  		}
-			}
-				
+  			// Then start timer to slideshow.
+  			tmrThumbs.Start();
         }
 		private void PicBoxMouseLeave(object sender, EventArgs e)
         {
 			m_Hovering = false;
 			
-        	if(!m_bErrorImage && m_Bitmaps != null)
+        	if(!m_IsError && m_Bitmaps != null)
         	{
 				tmrThumbs.Stop();
 				if(m_Bitmaps.Count > 0)
@@ -495,58 +492,54 @@ namespace Kinovea.ScreenManager
         }
 		private void TbFileNameKeyPress(object sender, KeyPressEventArgs e)
         {
-			// editing a file name.
-			
-        	if (e.KeyChar == 13) // Carriage Return.
-			{
-        		string newFileName = Path.GetDirectoryName(m_FileName) + "\\" + tbFileName.Text;				
-        		
-        		// Prevent overwriting.
-        		if(File.Exists(m_FileName) && !File.Exists(newFileName) && newFileName.Length > 5)
-        		{
-        			// Try to change the filename 
-					try
-        			{
-						File.Move(m_FileName, newFileName);
-						
-		        		// If renaming went fine, consolidate the file name.
-		        		if(!File.Exists(m_FileName))
-		        		{
-		        			FileName = newFileName;
-		        		}   
-		        		
-		        		// Ask the Explorer tree to refresh itself...
-						// But not the thumbnails pane.
-			            DelegatesPool dp = DelegatesPool.Instance();
-			            if (dp.RefreshFileExplorer != null)
-			            {
-			                dp.RefreshFileExplorer(false);
-			            }
-					}
-					catch(ArgumentException)
-					{
-						// contains only white space, or contains invalid characters as defined in InvalidPathChars.
-						// -> Silently fail.
-						// TODO:Display error dialog box.
-					}
-					catch(UnauthorizedAccessException)
-					{
-						// The caller does not have the required permission.
-					}
-					catch(Exception)
-					{
-						// Log error.
-					}
-        		}
-        		QuitEditMode();
-				
-				// Set this thumb as selected.
-				SetSelected();
-			}
-        	else if(e.KeyChar == 27) // Escape.
+			// Editing a file name.
+			if(e.KeyChar == 27)
         	{
         		QuitEditMode();
+        		return;
         	}
+			
+        	if (e.KeyChar != 13) // Carriage Return.
+        	    return;
+        	
+			
+        	string newFileName = Path.GetDirectoryName(m_FileName) + "\\" + tbFileName.Text;				
+    		if(File.Exists(m_FileName) && !File.Exists(newFileName) && newFileName.Length > 5)
+    		{
+				try
+    			{
+					File.Move(m_FileName, newFileName);
+					
+	        		if(!File.Exists(m_FileName))
+	        		{
+	        		    m_FileName = newFileName;
+	        		    lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
+	        		}
+	        		// Ask the Explorer tree to refresh itself...
+					// But not the thumbnails pane.
+		            DelegatesPool dp = DelegatesPool.Instance();
+		            if (dp.RefreshFileExplorer != null)
+		                dp.RefreshFileExplorer(false);
+				}
+				catch(ArgumentException)
+				{
+					// contains only white space, or contains invalid characters as defined in InvalidPathChars.
+					// -> Silently fail.
+					// TODO:Display error dialog box.
+				}
+				catch(UnauthorizedAccessException)
+				{
+					// The caller does not have the required permission.
+				}
+				catch(Exception)
+				{
+					// Log error.
+				}
+    		}
+    		QuitEditMode();
+			
+			// Set this thumb as selected.
+			SetSelected();
         }
 		#endregion
 		
@@ -577,9 +570,7 @@ namespace Kinovea.ScreenManager
 				// This will in turn refresh the thumbnails pane.
 	            DelegatesPool dp = DelegatesPool.Instance();
 	            if (dp.RefreshFileExplorer != null)
-	            {
 	                dp.RefreshFileExplorer(true);
-	            }
 			}
 		}
 		private void mnuLaunch_Click(object sender, EventArgs e)
@@ -601,7 +592,6 @@ namespace Kinovea.ScreenManager
 			if (FileNameEditing != null)
 			{
 				FileNameEditing(this, new EditingEventArgs(true));
-				
 				m_bEditMode = true;
 				ToggleEditMode();
 			}
@@ -610,9 +600,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Quit edit mode.
     		if (FileNameEditing != null)
-			{
     			FileNameEditing(this, new EditingEventArgs(false));
-    		}
     		
 			m_bEditMode = false;
 			ToggleEditMode();
