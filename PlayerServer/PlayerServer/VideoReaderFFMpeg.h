@@ -139,11 +139,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual String^ ReadMetadata() override;
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
-		virtual void StartPreBuffering() override;
-		virtual void StopPreBuffering() override;
+		virtual void BeforePlayloop() override;
 		virtual void BeforeFrameEnumeration() override;
-		virtual void AfterFrameEnumerationStep() override;
-		virtual void CompletedFrameEnumeration() override;
+		virtual void AfterFrameEnumeration() override;
 		virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
 		
 	// Construction / Destruction.
@@ -185,6 +183,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		static const int DecodingQuality = SWS_FAST_BILINEAR;
 
 		// Others
+		bool m_WasPrebuffering;
 		Stopwatch^ m_Stopwatch;
 		Thread^ m_PreBufferingThread;
 		static log4net::ILog^ log = log4net::LogManager::GetLogger(MethodBase::GetCurrentMethod()->DeclaringType);
@@ -207,6 +206,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		void SwitchDecodingMode(VideoDecodingMode _mode);
 		void SwitchToBestAfterCaching();
 		void ImportWorkingZoneToCache(System::Object^ sender,DoWorkEventArgs^ e);
+		void StartPreBuffering();
+		void StopPreBuffering();
 
 		void DumpInfo();
 		static void DumpStreamsInfos(AVFormatContext* _pFormatCtx);

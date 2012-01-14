@@ -498,9 +498,6 @@ namespace Kinovea.ScreenManager
 			// 	ScreenManager upon loading standalone analysis.
 			//----------------------------------------------------------
 
-			// TODO - progress bar ?
-			m_FrameServer.VideoReader.BeforeFrameOperation();
-			
 			int iOutOfRange = -1;
 			int iCurrentKeyframe = -1;
 
@@ -550,8 +547,6 @@ namespace Kinovea.ScreenManager
 				// Some keyframes were out of range. remove them.
 				m_FrameServer.Metadata.Keyframes.RemoveRange(iOutOfRange, m_FrameServer.Metadata.Keyframes.Count - iOutOfRange);
 			}
-			
-			m_FrameServer.VideoReader.AfterFrameOperation();
 			
             UpdateFilenameLabel();
 			OrganizeKeyframes();
@@ -4551,8 +4546,6 @@ namespace Kinovea.ScreenManager
 			
 			StopPlaying();
 			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-			m_FrameServer.VideoReader.BeforeFrameOperation();
-
 			DelegatesPool dp = DelegatesPool.Instance();
 			if (dp.DeactivateKeyboardHandler != null)
 				dp.DeactivateKeyboardHandler();
@@ -4570,7 +4563,6 @@ namespace Kinovea.ScreenManager
 			if (dp.ActivateKeyboardHandler != null)
 				dp.ActivateKeyboardHandler();
 			
-			m_FrameServer.VideoReader.AfterFrameOperation();
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iSelStart, true);
 			ActivateKeyframe(m_iCurrentPosition, true);
@@ -4582,7 +4574,8 @@ namespace Kinovea.ScreenManager
             
 		    // Use an abstracted enumerator on the frames we are interested in.
 			// Either the keyframes or arbitrary frames at regular interval.
-			IEnumerable<VideoFrame> frames = _bKeyframesOnly ? m_FrameServer.Metadata.EnabledKeyframes() : VideoFrameEnumerator(_interval);
+			m_FrameServer.VideoReader.BeforeFrameEnumeration();
+			IEnumerable<VideoFrame> frames = _bKeyframesOnly ? m_FrameServer.Metadata.EnabledKeyframes() : m_FrameServer.VideoReader.FrameEnumerator(_interval);
 			
 			foreach(VideoFrame vf in frames)
             {
@@ -4608,6 +4601,8 @@ namespace Kinovea.ScreenManager
 
                 _bgWorker.ReportProgress(iCurrent++, total);
 			}
+			
+			m_FrameServer.VideoReader.AfterFrameEnumeration();
 		}
 		private int GetKeyframeIndex(long _timestamp)
 		{
@@ -4622,28 +4617,6 @@ namespace Kinovea.ScreenManager
                 }
             }
             return index;
-		}
-		private IEnumerable<VideoFrame> VideoFrameEnumerator(long _interval)
-		{
-            m_iFramesToDecode = 1;
-            ShowNextFrame(m_iSelStart, false);
-            yield return m_FrameServer.VideoReader.Current;
-            
-			bool done = false;
-			do
-			{
-				if (m_iCurrentPosition + _interval <= m_iSelEnd)
-				{
-					m_iFramesToDecode = 1;
-					ShowNextFrame(m_iCurrentPosition + _interval, false);
-					yield return m_FrameServer.VideoReader.Current;
-				}
-				else
-				{
-					done = true;
-				}
-			}
-			while (!done);
 		}
 		private void btnVideo_Click(object sender, EventArgs e)
 		{

@@ -66,8 +66,7 @@ namespace Kinovea.Video
         public override void PostLoad(){}
         public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn){}
         public override void BeforeFrameEnumeration(){}
-        public override void AfterFrameEnumerationStep(){}
-        public override void CompletedFrameEnumeration(){}
+        public override void AfterFrameEnumeration(){}
         #endregion
     }
 }

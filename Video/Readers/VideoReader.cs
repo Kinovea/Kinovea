@@ -102,7 +102,6 @@ namespace Kinovea.Video
 		#endregion
 
 		#region Members
-		private bool m_bWasPreBuffering;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 		
@@ -128,13 +127,18 @@ namespace Kinovea.Video
 		public abstract bool MoveTo(long _timestamp, bool _decodeIfNecessary);
 		
 		public abstract void BeforeFrameEnumeration();
-		public abstract void AfterFrameEnumerationStep();
-		public abstract void CompletedFrameEnumeration();
+		public abstract void AfterFrameEnumeration();
 		
 		/// <summary>
 		/// Called after load and before the first decode request.
 		/// </summary>
 		public abstract void PostLoad();
+		
+		/// <summary>
+		/// Updates the internal working zone. Import whole zone to cache if possible.
+		/// </summary>
+		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
+		public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
 		
 		#region Move playhead
 		public bool MovePrev()
@@ -190,15 +194,9 @@ namespace Kinovea.Video
 		
 		public virtual void BeforePlayloop()
 		{
-            //if(!IsCaching && !IsPreBuffering && CanPreBuffer)
-            if(DecodingMode != VideoDecodingMode.Caching &&
-               (CanPreBuffer && DecodingMode != VideoDecodingMode.PreBuffering))
-            {
-                // Just in case something wrong happened, make sure the decoding thread is alive.
-                // Normally it should always be running (unless the whole zone is cached).
-                log.Error("Forcing PreBuffering thread to restart.");
-                StartPreBuffering();
-            }
+		    // Called right before starting the play loop.
+		    // Might be used to ensure the prebuffering thread is started.
+            // Does nothing by default. Override to implement.
 		}
 		
 		/// <summary>
@@ -223,10 +221,8 @@ namespace Kinovea.Video
         /// <summary>
         /// Provide a lazy enumerator on each frame of the Working Zone.
         /// </summary>
-        public virtual IEnumerable<VideoFrame> FrameEnumerator()
+        public IEnumerable<VideoFrame> FrameEnumerator(long _interval)
         {
-            // TODO: how to provide this function without assuming container ?
-            
             if(DecodingMode == VideoDecodingMode.PreBuffering)
                 throw new ThreadStateException("Frame enumerator called while prebuffering");
             
@@ -235,35 +231,22 @@ namespace Kinovea.Video
             
             while(hasMore)
             {
-                hasMore = MoveNext(0, true);
+                if(_interval == 0)
+                    hasMore = MoveNext(0, true);
+                else
+                    hasMore = MoveTo(Current.Timestamp + _interval, true);
+                
                 yield return Current;
-                // next line should not be needed. 
-                // we should be in single frame mode or in full cache mode.
-                AfterFrameEnumerationStep();
             }
         }
-		
-		/// <summary>
-		/// Updates the internal working zone. Import whole zone to cache if possible.
-		/// </summary>
-		/// <param name="_workerFn">A function that will start a background thread for the actual import</param>
-		public abstract void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn);
+        public IEnumerable<VideoFrame> FrameEnumerator()
+		{
+            return FrameEnumerator(0);
+		}
 
 		public virtual string ReadMetadata()
 		{
 		    return "";
-		}
-		public virtual void StartPreBuffering()
-		{
-		    // This should be used to initialize any variable or 
-		    // enter any state necessary to sustain the play loop.
-		    // Typically used to start a background thread for decoding.
-		    
-		    // Does nothing by default. Override to implement.
-		}
-		public virtual void StopPreBuffering()
-		{
-		    // Does nothing by default. Override to implement.
 		}
 		public virtual void SkipDrops()
 		{
@@ -271,40 +254,6 @@ namespace Kinovea.Video
 		    
 		    /*if(Cache != null)
 		        Cache.SkipDrops();*/
-		}
-		
-		/// <summary>
-		/// Must be called before every operation that would conflict with async decoding.
-		/// For example, loading key images or saving image sequence, saving videos.
-		/// These operations need the playhead to repeatedly move to non contiguous frames, which
-		/// would induce unecessary decoding each time we move.
-		/// the async decode thread should be stopped temporarily and restarted after the operation.
-		/// </summary>
-		public virtual void BeforeFrameOperation()
-		{
-		    // TODO: this will be replaced by a switch to NotBuffering mode.
-            /*m_bWasPreBuffering = IsPreBuffering;
-            if(m_bWasPreBuffering)
-            {
-                StopPreBuffering();
-                Cache.Clear();
-            }*/
-		}
-		/// <summary>
-		/// Should be called after non-playback decoding operations.
-		/// </summary>
-		public virtual void AfterFrameOperation()
-		{
-		    // TODO: will change when frame containers are better split.
-		    
-            /*if(CanPreBuffer && !IsCaching)
-            {
-                // The operation may have corrupted the cache with non contiguous frames.
-                Cache.Clear();
-                
-                if(m_bWasPreBuffering)
-                    StartPreBuffering();
-            }*/
 		}
 		#endregion
 	}
