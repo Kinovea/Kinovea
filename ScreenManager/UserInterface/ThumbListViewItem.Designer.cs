@@ -38,7 +38,7 @@
         	// 
         	this.lblFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.lblFileName.BackColor = System.Drawing.Color.Transparent;
+        	this.lblFileName.BackColor = System.Drawing.Color.White;
         	this.lblFileName.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.lblFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
         	this.lblFileName.ForeColor = System.Drawing.Color.Black;
@@ -49,15 +49,14 @@
         	this.lblFileName.Text = "FileName";
         	this.lblFileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         	this.lblFileName.TextChanged += new System.EventHandler(this.lblFileName_TextChanged);
-        	this.lblFileName.DoubleClick += new System.EventHandler(this.ThumbListViewItem_DoubleClick);
         	this.lblFileName.Click += new System.EventHandler(this.LblFileNameClick);
+        	this.lblFileName.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
         	// 
         	// picBox
         	// 
         	this.picBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.picBox.BackColor = System.Drawing.Color.WhiteSmoke;
-        	this.picBox.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.missing3;
+        	this.picBox.BackColor = System.Drawing.Color.Transparent;
         	this.picBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
         	this.picBox.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.picBox.Location = new System.Drawing.Point(3, 3);
@@ -65,12 +64,12 @@
         	this.picBox.Size = new System.Drawing.Size(234, 174);
         	this.picBox.TabIndex = 0;
         	this.picBox.TabStop = false;
-        	this.picBox.DoubleClick += new System.EventHandler(this.ThumbListViewItem_DoubleClick);
+        	this.picBox.Click += new System.EventHandler(this.AllControls_Click);
+        	this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBoxPaint);
+        	this.picBox.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+        	this.picBox.MouseEnter += new System.EventHandler(this.PicBoxMouseEnter);
         	this.picBox.MouseLeave += new System.EventHandler(this.PicBoxMouseLeave);
         	this.picBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PicBoxMouseMove);
-        	this.picBox.Click += new System.EventHandler(this.ThumbListViewItem_Click);
-        	this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBoxPaint);
-        	this.picBox.MouseEnter += new System.EventHandler(this.PicBoxMouseEnter);
         	// 
         	// tbFileName
         	// 
@@ -89,15 +88,15 @@
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.BackColor = System.Drawing.Color.WhiteSmoke;
+        	this.BackColor = System.Drawing.Color.Transparent;
         	this.Controls.Add(this.tbFileName);
         	this.Controls.Add(this.lblFileName);
         	this.Controls.Add(this.picBox);
         	this.Name = "ThumbListViewItem";
         	this.Size = new System.Drawing.Size(240, 195);
-        	this.DoubleClick += new System.EventHandler(this.ThumbListViewItem_DoubleClick);
+        	this.Click += new System.EventHandler(this.AllControls_Click);
         	this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbListViewItemPaint);
-        	this.Click += new System.EventHandler(this.ThumbListViewItem_Click);
+        	this.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
         	((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
         	this.ResumeLayout(false);
         	this.PerformLayout();

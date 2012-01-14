@@ -378,6 +378,8 @@
     <Compile Include="Properties\Drawings.Designer.cs">
       <DependentUpon>Drawings.resx</DependentUpon>
     </Compile>
+    <Compile Include="SummaryLoadedEventArgs.cs" />
+    <Compile Include="SummaryLoader.cs" />
     <Compile Include="UserInterface\ColorPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -422,7 +424,6 @@
     <Compile Include="UserInterface\ScreenManagerUserInterface.Designer.cs">
       <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\ThumbListLoader.cs" />
     <Compile Include="UserInterface\ThumbListView.cs">
       <SubType>UserControl</SubType>
     </Compile>

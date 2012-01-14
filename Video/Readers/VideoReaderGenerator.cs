@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -35,7 +36,7 @@ namespace Kinovea.Video
     /// If the underlying source is limited in time, it should be exposed through a VideoReader.
     /// Usage for generators is: random images, images with the timestamp painted on for tests, single image file.
     /// </summary>
-    [SupportedExtensions(".jpg;.jpeg;.png;.bmp")]
+    [SupportedExtensions(".jpg;.jpeg;.png;.bmp;.svg")]
     public class VideoReaderGenerator : VideoReader
     {
         #region Properties
@@ -85,8 +86,25 @@ namespace Kinovea.Video
         }
         public override VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width)
         {
-            // TODO: return a summary with a single frame inside.
-            throw new NotImplementedException();
+            Open(_filePath);
+            
+            if(m_Generator == null)
+                return VideoSummary.GetInvalid(_filePath);
+            
+            Bitmap bmp = m_Generator.Generate(0);
+            Size size = bmp.Size;
+            
+            int height = (int)(size.Height / ((float)size.Width / _width));
+            
+            Bitmap thumb = new Bitmap(_width, height);
+            Graphics g = Graphics.FromImage(thumb);
+            g.DrawImage(bmp, 0, 0, _width, height);
+            g.Dispose();
+            Close();
+            
+            bool hasKva = VideoSummary.HasCompanionKva(_filePath);
+
+            return new VideoSummary(_filePath, true, hasKva, size, 0, new List<Bitmap>{ thumb });
         }
         public override void PostLoad(){}
         public override bool MoveNext(int _skip, bool _decodeIfNecessary)
