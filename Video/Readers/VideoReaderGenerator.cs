@@ -102,8 +102,7 @@ namespace Kinovea.Video
             m_WorkingZone = _newZone;
 		}
         public override void BeforeFrameEnumeration(){}
-        public override void AfterFrameEnumerationStep(){}
-        public override void CompletedFrameEnumeration(){}
+        public override void AfterFrameEnumeration(){}
         #endregion
         
         #region Private methods

@@ -214,12 +214,10 @@ namespace Kinovea.ScreenManager
         		s.Metadata = m_Metadata.ToXmlString(iDuplicateFactor);
         	}
 
-        	m_VideoReader.BeforeFrameOperation();
             m_FormProgressBar = new formProgressBar(true);
             m_FormProgressBar.Cancel = Cancel_Asked;
         	m_BgWorkerSave.RunWorkerAsync(s);
         	m_FormProgressBar.ShowDialog();
-        	m_VideoReader.AfterFrameOperation();
 		}
 		
 		#region Background worker event handlers
@@ -284,7 +282,7 @@ namespace Kinovea.ScreenManager
 
                 VideoFileWriter w = new VideoFileWriter();
                 m_SaveResult = w.Save(settings, m_VideoReader.Info, images, bgWorker);
-                m_VideoReader.CompletedFrameEnumeration();
+                m_VideoReader.AfterFrameEnumeration();
         	}
         	catch (Exception exp)
 			{

@@ -237,8 +237,8 @@ namespace Kinovea.Video
                 // completely clearing it. The decoding thread is potentially waiting on a full buffer,
                 // so we must discard at least one frame to make it run again and check for cancellation.
                 // However, the next Add is assumed to run on the UI thread, so it must not block.
-                // So we actually need to have room for two frames, on to push the read,
-                // and one to make it non-blocking.
+                // So we actually need to have two empty slots: one to push the read,
+                // and one to make that push non-blocking.
                 log.Debug("Unblocking prebuffering thread and making room for a non blocking addition.");
                 
                 while(m_Frames.Count > m_TotalCapacity - 2)
