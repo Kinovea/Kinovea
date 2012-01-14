@@ -2109,7 +2109,7 @@ namespace Kinovea.ScreenManager
             int userCtx = 0;
 			m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 			m_bIsCurrentlyPlaying = true;
-			log.Debug("Player timer started.");
+			//log.Debug("Player timer started.");
 		}
 		private void StopMultimediaTimer()
 		{
@@ -2119,7 +2119,7 @@ namespace Kinovea.ScreenManager
 			m_bIsCurrentlyPlaying = false;
 			Application.Idle -= Application_Idle;
 			
-			log.Debug("Player timer stopped.");
+			//log.Debug("Player timer stopped.");
 			log.Debug(m_DropWatcher.Ratio);
 			log.Debug(m_LoopWatcher.Average);
 		}
@@ -2178,11 +2178,11 @@ namespace Kinovea.ScreenManager
                 // This means if we missed the previous frame because the UI was busy, we won't 
                 // render it now either. On the other hand, it means we will have less chance to
                 // miss the next frame while trying to render an already outdated one.
-                if(m_FrameServer.VideoReader.PreBufferingDrops > 0)
+                if(m_FrameServer.VideoReader.Drops > 0)
                 {
-                    if(m_FrameServer.VideoReader.PreBufferingDrops > m_MaxDecodingDrops)
+                    if(m_FrameServer.VideoReader.Drops > m_MaxDecodingDrops)
                     {
-                        log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.PreBufferingDrops);
+                        log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
                         ForceSlowdown();
                     }
                 }
@@ -2231,9 +2231,9 @@ namespace Kinovea.ScreenManager
                 // Regular loop.
                 ShowNextFrame(-1, true);
                 
-                if(m_FrameServer.VideoReader.PreBufferingDrops > m_MaxDecodingDrops)
+                if(m_FrameServer.VideoReader.Drops > m_MaxDecodingDrops)
                 {
-                    log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.PreBufferingDrops);
+                    log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
                     ForceSlowdown();
                 }
                 
@@ -2288,7 +2288,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void ForceSlowdown()
 		{
-		    m_FrameServer.VideoReader.SkipDrops();
+		    m_FrameServer.VideoReader.ResetDrops();
 		    m_iFramesToDecode = 0;
             sldrSpeed.ForceValue(sldrSpeed.Value - sldrSpeed.LargeChange);
 		}
