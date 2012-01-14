@@ -113,11 +113,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual property VideoSection PreBufferingSegment {
 			VideoSection get() override {
 				if(m_DecodingMode == VideoDecodingMode::PreBuffering)
-				{
-					VideoSection t = m_PreBuffer->Segment;
-					return t;
-					//return m_PreBuffer->Segment;
-				}
+					return m_PreBuffer->Segment;
 				else 
 					return VideoSection::Empty; 
 			}
@@ -125,6 +121,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual property VideoFrame^ Current {
 			VideoFrame^ get() override { 
 				return m_FramesContainer != nullptr ? m_FramesContainer->CurrentFrame : nullptr; 
+			}
+		}
+		virtual property int Drops {
+			int get() override {
+				return m_DecodingMode == VideoDecodingMode::PreBuffering ? m_PreBuffer->Drops : 0;
 			}
 		}
 
@@ -143,7 +144,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual void BeforeFrameEnumeration() override;
 		virtual void AfterFrameEnumeration() override;
 		virtual void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler^>^ _workerFn) override;
-		
+		virtual void ResetDrops() override;
+
 	// Construction / Destruction.
 	public:
 		VideoReaderFFMpeg();

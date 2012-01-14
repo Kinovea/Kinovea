@@ -37,7 +37,7 @@ namespace Kinovea.Video
     /// <remarks>
     /// Naming:
     /// - Segment: the section of prebuffered frames, contained inside the working zone.
-    /// - Remembrance: the number of frames kept that are older than the current point.
+    /// - OldFramesCapacity: the number of frames kept that are older than the current point.
     ///
     /// Thread safety:
     /// Locking is necessary around all access to m_Frames as it is read and written by both the UI and the decoding thread.
@@ -56,14 +56,8 @@ namespace Kinovea.Video
         public VideoSection Segment { 
             get { lock(m_Locker) return m_Segment;} 
         }
-        public int Count { 
-            get { lock(m_Locker) return m_Frames.Count; } 
-        }
         public int Drops { 
-            get { return m_Drops; } 
-        }
-        public int Capacity { 
-            get { return m_TotalCapacity; }
+            get { return m_Drops; }
         }
         #endregion
         
@@ -126,7 +120,7 @@ namespace Kinovea.Video
                 else
                 {
                     m_Drops++;
-                    log.DebugFormat("Decoding Drops: {0}.", m_Drops);
+                    //log.DebugFormat("Decoding Drops: {0}.", m_Drops);
                 }
                 
                 if(m_CurrentIndex >= 0 && m_CurrentIndex <= lastIndex)
@@ -168,7 +162,7 @@ namespace Kinovea.Video
             
             return true;
         }
-        public void SkipDrops()
+        public void ResetDrops()
         {
             m_Drops = 0;
         }
@@ -197,7 +191,6 @@ namespace Kinovea.Video
         {
             lock(m_Locker)
             {
-                log.DebugFormat("Does {0} contain {1}", m_Segment, _timestamp);
                 if(m_Segment.Wrapped)
                 {
                     bool postWrap = _timestamp >= m_WorkingZone.Start && _timestamp <= m_Segment.End;
@@ -296,17 +289,6 @@ namespace Kinovea.Video
                 Monitor.Pulse(m_Locker);
             }
         }
-        /*public void DisableCapacityCheck()
-        {
-            // This may be used to load a whole video initially in the cache.
-            m_TotalCapacity = int.MaxValue;
-            m_OldFramesCapacity = int.MaxValue;
-        }
-        public void SetPrependBlock(bool _prepend)
-        {
-            m_PrependingBlock = _prepend;
-            m_InsertIndex = 0;
-        }*/
         public bool IsRolloverJump(long _timestamp)
         {
             // A rollover (back to begining after end of working zone),
@@ -332,9 +314,12 @@ namespace Kinovea.Video
             // /!\ Should only be called from inside a lock construct.
             
             // Returns an iterator on the indices of frames in the buffer in the order of timestamps.
+            // For example if the current buffer is [7;8;9;0;1] it will return [0;1;7;8;9].
             // Can be used to loop over the frames without bothering about wrapping.
+            
             // todo: keep track of the wrap index outside here.
             int wrapIndex = GetWrapIndex();
+            
             for(int i = 0; i<m_Frames.Count; i++)
             {
                 int next = i + wrapIndex;

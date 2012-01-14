@@ -61,9 +61,9 @@ namespace Kinovea.Video
 		public virtual VideoSection PreBufferingSegment {
 		    get { return VideoSection.Empty; }
 		}
-		public virtual int PreBufferingDrops {
+		// If the reader is subject to decoding drops (prebuffering), this property should be filled accordingly.
+		public virtual int Drops {
 		    get {return 0; }
-            //get { return Cache == null ? 0 : Cache.Drops;}
 		}
 		public VideoOptions Options { get; set; }
 		
@@ -248,12 +248,11 @@ namespace Kinovea.Video
 		{
 		    return "";
 		}
-		public virtual void SkipDrops()
+		public virtual void ResetDrops()
 		{
-		    //TODO: do not assume prebuffering or specific container.
-		    
-		    /*if(Cache != null)
-		        Cache.SkipDrops();*/
+		    // Called when the decoding drop counter should be reset (for example after forced slow down.)
+		    // (a reader specific action because not all reader are subject to dropping).
+		    // Does nothing by default. Override to implement.
 		}
 		#endregion
 	}
