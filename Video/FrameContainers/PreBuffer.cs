@@ -119,7 +119,7 @@ namespace Kinovea.Video
                 }
                 else
                 {
-                    m_Drops++;
+                    m_Drops = expectedCurrentIndex - lastIndex + 1;
                     //log.DebugFormat("Decoding Drops: {0}.", m_Drops);
                 }
                 
@@ -166,7 +166,7 @@ namespace Kinovea.Video
         {
             m_Drops = 0;
         }
-        public bool HasNext(int _skip) 
+        public bool HasNext(int _skip)
         {
             lock(m_Locker)
                 return m_CurrentIndex + m_Drops + _skip + 1 < m_Frames.Count;

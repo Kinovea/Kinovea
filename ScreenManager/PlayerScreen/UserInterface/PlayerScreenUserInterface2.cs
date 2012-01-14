@@ -2099,6 +2099,7 @@ namespace Kinovea.ScreenManager
 		#region Timers & Playloop
 		private void StartMultimediaTimer(int _interval)
 		{
+		    //log.DebugFormat("starting playback timer at {0} ms interval.", _interval);
             ActivateKeyframe(-1);
             m_DropWatcher.Restart();
             m_LoopWatcher.Restart();
@@ -2109,7 +2110,6 @@ namespace Kinovea.ScreenManager
             int userCtx = 0;
 			m_IdMultimediaTimer = timeSetEvent(_interval, _interval, m_TimerEventHandler, ref userCtx, TIME_PERIODIC | TIME_KILL_SYNCHRONOUS);
 			m_bIsCurrentlyPlaying = true;
-			//log.Debug("Player timer started.");
 		}
 		private void StopMultimediaTimer()
 		{
@@ -2119,15 +2119,14 @@ namespace Kinovea.ScreenManager
 			m_bIsCurrentlyPlaying = false;
 			Application.Idle -= Application_Idle;
 			
-			//log.Debug("Player timer stopped.");
-			log.Debug(m_DropWatcher.Ratio);
-			log.Debug(m_LoopWatcher.Average);
+			log.DebugFormat("Rendering drops ratio: {0:0.00}", m_DropWatcher.Ratio);
+			log.DebugFormat("Average rendering loop time: {0:0.000}ms", m_LoopWatcher.Average);
 		}
 		private void MultimediaTimer_Tick(uint id, uint msg, ref int userCtx, int rsv1, int rsv2)
 		{
 		    if(!m_FrameServer.Loaded)
                 return;
-            
+		    
             // We cannot change the pointer to current here in case the UI is painting it,
             // so we will pass the number of drops along to the rendering.
             // The rendering will then ask for an update of the pointer to current, skipping as
@@ -2138,12 +2137,13 @@ namespace Kinovea.ScreenManager
                 {
                     int drops = m_RenderingDrops;
                     BeginInvoke((Action) delegate {Rendering_Invoked(drops);});
+                    m_bIsBusyRendering = true;
+                    m_RenderingDrops = 0;
                     m_DropWatcher.AddDropStatus(false);
                 }
                 else
                 {
                     m_RenderingDrops++;
-                    //log.Debug("[Timer] - UI is busy rendering. Rendering drop.");
                     m_DropWatcher.AddDropStatus(true);
                 }
             }
@@ -2152,13 +2152,6 @@ namespace Kinovea.ScreenManager
 		{
 		    // This is in UI thread space.
 		    // Rendering in the context of continuous playback (play loop).
-		    
-            lock(m_TimingSync)
-		    {
-		        m_bIsBusyRendering = true;
-		        m_RenderingDrops = 0;
-		    }
-            
             m_TimeWatcher.Restart();
 
             int skip = m_FrameServer.Metadata.IsTracking ? 0 : _missedFrames;
@@ -2170,20 +2163,26 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-			    // This may be slow (several ms) due to delete call when dequeuing the cache. To investigate.
+			    // This may be slow (several ms) due to delete call when dequeuing the pre-buffer. To investigate.
                 bool hasMore = m_FrameServer.VideoReader.MoveNext(skip, false);
                 //m_TimeWatcher.LogTime("Moved to next frame.");
                 
-                // In case the frame wasn't available in the cache, don't render anything.
+                // In case the frame wasn't available in the pre-buffer, don't render anything.
                 // This means if we missed the previous frame because the UI was busy, we won't 
                 // render it now either. On the other hand, it means we will have less chance to
                 // miss the next frame while trying to render an already outdated one.
+                // We must also "unreset" the rendering drop counter, since we didn't actually render the frame.
                 if(m_FrameServer.VideoReader.Drops > 0)
                 {
                     if(m_FrameServer.VideoReader.Drops > m_MaxDecodingDrops)
                     {
                         log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
                         ForceSlowdown();
+                    }
+                    else
+                    {
+                       lock(m_TimingSync)
+                            m_RenderingDrops = _missedFrames;
                     }
                 }
                 else if(m_FrameServer.VideoReader.Current != null)
@@ -2335,7 +2334,7 @@ namespace Kinovea.ScreenManager
 		    if(_iSeekTarget < 0)
 		        hasMore = m_FrameServer.VideoReader.MoveBy(m_iFramesToDecode, true);
 		    else
-		        hasMore = m_FrameServer.VideoReader.MoveTo(_iSeekTarget, true);
+		        hasMore = m_FrameServer.VideoReader.MoveTo(_iSeekTarget);
 		    
             if(m_FrameServer.VideoReader.Current != null)
 			{
@@ -2379,7 +2378,10 @@ namespace Kinovea.ScreenManager
 			StopMultimediaTimer();
 
 			lock(m_TimingSync)
+			{
 		        m_bIsBusyRendering = false;
+                m_RenderingDrops = 0;
+			}
 
 			m_iFramesToDecode = 0;
 			
@@ -2692,7 +2694,7 @@ namespace Kinovea.ScreenManager
 							}
 							else if(ad is DrawingPlane)
 							{
-							    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, new Point(0,0));
+							    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, Point.Empty);
 							}
 						}
 						else
