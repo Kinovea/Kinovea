@@ -75,8 +75,7 @@ namespace Kinovea.Root
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
             // Finished moving the splitter.
-
-            //Redessiner le fileExplorer pour être sûr qu'il remplisse tout.
+            
             splitWorkSpace.Panel1.Refresh();
 
             if (m_bInitialized)

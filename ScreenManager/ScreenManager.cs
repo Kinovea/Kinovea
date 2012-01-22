@@ -979,19 +979,18 @@ namespace Kinovea.ScreenManager
         public bool PreFilterMessage(ref Message m)
         {
             //----------------------------------------------------------------------------
-            // Attention au niveau des performances avec cette fonction
-            // car du coup tous les WM_XXX windows passent par là
-            // WM_PAINT, WM_MOUSELEAVE de tous les contrôles, etc...
-            // Plus on la place haut dans la hiérarchie, plus elle plombe les perfs.
+            // Main keyboard handler.
             //
-            // Les actions de ce KeyHandler n'affectent pour la plupart que l'ActiveScreen
-            // (sauf en mode DualScreen)
-            //
-            // Si cette fonction interfère avec d'autres parties 
-            // (car elle redéfinie return, space, etc.) utiliser le delegate pool avec 
-            // DeactivateKeyboardHandler et ActivateKeyboardHandler
+            // We must be careful with performances with this function.
+            // As it will intercept every WM_XXX Windows message, 
+            // incuding WM_PAINT, WM_MOUSEMOVE, etc. from each control.
+            // 
+            // If the function interfere with other parts of the application (because it
+            // handles Return, Space, etc.) Use the DeactivateKeyboardHandler and 
+            // ActivateKeyboardHandler delegates from the delegate pool, to temporarily 
+            // bypass this handler.
             //----------------------------------------------------------------------------
-			
+            
             if ( m.Msg != WM_KEYDOWN || !m_bAllowKeyboardHandler)
 			    return false;
 			
