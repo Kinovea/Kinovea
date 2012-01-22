@@ -113,7 +113,7 @@ namespace Kinovea.Root
             
             // Initialise command line parser and get the arguments.
             CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
-            am.InitializeComandLineParser();
+            am.InitializeCommandLineParser();
             string[] args = Environment.GetCommandLineArgs();
             am.ParseArguments(args);
             
@@ -145,7 +145,7 @@ namespace Kinovea.Root
             CheckTimecodeMenu();
             
             m_ScreenManager.Prepare();
-            PrintInitialConf();
+            LogInitialConfiguration();
             if(CommandLineArgumentManager.Instance().InputFile != null)
             {
             	m_ScreenManager.PrepareScreen();
@@ -729,7 +729,7 @@ namespace Kinovea.Root
                                 MessageBoxIcon.Exclamation);
             }
         }
-        private void PrintInitialConf()
+        private void LogInitialConfiguration()
         {
         	CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
         	
