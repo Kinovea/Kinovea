@@ -62,7 +62,6 @@ namespace Kinovea.ScreenManager
 		private int m_iLeftMargin = 30;
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
 		private int m_iTopMargin = 5;
-		private int m_iHorzSpacing = 20;   	// Right placed and respected even for the last column.
 		private int m_iVertSpacing = 20;
 		private int m_Columns = (int)ExplorerThumbSizes.Large;
 		private static readonly Brush m_GradientBrush = new LinearGradientBrush(new Point(33, 0), new Point(350, 0), Color.LightSteelBlue, Color.White);
