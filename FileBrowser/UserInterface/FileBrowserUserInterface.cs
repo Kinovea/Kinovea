@@ -439,57 +439,63 @@ namespace Kinovea.FileBrowser
 			// Discard keyboard event as they interfere with player functions
 			e.Handled = true;
 		}
-		private void UpdateFileList(CShItem _Folder, ListView _ListView, bool _bRefreshThumbnails)
+		private void UpdateFileList(CShItem _folder, ListView _listView, bool _bRefreshThumbnails)
 		{
 			// Update a file list with the given folder.
 			// Triggers an update of the thumbnails pane if requested.
+			if(_folder == null)
+			    return;
 			
-			log.Debug(String.Format("Updating file list : {0}", _ListView.Name));
+			log.Debug(String.Format("Updating file list : {0}", _listView.Name));
 			
-			if(_Folder != null)
+			this.Cursor = Cursors.WaitCursor;
+			
+			_listView.BeginUpdate();
+			_listView.Items.Clear();
+			
+			// Each list element will store the CShItem it's referring to in its Tag property.
+			ArrayList fileList = _folder.GetFiles();
+			List<String> fileNames = new List<string>();
+			for (int i = 0; i < fileList.Count; i++)
 			{
-				this.Cursor = Cursors.WaitCursor;
+				CShItem shellItem = (CShItem)fileList[i];
 				
-				_ListView.BeginUpdate();
-				_ListView.Items.Clear();
-				
-				// Each list element will store the CShItem it's referring to in its Tag property.
-				// Get all files in the folder, and add them to the list.
-				ArrayList fileList = _Folder.GetFiles();
-				List<String> fileNames = new List<string>();
-				for (int i = 0; i < fileList.Count; i++)
-				{
-					CShItem shellItem = (CShItem)fileList[i];
+                try
+                {
 					string extension = Path.GetExtension(shellItem.Path);
-					if (!string.IsNullOrEmpty(extension) && VideoTypeManager.IsSupported(extension))
-					{
-						ListViewItem lvi = new ListViewItem(shellItem.DisplayName);
-						
-						lvi.Tag = shellItem;
-						lvi.ImageIndex = 6;
-						_ListView.Items.Add(lvi);
-						fileNames.Add(shellItem.Path);
-					}
-				}
-				
-				_ListView.EndUpdate();
-				log.Debug("List updated");
-											
-				// Even if we don't want to reload the thumbnails, we must ensure that 
-				// the screen manager backup list is in sync with the actual file list.
-				// desync can happen in case of renaming and deleting files.
-				// the screenmanager backup list is used at BringBackThumbnail,
-				// (i.e. when we close a screen)
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DisplayThumbnails != null)
-				{
-					log.Debug("Asking the ScreenManager to refresh the thumbnails.");
-					dp.DisplayThumbnails(fileNames, _bRefreshThumbnails);
-				}
-				
-				this.Cursor = Cursors.Default;
-				
+					if (string.IsNullOrEmpty(extension) || !VideoTypeManager.IsSupported(extension))
+					    continue;
+					
+					ListViewItem lvi = new ListViewItem(shellItem.DisplayName);
+					
+					lvi.Tag = shellItem;
+					lvi.ImageIndex = 6;
+					_listView.Items.Add(lvi);
+					fileNames.Add(shellItem.Path);
+                }
+                catch(Exception)
+                {
+                    // Known case : when we are in OS/X parallels context, the path of existing files are invalid.
+                    log.ErrorFormat("An error happened while trying to add a file to the file list : {0}", shellItem.Path);
+                }
 			}
+			
+			_listView.EndUpdate();
+			log.Debug("List updated");
+										
+			// Even if we don't want to reload the thumbnails, we must ensure that 
+			// the screen manager backup list is in sync with the actual file list.
+			// desync can happen in case of renaming and deleting files.
+			// the screenmanager backup list is used at BringBackThumbnail,
+			// (i.e. when we close a screen)
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DisplayThumbnails != null)
+			{
+				log.Debug("Asking the ScreenManager to refresh the thumbnails.");
+				dp.DisplayThumbnails(fileNames, _bRefreshThumbnails);
+			}
+			
+			this.Cursor = Cursors.Default;
 		}
 		private void lv_ItemDrag(object sender, ItemDragEventArgs e)
 		{
