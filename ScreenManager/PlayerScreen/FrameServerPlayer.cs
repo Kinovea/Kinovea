@@ -148,8 +148,7 @@ namespace Kinovea.ScreenManager
             	}
             	else
             	{
-            		DoSave(fve.Filename, 
-    						fve.MuxDrawings,
+            		DoSave(fve.Filename,
     						fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoReader.Info.FrameIntervalMilliseconds,
     						fve.BlendDrawings,
     						false,
@@ -169,7 +168,6 @@ namespace Kinovea.ScreenManager
 			    if(fde.ShowDialog() == DialogResult.OK)
     			{
     				DoSave(fde.Filename, 
-    				       	false, 
     				       	fde.FrameInterval,
     				       	true, 
     				       	fde.PausedVideo ? false : true,
@@ -194,7 +192,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Saving processing
-		private void DoSave(string _FilePath, bool _saveMetadata, double _frameInterval, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, ImageRetriever _DelegateOutputBitmap)
+		private void DoSave(string _FilePath, double _frameInterval, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, ImageRetriever _DelegateOutputBitmap)
         {
 		    SavingSettings s = new SavingSettings();
 		    s.Section = m_VideoReader.WorkingZone;
@@ -205,15 +203,6 @@ namespace Kinovea.ScreenManager
 			s.PausedVideo = _bPausedVideo;
 			s.ImageRetriever = _DelegateOutputBitmap;
 			
-			m_SavingMetada = _saveMetadata;
-        	if(m_SavingMetada)
-        	{
-        		// If frame duplication is going to occur (saving at less than 8fps)
-        		// We have to store this in the xml output to be able to match frames with timestamps later.
-        		int iDuplicateFactor = (int)Math.Ceiling(_frameInterval / 125.0);
-        		s.Metadata = m_Metadata.ToXmlString(iDuplicateFactor);
-        	}
-
             m_FormProgressBar = new formProgressBar(true);
             m_FormProgressBar.Cancel = Cancel_Asked;
         	m_BgWorkerSave.RunWorkerAsync(s);

@@ -44,10 +44,6 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_bBlendDrawings; }
 		}
-		public bool MuxDrawings
-		{
-			get { return m_bMuxDrawings; }
-		}
 		public string Filename
 		{
 			get { return m_Filename; }
@@ -67,7 +63,6 @@ namespace Kinovea.ScreenManager
     	
         private bool m_bSaveAnalysis;
 		private bool m_bBlendDrawings;
-		private bool m_bMuxDrawings;
 		private bool m_bUseSlowMotion;
 		private string m_Filename;
         #endregion
@@ -93,8 +88,6 @@ namespace Kinovea.ScreenManager
         {
             this.Text = "   " + ScreenManagerLang.dlgSaveAnalysisOrVideo_Title;
             groupSaveMethod.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_GroupSaveMethod;            
-            radioSaveMuxed.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioMuxed;
-            tbSaveMuxed.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintMuxed.Split('#');
             radioSaveBlended.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioBlended;
 			tbSaveBlended.Lines = ScreenManagerLang.dlgSaveAnalysisOrVideo_HintBlended.Split('#');
             radioSaveAnalysis.Text = ScreenManagerLang.dlgSaveAnalysisOrVideo_RadioAnalysis;
@@ -110,7 +103,7 @@ namespace Kinovea.ScreenManager
             EnableDisableOptions();
 
             // default option
-            radioSaveMuxed.Checked = true;
+            radioSaveAnalysis.Checked = true;
         }
 		#endregion
         
@@ -123,7 +116,6 @@ namespace Kinovea.ScreenManager
 			{
 				// Directly ask for a filename.
 				m_bBlendDrawings = true;
-				m_bMuxDrawings = false;
                 m_bUseSlowMotion = false;
 				return DoSaveVideo();
 			}
@@ -145,7 +137,6 @@ namespace Kinovea.ScreenManager
 			DialogResult dr;
 			
 			m_bBlendDrawings = false;
-            m_bMuxDrawings = false;
             m_bSaveAnalysis = false;
             m_bUseSlowMotion = false;
             
@@ -157,7 +148,6 @@ namespace Kinovea.ScreenManager
             else
             {
                 m_bBlendDrawings = radioSaveBlended.Checked;
-                m_bMuxDrawings = radioSaveMuxed.Checked;
                 m_bUseSlowMotion = checkSlowMotion.Checked;
             	dr = DoSaveVideo();	
             }
@@ -177,11 +167,6 @@ namespace Kinovea.ScreenManager
         	UncheckAllOptions();
         	radioSaveAnalysis.Checked = true;	
         }
-        private void BtnSaveMuxedClick(object sender, EventArgs e)
-        {
-        	UncheckAllOptions();
-        	radioSaveMuxed.Checked = true;
-        }
         private void BtnSaveBothClick(object sender, EventArgs e)
         {
         	UncheckAllOptions();
@@ -196,7 +181,6 @@ namespace Kinovea.ScreenManager
         #region lower levels helpers
         private void EnableDisableOptions()
         {
-            radioSaveMuxed.Enabled = true;
             radioSaveBlended.Enabled = true;
 			radioSaveAnalysis.Enabled = true;            
 			checkSlowMotion.Enabled = radioSaveAnalysis.Checked ? false : (m_fSlowmotionPercentage != 100);
@@ -204,7 +188,6 @@ namespace Kinovea.ScreenManager
         private void UncheckAllOptions()
         {
             radioSaveAnalysis.Checked = false;
-            radioSaveMuxed.Checked = false;
             radioSaveBlended.Checked = false;	
         }
     
@@ -220,16 +203,8 @@ namespace Kinovea.ScreenManager
             saveFileDialog.Title = ScreenManagerLang.dlgSaveVideoTitle;
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.FilterIndex = 1;
-
-            if (radioSaveMuxed.Checked)
-            {
-                saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterMuxed;
-            }
-            else
-            {
-                saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
-            }
-
+            saveFileDialog.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+            
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 filePath = saveFileDialog.FileName;
