@@ -554,7 +554,8 @@ namespace Kinovea.ScreenManager
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
 			if(!m_bSizeKnown || m_bSizeChanged)
 			{
-				Thread.CurrentThread.Name = "Grab";
+                if(string.IsNullOrEmpty(Thread.CurrentThread.Name))
+                    Thread.CurrentThread.Name = "Grab";
 				
 				m_bSizeKnown = true;
 				m_bSizeChanged = false;
@@ -584,7 +585,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void VideoDevice_VideoSourceError(object sender, VideoSourceErrorEventArgs eventArgs)
 		{
-			log.ErrorFormat("Capture error: {1}", m_CurrentVideoDevice.Name, eventArgs.Description);
+			log.ErrorFormat("Capture error ({0}): {1}", m_CurrentVideoDevice.Name, eventArgs.Description);
 		}
 		#endregion
 	}
