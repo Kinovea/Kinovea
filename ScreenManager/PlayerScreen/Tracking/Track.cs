@@ -195,7 +195,7 @@ namespace Kinovea.ScreenManager
             if (_CurrentImage != null)
             {
             	m_Tracker = new TrackerBlock2(_CurrentImage.Width, _CurrentImage.Height);
-           		AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _origin.X, _origin.Y, 1.0f, 0, _CurrentImage, m_Positions);
+           		AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, _origin.X, _origin.Y, 1.0f, _t, _CurrentImage, m_Positions);
            		if(atp != null)
            			m_Positions.Add(atp);
            		else
@@ -205,7 +205,7 @@ namespace Kinovea.ScreenManager
             {
             	// Happens when loading Metadata from file or demuxing.
             	m_Tracker = new TrackerBlock2(_imageSize.Width, _imageSize.Height);
-            	m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_origin.X, _origin.Y, 0));
+            	m_Positions.Add(m_Tracker.CreateOrphanTrackPoint(_origin.X, _origin.Y, _t));
             }
 
             if(!m_bUntrackable)
@@ -491,7 +491,7 @@ namespace Kinovea.ScreenManager
                 {
                 	// In focus mode, only show labels that are in focus section.
                 	if(m_TrackView == TrackView.Complete ||
-                	   m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp, kl.Timestamp, m_iFocusFadingFrames)
+                	   m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, kl.Timestamp, m_iFocusFadingFrames)
                 	  )
                 	{
                     	kl.Draw(_canvas, _transformer, _fFadingFactor);
@@ -647,7 +647,7 @@ namespace Kinovea.ScreenManager
                 // Move Playhead to closest frame (x,y,t).
                 // In this case, _X and _Y are absolute values.
                 if (m_ShowClosestFrame != null && m_Positions.Count > 1)
-                    m_ShowClosestFrame(new Point(_X, _Y), m_iBeginTimeStamp, m_Positions, m_iTotalDistance, false);
+                    m_ShowClosestFrame(new Point(_X, _Y), m_Positions, m_iTotalDistance, false);
             }
         }
         private void MoveLabelTo(int _deltaX, int _deltaY, int _iLabelNumber)
@@ -694,7 +694,7 @@ namespace Kinovea.ScreenManager
             	
                 for (int i = 0; i < m_KeyframesLabels.Count; i++)
                 {
-                    bool isVisible = m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T + m_iBeginTimeStamp, 
+                    bool isVisible = m_InfosFading.IsVisible(m_Positions[m_iCurrentPoint].T, 
                                                              m_KeyframesLabels[i].Timestamp, 
                                                              m_iFocusFadingFrames);
                     if(m_TrackView == TrackView.Complete || isVisible)
@@ -734,15 +734,14 @@ namespace Kinovea.ScreenManager
             if (m_iCurrentPoint < m_Positions.Count - 1)
                 m_Positions.RemoveRange(m_iCurrentPoint + 1, m_Positions.Count - m_iCurrentPoint - 1);
 
-            m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
+            m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T;
             // Todo: we must now refill the last point with a patch image.
         }
         public List<AbstractTrackPoint> GetEndOfTrack(long _iTimestamp)
         {
         	// Called from CommandDeleteEndOfTrack,
         	// We need to keep the old values in case the command is undone.
-        	long ts = _iTimestamp - m_iBeginTimeStamp;
-        	List<AbstractTrackPoint> endOfTrack = m_Positions.SkipWhile(p => p.T >= ts).ToList();
+          List<AbstractTrackPoint> endOfTrack = m_Positions.SkipWhile(p => p.T >= _iTimestamp).ToList();
         	return endOfTrack;
         }
         public void AppendPoints(long _iCurrentTimestamp, List<AbstractTrackPoint> _ChoppedPoints)
@@ -764,7 +763,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractTrackPoint trkpos in _ChoppedPoints)
                     m_Positions.Add(trkpos);
 
-                m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
+                m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T;
             }
         }
         public void StopTracking()
@@ -784,11 +783,11 @@ namespace Kinovea.ScreenManager
             // New points to trajectories are always created from here, 
             // the user can only moves existing points.
             
-            if (_current.Timestamp <= m_iBeginTimeStamp + m_Positions.Last().T)
+            if (_current.Timestamp <= m_Positions.Last().T)
                 return;
             
             AbstractTrackPoint p = null;
-            bool bMatched = m_Tracker.Track(m_Positions, _current.Image, _current.Timestamp - m_iBeginTimeStamp, out p);
+            bool bMatched = m_Tracker.Track(m_Positions, _current.Image, _current.Timestamp, out p);
                 
             if(p==null)
             {
@@ -802,7 +801,7 @@ namespace Kinovea.ScreenManager
                 StopTracking();
 			
         	// Adjust internal data.
-        	m_iEndTimeStamp = m_Positions.Last().T + m_iBeginTimeStamp;
+        	m_iEndTimeStamp = m_Positions.Last().T;
             ComputeFlatDistance();
             IntegrateKeyframes();
         }
@@ -851,7 +850,7 @@ namespace Kinovea.ScreenManager
             	// Update the mini label (attach, position of label, and text).
             	for (int i = 0; i < m_KeyframesLabels.Count; i++)
             	{
-            		if(m_KeyframesLabels[i].Timestamp == current.T + m_iBeginTimeStamp)
+            		if(m_KeyframesLabels[i].Timestamp == current.T)
             		{
             			m_KeyframesLabels[i].SetAttach(current.Point, true);
 						if(m_TrackExtraData != TrackExtraData.None)
@@ -923,6 +922,7 @@ namespace Kinovea.ScreenManager
             	    // Data in user units.
                     // - The origin of the coordinates system is given as parameter.
                     // - X goes left (same than internal), Y goes up (opposite than internal).
+                    // - Time is absolute.
                     double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
                     double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
                     string userT = m_ParentMetadata.TimeStampsToTimecode(tp.T, TimeCodeFormat.Unknown, false);
@@ -999,7 +999,7 @@ namespace Kinovea.ScreenManager
             
 			if (m_Positions.Count > 0)
             {
-                m_iEndTimeStamp = m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp;
+                m_iEndTimeStamp = m_Positions.Last().T;
                 m_MainLabel.SetAttach(m_Positions[0].Point, false);
                 m_MainLabel.SetText(Label);
                 
@@ -1056,7 +1056,7 @@ namespace Kinovea.ScreenManager
                     if (m_Positions.Count > 0)
                     {
                         // Match with TrackPositions previously found.
-                        int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, m_Positions, m_iBeginTimeStamp);
+                        int iMatchedTrackPosition = FindClosestPoint(kfl.Timestamp, m_Positions);
                         kfl.AttachIndex = iMatchedTrackPosition;
                         
                         kfl.SetAttach(m_Positions[iMatchedTrackPosition].Point, false);
@@ -1091,7 +1091,8 @@ namespace Kinovea.ScreenManager
             {
                 // Strictly superior because we don't show the keyframe that was created when the
                 // user added the CrossMarker drawing to make the Track out of it.
-                if (m_ParentMetadata[i].Position > m_iBeginTimeStamp && m_ParentMetadata[i].Position <= (m_Positions[m_Positions.Count - 1].T + m_iBeginTimeStamp))
+                if (m_ParentMetadata[i].Position > m_iBeginTimeStamp && 
+                    m_ParentMetadata[i].Position <= m_Positions.Last().T)
                 {
                     // The Keyframe is within the Trajectory interval.
                     // Do we know it already ?
@@ -1117,7 +1118,7 @@ namespace Kinovea.ScreenManager
                         KeyframeLabel kfl = new KeyframeLabel();
                         kfl.AttachIndex = FindClosestPoint(m_ParentMetadata[i].Position);
                         kfl.SetAttach(m_Positions[kfl.AttachIndex].Point, true);
-                        kfl.Timestamp = m_Positions[kfl.AttachIndex].T + m_iBeginTimeStamp;                        
+                        kfl.Timestamp = m_Positions[kfl.AttachIndex].T;                        
                         kfl.SetText(m_ParentMetadata[i].Title);
                         
                         m_KeyframesLabels.Add(kfl);
@@ -1179,9 +1180,9 @@ namespace Kinovea.ScreenManager
 		#region Miscellaneous private methods
         private int FindClosestPoint(long _iCurrentTimestamp)
         {
-            return FindClosestPoint(_iCurrentTimestamp, m_Positions, m_iBeginTimeStamp);
+            return FindClosestPoint(_iCurrentTimestamp, m_Positions);
         }
-        private int FindClosestPoint(long _iCurrentTimestamp, List<AbstractTrackPoint> _Positions, long _iBeginTimestamp)
+        private int FindClosestPoint(long _iCurrentTimestamp, List<AbstractTrackPoint> _Positions)
         {
             // Find the closest registered timestamp
             // Parameter is given in absolute timestamp.
@@ -1190,7 +1191,7 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < _Positions.Count; i++)
             {
-                long err = Math.Abs((long)((_Positions[i].T + _iBeginTimestamp) - _iCurrentTimestamp));
+                long err = Math.Abs(_Positions[i].T - _iCurrentTimestamp);
                 if (err < minErr)
                 {
                     minErr = err;
