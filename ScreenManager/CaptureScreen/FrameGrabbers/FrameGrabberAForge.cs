@@ -182,9 +182,7 @@ namespace Kinovea.ScreenManager
 				}
 				
 				if(reconnected)
-				{
 					m_Container.Connected();
-				}
 			}
 			
 			fdp.Dispose();
@@ -246,22 +244,16 @@ namespace Kinovea.ScreenManager
 		        	}
 		        	
 		        	if(bSuccess)
-		        	{
 		        		m_Container.Connected();	
-		        	}
 	        	}
 	        	
 	        	m_iGrabbedSinceLastCheck = 0;
 	        	
 	        	if(m_bIsConnected)
-	        	{
 	        		m_iConnectionsWithoutFrames++;
-	        	}
 	        	
 	        	if(!m_bIsConnected && m_iConnectionsAttempts == 2)
-	        	{
 	        		m_Container.AlertCannotConnect();
-	        	}
 			}
 		}
 		public override void CheckDeviceConnection()
@@ -290,7 +282,6 @@ namespace Kinovea.ScreenManager
 			// This prevents working with very slow capturing devices (when fps < heartbeat).
 			// Can't check if we are not currently grabbing.
 			//--------------------------------------------------------------------------------------------------
-			
 			
 			// bHasJustConnected : prevent triggerring the mechanism if we just changed device or conf.
 			// bStayConnected : do not trigger either if we are on network device.
@@ -531,27 +522,29 @@ namespace Kinovea.ScreenManager
 		{
 			// The screen is about to be closed, release resources.
 			
-			if(m_bIsConnected && m_VideoSource != null)
-			{
-				log.DebugFormat("disconnecting from {0}", m_CurrentVideoDevice.Name);
-				
-				// Reset
-				m_bIsGrabbing = false;
-				m_bSizeKnown = false;
-				m_iConnectionsAttempts = 0;
-				m_Container.SetImageSize(Size.Empty);
-				
-				m_VideoSource.Stop();
-				m_VideoSource.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
-				m_VideoSource.VideoSourceError -= new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
-				
-				m_FrameBuffer.Clear();
-				m_bIsConnected = false;
-			}
+			if(!m_bIsConnected || m_VideoSource == null)
+                return;
+
+            log.DebugFormat("disconnecting from {0}", m_CurrentVideoDevice.Name);
+            
+            m_VideoSource.NewFrame -= new NewFrameEventHandler( VideoDevice_NewFrame );
+            m_VideoSource.VideoSourceError -= new VideoSourceErrorEventHandler( VideoDevice_VideoSourceError );
+            m_VideoSource.Stop();
+            
+            m_bIsGrabbing = false;
+            m_bSizeKnown = false;
+            m_iConnectionsAttempts = 0;
+            m_Container.SetImageSize(Size.Empty);
+            m_FrameBuffer.Clear();
+            m_bIsConnected = false;
 		}
 		private void VideoDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
 		{
 			// A new frame has been grabbed, push it to the buffer and notifies the frame server.
+			
+			if(!m_bIsConnected || m_VideoSource == null)
+                return;
+			
 			if(!m_bSizeKnown || m_bSizeChanged)
 			{
                 if(string.IsNullOrEmpty(Thread.CurrentThread.Name))
