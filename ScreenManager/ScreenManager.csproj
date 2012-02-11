@@ -63,21 +63,75 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <FileAlignment>1024</FileAlignment>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugExternals|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\DebugExternals\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>18153472</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <NoWarn>1591</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugExternals|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\DebugExternals\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <FileAlignment>1024</FileAlignment>
+    <NoWarn>1591</NoWarn>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge">
+    <Reference Include="AForge" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\Refs\AForge.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Imaging">
+    <Reference Include="AForge" Condition=" '$(Configuration)' == 'Debug' ">
+      <HintPath>..\Refs\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge" Condition=" '$(Configuration)' == 'DebugExternals' ">
+      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Core\bin\Debug\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Math">
+    <Reference Include="AForge.Imaging" Condition=" '$(Configuration)' == 'Debug' ">
+      <HintPath>..\Refs\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging" Condition=" '$(Configuration)' == 'DebugExternals' ">
+      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Imaging\bin\Debug\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\Refs\AForge.Math.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Video">
+    <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'Debug' ">
+      <HintPath>..\Refs\AForge.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'DebugExternals' ">
+      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Math\bin\Debug\AForge.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\Refs\AForge.Video.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Video.DirectShow">
+    <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'Debug' ">
+      <HintPath>..\Refs\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'DebugExternals' ">
+      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Video\bin\Debug\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'Debug' ">
+      <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'DebugExternals' ">
+      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Video.DirectShow\bin\Debug\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV">
       <HintPath>..\Refs\Emgu.CV.dll</HintPath>
@@ -611,7 +665,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\CaptureScreen\" />
-    <Folder Include="PlayerScreen\UserInterface\Controls" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

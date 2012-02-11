@@ -44,6 +44,15 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugExternals|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\DebugExternals\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>Full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="LinqBridge">
       <HintPath>..\Refs\LinqBridge.dll</HintPath>
@@ -87,12 +96,6 @@
     <Compile Include="VideoSection.cs" />
     <Compile Include="VideoSummary.cs" />
     <Compile Include="VideoTypeManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Base" />
-    <Folder Include="FrameContainers" />
-    <Folder Include="Readers" />
-    <Folder Include="Readers\Generators" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
