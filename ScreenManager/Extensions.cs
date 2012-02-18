@@ -60,5 +60,10 @@ namespace Kinovea.ScreenManager
         {
             return Color.FromArgb(_color.A, 255 - _color.R, 255 - _color.G, 255 - _color.B);
         }
+        
+        public static bool FitsIn(this Size _size, Size _container)
+        {
+            return _size.Width <= _container.Width && _size.Height <= _container.Height;
+        }
     }
 }

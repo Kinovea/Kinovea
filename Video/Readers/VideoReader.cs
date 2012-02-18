@@ -80,6 +80,10 @@ namespace Kinovea.Video
 		    }
 		}
 		
+		public virtual bool CanDrawUnscaled {
+		    get { return false;}
+		}
+		
 		// Shorcuts for capabilities.
 		public bool CanDecodeOnDemand {
 		    get { return (Flags & VideoCapabilities.CanDecodeOnDemand) != 0; }
@@ -98,6 +102,9 @@ namespace Kinovea.Video
 		}
 		public bool CanChangeWorkingZone {
 		    get { return (Flags & VideoCapabilities.CanChangeWorkingZone) != 0; }
+		}
+		public bool CanChangeDecodingSize {
+		    get { return (Flags & VideoCapabilities.CanChangeDecodingSize) != 0; }
 		}
 		#endregion
 
@@ -216,6 +223,15 @@ namespace Kinovea.Video
 		{
 		    // Does nothing by default. Override to implement.
             return false;
+		}
+		
+		/// <summary>
+		/// Ask the reader to provide its images at a specific size.
+		/// The operation must not invalidate the cache.
+		/// </summary>
+		public virtual void ChangeDecodingSize(Size _size)
+		{
+		    // Does nothing by default. Override to implement.
 		}
 		
         /// <summary>

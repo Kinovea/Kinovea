@@ -215,7 +215,8 @@ namespace Kinovea.ScreenManager
 		private bool m_DualSaveInProgress;
 		
 		// Image
-		private bool m_bStretchModeOn;
+		private ViewportManipulator m_viewportManipulator = new ViewportManipulator();
+		private bool m_fill;
 		private bool m_bShowImageBorder;
 		private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
 		
@@ -340,7 +341,10 @@ namespace Kinovea.ScreenManager
 			m_DeselectionTimer.Tick += DeselectionTimer_OnTick;
 
 			EnableDisableActions(false);
+			
+			Application.Idle += PostLoad_Idle;
 		}
+		
 		#endregion
 		
 		#region Public Methods
@@ -437,8 +441,6 @@ namespace Kinovea.ScreenManager
 			m_iSelEnd = m_FrameServer.VideoReader.WorkingZone.End;
 			m_iSelDuration  = m_iTotalDuration;
 			
-            //UpdateWorkingZone(false);
-			
 			if(!m_FrameServer.VideoReader.CanChangeWorkingZone)
 			    EnableDisableWorkingZoneControls(false);
 
@@ -454,13 +456,14 @@ namespace Kinovea.ScreenManager
 			
 			// Other various infos.
 			m_FrameServer.SetupMetadata();
-			m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
+			m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+			m_viewportManipulator.Initialize(m_FrameServer.VideoReader);
 			
 			UpdateFilenameLabel();
 			sldrSpeed.Enabled = true;
 
 			// Screen position and size.
-			m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.Metadata.ImageSize);
+			m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			SetUpForNewMovie();
 			m_KeyframeCommentsHub.UserActivated = false;
@@ -480,11 +483,9 @@ namespace Kinovea.ScreenManager
 			    m_FrameServer.Metadata.CleanupHash();
 			}
 			
-			m_FrameServer.VideoReader.PostLoad();
-
+			/*m_FrameServer.VideoReader.PostLoad();
 			UpdateWorkingZone(false);
-			
-			UpdateFramesMarkers();
+			UpdateFramesMarkers();*/
 			
 			return 0;
 		}
@@ -701,7 +702,7 @@ namespace Kinovea.ScreenManager
 		    EnableDisableAllPlayingControls(false);
 			EnableDisableDrawingTools(false);
 			DockKeyframePanel(true);
-			m_bStretchModeOn = true;
+			m_fill = true;
 			StretchSqueezeSurface();
 			DoInvalidate();
 		}
@@ -859,22 +860,18 @@ namespace Kinovea.ScreenManager
 		}
 		public void UpdateImageSize()
 		{
-			Size imageSize = m_FrameServer.VideoReader.Info.DecodingSize;
-			
-			m_FrameServer.Metadata.ImageSize = imageSize;
-			
-			m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
-			
-			m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.Metadata.ImageSize);
+			m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.AspectRatioSize;
+			m_PointerTool.SetImageSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
+			m_FrameServer.CoordinateSystem.SetOriginalSize(m_FrameServer.VideoReader.Info.AspectRatioSize);
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			
 			StretchSqueezeSurface();
 		}
 		public void FullScreen(bool _bFullScreen)
 		{
-		    if (_bFullScreen && !m_bStretchModeOn)
+		    if (_bFullScreen && !m_fill)
 			{
-				m_bStretchModeOn = true;
+				m_fill = true;
 				StretchSqueezeSurface();
 			    m_FrameServer.Metadata.ResizeFinished();
 			    DoInvalidate();
@@ -1044,7 +1041,7 @@ namespace Kinovea.ScreenManager
 			DeactivateInteractiveEffect();
 			m_bIsCurrentlyPlaying = false;
 			m_ePlayingMode = PlayingMode.Loop;
-			m_bStretchModeOn = false;
+			m_fill = false;
 			m_FrameServer.CoordinateSystem.Reset();
 			
 			// Sync
@@ -1117,7 +1114,7 @@ namespace Kinovea.ScreenManager
 			StretchSqueezeSurface();
 			
 			// Since it hadn't its final size, we don't really know if the pic is too large...
-			m_bStretchModeOn = false;
+			m_fill = false;
 			OnPoke();
 		}
 		private void SetupKeyframeCommentsHub()
@@ -1939,85 +1936,48 @@ namespace Kinovea.ScreenManager
 		#region Auto Stretch & Manual Resize
 		private void StretchSqueezeSurface()
 		{
-			if (m_FrameServer.Loaded)
-			{
-				// Check if the image was loaded squeezed.
-				// (happen when screen control isn't being fully expanded at video load time.)
-				if(pbSurfaceScreen.Height < panelCenter.Height && m_FrameServer.CoordinateSystem.Stretch < 1.0)
-				{
-					m_FrameServer.CoordinateSystem.Stretch = 1.0;
-				}
-				
-				//---------------------------------------------------------------
-				// Check if the stretch factor is not going to outsize the panel.
-				// If so, force maximized, unless screen is smaller than video.
-				//---------------------------------------------------------------
-				int iTargetHeight = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
-				int iTargetWidth = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-				
-				if (iTargetHeight > panelCenter.Height || iTargetWidth > panelCenter.Width)
-				{
-					if (m_FrameServer.CoordinateSystem.Stretch > 1.0)
-					{
-						m_bStretchModeOn = true;
-					}
-				}
-				
-				if ((m_bStretchModeOn) || (m_FrameServer.VideoReader.Info.DecodingSize.Width > panelCenter.Width) || (m_FrameServer.VideoReader.Info.DecodingSize.Height > panelCenter.Height))
-				{
-					//-------------------------------------------------------------------------------
-					// Maximiser :
-					//Redimensionner l'image selon la dimension la plus proche de la taille du panel.
-					//-------------------------------------------------------------------------------
-					float WidthRatio = (float)m_FrameServer.VideoReader.Info.DecodingSize.Width / panelCenter.Width;
-					float HeightRatio = (float)m_FrameServer.VideoReader.Info.DecodingSize.Height / panelCenter.Height;
-					
-					if (WidthRatio > HeightRatio)
-					{
-						pbSurfaceScreen.Width = panelCenter.Width;
-						pbSurfaceScreen.Height = (int)((float)m_FrameServer.VideoReader.Info.DecodingSize.Height / WidthRatio);
-						
-						m_FrameServer.CoordinateSystem.Stretch = (1 / WidthRatio);
-					}
-					else
-					{
-						pbSurfaceScreen.Width = (int)((float)m_FrameServer.VideoReader.Info.DecodingSize.Width / HeightRatio);
-						pbSurfaceScreen.Height = panelCenter.Height;
-						
-						m_FrameServer.CoordinateSystem.Stretch = (1 / HeightRatio);
-					}
-				}
-				else
-				{
-					pbSurfaceScreen.Width = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Width * m_FrameServer.CoordinateSystem.Stretch);
-					pbSurfaceScreen.Height = (int)((double)m_FrameServer.VideoReader.Info.DecodingSize.Height * m_FrameServer.CoordinateSystem.Stretch);
-				}
-				
-				// Center
-				pbSurfaceScreen.Left = (panelCenter.Width / 2) - (pbSurfaceScreen.Width / 2);
-				pbSurfaceScreen.Top = (panelCenter.Height / 2) - (pbSurfaceScreen.Height / 2);
-				ReplaceResizers();
-			}
+            if (!m_FrameServer.Loaded)
+                return;
+
+            // Fix squeezing of video due to the initial upsizing of the screen control.
+            // (todo: test with the flag that prevent events to be fired.)
+            if(pbSurfaceScreen.Height < panelCenter.Height && m_FrameServer.CoordinateSystem.Stretch < 1.0)
+                m_FrameServer.CoordinateSystem.Stretch = 1.0;
+            
+            // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
+            // During the process, stretch and fill may be forced to different values.
+            m_viewportManipulator.Manipulate(m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Stretch, panelCenter.Size, m_fill);
+            pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
+            pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
+            m_FrameServer.CoordinateSystem.Stretch = m_viewportManipulator.Stretch;
+            m_fill = m_viewportManipulator.FillContainer;
+            
+            if(m_FrameServer.VideoReader.CanChangeDecodingSize)
+                m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.DecodingSize);
+            
+            ReplaceResizers();
 		}
 		private void ReplaceResizers()
 		{
-			ImageResizerSE.Left = pbSurfaceScreen.Left + pbSurfaceScreen.Width - (ImageResizerSE.Width / 2);
-			ImageResizerSE.Top = pbSurfaceScreen.Top + pbSurfaceScreen.Height - (ImageResizerSE.Height / 2);
+			ImageResizerSE.Left = pbSurfaceScreen.Right - (ImageResizerSE.Width / 2);
+			ImageResizerSE.Top = pbSurfaceScreen.Bottom - (ImageResizerSE.Height / 2);
 
 			ImageResizerSW.Left = pbSurfaceScreen.Left - (ImageResizerSW.Width / 2);
-			ImageResizerSW.Top = pbSurfaceScreen.Top + pbSurfaceScreen.Height - (ImageResizerSW.Height / 2);
+			ImageResizerSW.Top = pbSurfaceScreen.Bottom - (ImageResizerSW.Height / 2);
 
-			ImageResizerNE.Left = pbSurfaceScreen.Left + pbSurfaceScreen.Width - (ImageResizerNE.Width / 2);
+			ImageResizerNE.Left = pbSurfaceScreen.Right - (ImageResizerNE.Width / 2);
 			ImageResizerNE.Top = pbSurfaceScreen.Top - (ImageResizerNE.Height / 2);
 
-			ImageResizerNW.Left = pbSurfaceScreen.Left - (ImageResizerNW.Width / 2);
-			ImageResizerNW.Top = pbSurfaceScreen.Top - (ImageResizerNW.Height / 2);
+			//ImageResizerNW.Left = pbSurfaceScreen.Left - (ImageResizerNW.Width / 2);
+			//ImageResizerNW.Top = pbSurfaceScreen.Top - (ImageResizerNW.Height / 2);
+			ImageResizerNW.Left = pbSurfaceScreen.Left - ImageResizerNW.Width;
+			ImageResizerNW.Top = pbSurfaceScreen.Top - ImageResizerNW.Height;
 		}
 		private void ToggleStretchMode()
 		{
-			if (!m_bStretchModeOn)
+			if (!m_fill)
 			{
-				m_bStretchModeOn = true;
+				m_fill = true;
 			}
 			else
 			{
@@ -2025,7 +1985,7 @@ namespace Kinovea.ScreenManager
 				if (m_FrameServer.CoordinateSystem.Stretch >= 1)
 				{
 					m_FrameServer.CoordinateSystem.Stretch = 1;
-					m_bStretchModeOn = false;
+					m_fill = false;
 				}
 			}
 			StretchSqueezeSurface();
@@ -2034,12 +1994,12 @@ namespace Kinovea.ScreenManager
 		}
 		private void ImageResizerSE_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
-			{
-				int iTargetHeight = (ImageResizerSE.Top - pbSurfaceScreen.Top + e.Y);
-				int iTargetWidth = (ImageResizerSE.Left - pbSurfaceScreen.Left + e.X);
-				ResizeImage(iTargetWidth, iTargetHeight);
-			}
+			if (e.Button != MouseButtons.Left)
+			    return;
+			
+			int iTargetHeight = (ImageResizerSE.Top - pbSurfaceScreen.Top + e.Y);
+			int iTargetWidth = (ImageResizerSE.Left - pbSurfaceScreen.Left + e.X);
+			ResizeImage(iTargetWidth, iTargetHeight);
 		}
 		private void ImageResizerSW_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -2070,17 +2030,15 @@ namespace Kinovea.ScreenManager
 		}
 		private void ResizeImage(int _iTargetWidth, int _iTargetHeight)
 		{
-			// Resize only if : Bigger than original image size, smaller than panel size.
-			if (_iTargetHeight > m_FrameServer.VideoReader.Info.DecodingSize.Height &&
-			    _iTargetHeight < panelCenter.Height &&
-			    _iTargetWidth > m_FrameServer.VideoReader.Info.DecodingSize.Width &&
-			    _iTargetWidth < panelCenter.Width)
+		    Size targetSize = new Size(_iTargetWidth, _iTargetHeight);
+		    
+			if(m_FrameServer.VideoReader.Info.AspectRatioSize.FitsIn(targetSize) && targetSize.FitsIn(panelCenter.Size))
 			{
-				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.DecodingSize.Height);
-				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.DecodingSize.Width);
+				double fHeightFactor = ((_iTargetHeight) / (double)m_FrameServer.VideoReader.Info.AspectRatioSize.Height);
+				double fWidthFactor = ((_iTargetWidth) / (double)m_FrameServer.VideoReader.Info.AspectRatioSize.Width);
 
 				m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
-				m_bStretchModeOn = false;
+				m_fill = false;
 				StretchSqueezeSurface();
 				DoInvalidate();
 			}
@@ -2304,6 +2262,24 @@ namespace Kinovea.ScreenManager
 
                 UpdateFramesMarkers();
             }
+		}
+		private void PostLoad_Idle(object sender, EventArgs e)
+		{
+		    Application.Idle -= PostLoad_Idle;
+		    
+		    if(!m_FrameServer.Loaded)
+		        return;
+		    
+		    log.DebugFormat("First quiet time after the construction of the screen.");
+		    
+		    // This would be a good time to start the prebuffering if supported.
+		    m_FrameServer.VideoReader.PostLoad();
+			UpdateWorkingZone(false);
+			UpdateFramesMarkers();
+		    
+		    // Update the decoding size. (May clear and restart the prebuffering).
+		    if(m_FrameServer.VideoReader.CanChangeDecodingSize)
+                m_FrameServer.VideoReader.ChangeDecodingSize(m_viewportManipulator.DecodingSize);
 		}
 		private void Application_Idle(object sender, EventArgs e)
 		{
@@ -3229,12 +3205,38 @@ namespace Kinovea.ScreenManager
             }*/
 			
 			m_TimeWatcher.LogTime("Before DrawImage");
-			if((m_FrameServer.CoordinateSystem.Scale == 1.0 && !m_FrameServer.Metadata.Mirrored))
+			
+			//log.DebugFormat("image size: {0}", _sourceImage.Size);
+			/*if(m_FrameServer.Metadata.Mirrored)
+			{
+                g.DrawImageUnscaled(_sourceImage, 0,0);
+			}
+            else if((m_FrameServer.CoordinateSystem.Scale == 1.0 && !m_FrameServer.Metadata.Mirrored))
 			{
 			    g.DrawImageUnscaled(_sourceImage, 0,0);
 			}
+            else if((m_FrameServer.CoordinateSystem.Zoom == 1.0 && !m_FrameServer.Metadata.Mirrored))
+			{
+			    g.DrawImageUnscaled(_sourceImage, 0,0);
+			}*/
+			
+			if(!m_FrameServer.Metadata.Mirrored && m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
+			{
+			    if(m_FrameServer.CoordinateSystem.Zooming)
+			    {
+                    int left = (int)(m_FrameServer.CoordinateSystem.ZoomWindow.Location.X * m_viewportManipulator.RenderingZoomFactor);
+                    int top =  (int)(m_FrameServer.CoordinateSystem.ZoomWindow.Location.Y * m_viewportManipulator.RenderingZoomFactor);
+                    g.DrawImageUnscaled(_sourceImage, -left, -top);
+			    }
+			    else
+			    {
+			        g.DrawImageUnscaled(_sourceImage, 0, 0);
+			    }
+			    
+			}
 			else
 			{
+			    log.DebugFormat("drawing with scaling. :-(");
     			Rectangle rDst;
     			if(m_FrameServer.Metadata.Mirrored)
     				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
@@ -4294,6 +4296,7 @@ namespace Kinovea.ScreenManager
 			// Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
 			m_FrameServer.CoordinateSystem.Zoom = m_FrameServer.Metadata.Magnifier.ZoomFactor;
 			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Metadata.Magnifier.MagnifiedCenter);
+			StretchSqueezeSurface();
 			DisableMagnifier();
 			m_FrameServer.Metadata.ResizeFinished();
 			ToastZoom();
@@ -4350,6 +4353,7 @@ namespace Kinovea.ScreenManager
 		{
 			m_FrameServer.CoordinateSystem.ReinitZoom();
 			m_PointerTool.SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
+			StretchSqueezeSurface();
 			m_FrameServer.Metadata.ResizeFinished();
 		}
 		private void IncreaseDirectZoom()
@@ -4378,7 +4382,7 @@ namespace Kinovea.ScreenManager
 		{
 		    m_FrameServer.CoordinateSystem.RelocateZoomWindow();
 			m_PointerTool.SetZoomLocation(m_FrameServer.CoordinateSystem.Location);
-			
+			StretchSqueezeSurface();
 			m_FrameServer.Metadata.ResizeFinished();
 			ToastZoom();
 			ReportForSyncMerge();
