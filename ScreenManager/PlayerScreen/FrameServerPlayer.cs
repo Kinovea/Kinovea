@@ -122,9 +122,7 @@ namespace Kinovea.ScreenManager
 			if(m_Metadata == null || m_VideoReader == null)
 			    return;
 			
-			Size imageSize = m_VideoReader.Info.DecodingSize;
-					
-			m_Metadata.ImageSize = imageSize;
+			m_Metadata.ImageSize = m_VideoReader.Info.AspectRatioSize;
 			m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
 			m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoReader.Info.FramesPerSeconds;
 			m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;

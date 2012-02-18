@@ -164,7 +164,7 @@ namespace Kinovea.Video
                 m_VideoInfo.OriginalSize = m_Generator.Size;
             else
                 m_VideoInfo.OriginalSize = new Size(640, 480);
-            m_VideoInfo.DecodingSize = m_VideoInfo.OriginalSize;
+            m_VideoInfo.AspectRatioSize = m_VideoInfo.OriginalSize;
             
         }
         private bool UpdateCurrent(long _timestamp)

@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
             get { return m_fStretch * m_fZoom; }
         }
 		/// <summary>
-		/// The stretching to apply to the image. Not taking zoom into account.
+		/// The stretching to apply to the image due to container manipulation. Does not take zoom into account.
 		/// </summary>
 		public double Stretch
 		{
@@ -135,8 +135,8 @@ namespace Kinovea.ScreenManager
 			// This used when increasing and decreasing the zoom factor,
 			// to automatically adjust the viewing window.
 			
-			int iNewWidth = (int)((double)m_OriginalSize.Width / m_fZoom);
-			int iNewHeight = (int)((double)m_OriginalSize.Height / m_fZoom);
+			int iNewWidth = (int)(m_OriginalSize.Width / m_fZoom);
+			int iNewHeight = (int)(m_OriginalSize.Height / m_fZoom);
 
 			int iNewLeft = _center.X - (iNewWidth / 2);
 			int iNewTop = _center.Y - (iNewHeight / 2);

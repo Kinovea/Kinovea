@@ -429,6 +429,7 @@
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterMosaic.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
+    <Compile Include="PlayerScreen\ViewportManipulator.cs" />
     <Compile Include="Properties\Drawings.Designer.cs">
       <DependentUpon>Drawings.resx</DependentUpon>
     </Compile>
