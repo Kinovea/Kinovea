@@ -279,6 +279,7 @@ namespace Kinovea.ScreenManager
             }
             
             m_ThumbsViewer.Visible = false;
+            m_ThumbsViewer.StopLoading();
         }
         public void BringBackThumbnails()
         {
