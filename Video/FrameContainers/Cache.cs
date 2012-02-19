@@ -46,7 +46,7 @@ namespace Kinovea.Video
         private List<VideoFrame> m_Frames = new List<VideoFrame>();
         private int m_CurrentIndex = -1;
         private VideoFrame m_Current;
-        private VideoSection m_WorkingZone;
+        private VideoSection m_WorkingZone = VideoSection.Empty;
         private bool m_PrependingBlock;
         private int m_InsertIndex;
         private VideoFrameDisposer m_Disposer;

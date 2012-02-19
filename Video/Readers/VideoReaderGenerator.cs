@@ -36,7 +36,7 @@ namespace Kinovea.Video
     /// If the underlying source is limited in time, it should be exposed through a VideoReader.
     /// Usage for generators is: random images, images with the timestamp painted on for tests, single image file.
     /// </summary>
-    [SupportedExtensions(".jpg;.jpeg;.png;.bmp;.svg")]
+    [SupportedExtensions(".jpg;.jpeg;.png;.bmp")]
     public class VideoReaderGenerator : VideoReader
     {
         #region Properties

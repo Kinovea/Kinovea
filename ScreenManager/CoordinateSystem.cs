@@ -79,7 +79,11 @@ namespace Kinovea.ScreenManager
 		public Rectangle ZoomWindow
 		{
 			get { return m_DirectZoomWindow;}
-		}		
+		}
+		public Rectangle RenderingZoomWindow
+		{
+		    get { return m_RenderingZoomWindow; }
+		}
 		public bool FreeMove
 		{
 			get { return m_bFreeMove; }
@@ -98,6 +102,8 @@ namespace Kinovea.ScreenManager
 		private double m_fZoom = 1.0f;		
 		private Rectangle m_DirectZoomWindow;
 		private bool m_bFreeMove;				// If we allow the image to be moved out of bounds.
+		private Rectangle m_RenderingZoomWindow;
+		private double m_RenderingZoomFactor;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -134,47 +140,47 @@ namespace Kinovea.ScreenManager
 			// Recreate the zoom window coordinates, given a new zoom factor, keeping the window center.
 			// This used when increasing and decreasing the zoom factor,
 			// to automatically adjust the viewing window.
+			Size newSize = new Size((int)(m_OriginalSize.Width / m_fZoom), (int)(m_OriginalSize.Height / m_fZoom));
+			int left = _center.X - (newSize.Width / 2);
+			int top = _center.Y - (newSize.Height / 2);
 			
-			int iNewWidth = (int)(m_OriginalSize.Width / m_fZoom);
-			int iNewHeight = (int)(m_OriginalSize.Height / m_fZoom);
+			Point newLocation = ConfineZoomWindow(left, top, newSize, m_OriginalSize);
 
-			int iNewLeft = _center.X - (iNewWidth / 2);
-			int iNewTop = _center.Y - (iNewHeight / 2);
-
-			if(!m_bFreeMove)
-			{
-				if (iNewLeft < 0) iNewLeft = 0;
-				if (iNewLeft + iNewWidth >= m_OriginalSize.Width) iNewLeft = m_OriginalSize.Width - iNewWidth;
-	
-				if (iNewTop < 0) iNewTop = 0;
-				if (iNewTop + iNewHeight >= m_OriginalSize.Height) iNewTop = m_OriginalSize.Height - iNewHeight;
-			}
-
-			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, iNewWidth, iNewHeight);	
+			m_DirectZoomWindow = new Rectangle(newLocation, newSize);
+			UpdateRenderingZoomWindow();
 		}
 		public void MoveZoomWindow(double _fDeltaX, double _fDeltaY)
 		{
 			// Move the zoom window keeping the same zoom factor.
-			
-			// Tentative new coords.
-			int iNewLeft = (int)((double)m_DirectZoomWindow.Left - _fDeltaX);
-			int iNewTop = (int)((double)m_DirectZoomWindow.Top - _fDeltaY);
-			
-			// Restraint the tentative coords at image borders.
-			if(!m_bFreeMove)
-			{
-				if (iNewLeft < 0) iNewLeft = 0;
-				if (iNewTop < 0) iNewTop = 0;
-				
-				if (iNewLeft + m_DirectZoomWindow.Width >= m_OriginalSize.Width)
-					iNewLeft = m_OriginalSize.Width - m_DirectZoomWindow.Width;
-				
-				if (iNewTop + m_DirectZoomWindow.Height >= m_OriginalSize.Height)
-					iNewTop = m_OriginalSize.Height - m_DirectZoomWindow.Height;
-			}
-			
-			// Reposition.
-			m_DirectZoomWindow = new Rectangle(iNewLeft, iNewTop, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
+			Point newLocation = ConfineZoomWindow((int)(m_DirectZoomWindow.Left - _fDeltaX), (int)(m_DirectZoomWindow.Top - _fDeltaY), m_DirectZoomWindow.Size, m_OriginalSize);
+			m_DirectZoomWindow = new Rectangle(newLocation.X, newLocation.Y, m_DirectZoomWindow.Width, m_DirectZoomWindow.Height);
+			UpdateRenderingZoomWindow();
+		}
+		public void SetRenderingZoomFactor(double _zoomFactor)
+		{
+		    m_RenderingZoomFactor = _zoomFactor;
+		    UpdateRenderingZoomWindow();
+		}
+		private void UpdateRenderingZoomWindow()
+		{
+		    int left = (int)(m_DirectZoomWindow.Left * m_RenderingZoomFactor);
+		    int top = (int)(m_DirectZoomWindow.Top * m_RenderingZoomFactor);
+		    int width = (int)(m_DirectZoomWindow.Width * m_RenderingZoomFactor);
+		    int height = (int)(m_DirectZoomWindow.Height * m_RenderingZoomFactor);
+	        
+	        m_RenderingZoomWindow = new Rectangle(left, top, width, height);
+		}
+		private Point ConfineZoomWindow(int _left, int _top, Size _zoomWindow, Size _containerSize)
+		{
+		    // Prevent the zoom window to move outside the rendering window.
+            
+		    if(m_bFreeMove)
+		        return new Point(_left, _top);
+
+            int left = Math.Min(Math.Max(0, _left), _containerSize.Width - _zoomWindow.Width);
+            int top = Math.Min(Math.Max(0, _top), _containerSize.Height - _zoomWindow.Height);
+            
+			return new Point(left, top);
 		}
 		#endregion
 		
