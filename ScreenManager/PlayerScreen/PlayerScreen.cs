@@ -87,8 +87,7 @@ namespace Kinovea.ScreenManager
                 if (uncached && m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
                     m_PlayerScreenUI.UpdateWorkingZone(true);
                     
-                m_PlayerScreenUI.UpdateImageSize();
-                RefreshImage();
+                m_PlayerScreenUI.AspectRatioChanged();
             }
         }
         public FrameServerPlayer FrameServer
