@@ -290,9 +290,14 @@ namespace Kinovea.ScreenManager
             // the close screen routine to detect if there is something left in the 
             // metadata and alerts the user.
             if(m_FrameServer.Loaded)
-            {
                 m_PlayerScreenUI.StopPlaying();
+        }
+        public override void AfterClose()
+        {
+            if(m_FrameServer.Loaded)
+            {
                 m_FrameServer.VideoReader.Close();
+                m_PlayerScreenUI.ResetToEmptyState();
             }
         }
         public override void refreshUICulture()

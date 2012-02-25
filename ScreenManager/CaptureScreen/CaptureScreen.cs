@@ -147,6 +147,11 @@ namespace Kinovea.ScreenManager
         	m_FrameServer.BeforeClose();
         	m_CaptureScreenUI.BeforeClose();
         }
+        public override void AfterClose()
+        {
+            // Fixme: all the stopping and cleaning is implemented in BeforeClose instead of AfterClose. 
+            // It works while there is no cancellation possible.
+        }
         public override bool OnKeyPress(Keys _key)
         {
         	return m_CaptureScreenUI.OnKeyPress(_key);
