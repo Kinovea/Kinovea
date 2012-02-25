@@ -144,6 +144,10 @@ namespace Kinovea.ScreenManager
 				sl.Run();
 			}
 		}
+		public void StopLoading()
+		{
+		    CleanupLoaders();
+		}
 		private void CleanupLoaders()
 		{
 			for(int i=m_Loaders.Count-1;i>=0;i--)

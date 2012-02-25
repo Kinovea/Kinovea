@@ -66,11 +66,7 @@ namespace Kinovea.ScreenManager
         public Size ImageSize
         {
             get { return m_ImageSize; }
-            set 
-            { 
-                m_ImageSize.Width   = value.Width;
-                m_ImageSize.Height  = value.Height; 
-            }
+            set { m_ImageSize = value;}
         }
         public CoordinateSystem CoordinateSystem
 		{
@@ -222,7 +218,7 @@ namespace Kinovea.ScreenManager
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
 		{
             // Deserialization constructor
-            m_ImageSize = _info.DecodingSize;
+            m_ImageSize = _info.AspectRatioSize;
             AverageTimeStampsPerFrame = _info.AverageTimeStampsPerFrame;
             m_FullPath = _info.FilePath;
             Load(_kvaString, false);
