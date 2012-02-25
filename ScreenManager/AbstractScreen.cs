@@ -67,6 +67,7 @@ namespace Kinovea.ScreenManager
         public abstract void DisplayAsActiveScreen(bool _bActive);
         public abstract void refreshUICulture();
         public abstract void BeforeClose();
+        public abstract void AfterClose();
         public abstract bool OnKeyPress(Keys _key);
         public abstract void RefreshImage();
         public abstract void AddImageDrawing(string _filename, bool _bIsSvg);
