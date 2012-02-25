@@ -95,8 +95,8 @@ namespace Kinovea.ScreenManager
 		}
 		public Magnifier Magnifier
 		{
-			get { return m_Magnifier; }
-			set { m_Magnifier = value; }
+			get { return m_Metadata.Magnifier; }
+			set { m_Metadata.Magnifier = value; }
 		}
 		public CoordinateSystem CoordinateSystem
 		{
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
 		private AbstractFrameGrabber m_FrameGrabber;
 		private FrameBuffer m_FrameBuffer = new FrameBuffer();
 		private Bitmap m_ImageToDisplay;
-		private Size m_ImageSize = new Size(720, 576);		
+		private Size m_ImageSize = new Size(720, 576);
 		private ImageAspectRatio m_AspectRatio = ImageAspectRatio.Auto;
 		private int m_iFrameIndex;		// The "age" we pull from, in the circular buffer.
 		private int m_iCurrentBufferFill;
@@ -143,7 +143,6 @@ namespace Kinovea.ScreenManager
 		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
 		private Metadata m_Metadata;
-		private Magnifier m_Magnifier = new Magnifier();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		
 		// Saving to disk
@@ -153,7 +152,6 @@ namespace Kinovea.ScreenManager
 		// Captured video thumbnails.
 		private string m_CurrentCaptureFilePath;
 		private List<CapturedVideo> m_RecentlyCapturedVideos = new List<CapturedVideo>();
-		
 		
 		// General
 		private Stopwatch m_Stopwatch = new Stopwatch();
@@ -414,9 +412,9 @@ namespace Kinovea.ScreenManager
 			
 			// .Magnifier
 			// TODO: handle miroring.
-			if (m_Magnifier.Mode != MagnifierMode.NotVisible)
+			if (m_Metadata.Magnifier.Mode != MagnifierMode.None)
 			{
-				m_Magnifier.Draw(_image, _canvas, 1.0, false);
+				m_Metadata.Magnifier.Draw(_image, _canvas, m_CoordinateSystem, false);
 			}
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas)

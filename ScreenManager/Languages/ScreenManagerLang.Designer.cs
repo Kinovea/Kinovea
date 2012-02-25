@@ -2032,6 +2032,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Zoom x{0:0.00}.
+        /// </summary>
+        internal static string mnuMagnification {
+            get {
+                return ResourceManager.GetString("mnuMagnification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Zoom x1.5.
         /// </summary>
         internal static string mnuMagnifier150 {

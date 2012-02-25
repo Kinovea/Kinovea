@@ -73,6 +73,7 @@ namespace Kinovea.ScreenManager
 		private DrawingToolPointer m_PointerTool;
 		private bool m_bDocked = true;
 		private bool m_bTextEdit;
+		private Point m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
 		
 		// Other
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
@@ -95,11 +96,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
 		
 		private ContextMenuStrip popMenuMagnifier = new ContextMenuStrip();
-		private ToolStripMenuItem mnuMagnifier150 = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuMagnifier175 = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuMagnifier200 = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuMagnifier225 = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuMagnifier250 = new ToolStripMenuItem();
+		private List<ToolStripMenuItem> maginificationMenus = new List<ToolStripMenuItem>();
 		private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
 		#endregion
@@ -549,17 +546,16 @@ namespace Kinovea.ScreenManager
 			mnuDeleteDrawing.Image = Properties.Drawings.delete;
 
 			// 5. Magnifier
-			mnuMagnifier150.Click += new EventHandler(mnuMagnifier150_Click);
-			mnuMagnifier175.Click += new EventHandler(mnuMagnifier175_Click);
-			mnuMagnifier175.Checked = true;
-			mnuMagnifier200.Click += new EventHandler(mnuMagnifier200_Click);
-			mnuMagnifier225.Click += new EventHandler(mnuMagnifier225_Click);
-			mnuMagnifier250.Click += new EventHandler(mnuMagnifier250_Click);
+			foreach(double factor in Magnifier.MagnificationFactors)
+			    maginificationMenus.Add(CreateMagnificationMenu(factor));
+			maginificationMenus[1].Checked = true;
+			popMenuMagnifier.Items.AddRange(maginificationMenus.ToArray());
+			
 			mnuMagnifierDirect.Click += new EventHandler(mnuMagnifierDirect_Click);
 			mnuMagnifierDirect.Image = Properties.Resources.arrow_out;
 			mnuMagnifierQuit.Click += new EventHandler(mnuMagnifierQuit_Click);
 			mnuMagnifierQuit.Image = Properties.Resources.hide;
-			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { mnuMagnifier150, mnuMagnifier175, mnuMagnifier200, mnuMagnifier225, mnuMagnifier250, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
+			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 			
 			// The right context menu and its content will be choosen upon MouseDown.
 			panelCenter.ContextMenuStrip = popMenu;
@@ -580,6 +576,14 @@ namespace Kinovea.ScreenManager
 		private void UpdateFilenameLabel()
 		{
 			lblFileName.Text = m_FrameServer.DeviceName;
+		}
+		private ToolStripMenuItem CreateMagnificationMenu(double magnificationFactor)
+		{
+		    ToolStripMenuItem mnu = new ToolStripMenuItem();
+			mnu.Tag = magnificationFactor;
+			mnu.Text = String.Format(ScreenManagerLang.mnuMagnification, magnificationFactor.ToString());
+			mnu.Click += mnuMagnifierChangeMagnification;
+			return mnu;
 		}
 		#endregion
 		
@@ -945,11 +949,11 @@ namespace Kinovea.ScreenManager
 			mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
 			
 			// 5. Magnifier
-			mnuMagnifier150.Text = ScreenManagerLang.mnuMagnifier150;
-			mnuMagnifier175.Text = ScreenManagerLang.mnuMagnifier175;
-			mnuMagnifier200.Text = ScreenManagerLang.mnuMagnifier200;
-			mnuMagnifier225.Text = ScreenManagerLang.mnuMagnifier225;
-			mnuMagnifier250.Text = ScreenManagerLang.mnuMagnifier250;
+			foreach(ToolStripMenuItem m in maginificationMenus)
+			{
+			    double factor = (double)m.Tag;
+			    m.Text = String.Format(ScreenManagerLang.mnuMagnification, factor.ToString());
+			}
 			mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;	
 			mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
 		}
@@ -992,207 +996,183 @@ namespace Kinovea.ScreenManager
 		#region SurfaceScreen Events
 		private void SurfaceScreen_MouseDown(object sender, MouseEventArgs e)
 		{
-			if(m_FrameServer.IsConnected)
-			{
-				m_DeselectionTimer.Stop();
+			if(!m_FrameServer.IsConnected)
+			    return;
+			
+			m_DeselectionTimer.Stop();
+			m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
 				
-				if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left)
+			    SurfaceScreen_LeftDown();
+			else if (e.Button == MouseButtons.Right)
+			    SurfaceScreen_RightDown();
+				
+			pbSurfaceScreen.Invalidate();
+		}
+		private void SurfaceScreen_LeftDown()
+		{
+		    bool hitMagnifier = false;
+		    if(m_ActiveTool == m_PointerTool)
+                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse);
+		    
+		    if(hitMagnifier)
+		        return;
+		    
+			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+		
+			if (m_ActiveTool == m_PointerTool)
+			{
+				bool bDrawingHit = false;
+			
+				// Show the grabbing hand cursor.
+				SetCursor(m_PointerTool.GetCursor(1));
+				bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, 0, m_DescaledMouse, 0, m_PrefManager.DefaultFading.Enabled);
+			}
+			else
+			{
+			    CreateNewDrawing();
+			}
+		}
+		private void CreateNewDrawing()
+		{
+		    // TODO: deduplicate with PlayerScreenUI.
+		    
+		    if (m_ActiveTool != ToolManager.Label)
+			{
+				// Add an instance of a drawing from the active tool to the current keyframe.
+				// The drawing is initialized with the current mouse coordinates.
+				AbstractDrawing ad = m_ActiveTool.GetNewDrawing(m_DescaledMouse, 0, 1);
+				
+				m_FrameServer.Metadata[0].AddDrawing(ad);
+				m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+				m_FrameServer.Metadata.SelectedDrawing = 0;
+				
+				// Post creation hacks.
+				if(ad is DrawingLine2D)
 				{
-					if (m_FrameServer.IsConnected)
+					((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
+					((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
+				}
+				else if(ad is DrawingCross2D)
+				{
+					((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
+					((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
+				}
+                else if(ad is DrawingPlane)
+				{
+				    ((DrawingPlane)ad).SetLocations(m_FrameServer.ImageSize, 1.0, new Point(0,0));
+				}
+			}
+			else
+			{
+				
+				// We are using the Text Tool. This is a special case because
+				// if we are on an existing Textbox, we just go into edit mode
+				// otherwise, we add and setup a new textbox.
+				bool bEdit = false;
+				foreach (AbstractDrawing ad in m_FrameServer.Metadata[0].Drawings)
+				{
+					if (ad is DrawingText)
 					{
-						if ( (m_ActiveTool == m_PointerTool)      &&
-						    (m_FrameServer.Magnifier.Mode != MagnifierMode.NotVisible) &&
-						    (m_FrameServer.Magnifier.IsOnObject(e)))
+						int hitRes = ad.HitTest(m_DescaledMouse, 0);
+						if (hitRes >= 0)
 						{
-							m_FrameServer.Magnifier.OnMouseDown(e);
+							bEdit = true;
+							((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
 						}
-						else
-						{
-							//-------------------------------------
-							// Action begins:
-							// Move or set magnifier
-							// Move or set Drawing
-							//-------------------------------------
-						
-							Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
-						
-							// 1. Pass all DrawingText to normal mode
-							m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-						
-							if (m_ActiveTool == m_PointerTool)
-							{
-								// 1. Manipulating an object or Magnifier
-								bool bMovingMagnifier = false;
-								bool bDrawingHit = false;
-							
-								// Show the grabbing hand cursor.
-								SetCursor(m_PointerTool.GetCursor(1));
-							
-								if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect)
-								{
-									bMovingMagnifier = m_FrameServer.Magnifier.OnMouseDown(e);
-								}
-							
-								if (!bMovingMagnifier)
-								{
-									// Magnifier wasn't hit or is not in use,
-									// try drawings (including chronos and other extra drawings)
-									bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, 0, descaledMouse, 0, m_PrefManager.DefaultFading.Enabled);
-								}
-							}
-							else
-							{
-								//-----------------------
-								// Creating a new Drawing
-								//-----------------------
-								if (m_ActiveTool != ToolManager.Label)
-								{
-									// Add an instance of a drawing from the active tool to the current keyframe.
-									// The drawing is initialized with the current mouse coordinates.
-									AbstractDrawing ad = m_ActiveTool.GetNewDrawing(descaledMouse, 0, 1);
-									
-									m_FrameServer.Metadata[0].AddDrawing(ad);
-									m_FrameServer.Metadata.SelectedDrawingFrame = 0;
-									m_FrameServer.Metadata.SelectedDrawing = 0;
-									
-									// Post creation hacks.
-									if(ad is DrawingLine2D)
-									{
-										((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
-										((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
-									}
-									else if(ad is DrawingCross2D)
-									{
-										((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
-										((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
-									}
-                                    else if(ad is DrawingPlane)
-									{
-									    ((DrawingPlane)ad).SetLocations(m_FrameServer.ImageSize, 1.0, new Point(0,0));
-									}
-								}
-								else
-								{
-									
-									// We are using the Text Tool. This is a special case because
-									// if we are on an existing Textbox, we just go into edit mode
-									// otherwise, we add and setup a new textbox.
-									bool bEdit = false;
-									foreach (AbstractDrawing ad in m_FrameServer.Metadata[0].Drawings)
-									{
-										if (ad is DrawingText)
-										{
-											int hitRes = ad.HitTest(descaledMouse, 0);
-											if (hitRes >= 0)
-											{
-												bEdit = true;
-												((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
-											}
-										}
-									}
-									
-									// If we are not on an existing textbox : create new DrawingText.
-									if (!bEdit)
-									{
-										m_FrameServer.Metadata[0].AddDrawing(m_ActiveTool.GetNewDrawing(descaledMouse, 0, 1));
-										m_FrameServer.Metadata.SelectedDrawingFrame = 0;
-										m_FrameServer.Metadata.SelectedDrawing = 0;
-										
-										DrawingText dt = (DrawingText)m_FrameServer.Metadata[0].Drawings[0];
-										
-										dt.ContainerScreen = pbSurfaceScreen;
-										dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
-										panelCenter.Controls.Add(dt.EditBox);
-										dt.EditBox.BringToFront();
-										dt.EditBox.Focus();
-									}
-								}
-							}
-						}	
 					}
 				}
-				else if (e.Button == MouseButtons.Right)
+				
+				// If we are not on an existing textbox : create new DrawingText.
+				if (!bEdit)
 				{
-					// Show the right Pop Menu depending on context.
-					// (Drawing, Magnifier, Nothing)
+					m_FrameServer.Metadata[0].AddDrawing(m_ActiveTool.GetNewDrawing(m_DescaledMouse, 0, 1));
+					m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+					m_FrameServer.Metadata.SelectedDrawing = 0;
 					
-					Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+					DrawingText dt = (DrawingText)m_FrameServer.Metadata[0].Drawings[0];
 					
-					if (m_FrameServer.IsConnected)
+					dt.ContainerScreen = pbSurfaceScreen;
+					dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
+					panelCenter.Controls.Add(dt.EditBox);
+					dt.EditBox.BringToFront();
+					dt.EditBox.Focus();
+				}
+			}
+		}
+		private void SurfaceScreen_RightDown()
+		{
+		    // Show the right Pop Menu depending on context.
+			// (Drawing, Magnifier, Nothing)
+			
+			m_FrameServer.Metadata.UnselectAll();
+				
+			if (m_FrameServer.Metadata.IsOnDrawing(0, m_DescaledMouse, 0))
+			{
+				// Rebuild the context menu according to the capabilities of the drawing we are on.
+					
+				AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
+				if(ad != null)
+				{
+					popMenuDrawings.Items.Clear();
+					
+					// Generic context menu from drawing capabilities.
+					if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
 					{
-						m_FrameServer.Metadata.UnselectAll();
-						
-						if (m_FrameServer.Metadata.IsOnDrawing(0, descaledMouse, 0))
-						{
-							// Rebuild the context menu according to the capabilities of the drawing we are on.
-								
-							AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
-							if(ad != null)
-							{
-								popMenuDrawings.Items.Clear();
-								
-								// Generic context menu from drawing capabilities.
-								if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
-								{
-								   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-								   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
-								}
-								   
-								if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
-								{
-									mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
-								   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
-								}
-								
-								if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
-								{
-									popMenuDrawings.Items.Add(mnuConfigureOpacity);
-								}
-								
-								popMenuDrawings.Items.Add(mnuSepDrawing);
+					   	mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
+					   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
+					}
+					   
+					if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
+					{
+						mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+					   	popMenuDrawings.Items.Add(mnuConfigureDrawing);
+					}
+					
+					if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
+					{
+						popMenuDrawings.Items.Add(mnuConfigureOpacity);
+					}
+					
+					popMenuDrawings.Items.Add(mnuSepDrawing);
 
-								// Specific menus. Hosted by the drawing itself.
-								bool hasExtraMenu = (ad.ContextMenu != null && ad.ContextMenu.Count > 0);
-								if(hasExtraMenu)
-								{
-									foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
-									{
-										popMenuDrawings.Items.Add(tsmi);
-									}
-								}
-								
-								if(hasExtraMenu)
-									popMenuDrawings.Items.Add(mnuSepDrawing2);
-									
-								// Generic delete
-								popMenuDrawings.Items.Add(mnuDeleteDrawing);
-								
-								// Set this menu as the context menu.
-								panelCenter.ContextMenuStrip = popMenuDrawings;
-							}
-						}
-						else if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Magnifier.IsOnObject(e))
+					// Specific menus. Hosted by the drawing itself.
+					bool hasExtraMenu = (ad.ContextMenu != null && ad.ContextMenu.Count > 0);
+					if(hasExtraMenu)
+					{
+						foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
 						{
-							panelCenter.ContextMenuStrip = popMenuMagnifier;
-						}
-						else if(m_ActiveTool != m_PointerTool)
-						{
-							// Launch FormToolPreset.
-							FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
-							ScreenManagerKernel.LocateForm(ftp);
-							ftp.ShowDialog();
-							ftp.Dispose();
-							UpdateCursor();
-						}
-						else
-						{
-							// No drawing touched and no tool selected
-							panelCenter.ContextMenuStrip = popMenu;
+							popMenuDrawings.Items.Add(tsmi);
 						}
 					}
-				}
 					
-				pbSurfaceScreen.Invalidate();
+					if(hasExtraMenu)
+						popMenuDrawings.Items.Add(mnuSepDrawing2);
+						
+					// Generic delete
+					popMenuDrawings.Items.Add(mnuDeleteDrawing);
+					
+					// Set this menu as the context menu.
+					panelCenter.ContextMenuStrip = popMenuDrawings;
+				}
+			}
+			else if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Magnifier.IsOnObject(m_DescaledMouse))
+			{
+				panelCenter.ContextMenuStrip = popMenuMagnifier;
+			}
+			else if(m_ActiveTool != m_PointerTool)
+			{
+				// Launch FormToolPreset.
+				FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
+				ScreenManagerKernel.LocateForm(ftp);
+				ftp.ShowDialog();
+				ftp.Dispose();
+				UpdateCursor();
+			}
+			else
+			{
+				// No drawing touched and no tool selected
+				panelCenter.ContextMenuStrip = popMenu;
 			}
 		}
 		private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
@@ -1201,61 +1181,58 @@ namespace Kinovea.ScreenManager
 			// 1:Magnifier, 2:Drawings, 3:Chronos/Tracks
 			// When creating a drawing, the active tool will stay on this drawing until its setup is over.
 			// After the drawing is created, we either fall back to Pointer tool or stay on the same tool.
-
-			if(m_FrameServer.IsConnected)
+			
+			if(!m_FrameServer.IsConnected)
+			    return;
+			
+			m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+			
+			if (e.Button == MouseButtons.None && m_FrameServer.Magnifier.Mode == MagnifierMode.Direct)
 			{
-				if (e.Button == MouseButtons.None && m_FrameServer.Magnifier.Mode == MagnifierMode.Direct)
+				//m_FrameServer.Magnifier.MouseX = e.X;
+				//m_FrameServer.Magnifier.MouseY = e.Y;
+				m_FrameServer.Magnifier.Move(m_DescaledMouse);
+				pbSurfaceScreen.Invalidate();
+			}
+			else if (e.Button == MouseButtons.Left)
+			{
+				if (m_ActiveTool != m_PointerTool)
 				{
-					m_FrameServer.Magnifier.MouseX = e.X;
-					m_FrameServer.Magnifier.MouseY = e.Y;
-					pbSurfaceScreen.Invalidate();
+					// Currently setting the second point of a Drawing.
+					IInitializable initializableDrawing = m_FrameServer.Metadata[0].Drawings[0] as IInitializable;
+					if(initializableDrawing != null)
+						initializableDrawing.ContinueSetup(m_DescaledMouse);
 				}
-				else if (e.Button == MouseButtons.Left)
+				else
 				{
-					if (m_ActiveTool != m_PointerTool)
+					bool bMovingMagnifier = false;
+					if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect)
 					{
-						// Currently setting the second point of a Drawing.
-						IInitializable initializableDrawing = m_FrameServer.Metadata[0].Drawings[0] as IInitializable;
-						if(initializableDrawing != null)
-						{
-							initializableDrawing.ContinueSetup(m_FrameServer.CoordinateSystem.Untransform(new Point(e.X, e.Y)));
-						}
+						bMovingMagnifier = m_FrameServer.Magnifier.Move(m_DescaledMouse);
 					}
-					else
-					{
-						bool bMovingMagnifier = false;
-						if (m_FrameServer.Magnifier.Mode == MagnifierMode.Indirect)
-						{
-							bMovingMagnifier = m_FrameServer.Magnifier.OnMouseMove(e);
-						}
-						
-						if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
-						{
-							// Moving an object.
-							
-							Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
-							
-							// Magnifier is not being moved or is invisible, try drawings through pointer tool.
-							bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, descaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
-							
-							if (!bMovingObject && m_FrameServer.CoordinateSystem.Zooming)
-							{
-								// User is not moving anything and we are zooming : move the zoom window.
-								
-								// Get mouse deltas (descaled=in image coords).
-								double fDeltaX = (double)m_PointerTool.MouseDelta.X;
-								double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
-								
-								m_FrameServer.CoordinateSystem.MoveZoomWindow(fDeltaX, fDeltaY);
-							}
-						}
-					}
-				}
 					
-				if (!m_FrameServer.IsGrabbing)
-				{
-					pbSurfaceScreen.Invalidate();
+					if (!bMovingMagnifier && m_ActiveTool == m_PointerTool)
+					{
+						// Magnifier is not being moved or is invisible, try drawings through pointer tool.
+						bool bMovingObject = m_PointerTool.OnMouseMove(m_FrameServer.Metadata, m_DescaledMouse, m_FrameServer.CoordinateSystem.Location, ModifierKeys);
+						
+						if (!bMovingObject && m_FrameServer.CoordinateSystem.Zooming)
+						{
+							// User is not moving anything and we are zooming : move the zoom window.
+							
+							// Get mouse deltas (descaled=in image coords).
+							double fDeltaX = (double)m_PointerTool.MouseDelta.X;
+							double fDeltaY = (double)m_PointerTool.MouseDelta.Y;
+							
+							m_FrameServer.CoordinateSystem.MoveZoomWindow(fDeltaX, fDeltaY);
+						}
+					}
 				}
+			}
+				
+			if (!m_FrameServer.IsGrabbing)
+			{
+				pbSurfaceScreen.Invalidate();
 			}
 		}
 		private void SurfaceScreen_MouseUp(object sender, MouseEventArgs e)
@@ -1263,104 +1240,104 @@ namespace Kinovea.ScreenManager
 			// End of an action.
 			// Depending on the active tool we have various things to do.
 			
-			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left)
-			{
-				if (m_ActiveTool == m_PointerTool)
-				{
-					OnPoke();
-				}
-				
-				m_FrameServer.Magnifier.OnMouseUp(e);
-				
-				// Memorize the action we just finished to enable undo.
-				if (m_ActiveTool != m_PointerTool)
-				{
-					// Record the adding unless we are editing a text box.
-					if (!m_bTextEdit)
-					{
-						IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[0].Position);
-						CommandManager cm = CommandManager.Instance();
-						cm.LaunchUndoableCommand(cad);
-						
-					}
-					else
-					{
-						m_bTextEdit = false;
-					}
-				}
-				
-				// The fact that we stay on this tool or fall back to pointer tool, depends on the tool.
-				m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
-				
-				if (m_ActiveTool == m_PointerTool)
-				{
-					SetCursor(m_PointerTool.GetCursor(0));
-					m_PointerTool.OnMouseUp();
-				
-					// If we were resizing an SVG drawing, trigger a render.
-					// TODO: this is currently triggered on every mouse up, not only on resize !
-					int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
-					int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
-					if(selectedFrame != -1 && selectedDrawing  != -1)
-					{
-						DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
-						if(d != null)
-						{
-							d.ResizeFinished();
-						}
-					}
-				
-				}
-				
-				// Unselect drawings.
-				//m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-				//m_FrameServer.Metadata.SelectedDrawing = -1;
-							
-				if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
-				{
-					m_DeselectionTimer.Start();					
-				}
-				
-				pbSurfaceScreen.Invalidate();
-			}
-		}
-		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if(m_FrameServer.IsConnected && e.Button == MouseButtons.Left && m_ActiveTool == m_PointerTool)
-			{
+			if(!m_FrameServer.IsConnected || e.Button != MouseButtons.Left)
+			    return;
+			
+			m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+			
+			if (m_ActiveTool == m_PointerTool)
 				OnPoke();
-				
-				Point descaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
-				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-				m_FrameServer.Metadata.UnselectAll();
-				
-				//------------------------------------------------------------------------------------
-				// - If on text, switch to edit mode.
-				// - If on other drawing, launch the configuration dialog.
-				// - Otherwise -> Maximize/Reduce image.
-				//------------------------------------------------------------------------------------
-				if (m_FrameServer.Metadata.IsOnDrawing(0, descaledMouse, 0))
+			
+			m_FrameServer.Magnifier.OnMouseUp(m_DescaledMouse);
+			
+			// Memorize the action we just finished to enable undo.
+			if (m_ActiveTool != m_PointerTool)
+			{
+				// Record the adding unless we are editing a text box.
+				if (!m_bTextEdit)
 				{
-					AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[0].Drawings[m_FrameServer.Metadata.SelectedDrawing];
-					if (ad is DrawingText)
-					{
-						((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
-						m_ActiveTool = ToolManager.Label;
-						m_bTextEdit = true;
-					}
-					else if(ad is DrawingSVG || ad is DrawingBitmap)
-					{
-						mnuConfigureOpacity_Click(null, EventArgs.Empty);
-					}
-					else
-					{
-						mnuConfigureDrawing_Click(null, EventArgs.Empty);
-					}
+					IUndoableCommand cad = new CommandAddDrawing(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata, m_FrameServer.Metadata[0].Position);
+					CommandManager cm = CommandManager.Instance();
+					cm.LaunchUndoableCommand(cad);
+					
 				}
 				else
 				{
-					ToggleStretchMode();
+					m_bTextEdit = false;
 				}
+			}
+			
+			// The fact that we stay on this tool or fall back to pointer tool, depends on the tool.
+			m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
+			
+			if (m_ActiveTool == m_PointerTool)
+			{
+				SetCursor(m_PointerTool.GetCursor(0));
+				m_PointerTool.OnMouseUp();
+			
+				// If we were resizing an SVG drawing, trigger a render.
+				// TODO: this is currently triggered on every mouse up, not only on resize !
+				int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
+				int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
+				if(selectedFrame != -1 && selectedDrawing  != -1)
+				{
+					DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
+					if(d != null)
+					{
+						d.ResizeFinished();
+					}
+				}
+			
+			}
+			
+			// Unselect drawings.
+			//m_FrameServer.Metadata.SelectedDrawingFrame = -1;
+			//m_FrameServer.Metadata.SelectedDrawing = -1;
+						
+			if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
+			{
+				m_DeselectionTimer.Start();					
+			}
+			
+			pbSurfaceScreen.Invalidate();
+		}
+		private void SurfaceScreen_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if(!m_FrameServer.IsConnected || e.Button != MouseButtons.Left || m_ActiveTool == m_PointerTool)
+			    return;
+			
+			OnPoke();
+			
+			m_DescaledMouse = m_FrameServer.CoordinateSystem.Untransform(e.Location);
+			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
+			m_FrameServer.Metadata.UnselectAll();
+			
+			//------------------------------------------------------------------------------------
+			// - If on text, switch to edit mode.
+			// - If on other drawing, launch the configuration dialog.
+			// - Otherwise -> Maximize/Reduce image.
+			//------------------------------------------------------------------------------------
+			if (m_FrameServer.Metadata.IsOnDrawing(0, m_DescaledMouse, 0))
+			{
+				AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[0].Drawings[m_FrameServer.Metadata.SelectedDrawing];
+				if (ad is DrawingText)
+				{
+					((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
+					m_ActiveTool = ToolManager.Label;
+					m_bTextEdit = true;
+				}
+				else if(ad is DrawingSVG || ad is DrawingBitmap)
+				{
+					mnuConfigureOpacity_Click(null, EventArgs.Empty);
+				}
+				else
+				{
+					mnuConfigureDrawing_Click(null, EventArgs.Empty);
+				}
+			}
+			else
+			{
+				ToggleStretchMode();
 			}
 		}
 		private void SurfaceScreen_Paint(object sender, PaintEventArgs e)
@@ -1545,18 +1522,17 @@ namespace Kinovea.ScreenManager
 			{
 				m_ActiveTool = m_PointerTool;
 
-				if (m_FrameServer.Magnifier.Mode == MagnifierMode.NotVisible)
+				if (m_FrameServer.Magnifier.Mode == MagnifierMode.None)
 				{
 					UnzoomDirectZoom();
 					m_FrameServer.Magnifier.Mode = MagnifierMode.Direct;
-					//btnMagnifier.BackgroundImage = Resources.magnifierActive2;
 					SetCursor(Cursors.Cross);
 				}
 				else if (m_FrameServer.Magnifier.Mode == MagnifierMode.Direct)
 				{
 					// Revert to no magnification.
 					UnzoomDirectZoom();
-					m_FrameServer.Magnifier.Mode = MagnifierMode.NotVisible;
+					m_FrameServer.Magnifier.Mode = MagnifierMode.None;
 					//btnMagnifier.BackgroundImage = Resources.magnifier2;
 					SetCursor(m_PointerTool.GetCursor(0));
 					pbSurfaceScreen.Invalidate();
@@ -1656,52 +1632,30 @@ namespace Kinovea.ScreenManager
 		{
 			// Use position and magnification to Direct Zoom.
 			// Go to direct zoom, at magnifier zoom factor, centered on same point as magnifier.
-			m_FrameServer.CoordinateSystem.Zoom = m_FrameServer.Magnifier.ZoomFactor;
-			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Magnifier.MagnifiedCenter);
+			m_FrameServer.CoordinateSystem.Zoom = m_FrameServer.Magnifier.MagnificationFactor;
+			m_FrameServer.CoordinateSystem.RelocateZoomWindow(m_FrameServer.Magnifier.Center);
 			DisableMagnifier();
 			m_FrameServer.Metadata.ResizeFinished();
 			pbSurfaceScreen.Invalidate();
 		}
-		private void mnuMagnifier150_Click(object sender, EventArgs e)
+		private void mnuMagnifierChangeMagnification(object sender, EventArgs e)
 		{
-			SetMagnifier(mnuMagnifier150, 1.5);
-		}
-		private void mnuMagnifier175_Click(object sender, EventArgs e)
-		{
-			SetMagnifier(mnuMagnifier175, 1.75);
-		}
-		private void mnuMagnifier200_Click(object sender, EventArgs e)
-		{
-			SetMagnifier(mnuMagnifier200, 2.0);
-		}
-		private void mnuMagnifier225_Click(object sender, EventArgs e)
-		{
-			SetMagnifier(mnuMagnifier225, 2.25);
-		}
-		private void mnuMagnifier250_Click(object sender, EventArgs e)
-		{
-			SetMagnifier(mnuMagnifier250, 2.5);
-		}
-		private void SetMagnifier(ToolStripMenuItem _menu, double _fValue)
-		{
-			m_FrameServer.Magnifier.ZoomFactor = _fValue;
-			UncheckMagnifierMenus();
-			_menu.Checked = true;
-			pbSurfaceScreen.Invalidate();
-		}
-		private void UncheckMagnifierMenus()
-		{
-			mnuMagnifier150.Checked = false;
-			mnuMagnifier175.Checked = false;
-			mnuMagnifier200.Checked = false;
-			mnuMagnifier225.Checked = false;
-			mnuMagnifier250.Checked = false;
+		    ToolStripMenuItem menu = sender as ToolStripMenuItem;
+		    if(menu == null)
+		        return;
+		    
+		    foreach(ToolStripMenuItem m in maginificationMenus)
+		        m.Checked = false;
+		    
+			menu.Checked = true;
+			
+			m_FrameServer.Magnifier.MagnificationFactor = (double)menu.Tag;
+			DoInvalidate();
 		}
 		private void DisableMagnifier()
 		{
 			// Revert to no magnification.
-			m_FrameServer.Magnifier.Mode = MagnifierMode.NotVisible;
-			//btnMagnifier.BackgroundImage = Drawings.magnifier;
+			m_FrameServer.Magnifier.Mode = MagnifierMode.None;
 			SetCursor(m_PointerTool.GetCursor(0));
 		}
 		#endregion
@@ -1717,7 +1671,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void IncreaseDirectZoom()
 		{
-			if (m_FrameServer.Magnifier.Mode != MagnifierMode.NotVisible)
+			if (m_FrameServer.Magnifier.Mode != MagnifierMode.None)
 			{
 				DisableMagnifier();
 			}

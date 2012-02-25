@@ -289,6 +289,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>载入关键图像数据...</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>放大 x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>放大 x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>放大 x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>放大 x2</value></data>

@@ -7,7 +7,7 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// A helper class for drawings using a bounding box.
-    /// The drawing should defer part of its hit testing, move handle and move drawing methods to it.
+    /// Basically a wrapper around a rectangle, with added method for moving, hit testing, and drawing.
     /// By convention, the handles id of the bounding box will always be 1 to 4.
     /// When the drawing has other handles, they should start at id 5.
     /// </summary>
@@ -23,6 +23,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Rectangle m_Rectangle;
+        private static Size m_MinimalSize = new Size(50,50);
         #endregion
 
         public void Draw(Graphics _canvas, Rectangle _rect, Pen _pen, SolidBrush _brush, int _widen)
@@ -56,9 +57,23 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public void MoveHandle(Point point, int handleNumber, Size _originalSize)
+        public void MoveHandle(Point point, int handleNumber, Size _originalSize, bool keepAspectRatio)
         {
-            // Force aspect ratio for now.
+            if(keepAspectRatio)
+                MoveHandleKeepAspectRatio(point, handleNumber, _originalSize);
+            else
+                MoveHandleFree(point, handleNumber);
+        }
+        public void Move(int _deltaX, int _deltaY)
+        {
+            m_Rectangle = new Rectangle(m_Rectangle.X + _deltaX, m_Rectangle.Y + _deltaY, m_Rectangle.Width, m_Rectangle.Height);
+        }
+        
+        private void MoveHandleKeepAspectRatio(Point point, int handleNumber, Size _originalSize)
+        {
+            
+            // TODO: refactor/simplify.
+            
             switch (handleNumber)
             {
                 case 1:
@@ -67,7 +82,7 @@ namespace Kinovea.ScreenManager
                         int dx = point.X - m_Rectangle.Left;
                         int newWidth = m_Rectangle.Width - dx;
 
-                        if (newWidth > 50)
+                        if (newWidth > m_MinimalSize.Width)
                         {
                             double qRatio = (double)newWidth / (double)_originalSize.Width;
                             int newHeight = (int)((double)_originalSize.Height * qRatio); 	// Only if square.
@@ -85,7 +100,7 @@ namespace Kinovea.ScreenManager
                         int dx = m_Rectangle.Right - point.X;
                         int newWidth = m_Rectangle.Width - dx;
 
-                        if (newWidth > 50)
+                        if (newWidth > m_MinimalSize.Width)
                         {
                             double qRatio = (double)newWidth / (double)_originalSize.Width;
                             int newHeight = (int)((double)_originalSize.Height * qRatio); 	// Only if square.
@@ -103,7 +118,7 @@ namespace Kinovea.ScreenManager
                         int dx = m_Rectangle.Right - point.X;
                         int newWidth = m_Rectangle.Width - dx;
 
-                        if (newWidth > 50)
+                        if (newWidth > m_MinimalSize.Width)
                         {
                             double qRatio = (double)newWidth / (double)_originalSize.Width;
                             int newHeight = (int)((double)_originalSize.Height * qRatio); 	// Only if square.
@@ -121,7 +136,7 @@ namespace Kinovea.ScreenManager
                         int dx = point.X - m_Rectangle.Left;
                         int newWidth = m_Rectangle.Width - dx;
 
-                        if (newWidth > 50)
+                        if (newWidth > m_MinimalSize.Width)
                         {
                             double qRatio = (double)newWidth / (double)_originalSize.Width;
                             int newHeight = (int)((double)_originalSize.Height * qRatio); 	// Only if square.
@@ -136,9 +151,37 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
-        public void Move(int _deltaX, int _deltaY)
+        private void MoveHandleFree(Point point, int handleNumber)
         {
-            m_Rectangle = new Rectangle(m_Rectangle.X + _deltaX, m_Rectangle.Y + _deltaY, m_Rectangle.Width, m_Rectangle.Height);
+            Rectangle target = Rectangle.Empty;
+            
+            switch (handleNumber)
+            {
+                case 1:
+                    target = new Rectangle(point.X, point.Y, m_Rectangle.Right - point.X, m_Rectangle.Bottom - point.Y);
+                    break;
+                case 2:
+                    target = new Rectangle(m_Rectangle.Left, point.Y, point.X - m_Rectangle.Left, m_Rectangle.Bottom - point.Y);
+                    break;
+                case 3:
+                    target = new Rectangle(m_Rectangle.Left, m_Rectangle.Top, point.X - m_Rectangle.Left, point.Y - m_Rectangle.Top);
+                    break;
+                case 4:
+                    target = new Rectangle(point.X, m_Rectangle.Top, m_Rectangle.Right - point.X, point.Y - m_Rectangle.Top);
+                    break;
+            }
+            
+            ApplyWithConstraints(target);
+        }
+        private void ApplyWithConstraints(Rectangle target)
+        {
+            if(target.Width < m_MinimalSize.Width)
+                target = new Rectangle(m_Rectangle.Left, target.Top, m_MinimalSize.Width, target.Height);
+            
+            if(target.Height < m_MinimalSize.Height)
+                target = new Rectangle(target.Left, m_Rectangle.Top, target.Width, m_MinimalSize.Height);
+            
+            m_Rectangle = target;
         }
     }
 }

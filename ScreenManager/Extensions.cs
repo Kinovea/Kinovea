@@ -46,6 +46,14 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
+        /// Get the center of a rectangle.
+        /// </summary>
+        public static Point Center(this Rectangle _rect)
+        {
+            return new Point(_rect.X + _rect.Width / 2, _rect.Y + _rect.Height / 2);
+        }
+        
+        /// <summary>
         /// Translate a point by x pixels horizontally, y pixels vertically.
         /// </summary>
         public static Point Translate(this Point _point, int _x, int _y)

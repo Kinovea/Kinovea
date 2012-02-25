@@ -72,6 +72,9 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_fZoom > 1.0f;}
 		}
+		/// <summary>
+		/// Location of the zoom window.
+		/// </summary>
 		public Point Location
 		{
 			get { return m_DirectZoomWindow.Location;}
