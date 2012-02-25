@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
             	// that we currently don't save to the .kva but only draw on the image.
                 return m_Keyframes.Count > 0 ||
                         m_ExtraDrawings.Count > m_iStaticExtraDrawings ||
-                        m_Magnifier.Mode != MagnifierMode.NotVisible;
+                        m_Magnifier.Mode != MagnifierMode.None;
             }
         }
         public bool IsTracking {

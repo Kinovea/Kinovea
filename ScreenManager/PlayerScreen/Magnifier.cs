@@ -1,5 +1,6 @@
+#region License
 /*
-Copyright © Joan Charmant 2008.
+Copyright © Joan Charmant 2012.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -15,392 +16,166 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
-
+#endregion
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Picture-in-picture with magnification.
+    /// </summary>
     public class Magnifier
     {
-        private enum Hit
-        {
-            None,
-            SourceWindow,
-            MagnifyWindow,
-            TopLeftResizer,
-            TopRightResizer,
-            BottomLeftResizer,
-            BottomRightResizer
-        }
-
-        #region Properties
-        public double ZoomFactor
-        {
-            get { return m_fZoomFactor; }
-            set 
-            {
-                m_fZoomFactor = value;
-                m_iMagWidth = (int)((double)m_iSrcCustomWidth * m_fZoomFactor);
-                m_iMagHeight = (int)((double)m_iSrcCustomHeight * m_fZoomFactor);
-            }
-        }
-        public int MouseX = 0;
-        public int MouseY = 0;
-        public MagnifierMode Mode = MagnifierMode.NotVisible;
-        public Point MagnifiedCenter
-        {
-            get { return new Point(m_ImgTopLeft.X + m_iImgWidth / 2, m_ImgTopLeft.Y + m_iImgHeight / 2); }
-        }
-        #endregion
-
-        #region Members
-        private double m_fStretchFactor = double.MaxValue;
-
-        private Size m_iImageSize = new Size(1, 1);
-
-        // TODO : turn everything into Rectangles.
+        // As always, coordinates are expressed in terms of the original image size.
+        // They are converted to display size at the last moment, using the CoordinateSystem transformer.
+        // TODO: save positions in the KVA.
+        // TODO: support for rendering unscaled.
         
-        // Precomputed values (computed only when image stretch factor changes)
-        private int m_iSrcWidth = 0;
-        private int m_iSrcHeight = 0;
-
-        private int m_iMagLeft = 10;
-        private int m_iMagTop = 10;
-        private int m_iMagWidth = 0;
-        private int m_iMagHeight = 0;
-
-        private Point m_ImgTopLeft = new Point(0, 0); // Location of source zone in source image system.
-        private int m_iImgWidth = 0;    				// size of the source zone in the original image
-        private int m_iImgHeight = 0;
-
-        // Default coeffs
-        private static double m_fDefaultWindowFactor  = 0.20; // Size of the source zone relative to image size.
-        private static double m_fZoomFactor = 1.75;
-
-        // Indirect mode values
-        private int m_iSrcCustomLeft = 0;
-        private int m_iSrcCustomTop = 0;
-        private int m_iSrcCustomWidth = 0;
-        private int m_iSrcCustomHeight = 0;
-        private Point m_LastPoint = new Point(0,0);
-        private Hit m_MovingObject = Hit.None;
+        public static readonly double[] MagnificationFactors = new double[]{1.50, 1.75, 2.0, 2.25, 2.5};
+        
+        #region Properties
+        public MagnifierMode Mode {
+            get { return m_mode; }
+            set { m_mode = value; }
+        }
+        public double MagnificationFactor {
+            get { return m_magnificationFactor; }
+            set { 
+                m_magnificationFactor = value;
+                ResizeInsert();
+            }
+        }
+        public Point Center {
+            get { return m_source.Rectangle.Center(); }
+        }
         #endregion
-
-        #region Public Interface
-        public void Draw(Bitmap _bitmap, Graphics _canvas, double _fStretchFactor, bool _bMirrored)
+        
+        #region Members
+        private BoundingBox m_source = new BoundingBox();   // Wrapper for the region of interest in the original image.
+        private Rectangle m_insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
+        private MagnifierMode m_mode;// = MagnifierMode.None;
+        private Point m_sourceLastLocation;
+        private Point m_insertLastLocation;
+        private int m_hitHandle = -1;
+        private double m_magnificationFactor = MagnificationFactors[1];
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
+        #endregion
+       
+        #region Constructor
+        public Magnifier()
         {
-            m_iImageSize = new Size(_bitmap.Width, _bitmap.Height);
-
-            if (_fStretchFactor != m_fStretchFactor)
-            {
-                m_LastPoint = new Point((int)((double)m_LastPoint.X * _fStretchFactor), (int)((double)m_LastPoint.Y * _fStretchFactor));
-
-                if (m_fStretchFactor != double.MaxValue)
-                {
-                    // Scale to new stretch factor.
-
-                    double fRescaleFactor = _fStretchFactor / m_fStretchFactor;
-
-                    m_iSrcCustomLeft = (int)((double)m_iSrcCustomLeft * fRescaleFactor);
-                    m_iSrcCustomTop = (int)((double)m_iSrcCustomTop * fRescaleFactor);
-                    m_iSrcCustomWidth = (int)((double)m_iSrcCustomWidth * fRescaleFactor);
-                    m_iSrcCustomHeight = (int)((double)m_iSrcCustomHeight * fRescaleFactor);
-
-                    m_iMagLeft = (int)((double)m_iMagLeft * fRescaleFactor);
-                    m_iMagTop = (int)((double)m_iMagTop * fRescaleFactor);
-                    m_iMagWidth = (int)((double)m_iMagWidth * fRescaleFactor);
-                    m_iMagHeight = (int)((double)m_iMagHeight * fRescaleFactor);
-                }
-                else
-                {
-                    // Initializations.
-                    
-                    m_iSrcWidth = (int)((double)_bitmap.Width * _fStretchFactor * m_fDefaultWindowFactor);
-                    m_iSrcHeight = (int)((double)_bitmap.Height * _fStretchFactor * m_fDefaultWindowFactor);
-                    
-                    m_iMagLeft = 10;
-                    m_iMagTop = 10;
-                    
-                    m_iMagWidth = (int)((double)m_iSrcWidth * m_fZoomFactor);
-                    m_iMagHeight = (int)((double)m_iSrcHeight * m_fZoomFactor);
-                    
-                    m_iImgWidth = (int)((double)m_iSrcWidth / _fStretchFactor);
-                    m_iImgHeight = (int)((double)m_iSrcHeight / _fStretchFactor);
-                }
-
-                m_fStretchFactor = _fStretchFactor;
-            }
-
-            int iImgLeft = 0;
-            int iImgTop = 0;
+            ResetData();
+        }
+        #endregion
+       
+        #region Public interface
+        public void Draw(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored)
+        {
+            if(m_mode == MagnifierMode.None)
+                return;
             
-            if (Mode == MagnifierMode.Direct)
-            {
-                iImgLeft = (int)((double)MouseX / _fStretchFactor) - (m_iImgWidth / 2);
-                iImgTop = (int)((double)MouseY / _fStretchFactor) - (m_iImgHeight / 2);
-				m_ImgTopLeft = new Point(iImgLeft, iImgTop);
-				
-                _canvas.DrawRectangle(Pens.White, MouseX - m_iSrcWidth / 2, MouseY - m_iSrcHeight/2, m_iSrcWidth, m_iSrcHeight);
-            }
-            else if (Mode == MagnifierMode.Indirect)
-            {
-                iImgLeft = (int)((double)m_iSrcCustomLeft / _fStretchFactor);
-                iImgTop = (int)((double)m_iSrcCustomTop / _fStretchFactor);
-                
-
-                _canvas.DrawRectangle(Pens.LightGray, m_iSrcCustomLeft, m_iSrcCustomTop, m_iSrcCustomWidth, m_iSrcCustomHeight);
-
-               // Handlers
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft - 2, m_iSrcCustomTop - 2, m_iSrcCustomLeft + 2, m_iSrcCustomTop - 2);
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft - 2, m_iSrcCustomTop - 2, m_iSrcCustomLeft - 2, m_iSrcCustomTop + 2);
-
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft - 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2, m_iSrcCustomLeft + 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2);
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft - 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2, m_iSrcCustomLeft - 2, m_iSrcCustomTop + m_iSrcCustomHeight - 2);
-
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop - 2, m_iSrcCustomLeft + m_iSrcCustomWidth - 2, m_iSrcCustomTop - 2);
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop - 2, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + 2);
-
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2, m_iSrcCustomLeft + m_iSrcCustomWidth - 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2);
-                _canvas.DrawLine(Pens.LightGray, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + m_iSrcCustomHeight + 2, m_iSrcCustomLeft + m_iSrcCustomWidth + 2, m_iSrcCustomTop + m_iSrcCustomHeight - 2);
-            }
-            
-            // Image Window.
-            m_ImgTopLeft = new Point(iImgLeft, iImgTop);
-            Rectangle rDst;
+            m_source.Draw(_canvas, _transformer.Transform(m_source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
+            DrawInsert(_bitmap, _canvas, _transformer, _bMirrored);
+        }
+        private void DrawInsert(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored)
+        {
             Rectangle rSrc;
             if(_bMirrored)
-            {
-            	// If mirrored, the destination spot is reversed (negative width),
-            	// and the source spot is reversed relatively to the edge of the image.
-            	rDst = new Rectangle(m_iMagLeft + m_iMagWidth, m_iMagTop, - m_iMagWidth, m_iMagHeight);
-            	rSrc = new Rectangle(m_iImageSize.Width - (iImgLeft + m_iImgWidth), iImgTop, m_iImgWidth, m_iImgHeight);
-            }
+            	rSrc = new Rectangle(_bitmap.Width - m_source.Rectangle.Left, m_source.Rectangle.Top, -m_source.Rectangle.Width, m_source.Rectangle.Height);
             else
-            {
-            	rDst = new Rectangle(m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
-            	rSrc = new Rectangle(iImgLeft, iImgTop, m_iImgWidth, m_iImgHeight);
-            }
+            	rSrc = m_source.Rectangle;
             
-            _canvas.DrawImage(_bitmap, rDst, rSrc, GraphicsUnit.Pixel);
-			_canvas.DrawRectangle(Pens.White, m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
+            _canvas.DrawImage(_bitmap, _transformer.Transform(m_insert), rSrc, GraphicsUnit.Pixel);
+            _canvas.DrawRectangle(Pens.White, _transformer.Transform(m_insert));
         }
-        public void OnMouseUp(MouseEventArgs e)
+        public void OnMouseUp(Point _location)
         {
-            if (Mode == MagnifierMode.Direct)
-            {
+            if(Mode == MagnifierMode.Direct)
                 Mode = MagnifierMode.Indirect;
-
-                // Fix current values.
-                m_iSrcCustomLeft = MouseX - m_iSrcWidth/2;
-                m_iSrcCustomTop = MouseY - m_iSrcHeight/2;
-                m_iSrcCustomWidth = m_iSrcWidth;
-                m_iSrcCustomHeight = m_iSrcHeight;
-            }
         }
-        public bool OnMouseMove(MouseEventArgs e)
+        public bool Move(Point _location)
         {
-            if (Mode == MagnifierMode.Indirect)
+            // Currently the magnifier does not use the same move/moveHandle mechanics as other drawings.
+            // (Going through the pointer tool to keep track of last mouse location and calling move or moveHandle from there)
+            // Hence, we keep the last location here and recompute the deltas locally.
+            if(m_mode == MagnifierMode.Direct || m_hitHandle == 0)
             {
-                int deltaX = e.X - m_LastPoint.X;
-                int deltaY = e.Y - m_LastPoint.Y;
-
-                m_LastPoint.X = e.X;
-                m_LastPoint.Y = e.Y;
-
-                switch (m_MovingObject)
-                {
-                    case Hit.SourceWindow:
-                        if ((m_iSrcCustomLeft + deltaX > 0) && (m_iSrcCustomLeft + m_iSrcCustomWidth + deltaX + 1 < m_iImageSize.Width * m_fStretchFactor))
-                        {
-                            m_iSrcCustomLeft += deltaX;
-                        }
-                        if ((m_iSrcCustomTop + deltaY > 0) && (m_iSrcCustomTop + m_iSrcCustomHeight + deltaY + 1 < m_iImageSize.Height * m_fStretchFactor))
-                        {
-                            m_iSrcCustomTop += deltaY;
-                        }
-                        break;
-                    case Hit.MagnifyWindow:
-                        if ((m_iMagLeft + deltaX > 0) && (m_iMagLeft + m_iMagWidth + deltaX + 1 < m_iImageSize.Width * m_fStretchFactor))
-                        {
-                            m_iMagLeft += deltaX;
-                        }
-                        if ((m_iMagTop + deltaY > 0) && (m_iMagTop + m_iMagHeight + deltaY + 1 < m_iImageSize.Height * m_fStretchFactor))
-                        {
-                            m_iMagTop += deltaY;
-                        }
-                        break;
-                    case Hit.TopLeftResizer:
-                        if ((m_iSrcCustomLeft + deltaX > 0) && 
-                            (m_iSrcCustomTop + deltaY > 0)  &&
-                            (m_iSrcCustomLeft + m_iSrcCustomWidth + deltaX + 1 < m_iImageSize.Width * m_fStretchFactor) &&
-                            (m_iSrcCustomTop + m_iSrcCustomHeight + deltaY + 1 < m_iImageSize.Height * m_fStretchFactor)    )
-                        {
-                            m_iSrcCustomLeft += deltaX;
-                            m_iSrcCustomTop += deltaY;
-                            m_iSrcCustomWidth -= deltaX;
-                            m_iSrcCustomHeight -= deltaY;
-
-                            if (m_iSrcCustomWidth < 10) m_iSrcCustomWidth = 10;
-                            if (m_iSrcCustomHeight < 10) m_iSrcCustomHeight = 10;
-
-                            m_iMagWidth = (int)((double)m_iSrcCustomWidth * m_fZoomFactor);
-                            m_iMagHeight = (int)((double)m_iSrcCustomHeight * m_fZoomFactor);
-                            m_iImgWidth = (int)((double)m_iSrcCustomWidth / m_fStretchFactor);
-                            m_iImgHeight = (int)((double)m_iSrcCustomHeight / m_fStretchFactor);
-                        }
-                        break;
-                    case Hit.BottomLeftResizer:
-                        if ((m_iSrcCustomLeft + deltaX > 0) &&
-                            (m_iSrcCustomTop + deltaY > 0) &&
-                            (m_iSrcCustomLeft + m_iSrcCustomWidth + deltaX + 1 < m_iImageSize.Width * m_fStretchFactor) &&
-                            (m_iSrcCustomTop + m_iSrcCustomHeight + deltaY + 1 < m_iImageSize.Height * m_fStretchFactor))
-                        {
-                            m_iSrcCustomLeft += deltaX;
-                            m_iSrcCustomWidth -= deltaX;
-                            m_iSrcCustomHeight += deltaY;
-
-                            if (m_iSrcCustomWidth < 10) m_iSrcCustomWidth = 10;
-                            if (m_iSrcCustomHeight < 10) m_iSrcCustomHeight = 10;
-
-                            m_iMagWidth = (int)((double)m_iSrcCustomWidth * m_fZoomFactor);
-                            m_iMagHeight = (int)((double)m_iSrcCustomHeight * m_fZoomFactor);
-                            m_iImgWidth = (int)((double)m_iSrcCustomWidth / m_fStretchFactor);
-                            m_iImgHeight = (int)((double)m_iSrcCustomHeight / m_fStretchFactor);
-                        }
-                        break;
-                    case Hit.TopRightResizer:
-                        if ((m_iSrcCustomLeft + deltaX > 0) &&
-                            (m_iSrcCustomTop + deltaY > 0) &&
-                            (m_iSrcCustomLeft + m_iSrcCustomWidth + deltaX + 1 < m_iImageSize.Width * m_fStretchFactor) &&
-                            (m_iSrcCustomTop + m_iSrcCustomHeight + deltaY + 1 < m_iImageSize.Height * m_fStretchFactor))
-                        {
-                            m_iSrcCustomTop += deltaY;
-                            m_iSrcCustomWidth += deltaX;
-                            m_iSrcCustomHeight -= deltaY;
-
-                            if (m_iSrcCustomWidth < 10) m_iSrcCustomWidth = 10;
-                            if (m_iSrcCustomHeight < 10) m_iSrcCustomHeight = 10;
-
-                            m_iMagWidth = (int)((double)m_iSrcCustomWidth * m_fZoomFactor);
-                            m_iMagHeight = (int)((double)m_iSrcCustomHeight * m_fZoomFactor);
-                            m_iImgWidth = (int)((double)m_iSrcCustomWidth / m_fStretchFactor);
-                            m_iImgHeight = (int)((double)m_iSrcCustomHeight / m_fStretchFactor);
-                        }
-                        break;
-                    case Hit.BottomRightResizer:
-                        if ((m_iSrcCustomLeft + deltaX > 0) &&
-                            (m_iSrcCustomTop + deltaY > 0) &&
-                            (m_iSrcCustomLeft + m_iSrcCustomWidth + deltaX + 1 < m_iImageSize.Width * m_fStretchFactor) &&
-                            (m_iSrcCustomTop + m_iSrcCustomHeight + deltaY + 1 < m_iImageSize.Height * m_fStretchFactor))
-                        {
-                            m_iSrcCustomWidth += deltaX;
-                            m_iSrcCustomHeight += deltaY;
-
-                            if (m_iSrcCustomWidth < 10) m_iSrcCustomWidth = 10;
-                            if (m_iSrcCustomHeight < 10) m_iSrcCustomHeight = 10;
-
-                            m_iMagWidth = (int)((double)m_iSrcCustomWidth * m_fZoomFactor);
-                            m_iMagHeight = (int)((double)m_iSrcCustomHeight * m_fZoomFactor);
-                            m_iImgWidth = (int)((double)m_iSrcCustomWidth / m_fStretchFactor);
-                            m_iImgHeight = (int)((double)m_iSrcCustomHeight / m_fStretchFactor);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-                
-
-                
+                m_source.Move(_location.X - m_sourceLastLocation.X, _location.Y - m_sourceLastLocation.Y);
+                m_sourceLastLocation = _location;
             }
-
-            return (m_MovingObject != Hit.None);
-        }
-        public bool OnMouseDown(MouseEventArgs e)
-        {
-            //----------------------------------------------------------------
-            // Return true if we actually hit any of the magnifier elements
-            // (mag window, resizers, etc...)
-            // In case of the first switch to indirect mode, will return true.
-            //----------------------------------------------------------------
-            if (Mode == MagnifierMode.Indirect)
+            else if(m_hitHandle > 0 && m_hitHandle < 5)
             {
-                // initialize position.
-                m_LastPoint.X = e.X;
-                m_LastPoint.Y = e.Y;
-
-                // initialize what we are moving.
-                m_MovingObject = HitTest(new Point(e.X, e.Y));
+                m_source.MoveHandle(_location, m_hitHandle, Size.Empty, false);
+                ResizeInsert();
             }
-
-            return (m_MovingObject != Hit.None);
+            else if(m_hitHandle == 5)
+            {
+                m_insert = new Rectangle(m_insert.X + (_location.X - m_insertLastLocation.X), m_insert.Y + (_location.Y - m_insertLastLocation.Y), m_insert.Width, m_insert.Height);
+                m_insertLastLocation = _location;
+            }
+            return false;
         }
-        public bool IsOnObject(MouseEventArgs e)
+        public bool OnMouseDown(Point _location)
         {
-            return (HitTest(new Point(e.X, e.Y)) != Hit.None);
+            if(m_mode != MagnifierMode.Indirect)
+                return false;
+
+            m_hitHandle = HitTest(_location);
+            
+            if(m_hitHandle == 0)
+                m_sourceLastLocation = _location;
+            else if(m_hitHandle == 5)
+                m_insertLastLocation = _location;
+
+            return m_hitHandle >= 0;
+        }
+        public bool IsOnObject(Point _location)
+        {
+            return HitTest(_location) >= 0;
+        }
+        public int HitTest(Point _location)
+        {
+            // Hit results : 
+            // -1: nothing.
+            // 0: source rectangle.
+            // 1 to 4: source corners, clockwise starting top-left.
+            // 5: insert picture.
+            
+            int hit = -1;
+            if(m_insert.Contains(_location))
+                hit = 5;
+            else
+                hit = m_source.HitTest(_location);
+
+            return hit;
         }
         public void ResetData()
         {
-        	m_LastPoint.X = 0;
-            m_LastPoint.Y = 0;
-
-            m_iImageSize = new Size(1, 1);
-            m_ImgTopLeft = new Point(0, 0);	
+            Size defaultSize = new Size(100, 100);
+            m_source.Rectangle = new Rectangle(- (defaultSize.Width / 2), - (defaultSize.Height / 2), defaultSize.Width, defaultSize.Height);
+            m_insert = new Rectangle(10, 10, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
+            
+            m_sourceLastLocation = Point.Empty;
+            m_insertLastLocation = Point.Empty;
+            
+            m_mode = MagnifierMode.None;
         }
         #endregion
-
-        private Hit HitTest(Point _point)
-        {
-            // Hit Result:
-            // -1: miss, 0: on source window, 1: on magnification window, 1+: on source resizer.
-
-            Hit res = Hit.None;
-
-            Rectangle srcRectangle = new Rectangle(m_iSrcCustomLeft, m_iSrcCustomTop, m_iSrcCustomWidth, m_iSrcCustomHeight);
-            Rectangle magRectangle = new Rectangle(m_iMagLeft, m_iMagTop, m_iMagWidth, m_iMagHeight);
-
-            // We widen the size of handlers rectangle for easier selection.
-            int widen = 6;
-
-            if (new Rectangle(m_iSrcCustomLeft - widen, m_iSrcCustomTop - widen, widen * 2, widen * 2).Contains(_point))
-            {
-                res = Hit.TopLeftResizer;
-            }
-            else if (new Rectangle(m_iSrcCustomLeft - widen, m_iSrcCustomTop + m_iSrcCustomHeight - widen, widen * 2, widen * 2).Contains(_point))
-            {
-                res = Hit.BottomLeftResizer;
-            }
-            else if (new Rectangle(m_iSrcCustomLeft + m_iSrcCustomWidth - widen, m_iSrcCustomTop - widen, widen * 2, widen * 2).Contains(_point))
-            {
-                res = Hit.TopRightResizer;
-            }
-            else if (new Rectangle(m_iSrcCustomLeft + m_iSrcCustomWidth - widen, m_iSrcCustomTop + m_iSrcCustomHeight - widen, widen * 2, widen * 2).Contains(_point))
-            {
-                res = Hit.BottomRightResizer;
-            }
-            else if (srcRectangle.Contains(_point))
-            {
-                res = Hit.SourceWindow;
-            }
-            else if (magRectangle.Contains(_point))
-            {
-                res = Hit.MagnifyWindow;
-            }
-            
-
-            return res;
-        }
         
+        private void ResizeInsert()
+        {
+            m_insert = new Rectangle(m_insert.Left, m_insert.Top, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
+        }
     }
-
+    
     public enum MagnifierMode
     {
-        NotVisible,               
-        Direct, 		// When the mouse move makes the magnifier move.     
+        None,
+        Direct, 		// When the mouse move makes the magnifier move (Initial mode).
         Indirect    	// When the user has to click to change the boundaries of the magnifier.
     }
 }
