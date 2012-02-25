@@ -224,12 +224,17 @@ namespace Kinovea.Root
             
             log.Debug("RefreshUICulture - Whole tree culture reloaded.");
         }
-        public void CloseSubModules()
+        public bool CloseSubModules()
         {
             log.Debug("Root is closing. Call close on all sub modules.");
-            m_FileBrowser.CloseSubModules();
-            m_Updater.CloseSubModules();
-            m_ScreenManager.CloseSubModules();    
+            bool cancel = m_ScreenManager.CloseSubModules();
+            if(!cancel)
+            {
+                m_FileBrowser.CloseSubModules();
+                m_Updater.CloseSubModules();
+            }
+
+            return cancel;
         }
         #endregion
 

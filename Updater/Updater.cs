@@ -87,10 +87,11 @@ namespace Kinovea.Updater
         {
             mnuCheckForUpdates.Text = UpdaterLang.mnuCheckForUpdates;
         }
-        public void CloseSubModules()
+        public bool CloseSubModules()
         {
             // No sub modules to close.
             // Nothing more to do here.
+            return false;
         }
         #endregion
 

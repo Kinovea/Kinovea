@@ -117,7 +117,7 @@ namespace Kinovea.Root
         #region Event Handlers
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
-            mRootKernel.CloseSubModules();
+            e.Cancel = mRootKernel.CloseSubModules();
         }
         #endregion
     }
