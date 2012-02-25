@@ -73,23 +73,30 @@ namespace Kinovea.ScreenManager
         #endregion
        
         #region Public interface
-        public void Draw(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored)
+        public void Draw(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored, Size _originalSize)
         {
             if(m_mode == MagnifierMode.None)
                 return;
             
             m_source.Draw(_canvas, _transformer.Transform(m_source.Rectangle), Pens.White, (SolidBrush)Brushes.White, 4);
-            DrawInsert(_bitmap, _canvas, _transformer, _bMirrored);
+            DrawInsert(_bitmap, _canvas, _transformer, _bMirrored, _originalSize);
         }
-        private void DrawInsert(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored)
+        private void DrawInsert(Bitmap _bitmap, Graphics _canvas, CoordinateSystem _transformer, bool _bMirrored, Size _originalSize)
         {
-            Rectangle rSrc;
-            if(_bMirrored)
-            	rSrc = new Rectangle(_bitmap.Width - m_source.Rectangle.Left, m_source.Rectangle.Top, -m_source.Rectangle.Width, m_source.Rectangle.Height);
-            else
-            	rSrc = m_source.Rectangle;
+            // The bitmap passed in is the image decoded, so it might be at a different size than the original image size.
+            // We also need to take mirroring into account (until it's included in the CoordinateSystem).
             
-            _canvas.DrawImage(_bitmap, _transformer.Transform(m_insert), rSrc, GraphicsUnit.Pixel);
+            double scaleX = (double)_bitmap.Size.Width / _originalSize.Width;
+            double scaleY = (double)_bitmap.Size.Height / _originalSize.Height;
+            Rectangle scaledSource = new Rectangle((int)(m_source.Rectangle.Left * scaleX), (int)(m_source.Rectangle.Top * scaleY), (int)(m_source.Rectangle.Width * scaleX), (int)(m_source.Rectangle.Height * scaleY));
+            
+            Rectangle src;
+            if(_bMirrored)
+            	src = new Rectangle(_bitmap.Width - scaledSource.Left, scaledSource.Top, -scaledSource.Width, scaledSource.Height);
+            else
+            	src = scaledSource;
+            
+            _canvas.DrawImage(_bitmap, _transformer.Transform(m_insert), src, GraphicsUnit.Pixel);
             _canvas.DrawRectangle(Pens.White, _transformer.Transform(m_insert));
         }
         public void OnMouseUp(Point _location)

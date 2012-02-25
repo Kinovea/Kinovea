@@ -398,13 +398,9 @@ namespace Kinovea.ScreenManager
 			
 			RectangleF rSrc;
 			if (m_CoordinateSystem.Zooming)
-			{
 				rSrc = m_CoordinateSystem.ZoomWindow;
-			}
 			else
-			{
 				rSrc = new Rectangle(0, 0, _image.Width, _image.Height);
-			}
 			
 			_canvas.DrawImage(_image, rDst, rSrc, GraphicsUnit.Pixel);
 			
@@ -414,7 +410,7 @@ namespace Kinovea.ScreenManager
 			// TODO: handle miroring.
 			if (m_Metadata.Magnifier.Mode != MagnifierMode.None)
 			{
-				m_Metadata.Magnifier.Draw(_image, _canvas, m_CoordinateSystem, false);
+				m_Metadata.Magnifier.Draw(_image, _canvas, m_CoordinateSystem, false, _image.Size);
 			}
 		}
 		private void FlushDrawingsOnGraphics(Graphics _canvas)

@@ -1220,7 +1220,7 @@ namespace Kinovea.ScreenManager
 			// Load texts
 			ReloadMenusCulture();
 		}
-                private ToolStripMenuItem CreateMagnificationMenu(double magnificationFactor)
+        private ToolStripMenuItem CreateMagnificationMenu(double magnificationFactor)
 		{
 		    ToolStripMenuItem mnu = new ToolStripMenuItem();
 			mnu.Tag = magnificationFactor;
@@ -1228,7 +1228,7 @@ namespace Kinovea.ScreenManager
 			mnu.Click += mnuMagnifierChangeMagnification;
 			return mnu;
 		}
-                private void PostLoad_Idle(object sender, EventArgs e)
+        private void PostLoad_Idle(object sender, EventArgs e)
 		{
 		    Application.Idle -= PostLoad_Idle;
 		    m_Constructed = true;
@@ -1248,7 +1248,7 @@ namespace Kinovea.ScreenManager
 		    
 			ResizeUpdate(true);
 		}
-#endregion
+        #endregion
 		
 		#region Misc Events
 		private void btnClose_Click(object sender, EventArgs e)
@@ -2597,7 +2597,6 @@ namespace Kinovea.ScreenManager
 			else if (e.Button == MouseButtons.Right)
 			    SurfaceScreen_RightDown();
 
-			
 			DoInvalidate();
 		}
 		private void SurfaceScreen_LeftDown()
@@ -3162,7 +3161,6 @@ namespace Kinovea.ScreenManager
 			
 			m_TimeWatcher.LogTime("Before DrawImage");
 			
-			
 			if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
 			{
 			    // Source image should be at the right size, unless it has been temporarily disabled.
@@ -3305,7 +3303,7 @@ namespace Kinovea.ScreenManager
 			// Note: the Graphics object must not be the one extracted from the image itself.
 			// If needed, clone the image.
 			if (_sourceImage != null && m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
-				m_FrameServer.Metadata.Magnifier.Draw(_sourceImage, g, _transformer, m_FrameServer.Metadata.Mirrored);
+				m_FrameServer.Metadata.Magnifier.Draw(_sourceImage, g, _transformer, m_FrameServer.Metadata.Mirrored, m_FrameServer.VideoReader.Info.AspectRatioSize);
 		}
 		private void DoInvalidate()
 		{
