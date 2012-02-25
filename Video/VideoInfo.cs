@@ -30,7 +30,7 @@ namespace Kinovea.Video
     {
         // Structural info
         public string FilePath;
-        public Size DecodingSize;
+        public Size AspectRatioSize;
         public bool HasKva;
         
         // Timing info
@@ -53,7 +53,7 @@ namespace Kinovea.Video
             get { 
                 return new VideoInfo {
                     FilePath = "",
-                    DecodingSize = Size.Empty,
+                    AspectRatioSize = Size.Empty,
                     HasKva = false,
                     AverageTimeStampsPerFrame = 0,
                     AverageTimeStampsPerSeconds = 0,
