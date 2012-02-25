@@ -1940,6 +1940,22 @@ namespace Kinovea.ScreenManager
     			m_bTryingToConnect = false;
     		}
         }
+        private void BtnSaveImageLocationClick(object sender, EventArgs e)
+        {
+            OpenInExplorer(m_PrefManager.CaptureImageDirectory);
+        }
+        private void BtnSaveVideoLocationClick(object sender, EventArgs e)
+        {
+            OpenInExplorer(m_PrefManager.CaptureVideoDirectory);
+        }
+        private void OpenInExplorer(string path)
+        {
+            if (!Directory.Exists(path))
+                return;
+
+            string arg = "\"" + m_PrefManager.CaptureVideoDirectory +"\"";
+            System.Diagnostics.Process.Start("explorer.exe", arg);
+        }
         #endregion
 	}
 }

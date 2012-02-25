@@ -226,7 +226,7 @@ namespace Kinovea.ScreenManager
         	// btnSaveImageLocation
         	// 
         	this.btnSaveImageLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnSaveImageLocation.Cursor = System.Windows.Forms.Cursors.Arrow;
+        	this.btnSaveImageLocation.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.btnSaveImageLocation.FlatAppearance.BorderSize = 0;
         	this.btnSaveImageLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnSaveImageLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -238,6 +238,7 @@ namespace Kinovea.ScreenManager
         	this.btnSaveImageLocation.TabIndex = 36;
         	this.btnSaveImageLocation.Tag = "";
         	this.btnSaveImageLocation.UseVisualStyleBackColor = true;
+        	this.btnSaveImageLocation.Click += new System.EventHandler(this.BtnSaveImageLocationClick);
         	// 
         	// tbImageFilename
         	// 
@@ -266,7 +267,7 @@ namespace Kinovea.ScreenManager
         	// btnSaveVideoLocation
         	// 
         	this.btnSaveVideoLocation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	this.btnSaveVideoLocation.Cursor = System.Windows.Forms.Cursors.Arrow;
+        	this.btnSaveVideoLocation.Cursor = System.Windows.Forms.Cursors.Hand;
         	this.btnSaveVideoLocation.FlatAppearance.BorderSize = 0;
         	this.btnSaveVideoLocation.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
         	this.btnSaveVideoLocation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -278,6 +279,7 @@ namespace Kinovea.ScreenManager
         	this.btnSaveVideoLocation.TabIndex = 31;
         	this.btnSaveVideoLocation.Tag = "";
         	this.btnSaveVideoLocation.UseVisualStyleBackColor = true;
+        	this.btnSaveVideoLocation.Click += new System.EventHandler(this.BtnSaveVideoLocationClick);
         	// 
         	// tbVideoFilename
         	// 
