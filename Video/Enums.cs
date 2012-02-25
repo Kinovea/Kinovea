@@ -37,7 +37,7 @@ namespace Kinovea.Video
 		CanChangeDeinterlacing = 32,
 		CanChangeVideoDuration = 64,
 		CanChangeFrameRate = 128,
-		CanChangeOriginalSize = 256
+		CanChangeDecodingSize = 256
 	}
     
     /// <summary>

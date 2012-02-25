@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
         private static readonly Pen m_PenSyncInside = new Pen(Color.FromArgb(96, Color.Firebrick), 1);
         #endregion
         
-        private static readonly bool m_DebugDisplay = false;
+        private static readonly bool m_PrebufferDisplay = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -213,7 +213,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void UpdateCacheSegmentMarker(VideoSection _section)
 		{
-		    if(!_section.IsEmpty && m_DebugDisplay)
+		    if(!_section.IsEmpty && m_PrebufferDisplay)
 		    {
     		    m_CacheSegment = _section;
                 UpdateCacheSegmentMarkerPosition();
@@ -302,7 +302,7 @@ namespace Kinovea.ScreenManager
         	if(!m_bEnabled)
         	    return;
         	
-        	if(m_DebugDisplay)
+        	if(m_PrebufferDisplay)
             {
                 foreach(Point mark in m_CacheSegmentMarks)
                     DrawMark(_canvas, Pens.LightSlateGray, Brushes.LightSteelBlue, mark);
