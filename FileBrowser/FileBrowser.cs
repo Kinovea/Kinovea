@@ -71,12 +71,11 @@ namespace Kinovea.FileBrowser
         {
             m_Fbui.RefreshUICulture();
         }
-        public void CloseSubModules()
+        public bool CloseSubModules()
         {
-            // No sub modules to close.
-         	
             // Save last browsed directory
             m_Fbui.Closing();
+            return false;
         }
         #endregion
 

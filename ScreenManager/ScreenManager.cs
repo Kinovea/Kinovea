@@ -499,10 +499,17 @@ namespace Kinovea.ScreenManager
 
             ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
         }
-        public void CloseSubModules()
+        public bool CloseSubModules()
         {
-            foreach (AbstractScreen screen in screenList)
-                screen.BeforeClose();
+            for(int i = screenList.Count - 1; i >= 0; i--)
+            {
+                screenList[i].BeforeClose();
+                CloseFile(i);
+                UpdateCaptureBuffers();
+                PrepareSync(false);
+            }
+            
+            return screenList.Count != 0;
         }
         #endregion
         
