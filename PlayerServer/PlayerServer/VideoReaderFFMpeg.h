@@ -128,6 +128,11 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 				return m_DecodingMode == VideoDecodingMode::PreBuffering ? m_PreBuffer->Drops : 0;
 			}
 		}
+		virtual property bool CanDrawUnscaled {
+			bool get() override {
+				return m_CanDrawUnscaled;
+			}
+		}
 
 	// Public Methods (VideoReader subclassing).
 	public:
@@ -140,6 +145,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		virtual String^ ReadMetadata() override;
 		virtual bool ChangeAspectRatio(ImageAspectRatio _ratio) override;
 		virtual bool ChangeDeinterlace(bool _deint) override;
+		virtual void ChangeDecodingSize(Size _size) override;
 		virtual void BeforePlayloop() override;
 		virtual void BeforeFrameEnumeration() override;
 		virtual void AfterFrameEnumeration() override;
@@ -166,6 +172,8 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		ThreadCanceler^ m_PreBufferingThreadCanceler;
 		VideoSection m_SectionToCache;
 		bool m_Prepend;
+		Size m_DecodingSize;
+		bool m_CanDrawUnscaled;
 
 		// Frame containers
 		IVideoFramesContainer^ m_FramesContainer;
@@ -201,7 +209,9 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		bool RescaleAndConvert(AVFrame* _pOutputFrame, AVFrame* _pInputFrame, int _OutputWidth, int _OutputHeight, int _OutputFmt, bool _bDeinterlace);
 		static void DisposeFrame(VideoFrame^ _frame);
 		static int GetStreamIndex(AVFormatContext* _pFormatCtx, int _iCodecType);
-		void SetDecodingSize(ImageAspectRatio _ratio);
+		void SetAspectRatioSize(ImageAspectRatio _ratio);
+		Size FixSize(Size _size);
+		void ResetDecodingSize();
 		void PreBufferingWorker(Object^ _canceler);
 		bool WorkingZoneFitsInMemory(VideoSection _newZone, int _maxSeconds, int _maxMemory);
 		bool ReadMany(BackgroundWorker^ _bgWorker, VideoSection _section, bool _prepend);
