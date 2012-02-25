@@ -6,7 +6,9 @@
 
     This stylesheet formats a .kva 1.5 file to .kva 2.0 file.
     You shouldn't have to use it manually, it is processed by Kinovea to read pre 0.8.16 files.
+    
     2011-08-06 - Initial converter. Styles are not converted.
+    TODO: Convert time of track points from relative to absolute.
 -->
 
 <xsl:template match="/">

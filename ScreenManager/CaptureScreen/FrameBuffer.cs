@@ -93,10 +93,12 @@ namespace Kinovea.ScreenManager
 				m_Buffer[m_iTail] = AForge.Imaging.Image.Clone(_bmp);
 			}
 			
-			if(m_iFill < m_iCapacity) m_iFill++;
+			if(m_iFill < m_iCapacity) 
+			    m_iFill++;
 			m_iToRead++;
 			m_iTail++;
-			if(m_iTail == m_iCapacity) m_iTail = 0;
+			if(m_iTail == m_iCapacity) 
+			    m_iTail = 0;
 			
 			//log.Debug(String.Format("Wrote frame. tail:{0}, head:{1}, count:{2}", m_iTail, m_iHead, m_iFill));
 		}
@@ -138,9 +140,7 @@ namespace Kinovea.ScreenManager
 			for(int i=0; i<m_Buffer.Length; i++)
 			{
 				if(m_Buffer[i] != null)
-				{
 					m_Buffer[i].Dispose();	
-				}
 			}
 			
 			m_iHead = 0;
