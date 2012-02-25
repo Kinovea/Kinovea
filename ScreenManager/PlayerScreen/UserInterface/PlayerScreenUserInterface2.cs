@@ -212,6 +212,7 @@ namespace Kinovea.ScreenManager
 		private Bitmap m_SyncMergeImage;
 		private ColorMatrix m_SyncMergeMatrix = new ColorMatrix();
 		private ImageAttributes m_SyncMergeImgAttr = new ImageAttributes();
+		private float m_SyncAlpha = 0.5f;
 		private bool m_DualSaveInProgress;
 		
 		// Image
@@ -314,7 +315,7 @@ namespace Kinovea.ScreenManager
 			InitializeComponent();
 			BuildContextMenus();
 			InitializeDrawingTools();
-			SyncSetAlpha(0.5f);
+			AfterSyncAlphaChange();
 			m_MessageToaster = new MessageToaster(pbSurfaceScreen);
 			
 			CommandLineArgumentManager clam = CommandLineArgumentManager.Instance();
@@ -712,9 +713,6 @@ namespace Kinovea.ScreenManager
 		}
 		public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
 		{
-			//if(m_SyncMergeImage != null)
-			//	m_SyncMergeImage.Dispose();
-			
 			m_SyncMergeImage = _SyncMergeImage;
 				
 			if(_bUpdateUI)
@@ -788,15 +786,22 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.Add:
 						{
-							IncreaseDirectZoom();
-							bWasHandled = true;
+				            if((ModifierKeys & Keys.Alt) == Keys.Alt)
+				                IncreaseSyncAlpha();
+				            else
+                                IncreaseDirectZoom();
+							
+				            bWasHandled = true;
 							break;
 						}
 					case Keys.Subtract:
 						{
-							// Decrease Zoom.
-							DecreaseDirectZoom();
-							bWasHandled = true;
+							if((ModifierKeys & Keys.Alt) == Keys.Alt)
+				                DecreaseSyncAlpha();
+				            else
+                                DecreaseDirectZoom();
+							
+				            bWasHandled = true;
 							break;
 						}
 					case Keys.F6:
@@ -1571,6 +1576,13 @@ namespace Kinovea.ScreenManager
 					IncreaseDirectZoom();
 				else
 					DecreaseDirectZoom();
+			}
+			else if((ModifierKeys & Keys.Alt) == Keys.Alt)
+			{
+			    if (iScrollOffset > 0)
+					IncreaseSyncAlpha();
+				else
+					DecreaseSyncAlpha();
 			}
 			else
 			{
@@ -3141,6 +3153,7 @@ namespace Kinovea.ScreenManager
 		private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _iNewSize, int _iKeyFrameIndex, long _iPosition)
 		{
 			// This function is used both by the main rendering loop and by image export functions.
+			// Video export get its image from the VideoReader or the cache.
 
 			// Notes on performances:
 			// - The global performance depends on the size of the *source* image. Not destination.
@@ -4296,10 +4309,7 @@ namespace Kinovea.ScreenManager
 			if (m_FrameServer.Metadata.Magnifier.Mode != MagnifierMode.None)
 				DisableMagnifier();
 
-			m_FrameServer.CoordinateSystem.Zoom += 0.10f;
-			if (m_FrameServer.CoordinateSystem.Zoom > m_MaxZoomFactor)
-			    m_FrameServer.CoordinateSystem.Zoom = m_MaxZoomFactor;
-			
+			m_FrameServer.CoordinateSystem.Zoom = Math.Min(m_FrameServer.CoordinateSystem.Zoom + 0.10f, m_MaxZoomFactor);
 			AfterZoomChange();
 		}
 		private void DecreaseDirectZoom()
@@ -4307,10 +4317,7 @@ namespace Kinovea.ScreenManager
 			if (!m_FrameServer.CoordinateSystem.Zooming)
 			    return;
 
-			m_FrameServer.CoordinateSystem.Zoom -= 0.10f;
-			if (m_FrameServer.CoordinateSystem.Zoom < 1.0f)
-                m_FrameServer.CoordinateSystem.Zoom = 1.0f;
-				
+			m_FrameServer.CoordinateSystem.Zoom = Math.Max(m_FrameServer.CoordinateSystem.Zoom - 0.10f, 1.0f);
 			AfterZoomChange();
 		}
 		private void AfterZoomChange()
@@ -4339,41 +4346,54 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Synchronisation specifics
-		private void SyncSetAlpha(float _alpha)
+		private void AfterSyncAlphaChange()
 		{
 			m_SyncMergeMatrix.Matrix00 = 1.0f;
 			m_SyncMergeMatrix.Matrix11 = 1.0f;
 			m_SyncMergeMatrix.Matrix22 = 1.0f;
-			m_SyncMergeMatrix.Matrix33 = _alpha;
+			m_SyncMergeMatrix.Matrix33 = m_SyncAlpha;
 			m_SyncMergeMatrix.Matrix44 = 1.0f;
 			m_SyncMergeImgAttr.SetColorMatrix(m_SyncMergeMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+		}
+		private void IncreaseSyncAlpha()
+		{
+		    if(!m_bSyncMerge)
+		        return;
+		    m_SyncAlpha = Math.Max(m_SyncAlpha - 0.1f, 0.0f);
+		    AfterSyncAlphaChange();
+		    DoInvalidate();
+		}
+		private void DecreaseSyncAlpha()
+		{
+		    if(!m_bSyncMerge)
+		        return;
+		    m_SyncAlpha = Math.Min(m_SyncAlpha + 0.1f, 1.0f);
+		    AfterSyncAlphaChange();
+            DoInvalidate();
 		}
 		private void ReportForSyncMerge()
 		{
 			// We have to re-apply the transformations here, because when drawing in this screen we draw directly on the canvas.
 			// (there is no intermediate image that we could reuse here, this might be a future optimization).
 			// We need to clone it anyway, so we might aswell do the transform.
-			if(m_bSynched && m_FrameServer.CurrentImage != null)
-			{
-				Bitmap img = CloneTransformedImage();
-				m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
-			}
+			if(!m_bSynched || !m_bSyncMerge || m_FrameServer.CurrentImage == null)
+			    return;
+			
+			Bitmap img = CloneTransformedImage();
+			if(img != null)
+			    m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
 		}
 		private Bitmap CloneTransformedImage()
 		{
-			Size imgSize = new Size(m_FrameServer.CurrentImage.Size.Width, m_FrameServer.CurrentImage.Size.Height);
+		    Size imgSize = new Size(m_FrameServer.CurrentImage.Size.Width, m_FrameServer.CurrentImage.Size.Height);
 			Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
 			Graphics g = Graphics.FromImage(img);
 			
 			Rectangle rDst;
 			if(m_FrameServer.Metadata.Mirrored)
-			{
 				rDst = new Rectangle(imgSize.Width, 0, -imgSize.Width, imgSize.Height);
-			}
 			else
-			{
 				rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
-			}
 			
 			g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
 			return img;
