@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
 		/// <param name="_previousPoints">The list of tracked points so far.</param>
 		/// <param name="_CurrentImage">Current image.</param>
 		/// <param name="_currentPoint">The resulting point that should be added to the list.</param>
-		/// <param name="_t">The current timestamp to create the TrackPoint. Relative to the first timestamp.</param>
+		/// <param name="_t">The current timestamp to create the TrackPoint.</param>
 		/// <returns>true if the tracking is reliable, false if the point couldn't be found.</returns>
 		public abstract bool Track(List<AbstractTrackPoint> _previousPoints, Bitmap _CurrentImage, long _t, out AbstractTrackPoint _currentPoint);
 		

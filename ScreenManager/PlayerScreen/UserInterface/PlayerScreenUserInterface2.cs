@@ -4110,7 +4110,7 @@ namespace Kinovea.ScreenManager
 				}
 			}
 		}
-		private void OnShowClosestFrame(Point _mouse, long _iBeginTimestamp, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
+		private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
 		{
 			//--------------------------------------------------------------------------
 			// This is where the interactivity of the trajectory is done.
@@ -4156,7 +4156,7 @@ namespace Kinovea.ScreenManager
 
 				for (int i = 0; i < _positions.Count; i++)
 				{
-					double fTimeDistance = (double)(m_iCurrentPosition - _iBeginTimestamp - _positions[i].T);
+					double fTimeDistance = (double)(m_iCurrentPosition - _positions[i].T);
 
 					double dist = Math.Sqrt(((_mouse.X - _positions[i].X) * (_mouse.X - _positions[i].X))
 					                        + ((_mouse.Y - _positions[i].Y) * (_mouse.Y - _positions[i].Y))
@@ -4173,7 +4173,7 @@ namespace Kinovea.ScreenManager
 
 			// move to corresponding timestamp.
 			m_iFramesToDecode = 1;
-			ShowNextFrame(_positions[iClosestPoint].T + _iBeginTimestamp, true);
+			ShowNextFrame(_positions[iClosestPoint].T, true);
 			UpdatePositionUI();
 		}
 		#endregion
