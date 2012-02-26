@@ -1019,6 +1019,7 @@ namespace Kinovea.ScreenManager
             	case Keys.Delete:
             	case Keys.Add:
             	case Keys.Subtract:
+                case Keys.NumPad0:
             	case Keys.F2:
             	case Keys.F7:
                     {
