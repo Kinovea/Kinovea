@@ -121,6 +121,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Languages\FileBrowserLang.da.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.el.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.fi.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.lt.resx" />

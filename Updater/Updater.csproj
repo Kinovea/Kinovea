@@ -124,6 +124,7 @@
     <Compile Include="UserInterface\UpdateDialog2.Designer.cs">
       <DependentUpon>UpdateDialog2.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Languages\UpdaterLang.da.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.el.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.fi.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.lt.resx" />

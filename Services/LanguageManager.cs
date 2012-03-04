@@ -47,6 +47,10 @@ namespace Kinovea.Services
 		{
 			get { return Languages["en"]; }
 		}
+        public static string Danish
+		{
+			get { return Languages["da"]; }
+		}
         public static string Dutch
 		{
 			get { return Languages["nl"]; }
@@ -111,6 +115,7 @@ namespace Kinovea.Services
         {
             // Alphabetical order by native name.
             m_Languages = new Dictionary<string, string>();
+            m_Languages.Add("da", "Dansk");
             m_Languages.Add("de", "Deutsch");
             m_Languages.Add("el", "Ελληνικά");
             m_Languages.Add("en", "English");
