@@ -166,12 +166,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateRenderingZoomWindow()
 		{
-		    int left = (int)(m_DirectZoomWindow.Left * m_RenderingZoomFactor);
-		    int top = (int)(m_DirectZoomWindow.Top * m_RenderingZoomFactor);
-		    int width = (int)(m_DirectZoomWindow.Width * m_RenderingZoomFactor);
-		    int height = (int)(m_DirectZoomWindow.Height * m_RenderingZoomFactor);
-	        
-	        m_RenderingZoomWindow = new Rectangle(left, top, width, height);
+		    m_RenderingZoomWindow = m_DirectZoomWindow.Scale(m_RenderingZoomFactor, m_RenderingZoomFactor);
 		}
 		private Point ConfineZoomWindow(int _left, int _top, Size _zoomWindow, Size _containerSize)
 		{

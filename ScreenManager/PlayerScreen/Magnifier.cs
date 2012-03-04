@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager
             
             double scaleX = (double)_bitmap.Size.Width / _originalSize.Width;
             double scaleY = (double)_bitmap.Size.Height / _originalSize.Height;
-            Rectangle scaledSource = new Rectangle((int)(m_source.Rectangle.Left * scaleX), (int)(m_source.Rectangle.Top * scaleY), (int)(m_source.Rectangle.Width * scaleX), (int)(m_source.Rectangle.Height * scaleY));
+            Rectangle scaledSource = m_source.Rectangle.Scale(scaleX, scaleY);
             
             Rectangle src;
             if(_bMirrored)

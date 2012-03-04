@@ -2599,15 +2599,19 @@ namespace Kinovea.ScreenManager
         }
         private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
         {
-        	PlayerScreen ps = m_ActiveScreen as PlayerScreen;
-        	if (ps != null)
-        	{
-        		formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(ps.FrameServer.CurrentImage, ps.FrameServer.Metadata);
-				fsto.StartPosition = FormStartPosition.CenterScreen;
-				fsto.ShowDialog();
-				fsto.Dispose();
-				ps.RefreshImage();
-        	}
+            PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+            if (ps == null)
+                return;
+            
+            Bitmap currentImage = ps.FrameServer.CurrentImage;
+            CalibrationHelper calibrationHelper = ps.FrameServer.Metadata.CalibrationHelper;
+            Size originalSize = ps.FrameServer.VideoReader.Info.AspectRatioSize;
+            
+            formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(currentImage, calibrationHelper, originalSize);
+            fsto.StartPosition = FormStartPosition.CenterScreen;
+            fsto.ShowDialog();
+            fsto.Dispose();
+            ps.RefreshImage();
         }
         #endregion
 

@@ -139,6 +139,7 @@
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="true"
 				AdditionalDependencies="avformat.lib avdevice.lib avcodec.lib avfilter.lib avutil.lib swscale.lib postproc.lib $(NOINHERIT)"
+				OutputFile="$(OutDir)\Kinovea.Video.FFMpeg.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\Refs\FFmpeg\lib&quot;"
 				GenerateDebugInformation="false"
@@ -201,13 +202,20 @@
 		<AssemblyReference
 			RelativePath="..\..\Refs\log4net.dll"
 			AssemblyName="log4net, Version=1.2.10.0, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
+			CopyLocal="false"
+			CopyLocalDependencies="false"
+			UseDependenciesInBuild="false"
+			CopyLocalSatelliteAssemblies="false"
 			MinFrameworkVersion="131072"
 		/>
 		<AssemblyReference
-			RelativePath="..\..\Video\bin\Kinovea.Video.dll"
-			AssemblyName="Kinovea.Video, Version=1.0.0.26134, processorArchitecture=IA64"
+			RelativePath="..\..\Video\bin\x86\Debug\Kinovea.Video.dll"
+			AssemblyName="Kinovea.Video, Version=1.0.0.31066, processorArchitecture=IA64"
+			CopyLocal="false"
+			CopyLocalDependencies="false"
 			UseDependenciesInBuild="false"
-			MinFrameworkVersion="131072"
+			CopyLocalSatelliteAssemblies="false"
+			MinFrameworkVersion="0"
 		/>
 	</References>
 	<Files>

@@ -74,10 +74,18 @@ namespace Kinovea.ScreenManager
             m_reader = _videoReader;
         }
         
-        public void Manipulate(double _zoomFactor, double _stretchFactor, Size _containerSize, bool _fillContainer)
+        public void Manipulate(Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize)
         {
             // One of the constraint has changed, recompute the sizes.
             Size aspectRatioSize = m_reader.Info.AspectRatioSize;
+            
+            ComputeRenderingSize(aspectRatioSize, _containerSize, _stretchFactor, _fillContainer);
+            ComputeDecodingSize(aspectRatioSize, _containerSize, _zoomFactor, _enableCustomDecodingSize);
+        }
+        
+        private void ComputeRenderingSize(Size _aspectRatioSize, Size _containerSize, double _stretchFactor, bool _fillContainer)
+        {
+            // Updates the following globals: m_stretchFactor, m_fillContainer, m_renderingSize, m_renderingLocation.
             
             //log.DebugFormat("Input: zoom:{0:0.00}, stretch:{1:0.00}, container:{2}, fill:{3}, aspectRatioSize:{4}",
             //               _zoomFactor, _stretchFactor, _containerSize, _fillContainer, aspectRatioSize);
@@ -85,26 +93,26 @@ namespace Kinovea.ScreenManager
             m_stretchFactor = _stretchFactor;
             m_fillContainer = _fillContainer;
             
-            Size stretchedSize = new Size((int)(aspectRatioSize.Width * m_stretchFactor), (int)(aspectRatioSize.Height * m_stretchFactor));
+            Size stretchedSize = new Size((int)(_aspectRatioSize.Width * m_stretchFactor), (int)(_aspectRatioSize.Height * m_stretchFactor));
             if(!stretchedSize.FitsIn(_containerSize) || m_fillContainer)
             {
                 m_fillContainer = true;
                 
                 // What factor must be applied so that it fits in the container. 
                 // If the image does not fit, the factor for at least one side is strictly less than 1.0f.
-                double stretchWidth = (double)_containerSize.Width / aspectRatioSize.Width;
-                double stretchHeight = (double)_containerSize.Height / aspectRatioSize.Height;
+                double stretchWidth = (double)_containerSize.Width / _aspectRatioSize.Width;
+                double stretchHeight = (double)_containerSize.Height / _aspectRatioSize.Height;
                 
                 // Stretch using the smaller factor, so that the other side fits in.
                 if(stretchWidth < stretchHeight)
                 {
                     m_stretchFactor = stretchWidth;
-                    m_renderingSize = new Size(_containerSize.Width, (int)(aspectRatioSize.Height * m_stretchFactor));
+                    m_renderingSize = new Size(_containerSize.Width, (int)(_aspectRatioSize.Height * m_stretchFactor));
                 }
                 else
                 {
                     m_stretchFactor = stretchHeight;
-                    m_renderingSize = new Size((int)(aspectRatioSize.Width * m_stretchFactor), _containerSize.Height);
+                    m_renderingSize = new Size((int)(_aspectRatioSize.Width * m_stretchFactor), _containerSize.Height);
                 }
             }
             else
@@ -113,44 +121,56 @@ namespace Kinovea.ScreenManager
             }
             
             m_renderingLocation = new Point((_containerSize.Width - m_renderingSize.Width) / 2, (_containerSize.Height - m_renderingSize.Height) / 2);
+        }
+        private void ComputeDecodingSize(Size _aspectRatioSize, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize)
+        {
+            // Updates the following globals: m_decodingSize, m_mayDrawUnscaled, m_renderingZoomFactor.
             
-            // Zoom does not impact rendering viewport size, but it does impact decoding size.
-            // The policy is to never ask the VideoReader to decode at a size larger than the container.
-            // The intersting thing here is that it is possible for the zoom to be compensated by the forced squeeze,
-            // for example when we zoom into a video that is too big for the viewport.
-            if(_zoomFactor == 1.0)
+            if(!_enableCustomDecodingSize)
             {
-                m_decodingSize = m_renderingSize;
-                m_mayDrawUnscaled = true;
+                m_decodingSize = _aspectRatioSize;
+                m_mayDrawUnscaled = false;
             }
             else
             {
-                // scaledSize is the size at which we would need to decode the image if we wanted to be able
-                // to draw the region of interest (zoom sub window) directly on the viewport without additional scaling.
-                double scaleFactor = _zoomFactor * m_stretchFactor;
-                Size scaledSize = new Size((int)(m_renderingSize.Width * _zoomFactor), (int)(m_renderingSize.Height * _zoomFactor));
-                
-                // We don't actually care if the scaled image fits in the container, but we use the container size as the
-                // upper boundary to what we allow the decoding size to be, in order not to put too much load on the decoder.
-                if(!scaledSize.FitsIn(_containerSize) && !scaledSize.FitsIn(aspectRatioSize))
+                // Zoom does not impact rendering viewport size, but it does impact decoding size.
+                // The policy is to never ask the VideoReader to decode at a size larger than the container.
+                // The intersting thing here is that it is possible for the zoom to be compensated by the forced squeeze,
+                // for example when we zoom into a video that is too big for the viewport.
+                if(_zoomFactor == 1.0)
                 {
-                    // Here we could also use _containerSize at right ratio. Will have to test perfs to know which is better.
-                    // If in this branch, we cannot draw unscaled.
-                    m_decodingSize = aspectRatioSize;
-                    m_mayDrawUnscaled = false;
-                    //log.DebugFormat("Will not decode at size larger than container or aspectRatioSize. {0}", scaledSize);
+                    m_decodingSize = m_renderingSize;
+                    m_mayDrawUnscaled = true;
                 }
                 else
                 {
-                    m_decodingSize = scaledSize;
-                    m_mayDrawUnscaled = true;
-                    Size zoomSize = new Size((int)(scaledSize.Width / _zoomFactor), (int)(scaledSize.Height / _zoomFactor));
-                    //log.DebugFormat("Zoom will fit. Zoom window size should be:{0}, decoding size (scaled size):{1}, decoding zoom factor:{2}",
-                    //                zoomSize, scaledSize, m_renderingZoomFactor);
+                    // scaledSize is the size at which we would need to decode the image if we wanted to be able
+                    // to draw the region of interest (zoom sub window) directly on the viewport without additional scaling.
+                    double scaleFactor = _zoomFactor * m_stretchFactor;
+                    Size scaledSize = new Size((int)(m_renderingSize.Width * _zoomFactor), (int)(m_renderingSize.Height * _zoomFactor));
+                    
+                    // We don't actually care if the scaled image fits in the container, but we use the container size as the
+                    // upper boundary to what we allow the decoding size to be, in order not to put too much load on the decoder.
+                    if(!scaledSize.FitsIn(_containerSize) && !scaledSize.FitsIn(_aspectRatioSize))
+                    {
+                        // Here we could also use _containerSize at right ratio. Will have to test perfs to know which is better.
+                        // If in this branch, we cannot draw unscaled.
+                        m_decodingSize = _aspectRatioSize;
+                        m_mayDrawUnscaled = false;
+                        //log.DebugFormat("Will not decode at size larger than container or aspectRatioSize. {0}", scaledSize);
+                    }
+                    else
+                    {
+                        m_decodingSize = scaledSize;
+                        m_mayDrawUnscaled = true;
+                        Size zoomSize = new Size((int)(scaledSize.Width / _zoomFactor), (int)(scaledSize.Height / _zoomFactor));
+                        //log.DebugFormat("Zoom will fit. Zoom window size should be:{0}, decoding size (scaled size):{1}, decoding zoom factor:{2}",
+                        //                zoomSize, scaledSize, m_renderingZoomFactor);
+                    }
                 }
             }
             
-            m_renderingZoomFactor = (double)m_decodingSize.Width / aspectRatioSize.Width;
+            m_renderingZoomFactor = (double)m_decodingSize.Width / _aspectRatioSize.Width;
             
             //log.DebugFormat("Output: stretch:{0:0.00}, fill:{1}, renderingSize:{2}, scaleFactor:{3:0.00}, decodingSize:{4}, mayDrawUnscaled:{5}", 
             //                m_stretchFactor, m_fillContainer, m_renderingSize, _zoomFactor * m_stretchFactor, m_decodingSize, m_mayDrawUnscaled);
