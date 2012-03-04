@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
     public partial class ScreenManagerUserInterface : UserControl
     {
         #region Delegates
-        public delegate void DelegateUpdateTrkFrame(int _iFrame);
+        public delegate void DelegateUpdateTrkFrame(long _iFrame);
         public DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
         #endregion
 
@@ -105,24 +105,26 @@ namespace Kinovea.ScreenManager
             btnShowThumbView.Text = ScreenManagerLang.btnShowThumbView;
             m_ThumbsViewer.RefreshUICulture();
         }
-        public void DisplaySyncLag(int _iOffset)
+        public void DisplaySyncLag(long _iOffset)
         {
             ComCtrls.SyncOffset = _iOffset;
         }
-        public void UpdateSyncPosition(int _iPosition)
+        public void UpdateSyncPosition(long _iPosition)
         {
         	ComCtrls.trkFrame.UpdateSyncPointMarker(_iPosition);
         	ComCtrls.trkFrame.Invalidate();
         }
-        public void SetupTrkFrame(int _iMinimum, int _iMaximum, int _iPosition)
+        public void SetupTrkFrame(long _iMinimum, long _iMaximum, long _iPosition)
         {
             ComCtrls.trkFrame.Minimum = _iMinimum;
             ComCtrls.trkFrame.Maximum = _iMaximum;
-            ComCtrls.trkFrame.Position = _iPosition;   
+            ComCtrls.trkFrame.Position = _iPosition;
+            ComCtrls.trkFrame.Invalidate();
         }
-        public void UpdateTrkFrame(int _iPosition)
+        public void UpdateTrkFrame(long _iPosition)
         {
             ComCtrls.trkFrame.Position = _iPosition;
+            ComCtrls.trkFrame.Invalidate();
         }
         public void OrganizeMenuProxy(Delegate _method)
         {

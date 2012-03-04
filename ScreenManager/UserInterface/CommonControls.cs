@@ -54,12 +54,11 @@ namespace Kinovea.ScreenManager
 			}
 		}
 
-        public int SyncOffset
+        public long SyncOffset
         {
             set 
             {
-                int iValue = value;
-                lblSyncOffset.Text = "SyncOffset : " + iValue;
+                lblSyncOffset.Text = "SyncOffset : " + value;
                 lblSyncOffset.Invalidate();
             }
         }
@@ -148,6 +147,7 @@ namespace Kinovea.ScreenManager
         	{
         		m_ScreenManagerUIContainer.CommonCtrl_GotoFirst();
         		trkFrame.Position = trkFrame.Minimum;
+        		trkFrame.Invalidate();
             	PlayStopped();
         	}
         }
@@ -157,6 +157,7 @@ namespace Kinovea.ScreenManager
             { 
             	m_ScreenManagerUIContainer.CommonCtrl_GotoPrev(); 
             	trkFrame.Position--;
+            	trkFrame.Invalidate();
             }
         }
         public void buttonPlay_Click(object sender, EventArgs e)
@@ -174,6 +175,7 @@ namespace Kinovea.ScreenManager
         	{ 
             	m_ScreenManagerUIContainer.CommonCtrl_GotoNext(); 
             	trkFrame.Position++;
+            	trkFrame.Invalidate();
             }
         }
         public void buttonGotoLast_Click(object sender, EventArgs e)
@@ -182,6 +184,7 @@ namespace Kinovea.ScreenManager
         	{
             	m_ScreenManagerUIContainer.CommonCtrl_GotoLast(); 
             	trkFrame.Position = trkFrame.Maximum;
+            	trkFrame.Invalidate();
             }
         }
         private void btnSwap_Click(object sender, EventArgs e)
