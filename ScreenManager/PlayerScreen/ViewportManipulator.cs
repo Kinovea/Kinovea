@@ -39,9 +39,6 @@ namespace Kinovea.ScreenManager
         public double Stretch {
             get { return m_stretchFactor; }
         }
-        public bool FillContainer {
-            get { return m_fillContainer; }
-        }
         public Size DecodingSize {
             get { return m_decodingSize;}
         }
@@ -58,7 +55,6 @@ namespace Kinovea.ScreenManager
         private Point m_renderingLocation;          // Location of the surface we are going to draw on relatively to the container.
         private Size m_decodingSize;                // Size at which we will ask the VideoReader to provide its frames. (Not necessarily honored by the reader).
         private double m_stretchFactor = 1.0;       // input/output. May be updated during the computation.
-        private bool m_fillContainer;               // input/output. May be updated during the computation.
         private bool m_mayDrawUnscaled;
         private double m_renderingZoomFactor = 1.0; // factor to apply on the reference size to get the rendering size x zoom.
                                                     // It will be used to locate the region of interest.
@@ -85,19 +81,16 @@ namespace Kinovea.ScreenManager
         
         private void ComputeRenderingSize(Size _aspectRatioSize, Size _containerSize, double _stretchFactor, bool _fillContainer)
         {
-            // Updates the following globals: m_stretchFactor, m_fillContainer, m_renderingSize, m_renderingLocation.
+            // Updates the following globals: m_stretchFactor, m_renderingSize, m_renderingLocation.
             
             //log.DebugFormat("Input: zoom:{0:0.00}, stretch:{1:0.00}, container:{2}, fill:{3}, aspectRatioSize:{4}",
             //               _zoomFactor, _stretchFactor, _containerSize, _fillContainer, aspectRatioSize);
             
             m_stretchFactor = _stretchFactor;
-            m_fillContainer = _fillContainer;
             
             Size stretchedSize = new Size((int)(_aspectRatioSize.Width * m_stretchFactor), (int)(_aspectRatioSize.Height * m_stretchFactor));
-            if(!stretchedSize.FitsIn(_containerSize) || m_fillContainer)
+            if(!stretchedSize.FitsIn(_containerSize) || _fillContainer)
             {
-                m_fillContainer = true;
-                
                 // What factor must be applied so that it fits in the container. 
                 // If the image does not fit, the factor for at least one side is strictly less than 1.0f.
                 double stretchWidth = (double)_containerSize.Width / _aspectRatioSize.Width;
@@ -172,8 +165,8 @@ namespace Kinovea.ScreenManager
             
             m_renderingZoomFactor = (double)m_decodingSize.Width / _aspectRatioSize.Width;
             
-            //log.DebugFormat("Output: stretch:{0:0.00}, fill:{1}, renderingSize:{2}, scaleFactor:{3:0.00}, decodingSize:{4}, mayDrawUnscaled:{5}", 
-            //                m_stretchFactor, m_fillContainer, m_renderingSize, _zoomFactor * m_stretchFactor, m_decodingSize, m_mayDrawUnscaled);
+            //log.DebugFormat("Output: stretch:{0:0.00}, renderingSize:{1}, scaleFactor:{2:0.00}, decodingSize:{3}, mayDrawUnscaled:{4}", 
+            //                m_stretchFactor, m_renderingSize, _zoomFactor * m_stretchFactor, m_decodingSize, m_mayDrawUnscaled);
         }
     }
 }

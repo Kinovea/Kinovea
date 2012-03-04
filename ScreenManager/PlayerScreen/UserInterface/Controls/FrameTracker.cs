@@ -203,13 +203,11 @@ namespace Kinovea.ScreenManager
 			m_Metadata = _metadata;
             UpdateMarkersPositions();
             UpdateCacheSegmentMarkerPosition();
-			//Invalidate();
 		}
 		public void UpdateSyncPointMarker(long _marker)
 		{
 			m_SyncPointTimestamp = _marker;
 			UpdateSyncPointMarkerPosition();
-			//Invalidate();
 		}
 		public void UpdateCacheSegmentMarker(VideoSection _section)
 		{

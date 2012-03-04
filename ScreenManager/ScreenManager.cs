@@ -39,14 +39,6 @@ namespace Kinovea.ScreenManager
 {
     public class ScreenManagerKernel : IKernel, IScreenHandler, IScreenManagerUIContainer, IMessageFilter
     {
-        private enum SyncStep
-        {
-            Initial,
-            StartingWait,
-            BothPlaying,
-            EndingWait
-        }
-        
         #region Properties
         public UserControl UI
         {
@@ -135,15 +127,15 @@ namespace Kinovea.ScreenManager
         #region Synchronization
         private bool    m_bSynching;
         private bool 	m_bSyncMerging;				// true if blending each other videos. 
-        private int     m_iSyncLag; 	            // Sync Lag in Frames, for static sync.
-        private int     m_iSyncLagMilliseconds;		// Sync lag in Milliseconds, for dynamic sync.
+        private long    m_iSyncLag; 	            // Sync Lag in Frames, for static sync.
+        private long     m_iSyncLagMilliseconds;		// Sync lag in Milliseconds, for dynamic sync.
         private bool 	m_bDynamicSynching;			// replace the common timer.
         
         // Static Sync Positions
-        private int m_iCurrentFrame = 0;            // Current frame in trkFrame...
-        private int m_iLeftSyncFrame = 0;           // Sync reference in the left video
-        private int m_iRightSyncFrame = 0;          // Sync reference in the right video
-        private int m_iMaxFrame = 0;                // Max du trkFrame
+        private long m_iCurrentFrame = 0;            // Current frame in trkFrame...
+        private long m_iLeftSyncFrame = 0;           // Sync reference in the left video
+        private long m_iRightSyncFrame = 0;          // Sync reference in the right video
+        private long m_iMaxFrame = 0;                // Max du trkFrame
 
         // Dynamic Sync Flags.
         private bool m_bRightIsStarting = false;    // true when the video is between [0] and [1] frames.
@@ -596,27 +588,22 @@ namespace Kinovea.ScreenManager
         }
         public void Player_ImageChanged(PlayerScreen _screen, Bitmap _image)
         {
-        	if (m_bSynching)
-            {
-				// Transfer the image to the other screen.
-        		if(m_bSyncMerging)
-        		{
-	        		foreach (AbstractScreen screen in screenList)
-	                {
-	                    if (screen != _screen && screen is PlayerScreen)
-	                    {
-	                    	// The image has been cloned and transformed in the caller screen.
-	                    	((PlayerScreen)screen).SetSyncMergeImage(_image, !m_bDualSaveInProgress);
-	                    }
-	                }	
-        		}
+            if (!m_bSynching)
+                return;
 
-        		// Dynamic sync.
-        		if(m_bDynamicSynching)
-        		{
-        			DynamicSync();
-        		}
-        	}
+            if(m_bDynamicSynching)
+                DynamicSync();
+            
+            // Transfer the caller's image to the other screen.
+            // The image has been cloned and transformed in the caller screen.
+            if(m_bSyncMerging && _image != null)
+            {
+                foreach (AbstractScreen screen in screenList)
+                {
+                    if (screen != _screen && screen is PlayerScreen)
+                        ((PlayerScreen)screen).SetSyncMergeImage(_image, !m_bDualSaveInProgress);
+                }
+            }
         }
         public void Player_SendImage(PlayerScreen _screen, Bitmap _image)
         {
@@ -840,9 +827,6 @@ namespace Kinovea.ScreenManager
                 SetSyncPoint(false);
                 SetSyncLimits();
 
-                // Mise à jour du trkFrame.
-                ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
-
                 // Mise à jour des Players.
                 OnCommonPositionChanged(m_iCurrentFrame, true);
 
@@ -874,7 +858,7 @@ namespace Kinovea.ScreenManager
 
                 ((ScreenManagerUserInterface)UI).DisplayAsPaused();
 
-                m_iCurrentFrame = (int)_iPosition;
+                m_iCurrentFrame = _iPosition;
                 OnCommonPositionChanged(m_iCurrentFrame, true);
             }	
         }
@@ -917,69 +901,67 @@ namespace Kinovea.ScreenManager
    			}
    		}
    	}
-   	public void CommonCtrl_DualVideo()
-   	{
-   		// Create and save a composite video with side by side synchronized images.
-   		// If merge is active, just save one video.
-   		
-   		if (m_bSynching && screenList.Count == 2)
+        public void CommonCtrl_DualVideo()
         {
-   			PlayerScreen ps1 = screenList[0] as PlayerScreen;
-   			PlayerScreen ps2 = screenList[1] as PlayerScreen;
-   			if(ps1 != null && ps2 != null)
-   			{
-   				DoStopPlaying();
-   				
-   				// Get file name from user.
-   				SaveFileDialog dlgSave = new SaveFileDialog();
-	            dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
-	            dlgSave.RestoreDirectory = true;
-	            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
-	            dlgSave.FilterIndex = 1;
-	            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
-				
-   				if (dlgSave.ShowDialog() == DialogResult.OK)
-	            {
-                	int iCurrentFrame = m_iCurrentFrame;
-						m_bDualSaveCancelled = false;
-						m_DualSaveFileName = dlgSave.FileName;
-				
-                	// Instanciate and configure the bgWorker.
-		            m_bgWorkerDualSave = new BackgroundWorker();
-		            m_bgWorkerDualSave.WorkerReportsProgress = true;
-		        	m_bgWorkerDualSave.WorkerSupportsCancellation = true;
-		            m_bgWorkerDualSave.DoWork += new DoWorkEventHandler(bgWorkerDualSave_DoWork);
-		        	m_bgWorkerDualSave.ProgressChanged += new ProgressChangedEventHandler(bgWorkerDualSave_ProgressChanged);
-		            m_bgWorkerDualSave.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorkerDualSave_RunWorkerCompleted);
-		
-		            // Make sure none of the screen will try to update itself.
-   					// Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
-		            m_bDualSaveInProgress = true;
-		            ps1.DualSaveInProgress = true;
-   					ps2.DualSaveInProgress = true;
-		            
-   					// Create the progress bar and launch the worker.
-		            m_DualSaveProgressBar = new formProgressBar(true);
-		            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
-		            m_bgWorkerDualSave.RunWorkerAsync();
-		            m_DualSaveProgressBar.ShowDialog();
-		        	
-		            // If cancelled, delete temporary file.
-		            if(m_bDualSaveCancelled)
-    				{
-		            	DeleteTemporaryFile(m_DualSaveFileName);
-    				}
-    				
-		            // Reset to where we were.
-       				m_bDualSaveInProgress = false;
-		            ps1.DualSaveInProgress = false;
-   					ps2.DualSaveInProgress = false;
-		            m_iCurrentFrame = iCurrentFrame;
-       				OnCommonPositionChanged(m_iCurrentFrame, true);
-	        	}       				
-   			}
-   		}
-   	}
+            // Create and save a composite video with side by side synchronized images.
+            // If merge is active, just save one video.
+            
+            if (!m_bSynching || screenList.Count != 2)
+                return;
+            
+            PlayerScreen ps1 = screenList[0] as PlayerScreen;
+            PlayerScreen ps2 = screenList[1] as PlayerScreen;
+            if(ps1 == null || ps2 == null)
+                return;
+            
+            DoStopPlaying();
+            
+            // Get file name from user.
+            SaveFileDialog dlgSave = new SaveFileDialog();
+            dlgSave.Title = ScreenManagerLang.dlgSaveVideoTitle;
+            dlgSave.RestoreDirectory = true;
+            dlgSave.Filter = ScreenManagerLang.dlgSaveVideoFilterAlone;
+            dlgSave.FilterIndex = 1;
+            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
+            
+            if (dlgSave.ShowDialog() != DialogResult.OK)
+                return;
+            
+            long iCurrentFrame = m_iCurrentFrame;
+            m_bDualSaveCancelled = false;
+            m_DualSaveFileName = dlgSave.FileName;
+            
+            // Instanciate and configure the bgWorker.
+            m_bgWorkerDualSave = new BackgroundWorker();
+            m_bgWorkerDualSave.WorkerReportsProgress = true;
+            m_bgWorkerDualSave.WorkerSupportsCancellation = true;
+            m_bgWorkerDualSave.DoWork += bgWorkerDualSave_DoWork;
+            m_bgWorkerDualSave.ProgressChanged += bgWorkerDualSave_ProgressChanged;
+            m_bgWorkerDualSave.RunWorkerCompleted += bgWorkerDualSave_RunWorkerCompleted;
+            
+            // Make sure none of the screen will try to update itself.
+            // Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
+            m_bDualSaveInProgress = true;
+            ps1.DualSaveInProgress = true;
+            ps2.DualSaveInProgress = true;
+            
+            // Create the progress bar and launch the worker.
+            m_DualSaveProgressBar = new formProgressBar(true);
+            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
+            m_bgWorkerDualSave.RunWorkerAsync();
+            m_DualSaveProgressBar.ShowDialog();
+            
+            // If cancelled, delete temporary file.
+            if(m_bDualSaveCancelled)
+                DeleteTemporaryFile(m_DualSaveFileName);
+            
+            // Reset to where we were.
+            m_bDualSaveInProgress = false;
+            ps1.DualSaveInProgress = false;
+            ps2.DualSaveInProgress = false;
+            m_iCurrentFrame = iCurrentFrame;
+            OnCommonPositionChanged(m_iCurrentFrame, true);
+        }
    	#endregion
         
         #region IMessageFilter Implementation
@@ -1782,9 +1764,7 @@ namespace Kinovea.ScreenManager
                 img2.Dispose();
 	       	composite.Dispose();
 			}
-	       	
-       	m_bgWorkerDualSave.ReportProgress(1, m_iMaxFrame);
-		
+
             // Loop all remaining frames in static sync mode, but without refreshing the UI.
 			while(m_iCurrentFrame < m_iMaxFrame && !m_bDualSaveCancelled)
 			{
@@ -1796,7 +1776,6 @@ namespace Kinovea.ScreenManager
 				    m_bDualSaveCancelled = true;
 					break;
 				}
-				
 				
 				// Move both playheads and get the composite image.
 				OnCommonPositionChanged(-1, false);
@@ -1819,7 +1798,8 @@ namespace Kinovea.ScreenManager
    				composite.Dispose();
    			}
    			
-   			m_bgWorkerDualSave.ReportProgress(m_iCurrentFrame+1, m_iMaxFrame);
+   			int percent = (int)(((double)(m_iCurrentFrame+1)/m_iMaxFrame) * 100);
+   			m_bgWorkerDualSave.ReportProgress(percent);
 			}
 			
 			if(!m_bDualSaveCancelled)
@@ -1827,18 +1807,10 @@ namespace Kinovea.ScreenManager
         }
         private void bgWorkerDualSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-        	// call snippet : m_BackgroundWorker.ReportProgress(iCurrentValue, iMaximum);
-        	if(!m_bgWorkerDualSave.CancellationPending)
-        	{
-        		int iValue = (int)e.ProgressPercentage;
-        		int iMaximum = (int)e.UserState;            
-            	if (iValue > iMaximum) 
-            	{ 
-            		iValue = iMaximum; 
-            	}
-            	
-            	m_DualSaveProgressBar.Update(iValue, iMaximum, true);
-        	}
+            if(m_bgWorkerDualSave.CancellationPending)
+                return;
+
+            m_DualSaveProgressBar.Update(Math.Min(e.ProgressPercentage, 100), 100, true);
         }
         private void bgWorkerDualSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -2769,7 +2741,6 @@ namespace Kinovea.ScreenManager
 
                         // Mise à jour trkFrame
                         SetSyncLimits();
-                        ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
 
                         // Mise à jour Players
                         OnCommonPositionChanged(m_iCurrentFrame, true);
@@ -2861,50 +2832,38 @@ namespace Kinovea.ScreenManager
 	
 	            // We need to recompute the lag in milliseconds because it can change even when 
 	            // the references positions don't change. For exemple when varying framerate (speed).
-	            int iLeftSyncMilliseconds = (int)(((PlayerScreen)screenList[0]).FrameInterval * m_iLeftSyncFrame);
-	            int iRightSyncMilliseconds = (int)(((PlayerScreen)screenList[1]).FrameInterval * m_iRightSyncFrame);
+	            long iLeftSyncMilliseconds = (long)(((PlayerScreen)screenList[0]).FrameInterval * m_iLeftSyncFrame);
+	            long iRightSyncMilliseconds = (long)(((PlayerScreen)screenList[1]).FrameInterval * m_iRightSyncFrame);
 	            m_iSyncLagMilliseconds = iRightSyncMilliseconds - iLeftSyncMilliseconds;
 	
 	            // Update common position (sign of m_iSyncLag might have changed.)
-	            if (m_iSyncLag > 0)
-	            {
-	                m_iCurrentFrame = m_iRightSyncFrame;
-	            }
-	            else
-	            {
-	                m_iCurrentFrame = m_iLeftSyncFrame;
-	            }
-	
-	            ((ScreenManagerUserInterface)UI).UpdateSyncPosition(m_iCurrentFrame);
+	            m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
+	            
+	            ((ScreenManagerUserInterface)UI).UpdateSyncPosition(m_iCurrentFrame);  // <-- expects timestamp ?
 	            ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
             }
         }
         private void SetSyncLimits()
         {
-            //--------------------------------------------------------------------------------
-            // Computes the real max of the trkFrame, considering the lag and original sizes.
+            //-----------------------------------------------------------------------------------
+            // Computes the real max of the trkFrame, considering the lag and original durations.
             // Updates trkFrame bounds, expressed in *Frames*.
             // impact : m_iMaxFrame.
-            //---------------------------------------------------------------------------------
+            //-----------------------------------------------------------------------------------
 			log.Debug("SetSyncLimits() called.");
-            int iLeftMaxFrame = ((PlayerScreen)screenList[0]).SelectionLastTimestamp;
-            int iRightMaxFrame = ((PlayerScreen)screenList[1]).SelectionLastTimestamp;
+            long leftEstimatedFrames = ((PlayerScreen)screenList[0]).EstimatedFrames;
+            long rightEstimatedFrames = ((PlayerScreen)screenList[1]).EstimatedFrames;
 
             if (m_iSyncLag > 0)
             {
                 // Lag is positive. Right video starts first and its duration stay the same as original.
                 // Left video has to wait for an ammount of time.
 
-                // Get Lag in number of frames of left video.
-                //int iSyncLagFrames = ((PlayerScreen)screenList[0]).NormalizedToFrame(m_iSyncLag);
-
-                // Check if lag is still valid. (?)
-                if (m_iSyncLag > iRightMaxFrame) 
-                {
+                // Check if lag is still valid. (?) Why is this needed ?
+                if (m_iSyncLag > rightEstimatedFrames)
                     m_iSyncLag = 0; 
-                }
 
-                iLeftMaxFrame += m_iSyncLag;
+                leftEstimatedFrames += m_iSyncLag;
             }
             else
             {
@@ -2915,15 +2874,18 @@ namespace Kinovea.ScreenManager
                 //int iSyncLagFrames = ((PlayerScreen)screenList[1]).NormalizedToFrame(m_iSyncLag);
 
                 // Check if lag is still valid.(?)
-                if (-m_iSyncLag > iLeftMaxFrame) { m_iSyncLag = 0; }
-                iRightMaxFrame += (-m_iSyncLag);
+                if (-m_iSyncLag > leftEstimatedFrames)
+                    m_iSyncLag = 0;
+                
+                rightEstimatedFrames += (-m_iSyncLag);
             }
 
-            m_iMaxFrame = Math.Max(iLeftMaxFrame, iRightMaxFrame);
+            m_iMaxFrame = (int)Math.Max(leftEstimatedFrames, rightEstimatedFrames);
+            ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
 
-            //Console.WriteLine("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", m_iSyncLag, m_iSyncLagMilliseconds, m_iMaxFrame);
+            log.DebugFormat("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", m_iSyncLag, m_iSyncLagMilliseconds, m_iMaxFrame);
         }
-        private void OnCommonPositionChanged(int _iFrame, bool _bAllowUIUpdate)
+        private void OnCommonPositionChanged(long _iFrame, bool _bAllowUIUpdate)
         {
             //------------------------------------------------------------------------------
             // This is where the "static sync" is done.
@@ -2936,8 +2898,8 @@ namespace Kinovea.ScreenManager
             //log.Debug(String.Format("Static Sync, common position changed to {0}",_iFrame));
             
             // Get corresponding position in each video, in frames
-            int iLeftFrame = 0;
-            int iRightFrame = 0;
+            long iLeftFrame = 0;
+            long iRightFrame = 0;
 
             if (_iFrame >= 0)
             {
@@ -2998,7 +2960,7 @@ namespace Kinovea.ScreenManager
             if (!m_bSynching || screenList.Count != 2)
         	    return;
             
-            int temp = m_iLeftSyncFrame;
+            long temp = m_iLeftSyncFrame;
             m_iLeftSyncFrame = m_iRightSyncFrame;
             m_iRightSyncFrame = temp;
 
@@ -3016,6 +2978,10 @@ namespace Kinovea.ScreenManager
         private void DynamicSync()
         {
         	// This is where the dynamic sync is done.
+        	// It was used in timer loop at some point but now it's called directly.
+        	// When a screen finishes decoding its image, we call in here to verify if the other screen
+        	// needs to be started, paused, or something else.
+        	
             // Get each video positions in common timebase and milliseconds.
             // Figure if a restart or pause is needed, considering current positions.
             
@@ -3025,35 +2991,21 @@ namespace Kinovea.ScreenManager
             // We just start and stop the players timers when we detect one of the video has reached the end,
             // to prevent it from auto restarting.
 
-            //-----------------------------------------------------------------------------
-            // /!\ Following paragraph is obsolete when using Direct call to dynamic sync.
-            // This function is executed in the WORKER THREAD.
-            // nothing called from here should ultimately call in the UI thread.
-            //
-            // Except when using BeginInvoke.
-            // But we can't use BeginInvoke here, because it's only available for Controls.
-            // Calling the BeginInvoke of the PlayerScreenUI is useless because it's not the same 
-            // UI thread as the one used to create the menus that we will update upon SetAsActiveScreen
-            // 
-            //-----------------------------------------------------------------------------
-
             // Glossary:
-            // XIsStarting 		: currently on [0] but a Play was asked.
+            // XIsStarting 	: currently on [0] but a Play was asked.
             // XIsCatchingUp 	: video is between [0] and the point where both video will be running. 
             
             
             if (m_bSynching && screenList.Count == 2)
             {
-                // Function called by timer event handler, asynchronously on each tick.
-
                 // L'ensemble de la supervision est réalisée en TimeStamps.
                 // Seul les décision de lancer / arrêter sont établies par rapport
                 // au temps auquel on est.
 
-                int iLeftPosition = ((PlayerScreen)screenList[0]).CurrentFrame;
-                int iRightPosition = ((PlayerScreen)screenList[1]).CurrentFrame;
-                int iLeftMilliseconds = (int)(iLeftPosition * ((PlayerScreen)screenList[0]).FrameInterval);
-                int iRightMilliseconds = (int)(iRightPosition * ((PlayerScreen)screenList[1]).FrameInterval);
+                long iLeftPosition = ((PlayerScreen)screenList[0]).CurrentFrame;
+                long iRightPosition = ((PlayerScreen)screenList[1]).CurrentFrame;
+                long iLeftMilliseconds = (long)(iLeftPosition * ((PlayerScreen)screenList[0]).FrameInterval);
+                long iRightMilliseconds = (long)(iRightPosition * ((PlayerScreen)screenList[1]).FrameInterval);
 
                 //-----------------------------------------------------------------------
                 // Dans cette fonction, on part du principe que les deux vidéos tournent.
@@ -3314,8 +3266,8 @@ namespace Kinovea.ScreenManager
             // We sync back the videos.
             // Used when one video has been moved individually.
 			log.Debug("SyncCatch() called.");
-            int iLeftFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
-            int iRightFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
+			long iLeftFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
+			long iRightFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
 
             if (m_iSyncLag > 0)
             {

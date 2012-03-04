@@ -125,23 +125,23 @@ namespace Kinovea.ScreenManager
                     return m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             }
         }
-        public int CurrentFrame
+        public long CurrentFrame
         {
             get
             {
                 // Get the approximate frame we should be on.
                 // Only as accurate as the framerate is stable regarding to the timebase.
                 
-                // Timestamp (relative to selection start).
-                long iCurrentTimestamp = m_PlayerScreenUI.SyncCurrentPosition;
-                return (int)(iCurrentTimestamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                // SyncCurrentPosition timestamp is already relative to selection start).
+                return (long)((double)m_PlayerScreenUI.SyncCurrentPosition / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
-        public int SelectionLastTimestamp
+        public long EstimatedFrames
         {
             get 
             {
-                return (int)m_FrameServer.VideoReader.WorkingZone.End;
+                // Used to compute the total duration of the common track bar.
+                return m_FrameServer.VideoReader.EstimatedFrames;
             }
         }
         public double FrameInterval
@@ -335,7 +335,7 @@ namespace Kinovea.ScreenManager
         {
             m_PlayerScreenUI.SyncSetCurrentFrame(-1, _bAllowUIUpdate);
         }
-        public void GotoFrame(int _frame, bool _bAllowUIUpdate)
+        public void GotoFrame(long _frame, bool _bAllowUIUpdate)
         {
         	m_PlayerScreenUI.SyncSetCurrentFrame(_frame, _bAllowUIUpdate);
         }

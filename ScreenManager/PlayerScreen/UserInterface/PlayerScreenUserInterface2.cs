@@ -132,6 +132,7 @@ namespace Kinovea.ScreenManager
 				{
 					m_iSyncPosition = 0;
 					trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+					trkFrame.Invalidate();
 					UpdateCurrentPositionLabel();
 					
 					m_bSyncMerge = false;
@@ -155,6 +156,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_iSyncPosition = value;
 				trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+				trkFrame.Invalidate();
 				UpdateCurrentPositionLabel();
 			}
 		}
@@ -218,6 +220,7 @@ namespace Kinovea.ScreenManager
 		// Image
 		private ViewportManipulator m_viewportManipulator = new ViewportManipulator();
 		private bool m_fill;
+		private double m_lastUserStretch = 1.0f;
 		private bool m_bShowImageBorder;
 		private bool m_bManualSqueeze = true; // If it's allowed to manually reduce the rendering surface under the aspect ratio size.
 		private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
@@ -253,7 +256,6 @@ namespace Kinovea.ScreenManager
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		private MessageToaster m_MessageToaster;
 		private bool m_Constructed;
-		private bool m_FormResizing;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -366,6 +368,7 @@ namespace Kinovea.ScreenManager
 			DockKeyframePanel(true);
 			UpdateFramesMarkers();
 			trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
+			trkFrame.Invalidate();
 			EnableDisableAllPlayingControls(true);
 			EnableDisableDrawingTools(true);
 			EnableDisableSnapshot(true);
@@ -1402,6 +1405,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Updates the markers coordinates and redraw the trkFrame.
 			trkFrame.UpdateMarkers(m_FrameServer.Metadata);
+			trkFrame.Invalidate();
 		}
 		private void ShowBorder(bool _bShow)
 		{
@@ -1997,13 +2001,19 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
 
+            double targetStretch = m_FrameServer.CoordinateSystem.Stretch;
+            
+            // If we have been forced to a different stretch (due to application resizing or minimizing), 
+            // make sure we aim for the user's last requested value.
+            if(!m_fill && m_lastUserStretch != m_viewportManipulator.Stretch)
+                targetStretch = m_lastUserStretch;
+            
             // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
             // During the process, stretch and fill may be forced to different values.
-            m_viewportManipulator.Manipulate(panelCenter.Size, m_FrameServer.CoordinateSystem.Stretch, m_fill, m_FrameServer.CoordinateSystem.Zoom, m_bEnableCustomDecodingSize);
+            m_viewportManipulator.Manipulate(panelCenter.Size, targetStretch, m_fill, m_FrameServer.CoordinateSystem.Zoom, m_bEnableCustomDecodingSize);
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             m_FrameServer.CoordinateSystem.Stretch = m_viewportManipulator.Stretch;
-            m_fill = m_viewportManipulator.FillContainer;
             
             ReplaceResizers();
 		}
@@ -2046,7 +2056,7 @@ namespace Kinovea.ScreenManager
 			
 			int iTargetHeight = (ImageResizerSE.Top - pbSurfaceScreen.Top + e.Y);
 			int iTargetWidth = (ImageResizerSE.Left - pbSurfaceScreen.Left + e.X);
-			ResizeImage(iTargetWidth, iTargetHeight);
+			ManualResizeImage(iTargetWidth, iTargetHeight);
 		}
 		private void ImageResizerSW_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -2054,7 +2064,7 @@ namespace Kinovea.ScreenManager
 			{
 				int iTargetHeight = (ImageResizerSW.Top - pbSurfaceScreen.Top + e.Y);
 				int iTargetWidth = pbSurfaceScreen.Width + (pbSurfaceScreen.Left - (ImageResizerSW.Left + e.X));
-				ResizeImage(iTargetWidth, iTargetHeight);
+				ManualResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
 		private void ImageResizerNW_MouseMove(object sender, MouseEventArgs e)
@@ -2063,7 +2073,7 @@ namespace Kinovea.ScreenManager
 			{
 				int iTargetHeight = pbSurfaceScreen.Height + (pbSurfaceScreen.Top - (ImageResizerNW.Top + e.Y));
 				int iTargetWidth = pbSurfaceScreen.Width + (pbSurfaceScreen.Left - (ImageResizerNW.Left + e.X));
-				ResizeImage(iTargetWidth, iTargetHeight);
+				ManualResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
 		private void ImageResizerNE_MouseMove(object sender, MouseEventArgs e)
@@ -2072,10 +2082,10 @@ namespace Kinovea.ScreenManager
 			{
 				int iTargetHeight = pbSurfaceScreen.Height + (pbSurfaceScreen.Top - (ImageResizerNE.Top + e.Y));
 				int iTargetWidth = (ImageResizerNE.Left - pbSurfaceScreen.Left + e.X);
-				ResizeImage(iTargetWidth, iTargetHeight);
+				ManualResizeImage(iTargetWidth, iTargetHeight);
 			}
 		}
-		private void ResizeImage(int _iTargetWidth, int _iTargetHeight)
+		private void ManualResizeImage(int _iTargetWidth, int _iTargetHeight)
 		{
 		    Size targetSize = new Size(_iTargetWidth, _iTargetHeight);
 		    if(!targetSize.FitsIn(panelCenter.Size))
@@ -2101,6 +2111,7 @@ namespace Kinovea.ScreenManager
 
 			m_FrameServer.CoordinateSystem.Stretch = (fWidthFactor + fHeightFactor) / 2;
 			m_fill = false;
+			m_lastUserStretch = m_FrameServer.CoordinateSystem.Stretch;
 
 			ResizeUpdate(false);
 		}
@@ -2354,7 +2365,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void ComputeOrStopTracking(bool _contiguous)
 		{
-		    if (!m_FrameServer.Metadata.HasTrack)
+		    if(!m_FrameServer.Metadata.IsTracking)
                 return;
 		    
             // Fixme: Tracking only supports contiguous frames,
@@ -3254,16 +3265,23 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-			    // TODO: if the size is right, draw unscaled anyway.
-			    
-    			Rectangle rDst;
-    			if(m_FrameServer.Metadata.Mirrored)
-    				rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
-    			else
-    				rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-			    
-    			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
-    			//log.DebugFormat("drawing scaled.");
+			    if(!m_FrameServer.CoordinateSystem.Zooming && !m_FrameServer.Metadata.Mirrored && m_FrameServer.CoordinateSystem.Stretch == 1.0f)
+			    {
+			        // This allow to draw unscaled while tracking or caching for example, provided we are rendering at original size.
+			        g.DrawImageUnscaled(_sourceImage, 0, 0);
+                    //log.DebugFormat("drawing unscaled because at the right size.");
+			    }
+			    else
+			    {
+                    Rectangle rDst;
+                    if(m_FrameServer.Metadata.Mirrored)
+                    rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
+                    else
+                    rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
+                    
+                    g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+                    //log.DebugFormat("drawing scaled.");
+			    }
 			}
 			
 			m_TimeWatcher.LogTime("After DrawImage");
@@ -3296,10 +3314,10 @@ namespace Kinovea.ScreenManager
 			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
 			{
 				// The mirroring, if any, will have been done already and applied to the sync image.
-				// (because to draw the other image, we take account its own mirroring option,
-				// not the option of the original video in this screen.)
+				// (because to draw the other image, we take into account its own mirroring option,
+				// not the option in this screen.)
 				Rectangle rSyncDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
-				g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
+                g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
 			}
 			
 			if ((m_bIsCurrentlyPlaying && m_PrefManager.DrawOnPlay) || !m_bIsCurrentlyPlaying)
@@ -4412,30 +4430,42 @@ namespace Kinovea.ScreenManager
 		}
 		private void ReportForSyncMerge()
 		{
-			// We have to re-apply the transformations here, because when drawing in this screen we draw directly on the canvas.
-			// (there is no intermediate image that we could reuse here, this might be a future optimization).
-			// We need to clone it anyway, so we might aswell do the transform.
-			if(!m_bSynched || !m_bSyncMerge || m_FrameServer.CurrentImage == null)
-			    return;
-			
-			Bitmap img = CloneTransformedImage();
-			if(img != null)
-			    m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
+            if(!m_bSynched)
+                return;
+            
+            // If we are not actually merging, we don't need to clone and send the image.
+            // But we still need to report to the screen manager to trigger sync operations.
+            Bitmap img = null;
+            
+            if(m_bSyncMerge && m_FrameServer.CurrentImage != null)
+            {
+                // We have to re-apply the transformations here, because when drawing in this screen we draw directly on the canvas.
+                // (there is no intermediate image that we could reuse here, this might be a future optimization).
+                // We need to clone it anyway, so we might aswell do the transform.
+                img = CloneTransformedImage();
+            }
+            
+            m_PlayerScreenUIHandler.PlayerScreenUI_ImageChanged(img);
 		}
 		private Bitmap CloneTransformedImage()
 		{
-		    Size imgSize = new Size(m_FrameServer.CurrentImage.Size.Width, m_FrameServer.CurrentImage.Size.Height);
-			Bitmap img = new Bitmap(imgSize.Width, imgSize.Height);
-			Graphics g = Graphics.FromImage(img);
+		    // TODO: try to render unscaled here as well when possible.
+		    Size copySize = m_viewportManipulator.RenderingSize;
+			Bitmap copy = new Bitmap(copySize.Width, copySize.Height);
+			Graphics g = Graphics.FromImage(copy);
 			
 			Rectangle rDst;
 			if(m_FrameServer.Metadata.Mirrored)
-				rDst = new Rectangle(imgSize.Width, 0, -imgSize.Width, imgSize.Height);
+				rDst = new Rectangle(copySize.Width, 0, -copySize.Width, copySize.Height);
 			else
-				rDst = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
+				rDst = new Rectangle(0, 0, copySize.Width, copySize.Height);
 			
-			g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
-			return img;
+			if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
+			    g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.CoordinateSystem.RenderingZoomWindow, GraphicsUnit.Pixel);
+			else
+			    g.DrawImage(m_FrameServer.CurrentImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
+                
+			return copy;
 		}
 		#endregion
 		
@@ -4587,11 +4617,7 @@ namespace Kinovea.ScreenManager
                     BuildFilename(_filepath, vf.Timestamp, m_PrefManager.TimeCodeFormat), 
                     Path.GetExtension(_filepath));
                 
-                Size s = new Size((int)(m_FrameServer.CoordinateSystem.Stretch * vf.Image.Width), 
-                                  (int)(m_FrameServer.CoordinateSystem.Stretch * vf.Image.Height) );
-                
-                // Should simply be RenderingSize ?
-                Size s2 = m_viewportManipulator.RenderingSize;
+                Size s = m_viewportManipulator.RenderingSize;
                     
                 using(Bitmap result = new Bitmap(s.Width, s.Height, PixelFormat.Format24bppRgb))
                 {
@@ -4745,11 +4771,10 @@ namespace Kinovea.ScreenManager
 			// Returns an image with all drawings flushed, including
 			// grids, chronos, magnifier, etc.
 			// image should be at same strech factor than the one visible on screen.
-			Size iNewSize = new Size((int)((double)m_FrameServer.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
+			//Size iNewSize = new Size((int)((double)m_FrameServer.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
+			Size renderingSize = m_viewportManipulator.RenderingSize;
 			
-			Size s = m_viewportManipulator.RenderingSize;
-			
-			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
+			Bitmap output = new Bitmap(renderingSize.Width, renderingSize.Height, PixelFormat.Format24bppRgb);
 			output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
 			
 			if(InteractiveFiltering)
@@ -4764,7 +4789,7 @@ namespace Kinovea.ScreenManager
 					iKeyFrameIndex = m_iActiveKeyFrameIndex;
 				}				
 				
-				FlushOnGraphics(m_FrameServer.CurrentImage, Graphics.FromImage(output), iNewSize, iKeyFrameIndex, m_iCurrentPosition);
+				FlushOnGraphics(m_FrameServer.CurrentImage, Graphics.FromImage(output), renderingSize, iKeyFrameIndex, m_iCurrentPosition);
 			}
 			
 			return output;
