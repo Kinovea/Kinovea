@@ -170,11 +170,11 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Alternativ</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Spara metod</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Spara endast nyckelbildernas data.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Kun beskrivelse af tegninger og andre analyseobjekter vil blive gemt. #Filen kan importeres i en video senere.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Kombinera video och nyckelbilds data i en fil.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>Tegninger og andre analyseobjekter vil være modoficerbar, når der åbnes med Kinovea.#Hvis der åbnes i andre afspillere, vil tegninger og analyseobjekter ikke være synlige.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Måla nyckelbildernas grafik permanent på videon.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Analyseobjekter vil være synlige i alle afspillere, men kan ikke ændres.#Ekstra kommentarer til nøglebilleder vil ikke blive gemt.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Spara endast video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Spara video eller nyckelbilds data...</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Spara nyckelbilds data</value></data>
@@ -212,7 +212,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Färg :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguration</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Fontstorlek</value></data>
-   
+   <data name="Generic_LineSizePicker" xml:space="preserve"><value>Bredde:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Transparens</value></data>
    
    <data name="Generic_Save" xml:space="preserve"><value>Spara</value></data>
@@ -389,6 +389,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Översikt...</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Invertera...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisk kontrast...</value></data>
+   
    
    
    
