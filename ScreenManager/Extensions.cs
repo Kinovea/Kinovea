@@ -60,6 +60,10 @@ namespace Kinovea.ScreenManager
         {
             return new Point(_point.X + _x, _point.Y + _y);
         }
+        public static Point Scale(this Point _point, double _scaleX, double _scaleY)
+        {
+            return new Point((int)(_point.X * _scaleX), (int)(_point.Y * _scaleY));
+        }
         
         /// <summary>
         /// Get the complementary color.
@@ -81,6 +85,10 @@ namespace Kinovea.ScreenManager
             int widthDifference = _size.Width - _other.Width;
             int heightDifference = _size.Height - _other.Height;
             return widthDifference > -4 && widthDifference < 4 && heightDifference > -4 && heightDifference < 4;
+        }
+        public static Rectangle Scale(this Rectangle _rect, double _scaleX, double _scaleY)
+        {
+            return new Rectangle((int)(_rect.Left * _scaleX), (int)(_rect.Top * _scaleY), (int)(_rect.Width * _scaleX), (int)(_rect.Height * _scaleY));
         }
     }
 }

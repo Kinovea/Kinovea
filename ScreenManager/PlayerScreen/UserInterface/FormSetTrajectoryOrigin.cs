@@ -36,31 +36,28 @@ namespace Kinovea.ScreenManager
 	{
 		#region Members
         private Bitmap m_bmpPreview;
-        //private Track m_Track;
-        private Point m_ScaledOrigin = new Point(-1,-1);	// Selected point in display size coordinates.
-        private Point m_RealOrigin = new Point(-1,-1);		// Selected point in image size coordinates.
-        private float m_fRatio = 1.0f;
+        private Size m_OriginalSize;
+        private Point m_Origin = new Point(-1,-1);
+        private double m_Scale = 1.0f;
         private Pen m_PenCurrent;
-        private Pen m_PenSelected;
-        private string m_Text;								// Current mouse coord in the new coordinate system.
-        private Point m_CurrentMouse;
-        private Metadata m_ParentMetadata;
+        private Pen m_PenSelected = Pens.Red;
+        private Point m_MousePosition;
+        private CalibrationHelper m_CalibrationHelper;
+        private Font m_FontText = new Font("Arial", 8, FontStyle.Bold);
         #endregion
 		
         #region Constructor
-		public formSetTrajectoryOrigin(Bitmap _bmpPreview, Metadata _ParentMetadata)
+		public formSetTrajectoryOrigin(Bitmap _bmpPreview, CalibrationHelper _calibrationHelper, Size _originalSize)
 		{
-			// Init data.
-			m_ParentMetadata = _ParentMetadata;
 			m_bmpPreview = _bmpPreview;
-			m_PenSelected = new Pen(Color.Red);
-			m_PenCurrent = new Pen(Color.Red);
+			m_CalibrationHelper = _calibrationHelper;
+			m_OriginalSize = _originalSize;
+			
+			m_PenCurrent = new Pen(m_PenSelected.Color);
 			m_PenCurrent.DashStyle = DashStyle.Dot;
 			 
-			if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 && m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
-            {
-            	m_RealOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
-            }
+			if(_calibrationHelper.CoordinatesOrigin.X >= 0 && _calibrationHelper.CoordinatesOrigin.Y >= 0)
+            	m_Origin = _calibrationHelper.CoordinatesOrigin;
 			
 			InitializeComponent();
 			
@@ -75,52 +72,52 @@ namespace Kinovea.ScreenManager
 		private void formSetTrajectoryOrigin_Load(object sender, EventArgs e)
 		{
             RatioStretch();
-            UpdateScaledOrigin();
             picPreview.Invalidate();
 		}
 		private void picPreview_MouseMove(object sender, MouseEventArgs e)
 		{
-			// Save current mouse position and coordinates in the new system.
-			m_CurrentMouse = new Point(e.X, e.Y);
-			
-			int iCoordX = (int)((float)e.X * m_fRatio) - m_RealOrigin.X;
-			int iCoordY = m_RealOrigin.Y - (int)((float)e.Y * m_fRatio);
-			string textX = m_ParentMetadata.CalibrationHelper.GetLengthText((double)iCoordX, false, false);
-			string textY = m_ParentMetadata.CalibrationHelper.GetLengthText((double)iCoordY, false, false);
-			m_Text = String.Format("{{{0};{1}}} {2}", textX, textY, m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
-			
-			picPreview.Invalidate();
+		    m_MousePosition = e.Location;
+		    picPreview.Invalidate();
 		}
 		private void picPreview_Paint(object sender, PaintEventArgs e)
 		{
 			// Afficher l'image.
-            if (m_bmpPreview != null)
-            {
-                e.Graphics.DrawImage(m_bmpPreview, 0, 0, picPreview.Width, picPreview.Height);
-            	
-                if(m_ScaledOrigin.X >= 0 && m_ScaledOrigin.Y >= 0)
-                {
-        			// Selected Coordinate system.
-					e.Graphics.DrawLine(m_PenSelected, 0, m_ScaledOrigin.Y, e.ClipRectangle.Width, m_ScaledOrigin.Y);
-               		e.Graphics.DrawLine(m_PenSelected, m_ScaledOrigin.X, 0, m_ScaledOrigin.X, e.ClipRectangle.Height);
-                
-               		// Current Mouse system.
-               		e.Graphics.DrawLine(m_PenCurrent, 0, m_CurrentMouse.Y, e.ClipRectangle.Width, m_CurrentMouse.Y);
-               		e.Graphics.DrawLine(m_PenCurrent, m_CurrentMouse.X, 0, m_CurrentMouse.X, e.ClipRectangle.Height);
-                
-                	// Current pos.
-                	Font fontText = new Font("Arial", 8, FontStyle.Bold);
-        			SolidBrush fontBrush = new SolidBrush(m_PenSelected.Color);
-                	e.Graphics.DrawString(m_Text, fontText, fontBrush, m_CurrentMouse.X - 67,m_CurrentMouse.Y + 2);
-                	fontBrush.Dispose();
-                	fontText.Dispose();
-                }
-            }
+            if (m_bmpPreview == null)
+                return;
+            
+            e.Graphics.DrawImage(m_bmpPreview, 0, 0, picPreview.Width, picPreview.Height);
+            
+            if(m_Origin.X < 0 || m_Origin.Y < 0)
+                return;
+            
+            // Selected system
+            Point scaledOrigin = m_Origin.Scale(m_Scale, m_Scale);
+            e.Graphics.DrawLine(Pens.Red, 0, scaledOrigin.Y, picPreview.Width, scaledOrigin.Y);
+            e.Graphics.DrawLine(Pens.Red, scaledOrigin.X, 0, scaledOrigin.X, picPreview.Height);
+            
+            // On the fly system
+            e.Graphics.DrawLine(m_PenCurrent, 0, m_MousePosition.Y, picPreview.Width, m_MousePosition.Y);
+            e.Graphics.DrawLine(m_PenCurrent, m_MousePosition.X, 0, m_MousePosition.X, picPreview.Height);
+            
+            // Text
+            Point descaledMouse = Descale(m_MousePosition);
+            Point descaledDelta = new Point(descaledMouse.X - m_Origin.X, descaledMouse.Y - m_Origin.Y);
+            string textX = m_CalibrationHelper.GetLengthText((double)descaledDelta.X, false, false);
+			string textY = m_CalibrationHelper.GetLengthText((double)descaledDelta.Y, false, false);
+			string text = String.Format("{{{0};{1}}} {2}", textX, textY, m_CalibrationHelper.GetLengthAbbreviation());
+			
+			int textCoordX = m_MousePosition.X - 70;
+			int textCoordY = m_MousePosition.Y + 2;
+			if(textCoordX < 0)
+			    textCoordX = m_MousePosition.X;
+			if(textCoordY > picPreview.Height - 15)
+			    textCoordY = m_MousePosition.Y - 15;
+			
+			e.Graphics.DrawString(text, m_FontText, (SolidBrush)Brushes.Red, (float)textCoordX, (float)textCoordY);
 		}
 		private void pnlPreview_Resize(object sender, EventArgs e)
 		{
 			RatioStretch();
-			UpdateScaledOrigin();
 			picPreview.Invalidate();
 		}
 		#endregion
@@ -128,18 +125,15 @@ namespace Kinovea.ScreenManager
 		#region User triggered events
 		private void picPreview_MouseClick(object sender, MouseEventArgs e)
 		{
-			// User selected an origin point.
-			m_ScaledOrigin = new Point(e.X, e.Y);
-
-			int iLeft = (int)((float)e.X * m_fRatio);
-			int iTop = (int)((float)e.Y * m_fRatio);
-			m_RealOrigin = new Point(iLeft, iTop);
-			
+		    if(e.Button != MouseButtons.Left)
+		        return;
+		    
+		    m_Origin = Descale(e.Location);
 			picPreview.Invalidate();
 		}
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-			m_ParentMetadata.CalibrationHelper.CoordinatesOrigin = m_RealOrigin;
+			m_CalibrationHelper.CoordinatesOrigin = m_Origin;
 		}
 		#endregion
 		
@@ -147,46 +141,27 @@ namespace Kinovea.ScreenManager
 		private void RatioStretch()
         {
 			// Resizes the picture box to maximize the image in the panel.
-			
-			// This method directly pasted from FormPreviewVideoFilter.
-			// Todo: avoid duplication and factorize the two dialogs ?
-			
-            if (m_bmpPreview != null)
-            {
-                float WidthRatio = (float)m_bmpPreview.Width / pnlPreview.Width;
-                float HeightRatio = (float)m_bmpPreview.Height / pnlPreview.Height;
+			// This method might be similar to others, notably in FormPreviewVideoFilter.
 
-                //Redimensionner l'image selon la dimension la plus proche de la taille du panel.
-                if (WidthRatio > HeightRatio)
-                {
-                    picPreview.Width = pnlPreview.Width;
-                    picPreview.Height = (int)((float)m_bmpPreview.Height / WidthRatio);
-                	m_fRatio = WidthRatio;
-                }
-                else
-                {
-                    picPreview.Width = (int)((float)m_bmpPreview.Width / HeightRatio);
-                    picPreview.Height = pnlPreview.Height;
-                    m_fRatio = HeightRatio;
-                }
+			if (m_bmpPreview == null)
+                return;
+            
+            double widthRatio = (double)pnlPreview.Width / m_bmpPreview.Width;
+            double heightRatio = (double)pnlPreview.Height / m_bmpPreview.Height;
 
-                // Centering.
-                picPreview.Left = (pnlPreview.Width / 2) - (picPreview.Width / 2);
-                picPreview.Top = (pnlPreview.Height / 2) - (picPreview.Height / 2);
-            }
+            if (widthRatio < heightRatio)
+                picPreview.Size = new Size(pnlPreview.Width, (int)(m_bmpPreview.Height * widthRatio));
+            else
+                picPreview.Size = new Size((int)(m_bmpPreview.Width * heightRatio), pnlPreview.Height);
+
+            m_Scale = (double)picPreview.Width / m_OriginalSize.Width;
+            
+            picPreview.Left = (pnlPreview.Width - picPreview.Width) / 2;
+            picPreview.Top = (pnlPreview.Height - picPreview.Height) / 2;
         }
-		private void UpdateScaledOrigin()
+		private Point Descale(Point _point)
 		{
-			if(m_RealOrigin.X >= 0 && m_RealOrigin.Y >= 0)
-            {
-				int iLeft = (int)((float)m_RealOrigin.X / m_fRatio);
-				int iTop = (int)((float)m_RealOrigin.Y / m_fRatio);
-				m_ScaledOrigin = new Point(iLeft, iTop);
-			}
-			else
-			{
-				m_ScaledOrigin = new Point(-1, -1);
-			}
+		    return new Point((int)(_point.X / m_Scale), (int)(_point.Y / m_Scale));
 		}
 		#endregion
 	}

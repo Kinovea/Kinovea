@@ -5,7 +5,7 @@ Last update: 2011-08-10. (0.8.16)
 
 1. Set experimental / release mode in RootKernel constructor.
 2. Check log level in OtherFiles\logConf.xml
-3. Update readme.txt (Refer to SVN changelog)
+3. Update readme.txt (Refer to Mercurial changelog)
 4. Rebuild PlayerServer in release mode. (todo: move this to NSIS script)
 5. Update NSIS script.
     - Version number.

@@ -334,14 +334,12 @@ namespace Kinovea.ScreenManager
         public void UpdateTrackPoint(Bitmap _bmp)
         {
         	// Happens when mouse up and editing a track.
-        	if(m_iSelectedExtraDrawing > 0)
-        	{
-        		Track t = m_ExtraDrawings[m_iSelectedExtraDrawing] as Track;
-        		if(t != null && t.Status == TrackStatus.Edit)
-        		{
-        			t.UpdateTrackPoint(_bmp);
-        		}
-        	}
+        	if(m_iSelectedExtraDrawing < 0)
+        	    return;
+        	
+        	Track t = m_ExtraDrawings[m_iSelectedExtraDrawing] as Track;
+        	if(t != null && t.Status == TrackStatus.Edit)
+                t.UpdateTrackPoint(_bmp);
         }
         public void CleanupHash()
         {
@@ -678,7 +676,6 @@ namespace Kinovea.ScreenManager
 					case "LengthUnit":
 						TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
                         m_CalibrationHelper.CurrentLengthUnit = (LengthUnits)enumConverter.ConvertFromString(r.ReadElementContentAsString());
-						//m_CalibrationHelper.CurrentLengthUnit = (CalibrationHelper.LengthUnits)int.Parse(r.ReadElementContentAsString());
 						break;
 					case "CoordinatesOrigin":
 						// Note: we don't adapt to the destination image size. It makes little sense anyway.

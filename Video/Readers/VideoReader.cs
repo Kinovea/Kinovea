@@ -227,9 +227,16 @@ namespace Kinovea.Video
 		
 		/// <summary>
 		/// Ask the reader to provide its images at a specific size.
-		/// The operation must not invalidate the cache.
+		/// Not necessarily honored by the reader.
 		/// </summary>
 		public virtual void ChangeDecodingSize(Size _size)
+		{
+		    // Does nothing by default. Override to implement.
+		}
+		/// <summary>
+		/// Ask the reader to reset the decoding size to the "aspect ratio" size.
+		/// </summary>
+		public virtual void DisableCustomDecodingSize()
 		{
 		    // Does nothing by default. Override to implement.
 		}

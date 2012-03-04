@@ -222,6 +222,7 @@ namespace Kinovea.ScreenManager
 		private bool m_bManualSqueeze = true; // If it's allowed to manually reduce the rendering surface under the aspect ratio size.
 		private static readonly Pen m_PenImageBorder = Pens.SteelBlue;
 		private static readonly Size m_MinimalSize = new Size(160,120);
+		private bool m_bEnableCustomDecodingSize = true;
 		
 		// Selection (All values in TimeStamps)
 		// trkSelection.minimum and maximum are also in absolute timestamps.
@@ -252,6 +253,7 @@ namespace Kinovea.ScreenManager
 		private System.Windows.Forms.Timer m_DeselectionTimer = new System.Windows.Forms.Timer();
 		private MessageToaster m_MessageToaster;
 		private bool m_Constructed;
+		private bool m_FormResizing;
 		
 		#region Context Menus
 		private ContextMenuStrip popMenu = new ContextMenuStrip();
@@ -577,6 +579,8 @@ namespace Kinovea.ScreenManager
                 VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
                 m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
                 //log.DebugFormat("After updating working zone. Asked:{0}, got: {1}", newZone, m_FrameServer.VideoReader.WorkingZone);
+                
+                ResizeUpdate(true);
             }
             
             // Reupdate back the locals as the reader uses more precise values.
@@ -1242,10 +1246,10 @@ namespace Kinovea.ScreenManager
 			return mnu;
 		}
         private void PostLoad_Idle(object sender, EventArgs e)
-		{
-		    Application.Idle -= PostLoad_Idle;
-		    m_Constructed = true;
-		    
+        {
+            Application.Idle -= PostLoad_Idle;
+            m_Constructed = true;
+
 		    if(!m_FrameServer.Loaded)
 		        return;
 		    
@@ -1418,7 +1422,19 @@ namespace Kinovea.ScreenManager
 			DisableMagnifier();
 			UnzoomDirectZoom(false);
 			m_FrameServer.Metadata.StopAllTracking();
+			CheckCustomDecodingSize(false);
 		}
+		private Form GetParentForm(Control _parent)
+		{
+            Form form = _parent as Form;
+            if(form != null )
+                return form;
+    
+            if(_parent != null)
+                return GetParentForm(_parent.Parent);
+            
+            return null;
+        }
 		#endregion
 
 		#region Video Controls
@@ -1983,7 +1999,7 @@ namespace Kinovea.ScreenManager
 
             // Stretch factor, zoom, or container size have been updated, update the rendering and decoding sizes.
             // During the process, stretch and fill may be forced to different values.
-            m_viewportManipulator.Manipulate(m_FrameServer.CoordinateSystem.Zoom, m_FrameServer.CoordinateSystem.Stretch, panelCenter.Size, m_fill);
+            m_viewportManipulator.Manipulate(panelCenter.Size, m_FrameServer.CoordinateSystem.Stretch, m_fill, m_FrameServer.CoordinateSystem.Zoom, m_bEnableCustomDecodingSize);
             pbSurfaceScreen.Size = m_viewportManipulator.RenderingSize;
             pbSurfaceScreen.Location = m_viewportManipulator.RenderingLocation;
             m_FrameServer.CoordinateSystem.Stretch = m_viewportManipulator.Stretch;
@@ -2118,6 +2134,26 @@ namespace Kinovea.ScreenManager
             {
                 DoInvalidate();
             }
+		}
+		private void CheckCustomDecodingSize(bool _forceDisable)
+		{
+            // Enable or disable custom decoding size depending on current state.
+            // Custom decoding size is not compatible with tracking.
+            // The boolean will later be used each time we attempt to change decoding size in StretchSqueezeSurface.
+            // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
+            bool wasCustomDecodingSize = m_bEnableCustomDecodingSize;
+            m_bEnableCustomDecodingSize = !m_FrameServer.Metadata.IsTracking && !_forceDisable;
+            
+            if(wasCustomDecodingSize && !m_bEnableCustomDecodingSize)
+            {
+                m_FrameServer.VideoReader.DisableCustomDecodingSize();
+            }
+            else if(!wasCustomDecodingSize && m_bEnableCustomDecodingSize)
+            {
+                ResizeUpdate(true);
+            }
+            
+            log.DebugFormat("CheckCustomDecodingSize. was:{0}, is:{1}", wasCustomDecodingSize, m_bEnableCustomDecodingSize);
 		}
 		#endregion
 		
@@ -2318,17 +2354,18 @@ namespace Kinovea.ScreenManager
 		}
 		private void ComputeOrStopTracking(bool _contiguous)
 		{
-		    if (m_FrameServer.Metadata.HasTrack)
-            {
-                // Fixme: Tracking only supports contiguous frames,
-                // but this should be the responsibility of the track tool anyway.
-                if (!_contiguous)
-                    m_FrameServer.Metadata.StopAllTracking();
-                else
-                    m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
+		    if (!m_FrameServer.Metadata.HasTrack)
+                return;
+		    
+            // Fixme: Tracking only supports contiguous frames,
+            // but this should be the responsibility of the track tool anyway.
+            if (!_contiguous)
+                m_FrameServer.Metadata.StopAllTracking();
+            else
+                m_FrameServer.Metadata.PerformTracking(m_FrameServer.VideoReader.Current);
 
-                UpdateFramesMarkers();
-            }
+            UpdateFramesMarkers();
+            CheckCustomDecodingSize(false);
 		}
 		private void Application_Idle(object sender, EventArgs e)
 		{
@@ -3028,7 +3065,7 @@ namespace Kinovea.ScreenManager
 			//------------------------------------------------------------------------------------
 			if(InteractiveFiltering)
 			{
-				ToggleImageFillMode();	
+				ToggleImageFillMode();
 			}
 			else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 			{
@@ -3095,7 +3132,7 @@ namespace Kinovea.ScreenManager
 						}
 					}
 					
-					FlushOnGraphics(m_FrameServer.CurrentImage, e.Graphics, pbSurfaceScreen.Size, iKeyFrameIndex, m_iCurrentPosition);
+					FlushOnGraphics(m_FrameServer.CurrentImage, e.Graphics, m_viewportManipulator.RenderingSize, iKeyFrameIndex, m_iCurrentPosition);
 					
 					if(m_MessageToaster.Enabled)
 						m_MessageToaster.Draw(e.Graphics);
@@ -3158,7 +3195,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 		}
-		private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _iNewSize, int _iKeyFrameIndex, long _iPosition)
+		private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _renderingSize, int _iKeyFrameIndex, long _iPosition)
 		{
 			// This function is used both by the main rendering loop and by image export functions.
 			// Video export get its image from the VideoReader or the cache.
@@ -3185,7 +3222,7 @@ namespace Kinovea.ScreenManager
 			if(m_viewportManipulator.MayDrawUnscaled && m_FrameServer.VideoReader.CanDrawUnscaled)
 			{
 			    // Source image should be at the right size, unless it has been temporarily disabled.
-			    if(m_FrameServer.CoordinateSystem.RenderingZoomWindow.Size.CloseTo(_iNewSize) && !m_FrameServer.Metadata.Mirrored)
+			    if(m_FrameServer.CoordinateSystem.RenderingZoomWindow.Size.CloseTo(_renderingSize) && !m_FrameServer.Metadata.Mirrored)
 			    {
 			        if(!m_FrameServer.CoordinateSystem.Zooming)
     			    {
@@ -3205,9 +3242,9 @@ namespace Kinovea.ScreenManager
 			        // Image was decoded at customized size, but can't be rendered unscaled.
                     Rectangle rDst;
                     if(m_FrameServer.Metadata.Mirrored)
-                        rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+                        rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
                     else
-                        rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+                        rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
 			        
                     // TODO: integrate the mirror flag into the CoordinateSystem.
                     
@@ -3221,9 +3258,9 @@ namespace Kinovea.ScreenManager
 			    
     			Rectangle rDst;
     			if(m_FrameServer.Metadata.Mirrored)
-    				rDst = new Rectangle(_iNewSize.Width, 0, -_iNewSize.Width, _iNewSize.Height);
+    				rDst = new Rectangle(_renderingSize.Width, 0, -_renderingSize.Width, _renderingSize.Height);
     			else
-    				rDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+    				rDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
 			    
     			g.DrawImage(_sourceImage, rDst, m_FrameServer.CoordinateSystem.ZoomWindow, GraphicsUnit.Pixel);
     			//log.DebugFormat("drawing scaled.");
@@ -3261,7 +3298,7 @@ namespace Kinovea.ScreenManager
 				// The mirroring, if any, will have been done already and applied to the sync image.
 				// (because to draw the other image, we take account its own mirroring option,
 				// not the option of the original video in this screen.)
-				Rectangle rSyncDst = new Rectangle(0, 0, _iNewSize.Width, _iNewSize.Height);
+				Rectangle rSyncDst = new Rectangle(0, 0, _renderingSize.Width, _renderingSize.Height);
 				g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
 			}
 			
@@ -3349,7 +3386,7 @@ namespace Kinovea.ScreenManager
 		private void PanelCenter_Resize(object sender, EventArgs e)
 		{
 		    if(m_Constructed)
-		      ResizeUpdate(true);
+                ResizeUpdate(true);
 		}
 		private void PanelCenter_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -3485,8 +3522,6 @@ namespace Kinovea.ScreenManager
 		}
 		private void EnableDisableKeyframes()
 		{
-			// public : called from formKeyFrameComments. (fixme ?)
-
 			// Enable Keyframes that are within Working Zone, Disable others.
 
 			// We leverage the fact that pnlThumbnail is exclusively populated with thumboxes.
@@ -3519,16 +3554,11 @@ namespace Kinovea.ScreenManager
 		}
 		public void OnKeyframesTitleChanged()
 		{
-			// Called when title changed.
-
 			// Update trajectories.
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-
 			// Update thumb boxes.
 			EnableDisableKeyframes();
-
 			DoInvalidate();
-
 		}
 		private void GotoNextKeyframe()
 		{
@@ -3934,8 +3964,9 @@ namespace Kinovea.ScreenManager
 		{
 			// Track the point. No Cross2D was selected.
 			// m_DescaledMouse would have been set during the MouseDown event.
+			CheckCustomDecodingSize(true);
 			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.CurrentImage, m_FrameServer.CurrentImage.Size);
-			m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get from track tool.
+			m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get color from track tool.
 			
 			// Return to the pointer tool.
 			m_ActiveTool = m_PointerTool;
@@ -4049,8 +4080,10 @@ namespace Kinovea.ScreenManager
 					DrawingCross2D dc = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[iSelectedDrawing] as DrawingCross2D;
 					if(dc != null)
 					{
+					    CheckCustomDecodingSize(true);
 						Track trk = new Track(dc.Center, m_iCurrentPosition, m_FrameServer.CurrentImage, m_FrameServer.CurrentImage.Size);
 						m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, dc.PenColor);
+						
 						
 						// Suppress the point as a Drawing (?)
 						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings.RemoveAt(iSelectedDrawing);
@@ -4072,9 +4105,8 @@ namespace Kinovea.ScreenManager
 		{
 			Track trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Track;
 			if(trk != null)
-			{
 				trk.StopTracking();
-			}
+			CheckCustomDecodingSize(false);
 			DoInvalidate();
 		}
 		private void mnuDeleteEndOfTrajectory_Click(object sender, EventArgs e)
@@ -4089,10 +4121,11 @@ namespace Kinovea.ScreenManager
 		private void mnuRestartTracking_Click(object sender, EventArgs e)
 		{
 			Track trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Track;
-			if(trk != null)
-			{
-				trk.RestartTracking();
-			}
+			if(trk == null)
+			    return;
+			
+			CheckCustomDecodingSize(true);
+			trk.RestartTracking();
 			DoInvalidate();
 		}
 		private void mnuDeleteTrajectory_Click(object sender, EventArgs e)
@@ -4102,6 +4135,7 @@ namespace Kinovea.ScreenManager
 			cm.LaunchUndoableCommand(cdc);
 			
 			UpdateFramesMarkers();
+			CheckCustomDecodingSize(false);
 			
 			// Trigger a refresh of the export to spreadsheet menu, 
 			// in case we don't have any more trajectory left to export.
@@ -4110,25 +4144,20 @@ namespace Kinovea.ScreenManager
 		private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
 		{
 			Track trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Track;
-			if(trk != null)
-			{
-				// Change this trajectory display.
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DeactivateKeyboardHandler != null)
-				{
-					dp.DeactivateKeyboardHandler();
-				}
-	
-				formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, DoInvalidate);
-				fctd.StartPosition = FormStartPosition.CenterScreen;
-				fctd.ShowDialog();
-				fctd.Dispose();
-	
-				if (dp.ActivateKeyboardHandler != null)
-				{
-					dp.ActivateKeyboardHandler();
-				}
-			}
+			if(trk == null)
+			    return;
+			
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DeactivateKeyboardHandler != null)
+				dp.DeactivateKeyboardHandler();
+
+			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, DoInvalidate);
+			fctd.StartPosition = FormStartPosition.CenterScreen;
+			fctd.ShowDialog();
+			fctd.Dispose();
+
+			if (dp.ActivateKeyboardHandler != null)
+				dp.ActivateKeyboardHandler();
 		}
 		private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
 		{
@@ -4137,7 +4166,6 @@ namespace Kinovea.ScreenManager
 			// The user has draged or clicked the trajectory, we find the closest point
 			// and we update to the corresponding frame.
 			//--------------------------------------------------------------------------
-
 
 			// Compute the 3D distance (x,y,t) of each point in the path.
 			// unscaled coordinates.
@@ -4561,6 +4589,9 @@ namespace Kinovea.ScreenManager
                 
                 Size s = new Size((int)(m_FrameServer.CoordinateSystem.Stretch * vf.Image.Width), 
                                   (int)(m_FrameServer.CoordinateSystem.Stretch * vf.Image.Height) );
+                
+                // Should simply be RenderingSize ?
+                Size s2 = m_viewportManipulator.RenderingSize;
                     
                 using(Bitmap result = new Bitmap(s.Width, s.Height, PixelFormat.Format24bppRgb))
                 {
@@ -4715,6 +4746,9 @@ namespace Kinovea.ScreenManager
 			// grids, chronos, magnifier, etc.
 			// image should be at same strech factor than the one visible on screen.
 			Size iNewSize = new Size((int)((double)m_FrameServer.CurrentImage.Width * m_FrameServer.CoordinateSystem.Stretch), (int)((double)m_FrameServer.CurrentImage.Height * m_FrameServer.CoordinateSystem.Stretch));
+			
+			Size s = m_viewportManipulator.RenderingSize;
+			
 			Bitmap output = new Bitmap(iNewSize.Width, iNewSize.Height, PixelFormat.Format24bppRgb);
 			output.SetResolution(m_FrameServer.CurrentImage.HorizontalResolution, m_FrameServer.CurrentImage.VerticalResolution);
 			

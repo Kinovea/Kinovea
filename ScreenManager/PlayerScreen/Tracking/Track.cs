@@ -576,32 +576,18 @@ namespace Kinovea.ScreenManager
         }
         private string GetDistanceText(int _p1, int _p2)
         {
-        	// return the distance between two tracked points.
-        	// Todo: currently it just return the distance between the points.
-        	// We would like to get the distance between all points inside the range defined by the points.
-
-        	string dist = "";
-        	if(m_Positions.Count > 0)
-        	{
-        		if( _p1 >= 0 && _p1 < m_Positions.Count &&
-        	   		_p2 >= 0 && _p2 < m_Positions.Count )
-	        	{
-        			double fPixelDistance = 0;
-        			for(int i = _p1; i < _p2; i++)
-        			{
-        				fPixelDistance += CalibrationHelper.PixelDistance(m_Positions[i].Point, m_Positions[i+1].Point);
-        			}
-        			
-	        		dist = m_ParentMetadata.CalibrationHelper.GetLengthText(fPixelDistance);
-	        	}
-	        	else
-	        	{
-	        		// return 0.
-	        		dist = m_ParentMetadata.CalibrationHelper.GetLengthText(0);	
-	        	}
-        	}
-
-        	return dist;
+        	// Cumulative distance between two points.
+        	if(m_Positions.Count < 1)
+        	    return "";
+        	
+        	if(_p1 < 0 || _p1 >= m_Positions.Count || _p2 < 0 || _p2 >= m_Positions.Count)
+        	    return m_ParentMetadata.CalibrationHelper.GetLengthText(0);
+        	
+        	double fPixelDistance = 0;
+    		for(int i = _p1; i < _p2; i++)
+    			fPixelDistance += CalibrationHelper.PixelDistance(m_Positions[i].Point, m_Positions[i+1].Point);
+    		
+        	return m_ParentMetadata.CalibrationHelper.GetLengthText(fPixelDistance);
         }
         private string GetSpeedText(int _p1, int _p2)
         {
@@ -609,25 +595,13 @@ namespace Kinovea.ScreenManager
 			// (that is the distance between p1 and p2 divided by the time to get from p1 to p2).
 			// p2 needs to be after p1.
 			
-        	string speed = "";
+			if(m_Positions.Count < 1)
+        	    return "";
         	
-        	if(m_Positions.Count > 0)
-        	{
-        		int iFrames = _p2 - _p1;
+        	if(_p1 < 0 || _p1 >= m_Positions.Count-1 || _p2 < 0 || _p2 >= m_Positions.Count)
+        	    return m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[0].Point, m_Positions[0].Point, 0);
         	
-        		if( _p1 >= 0 && _p1 < m_Positions.Count-1 &&
-        	   		_p2 > _p1 && _p2 < m_Positions.Count )
-	        	{
-	        		speed = m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].Point, m_Positions[_p2].Point, iFrames);
-	        	}
-	        	else
-	        	{
-	        		// not computable, return 0.
-	        		speed = m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[0].Point, m_Positions[0].Point, 0);	
-	        	}
-        	}
-
-        	return speed;
+    		return m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].Point, m_Positions[_p2].Point, _p2 - _p1);
         }
 		#endregion
     
@@ -837,27 +811,29 @@ namespace Kinovea.ScreenManager
         	// The user moved a point that had been previously placed.
         	// We need to reconstruct tracking data stored in the point, for later tracking.
         	// The coordinate of the point have already been updated during the mouse move.
-            if (m_Positions.Count > 1 && m_iCurrentPoint >= 0)
-            {
-                AbstractTrackPoint current = m_Positions[m_iCurrentPoint];
+            if (m_Positions.Count < 2 || m_iCurrentPoint < 0)
+                return;
             
-            	current.ResetTrackData();
-            	AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, current.X, current.Y, 1.0f, current.T,  _CurrentImage, m_Positions);
-            	
-            	if(atp != null)
-            		current = atp;
-            	
-            	// Update the mini label (attach, position of label, and text).
-            	for (int i = 0; i < m_KeyframesLabels.Count; i++)
-            	{
-            		if(m_KeyframesLabels[i].Timestamp == current.T)
-            		{
-            			m_KeyframesLabels[i].SetAttach(current.Point, true);
-						if(m_TrackExtraData != TrackExtraData.None)
-						    m_KeyframesLabels[i].SetText(GetExtraDataText(m_KeyframesLabels[i].AttachIndex));
-            		}
-            	}
-            }
+            AbstractTrackPoint current = m_Positions[m_iCurrentPoint];
+        
+        	current.ResetTrackData();
+        	AbstractTrackPoint atp = m_Tracker.CreateTrackPoint(true, current.X, current.Y, 1.0f, current.T,  _CurrentImage, m_Positions);
+        	
+        	if(atp != null)
+        		 m_Positions[m_iCurrentPoint] = atp;
+        	
+        	// Update the mini label (attach, position of label, and text).
+        	for (int i = 0; i < m_KeyframesLabels.Count; i++)
+        	{
+        		if(m_KeyframesLabels[i].Timestamp == current.T)
+        		{
+        			m_KeyframesLabels[i].SetAttach(current.Point, true);
+					if(m_TrackExtraData != TrackExtraData.None)
+					    m_KeyframesLabels[i].SetText(GetExtraDataText(m_KeyframesLabels[i].AttachIndex));
+                    
+					break;
+        		}
+        	}
         }
 		#endregion
         
