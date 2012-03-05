@@ -95,11 +95,11 @@ namespace Kinovea.ScreenManager
 			// + each image must be scaled down by a factor of 1/6.
 			
 			int n = (int)Math.Sqrt(_parameters.Spots);
-			int thumbWidth = (int)_canvas.ClipBounds.Width / n;
-			int thumbHeight = (int)_canvas.ClipBounds.Height / n;
+			int thumbWidth = (int)_canvas.VisibleClipBounds.Width / n;
+			int thumbHeight = (int)_canvas.VisibleClipBounds.Height / n;
 						
-			Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
-            Font f = new Font("Arial", GetFontSize(thumbWidth), FontStyle.Bold);
+      Rectangle rSrc = new Rectangle(0, 0, selectedFrames[0].Width, selectedFrames[0].Height);
+      Font f = new Font("Arial", GetFontSize(thumbWidth), FontStyle.Bold);
 			
 			for(int i=0;i<n;i++)
 			{
