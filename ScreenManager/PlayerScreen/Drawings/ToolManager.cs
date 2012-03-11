@@ -72,6 +72,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolLine2D)Tools["Line"]; }
 		}
+        public static DrawingToolArrow Arrow
+		{
+			get { return (DrawingToolArrow)Tools["Arrow"]; }
+		}
 		public static DrawingToolPencil Pencil
 		{
 			get { return (DrawingToolPencil)Tools["Pencil"]; }
@@ -200,6 +204,7 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Circle", new DrawingToolCircle());
         	m_Tools.Add("CrossMark", new DrawingToolCross2D());
         	m_Tools.Add("Line", new DrawingToolLine2D());
+        	m_Tools.Add("Arrow", new DrawingToolArrow());
         	m_Tools.Add("Pencil", new DrawingToolPencil());
         	m_Tools.Add("Label", new DrawingToolText());
         	m_Tools.Add("Grid", new DrawingToolGrid());

@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Events
+        #region Events and overrides
         protected override void OnMouseDown(MouseEventArgs e)
         {
             longClickTimer.Enabled = true;
@@ -87,23 +87,29 @@ namespace Kinovea.ScreenManager
             ToolStripItem item = dropDownMenuContainer.Items[selectedIndex];
             item.PerformClick();
         }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+           
+            // Arrow in the corner
+            /*PointF[] points = new PointF[]{
+                new Point(this.Width - 5, 3),
+                new Point(this.Width - 2, 3),
+                new Point(this.Width - 2, 6)};*/
+            
+            // Arrow in top-left corner.
+            PointF[] points = new PointF[]{
+                new Point(2, 3),
+                new Point(5, 3),
+                new Point(2, 6)};
+            
+            e.Graphics.FillPolygon((SolidBrush)Brushes.Black, points);
+        }
         private void longClickTimer_Tick(object sender, EventArgs e)
         {
             longClickTimer.Enabled = false;
             dropDownMenuContainer.Show(GetDropDownLocation());
             longClicking = true;
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-           
-            // Arrow
-            PointF[] points = new PointF[]{
-                new Point(this.Width - 5, 3),
-                new Point(this.Width - 2, 3),
-                new Point(this.Width - 2, 6)};
-            
-            e.Graphics.FillPolygon((SolidBrush)Brushes.Black, points);
         }
         #endregion
         
