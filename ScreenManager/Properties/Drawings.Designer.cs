@@ -330,6 +330,15 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap spotlight
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("spotlight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap stopwatch
         {
             get

@@ -134,6 +134,10 @@ namespace Kinovea.ScreenManager
         	get { return m_Magnifier;}
         	set { m_Magnifier = value;}
         }
+        public SpotlightManager SpotlightManager
+        {
+            get { return m_SpotlightManager;}
+        }
         public bool Mirrored
         {
             get { return m_Mirrored; }
@@ -180,6 +184,7 @@ namespace Kinovea.ScreenManager
         private int m_iStaticExtraDrawings;			// TODO: might be removed when even Chronos and tracks are represented by a single manager object.
 
         private Magnifier m_Magnifier = new Magnifier();
+        private SpotlightManager m_SpotlightManager = new SpotlightManager();
         
         private bool m_Mirrored;
         
@@ -1445,7 +1450,7 @@ namespace Kinovea.ScreenManager
         	// [0.8.16] - This function currently doesn't do anything as the Grids have been moved to attached drawings.
         	// It is kept nevertheless because it will be needed for SpotlightManager and others.
         	
-            //m_ExtraDrawings.Add(m_Plane);
+            m_ExtraDrawings.Add(m_SpotlightManager);
             m_iStaticExtraDrawings = m_ExtraDrawings.Count;
         }
 		#endregion
