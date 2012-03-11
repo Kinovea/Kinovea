@@ -1015,7 +1015,7 @@ namespace Kinovea.ScreenManager
         	m_btnShowComments.Click += btnShowComments_Click;
         	m_btnShowComments.ToolTipText = ScreenManagerLang.ToolTip_ShowComments;
         	stripDrawingTools.Items.Add(m_btnShowComments);
-        	
+
         	// All other tools
 			AddToolButton(ToolManager.Label, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
@@ -1024,9 +1024,9 @@ namespace Kinovea.ScreenManager
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
 			AddToolButton(ToolManager.Angle, drawingTool_Click);
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
-			AddToolButton(ToolManager.Plane, drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Plane, ToolManager.Grid}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
-						
+
 			// Special button: Tool presets
 			m_btnToolPresets = CreateToolButton();
         	m_btnToolPresets.Image = Resources.SwatchIcon3;
@@ -1051,6 +1051,40 @@ namespace Kinovea.ScreenManager
         	btn.Tag = _tool;
         	btn.Click += _handler;
         	btn.ToolTipText = _tool.DisplayName;
+        	stripDrawingTools.Items.Add(btn);
+		}
+		private void AddToolButtonWithMenu(AbstractDrawingTool[] _tools, int selectedIndex, EventHandler _handler)
+		{
+		    // Adds a button with a sub menu.
+		    // Each menu item will act as a button, and the master button will take the icon of the selected menu.
+		    
+		    ToolStripButtonWithDropDown btn = new ToolStripButtonWithDropDown();
+			btn.AutoSize = false;
+        	btn.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        	btn.ImageScaling = ToolStripItemImageScaling.None;
+        	btn.Size = new Size(25, 25);
+        	btn.AutoToolTip = false;
+
+        	int index = 0;
+        	foreach(AbstractDrawingTool tool in _tools)
+        	{
+        	    ToolStripMenuItem item = new ToolStripMenuItem();
+        	    item.Image = tool.Icon;
+        	    item.Text = tool.DisplayName;
+        	    item.Tag = tool;
+        	    int indexClosure = index;
+        	    item.Click += (s,e) => 
+        	    {
+        	        btn.SelectedIndex = indexClosure;
+        	        _handler(s,e);
+        	    };
+        	    index++;
+
+        	    btn.DropDownItems.Add(item);
+        	}
+        	
+        	btn.SelectedIndex = selectedIndex;
+        	
         	stripDrawingTools.Items.Add(btn);
 		}
 		private void ResetData()
