@@ -1025,6 +1025,7 @@ namespace Kinovea.ScreenManager
 			AddToolButton(ToolManager.Angle, drawingTool_Click);
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
+			AddToolButton(ToolManager.Spotlight, drawingTool_Click);
 			AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
 
 			// Special button: Tool presets
@@ -2738,6 +2739,10 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.Metadata.AddChrono(chrono);
 				m_ActiveTool = m_PointerTool;
 			}
+			else if(m_ActiveTool == ToolManager.Spotlight)
+			{
+			    m_FrameServer.Metadata.SpotlightManager.Add(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+			}
 			else
 			{
 			    CreateNewDrawing();
@@ -2967,8 +2972,14 @@ namespace Kinovea.ScreenManager
 			{
 				if (m_ActiveTool != m_PointerTool)
 				{
-					// Tools that are not IInitializable should reset to Pointer tool after creation.
-					if (m_iActiveKeyFrameIndex >= 0 && !m_bIsCurrentlyPlaying)
+				    // Tools that are not IInitializable should reset to Pointer tool after creation.
+				    
+				    if(m_ActiveTool == ToolManager.Spotlight)
+    			    {
+    			        IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
+    			        initializableDrawing.ContinueSetup(m_DescaledMouse);
+    			    }
+					else if (m_iActiveKeyFrameIndex >= 0 && !m_bIsCurrentlyPlaying)
 					{
 						// Currently setting the second point of a Drawing.
 						IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0] as IInitializable;
@@ -3885,27 +3896,15 @@ namespace Kinovea.ScreenManager
 			OnPoke();
 			
 			AbstractDrawingTool tool = ((ToolStripItem)sender).Tag as AbstractDrawingTool;
-			if(tool != null)
-			{
-				m_ActiveTool = tool;
-			}
-			else
-			{
-				m_ActiveTool = m_PointerTool;
-			}
-			
+    		m_ActiveTool = tool ?? m_PointerTool;
 			
 			UpdateCursor();
 			
 			// Ensure there's a key image at this position, unless the tool creates unattached drawings.
 			if(m_ActiveTool == m_PointerTool && m_FrameServer.Metadata.Count < 1)
-			{
 				DockKeyframePanel(true);
-			}
 			else if(m_ActiveTool.Attached)
-			{
 				PrepareKeyframesDock();
-			}
 			
 			pbSurfaceScreen.Invalidate();
 		}

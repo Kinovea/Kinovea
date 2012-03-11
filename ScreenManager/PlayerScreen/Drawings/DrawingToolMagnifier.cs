@@ -26,9 +26,6 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Description for the magnifier tool.
-	/// </summary>
 	public class DrawingToolMagnifier : AbstractDrawingTool
 	{
 		#region Properties
