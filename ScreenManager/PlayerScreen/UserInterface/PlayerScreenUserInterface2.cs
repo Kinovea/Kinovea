@@ -485,10 +485,12 @@ namespace Kinovea.ScreenManager
 			    PostImportMetadata();
 			    m_FrameServer.Metadata.CleanupHash();
 			}
+			else
+			{
+                m_FrameServer.AutoSaver.Clean();
+                m_FrameServer.AutoSaver.Start();
+			}
 			
-			/*m_FrameServer.VideoReader.PostLoad();
-			UpdateWorkingZone(false);
-			UpdateFramesMarkers();*/
 			Application.Idle += PostLoad_Idle;
 			
 			return 0;
@@ -568,6 +570,9 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.SetupMetadata();
 			m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
 
+			m_FrameServer.AutoSaver.Clean();
+			m_FrameServer.AutoSaver.Start();
+			
 			DoInvalidate();
 		}
         public void UpdateWorkingZone(bool _bForceReload)
@@ -1143,9 +1148,7 @@ namespace Kinovea.ScreenManager
 			kvaFile = kvaFile + "\\" + Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath) + ".kva";
 			
 			if (File.Exists(kvaFile))
-			{
 				m_FrameServer.Metadata.Load(kvaFile, true);
-			}
 		}
 		private void UpdateFilenameLabel()
 		{

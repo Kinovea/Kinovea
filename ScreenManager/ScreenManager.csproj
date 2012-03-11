@@ -234,6 +234,7 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
+    <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
     <Compile Include="PlayerScreen\Drawings\BoundingBox.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
