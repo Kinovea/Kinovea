@@ -286,6 +286,10 @@
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.Designer.cs">
+      <DependentUpon>DropDownMenuContainer.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\Controls\FrameTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -316,6 +320,7 @@
     <Compile Include="PlayerScreen\UserInterface\Controls\SpeedSlider.designer.cs">
       <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs" />
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs">
       <SubType>Form</SubType>
     </Compile>

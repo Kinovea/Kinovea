@@ -32,6 +32,8 @@ namespace Kinovea.ScreenManager
         
         public AutoSaver()
         {
+            m_Enabled = false;
+            
             m_Timer.Interval = m_Interval;
             m_Timer.Elapsed += Timer_Elapsed;
             m_AutosaveDirectory = PreferencesManager.SettingsFolder + PreferencesManager.ResourceManager.GetString("TempFolder");
