@@ -242,6 +242,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />

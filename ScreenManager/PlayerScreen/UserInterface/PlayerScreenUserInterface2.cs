@@ -1000,7 +1000,7 @@ namespace Kinovea.ScreenManager
 			
 			// Special button: Add key image
 			m_btnAddKeyFrame = CreateToolButton();
-        	m_btnAddKeyFrame.Image = Resources.page_white_go;
+        	m_btnAddKeyFrame.Image = Drawings.addkeyimage;
         	m_btnAddKeyFrame.Click += btnAddKeyframe_Click;
         	m_btnAddKeyFrame.ToolTipText = ScreenManagerLang.ToolTip_AddKeyframe;
         	stripDrawingTools.Items.Add(m_btnAddKeyFrame);
@@ -1019,12 +1019,12 @@ namespace Kinovea.ScreenManager
         	// All other tools
 			AddToolButton(ToolManager.Label, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
-			AddToolButton(ToolManager.Line, drawingTool_Click);
-			AddToolButton(ToolManager.Circle, drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
+			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
 			AddToolButton(ToolManager.Angle, drawingTool_Click);
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
-			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Plane, ToolManager.Grid}, 0, drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
 
 			// Special button: Tool presets
@@ -1065,25 +1065,24 @@ namespace Kinovea.ScreenManager
         	btn.Size = new Size(25, 25);
         	btn.AutoToolTip = false;
 
-        	int index = 0;
-        	foreach(AbstractDrawingTool tool in _tools)
+        	for(int i = _tools.Length-1;i>=0;i--)
         	{
+        	    AbstractDrawingTool tool = _tools[i];
         	    ToolStripMenuItem item = new ToolStripMenuItem();
         	    item.Image = tool.Icon;
         	    item.Text = tool.DisplayName;
         	    item.Tag = tool;
-        	    int indexClosure = index;
-        	    item.Click += (s,e) => 
+        	    int indexClosure = _tools.Length - 1 - i;
+        	    item.Click += (s,e) =>
         	    {
         	        btn.SelectedIndex = indexClosure;
         	        _handler(s,e);
         	    };
-        	    index++;
 
         	    btn.DropDownItems.Add(item);
         	}
         	
-        	btn.SelectedIndex = selectedIndex;
+        	btn.SelectedIndex = _tools.Length - 1 - selectedIndex;
         	
         	stripDrawingTools.Items.Add(btn);
 		}
