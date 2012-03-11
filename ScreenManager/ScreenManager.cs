@@ -1908,7 +1908,7 @@ namespace Kinovea.ScreenManager
                 if (filePath.Length > 0)
                 {
                    ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.Load(filePath, true);
-                   ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();    
+                   ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();
                 }
             }
         }

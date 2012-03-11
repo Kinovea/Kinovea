@@ -50,7 +50,16 @@ namespace Kinovea.ScreenManager
 		public Metadata Metadata
 		{
 			get { return m_Metadata; }
-			set { m_Metadata = value; }
+			set 
+			{ 
+			    m_Metadata = value;
+			    m_AutoSaver.SetMetadata(m_Metadata);
+			    m_AutoSaver.Start();
+			}
+		}
+		public AutoSaver AutoSaver
+		{
+		    get { return m_AutoSaver; }
 		}
 		public CoordinateSystem CoordinateSystem
 		{
@@ -73,6 +82,7 @@ namespace Kinovea.ScreenManager
 		#region Members
 		private VideoReader m_VideoReader;
 		private Metadata m_Metadata;
+		private AutoSaver m_AutoSaver = new AutoSaver();
 		private formProgressBar m_FormProgressBar;
 		private BackgroundWorker m_BgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult m_SaveResult;
@@ -113,7 +123,12 @@ namespace Kinovea.ScreenManager
 			// Prepare the FrameServer for a new video by resetting everything.
 			if(m_VideoReader != null && m_VideoReader.Loaded)
                 m_VideoReader.Close();
-			if(m_Metadata != null) m_Metadata.Reset();
+			
+			if(m_Metadata != null)
+			{
+			    m_Metadata.Reset();
+			    m_AutoSaver.Clean();
+			}
 		}
 		public void SetupMetadata()
 		{
@@ -143,6 +158,7 @@ namespace Kinovea.ScreenManager
             	if(fve.SaveAnalysis)
             	{
             		m_Metadata.ToXmlFile(fve.Filename);
+            		m_AutoSaver.Clean();
             	}
             	else
             	{
