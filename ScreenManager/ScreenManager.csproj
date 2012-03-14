@@ -212,10 +212,12 @@
     <Compile Include="CaptureScreen\VideoRecorder.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandAddMultiDrawingItem.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteKeyframe.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddChrono.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteChrono.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteMultiDrawingItem.cs" />
     <Compile Include="Commands\PlayerScreen\CommandModifyChrono.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteTrack.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
@@ -235,6 +237,7 @@
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
+    <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
     <Compile Include="PlayerScreen\Drawings\BoundingBox.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
@@ -674,9 +677,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\CaptureScreen\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

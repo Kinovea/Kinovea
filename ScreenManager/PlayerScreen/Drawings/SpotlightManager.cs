@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -32,9 +33,22 @@ namespace Kinovea.ScreenManager
 	/// Spotlights.
 	/// This is the proxy object dispatching all spotlights requests. (draw, hit testing, etc.)
 	/// </summary>
-	public class SpotlightManager : AbstractDrawing, IInitializable
+	public class SpotlightManager : AbstractMultiDrawing, IInitializable
 	{
 		#region Properties
+		public override object SelectedItem {
+		    get 
+		    {
+                if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
+                    return m_Spotlights[m_iSelected];
+                else
+                    return null;
+		    }
+		}
+        public override int Count {
+		    get { return m_Spotlights.Count; }
+        }
+		
 		// Fading is not currently modifiable from outside.
         public override InfosFading  infosFading
         {
@@ -52,11 +66,9 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private List<SpotLight> m_Spots = new List<SpotLight>();
+		private List<Spotlight> m_Spotlights = new List<Spotlight>();
 		private int m_iSelected = -1;
-		private static readonly Pen m_WidenPen = new Pen(Color.Black, 2);
-		private static readonly int m_iDefaultBackgroundAlpha = 128;
-		private static readonly SolidBrush m_BrushBackground = new SolidBrush(Color.FromArgb(m_iDefaultBackgroundAlpha, Color.Black));
+		private static readonly int m_iDefaultBackgroundAlpha = 150; // <-- opacity of the dim layer. Higher value => darker.
 		#endregion
 		
 		#region AbstractDrawing Implementation
@@ -64,11 +76,12 @@ namespace Kinovea.ScreenManager
 		{
 		    // We draw a single translucent black rectangle to cover the whole image.
 			// (Opacity varies between 0% and 50%, depending on the opacity factor of the closest spotlight in time)
-			if(m_Spots.Count < 1)
+			if(m_Spotlights.Count < 1)
 			    return;
 			
 			// Create a mask rectangle and obliterate spotlights from it.
 			// FIXME: spots subtract from each other which is not desirable.
+			// TODO: might be better to first get the opacity, then only ask for the path. In case opacity is 0.
 			GraphicsPath globalPath = new GraphicsPath();
 			globalPath.AddRectangle(_canvas.ClipBounds);
 			
@@ -76,7 +89,7 @@ namespace Kinovea.ScreenManager
 			// Get their opacity in the process to compute the global opacity of the covering rectangle.
 			double maxOpacity = 0.0;
 			GraphicsPath spotsPath = new GraphicsPath();
-			foreach(SpotLight spot in m_Spots)
+			foreach(Spotlight spot in m_Spotlights)
 			{
 				double opacity = spot.AddSpot(_iCurrentTimestamp, spotsPath, _transformer);
 				maxOpacity = Math.Max(maxOpacity, opacity);
@@ -91,29 +104,30 @@ namespace Kinovea.ScreenManager
 			// Draw the mask with the spot holes on top of the frame.
 			int backgroundAlpha = (int)((double)m_iDefaultBackgroundAlpha * maxOpacity);
 			using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.Black)))
-            {
+			//using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.FromArgb(255, 0, 0, 16))))
+			{
                 _canvas.FillPath(brushBackground, globalPath);
             }
 			
 			// Draw each spot border or any visuals.
-            foreach(SpotLight spot in m_Spots)
+            foreach(Spotlight spot in m_Spotlights)
                 spot.Draw(_canvas, _transformer, _iCurrentTimestamp);
 		}
 		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
 		{
-		    if(m_iSelected >= 0 && m_iSelected < m_Spots.Count)
-				m_Spots[m_iSelected].MouseMove(_deltaX, _deltaY);
+		    if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
+				m_Spotlights[m_iSelected].MouseMove(_deltaX, _deltaY);
 		}
 		public override void MoveHandle(Point point, int handleNumber)
 		{
-		    if(m_iSelected >= 0 && m_iSelected < m_Spots.Count)
-				m_Spots[m_iSelected].MoveHandleTo(point);
+		    if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
+				m_Spotlights[m_iSelected].MoveHandleTo(point);
 		}
 		public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
 		    int currentSpot = 0;
 		    int handle = -1;
-		    foreach(SpotLight spot in m_Spots)
+		    foreach(Spotlight spot in m_Spotlights)
 		    {
 		        handle = spot.HitTest(_point, _iCurrentTimestamp);
 		        if(handle >= 0)
@@ -128,6 +142,32 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		#region AbstractMultiDrawing Implementation
+		public override void Add(object _item)
+        {
+            Spotlight spotlight = _item as Spotlight;
+            if(spotlight == null)
+                return;
+            
+		    m_Spotlights.Add(spotlight);
+		    m_iSelected = m_Spotlights.Count - 1;
+		}
+        public override void Remove(object _item)
+		{
+            Spotlight spotlight = _item as Spotlight;
+            if(spotlight == null)
+                return;
+            
+		    m_Spotlights.Remove(spotlight);
+		    m_iSelected = -1;
+		}
+        public override void Clear()
+        {
+            m_Spotlights.Clear();
+            m_iSelected = -1;
+        }
+		#endregion
+		
 		#region IInitializable implementation
         public void ContinueSetup(Point point)
 		{
@@ -136,12 +176,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
 		#region Public methods
+		public override string ToString()
+        {
+            return "Spotlight"; //ScreenManagerLang.ToolTip_DrawingToolSpotlight;
+        }
 		public void Add(Point _point, long _iPosition, long _iAverageTimeStampsPerFrame)
 		{
 		    // Equivalent to GetNewDrawing() for regular drawing tools.
-		    
-			m_Spots.Add(new SpotLight(_iPosition, _iAverageTimeStampsPerFrame, _point));
-			m_iSelected = m_Spots.Count - 1;
+			m_Spotlights.Add(new Spotlight(_iPosition, _iAverageTimeStampsPerFrame, _point));
+			m_iSelected = m_Spotlights.Count - 1;
 		}
 		#endregion
 	}
