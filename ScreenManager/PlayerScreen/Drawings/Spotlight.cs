@@ -27,10 +27,10 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// SpotLight.
-	/// Describe and draw a single spot light.
+	/// SpotLight. (MultiDrawingItem of SpotlightManager)
+	/// Describe and draw a single spotlight.
 	/// </summary>
-	public class SpotLight
+	public class Spotlight
 	{
 		#region Members
 		private long m_iPosition;
@@ -41,19 +41,20 @@ namespace Kinovea.ScreenManager
 		
 		private static readonly int m_iMinimalRadius = 10;
 		private static readonly int m_iBorderWidth = 2;
-		private static readonly DashStyle m_DashStyle = DashStyle.Dash; // DashStyle.Dot
+		private static readonly DashStyle m_DashStyle = DashStyle.Dash;
 		private InfosFading m_InfosFading;
 		#endregion
 		
 		#region Constructor
-		public SpotLight(long _iPosition, long _iAverageTimeStampsPerFrame, Point _center)
+		public Spotlight(long _iPosition, long _iAverageTimeStampsPerFrame, Point _center)
 		{
 			m_iPosition = _iPosition;
 			m_Center = _center;
 			m_iRadius = m_iMinimalRadius;
 			m_InfosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
 			m_InfosFading.UseDefault = false;
-            m_InfosFading.FadingFrames = 25;
+			m_InfosFading.FadingFrames = 25;
+			//m_InfosFading.AlwaysVisible = true;
 		}
 		#endregion
 		
@@ -110,15 +111,6 @@ namespace Kinovea.ScreenManager
 		{
 			m_Center.X += _deltaX;
             m_Center.Y += _deltaY;
-		}
-		public void InitMove(Point _init)
-		{
-			int deltaX = _init.X - m_Center.X;
-			int deltaY = _init.Y - m_Center.Y;
-			
-			m_iRadius = (int)Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY));
-			
-			if(m_iRadius < m_iMinimalRadius) m_iRadius = m_iMinimalRadius;
 		}
 		public void MoveHandleTo(Point point)
         {
