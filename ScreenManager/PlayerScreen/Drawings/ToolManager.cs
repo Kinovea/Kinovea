@@ -96,6 +96,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolSpotlight)Tools["Spotlight"]; }
 		}
+        public static DrawingToolAutoNumbers AutoNumbers
+		{
+			get { return (DrawingToolAutoNumbers)Tools["AutoNumbers"]; }
+		}
 		public static DrawingToolMagnifier Magnifier
 		{
 			get { return (DrawingToolMagnifier)Tools["Magnifier"]; }
@@ -214,6 +218,7 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Grid", new DrawingToolGrid());
         	m_Tools.Add("Plane", new DrawingToolPlane());
             m_Tools.Add("Spotlight", new DrawingToolSpotlight());
+            m_Tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
         	m_Tools.Add("Magnifier", new DrawingToolMagnifier());
         	
         	LoadPresets();

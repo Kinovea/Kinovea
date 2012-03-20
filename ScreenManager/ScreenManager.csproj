@@ -239,6 +239,8 @@
     <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
+    <Compile Include="PlayerScreen\Drawings\AutoNumber.cs" />
+    <Compile Include="PlayerScreen\Drawings\AutoNumberManager.cs" />
     <Compile Include="PlayerScreen\Drawings\BoundingBox.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolAutoNumbers.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />

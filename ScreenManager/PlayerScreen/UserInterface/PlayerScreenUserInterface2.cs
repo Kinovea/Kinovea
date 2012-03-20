@@ -1018,7 +1018,7 @@ namespace Kinovea.ScreenManager
         	stripDrawingTools.Items.Add(m_btnShowComments);
 
         	// All other tools
-			AddToolButton(ToolManager.Label, drawingTool_Click);
+        	AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 1, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
@@ -1027,6 +1027,7 @@ namespace Kinovea.ScreenManager
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Spotlight, drawingTool_Click);
+			
 			AddToolButton(ToolManager.Magnifier, btnMagnifier_Click);
 
 			// Special button: Tool presets
@@ -2751,6 +2752,13 @@ namespace Kinovea.ScreenManager
 			{
 			    m_FrameServer.Metadata.SpotlightManager.Add(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
 			    m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.SpotlightManager);
+			    m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
+			}
+			else if(m_ActiveTool == ToolManager.AutoNumbers)
+			{
+			    m_FrameServer.Metadata.AutoNumberManager.Add(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+			    m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.AutoNumberManager);
+			    m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
 			}
 			else
 			{
@@ -2933,7 +2941,7 @@ namespace Kinovea.ScreenManager
 					
 					panelCenter.ContextMenuStrip = popMenuTrack;
 				}
-				else if(hitDrawing is SpotlightManager)
+				else if(hitDrawing is AbstractMultiDrawing)
 				{
                     panelCenter.ContextMenuStrip = popMenuMultiDrawing;
 				}
@@ -2989,10 +2997,10 @@ namespace Kinovea.ScreenManager
     			        IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
     			        initializableDrawing.ContinueSetup(m_DescaledMouse);
     			    }
-					else if (m_iActiveKeyFrameIndex >= 0 && !m_bIsCurrentlyPlaying)
+					else if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0 && !m_bIsCurrentlyPlaying)
 					{
 						// Currently setting the second point of a Drawing.
-						IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0] as IInitializable;
+						IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IInitializable;
 						if(initializableDrawing != null)
 							initializableDrawing.ContinueSetup(m_DescaledMouse);
 					}

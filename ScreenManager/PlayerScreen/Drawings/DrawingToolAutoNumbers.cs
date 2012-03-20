@@ -27,17 +27,17 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-    public class DrawingToolSpotlight : AbstractDrawingTool
+    public class DrawingToolAutoNumbers : AbstractDrawingTool
     {
     	#region Properties
     	public override string DisplayName
     	{
     		//get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
-    		get { return "Spotlight";}
+    		get { return "Auto numbers";}
     	}
     	public override Bitmap Icon
     	{
-    		get { return Properties.Drawings.spotlight; }
+    		get { return Properties.Drawings.number; }
     	}
     	public override bool Attached
     	{
@@ -45,11 +45,11 @@ namespace Kinovea.ScreenManager
     	}
     	public override bool KeepTool
     	{
-    		get { return false; }
+    		get { return true; }
     	}
     	public override bool KeepToolFrameChanged
     	{
-    		get { return false; }
+    		get { return true; }
     	}
     	public override DrawingStyle StylePreset
 		{
@@ -69,10 +69,12 @@ namespace Kinovea.ScreenManager
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{
+    	    // Would be cool to have a real cursor with the actual next number in it.
     		return Cursors.Cross;
     	}
     	#endregion
     }
 }
+
 
 
