@@ -139,6 +139,10 @@ namespace Kinovea.ScreenManager
         {
             get { return m_SpotlightManager;}
         }
+        public AutoNumberManager AutoNumberManager
+        {
+            get { return m_AutoNumberManager;}
+        }
         public bool Mirrored
         {
             get { return m_Mirrored; }
@@ -186,6 +190,7 @@ namespace Kinovea.ScreenManager
 
         private Magnifier m_Magnifier = new Magnifier();
         private SpotlightManager m_SpotlightManager;
+        private AutoNumberManager m_AutoNumberManager;
         
         private bool m_Mirrored;
         
@@ -1472,8 +1477,10 @@ namespace Kinovea.ScreenManager
         	// It could be "multi drawing", like SpotlightManager.
         	
         	m_SpotlightManager = new SpotlightManager();
+        	m_AutoNumberManager = new AutoNumberManager();
         	
         	m_ExtraDrawings.Add(m_SpotlightManager);
+        	m_ExtraDrawings.Add(m_AutoNumberManager);
             
         	// m_iStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
         	// and dynamic extra drawings like tracks and chronos.
