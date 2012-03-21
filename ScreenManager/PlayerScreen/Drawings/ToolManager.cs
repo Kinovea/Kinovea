@@ -104,6 +104,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolMagnifier)Tools["Magnifier"]; }
 		}
+		public static DrawingToolPosture Posture
+		{
+			get { return (DrawingToolPosture)Tools["Posture"]; }
+		}
 		#endregion
 		
 		#region Members
@@ -220,6 +224,7 @@ namespace Kinovea.ScreenManager
             m_Tools.Add("Spotlight", new DrawingToolSpotlight());
             m_Tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
         	m_Tools.Add("Magnifier", new DrawingToolMagnifier());
+        	m_Tools.Add("Posture", new DrawingToolPosture());
         	
         	LoadPresets();
         }

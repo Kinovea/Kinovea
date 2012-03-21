@@ -245,6 +245,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolAutoNumbers.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />

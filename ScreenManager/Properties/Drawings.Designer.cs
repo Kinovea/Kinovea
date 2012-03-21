@@ -339,6 +339,42 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap posture
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture4
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture6
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture7
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap spotlight
         {
             get

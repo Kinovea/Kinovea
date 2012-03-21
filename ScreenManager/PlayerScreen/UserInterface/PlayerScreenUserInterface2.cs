@@ -1018,12 +1018,13 @@ namespace Kinovea.ScreenManager
         	stripDrawingTools.Items.Add(m_btnShowComments);
 
         	// All other tools
-        	AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 1, drawingTool_Click);
+        	AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
-			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle, ToolManager.Posture}, 2, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
 			AddToolButton(ToolManager.Angle, drawingTool_Click);
+			//AddToolButton(ToolManager.Posture, drawingTool_Click);
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Spotlight, drawingTool_Click);
@@ -2752,7 +2753,7 @@ namespace Kinovea.ScreenManager
 			{
 			    m_FrameServer.Metadata.SpotlightManager.Add(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
 			    m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.SpotlightManager);
-			    m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
+			    //m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
 			}
 			else if(m_ActiveTool == ToolManager.AutoNumbers)
 			{
