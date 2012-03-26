@@ -56,6 +56,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolAngle2D)Tools["Angle"]; }
 		}
+		public static DrawingToolAlignmentAngle AlignmentAngle
+		{
+			get { return (DrawingToolAlignmentAngle)Tools["AlignmentAngle"]; }
+		}
 		public static DrawingToolChrono Chrono
 		{
 			get { return (DrawingToolChrono)Tools["Chrono"]; }
@@ -212,6 +216,7 @@ namespace Kinovea.ScreenManager
         	// Maybe in the future we can have a plug-in system with .dll containing extensions tools.
         	// Note that the pointer "tool" is not listed, as each screen must have its own.
         	m_Tools.Add("Angle", new DrawingToolAngle2D());
+        	m_Tools.Add("AlignmentAngle", new DrawingToolAlignmentAngle());
         	m_Tools.Add("Chrono", new DrawingToolChrono());
         	m_Tools.Add("Circle", new DrawingToolCircle());
         	m_Tools.Add("CrossMark", new DrawingToolCross2D());

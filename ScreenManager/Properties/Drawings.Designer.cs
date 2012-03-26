@@ -78,6 +78,24 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap alignmentangle10
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("alignmentangle10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap alignmentangle11
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("alignmentangle11", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap angle
         {
             get
