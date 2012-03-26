@@ -103,7 +103,8 @@ namespace Kinovea.ScreenManager
                 new Point(5, 3),
                 new Point(2, 6)};
             
-            e.Graphics.FillPolygon((SolidBrush)Brushes.Black, points);
+            //e.Graphics.FillPolygon((SolidBrush)Brushes.Black, points);
+            e.Graphics.FillPolygon((SolidBrush)Brushes.DimGray, points);
         }
         private void longClickTimer_Tick(object sender, EventArgs e)
         {

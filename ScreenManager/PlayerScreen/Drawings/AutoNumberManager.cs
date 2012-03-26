@@ -156,7 +156,6 @@ namespace Kinovea.ScreenManager
 		    else
 		    {
 		        int prev = m_AutoNumbers[0].Value;
-		        bool hole = false;
 		        
 		        // TODO: handle reset points.
 		        
@@ -164,7 +163,7 @@ namespace Kinovea.ScreenManager
 		        {
 		            if(m_AutoNumbers[i].Value > m_AutoNumbers[i-1].Value + 1)
 		            {
-		                hole = true;
+		                //hole = true;
 		                prev = m_AutoNumbers[i-1].Value;
 		                break;
 		            }
