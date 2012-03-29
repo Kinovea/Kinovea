@@ -71,14 +71,14 @@ namespace Kinovea.Video
         #region Public methods
         public override OpenVideoResult Open(string _filePath)
         {
-            InstanciateGenerator(_filePath);
-            if(!m_Initialized)
-                return OpenVideoResult.NotSupported;
+            OpenVideoResult res = InstanciateGenerator(_filePath);
+            if(res != OpenVideoResult.Success)
+                return res;
             
             SetupVideoInfo(_filePath);
             m_WorkingZone = new VideoSection(0, m_VideoInfo.DurationTimeStamps - m_VideoInfo.AverageTimeStampsPerFrame);
             
-            return OpenVideoResult.Success;
+            return res;
         }
         public override void Close()
         {
@@ -86,9 +86,9 @@ namespace Kinovea.Video
         }
         public override VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width)
         {
-            Open(_filePath);
+            OpenVideoResult res = Open(_filePath);
             
-            if(m_Generator == null)
+            if(res != OpenVideoResult.Success || m_Generator == null)
                 return VideoSummary.GetInvalid(_filePath);
             
             Bitmap bmp = m_Generator.Generate(0);
@@ -124,8 +124,9 @@ namespace Kinovea.Video
         #endregion
         
         #region Private methods
-        private void InstanciateGenerator(string _filePath)
+        private OpenVideoResult InstanciateGenerator(string _filePath)
         {
+            OpenVideoResult res = OpenVideoResult.NotSupported;
             string extension = Path.GetExtension(_filePath).ToLower();
             switch(extension)
             {
@@ -143,9 +144,10 @@ namespace Kinovea.Video
             
             if(m_Generator != null)
             {
-                m_Generator.Initialize(_filePath);
-                m_Initialized = true;
+                res = m_Generator.Initialize(_filePath);
+                m_Initialized = res == OpenVideoResult.Success;
             }
+            return res;
         }
         private void SetupVideoInfo(string _filePath)
         {

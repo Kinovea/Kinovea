@@ -33,13 +33,27 @@ namespace Kinovea.Video
         }
         private Bitmap m_Bitmap;
         private Bitmap m_ErrorBitmap;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
         public FrameGeneratorImageFile()
         {
             m_ErrorBitmap = new Bitmap(640, 480);
         }
-        public void Initialize(string _init)
+        public OpenVideoResult Initialize(string _init)
         {
-            m_Bitmap = new Bitmap(_init);
+            OpenVideoResult res = OpenVideoResult.NotSupported;
+            try
+            {
+                m_Bitmap = new Bitmap(_init);
+                if(m_Bitmap != null)
+                    res = OpenVideoResult.Success;
+            }
+            catch(Exception e)
+            {
+                log.ErrorFormat("An error occured while trying to open {0}", _init);
+                log.Error(e);
+            }
+            return res;
         }
         public Bitmap Generate(long _timestamp)
         {
