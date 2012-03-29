@@ -31,7 +31,7 @@ namespace Kinovea.Video
     {
         Bitmap Generate(long _timestamp);
         void DisposePrevious(Bitmap _previous);
-        void Initialize(string _init);
+        OpenVideoResult Initialize(string _init);
         void Close();
         Size Size {get;}
     }
