@@ -126,7 +126,8 @@ namespace Kinovea.ScreenManager
             
             using(Pen penEdges = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor*255)))
             using(Pen penDash = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor*255)))
-            using(SolidBrush brushEdges = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*128)))
+            using(SolidBrush brushEdges = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*255)))
+            using(SolidBrush brushHead = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*128)))
             {
                 penEdges.Width = 2;
                 penDash.Width = 2;
@@ -137,9 +138,18 @@ namespace Kinovea.ScreenManager
                 _canvas.DrawLine(penEdges, rightLineTop, rightLineBottom);
                 
                 _canvas.DrawEllipse(penEdges, headCenter.Box(radius));
-                _canvas.FillEllipse(brushEdges, headCenter.Box(5));
+                _canvas.FillEllipse(brushHead, headCenter.Box(5));
                 
                 _canvas.DrawLine(penEdges, shoulderLineStart, shoulderLineEnd);
+                
+                _canvas.FillEllipse(brushEdges, leftLineTop.Box(3));
+                _canvas.FillEllipse(brushEdges, leftLineBottom.Box(3));
+                _canvas.FillEllipse(brushEdges, middleLineTop.Box(3));
+                _canvas.FillEllipse(brushEdges, middleLineBottom.Box(3));
+                _canvas.FillEllipse(brushEdges, rightLineTop.Box(3));
+                _canvas.FillEllipse(brushEdges, rightLineBottom.Box(3));
+                _canvas.FillEllipse(brushEdges, shoulderLineStart.Box(3));
+                _canvas.FillEllipse(brushEdges, shoulderLineEnd.Box(3));
             }
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
