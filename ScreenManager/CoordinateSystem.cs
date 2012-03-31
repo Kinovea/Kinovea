@@ -218,6 +218,14 @@ namespace Kinovea.ScreenManager
 
 			return new Point((int)fStretchedX, (int)fStretchedY);
 		}
+		public List<Point> Transform(List<Point> _points)
+		{
+		    List<Point> points = new List<Point>();
+		    foreach(Point p in _points)
+		        points.Add(Transform(p));
+		    
+			return points;
+		}
 
         /// <summary>
         /// Transform a length in the image coordinate system to its equivalent in screen coordinate system.
@@ -250,6 +258,14 @@ namespace Kinovea.ScreenManager
         public Rectangle Transform(Rectangle _rect)
         {
             return new Rectangle(Transform(_rect.Location), Transform(_rect.Size));
+        }
+        public List<Rectangle> Transform(List<Rectangle> _rectangles)
+        {
+            List<Rectangle> rectangles = new List<Rectangle>();
+            foreach(Rectangle r in _rectangles)
+                rectangles.Add(Transform(r));
+            
+            return rectangles;
         }
         
         public Quadrilateral Transform(Quadrilateral _quad)
