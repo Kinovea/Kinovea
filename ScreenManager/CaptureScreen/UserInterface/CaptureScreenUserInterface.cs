@@ -598,8 +598,7 @@ namespace Kinovea.ScreenManager
 			// This is used for drawings that must show extra stuff for being transformed, but we 
 			// don't want to show the extra stuff all the time for clarity.
 			
-			m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-			m_FrameServer.Metadata.SelectedDrawing = -1;
+			m_FrameServer.Metadata.Deselect();
 			log.Debug("Deselection timer fired.");
 			m_DeselectionTimer.Stop();
 			pbSurfaceScreen.Invalidate();
