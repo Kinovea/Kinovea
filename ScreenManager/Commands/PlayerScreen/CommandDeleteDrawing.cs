@@ -30,12 +30,8 @@ namespace Kinovea.ScreenManager
     public class CommandDeleteDrawing : IUndoableCommand
     {
 
-        public string FriendlyName
-        {
-        	get 
-        	{ 
-        		return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + m_Drawing.ToString() + ")";
-        	}
+        public string FriendlyName {
+            get { return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + m_Drawing.ToString() + ")"; }
         }
 
         private Action m_DoScreenInvalidate;
@@ -51,12 +47,10 @@ namespace Kinovea.ScreenManager
             m_iFramePosition = _iFramePosition;
             m_Metadata = _Metadata;
             m_iDrawingIndex = _iDrawingIndex;
-
+            
             int iIndex = GetKeyframeIndex();
             if (iIndex >= 0)
-            {
                 m_Drawing = m_Metadata[iIndex].Drawings[m_iDrawingIndex];
-            }
         }
         #endregion
 
@@ -74,9 +68,7 @@ namespace Kinovea.ScreenManager
             int iIndex = GetKeyframeIndex();
             if (iIndex >= 0)
             {
-                m_Metadata[iIndex].Drawings.RemoveAt(m_iDrawingIndex);
-                m_Metadata.SelectedDrawing = -1;
-                m_Metadata.SelectedDrawingFrame = -1;
+                m_Metadata.DeleteDrawing(iIndex, m_iDrawingIndex);
                 m_DoScreenInvalidate();
             }
         }
@@ -105,9 +97,7 @@ namespace Kinovea.ScreenManager
             for (int i = 0; i < m_Metadata.Count; i++)
             {
                 if (m_Metadata[i].Position == m_iFramePosition)
-                {
                     iIndex = i;
-                }
             }
 
             return iIndex;

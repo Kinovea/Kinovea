@@ -99,6 +99,7 @@ namespace Kinovea.ScreenManager
             	// This is used to know if there is anything to burn on the images when saving.
             	// All kind of objects should be taken into account here, even those
             	// that we currently don't save to the .kva but only draw on the image.
+            	// TODO: detect if any extradrawing is dirty.
                 return m_Keyframes.Count > 0 ||
                         m_ExtraDrawings.Count > m_iStaticExtraDrawings ||
                         m_Magnifier.Mode != MagnifierMode.None;
@@ -133,6 +134,14 @@ namespace Kinovea.ScreenManager
         {
         	get { return m_Magnifier;}
         	set { m_Magnifier = value;}
+        }
+        public SpotlightManager SpotlightManager
+        {
+            get { return m_SpotlightManager;}
+        }
+        public AutoNumberManager AutoNumberManager
+        {
+            get { return m_AutoNumberManager;}
         }
         public bool Mirrored
         {
@@ -180,6 +189,8 @@ namespace Kinovea.ScreenManager
         private int m_iStaticExtraDrawings;			// TODO: might be removed when even Chronos and tracks are represented by a single manager object.
 
         private Magnifier m_Magnifier = new Magnifier();
+        private SpotlightManager m_SpotlightManager;
+        private AutoNumberManager m_AutoNumberManager;
         
         private bool m_Mirrored;
         
@@ -362,6 +373,23 @@ namespace Kinovea.ScreenManager
         	// render in the same way when the user is resizing the window or not.
             foreach(DrawingSVG svg in SVGs())
                 svg.ResizeFinished();
+        }
+        
+        public void DeleteDrawing(int _frameIndex, int _drawingIndex)
+        {
+            m_Keyframes[_frameIndex].Drawings.RemoveAt(_drawingIndex);
+            Deselect();
+        }
+        public void Deselect()
+        {
+            m_iSelectedDrawing = -1;
+            m_iSelectedDrawingFrame = -1;
+            m_iSelectedExtraDrawing = -1;
+        }
+        public void SelectExtraDrawing(AbstractDrawing drawing)
+        {
+            int index = m_ExtraDrawings.FindIndex(d => d == drawing);
+            m_iSelectedExtraDrawing = index;
         }
         
         #region Objects Hit Tests
@@ -1382,6 +1410,13 @@ namespace Kinovea.ScreenManager
             StopAllTracking();
             m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
             m_Magnifier.ResetData();
+            
+            foreach(AbstractDrawing extraDrawing in m_ExtraDrawings)
+            {
+                if(extraDrawing is AbstractMultiDrawing)
+                    ((AbstractMultiDrawing)extraDrawing).Clear();
+            }
+            
             m_Mirrored = false;
             UnselectAll();
         }
@@ -1431,22 +1466,25 @@ namespace Kinovea.ScreenManager
         {
         	int iHashCode = 0;
             foreach (AbstractDrawing ad in m_ExtraDrawings)
-            {
                 iHashCode ^= ad.GetHashCode();
-            }
+
             return iHashCode;
         }
         private void InitExtraDrawingTools()
         {
         	// Add the static extra drawing tools to the list of drawings.
         	// These drawings are unique and not attached to any particular key image.
-        	// It could be proxy drawings, like SpotlightManager.
+        	// It could be "multi drawing", like SpotlightManager.
         	
-        	// [0.8.16] - This function currently doesn't do anything as the Grids have been moved to attached drawings.
-        	// It is kept nevertheless because it will be needed for SpotlightManager and others.
+        	m_SpotlightManager = new SpotlightManager();
+        	m_AutoNumberManager = new AutoNumberManager();
         	
-            //m_ExtraDrawings.Add(m_Plane);
-            m_iStaticExtraDrawings = m_ExtraDrawings.Count;
+        	m_ExtraDrawings.Add(m_SpotlightManager);
+        	m_ExtraDrawings.Add(m_AutoNumberManager);
+            
+        	// m_iStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
+        	// and dynamic extra drawings like tracks and chronos.
+        	m_iStaticExtraDrawings = m_ExtraDrawings.Count;
         }
 		#endregion
     }

@@ -212,10 +212,12 @@
     <Compile Include="CaptureScreen\VideoRecorder.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandAddMultiDrawingItem.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteKeyframe.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddChrono.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteChrono.cs" />
+    <Compile Include="Commands\PlayerScreen\CommandDeleteMultiDrawingItem.cs" />
     <Compile Include="Commands\PlayerScreen\CommandModifyChrono.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteTrack.cs" />
     <Compile Include="Commands\PlayerScreen\CommandDeleteEndOfTrack.cs" />
@@ -235,25 +237,36 @@
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\AutoSaver.cs" />
+    <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractStyleElement.cs" />
+    <Compile Include="PlayerScreen\Drawings\AutoNumber.cs" />
+    <Compile Include="PlayerScreen\Drawings\AutoNumberManager.cs" />
     <Compile Include="PlayerScreen\Drawings\BoundingBox.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingAlignmentAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolAlignmentAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolAutoNumbers.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolPosture.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\Quadrilateral.cs" />
     <Compile Include="PlayerScreen\Drawings\RoundedRectangle.cs" />
+    <Compile Include="PlayerScreen\Drawings\Spotlight.cs" />
+    <Compile Include="PlayerScreen\Drawings\SpotlightManager.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementFontSize.cs" />
     <Compile Include="PlayerScreen\Drawings\StyleElementLineEnding.cs" />
@@ -276,6 +289,10 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolPencil.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
+    <Compile Include="PlayerScreen\Geometry\AngleHelper.cs" />
+    <Compile Include="PlayerScreen\Geometry\GeometryHelper.cs" />
+    <Compile Include="PlayerScreen\Geometry\Segment.cs" />
+    <Compile Include="PlayerScreen\Geometry\Vector.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
@@ -673,7 +690,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\CaptureScreen\" />
+    <Folder Include="PlayerScreen\Geometry" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

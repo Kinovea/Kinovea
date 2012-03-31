@@ -55,7 +55,7 @@ namespace Kinovea.ScreenManager
             m_Metadata = _Metadata;
 
             int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
+            if (iIndex >= 0 && m_Metadata[iIndex].Drawings.Count >= 0)
             {
                 m_iTotalDrawings = m_Metadata[iIndex].Drawings.Count;
                 m_Drawing = m_Metadata[iIndex].Drawings[0];

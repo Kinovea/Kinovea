@@ -78,6 +78,24 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap alignmentangle10
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("alignmentangle10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap alignmentangle11
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("alignmentangle11", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap angle
         {
             get
@@ -303,6 +321,15 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap number
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap pencil
         {
             get
@@ -326,6 +353,51 @@ namespace Kinovea.ScreenManager.Properties
             get
             {
                 object obj = ResourceManager.GetObject("plane", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture4
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture6
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap posture7
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("posture7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap spotlight
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("spotlight", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
