@@ -263,7 +263,6 @@
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
-    <Compile Include="PlayerScreen\Drawings\Quadrilateral.cs" />
     <Compile Include="PlayerScreen\Drawings\RoundedRectangle.cs" />
     <Compile Include="PlayerScreen\Drawings\Spotlight.cs" />
     <Compile Include="PlayerScreen\Drawings\SpotlightManager.cs" />
@@ -291,6 +290,7 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
     <Compile Include="PlayerScreen\Geometry\AngleHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\GeometryHelper.cs" />
+    <Compile Include="PlayerScreen\Geometry\Quadrilateral.cs" />
     <Compile Include="PlayerScreen\Geometry\Segment.cs" />
     <Compile Include="PlayerScreen\Geometry\Vector.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
