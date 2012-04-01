@@ -74,7 +74,7 @@ namespace Kinovea.ScreenManager
         {
             m_GenericPosture = _posture;
             for(int i=0;i<m_GenericPosture.Angles.Count;i++)
-                m_Angles.Add(new AngleHelper(true, 40));
+                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40));
             
             UpdateAngles();
             
@@ -110,30 +110,29 @@ namespace Kinovea.ScreenManager
             foreach(AngleHelper angle in m_Angles)
                 boxes.Add(_transformer.Transform(angle.BoundingBox));
             
-            using(Pen penEdges = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor * 255)))
-            using(Pen penDash = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor*255)))
-            using(SolidBrush brushEdges = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*255)))
-            using(Pen penShoulderLine = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor * 255)))
+            using(Pen penEdge = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor * 255)))
+            using(SolidBrush brushHandle = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*255)))
             using(SolidBrush brushFill = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*m_iDefaultBackgroundAlpha)))
             {
-                penEdges.Width = 2;
-                penDash.Width = 2;
-                penDash.DashStyle = DashStyle.Dash;
-                penShoulderLine.DashStyle = DashStyle.Dash;
-                penShoulderLine.Width = 2;
-                
                 foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
-                    _canvas.DrawLine(penEdges, points[segment.Start], points[segment.End]);
+                {
+                    penEdge.Width = segment.Width;
+                    penEdge.DashStyle = Convert(segment.Style);
+                    _canvas.DrawLine(penEdge, points[segment.Start], points[segment.End]);
+                }
                 
                 foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
                 {
                     if(handle.Type == HandleType.Point)
-                        _canvas.FillEllipse(brushEdges, points[handle.Reference].Box(3));
+                        _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
+                
+                penEdge.Width = 2;
+                penEdge.DashStyle = DashStyle.Solid;
                 for(int i = 0; i<m_Angles.Count; i++)
                 {
                     _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
-                    _canvas.DrawArc(penEdges, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                    _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
                     DrawText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
                 }
             }
@@ -268,6 +267,15 @@ namespace Kinovea.ScreenManager
                 Point leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
                 Point leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
                 m_Angles[i].Update(origin, leg1, leg2);
+            }
+        }
+        private DashStyle Convert(SegmentLineStyle style)
+        {
+            switch(style)
+            {
+            case SegmentLineStyle.Dash:     return DashStyle.Dash;
+            case SegmentLineStyle.Solid:    return DashStyle.Solid;
+            default: return DashStyle.Solid;
             }
         }
         private void BindStyle()

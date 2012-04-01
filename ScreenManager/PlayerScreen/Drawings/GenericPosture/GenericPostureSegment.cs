@@ -30,20 +30,17 @@ namespace Kinovea.ScreenManager
     {
         public int Start { get; private set;}
         public int End { get; private set;}
+        public SegmentLineStyle Style { get; private set;}
+        public int Width { get; private set;}
         
         private string name;
-        private string style;
-        private int width;
         
-        public GenericPostureSegment(int start, int end)
-        {
-            this.Start = start;
-            this.End = end;
-        }
         public GenericPostureSegment(XmlReader r)
         {
             //<Segment point1="0" point2="1" name="" style="Solid" width="1"/>
-                
+            Width = 2;
+            Style = SegmentLineStyle.Solid;
+            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("point1"))
@@ -56,10 +53,10 @@ namespace Kinovea.ScreenManager
                 name = r.ReadContentAsString();
 
             if(r.MoveToAttribute("style"))
-                style = r.ReadContentAsString();
+                Style = (SegmentLineStyle) Enum.Parse(typeof(SegmentLineStyle), r.ReadContentAsString());
             
             if(r.MoveToAttribute("width"))
-                width = r.ReadContentAsInt();
+                Width = r.ReadContentAsInt();
 
             r.ReadStartElement();
             

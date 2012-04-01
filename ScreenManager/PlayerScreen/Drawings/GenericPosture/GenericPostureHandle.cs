@@ -32,6 +32,8 @@ namespace Kinovea.ScreenManager
         public int Reference { get; private set;}
         public ConstraintType ConstraintType { get; private set;}
         public GenericPostureAbstractConstraint Constraint { get; private set;}
+        public ImpactType ImpactType { get; private set;}
+        public GenericPostureAbstractImpact Impact { get; private set;}
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -41,8 +43,16 @@ namespace Kinovea.ScreenManager
             //  <Constraint type="LineSlide">
             //    <LineSlide point1="0" point2="2" position="Inbetween"/>
             //  </Constraint>
+            //  <Impact type="Align">
+            //    <Align pointToAlign="1" AlignWith="2"/>
+            //  </Impact>
             //</Handle>
-                
+            
+            ConstraintType = ConstraintType.None;
+            Constraint = null;
+            ImpactType = ImpactType.None;
+            Impact = null;
+            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("type"))
@@ -53,9 +63,6 @@ namespace Kinovea.ScreenManager
             
             r.ReadStartElement();
             
-            ConstraintType = ConstraintType.None;
-            Constraint = null;
-            
             if(isEmpty)
                 return;
             
@@ -64,6 +71,10 @@ namespace Kinovea.ScreenManager
                 if(r.Name == "Constraint")
                 {
                     ParseConstraint(r);
+                }
+                else if(r.Name == "Impact")
+                {
+                    ParseImpact(r);
                 }
                 else
                 {
@@ -76,6 +87,7 @@ namespace Kinovea.ScreenManager
         }
         private void ParseConstraint(XmlReader r)
         {
+            // A "constraint" represents the valid positions where the handle can go.
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("type"))
@@ -90,6 +102,33 @@ namespace Kinovea.ScreenManager
                     break;
                 case ConstraintType.LineSlide:
                     Constraint = new GenericPostureConstraintLineSlide(r);
+                    break;
+                default:
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content: {0}", outerXml);
+                    break;
+            }
+            
+            if(!isEmpty)
+                r.ReadEndElement();
+        }
+        private void ParseImpact(XmlReader r)
+        {
+            // An "impact" reprsent how other points are constrained by the position of this handle.
+            bool isEmpty = r.IsEmptyElement;
+            
+            if(r.MoveToAttribute("type"))
+                ImpactType = (ImpactType) Enum.Parse(typeof(ImpactType), r.ReadContentAsString());
+            
+            r.ReadStartElement();
+            
+            switch(ImpactType)
+            {
+                case ImpactType.None:
+                    Impact = null;
+                    break;
+                case ImpactType.Align:
+                    Impact = new GenericPostureImpactAlign(r);
                     break;
                 default:
                     string outerXml = r.ReadOuterXml();

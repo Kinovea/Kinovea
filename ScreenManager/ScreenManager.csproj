@@ -264,13 +264,16 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\ConstraintType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAbstractConstraint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAbstractImpact.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureConstraintEngine.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureConstraintLineSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureHandle.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureImpactAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureSegment.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HandleType.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\LineSlideAllowedPosition.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ImpactType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\SegmentLineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
@@ -302,8 +305,8 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
     <Compile Include="PlayerScreen\Geometry\AngleHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\GeometryHelper.cs" />
+    <Compile Include="PlayerScreen\Geometry\PointLinePosition.cs" />
     <Compile Include="PlayerScreen\Geometry\Quadrilateral.cs" />
-    <Compile Include="PlayerScreen\Geometry\Segment.cs" />
     <Compile Include="PlayerScreen\Geometry\Vector.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
