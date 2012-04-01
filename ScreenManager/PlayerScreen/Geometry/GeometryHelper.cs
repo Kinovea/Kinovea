@@ -29,7 +29,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Get the point on segment [AB] that is the closest from point C.
         /// </summary>
-        public static Point GetClosestPoint(Point a, Point b, Point c, bool inside, int _margin)
+        public static Point GetClosestPoint(Point a, Point b, Point c, PointLinePosition allowedPosition, int _margin)
         {
             //ILog log = LogManager.GetLogger("GeometryHelper.GetClosestPoint");
             
@@ -46,7 +46,8 @@ namespace Kinovea.ScreenManager
             float t =  dot / ab2;
             
             float margin = (float)_margin / ab.Norm();
-            if(inside)
+            // TODO: clamp based on allowed position.
+            if(allowedPosition == PointLinePosition.OnSegment)
                 t = Math.Min(Math.Max(margin, t), 1.0f - margin);
             else
                 t = Math.Max(1.0f + margin, t);

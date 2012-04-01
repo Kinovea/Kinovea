@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public class GenericPostureAngle
@@ -31,11 +33,14 @@ namespace Kinovea.ScreenManager
         public int Origin { get; private set;}
         public int Leg1 { get; private set;}
         public int Leg2 { get; private set;}
+        public bool Relative { get; private set;}
         
         public GenericPostureAngle(XmlReader r)
         {
-            //<Angle origin="1" leg1="2" leg2="3"/>
-                
+            //<Angle origin="1" leg1="2" leg2="3" relative="true" />
+            
+            Relative = true;
+            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("origin"))
@@ -46,6 +51,9 @@ namespace Kinovea.ScreenManager
 
             if(r.MoveToAttribute("leg2"))
                 Leg2 = r.ReadContentAsInt();
+            
+            if(r.MoveToAttribute("relative"))
+                Relative = XmlHelper.ParseBoolean(r.ReadContentAsString());
 
             r.ReadStartElement();
             

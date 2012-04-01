@@ -20,19 +20,31 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// The point is constrained on the line defined by two points. 
-    /// This enum describe where the move point is allowed to go relatively to the two points.
-    /// </summary>
-    public enum LineSlideAllowedPosition
+    public class GenericPostureImpactAlign : GenericPostureAbstractImpact
     {
-        Inbetween,
-        BeforeStart,
-        BeforeEnd,
-        AfterStart,
-        AfterEnd
+        public int PointToAlign { get; private set;}
+        public int AlignWith { get; private set;}
+        
+        public GenericPostureImpactAlign(XmlReader r)
+        {
+            // <Align pointToAlign="1" alignWith="0"/>
+            bool isEmpty = r.IsEmptyElement;
+            
+            if(r.MoveToAttribute("pointToAlign"))
+                PointToAlign = r.ReadContentAsInt();
+            
+            if(r.MoveToAttribute("alignWith"))
+                AlignWith = r.ReadContentAsInt();
+            
+            r.ReadStartElement();
+            
+            //if(!isEmpty)
+            //    r.ReadEndElement();
+        }
     }
 }
+

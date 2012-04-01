@@ -16,22 +16,16 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
+
 */
 #endregion
 using System;
-using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public struct Segment
+    public enum SegmentLineStyle
     {
-        public Point A;
-        public Point B;
-        
-        public Segment(Point _a, Point _b)
-        {
-            A =_a;
-            B =_b;
-        }
+        Solid,
+        Dash
     }
 }

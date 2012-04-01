@@ -28,11 +28,14 @@ namespace Kinovea.ScreenManager
     {
         public int Start { get; private set;}
         public int End { get; private set;}
-        public LineSlideAllowedPosition AllowedPosition { get; private set;}
+        public PointLinePosition AllowedPosition { get; private set;}
+        public int Margin { get; private set;}
         
         public GenericPostureConstraintLineSlide(XmlReader r)
         {
             // <LineSlide point1="0" point2="2" position="Inbetween"/>
+            Margin = 10;
+            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("point1"))
@@ -42,7 +45,7 @@ namespace Kinovea.ScreenManager
                 End = r.ReadContentAsInt();
             
             if(r.MoveToAttribute("position"))
-                AllowedPosition = (LineSlideAllowedPosition) Enum.Parse(typeof(LineSlideAllowedPosition), r.ReadContentAsString());
+                AllowedPosition = (PointLinePosition) Enum.Parse(typeof(PointLinePosition), r.ReadContentAsString());
             
             r.ReadStartElement();
             

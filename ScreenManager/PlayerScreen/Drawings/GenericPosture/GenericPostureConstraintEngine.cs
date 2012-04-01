@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         }
         private static void MovePointHandle(GenericPosture posture, int handle, Point point)
         {
-            // switch constraint type.
+            // Constrain position of the point managed by this handle.
             switch(posture.Handles[handle].ConstraintType)
             {
                 case ConstraintType.None:
@@ -48,6 +48,15 @@ namespace Kinovea.ScreenManager
                 case ConstraintType.LineSlide:
                     GenericPostureConstraintLineSlide constraint = posture.Handles[handle].Constraint as GenericPostureConstraintLineSlide;
                     MovePointHandleAlongLine(posture, handle, point, constraint);
+                    break;
+            }
+            
+            // Constrain position of other points.
+            switch(posture.Handles[handle].ImpactType)
+            {
+                case ImpactType.Align:
+                    GenericPostureImpactAlign impact = posture.Handles[handle].Impact as GenericPostureImpactAlign;
+                    AlignPoint(posture, handle, impact);
                     break;
             }
         }
@@ -63,21 +72,24 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            Point result;
             Point start = posture.Points[constraint.Start];
             Point end = posture.Points[constraint.End];
             
-            switch(constraint.AllowedPosition)
-            {
-                case LineSlideAllowedPosition.Inbetween:
-                    result = GeometryHelper.GetClosestPoint(start, end, point, true, 10);
-                    break;
-                default:
-                    result = point;
-                    break;
-            }
+            Point result = GeometryHelper.GetClosestPoint(start, end, point, constraint.AllowedPosition, constraint.Margin);
 
             posture.Points[posture.Handles[handle].Reference] = result;
+        }
+        private static void AlignPoint(GenericPosture posture, int handle, GenericPostureImpactAlign impact)
+        {
+            if(impact == null)
+                return;
+            
+            Point start = posture.Points[handle];
+            Point end = posture.Points[impact.AlignWith];
+            
+            Point result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.OnSegment, 10);
+            
+            posture.Points[impact.PointToAlign] = result;
         }
     }
 }
