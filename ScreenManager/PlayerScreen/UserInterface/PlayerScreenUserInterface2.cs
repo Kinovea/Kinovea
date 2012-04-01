@@ -1020,6 +1020,7 @@ namespace Kinovea.ScreenManager
         	// All other tools
         	AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
+			AddToolButton(ToolManager.GenericPosture, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle, ToolManager.Posture}, 2, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);

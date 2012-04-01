@@ -30,6 +30,7 @@ namespace Kinovea.ScreenManager
         public double Sweep { get; private set; }
         public Rectangle BoundingBox { get; private set; }
         public Point TextPosition { get; private set;}
+        public Point Origin { get; private set;}
         
         private bool relative;
         private int textDistance;
@@ -44,6 +45,9 @@ namespace Kinovea.ScreenManager
         }
         public void Update(Point o, Point a, Point b)
         {
+            // TODO: try catch around division by zero.
+            
+            Origin = o;
             ComputeAngles(o, a, b);
             ComputeBoundingBox(o, a, b);
             ComputeTextPosition(Start, Sweep);
