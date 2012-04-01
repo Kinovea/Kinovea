@@ -84,6 +84,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolPencil)Tools["Pencil"]; }
 		}
+		public static DrawingToolGenericPostureSandbox GenericPosture
+		{
+			get { return (DrawingToolGenericPostureSandbox)Tools["GenericPosture"]; }
+		}
 		public static DrawingToolText Label
 		{
 			get { return (DrawingToolText)Tools["Label"]; }
@@ -223,6 +227,7 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Line", new DrawingToolLine2D());
         	m_Tools.Add("Arrow", new DrawingToolArrow());
         	m_Tools.Add("Pencil", new DrawingToolPencil());
+        	m_Tools.Add("GenericPosture", new DrawingToolGenericPostureSandbox());
         	m_Tools.Add("Label", new DrawingToolText());
         	m_Tools.Add("Grid", new DrawingToolGrid());
         	m_Tools.Add("Plane", new DrawingToolPlane());
