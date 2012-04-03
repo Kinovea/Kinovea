@@ -39,26 +39,36 @@ namespace Kinovea.ScreenManager
         }
         private static void MovePointHandle(GenericPosture posture, int handle, Point point)
         {
-            // Constrain position of the point managed by this handle.
-            switch(posture.Handles[handle].ConstraintType)
+            // Constraints. (position of the point managed by this handle).
+            if(posture.Handles[handle].Constraint == null)
             {
-                case ConstraintType.None:
-                    MovePointHandleFreely(posture, handle, point);
-                    break;
-                case ConstraintType.LineSlide:
-                    GenericPostureConstraintLineSlide constraint = posture.Handles[handle].Constraint as GenericPostureConstraintLineSlide;
-                    MovePointHandleAlongLine(posture, handle, point, constraint);
-                    break;
+                MovePointHandleFreely(posture, handle, point);
+            }
+            else
+            {
+                switch(posture.Handles[handle].Constraint.Type)
+                {
+                    case ConstraintType.None:
+                        MovePointHandleFreely(posture, handle, point);
+                        break;
+                    case ConstraintType.LineSlide:
+                        GenericPostureConstraintLineSlide constraint = posture.Handles[handle].Constraint as GenericPostureConstraintLineSlide;
+                        MovePointHandleAlongLine(posture, handle, point, constraint);
+                        break;
+                }
             }
             
-            // Constrain position of other points.
-            switch(posture.Handles[handle].ImpactType)
+            // Impacts. (positions of other points).
+            foreach(GenericPostureAbstractImpact impact in posture.Handles[handle].Impacts)
             {
-                case ImpactType.Align:
-                    GenericPostureImpactAlign impact = posture.Handles[handle].Impact as GenericPostureImpactAlign;
-                    AlignPoint(posture, handle, impact);
-                    break;
+                switch(impact.Type)
+                {
+                    case ImpactType.Align:
+                        AlignPoint(posture, handle, impact as GenericPostureImpactAlign);
+                        break;
+                } 
             }
+            
         }
         private static void MovePointHandleFreely(GenericPosture posture, int handle, Point point)
         {
@@ -87,7 +97,7 @@ namespace Kinovea.ScreenManager
             Point start = posture.Points[handle];
             Point end = posture.Points[impact.AlignWith];
             
-            Point result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.OnSegment, 10);
+            Point result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.Anywhere, 10);
             
             posture.Points[impact.PointToAlign] = result;
         }

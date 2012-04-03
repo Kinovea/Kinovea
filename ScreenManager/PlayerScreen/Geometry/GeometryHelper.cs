@@ -31,27 +31,32 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public static Point GetClosestPoint(Point a, Point b, Point c, PointLinePosition allowedPosition, int _margin)
         {
-            //ILog log = LogManager.GetLogger("GeometryHelper.GetClosestPoint");
-            
-            if (a.X == b.X)
-                return new Point(a.X, c.Y);
-            
-            if(a.Y == b.Y)
-                return new Point(c.X, a.Y);
-            
             Vector ac = new Vector(a,c);
             Vector ab = new Vector(a,b);
             float ab2 = ab.Squared();
             float dot = ac.Dot(ab);
             float t =  dot / ab2;
             
-            float margin = (float)_margin / ab.Norm();
-            // TODO: clamp based on allowed position.
-            if(allowedPosition == PointLinePosition.OnSegment)
-                t = Math.Min(Math.Max(margin, t), 1.0f - margin);
-            else
-                t = Math.Max(1.0f + margin, t);
-
+            float fMargin = (float)_margin / ab.Norm();
+            switch(allowedPosition)
+            {
+                case PointLinePosition.BeforeSegment:
+                    t = Math.Min(-fMargin, t);
+                    break;
+                case PointLinePosition.BeforeAndOnSegment:
+                    t = Math.Min(1.0f - fMargin, t);
+                    break;
+                case PointLinePosition.OnSegment:
+                    t = Math.Min(Math.Max(fMargin, t), 1.0f - fMargin);
+                    break;
+                case PointLinePosition.AfterSegment:
+                    t = Math.Max(1.0f + fMargin, t);
+                    break;
+                case PointLinePosition.AfterAndOnSegment:
+                    t = Math.Max(fMargin, t);
+                    break;
+            }
+            
             Vector closest = ab * t;
             return (new Vector(a) + closest).ToPoint();
         }

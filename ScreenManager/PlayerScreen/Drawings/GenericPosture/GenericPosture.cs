@@ -39,6 +39,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
+        public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         #endregion
         
         #region Members
@@ -52,6 +53,7 @@ namespace Kinovea.ScreenManager
             Segments = new List<GenericPostureSegment>();
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
+            HitZones = new List<GenericPostureAbstractHitZone>();
             
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
@@ -91,6 +93,9 @@ namespace Kinovea.ScreenManager
 						break;
 					case "Handles":
 						ParseHandles(r);
+						break;
+                    case "HitZone":
+						ParseHitZone(r);
 						break;
 					case "InitialConfiguration":
 						ParseInitialConfiguration(r);
@@ -167,6 +172,25 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
+        private void ParseHitZone(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                if(r.Name == "Polygon")
+                {
+                    HitZones.Add(new GenericPostureHitZonePolygon(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
         private void ParseInitialConfiguration(XmlReader r)
         {
             r.ReadStartElement();
@@ -196,8 +220,5 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
         }
         #endregion
-        
-        
-        
     }
 }

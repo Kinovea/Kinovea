@@ -23,16 +23,9 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// Allowed position of a point on a line, relative to the segment defining the line.
-    /// </summary>
-    public enum PointLinePosition
+    public enum HitZoneType
     {
-        BeforeSegment,
-        BeforeAndOnSegment,
-        OnSegment,
-        AfterAndOnSegment,
-        AfterSegment,
-        Anywhere
+        Polygon
     }
 }
+

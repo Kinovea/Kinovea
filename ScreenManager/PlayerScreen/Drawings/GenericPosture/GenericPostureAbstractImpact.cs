@@ -28,5 +28,6 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureAbstractImpact
     {
+        public ImpactType Type { get; protected set;}
     }
 }

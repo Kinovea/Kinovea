@@ -30,10 +30,8 @@ namespace Kinovea.ScreenManager
     {
         public HandleType Type { get; private set;}
         public int Reference { get; private set;}
-        public ConstraintType ConstraintType { get; private set;}
         public GenericPostureAbstractConstraint Constraint { get; private set;}
-        public ImpactType ImpactType { get; private set;}
-        public GenericPostureAbstractImpact Impact { get; private set;}
+        public List<GenericPostureAbstractImpact> Impacts { get; private set;}
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -48,10 +46,11 @@ namespace Kinovea.ScreenManager
             //  </Impact>
             //</Handle>
             
-            ConstraintType = ConstraintType.None;
+            // TODO: maybe use the same pattern for Handle than for constraints, impacts and hit zones.
+            
+            
             Constraint = null;
-            ImpactType = ImpactType.None;
-            Impact = null;
+            Impacts = new List<GenericPostureAbstractImpact>();
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -74,7 +73,9 @@ namespace Kinovea.ScreenManager
                 }
                 else if(r.Name == "Impact")
                 {
-                    ParseImpact(r);
+                    GenericPostureAbstractImpact impact = ParseImpact(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
                 }
                 else
                 {
@@ -89,13 +90,14 @@ namespace Kinovea.ScreenManager
         {
             // A "constraint" represents the valid positions where the handle can go.
             bool isEmpty = r.IsEmptyElement;
+            ConstraintType type = ConstraintType.None;
             
             if(r.MoveToAttribute("type"))
-                ConstraintType = (ConstraintType) Enum.Parse(typeof(ConstraintType), r.ReadContentAsString());
+                type = (ConstraintType) Enum.Parse(typeof(ConstraintType), r.ReadContentAsString());
             
             r.ReadStartElement();
             
-            switch(ConstraintType)
+            switch(type)
             {
                 case ConstraintType.None:
                     Constraint = null;
@@ -112,23 +114,26 @@ namespace Kinovea.ScreenManager
             if(!isEmpty)
                 r.ReadEndElement();
         }
-        private void ParseImpact(XmlReader r)
+        private GenericPostureAbstractImpact ParseImpact(XmlReader r)
         {
             // An "impact" reprsent how other points are constrained by the position of this handle.
+            GenericPostureAbstractImpact impact = null;
+            ImpactType type = ImpactType.None;
+            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("type"))
-                ImpactType = (ImpactType) Enum.Parse(typeof(ImpactType), r.ReadContentAsString());
+                type = (ImpactType) Enum.Parse(typeof(ImpactType), r.ReadContentAsString());
             
             r.ReadStartElement();
             
-            switch(ImpactType)
+            switch(type)
             {
                 case ImpactType.None:
-                    Impact = null;
+                    impact = null;
                     break;
                 case ImpactType.Align:
-                    Impact = new GenericPostureImpactAlign(r);
+                    impact = new GenericPostureImpactAlign(r);
                     break;
                 default:
                     string outerXml = r.ReadOuterXml();
@@ -138,6 +143,8 @@ namespace Kinovea.ScreenManager
             
             if(!isEmpty)
                 r.ReadEndElement();
+            
+            return impact;
         }
     }
 }

@@ -222,6 +222,15 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap generic_posture
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("generic_posture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap grid
         {
             get
