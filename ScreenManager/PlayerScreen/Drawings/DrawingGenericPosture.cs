@@ -157,7 +157,7 @@ namespace Kinovea.ScreenManager
                 }
                 else if(m_GenericPosture.Handles[i].Type == HandleType.Segment)
                 {
-                    // Test for segment hit.
+                    // Test for segment handle hit.
                 }
             }
             
@@ -314,41 +314,84 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(Point _point)
         {
+            // Angles, hit zones, segments.
+            
             bool hit = false;
             foreach(AngleHelper angle in m_Angles)
             {
-                if(!angle.Hit(_point))
-                    continue;
-
-                hit = true;
-                break;
+                hit = angle.Hit(_point);
+                if(hit)
+                    break;
             }
-            /*using (GraphicsPath gp = new GraphicsPath())
+            
+            if(hit == true)
+                return true;
+            
+            foreach(GenericPostureAbstractHitZone hitZone in m_GenericPosture.HitZones)
             {
-                gp.AddPolygon(m_Points.ToArray());
-                using (Region r = new Region(gp))
+                hit = IsPointInHitZone(hitZone, _point);
+                if(hit)
+                    break;
+            }
+                
+            if(hit == true)
+                return true;
+            
+            foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
+            {
+                hit = IsPointOnSegment(segment, _point);
+                if(hit)
+                    break;
+            }
+            
+            return hit;
+        }
+        private bool IsPointInHitZone(GenericPostureAbstractHitZone _hitZone, Point _point)
+        {
+            bool hit = false;
+            
+            switch(_hitZone.Type)
+            {
+                case HitZoneType.Polygon:
                 {
-                    hit = r.IsVisible(_point);
+                    GenericPostureHitZonePolygon hitPolygon = _hitZone as GenericPostureHitZonePolygon;
+                    using (GraphicsPath gp = new GraphicsPath())
+                    {
+                        List<Point> points = new List<Point>();
+                        foreach(int pointRef in hitPolygon.Points)
+                            points.Add(m_GenericPosture.Points[pointRef]);
+    
+                        gp.AddPolygon(points.ToArray());
+                        using (Region region = new Region(gp))
+                        {
+                            hit = region.IsVisible(_point);
+                        }
+                    }
+                    break;
                 }
-            }*/
+            }
+            
+            return hit;
+        }
+        private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point)
+        {
+            bool hit = false;
+            
+            using(GraphicsPath segmentPath = new GraphicsPath())
+            {
+                segmentPath.AddLine(m_GenericPosture.Points[_segment.Start], m_GenericPosture.Points[_segment.End]);
+                using(Pen p = new Pen(Color.Black, 7))
+                {
+                    segmentPath.Widen(p);
+                }
+                using(Region region = new Region(segmentPath))
+                {
+                     hit = region.IsVisible(_point);
+                }
+            }
+            
             return hit;
         }
         #endregion
-        
-        private struct Line
-        {
-            public Point A;
-            public Point B;
-            public int start;
-            public int end;
-            
-            public Line(int start, int end)
-            {
-                this.start = start;
-                this.end = end;
-                this.A = Point.Empty;
-                this.B = Point.Empty;
-            }
-        }
     }
 }

@@ -20,27 +20,25 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Xml;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureImpactAlign : GenericPostureAbstractImpact
+    public class GenericPostureHitZonePolygon : GenericPostureAbstractHitZone
     {
-        public int PointToAlign { get; private set;}
-        public int AlignWith { get; private set;}
+        public List<int> Points { get; private set;}
         
-        public GenericPostureImpactAlign(XmlReader r)
+        public GenericPostureHitZonePolygon(XmlReader r)
         {
-            Type = ImpactType.Align;
+            Type = HitZoneType.Polygon;
             
-            // <Align pointToAlign="1" alignWith="0"/>
+            // <Polygon points="0;1;2;3;4"/>
             bool isEmpty = r.IsEmptyElement;
             
-            if(r.MoveToAttribute("pointToAlign"))
-                PointToAlign = r.ReadContentAsInt();
-            
-            if(r.MoveToAttribute("alignWith"))
-                AlignWith = r.ReadContentAsInt();
+            if(r.MoveToAttribute("points"))
+                Points = XmlHelper.ParseIntList(r.ReadContentAsString());
             
             r.ReadStartElement();
             

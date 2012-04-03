@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Xml;
@@ -44,6 +45,21 @@ namespace Kinovea.Services
             }
 
             return point;
+        }
+        public static List<int> ParseIntList(string _intList)
+        {
+            List<int> l = new List<int>();
+            try
+            {
+                string[] listAsStrings = _intList.Split(new char[] {';'});
+                foreach(string s in listAsStrings)
+                    l.Add(int.Parse(s));
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing List of ints. ({0}).", _intList));
+            }
+            return l;
         }
         public static Color ParseColor(string _sColor)
         {

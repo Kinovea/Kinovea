@@ -20,19 +20,15 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// Allowed position of a point on a line, relative to the segment defining the line.
-    /// </summary>
-    public enum PointLinePosition
+    public class GenericPostureAbstractHitZone
     {
-        BeforeSegment,
-        BeforeAndOnSegment,
-        OnSegment,
-        AfterAndOnSegment,
-        AfterSegment,
-        Anywhere
+        public HitZoneType Type { get; protected set;}
     }
 }
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Archery - Top View</Name>
+  <PointCount>7</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="3" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="6" name="" style="Dash" width="2"/>
+    <Segment point1="4" point2="5" name="" style="Dash" width="2"/>
+  </Segments>
+  <!--Angles>
+    <Angle origin="1" leg1="2" leg2="3" relative="true"/>
+  </Angles-->
+  <Handles>
+    <Handle type="Point" reference="0">
+      <Impact type="Align">
+        <Align pointToAlign="6" alignWith="4"/>
+      </Impact>
+      <Impact type="Align">
+        <Align pointToAlign="5" alignWith="4"/>
+      </Impact>
+    </Handle>
+    
+    <Handle type="Point" reference="1"/>
+    <Handle type="Point" reference="2"/>
+    <Handle type="Point" reference="3"/>
+    
+    <Handle type="Point" reference="4">
+      <Impact type="Align">
+        <Align pointToAlign="6" alignWith="0"/>
+      </Impact>
+      <Impact type="Align">
+        <Align pointToAlign="5" alignWith="0"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="5">
+      <Constraint type="LineSlide">
+        <LineSlide point1="0" point2="4" position="AfterSegment"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="6">
+      <Constraint type="LineSlide">
+        <LineSlide point1="0" point2="4" position="BeforeSegment"/>
+      </Constraint>
+    </Handle>
+  </Handles>
+  <HitZone>
+    <Polygon points="0;1;2;3;4"/>
+  </HitZone>
+  <InitialConfiguration>
+    <Point>200;200</Point>
+    <Point>150;150</Point>
+    <Point>300;100</Point>
+    <Point>400;150</Point>
+    <Point>300;200</Point>
+    <Point>500;200</Point>
+    <Point>100;200</Point>
+  </InitialConfiguration>
+</KinoveaPostureTool>
