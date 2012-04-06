@@ -171,12 +171,14 @@ namespace Kinovea.ScreenManager
             if(index == 0)
             {
                 m_PointA = _point;
-                m_PointB = GeometryHelper.GetClosestPoint(m_PointA, m_PointC, m_PointB, PointLinePosition.OnSegment, 10);
+                PointF p = GeometryHelper.GetClosestPoint(m_PointA, m_PointC, m_PointB, PointLinePosition.OnSegment, 10);
+                m_PointB = new Point((int)p.X, (int)p.Y);
             }
             else if(index == 1)
             {
                 // Force B on the main line.
-                m_PointB = GeometryHelper.GetClosestPoint(m_PointA, m_PointC, _point, PointLinePosition.OnSegment, 10);
+                PointF p = GeometryHelper.GetClosestPoint(m_PointA, m_PointC, _point, PointLinePosition.OnSegment, 10);
+                m_PointB = new Point((int)p.X, (int)p.Y);
                 
                 // Allow B to move freely, and force C to be aligned.
                 /*m_PointB = _point;
@@ -189,7 +191,8 @@ namespace Kinovea.ScreenManager
                 m_PointC = _point;
                 if(m_PointC == m_PointA)
                     m_PointC = new Point(m_PointA.X + 20, m_PointA.Y - 20);
-                m_PointB = GeometryHelper.GetClosestPoint(m_PointA, m_PointC, m_PointB, PointLinePosition.OnSegment, 10);
+                PointF p = GeometryHelper.GetClosestPoint(m_PointA, m_PointC, m_PointB, PointLinePosition.OnSegment, 10);
+                m_PointB = new Point((int)p.X, (int)p.Y);
             }
             else if(index == 3)
             {

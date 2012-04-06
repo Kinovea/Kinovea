@@ -219,10 +219,22 @@ namespace Kinovea.ScreenManager
 
 			return new Point((int)fStretchedX, (int)fStretchedY);
 		}
-		public List<Point> Transform(List<Point> _points)
+		public Point Transform(PointF _point)
+		{
+			// Zoom and translate
+            double fZoomedX = (_point.X - m_DirectZoomWindow.Left) * m_fZoom;
+			double fZoomedY = (_point.Y - m_DirectZoomWindow.Top) * m_fZoom;
+
+            // Scale
+            double fStretchedX = fZoomedX * m_fStretch;
+			double fStretchedY = fZoomedY * m_fStretch;
+
+			return new Point((int)fStretchedX, (int)fStretchedY);
+		}
+		public List<Point> Transform(List<PointF> _points)
 		{
 		    List<Point> points = new List<Point>();
-		    foreach(Point p in _points)
+		    foreach(PointF p in _points)
 		        points.Add(Transform(p));
 		    
 			return points;

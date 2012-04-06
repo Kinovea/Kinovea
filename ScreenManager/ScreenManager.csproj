@@ -261,21 +261,23 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolPlane.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolSpotlight.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\ConstraintType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\ConstraintType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureAbstractConstraint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintDistanceToPoint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintLineSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPosture.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAbstractConstraint.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAbstractHitZone.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAbstractImpact.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureConstraintEngine.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureConstraintLineSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureHandle.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureHitZonePolygon.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureImpactAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureSegment.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HandleType.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZoneType.cs" />
-    <Compile Include="PlayerScreen\Drawings\GenericPosture\ImpactType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureAbstractHitZone.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureHitZonePolygon.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\HitZoneType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureAbstractImpact.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactAlign.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactPivot.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\ImpactType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\SegmentLineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\IDecorable.cs" />
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
@@ -709,6 +711,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PlayerScreen\Drawings\GenericPosture" />
+    <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
+    <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
+    <Folder Include="PlayerScreen\Drawings\GenericPosture\HitZones" />
     <Folder Include="PlayerScreen\Geometry" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

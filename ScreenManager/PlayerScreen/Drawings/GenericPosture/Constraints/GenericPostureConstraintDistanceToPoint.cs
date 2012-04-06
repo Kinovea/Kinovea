@@ -20,12 +20,28 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ImpactType
+    public class GenericPostureConstraintDistanceToPoint : GenericPostureAbstractConstraint
     {
-        None,
-        Align
+        public int RefPoint { get; private set;}
+        
+        public GenericPostureConstraintDistanceToPoint(XmlReader r)
+        {
+            Type = ConstraintType.DistanceToPoint;
+            
+            bool isEmpty = r.IsEmptyElement;
+            
+            if(r.MoveToAttribute("point"))
+                RefPoint = r.ReadContentAsInt();
+            
+            r.ReadStartElement();
+            
+            //if(!isEmpty)
+            //    r.ReadEndElement();
+        }
     }
 }
+

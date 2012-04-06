@@ -124,7 +124,7 @@ namespace Kinovea.ScreenManager
                 foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
                 {
                     if(handle.Type == HandleType.Point)
-                        _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
+                        _canvas.FillEllipse(brushHandle, points[handle.RefPoint].Box(3));
                 }
                 
                 penEdge.Width = 2;
@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
                 if(m_GenericPosture.Handles[i].Type == HandleType.Point)
                 {
                     // Test for point hit.
-                    if(m_GenericPosture.Points[m_GenericPosture.Handles[i].Reference].Box(10).Contains(_point))
+                    if(m_GenericPosture.Points[m_GenericPosture.Handles[i].RefPoint].Box(10).Contains(_point))
                     {
                         iHitResult = i+1;
                         break;
@@ -183,17 +183,14 @@ namespace Kinovea.ScreenManager
 
         public override string ToString()
         {
-            // get name from xml.
-            return "Generic drawing"; //ScreenManagerLang.ToolTip_DrawingToolAngle2D;
+            return m_GenericPosture.Name;
         }
         public override int GetHashCode()
         {
-          /*int iHash = m_PointO.GetHashCode();
-          iHash ^= m_PointA.GetHashCode();
-          iHash ^= m_PointB.GetHashCode();
-          iHash ^= m_StyleHelper.GetHashCode();
-          return iHash;*/
-          return 0;
+          int hash = 0;
+          foreach(PointF p in m_GenericPosture.Points)
+              hash ^= p.GetHashCode();
+          return hash;
         }
 
         #region KVA Serialization
@@ -263,10 +260,10 @@ namespace Kinovea.ScreenManager
         {
             for(int i = 0; i<m_Angles.Count;i++)
             {
-                Point origin = m_GenericPosture.Points[m_GenericPosture.Angles[i].Origin];
-                Point leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
-                Point leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
-                m_Angles[i].Update(origin, leg1, leg2);
+                PointF origin = m_GenericPosture.Points[m_GenericPosture.Angles[i].Origin];
+                PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
+                PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
+                m_Angles[i].Update(origin.ToPoint(), leg1.ToPoint(), leg2.ToPoint());
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
@@ -359,7 +356,7 @@ namespace Kinovea.ScreenManager
                     {
                         List<Point> points = new List<Point>();
                         foreach(int pointRef in hitPolygon.Points)
-                            points.Add(m_GenericPosture.Points[pointRef]);
+                            points.Add(m_GenericPosture.Points[pointRef].ToPoint());
     
                         gp.AddPolygon(points.ToArray());
                         using (Region region = new Region(gp))
