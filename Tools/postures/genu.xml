@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Genu</Name>
+  <PointCount>11</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="3" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="4" point2="0" name="" style="Solid" width="2"/>
+    <Segment point1="4" point2="5" name="" style="Solid" width="2"/>
+    <Segment point1="5" point2="6" name="" style="Solid" width="2"/>
+    <Segment point1="6" point2="7" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="8" name="" style="Solid" width="2"/>
+    <Segment point1="8" point2="9" name="" style="Solid" width="2"/>
+    <Segment point1="9" point2="10" name="" style="Solid" width="2"/>
+  </Segments>
+  <Handles>
+    <!-- Left knee -->
+    <Handle type="Point" reference="5">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="4"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="4" impacted="6;7"/>
+      </Impact>
+    </Handle>
+    <!-- Left ankle -->
+    <Handle type="Point" reference="6">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="5"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="5" impacted="7"/>
+      </Impact>
+    </Handle>
+    <!-- Left foot -->
+    <Handle type="Point" reference="7">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="6"/>
+      </Constraint>
+    </Handle>
+    
+    <!-- Right knee -->
+    <Handle type="Point" reference="8">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="2"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="2" impacted="9;10"/>
+      </Impact>
+    </Handle>
+    <!-- Right ankle -->
+    <Handle type="Point" reference="9">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="8"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="8" impacted="10"/>
+      </Impact>
+    </Handle>
+    <!-- Right foot -->
+    <Handle type="Point" reference="10">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="9"/>
+      </Constraint>
+    </Handle>
+  </Handles>
+  <HitZone>
+    <Polygon points="0;1;2;3;4"/>
+  </HitZone>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>150;100</Point>
+    <Point>160;120</Point>
+    <Point>125;130</Point>
+    <Point>90;120</Point>
+    <Point>90;170</Point><!-- 5 -->
+    <Point>90;220</Point>
+    <Point>70;230</Point>
+    <Point>160;170</Point><!-- 4 -->
+    <Point>160;220</Point>
+    <Point>180;230</Point>
+  </InitialConfiguration>
+</KinoveaPostureTool>
