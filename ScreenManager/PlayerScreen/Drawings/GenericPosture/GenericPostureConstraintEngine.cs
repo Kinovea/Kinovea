@@ -26,34 +26,49 @@ namespace Kinovea.ScreenManager
 {
     public static class GenericPostureConstraintEngine
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
         public static void MoveHandle(GenericPosture posture, int handle, Point point)
         {
-            // Update the point(s) attached to the handle based on the constraints.
-            // Update all other points that may have been impacted.
-            switch(posture.Handles[handle].Type)
+            try
             {
-                case HandleType.Point:
-                    MovePointHandle(posture, handle, point);
-                    break;
+                // Update the point(s) attached to the handle based on the constraints.
+                // Update all other points that may have been impacted.
+                switch(posture.Handles[handle].Type)
+                {
+                    case HandleType.Point:
+                        MovePointHandle(posture, handle, point);
+                        break;
+                }
+            }
+            catch(Exception e)
+            {
+                log.DebugFormat("Error while moving handle");
+                log.DebugFormat(e.ToString());
             }
         }
         private static void MovePointHandle(GenericPosture posture, int handle, Point point)
         {
             // Constraints. (position of the point managed by this handle).
-            if(posture.Handles[handle].Constraint == null)
+            GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
+            PointF old = posture.Points[posture.Handles[handle].RefPoint];
+            
+            if(constraint == null)
             {
                 MovePointHandleFreely(posture, handle, point);
             }
             else
             {
-                switch(posture.Handles[handle].Constraint.Type)
+                switch(constraint.Type)
                 {
                     case ConstraintType.None:
                         MovePointHandleFreely(posture, handle, point);
                         break;
                     case ConstraintType.LineSlide:
-                        GenericPostureConstraintLineSlide constraint = posture.Handles[handle].Constraint as GenericPostureConstraintLineSlide;
-                        MovePointHandleAlongLine(posture, handle, point, constraint);
+                        MovePointHandleAlongLine(posture, handle, point, constraint as GenericPostureConstraintLineSlide);
+                        break;
+                    case ConstraintType.DistanceToPoint:
+                        MovePointHandleAtDistance(posture, handle, point, constraint as GenericPostureConstraintDistanceToPoint);
                         break;
                 }
             }
@@ -66,13 +81,27 @@ namespace Kinovea.ScreenManager
                     case ImpactType.Align:
                         AlignPoint(posture, handle, impact as GenericPostureImpactAlign);
                         break;
+                    case ImpactType.Pivot:
+                        // Get rotation that was applied. Apply same rotation on all points.
+                        GenericPostureImpactPivot impactPivot = impact as GenericPostureImpactPivot;
+                        if(impact != null)
+                        {
+                            PointF a = posture.Points[impactPivot.Pivot];
+                            PointF b = old;
+                            PointF c = posture.Points[posture.Handles[handle].RefPoint];
+                            float radians = GeometryHelper.GetAngle(a, b, c);
+                            PivotPoints(posture, handle, radians, impact as GenericPostureImpactPivot);
+                        }
+                        break;
                 } 
             }
             
         }
+      
+        #region Constraints
         private static void MovePointHandleFreely(GenericPosture posture, int handle, Point point)
         {
-            posture.Points[posture.Handles[handle].Reference] = point;
+            posture.Points[posture.Handles[handle].RefPoint] = point;
         }
         private static void MovePointHandleAlongLine(GenericPosture posture, int handle, Point point, GenericPostureConstraintLineSlide constraint)
         {
@@ -82,24 +111,49 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            Point start = posture.Points[constraint.Start];
-            Point end = posture.Points[constraint.End];
+            PointF start = posture.Points[constraint.Start];
+            PointF end = posture.Points[constraint.End];
             
-            Point result = GeometryHelper.GetClosestPoint(start, end, point, constraint.AllowedPosition, constraint.Margin);
-
-            posture.Points[posture.Handles[handle].Reference] = result;
+            posture.Points[posture.Handles[handle].RefPoint] = GeometryHelper.GetClosestPoint(start, end, point, constraint.AllowedPosition, constraint.Margin);
         }
+        private static void MovePointHandleAtDistance(GenericPosture posture, int handle, Point point, GenericPostureConstraintDistanceToPoint constraint)
+        {
+            if(constraint == null)
+            {
+                MovePointHandleFreely(posture, handle, point);
+                return;
+            }
+            
+            PointF parent = posture.Points[constraint.RefPoint];
+            PointF child = posture.Points[posture.Handles[handle].RefPoint];
+            float distance = GeometryHelper.GetDistance(parent, child);
+
+            posture.Points[posture.Handles[handle].RefPoint] = GeometryHelper.GetPointAtDistance(parent, point, distance);
+        }
+        #endregion
+
+        #region Impacts
         private static void AlignPoint(GenericPosture posture, int handle, GenericPostureImpactAlign impact)
         {
             if(impact == null)
                 return;
             
-            Point start = posture.Points[handle];
-            Point end = posture.Points[impact.AlignWith];
+            PointF start = posture.Points[handle];
+            PointF end = posture.Points[impact.AlignWith];
             
-            Point result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.Anywhere, 10);
-            
+            PointF result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.Anywhere, 10);
             posture.Points[impact.PointToAlign] = result;
         }
+        private static void PivotPoints(GenericPosture posture, int handle, float radians, GenericPostureImpactPivot impact)
+        {
+            // Rotates a series of point around a pivot point.
+            PointF pivot = posture.Points[impact.Pivot];
+            
+            foreach(int pointRef in impact.Impacted)
+            {
+                posture.Points[pointRef] = GeometryHelper.Pivot(pivot, posture.Points[pointRef], radians);
+            }
+        }
+        #endregion
     }
 }

@@ -36,7 +36,6 @@ namespace Kinovea.ScreenManager
         private int textDistance;
         private Region hitRegion;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const double RadiansToDegrees = 180 / Math.PI;
         
         public AngleHelper(bool relative, int textDistance)
         {
@@ -63,7 +62,7 @@ namespace Kinovea.ScreenManager
         private double GetAbsoluteAngle(Point o, Point p)
         {
             double radians = Math.Atan((double)(p.Y - o.Y) / (double)(p.X - o.X));
-            double angle = radians * RadiansToDegrees;
+            double angle = radians * GeometryHelper.RadiansToDegrees;
             
             // We get a value between -90 and +90, depending on the quadrant.
             // Translate to 0 -> 360 clockwise with 0 at right.

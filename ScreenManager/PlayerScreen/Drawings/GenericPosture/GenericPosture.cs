@@ -35,11 +35,12 @@ namespace Kinovea.ScreenManager
     public class GenericPosture
     {
         #region Properties
-        public List<Point> Points { get; private set; }
+        public List<PointF> Points { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
+        public string Name { get; private set;}
         #endregion
         
         #region Members
@@ -49,7 +50,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public GenericPosture(string descriptionFile)
         {
-            Points = new List<Point>();
+            Points = new List<PointF>();
             Segments = new List<GenericPostureSegment>();
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
@@ -70,44 +71,55 @@ namespace Kinovea.ScreenManager
         #region Serialization - Reading
         private void ReadXml(XmlReader r)
         {
-            r.MoveToContent();
-            
-            if(!(r.Name == "KinoveaPostureTool"))
-        	    return;
-            
-        	r.ReadStartElement();
-        	r.ReadElementContentAsString("FormatVersion", "");
-        	
-        	while(r.NodeType == XmlNodeType.Element)
-			{
-                switch(r.Name)
-				{
-                    case "PointCount":
-                        ParsePointCount(r);
-						break;
-                    case "Segments":
-						ParseSegments(r);
-						break;
-					case "Angles":
-						ParseAngles(r);
-						break;
-					case "Handles":
-						ParseHandles(r);
-						break;
-                    case "HitZone":
-						ParseHitZone(r);
-						break;
-					case "InitialConfiguration":
-						ParseInitialConfiguration(r);
-						break;
-                    default:
-						string unparsed = r.ReadOuterXml();
-						log.DebugFormat("Unparsed content in XML: {0}", unparsed);
-						break;
+            try
+            {
+                r.MoveToContent();
+                
+                if(!(r.Name == "KinoveaPostureTool"))
+            	    return;
+                
+            	r.ReadStartElement();
+            	r.ReadElementContentAsString("FormatVersion", "");
+            	
+            	while(r.NodeType == XmlNodeType.Element)
+    			{
+                    switch(r.Name)
+    				{
+                        case "Name":
+                            Name = r.ReadElementContentAsString();
+                            break;
+                        case "PointCount":
+                            ParsePointCount(r);
+    						break;
+                        case "Segments":
+    						ParseSegments(r);
+    						break;
+    					case "Angles":
+    						ParseAngles(r);
+    						break;
+    					case "Handles":
+    						ParseHandles(r);
+    						break;
+                        case "HitZone":
+    						ParseHitZone(r);
+    						break;
+    					case "InitialConfiguration":
+    						ParseInitialConfiguration(r);
+    						break;
+                        default:
+    						string unparsed = r.ReadOuterXml();
+    						log.DebugFormat("Unparsed content in XML: {0}", unparsed);
+    						break;
+                    }
                 }
+                
+                r.ReadEndElement();
             }
-            
-            r.ReadEndElement();
+            catch(Exception e)
+            {
+                log.ErrorFormat("An error occurred during the parsing of a custom tool.");
+                log.ErrorFormat(e.ToString());
+            }
         }
         private void ParsePointCount(XmlReader r)
         {

@@ -45,6 +45,11 @@ namespace Kinovea.ScreenManager
             return new Rectangle(_point.X - _size.Width/2, _point.Y - _size.Height/2, _size.Width, _size.Height);
         }
         
+        public static Rectangle Box(this PointF _point, int _radius)
+        {
+            return new Rectangle((int)_point.X - _radius, (int)_point.Y - _radius, _radius * 2, _radius * 2);
+        }
+        
         /// <summary>
         /// Get the center of a rectangle.
         /// </summary>
@@ -60,9 +65,17 @@ namespace Kinovea.ScreenManager
         {
             return new Point(_point.X + _x, _point.Y + _y);
         }
+        public static Point Translate(this PointF _point, int _x, int _y)
+        {
+            return new Point((int)_point.X + _x, (int)_point.Y + _y);
+        }
         public static Point Scale(this Point _point, double _scaleX, double _scaleY)
         {
             return new Point((int)(_point.X * _scaleX), (int)(_point.Y * _scaleY));
+        }
+        public static Point ToPoint(this PointF _point)
+        {
+            return new Point((int)_point.X, (int)_point.Y);
         }
         
         /// <summary>

@@ -38,11 +38,16 @@ namespace Kinovea.ScreenManager
              X = b.X - a.X;
              Y = b.Y - a.Y;
         }
-        public Vector(Point p)
+        public Vector(PointF a, PointF b)
+        {
+             X = b.X - a.X;
+             Y = b.Y - a.Y;
+        }
+        /*public Vector(Point p)
         {
             X = p.X;
             Y = p.Y;
-        }
+        }*/
         
         public static Vector operator -(Vector v1, Vector v2)
         {
@@ -52,6 +57,22 @@ namespace Kinovea.ScreenManager
         {
             return new Vector(v1.X + v2.X, v1.Y + v2.Y);
         }
+        public static PointF operator +(Vector v, Point p)
+        {
+            return p+v;
+        }
+        public static PointF operator +(Point p, Vector v)
+        {
+            return new PointF(p.X + v.X, p.Y + v.Y);
+        }
+        public static PointF operator +(Vector v, PointF p)
+        {
+            return p+v;
+        }
+        public static PointF operator +(PointF p, Vector v)
+        {
+            return new PointF(p.X + v.X, p.Y + v.Y);
+        }
         public static Vector operator *(Vector v, float f)
         {
             return new Vector(v.X * f, v.Y * f);
@@ -60,6 +81,7 @@ namespace Kinovea.ScreenManager
         {
             return v*f;
         }
+        
         
         public float Dot(Vector v)
         {

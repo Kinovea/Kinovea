@@ -26,10 +26,13 @@ namespace Kinovea.ScreenManager
 {
     public static class GeometryHelper
     {
+        public const double RadiansToDegrees = 180 / Math.PI;
+        public const double DegreesToRadians = Math.PI / 180;
+        
         /// <summary>
         /// Get the point on segment [AB] that is the closest from point C.
         /// </summary>
-        public static Point GetClosestPoint(Point a, Point b, Point c, PointLinePosition allowedPosition, int _margin)
+        public static PointF GetClosestPoint(PointF a, PointF b, PointF c, PointLinePosition allowedPosition, int _margin)
         {
             Vector ac = new Vector(a,c);
             Vector ab = new Vector(a,b);
@@ -57,8 +60,41 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            Vector closest = ab * t;
-            return (new Vector(a) + closest).ToPoint();
+            Vector v = ab * t;
+            return a + v;
+        }
+        public static PointF GetPointAtDistance(PointF a, PointF b, float distance)
+        {
+            Vector ab = new Vector(a,b);
+            float d = distance / ab.Norm();
+            Vector v = ab * d;
+            return a + v;
+        }
+        public static float GetDistance(PointF a, PointF b)
+        {
+            return new Vector(a,b).Norm();
+        }
+        
+        /// <summary>
+        /// Return the signed angle (in radians) between vectors ab and ac.
+        /// </summary>
+        public static float GetAngle(PointF a, PointF b, PointF c)
+        {
+            Vector ab = new Vector(a,b);
+            Vector ac = new Vector(a,c);
+            float  perpDot = ab.X*ac.Y - ab.Y*ac.X;
+            return  (float)Math.Atan2(perpDot, ab.Dot(ac));
+        }
+        
+        /// <summary>
+        /// Rotates point b around point a by given rotation factor (in radians).
+        /// </summary>
+        public static PointF Pivot(PointF a, PointF b, float radians)
+        {
+            Vector v = new Vector(a,b);
+            float dx = (float)(v.X * Math.Cos(radians) - v.Y * Math.Sin(radians));
+            float dy = (float)(v.X * Math.Sin(radians) + v.Y * Math.Cos(radians));
+            return new PointF(a.X + dx, a.Y + dy);
         }
     }
 }

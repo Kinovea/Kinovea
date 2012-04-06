@@ -23,11 +23,10 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ConstraintType
+    public enum ImpactType
     {
         None,
-        LineSlide,
-        VerticalSlide,
-        HorizontalSlide
+        Align,
+        Pivot
     }
 }
