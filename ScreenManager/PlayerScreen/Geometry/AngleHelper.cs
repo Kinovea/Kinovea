@@ -42,13 +42,13 @@ namespace Kinovea.ScreenManager
             this.relative = relative;
             this.textDistance = textDistance;
         }
-        public void Update(Point o, Point a, Point b)
+        public void Update(Point o, Point a, Point b, int radius)
         {
             // TODO: try catch around division by zero.
             
             Origin = o;
             ComputeAngles(o, a, b);
-            ComputeBoundingBox(o, a, b);
+            ComputeBoundingBox(o, a, b, radius);
             ComputeTextPosition(Start, Sweep);
             ComputeHitRegion(BoundingBox, Start, Sweep);
         }
@@ -99,16 +99,18 @@ namespace Kinovea.ScreenManager
             
             Sweep %= 360;
         }
-        private void ComputeBoundingBox(Point o, Point a, Point b)
+        private void ComputeBoundingBox(Point o, Point a, Point b, int radius)
         {
-            // Smallest segment gets to be the radius of the box.
-            double oaLength = Math.Sqrt(((a.X - o.X) * (a.X - o.X)) + ((a.Y - o.Y) * (a.Y - o.Y)));
-            double obLength = Math.Sqrt(((b.X - o.X) * (b.X - o.X)) + ((b.Y - o.Y) * (b.Y - o.Y)));
-            int radius = (int)Math.Min(oaLength, obLength);
-            if (radius > 20)
-                radius -= 10;
+            float r = radius;
+            if(r == 0)
+            {
+                float oa = new Vector(o,a).Norm();
+                float ob = new Vector(o,b).Norm();
+                float smaller = Math.Min(oa, ob);
+                r = smaller > 20 ? smaller - 10 : smaller;
+            }
 
-            BoundingBox = o.Box(radius);
+            BoundingBox = o.Box((int)r);
         }
         private void ComputeTextPosition(double start, double sweep)
         {

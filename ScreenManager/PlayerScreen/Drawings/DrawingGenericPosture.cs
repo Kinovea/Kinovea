@@ -281,7 +281,8 @@ namespace Kinovea.ScreenManager
                 PointF origin = m_GenericPosture.Points[m_GenericPosture.Angles[i].Origin];
                 PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
                 PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
-                m_Angles[i].Update(origin.ToPoint(), leg1.ToPoint(), leg2.ToPoint());
+                int radius = m_GenericPosture.Angles[i].Radius;
+                m_Angles[i].Update(origin.ToPoint(), leg1.ToPoint(), leg2.ToPoint(), radius);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
