@@ -68,7 +68,25 @@ namespace Kinovea.ScreenManager
         {
             m_Rectangle = new Rectangle(m_Rectangle.X + _deltaX, m_Rectangle.Y + _deltaY, m_Rectangle.Width, m_Rectangle.Height);
         }
-        
+        public void MoveAndSnap(int _deltaX, int _deltaY, Size _containerSize, int _snapMargin)
+        {
+            int deltaX = _deltaX;
+            int deltaY = _deltaY;
+            
+            if(m_Rectangle.Left + deltaX < _snapMargin)
+                deltaX = - m_Rectangle.Left;
+            
+            if(m_Rectangle.Right + deltaX > _containerSize.Width - _snapMargin)
+                deltaX = _containerSize.Width - m_Rectangle.Right;
+            
+            if(m_Rectangle.Top + deltaY < _snapMargin)
+                deltaY = - m_Rectangle.Top;
+            
+            if(m_Rectangle.Bottom + deltaY > _containerSize.Height - _snapMargin)
+                deltaY = _containerSize.Height - m_Rectangle.Bottom;
+            
+            Move(deltaX, deltaY);
+        }
         private void MoveHandleKeepAspectRatio(Point point, int handleNumber, Size _originalSize)
         {
             
