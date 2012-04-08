@@ -73,10 +73,8 @@ namespace Kinovea.ScreenManager
         public DrawingGenericPosture(Point _origin, GenericPosture _posture, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _stylePreset)
         {
             m_GenericPosture = _posture;
-            for(int i=0;i<m_GenericPosture.Angles.Count;i++)
-                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40));
-            
-            UpdateAngles();
+            if(m_GenericPosture != null)
+                InitAngles();
             
             // Decoration and binding to mini editors.
             m_StyleHelper.Bicolor = new Bicolor(Color.Empty);
@@ -91,9 +89,14 @@ namespace Kinovea.ScreenManager
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
         }
         public DrawingGenericPosture(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(Point.Empty, null, 0, 0, ToolManager.Angle.StylePreset.Clone())
+            : this(Point.Empty, null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
+            
+            if(m_GenericPosture != null)
+                InitAngles();
+            else 
+                m_GenericPosture = new GenericPosture("", true);
         }
         
         #region AbstractDrawing Implementation
@@ -137,13 +140,20 @@ namespace Kinovea.ScreenManager
                         _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
                 
-                penEdge.Width = 2;
-                penEdge.DashStyle = DashStyle.Solid;
-                for(int i = 0; i<m_Angles.Count; i++)
+                try
                 {
-                    _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
-                    _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
-                    DrawText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
+                    penEdge.Width = 2;
+                    penEdge.DashStyle = DashStyle.Solid;
+                    for(int i = 0; i<m_Angles.Count; i++)
+                    {
+                        _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                        _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                        DrawText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
+                    }
+                }
+                catch(Exception e)
+                {
+                    log.DebugFormat(e.ToString());
                 }
             }
         }
@@ -214,66 +224,106 @@ namespace Kinovea.ScreenManager
         #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
-           /*_xmlReader.ReadStartElement();
-        
-          while (_xmlReader.NodeType == XmlNodeType.Element)
-          {
-            switch (_xmlReader.Name)
+            // TODO: the ctor is initialized with the style preset of the Angle tool.
+            // Create a real tool and reference it in the manager.
+            
+            // The id must be read before the point list.
+            Guid toolId;
+
+            _xmlReader.ReadStartElement();
+            while (_xmlReader.NodeType == XmlNodeType.Element)
             {
-              case "PointO":
-                m_PointO = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                break;
-              case "PointA":
-                m_PointA = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                break;
-              case "PointB":
-                m_PointB = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                break;
-              case "DrawingStyle":
-                m_Style = new DrawingStyle(_xmlReader);
-                BindStyle();
-                break;
-              case "InfosFading":
-                m_InfosFading.ReadXml(_xmlReader);
-                break;
-              default:
-                string unparsed = _xmlReader.ReadOuterXml();
-                log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                break;
+                switch (_xmlReader.Name)
+                {
+                    case "ToolId":
+                        toolId = new Guid(_xmlReader.ReadElementContentAsString());
+                        m_GenericPosture = GenericPostureManager.Instanciate(toolId);
+                        break;
+                    case "Positions":
+                        if(m_GenericPosture != null)
+                            ParsePointList(_xmlReader, _scale);
+                        else
+                            _xmlReader.ReadOuterXml();
+                        break;
+                   case "DrawingStyle":
+						m_Style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+				    case "InfosFading":
+						m_InfosFading.ReadXml(_xmlReader);
+						break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
             }
-          }
-        
-          _xmlReader.ReadEndElement();
-        
-          m_PointO = new Point((int)((float)m_PointO.X * _scale.X), (int)((float)m_PointO.Y * _scale.Y));
-          m_PointA = new Point((int)((float)m_PointA.X * _scale.X), (int)((float)m_PointA.Y * _scale.Y));
-          m_PointB = new Point((int)((float)m_PointB.X * _scale.X), (int)((float)m_PointB.Y * _scale.Y));
-        
-          ComputeValues();*/
+            
+            _xmlReader.ReadEndElement();
+        }
+        private void ParsePointList(XmlReader _xmlReader, PointF _scale)
+        {
+            List<PointF> points = new List<PointF>();
+            
+            _xmlReader.ReadStartElement();
+            
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+                if(_xmlReader.Name == "Point")
+				{
+                    PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
+                    PointF adapted = new PointF(p.X * _scale.X, p.Y * _scale.Y);
+                    points.Add(adapted);
+                }
+                else
+                {
+                    string unparsed = _xmlReader.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+            
+            if(points.Count == m_GenericPosture.Points.Count)
+            {
+                for(int i = 0; i<m_GenericPosture.Points.Count; i++)
+                    m_GenericPosture.Points[i] = points[i];
+            }
+            else
+            {
+                log.ErrorFormat("Number of points do not match. Tool expects {0}, read:{1}", m_GenericPosture.Points.Count, points.Count);
+            }
         }
         public void WriteXml(XmlWriter _xmlWriter)
         {
-          /*_xmlWriter.WriteElementString("PointO", String.Format("{0};{1}", m_PointO.X, m_PointO.Y));
-          _xmlWriter.WriteElementString("PointA", String.Format("{0};{1}", m_PointA.X, m_PointA.Y));
-          _xmlWriter.WriteElementString("PointB", String.Format("{0};{1}", m_PointB.X, m_PointB.Y));
+            if(m_GenericPosture.Id == Guid.Empty)
+                return;
+            
+            _xmlWriter.WriteElementString("ToolId", m_GenericPosture.Id.ToString());
+            
+            _xmlWriter.WriteStartElement("Positions");
+            foreach (PointF p in m_GenericPosture.Points)
+                _xmlWriter.WriteElementString("Point", String.Format("{0};{1}", p.X, p.Y));
+            _xmlWriter.WriteEndElement();
+            
+            _xmlWriter.WriteStartElement("DrawingStyle");
+            m_Style.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
         
-          _xmlWriter.WriteStartElement("DrawingStyle");
-          m_Style.WriteXml(_xmlWriter);
-          _xmlWriter.WriteEndElement();
-        
-          _xmlWriter.WriteStartElement("InfosFading");
-          m_InfosFading.WriteXml(_xmlWriter);
-          _xmlWriter.WriteEndElement();
-        
-          // Spreadsheet support.
-          _xmlWriter.WriteStartElement("Measure");
-          int angle = (int)Math.Floor(-m_fSweepAngle);
-          _xmlWriter.WriteAttributeString("UserAngle", angle.ToString());
-          _xmlWriter.WriteEndElement();*/
+            _xmlWriter.WriteStartElement("InfosFading");
+            m_InfosFading.WriteXml(_xmlWriter);
+            _xmlWriter.WriteEndElement();
         }
         #endregion
 
         #region Lower level helpers
+        private void InitAngles()
+        {
+            for(int i=0;i<m_GenericPosture.Angles.Count;i++)
+                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40));
+
+            UpdateAngles();
+        }
         private void UpdateAngles()
         {
             for(int i = 0; i<m_Angles.Count;i++)
@@ -402,6 +452,8 @@ namespace Kinovea.ScreenManager
         private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point)
         {
             bool hit = false;
+            if(m_GenericPosture.Points[_segment.Start] == m_GenericPosture.Points[_segment.End])
+                return false;
             
             using(GraphicsPath segmentPath = new GraphicsPath())
             {

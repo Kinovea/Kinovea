@@ -376,16 +376,21 @@ namespace Kinovea.ScreenManager
                             for (int i = iStart; i < iEnd; i++)
                                 points[i-iStart] = m_Positions[i].Point;
 
-                            GraphicsPath areaPath = new GraphicsPath();
-                            areaPath.AddCurve(points, 0.5f);
-                            RectangleF bounds = areaPath.GetBounds();
-                            if(!bounds.IsEmpty)
+                            using(GraphicsPath areaPath = new GraphicsPath())
                             {
-                                Pen tempPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
-                                areaPath.Widen(tempPen);
-                                tempPen.Dispose();
-                                Region areaRegion = new Region(areaPath);
-                                iHitResult = areaRegion.IsVisible(_point) ? 0 : -1;
+                                areaPath.AddCurve(points, 0.5f);
+                                RectangleF bounds = areaPath.GetBounds();
+                                if(!bounds.IsEmpty)
+                                {
+                                    using(Pen tempPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
+                                    {
+                                        areaPath.Widen(tempPen);
+                                    }
+                                    using(Region areaRegion = new Region(areaPath))
+                                    {
+                                        iHitResult = areaRegion.IsVisible(_point) ? 0 : -1;
+                                    }
+                                }
                             }
                         }
                         catch (Exception exp)

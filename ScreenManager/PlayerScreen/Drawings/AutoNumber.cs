@@ -120,11 +120,17 @@ namespace Kinovea.ScreenManager
 		#region Private methods
 		private bool IsPointInObject(Point _point)
         {
+		    bool hit = false;
             // Point coordinates are descaled.
-            GraphicsPath areaPath = new GraphicsPath();
-            areaPath.AddEllipse(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2);
-            Region areaRegion = new Region(areaPath);
-            return areaRegion.IsVisible(_point);
+            using(GraphicsPath areaPath = new GraphicsPath())
+            {
+                areaPath.AddEllipse(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2);
+                using(Region areaRegion = new Region(areaPath))
+                {
+                    hit = areaRegion.IsVisible(_point);
+                }
+            }
+            return hit;
         }
 		#endregion
 	}

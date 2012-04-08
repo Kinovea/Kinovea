@@ -161,6 +161,7 @@ namespace Kinovea.ScreenManager
             gp.AddLine(_rDst.Left + (bgSize.Width/2), _rDst.Top + bgSize.Height, _rDst.Left, _rDst.Top + bgSize.Height);
             gp.CloseFigure();
             _canvas.FillPath(Brushes.Black, gp);
+            gp.Dispose();
             
             // 2. Draw image number.
 			_canvas.DrawString(number, _font, Brushes.White, _rDst.Location);

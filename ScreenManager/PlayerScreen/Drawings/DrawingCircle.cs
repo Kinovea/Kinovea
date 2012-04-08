@@ -222,27 +222,39 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(Point _point)
         {
-            bool bIsPointInObject = false;
-			GraphicsPath areaPath = new GraphicsPath();
-			areaPath.AddEllipse(m_Center.Box(m_iRadius + 10));
-            bIsPointInObject = new Region(areaPath).IsVisible(_point);
-            return bIsPointInObject;
+            bool hit = false;
+            using(GraphicsPath areaPath = new GraphicsPath())
+            {
+                areaPath.AddEllipse(m_Center.Box(m_iRadius + 10));
+                using(Region r = new Region(areaPath))
+                {
+                    hit = r.IsVisible(_point);
+                }
+            }
+            return hit;
         }
         private bool IsPointOnHandler(Point _point)
         {
-        	bool bIsPointOnHandler = false;
-            if(m_iRadius > 0)
+            if(m_iRadius < 0)
+                return false;
+            
+            bool hit = false;
+            
+            using(GraphicsPath areaPath = new GraphicsPath())
             {
-                GraphicsPath areaPath = new GraphicsPath();			
                 areaPath.AddArc(m_Center.Box(m_iRadius + 5), 25, 40);
     			
-    			Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10);
-    			areaPath.Widen(areaPen);
-    			areaPen.Dispose();
-                bIsPointOnHandler = new Region(areaPath).IsVisible(_point);
+                using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 10))
+                {
+                    areaPath.Widen(areaPen);
+                }
+                using(Region r = new Region(areaPath))
+                {
+                    hit = r.IsVisible(_point);
+                }
             }
 			
-            return bIsPointOnHandler;	
+            return hit;
         }
         #endregion
     }

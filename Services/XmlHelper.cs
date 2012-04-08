@@ -46,6 +46,21 @@ namespace Kinovea.Services
 
             return point;
         }
+        public static PointF ParsePointF(string _sPoint)
+        {
+            PointF point = PointF.Empty;
+            try
+            {
+                string[] a = _sPoint.Split(new char[] {';'});
+                point = new PointF(float.Parse(a[0]), float.Parse(a[1]));
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing PointF value. ({0}).", _sPoint));
+            }
+
+            return point;
+        }
         public static List<int> ParseIntList(string _intList)
         {
             List<int> l = new List<int>();

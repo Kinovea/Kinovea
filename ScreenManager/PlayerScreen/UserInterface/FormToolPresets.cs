@@ -77,9 +77,12 @@ namespace Kinovea.ScreenManager
 				if(tool.StylePreset != null && tool.StylePreset.Elements.Count > 0)
 				{
 					lstPresets.Items.Add(tool);
+
 					if(_memorize)
 						tool.StylePreset.Memorize();
-					if(tool == m_Preselect) preselected = lstPresets.Items.Count - 1;
+
+					if(tool == m_Preselect || (tool is DrawingToolGenericPosture && m_Preselect is DrawingToolGenericPosture))
+					    preselected = lstPresets.Items.Count - 1;
 				}
 			}
 				

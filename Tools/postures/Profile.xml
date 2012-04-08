@@ -2,6 +2,7 @@
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
   <Name>Profile</Name>
+  <Id>32ea0553-bdc5-48fe-b20b-0493a1d73526</Id>
   <PointCount>6</PointCount>
   <Segments>
     <Segment point1="0" point2="1" name="" style="Solid" width="2"/>

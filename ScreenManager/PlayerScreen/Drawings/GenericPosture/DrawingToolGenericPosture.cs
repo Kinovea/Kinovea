@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
 {
     // A sandbox for the generic posture tool.
     
-    public class DrawingToolGenericPostureSandbox : AbstractDrawingTool
+    public class DrawingToolGenericPosture : AbstractDrawingTool
     {
     	#region Properties
 		public override string DisplayName
@@ -68,13 +68,13 @@ namespace Kinovea.ScreenManager
     	#region Members
     	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
     	private DrawingStyle m_StylePreset;
-    	private string filename;
+    	private Guid id;
     	private string displayName = "Generic Posture";
     	private Bitmap icon = Properties.Drawings.generic_posture;
     	#endregion
 		
 		#region Constructor
-		public DrawingToolGenericPostureSandbox()
+		public DrawingToolGenericPosture()
 		{
 			m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
 			m_StylePreset = m_DefaultStylePreset.Clone();
@@ -84,25 +84,18 @@ namespace Kinovea.ScreenManager
 		#region Public Methods
 		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
 		{
-		    if(string.IsNullOrEmpty(filename) || !File.Exists(filename))
-		        return null;
+		    m_StylePreset = ToolManager.GenericPosture.m_StylePreset.Clone();
 		    
-		    GenericPosture posture = new GenericPosture(filename, false);
+		    GenericPosture posture = GenericPostureManager.Instanciate(id);
 		    return new DrawingGenericPosture(_Origin, posture, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
 		}
 		public override Cursor GetCursor(double _fStretchFactor)
 		{
 			return Cursors.Cross;
 		}
-		public void SetFile(string filename)
+		public void SetInfo(GenericPosture posture)
 		{
-		    this.filename = filename;
-		    displayName = Path.GetFileNameWithoutExtension(filename);
-		    
-		    // Extract icon and name.
-		    GenericPosture posture = new GenericPosture(filename, true);
-		    if(posture == null)
-		        return;
+		    this.id = posture.Id;
 		    
 		    if(!string.IsNullOrEmpty(posture.Name))
 		       displayName = posture.Name;

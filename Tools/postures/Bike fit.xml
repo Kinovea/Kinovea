@@ -2,6 +2,7 @@
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
   <Name>Bike fit</Name>
+  <Id>02a52d37-4694-4b90-a6d4-58d2a399638c</Id>
   <PointCount>8</PointCount>
   <Segments>
     <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
@@ -40,10 +41,12 @@
   </InitialConfiguration>
   <Icon>
     iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
-    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADWSURBVDhPY/j//z8DDDclWzPgw8hqYWy4ZpAAFs0J
-    QDE/mDipBsgBNX4G4v9AbAkyhFQDtkM1LyXHBbFQzW+BtBC615Bdgi0M7IAaPkENiMIWqIQMuAXV/AdI
-    bwHiHCAGhQc8kAkZ0AxU/AFqCCgAYfgBkO2BHpj4olEUqBjkha1A/AtqUCkpBrABFVcD8TeoZhCdRKwB
-    rkCFN5CcvwLIlsYWnRiJA6qoBKr5FZDuIzoakZKzIlogoiRznLGAZAAP0IA0IG4B4mnkuABrriSYF7Ap
-    ICQGAJJoJ2qW4Q5fAAAAAElFTkSuQmCC
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE/SURBVDhPzdO9S4JRFMfxh6ZabGkQGoMMakgiIZpD
+    xxodKhyCtqBwEIloKBoiGoqWJPIfEESCXjCiwaQ3aJByCEtbyqW15en7gyPcIVocavhwrvfec869XvV8
+    3/fa0VayGv+DAtFY0nOMMl7BIgac+SHGl6gg5Oa4yRqP4RVlTNlnzUWwjRK6fiugIsf4QA4nOMUR7uwU
+    nT8VUJdZpHCGGhIIY9jiJrGBNKZbV1HHDUt4IH7hEFvIYATj2MW5naxJvMcz5lTgBXHM2IKOuoZrXOEJ
+    O1jHJy7Qi1XUVUD3U8xD91eBNywjC51Q63oFXUNzC+hARQvqFMAgJjRpXfaISfRYAXXeRzf6oOesqcAj
+    9Dz6Egt2Av0O1C1oydo3iXccYN4aFbWgzVXcQvddssR+J1n7dGQla++NFYj+/X/hG1UdCPO6d1taAAAA
+    AElFTkSuQmCC
   </Icon>
 </KinoveaPostureTool>

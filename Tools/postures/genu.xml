@@ -2,6 +2,7 @@
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
   <Name>Genu</Name>
+  <Id>06bed28a-9e9f-45b2-bb50-125f5ed68cf0</Id>
   <PointCount>11</PointCount>
   <Segments>
     <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
