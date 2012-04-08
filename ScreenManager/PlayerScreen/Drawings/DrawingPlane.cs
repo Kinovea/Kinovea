@@ -251,9 +251,16 @@ namespace Kinovea.ScreenManager
 		    m_Corners[handleNumber - 1] = point;
 		
 			if (m_bSupport3D)
-                m_bValidPlane = m_Corners.IsConvex;
+			{
+			    m_bValidPlane = m_Corners.IsConvex;
+			}
             else
-                m_Corners.MakeRectangle(handleNumber - 1);
+            {
+                if((modifiers & Keys.Shift) == Keys.Shift)
+                    m_Corners.MakeSquare(handleNumber - 1);
+                else
+                    m_Corners.MakeRectangle(handleNumber - 1);
+            }
             
             RedefineHomography();
             m_fShift = 0F;
