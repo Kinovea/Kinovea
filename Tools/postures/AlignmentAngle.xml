@@ -13,8 +13,8 @@
   </Angles>
   <Handles>
     <Handle type="Point" reference="0">
-      <Impact type="Align">
-        <Align pointToAlign="1" alignWith="2"/>
+      <Impact type="LineAlign">
+        <Align pointToAlign="1" point1="0" point2="2"/>
       </Impact>
     </Handle>
     <Handle type="Point" reference="1">
@@ -23,15 +23,21 @@
       </Constraint>
     </Handle>
     <Handle type="Point" reference="2">
-      <Impact type="Align">
-        <Align pointToAlign="1" alignWith="0"/>
+      <Impact type="LineAlign">
+        <Align pointToAlign="1" point1="2" point2="0"/>
       </Impact>
     </Handle>
     <Handle type="Point" reference="3"/>
   </Handles>
-  <!--HitZone>
-    <Polygon points="0;1;2;3"/>
-  </HitZone-->
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEASURBVDhPY/j//z8DJZgizSCLwQaEzloNwtZAPBOI
+    paB8mDgKje5amAHCQE1zgPg/EPcBMScuQ3AZwAjU4AjEz4D4GxDHATEzPpfA5JC9ANKQBsT/gPg2EJsA
+    sQohQ5ANAPkV5HRQOIC8AsOXgOxqIJbDZhi6ASBDpIH4HJohMMNOAsXzgVgCmxeQQ1sfqOAyEGsAcQsQ
+    X8ViYCDIEGwugBnEBDVgNTQstIB0IzR8/gBpIUIGCAAVgDSfAGIjIGZDCgN4eOBzAcglokAMih0bqGtY
+    0QOSkAEgb4DSByhaQenDEFdCwppsobaxA+luIF4GxDrkGAAyXATmdKwGUJKdAaKCL3D3GuN3AAAAAElF
+    TkSuQmCC
+  </Icon>
   <InitialConfiguration>
     <Point>200;200</Point>
     <Point>250;200</Point>

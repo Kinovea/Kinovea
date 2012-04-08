@@ -121,10 +121,20 @@ namespace Kinovea.ScreenManager
                     _canvas.DrawLine(penEdge, points[segment.Start], points[segment.End]);
                 }
                 
+                foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
+                {
+                    penEdge.Width = ellipse.Width;
+                    penEdge.DashStyle = Convert(ellipse.Style);
+                    //_canvas.DrawLine(penEdge, points[], points[segment.End]);
+                    Point center = points[ellipse.Center];
+                    int radius = _transformer.Transform(ellipse.Radius);
+                    _canvas.DrawEllipse(penEdge, center.Box(radius));
+                }
+                
                 foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
                 {
                     if(handle.Type == HandleType.Point)
-                        _canvas.FillEllipse(brushHandle, points[handle.RefPoint].Box(3));
+                        _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
                 
                 penEdge.Width = 2;
@@ -146,18 +156,26 @@ namespace Kinovea.ScreenManager
 
             for(int i = 0; i<m_GenericPosture.Handles.Count;i++)
             {
-                if(m_GenericPosture.Handles[i].Type == HandleType.Point)
+                if(iHitResult >= 0)
+                    break;
+                
+                switch(m_GenericPosture.Handles[i].Type)
                 {
-                    // Test for point hit.
-                    if(m_GenericPosture.Points[m_GenericPosture.Handles[i].RefPoint].Box(10).Contains(_point))
-                    {
-                        iHitResult = i+1;
+                    case HandleType.Point:
+                        if(m_GenericPosture.Points[m_GenericPosture.Handles[i].Reference].Box(10).Contains(_point))
+                            iHitResult = i+1;
                         break;
-                    }
-                }
-                else if(m_GenericPosture.Handles[i].Type == HandleType.Segment)
-                {
-                    // Test for segment handle hit.
+                    case HandleType.Segment:
+                        if(IsPointOnSegment(m_GenericPosture.Segments[m_GenericPosture.Handles[i].Reference], _point))
+                        {
+                            m_GenericPosture.Handles[i].GrabPoint = _point;
+                            iHitResult = i+1;
+                        }
+                        break;
+                    case HandleType.Ellipse:
+                        if(IsPointOnEllipseArc(m_GenericPosture.Ellipses[m_GenericPosture.Handles[i].Reference], _point))
+                            iHitResult = i+1;
+                        break;
                 }
             }
             
@@ -334,6 +352,16 @@ namespace Kinovea.ScreenManager
             if(hit == true)
                 return true;
             
+            foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
+            {
+                hit = IsPointInsideEllipse(ellipse, _point);
+                if(hit)
+                    break;
+            }
+            
+            if(hit == true)
+                return true;
+            
             foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
             {
                 hit = IsPointOnSegment(segment, _point);
@@ -387,6 +415,39 @@ namespace Kinovea.ScreenManager
                 }
             }
             
+            return hit;
+        }
+        private bool IsPointInsideEllipse(GenericPostureEllipse _ellipse, Point _point)
+        {
+            bool hit = false;
+            
+            using(GraphicsPath path = new GraphicsPath())
+            {
+                path.AddEllipse(m_GenericPosture.Points[_ellipse.Center].Box(_ellipse.Radius));
+                using(Region region = new Region(path))
+                {
+                     hit = region.IsVisible(_point);
+                }
+            }
+            
+            return hit;
+        }
+        private bool IsPointOnEllipseArc(GenericPostureEllipse _ellipse, Point _point)
+        {
+            bool hit = false;
+            
+        	using(GraphicsPath path = new GraphicsPath())
+            {        	
+        		path.AddArc(m_GenericPosture.Points[_ellipse.Center].Box(_ellipse.Radius), 0, 360);
+        		using(Pen p = new Pen(Color.Black, 7))
+                {
+                    path.Widen(p);
+                }
+        		using(Region region = new Region(path))
+                {
+                     hit = region.IsVisible(_point);
+                }
+        	}
             return hit;
         }
         #endregion

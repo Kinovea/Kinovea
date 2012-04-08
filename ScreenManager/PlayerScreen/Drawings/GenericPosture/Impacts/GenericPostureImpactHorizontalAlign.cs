@@ -20,16 +20,30 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ImpactType
+    public class GenericPostureImpactHorizontalAlign : GenericPostureAbstractImpact
     {
-        None,
-        LineAlign,
-        VerticalAlign,
-        HorizontalAlign,
-        Pivot,
-        HorizontalSymmetry
+        public int PointRef { get; private set;}
+        
+        public GenericPostureImpactHorizontalAlign(XmlReader r)
+        {
+            Type = ImpactType.HorizontalAlign;
+            
+            bool isEmpty = r.IsEmptyElement;
+            
+            if(r.MoveToAttribute("point"))
+                PointRef = r.ReadContentAsInt();
+            
+            r.ReadStartElement();
+            
+            //if(!isEmpty)
+            //    r.ReadEndElement();
+        }
     }
 }
+
+
+

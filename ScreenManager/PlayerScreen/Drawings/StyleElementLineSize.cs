@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private static readonly int[] m_Options = { 2, 3, 4, 5, 7, 9, 11, 13 };
+		private static readonly int[] m_Options = { 1, 2, 3, 4, 5, 7, 9, 11, 13 };
 		private static readonly int m_iDefaultSize = 3;
 		private int m_iPenSize;
 		#endregion
