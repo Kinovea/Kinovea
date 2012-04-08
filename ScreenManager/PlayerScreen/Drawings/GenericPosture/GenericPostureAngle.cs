@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         public int Leg1 { get; private set;}
         public int Leg2 { get; private set;}
         public bool Relative { get; private set;}
+        public int Radius { get; private set;}
         
         public GenericPostureAngle(XmlReader r)
         {
@@ -54,6 +55,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("relative"))
                 Relative = XmlHelper.ParseBoolean(r.ReadContentAsString());
+
+            if(r.MoveToAttribute("radius"))
+                Radius = r.ReadContentAsInt();
 
             r.ReadStartElement();
             

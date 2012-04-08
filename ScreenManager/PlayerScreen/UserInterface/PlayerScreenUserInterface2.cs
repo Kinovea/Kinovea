@@ -1093,7 +1093,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void AddToolButtonPosture(EventHandler _handler)
         {
-            string dir = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\GenericPosture\Tools\postures";
+            string dir = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\ToolLaboratory\Tools\postures";
             
             if(!Directory.Exists(dir))
                 return;

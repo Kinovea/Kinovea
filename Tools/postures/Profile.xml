@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Profile</Name>
+  <PointCount>6</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="3" point2="4" name="" style="Solid" width="2"/>
+  </Segments>
+  <Ellipses>
+    <Ellipse center="5" radius="10" name="" style="Solid" width="2"/>
+  </Ellipses>
+  <Handles>
+    <Handle type="Point" reference="0">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="1" impacted="5"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="1">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="0"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="0" impacted="2;3;4"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="2">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="1"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="1" impacted="3;4"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="3">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="2"/>
+      </Constraint>
+      <Impact type="Pivot">
+        <Pivot pivot="2" impacted="4;"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="4">
+      <Constraint type="DistanceToPoint">
+        <DistanceToPoint point="3"/>
+      </Constraint>
+    </Handle>
+  </Handles>
+  <InitialConfiguration>
+    <Point>80;80</Point>
+    <Point>80;140</Point>
+    <Point>100;180</Point>
+    <Point>80;220</Point>
+    <Point>100;230</Point>
+    <Point>80;70</Point>
+  </InitialConfiguration>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADWSURBVDhPY/j//z8DDDclWzPgw8hqYWy4ZpAAFs0J
+    QDE/mDipBsgBNX4G4v9AbAkyhFQDtkM1LyXHBbFQzW+BtBC615Bdgi0M7IAaPkENiMIWqIQMuAXV/AdI
+    bwHiHCAGhQc8kAkZ0AxU/AFqCCgAYfgBkO2BHpj4olEUqBjkha1A/AtqUCkpBrABFVcD8TeoZhCdRKwB
+    rkCFN5CcvwLIlsYWnRiJA6qoBKr5FZDuIzoakZKzIlogoiRznLGAZAAP0IA0IG4B4mnkuABrriSYF7Ap
+    ICQGAJJoJ2qW4Q5fAAAAAElFTkSuQmCC
+  </Icon>
+</KinoveaPostureTool>
