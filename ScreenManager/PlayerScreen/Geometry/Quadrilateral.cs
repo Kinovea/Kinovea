@@ -126,6 +126,50 @@ namespace Kinovea.ScreenManager
                     break;
             }
         }
+        public void MakeSquare(int _anchor)
+        {
+            // Forces the other points to align and makes square on the smallest side.
+            // Assumes the opposite point is already aligned with the other two.
+            int width = 0;
+            int height = 0;
+            int side = 0;
+            
+            switch (_anchor)
+            {
+                case 0:
+                    width = C.X - A.X;
+                    height = C.Y - A.Y;
+                    side = Math.Min(width, height);
+                    A = new Point(C.X - side, C.Y - side);
+                    B = new Point(C.X, C.Y - side);
+                    D = new Point(C.X - side, C.Y);
+                    break;
+                case 1:
+                    width = B.X - D.X;
+                    height = D.Y - B.Y;
+                    side = Math.Min(width, height);
+                    A = new Point(D.X, D.Y - side);
+                    B = new Point(D.X + side, D.Y - side);
+                    C = new Point(D.X + side, D.Y);
+                    break;
+                case 2:
+                    width = C.X - A.X;
+                    height = C.Y - A.Y;
+                    side = Math.Min(width, height);
+                    B = new Point(A.X + side, A.Y);
+                    C = new Point(A.X + side, A.Y + side);
+                    D = new Point(A.X, A.Y + side);
+                    break;
+                case 3:
+                    width = B.X - D.X;
+                    height = D.Y - B.Y;
+                    side = Math.Min(width, height);
+                    A = new Point(B.X - side, B.Y);
+                    C = new Point(B.X, B.Y + side);
+                    D = new Point(B.X - side, B.Y + side);
+                    break;
+            }
+        }
         public bool Contains(Point _point)
         {
             if (!IsQuadConvex())
