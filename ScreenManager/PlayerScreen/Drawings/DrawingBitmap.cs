@@ -52,6 +52,8 @@ namespace Kinovea.ScreenManager
         private float m_fInitialScale = 1.0f;			            // The scale we apply upon loading to make sure the image fits the screen.
         private int m_iOriginalWidth;
         private int m_iOriginalHeight;
+        private Size m_videoSize;
+        private static readonly int m_snapMargin = 0;
         // Decoration
         private InfosFading m_InfosFading;
         private ColorMatrix m_FadingColorMatrix = new ColorMatrix();
@@ -83,6 +85,8 @@ namespace Kinovea.ScreenManager
         }
         private void Initialize(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame)
         {
+            m_videoSize = new Size(_iWidth, _iHeight);
+            
         	m_iOriginalWidth = m_Bitmap.Width;
 	        m_iOriginalHeight  = m_Bitmap.Height;
 	        
@@ -155,7 +159,7 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            m_BoundingBox.Move(_deltaX, _deltaY);
+            m_BoundingBox.MoveAndSnap(_deltaX, _deltaY, m_videoSize, m_snapMargin);
         }
         #endregion
         

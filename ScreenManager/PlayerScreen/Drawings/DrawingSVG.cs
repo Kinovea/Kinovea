@@ -71,6 +71,8 @@ namespace Kinovea.ScreenManager
         private BoundingBox m_BoundingBox = new BoundingBox();
         private bool m_bSizeInPercentage;               // A property of some SVG files.
         private bool m_bFinishedResizing;
+        private Size m_videoSize;
+        private static readonly int m_snapMargin = 0;
         // Decoration
         private InfosFading m_InfosFading;
         private ColorMatrix m_FadingColorMatrix = new ColorMatrix();
@@ -84,7 +86,9 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingSVG(int _iWidth, int _iHeight, long _iTimestamp, long _iAverageTimeStampsPerFrame, string _filename)
         {
-			// Init and import an SVG.
+            m_videoSize = new Size(_iWidth, _iHeight);
+			
+            // Init and import an SVG.
 			m_Renderer.BackColor = Color.Transparent;
 			
 			// Rendering window. The width and height will be updated later.
@@ -178,7 +182,7 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            m_BoundingBox.Move(_deltaX, _deltaY);
+            m_BoundingBox.MoveAndSnap(_deltaX, _deltaY, m_videoSize, m_snapMargin);
         }
         #endregion
        
