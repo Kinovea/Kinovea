@@ -467,6 +467,10 @@
       <Visible>False</Visible>
       <InProject>false</InProject>
     </XSLTItem>
+    <DrawingsItem Include="$(MSBuildProjectDirectory)\..\Tools\postures\*.xml">
+      <Visible>False</Visible>
+      <InProject>false</InProject>
+    </DrawingsItem>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -479,8 +483,13 @@
     <RemoveDir Directories="$(OutputPath)guides" />
     <MakeDir Directories="$(OutputPath)guides" Condition="!Exists('$(OutputPath)guides')" />
     <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)guides" />
+    
     <RemoveDir Directories="$(OutputPath)xslt" />
     <MakeDir Directories="$(OutputPath)xslt" Condition="!Exists('$(OutputPath)xslt')" />
     <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)xslt" />
+    
+    <RemoveDir Directories="$(OutputPath)DrawingTools" />
+    <MakeDir Directories="$(OutputPath)DrawingTools" Condition="!Exists('$(OutputPath)DrawingTools')" />
+    <Copy SourceFiles="@(DrawingsItem)" DestinationFolder="$(OutputPath)DrawingTools" />
   </Target>
 </Project>

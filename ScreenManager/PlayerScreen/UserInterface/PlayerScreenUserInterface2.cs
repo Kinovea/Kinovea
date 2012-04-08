@@ -1093,7 +1093,10 @@ namespace Kinovea.ScreenManager
 		}
 		private void AddToolButtonPosture(EventHandler _handler)
         {
-            string dir = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\ToolLaboratory\Tools\postures";
+		    if(GenericPostureManager.Tools.Count > 0)
+		        AddToolButtonWithMenu(GenericPostureManager.Tools.ToArray(), 0, drawingTool_Click);
+		    
+            /*string dir = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\ToolLaboratory\Tools\postures";
             
             if(!Directory.Exists(dir))
                 return;
@@ -1111,7 +1114,7 @@ namespace Kinovea.ScreenManager
             }
             
             if(tools.Count > 0)
-                AddToolButtonWithMenu(tools.ToArray(), 0, drawingTool_Click);
+                AddToolButtonWithMenu(tools.ToArray(), 0, drawingTool_Click);*/
 		}
 		private void ResetData()
 		{

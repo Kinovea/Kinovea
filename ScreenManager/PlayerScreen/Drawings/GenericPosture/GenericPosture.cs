@@ -36,14 +36,16 @@ namespace Kinovea.ScreenManager
     public class GenericPosture
     {
         #region Properties
+        public Guid Id { get; private set;}
+        public string Name { get; private set;}
+        public Bitmap Icon { get; private set;}
+        
         public List<PointF> Points { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureEllipse> Ellipses { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
-        public string Name { get; private set;}
-        public Bitmap Icon { get; private set;}
         #endregion
         
         #region Members
@@ -53,12 +55,19 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public GenericPosture(string descriptionFile, bool info)
         {
+            Id = Guid.Empty;
+            Name = "";
+            Icon = null;
+            
             Points = new List<PointF>();
             Segments = new List<GenericPostureSegment>();
             Ellipses = new List<GenericPostureEllipse>();
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
             HitZones = new List<GenericPostureAbstractHitZone>();
+            
+            if(string.IsNullOrEmpty(descriptionFile))
+                return;
             
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreComments = true;
@@ -93,6 +102,9 @@ namespace Kinovea.ScreenManager
     			{
                     switch(r.Name)
     				{
+                        case "Id":
+                            Id = new Guid(r.ReadElementContentAsString());
+                            break;
                         case "Name":
                             Name = r.ReadElementContentAsString();
                             break;
@@ -132,6 +144,9 @@ namespace Kinovea.ScreenManager
                         case "Name":
                         case "Icon":
                              r.ReadOuterXml();
+                            break;
+                        case "Id":
+                            Id = new Guid(r.ReadElementContentAsString());
                             break;
                         case "PointCount":
                             ParsePointCount(r);

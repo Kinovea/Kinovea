@@ -112,6 +112,10 @@ namespace Kinovea.ScreenManager
 			// Draw each spot border or any visuals.
             foreach(Spotlight spot in m_Spotlights)
                 spot.Draw(_canvas, _transformer, _iCurrentTimestamp);
+            
+            globalPath.Dispose();
+            spotsPath.Dispose();
+            
 		}
 		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
 		{

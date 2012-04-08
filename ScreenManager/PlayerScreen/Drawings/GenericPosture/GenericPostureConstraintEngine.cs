@@ -265,6 +265,12 @@ namespace Kinovea.ScreenManager
             PointF start = posture.Points[impact.Start];
             PointF end = posture.Points[impact.End];
             
+            if(start == end)
+            {
+                posture.Points[impact.PointToAlign] = start;
+                return;
+            }
+            
             PointF result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.Anywhere, 10);
             posture.Points[impact.PointToAlign] = result;
         }

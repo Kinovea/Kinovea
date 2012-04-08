@@ -80,9 +80,9 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolPencil)Tools["Pencil"]; }
 		}
-		public static DrawingToolGenericPostureSandbox GenericPosture
+		public static DrawingToolGenericPosture GenericPosture
 		{
-			get { return (DrawingToolGenericPostureSandbox)Tools["GenericPosture"]; }
+			get { return (DrawingToolGenericPosture)Tools["GenericPosture"]; }
 		}
 		public static DrawingToolText Label
 		{
@@ -107,10 +107,6 @@ namespace Kinovea.ScreenManager
 		public static DrawingToolMagnifier Magnifier
 		{
 			get { return (DrawingToolMagnifier)Tools["Magnifier"]; }
-		}
-		public static DrawingToolPosture Posture
-		{
-			get { return (DrawingToolPosture)Tools["Posture"]; }
 		}
 		#endregion
 		
@@ -222,14 +218,13 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("Line", new DrawingToolLine2D());
         	m_Tools.Add("Arrow", new DrawingToolArrow());
         	m_Tools.Add("Pencil", new DrawingToolPencil());
-        	m_Tools.Add("GenericPosture", new DrawingToolGenericPostureSandbox());
+        	m_Tools.Add("GenericPosture", new DrawingToolGenericPosture());
         	m_Tools.Add("Label", new DrawingToolText());
         	m_Tools.Add("Grid", new DrawingToolGrid());
         	m_Tools.Add("Plane", new DrawingToolPlane());
             m_Tools.Add("Spotlight", new DrawingToolSpotlight());
             m_Tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
         	m_Tools.Add("Magnifier", new DrawingToolMagnifier());
-        	m_Tools.Add("Posture", new DrawingToolPosture());
         	
         	LoadPresets();
         }

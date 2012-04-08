@@ -127,26 +127,33 @@ namespace Kinovea.ScreenManager
 		#region Private methods
 		private bool IsPointInObject(Point _point)
         {
-            // Point coordinates are descaled.
-            GraphicsPath areaPath = new GraphicsPath();
-            areaPath.AddEllipse(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2);
-            Region areaRegion = new Region(areaPath);
-            return areaRegion.IsVisible(_point);
+            bool hit = false;
+            using(GraphicsPath areaPath = new GraphicsPath())
+            {
+                areaPath.AddEllipse(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2);
+                using(Region areaRegion = new Region(areaPath))
+                {
+                    hit = areaRegion.IsVisible(_point);
+                }
+            }
+            return hit;
         }
 		private bool IsPointOnHandler(Point _point)
         {
-        	// Point coordinates are descaled.
-			GraphicsPath areaPath = new GraphicsPath();			
-			areaPath.AddArc(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2, 0, 360);
-			
-			Pen areaPen = new Pen(Color.Black, 10);
-			areaPath.Widen(areaPen);
-			areaPen.Dispose();
-			
-			// Create region from the path
-			bool bIsPointOnHandler = false;
-            bIsPointOnHandler = new Region(areaPath).IsVisible(_point);
-            return bIsPointOnHandler;	
+            bool hit = false;
+		    using(GraphicsPath areaPath = new GraphicsPath())
+			{
+                areaPath.AddArc(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2, 0, 360);
+                using(Pen areaPen = new Pen(Color.Black, 10))
+                {
+                    areaPath.Widen(areaPen);
+                }
+                using(Region r = new Region(areaPath))
+                {
+                    hit = r.IsVisible(_point);
+                }
+		    }
+		    return hit;
         }
 		#endregion
 	}

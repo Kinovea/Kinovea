@@ -364,19 +364,26 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(Point _point)
         {
-            // Create path which contains wide line for easy mouse selection
-            GraphicsPath areaPath = new GraphicsPath();
+            bool hit = false;
             
-            if(m_StartPoint == m_EndPoint)
-                areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_StartPoint.X + 2, m_StartPoint.Y + 2);
-            else
-            	areaPath.AddLine(m_StartPoint, m_EndPoint);
+            using(GraphicsPath areaPath = new GraphicsPath())
+            {
+                if(m_StartPoint == m_EndPoint)
+                    areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_StartPoint.X + 2, m_StartPoint.Y + 2);
+                else
+                	areaPath.AddLine(m_StartPoint, m_EndPoint);
             
-            Pen areaPen = new Pen(Color.Black, 7);
-            areaPath.Widen(areaPen);
-            areaPen.Dispose();
-            Region areaRegion = new Region(areaPath);
-            return areaRegion.IsVisible(_point);
+                using(Pen areaPen = new Pen(Color.Black, 7))
+                {
+                    areaPath.Widen(areaPen);
+                }
+                using(Region r = new Region(areaPath))
+                {
+                    hit = r.IsVisible(_point);
+                }
+            }
+            
+            return hit;
         }
         private Point GetMiddlePoint()
         {

@@ -174,15 +174,24 @@ namespace Kinovea.ScreenManager
         {
             if (!IsQuadConvex())
                 return false;
-                
-            GraphicsPath areaPath = new GraphicsPath();
-            areaPath.AddLine(A, B);
-            areaPath.AddLine(B, C);
-            areaPath.AddLine(C, D);
-            areaPath.CloseAllFigures();
-            Region areaRegion = new Region(areaPath);
             
-            return areaRegion.IsVisible(_point);
+            bool hit = false;
+            using(GraphicsPath areaPath = new GraphicsPath())
+            {
+                areaPath.AddPolygon(new Point[]{A,B,C,D});
+                using(Region r = new Region(areaPath))
+                {
+                    hit = r.IsVisible(_point);
+                }
+            }
+            return hit;
+                /*areaPath.AddLine(A, B);
+                areaPath.AddLine(B, C);
+                areaPath.AddLine(C, D);
+                areaPath.CloseAllFigures();
+                Region areaRegion = new Region(areaPath);
+                
+                return areaRegion.IsVisible(_point);*/
         }
         public Quadrilateral Clone()
         {

@@ -44,13 +44,19 @@ namespace Kinovea.ScreenManager
         }
         public void Update(Point o, Point a, Point b, int radius)
         {
-            // TODO: try catch around division by zero.
-            
+            if(o == a || o == b)
+                return;
+
             Origin = o;
             ComputeAngles(o, a, b);
             ComputeBoundingBox(o, a, b, radius);
             ComputeTextPosition(Start, Sweep);
             ComputeHitRegion(BoundingBox, Start, Sweep);
+            
+            /*catch(OverflowException)
+            {
+                log.DebugFormat("Exception while computing angle. o:{0}, a:{1}, b:{2}", o, a, b);
+            }*/
         }
         public bool Hit(Point p)
         {
@@ -107,9 +113,9 @@ namespace Kinovea.ScreenManager
                 float oa = new Vector(o,a).Norm();
                 float ob = new Vector(o,b).Norm();
                 float smaller = Math.Min(oa, ob);
-                r = smaller > 20 ? smaller - 10 : smaller;
+                r = smaller > 20 ? smaller - 10 : Math.Min(smaller, 10);
             }
-
+            
             BoundingBox = o.Box((int)r);
         }
         private void ComputeTextPosition(double start, double sweep)

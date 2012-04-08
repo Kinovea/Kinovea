@@ -243,26 +243,32 @@ namespace Kinovea.ScreenManager
         }
         private bool IsPointInObject(Point _point)
         {
-           // Create path which contains wide line for easy mouse selection
-            GraphicsPath areaPath = new GraphicsPath();
-            areaPath.AddCurve(m_PointList.ToArray(), 0.5f);
+            bool hit = false;
+            using(GraphicsPath areaPath = new GraphicsPath())
+            {
+                areaPath.AddCurve(m_PointList.ToArray(), 0.5f);
             
-            RectangleF bounds = areaPath.GetBounds();
-            if(!bounds.IsEmpty)
-            {
-                Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7);
-                areaPen.StartCap = LineCap.Round;
-                areaPen.EndCap = LineCap.Round;
-                areaPen.LineJoin = LineJoin.Round;
-                areaPath.Widen(areaPen);
-    			areaPen.Dispose();
-                Region areaRegion = new Region(areaPath);
-                return areaRegion.IsVisible(_point);
+                RectangleF bounds = areaPath.GetBounds();
+                if(!bounds.IsEmpty)
+                {
+                    using(Pen areaPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
+                    {
+                        areaPen.StartCap = LineCap.Round;
+                        areaPen.EndCap = LineCap.Round;
+                        areaPen.LineJoin = LineJoin.Round;
+                        areaPath.Widen(areaPen);
+                    }
+                    using(Region areaRegion = new Region(areaPath))
+                    {
+                        hit = areaRegion.IsVisible(_point);
+                    }
+                }
+                else
+                {
+                    hit = false;
+                }
             }
-            else
-            {
-                return false;
-            }
+            return hit;
         }
         #endregion
     }

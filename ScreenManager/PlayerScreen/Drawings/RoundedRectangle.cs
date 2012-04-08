@@ -74,6 +74,8 @@ namespace Kinovea.ScreenManager
             
             gp.CloseFigure();
             _canvas.FillPath(_brush, gp);
+            
+            gp.Dispose();
         }
         public int HitTest(Point _point, bool _hiddenHandle)
         {
