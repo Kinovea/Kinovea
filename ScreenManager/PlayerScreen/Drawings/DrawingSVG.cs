@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
             
             return iHitResult;
         }
-        public override void MoveHandle(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
             m_BoundingBox.MoveHandle(point, handleNumber, new Size(m_iOriginalWidth, m_iOriginalHeight), true);
         }

@@ -324,7 +324,7 @@ namespace Kinovea.ScreenManager
 				}
             }
 		}
-		public override void MoveHandle(Point point, int handleNumber)
+		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
 			// We come here when moving the target or moving along the trajectory,
 			// and in interactive mode (change current frame).

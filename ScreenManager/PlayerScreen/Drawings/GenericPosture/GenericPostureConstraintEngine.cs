@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -28,7 +29,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public static void MoveHandle(GenericPosture posture, int handle, Point point)
+        public static void MoveHandle(GenericPosture posture, int handle, Point point, Keys modifiers)
         {
             try
             {
@@ -37,7 +38,7 @@ namespace Kinovea.ScreenManager
                 switch(posture.Handles[handle].Type)
                 {
                     case HandleType.Point:
-                        MovePointHandle(posture, handle, point);
+                        MovePointHandle(posture, handle, point, modifiers);
                         break;
                     case HandleType.Segment:
                         MoveSegmentHandle(posture, handle, point);
@@ -53,7 +54,7 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat(e.ToString());
             }
         }
-        private static void MovePointHandle(GenericPosture posture, int handle, Point point)
+        private static void MovePointHandle(GenericPosture posture, int handle, Point point, Keys modifiers)
         {
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
@@ -80,7 +81,7 @@ namespace Kinovea.ScreenManager
                         MovePointHandleAlongHorizontal(posture, handle, point);
                         break;
                     case ConstraintType.DistanceToPoint:
-                        MovePointHandleAtDistance(posture, handle, point, constraint as GenericPostureConstraintDistanceToPoint);
+                        MovePointHandleAtDistance(posture, handle, point, constraint as GenericPostureConstraintDistanceToPoint, modifiers);
                         break;
                 }
             }
@@ -221,7 +222,7 @@ namespace Kinovea.ScreenManager
             Vector v = new Vector(0, moved.Y);
             TranslateSegmentHandle(posture, handle, v);
         }
-        private static void MovePointHandleAtDistance(GenericPosture posture, int handle, Point point, GenericPostureConstraintDistanceToPoint constraint)
+        private static void MovePointHandleAtDistance(GenericPosture posture, int handle, Point point, GenericPostureConstraintDistanceToPoint constraint, Keys modifiers)
         {
             if(constraint == null)
             {
@@ -232,8 +233,12 @@ namespace Kinovea.ScreenManager
             PointF parent = posture.Points[constraint.RefPoint];
             PointF child = posture.Points[posture.Handles[handle].Reference];
             float distance = GeometryHelper.GetDistance(parent, child);
-
-            posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtDistance(parent, point, distance);
+            PointF temp = GeometryHelper.GetPointAtDistance(parent, point, distance);
+            
+            if((modifiers & Keys.Shift) == Keys.Shift)
+                posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtConstraintAngle(parent, temp);
+            else
+                posture.Points[posture.Handles[handle].Reference] = temp;
         }
         private static void TranslateSegmentHandle(GenericPosture posture, int handle, Vector vector)
         {

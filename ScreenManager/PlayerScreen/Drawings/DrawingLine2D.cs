@@ -165,16 +165,39 @@ namespace Kinovea.ScreenManager
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
-        public override void MoveHandle(Point point, int handleNumber)
+        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        {
+            int iHitResult = -1;
+            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            if (fOpacityFactor > 0)
+            {
+            	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
+            		iHitResult = 3;
+            	else if (m_StartPoint.Box(6).Contains(_point))
+                    iHitResult = 1;
+            	else if (m_EndPoint.Box(6).Contains(_point))
+                    iHitResult = 2;
+                else if (IsPointInObject(_point))
+                    iHitResult = 0;
+            }
+            return iHitResult;
+        }
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
             switch(handleNumber)
             {
             	case 1:
-            		m_StartPoint = point;
+                    if((modifiers & Keys.Shift) == Keys.Shift)
+                        m_StartPoint = GeometryHelper.GetPointAtConstraintAngle(m_EndPoint, point);
+                    else
+                        m_StartPoint = point;
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             		break;
             	case 2:
-            		m_EndPoint = point;
+                    if((modifiers & Keys.Shift) == Keys.Shift)
+                        m_EndPoint = GeometryHelper.GetPointAtConstraintAngle(m_StartPoint, point);
+                    else
+                        m_EndPoint = point;
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             		break;
             	case 3:
@@ -192,23 +215,6 @@ namespace Kinovea.ScreenManager
             m_EndPoint.Y += _deltaY;
 
             m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
-        }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
-        {
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0)
-            {
-            	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
-            		iHitResult = 3;
-            	else if (m_StartPoint.Box(6).Contains(_point))
-                    iHitResult = 1;
-            	else if (m_EndPoint.Box(6).Contains(_point))
-                    iHitResult = 2;
-                else if (IsPointInObject(_point))
-                    iHitResult = 0;
-            }
-            return iHitResult;
         }
         #endregion
 
@@ -287,9 +293,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point)
+        public void ContinueSetup(Point point, Keys modifiers)
 		{
-			MoveHandle(point, 2);
+			MoveHandle(point, 2, modifiers);
 		}
         #endregion
         
@@ -376,6 +382,7 @@ namespace Kinovea.ScreenManager
         {
         	return new Point((m_StartPoint.X + m_EndPoint.X)/2, (m_StartPoint.Y + m_EndPoint.Y)/2);
         }
+        
         #endregion
     }
 }

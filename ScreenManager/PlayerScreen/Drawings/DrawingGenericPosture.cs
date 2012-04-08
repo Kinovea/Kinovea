@@ -184,16 +184,16 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void MoveHandle(Point _point, int _iHandleNumber)
+        public override void MoveHandle(Point point, int handle, Keys modifiers)
         {
-            int index = _iHandleNumber - 1;
-            GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, index, _point);
+            int index = handle - 1;
+            GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, index, point, modifiers);
             UpdateAngles();
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers)
         {
             for(int i = 0;i<m_GenericPosture.Points.Count;i++)
-                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(_deltaX, _deltaY);
+                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(deltaX, deltaY);
             
             UpdateAngles();
         }

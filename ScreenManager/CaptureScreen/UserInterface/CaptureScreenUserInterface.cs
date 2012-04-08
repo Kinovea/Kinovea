@@ -1198,7 +1198,7 @@ namespace Kinovea.ScreenManager
 					// Currently setting the second point of a Drawing.
 					IInitializable initializableDrawing = m_FrameServer.Metadata[0].Drawings[0] as IInitializable;
 					if(initializableDrawing != null)
-						initializableDrawing.ContinueSetup(m_DescaledMouse);
+						initializableDrawing.ContinueSetup(m_DescaledMouse, ModifierKeys);
 				}
 				else
 				{

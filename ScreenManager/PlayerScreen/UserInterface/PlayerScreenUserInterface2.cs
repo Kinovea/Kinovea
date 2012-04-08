@@ -1024,7 +1024,8 @@ namespace Kinovea.ScreenManager
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
-			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Angle, ToolManager.AlignmentAngle}, 1, drawingTool_Click);
+			//AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Angle}, 0, drawingTool_Click);
+			AddToolButton(ToolManager.Angle, drawingTool_Click);
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Spotlight, drawingTool_Click);
@@ -3018,14 +3019,14 @@ namespace Kinovea.ScreenManager
 				    if(m_ActiveTool == ToolManager.Spotlight)
     			    {
     			        IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
-    			        initializableDrawing.ContinueSetup(m_DescaledMouse);
+    			        initializableDrawing.ContinueSetup(m_DescaledMouse, ModifierKeys);
     			    }
 					else if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0 && !m_bIsCurrentlyPlaying)
 					{
 						// Currently setting the second point of a Drawing.
 						IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IInitializable;
 						if(initializableDrawing != null)
-							initializableDrawing.ContinueSetup(m_DescaledMouse);
+							initializableDrawing.ContinueSetup(m_DescaledMouse, ModifierKeys);
 					}
 				}
 				else

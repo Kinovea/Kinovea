@@ -26,8 +26,8 @@ namespace Kinovea.ScreenManager
 {
     public static class GeometryHelper
     {
-        public const double RadiansToDegrees = 180 / Math.PI;
-        public const double DegreesToRadians = Math.PI / 180;
+        public const float RadiansToDegrees = (float)(180 / Math.PI);
+        public const float DegreesToRadians = (float)(Math.PI / 180);
         
         /// <summary>
         /// Get the point on segment [AB] that is the closest from point C.
@@ -95,6 +95,39 @@ namespace Kinovea.ScreenManager
             float dx = (float)(v.X * Math.Cos(radians) - v.Y * Math.Sin(radians));
             float dy = (float)(v.X * Math.Sin(radians) + v.Y * Math.Cos(radians));
             return new PointF(a.X + dx, a.Y + dy);
+        }
+        /// <summary>
+        /// Computes the new position of the handle with a constraint on allowed angles.
+        /// </summary>
+        public static PointF GetPointAtConstraintAngle(PointF pivot, PointF point)
+        {
+            // Computes the delta angle between the current point and the closest 45° step.
+            // Pivot the current angle by this delta angle.
+            
+            PointF zero = new PointF(pivot.X + 100, pivot.Y);
+            
+            float angle = GetAngle(pivot, zero, point);
+            if(angle < 0)
+                angle += (float)(2*Math.PI);
+            
+            float degrees = angle * RadiansToDegrees;
+            
+            float step = 45;
+            int section = (int)(degrees / step);
+            if(degrees % step > step / 2)
+                section++;
+            
+            float deltaAngle = (section * step) - degrees;
+            
+            return Pivot(pivot, point, deltaAngle * DegreesToRadians);
+        }
+        /// <summary>
+        /// Computes the new position of the handle with a constraint on allowed angles.
+        /// </summary>
+        public static Point GetPointAtConstraintAngle(Point pivot, Point point)
+        {
+            PointF result = GetPointAtConstraintAngle(new PointF(pivot.X, pivot.Y), new PointF(point.X, point.Y));
+            return result.ToPoint();
         }
     }
 }

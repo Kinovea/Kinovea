@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override void MoveHandle(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
             // User is dragging the outline of the circle, figure out the new radius at this point.
             int shiftX = Math.Abs(point.X - m_Center.X);
@@ -196,9 +196,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IInitializable implementation
-        public void ContinueSetup(Point point)
+        public void ContinueSetup(Point point, Keys modifiers)
 		{
-			MoveHandle(point, 1);
+			MoveHandle(point, 1, modifiers);
 		}
         #endregion
         
