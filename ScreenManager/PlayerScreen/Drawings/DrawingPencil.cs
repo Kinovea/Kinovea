@@ -209,20 +209,37 @@ namespace Kinovea.ScreenManager
         #region IInitializable implementation
         public void ContinueSetup(Point point, Keys modifiers)
 		{
-			AddPoint(point);
+			AddPoint(point, modifiers);
 		}
         #endregion
         
-        public void AddPoint(Point _coordinates)
-        {
-            m_PointList.Add(_coordinates);
-        }
-
         #region Lower level helpers
         private void BindStyle()
         {
             m_Style.Bind(m_StyleHelper, "Color", "color");
             m_Style.Bind(m_StyleHelper, "LineSize", "pen size");
+        }
+        private void AddPoint(Point _coordinates, Keys modifiers)
+        {
+            Point newPoint = Point.Empty;
+            int pointsUsedToComputeDirection = Math.Min(10, m_PointList.Count);
+            
+            if((modifiers & Keys.Shift) == Keys.Shift)
+            {
+                // Checks whether the mouse motion is more horizontal or vertical, and only keep this component of the motion.
+                int dx = Math.Abs(_coordinates.X - m_PointList[m_PointList.Count - pointsUsedToComputeDirection].X);
+                int dy = Math.Abs(_coordinates.Y - m_PointList[m_PointList.Count - pointsUsedToComputeDirection].Y);
+                if(dx > dy)
+                    newPoint = new Point(_coordinates.X, m_PointList[m_PointList.Count - 1].Y);
+                else
+                    newPoint = new Point(m_PointList[m_PointList.Count - 1].X, _coordinates.Y);
+            }
+            else
+            {
+                newPoint = _coordinates;
+            }
+            
+            m_PointList.Add(newPoint);
         }
         private bool IsPointInObject(Point _point)
         {
