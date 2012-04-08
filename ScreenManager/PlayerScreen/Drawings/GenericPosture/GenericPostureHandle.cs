@@ -29,7 +29,8 @@ namespace Kinovea.ScreenManager
     public class GenericPostureHandle
     {
         public HandleType Type { get; private set;}
-        public int RefPoint { get; private set;}
+        public int Reference { get; private set;}
+        public PointF GrabPoint { get; set;}
         public GenericPostureAbstractConstraint Constraint { get; private set;}
         public List<GenericPostureAbstractImpact> Impacts { get; private set;}
         
@@ -58,7 +59,7 @@ namespace Kinovea.ScreenManager
                 Type = (HandleType) Enum.Parse(typeof(HandleType), r.ReadContentAsString());
             
             if(r.MoveToAttribute("reference"))
-                RefPoint = r.ReadContentAsInt();
+                Reference = r.ReadContentAsInt();
             
             r.ReadStartElement();
             
@@ -105,6 +106,12 @@ namespace Kinovea.ScreenManager
                 case ConstraintType.LineSlide:
                     Constraint = new GenericPostureConstraintLineSlide(r);
                     break;
+                case ConstraintType.VerticalSlide:
+                    Constraint = new GenericPostureConstraintVerticalSlide();
+                    break;
+                case ConstraintType.HorizontalSlide:
+                    Constraint = new GenericPostureConstraintHorizontalSlide();
+                    break;
                 case ConstraintType.DistanceToPoint:
                     Constraint = new GenericPostureConstraintDistanceToPoint(r);
                     break;
@@ -135,11 +142,20 @@ namespace Kinovea.ScreenManager
                 case ImpactType.None:
                     impact = null;
                     break;
-                case ImpactType.Align:
-                    impact = new GenericPostureImpactAlign(r);
+                case ImpactType.LineAlign:
+                    impact = new GenericPostureImpactLineAlign(r);
+                    break;
+                case ImpactType.VerticalAlign:
+                    impact = new GenericPostureImpactVerticalAlign(r);
+                    break;
+                case ImpactType.HorizontalAlign:
+                    impact = new GenericPostureImpactHorizontalAlign(r);
                     break;
                 case ImpactType.Pivot:
                     impact = new GenericPostureImpactPivot(r);
+                    break;
+                case ImpactType.HorizontalSymmetry:
+                    impact = new GenericPostureImpactHorizontalSymmetry(r);
                     break;
                 default:
                     string outerXml = r.ReadOuterXml();

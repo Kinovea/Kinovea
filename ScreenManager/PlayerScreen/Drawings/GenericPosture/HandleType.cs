@@ -26,6 +26,7 @@ namespace Kinovea.ScreenManager
     public enum HandleType
     {
         Point,
-        Segment
+        Segment,
+        Ellipse
     }
 }

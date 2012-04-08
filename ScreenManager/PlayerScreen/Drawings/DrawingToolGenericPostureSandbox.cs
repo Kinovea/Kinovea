@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override Bitmap Icon
 		{
-			get { return Properties.Drawings.generic_posture; }
+			get { return icon; }
 		}
     	public override bool Attached
     	{
@@ -70,6 +70,7 @@ namespace Kinovea.ScreenManager
     	private DrawingStyle m_StylePreset;
     	private string filename;
     	private string displayName = "Generic Posture";
+    	private Bitmap icon = Properties.Drawings.generic_posture;
     	#endregion
 		
 		#region Constructor
@@ -83,11 +84,10 @@ namespace Kinovea.ScreenManager
 		#region Public Methods
 		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
 		{
-		    //string tool = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\GenericPosture\Tools\postures\AlignmentAngle.xml";
 		    if(string.IsNullOrEmpty(filename) || !File.Exists(filename))
 		        return null;
 		    
-		    GenericPosture posture = new GenericPosture(filename);
+		    GenericPosture posture = new GenericPosture(filename, false);
 		    return new DrawingGenericPosture(_Origin, posture, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
 		}
 		public override Cursor GetCursor(double _fStretchFactor)
@@ -97,9 +97,18 @@ namespace Kinovea.ScreenManager
 		public void SetFile(string filename)
 		{
 		    this.filename = filename;
-		    this.displayName = Path.GetFileNameWithoutExtension(filename);
+		    displayName = Path.GetFileNameWithoutExtension(filename);
 		    
-		    // Extract icon.
+		    // Extract icon and name.
+		    GenericPosture posture = new GenericPosture(filename, true);
+		    if(posture == null)
+		        return;
+		    
+		    if(!string.IsNullOrEmpty(posture.Name))
+		       displayName = posture.Name;
+		    
+		    if(posture.Icon != null && posture.Icon.Width == 16 && posture.Icon.Height == 16)
+		      icon = posture.Icon;
 		}
 		#endregion
     }

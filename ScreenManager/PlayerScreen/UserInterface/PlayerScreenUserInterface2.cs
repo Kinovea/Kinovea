@@ -1021,7 +1021,7 @@ namespace Kinovea.ScreenManager
         	AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
 			AddToolButtonPosture(drawingTool_Click);
-			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle, ToolManager.Posture}, 2, drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Angle, ToolManager.AlignmentAngle}, 1, drawingTool_Click);
@@ -1108,8 +1108,6 @@ namespace Kinovea.ScreenManager
                 tool.SetFile(f);
                 tools.Add(tool);
             }
-            
-            tools.Reverse();
             
             if(tools.Count > 0)
                 AddToolButtonWithMenu(tools.ToArray(), 0, drawingTool_Click);

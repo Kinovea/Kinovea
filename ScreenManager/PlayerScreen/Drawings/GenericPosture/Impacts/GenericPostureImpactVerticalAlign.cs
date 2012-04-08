@@ -24,23 +24,18 @@ using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureImpactAlign : GenericPostureAbstractImpact
+    public class GenericPostureImpactVerticalAlign : GenericPostureAbstractImpact
     {
-        public int PointToAlign { get; private set;}
-        public int AlignWith { get; private set;}
+        public int PointRef { get; private set;}
         
-        public GenericPostureImpactAlign(XmlReader r)
+        public GenericPostureImpactVerticalAlign(XmlReader r)
         {
-            Type = ImpactType.Align;
+            Type = ImpactType.VerticalAlign;
             
-            // <Align pointToAlign="1" alignWith="0"/>
             bool isEmpty = r.IsEmptyElement;
             
-            if(r.MoveToAttribute("pointToAlign"))
-                PointToAlign = r.ReadContentAsInt();
-            
-            if(r.MoveToAttribute("alignWith"))
-                AlignWith = r.ReadContentAsInt();
+            if(r.MoveToAttribute("point"))
+                PointRef = r.ReadContentAsInt();
             
             r.ReadStartElement();
             
@@ -49,4 +44,5 @@ namespace Kinovea.ScreenManager
         }
     }
 }
+
 

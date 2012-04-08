@@ -20,16 +20,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ImpactType
+    public class GenericPostureConstraintHorizontalSlide : GenericPostureAbstractConstraint
     {
-        None,
-        LineAlign,
-        VerticalAlign,
-        HorizontalAlign,
-        Pivot,
-        HorizontalSymmetry
+        public GenericPostureConstraintHorizontalSlide()
+        {
+            Type = ConstraintType.HorizontalSlide;
+        }
     }
 }
+
+

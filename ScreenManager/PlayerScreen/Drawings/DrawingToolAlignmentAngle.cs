@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override Bitmap Icon
 		{
-			get { return Properties.Drawings.alignmentangle11; }
+			get { return Properties.Drawings.alignmentangle2; }
 		}
     	public override bool Attached
     	{

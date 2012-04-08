@@ -17,11 +17,11 @@
   </Angles-->
   <Handles>
     <Handle type="Point" reference="0">
-      <Impact type="Align">
-        <Align pointToAlign="6" alignWith="4"/>
+      <Impact type="LineAlign">
+        <Align pointToAlign="6" point1="0" point2="4"/>
       </Impact>
-      <Impact type="Align">
-        <Align pointToAlign="5" alignWith="4"/>
+      <Impact type="LineAlign">
+        <Align pointToAlign="5" point1="0" point2="4"/>
       </Impact>
     </Handle>
     
@@ -30,11 +30,11 @@
     <Handle type="Point" reference="3"/>
     
     <Handle type="Point" reference="4">
-      <Impact type="Align">
-        <Align pointToAlign="6" alignWith="0"/>
+      <Impact type="LineAlign">
+        <Align pointToAlign="6" point1="4" point2="0"/>
       </Impact>
-      <Impact type="Align">
-        <Align pointToAlign="5" alignWith="0"/>
+      <Impact type="LineAlign">
+        <Align pointToAlign="5" point1="4" point2="0"/>
       </Impact>
     </Handle>
     <Handle type="Point" reference="5">

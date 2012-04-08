@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Posture</Name>
+  <PointCount>9</PointCount>
+  <Segments>
+    <Segment point1="0" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="4" name="" style="Dash" width="2"/>
+    <Segment point1="2" point2="5" name="" style="Solid" width="2"/>
+    <Segment point1="7" point2="8" name="" style="Solid" width="2"/>
+  </Segments>
+  <Ellipses>
+    <Ellipse center="6" radius="10" name="" style="Solid" width="2"/>
+  </Ellipses>
+  <Handles>
+    <Handle type="Point" reference="0">
+      <Constraint type="VerticalSlide"/>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="1"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="2"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="1">
+      <Constraint type="VerticalSlide"/>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="0"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="2"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="2">
+      <Constraint type="VerticalSlide"/>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="0"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="1"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="3">
+      <Constraint type="VerticalSlide"/>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="4"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="5"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="4">
+      <Constraint type="VerticalSlide"/>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="3"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="5"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="5">
+      <Constraint type="VerticalSlide"/>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="3"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <VerticalAlign point="4"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="6">
+      <Constraint type="LineSlide">
+        <LineSlide point1="1" point2="4" position="OnSegment"/>
+      </Constraint>
+    </Handle>
+    <Handle type="Point" reference="7"/>
+    <Handle type="Point" reference="8"/>
+    <Handle type="Segment" reference="0">
+      <Constraint type="HorizontalSlide"/>
+      <Impact type="HorizontalSymmetry">
+        <HorizontalSymmetry impacting="0" impacted="2" axis="1"/>
+      </Impact>
+    </Handle>
+    <Handle type="Segment" reference="2">
+      <Constraint type="HorizontalSlide"/>
+      <Impact type="HorizontalSymmetry">
+        <HorizontalSymmetry impacting="2" impacted="0" axis="1"/>
+      </Impact>
+    </Handle>
+    <Handle type="Segment" reference="3"/>
+    <Handle type="Ellipse" reference="0"/>
+  </Handles>
+  <HitZone>
+    <Polygon points="0;2;5;3"/>
+  </HitZone>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>130;100</Point>
+    <Point>160;100</Point>
+    <Point>100;220</Point>
+    <Point>130;220</Point>
+    <Point>160;220</Point>
+    <Point>130;120</Point> <!-- head center -->
+    <Point>110;140</Point>
+    <Point>150;140</Point>
+  </InitialConfiguration>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADgSURBVDhPY/j//z8DMl4dOpEBiuWAdAgQewCxEEwc
+    XT1cM5JGkAGNQPwHiP9D8Ssg7QdSQ4wB4VBNr4F0BRD7AvEZIP4ExCrIFoEMQ3fBJSRbq4BsGN8fyH6P
+    5Co2mGvwGQDyO8wAOyD7LpLh4HAi5IK9QEUKQCwCxMuA+B8pBjyEOhcWkL+B/KWkGGAOVNwCxJ+hmkCx
+    AnI2LFYIekEXObSBbBifZANggThwBsCSNdEuqAP6dyYQS0PDAJnPCZWbAAsfbOkAZiM8lEGK0AIUzkcx
+    AD2TEMvHyF3EaoSpAwDNulLVvkId6wAAAABJRU5ErkJggg==
+  </Icon>
+</KinoveaPostureTool>

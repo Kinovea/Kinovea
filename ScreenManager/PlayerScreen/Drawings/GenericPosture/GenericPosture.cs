@@ -22,6 +22,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Xml;
 
 using Kinovea.Services;
@@ -37,10 +38,12 @@ namespace Kinovea.ScreenManager
         #region Properties
         public List<PointF> Points { get; private set; }
         public List<GenericPostureSegment> Segments { get; private set;}
+        public List<GenericPostureEllipse> Ellipses { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public string Name { get; private set;}
+        public Bitmap Icon { get; private set;}
         #endregion
         
         #region Members
@@ -48,10 +51,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public GenericPosture(string descriptionFile)
+        public GenericPosture(string descriptionFile, bool info)
         {
             Points = new List<PointF>();
             Segments = new List<GenericPostureSegment>();
+            Ellipses = new List<GenericPostureEllipse>();
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
             HitZones = new List<GenericPostureAbstractHitZone>();
@@ -63,13 +67,17 @@ namespace Kinovea.ScreenManager
             settings.CloseInput = true;
 
             XmlReader reader = XmlReader.Create(descriptionFile, settings);
-            ReadXml(reader);
+            if(info)
+                ReadInfoXml(reader);
+            else
+                ReadXml(reader);
+            
             reader.Close();
         }
         #endregion
         
         #region Serialization - Reading
-        private void ReadXml(XmlReader r)
+        private void ReadInfoXml(XmlReader r)
         {
             try
             {
@@ -88,11 +96,51 @@ namespace Kinovea.ScreenManager
                         case "Name":
                             Name = r.ReadElementContentAsString();
                             break;
+                        case "Icon":
+                            ParseIcon(r);
+                            break;
+                        default:
+    						r.ReadOuterXml();
+    						break;
+                    }
+                }
+                
+                r.ReadEndElement();
+            }
+            catch(Exception e)
+            {
+                log.ErrorFormat("An error occurred during the parsing of a custom tool.");
+                log.ErrorFormat(e.ToString());
+            }
+        }
+        private void ReadXml(XmlReader r)
+        {
+            try
+            {
+                r.MoveToContent();
+                
+                if(!(r.Name == "KinoveaPostureTool"))
+            	    return;
+                
+            	r.ReadStartElement();
+            	r.ReadElementContentAsString("FormatVersion", "");
+            	
+            	while(r.NodeType == XmlNodeType.Element)
+    			{
+                    switch(r.Name)
+    				{
+                        case "Name":
+                        case "Icon":
+                             r.ReadOuterXml();
+                            break;
                         case "PointCount":
                             ParsePointCount(r);
     						break;
                         case "Segments":
     						ParseSegments(r);
+    						break;
+    					case "Ellipses":
+    						ParseEllipses(r);
     						break;
     					case "Angles":
     						ParseAngles(r);
@@ -121,6 +169,12 @@ namespace Kinovea.ScreenManager
                 log.ErrorFormat(e.ToString());
             }
         }
+        private void ParseIcon(XmlReader r)
+        {
+            string base64 = r.ReadElementContentAsString();
+            byte[] bytes = Convert.FromBase64String(base64);
+            Icon = (Bitmap)Image.FromStream(new MemoryStream(bytes));
+        }
         private void ParsePointCount(XmlReader r)
         {
             int pointCount = r.ReadElementContentAsInt();
@@ -136,6 +190,25 @@ namespace Kinovea.ScreenManager
                 if(r.Name == "Segment")
                 {
                     Segments.Add(new GenericPostureSegment(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
+        private void ParseEllipses(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                if(r.Name == "Ellipse")
+                {
+                    Ellipses.Add(new GenericPostureEllipse(r));
                 }
                 else
                 {
