@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Bike fit</Name>
+  <PointCount>8</PointCount>
+  <Segments>
+    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
+    <Segment point1="1" point2="4" name="" style="Solid" width="2"/>
+    <Segment point1="4" point2="5" name="" style="Solid" width="2"/>
+    <Segment point1="5" point2="6" name="" style="Solid" width="2"/>
+    <Segment point1="6" point2="7" name="" style="Solid" width="2"/>
+  </Segments>
+  <Angles>
+    <Angle origin="5" leg1="4" leg2="6" relative="true" radius="40"/> <!-- knee -->
+    <Angle origin="4" leg1="1" leg2="5" relative="true" radius="30"/> <!-- hip -->
+    <Angle origin="1" leg1="4" leg2="2" relative="true" radius="30"/> <!-- shoulder-->
+    <Angle origin="2" leg1="1" leg2="3" relative="true" radius="20"/> <!-- elbow -->
+  </Angles>
+  <Handles>
+    <Handle type="Point" reference="0"/>
+    <Handle type="Point" reference="1"/>
+    <Handle type="Point" reference="2"/>
+    <Handle type="Point" reference="3"/>
+    <Handle type="Point" reference="4"/>
+    <Handle type="Point" reference="5"/>
+    <Handle type="Point" reference="6"/>
+    <Handle type="Point" reference="7"/>
+  </Handles>
+  <InitialConfiguration>
+    <Point>200;200</Point> <!-- tip of head -->
+    <Point>160;210</Point> <!-- shoulder -->
+    <Point>180;270</Point> <!-- elbow -->
+    <Point>210;330</Point> <!-- hand -->
+    <Point>50;260</Point> <!-- hip -->
+    <Point>110;300</Point> <!-- knee -->
+    <Point>40;420</Point> <!-- ankle -->
+    <Point>60;450</Point> <!-- tip of foot -->
+  </InitialConfiguration>
+  <Icon>
+    iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+    dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADWSURBVDhPY/j//z8DDDclWzPgw8hqYWy4ZpAAFs0J
+    QDE/mDipBsgBNX4G4v9AbAkyhFQDtkM1LyXHBbFQzW+BtBC615Bdgi0M7IAaPkENiMIWqIQMuAXV/AdI
+    bwHiHCAGhQc8kAkZ0AxU/AFqCCgAYfgBkO2BHpj4olEUqBjkha1A/AtqUCkpBrABFVcD8TeoZhCdRKwB
+    rkCFN5CcvwLIlsYWnRiJA6qoBKr5FZDuIzoakZKzIlogoiRznLGAZAAP0IA0IG4B4mnkuABrriSYF7Ap
+    ICQGAJJoJ2qW4Q5fAAAAAElFTkSuQmCC
+  </Icon>
+</KinoveaPostureTool>
