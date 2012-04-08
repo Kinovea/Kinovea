@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -32,6 +33,6 @@ namespace Kinovea.ScreenManager
         /// Continues to setup the drawing.
         /// </summary>
         /// <param name="point">The current location of the mouse, in original image scale coordinates</param>
-        void ContinueSetup(Point point);
+        void ContinueSetup(Point point, Keys modifiers);
 	}
 }

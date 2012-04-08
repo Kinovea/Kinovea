@@ -188,43 +188,43 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void MoveHandle(Point _point, int _iHandleNumber)
+        public override void MoveHandle(Point point, int handle, Keys modifiers)
         {
-            int index = _iHandleNumber - 1;
+            int index = handle - 1;
             if(index >= 0 && index <= 2)
             {
                 // Top row. Move together.
                 for(int i = 0; i < 3; i++)
-                    m_Points[i] = new Point(m_Points[i].X, Math.Min(_point.Y, m_Points[3].Y - 10));
+                    m_Points[i] = new Point(m_Points[i].X, Math.Min(point.Y, m_Points[3].Y - 10));
             }
             else if(index > 2 && index <= 5)
             {
                 // Bottom row. Move together.
                 for(int i = 3; i < 6; i++)
-                    m_Points[i] = new Point(m_Points[i].X, Math.Max(_point.Y, m_Points[0].Y + 10));
+                    m_Points[i] = new Point(m_Points[i].X, Math.Max(point.Y, m_Points[0].Y + 10));
             }
             else if(index == 6 || index == 7)
             {
                 // Shoulder line end points. Move freely.
-                m_Points[index] = new Point(_point.X, _point.Y);
+                m_Points[index] = new Point(point.X, point.Y);
             }
             else if(index == 8)
             {
                 // Head center dot. Move along Y.
-                m_Points[index] = new Point(m_Points[index].X, _point.Y);
+                m_Points[index] = new Point(m_Points[index].X, point.Y);
             }
             else if(index == 9)
             {
                 // Head circle. Constrain to side lines.
-                int shiftX = Math.Abs(_point.X - m_headCenter.X);
-                int shiftY = Math.Abs(_point.Y - m_headCenter.Y);
+                int shiftX = Math.Abs(point.X - m_headCenter.X);
+                int shiftY = Math.Abs(point.Y - m_headCenter.Y);
                 int radius = (int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY));
                 m_headRadius = Math.Min(Math.Max(radius, 10), m_Points[1].X - m_Points[0].X);
             }
             else if(index == 10)
             {
                 // Left side wall. Force symmetry on right side.
-                int left = Math.Min(_point.X, (m_headCenter.X - 5));
+                int left = Math.Min(point.X, (m_headCenter.X - 5));
                 int right = m_headCenter.X + (m_headCenter.X - left);
                 m_Points[0] = new Point(left, m_Points[0].Y);
                 m_Points[3] = new Point(left, m_Points[3].Y);
@@ -234,7 +234,7 @@ namespace Kinovea.ScreenManager
             else if(index == 11)
             {
                 // Right side wall. Force symmetry on left side.
-                int right = Math.Max(_point.X, (m_headCenter.X + 5));
+                int right = Math.Max(point.X, (m_headCenter.X + 5));
                 int left = m_headCenter.X - (right - m_headCenter.X);
                 m_Points[0] = new Point(left, m_Points[0].Y);
                 m_Points[3] = new Point(left, m_Points[3].Y);
@@ -244,8 +244,8 @@ namespace Kinovea.ScreenManager
             else if(index == 12)
             {
                 // Shoulder line grab. Compute delta back and move freely.
-                int deltaX = _point.X - m_shoulderGrab.X;
-                int deltaY = _point.Y - m_shoulderGrab.Y;
+                int deltaX = point.X - m_shoulderGrab.X;
+                int deltaY = point.Y - m_shoulderGrab.Y;
                 m_Points[6] = new Point(m_Points[6].X + deltaX, m_Points[6].Y + deltaY);
                 m_Points[7] = new Point(m_Points[7].X + deltaX, m_Points[7].Y + deltaY);
                 m_shoulderGrab = m_shoulderGrab.Translate(deltaX, deltaY);

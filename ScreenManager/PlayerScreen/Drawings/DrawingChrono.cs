@@ -233,7 +233,7 @@ namespace Kinovea.ScreenManager
 
             return iHitResult;
         }
-        public override void MoveHandle(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
             // Invisible handler to change font size.
             int wantedHeight = point.Y - m_MainBackground.Rectangle.Location.Y;

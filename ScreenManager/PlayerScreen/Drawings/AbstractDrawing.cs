@@ -86,7 +86,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         /// <param name="point">The new location of the handle, in original image scale coordinates</param>
         /// <param name="handleNumber">The handle identifier</param>
-        public abstract void MoveHandle(Point point, int handleNumber);
+        /// <param name="modifiers">Modifiers key pressed while moving the handle</param>
+        public abstract void MoveHandle(Point point, int handleNumber, Keys modifiers);
         
         /// <summary>
         /// Move the drawing as a whole.

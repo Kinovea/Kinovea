@@ -246,7 +246,7 @@ namespace Kinovea.ScreenManager
                 m_fShift = 0F;
             }
 		}
-		public override void MoveHandle(Point point, int handleNumber)
+		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
 		    m_Corners[handleNumber - 1] = point;
 		

@@ -233,13 +233,13 @@ namespace Kinovea.ScreenManager
                             	case SelectedObjectType.ExtraDrawing:
                             		if (_Metadata.SelectedExtraDrawing >= 0)
                             		{
-                            			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle);		
+                            			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);		
                             		}
                             		break;
                                 case SelectedObjectType.Drawing:
                                     if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
                                     {
-                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveHandle(_MouseLocation, m_iResizingHandle);
+                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);
                                     }
                                     break;
                                 default:

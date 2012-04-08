@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
                 m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
-        public override void MoveHandle(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
             if(handleNumber == 1)
                 m_LabelCoordinates.SetLabel(point);

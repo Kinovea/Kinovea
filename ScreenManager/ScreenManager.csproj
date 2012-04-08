@@ -242,7 +242,6 @@
     <Compile Include="PlayerScreen\Drawings\AutoNumber.cs" />
     <Compile Include="PlayerScreen\Drawings\AutoNumberManager.cs" />
     <Compile Include="PlayerScreen\Drawings\BoundingBox.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingAlignmentAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
@@ -250,7 +249,6 @@
     <Compile Include="PlayerScreen\Drawings\DrawingPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
-    <Compile Include="PlayerScreen\Drawings\DrawingToolAlignmentAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />

@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
 		    if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
 				m_Spotlights[m_iSelected].MouseMove(_deltaX, _deltaY);
 		}
-		public override void MoveHandle(Point point, int handleNumber)
+		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
 		    if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
 				m_Spotlights[m_iSelected].MoveHandleTo(point);
@@ -169,9 +169,9 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region IInitializable implementation
-        public void ContinueSetup(Point point)
+        public void ContinueSetup(Point point, Keys modifiers)
 		{
-			MoveHandle(point, -1);
+			MoveHandle(point, -1, modifiers);
 		}
         #endregion
         

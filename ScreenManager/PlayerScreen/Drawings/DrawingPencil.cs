@@ -103,7 +103,7 @@ namespace Kinovea.ScreenManager
                 _canvas.DrawCurve(penLine, points, 0.5f);
             }
         }
-        public override void MoveHandle(Point point, int handleNumber)
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
@@ -207,7 +207,7 @@ namespace Kinovea.ScreenManager
         }
 
         #region IInitializable implementation
-        public void ContinueSetup(Point point)
+        public void ContinueSetup(Point point, Keys modifiers)
 		{
 			AddPoint(point);
 		}
