@@ -184,20 +184,31 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
+            int constraintAngleSubdivisions = 8; // (Constraint by 45° steps).
             switch(handleNumber)
             {
             	case 1:
                     if((modifiers & Keys.Shift) == Keys.Shift)
-                        m_StartPoint = GeometryHelper.GetPointAtConstraintAngle(m_EndPoint, point);
+                    {
+                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(m_EndPoint, point, constraintAngleSubdivisions);
+                        m_StartPoint = new Point((int)result.X, (int)result.Y);
+                    }
                     else
+                    {
                         m_StartPoint = point;
+                    }
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             		break;
             	case 2:
                     if((modifiers & Keys.Shift) == Keys.Shift)
-                        m_EndPoint = GeometryHelper.GetPointAtConstraintAngle(m_StartPoint, point);
+                    {
+                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(m_StartPoint, point, constraintAngleSubdivisions);
+                        m_EndPoint = new Point((int)result.X, (int)result.Y);
+                    }
                     else
+                    {
                         m_EndPoint = point;
+                    }
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
             		break;
             	case 3:

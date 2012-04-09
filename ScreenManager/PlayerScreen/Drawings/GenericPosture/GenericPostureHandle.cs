@@ -115,6 +115,9 @@ namespace Kinovea.ScreenManager
                 case ConstraintType.DistanceToPoint:
                     Constraint = new GenericPostureConstraintDistanceToPoint(r);
                     break;
+                case ConstraintType.RotationSteps:
+                    Constraint = new GenericPostureConstraintRotationSteps(r);
+                    break;
                 default:
                     string outerXml = r.ReadOuterXml();
                     log.DebugFormat("Unparsed content: {0}", outerXml);
@@ -153,6 +156,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case ImpactType.Pivot:
                     impact = new GenericPostureImpactPivot(r);
+                    break;
+                case ImpactType.KeepAngle:
+                    impact = new GenericPostureImpactKeepAngle(r);
                     break;
                 case ImpactType.HorizontalSymmetry:
                     impact = new GenericPostureImpactHorizontalSymmetry(r);

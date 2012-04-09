@@ -30,6 +30,7 @@ namespace Kinovea.ScreenManager
         VerticalAlign,
         HorizontalAlign,
         Pivot,
+        KeepAngle,          // (similar to pivot but more explicitly defined)
         HorizontalSymmetry
     }
 }

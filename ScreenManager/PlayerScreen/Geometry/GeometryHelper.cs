@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
         public const float DegreesToRadians = (float)(Math.PI / 180);
         
         /// <summary>
-        /// Get the point on segment [AB] that is the closest from point C.
+        /// Gets the point on segment [AB] that is the closest from point C.
         /// </summary>
         public static PointF GetClosestPoint(PointF a, PointF b, PointF c, PointLinePosition allowedPosition, int _margin)
         {
@@ -63,6 +63,10 @@ namespace Kinovea.ScreenManager
             Vector v = ab * t;
             return a + v;
         }
+        
+        /// <summary>
+        /// Gets the point on the (AB) line that is a the specified distance (in pixels) starting from A.
+        /// </summary>
         public static PointF GetPointAtDistance(PointF a, PointF b, float distance)
         {
             Vector ab = new Vector(a,b);
@@ -70,13 +74,17 @@ namespace Kinovea.ScreenManager
             Vector v = ab * d;
             return a + v;
         }
+        
+        /// <summary>
+        /// Gets the distance between points A and B.
+        /// </summary>
         public static float GetDistance(PointF a, PointF b)
         {
             return new Vector(a,b).Norm();
         }
         
         /// <summary>
-        /// Return the signed angle (in radians) between vectors ab and ac.
+        /// Returns the signed angle (in radians) between vectors ab and ac.
         /// </summary>
         public static float GetAngle(PointF a, PointF b, PointF c)
         {
@@ -96,23 +104,22 @@ namespace Kinovea.ScreenManager
             float dy = (float)(v.X * Math.Sin(radians) + v.Y * Math.Cos(radians));
             return new PointF(a.X + dx, a.Y + dy);
         }
+        
         /// <summary>
-        /// Computes the new position of the handle with a constraint on allowed angles.
+        /// Gets the position of the point by restricting rotation steps allowed relatively to [pivot,leg1] segment.
         /// </summary>
-        public static PointF GetPointAtConstraintAngle(PointF pivot, PointF point)
+        public static PointF GetPointAtClosestRotationStep(PointF pivot, PointF leg1, PointF point, int subdivisions)
         {
-            // Computes the delta angle between the current point and the closest 45° step.
+            // Computes the delta angle between the current point and the closest step.
             // Pivot the current angle by this delta angle.
             
-            PointF zero = new PointF(pivot.X + 100, pivot.Y);
-            
-            float angle = GetAngle(pivot, zero, point);
+            float angle = GetAngle(pivot, leg1, point);
             if(angle < 0)
                 angle += (float)(2*Math.PI);
             
             float degrees = angle * RadiansToDegrees;
             
-            float step = 45;
+            float step = 360 / subdivisions;
             int section = (int)(degrees / step);
             if(degrees % step > step / 2)
                 section++;
@@ -121,13 +128,38 @@ namespace Kinovea.ScreenManager
             
             return Pivot(pivot, point, deltaAngle * DegreesToRadians);
         }
+        
+        
         /// <summary>
-        /// Computes the new position of the handle with a constraint on allowed angles.
+        /// Gets the position of the point by restricting rotation steps allowed. 
+        /// In this version, steps are relative to the trig circle.
         /// </summary>
-        public static Point GetPointAtConstraintAngle(Point pivot, Point point)
+        public static PointF GetPointAtClosestRotationStepCardinal(PointF pivot, PointF point, int subdivisions)
         {
-            PointF result = GetPointAtConstraintAngle(new PointF(pivot.X, pivot.Y), new PointF(point.X, point.Y));
+            PointF zero = new PointF(pivot.X + 100, pivot.Y);
+            return GetPointAtClosestRotationStep(pivot, zero, point, subdivisions);
+        }
+        /*
+        /// <summary>
+        /// Gets the position of the point by restricting rotation steps allowed. 
+        /// In this version, steps are relative to the trig circle.
+        /// For integer coordinates points.
+        /// </summary>
+        public static Point GetPointAtClosestRotationStepCardinal(Point pivot, Point point, int subdivisions)
+        {
+            PointF result = GetPointAtClosestRotationStepCardinal(new PointF(pivot.X, pivot.Y), new PointF(point.X, point.Y), subdivisions);
             return result.ToPoint();
+        }*/
+        
+        /// <summary>
+        /// Returns the point that is at the specified angle relatively to the [origin,leg1] segment, and at the specified distance from origin.
+        /// </summary>
+        public static PointF GetPointAtAngleAndDistance(PointF origin, PointF leg1, float angle, float distance)
+        {
+            // First get a point in the right direction, then get the point in this direction that is at the right distance.
+            PointF direction = Pivot(origin, leg1, angle);
+            PointF result = GetPointAtDistance(origin, direction, distance);
+            return result;
         }
     }
 }

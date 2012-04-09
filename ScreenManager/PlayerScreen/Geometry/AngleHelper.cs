@@ -29,20 +29,22 @@ namespace Kinovea.ScreenManager
         public double Start { get; private set; }
         public double Sweep { get; private set; }
         public Rectangle BoundingBox { get; private set; }
-        public Point TextPosition { get; private set;}
-        public Point Origin { get; private set;}
+        public PointF TextPosition { get; private set;}
+        public PointF Origin { get; private set;}
+        public bool Tenth { get; private set;}
         
         private bool relative;
         private int textDistance;
         private Region hitRegion;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public AngleHelper(bool relative, int textDistance)
+        public AngleHelper(bool relative, int textDistance, bool tenth)
         {
             this.relative = relative;
             this.textDistance = textDistance;
+            this.Tenth = tenth;
         }
-        public void Update(Point o, Point a, Point b, int radius)
+        public void Update(PointF o, PointF a, PointF b, int radius)
         {
             if(o == a || o == b)
                 return;
@@ -52,11 +54,6 @@ namespace Kinovea.ScreenManager
             ComputeBoundingBox(o, a, b, radius);
             ComputeTextPosition(Start, Sweep);
             ComputeHitRegion(BoundingBox, Start, Sweep);
-            
-            /*catch(OverflowException)
-            {
-                log.DebugFormat("Exception while computing angle. o:{0}, a:{1}, b:{2}", o, a, b);
-            }*/
         }
         public bool Hit(Point p)
         {
@@ -65,7 +62,7 @@ namespace Kinovea.ScreenManager
             else
                 return hitRegion.IsVisible(p);
         }
-        private double GetAbsoluteAngle(Point o, Point p)
+        private double GetAbsoluteAngle(PointF o, PointF p)
         {
             double radians = Math.Atan((double)(p.Y - o.Y) / (double)(p.X - o.X));
             double angle = radians * GeometryHelper.RadiansToDegrees;
@@ -84,7 +81,7 @@ namespace Kinovea.ScreenManager
             
             return angle % 360;
         }
-        private void ComputeAngles(Point o, Point a, Point b)
+        private void ComputeAngles(PointF o, PointF a, PointF b)
         {
             double oa = GetAbsoluteAngle(o, a);
             double ob = GetAbsoluteAngle(o, b);
@@ -105,7 +102,7 @@ namespace Kinovea.ScreenManager
             
             Sweep %= 360;
         }
-        private void ComputeBoundingBox(Point o, Point a, Point b, int radius)
+        private void ComputeBoundingBox(PointF o, PointF a, PointF b, int radius)
         {
             float r = radius;
             if(r == 0)
@@ -120,7 +117,7 @@ namespace Kinovea.ScreenManager
         }
         private void ComputeTextPosition(double start, double sweep)
         {
-            double bissect = (Math.PI/180) * (start + sweep/2);
+            double bissect = (start + sweep/2) * GeometryHelper.DegreesToRadians;
             int adjacent = (int)(Math.Cos(bissect) * textDistance);
             int opposed = (int)(Math.Sin(bissect) * textDistance);
             
@@ -131,10 +128,19 @@ namespace Kinovea.ScreenManager
             if (BoundingBox == Rectangle.Empty)
                 return;
             
-            using (GraphicsPath gp = new GraphicsPath())
+            try
             {
-                gp.AddPie(BoundingBox, (float)Start, (float)Sweep);
-                hitRegion = new Region(gp);
+                using (GraphicsPath gp = new GraphicsPath())
+                {
+                    gp.AddPie(BoundingBox, (float)Start, (float)Sweep);
+                    if(hitRegion != null)
+                        hitRegion.Dispose();
+                    hitRegion = new Region(gp);
+                }
+            }
+            catch(Exception)
+            {
+                log.DebugFormat("Error while computing hit region of angle helper.");
             }
         }
     }

@@ -128,7 +128,6 @@ namespace Kinovea.ScreenManager
                 {
                     penEdge.Width = ellipse.Width;
                     penEdge.DashStyle = Convert(ellipse.Style);
-                    //_canvas.DrawLine(penEdge, points[], points[segment.End]);
                     Point center = points[ellipse.Center];
                     int radius = _transformer.Transform(ellipse.Radius);
                     _canvas.DrawEllipse(penEdge, center.Box(radius));
@@ -320,7 +319,7 @@ namespace Kinovea.ScreenManager
         private void InitAngles()
         {
             for(int i=0;i<m_GenericPosture.Angles.Count;i++)
-                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40));
+                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth));
 
             UpdateAngles();
         }
@@ -332,7 +331,7 @@ namespace Kinovea.ScreenManager
                 PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
                 PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
                 int radius = m_GenericPosture.Angles[i].Radius;
-                m_Angles[i].Update(origin.ToPoint(), leg1.ToPoint(), leg2.ToPoint(), radius);
+                m_Angles[i].Update(origin, leg1, leg2, radius);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
@@ -355,10 +354,16 @@ namespace Kinovea.ScreenManager
             // This version is already more generic.
             //-------------------------------------------------
             
-            int angleValue = (int)Math.Floor(angle.Sweep);
-            if(angleValue < 0)
-                angleValue = -angleValue;
-            string label = angleValue.ToString() + "°";
+            //int angleValue = (int)Math.Floor(angle.Sweep);
+            double value = angle.Sweep;
+            if(value < 0)
+                value = -value;
+            
+            string label = "";
+            if(angle.Tenth)
+                label = String.Format("{0:0.0}°", value);
+            else
+                label = String.Format("{0}°", (int)Math.Round(value));
             
             SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_opacity * 255));
             Font tempFont = m_StyleHelper.GetFont((float)_transformer.Scale);
@@ -433,9 +438,9 @@ namespace Kinovea.ScreenManager
                     GenericPostureHitZonePolygon hitPolygon = _hitZone as GenericPostureHitZonePolygon;
                     using (GraphicsPath gp = new GraphicsPath())
                     {
-                        List<Point> points = new List<Point>();
+                        List<PointF> points = new List<PointF>();
                         foreach(int pointRef in hitPolygon.Points)
-                            points.Add(m_GenericPosture.Points[pointRef].ToPoint());
+                            points.Add(m_GenericPosture.Points[pointRef]);
     
                         gp.AddPolygon(points.ToArray());
                         using (Region region = new Region(gp))
