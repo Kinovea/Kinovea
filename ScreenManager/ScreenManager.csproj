@@ -260,6 +260,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintDistanceToPoint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintHorizontalSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintLineSlide.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintRotationSteps.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintVerticalSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\DrawingGenericPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\DrawingToolGenericPosture.cs" />
@@ -277,6 +278,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureAbstractImpact.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactHorizontalSymmetry.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactHorizontalAlign.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactKeepAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactLineAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactPivot.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactVerticalAlign.cs" />

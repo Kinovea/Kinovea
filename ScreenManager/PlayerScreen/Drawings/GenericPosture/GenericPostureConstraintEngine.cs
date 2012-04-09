@@ -59,6 +59,7 @@ namespace Kinovea.ScreenManager
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
             PointF old = posture.Points[posture.Handles[handle].Reference];
+            PrepareImpacts(posture, handle);
             
             if(constraint == null)
             {
@@ -82,6 +83,9 @@ namespace Kinovea.ScreenManager
                         break;
                     case ConstraintType.DistanceToPoint:
                         MovePointHandleAtDistance(posture, handle, point, constraint as GenericPostureConstraintDistanceToPoint, modifiers);
+                        break;
+                    case ConstraintType.RotationSteps:
+                        MovePointHandleByRotationSteps(posture, handle, point, constraint as GenericPostureConstraintRotationSteps);
                         break;
                 }
             }
@@ -112,10 +116,14 @@ namespace Kinovea.ScreenManager
                             PivotPoints(posture, handle, radians, impact as GenericPostureImpactPivot);
                         }
                         break;
+                    case ImpactType.KeepAngle:
+                        KeepPointAngle(posture, handle, impact as GenericPostureImpactKeepAngle);
+                        break;
                 } 
             }
             
         }
+        
         private static void MoveSegmentHandle(GenericPosture posture, int handle, Point point)
         {
             // Constraints. (position of the point managed by this handle).
@@ -235,8 +243,10 @@ namespace Kinovea.ScreenManager
             float distance = GeometryHelper.GetDistance(parent, child);
             PointF temp = GeometryHelper.GetPointAtDistance(parent, point, distance);
             
+            int constraintAngleSubdivisions = 8; // (Constraint by 45° steps).
+            
             if((modifiers & Keys.Shift) == Keys.Shift)
-                posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtConstraintAngle(parent, temp);
+                posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtClosestRotationStepCardinal(parent, temp, constraintAngleSubdivisions);
             else
                 posture.Points[posture.Handles[handle].Reference] = temp;
         }
@@ -254,9 +264,44 @@ namespace Kinovea.ScreenManager
             posture.Points[start] = posture.Points[start] + vector;
             posture.Points[end] = posture.Points[end] + vector;
         }
+        private static void MovePointHandleByRotationSteps(GenericPosture posture, int handle, Point point, GenericPostureConstraintRotationSteps constraint)
+        {
+            if(constraint == null)
+                return;
+            
+            PointF parent = posture.Points[constraint.Origin];
+            PointF leg1 = posture.Points[constraint.Leg1];
+            
+            if(parent == leg1 || constraint.Step == 0)
+                return;
+            
+            int constraintAngleSubdivisions = 360/constraint.Step;
+            posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtClosestRotationStep(parent, leg1, point, constraintAngleSubdivisions);
+        }
         #endregion
 
         #region Impacts
+        private static void PrepareImpacts(GenericPosture posture, int handle)
+        {
+            foreach(GenericPostureAbstractImpact impact in posture.Handles[handle].Impacts)
+            {
+                // If there is a KeepAngle impact, we'll later need to know the current angle.
+                if(impact.Type == ImpactType.KeepAngle)
+                {
+                    GenericPostureImpactKeepAngle impactKeepAngle = impact as GenericPostureImpactKeepAngle;
+                    
+                    PointF origin = posture.Points[impactKeepAngle.Origin];
+                    PointF leg1 = posture.Points[impactKeepAngle.Leg1];
+                    PointF leg2 = posture.Points[impactKeepAngle.Leg2];
+                    
+                    if(origin == leg1 || origin == leg2)
+                        continue;
+                    
+                    impactKeepAngle.OldAngle = GeometryHelper.GetAngle(origin, leg1, leg2);
+                    impactKeepAngle.OldDistance = GeometryHelper.GetDistance(origin, leg2);
+                }
+            }
+        }
         private static void AlignPointSegment(GenericPosture posture, int handle, GenericPostureImpactLineAlign impact)
         {
             if(impact == null)
@@ -318,7 +363,21 @@ namespace Kinovea.ScreenManager
             Vector vEnd = new Vector(posture.Points[impacting.End], posture.Points[axis.End]);
             posture.Points[impacted.End] = new PointF(posture.Points[axis.End].X + vEnd.X, posture.Points[impacting.End].Y);
         }
-        
+        private static void KeepPointAngle(GenericPosture posture, int handle, GenericPostureImpactKeepAngle impact)
+        {
+            // The point is moved so that the angle between its leg and the other leg is kept.
+            if(impact == null)
+                return;
+            
+            PointF origin = posture.Points[impact.Origin];
+            PointF leg1 = posture.Points[impact.Leg1];
+            
+            if(origin == leg1)
+                return;
+             
+            PointF result = GeometryHelper.GetPointAtAngleAndDistance(origin, leg1, impact.OldAngle, impact.OldDistance);
+            posture.Points[impact.Leg2] = result;
+        }
         #endregion
 
     }

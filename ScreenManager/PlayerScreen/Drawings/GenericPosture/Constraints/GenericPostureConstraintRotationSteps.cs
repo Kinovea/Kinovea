@@ -20,28 +20,19 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Xml;
-
-using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureAngle
+    public class GenericPostureConstraintRotationSteps : GenericPostureAbstractConstraint
     {
         public int Origin { get; private set;}
         public int Leg1 { get; private set;}
-        public int Leg2 { get; private set;}
-        public bool Relative { get; private set;}
-        public int Radius { get; private set;}
-        public bool Tenth { get; private set;}
+        public int Step { get; private set;}
         
-        public GenericPostureAngle(XmlReader r)
+        public GenericPostureConstraintRotationSteps(XmlReader r)
         {
-            //<Angle origin="1" leg1="2" leg2="3" relative="true" />
-            
-            Relative = true;
+            Type = ConstraintType.RotationSteps;
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -50,26 +41,16 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("leg1"))
                 Leg1 = r.ReadContentAsInt();
-
-            if(r.MoveToAttribute("leg2"))
-                Leg2 = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("relative"))
-                Relative = XmlHelper.ParseBoolean(r.ReadContentAsString());
-
-            if(r.MoveToAttribute("tenth"))
-                Tenth = XmlHelper.ParseBoolean(r.ReadContentAsString());
+            if(r.MoveToAttribute("step"))
+                Step = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("radius"))
-                Radius = r.ReadContentAsInt();
-
             r.ReadStartElement();
             
-            if(isEmpty)
-                return;
-            
-            // Read sub elements.
-            //r.ReadEndElement();
+            //if(!isEmpty)
+            //    r.ReadEndElement();
         }
     }
 }
+
+
