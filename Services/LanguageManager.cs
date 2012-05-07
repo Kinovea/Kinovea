@@ -47,6 +47,10 @@ namespace Kinovea.Services
 		{
 			get { return Languages["en"]; }
 		}
+        public static string Czech
+		{
+			get { return Languages["cs"]; }
+		}
         public static string Danish
 		{
 			get { return Languages["da"]; }
@@ -107,20 +111,26 @@ namespace Kinovea.Services
 		{
 			get { return Languages["sv"]; }
 		}
+        public static string Korean
+		{
+			get { return Languages["ko"]; }
+		}
         #endregion
         
         private static Dictionary<string, string> m_Languages = null;
         
         public static void Initialize()
         {
-            // Alphabetical order by native name.
+            // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             m_Languages = new Dictionary<string, string>();
+            m_Languages.Add("cs", "Čeština");
             m_Languages.Add("da", "Dansk");
             m_Languages.Add("de", "Deutsch");
             m_Languages.Add("el", "Ελληνικά");
             m_Languages.Add("en", "English");
             m_Languages.Add("es", "Español");
             m_Languages.Add("fr", "Français");
+            m_Languages.Add("ko", "한국어");
             m_Languages.Add("it", "Italiano");
             m_Languages.Add("lt", "Lietuvių");
             m_Languages.Add("nl", "Nederlands");
