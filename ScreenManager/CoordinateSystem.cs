@@ -26,7 +26,7 @@ namespace Kinovea.ScreenManager
 	/// <summary>
 	/// Helper class to encapsulate calculations about the coordinate system for drawings,
 	/// to compensate the differences between the original image and the displayed one.
-	/// Note : This is not the coordinate system that the user can adjust for distance calculations.
+	/// Note : This is not the coordinate system that the user can adjust for distance calculations, that one is PlayerScreen/CalibrationHelper.cs.
 	/// 
 	/// Includes : 
 	/// - stretching, image may be stretched or squeezed relative to the original.

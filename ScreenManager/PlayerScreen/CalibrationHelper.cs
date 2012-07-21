@@ -121,18 +121,7 @@ namespace Kinovea.ScreenManager
 		public string GetLengthText(double _pixelLength)
 		{
 			// Return the length in the user unit, with the abbreviation.
-			string lengthText = "";
-			
-			// Use 2 digits precision except for pixels.
-			if(m_CurrentLengthUnit == LengthUnits.Pixels)
-			{
-				lengthText = String.Format("{0:0} {1}", _pixelLength, GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
-			}
-			else
-			{
-				lengthText = String.Format("{0:0.00} {1}", GetLengthInUserUnit(_pixelLength), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
-			}
-			
+			string lengthText = String.Format("{0:0.00} {1}", GetLengthInUserUnit(_pixelLength), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
 			return lengthText;
 		}
 		public string GetLengthText(Point p1, Point p2)
@@ -141,21 +130,9 @@ namespace Kinovea.ScreenManager
 			string lengthText = "";
 			
 			if(p1.X == p2.X && p1.Y == p2.Y)
-			{
 				lengthText = "0" + " " + GetLengthAbbreviationFromUnit(m_CurrentLengthUnit);
-			}
 			else
-			{
-				// Use 2 digits precision except for pixels.
-				if(m_CurrentLengthUnit == LengthUnits.Pixels)
-				{
-					lengthText = String.Format("{0:0} {1}", GetLengthInUserUnit(p1, p2), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
-				}
-				else
-				{
-					lengthText = String.Format("{0:0.00} {1}", GetLengthInUserUnit(p1, p2), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
-				}
-			}
+				lengthText = String.Format("{0:0.00} {1}", GetLengthInUserUnit(p1, p2), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
 			
 			return lengthText;
 		}
@@ -165,25 +142,17 @@ namespace Kinovea.ScreenManager
 			string lengthText = "";
 			if(_bAbbreviation)
 			{
-				if(m_CurrentLengthUnit == LengthUnits.Pixels || !_bPrecise)
-				{
+				if(!_bPrecise)
 					lengthText = String.Format("{0:0} {1}", GetLengthInUserUnit(_fPixelLength), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
-				}
 				else
-				{
 					lengthText = String.Format("{0:0.00} {1}", GetLengthInUserUnit(_fPixelLength), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
-				}
 			}
-			else 
+			else
 			{
-				if(m_CurrentLengthUnit == LengthUnits.Pixels || !_bPrecise)
-				{
+				if(!_bPrecise)
 					lengthText = String.Format("{0:0}", GetLengthInUserUnit(_fPixelLength));
-				}
 				else
-				{
 					lengthText = String.Format("{0:0.00}", GetLengthInUserUnit(_fPixelLength));
-				}
 			}
 			
 			return lengthText;
@@ -196,7 +165,6 @@ namespace Kinovea.ScreenManager
 			if(p1.X != p2.X || p1.Y != p2.Y)
 			{
 				double fPixelLength = PixelDistance(p1, p2);
-				
 				fUnitLength = GetLengthInUserUnit(fPixelLength);
 			}
 			
@@ -221,18 +189,12 @@ namespace Kinovea.ScreenManager
 			
 			string pointText;
 			if(m_CurrentLengthUnit == LengthUnits.Pixels)
-			{
 				pointText = String.Format("{{{0:0};{1:0}}}", fX, fY);
-			}
 			else
-			{
 				pointText = String.Format("{{{0:0.00};{1:0.00}}}", fX, fY);
-			}
 			
 			if(_bAbbreviation)
-			{
 				pointText = pointText + " " + GetLengthAbbreviation();
-			}
 			
 			return pointText;
 		}
@@ -284,31 +246,20 @@ namespace Kinovea.ScreenManager
 					// The user may have configured a preferred speed unit that we can't use because no 
 					// calibration has been done on the video. In this case we use the px/f speed unit,
 					// but we don't change the user's preference.
-					
 					unitToUse = SpeedUnits.PixelsPerFrame;
 				}
 				
-				// Use 2 digits precision except for pixels.
-				if(unitToUse == SpeedUnits.PixelsPerFrame)
-				{
-					speedText = String.Format("{0:0} {1}", GetSpeedInUserUnit(p1, p2, frames, unitToUse), GetSpeedAbbreviationFromUnit(unitToUse));
-				}
-				else
-				{
-					speedText = String.Format("{0:0.00} {1}", GetSpeedInUserUnit(p1, p2, frames, unitToUse), GetSpeedAbbreviationFromUnit(unitToUse));
-				}	
+				speedText = String.Format("{0:0.00} {1}", GetSpeedInUserUnit(p1, p2, frames, unitToUse), GetSpeedAbbreviationFromUnit(unitToUse));
 			}
 
 			return speedText;
 		}
 		public static double PixelDistance(Point p1, Point p2)
 		{
-			// General utility method to return distance between pixels.
 			return Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));
 		}
 		public static double PixelDistance(PointF p1, PointF p2)
 		{
-			// General utility method to return distance between pixels, subpixel accuracy.
 			return Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));
 		}
 		#endregion
@@ -366,7 +317,7 @@ namespace Kinovea.ScreenManager
 			// 1 foot			= 0.3048 m.
 			// 1 yard 			= 0.9144 m.
 			// 1 mile 			= 1 609.344 m.
-			// 1 nautical mile 	= 1 852 m.
+			// 1 nautical mile  = 1 852 m.
 			
 			double fLength2 = 0;
 			
