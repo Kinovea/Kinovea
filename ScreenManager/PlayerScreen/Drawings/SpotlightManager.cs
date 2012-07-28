@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
 	/// Spotlights.
 	/// This is the proxy object dispatching all spotlights requests. (draw, hit testing, etc.)
 	/// </summary>
-	public class SpotlightManager : AbstractMultiDrawing, IInitializable, IKvaSerializable
+	public class SpotlightManager : AbstractMultiDrawing, IInitializable
 	{
 		#region Properties
 		public override object SelectedItem {
@@ -180,54 +180,6 @@ namespace Kinovea.ScreenManager
 		}
         #endregion
         
-        #region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale)
-        {
-            /*_xmlReader.ReadStartElement();
-            
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "Origin":
-				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_Center = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-				        break;
-					case "Radius":
-				        int radius = _xmlReader.ReadElementContentAsInt();
-                        m_iRadius = (int)((double)radius * _scale.X);
-                        break;
-					case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "InfosFading":
-						m_InfosFading.ReadXml(_xmlReader);
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();*/
-        }
-        public void WriteXml(XmlWriter _xmlWriter)
-		{
-            /*_xmlWriter.WriteElementString("Origin", String.Format("{0};{1}", m_Center.X, m_Center.Y));
-            _xmlWriter.WriteElementString("Radius", m_iRadius.ToString());
-            
-            _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
-            _xmlWriter.WriteEndElement();*/
-        }
-        #endregion
-        
 		#region Public methods
 		public override string ToString()
         {
@@ -238,6 +190,15 @@ namespace Kinovea.ScreenManager
 		    // Equivalent to GetNewDrawing() for regular drawing tools.
 			m_Spotlights.Add(new Spotlight(_iPosition, _iAverageTimeStampsPerFrame, _point));
 			m_iSelected = m_Spotlights.Count - 1;
+		}
+		public void WriteXml(XmlWriter w)
+		{
+		    foreach(Spotlight spot in m_Spotlights)
+		    {
+		        w.WriteStartElement("Spotlight");
+		        spot.WriteXml(w);
+		        w.WriteEndElement();
+		    }
 		}
 		#endregion
 	}

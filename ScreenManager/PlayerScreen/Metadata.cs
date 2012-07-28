@@ -679,6 +679,12 @@ namespace Kinovea.ScreenManager
 					case "Chronos":
 						ParseChronos(r);
 						break;
+                    case "Spotlights":
+						ParseSpotlights(r);
+						break;
+                    case "AutoNumbers":
+						ParseAutoNumbers(r);
+						break;
                     default:
 						// We still need to properly skip the unparsed nodes.
 						string unparsed = r.ReadOuterXml();
@@ -717,39 +723,6 @@ namespace Kinovea.ScreenManager
 			}
 			
 			r.ReadEndElement();
-        }
-        private void ParseChronos(XmlReader r)
-        {
-            // TODO: catch empty tag <Chronos/>.
-            
-            r.ReadStartElement();
-            
-            while(r.NodeType == XmlNodeType.Element)
-			{
-                // When we have other Chrono tools (cadence tool), make this dynamic
-                // on a similar model than for attached drawings. (see ParseDrawing())
-                if(r.Name == "Chrono")
-				{
-                    PointF scaling = new PointF(1.0f, 1.0f);
-                    if(!m_ImageSize.IsEmpty && m_InputImageSize.Width != 0 && m_InputImageSize.Height != 0)
-                    {
-                        scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
-                        scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;    
-                    }
-                    
-                    DrawingChrono dc = new DrawingChrono(r, scaling, DoRemapTimestamp);
-                    
-                    if (dc != null)
-                        AddChrono(dc);
-                }
-                else
-                {
-                    string unparsed = r.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-            
-            r.ReadEndElement();
         }
         private void ParseKeyframes(XmlReader r)
         {
@@ -872,13 +845,8 @@ namespace Kinovea.ScreenManager
                         
                         if(ci != null)
                         {
-                            PointF scaling = new PointF(1.0f, 1.0f);
-                            if(!m_ImageSize.IsEmpty && m_InputImageSize.Width != 0 && m_InputImageSize.Height != 0)
-                            {
-                                scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
-                                scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;    
-                            }
-                    
+                            PointF scaling = GetScaling();
+                            
                             // Instanciate the drawing.
                             object[] parameters = new object[]{r, scaling, this};
 	                        drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
@@ -900,6 +868,32 @@ namespace Kinovea.ScreenManager
             
             return drawing;
         }
+        private void ParseChronos(XmlReader r)
+        {
+            // TODO: catch empty tag <Chronos/>.
+            
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+			{
+                // When we have other Chrono tools (cadence tool), make this dynamic
+                // on a similar model than for attached drawings. (see ParseDrawing())
+                if(r.Name == "Chrono")
+				{
+                    DrawingChrono dc = new DrawingChrono(r, GetScaling(), DoRemapTimestamp);
+                    
+                    if (dc != null)
+                        AddChrono(dc);
+                }
+                else
+                {
+                    string unparsed = r.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
         private void ParseTracks(XmlReader _xmlReader)
         {
              // TODO: catch empty tag <Tracks/>.
@@ -908,15 +902,9 @@ namespace Kinovea.ScreenManager
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
 			{
-                // When we have other Chrono tools (cadence tool), make this dynamic
-                // on a similar model than for attached drawings. (see ParseDrawing())
                 if(_xmlReader.Name == "Track")
 				{
-                    PointF scaling = new PointF();
-                    scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
-                    scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;
-                    
-                    Track trk = new Track(_xmlReader, scaling, DoRemapTimestamp, m_ImageSize);
+                    Track trk = new Track(_xmlReader, GetScaling(), DoRemapTimestamp, m_ImageSize);
                     
                     if (!trk.Invalid)
                     {
@@ -932,6 +920,56 @@ namespace Kinovea.ScreenManager
             }
             
             _xmlReader.ReadEndElement();
+        }
+        private void ParseSpotlights(XmlReader _xmlReader)
+        {
+            _xmlReader.ReadStartElement();
+            
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+                if(_xmlReader.Name == "Spotlight")
+				{
+                    Spotlight spotlight = new Spotlight(_xmlReader, GetScaling(), DoRemapTimestamp, m_iAverageTimeStampsPerFrame);
+                    m_SpotlightManager.Add(spotlight);
+                }
+                else
+                {
+                    string unparsed = _xmlReader.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+        }
+        private void ParseAutoNumbers(XmlReader _xmlReader)
+        {
+            _xmlReader.ReadStartElement();
+            
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+                if(_xmlReader.Name == "AutoNumber")
+				{
+                    AutoNumber autonumber = new AutoNumber(_xmlReader, GetScaling(), DoRemapTimestamp, m_iAverageTimeStampsPerFrame);
+                    m_AutoNumberManager.Add(autonumber);
+                }
+                else
+                {
+                    string unparsed = _xmlReader.ReadOuterXml();
+				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+        }
+        private PointF GetScaling()
+        {
+            PointF scaling = new PointF(1.0f, 1.0f);
+            if(!m_ImageSize.IsEmpty && !m_InputImageSize.IsEmpty)
+            {
+                scaling.X = (float)m_ImageSize.Width / (float)m_InputImageSize.Width;
+                scaling.Y = (float)m_ImageSize.Height / (float)m_InputImageSize.Height;    
+            }
+            return scaling;       
         }
         #endregion
         
@@ -1016,7 +1054,15 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
             
-            // Chronos
+            WriteChronos(w);
+            WriteTracks(w);
+            WriteSpotlights(w);
+            WriteAutoNumbers(w);
+            
+			w.WriteEndElement();
+        }
+        private void WriteChronos(XmlWriter w)
+        {
             bool atLeastOne = false;
             foreach(AbstractDrawing ad in m_ExtraDrawings)
             {
@@ -1038,9 +1084,10 @@ namespace Kinovea.ScreenManager
             {
             	w.WriteEndElement();
             }
-            
-            // Tracks
-            atLeastOne = false;
+        }
+        private void WriteTracks(XmlWriter w)
+        {
+            bool atLeastOne = false;
             foreach(AbstractDrawing ad in m_ExtraDrawings)
             {
             	Track trk = ad as Track;
@@ -1061,9 +1108,26 @@ namespace Kinovea.ScreenManager
             {
             	w.WriteEndElement();
             }
-            
-			w.WriteEndElement();
         }
+        private void WriteSpotlights(XmlWriter w)
+        {
+            if(m_SpotlightManager.Count == 0)
+                return;
+            
+            w.WriteStartElement("Spotlights");
+            m_SpotlightManager.WriteXml(w);
+            w.WriteEndElement();
+        }
+        private void WriteAutoNumbers(XmlWriter w)
+        {
+            if(m_AutoNumberManager.Count == 0)
+                return;
+            
+            w.WriteStartElement("AutoNumbers");
+            m_AutoNumberManager.WriteXml(w);
+            w.WriteEndElement();
+        }
+          
         private void WriteGeneralInformation(XmlWriter w)
         {
             w.WriteElementString("FormatVersion", "2.0");
