@@ -73,6 +73,10 @@ namespace Kinovea.ScreenManager
         {
             return new Point((int)(_point.X * _scaleX), (int)(_point.Y * _scaleY));
         }
+        public static PointF Scale(this PointF _point, float _scaleX, float _scaleY)
+        {
+            return new PointF(_point.X * _scaleX, _point.Y * _scaleY);
+        }
         
         /// <summary>
         /// Get the complementary color.

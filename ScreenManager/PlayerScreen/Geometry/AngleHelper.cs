@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
 
             Origin = o;
             ComputeAngles(o, a, b);
-            ComputeBoundingBox(o, a, b, radius);
+            ComputeBoundingBox(o, a, b, (float)radius);
             ComputeTextPosition(Start, Sweep);
             ComputeHitRegion(BoundingBox, Start, Sweep);
         }
@@ -102,18 +102,18 @@ namespace Kinovea.ScreenManager
             
             Sweep %= 360;
         }
-        private void ComputeBoundingBox(PointF o, PointF a, PointF b, int radius)
+        private void ComputeBoundingBox(PointF o, PointF a, PointF b, float radius)
         {
-            float r = radius;
-            if(r == 0)
+            if(radius == 0)
             {
+                // Special case meaning "biggest as possible" -> up to the small leg.
                 float oa = new Vector(o,a).Norm();
                 float ob = new Vector(o,b).Norm();
-                float smaller = Math.Min(oa, ob);
-                r = smaller > 20 ? smaller - 10 : Math.Min(smaller, 10);
+                float smallest = Math.Min(oa, ob);
+                radius = smallest > 20 ? smallest - 10 : Math.Min(smallest, 10);
             }
             
-            BoundingBox = o.Box((int)r);
+            BoundingBox = o.Box((int)radius);
         }
         private void ComputeTextPosition(double start, double sweep)
         {

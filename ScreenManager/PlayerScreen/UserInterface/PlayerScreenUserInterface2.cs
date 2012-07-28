@@ -2824,6 +2824,10 @@ namespace Kinovea.ScreenManager
 				{
 				    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, Point.Empty);
 				}
+				else if(ad is DrawingGenericPosture)
+				{
+				    ((DrawingGenericPosture)ad).InitialScale(m_FrameServer.Metadata.ImageSize);
+				}
 			}
 			else
 			{

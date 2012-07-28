@@ -61,7 +61,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
-        //private Dictionary<AngleHelper, int[]> m_AngleMaps = new Dictionary<AngleHelper, int[]>();
         
         private DrawingStyle m_Style;
         private StyleHelper m_StyleHelper = new StyleHelper();
@@ -139,21 +138,26 @@ namespace Kinovea.ScreenManager
                         _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
                 
-                try
+                
+                penEdge.Width = 2;
+                penEdge.DashStyle = DashStyle.Solid;
+                for(int i = 0; i<m_Angles.Count; i++)
                 {
-                    penEdge.Width = 2;
-                    penEdge.DashStyle = DashStyle.Solid;
-                    for(int i = 0; i<m_Angles.Count; i++)
+                    _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                    
+                    try
                     {
-                        _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                        //log.DebugFormat("box:{0}, start:{1}, sweep:{2}", boxes[i].ToString(), (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
                         _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
-                        DrawText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
                     }
+                    catch(Exception e)
+                    {
+                        log.DebugFormat(e.ToString());
+                    }
+                    
+                    DrawText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
                 }
-                catch(Exception e)
-                {
-                    log.DebugFormat(e.ToString());
-                }
+                
             }
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
@@ -218,6 +222,27 @@ namespace Kinovea.ScreenManager
           foreach(PointF p in m_GenericPosture.Points)
               hash ^= p.GetHashCode();
           return hash;
+        }
+        public void InitialScale(Size imageSize)
+        {
+            // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
+            // Scale the positions and angle radius according to the actual image size.
+            Size referenceSize = new Size(800, 600);
+            
+            float ratioWidth = (float)imageSize.Width / referenceSize.Width;
+            float ratioHeight = (float)imageSize.Height / referenceSize.Height;
+            float ratio = Math.Min(ratioWidth, ratioHeight);
+            
+            for(int i = 0; i < m_GenericPosture.Points.Count; i++)
+                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Scale(ratio, ratio);
+            
+            for(int i = 0; i < m_GenericPosture.Ellipses.Count; i++)
+                m_GenericPosture.Ellipses[i].Radius = (int)(m_GenericPosture.Ellipses[i].Radius * ratio);
+            
+            for(int i = 0; i<m_GenericPosture.Angles.Count;i++)
+                m_GenericPosture.Angles[i].Radius = (int)(m_GenericPosture.Angles[i].Radius * ratio);
+                
+            UpdateAngles();
         }
 
         #region KVA Serialization
@@ -353,8 +378,6 @@ namespace Kinovea.ScreenManager
             // FIXME: function duplicated. Move to AngleHelper.
             // This version is already more generic.
             //-------------------------------------------------
-            
-            //int angleValue = (int)Math.Floor(angle.Sweep);
             double value = angle.Sweep;
             if(value < 0)
                 value = -value;
@@ -366,7 +389,7 @@ namespace Kinovea.ScreenManager
                 label = String.Format("{0}°", (int)Math.Round(value));
             
             SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_opacity * 255));
-            Font tempFont = m_StyleHelper.GetFont((float)_transformer.Scale);
+            Font tempFont = m_StyleHelper.GetFont(Math.Max((float)_transformer.Scale, 1.0F));
             SizeF labelSize = _canvas.MeasureString(label, tempFont);
                 
             // Background
@@ -375,7 +398,7 @@ namespace Kinovea.ScreenManager
             Point origin = _transformer.Transform(angle.Origin);
             PointF textOrigin = new PointF(shiftx + origin.X - labelSize.Width / 2, shifty + origin.Y - labelSize.Height / 2);
             RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
-            RoundedRectangle.Draw(_canvas, backRectangle, _brushFill, tempFont.Height/4, false);
+            RoundedRectangle.Draw(_canvas, backRectangle, _brushFill, tempFont.Height/4, false, false, null);
     
             // Text
 			_canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);

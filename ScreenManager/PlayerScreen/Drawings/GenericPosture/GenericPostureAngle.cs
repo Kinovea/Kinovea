@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
         public int Leg1 { get; private set;}
         public int Leg2 { get; private set;}
         public bool Relative { get; private set;}
-        public int Radius { get; private set;}
+        public int Radius { get; set;}
         public bool Tenth { get; private set;}
         
         public GenericPostureAngle(XmlReader r)
