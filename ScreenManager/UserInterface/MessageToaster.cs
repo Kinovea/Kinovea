@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
 				PointF location = new PointF((m_CanvasHolder.Width - bgSize.Width)/2, (m_CanvasHolder.Height - bgSize.Height)/2);
 				RectangleF bg = new RectangleF(location.X - 5, location.Y - 5, bgSize.Width + 10, bgSize.Height + 5);
 	            int radius = (int)(m_Font.Size / 2);
-	            RoundedRectangle.Draw(_canvas, bg, (SolidBrush)m_BackBrush, radius, false);
+	            RoundedRectangle.Draw(_canvas, bg, (SolidBrush)m_BackBrush, radius, false, false, null);
 	            _canvas.DrawString(m_Message, m_Font, m_ForeBrush, location.X, location.Y);
 			}
 		}

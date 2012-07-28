@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
                 Point location = _transformer.Transform(m_Background.Rectangle.Location);
                 Size size = new Size((int)textSize.Width, (int)textSize.Height);
                 Rectangle rect = new Rectangle(location, size);
-                RoundedRectangle.Draw(_canvas, rect, fillBrush, f.Height/4, false);
+                RoundedRectangle.Draw(_canvas, rect, fillBrush, f.Height/4, false, false, null);
                 _canvas.DrawString(m_Text, f, fontBrush, rect.Location);
         	}
         }    

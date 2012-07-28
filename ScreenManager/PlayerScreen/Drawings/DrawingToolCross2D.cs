@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
     	}
     	public override bool KeepToolFrameChanged
     	{
-    		get { return false; }
+    		get { return true; }
     	}
     	public override DrawingStyle StylePreset
 		{

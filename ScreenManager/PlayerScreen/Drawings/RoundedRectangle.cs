@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_rect">The rectangle specifications</param>
         /// <param name="_brush">Brush to draw with</param>
         /// <param name="_radius">Radius of the rounded corners</param>
-        public static void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush, int _radius, bool _dropShape)
+        public static void Draw(Graphics _canvas, RectangleF _rect, SolidBrush _brush, int _radius, bool _dropShape, bool _contour, Pen _penContour)
         {
             float diameter = 2F * _radius;
             RectangleF arc = new RectangleF(_rect.Location, new SizeF(diameter, diameter));
@@ -73,7 +73,11 @@ namespace Kinovea.ScreenManager
             gp.AddArc(arc, 90, 90);
             
             gp.CloseFigure();
+            
             _canvas.FillPath(_brush, gp);
+            
+            if(_contour)
+                _canvas.DrawPath(_penContour, gp);
             
             gp.Dispose();
         }
