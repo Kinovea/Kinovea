@@ -31,22 +31,6 @@ namespace Kinovea.ScreenManager
 	public static class GenericPostureManager
 	{
 		#region Properties
-		
-		/// <summary>
-		///   Returns the cached list of tools.
-		/// </summary>
-		/*public static Dictionary<Guid, GenericPosture> Info
-		{
-			get 
-			{
-				if (object.ReferenceEquals(m_info, null))
-				{
-					Initialize();
-				}
-				
-				return m_info; 
-			}
-		}*/
 		public static List<DrawingToolGenericPosture> Tools
 		{
 		    get {
