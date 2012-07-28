@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
                 Rectangle rect = _transformer.Transform(m_Background.Rectangle);
-                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false);
+                RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false, false, null);
                 _canvas.DrawString(m_Text, fontText, brushText, rect.Location);
             }
         }

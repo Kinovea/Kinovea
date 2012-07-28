@@ -52,8 +52,8 @@ namespace Kinovea.ScreenManager
 		// Fading is not currently modifiable from outside.
         public override InfosFading  infosFading
         {
-            get { throw new NotImplementedException("Spotlight, The method or operation is not implemented."); }
-            set { throw new NotImplementedException("Spotlight, The method or operation is not implemented."); }
+            get { throw new NotImplementedException("Autonumber, The method or operation is not implemented."); }
+            set { throw new NotImplementedException("Autonumber, The method or operation is not implemented."); }
         }
         public override DrawingCapabilities Caps
 		{
@@ -141,9 +141,7 @@ namespace Kinovea.ScreenManager
 		{
 		    // Equivalent to GetNewDrawing() for regular drawing tools.
 		    int nextValue = NextValue(_iPosition);
-		    
-			m_AutoNumbers.Add(new AutoNumber(_iPosition, _iAverageTimeStampsPerFrame, _point, nextValue));
-			m_iSelected = m_AutoNumbers.Count - 1;
+			m_iSelected = InsertSorted(new AutoNumber(_iPosition, _iAverageTimeStampsPerFrame, _point, nextValue));
 		}
 		#endregion
 		
@@ -155,25 +153,7 @@ namespace Kinovea.ScreenManager
 		    }
 		    else
 		    {
-		        int prev = m_AutoNumbers[0].Value;
-		        
-		        // TODO: handle reset points.
-		        
-		        for(int i=1;i<m_AutoNumbers.Count;i++)
-		        {
-		            if(m_AutoNumbers[i].Value > m_AutoNumbers[i-1].Value + 1)
-		            {
-		                //hole = true;
-		                prev = m_AutoNumbers[i-1].Value;
-		                break;
-		            }
-		            else
-		            {
-		                prev = m_AutoNumbers[i].Value;
-		            }
-		        }
-		        
-		        return prev + 1;
+		        return NextValueVideo(_iPosition);
 		    }
 		        
 		        
@@ -198,6 +178,40 @@ namespace Kinovea.ScreenManager
 		        
 		        return next;
 		    }*/
+		}
+		private int NextValueVideo(long _iPosition)
+		{
+		    // Consider the whole video for increment and holes.
+		    int holeIndex = FindFirstHole();
+		    if(holeIndex >=0)
+		        return holeIndex;
+		    
+		    return m_AutoNumbers[m_AutoNumbers.Count-1].Value + 1;
+		}
+		private int FindFirstHole()
+		{
+		    // Returns the value that should be in the first found hole.
+            for(int i=0;i<m_AutoNumbers.Count;i++)
+	        {
+                if(m_AutoNumbers[i].Value > i + 1)
+	               return i + 1;  
+		    }
+		    
+		    return -1;
+		}
+		private int InsertSorted(AutoNumber item)
+		{
+		    for(int i=0;i<m_AutoNumbers.Count;i++)
+	        {
+		        if(m_AutoNumbers[i].Value > item.Value)
+		        {
+		            m_AutoNumbers.Insert(i, item);
+		            return i;
+		        }
+		    }
+		    
+		    m_AutoNumbers.Add(item);
+		    return m_AutoNumbers.Count - 1;
 		}
 	}
 }
