@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Xml;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -142,6 +143,15 @@ namespace Kinovea.ScreenManager
 		    // Equivalent to GetNewDrawing() for regular drawing tools.
 		    int nextValue = NextValue(_iPosition);
 			m_iSelected = InsertSorted(new AutoNumber(_iPosition, _iAverageTimeStampsPerFrame, _point, nextValue));
+		}
+		public void WriteXml(XmlWriter w)
+		{
+		    foreach(AutoNumber number in m_AutoNumbers)
+		    {
+		        w.WriteStartElement("AutoNumber");
+		        number.WriteXml(w);
+		        w.WriteEndElement();
+		    }
 		}
 		#endregion
 		

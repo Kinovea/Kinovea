@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Xml;
 
 using Kinovea.Services;
 
@@ -30,7 +31,7 @@ namespace Kinovea.ScreenManager
 	/// SpotLight. (MultiDrawingItem of SpotlightManager)
 	/// Describe and draw a single spotlight.
 	/// </summary>
-	public class Spotlight
+	public class Spotlight : IKvaSerializable
 	{
 		#region Members
 		private long m_iPosition;
@@ -43,6 +44,7 @@ namespace Kinovea.ScreenManager
 		private static readonly int m_iBorderWidth = 2;
 		private static readonly DashStyle m_DashStyle = DashStyle.Dash;
 		private InfosFading m_InfosFading;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -54,7 +56,15 @@ namespace Kinovea.ScreenManager
 			m_InfosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
 			m_InfosFading.UseDefault = false;
 			m_InfosFading.FadingFrames = 25;
-			//m_InfosFading.AlwaysVisible = true;
+		}
+		public Spotlight(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+            : this(0, 0, Point.Empty)
+        {
+		     ReadXml(_xmlReader, _scale, _remapTimestampCallback);
+		     
+		     m_InfosFading = new InfosFading(m_iPosition, _iAverageTimeStampsPerFrame);
+			 m_InfosFading.UseDefault = false;
+			 m_InfosFading.FadingFrames = 25;
 		}
 		#endregion
 		
@@ -156,6 +166,48 @@ namespace Kinovea.ScreenManager
 		    return hit;
         }
 		#endregion
+		
+		#region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        {
+            if(_remapTimestampCallback == null)
+            {
+                _xmlReader.ReadOuterXml();
+                return;                
+            }
+            
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Time":
+				        m_iPosition = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        break;
+					case "Center":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_Center = p.Scale(_scale.X, _scale.Y);
+                        break;
+					case "Radius":
+                        m_iRadius = _xmlReader.ReadElementContentAsInt();
+						break;
+				    default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+        }
+        public void WriteXml(XmlWriter _xmlWriter)
+		{
+            _xmlWriter.WriteElementString("Time", m_iPosition.ToString());
+            _xmlWriter.WriteElementString("Center", string.Format("{0};{1}", m_Center.X, m_Center.Y));
+            _xmlWriter.WriteElementString("Radius", m_iRadius.ToString());
+        }
+        #endregion
 	}
 }
 

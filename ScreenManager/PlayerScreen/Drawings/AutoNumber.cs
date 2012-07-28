@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Xml;
 
 using Kinovea.Services;
 
@@ -31,7 +32,7 @@ namespace Kinovea.ScreenManager
 	/// AutoNumber. (MultiDrawingItem of AutoNumberManager)
 	/// Describe and draw a single autonumber.
 	/// </summary>
-	public class AutoNumber
+	public class AutoNumber : IKvaSerializable
 	{
 	    #region Properties
 	    public int Value {
@@ -41,21 +42,36 @@ namespace Kinovea.ScreenManager
 
 		#region Members
 		private long m_iPosition;
-		private RoundedRectangle m_Background = new RoundedRectangle();
+		private RoundedRectangle m_Background = new RoundedRectangle();   // <-- Also used as a simple ellipsis-defining rectangle when value < 10.
 		private InfosFading m_InfosFading;
 		private int m_Value = 1;
+		private double m_LastScaleFactor = 1.0;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public AutoNumber(long _iPosition, long _iAverageTimeStampsPerFrame, Point _center, int _value)
+		public AutoNumber(long _iPosition, long _iAverageTimeStampsPerFrame, Point _location, int _value)
 		{
 			m_iPosition = _iPosition;
-			m_Background.Rectangle = new Rectangle(_center, Size.Empty);
+			m_Background.Rectangle = new Rectangle(_location, Size.Empty);
+			m_Value = _value;
+			
 			m_InfosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
 			m_InfosFading.UseDefault = false;
 			m_InfosFading.FadingFrames = 25;
-			m_Value = _value;
+			
 			SetText(m_Value.ToString());
+		}
+		public AutoNumber(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+            : this(0, 0, Point.Empty, 0)
+        {
+		     ReadXml(_xmlReader, _scale, _remapTimestampCallback);
+		     
+		     m_InfosFading = new InfosFading(m_iPosition, _iAverageTimeStampsPerFrame);
+			 m_InfosFading.UseDefault = false;
+			 m_InfosFading.FadingFrames = 25;
+			 
+			 SetText(m_Value.ToString());
 		}
 		#endregion
 		
@@ -71,6 +87,8 @@ namespace Kinovea.ScreenManager
 			Color backColor = Color.FromArgb(alpha, Color.Black);
 			Color frontColor = Color.FromArgb(alpha, Color.White);
 			
+			m_LastScaleFactor = _transformer.Scale;
+			
 			using(SolidBrush brushBack = new SolidBrush(backColor))
 			using(SolidBrush brushFront = new SolidBrush(frontColor))
 			using(Pen penContour = new Pen(frontColor, 2))
@@ -80,22 +98,20 @@ namespace Kinovea.ScreenManager
                 
 			    SizeF textSize = _canvas.MeasureString(text, f);
                 Point location = _transformer.Transform(m_Background.Rectangle.Location);
+                Rectangle rect = new Rectangle(location, m_Background.Rectangle.Size);
                 
 			    if(m_Value < 10)
 			    {
-			        int side = (int)textSize.Height;
-			        Rectangle rect = new Rectangle(new Point(location.X + (int)((textSize.Width - side)/2), location.Y), new Size(side, side));
 			        _canvas.FillEllipse(brushBack, rect);
 			        _canvas.DrawEllipse(penContour, rect);
-                    _canvas.DrawString(text, f, brushFront, location.Translate(0, 2));
 			    }
                 else
                 {
-                    Size size = new Size((int)textSize.Width, (int)textSize.Height);
-                    Rectangle rect = new Rectangle(location, size);
                     RoundedRectangle.Draw(_canvas, rect, brushBack, f.Height/4, false, true, penContour);    
-                    _canvas.DrawString(text, f, brushFront, rect.Location.Translate(0, 2));
                 }
+                
+                Point textLocation = new Point(location.X + (int)((rect.Width - textSize.Width)/2), location.Y + 2);
+                _canvas.DrawString(text, f, brushFront, textLocation);
 			}
 		}
 		public int HitTest(Point _point, long _iCurrentTimeStamp)
@@ -106,15 +122,17 @@ namespace Kinovea.ScreenManager
 			double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimeStamp);
 			if(fOpacityFactor > 0)
 			{
-			    return m_Background.HitTest(_point, false);
+			    // Special case. We double-unscale the drawing (but not its location).
+			    Rectangle rect = new Rectangle(m_Background.Rectangle.Location, new Size((int)(m_Background.Rectangle.Width / m_LastScaleFactor), (int)(m_Background.Rectangle.Height / m_LastScaleFactor)));
+			    if(rect.Contains(_point))
+			        return 0;
 			}
+
 			return iHitResult;
 		}
 		public void MouseMove(int _deltaX, int _deltaY)
 		{
-			//m_Center.X += _deltaX;
-            //m_Center.Y += _deltaY;
-            m_Background.Move(_deltaX, _deltaY);
+			m_Background.Move(_deltaX, _deltaY);
 		}
 		public void MoveHandleTo(Point point)
         {
@@ -126,6 +144,48 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		#region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        {
+            if(_remapTimestampCallback == null)
+            {
+                _xmlReader.ReadOuterXml();
+                return;                
+            }
+            
+            _xmlReader.ReadStartElement();
+            
+			while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "Time":
+				        m_iPosition = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+                        break;
+					case "Location":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        m_Background.Rectangle = new Rectangle(p.Scale(_scale.X, _scale.Y), Size.Empty);
+                        break;
+					case "Value":
+                        m_Value = _xmlReader.ReadElementContentAsInt();
+						break;
+				    default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}
+			
+			_xmlReader.ReadEndElement();
+        }
+        public void WriteXml(XmlWriter _xmlWriter)
+		{
+            _xmlWriter.WriteElementString("Time", m_iPosition.ToString());
+            _xmlWriter.WriteElementString("Location", string.Format("{0};{1}", m_Background.X, m_Background.Y));
+            _xmlWriter.WriteElementString("Value", m_Value.ToString());
+        }
+        #endregion
+        
 		#region Private methods
 		private void SetText(string text)
 		{
@@ -134,7 +194,10 @@ namespace Kinovea.ScreenManager
             using(Font f = new Font("Arial", 16, FontStyle.Bold))
             {
                 SizeF textSize = g.MeasureString(text, f);
-                m_Background.Rectangle = new Rectangle(m_Background.Rectangle.Location, new Size((int)textSize.Width, (int)textSize.Height));
+                
+                int width = m_Value < 10 ? (int)textSize.Height : (int)textSize.Width;
+                int height = (int)textSize.Height;
+                m_Background.Rectangle = new Rectangle(m_Background.Rectangle.Location, new Size(width, height));
             }
 		}
 		#endregion

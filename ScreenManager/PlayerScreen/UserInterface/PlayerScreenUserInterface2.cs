@@ -2777,12 +2777,14 @@ namespace Kinovea.ScreenManager
 			}
 			else if(m_ActiveTool == ToolManager.Spotlight)
 			{
+			    AddKeyframe();
 			    m_FrameServer.Metadata.SpotlightManager.Add(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
 			    m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.SpotlightManager);
-			    //m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
+			    // Keep the tool so the user can finish drawing initialization.
 			}
 			else if(m_ActiveTool == ToolManager.AutoNumbers)
 			{
+			    AddKeyframe();
 			    m_FrameServer.Metadata.AutoNumberManager.Add(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
 			    m_FrameServer.Metadata.SelectExtraDrawing(m_FrameServer.Metadata.AutoNumberManager);
 			    m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
