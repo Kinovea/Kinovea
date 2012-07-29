@@ -298,6 +298,7 @@ namespace Kinovea.ScreenManager
 		
 		private ContextMenuStrip popMenuMultiDrawing = new ContextMenuStrip();
 		private ToolStripMenuItem mnuDeleteMultiDrawingItem = new ToolStripMenuItem();
+		private ToolStripMenuItem mnuConfigureMultiDrawing = new ToolStripMenuItem();
 		#endregion
 
 		ToolStripButton m_btnAddKeyFrame;
@@ -1300,10 +1301,12 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierQuit.Image = Properties.Resources.hide;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
 			
-			// 6. Spotlight.
+			// 6. MultiDrawings.
+			mnuConfigureMultiDrawing.Click += new EventHandler(mnuConfigureMultiDrawing_Click);
+			mnuConfigureMultiDrawing.Image = Properties.Drawings.configure;
 			mnuDeleteMultiDrawingItem.Image = Properties.Drawings.delete;
 			mnuDeleteMultiDrawingItem.Click += mnuDeleteMultiDrawingItem_Click;
-			popMenuMultiDrawing.Items.AddRange(new ToolStripItem[] { mnuDeleteMultiDrawingItem});
+			//popMenuMultiDrawing.Items.AddRange(new ToolStripItem[] { mnuDeleteMultiDrawingItem});
 			
 			// The right context menu and its content will be choosen upon MouseDown.
 			panelCenter.ContextMenuStrip = popMenu;
@@ -2663,8 +2666,9 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
 			mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
 			
-			// 6. Spotlight
+			// 6. MultiDrawing
 			mnuDeleteMultiDrawingItem.Text = ScreenManagerLang.mnuDeleteDrawing;
+			mnuConfigureMultiDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 		}
 		private void ReloadTooltipsCulture()
 		{
@@ -2976,7 +2980,27 @@ namespace Kinovea.ScreenManager
 				}
 				else if(hitDrawing is AbstractMultiDrawing)
 				{
-                    panelCenter.ContextMenuStrip = popMenuMultiDrawing;
+				    // TODO: deduplicate this from the regular drawings ?
+				    popMenuMultiDrawing.Items.Clear();
+				    
+				    AbstractMultiDrawing amd = hitDrawing as AbstractMultiDrawing;
+				    if((amd.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
+					{
+                        mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
+                        popMenuMultiDrawing.Items.Add(mnuConfigureMultiDrawing);
+					}
+
+					if((amd.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
+					{
+                        mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+                        popMenuMultiDrawing.Items.Add(mnuConfigureMultiDrawing);
+					}
+				    
+					if(popMenuMultiDrawing.Items.Count > 0)
+					    popMenuMultiDrawing.Items.Add(mnuSepDrawing);
+					
+				    popMenuMultiDrawing.Items.Add(mnuDeleteMultiDrawingItem);
+				    panelCenter.ContextMenuStrip = popMenuMultiDrawing;
 				}
 			}
 			else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse))
@@ -4442,12 +4466,30 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 
+		#region MultiDrawings
 		private void mnuDeleteMultiDrawingItem_Click(object sender, EventArgs e)
 		{
             IUndoableCommand cds = new CommandDeleteMultiDrawingItem(this, m_FrameServer.Metadata);
 			CommandManager cm = CommandManager.Instance();
 			cm.LaunchUndoableCommand(cds);
 		}
+		private void mnuConfigureMultiDrawing_Click(object sender, EventArgs e)
+		{
+			if(m_FrameServer.Metadata.SelectedExtraDrawing < 0)
+			    return;
+			
+			IDecorable decorableDrawing = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as IDecorable;
+			if(decorableDrawing == null || decorableDrawing.DrawingStyle == null || decorableDrawing.DrawingStyle.Elements.Count == 0)
+			    return;
+			
+		    FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
+			ScreenManagerKernel.LocateForm(fcd);
+			fcd.ShowDialog();
+			fcd.Dispose();
+			DoInvalidate();
+		}
+		#endregion
+		
 		#endregion
 		
 		#region DirectZoom

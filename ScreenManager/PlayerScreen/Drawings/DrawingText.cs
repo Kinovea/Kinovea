@@ -138,7 +138,13 @@ namespace Kinovea.ScreenManager
             using (SolidBrush brushText = m_StyleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
             using (Font fontText = m_StyleHelper.GetFont((float)_transformer.Scale))
             {
-                Rectangle rect = _transformer.Transform(m_Background.Rectangle);
+                // Note: recompute background size in case the font floored.
+                SizeF textSize = _canvas.MeasureString(m_Text, fontText);
+			    Point bgLocation = _transformer.Transform(m_Background.Rectangle.Location);
+			    Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+			    
+                //Rectangle rect = _transformer.Transform(m_Background.Rectangle);
+                Rectangle rect = new Rectangle(bgLocation, bgSize);
                 RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false, false, null);
                 _canvas.DrawString(m_Text, fontText, brushText, rect.Location);
             }

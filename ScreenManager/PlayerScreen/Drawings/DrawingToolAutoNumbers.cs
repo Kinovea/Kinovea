@@ -53,19 +53,30 @@ namespace Kinovea.ScreenManager
     	}
     	public override DrawingStyle StylePreset
 		{
-			get { return null;}
-			set { return;}
+			get { return stylePreset;}
+			set { stylePreset = value;}
 		}
 		public override DrawingStyle DefaultStylePreset
 		{
-			get { return null;}
+			get { return defaultStylePreset;}
 		}
+    	#endregion
+    	
+    	#region Members
+    	private DrawingStyle defaultStylePreset = new DrawingStyle();
+    	private DrawingStyle stylePreset;
     	#endregion
 		
     	#region Public Methods
+    	public DrawingToolAutoNumbers()
+    	{
+    	    defaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.Black));
+    	    defaultStylePreset.Elements.Add("font size", new StyleElementFontSize(16));
+			stylePreset = defaultStylePreset.Clone();
+    	}
     	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
     	{
-    	    return null;
+    	   return null;
     	}
     	public override Cursor GetCursor(double _fStretchFactor)
     	{

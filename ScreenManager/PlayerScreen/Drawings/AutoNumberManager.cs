@@ -34,20 +34,24 @@ namespace Kinovea.ScreenManager
 	/// Auto Numbers.
 	/// This is the proxy object dispatching all individual numbers requests. (draw, hit testing, etc.)
 	/// </summary>
-	public class AutoNumberManager : AbstractMultiDrawing
+	public class AutoNumberManager : AbstractMultiDrawing, IDecorable
 	{
 		#region Properties
+		public DrawingStyle DrawingStyle
+        {
+        	get { return style;}
+        }
 		public override object SelectedItem {
 		    get 
 		    {
-                if(m_iSelected >= 0 && m_iSelected < m_AutoNumbers.Count)
-                    return m_AutoNumbers[m_iSelected];
+                if(selected >= 0 && selected < autoNumbers.Count)
+                    return autoNumbers[selected];
                 else
                     return null;
 		    }
 		}
         public override int Count {
-		    get { return m_AutoNumbers.Count; }
+		    get { return autoNumbers.Count; }
         }
 		
 		// Fading is not currently modifiable from outside.
@@ -58,7 +62,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
 		{
-			get { return DrawingCapabilities.None; }
+			get { return DrawingCapabilities.ConfigureColorSize; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -67,36 +71,57 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private List<AutoNumber> m_AutoNumbers = new List<AutoNumber>();
-		private int m_iSelected = -1;
+		private StyleHelper styleHelper = new StyleHelper();
+		private DrawingStyle style;
+		private const int defaultFontSize = 16;
+		private List<AutoNumber> autoNumbers = new List<AutoNumber>();
+		private int selected = -1;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
+		
+		public AutoNumberManager(DrawingStyle _preset)
+		{
+            styleHelper.Bicolor = new Bicolor(Color.Black);
+            styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+            if(_preset != null)
+            {
+                style = _preset.Clone();
+                BindStyle();
+            }
+		}
+		public AutoNumberManager(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+		    : this(ToolManager.AutoNumbers.StylePreset.Clone())
+		{
+		    ReadXml(_xmlReader, _scale, _remapTimestampCallback, _iAverageTimeStampsPerFrame);
+		}
+		
 		
 		#region AbstractDrawing Implementation
 		public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
 		{
-		    foreach(AutoNumber number in m_AutoNumbers)
+		    foreach(AutoNumber number in autoNumbers)
                 number.Draw(_canvas, _transformer, _iCurrentTimestamp);
 		}
 		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
 		{
-		    if(m_iSelected >= 0 && m_iSelected < m_AutoNumbers.Count)
-				m_AutoNumbers[m_iSelected].MouseMove(_deltaX, _deltaY);
+		    if(selected >= 0 && selected < autoNumbers.Count)
+				autoNumbers[selected].MouseMove(_deltaX, _deltaY);
 		}
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
-		    if(m_iSelected >= 0 && m_iSelected < m_AutoNumbers.Count)
-				m_AutoNumbers[m_iSelected].MoveHandleTo(point);
+		    if(selected >= 0 && selected < autoNumbers.Count)
+				autoNumbers[selected].MoveHandleTo(point);
 		}
 		public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
 		    int currentNumber = 0;
 		    int handle = -1;
-		    foreach(AutoNumber number in m_AutoNumbers)
+		    foreach(AutoNumber number in autoNumbers)
 		    {
 		        handle = number.HitTest(_point, _iCurrentTimestamp);
 		        if(handle >= 0)
 		        {
-		            m_iSelected = currentNumber;
+		            selected = currentNumber;
 		            break;
 		        }
 		        currentNumber++;
@@ -114,8 +139,8 @@ namespace Kinovea.ScreenManager
             if(number == null)
                 return;
             
-		    m_AutoNumbers.Add(number);
-		    m_iSelected = m_AutoNumbers.Count - 1;
+		    autoNumbers.Add(number);
+		    selected = autoNumbers.Count - 1;
 		}
         public override void Remove(object _item)
 		{
@@ -123,13 +148,13 @@ namespace Kinovea.ScreenManager
             if(number == null)
                 return;
             
-		    m_AutoNumbers.Remove(number);
-		    m_iSelected = -1;
+		    autoNumbers.Remove(number);
+		    selected = -1;
 		}
         public override void Clear()
         {
-            m_AutoNumbers.Clear();
-            m_iSelected = -1;
+            autoNumbers.Clear();
+            selected = -1;
         }
 		#endregion
 		
@@ -142,11 +167,40 @@ namespace Kinovea.ScreenManager
 		{
 		    // Equivalent to GetNewDrawing() for regular drawing tools.
 		    int nextValue = NextValue(_iPosition);
-			m_iSelected = InsertSorted(new AutoNumber(_iPosition, _iAverageTimeStampsPerFrame, _point, nextValue));
+		    selected = InsertSorted(new AutoNumber(_iPosition, _iAverageTimeStampsPerFrame, _point, nextValue, styleHelper));
+		}
+		public void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+		{
+		    _xmlReader.ReadStartElement();
+		    
+		    while(_xmlReader.NodeType == XmlNodeType.Element)
+			{
+				switch(_xmlReader.Name)
+				{
+					case "DrawingStyle":
+				        style = new DrawingStyle(_xmlReader);
+						BindStyle();
+						break;
+		            case "AutoNumber":
+                        AutoNumber number = new AutoNumber(_xmlReader, _scale, _remapTimestampCallback, _iAverageTimeStampsPerFrame, styleHelper);
+                        InsertSorted(number);
+						break;
+		            default:
+						string unparsed = _xmlReader.ReadOuterXml();
+						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+						break;
+				}
+			}	
+		    
+		    _xmlReader.ReadEndElement();
 		}
 		public void WriteXml(XmlWriter w)
 		{
-		    foreach(AutoNumber number in m_AutoNumbers)
+		    w.WriteStartElement("DrawingStyle");
+            style.WriteXml(w);
+            w.WriteEndElement();
+            
+		    foreach(AutoNumber number in autoNumbers)
 		    {
 		        w.WriteStartElement("AutoNumber");
 		        number.WriteXml(w);
@@ -155,9 +209,14 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		private void BindStyle()
+        {
+            style.Bind(styleHelper, "Bicolor", "back color");
+            style.Bind(styleHelper, "Font", "font size");
+        }
 		private int NextValue(long _iPosition)
 		{
-		    if(m_AutoNumbers.Count == 0)
+		    if(autoNumbers.Count == 0)
 		    {
 		        return 1;
 		    }
@@ -165,29 +224,6 @@ namespace Kinovea.ScreenManager
 		    {
 		        return NextValueVideo(_iPosition);
 		    }
-		        
-		        
-		        //int maxValue = 9;
-		        
-		        // Get the highest visible number, and increment.
-		        /*int highestValue = 0;
-		        foreach(AutoNumber number in m_AutoNumbers)
-                {
-		            if(number.IsVisible(_iPosition))
-		               highestValue = Math.Max(highestValue, number.Value);
-		        }
-		        
-		        // If no number is visible, reset.
-		        //if(highestValue == 0)
-		           //highestValue = m_AutoNumbers[m_AutoNumbers.Count - 1].Value;
-		        
-		        int next = highestValue + 1;
-		        
-		        //if(next > maxValue)
-		          //  next = 1;* /
-		        
-		        return next;
-		    }*/
 		}
 		private int NextValueVideo(long _iPosition)
 		{
@@ -196,14 +232,14 @@ namespace Kinovea.ScreenManager
 		    if(holeIndex >=0)
 		        return holeIndex;
 		    
-		    return m_AutoNumbers[m_AutoNumbers.Count-1].Value + 1;
+		    return autoNumbers[autoNumbers.Count-1].Value + 1;
 		}
 		private int FindFirstHole()
 		{
 		    // Returns the value that should be in the first found hole.
-            for(int i=0;i<m_AutoNumbers.Count;i++)
+            for(int i=0;i<autoNumbers.Count;i++)
 	        {
-                if(m_AutoNumbers[i].Value > i + 1)
+                if(autoNumbers[i].Value > i + 1)
 	               return i + 1;  
 		    }
 		    
@@ -211,17 +247,17 @@ namespace Kinovea.ScreenManager
 		}
 		private int InsertSorted(AutoNumber item)
 		{
-		    for(int i=0;i<m_AutoNumbers.Count;i++)
+		    for(int i=0;i<autoNumbers.Count;i++)
 	        {
-		        if(m_AutoNumbers[i].Value > item.Value)
+		        if(autoNumbers[i].Value > item.Value)
 		        {
-		            m_AutoNumbers.Insert(i, item);
+		            autoNumbers.Insert(i, item);
 		            return i;
 		        }
 		    }
 		    
-		    m_AutoNumbers.Add(item);
-		    return m_AutoNumbers.Count - 1;
+		    autoNumbers.Add(item);
+		    return autoNumbers.Count - 1;
 		}
 	}
 }
