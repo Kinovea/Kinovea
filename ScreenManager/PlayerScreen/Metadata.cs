@@ -943,23 +943,10 @@ namespace Kinovea.ScreenManager
         }
         private void ParseAutoNumbers(XmlReader _xmlReader)
         {
-            _xmlReader.ReadStartElement();
-            
-            while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-                if(_xmlReader.Name == "AutoNumber")
-				{
-                    AutoNumber autonumber = new AutoNumber(_xmlReader, GetScaling(), DoRemapTimestamp, m_iAverageTimeStampsPerFrame);
-                    m_AutoNumberManager.Add(autonumber);
-                }
-                else
-                {
-                    string unparsed = _xmlReader.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                }
-            }
-            
-            _xmlReader.ReadEndElement();
+            int index = m_ExtraDrawings.IndexOf(m_AutoNumberManager);
+            m_AutoNumberManager = new AutoNumberManager(_xmlReader, GetScaling(), DoRemapTimestamp, m_iAverageTimeStampsPerFrame);
+            m_ExtraDrawings.RemoveAt(index);
+            m_ExtraDrawings.Insert(index, m_AutoNumberManager);
         }
         private PointF GetScaling()
         {
@@ -1541,7 +1528,7 @@ namespace Kinovea.ScreenManager
         	// It could be "multi drawing", like SpotlightManager.
         	
         	m_SpotlightManager = new SpotlightManager();
-        	m_AutoNumberManager = new AutoNumberManager();
+        	m_AutoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
         	
         	m_ExtraDrawings.Add(m_SpotlightManager);
         	m_ExtraDrawings.Add(m_AutoNumberManager);
