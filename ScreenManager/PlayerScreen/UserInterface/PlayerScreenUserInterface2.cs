@@ -1025,7 +1025,6 @@ namespace Kinovea.ScreenManager
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
-			//AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Angle}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Angle, drawingTool_Click);
 			AddToolButton(ToolManager.Chrono, drawingTool_Click);
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
@@ -1096,26 +1095,6 @@ namespace Kinovea.ScreenManager
         {
 		    if(GenericPostureManager.Tools.Count > 0)
 		        AddToolButtonWithMenu(GenericPostureManager.Tools.ToArray(), 0, drawingTool_Click);
-		    
-            /*string dir = @"C:\Users\Joan\Dev  Prog\Videa\Bitbucket\ToolLaboratory\Tools\postures";
-            
-            if(!Directory.Exists(dir))
-                return;
-            
-            List<AbstractDrawingTool> tools = new List<AbstractDrawingTool>();
-
-            foreach (string f in Directory.GetFiles(dir))
-            {
-                if (!Path.GetExtension(f).ToLower().Equals(".xml"))
-                    continue;
-
-                DrawingToolGenericPostureSandbox tool = new DrawingToolGenericPostureSandbox();
-                tool.SetFile(f);
-                tools.Add(tool);
-            }
-            
-            if(tools.Count > 0)
-                AddToolButtonWithMenu(tools.ToArray(), 0, drawingTool_Click);*/
 		}
 		private void ResetData()
 		{
