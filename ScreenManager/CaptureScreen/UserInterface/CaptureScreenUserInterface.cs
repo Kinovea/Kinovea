@@ -457,21 +457,25 @@ namespace Kinovea.ScreenManager
 			// Tools buttons.
 			EventHandler handler = new EventHandler(drawingTool_Click);
 			
+			// Pointer tool button
 			AddToolButton(m_PointerTool, handler);
 			stripDrawingTools.Items.Add(new ToolStripSeparator());
+			
 			AddToolButton(ToolManager.Label, handler);
 			AddToolButton(ToolManager.Pencil, handler);
-			AddToolButton(ToolManager.Line, handler);
-			AddToolButton(ToolManager.Circle, handler);
+			AddToolButtonPosture(drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
+			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, handler);
-			AddToolButton(ToolManager.Angle, handler);
-			AddToolButton(ToolManager.Plane, handler);
+			AddToolButton(ToolManager.Angle, drawingTool_Click);
+			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Grid, ToolManager.Plane}, 0, drawingTool_Click);
+			
 			AddToolButton(ToolManager.Magnifier, new EventHandler(btnMagnifier_Click));
 			
 			// Tool presets
 			m_btnToolPresets = CreateToolButton();
         	m_btnToolPresets.Image = Resources.SwatchIcon3;
-        	m_btnToolPresets.Click += new EventHandler(btnColorProfile_Click);
+        	m_btnToolPresets.Click += btnColorProfile_Click;
         	m_btnToolPresets.ToolTipText = ScreenManagerLang.ToolTip_ColorProfile;
         	stripDrawingTools.Items.Add(m_btnToolPresets);
         }
@@ -493,6 +497,46 @@ namespace Kinovea.ScreenManager
         	btn.Click += _handler;
         	btn.ToolTipText = _tool.DisplayName;
         	stripDrawingTools.Items.Add(btn);
+		}
+		private void AddToolButtonWithMenu(AbstractDrawingTool[] _tools, int selectedIndex, EventHandler _handler)
+		{
+		    // TODO:Deduplicate with PlayerScreen.
+		    
+		    // Adds a button with a sub menu.
+		    // Each menu item will act as a button, and the master button will take the icon of the selected menu.
+		    
+		    ToolStripButtonWithDropDown btn = new ToolStripButtonWithDropDown();
+			btn.AutoSize = false;
+        	btn.DisplayStyle = ToolStripItemDisplayStyle.Image;
+        	btn.ImageScaling = ToolStripItemImageScaling.None;
+        	btn.Size = new Size(25, 25);
+        	btn.AutoToolTip = false;
+
+        	for(int i = _tools.Length-1;i>=0;i--)
+        	{
+        	    AbstractDrawingTool tool = _tools[i];
+        	    ToolStripMenuItem item = new ToolStripMenuItem();
+        	    item.Image = tool.Icon;
+        	    item.Text = tool.DisplayName;
+        	    item.Tag = tool;
+        	    int indexClosure = _tools.Length - 1 - i;
+        	    item.Click += (s,e) =>
+        	    {
+        	        btn.SelectedIndex = indexClosure;
+        	        _handler(s,e);
+        	    };
+
+        	    btn.DropDownItems.Add(item);
+        	}
+        	
+        	btn.SelectedIndex = _tools.Length - 1 - selectedIndex;
+        	
+        	stripDrawingTools.Items.Add(btn);
+		}
+		private void AddToolButtonPosture(EventHandler _handler)
+        {
+		    if(GenericPostureManager.Tools.Count > 0)
+		        AddToolButtonWithMenu(GenericPostureManager.Tools.ToArray(), 0, drawingTool_Click);
 		}
 		private void InitializeMetadata()
 		{
