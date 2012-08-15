@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Ołówek</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Przesuń</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Idź do początku</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Skocz na koniec</value></data>
    

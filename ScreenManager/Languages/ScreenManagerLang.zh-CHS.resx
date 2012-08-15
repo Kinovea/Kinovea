@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>铅笔</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>移动</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>文字</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>回到开始</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>跳到最后</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>放大镜</value></data>

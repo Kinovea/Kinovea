@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Kynä</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Siirrä</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Teksti</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Palaa alkuun</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Siirry loppuun</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Suurennuslasi</value></data>

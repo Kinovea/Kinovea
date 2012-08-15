@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Potlood</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Verplaats</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Ga terug naar het begin</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Spring naar het eind</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Vergrootglas</value></data>

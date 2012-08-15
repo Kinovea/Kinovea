@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Kalem</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Taşı</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Metin</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Başa Geri Dön</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Sona Atla</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Büyüteç</value></data>

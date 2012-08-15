@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Μολύβι</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Μετακίνηση</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Κείμενο</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Πήγαινε Πίσω στην Αρχή</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Πήδημα στο Τέλος</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Μεγεθυντής</value></data>

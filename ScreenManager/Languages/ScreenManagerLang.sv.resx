@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Penna</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Flytta</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Text</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Gå tillbaka till början</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Hoppa till slutet</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Förstoringsglas</value></data>

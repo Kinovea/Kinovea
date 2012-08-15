@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Blyant</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Flyt</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Gå tibage til begyndelsen</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Hop til enden</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Forstør</value></data>
