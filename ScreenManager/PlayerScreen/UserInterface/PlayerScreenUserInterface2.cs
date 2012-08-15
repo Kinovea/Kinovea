@@ -688,6 +688,7 @@ namespace Kinovea.ScreenManager
 			
 			RepositionSpeedControl();			
 			ReloadTooltipsCulture();
+			ReloadToolsCulture();
 			ReloadMenusCulture();
 			m_KeyframeCommentsHub.RefreshUICulture();
 
@@ -2687,9 +2688,10 @@ namespace Kinovea.ScreenManager
 			toolTips.SetToolTip(btnHandlersReset, ScreenManagerLang.ToolTip_ResetWorkingZone);
 			trkSelection.ToolTip = ScreenManagerLang.ToolTip_trkSelection;
 			sldrSpeed.ToolTip = ScreenManagerLang.ToolTip_sldrSpeed;
-
-			// Drawing tools
-			foreach(ToolStripItem tsi in stripDrawingTools.Items)
+		}
+		private void ReloadToolsCulture()
+		{
+		    foreach(ToolStripItem tsi in stripDrawingTools.Items)
 			{
 			    if(tsi is ToolStripSeparator)
 			        continue;
