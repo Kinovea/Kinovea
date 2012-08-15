@@ -551,9 +551,11 @@
     <EmbeddedResource Include="CaptureScreen\UserInterface\FormDevicePicker.resx">
       <DependentUpon>FormDevicePicker.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.da.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.el.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.fi.resx" />
+    <EmbeddedResource Include="Languages\ScreenManagerLang.ko.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.lt.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.no.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.sv.resx" />

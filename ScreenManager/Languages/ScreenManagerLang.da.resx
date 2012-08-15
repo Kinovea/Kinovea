@@ -114,7 +114,7 @@
    <data name="dlgConfigureOpacity_Title" xml:space="preserve"><value>Konfigurer ugennemsigtighed</value></data>
    <data name="dlgConfigureOpacity_lblValue" xml:space="preserve"><value>Ugennemsigtighed: {0:0}%</value></data>
    <data name="dlgConfigureSpeed_lblFPSCaptureTime" xml:space="preserve"><value>Antal billeder pr. sek. under optagelse:\n(f. eks.: 300)</value></data>
-   <data name="dlgConfigureSpeed_lblFPSDisplayTime" xml:space="preserve"><value>Antal billeder pr. sek. under afspilning:\n(f. eks.: 300)</value></data>
+   
    <data name="dlgConfigureSpeed_lblSlowFactor" xml:space="preserve"><value>Video afspilles {0:0} gange langsommere end originalen.</value></data>
    <data name="dlgConfigureSpeed_Title" xml:space="preserve"><value>Konfigurer original hastighed</value></data>
    <data name="dlgConfigureSpeed_ToolTip_Reset" xml:space="preserve"><value>Nulstil</value></data>
@@ -170,11 +170,11 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Valgmuligheder</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Lagringsmåde</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Gem kun analysen</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Kun beskrivelse af tegninger og andre analyseobjekter vil blive gemt. #Filen kan importeres i en video senere.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Gem video med modificerbar analyse</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintMuxed" xml:space="preserve"><value>Tegninger og andre analyseobjekter vil være modoficerbar, når der åbnes med Kinovea.#Hvis der åbnes i andre afspillere, vil tegninger og analyseobjekter ikke være synlige.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Gem video, med permanent analyse</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>Analyseobjekter vil være synlige i alle afspillere, men kan ikke ændres.#Ekstra kommentarer til nøglebilleder vil ikke blive gemt.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Gem kun video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Gem Video…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Gem data for nøglebilleder</value></data>
@@ -212,7 +212,7 @@
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Farve:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguration</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Skriftstørrelse:</value></data>
-   
+   <data name="Generic_LineSizePicker" xml:space="preserve"><value>Bredde:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Ugennemsigtighed:</value></data>
    <data name="Generic_PenSizePicker" xml:space="preserve"><value>Størrelse:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Gem</value></data>
@@ -289,7 +289,7 @@
    <data name="mnuImportImage" xml:space="preserve"><value>Importer billede…</value></data>
    <data name="mnuInvertAngle" xml:space="preserve"><value>Inverter vinkel</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Indlæs data til nøglebilleder…</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0,00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1,5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1,75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
