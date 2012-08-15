@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Pieštukas</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Perkelti</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekstas</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Nuo pradžių</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Į pabaigą</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Didintuvas</value></data>

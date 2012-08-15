@@ -2599,6 +2599,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Arrow.
+        /// </summary>
+        internal static string ToolTip_DrawingToolArrow {
+            get {
+                return ResourceManager.GetString("ToolTip_DrawingToolArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto numbers.
+        /// </summary>
+        internal static string ToolTip_DrawingToolAutonumbers {
+            get {
+                return ResourceManager.GetString("ToolTip_DrawingToolAutonumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Stopwatch.
         /// </summary>
         internal static string ToolTip_DrawingToolChrono {
@@ -2649,6 +2667,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string ToolTip_DrawingToolPointer {
             get {
                 return ResourceManager.GetString("ToolTip_DrawingToolPointer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Spotlight.
+        /// </summary>
+        internal static string ToolTip_DrawingToolSpotlight {
+            get {
+                return ResourceManager.GetString("ToolTip_DrawingToolSpotlight", resourceCulture);
             }
         }
         

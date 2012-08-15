@@ -65,6 +65,14 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        public void UpdateToolTip()
+        {
+            if(dropDownMenuContainer.Items.Count < 1 || selectedIndex < 0 || selectedIndex >= dropDownMenuContainer.Items.Count)
+                return;
+            
+            this.ToolTipText = dropDownMenuContainer.Items[selectedIndex].Text;
+        }
+        
         #region Events and overrides
         protected override void OnMouseDown(MouseEventArgs e)
         {

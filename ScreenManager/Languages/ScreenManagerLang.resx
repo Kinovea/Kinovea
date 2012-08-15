@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Pencil</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Move</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Text</value></data>
+   <data name="ToolTip_DrawingToolArrow" xml:space="preserve"><value>Arrow</value></data>
+   <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve"><value>Spotlight</value></data>
+   <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve"><value>Auto numbers</value></data>
    <data name="ToolTip_First" xml:space="preserve"><value>Go Back to Beginning</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Jump to End</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Magnifier</value></data>

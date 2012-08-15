@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Matita</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Sposta</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Testo</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>Torna all'Inizio</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Salta alla Fine</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Lente d'ingrandimento</value></data>

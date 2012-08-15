@@ -32,8 +32,7 @@ namespace Kinovea.ScreenManager
     	#region Properties
     	public override string DisplayName
     	{
-    		//get { return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
-    		get { return "Arrow";}
+    		get { return ScreenManagerLang.ToolTip_DrawingToolArrow; }
     	}
     	public override Bitmap Icon
     	{

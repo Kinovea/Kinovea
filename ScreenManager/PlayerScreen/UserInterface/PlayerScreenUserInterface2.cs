@@ -2691,13 +2691,31 @@ namespace Kinovea.ScreenManager
 			// Drawing tools
 			foreach(ToolStripItem tsi in stripDrawingTools.Items)
 			{
-				if(tsi is ToolStripButton)
+			    if(tsi is ToolStripSeparator)
+			        continue;
+			    
+			    if(tsi is ToolStripButtonWithDropDown)
+			    {
+                    foreach(ToolStripItem subItem in ((ToolStripButtonWithDropDown)tsi).DropDownItems)
+				    {
+                        if(!(subItem is ToolStripMenuItem))
+                            continue;
+				        
+                        AbstractDrawingTool tool = subItem.Tag as AbstractDrawingTool;
+				        if(tool != null)
+				        {
+				            subItem.Text = tool.DisplayName;
+				            subItem.ToolTipText = tool.DisplayName;
+				        }
+				    }
+                    
+                    ((ToolStripButtonWithDropDown)tsi).UpdateToolTip();
+			    }
+				else if(tsi is ToolStripButton)
 				{
 					AbstractDrawingTool tool = tsi.Tag as AbstractDrawingTool;
 					if(tool != null)
-					{
 						tsi.ToolTipText = tool.DisplayName;
-					}
 				}
 			}
 			

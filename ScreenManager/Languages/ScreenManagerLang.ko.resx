@@ -356,6 +356,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>연필</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>이동</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>문자</value></data>
+   
+   
+   
    <data name="ToolTip_First" xml:space="preserve"><value>시작으로 되돌아감</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>끝으로 감</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>확대경</value></data>
