@@ -87,6 +87,8 @@ namespace Kinovea.ScreenManager
         {
             foreach(TrackablePoint trackablePoint in trackablePoints.Values)
                 trackablePoint.Dispose();
+            
+            drawing.TrackablePointMoved -= drawing_TrackablePointMoved;
         }
         
         private void drawing_TrackablePointMoved(object sender, TrackablePointMovedEventArgs e)
