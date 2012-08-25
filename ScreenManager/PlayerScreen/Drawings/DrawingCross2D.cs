@@ -38,8 +38,12 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("CrossMark")]
-    public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable
+    public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable
     {
+        #region Events
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        #endregion
+        
         #region Properties
         public DrawingStyle DrawingStyle
         {
@@ -52,7 +56,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
 		{
-			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -79,21 +83,13 @@ namespace Kinovea.ScreenManager
             // get => unused.
             set { m_ParentMetadata = value; }
         }
-        
-        // Next 2 props are accessed from Track creation.
-        public Point Center 
-		{
-			get { return m_Center; }
-		}
-        public Color PenColor
-        {
-        	get { return m_StyleHelper.Color; }
-        }
         #endregion
 
         #region Members
-		// Core
-        private Point m_Center;           
+		private Guid id = Guid.NewGuid();
+    	private Dictionary<string, Point> points = new Dictionary<string, Point>();
+    	private bool tracking;
+    	
 		private KeyframeLabel m_LabelCoordinates;
 		private bool m_bShowCoordinates;
 		// Decoration
@@ -113,8 +109,8 @@ namespace Kinovea.ScreenManager
         #region Constructors
         public DrawingCross2D(Point _center, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
-            m_Center = _center;
-            m_LabelCoordinates = new KeyframeLabel(m_Center, Color.Black);
+            points["0"] = _center;
+            m_LabelCoordinates = new KeyframeLabel(points["0"], Color.Black);
             
             // Decoration & binding with editors
             m_StyleHelper.Color = Color.CornflowerBlue;
@@ -142,11 +138,15 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            
+            if(tracking)
+                fOpacityFactor = 1.0;
+            
             if(fOpacityFactor <= 0)
                 return;
             
             int iAlpha = (int)(fOpacityFactor * 255);
-            Point c = _transformer.Transform(m_Center);
+            Point c = _transformer.Transform(points["0"]);
 
             using(Pen p = m_StyleHelper.GetPen(iAlpha))
             using(SolidBrush b = m_StyleHelper.GetBrush((int)(fOpacityFactor * m_iDefaultBackgroundAlpha)))
@@ -158,7 +158,7 @@ namespace Kinovea.ScreenManager
             
             if(m_bShowCoordinates)
             {
-                m_LabelCoordinates.SetText(m_ParentMetadata.CalibrationHelper.GetPointText(m_Center, true));
+                m_LabelCoordinates.SetText(m_ParentMetadata.CalibrationHelper.GetPointText(points["0"], true));
                 m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
@@ -169,20 +169,20 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            m_Center.X += _deltaX;
-            m_Center.Y += _deltaY;
-            m_LabelCoordinates.SetAttach(m_Center, true);
+            points["0"] = new Point(points["0"].X + _deltaX, points["0"].Y + _deltaY);
+            SignalTrackablePointMoved();
+            m_LabelCoordinates.SetAttach(points["0"], true);
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int iHitResult = -1;
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0)
+            if (tracking || fOpacityFactor > 0)
             {
             	if(m_bShowCoordinates && m_LabelCoordinates.HitTest(_point))
             		iHitResult = 1;
-            	else if (m_Center.Box(m_iDefaultRadius + 10).Contains(_point))
+            	else if (points["0"].Box(m_iDefaultRadius + 10).Contains(_point))
                     iHitResult = 0;
             }
             
@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
 				{
 					case "CenterPoint":
 				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_Center = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
+                        points["0"] = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
 				        break;
 					case "CoordinatesVisible":
 				        m_bShowCoordinates = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
@@ -221,11 +221,11 @@ namespace Kinovea.ScreenManager
 			}
 			
 			_xmlReader.ReadEndElement();
-			m_LabelCoordinates.SetAttach(m_Center, true);
+			m_LabelCoordinates.SetAttach(points["0"], true);
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-		    _xmlWriter.WriteElementString("CenterPoint", String.Format("{0};{1}", m_Center.X, m_Center.Y));
+		    _xmlWriter.WriteElementString("CenterPoint", String.Format("{0};{1}", points["0"].X, points["0"].Y));
             _xmlWriter.WriteElementString("CoordinatesVisible", m_bShowCoordinates ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
@@ -241,7 +241,7 @@ namespace Kinovea.ScreenManager
             	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Coordinates");
             	
-            	PointF coords = m_ParentMetadata.CalibrationHelper.GetPointInUserUnit(m_Center);
+            	PointF coords = m_ParentMetadata.CalibrationHelper.GetPointInUserUnit(points["0"]);
 	            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
@@ -259,10 +259,40 @@ namespace Kinovea.ScreenManager
         }
         public override int GetHashCode()
         {
-            int iHash = m_Center.GetHashCode();
+            int iHash = points["0"].GetHashCode();
             iHash ^= m_StyleHelper.GetHashCode();
             return iHash;
         }
+        
+        #region ITrackable implementation and support.
+        public Guid ID
+        {
+            get { return id; }
+        }
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            return points;
+        }
+        public void SetTracking(bool tracking)
+        {
+            this.tracking = tracking;
+        }
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            if(!points.ContainsKey(name))
+                throw new ArgumentException("This point is not bound.");
+            
+            points[name] = value;
+            m_LabelCoordinates.SetAttach(points["0"], true);
+        }
+        private void SignalTrackablePointMoved()
+        {
+            if(TrackablePointMoved == null)
+                return;
+            
+            TrackablePointMoved(this, new TrackablePointMovedEventArgs("0", points["0"]));
+        }
+        #endregion
 
         #region Context menu
         private void mnuShowCoordinates_Click(object sender, EventArgs e)

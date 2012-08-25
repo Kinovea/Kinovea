@@ -21,9 +21,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Kinovea.Video
 {
@@ -41,6 +42,58 @@ namespace Kinovea.Video
             Graphics g = Graphics.FromImage(clone);
             g.DrawImageUnscaled(_bmp, 0, 0);
 			return clone;
+        }
+        
+        /// <summary>
+        /// Extract a rectangular region out of a bitmap.
+        /// </summary>
+        public static Bitmap ExtractTemplate(Bitmap image, Rectangle region)
+        {
+            // TODO: test perfs by simply drawing in the new image.
+            
+            Bitmap template = new Bitmap(region.Width, region.Height, PixelFormat.Format32bppPArgb);
+            
+            BitmapData imageData = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), ImageLockMode.ReadOnly, image.PixelFormat );
+			BitmapData templateData = template.LockBits(new Rectangle( 0, 0, template.Width, template.Height ), ImageLockMode.ReadWrite, template.PixelFormat );
+				
+            int pixelSize = 4;
+	            
+            int tplStride = templateData.Stride;
+            int templateWidthInBytes = region.Width * pixelSize;
+            int tplOffset = tplStride - templateWidthInBytes;
+            
+            int imgStride = imageData.Stride;
+            int imageWidthInBytes = image.Width * pixelSize;
+            int imgOffset = imgStride - (image.Width * pixelSize) + imageWidthInBytes - templateWidthInBytes;
+            
+            int startY = Math.Max(0, region.Top);
+            int startX = Math.Max(0, region.Left);
+            
+			unsafe
+			{
+				byte* pTpl = (byte*) templateData.Scan0.ToPointer();
+				byte* pImg = (byte*) imageData.Scan0.ToPointer()  + (imgStride * startY) + (pixelSize * startX);
+				
+				for ( int row = 0; row < region.Height; row++ )
+                {
+					if(startY + row > imageData.Height - 1)
+						break;
+                    
+					for ( int col = 0; col < templateWidthInBytes; col++, pTpl++, pImg++ )
+                    {
+						if(startX * pixelSize + col < imageWidthInBytes)
+							*pTpl = *pImg;	
+                    }
+                    
+                    pTpl += tplOffset;
+                    pImg += imgOffset;
+				}
+			}
+			
+			image.UnlockBits(imageData);
+            template.UnlockBits(templateData);
+            
+            return template;
         }
     }
 }
