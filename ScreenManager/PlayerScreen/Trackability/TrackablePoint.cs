@@ -161,11 +161,10 @@ namespace Kinovea.ScreenManager
             trackerParameters.SearchWindowSize = new Size(templateWidth * searchExpand, templateHeight * searchExpand);
 	    }
 	    
-	    
 	    private TrackFrame CreateTrackFrame(Point location, PositionningSource positionningSource)
 	    {
 	        Rectangle region = location.Box(templateSize);
-	        Bitmap template = ImageUtils.ExtractTemplate(context.Image, region);
+	        Bitmap template = context.Image.ExtractTemplate(region);
 	        return new TrackFrame(context.Time, location, template, positionningSource);
 	    }
 	    
