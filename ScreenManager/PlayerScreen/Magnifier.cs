@@ -176,6 +176,7 @@ namespace Kinovea.ScreenManager
         public void ResetData()
         {
             points["0"] = Point.Empty;
+            tracking = false;
             m_source.Rectangle = points["0"].Box(50);
             m_insert = new Rectangle(10, 10, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
             
