@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
             trackers.Add(drawing.ID, new DrawingTracker(drawing, context));
         }
         
-        public void Dispose()
+        public void Clear()
         {
             foreach(DrawingTracker tracker in trackers.Values)
                 tracker.Dispose();

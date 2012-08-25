@@ -1461,6 +1461,7 @@ namespace Kinovea.ScreenManager
         private void ResetCoreContent()
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
+            m_TrackabilityManager.Clear();
             m_Keyframes.Clear();
             StopAllTracking();
             m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);

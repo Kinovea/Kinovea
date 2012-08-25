@@ -47,7 +47,7 @@ namespace Kinovea.Video
         /// <summary>
         /// Extract a rectangular region out of a bitmap.
         /// </summary>
-        public static Bitmap ExtractTemplate(Bitmap image, Rectangle region)
+        public static Bitmap ExtractTemplate(this Bitmap image, Rectangle region)
         {
             // TODO: test perfs by simply drawing in the new image.
             
