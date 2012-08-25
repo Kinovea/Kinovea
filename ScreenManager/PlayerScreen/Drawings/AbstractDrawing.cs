@@ -123,6 +123,7 @@ namespace Kinovea.ScreenManager
 	    ConfigureColor = 1,
 	    ConfigureColorSize = 2,
 	    Fading = 4,
-	    Opacity = 8
+	    Opacity = 8,
+	    Track = 16
 	}
 }

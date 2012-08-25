@@ -180,6 +180,7 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FilenameHelper.cs" />
@@ -288,6 +289,7 @@
     <Compile Include="PlayerScreen\Drawings\IInitializable.cs" />
     <Compile Include="PlayerScreen\Drawings\IKvaSerializable.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
+    <Compile Include="PlayerScreen\Drawings\ITrackable.cs" />
     <Compile Include="PlayerScreen\Drawings\RoundedRectangle.cs" />
     <Compile Include="PlayerScreen\Drawings\Spotlight.cs" />
     <Compile Include="PlayerScreen\Drawings\SpotlightManager.cs" />
@@ -324,6 +326,17 @@
     <Compile Include="PlayerScreen\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
+    <Compile Include="PlayerScreen\Trackability\DrawingTracker.cs" />
+    <Compile Include="PlayerScreen\Trackability\PositionningSource.cs" />
+    <Compile Include="PlayerScreen\Trackability\Tracker.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackabilityManager.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackablePoint.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackablePointMovedEventArgs.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackerParameters.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackFrame.cs" />
+    <Compile Include="PlayerScreen\Trackability\Timeline.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackingContext.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackResult.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTracker.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTrackPoint.cs" />
     <Compile Include="PlayerScreen\Tracking\Track.cs" />
@@ -722,6 +735,7 @@
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\HitZones" />
     <Folder Include="PlayerScreen\Geometry" />
+    <Folder Include="PlayerScreen\Trackability" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

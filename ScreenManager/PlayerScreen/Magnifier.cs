@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -27,7 +28,7 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Picture-in-picture with magnification.
     /// </summary>
-    public class Magnifier
+    public class Magnifier : ITrackable
     {
         // As always, coordinates are expressed in terms of the original image size.
         // They are converted to display size at the last moment, using the CoordinateSystem transformer.
@@ -35,6 +36,10 @@ namespace Kinovea.ScreenManager
         // TODO: support for rendering unscaled.
         
         public static readonly double[] MagnificationFactors = new double[]{1.50, 1.75, 2.0, 2.25, 2.5};
+        
+        #region Events
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        #endregion
         
         #region Properties
         public MagnifierMode Mode {
@@ -54,9 +59,13 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
+        private Guid id = Guid.NewGuid();
+    	private Dictionary<string, Point> points = new Dictionary<string, Point>();
+    	private bool tracking;
+    	
         private BoundingBox m_source = new BoundingBox();   // Wrapper for the region of interest in the original image.
         private Rectangle m_insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
-        private MagnifierMode m_mode;// = MagnifierMode.None;
+        private MagnifierMode m_mode;
         private Point m_sourceLastLocation;
         private Point m_insertLastLocation;
         private int m_hitHandle = -1;
@@ -113,11 +122,15 @@ namespace Kinovea.ScreenManager
             {
                 m_source.Move(_location.X - m_sourceLastLocation.X, _location.Y - m_sourceLastLocation.Y);
                 m_sourceLastLocation = _location;
+                points["0"] = m_source.Rectangle.Center();
+                SignalTrackablePointMoved();
             }
             else if(m_hitHandle > 0 && m_hitHandle < 5)
             {
                 m_source.MoveHandle(_location, m_hitHandle, Size.Empty, false);
+                points["0"] = m_source.Rectangle.Center();
                 ResizeInsert();
+                SignalTrackablePointMoved();
             }
             else if(m_hitHandle == 5)
             {
@@ -162,14 +175,44 @@ namespace Kinovea.ScreenManager
         }
         public void ResetData()
         {
-            Size defaultSize = new Size(100, 100);
-            m_source.Rectangle = new Rectangle(- (defaultSize.Width / 2), - (defaultSize.Height / 2), defaultSize.Width, defaultSize.Height);
+            points["0"] = Point.Empty;
+            m_source.Rectangle = points["0"].Box(50);
             m_insert = new Rectangle(10, 10, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
             
-            m_sourceLastLocation = Point.Empty;
-            m_insertLastLocation = Point.Empty;
+            m_sourceLastLocation = points["0"];
+            m_insertLastLocation = points["0"];
             
             m_mode = MagnifierMode.None;
+        }
+        #endregion
+        
+        #region ITrackable implementation and support.
+        public Guid ID
+        {
+            get { return id; }
+        }
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            return points;
+        }
+        public void SetTracking(bool tracking)
+        {
+            this.tracking = tracking;
+        }
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            if(!points.ContainsKey(name))
+                throw new ArgumentException("This point is not bound.");
+            
+            points[name] = value;
+            m_source.Rectangle = points[name].Box(m_source.Rectangle.Size);
+        }
+        private void SignalTrackablePointMoved()
+        {
+            if(TrackablePointMoved == null)
+                return;
+            
+            TrackablePointMoved(this, new TrackablePointMovedEventArgs("0", points["0"]));
         }
         #endregion
         

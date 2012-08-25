@@ -168,7 +168,10 @@ namespace Kinovea.ScreenManager
 		public CalibrationHelper CalibrationHelper 
 		{
 			get { return m_CalibrationHelper; }
-			set { m_CalibrationHelper = value; }
+		}
+		public TrackabilityManager TrackabilityManager
+		{
+		    get { return m_TrackabilityManager;}
 		}
         #endregion
 
@@ -203,6 +206,7 @@ namespace Kinovea.ScreenManager
         private int m_iLastCleanHash;
         private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
+		private TrackabilityManager m_TrackabilityManager = new TrackabilityManager();
         
         // Read from XML, used for adapting the data to the current video
         private Size m_InputImageSize = new Size(0, 0);
