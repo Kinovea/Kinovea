@@ -2216,8 +2216,10 @@ namespace Kinovea.ScreenManager
             {
                 m_FrameServer.VideoReader.DisableCustomDecodingSize();
             }
-            
-            ResizeUpdate(true);
+            else if(!wasCustomDecodingSize && m_bEnableCustomDecodingSize)
+            {
+                ResizeUpdate(true);
+            }
                         
             log.DebugFormat("CheckCustomDecodingSize. was:{0}, is:{1}", wasCustomDecodingSize, m_bEnableCustomDecodingSize);
 		}
@@ -2460,6 +2462,7 @@ namespace Kinovea.ScreenManager
 		    if(!m_FrameServer.VideoReader.Loaded)
 		        return false;
 		    
+		    bool refreshInPlace = _iSeekTarget == m_iCurrentPosition;
 		    bool hasMore = false;
 		    
 		    if(_iSeekTarget < 0)
@@ -2474,13 +2477,11 @@ namespace Kinovea.ScreenManager
                 m_FrameServer.Metadata.TrackabilityManager.Track(m_FrameServer.VideoReader.Current);
                     
 				bool contiguous = _iSeekTarget < 0 && m_iFramesToDecode <= 1;
-				ComputeOrStopTracking(contiguous);
+				if(!refreshInPlace)
+				    ComputeOrStopTracking(contiguous);
 				
 				if(_bAllowUIUpdate) 
-				{
-				    //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
 				    DoInvalidate();
-				}
 				
 				ReportForSyncMerge();
 			}
@@ -4123,7 +4124,7 @@ namespace Kinovea.ScreenManager
 		#region Main
 		private void mnuDirectTrack_Click(object sender, EventArgs e)
 		{
-			// Track the point. No Cross2D was selected.
+			// Track the point.
 			// m_DescaledMouse would have been set during the MouseDown event.
 			CheckCustomDecodingSize(true);
 			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.CurrentImage, m_FrameServer.CurrentImage.Size);
@@ -4216,6 +4217,8 @@ namespace Kinovea.ScreenManager
 			    // Tracking is not compatible with custom decoding size, force the use of the original size.
 			    // This will set the context of the trackability manager with the right image size.
 			    CheckCustomDecodingSize(true);
+			    // Force the context
+			    ShowNextFrame(m_iCurrentPosition, true);
 			    m_FrameServer.Metadata.TrackabilityManager.ToggleTracking(drawing);
 			}
 		}
@@ -4465,8 +4468,9 @@ namespace Kinovea.ScreenManager
 		{
             ITrackable drawing = m_FrameServer.Metadata.Magnifier as ITrackable;
             
-            // Tracking is not compatible with custom decoding size force the use of the original size.
+            // Tracking is not compatible with custom decoding size, force the use of the original size.
             CheckCustomDecodingSize(true);
+            ShowNextFrame(m_iCurrentPosition, true);
             m_FrameServer.Metadata.TrackabilityManager.ToggleTracking(drawing);
 		}
 		
