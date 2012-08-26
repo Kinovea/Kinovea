@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 
 using Kinovea.Services;
@@ -46,9 +48,11 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
+        public bool Trackable { get; private set;}
         #endregion
         
         #region Members
+        private List<int> trackableIndices = new List<int>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -77,9 +81,15 @@ namespace Kinovea.ScreenManager
 
             XmlReader reader = XmlReader.Create(descriptionFile, settings);
             if(info)
+            {
                 ReadInfoXml(reader);
+            }
             else
+            {
                 ReadXml(reader);
+                trackableIndices = Handles.Where(h => h.Trackable).Select(h => h.Reference).ToList();
+                Trackable = trackableIndices.Count > 0;
+            }
             
             reader.Close();
         }
@@ -320,5 +330,39 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
         }
         #endregion
+   
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            Dictionary<string, Point> trackablePoints = new Dictionary<string, Point>();
+            
+            // TODO: generalize the use of PointF.
+            foreach(int index in trackableIndices)
+            {
+                Point p = new Point((int)Points[index].X, (int)Points[index].Y);
+                trackablePoints.Add(index.ToString(), p);
+            }
+            
+            return trackablePoints;
+        }
+        
+        public void SignalAllTrackablePointsMoved(EventHandler<TrackablePointMovedEventArgs> trackablePointMoved)
+        {
+            // TODO: generalize the use of PointF.
+            foreach(int index in trackableIndices)
+            {
+                Point p = new Point((int)Points[index].X, (int)Points[index].Y);
+                trackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
+            }
+        }
+              
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            // Value coming from tracking.
+            int index = int.Parse(name);
+            if(index >= Points.Count)
+                throw new ArgumentException("This point is not bound.");
+            
+            GenericPostureConstraintEngine.MoveHandle(this, index, value, Keys.None);
+        }
     }
 }

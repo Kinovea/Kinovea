@@ -13,12 +13,12 @@
     <Angle origin="1" leg1="3" leg2="2" relative="true" tenth="true"/>
   </Angles>
   <Handles>
-    <Handle type="Point" reference="0">
+    <Handle type="Point" reference="0" trackable="true">
       <Impact type="KeepAngle">
         <KeepAngle origin="1" leg1="0" leg2="2"/>
       </Impact>
     </Handle>
-    <Handle type="Point" reference="1">
+    <Handle type="Point" reference="1" trackable="true">
       <Impact type="KeepAngle">
         <KeepAngle origin="1" leg1="0" leg2="2"/>
       </Impact>
@@ -28,7 +28,7 @@
         <RotationSteps origin="1" leg1="0" step="45"/>
       </Constraint>
     </Handle>
-    <Handle type="Point" reference="3"/>
+    <Handle type="Point" reference="3" trackable="true"/>
   </Handles>
   <Icon>
     iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m

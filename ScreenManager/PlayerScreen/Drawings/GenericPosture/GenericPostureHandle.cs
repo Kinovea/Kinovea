@@ -30,6 +30,7 @@ namespace Kinovea.ScreenManager
     {
         public HandleType Type { get; private set;}
         public int Reference { get; private set;}
+        public bool Trackable { get; private set;}
         public PointF GrabPoint { get; set;}
         public GenericPostureAbstractConstraint Constraint { get; private set;}
         public List<GenericPostureAbstractImpact> Impacts { get; private set;}
@@ -38,7 +39,7 @@ namespace Kinovea.ScreenManager
         
         public GenericPostureHandle(XmlReader r)
         {
-            //<Handle type="Point" reference="0">
+            //<Handle type="Point" reference="0" trackable="true">
             //  <Constraint type="LineSlide">
             //    <LineSlide point1="0" point2="2" position="Inbetween"/>
             //  </Constraint>
@@ -48,7 +49,6 @@ namespace Kinovea.ScreenManager
             //</Handle>
             
             // TODO: maybe use the same pattern for Handle than for constraints, impacts and hit zones.
-            
             
             Constraint = null;
             Impacts = new List<GenericPostureAbstractImpact>();
@@ -60,6 +60,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("reference"))
                 Reference = r.ReadContentAsInt();
+            
+            if(r.MoveToAttribute("trackable"))
+                Trackable = r.ReadContentAsBoolean();
             
             r.ReadStartElement();
             
