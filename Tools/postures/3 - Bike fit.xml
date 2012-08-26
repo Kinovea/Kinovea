@@ -20,14 +20,14 @@
     <Angle origin="2" leg1="1" leg2="3" relative="true" radius="20"/> <!-- elbow -->
   </Angles>
   <Handles>
-    <Handle type="Point" reference="0"/>
-    <Handle type="Point" reference="1"/>
-    <Handle type="Point" reference="2"/>
-    <Handle type="Point" reference="3"/>
-    <Handle type="Point" reference="4"/>
-    <Handle type="Point" reference="5"/>
-    <Handle type="Point" reference="6"/>
-    <Handle type="Point" reference="7"/>
+    <Handle type="Point" reference="0" trackable="true"/>
+    <Handle type="Point" reference="1" trackable="true"/>
+    <Handle type="Point" reference="2" trackable="true"/>
+    <Handle type="Point" reference="3" trackable="true"/>
+    <Handle type="Point" reference="4" trackable="true"/>
+    <Handle type="Point" reference="5" trackable="true"/>
+    <Handle type="Point" reference="6" trackable="true"/>
+    <Handle type="Point" reference="7" trackable="true"/>
   </Handles>
   <InitialConfiguration>
     <Point>200;200</Point> <!-- tip of head -->

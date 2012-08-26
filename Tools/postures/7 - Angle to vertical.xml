@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KinoveaPostureTool>
+  <FormatVersion>1.0</FormatVersion>
+  <Name>Angle to vertical</Name>
+  <Id>B0D88F59-FA46-4B8A-A2B3-F28A66FE2163</Id>
+  <PointCount>4</PointCount>
+  <Segments>
+    <Segment point1="0" point2="2" style="Dash" width="2"/>
+    <Segment point1="1" point2="3" name="" style="Solid" width="2"/>
+  </Segments>
+  <Angles>
+    <Angle origin="1" leg1="2" leg2="3" relative="true" tenth="true"/>
+  </Angles>
+  <Handles>
+    <Handle type="Point" reference="0">
+      <Constraint type="VerticalSlide"/>
+    </Handle>
+    <Handle type="Point" reference="1" trackable="true">
+      <Impact type="HorizontalAlign">
+        <HorizontalAlign point="0"/>
+      </Impact>
+      <Impact type="HorizontalAlign">
+        <HorizontalAlign point="2"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="2">
+      <Constraint type="VerticalSlide"/>
+    </Handle>
+    <Handle type="Point" reference="3" trackable="true"/>
+  </Handles>
+  <Icon>
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAENSURBVHjanNOxSwJhGMfxUyqcQqfEJQTR1cFRUBzcXAIhzO3QHPwHbG5w6U8QcglCt0YRGsyCxgYDkXBQyEWHRLLi+p48g8i9d+oDH16O9+XHe8/7vi7DMLTNeqh1Igwn+MOTZlEZPb4a3Zp1xVDDJVyaTakCvhCCF4f7BHziF8di54AFJvBJH3YOGGGGMFL7BMyleR40ca3qhSpgiSHq8n2Fc6uFB4oA878vcCphBVTxgc42OzC3r+MMb+gigAai2wQc4R0JvCKLF/hxI/O2Ad94Rgl9jFHBj5xK0SnArDRukZRePSKHO7SdAtzSyCDya+ua0tye0ymYT7SFMgZ2t9EuYIp7uUDKgH8BBgDF1DfNhJIu9QAAAABJRU5ErkJggg==
+  </Icon>
+  <InitialConfiguration>
+    <Point>100;100</Point>
+    <Point>100;150</Point>
+    <Point>100;200</Point>
+    <Point>150;200</Point>
+  </InitialConfiguration>
+</KinoveaPostureTool>

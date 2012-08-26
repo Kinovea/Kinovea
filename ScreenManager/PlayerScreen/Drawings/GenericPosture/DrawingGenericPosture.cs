@@ -36,8 +36,12 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType("GenericPosture")]
-    public class DrawingGenericPosture : AbstractDrawing, IKvaSerializable, IDecorable
+    public class DrawingGenericPosture : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable
     {
+        #region Events
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        #endregion
+        
         #region Properties
         public DrawingStyle DrawingStyle
         {
@@ -50,7 +54,13 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
         {
-          get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading; }
+            get 
+            {
+                if(m_GenericPosture.Trackable)
+                    return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track;
+                else
+                    return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading;
+            }
         }
         public override List<ToolStripMenuItem> ContextMenu
         {
@@ -59,7 +69,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private GenericPosture m_GenericPosture;
+        private Guid id = Guid.NewGuid();
+    	private bool tracking;
+    	private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
         
         private DrawingStyle m_Style;
@@ -103,6 +115,9 @@ namespace Kinovea.ScreenManager
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
         
+            if(tracking)
+                fOpacityFactor = 1.0;
+            
             if (fOpacityFactor <= 0)
                 return;
         
@@ -164,7 +179,7 @@ namespace Kinovea.ScreenManager
         {
             // Convention: miss = -1, object = 0, handle = n.
             int iHitResult = -1;
-            if (m_InfosFading.GetOpacityFactor(_iCurrentTimestamp) <= 0)
+            if (!tracking && m_InfosFading.GetOpacityFactor(_iCurrentTimestamp) <= 0)
                return -1;
 
             for(int i = 0; i<m_GenericPosture.Handles.Count;i++)
@@ -202,6 +217,7 @@ namespace Kinovea.ScreenManager
             int index = handle - 1;
             GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, index, point, modifiers);
             UpdateAngles();
+            SignalAllTrackablePointsMoved();
         }
         public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers)
         {
@@ -209,6 +225,7 @@ namespace Kinovea.ScreenManager
                 m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Translate(deltaX, deltaY);
             
             UpdateAngles();
+            SignalAllTrackablePointsMoved();
         }
         #endregion
 
@@ -340,6 +357,34 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region ITrackable implementation and support.
+        public Guid ID
+        {
+            get { return id; }
+        }
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            return m_GenericPosture.GetTrackablePoints();
+        }
+        public void SetTracking(bool tracking)
+        {
+            this.tracking = tracking;
+        }
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            m_GenericPosture.SetTrackablePointValue(name, value);
+            UpdateAngles();
+        }
+        private void SignalAllTrackablePointsMoved()
+        {
+            if(TrackablePointMoved == null)
+                return;
+         
+            m_GenericPosture.SignalAllTrackablePointsMoved(TrackablePointMoved);
+        }
+        #endregion
+       
+        
         #region Lower level helpers
         private void InitAngles()
         {
