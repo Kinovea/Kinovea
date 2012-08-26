@@ -39,8 +39,12 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Line")]
-    public class DrawingLine2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
+    public class DrawingLine2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable
     {
+        #region Events
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        #endregion
+        
         #region Properties
         public DrawingStyle DrawingStyle
         {
@@ -53,7 +57,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
 		{
-			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -85,9 +89,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        // Core
-        public Point m_StartPoint;            	// Public because also used for the Active Screen Bordering...
-        public Point m_EndPoint;				// Idem.
+        private Guid id = Guid.NewGuid();
+    	private Dictionary<string, Point> points = new Dictionary<string, Point>();
+    	private bool tracking;
+    	
         // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
@@ -105,8 +110,8 @@ namespace Kinovea.ScreenManager
         #region Constructors
         public DrawingLine2D(Point _start, Point _end, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
-            m_StartPoint = _start;
-            m_EndPoint = _end;
+            points["a"] = _start;
+            points["b"] = _end;
             m_LabelMeasure = new KeyframeLabel(GetMiddlePoint(), Color.Black);
             
             // Decoration
@@ -139,11 +144,15 @@ namespace Kinovea.ScreenManager
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            
+            if(tracking)
+                fOpacityFactor = 1.0;
+            
             if(fOpacityFactor <= 0)
                 return;
             
-            Point start = _transformer.Transform(m_StartPoint);
-            Point end = _transformer.Transform(m_EndPoint);
+            Point start = _transformer.Transform(points["a"]);
+            Point end = _transformer.Transform(points["b"]);
             
             using(Pen penEdges = m_StyleHelper.GetPen((int)(fOpacityFactor * 255), _transformer.Scale))
             {
@@ -161,7 +170,7 @@ namespace Kinovea.ScreenManager
             if(m_bShowMeasure)
             {
             	// Text of the measure. (The helpers knows the unit)
-            	m_LabelMeasure.SetText(m_ParentMetadata.CalibrationHelper.GetLengthText(m_StartPoint, m_EndPoint));
+            	m_LabelMeasure.SetText(m_ParentMetadata.CalibrationHelper.GetLengthText(points["a"], points["b"]));
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
@@ -169,17 +178,18 @@ namespace Kinovea.ScreenManager
         {
             int iHitResult = -1;
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0)
+            if (tracking || fOpacityFactor > 0)
             {
             	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
             		iHitResult = 3;
-            	else if (m_StartPoint.Box(6).Contains(_point))
+            	else if (points["a"].Box(6).Contains(_point))
                     iHitResult = 1;
-            	else if (m_EndPoint.Box(6).Contains(_point))
+            	else if (points["b"].Box(6).Contains(_point))
                     iHitResult = 2;
                 else if (IsPointInObject(_point))
                     iHitResult = 0;
             }
+            
             return iHitResult;
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
@@ -190,26 +200,28 @@ namespace Kinovea.ScreenManager
             	case 1:
                     if((modifiers & Keys.Shift) == Keys.Shift)
                     {
-                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(m_EndPoint, point, constraintAngleSubdivisions);
-                        m_StartPoint = new Point((int)result.X, (int)result.Y);
+                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(points["b"], point, constraintAngleSubdivisions);
+                        points["a"] = new Point((int)result.X, (int)result.Y);
                     }
                     else
                     {
-                        m_StartPoint = point;
+                        points["a"] = point;
                     }
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+                    SignalTrackablePointMoved("a");
             		break;
             	case 2:
                     if((modifiers & Keys.Shift) == Keys.Shift)
                     {
-                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(m_StartPoint, point, constraintAngleSubdivisions);
-                        m_EndPoint = new Point((int)result.X, (int)result.Y);
+                        PointF result = GeometryHelper.GetPointAtClosestRotationStepCardinal(points["a"], point, constraintAngleSubdivisions);
+                        points["b"] = new Point((int)result.X, (int)result.Y);
                     }
                     else
                     {
-                        m_EndPoint = point;
+                        points["b"] = point;
                     }
                     m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+                    SignalTrackablePointMoved("b");
             		break;
             	case 3:
             		// Move the center of the mini label to the mouse coord.
@@ -219,13 +231,10 @@ namespace Kinovea.ScreenManager
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
         {
-            m_StartPoint.X += _deltaX;
-            m_StartPoint.Y += _deltaY;
-
-            m_EndPoint.X += _deltaX;
-            m_EndPoint.Y += _deltaY;
-
+            points["a"] = new Point(points["a"].X + _deltaX, points["a"].Y + _deltaY);
+            points["b"] = new Point(points["b"].X + _deltaX, points["b"].Y + _deltaY);
             m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+            SignalAllTrackablePointsMoved();
         }
         #endregion
 
@@ -241,13 +250,13 @@ namespace Kinovea.ScreenManager
 					case "Start":
 				        {
 				            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-				            m_StartPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+				            points["a"] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
                             break;
 				        }
 					case "End":
 				        {
     				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            m_EndPoint = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            points["b"] = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
                             break;
 				        }
                     case "DrawingStyle":
@@ -273,8 +282,8 @@ namespace Kinovea.ScreenManager
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-            _xmlWriter.WriteElementString("Start", String.Format("{0};{1}", m_StartPoint.X, m_StartPoint.Y));
-            _xmlWriter.WriteElementString("End", String.Format("{0};{1}", m_EndPoint.X, m_EndPoint.Y));
+            _xmlWriter.WriteElementString("Start", String.Format("{0};{1}", points["a"].X, points["a"].Y));
+            _xmlWriter.WriteElementString("End", String.Format("{0};{1}", points["b"].X, points["b"].Y));
             _xmlWriter.WriteElementString("MeasureVisible", m_bShowMeasure ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
@@ -290,7 +299,7 @@ namespace Kinovea.ScreenManager
             	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Measure");
             	
-            	double len = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit(m_StartPoint, m_EndPoint);
+            	double len = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit(points["a"], points["b"]);
 	            string value = String.Format("{0:0.00}", len);
 	            string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 
@@ -310,6 +319,44 @@ namespace Kinovea.ScreenManager
 		}
         #endregion
         
+         #region ITrackable implementation and support.
+        public Guid ID
+        {
+            get { return id; }
+        }
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            return points;
+        }
+        public void SetTracking(bool tracking)
+        {
+            this.tracking = tracking;
+        }
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            if(!points.ContainsKey(name))
+                throw new ArgumentException("This point is not bound.");
+            
+            points[name] = value;
+            m_LabelMeasure.SetAttach(GetMiddlePoint(), true);
+        }
+        private void SignalAllTrackablePointsMoved()
+        {
+            if(TrackablePointMoved == null)
+                return;
+            
+            foreach(KeyValuePair<string, Point> p in points)
+                TrackablePointMoved(this, new TrackablePointMovedEventArgs(p.Key, p.Value));
+        }
+        private void SignalTrackablePointMoved(string name)
+        {
+            if(TrackablePointMoved == null || !points.ContainsKey(name))
+                return;
+            
+            TrackablePointMoved(this, new TrackablePointMovedEventArgs(name, points[name]));
+        }
+        #endregion
+        
         public override string ToString()
         {
             return ScreenManagerLang.ToolTip_DrawingToolLine2D;
@@ -317,11 +364,16 @@ namespace Kinovea.ScreenManager
         public override int GetHashCode()
         {
             // Combine all relevant fields with XOR to get the Hash.
-            int iHash = m_StartPoint.GetHashCode();
-            iHash ^= m_EndPoint.GetHashCode();
+            int iHash = points["a"].GetHashCode();
+            iHash ^= points["b"].GetHashCode();
             iHash ^= m_StyleHelper.GetHashCode();
 
             return iHash;
+        }
+        
+        public float Length()
+        {
+            return GeometryHelper.GetDistance(points["a"], points["b"]);
         }
         
         #region Context menu
@@ -335,11 +387,12 @@ namespace Kinovea.ScreenManager
 			
 			CallInvalidateFromMenu(sender);
 		}
+        
         private void mnuSealMeasure_Click(object sender, EventArgs e)
 		{
 			// display a dialog that let the user specify how many real-world-units long is this line.
 			
-			if(m_StartPoint.X != m_EndPoint.X || m_StartPoint.Y != m_EndPoint.Y)
+			if(points["a"].X != points["b"].X || points["a"].Y != points["b"].Y)
 			{
 				if(!m_bShowMeasure)
 					m_bShowMeasure = true;
@@ -379,10 +432,10 @@ namespace Kinovea.ScreenManager
             
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                if(m_StartPoint == m_EndPoint)
-                    areaPath.AddLine(m_StartPoint.X, m_StartPoint.Y, m_StartPoint.X + 2, m_StartPoint.Y + 2);
+                if(points["a"] == points["b"])
+                    areaPath.AddLine(points["a"].X, points["a"].Y, points["a"].X + 2, points["a"].Y + 2);
                 else
-                	areaPath.AddLine(m_StartPoint, m_EndPoint);
+                	areaPath.AddLine(points["a"], points["b"]);
             
                 using(Pen areaPen = new Pen(Color.Black, 7))
                 {
@@ -398,7 +451,7 @@ namespace Kinovea.ScreenManager
         }
         private Point GetMiddlePoint()
         {
-        	return new Point((m_StartPoint.X + m_EndPoint.X)/2, (m_StartPoint.Y + m_EndPoint.Y)/2);
+        	return new Point((points["a"].X + points["b"].X)/2, (points["a"].Y + points["b"].Y)/2);
         }
         
         #endregion

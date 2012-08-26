@@ -51,8 +51,8 @@ namespace Kinovea.ScreenManager
         	m_Metadata = _metadata;
         	m_Line =_line;
         	
-        	m_fCurrentLengthPixels = Math.Sqrt(((m_Line.m_StartPoint.X - m_Line.m_EndPoint.X) * (m_Line.m_StartPoint.X - m_Line.m_EndPoint.X)) + ((m_Line.m_StartPoint.Y - m_Line.m_EndPoint.Y) * (m_Line.m_StartPoint.Y - m_Line.m_EndPoint.Y)));
-        	m_fCurrentLengthReal = m_Metadata.CalibrationHelper.GetLengthInUserUnit(m_Line.m_StartPoint, m_Line.m_EndPoint);
+        	m_fCurrentLengthPixels = (double)m_Line.Length();
+        	m_fCurrentLengthReal = m_Metadata.CalibrationHelper.GetLengthInUserUnit(m_fCurrentLengthPixels);
             	
         	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
         	
@@ -73,6 +73,7 @@ namespace Kinovea.ScreenManager
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Inches + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Inches) + ")");
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Feet + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Feet) + ")");
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Yards + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Yards) + ")");
+            cbUnit.Items.Add("Percentage" + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Percentage) + ")");
             
             // Update with current values.
             if(m_Metadata.CalibrationHelper.CurrentLengthUnit == LengthUnits.Pixels)

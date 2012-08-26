@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
 		Inches,
 		Feet,
 		Yards,
+		Percentage,
 		Pixels		  // Native unit.
 	}
 }

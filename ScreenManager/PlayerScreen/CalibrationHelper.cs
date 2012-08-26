@@ -106,6 +106,9 @@ namespace Kinovea.ScreenManager
 				case LengthUnits.Yards:
 					abbreviation = "yd";
 					break;
+                case LengthUnits.Percentage:
+					abbreviation = "%";
+					break;
 				case LengthUnits.Pixels:
 				default:
 					abbreviation = "px";
@@ -475,6 +478,7 @@ namespace Kinovea.ScreenManager
 					}
 					break;
 				case LengthUnits.Pixels:
+                case LengthUnits.Percentage:
 				default:
 					// If input length is in pixel, this means the image is not calibrated.
 					// Unless the target speed unit is pixel per frame, we can't compute the speed.
