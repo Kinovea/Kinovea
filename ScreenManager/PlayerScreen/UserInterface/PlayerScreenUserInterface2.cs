@@ -4770,7 +4770,9 @@ namespace Kinovea.ScreenManager
                     Path.GetDirectoryName(_filepath), 
                     BuildFilename(_filepath, vf.Timestamp, m_PrefManager.TimeCodeFormat), 
                     Path.GetExtension(_filepath));
-                
+
+                m_FrameServer.Metadata.TrackabilityManager.Track(vf);
+
                 Size s = m_viewportManipulator.RenderingSize;
                     
                 using(Bitmap result = new Bitmap(s.Width, s.Height, PixelFormat.Format24bppRgb))
@@ -4895,6 +4897,9 @@ namespace Kinovea.ScreenManager
 
             CoordinateSystem identityCoordinateSystem = m_FrameServer.CoordinateSystem.Identity;
 
+            // Make sure the trackable drawings are on the right context.
+            m_FrameServer.Metadata.TrackabilityManager.Track(new VideoFrame(_iTimestamp, _source));
+            
 			if (_bKeyframesOnly)
 			{
 				if(iClosestKeyImageDistance == 0)
