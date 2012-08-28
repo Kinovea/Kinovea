@@ -37,18 +37,23 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public class SpotlightManager : AbstractMultiDrawing, IInitializable
 	{
+	    #region Events
+	    public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
+	    public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingRemoved;
+	    #endregion
+	    
 		#region Properties
 		public override object SelectedItem {
 		    get 
 		    {
-                if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
-                    return m_Spotlights[m_iSelected];
+                if(selected >= 0 && selected < spotlights.Count)
+                    return spotlights[selected];
                 else
                     return null;
 		    }
 		}
         public override int Count {
-		    get { return m_Spotlights.Count; }
+		    get { return spotlights.Count; }
         }
 		
 		// Fading is not currently modifiable from outside.
@@ -59,7 +64,7 @@ namespace Kinovea.ScreenManager
         }
         public override DrawingCapabilities Caps
 		{
-			get { return DrawingCapabilities.None; }
+			get { return DrawingCapabilities.Track; }
 		}
         public override List<ToolStripMenuItem> ContextMenu
 		{
@@ -68,32 +73,32 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private List<Spotlight> m_Spotlights = new List<Spotlight>();
-		private int m_iSelected = -1;
-		private static readonly int m_iDefaultBackgroundAlpha = 150; // <-- opacity of the dim layer. Higher value => darker.
+		private List<Spotlight> spotlights = new List<Spotlight>();
+		private int selected = -1;
+		private static readonly int defaultBackgroundAlpha = 150; // <-- opacity of the dim layer. Higher value => darker.
 		#endregion
 		
 		#region AbstractDrawing Implementation
-		public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
+		public override void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp)
 		{
 		    // We draw a single translucent black rectangle to cover the whole image.
 			// (Opacity varies between 0% and 50%, depending on the opacity factor of the closest spotlight in time)
-			if(m_Spotlights.Count < 1)
+			if(spotlights.Count < 1)
 			    return;
 			
 			// Create a mask rectangle and obliterate spotlights from it.
 			// FIXME: spots subtract from each other which is not desirable.
 			// TODO: might be better to first get the opacity, then only ask for the path. In case opacity is 0.
 			GraphicsPath globalPath = new GraphicsPath();
-			globalPath.AddRectangle(_canvas.ClipBounds);
+			globalPath.AddRectangle(canvas.ClipBounds);
 			
 			// Combine all spots into a single GraphicsPath.
 			// Get their opacity in the process to compute the global opacity of the covering rectangle.
 			double maxOpacity = 0.0;
 			GraphicsPath spotsPath = new GraphicsPath();
-			foreach(Spotlight spot in m_Spotlights)
+			foreach(Spotlight spot in spotlights)
 			{
-				double opacity = spot.AddSpot(_iCurrentTimestamp, spotsPath, _transformer);
+				double opacity = spot.AddSpot(currentTimestamp, spotsPath, transformer);
 				maxOpacity = Math.Max(maxOpacity, opacity);
 			}
 			
@@ -104,40 +109,40 @@ namespace Kinovea.ScreenManager
 			globalPath.AddPath(spotsPath, false);
 			
 			// Draw the mask with the spot holes on top of the frame.
-			int backgroundAlpha = (int)((double)m_iDefaultBackgroundAlpha * maxOpacity);
+			int backgroundAlpha = (int)((double)defaultBackgroundAlpha * maxOpacity);
 			using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.Black)))
 			//using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.FromArgb(255, 0, 0, 16))))
 			{
-                _canvas.FillPath(brushBackground, globalPath);
+                canvas.FillPath(brushBackground, globalPath);
             }
 			
 			// Draw each spot border or any visuals.
-            foreach(Spotlight spot in m_Spotlights)
-                spot.Draw(_canvas, _transformer, _iCurrentTimestamp);
+            foreach(Spotlight spot in spotlights)
+                spot.Draw(canvas, transformer, currentTimestamp);
             
             globalPath.Dispose();
             spotsPath.Dispose();
 		}
-		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+		public override void MoveDrawing(int deltaX, int deltaY, Keys modifiers)
 		{
-		    if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
-				m_Spotlights[m_iSelected].MouseMove(_deltaX, _deltaY);
+		    if(selected >= 0 && selected < spotlights.Count)
+				spotlights[selected].MouseMove(deltaX, deltaY);
 		}
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
-		    if(m_iSelected >= 0 && m_iSelected < m_Spotlights.Count)
-				m_Spotlights[m_iSelected].MoveHandleTo(point);
+		    if(selected >= 0 && selected < spotlights.Count)
+				spotlights[selected].MoveHandleTo(point);
 		}
-		public override int HitTest(Point _point, long _iCurrentTimestamp)
+		public override int HitTest(Point point, long currentTimestamp)
         {
 		    int currentSpot = 0;
 		    int handle = -1;
-		    foreach(Spotlight spot in m_Spotlights)
+		    foreach(Spotlight spot in spotlights)
 		    {
-		        handle = spot.HitTest(_point, _iCurrentTimestamp);
+		        handle = spot.HitTest(point, currentTimestamp);
 		        if(handle >= 0)
 		        {
-		            m_iSelected = currentSpot;
+		            selected = currentSpot;
 		            break;
 		        }
 		        currentSpot++;
@@ -148,28 +153,40 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractMultiDrawing Implementation
-		public override void Add(object _item)
+		public override void Add(object item)
         {
-            Spotlight spotlight = _item as Spotlight;
+            Spotlight spotlight = item as Spotlight;
             if(spotlight == null)
                 return;
             
-		    m_Spotlights.Add(spotlight);
-		    m_iSelected = m_Spotlights.Count - 1;
+		    spotlights.Add(spotlight);
+		    selected = spotlights.Count - 1;
+		    
+		    if(TrackableDrawingAdded != null)
+			    TrackableDrawingAdded(this, new TrackableDrawingEventArgs(spotlight));
 		}
-        public override void Remove(object _item)
+        public override void Remove(object item)
 		{
-            Spotlight spotlight = _item as Spotlight;
+            Spotlight spotlight = item as Spotlight;
             if(spotlight == null)
                 return;
             
-		    m_Spotlights.Remove(spotlight);
-		    m_iSelected = -1;
+		    spotlights.Remove(spotlight);
+		    selected = -1;
+		    
+		    if(TrackableDrawingRemoved != null)
+		        TrackableDrawingRemoved(this, new TrackableDrawingEventArgs(spotlight));
 		}
         public override void Clear()
         {
-            m_Spotlights.Clear();
-            m_iSelected = -1;
+            if(TrackableDrawingRemoved != null)
+            {
+                foreach(Spotlight spotlight in spotlights)
+                    TrackableDrawingRemoved(this, new TrackableDrawingEventArgs(spotlight));
+            }
+            
+            spotlights.Clear();
+            selected = -1;
         }
 		#endregion
 		
@@ -185,15 +202,19 @@ namespace Kinovea.ScreenManager
         {
             return "Spotlight"; //ScreenManagerLang.ToolTip_DrawingToolSpotlight;
         }
-		public void Add(Point _point, long _iPosition, long _iAverageTimeStampsPerFrame)
+		public void Add(Point point, long position, long averageTimeStampsPerFrame)
 		{
 		    // Equivalent to GetNewDrawing() for regular drawing tools.
-			m_Spotlights.Add(new Spotlight(_iPosition, _iAverageTimeStampsPerFrame, _point));
-			m_iSelected = m_Spotlights.Count - 1;
+		    Spotlight spotlight = new Spotlight(position, averageTimeStampsPerFrame, point);
+			spotlights.Add(spotlight);
+			selected = spotlights.Count - 1;
+			
+			if(TrackableDrawingAdded != null)
+			    TrackableDrawingAdded(this, new TrackableDrawingEventArgs(spotlight));
 		}
 		public void WriteXml(XmlWriter w)
 		{
-		    foreach(Spotlight spot in m_Spotlights)
+		    foreach(Spotlight spot in spotlights)
 		    {
 		        w.WriteStartElement("Spotlight");
 		        spot.WriteXml(w);

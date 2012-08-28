@@ -52,9 +52,13 @@ namespace Kinovea.ScreenManager
 			get { return m_Metadata; }
 			set 
 			{ 
+			    // Currently this is the only entry point for the local Metadata.
+			    
 			    m_Metadata = value;
 			    m_AutoSaver.SetMetadata(m_Metadata);
 			    m_AutoSaver.Start();
+			    
+			    m_Metadata.RegisterTrackableDrawingCommand = RegisterTrackableDrawing;
 			}
 		}
 		public AutoSaver AutoSaver
@@ -397,5 +401,11 @@ namespace Kinovea.ScreenManager
 	        m_FormProgressBar.Dispose();
 		}
 		#endregion
+        
+		private void RegisterTrackableDrawing(ITrackable trackableDrawing)
+		{
+		    // Not necessarily the final place for this command.
+		    m_Metadata.TrackabilityManager.Add(trackableDrawing, m_VideoReader.Current);
+		}
 	}
 }

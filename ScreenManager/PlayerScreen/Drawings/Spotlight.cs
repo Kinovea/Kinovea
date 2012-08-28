@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
@@ -31,136 +32,178 @@ namespace Kinovea.ScreenManager
 	/// SpotLight. (MultiDrawingItem of SpotlightManager)
 	/// Describe and draw a single spotlight.
 	/// </summary>
-	public class Spotlight : IKvaSerializable
+	public class Spotlight : IKvaSerializable, ITrackable
 	{
+	    #region Events
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        #endregion
+        
 		#region Members
-		private long m_iPosition;
+		private long position;
 		
-		private Point m_Center;
-		private int m_iRadius;
-		private Rectangle m_RescaledRect;
+		private Guid id = Guid.NewGuid();
+    	private Dictionary<string, Point> points = new Dictionary<string, Point>();
+    	private bool tracking;
+        
+		private int radius;
+		private Rectangle rescaledRect;
 		
-		private static readonly int m_iMinimalRadius = 10;
-		private static readonly int m_iBorderWidth = 2;
-		private static readonly DashStyle m_DashStyle = DashStyle.Dash;
-		private InfosFading m_InfosFading;
+		private static readonly int minimalRadius = 10;
+		private static readonly int borderWidth = 2;
+		private static readonly DashStyle dashStyle = DashStyle.Dash;
+		private InfosFading infosFading;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
 		public Spotlight(long _iPosition, long _iAverageTimeStampsPerFrame, Point _center)
 		{
-			m_iPosition = _iPosition;
-			m_Center = _center;
-			m_iRadius = m_iMinimalRadius;
-			m_InfosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
-			m_InfosFading.UseDefault = false;
-			m_InfosFading.FadingFrames = 25;
+			position = _iPosition;
+			points["o"] = _center;
+			radius = minimalRadius;
+			infosFading = new InfosFading(_iPosition, _iAverageTimeStampsPerFrame);
+			infosFading.UseDefault = false;
+			infosFading.FadingFrames = 25;
 		}
 		public Spotlight(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
             : this(0, 0, Point.Empty)
         {
 		     ReadXml(_xmlReader, _scale, _remapTimestampCallback);
 		     
-		     m_InfosFading = new InfosFading(m_iPosition, _iAverageTimeStampsPerFrame);
-			 m_InfosFading.UseDefault = false;
-			 m_InfosFading.FadingFrames = 25;
+		     infosFading = new InfosFading(position, _iAverageTimeStampsPerFrame);
+			 infosFading.UseDefault = false;
+			 infosFading.FadingFrames = 25;
 		}
 		#endregion
 		
 		#region Public methods
-		public double AddSpot(long _timestamp, GraphicsPath _path, CoordinateSystem _transformer)
+		public double AddSpot(long timestamp, GraphicsPath path, CoordinateSystem transformer)
 		{
 			// Add the shape of this spotlight to the global mask for the frame.
 			// The dim rectangle is added separately in Spotlights class.
-			double fOpacityFactor = m_InfosFading.GetOpacityFactor(_timestamp);
-			if(fOpacityFactor <= 0)
+			double opacityFactor = infosFading.GetOpacityFactor(timestamp);
+			
+			if(tracking)
+                opacityFactor = 1.0;
+			
+			if(opacityFactor <= 0)
 			    return 0;
 			
 			//RescaleCoordinates(_fStretchFactor, _DirectZoomTopLeft);
-			Point center = _transformer.Transform(m_Center);
-			int radius = _transformer.Transform(m_iRadius);
-			m_RescaledRect = center.Box(radius);
-			_path.AddEllipse(m_RescaledRect);
+			Point center = transformer.Transform(points["o"]);
+			int r = transformer.Transform(radius);
+			rescaledRect = center.Box(r);
+			path.AddEllipse(rescaledRect);
 			
 			// Return the opacity factor at this spot so the spotlights manager is able to compute the global dim value.
-			return fOpacityFactor;
+			return opacityFactor;
 		}
-		public void Draw(Graphics _canvas, CoordinateSystem _transformer, long _timestamp)
+		public void Draw(Graphics canvas, CoordinateSystem transformer, long timestamp)
         {
 			// This just draws the border.
 			// Note: the coordinate system hasn't moved since AddSpot, but we recompute it anyway...
 			// This might be a good case where we should keep a global.
-			double fOpacityFactor = m_InfosFading.GetOpacityFactor(_timestamp);
-			if(fOpacityFactor <= 0)
+			double opacityFactor = infosFading.GetOpacityFactor(timestamp);
+			
+			if(tracking)
+                opacityFactor = 1.0;
+			
+			if(opacityFactor <= 0)
 			    return;
 		
-			Color colorPenBorder = Color.FromArgb((int)((double)255 * fOpacityFactor), Color.White);
-			using(Pen penBorder = new Pen(colorPenBorder, m_iBorderWidth))
+			Color colorPenBorder = Color.FromArgb((int)((double)255 * opacityFactor), Color.White);
+			using(Pen penBorder = new Pen(colorPenBorder, borderWidth))
 			{
-    			penBorder.DashStyle = m_DashStyle;
-    			_canvas.DrawEllipse(penBorder, m_RescaledRect);
+    			penBorder.DashStyle = dashStyle;
+    			canvas.DrawEllipse(penBorder, rescaledRect);
 			}
 		}
-		public int HitTest(Point _point, long _iCurrentTimeStamp)
+		public int HitTest(Point point, long timeStamp)
 		{
 			// Note: Coordinates are already descaled.
             // Hit Result: -1: miss, 0: on object, 1 on handle.
-			int iHitResult = -1;
-			double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimeStamp);
-			if(fOpacityFactor > 0)
+			int hitResult = -1;
+			double opacityFactor = infosFading.GetOpacityFactor(timeStamp);
+			if(tracking || opacityFactor > 0)
 			{
-				if(IsPointOnHandler(_point))
-                    iHitResult = 1;
-				else if (IsPointInObject(_point))
-                    iHitResult = 0;
+				if(IsPointOnHandler(point))
+                    hitResult = 1;
+				else if (IsPointInObject(point))
+                    hitResult = 0;
 			}
-			return iHitResult;
+			return hitResult;
 		}
-		public void MouseMove(int _deltaX, int _deltaY)
+		public void MouseMove(int deltaX, int deltaY)
 		{
-			m_Center.X += _deltaX;
-            m_Center.Y += _deltaY;
+		    points["o"] = new Point(points["o"].X + deltaX, points["o"].Y + deltaY);
+            SignalTrackablePointMoved();
 		}
 		public void MoveHandleTo(Point point)
         {
             // Point coordinates are descaled.
             // User is dragging the outline of the circle, figure out the new radius at this point.
-            int shiftX = Math.Abs(point.X - m_Center.X);
-            int shiftY = Math.Abs(point.Y - m_Center.Y);
-            m_iRadius = (int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY));
-            
-            if(m_iRadius < m_iMinimalRadius) m_iRadius = m_iMinimalRadius;
+            int shiftX = Math.Abs(point.X - points["o"].X);
+            int shiftY = Math.Abs(point.Y - points["o"].Y);
+            radius = Math.Max((int)Math.Sqrt((shiftX*shiftX) + (shiftY*shiftY)), minimalRadius);
         }
 		#endregion
 		
+		#region ITrackable implementation and support.
+        public Guid ID
+        {
+            get { return id; }
+        }
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            return points;
+        }
+        public void SetTracking(bool tracking)
+        {
+            this.tracking = tracking;
+        }
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            if(!points.ContainsKey(name))
+                throw new ArgumentException("This point is not bound.");
+            
+            points[name] = value;
+        }
+        private void SignalTrackablePointMoved()
+        {
+            if(TrackablePointMoved == null)
+                return;
+            
+            TrackablePointMoved(this, new TrackablePointMovedEventArgs("o", points["o"]));
+        }
+        #endregion
+        
 		#region Private methods
-		private bool IsPointInObject(Point _point)
+		private bool IsPointInObject(Point point)
         {
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddEllipse(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2);
+                areaPath.AddEllipse(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2);
                 using(Region areaRegion = new Region(areaPath))
                 {
-                    hit = areaRegion.IsVisible(_point);
+                    hit = areaRegion.IsVisible(point);
                 }
             }
             return hit;
         }
-		private bool IsPointOnHandler(Point _point)
+		private bool IsPointOnHandler(Point point)
         {
             bool hit = false;
 		    using(GraphicsPath areaPath = new GraphicsPath())
 			{
-                areaPath.AddArc(m_Center.X - m_iRadius, m_Center.Y - m_iRadius, m_iRadius*2, m_iRadius*2, 0, 360);
+                areaPath.AddArc(points["o"].X - radius, points["o"].Y - radius, radius*2, radius*2, 0, 360);
                 using(Pen areaPen = new Pen(Color.Black, 10))
                 {
                     areaPath.Widen(areaPen);
                 }
                 using(Region r = new Region(areaPath))
                 {
-                    hit = r.IsVisible(_point);
+                    hit = r.IsVisible(point);
                 }
 		    }
 		    return hit;
@@ -168,44 +211,44 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region KVA Serialization
-        private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        private void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper timeStampMapper)
         {
-            if(_remapTimestampCallback == null)
+            if(timeStampMapper == null)
             {
-                _xmlReader.ReadOuterXml();
+                xmlReader.ReadOuterXml();
                 return;                
             }
             
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
+			while(xmlReader.NodeType == XmlNodeType.Element)
 			{
-				switch(_xmlReader.Name)
+				switch(xmlReader.Name)
 				{
 					case "Time":
-				        m_iPosition = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+				        position = timeStampMapper(xmlReader.ReadElementContentAsLong(), false);
                         break;
 					case "Center":
-                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                        m_Center = p.Scale(_scale.X, _scale.Y);
+                        Point p = XmlHelper.ParsePoint(xmlReader.ReadElementContentAsString());
+                        points["o"] = p.Scale(scale.X, scale.Y);
                         break;
 					case "Radius":
-                        m_iRadius = _xmlReader.ReadElementContentAsInt();
+                        radius = xmlReader.ReadElementContentAsInt();
 						break;
 				    default:
-						string unparsed = _xmlReader.ReadOuterXml();
+						string unparsed = xmlReader.ReadOuterXml();
 						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
 						break;
 				}
 			}
 			
-			_xmlReader.ReadEndElement();
+			xmlReader.ReadEndElement();
         }
-        public void WriteXml(XmlWriter _xmlWriter)
+        public void WriteXml(XmlWriter xmlWriter)
 		{
-            _xmlWriter.WriteElementString("Time", m_iPosition.ToString());
-            _xmlWriter.WriteElementString("Center", string.Format("{0};{1}", m_Center.X, m_Center.Y));
-            _xmlWriter.WriteElementString("Radius", m_iRadius.ToString());
+            xmlWriter.WriteElementString("Time", position.ToString());
+            xmlWriter.WriteElementString("Center", string.Format("{0};{1}", points["o"].X, points["o"].Y));
+            xmlWriter.WriteElementString("Radius", radius.ToString());
         }
         #endregion
 	}
