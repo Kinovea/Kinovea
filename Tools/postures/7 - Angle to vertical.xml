@@ -33,8 +33,8 @@ iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
   </Icon>
   <InitialConfiguration>
     <Point>100;100</Point>
-    <Point>100;150</Point>
-    <Point>100;200</Point>
-    <Point>150;200</Point>
+    <Point>100;250</Point>
+    <Point>100;400</Point>
+    <Point>200;400</Point>
   </InitialConfiguration>
 </KinoveaPostureTool>

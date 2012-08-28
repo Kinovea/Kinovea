@@ -32,6 +32,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class TrackabilityManager
     {
+        public bool Tracking
+        {
+            get { return trackers.Values.Any((tracker) => tracker.IsTracking); }
+        }
+        
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
 
         public void Add(ITrackable drawing, VideoFrame videoFrame)
@@ -53,8 +58,8 @@ namespace Kinovea.ScreenManager
         
         public void Remove(ITrackable drawing)
         {
-            if(!trackers.ContainsKey(drawing.ID))
-                throw new ArgumentException("This drawing was not registered for tracking.");
+            if(trackers.Count == 0 || !trackers.ContainsKey(drawing.ID))
+                return;
             
             trackers[drawing.ID].Dispose();
             trackers.Remove(drawing.ID);
@@ -68,11 +73,6 @@ namespace Kinovea.ScreenManager
             {
                 tracker.Track(context);
             }
-        }
-        
-        public bool IsTracking()
-        {
-            return trackers.Values.Any((tracker) => tracker.IsTracking);
         }
         
         public bool IsTracking(ITrackable drawing)

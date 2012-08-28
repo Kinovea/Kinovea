@@ -328,6 +328,7 @@
     <Compile Include="PlayerScreen\Metadata.cs" />
     <Compile Include="PlayerScreen\Trackability\DrawingTracker.cs" />
     <Compile Include="PlayerScreen\Trackability\PositionningSource.cs" />
+    <Compile Include="PlayerScreen\Trackability\TrackableDrawingEventArgs.cs" />
     <Compile Include="PlayerScreen\Trackability\Tracker.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackabilityManager.cs" />
     <Compile Include="PlayerScreen\Trackability\TrackablePoint.cs" />
@@ -497,6 +498,7 @@
     </Compile>
     <Compile Include="SummaryLoadedEventArgs.cs" />
     <Compile Include="SummaryLoader.cs" />
+    <Compile Include="ToggleCommand.cs" />
     <Compile Include="UserInterface\ColorPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -19,29 +19,24 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public class TrackablePointMovedEventArgs : EventArgs
+    /// <summary>
+    ///  Simple event args for Added, Removed type of events.
+    /// </summary>
+    public class TrackableDrawingEventArgs : EventArgs
     {
-        public string PointName
+        public ITrackable TrackableDrawing
         {
-            get { return pointName; }
+            get { return trackableDrawing; }
         }
         
-        public Point Position
+        private readonly ITrackable trackableDrawing;
+     
+        public TrackableDrawingEventArgs(ITrackable trackableDrawing)
         {
-            get { return position;}
-        }
-        
-        private readonly string pointName;
-        private readonly Point position;
-        
-        public TrackablePointMovedEventArgs(string pointName, Point position)
-        {
-            this.pointName = pointName;
-            this.position = position;
+            this.trackableDrawing = trackableDrawing;
         }
     }
 }

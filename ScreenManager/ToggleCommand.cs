@@ -19,29 +19,32 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
 
 namespace Kinovea.ScreenManager
-{
-    public class TrackablePointMovedEventArgs : EventArgs
+{   
+    /// <summary>
+    /// A command that executes delegates to determine which state the toggle currently is, and to execute the toggle.
+    /// This should be part of a more general framework for decoupling the Views from the Presenters.
+    /// </summary>
+    public class ToggleCommand
     {
-        public string PointName
+        private readonly Action<object> execute;
+        private readonly Predicate<object> currentState;
+        
+        public ToggleCommand(Action<object> execute, Predicate<object> currentState)
         {
-            get { return pointName; }
+            this.execute = execute;
+            this.currentState = currentState;
         }
         
-        public Point Position
+        public bool CurrentState(object parameter)
         {
-            get { return position;}
+            return currentState(parameter);
         }
         
-        private readonly string pointName;
-        private readonly Point position;
-        
-        public TrackablePointMovedEventArgs(string pointName, Point position)
+        public void Execute(object parameter)
         {
-            this.pointName = pointName;
-            this.position = position;
+            execute(parameter);
         }
     }
 }
