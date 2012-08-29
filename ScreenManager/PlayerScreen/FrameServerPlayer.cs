@@ -57,8 +57,6 @@ namespace Kinovea.ScreenManager
 			    m_Metadata = value;
 			    m_AutoSaver.SetMetadata(m_Metadata);
 			    m_AutoSaver.Start();
-			    
-			    m_Metadata.RegisterTrackableDrawingCommand = RegisterTrackableDrawing;
 			}
 		}
 		public AutoSaver AutoSaver

@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
 	{
 	    #region Events
 	    public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
-	    public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingRemoved;
+	    public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted;
 	    #endregion
 	    
 		#region Properties
@@ -174,15 +174,15 @@ namespace Kinovea.ScreenManager
 		    spotlights.Remove(spotlight);
 		    selected = -1;
 		    
-		    if(TrackableDrawingRemoved != null)
-		        TrackableDrawingRemoved(this, new TrackableDrawingEventArgs(spotlight));
+		    if(TrackableDrawingDeleted != null)
+		        TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(spotlight));
 		}
         public override void Clear()
         {
-            if(TrackableDrawingRemoved != null)
+            if(TrackableDrawingDeleted != null)
             {
                 foreach(Spotlight spotlight in spotlights)
-                    TrackableDrawingRemoved(this, new TrackableDrawingEventArgs(spotlight));
+                    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(spotlight));
             }
             
             spotlights.Clear();

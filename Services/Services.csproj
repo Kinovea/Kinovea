@@ -104,9 +104,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandLineArgumentManager.cs" />
-    <Compile Include="CommandLineArgumentException.cs" />
-    <Compile Include="CommandLineArgumentParser.cs" />
+    <Compile Include="CommandLine\CommandLineArgumentException.cs" />
+    <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
+    <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="DeviceCapability.cs" />
     <Compile Include="DeviceConfiguration.cs" />
     <Compile Include="Enums.cs" />
@@ -117,6 +117,8 @@
     <Compile Include="HelpItem.cs" />
     <Compile Include="IKernel.cs" />
     <Compile Include="InfosFading.cs" />
+    <Compile Include="Infrastructure\RelayCommand.cs" />
+    <Compile Include="Infrastructure\ToggleCommand.cs" />
     <Compile Include="LanguageIdentifier.cs" />
     <Compile Include="LanguageManager.cs" />
     <Compile Include="PreferencesManager.cs" />
@@ -157,6 +159,10 @@
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Video</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CommandLine" />
+    <Folder Include="Infrastructure" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
