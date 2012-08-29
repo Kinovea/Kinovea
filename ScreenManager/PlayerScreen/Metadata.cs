@@ -44,9 +44,19 @@ namespace Kinovea.ScreenManager
 {
     public class Metadata
     {
-        #region Commands
-        public Action<ITrackable> RegisterTrackableDrawingCommand;
-        
+        #region Events and commands
+        public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded
+        {
+            // Route the multi drawings events upstream.
+            add { m_SpotlightManager.TrackableDrawingAdded += value; }
+            remove { m_SpotlightManager.TrackableDrawingAdded += value; }
+        }
+        public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted
+        {
+            // Route the multi drawings events upstream.
+            add { m_SpotlightManager.TrackableDrawingDeleted += value; }
+            remove { m_SpotlightManager.TrackableDrawingDeleted += value; }
+        }
         #endregion
         
         #region Properties
@@ -111,7 +121,7 @@ namespace Kinovea.ScreenManager
             }
         }
         public bool Tracking {
-            get { return Tracks().Any(t => t.Status == TrackStatus.Edit); }
+            get { return Tracks().Any(t => t.Status == TrackStatus.Edit) || TrackabilityManager.Tracking; }
         }
         public bool HasTrack {
             get { return m_ExtraDrawings.Any(drawing => drawing is Track); }
@@ -152,11 +162,6 @@ namespace Kinovea.ScreenManager
         {
             get { return m_Mirrored; }
             set { m_Mirrored = value; }
-        }
-        
-        public ToggleCommand ToggleTrackingCommand
-        {
-            get { return toggleTrackingCommand; }
         }
         
         // General infos
@@ -217,7 +222,6 @@ namespace Kinovea.ScreenManager
         private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		private TrackabilityManager m_TrackabilityManager = new TrackabilityManager();
-		private ToggleCommand toggleTrackingCommand;
         
         // Read from XML, used for adapting the data to the current video
         private Size m_InputImageSize = new Size(0, 0);
@@ -239,8 +243,6 @@ namespace Kinovea.ScreenManager
             
             log.Debug("Constructing new Metadata object.");
             CleanupHash();
-            
-            toggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
         }
         public Metadata(string _kvaString,  VideoInfo _info, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
@@ -1554,60 +1556,8 @@ namespace Kinovea.ScreenManager
         	// m_iStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
         	// and dynamic extra drawings like tracks and chronos.
         	m_iStaticExtraDrawings = m_ExtraDrawings.Count;
-        	
-        	m_SpotlightManager.TrackableDrawingAdded += TrackableDrawingAdded;
-        	m_SpotlightManager.TrackableDrawingRemoved += TrackableDrawingRemoved;
         }
-
-        #region Trackability events and commands
-        private void TrackableDrawingAdded(object sender, TrackableDrawingEventArgs e)
-        {
-            if(RegisterTrackableDrawingCommand != null)
-                RegisterTrackableDrawingCommand(e.TrackableDrawing);
-        }
-        
-        private void TrackableDrawingRemoved(object sender, TrackableDrawingEventArgs e)
-        {
-           m_TrackabilityManager.Remove(e.TrackableDrawing);
-        }
-        
-        private void ToggleTracking(object parameter)
-        {
-            ITrackable trackableDrawing = ConvertToTrackable(parameter);
-            if(trackableDrawing == null)
-                return;
-            
-            m_TrackabilityManager.ToggleTracking(trackableDrawing);
-        }
-        
-        private bool IsTracking(object parameter)
-        {
-            ITrackable trackableDrawing = ConvertToTrackable(parameter);
-            if(trackableDrawing == null)
-                return false;
-            
-            return m_TrackabilityManager.IsTracking(trackableDrawing);
-        }
-        
-        private ITrackable ConvertToTrackable(object parameter)
-        {
-            ITrackable trackableDrawing = null;
-            
-            if(parameter is AbstractMultiDrawing)
-            {
-                AbstractMultiDrawing manager = parameter as AbstractMultiDrawing;
-                if(manager != null)
-                    trackableDrawing = manager.SelectedItem as ITrackable;    
-            }
-            else
-            {
-                trackableDrawing = parameter as ITrackable;
-            }
-            
-            return trackableDrawing;
-        }
-        #endregion
-        
+ 
 		#endregion
     }
 

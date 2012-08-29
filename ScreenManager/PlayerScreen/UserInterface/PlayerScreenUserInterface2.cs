@@ -73,6 +73,16 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 
+		#region Events
+		public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
+		public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted;
+		#endregion
+		
+		#region Commands encapsulating domain logic implemented in the presenter.
+		public ToggleCommand ToggleTrackingCommand { get; set; }
+		public RelayCommand<VideoFrame> TrackDrawingsCommand { get; set; }
+		#endregion
+		
 		#region Properties
 		public bool IsCurrentlyPlaying {
 			get { return m_bIsCurrentlyPlaying; }
@@ -2212,7 +2222,7 @@ namespace Kinovea.ScreenManager
             // The boolean will later be used each time we attempt to change decoding size in StretchSqueezeSurface.
             // This is not concerned with decoding mode (prebuffering, caching, etc.) as this will be checked inside the reader.
             bool wasCustomDecodingSize = m_bEnableCustomDecodingSize;
-            m_bEnableCustomDecodingSize = !m_FrameServer.Metadata.Tracking && !_forceDisable && !m_FrameServer.Metadata.TrackabilityManager.Tracking;
+            m_bEnableCustomDecodingSize = !m_FrameServer.Metadata.Tracking && !_forceDisable;
             
             if(wasCustomDecodingSize && !m_bEnableCustomDecodingSize)
             {
@@ -2285,7 +2295,7 @@ namespace Kinovea.ScreenManager
 		    // Rendering in the context of continuous playback (play loop).
             m_TimeWatcher.Restart();
 
-            bool tracking = m_FrameServer.Metadata.Tracking || m_FrameServer.Metadata.TrackabilityManager.Tracking;
+            bool tracking = m_FrameServer.Metadata.Tracking;
             int skip = tracking ? 0 : _missedFrames;
             
 		    long estimateNext = m_iCurrentPosition + ((skip + 1) * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
@@ -2322,7 +2332,7 @@ namespace Kinovea.ScreenManager
                     DoInvalidate();
                     m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
                     
-                    m_FrameServer.Metadata.TrackabilityManager.Track(m_FrameServer.VideoReader.Current);
+                    TrackDrawingsCommand.Execute(null);
                     ComputeOrStopTracking(skip == 0);
                     
                     // This causes Invalidates and will postpone the idle event.
@@ -2344,53 +2354,6 @@ namespace Kinovea.ScreenManager
 				}*/
 			}
 			//m_TimeWatcher.LogTime("Exiting Rendering_Invodked.");
-		}
-		private void PlayLoop_Invoked()
-		{
-		    // DEPRECATED.
-		    // Kept for documentation purpose for a while.
-		    
-			// Runs in the UI thread.
-		    
-			long estimateNext = m_iCurrentPosition + (m_iFramesToDecode * m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
-			if (estimateNext > m_iSelEnd)
-			{
-			    EndOfFile();
-			}
-			else if(m_bIsIdle)
-            {
-			    m_bIsIdle = false;
-			    
-                // Regular loop.
-                ShowNextFrame(-1, true);
-                
-                if(m_FrameServer.VideoReader.Drops > m_MaxDecodingDrops)
-                {
-                    log.DebugFormat("Failsafe triggered on Decoding Drops ({0})", m_FrameServer.VideoReader.Drops);
-                    ForceSlowdown();
-                }
-                
-                UpdatePositionUI();
-				m_iFramesToDecode = 1;
-            }
-			else
-			{
-			    // The BeginInvoke in timer tick was posted before the form became idle.
-			    // Not really the proper way to figure out if we are dropping.
-			    if (!m_FrameServer.Metadata.Tracking)
-				{
-					m_iFramesToDecode++;
-					log.DebugFormat("Rendering Drops: {0}.", m_iFramesToDecode-1);
-				}
-                
-				if (m_iFramesToDecode > m_MaxRenderingDrops)
-				{
-				    log.DebugFormat("Failsafe triggered on Rendering Drops ({0})", m_iFramesToDecode-1);
-				    ForceSlowdown();
-				}
-			}
-			
-			log.Debug("Exiting playloop.");
 		}
 		private void EndOfFile()
 		{
@@ -2476,7 +2439,7 @@ namespace Kinovea.ScreenManager
 			{
 				m_iCurrentPosition = m_FrameServer.VideoReader.Current.Timestamp;
 				
-                m_FrameServer.Metadata.TrackabilityManager.Track(m_FrameServer.VideoReader.Current);
+				TrackDrawingsCommand.Execute(null);
                     
 				bool contiguous = _iSeekTarget < 0 && m_iFramesToDecode <= 1;
 				if(!refreshInPlace)
@@ -2847,7 +2810,8 @@ namespace Kinovea.ScreenManager
 				
 				if(ad is ITrackable)
 				{
-				    m_FrameServer.Metadata.TrackabilityManager.Add((ITrackable)ad, m_FrameServer.VideoReader.Current);
+				    if(TrackableDrawingAdded != null)
+				        TrackableDrawingAdded(this, new TrackableDrawingEventArgs(ad as ITrackable));
 				}
 			}
 			else
@@ -2944,7 +2908,7 @@ namespace Kinovea.ScreenManager
 					{
                         if(ad is ITrackable)
                         {
-                            mnuTrackDrawing.Checked = m_FrameServer.Metadata.ToggleTrackingCommand.CurrentState(ad);
+                            mnuTrackDrawing.Checked = ToggleTrackingCommand.CurrentState(ad);
                             popMenuDrawings.Items.Add(mnuTrackDrawing);
                         }
 					}
@@ -3022,7 +2986,7 @@ namespace Kinovea.ScreenManager
 					
 					if((amd.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
 					{
-					    mnuMultiDrawingItemTrack.Checked = m_FrameServer.Metadata.ToggleTrackingCommand.CurrentState(amd);
+					    mnuMultiDrawingItemTrack.Checked = ToggleTrackingCommand.CurrentState(amd);
 					    popMenuMultiDrawing.Items.Add(mnuMultiDrawingItemTrack);
 					}
 					
@@ -3035,7 +2999,7 @@ namespace Kinovea.ScreenManager
 			}
 			else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse))
 			{
-			    mnuMagnifierTrack.Checked = m_FrameServer.Metadata.ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
+			    mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
 			    panelCenter.ContextMenuStrip = popMenuMagnifier;
 			}
 			else if(m_ActiveTool != m_PointerTool)
@@ -4036,7 +4000,8 @@ namespace Kinovea.ScreenManager
 				m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.Direct;
 				SetCursor(Cursors.Cross);
 				
-				m_FrameServer.Metadata.TrackabilityManager.Add(m_FrameServer.Metadata.Magnifier as ITrackable, m_FrameServer.VideoReader.Current);
+				if(TrackableDrawingAdded != null)
+				    TrackableDrawingAdded(this, new TrackableDrawingEventArgs(m_FrameServer.Metadata.Magnifier as ITrackable));
 			}
 			else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Direct)
 			{
@@ -4223,12 +4188,9 @@ namespace Kinovea.ScreenManager
 			    ITrackable drawing = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as ITrackable;
 			    
 			    // Tracking is not compatible with custom decoding size, force the use of the original size.
-			    // This will set the context of the trackability manager with the right image size.
 			    CheckCustomDecodingSize(true);
-			    // Force the context
 			    ShowNextFrame(m_iCurrentPosition, true);
-			    
-			    m_FrameServer.Metadata.ToggleTrackingCommand.Execute(drawing);
+			    ToggleTrackingCommand.Execute(drawing);
 			}
 		}
 		private void mnuDeleteDrawing_Click(object sender, EventArgs e)
@@ -4240,8 +4202,8 @@ namespace Kinovea.ScreenManager
 			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
 			    ITrackable asTrackable = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as ITrackable;
-				if(asTrackable != null)
-				    m_FrameServer.Metadata.TrackabilityManager.Remove(asTrackable);
+				if(asTrackable != null && TrackableDrawingDeleted != null)
+				    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(asTrackable));
 				
 				IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
 				CommandManager cm = CommandManager.Instance();
@@ -4480,7 +4442,7 @@ namespace Kinovea.ScreenManager
             // Tracking is not compatible with custom decoding size, force the use of the original size.
             CheckCustomDecodingSize(true);
             ShowNextFrame(m_iCurrentPosition, true);
-            m_FrameServer.Metadata.ToggleTrackingCommand.Execute(drawing);
+            ToggleTrackingCommand.Execute(drawing);
 		}
 		
 		private void DisableMagnifier()
@@ -4500,7 +4462,7 @@ namespace Kinovea.ScreenManager
             CheckCustomDecodingSize(true);  
 			ShowNextFrame(m_iCurrentPosition, true);  
 			
-			m_FrameServer.Metadata.ToggleTrackingCommand.Execute(m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing]); 	
+			ToggleTrackingCommand.Execute(m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing]); 	
 		}
 		private void mnuDeleteMultiDrawingItem_Click(object sender, EventArgs e)
 		{
@@ -4794,7 +4756,8 @@ namespace Kinovea.ScreenManager
                     BuildFilename(_filepath, vf.Timestamp, m_PrefManager.TimeCodeFormat), 
                     Path.GetExtension(_filepath));
 
-                m_FrameServer.Metadata.TrackabilityManager.Track(vf);
+                
+                TrackDrawingsCommand.Execute(null);
 
                 Size s = m_viewportManipulator.RenderingSize;
                     
@@ -4921,7 +4884,7 @@ namespace Kinovea.ScreenManager
             CoordinateSystem identityCoordinateSystem = m_FrameServer.CoordinateSystem.Identity;
 
             // Make sure the trackable drawings are on the right context.
-            m_FrameServer.Metadata.TrackabilityManager.Track(new VideoFrame(_iTimestamp, _source));
+            TrackDrawingsCommand.Execute(new VideoFrame(_iTimestamp, _source));
             
 			if (_bKeyframesOnly)
 			{

@@ -55,14 +55,8 @@ namespace Kinovea.ScreenManager
 		{
 			get 
 			{ 
-				if(m_FrameServer.Loaded)
-				{
-					return Path.GetFileName(m_FrameServer.VideoReader.FilePath);		
-				}
-				else
-				{
-					return ScreenManagerLang.statusEmptyScreen;	
-				}
+                return m_FrameServer.Loaded ? Path.GetFileName(m_FrameServer.VideoReader.FilePath) :
+				                              ScreenManagerLang.statusEmptyScreen;
 			}
 		}
 		public override string Status
@@ -219,7 +213,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region members
-        public PlayerScreenUserInterface m_PlayerScreenUI;
+        public PlayerScreenUserInterface m_PlayerScreenUI; // <-- FIXME: Rely on a IPlayerScreenUI or IPlayerScreenView rather than the concrete implementation.
 		
         private IScreenHandler m_ScreenHandler;
         private FrameServerPlayer m_FrameServer = new FrameServerPlayer();
@@ -234,10 +228,33 @@ namespace Kinovea.ScreenManager
             m_ScreenHandler = _screenHandler;
             m_UniqueId = System.Guid.NewGuid();
             m_PlayerScreenUI = new PlayerScreenUserInterface(m_FrameServer, this);
+            
+            BindCommands();
         }
         #endregion
 
+        private void BindCommands()
+        {
+            // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
+            // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
+            
+            // Event handlers
+            m_PlayerScreenUI.TrackableDrawingAdded += (s, e) => RegisterTrackableDrawing(e.TrackableDrawing);
+            m_FrameServer.Metadata.TrackableDrawingAdded += (s, e) => RegisterTrackableDrawing(e.TrackableDrawing);
+            m_PlayerScreenUI.TrackableDrawingDeleted += (s, e) => TrackableDrawingDeleted(e.TrackableDrawing);
+            m_FrameServer.Metadata.TrackableDrawingDeleted += (s, e) => TrackableDrawingDeleted(e.TrackableDrawing);
+            
+            // Commands
+            m_PlayerScreenUI.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
+            m_PlayerScreenUI.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
+            
+        }
+        
+        
         #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
+        
+        // TODO: turn all these dependencies into commands.
+        
         public void ScreenUI_CloseAsked()
         {
         	m_ScreenHandler.Screen_CloseAsked(this);
@@ -376,5 +393,54 @@ namespace Kinovea.ScreenManager
         	return m_PlayerScreenUI.GetFlushedImage();
         }
         #endregion
+   
+        private void RegisterTrackableDrawing(ITrackable trackableDrawing)
+		{
+		    m_FrameServer.Metadata.TrackabilityManager.Add(trackableDrawing, m_FrameServer.VideoReader.Current);
+		}
+        
+        private void TrackableDrawingDeleted(ITrackable trackableDrawing)
+        {
+           m_FrameServer.Metadata.TrackabilityManager.Remove(trackableDrawing);
+        }
+        private void ToggleTracking(object parameter)
+        {
+            ITrackable trackableDrawing = ConvertToTrackable(parameter);
+            if(trackableDrawing == null)
+                return;
+            
+            m_FrameServer.Metadata.TrackabilityManager.ToggleTracking(trackableDrawing);
+        }
+        private bool IsTracking(object parameter)
+        {
+            ITrackable trackableDrawing = ConvertToTrackable(parameter);
+            if(trackableDrawing == null)
+                return false;
+            
+            return m_FrameServer.Metadata.TrackabilityManager.IsTracking(trackableDrawing);
+        }
+        
+        private ITrackable ConvertToTrackable(object parameter)
+        {
+            ITrackable trackableDrawing = null;
+            
+            if(parameter is AbstractMultiDrawing)
+            {
+                AbstractMultiDrawing manager = parameter as AbstractMultiDrawing;
+                if(manager != null)
+                    trackableDrawing = manager.SelectedItem as ITrackable;    
+            }
+            else
+            {
+                trackableDrawing = parameter as ITrackable;
+            }
+            
+            return trackableDrawing;
+        }
+        private void TrackDrawings(VideoFrame frameToUse)
+        {
+            VideoFrame frame = frameToUse ?? m_FrameServer.VideoReader.Current;
+            m_FrameServer.Metadata.TrackabilityManager.Track(frame);
+        }
     }
 }
