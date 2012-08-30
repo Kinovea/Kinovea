@@ -1,0 +1,18 @@
+syntax: glob
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+Installer/*.exe
+Installer/OtherFiles/Manuals/*.chm
+Installer/build.log
+*.suo
+Localization/WorkingDirectory/*.resx
+*.obj
+*.pdb
+*.user
+*.avi
+*.ncb
+*.bak
+Root/Languages/RootLang.resources
+Localization/WorkingDirectory/content.xml
