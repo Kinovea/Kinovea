@@ -590,7 +590,7 @@ namespace Kinovea.ScreenManager
         	
         	double fPixelDistance = 0;
     		for(int i = _p1; i < _p2; i++)
-    			fPixelDistance += CalibrationHelper.PixelDistance(m_Positions[i].Point, m_Positions[i+1].Point);
+    			fPixelDistance += GeometryHelper.GetDistance(m_Positions[i].Point, m_Positions[i+1].Point);
     		
         	return m_ParentMetadata.CalibrationHelper.GetLengthText(fPixelDistance);
         }

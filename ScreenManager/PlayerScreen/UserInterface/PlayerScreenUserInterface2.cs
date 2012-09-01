@@ -74,6 +74,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Events
+		public event EventHandler<DrawingEventArgs> DrawingAdded;
 		public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
 		public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted;
 		#endregion
@@ -1138,8 +1139,6 @@ namespace Kinovea.ScreenManager
 			
 			m_bDocked = true;
 			m_bTextEdit = false;
-			DrawingToolLine2D.ShowMeasure = false;
-			DrawingToolCross2D.ShowCoordinates = false;
 			
 			m_fHighSpeedFactor = 1.0f;
 			UpdateSpeedLabel();
@@ -2780,39 +2779,10 @@ namespace Kinovea.ScreenManager
 			
 			if (m_ActiveTool != ToolManager.Label)
 			{
-				// Add an instance of a drawing from the active tool to the current keyframe.
-				// The drawing is initialized with the current mouse coordinates.
-				AbstractDrawing ad = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+				AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
 				
-				m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(ad);
-				m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
-				m_FrameServer.Metadata.SelectedDrawing = 0;
-				
-				// Post creation hacks.
-				if(ad is DrawingLine2D)
-				{
-					((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
-					((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
-				}
-				else if(ad is DrawingCross2D)
-				{
-					((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
-					((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
-				}
-				else if(ad is DrawingPlane)
-				{
-				    ((DrawingPlane)ad).SetLocations(m_FrameServer.Metadata.ImageSize, 1.0, Point.Empty);
-				}
-				else if(ad is DrawingGenericPosture)
-				{
-				    ((DrawingGenericPosture)ad).InitialScale(m_FrameServer.Metadata.ImageSize);
-				}
-				
-				if(ad is ITrackable)
-				{
-				    if(TrackableDrawingAdded != null)
-				        TrackableDrawingAdded(this, new TrackableDrawingEventArgs(ad as ITrackable));
-				}
+				if(DrawingAdded != null)
+				    DrawingAdded(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
 			}
 			else
 			{
@@ -2836,17 +2806,21 @@ namespace Kinovea.ScreenManager
 				// If we are not on an existing textbox : create new DrawingText.
 				if (!bEdit)
 				{
-					m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame));
-					m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;
-					m_FrameServer.Metadata.SelectedDrawing = 0;
+				    AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.AverageTimeStampsPerFrame);
+				    
+					if(DrawingAdded != null)
+				        DrawingAdded(this, new DrawingEventArgs(drawing, m_iActiveKeyFrameIndex));
 					
-					DrawingText dt = (DrawingText)m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[0];
+				    // TODO: Find a way to move this to Metadata.
+					DrawingText drawingText = drawing as DrawingText;
 					
-					dt.ContainerScreen = pbSurfaceScreen;
-					dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
-					panelCenter.Controls.Add(dt.EditBox);
-					dt.EditBox.BringToFront();
-					dt.EditBox.Focus();
+					drawingText.ContainerScreen = pbSurfaceScreen;
+					drawingText.SetEditMode(true, m_FrameServer.CoordinateSystem);
+					
+					TextBox textBox = drawingText.EditBox;
+					panelCenter.Controls.Add(textBox);
+					textBox.BringToFront();
+					textBox.Focus();
 				}
 			}
 		}

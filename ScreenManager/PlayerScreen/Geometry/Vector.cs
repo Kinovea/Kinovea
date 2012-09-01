@@ -81,7 +81,14 @@ namespace Kinovea.ScreenManager
         {
             return v*f;
         }
-        
+        public static Vector operator /(Vector v, float f)
+        {
+            return new Vector(v.X / f, v.Y / f);
+        }
+        public static Vector operator /(float f, Vector v)
+        {
+            return v/f;
+        }
         
         public float Dot(Vector v)
         {

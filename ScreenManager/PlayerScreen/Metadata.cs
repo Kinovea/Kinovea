@@ -45,18 +45,8 @@ namespace Kinovea.ScreenManager
     public class Metadata
     {
         #region Events and commands
-        public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded
-        {
-            // Route the multi drawings events upstream.
-            add { m_SpotlightManager.TrackableDrawingAdded += value; }
-            remove { m_SpotlightManager.TrackableDrawingAdded += value; }
-        }
-        public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted
-        {
-            // Route the multi drawings events upstream.
-            add { m_SpotlightManager.TrackableDrawingDeleted += value; }
-            remove { m_SpotlightManager.TrackableDrawingDeleted += value; }
-        }
+        public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
+        public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
         
         #region Properties
@@ -182,11 +172,11 @@ namespace Kinovea.ScreenManager
         }         
 		public CalibrationHelper CalibrationHelper 
 		{
-			get { return m_CalibrationHelper; }
+			get { return calibrationHelper; }
 		}
 		public TrackabilityManager TrackabilityManager
 		{
-		    get { return m_TrackabilityManager;}
+		    get { return trackabilityManager;}
 		}
         #endregion
 
@@ -211,6 +201,7 @@ namespace Kinovea.ScreenManager
         private AutoNumberManager m_AutoNumberManager;
         
         private bool m_Mirrored;
+        private bool showingMeasurables;
         
         private string m_GlobalTitle = " ";
         private Size m_ImageSize = new Size(0,0);
@@ -219,9 +210,9 @@ namespace Kinovea.ScreenManager
         private long m_iSelectionStart;
         private int m_iDuplicateFactor = 1;
         private int m_iLastCleanHash;
-        private CalibrationHelper m_CalibrationHelper = new CalibrationHelper();
+        private CalibrationHelper calibrationHelper = new CalibrationHelper();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
-		private TrackabilityManager m_TrackabilityManager = new TrackabilityManager();
+		private TrackabilityManager trackabilityManager = new TrackabilityManager();
         
         // Read from XML, used for adapting the data to the current video
         private Size m_InputImageSize = new Size(0, 0);
@@ -322,6 +313,35 @@ namespace Kinovea.ScreenManager
         	m_ExtraDrawings.Add(_track);
         	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
         }
+        public void AddDrawing(AbstractDrawing drawing, int keyframeIndex)
+        {
+            m_Keyframes[keyframeIndex].AddDrawing(drawing);
+            m_iSelectedDrawingFrame = keyframeIndex;
+            m_iSelectedDrawing = 0;
+            
+			if(drawing is IScalable)
+			    ((IScalable)drawing).Scale(this.ImageSize);
+			
+			if(drawing is ITrackable && AddTrackableDrawingCommand != null)
+			    AddTrackableDrawingCommand.Execute(drawing as ITrackable);
+            
+            if(drawing is IMeasurable)
+            {
+                IMeasurable measurableDrawing = drawing as IMeasurable;
+                measurableDrawing.CalibrationHelper = calibrationHelper;
+                measurableDrawing.ShowMeasurableInfo = showingMeasurables;
+                measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
+            }
+            
+            if(drawing is DrawingLine2D)
+				((DrawingLine2D)drawing).CalibrationChanged += Line_CalibrationChanged;
+        }
+        public void DeleteTrackableDrawing(ITrackable drawing)
+        {
+            // TODO: when removal of all regular drawings is handled here in Metadata, we can set this method to private.
+            trackabilityManager.Remove(drawing);
+        }
+        
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
@@ -410,6 +430,8 @@ namespace Kinovea.ScreenManager
             int index = m_ExtraDrawings.FindIndex(d => d == drawing);
             m_iSelectedExtraDrawing = index;
         }
+        
+        
         
         #region Objects Hit Tests
         // Note: these hit tests are for right click only.
@@ -724,15 +746,15 @@ namespace Kinovea.ScreenManager
 				{
 					case "PixelToUnit":
 				        double fPixelToUnit = double.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
-				        m_CalibrationHelper.PixelToUnit = fPixelToUnit;
+				        calibrationHelper.PixelToUnit = fPixelToUnit;
 						break;
 					case "LengthUnit":
 						TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
-                        m_CalibrationHelper.CurrentLengthUnit = (LengthUnits)enumConverter.ConvertFromString(r.ReadElementContentAsString());
+                        calibrationHelper.CurrentLengthUnit = (LengthUnits)enumConverter.ConvertFromString(r.ReadElementContentAsString());
 						break;
 					case "CoordinatesOrigin":
 						// Note: we don't adapt to the destination image size. It makes little sense anyway.
-                    	m_CalibrationHelper.CoordinatesOrigin = XmlHelper.ParsePoint(r.ReadElementContentAsString());
+                    	calibrationHelper.CoordinatesOrigin = XmlHelper.ParsePoint(r.ReadElementContentAsString());
 						break;
 					default:
 						string unparsed = r.ReadOuterXml();
@@ -1160,16 +1182,16 @@ namespace Kinovea.ScreenManager
             
             w.WriteStartElement("CalibrationHelp");
             
-            w.WriteElementString("PixelToUnit", m_CalibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
+            w.WriteElementString("PixelToUnit", calibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
             w.WriteStartElement("LengthUnit");
-            w.WriteAttributeString("UserUnitLength", m_CalibrationHelper.GetLengthAbbreviation());
+            w.WriteAttributeString("UserUnitLength", calibrationHelper.GetLengthAbbreviation());
             
             TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
-            string unit = enumConverter.ConvertToString((LengthUnits)m_CalibrationHelper.CurrentLengthUnit);
+            string unit = enumConverter.ConvertToString((LengthUnits)calibrationHelper.CurrentLengthUnit);
             w.WriteString(unit);
 
             w.WriteEndElement();
-            w.WriteElementString("CoordinatesOrigin", String.Format("{0};{1}", m_CalibrationHelper.CoordinatesOrigin.X, m_CalibrationHelper.CoordinatesOrigin.Y));
+            w.WriteElementString("CoordinatesOrigin", String.Format("{0};{1}", calibrationHelper.CoordinatesOrigin.X, calibrationHelper.CoordinatesOrigin.Y));
 
             w.WriteEndElement();
         }
@@ -1476,7 +1498,7 @@ namespace Kinovea.ScreenManager
         private void ResetCoreContent()
         {
             // Semi reset: we keep Image size and AverageTimeStampsPerFrame
-            m_TrackabilityManager.Clear();
+            trackabilityManager.Clear();
             m_Keyframes.Clear();
             StopAllTracking();
             m_ExtraDrawings.RemoveRange(m_iStaticExtraDrawings, m_ExtraDrawings.Count - m_iStaticExtraDrawings);
@@ -1556,9 +1578,24 @@ namespace Kinovea.ScreenManager
         	// m_iStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
         	// and dynamic extra drawings like tracks and chronos.
         	m_iStaticExtraDrawings = m_ExtraDrawings.Count;
+        	
+        	m_SpotlightManager.TrackableDrawingAdded += (s, e) => 
+        	{ 
+        	    if(AddTrackableDrawingCommand != null) 
+        	        AddTrackableDrawingCommand.Execute(e.TrackableDrawing); 
+        	};
+        	
+        	m_SpotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
         }
- 
-		#endregion
+		private void Line_CalibrationChanged(object sender, EventArgs e)
+        {
+            UpdateTrajectoriesForKeyframes();
+        }
+        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
+        {
+            showingMeasurables = !showingMeasurables;
+        }
+        #endregion
     }
 
     public enum MetadataExportFormat

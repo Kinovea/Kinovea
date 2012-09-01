@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
     public partial class formConfigureMeasure : Form
     {
     	#region Members
-        private Metadata m_Metadata; 
+        private CalibrationHelper calibrationHelper;        
         private DrawingLine2D m_Line;
         private double m_fCurrentLengthPixels;
         private double m_fCurrentLengthReal;			// The current length of the segment. Might be expressed in pixels.
@@ -46,15 +46,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Construction & Initialization
-        public formConfigureMeasure(Metadata _metadata, DrawingLine2D _line)
+        public formConfigureMeasure(CalibrationHelper calibrationHelper, DrawingLine2D _line)
         {
-        	m_Metadata = _metadata;
+        	this.calibrationHelper = calibrationHelper;
         	m_Line =_line;
         	
         	m_fCurrentLengthPixels = (double)m_Line.Length();
-        	m_fCurrentLengthReal = m_Metadata.CalibrationHelper.GetLengthInUserUnit(m_fCurrentLengthPixels);
+        	m_fCurrentLengthReal = calibrationHelper.GetLengthInUserUnit(m_fCurrentLengthPixels);
             	
-        	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
+        	log.Debug(String.Format("Initial length:{0:0.00} {1}", m_fCurrentLengthReal, calibrationHelper.CurrentLengthUnit.ToString()));
         	
             InitializeComponent();
             LocalizeForm();
@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
             cbUnit.Items.Add("Percentage" + " (" + CalibrationHelper.GetLengthAbbreviationFromUnit(LengthUnits.Percentage) + ")");
             
             // Update with current values.
-            if(m_Metadata.CalibrationHelper.CurrentLengthUnit == LengthUnits.Pixels)
+            if(calibrationHelper.CurrentLengthUnit == LengthUnits.Pixels)
             {
             	// Default to 50 cm if no unit selected yet.
             	tbMeasure.Text = "50";
@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
             else
             {
             	tbMeasure.Text = String.Format("{0:0.00}",m_fCurrentLengthReal);
-            	cbUnit.SelectedIndex = (int)m_Metadata.CalibrationHelper.CurrentLengthUnit;
+            	cbUnit.SelectedIndex = (int)calibrationHelper.CurrentLengthUnit;
             }
             
         }
@@ -115,10 +115,10 @@ namespace Kinovea.ScreenManager
 	            
 	            	if(fRealWorldMeasure > 0 && m_fCurrentLengthReal > 0)
 	            	{
-	                	m_Metadata.CalibrationHelper.PixelToUnit = fRealWorldMeasure / m_fCurrentLengthPixels;
-	                	m_Metadata.CalibrationHelper.CurrentLengthUnit = (LengthUnits)cbUnit.SelectedIndex;
+	                	calibrationHelper.PixelToUnit = fRealWorldMeasure / m_fCurrentLengthPixels;
+	                	calibrationHelper.CurrentLengthUnit = (LengthUnits)cbUnit.SelectedIndex;
 	            	
-	                	log.Debug(String.Format("Selected length:{0:0.00} {1}", fRealWorldMeasure, m_Metadata.CalibrationHelper.CurrentLengthUnit.ToString()));
+	                	log.Debug(String.Format("Selected length:{0:0.00} {1}", fRealWorldMeasure, calibrationHelper.CurrentLengthUnit.ToString()));
 	            	}
 	            }
 	            catch

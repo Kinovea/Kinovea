@@ -52,6 +52,10 @@ namespace Kinovea.ScreenManager
         private InitDecodingSize m_InitDecodingSize;
 		#endregion
 		
+		#region Events
+		public event EventHandler<DrawingEventArgs> DrawingAdded;
+		#endregion
+		
 		#region Properties
 		#endregion
 
@@ -1100,29 +1104,10 @@ namespace Kinovea.ScreenManager
 		    
 		    if (m_ActiveTool != ToolManager.Label)
 			{
-				// Add an instance of a drawing from the active tool to the current keyframe.
-				// The drawing is initialized with the current mouse coordinates.
-				AbstractDrawing ad = m_ActiveTool.GetNewDrawing(m_DescaledMouse, 0, 1);
+				AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, 0, 1);
 				
-				m_FrameServer.Metadata[0].AddDrawing(ad);
-				m_FrameServer.Metadata.SelectedDrawingFrame = 0;
-				m_FrameServer.Metadata.SelectedDrawing = 0;
-				
-				// Post creation hacks.
-				if(ad is DrawingLine2D)
-				{
-					((DrawingLine2D)ad).ParentMetadata = m_FrameServer.Metadata;
-					((DrawingLine2D)ad).ShowMeasure = DrawingToolLine2D.ShowMeasure;
-				}
-				else if(ad is DrawingCross2D)
-				{
-					((DrawingCross2D)ad).ParentMetadata = m_FrameServer.Metadata;
-					((DrawingCross2D)ad).ShowCoordinates = DrawingToolCross2D.ShowCoordinates;
-				}
-                else if(ad is DrawingPlane)
-				{
-				    ((DrawingPlane)ad).SetLocations(m_FrameServer.ImageSize, 1.0, new Point(0,0));
-				}
+				if(DrawingAdded != null)
+				    DrawingAdded(this, new DrawingEventArgs(drawing, 0));
 			}
 			else
 			{
@@ -1131,15 +1116,15 @@ namespace Kinovea.ScreenManager
 				// if we are on an existing Textbox, we just go into edit mode
 				// otherwise, we add and setup a new textbox.
 				bool bEdit = false;
-				foreach (AbstractDrawing ad in m_FrameServer.Metadata[0].Drawings)
+				foreach (AbstractDrawing drawing in m_FrameServer.Metadata[0].Drawings)
 				{
-					if (ad is DrawingText)
+					if (drawing is DrawingText)
 					{
-						int hitRes = ad.HitTest(m_DescaledMouse, 0);
+						int hitRes = drawing.HitTest(m_DescaledMouse, 0);
 						if (hitRes >= 0)
 						{
 							bEdit = true;
-							((DrawingText)ad).SetEditMode(true, m_FrameServer.CoordinateSystem);
+							((DrawingText)drawing).SetEditMode(true, m_FrameServer.CoordinateSystem);
 						}
 					}
 				}
@@ -1147,17 +1132,19 @@ namespace Kinovea.ScreenManager
 				// If we are not on an existing textbox : create new DrawingText.
 				if (!bEdit)
 				{
-					m_FrameServer.Metadata[0].AddDrawing(m_ActiveTool.GetNewDrawing(m_DescaledMouse, 0, 1));
-					m_FrameServer.Metadata.SelectedDrawingFrame = 0;
-					m_FrameServer.Metadata.SelectedDrawing = 0;
+				    AbstractDrawing drawing = m_ActiveTool.GetNewDrawing(m_DescaledMouse, 0, 1);
+				    
+				    if(DrawingAdded != null)
+				        DrawingAdded(this, new DrawingEventArgs(drawing, 0));
+				    
+					DrawingText drawingText = drawing as DrawingText;
 					
-					DrawingText dt = (DrawingText)m_FrameServer.Metadata[0].Drawings[0];
-					
-					dt.ContainerScreen = pbSurfaceScreen;
-					dt.SetEditMode(true, m_FrameServer.CoordinateSystem);
-					panelCenter.Controls.Add(dt.EditBox);
-					dt.EditBox.BringToFront();
-					dt.EditBox.Focus();
+					drawingText.ContainerScreen = pbSurfaceScreen;
+					drawingText.SetEditMode(true, m_FrameServer.CoordinateSystem);
+					TextBox textBox = drawingText.EditBox;
+					panelCenter.Controls.Add(textBox);
+					textBox.BringToFront();
+					textBox.Focus();
 				}
 			}
 		}

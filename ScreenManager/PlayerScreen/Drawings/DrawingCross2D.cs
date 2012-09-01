@@ -38,10 +38,11 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("CrossMark")]
-    public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable
+    public class DrawingCross2D : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable, IMeasurable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        public event EventHandler ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -66,23 +67,16 @@ namespace Kinovea.ScreenManager
 				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
         		
 				mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
-				mnuShowCoordinates.Checked = m_bShowCoordinates;
+				mnuShowCoordinates.Checked = ShowMeasurableInfo;
         		
         		contextMenu.Add(mnuShowCoordinates);
         		
 				return contextMenu; 
 			}
 		}
-        public bool ShowCoordinates
-		{
-			get { return m_bShowCoordinates; }
-			set { m_bShowCoordinates = value; }
-		}
-        public Metadata ParentMetadata
-        {
-            // get => unused.
-            set { m_ParentMetadata = value; }
-        }
+        
+        public CalibrationHelper CalibrationHelper { get; set; }
+        public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
@@ -91,7 +85,6 @@ namespace Kinovea.ScreenManager
     	private bool tracking;
     	
 		private KeyframeLabel m_LabelCoordinates;
-		private bool m_bShowCoordinates;
 		// Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
@@ -100,7 +93,6 @@ namespace Kinovea.ScreenManager
         // Context menu
         private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
         
-        private Metadata m_ParentMetadata;
         private const int m_iDefaultBackgroundAlpha = 64;
         private const int m_iDefaultRadius = 3;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -130,7 +122,6 @@ namespace Kinovea.ScreenManager
             : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
-            m_ParentMetadata = _parent;
         }
         #endregion
 
@@ -156,9 +147,9 @@ namespace Kinovea.ScreenManager
                 _canvas.FillEllipse(b, c.Box(m_iDefaultRadius + 1));
             }
             
-            if(m_bShowCoordinates)
+            if(ShowMeasurableInfo)
             {
-                m_LabelCoordinates.SetText(m_ParentMetadata.CalibrationHelper.GetPointText(points["0"], true));
+                m_LabelCoordinates.SetText(CalibrationHelper.GetPointText(points["0"], true));
                 m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
@@ -180,7 +171,7 @@ namespace Kinovea.ScreenManager
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (tracking || fOpacityFactor > 0)
             {
-            	if(m_bShowCoordinates && m_LabelCoordinates.HitTest(_point))
+            	if(ShowMeasurableInfo && m_LabelCoordinates.HitTest(_point))
             		iHitResult = 1;
             	else if (points["0"].Box(m_iDefaultRadius + 10).Contains(_point))
                     iHitResult = 0;
@@ -204,7 +195,7 @@ namespace Kinovea.ScreenManager
                         points["0"] = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
 				        break;
 					case "CoordinatesVisible":
-				        m_bShowCoordinates = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+				        ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
 						m_Style = new DrawingStyle(_xmlReader);
@@ -226,7 +217,7 @@ namespace Kinovea.ScreenManager
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
 		    _xmlWriter.WriteElementString("CenterPoint", String.Format("{0};{1}", points["0"].X, points["0"].Y));
-            _xmlWriter.WriteElementString("CoordinatesVisible", m_bShowCoordinates ? "true" : "false");
+            _xmlWriter.WriteElementString("CoordinatesVisible", ShowMeasurableInfo ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
@@ -236,17 +227,17 @@ namespace Kinovea.ScreenManager
             m_InfosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement(); 
             
-            if(m_bShowCoordinates)
+            if(ShowMeasurableInfo)
             {
             	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Coordinates");
             	
-            	PointF coords = m_ParentMetadata.CalibrationHelper.GetPointInUserUnit(points["0"]);
+            	PointF coords = CalibrationHelper.GetPointInUserUnit(points["0"]);
 	            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
 	            _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
-	            _xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
+	            _xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
             	
             	_xmlWriter.WriteEndElement();
             }
@@ -298,10 +289,11 @@ namespace Kinovea.ScreenManager
         private void mnuShowCoordinates_Click(object sender, EventArgs e)
 		{
 			// Enable / disable the display of the coordinates for this cross marker.
-			m_bShowCoordinates = !m_bShowCoordinates;
+			ShowMeasurableInfo = !ShowMeasurableInfo;
 			
 			// Use this setting as the default value for new lines.
-			DrawingToolCross2D.ShowCoordinates = m_bShowCoordinates;
+			if(ShowMeasurableInfoChanged != null)
+			    ShowMeasurableInfoChanged(this, EventArgs.Empty);
 			
 			CallInvalidateFromMenu(sender);
 		}

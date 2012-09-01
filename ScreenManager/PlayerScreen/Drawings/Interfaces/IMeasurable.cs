@@ -1,6 +1,6 @@
-#region License
+﻿#region License
 /*
-Copyright � Joan Charmant 2011.
+Copyright © Joan Charmant 2012.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,20 +19,16 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Defines a method to initialize a drawing after it has been created.
-	/// </summary>
-	public interface IInitializable
-	{
-		/// <summary>
-        /// Continues to setup the drawing.
-        /// </summary>
-        /// <param name="point">The current location of the mouse, in original image scale coordinates</param>
-        void ContinueSetup(Point point, Keys modifiers);
-	}
+    /// <summary>
+    /// Interface for objects that can be mapped to physical values.
+    /// </summary>
+    public interface IMeasurable
+    {
+        CalibrationHelper CalibrationHelper { get; set; }
+        bool ShowMeasurableInfo { get; set; }
+        event EventHandler ShowMeasurableInfoChanged;
+    }
 }

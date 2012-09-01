@@ -39,10 +39,12 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Line")]
-    public class DrawingLine2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable
+    public class DrawingLine2D : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable, ITrackable, IMeasurable
     {
         #region Events
-        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
+        public event EventHandler CalibrationChanged;
+        public event EventHandler ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
@@ -67,7 +69,7 @@ namespace Kinovea.ScreenManager
 				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
         		
 				mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
-				mnuShowMeasure.Checked = m_bShowMeasure;
+				mnuShowMeasure.Checked = ShowMeasurableInfo;
         		mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
         		
         		contextMenu.Add(mnuShowMeasure);
@@ -76,16 +78,9 @@ namespace Kinovea.ScreenManager
 				return contextMenu; 
 			}
 		}
-        public Metadata ParentMetadata
-        {
-            // get => unused.
-            set { m_ParentMetadata = value; }
-        }
-        public bool ShowMeasure
-        {
-        	get { return m_bShowMeasure;}
-        	set { m_bShowMeasure = value;}
-        }
+        
+        public CalibrationHelper CalibrationHelper { get; set; }
+        public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
@@ -97,9 +92,8 @@ namespace Kinovea.ScreenManager
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private KeyframeLabel m_LabelMeasure;
-        private bool m_bShowMeasure;
-        private Metadata m_ParentMetadata;
         private InfosFading m_InfosFading;
+        
         // Context menu
         private ToolStripMenuItem mnuShowMeasure = new ToolStripMenuItem();
         private ToolStripMenuItem mnuSealMeasure = new ToolStripMenuItem();
@@ -136,7 +130,6 @@ namespace Kinovea.ScreenManager
             : this(Point.Empty, Point.Empty, 0, 0, ToolManager.Line.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
-            m_ParentMetadata = _parent;
         }
         #endregion
 
@@ -167,10 +160,10 @@ namespace Kinovea.ScreenManager
                     _canvas.DrawEllipse(penEdges, end.Box(3));
             }
 
-            if(m_bShowMeasure)
+            if(ShowMeasurableInfo)
             {
             	// Text of the measure. (The helpers knows the unit)
-            	m_LabelMeasure.SetText(m_ParentMetadata.CalibrationHelper.GetLengthText(points["a"], points["b"]));
+            	m_LabelMeasure.SetText(CalibrationHelper.GetLengthText(points["a"], points["b"]));
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
@@ -180,7 +173,7 @@ namespace Kinovea.ScreenManager
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
             if (tracking || fOpacityFactor > 0)
             {
-            	if(m_bShowMeasure && m_LabelMeasure.HitTest(_point))
+            	if(ShowMeasurableInfo && m_LabelMeasure.HitTest(_point))
             		iHitResult = 3;
             	else if (points["a"].Box(6).Contains(_point))
                     iHitResult = 1;
@@ -267,7 +260,7 @@ namespace Kinovea.ScreenManager
 						m_InfosFading.ReadXml(_xmlReader);
 						break;
 				    case "MeasureVisible":
-				        m_bShowMeasure = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+				        ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
 				        break;
 					default:
 						string unparsed = _xmlReader.ReadOuterXml();
@@ -284,7 +277,7 @@ namespace Kinovea.ScreenManager
 		{
             _xmlWriter.WriteElementString("Start", String.Format("{0};{1}", points["a"].X, points["a"].Y));
             _xmlWriter.WriteElementString("End", String.Format("{0};{1}", points["b"].X, points["b"].Y));
-            _xmlWriter.WriteElementString("MeasureVisible", m_bShowMeasure ? "true" : "false");
+            _xmlWriter.WriteElementString("MeasureVisible", ShowMeasurableInfo ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
@@ -294,18 +287,18 @@ namespace Kinovea.ScreenManager
             m_InfosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();  
 
-            if(m_bShowMeasure)
+            if(ShowMeasurableInfo)
             {
             	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Measure");
             	
-            	double len = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit(points["a"], points["b"]);
+            	double len = CalibrationHelper.GetLengthInUserUnit(points["a"], points["b"]);
 	            string value = String.Format("{0:0.00}", len);
 	            string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 
             	_xmlWriter.WriteAttributeString("UserLength", value);
             	_xmlWriter.WriteAttributeString("UserLengthInvariant", valueInvariant);
-            	_xmlWriter.WriteAttributeString("UserUnitLength", m_ParentMetadata.CalibrationHelper.GetLengthAbbreviation());
+            	_xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
             	
             	_xmlWriter.WriteEndElement();
             }
@@ -380,42 +373,42 @@ namespace Kinovea.ScreenManager
         private void mnuShowMeasure_Click(object sender, EventArgs e)
 		{
 			// Enable / disable the display of the measure for this line.
-			m_bShowMeasure = !m_bShowMeasure;
-			
-			// Use this setting as the default value for new lines.
-			DrawingToolLine2D.ShowMeasure = m_bShowMeasure;
+			ShowMeasurableInfo = !ShowMeasurableInfo;
+			if(ShowMeasurableInfoChanged != null)
+			    ShowMeasurableInfoChanged(this, EventArgs.Empty);
 			
 			CallInvalidateFromMenu(sender);
 		}
         
         private void mnuSealMeasure_Click(object sender, EventArgs e)
 		{
-			// display a dialog that let the user specify how many real-world-units long is this line.
+			if(points["a"].X == points["b"].X && points["a"].Y == points["b"].Y)
+			    return;
 			
-			if(points["a"].X != points["b"].X || points["a"].Y != points["b"].Y)
+			if(!ShowMeasurableInfo)
 			{
-				if(!m_bShowMeasure)
-					m_bShowMeasure = true;
-				
-				DrawingToolLine2D.ShowMeasure = true;
-				
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DeactivateKeyboardHandler != null)
-					dp.DeactivateKeyboardHandler();
-	
-				formConfigureMeasure fcm = new formConfigureMeasure(m_ParentMetadata, this);
-				ScreenManagerKernel.LocateForm(fcm);
-				fcm.ShowDialog();
-				fcm.Dispose();
-				
-				// Update traj for distance and speed after calibration.
-				m_ParentMetadata.UpdateTrajectoriesForKeyframes();
-				
-				CallInvalidateFromMenu(sender);
-				
-				if (dp.ActivateKeyboardHandler != null)
-					dp.ActivateKeyboardHandler();
+				ShowMeasurableInfo = true;
+				if(ShowMeasurableInfoChanged != null)
+			        ShowMeasurableInfoChanged(this, EventArgs.Empty);
 			}
+			
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.DeactivateKeyboardHandler != null)
+				dp.DeactivateKeyboardHandler();
+
+			formConfigureMeasure fcm = new formConfigureMeasure(CalibrationHelper, this);
+			ScreenManagerKernel.LocateForm(fcm);
+			fcm.ShowDialog();
+			fcm.Dispose();
+			
+			// Update traj for distance and speed after calibration.
+			if(CalibrationChanged != null)
+			    CalibrationChanged(this, EventArgs.Empty);
+			
+			CallInvalidateFromMenu(sender);
+			
+			if (dp.ActivateKeyboardHandler != null)
+				dp.ActivateKeyboardHandler();
 		}
         #endregion
         

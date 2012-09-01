@@ -107,9 +107,17 @@ namespace Kinovea.ScreenManager
         	log.Debug("Constructing a CaptureScreen.");
             m_ScreenHandler = _screenHandler;
             m_CaptureScreenUI = new CaptureScreenUserInterface(m_FrameServer, this);
+         
+            BindCommands();
         }
         #endregion
 
+        private void BindCommands()
+        {
+            // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
+            m_CaptureScreenUI.DrawingAdded += (s, e) => m_FrameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
+        }
+        
         #region ICaptureScreenUIHandler implementation
         public void ScreenUI_CloseAsked()
         {
