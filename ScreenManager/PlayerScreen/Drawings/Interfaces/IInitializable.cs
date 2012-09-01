@@ -19,16 +19,20 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Xml;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Defines methods to export and import a drawing's data to KVA XML format.
-	/// </summary>
-	public interface IKvaSerializable
-	{
-		void WriteXml(XmlWriter _xmlWriter);
-		//void ReadXml(XmlReader _xmlReader);
+    /// <summary>
+    /// Defines a method to initialize a drawing after it has been created.
+    /// </summary>
+    public interface IInitializable
+    {
+        /// <summary>
+        /// Continues to setup the drawing.
+        /// </summary>
+        /// <param name="point">The current location of the mouse, in original image scale coordinates</param>
+        void ContinueSetup(Point point, Keys modifiers);
 	}
 }

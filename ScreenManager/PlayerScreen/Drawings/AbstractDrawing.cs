@@ -103,11 +103,13 @@ namespace Kinovea.ScreenManager
         {
             // The screen invalidate hook was injected inside menus during popMenu attach.
             // This avoids having an injection hanging in DrawingTool.
+            // TODO: probably better to raise an event and handle it in the PlayerScreen presenter.
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi != null)
             {
                 Action screenInvalidate = tsmi.Tag as Action;
-                if (screenInvalidate != null) screenInvalidate();
+                if (screenInvalidate != null) 
+                    screenInvalidate();
             }
         }
         #endregion

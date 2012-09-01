@@ -58,12 +58,6 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_DefaultStylePreset;}
 		}
-    	
-    	/// <summary>
-    	/// This static property is used to keep the same setting for new lines.
-    	/// Once we activate the measure, new lines will be created with the setting on, and vice versa.
-    	/// </summary>
-    	public static bool ShowMeasure;
     	#endregion
 		
     	#region Members

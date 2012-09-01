@@ -75,6 +75,11 @@ namespace Kinovea.ScreenManager
             return a + v;
         }
         
+        public static PointF GetMiddlePoint(PointF a, PointF b)
+        {
+            return a + (new Vector(a,b) / 2);
+        }
+        
         /// <summary>
         /// Gets the distance between points A and B.
         /// </summary>

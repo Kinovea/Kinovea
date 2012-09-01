@@ -238,15 +238,28 @@ namespace Kinovea.ScreenManager
             // Provides implementation for behaviors triggered from the view, either as commands or as event handlers.
             // Fixme: those using FrameServer.Metadata work only because the Metadata object is never replaced during the PlayerScreen life.
             
+            
+            // Refactoring in progress.
+            // Moving code out the UI. The UI should raise an event instead, which we handle here.
+            // For example when adding a drawing, the UI raise an event that we handle here, then the Metadata performs the actual code,
+            // and the post init for trackable drawings is handled there by calling a command that is implemented here.
+            
             // Event handlers
-            m_PlayerScreenUI.TrackableDrawingAdded += (s, e) => RegisterTrackableDrawing(e.TrackableDrawing);
-            m_FrameServer.Metadata.TrackableDrawingAdded += (s, e) => RegisterTrackableDrawing(e.TrackableDrawing);
-            m_PlayerScreenUI.TrackableDrawingDeleted += (s, e) => TrackableDrawingDeleted(e.TrackableDrawing);
-            m_FrameServer.Metadata.TrackableDrawingDeleted += (s, e) => TrackableDrawingDeleted(e.TrackableDrawing);
+            m_PlayerScreenUI.DrawingAdded += (s, e) => m_FrameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
+            
+            // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
+            m_PlayerScreenUI.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
+            
+            // For magnifier AND other drawings. Remove as soon as possible, when delete drawing is handled in metadata.
+            // Currently all the code for delete drawing is in the UI. It should be in Metadata.
+            m_PlayerScreenUI.TrackableDrawingDeleted += (s, e) => m_FrameServer.Metadata.DeleteTrackableDrawing(e.TrackableDrawing);
+            
             
             // Commands
             m_PlayerScreenUI.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
             m_PlayerScreenUI.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
+            
+            m_FrameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
             
         }
         
@@ -394,15 +407,13 @@ namespace Kinovea.ScreenManager
         }
         #endregion
    
-        private void RegisterTrackableDrawing(ITrackable trackableDrawing)
+        
+        
+        private void AddTrackableDrawing(ITrackable trackableDrawing)
 		{
 		    m_FrameServer.Metadata.TrackabilityManager.Add(trackableDrawing, m_FrameServer.VideoReader.Current);
 		}
         
-        private void TrackableDrawingDeleted(ITrackable trackableDrawing)
-        {
-           m_FrameServer.Metadata.TrackabilityManager.Remove(trackableDrawing);
-        }
         private void ToggleTracking(object parameter)
         {
             ITrackable trackableDrawing = ConvertToTrackable(parameter);
@@ -437,6 +448,7 @@ namespace Kinovea.ScreenManager
             
             return trackableDrawing;
         }
+        
         private void TrackDrawings(VideoFrame frameToUse)
         {
             VideoFrame frame = frameToUse ?? m_FrameServer.VideoReader.Current;

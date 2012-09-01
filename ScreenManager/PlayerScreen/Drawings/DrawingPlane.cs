@@ -34,7 +34,7 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Plane")]
-	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable
+	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable
     {
         #region Properties
         public DrawingStyle DrawingStyle
@@ -351,15 +351,16 @@ namespace Kinovea.ScreenManager
 		
 		#endregion
 		
-		public void SetLocations(Size _ImageSize, double _fStretchFactor, Point _DirectZoomTopLeft)
-        {
-            // Initialize corners positions
+		#region IScalable implementation
+		public void Scale(Size imageSize)
+		{
+		    // Initialize corners positions
             if (!m_bInitialized)
             {
                 m_bInitialized = true;
 
-                int horzTenth = (int)(((double)_ImageSize.Width) / 10);
-                int vertTenth = (int)(((double)_ImageSize.Height) / 10);
+                int horzTenth = (int)(((double)imageSize.Width) / 10);
+                int vertTenth = (int)(((double)imageSize.Height) / 10);
 
                 if (m_bSupport3D)
                 {
@@ -378,9 +379,12 @@ namespace Kinovea.ScreenManager
                     m_Corners.D = new Point(2 * horzTenth, 8 * vertTenth);
                 }
             }
+            
             RedefineHomography();
             m_fShift = 0.0F;
-        }
+		}
+		#endregion
+		
         public void Reset()
         {
             // Used on metadata over load.

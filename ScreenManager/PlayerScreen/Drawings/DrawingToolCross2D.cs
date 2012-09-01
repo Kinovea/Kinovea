@@ -58,12 +58,6 @@ namespace Kinovea.ScreenManager
 		{
 			get { return m_DefaultStylePreset;}
 		}
-    	
-    	/// <summary>
-    	/// This static property is used to keep the same setting for new cross markers.
-    	/// Once we activate the display of coords, new markers will be created with the setting on, and vice versa.
-    	/// </summary>
-    	public static bool ShowCoordinates;
     	#endregion
 		
     	#region Private Methods

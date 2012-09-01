@@ -139,6 +139,19 @@ namespace Kinovea.ScreenManager
 			
 			return lengthText;
 		}
+		public string GetLengthText(PointF p1, PointF p2)
+		{
+			// Return the length in the user unit, with the abbreviation.
+			string lengthText = "";
+			
+			if(p1.X == p2.X && p1.Y == p2.Y)
+				lengthText = "0" + " " + GetLengthAbbreviationFromUnit(m_CurrentLengthUnit);
+			else
+				lengthText = String.Format("{0:0.00} {1}", GetLengthInUserUnit(p1, p2), GetLengthAbbreviationFromUnit(m_CurrentLengthUnit));
+			
+			return lengthText;
+		}
+		
 		public string GetLengthText(double _fPixelLength, bool _bAbbreviation, bool _bPrecise)
 		{
 			// Return length as a string. 
@@ -162,20 +175,21 @@ namespace Kinovea.ScreenManager
 		}
 		public double GetLengthInUserUnit(Point p1, Point p2)
 		{
-			// Return the length in the user unit.
-			double fUnitLength = 0;
-			
-			if(p1.X != p2.X || p1.Y != p2.Y)
-			{
-				double fPixelLength = PixelDistance(p1, p2);
-				fUnitLength = GetLengthInUserUnit(fPixelLength);
-			}
-			
-			return fUnitLength;
+			if(p1.X == p2.X && p1.Y == p2.Y)
+			    return 0;
+			else
+			    return GetLengthInUserUnit(GeometryHelper.GetDistance(p1, p2));
 		}
+		public double GetLengthInUserUnit(PointF p1, PointF p2)
+		{
+			if(p1.X == p2.X && p1.Y == p2.Y)
+			    return 0;
+			else
+			    return GetLengthInUserUnit(GeometryHelper.GetDistance(p1, p2));
+		}
+		
 		public double GetLengthInUserUnit(double _fPixelLength )
 		{
-			// Return the length in the user unit.
 			return _fPixelLength  * m_fPixelToUnit;
 		}
 		
@@ -256,14 +270,6 @@ namespace Kinovea.ScreenManager
 			}
 
 			return speedText;
-		}
-		public static double PixelDistance(Point p1, Point p2)
-		{
-			return Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));
-		}
-		public static double PixelDistance(PointF p1, PointF p2)
-		{
-			return Math.Sqrt(((p1.X - p2.X) * (p1.X - p2.X)) + ((p1.Y - p2.Y) * (p1.Y - p2.Y)));
 		}
 		#endregion
 		

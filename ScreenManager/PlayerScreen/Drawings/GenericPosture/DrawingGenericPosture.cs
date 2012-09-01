@@ -36,10 +36,11 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType("GenericPosture")]
-    public class DrawingGenericPosture : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable
+    public class DrawingGenericPosture : AbstractDrawing, IKvaSerializable, IDecorable, ITrackable, IMeasurable, IScalable
     {
         #region Events
-        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved; 
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
+        public event EventHandler ShowMeasurableInfoChanged = delegate {}; // not used.
         #endregion
         
         #region Properties
@@ -66,6 +67,8 @@ namespace Kinovea.ScreenManager
         {
           get { return null; }
         }
+        public CalibrationHelper CalibrationHelper { get; set; }
+        public bool ShowMeasurableInfo { get; set; }
         #endregion
         
         #region Members
@@ -153,7 +156,7 @@ namespace Kinovea.ScreenManager
                         _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
                 
-                
+                // Angles
                 penEdge.Width = 2;
                 penEdge.DashStyle = DashStyle.Solid;
                 for(int i = 0; i<m_Angles.Count; i++)
@@ -162,7 +165,6 @@ namespace Kinovea.ScreenManager
                     
                     try
                     {
-                        //log.DebugFormat("box:{0}, start:{1}, sweep:{2}", boxes[i].ToString(), (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
                         _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
                     }
                     catch(Exception e)
@@ -170,9 +172,16 @@ namespace Kinovea.ScreenManager
                         log.DebugFormat(e.ToString());
                     }
                     
-                    DrawText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
+                    DrawAngleText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
                 }
                 
+                // Distances
+                foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
+                {
+                    PointF a = points[distance.Point1];
+                    PointF b = points[distance.Point2];
+                    DrawDistanceText(a, b, _canvas, fOpacityFactor, _transformer, brushFill);
+                }
             }
         }
         public override int HitTest(Point _point, long _iCurrentTimestamp)
@@ -240,28 +249,7 @@ namespace Kinovea.ScreenManager
               hash ^= p.GetHashCode();
           return hash;
         }
-        public void InitialScale(Size imageSize)
-        {
-            // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
-            // Scale the positions and angle radius according to the actual image size.
-            Size referenceSize = new Size(800, 600);
-            
-            float ratioWidth = (float)imageSize.Width / referenceSize.Width;
-            float ratioHeight = (float)imageSize.Height / referenceSize.Height;
-            float ratio = Math.Min(ratioWidth, ratioHeight);
-            
-            for(int i = 0; i < m_GenericPosture.Points.Count; i++)
-                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Scale(ratio, ratio);
-            
-            for(int i = 0; i < m_GenericPosture.Ellipses.Count; i++)
-                m_GenericPosture.Ellipses[i].Radius = (int)(m_GenericPosture.Ellipses[i].Radius * ratio);
-            
-            for(int i = 0; i<m_GenericPosture.Angles.Count;i++)
-                m_GenericPosture.Angles[i].Radius = (int)(m_GenericPosture.Angles[i].Radius * ratio);
-                
-            UpdateAngles();
-        }
-
+        
         #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
@@ -357,6 +345,30 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region IScalable implementation
+        public void Scale(Size imageSize)
+        {
+            // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
+            // Scale the positions and angle radius according to the actual image size.
+            Size referenceSize = new Size(800, 600);
+            
+            float ratioWidth = (float)imageSize.Width / referenceSize.Width;
+            float ratioHeight = (float)imageSize.Height / referenceSize.Height;
+            float ratio = Math.Min(ratioWidth, ratioHeight);
+            
+            for(int i = 0; i < m_GenericPosture.Points.Count; i++)
+                m_GenericPosture.Points[i] = m_GenericPosture.Points[i].Scale(ratio, ratio);
+            
+            for(int i = 0; i < m_GenericPosture.Ellipses.Count; i++)
+                m_GenericPosture.Ellipses[i].Radius = (int)(m_GenericPosture.Ellipses[i].Radius * ratio);
+            
+            for(int i = 0; i<m_GenericPosture.Angles.Count;i++)
+                m_GenericPosture.Angles[i].Radius = (int)(m_GenericPosture.Angles[i].Radius * ratio);
+                
+            UpdateAngles();
+        }
+        #endregion
+        
         #region ITrackable implementation and support.
         public Guid ID
         {
@@ -384,7 +396,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
        
-        
         #region Lower level helpers
         private void InitAngles()
         {
@@ -417,7 +428,7 @@ namespace Kinovea.ScreenManager
         {
           m_Style.Bind(m_StyleHelper, "Bicolor", "line color");
         }
-        private void DrawText(Graphics _canvas, double _opacity, CoordinateSystem _transformer, AngleHelper angle, SolidBrush _brushFill)
+        private void DrawAngleText(Graphics _canvas, double _opacity, CoordinateSystem _transformer, AngleHelper angle, SolidBrush _brushFill)
         {
             //-------------------------------------------------
             // FIXME: function duplicated. Move to AngleHelper.
@@ -449,6 +460,26 @@ namespace Kinovea.ScreenManager
 			_canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
     			
     		tempFont.Dispose();
+            fontBrush.Dispose();
+        }
+        private void DrawDistanceText(PointF a, PointF b, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        {
+            string label = CalibrationHelper.GetLengthText(a, b);
+            
+            SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(opacity * 255));
+            Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            SizeF labelSize = canvas.MeasureString(label, tempFont);
+            
+            PointF middle = GeometryHelper.GetMiddlePoint(a, b);
+            PointF textOrigin = new PointF(middle.X - labelSize.Width / 2, middle.Y + 5);
+            
+            RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
+            RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height/4, false, false, null);
+
+            // Text
+			canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
+            
+            tempFont.Dispose();
             fontBrush.Dispose();
         }
         private bool IsPointInObject(Point _point)

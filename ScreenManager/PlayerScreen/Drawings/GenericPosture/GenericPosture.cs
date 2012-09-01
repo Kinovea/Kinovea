@@ -46,6 +46,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureSegment> Segments { get; private set;}
         public List<GenericPostureEllipse> Ellipses { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
+        public List<GenericPostureDistance> Distances { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public bool Trackable { get; private set;}
@@ -68,6 +69,7 @@ namespace Kinovea.ScreenManager
             Ellipses = new List<GenericPostureEllipse>();
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
+            Distances = new List<GenericPostureDistance>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             
             if(string.IsNullOrEmpty(descriptionFile))
@@ -170,6 +172,9 @@ namespace Kinovea.ScreenManager
     					case "Angles":
     						ParseAngles(r);
     						break;
+    				    case "Distances":
+    						ParseDistances(r);
+    						break;
     					case "Handles":
     						ParseHandles(r);
     						break;
@@ -253,6 +258,25 @@ namespace Kinovea.ScreenManager
                 if(r.Name == "Angle")
                 {
                     Angles.Add(new GenericPostureAngle(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
+        private void ParseDistances(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                if(r.Name == "Distance")
+                {
+                    Distances.Add(new GenericPostureDistance(r));
                 }
                 else
                 {
@@ -358,11 +382,12 @@ namespace Kinovea.ScreenManager
         public void SetTrackablePointValue(string name, Point value)
         {
             // Value coming from tracking.
-            int index = int.Parse(name);
-            if(index >= Points.Count)
+            int pointIndex = int.Parse(name);
+            if(pointIndex >= Points.Count)
                 throw new ArgumentException("This point is not bound.");
             
-            GenericPostureConstraintEngine.MoveHandle(this, index, value, Keys.None);
+            int handleIndex = Handles.FindIndex((h) => h.Reference == pointIndex);
+            GenericPostureConstraintEngine.MoveHandle(this, handleIndex, value, Keys.None);
         }
     }
 }
