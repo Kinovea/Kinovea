@@ -57,6 +57,10 @@ namespace Kinovea.ScreenManager
         {
             return new Point(_rect.X + _rect.Width / 2, _rect.Y + _rect.Height / 2);
         }
+        public static PointF Center(this RectangleF rect)
+        {
+            return new PointF(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
+        }
         
         /// <summary>
         /// Translate a point by x pixels horizontally, y pixels vertically.

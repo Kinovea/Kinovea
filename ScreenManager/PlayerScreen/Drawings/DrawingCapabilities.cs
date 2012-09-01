@@ -19,18 +19,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public interface ITrackable
+    [Flags]
+    public enum DrawingCapabilities
     {
-        Guid ID { get; }
-        
-        Dictionary<string, Point> GetTrackablePoints();
-        void SetTracking(bool tracking);
-        void SetTrackablePointValue(string name, Point value);
-        event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
+        None = 0,
+        ConfigureColor = 1,
+        ConfigureColorSize = 2,
+        Fading = 4,
+        Opacity = 8,
+        Track = 16
     }
 }

@@ -288,6 +288,8 @@
    <data name="mnuHome" xml:space="preserve"><value>File Explorer</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Import image…</value></data>
    <data name="mnuInvertAngle" xml:space="preserve"><value>Invert angle</value></data>
+   <data name="mnuFlipHorizontally" xml:space="preserve"><value>Flip horizontally</value></data>
+   <data name="mnuFlipVertically" xml:space="preserve"><value>Flip vertically</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Load Key Images Data...</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>

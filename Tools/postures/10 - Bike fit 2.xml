@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Bike fit</Name>
-  <Id>02a52d37-4694-4b90-a6d4-58d2a399638c</Id>
-  <PointCount>8</PointCount>
+  <Name>Bike fit 2</Name>
+  <Id>c286726d-e596-4850-8cbe-288e4aa466a2</Id>
+  <PointCount>10</PointCount>
   <Segments>
-    <Segment point1="0" point2="1" name="" style="Solid" width="2"/>
-    <Segment point1="1" point2="2" name="" style="Solid" width="2"/>
-    <Segment point1="2" point2="3" name="" style="Solid" width="2"/>
-    <Segment point1="1" point2="4" name="" style="Solid" width="2"/>
-    <Segment point1="4" point2="5" name="" style="Solid" width="2"/>
-    <Segment point1="5" point2="6" name="" style="Solid" width="2"/>
-    <Segment point1="6" point2="7" name="" style="Solid" width="2"/>
+    <Segment point1="0" point2="1" style="Solid" width="2"/>
+    <Segment point1="1" point2="2" style="Solid" width="2"/>
+    <Segment point1="2" point2="3" style="Solid" width="2"/>
+    <Segment point1="1" point2="4" style="Solid" width="2"/>
+    <Segment point1="4" point2="5" style="Solid" width="2"/>
+    <Segment point1="5" point2="6" style="Solid" width="2"/>
+    <Segment point1="6" point2="7" style="Solid" width="2"/>
+    <Segment point1="8" point2="9" style="Dash" width="2"/>
   </Segments>
   <Angles>
     <Angle origin="5" leg1="4" leg2="6" relative="true" radius="40"/> <!-- knee -->
     <Angle origin="4" leg1="1" leg2="5" relative="true" radius="30"/> <!-- hip -->
     <Angle origin="1" leg1="4" leg2="2" relative="true" radius="30"/> <!-- shoulder-->
     <Angle origin="2" leg1="1" leg2="3" relative="true" radius="20"/> <!-- elbow -->
+    <Angle origin="7" leg1="6" leg2="8" relative="true" radius="30"/> <!-- heel rise -->
   </Angles>
   <Handles>
     <Handle type="Point" reference="0" trackable="false"/> <!-- tip of head -->
@@ -27,7 +29,20 @@
     <Handle type="Point" reference="4" trackable="true"/> <!-- hip -->
     <Handle type="Point" reference="5" trackable="true"/> <!-- knee -->
     <Handle type="Point" reference="6" trackable="true"/> <!-- ankle or heel -->
-    <Handle type="Point" reference="7" trackable="true"/> <!-- tip of foot -->
+    <Handle type="Point" reference="7" trackable="true">
+      <Impact type="VerticalAlign">
+        <HorizontalAlign point="8"/>
+      </Impact>
+      <Impact type="VerticalAlign">
+        <HorizontalAlign point="9"/>
+      </Impact>
+    </Handle>
+    <Handle type="Point" reference="8">
+      <Constraint type="HorizontalSlide"/>
+    </Handle>
+    <Handle type="Point" reference="9">
+      <Constraint type="HorizontalSlide"/>
+    </Handle>
   </Handles>
   <InitialConfiguration>
     <Point>200;200</Point> <!-- tip of head -->
@@ -38,6 +53,8 @@
     <Point>110;300</Point> <!-- knee -->
     <Point>40;420</Point> <!-- ankle or heel-->
     <Point>60;450</Point> <!-- tip of foot -->
+    <Point>10;450</Point>
+    <Point>150;450</Point>
   </InitialConfiguration>
   <Capabilities flipHorizontal="true"/>
   <Icon>

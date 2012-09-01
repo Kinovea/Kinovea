@@ -1924,6 +1924,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Flip horizontally.
+        /// </summary>
+        internal static string mnuFlipHorizontally {
+            get {
+                return ResourceManager.GetString("mnuFlipHorizontally", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Flip vertically.
+        /// </summary>
+        internal static string mnuFlipVertically {
+            get {
+                return ResourceManager.GetString("mnuFlipVertically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Fluidify.
         /// </summary>
         internal static string mnuFluidify {

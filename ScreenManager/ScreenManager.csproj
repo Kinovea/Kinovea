@@ -243,6 +243,7 @@
     <Compile Include="PlayerScreen\Drawings\AutoNumberManager.cs" />
     <Compile Include="PlayerScreen\Drawings\BoundingBox.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingBitmap.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingCapabilities.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureHandle.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureManager.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureSegment.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureCapabilities.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HandleType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureAbstractHitZone.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureHitZonePolygon.cs" />
@@ -627,6 +629,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Drawings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Drawings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
