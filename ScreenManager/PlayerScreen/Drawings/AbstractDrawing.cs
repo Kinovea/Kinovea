@@ -114,18 +114,4 @@ namespace Kinovea.ScreenManager
         }
         #endregion
     }
-
-    /// <summary>
-	/// The various capabilities of a drawing, used to support dynamically adding generic menus.
-	/// </summary>
-	[Flags]
-	public enum DrawingCapabilities
-	{
-		None = 0,
-	    ConfigureColor = 1,
-	    ConfigureColorSize = 2,
-	    Fading = 4,
-	    Opacity = 8,
-	    Track = 16
-	}
 }

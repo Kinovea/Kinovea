@@ -65,7 +65,28 @@ namespace Kinovea.ScreenManager
         }
         public override List<ToolStripMenuItem> ContextMenu
         {
-          get { return null; }
+            get 
+            {
+                if(m_GenericPosture.Capabilities == GenericPostureCapabilities.None)
+                    return null;
+                
+                // Rebuild the menu each time to get the localized text.
+                List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+                
+                if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
+                {
+                    menuFlipHorizontal.Text = ScreenManagerLang.mnuFlipHorizontally;
+                    contextMenu.Add(menuFlipHorizontal);
+                }
+
+                if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipVertical) == GenericPostureCapabilities.FlipVertical)
+                {
+                    menuFlipVertical.Text = ScreenManagerLang.mnuFlipVertically;
+                    contextMenu.Add(menuFlipVertical);
+                }
+
+                return contextMenu; 
+            }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
@@ -76,6 +97,9 @@ namespace Kinovea.ScreenManager
     	private bool tracking;
     	private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
+        
+        private ToolStripMenuItem menuFlipHorizontal = new ToolStripMenuItem();
+        private ToolStripMenuItem menuFlipVertical = new ToolStripMenuItem();
         
         private DrawingStyle m_Style;
         private StyleHelper m_StyleHelper = new StyleHelper();
@@ -101,6 +125,11 @@ namespace Kinovea.ScreenManager
             
             // Fading
             m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
+            
+            menuFlipHorizontal.Click += menuFlipHorizontal_Click;
+            menuFlipHorizontal.Image = Properties.Drawings.fliphorizontal;
+            menuFlipVertical.Click += menuFlipVertical_Click;
+            menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
         public DrawingGenericPosture(XmlReader _xmlReader, PointF _scale, Metadata _parent)
             : this(Point.Empty, null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
@@ -395,7 +424,22 @@ namespace Kinovea.ScreenManager
             m_GenericPosture.SignalAllTrackablePointsMoved(TrackablePointMoved);
         }
         #endregion
-       
+        
+        private void menuFlipHorizontal_Click(object sender, EventArgs e)
+        {
+            m_GenericPosture.FlipHorizontal();
+            UpdateAngles();
+            SignalAllTrackablePointsMoved();
+            CallInvalidateFromMenu(sender);
+        }
+        private void menuFlipVertical_Click(object sender, EventArgs e)
+        {
+            m_GenericPosture.FlipVertical();
+            UpdateAngles();
+            SignalAllTrackablePointsMoved();
+            CallInvalidateFromMenu(sender);
+        }
+        
         #region Lower level helpers
         private void InitAngles()
         {

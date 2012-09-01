@@ -16,3 +16,4 @@ Localization/WorkingDirectory/*.resx
 *.bak
 Root/Languages/RootLang.resources
 Localization/WorkingDirectory/content.xml
+Localization/WorkingDirectory/.~*

@@ -288,6 +288,8 @@
    <data name="mnuHome" xml:space="preserve"><value>Przeglądarka plików</value></data>
    
    
+   
+   
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Wczytaj kluczowe dane obrazu</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    

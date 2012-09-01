@@ -213,6 +213,24 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap fliphorizontal
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("fliphorizontal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap flipvertical
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("flipvertical", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap generic_posture
         {
             get

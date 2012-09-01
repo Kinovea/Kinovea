@@ -49,6 +49,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureDistance> Distances { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
+        public GenericPostureCapabilities Capabilities { get; private set;}
         public bool Trackable { get; private set;}
         #endregion
         
@@ -71,6 +72,7 @@ namespace Kinovea.ScreenManager
             Angles = new List<GenericPostureAngle>();
             Distances = new List<GenericPostureDistance>();
             HitZones = new List<GenericPostureAbstractHitZone>();
+            Capabilities = GenericPostureCapabilities.None;
             
             if(string.IsNullOrEmpty(descriptionFile))
                 return;
@@ -180,6 +182,9 @@ namespace Kinovea.ScreenManager
     						break;
                         case "HitZone":
     						ParseHitZone(r);
+    						break;
+    		            case "Capabilities":
+    						ParseCapabilities(r);
     						break;
     					case "InitialConfiguration":
     						ParseInitialConfiguration(r);
@@ -325,6 +330,25 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
+        private void ParseCapabilities(XmlReader r)
+        {
+            // Note: must be an empty tag.
+            if(r.MoveToAttribute("flipHorizontal"))
+            {
+                bool cap = r.ReadContentAsBoolean();
+                if(cap)
+                    Capabilities |= GenericPostureCapabilities.FlipHorizontal;
+            }
+            
+            if(r.MoveToAttribute("flipVertical"))
+            {
+                bool cap = r.ReadContentAsBoolean();
+                if(cap)
+                    Capabilities |= GenericPostureCapabilities.FlipVertical;
+            }
+            
+            r.ReadStartElement();
+        }
         private void ParseInitialConfiguration(XmlReader r)
         {
             r.ReadStartElement();
@@ -388,6 +412,48 @@ namespace Kinovea.ScreenManager
             
             int handleIndex = Handles.FindIndex((h) => h.Reference == pointIndex);
             GenericPostureConstraintEngine.MoveHandle(this, handleIndex, value, Keys.None);
+        }
+    
+        public void FlipHorizontal()
+        {
+            RectangleF boundingBox = GetBoundingBox();
+            PointF center = boundingBox.Center();
+            
+            for(int i = 0; i<Points.Count; i++)
+            {
+                float x = center.X + (center.X - Points[i].X);
+                Points[i] = new PointF(x, Points[i].Y);
+            }
+        }
+
+        public void FlipVertical()
+        {
+            RectangleF boundingBox = GetBoundingBox();
+            PointF center = boundingBox.Center();
+            
+            for(int i = 0; i<Points.Count; i++)
+            {
+                float y = center.Y + (center.Y - Points[i].Y);
+                Points[i] = new PointF(Points[i].X, y);
+            }
+        }
+        
+        private RectangleF GetBoundingBox()
+        {
+            float left = float.MaxValue;
+            float right = float.MinValue;
+            float top = float.MaxValue;
+            float bottom = float.MinValue;
+            
+            foreach(PointF p in Points)
+            {
+                left = Math.Min(p.X, left);
+                right = Math.Max(p.X, right);
+                top = Math.Min(p.Y, top);
+                bottom = Math.Max(p.Y, bottom);
+            }
+            
+            return new RectangleF(left, top, right - left, bottom - top);
         }
     }
 }
