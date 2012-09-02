@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
         {
             get { return style;}
         }
-        public override InfosFading infosFading
+        public override InfosFading InfosFading
         {
             get { return null; }
             set { }

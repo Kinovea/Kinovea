@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
         {
         	m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
-            m_MemoInfosFading = _drawing.infosFading.Clone();
+            m_MemoInfosFading = _drawing.InfosFading.Clone();
             
             InitializeComponent();
             ConfigureForm();
@@ -59,10 +59,10 @@ namespace Kinovea.ScreenManager
         	// Display current values.
         	PreferencesManager pm = PreferencesManager.Instance();
         	trkValue.Maximum = pm.MaxFading;
-            trkValue.Value = Math.Min(m_Drawing.infosFading.FadingFrames, trkValue.Maximum);
-            chkDefault.Checked = m_Drawing.infosFading.UseDefault;
-            chkAlwaysVisible.Checked = m_Drawing.infosFading.AlwaysVisible;
-            chkEnable.Checked = m_Drawing.infosFading.Enabled;
+            trkValue.Value = Math.Min(m_Drawing.InfosFading.FadingFrames, trkValue.Maximum);
+            chkDefault.Checked = m_Drawing.InfosFading.UseDefault;
+            chkAlwaysVisible.Checked = m_Drawing.InfosFading.AlwaysVisible;
+            chkEnable.Checked = m_Drawing.InfosFading.Enabled;
         }
         private void LocalizeForm()
         {
@@ -91,32 +91,32 @@ namespace Kinovea.ScreenManager
         #region User choices handlers
         private void chkEnable_CheckedChanged(object sender, EventArgs e)
         {
-            m_Drawing.infosFading.Enabled = chkEnable.Checked;
+            m_Drawing.InfosFading.Enabled = chkEnable.Checked;
             EnableDisable();
             m_SurfaceScreen.Invalidate();
         }
         private void chkDefault_CheckedChanged(object sender, EventArgs e)
         {
-            m_Drawing.infosFading.UseDefault = chkDefault.Checked;
+            m_Drawing.InfosFading.UseDefault = chkDefault.Checked;
             EnableDisable();
             m_SurfaceScreen.Invalidate();
         }
         private void chkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
         {
-            m_Drawing.infosFading.AlwaysVisible = chkAlwaysVisible.Checked;
+            m_Drawing.InfosFading.AlwaysVisible = chkAlwaysVisible.Checked;
             EnableDisable();
             m_SurfaceScreen.Invalidate();
         }
         private void trkValue_ValueChanged(object sender, EventArgs e)
         {
-            m_Drawing.infosFading.FadingFrames = trkValue.Value;
+            m_Drawing.InfosFading.FadingFrames = trkValue.Value;
             UpdateValueLabel();
             chkAlwaysVisible.Checked = false; 
             m_SurfaceScreen.Invalidate();
         }
         private void UpdateValueLabel()
         {
-        	int val = Math.Min(trkValue.Maximum, m_Drawing.infosFading.FadingFrames);
+        	int val = Math.Min(trkValue.Maximum, m_Drawing.InfosFading.FadingFrames);
             lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureFading_lblValue, val.ToString());
         }
         private void EnableDisable()
@@ -156,7 +156,7 @@ namespace Kinovea.ScreenManager
         private void btnCancel_Click(object sender, EventArgs e)
         {
             // Fall back to memo.
-            m_Drawing.infosFading = m_MemoInfosFading.Clone();
+            m_Drawing.InfosFading = m_MemoInfosFading.Clone();
             m_SurfaceScreen.Invalidate();
             m_bManualClose = true;
         }
@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_bManualClose)
             {
-            	m_Drawing.infosFading = m_MemoInfosFading.Clone();
+            	m_Drawing.InfosFading = m_MemoInfosFading.Clone();
                 m_SurfaceScreen.Invalidate();
             }
         }

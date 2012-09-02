@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         {
         	get { return m_Style;}
         }
-        public override InfosFading  infosFading
+        public override InfosFading  InfosFading
         {
         	// Fading is not modifiable from outside for chrono.
             get { return null; }

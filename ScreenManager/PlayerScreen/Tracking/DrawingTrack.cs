@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
             get { return m_Invalid;}
         }
 		// Fading is not modifiable from outside.
-        public override InfosFading  infosFading
+        public override InfosFading  InfosFading
         {
             get { return null;}
             set { }

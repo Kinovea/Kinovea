@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
         {
         	m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
-            m_MemoInfosFading = _drawing.infosFading.Clone();
+            m_MemoInfosFading = _drawing.InfosFading.Clone();
             
             InitializeComponent();
             ConfigureForm();
@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         private void ConfigureForm()
         {
         	// Display current values.
-        	trkValue.Value = (int)Math.Ceiling(m_Drawing.infosFading.MasterFactor * 100);
+        	trkValue.Value = (int)Math.Ceiling(m_Drawing.InfosFading.MasterFactor * 100);
         }
         private void LocalizeForm()
         {
@@ -73,13 +73,13 @@ namespace Kinovea.ScreenManager
         #region User choices handlers
         private void trkValue_ValueChanged(object sender, EventArgs e)
         {
-        	m_Drawing.infosFading.MasterFactor = (float)trkValue.Value / 100;
+        	m_Drawing.InfosFading.MasterFactor = (float)trkValue.Value / 100;
             UpdateValueLabel();
             m_SurfaceScreen.Invalidate();
         }
         private void UpdateValueLabel()
         {
-            lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureOpacity_lblValue, m_Drawing.infosFading.MasterFactor * 100);
+            lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureOpacity_lblValue, m_Drawing.InfosFading.MasterFactor * 100);
         }
         #endregion
         
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
         private void btnCancel_Click(object sender, EventArgs e)
         {
             // Fall back to memo.
-            m_Drawing.infosFading = m_MemoInfosFading.Clone();
+            m_Drawing.InfosFading = m_MemoInfosFading.Clone();
             m_SurfaceScreen.Invalidate();
             m_bManualClose = true;
         }
@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_bManualClose)
             {
-            	m_Drawing.infosFading = m_MemoInfosFading.Clone();
+            	m_Drawing.InfosFading = m_MemoInfosFading.Clone();
                 m_SurfaceScreen.Invalidate();
             }
         }

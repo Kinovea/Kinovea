@@ -2935,9 +2935,9 @@ namespace Kinovea.ScreenManager
             
             bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
             
-            if(drawing.infosFading != null)
+            if(drawing.InfosFading != null)
             {
-                bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (drawing.infosFading.ReferenceTimestamp != m_iCurrentPosition));
+                bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition));
                 if(gotoVisible)
                 {
                     popMenu.Items.Add(mnuGotoKeyframe);
@@ -4075,10 +4075,10 @@ namespace Kinovea.ScreenManager
 		private void mnuGotoKeyframe_Click(object sender, EventArgs e)
 		{
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
-            if(drawing.infosFading == null)
+            if(drawing.InfosFading == null)
                 return;
             
-            long target = drawing.infosFading.ReferenceTimestamp;
+            long target = drawing.InfosFading.ReferenceTimestamp;
             m_iFramesToDecode = 1;
             ShowNextFrame(target, true);
             UpdatePositionUI();
