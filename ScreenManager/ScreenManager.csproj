@@ -312,6 +312,11 @@
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementTrackShape.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\ToolManager.cs" />
+    <Compile Include="PlayerScreen\Export\ExporterODF.cs" />
+    <Compile Include="PlayerScreen\Export\ExporterMSXML.cs" />
+    <Compile Include="PlayerScreen\Export\ExporterTrajectoryText.cs" />
+    <Compile Include="PlayerScreen\Export\ExporterXHTML.cs" />
+    <Compile Include="PlayerScreen\Export\MetadataExportFormat.cs" />
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingAngle2D.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCross2D.cs" />
@@ -742,6 +747,7 @@
     <Folder Include="PlayerScreen\Drawings\Events" />
     <Folder Include="PlayerScreen\Drawings\Styling" />
     <Folder Include="PlayerScreen\Geometry" />
+    <Folder Include="PlayerScreen\Export" />
     <Folder Include="PlayerScreen\Trackability" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
