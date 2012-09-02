@@ -1901,7 +1901,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {
-        	ExportSpreadsheet(MetadataExportFormat.ODF);
+            ExportSpreadsheet(MetadataExportFormat.ODF);
         }
         private void mnuExportMSXML_OnClick(object sender, EventArgs e)
         {
@@ -1913,7 +1913,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuExportTEXT_OnClick(object sender, EventArgs e)
         {
-        	ExportSpreadsheet(MetadataExportFormat.TEXT);
+        	ExportSpreadsheet(MetadataExportFormat.TrajectoryText);
         }
         private void ExportSpreadsheet(MetadataExportFormat _format)
         {
