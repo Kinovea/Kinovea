@@ -147,7 +147,7 @@ namespace Kinovea.ScreenManager
         private void btnForeColor_Click(object sender, EventArgs e)
         {
         	FormColorPicker picker = new FormColorPicker();
-        	ScreenManagerKernel.LocateForm(picker);
+        	FormsHelper.Locate(picker);
         	if(picker.ShowDialog() == DialogResult.OK)
         	{
         		rtbComment.SelectionColor = picker.PickedColor;
@@ -157,7 +157,7 @@ namespace Kinovea.ScreenManager
         private void btnBackColor_Click(object sender, EventArgs e)
         {
         	FormColorPicker picker = new FormColorPicker();
-        	ScreenManagerKernel.LocateForm(picker);
+        	FormsHelper.Locate(picker);
         	if(picker.ShowDialog() == DialogResult.OK)
         	{
         		rtbComment.SelectionBackColor = picker.PickedColor;

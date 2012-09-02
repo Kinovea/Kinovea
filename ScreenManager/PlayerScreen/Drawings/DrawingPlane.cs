@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
 			get { return m_InfosFading; }
             set { m_InfosFading = value; }
 		}
-		public override List<ToolStripMenuItem> ContextMenu
+		public override List<ToolStripItem> ContextMenu
 		{
 			get { return null; }
 		}

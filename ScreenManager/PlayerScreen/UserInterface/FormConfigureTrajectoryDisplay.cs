@@ -41,12 +41,12 @@ namespace Kinovea.ScreenManager
     	#region Members
     	private bool m_bManualClose = false;
     	private Action m_Invalidate;
-        private Track m_Track;
+        private DrawingTrack m_Track;
         private List<AbstractStyleElement> m_Elements = new List<AbstractStyleElement>();
         #endregion
         
         #region Construction
-        public formConfigureTrajectoryDisplay(Track _track, Action _invalidate)
+        public formConfigureTrajectoryDisplay(DrawingTrack _track, Action _invalidate)
         {
             InitializeComponent();
             m_Invalidate = _invalidate;

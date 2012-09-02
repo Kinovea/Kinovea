@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
 		{
 			get { return DrawingCapabilities.Opacity; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get { return null; }
 		}

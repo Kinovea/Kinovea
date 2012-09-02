@@ -144,6 +144,8 @@ namespace Kinovea.ScreenManager
 			m_Metadata.CalibrationHelper.FramesPerSeconds = m_VideoReader.Info.FramesPerSeconds;
 			m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
 			
+			m_Metadata.PostSetup();
+			
 			log.Debug("Setup metadata.");
 		}
 		public override void Draw(Graphics _canvas)

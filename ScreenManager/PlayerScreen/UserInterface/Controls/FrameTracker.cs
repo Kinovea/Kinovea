@@ -407,7 +407,7 @@ namespace Kinovea.ScreenManager
         	foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
         	{
                 DrawingChrono chrono = ad as DrawingChrono;
-                Track trk = ad as Track;
+                DrawingTrack trk = ad as DrawingTrack;
                 if(chrono != null)
                 {
                 	if(chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)

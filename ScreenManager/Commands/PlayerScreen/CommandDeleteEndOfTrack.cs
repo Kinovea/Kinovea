@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreenUserInterface m_psui;
         private Metadata m_Metadata;
-        private Track m_Track;
+        private DrawingTrack m_Track;
         private long m_iTimeStamp;
         public List<AbstractTrackPoint> m_Positions;
 
@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         {
             m_psui = _psui;
             m_Metadata = _Metadata;
-            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as Track;
+            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingTrack;
             m_iTimeStamp = _iTimeStamp;
         }
         #endregion

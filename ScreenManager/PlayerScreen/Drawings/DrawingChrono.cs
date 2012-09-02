@@ -47,14 +47,14 @@ namespace Kinovea.ScreenManager
         public override InfosFading  infosFading
         {
         	// Fading is not modifiable from outside for chrono.
-            get { throw new NotImplementedException("DrawingChrono, The method or operation is not implemented."); }
-            set { throw new NotImplementedException("DrawingChrono, The method or operation i not implemented."); }
+            get { return null; }
+            set { }
         }
         public override DrawingCapabilities Caps
 		{
 			get { return DrawingCapabilities.ConfigureColorSize; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get { return null; }
 		}

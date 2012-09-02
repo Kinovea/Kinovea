@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
     /// In Edit state: dragging the target moves the point's coordinates.
     /// In Interactive state: dragging the target moves to the next point (in time).
     /// </summary>
-    public class Track : AbstractDrawing, IDecorable
+    public class DrawingTrack : AbstractDrawing, IDecorable
     {
         #region Delegates
         // To ask the UI to display the frame closest to selected pos.
@@ -122,14 +122,14 @@ namespace Kinovea.ScreenManager
 		// Fading is not modifiable from outside.
         public override InfosFading  infosFading
         {
-            get { throw new NotImplementedException("Track, The method or operation is not implemented."); }
-            set { throw new NotImplementedException("Track, The method or operation is not implemented."); }
+            get { return null;}
+            set { }
         }
         public override DrawingCapabilities Caps
 		{
 			get { return DrawingCapabilities.None; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get { return null; }
 		}
@@ -182,7 +182,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Track(Point _origin, long _t, Bitmap _CurrentImage, Size _imageSize)
+        public DrawingTrack(Point _origin, long _t, Bitmap _CurrentImage, Size _imageSize)
         {
             //-----------------------------------------------------------------------------------------
             // t is absolute time.
@@ -234,7 +234,7 @@ namespace Kinovea.ScreenManager
             
             m_StyleHelper.ValueChanged += mainStyle_ValueChanged;
         }
-        public Track(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, Size _imageSize)
+        public DrawingTrack(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, Size _imageSize)
             : this(Point.Empty,0, null, _imageSize)
         {
             ReadXml(_xmlReader, _scale, _remapTimestampCallback);

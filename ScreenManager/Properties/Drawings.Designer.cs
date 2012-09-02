@@ -159,6 +159,42 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap coordinates
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("coordinates", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap coordinates_axis
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("coordinates_axis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap coordinates_graduations
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("coordinates_graduations", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap coordinates_grid
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("coordinates_grid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap crossmark
         {
             get

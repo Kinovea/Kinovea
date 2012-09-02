@@ -307,11 +307,6 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuMagnifierTrack = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierDirect = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuMagnifierQuit = new ToolStripMenuItem();
-		
-		private ContextMenuStrip popMenuMultiDrawing = new ContextMenuStrip();
-		private ToolStripMenuItem mnuMultiDrawingItemTrack = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuMultiDrawingItemDelete = new ToolStripMenuItem();
-		private ToolStripMenuItem mnuMultiDrawingItemConfigure = new ToolStripMenuItem();
 		#endregion
 
 		ToolStripButton m_btnAddKeyFrame;
@@ -990,7 +985,7 @@ namespace Kinovea.ScreenManager
 					
 			PrepareKeyframesDock();
 			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-			m_FrameServer.Metadata.Deselect();
+			m_FrameServer.Metadata.UnselectAll();
 			
 			// Add a KeyFrame here if it doesn't exist.
 			AddKeyframe();
@@ -998,7 +993,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void AfterAddImageDrawing()
 		{
-		    m_FrameServer.Metadata.Deselect();
+		    m_FrameServer.Metadata.UnselectAll();
 			m_ActiveTool = m_PointerTool;
 			SetCursor(m_PointerTool.GetCursor(0));
 			
@@ -1293,14 +1288,6 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierQuit.Click += mnuMagnifierQuit_Click;
 			mnuMagnifierQuit.Image = Properties.Resources.hide;
 			popMenuMagnifier.Items.AddRange(new ToolStripItem[] { new ToolStripSeparator(), mnuMagnifierTrack, new ToolStripSeparator(), mnuMagnifierDirect, mnuMagnifierQuit });
-			
-			// 6. MultiDrawings.
-			mnuMultiDrawingItemTrack.Click += mnuMultiDrawingItemTrack_Click;
-			mnuMultiDrawingItemTrack.Image = Properties.Drawings.track;
-			mnuMultiDrawingItemConfigure.Click += new EventHandler(mnuConfigureMultiDrawing_Click);
-			mnuMultiDrawingItemConfigure.Image = Properties.Drawings.configure;
-			mnuMultiDrawingItemDelete.Image = Properties.Drawings.delete;
-			mnuMultiDrawingItemDelete.Click += mnuDeleteMultiDrawingItem_Click;
 			
 			// The right context menu and its content will be choosen upon MouseDown.
 			panelCenter.ContextMenuStrip = popMenu;
@@ -2522,7 +2509,7 @@ namespace Kinovea.ScreenManager
 			else
 			{
 				fcs.StartPosition = FormStartPosition.Manual;
-				ScreenManagerKernel.LocateForm(fcs);
+				FormsHelper.Locate(fcs);
 			}
 			
 			if (fcs.ShowDialog() == DialogResult.OK)
@@ -2564,7 +2551,7 @@ namespace Kinovea.ScreenManager
 			// This is used for drawings that must show extra stuff for being transformed, but we 
 			// don't want to show the extra stuff all the time for clarity.
 			
-			m_FrameServer.Metadata.Deselect();
+			m_FrameServer.Metadata.UnselectAll();
 			log.Debug("Deselection timer fired.");
 			m_DeselectionTimer.Stop();
 			DoInvalidate();
@@ -2617,11 +2604,6 @@ namespace Kinovea.ScreenManager
 			mnuMagnifierTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
 			mnuMagnifierDirect.Text = ScreenManagerLang.mnuMagnifierDirect;
 			mnuMagnifierQuit.Text = ScreenManagerLang.mnuMagnifierQuit;
-			
-			// 6. MultiDrawing
-			mnuMultiDrawingItemTrack.Text = ScreenManagerLang.mnuTrackTrajectory;
-			mnuMultiDrawingItemDelete.Text = ScreenManagerLang.mnuDeleteDrawing;
-			mnuMultiDrawingItemConfigure.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
 		}
 		private void ReloadTooltipsCulture()
 		{
@@ -2772,7 +2754,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void CreateNewDrawing()
 		{
-		    m_FrameServer.Metadata.Deselect();
+		    m_FrameServer.Metadata.UnselectAll();
 			
 			// Add a KeyFrame here if it doesn't exist.
 			AddKeyframe();
@@ -2848,75 +2830,16 @@ namespace Kinovea.ScreenManager
 			}
 			else if (m_FrameServer.Metadata.IsOnDrawing(m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition))
 			{
-				// Rebuild the context menu according to the capabilities of the drawing we are on.
-				AbstractDrawing ad = m_FrameServer.Metadata.Keyframes[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing];
-				
-				if(ad != null)
-				{
-					popMenuDrawings.Items.Clear();
-					
-					// Generic context menu from drawing capabilities.
-					if((ad.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
-					{
-                        mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-                        popMenuDrawings.Items.Add(mnuConfigureDrawing);
-					}
-
-					if((ad.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
-					{
-                        mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
-                        popMenuDrawings.Items.Add(mnuConfigureDrawing);
-					}
-						
-					if(m_PrefManager.DefaultFading.Enabled && ((ad.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
-					{
-						popMenuDrawings.Items.Add(mnuConfigureFading);
-					}
-					
-					if((ad.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
-					{
-						popMenuDrawings.Items.Add(mnuConfigureOpacity);
-					}
-					
-					if((ad.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
-					{
-                        if(ad is ITrackable)
-                        {
-                            mnuTrackDrawing.Checked = ToggleTrackingCommand.CurrentState(ad);
-                            popMenuDrawings.Items.Add(mnuTrackDrawing);
-                        }
-					}
-					
-					popMenuDrawings.Items.Add(mnuSepDrawing);
-
-					// Specific menus. Hosted by the drawing itself.
-					bool hasExtraMenu = (ad.ContextMenu != null && ad.ContextMenu.Count > 0);
-					if(hasExtraMenu)
-					{
-						foreach(ToolStripMenuItem tsmi in ad.ContextMenu)
-						{
-							tsmi.Tag = (Action)DoInvalidate;	// Inject dependency on this screen's invalidate method.
-							popMenuDrawings.Items.Add(tsmi);
-						}
-					}
-					
-					bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (ad.infosFading.ReferenceTimestamp != m_iCurrentPosition));
-					if(gotoVisible)
-						popMenuDrawings.Items.Add(mnuGotoKeyframe);
-					
-					if(hasExtraMenu || gotoVisible)
-						popMenuDrawings.Items.Add(mnuSepDrawing2);
-						
-					// Generic delete
-					popMenuDrawings.Items.Add(mnuDeleteDrawing);
-					
-					// Set this menu as the context menu.
-					panelCenter.ContextMenuStrip = popMenuDrawings;
-				}
+				AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+				PrepareDrawingContextMenu(drawing, popMenuDrawings);
+				popMenuDrawings.Items.Add(mnuDeleteDrawing);
+				panelCenter.ContextMenuStrip = popMenuDrawings;
 			} 
 			else if( (hitDrawing = m_FrameServer.Metadata.IsOnExtraDrawing(m_DescaledMouse, m_iCurrentPosition)) != null)
 			{ 
 				// Unlike attached drawings, each extra drawing type has its own context menu for now.
+				// TODO: Maybe we could use the custom menus system to host these menus in the drawing instead of here.
+				// Only the drawing itself knows what to do upon click anyway.
 				
 				if(hitDrawing is DrawingChrono)
 				{
@@ -2925,9 +2848,9 @@ namespace Kinovea.ScreenManager
 					mnuChronoCountdown.Checked = ((DrawingChrono)hitDrawing).CountDown;
 					panelCenter.ContextMenuStrip = popMenuChrono;
 				}
-				else if(hitDrawing is Track)
+				else if(hitDrawing is DrawingTrack)
 				{
-					if (((Track)hitDrawing).Status == TrackStatus.Edit)
+					if (((DrawingTrack)hitDrawing).Status == TrackStatus.Edit)
 					{
 						mnuStopTracking.Visible = true;
 						mnuRestartTracking.Visible = false;
@@ -2940,35 +2863,16 @@ namespace Kinovea.ScreenManager
 					
 					panelCenter.ContextMenuStrip = popMenuTrack;
 				}
+				else if(hitDrawing is DrawingCoordinateSystem)
+				{
+				    PrepareDrawingContextMenu(hitDrawing, popMenuDrawings);
+				    panelCenter.ContextMenuStrip = popMenuDrawings;
+				}
 				else if(hitDrawing is AbstractMultiDrawing)
 				{
-				    // TODO: deduplicate this from the regular drawings ?
-				    popMenuMultiDrawing.Items.Clear();
-				    
-				    AbstractMultiDrawing amd = hitDrawing as AbstractMultiDrawing;
-				    if((amd.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
-					{
-                        mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
-                        popMenuMultiDrawing.Items.Add(mnuMultiDrawingItemConfigure);
-					}
-
-					if((amd.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
-					{
-                        mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
-                        popMenuMultiDrawing.Items.Add(mnuMultiDrawingItemConfigure);
-					}
-					
-					if((amd.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
-					{
-					    mnuMultiDrawingItemTrack.Checked = ToggleTrackingCommand.CurrentState(amd);
-					    popMenuMultiDrawing.Items.Add(mnuMultiDrawingItemTrack);
-					}
-					
-					if(popMenuMultiDrawing.Items.Count > 0)
-					    popMenuMultiDrawing.Items.Add(mnuSepDrawing);
-					
-				    popMenuMultiDrawing.Items.Add(mnuMultiDrawingItemDelete);
-				    panelCenter.ContextMenuStrip = popMenuMultiDrawing;
+				    PrepareDrawingContextMenu(hitDrawing, popMenuDrawings);
+				    popMenuDrawings.Items.Add(mnuDeleteDrawing);
+				    panelCenter.ContextMenuStrip = popMenuDrawings;
 				}
 			}
 			else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse))
@@ -2980,7 +2884,7 @@ namespace Kinovea.ScreenManager
 			{
 				// Launch FormToolPreset.
 				FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
-				ScreenManagerKernel.LocateForm(ftp);
+				FormsHelper.Locate(ftp);
 				ftp.ShowDialog();
 				ftp.Dispose();
 				UpdateCursor();
@@ -2992,6 +2896,71 @@ namespace Kinovea.ScreenManager
 				mnuSendPic.Visible = m_bSynched;
 				panelCenter.ContextMenuStrip = popMenu;
 			}
+		}
+		private void PrepareDrawingContextMenu(AbstractDrawing drawing, ContextMenuStrip popMenu)
+		{
+            popMenu.Items.Clear();
+            
+            // Generic context menu from drawing capabilities.
+            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
+            {
+                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
+                popMenu.Items.Add(mnuConfigureDrawing);
+            }
+            
+            if((drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
+            {
+                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+                popMenu.Items.Add(mnuConfigureDrawing);
+            }
+            
+            if(m_PrefManager.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
+            {
+                popMenu.Items.Add(mnuConfigureFading);
+            }
+            
+            if((drawing.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
+            {
+                popMenu.Items.Add(mnuConfigureOpacity);
+            }
+            
+            if((drawing.Caps & DrawingCapabilities.Track) == DrawingCapabilities.Track)
+            {
+                mnuTrackDrawing.Checked = ToggleTrackingCommand.CurrentState(drawing);
+                popMenu.Items.Add(mnuTrackDrawing);
+            }
+            
+            if(popMenu.Items.Count > 0)
+                popMenu.Items.Add(mnuSepDrawing);
+            
+            bool hasExtraMenus = AddDrawingCustomMenus(drawing, popMenu.Items);
+            
+            if(drawing.infosFading != null)
+            {
+                bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (drawing.infosFading.ReferenceTimestamp != m_iCurrentPosition));
+                if(gotoVisible)
+                {
+                    popMenu.Items.Add(mnuGotoKeyframe);
+                    hasExtraMenus = true;
+                }
+            }
+            
+            if(hasExtraMenus)
+                popMenu.Items.Add(mnuSepDrawing2);
+		}
+		private bool AddDrawingCustomMenus(AbstractDrawing drawing, ToolStripItemCollection menuItems)
+		{
+            bool hasExtraMenu = (drawing.ContextMenu != null && drawing.ContextMenu.Count > 0);
+            if(!hasExtraMenu)
+                return false;
+            
+            foreach(ToolStripItem tsmi in drawing.ContextMenu)
+            {
+                tsmi.Tag = (Action)DoInvalidate;	// Inject dependency on this screen's invalidate method.
+                menuItems.Add(tsmi);
+            }
+            
+            return true;
 		}
 		private void SurfaceScreen_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -3109,7 +3078,7 @@ namespace Kinovea.ScreenManager
     				CommandManager cm = CommandManager.Instance();
     				cm.LaunchUndoableCommand(cad);
     				
-    				m_FrameServer.Metadata.Deselect();
+    				m_FrameServer.Metadata.UnselectAll();
 			    }
 			    else if(m_iActiveKeyFrameIndex >= 0)
 			    {
@@ -3124,7 +3093,7 @@ namespace Kinovea.ScreenManager
         				cm.LaunchUndoableCommand(cad);
         				
         				// Deselect the drawing we just added.
-        				m_FrameServer.Metadata.Deselect();
+        				m_FrameServer.Metadata.UnselectAll();
         		    }
 			    }
 			}
@@ -3204,7 +3173,7 @@ namespace Kinovea.ScreenManager
 				{
 					mnuChronoConfigure_Click(null, EventArgs.Empty);	
 				}
-				else if(hitDrawing is Track)
+				else if(hitDrawing is DrawingTrack)
 				{
 					mnuConfigureTrajectory_Click(null, EventArgs.Empty);	
 				}
@@ -3386,30 +3355,6 @@ namespace Kinovea.ScreenManager
 			
 			m_TimeWatcher.LogTime("After DrawImage");
             
-			// Testing Key images overlay.
-			// Creates a ghost image of the last keyframe superposed with the current image.
-			// We can only do it in analysis mode to get the key image bitmap.
-			/*if(m_FrameServer.VideoFile.Selection.iAnalysisMode == 1 && m_FrameServer.Metadata.Keyframes.Count > 0)
-			{
-				// Look for the closest key image before.
-				int iImageMerge = -1 ;
-				long iBestDistance = long.MaxValue;	
-				for(int i=0; i<m_FrameServer.Metadata.Keyframes.Count;i++)
-				{
-					long iDistance = _iPosition - m_FrameServer.Metadata.Keyframes[i].Position;
-					if(iDistance >=0 && iDistance < iBestDistance)
-					{
-						iBestDistance = iDistance;
-						iImageMerge = i;
-					}
-				}
-				
-				// Merge images.
-				int iFrameIndex = (int)m_FrameServer.VideoFile.GetFrameNumber(m_FrameServer.Metadata.Keyframes[iImageMerge].Position);
-				Bitmap mergeImage = m_FrameServer.VideoFile.FrameList[iFrameIndex].BmpImage;
-				g.DrawImage(mergeImage, rDst, 0, 0, _sourceImage.Width, _sourceImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
-			}*/
-			
 			// .Sync superposition.
 			if(m_bSynched && m_bSyncMerge && m_SyncMergeImage != null)
 			{
@@ -4042,7 +3987,7 @@ namespace Kinovea.ScreenManager
 
 			// Load, save or modify current profile.
 			FormToolPresets ftp = new FormToolPresets();
-			ScreenManagerKernel.LocateForm(ftp);
+			FormsHelper.Locate(ftp);
 			ftp.ShowDialog();
 			ftp.Dispose();
 
@@ -4074,7 +4019,7 @@ namespace Kinovea.ScreenManager
 			// Track the point.
 			// m_DescaledMouse would have been set during the MouseDown event.
 			CheckCustomDecodingSize(true);
-			Track trk = new Track(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.CurrentImage, m_FrameServer.CurrentImage.Size);
+			DrawingTrack trk = new DrawingTrack(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.CurrentImage, m_FrameServer.CurrentImage.Size);
 			m_FrameServer.Metadata.AddTrack(trk, OnShowClosestFrame, Color.CornflowerBlue); // todo: get color from track tool.
 			
 			// Return to the pointer tool.
@@ -4097,75 +4042,56 @@ namespace Kinovea.ScreenManager
 		#region Drawings Menus
 		private void mnuConfigureDrawing_Click(object sender, EventArgs e)
 		{
-			// Generic menu for all drawings with the Color or ColorSize capability.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && 
-			   m_FrameServer.Metadata.SelectedDrawing >= 0 &&
-			   m_FrameServer.Metadata.Count > m_FrameServer.Metadata.SelectedDrawingFrame)
-			{
-			    Keyframe kf = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame];
-			    if(kf.Drawings.Count > m_FrameServer.Metadata.SelectedDrawing)
-			    {
-			        IDecorable decorableDrawing = kf.Drawings[m_FrameServer.Metadata.SelectedDrawing] as IDecorable;
-    				if(decorableDrawing != null && decorableDrawing.DrawingStyle != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
-    				{
-    					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
-    					ScreenManagerKernel.LocateForm(fcd);
-    					fcd.ShowDialog();
-    					fcd.Dispose();
-    					DoInvalidate();
-    				}
-			    }
-			}
+            IDecorable drawing = m_FrameServer.Metadata.HitDrawing as IDecorable;
+            if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
+                return;
+
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, DoInvalidate);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+            fcd.Dispose();
+            DoInvalidate();
 		}
 		private void mnuConfigureFading_Click(object sender, EventArgs e)
 		{
-			// Generic menu for all drawings with the Fading capability.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				formConfigureFading fcf = new formConfigureFading(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				ScreenManagerKernel.LocateForm(fcf);
-				fcf.ShowDialog();
-				fcf.Dispose();
-				DoInvalidate();
-			}
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+
+            formConfigureFading fcf = new formConfigureFading(drawing, pbSurfaceScreen);
+            FormsHelper.Locate(fcf);
+            fcf.ShowDialog();
+            fcf.Dispose();
+            DoInvalidate();
 		}
 		private void mnuConfigureOpacity_Click(object sender, EventArgs e)
 		{
-			// Generic menu for all drawings with the Opacity capability.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				formConfigureOpacity fco = new formConfigureOpacity(m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				ScreenManagerKernel.LocateForm(fco);
-				fco.ShowDialog();
-				fco.Dispose();
-				DoInvalidate();
-			}
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            
+            formConfigureOpacity fco = new formConfigureOpacity(drawing, pbSurfaceScreen);
+            FormsHelper.Locate(fco);
+            fco.ShowDialog();
+            fco.Dispose();
+            DoInvalidate();
 		}
 		private void mnuGotoKeyframe_Click(object sender, EventArgs e)
 		{
-			// Generic menu for all drawings when we are not on their attachement key frame.
-			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-				long iPosition = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing].infosFading.ReferenceTimestamp;
-
-				m_iFramesToDecode = 1;
-				ShowNextFrame(iPosition, true);
-				UpdatePositionUI();
-				ActivateKeyframe(m_iCurrentPosition);
-			}
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            if(drawing.infosFading == null)
+                return;
+            
+            long target = drawing.infosFading.ReferenceTimestamp;
+            m_iFramesToDecode = 1;
+            ShowNextFrame(target, true);
+            UpdatePositionUI();
+            ActivateKeyframe(m_iCurrentPosition);
 		}
 		private void mnuTrackDrawing_Click(object sender, EventArgs e)
 		{
-		    // Generic menu for all drawings with the Track capability.
-			if(m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-			    ITrackable drawing = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as ITrackable;
-			    
-			    // Tracking is not compatible with custom decoding size, force the use of the original size.
-			    CheckCustomDecodingSize(true);
-			    ShowNextFrame(m_iCurrentPosition, true);
-			    ToggleTrackingCommand.Execute(drawing);
-			}
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+
+            // Tracking is not compatible with custom decoding size, force the use of the original size.
+            CheckCustomDecodingSize(true);
+            ShowNextFrame(m_iCurrentPosition, true);
+            ToggleTrackingCommand.Execute(drawing);
 		}
 		private void mnuDeleteDrawing_Click(object sender, EventArgs e)
 		{
@@ -4173,24 +4099,32 @@ namespace Kinovea.ScreenManager
 		}
 		private void DeleteSelectedDrawing()
 		{
-			if (m_FrameServer.Metadata.SelectedDrawingFrame >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
-			{
-			    ITrackable asTrackable = m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Drawings[m_FrameServer.Metadata.SelectedDrawing] as ITrackable;
-				if(asTrackable != null && TrackableDrawingDeleted != null)
-				    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(asTrackable));
-				
-				IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
-				CommandManager cm = CommandManager.Instance();
-				cm.LaunchUndoableCommand(cdd);
-				DoInvalidate();
-			}
+            AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            
+            if(drawing is AbstractMultiDrawing)
+            {
+                IUndoableCommand cds = new CommandDeleteMultiDrawingItem(this, m_FrameServer.Metadata);
+    			CommandManager cm = CommandManager.Instance();
+    			cm.LaunchUndoableCommand(cds);
+            }
+            else
+            {
+                ITrackable trackable = drawing as ITrackable;
+                if(trackable != null && TrackableDrawingDeleted != null)
+                    TrackableDrawingDeleted(this, new TrackableDrawingEventArgs(trackable));
+                
+                IUndoableCommand cdd = new CommandDeleteDrawing(DoInvalidate, m_FrameServer.Metadata, m_FrameServer.Metadata[m_FrameServer.Metadata.SelectedDrawingFrame].Position, m_FrameServer.Metadata.SelectedDrawing);
+                CommandManager cm = CommandManager.Instance();
+                cm.LaunchUndoableCommand(cdd);
+                DoInvalidate();
+            }
 		}
 		#endregion
 		
 		#region Tracking Menus
 		private void mnuStopTracking_Click(object sender, EventArgs e)
 		{
-			Track trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Track;
+			DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
 			if(trk != null)
 				trk.StopTracking();
 			CheckCustomDecodingSize(false);
@@ -4207,7 +4141,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void mnuRestartTracking_Click(object sender, EventArgs e)
 		{
-			Track trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Track;
+			DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
 			if(trk == null)
 			    return;
 			
@@ -4230,7 +4164,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void mnuConfigureTrajectory_Click(object sender, EventArgs e)
 		{
-			Track trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as Track;
+			DrawingTrack trk = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingTrack;
 			if(trk == null)
 			    return;
 			
@@ -4365,7 +4299,7 @@ namespace Kinovea.ScreenManager
 				
 				// Change this chrono display.
 				formConfigureChrono fcc = new formConfigureChrono(dc, DoInvalidate);
-				ScreenManagerKernel.LocateForm(fcc);
+				FormsHelper.Locate(fcc);
 				fcc.ShowDialog();
 				fcc.Dispose();
 				DoInvalidate();
@@ -4424,40 +4358,6 @@ namespace Kinovea.ScreenManager
 			// Revert to no magnification.
 			m_FrameServer.Metadata.Magnifier.Mode = MagnifierMode.None;
 			SetCursor(m_PointerTool.GetCursor(0));
-		}
-		#endregion
-
-		#region MultiDrawings
-		private void mnuMultiDrawingItemTrack_Click(object sender, EventArgs e)
-		{
-		    if(m_FrameServer.Metadata.SelectedExtraDrawing < 0)
-			    return;
-			
-            CheckCustomDecodingSize(true);  
-			ShowNextFrame(m_iCurrentPosition, true);  
-			
-			ToggleTrackingCommand.Execute(m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing]); 	
-		}
-		private void mnuDeleteMultiDrawingItem_Click(object sender, EventArgs e)
-		{
-            IUndoableCommand cds = new CommandDeleteMultiDrawingItem(this, m_FrameServer.Metadata);
-			CommandManager cm = CommandManager.Instance();
-			cm.LaunchUndoableCommand(cds);
-		}
-		private void mnuConfigureMultiDrawing_Click(object sender, EventArgs e)
-		{
-			if(m_FrameServer.Metadata.SelectedExtraDrawing < 0)
-			    return;
-			
-			IDecorable decorableDrawing = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as IDecorable;
-			if(decorableDrawing == null || decorableDrawing.DrawingStyle == null || decorableDrawing.DrawingStyle.Elements.Count == 0)
-			    return;
-			
-		    FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
-			ScreenManagerKernel.LocateForm(fcd);
-			fcd.ShowDialog();
-			fcd.Dispose();
-			DoInvalidate();
 		}
 		#endregion
 		

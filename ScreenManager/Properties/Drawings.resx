@@ -813,4 +813,45 @@
         OBirAeTmSIqyMshSAP8ETp9hKgG+AAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="coordinates" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAN0AAA
+        DdABEGw9BwAAAFlJREFUOE9j+P//PwMIAwGQgrBJwXDFFBtAiq3IaqnnguHhhR/kBCRyIHJQagDFCWmA
+        vACMfw4oBmUIcDhA+ezEsEGKf0AxSCfYG1D+ByDNTpBNzdxIViACAOaan3TLPcQTAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="coordinates_axis" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAyElEQVQ4T2P4//8/AyUYrBkI
+        fIGYF4jTYTQjIyMvEK9BF4fyfWGWwgzgA5mCDICaGYB4HYjGAnjRDcjGohlkwAaoQehmZGN1AUwxEr0Z
+        XQxqEh+6AYUgCSwGbMNhQCGKAUBF/Fg0gwzciUOcH92APUCF2HAfDvE96AYI4LDpAA5xAfQwaMARBkdw
+        hEEDugGCOAw4jsMAQXQvdOJw6hkc4p3oBohgUwh01U0cBgijG1ANVCgKxEuQaaABz7CJA8WqUQygODdS
+        YgAAhqsi6YaToHIAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="coordinates_graduations" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABtElEQVQ4T6WT3StDcRjHn/Py
+        F8kNNy4sonnLaFkutqu5UopEZJGXrJi3zdvWpq2Wt800qTEpEW6Ul5RMkjRJkhLp8Xt+duak47hw8dnz
+        nO+e73fP+Z0dSFplSNpk2LLJdsZgBjtpi2aJ9F8reYE+aIhV58d5CN+O/Ui9nlEJ5gGbVrmBDCGTdHQV
+        68KXfTduWOVD0hbM0oxeJS+s1ctj76dzeOIqxtcjLz7vjWf7VLSTa1qVPOQF9iu+h6QT4825eBnpwKed
+        ETzoycfbeLcu5CEveCvF7qlyMcouUi8HHnzcHqIvUqT9BXmBDXFGikTvxWIbUnLMInlIc5UIutAMBE0S
+        ROo407R+OjGA1JM2WaYfwgMGCkQF/3m4Be/We/m9Meh8wKMTwgPCtZJCgNanw2NaQKWD26i9CQ9w5AkK
+        wbNgE96w/0KoRgwyQM2ERggPmKsWFcJptv41e5RMC6v07MzPEB7QmiMozB8HGvFqqR1nK8RlBmgxWvp9
+        OzxgmD2qDIl7tsHtqgPZdUKlq2d476sS+bnROwH9hi/6DDDeWwi7BPWKrq4TRgFWLF/GzAsIgIj/4hNP
+        /qXUZ4RtfwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="coordinates_grid" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAi0lEQVQ4T6XTMQqAMBBE0c3R
+        bSwtPUUQISAIFhZCGi/gBbxG3AgL61QjEQZ+k2eaSClFWvYeDiF0uvhjnf3UgEkPV6iOagRmB1CNQFLA
+        1hOdEFjcDahGYHUA1QhsCtgGojcEdncDqhE4HEA1AlkB20h0RuB0N6D6A4jIpbOPagSinr5/LH6A5tfY
+        Ajw6jFJAyoAaugAAAABJRU5ErkJggg==
+</value>
+  </data>
 </root>

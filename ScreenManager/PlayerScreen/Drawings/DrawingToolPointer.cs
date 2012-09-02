@@ -391,7 +391,7 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < _Metadata.ExtraDrawings.Count; i++)
             {
-            	Track trk = _Metadata.ExtraDrawings[i] as Track;
+            	DrawingTrack trk = _Metadata.ExtraDrawings[i] as DrawingTrack;
             	if(trk != null)
             	{
             		// Result: 
