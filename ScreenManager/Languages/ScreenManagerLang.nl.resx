@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Speel video af</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Toon/Verberg standaard bediening</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Baan Trajectpad</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Een onbekende fout is opgetreden</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Afspeelfout.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recent gebruikte kleuren:</value></data>

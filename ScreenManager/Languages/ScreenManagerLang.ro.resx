@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Lanseaza fisierul video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Arată/Ascunde controalele comune</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Urmăreşte traiectoria</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>A intervenit o eroare necunoscută.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea – Eroare la rulare.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Culori folosite recent :</value></data>

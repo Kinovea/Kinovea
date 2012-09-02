@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Reproducir el vídeo</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Mostrar / Ocultar controles comunes</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Seguir la Trayectoria</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Se ha producido un error desconocido.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Error de Lectura.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Colores usados recientemente</value></data>

@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
     	#region Properties
     	public override string DisplayName
     	{
-    		get { return ScreenManagerLang.dlgConfigureTrajectory_SetOrigin; }
+    		get { return ScreenManagerLang.mnuCoordinateSystem; }
     	}
     	public override Bitmap Icon
     	{

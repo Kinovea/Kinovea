@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Groti video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Rodyti / slepti įrankių juostą</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Sekimo kelias</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Įvyko nežinoma klaida.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - grojimo klaida.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Vėliausiai naudotos spalvos:</value></data>

@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Play video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Show/Hide Common Controls</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Track Path</value></data>
+   <data name="mnuCoordinateSystem" xml:space="preserve"><value>Coordinate System</value></data>
+   <data name="mnuCoordinateSystemShowAxis" xml:space="preserve"><value>Axes</value></data>
+   <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Grid</value></data>
+   <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Tick marks</value></data>
+   <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Hide</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>An Unknown Error Occurred.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Playing Error.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recently used colors:</value></data>

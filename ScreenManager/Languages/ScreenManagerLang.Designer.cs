@@ -1834,6 +1834,51 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Coordinate System.
+        /// </summary>
+        internal static string mnuCoordinateSystem {
+            get {
+                return ResourceManager.GetString("mnuCoordinateSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hide.
+        /// </summary>
+        internal static string mnuCoordinateSystemHide {
+            get {
+                return ResourceManager.GetString("mnuCoordinateSystemHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Axes.
+        /// </summary>
+        internal static string mnuCoordinateSystemShowAxis {
+            get {
+                return ResourceManager.GetString("mnuCoordinateSystemShowAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Grid.
+        /// </summary>
+        internal static string mnuCoordinateSystemShowGrid {
+            get {
+                return ResourceManager.GetString("mnuCoordinateSystemShowGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Tick marks.
+        /// </summary>
+        internal static string mnuCoordinateSystemShowTickMarks {
+            get {
+                return ResourceManager.GetString("mnuCoordinateSystemShowTickMarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Deinterlace.
         /// </summary>
         internal static string mnuDeinterlace {
