@@ -856,13 +856,14 @@ namespace Kinovea.ScreenManager
             
             while(r.NodeType == XmlNodeType.Element)
 			{
-                AbstractDrawing ad = ParseDrawing(r);
+                AbstractDrawing drawing = ParseDrawing(r);
                     
-                if (ad != null)
+                if (drawing != null)
                 {
-                    _keyframe.Drawings.Insert(0, ad);
+                    _keyframe.Drawings.Insert(0, drawing);
                     _keyframe.Drawings[0].infosFading.ReferenceTimestamp = _keyframe.Position;
                     _keyframe.Drawings[0].infosFading.AverageTimeStampsPerFrame = m_iAverageTimeStampsPerFrame;
+                    PostDrawingCreationHooks(drawing);
                 }
             }
             
