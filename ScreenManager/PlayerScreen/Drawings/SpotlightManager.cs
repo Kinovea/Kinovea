@@ -111,14 +111,13 @@ namespace Kinovea.ScreenManager
 			// Draw the mask with the spot holes on top of the frame.
 			int backgroundAlpha = (int)((double)defaultBackgroundAlpha * maxOpacity);
 			using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.Black)))
-			//using(SolidBrush brushBackground = new SolidBrush(Color.FromArgb(backgroundAlpha, Color.FromArgb(255, 0, 0, 16))))
 			{
                 canvas.FillPath(brushBackground, globalPath);
             }
 			
 			// Draw each spot border or any visuals.
             foreach(Spotlight spot in spotlights)
-                spot.Draw(canvas, transformer, currentTimestamp);
+                spot.Draw(canvas, currentTimestamp);
             
             globalPath.Dispose();
             spotsPath.Dispose();

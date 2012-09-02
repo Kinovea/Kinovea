@@ -1,0 +1,883 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FxCopProject Version="1.36" Name="My FxCop Project">
+ <ProjectOptions>
+  <SharedProject>True</SharedProject>
+  <Stylesheet Apply="False">c:\program files\microsoft fxcop 1.36\Xml\FxCopReport.xsl</Stylesheet>
+  <SaveMessages>
+   <Project Status="Active, Excluded" NewOnly="False" />
+   <Report Status="Active" NewOnly="False" />
+  </SaveMessages>
+  <ProjectFile Compress="True" DefaultTargetCheck="True" DefaultRuleCheck="True" SaveByRuleGroup="" Deterministic="True" />
+  <EnableMultithreadedLoad>True</EnableMultithreadedLoad>
+  <EnableMultithreadedAnalysis>True</EnableMultithreadedAnalysis>
+  <SourceLookup>True</SourceLookup>
+  <AnalysisExceptionsThreshold>10</AnalysisExceptionsThreshold>
+  <RuleExceptionsThreshold>1</RuleExceptionsThreshold>
+  <Spelling Locale="fr-FR" />
+  <OverrideRuleVisibilities>False</OverrideRuleVisibilities>
+  <CustomDictionaries SearchFxCopDir="True" SearchUserProfile="True" SearchProjectDir="True" />
+  <SearchGlobalAssemblyCache>False</SearchGlobalAssemblyCache>
+  <DeadlockDetectionTimeout>120</DeadlockDetectionTimeout>
+  <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
+ </ProjectOptions>
+ <Targets>
+  <AssemblyReferenceDirectories>
+   <Directory>$(ProjectDir)/../../PlayerServer/bin/</Directory>
+   <Directory>$(ProjectDir)/../../ScreenManager/bin/Debug/</Directory>
+   <Directory>$(ProjectDir)/../../Video/bin/x86/Debug/</Directory>
+  </AssemblyReferenceDirectories>
+  <Target Name="$(ProjectDir)/../../ScreenManager/bin/x86/Debug/Kinovea.ScreenManager.dll" Analyze="True" AnalyzeAllChildren="True" />
+ </Targets>
+ <Rules>
+  <RuleFiles>
+   <RuleFile Name="$(FxCopDir)\Rules\DesignRules.dll" Enabled="False" AllRulesEnabled="False">
+    <Rule Name="AvoidEmptyInterfaces" Enabled="True" />
+   </RuleFile>
+   <RuleFile Name="$(FxCopDir)\Rules\GlobalizationRules.dll" Enabled="False" AllRulesEnabled="False" />
+   <RuleFile Name="$(FxCopDir)\Rules\InteroperabilityRules.dll" Enabled="False" AllRulesEnabled="False" />
+   <RuleFile Name="$(FxCopDir)\Rules\MobilityRules.dll" Enabled="False" AllRulesEnabled="False" />
+   <RuleFile Name="$(FxCopDir)\Rules\NamingRules.dll" Enabled="False" AllRulesEnabled="False" />
+   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="False" AllRulesEnabled="False">
+    <Rule Name="AvoidUncalledPrivateCode" Enabled="True" />
+    <Rule Name="AvoidUninstantiatedInternalClasses" Enabled="True" />
+    <Rule Name="AvoidUnusedPrivateFields" Enabled="True" />
+    <Rule Name="RemoveEmptyFinalizers" Enabled="True" />
+    <Rule Name="RemoveUnusedLocals" Enabled="True" />
+   </RuleFile>
+   <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="False" AllRulesEnabled="False" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="False" AllRulesEnabled="False" />
+   <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="False" AllRulesEnabled="False">
+    <Rule Name="ReviewUnusedParameters" Enabled="True" />
+   </RuleFile>
+  </RuleFiles>
+  <Groups />
+  <Settings />
+ </Rules>
+ <FxCopReport Version="1.36">
+  <Targets>
+   <Target Name="$(ProjectDir)/../../ScreenManager/bin/x86/Debug/Kinovea.ScreenManager.dll">
+    <Modules>
+     <Module Name="kinovea.screenmanager.dll">
+      <Namespaces>
+       <Namespace Name="Kinovea.ScreenManager">
+        <Types>
+         <Type Name="AngleHelper">
+          <Members>
+           <Member Name="#ComputeHitRegion(System.Drawing.Rectangle,System.Double,System.Double)">
+            <Messages>
+             <Message Id="boundingBox" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'boundingBox'</Item>
+               <Item>'AngleHelper.ComputeHitRegion(Rectangle, Double, Double)'</Item>
+              </Issue>
+             </Message>
+             <Message Id="start" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'start'</Item>
+               <Item>'AngleHelper.ComputeHitRegion(Rectangle, Double, Double)'</Item>
+              </Issue>
+             </Message>
+             <Message Id="sweep" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'sweep'</Item>
+               <Item>'AngleHelper.ComputeHitRegion(Rectangle, Double, Double)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="AutoNumber">
+          <Members>
+           <Member Name="#Draw(System.Drawing.Graphics,Kinovea.ScreenManager.CoordinateSystem,System.Int64)">
+            <Messages>
+             <Message Id="backColor" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'AutoNumber.Draw(Graphics, CoordinateSystem, Long)'</Item>
+               <Item>'backColor'</Item>
+               <Item>'Color'</Item>
+              </Issue>
+             </Message>
+             <Message Id="frontColor" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'AutoNumber.Draw(Graphics, CoordinateSystem, Long)'</Item>
+               <Item>'frontColor'</Item>
+               <Item>'Color'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CaptureScreenUserInterface">
+          <Members>
+           <Member Name="#AddToolButtonPosture(System.EventHandler)">
+            <Messages>
+             <Message Id="_handler" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'_handler'</Item>
+               <Item>'CaptureScreenUserInterface.AddToolButtonPosture(EventHandler)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#SurfaceScreen_LeftDown()">
+            <Messages>
+             <Message Id="bDrawingHit" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'CaptureScreenUserInterface.SurfaceScreen_LeftDown()'</Item>
+               <Item>'bDrawingHit'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CommandDeleteKeyframe">
+          <Members>
+           <Member Name="#Unexecute()">
+            <Messages>
+             <Message Id="cm" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'CommandDeleteKeyframe.Unexecute()'</Item>
+               <Item>'cm'</Item>
+               <Item>'CommandManager'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CommandLoadMovieInScreen">
+          <Members>
+           <Member Name="#Execute()">
+            <Messages>
+             <Message Id="cm" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'CommandLoadMovieInScreen.Execute()'</Item>
+               <Item>'cm'</Item>
+               <Item>'CommandManager'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CoordinateSystem">
+          <Members>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'CoordinateSystem.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingAngle2D">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingAngle2D.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingBitmap">
+          <Members>
+           <Member Name="#Initialize(System.Int32,System.Int32,System.Int64,System.Int64)">
+            <Messages>
+             <Message Id="pm" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'DrawingBitmap.Initialize(Integer, Integer, Long, Long)'</Item>
+               <Item>'pm'</Item>
+               <Item>'PreferencesManager'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingCircle">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingCircle.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingCross2D">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingCross2D.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingGenericPosture">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingGenericPosture.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingLine2D">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingLine2D.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingPencil">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingPencil.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingPlane">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingPlane.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#InverseProjectiveMapping(System.Drawing.PointF,System.Single[])">
+            <Messages>
+             <Message TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'DrawingPlane.InverseProjectiveMapping(PointF, Single())'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingSVG">
+          <Members>
+           <Member Name="#.ctor(System.Int32,System.Int32,System.Int64,System.Int64,System.String)">
+            <Messages>
+             <Message Id="pm" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'DrawingSVG.New(Integer, Integer, Long, Long, String)'</Item>
+               <Item>'pm'</Item>
+               <Item>'PreferencesManager'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingText">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader,System.Drawing.PointF,Kinovea.ScreenManager.Metadata)">
+            <Messages>
+             <Message Id="_parent" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_parent'</Item>
+               <Item>'DrawingText.New(XmlReader, PointF, Metadata)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DrawingTrack">
+          <Members>
+           <Member Name="#AppendPoints(System.Int64,System.Collections.Generic.List`1&lt;Kinovea.ScreenManager.AbstractTrackPoint&gt;)">
+            <Messages>
+             <Message Id="_iCurrentTimestamp" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_iCurrentTimestamp'</Item>
+               <Item>'DrawingTrack.AppendPoints(Long, List(Of AbstractTrackPoint))'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FormConfigureDrawing2">
+          <Members>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FormConfigureDrawing2.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="formProgressBar">
+          <Members>
+           <Member Name="#m_bAsPercentage">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'formProgressBar.m_bAsPercentage'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="formProgressBar2">
+          <Members>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'formProgressBar2.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FormToolPresets">
+          <Members>
+           <Member Name="#LoadPreset(Kinovea.ScreenManager.AbstractDrawingTool)">
+            <Messages>
+             <Message Id="mimimalHeight" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FormToolPresets.LoadPreset(AbstractDrawingTool)'</Item>
+               <Item>'mimimalHeight'</Item>
+               <Item>'Integer'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FormToolPresets.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FrameServerCapture">
+          <Members>
+           <Member Name="#.ctor()">
+            <Messages>
+             <Message Id="forceHandleCreation" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FrameServerCapture.New()'</Item>
+               <Item>'forceHandleCreation'</Item>
+               <Item>'IntPtr'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#m_Locker">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FrameServerCapture.m_Locker'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#m_Stopwatch">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FrameServerCapture.m_Stopwatch'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FrameTracker">
+          <Members>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FrameTracker.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#m_BrushCache">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FrameTracker.m_BrushCache'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#m_PenCacheBorder">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'FrameTracker.m_PenCacheBorder'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureConstraintDistanceToPoint">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureConstraintDistanceToPoint.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureConstraintLineSlide">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureConstraintLineSlide.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureConstraintRotationSteps">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureConstraintRotationSteps.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureEllipse">
+          <Members>
+           <Member Name="#name">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureEllipse.name'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureHitZonePolygon">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureHitZonePolygon.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureImpactHorizontalAlign">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureImpactHorizontalAlign.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureImpactHorizontalSymmetry">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureImpactHorizontalSymmetry.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureImpactKeepAngle">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureImpactKeepAngle.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureImpactLineAlign">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureImpactLineAlign.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureImpactPivot">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureImpactPivot.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureImpactVerticalAlign">
+          <Members>
+           <Member Name="#.ctor(System.Xml.XmlReader)">
+            <Messages>
+             <Message Id="isEmpty" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureImpactVerticalAlign.New(XmlReader)'</Item>
+               <Item>'isEmpty'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="GenericPostureSegment">
+          <Members>
+           <Member Name="#name">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'GenericPostureSegment.name'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Magnifier">
+          <Members>
+           <Member Name="#OnMouseUp(System.Drawing.Point)">
+            <Messages>
+             <Message Id="_location" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_location'</Item>
+               <Item>'Magnifier.OnMouseUp(Point)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="PlayerScreenUserInterface">
+          <Members>
+           <Member Name="#Rendering_Invoked(System.Int32)">
+            <Messages>
+             <Message Id="hasMore" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'PlayerScreenUserInterface.Rendering_Invoked(Integer)'</Item>
+               <Item>'hasMore'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#SaveImageSequence(System.ComponentModel.BackgroundWorker,System.String,System.Int64,System.Boolean,System.Boolean,System.Int32)">
+            <Messages>
+             <Message Id="_bBlendDrawings" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2012-09-02 17:41:40Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'_bBlendDrawings'</Item>
+               <Item>'PlayerScreenUserInterface.SaveImageSequence(BackgroundWorker, String, Long, Boolean, Boolean, Integer)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#SurfaceScreen_LeftDown()">
+            <Messages>
+             <Message Id="bDrawingHit" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'PlayerScreenUserInterface.SurfaceScreen_LeftDown()'</Item>
+               <Item>'bDrawingHit'</Item>
+               <Item>'Boolean'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#SurfaceScreen_MouseUp(System.Object,System.Windows.Forms.MouseEventArgs)">
+            <Messages>
+             <Message Id="extraDrawing" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'PlayerScreenUserInterface.SurfaceScreen_MouseUp(Object, MouseEventArgs)'</Item>
+               <Item>'extraDrawing'</Item>
+               <Item>'AbstractMultiDrawing'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ScreenManagerKernel">
+          <Members>
+           <Member Name="#mnuHome_OnClick(System.Object,System.EventArgs)">
+            <Messages>
+             <Message Id="cm" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'ScreenManagerKernel.mnuHome_OnClick(Object, EventArgs)'</Item>
+               <Item>'cm'</Item>
+               <Item>'CommandManager'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ReinstateScreen(Kinovea.ScreenManager.ScreenState,System.Int32,Kinovea.ScreenManager.ScreenManagerState)">
+            <Messages>
+             <Message Id="cm" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'ScreenManagerKernel.ReinstateScreen(ScreenState, Integer, ScreenManagerState)'</Item>
+               <Item>'cm'</Item>
+               <Item>'CommandManager'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="SelectionTracker">
+          <Members>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'SelectionTracker.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="SpeedSlider">
+          <Members>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'SpeedSlider.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="StyleElementLineSize">
+          <Members>
+           <Member Name="#GetEditor()">
+            <Messages>
+             <Message Id="i" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'StyleElementLineSize.GetEditor()'</Item>
+               <Item>'i'</Item>
+               <Item>'Integer'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="StyleElementPenSize">
+          <Members>
+           <Member Name="#GetEditor()">
+            <Messages>
+             <Message Id="i" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'StyleElementPenSize.GetEditor()'</Item>
+               <Item>'i'</Item>
+               <Item>'Integer'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ThumbListView">
+          <Members>
+           <Member Name="#m_Locker">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'ThumbListView.m_Locker'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#toolTip1">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'ThumbListView.toolTip1'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#UpdateView()">
+            <Messages>
+             <Message Id="vertSpacing" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'ThumbListView.UpdateView()'</Item>
+               <Item>'vertSpacing'</Item>
+               <Item>'Integer'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="VideoFilterSandbox">
+          <Members>
+           <Member Name="#ELAVertInterpolation(System.Drawing.Bitmap,System.Drawing.Bitmap,System.Int32)">
+            <Messages>
+             <Message TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'VideoFilterSandbox.ELAVertInterpolation(Bitmap, Bitmap, Integer)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#log">
+            <Messages>
+             <Message TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'VideoFilterSandbox.log'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ViewportManipulator">
+          <Members>
+           <Member Name="#ComputeDecodingSize(System.Drawing.Size,System.Drawing.Size,System.Double,System.Boolean)">
+            <Messages>
+             <Message Id="scaleFactor" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2012-09-02 17:41:40Z">
+              <Issue>
+               <Item>'ViewportManipulator.ComputeDecodingSize(Size, Size, Double, Boolean)'</Item>
+               <Item>'scaleFactor'</Item>
+               <Item>'Double'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+  </Targets>
+  <Rules>
+   <Rule TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811">
+    <Resolution Name="Default">{0} appears to have no upstream public or protected callers.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidUnusedPrivateFields" Category="Microsoft.Performance" CheckId="CA1823">
+    <Resolution Name="Default">It appears that field {0} is never used or is only ever assigned to. Use this field or remove it.</Resolution>
+   </Rule>
+   <Rule TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804">
+    <Resolution Name="Default">{0} declares a variable, {1}, of type {2}, which is never used or is only assigned to. Use this variable or remove it.</Resolution>
+   </Rule>
+   <Rule TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801">
+    <Resolution Name="Default">Parameter {0} of {1} is never used. Remove the parameter or use it in the method body.</Resolution>
+   </Rule>
+  </Rules>
+ </FxCopReport>
+</FxCopProject>

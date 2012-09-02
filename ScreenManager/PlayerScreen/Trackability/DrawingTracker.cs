@@ -40,13 +40,11 @@ namespace Kinovea.ScreenManager
         
         private ITrackable drawing;
         private bool isTracking;
-        private TrackingContext context;
         private Dictionary<string, TrackablePoint> trackablePoints = new Dictionary<string, TrackablePoint>();
         
         public DrawingTracker(ITrackable drawing, TrackingContext context)
         {
             this.drawing = drawing;
-            this.context = context;
             
             foreach(KeyValuePair<string, Point> pair in drawing.GetTrackablePoints())
                 trackablePoints.Add(pair.Key, new TrackablePoint(context, pair.Value));
@@ -56,8 +54,6 @@ namespace Kinovea.ScreenManager
   
         public void Track(TrackingContext context)
         {
-            this.context = context;
-            
             // This is where we would spawn new threads for each tracking.
             // TODO: Extract the bitmapdata once and pass it to all.
             foreach(KeyValuePair<string, TrackablePoint> pair in trackablePoints)

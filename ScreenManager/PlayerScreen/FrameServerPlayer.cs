@@ -401,11 +401,5 @@ namespace Kinovea.ScreenManager
 	        m_FormProgressBar.Dispose();
 		}
 		#endregion
-        
-		private void RegisterTrackableDrawing(ITrackable trackableDrawing)
-		{
-		    // Not necessarily the final place for this command.
-		    m_Metadata.TrackabilityManager.Add(trackableDrawing, m_VideoReader.Current);
-		}
 	}
 }

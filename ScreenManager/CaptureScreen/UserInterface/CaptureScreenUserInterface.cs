@@ -357,65 +357,23 @@ namespace Kinovea.ScreenManager
 		}
 		public void AddImageDrawing(string _filename, bool _bIsSvg)
 		{
-			// Add an image drawing from a file.
-			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			if(m_FrameServer.IsConnected && File.Exists(_filename))
-			{		
-				m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-				
-				try
-				{
-                    if(_bIsSvg)
-					{
-						DrawingSVG dsvg = new DrawingSVG(m_FrameServer.ImageSize.Width,
-						                                 m_FrameServer.ImageSize.Height, 
-						                                 0, 
-						                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-						                                 _filename);
-					
-						m_FrameServer.Metadata[0].AddDrawing(dsvg);
-					}
-					else
-					{
-						DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.ImageSize.Width,
-						                                 		m_FrameServer.ImageSize.Height, 
-						                                 		0, 
-						                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-						                                 		_filename);
-					
-						m_FrameServer.Metadata[0].AddDrawing(dbmp);	
-					}
-					
-                    m_FrameServer.Metadata.SelectedDrawingFrame = 0;
-					m_FrameServer.Metadata.SelectedDrawing = 0;
-				}
-				catch
-				{
-					// An error occurred during the creation.
-					// example : external DTD an no network or invalid svg file.
-					log.Error("An error occurred during the creation of an SVG drawing.");
-				}
-				
-				pbSurfaceScreen.Invalidate();
-			}
+		    if(!m_FrameServer.IsConnected || !File.Exists(_filename))
+		        return;
+		    
+		    m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+		    m_FrameServer.Metadata.AddImageDrawing(_filename, _bIsSvg, 0);
+		    pbSurfaceScreen.Invalidate();
 		}
 		public void AddImageDrawing(Bitmap _bmp)
 		{
 			// Add an image drawing from a bitmap.
 			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			if(m_FrameServer.IsConnected)
-			{
-				DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.ImageSize.Width,
-				                                 		m_FrameServer.ImageSize.Height, 
-				                                 		0, 
-				                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-				                                 		_bmp);
-					
-				m_FrameServer.Metadata[0].AddDrawing(dbmp);	
-				
-				m_FrameServer.Metadata.SelectedDrawingFrame = 0;
-				m_FrameServer.Metadata.SelectedDrawing = 0;
-			}
+			if(!m_FrameServer.IsConnected)
+			    return;
+			
+		    m_FrameServer.Metadata.SelectedDrawingFrame = 0;
+		    m_FrameServer.Metadata.AddImageDrawing(_bmp, 0);
+			pbSurfaceScreen.Invalidate();
 		}
 		public void BeforeClose()
 		{
@@ -1337,10 +1295,6 @@ namespace Kinovea.ScreenManager
 				}
 			
 			}
-			
-			// Unselect drawings.
-			//m_FrameServer.Metadata.SelectedDrawingFrame = -1;
-			//m_FrameServer.Metadata.SelectedDrawing = -1;
 						
 			if (m_FrameServer.Metadata.SelectedDrawingFrame != -1 && m_FrameServer.Metadata.SelectedDrawing != -1)
 			{

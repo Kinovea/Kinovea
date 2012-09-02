@@ -60,9 +60,6 @@ namespace Kinovea.ScreenManager
                                                     // It will be used to locate the region of interest.
         // Reference data.
         private VideoReader m_reader;
-        //private Size m_aspectRatioSize;         // Size of images in the original video, after the aspect ratio has been applied.
-        
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         public void Initialize(VideoReader _videoReader)

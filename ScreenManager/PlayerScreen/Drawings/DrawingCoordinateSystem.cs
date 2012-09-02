@@ -92,7 +92,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private Guid id = Guid.NewGuid();
         private Dictionary<string, Point> points = new Dictionary<string, Point>();
-        private bool tracking;
         private bool showAxis = true;
         private bool showGrid;
         private bool showGraduations;
@@ -111,7 +110,6 @@ namespace Kinovea.ScreenManager
         private const int defaultBackgroundAlpha = 92;
         private const int gridAlpha = 92;
         private const int textMargin = 8;
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
@@ -164,10 +162,10 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     if(showGrid)
-                        DrawGrid(canvas, transformer, penLine, origin, size, stepSize);
+                        DrawGrid(canvas, penLine, origin, size, stepSize);
                     
                     if(showGraduations)
-                        DrawGraduations(canvas, transformer, penLine, origin, size, stepSize, stepSizeUserUnit);
+                        DrawGraduations(canvas, penLine, origin, size, stepSize, stepSizeUserUnit);
                     
                     DrawAxis(canvas, penLine, origin, size);
                 }
@@ -234,7 +232,6 @@ namespace Kinovea.ScreenManager
         }
         public void SetTracking(bool tracking)
         {
-            this.tracking = tracking;
         }
         public void SetTrackablePointValue(string name, Point value)
         {
@@ -300,24 +297,24 @@ namespace Kinovea.ScreenManager
             canvas.DrawLine(pen, origin.X - radius, origin.Y, origin.X + radius, origin.Y);
             canvas.DrawLine(pen, origin.X, origin.Y - radius, origin.X, origin.Y + radius);
         }
-        private void DrawGrid(Graphics canvas, CoordinateSystem transformer, Pen pen, Point origin, Size size, int stepSize)
+        private void DrawGrid(Graphics canvas, Pen pen, Point origin, Size size, int stepSize)
         {
             Pen p = new Pen(Color.FromArgb(gridAlpha, pen.Color), pen.Width);
             p.DashStyle = DashStyle.Dash;
             
-            DrawLinesAtTicks(canvas, transformer, p, origin, size, stepSize, size.Height, size.Width, false);
+            DrawLinesAtTicks(canvas, p, origin, size, stepSize, size.Height, size.Width, false);
             
             p.Dispose();
         }
-        private void DrawGraduations(Graphics canvas, CoordinateSystem transformer, Pen pen, Point origin, Size size, int stepSize, float stepSizeUserUnit)
+        private void DrawGraduations(Graphics canvas, Pen pen, Point origin, Size size, int stepSize, float stepSizeUserUnit)
         {
-            DrawLinesAtTicks(canvas, transformer, pen, origin, size, stepSize, 10, 10, true, true, stepSizeUserUnit);
+            DrawLinesAtTicks(canvas, pen, origin, size, stepSize, 10, 10, true, true, stepSizeUserUnit);
         }
-        private void DrawLinesAtTicks(Graphics canvas, CoordinateSystem transformer, Pen pen, Point origin, Size size, int stepSize, int linesHeight, int linesWidth, bool relative)
+        private void DrawLinesAtTicks(Graphics canvas, Pen pen, Point origin, Size size, int stepSize, int linesHeight, int linesWidth, bool relative)
         {
-            DrawLinesAtTicks(canvas, transformer, pen, origin, size, stepSize, linesHeight, linesWidth, relative, false, 0);
+            DrawLinesAtTicks(canvas, pen, origin, size, stepSize, linesHeight, linesWidth, relative, false, 0);
         }
-        private void DrawLinesAtTicks(Graphics canvas, CoordinateSystem transformer, Pen pen, Point origin, Size size, int stepSize, int linesHeight, int linesWidth, bool relative, bool graduations, float stepSizeUserUnit)
+        private void DrawLinesAtTicks(Graphics canvas, Pen pen, Point origin, Size size, int stepSize, int linesHeight, int linesWidth, bool relative, bool graduations, float stepSizeUserUnit)
         {
             SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
             SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);

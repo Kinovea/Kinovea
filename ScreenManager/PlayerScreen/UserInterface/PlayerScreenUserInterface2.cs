@@ -213,7 +213,6 @@ namespace Kinovea.ScreenManager
 		private uint m_IdMultimediaTimer;
 		private PlayingMode m_ePlayingMode = PlayingMode.Loop;
 		private double m_fSlowmotionPercentage = 100.0f;	// Always between 1 and 200 : this specific value is not impacted by high speed cameras.
-		private bool m_bIsIdle = true;
 		private bool m_bIsBusyRendering;
 		private int m_RenderingDrops;
 		private object m_TimingSync = new object();
@@ -910,71 +909,7 @@ namespace Kinovea.ScreenManager
 				ResizeUpdate(true);
 			}
 		}
-		public void AddImageDrawing(string _filename, bool _bIsSvg)
-		{
-			// Add an image drawing from a file.
-			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			if(!m_FrameServer.Loaded)
-                return;
-
-            BeforeAddImageDrawing();
-		
-			if(File.Exists(_filename))
-			{
-				try
-				{
-					if(_bIsSvg)
-					{
-						DrawingSVG dsvg = new DrawingSVG(m_FrameServer.Metadata.ImageSize.Width,
-						                                 m_FrameServer.Metadata.ImageSize.Height, 
-						                                 m_iCurrentPosition, 
-						                                 m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-						                                 _filename);
-					
-						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dsvg);
-					}
-					else
-					{
-						DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.Metadata.ImageSize.Width,
-						                                 		m_FrameServer.Metadata.ImageSize.Height, 
-						                                 		m_iCurrentPosition, 
-						                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-						                                 		_filename);
-					
-						m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dbmp);	
-					}
-				}
-				catch
-				{
-					// An error occurred during the creation.
-					// example : external DTD an no network or invalid svg file.
-					// TODO: inform the user.
-				}
-			}
-			
-			AfterAddImageDrawing();
-		}
-		public void AddImageDrawing(Bitmap _bmp)
-		{
-			// Add an image drawing from a bitmap.
-			// Mimick all the actions that are normally taken when we select a drawing tool and click on the image.
-			// TODO: use an actual DrawingTool class for this!?
-			if(m_FrameServer.Loaded)
-			{
-				BeforeAddImageDrawing();
-			
-				DrawingBitmap dbmp = new DrawingBitmap( m_FrameServer.Metadata.ImageSize.Width,
-							                                 		m_FrameServer.Metadata.ImageSize.Height, 
-							                                 		m_iCurrentPosition, 
-							                                 		m_FrameServer.Metadata.AverageTimeStampsPerFrame, 
-							                                 		_bmp);
-						
-				m_FrameServer.Metadata[m_iActiveKeyFrameIndex].AddDrawing(dbmp);
-				
-				AfterAddImageDrawing();
-			}
-		}
-		private void BeforeAddImageDrawing()
+		public void BeforeAddImageDrawing()
 		{
 			if(m_bIsCurrentlyPlaying)
 			{
@@ -984,16 +919,15 @@ namespace Kinovea.ScreenManager
 			}
 					
 			PrepareKeyframesDock();
-			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
-			m_FrameServer.Metadata.UnselectAll();
 			
 			// Add a KeyFrame here if it doesn't exist.
 			AddKeyframe();
 			
+			// temporary hack during refactoring. This is to support adding drawing svg from metadata.
+            m_FrameServer.Metadata.SelectedDrawingFrame = m_iActiveKeyFrameIndex;	
 		}
-		private void AfterAddImageDrawing()
+		public void AfterAddImageDrawing()
 		{
-		    m_FrameServer.Metadata.UnselectAll();
 			m_ActiveTool = m_PointerTool;
 			SetCursor(m_PointerTool.GetCursor(0));
 			
@@ -1030,7 +964,7 @@ namespace Kinovea.ScreenManager
         	// All other tools
         	AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Label, ToolManager.AutoNumbers}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Pencil, drawingTool_Click);
-			AddToolButtonPosture(drawingTool_Click);
+			AddToolButtonPosture();
 			AddToolButtonWithMenu(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, drawingTool_Click);
 			AddToolButton(ToolManager.Arrow, drawingTool_Click);
 			AddToolButton(ToolManager.CrossMark, drawingTool_Click);
@@ -1100,7 +1034,7 @@ namespace Kinovea.ScreenManager
         	
         	stripDrawingTools.Items.Add(btn);
 		}
-		private void AddToolButtonPosture(EventHandler _handler)
+		private void AddToolButtonPosture()
         {
 		    if(GenericPostureManager.Tools.Count > 0)
 		        AddToolButtonWithMenu(GenericPostureManager.Tools.ToArray(), 0, drawingTool_Click);
@@ -1483,17 +1417,6 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.StopAllTracking();
 			CheckCustomDecodingSize(false);
 		}
-		private Form GetParentForm(Control _parent)
-		{
-            Form form = _parent as Form;
-            if(form != null )
-                return form;
-    
-            if(_parent != null)
-                return GetParentForm(_parent.Parent);
-            
-            return null;
-        }
 		#endregion
 
 		#region Video Controls
@@ -2292,8 +2215,7 @@ namespace Kinovea.ScreenManager
 			else
 			{
 			    // This may be slow (several ms) due to delete call when dequeuing the pre-buffer. To investigate.
-                bool hasMore = m_FrameServer.VideoReader.MoveNext(skip, false);
-                //m_TimeWatcher.LogTime("Moved to next frame.");
+                m_FrameServer.VideoReader.MoveNext(skip, false);
                 
                 // In case the frame wasn't available in the pre-buffer, don't render anything.
                 // This means if we missed the previous frame because the UI was busy, we won't 
@@ -2323,23 +2245,14 @@ namespace Kinovea.ScreenManager
                     
                     // This causes Invalidates and will postpone the idle event.
                     // Update UI. For speed purposes, we don't update Selection Tracker hairline.
-                    //trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.Cache.Segment);
                     trkFrame.Position = m_iCurrentPosition;
                     trkFrame.UpdateCacheSegmentMarker(m_FrameServer.VideoReader.PreBufferingSegment);
                     trkFrame.Invalidate();
                     UpdateCurrentPositionLabel();
                     
                     ReportForSyncMerge();
-                    //m_TimeWatcher.LogTime("All rendiring operations posted.");
                 }
-                
-                /*if (skip > m_MaxRenderingDrops)
-				{
-				    log.DebugFormat("Failsafe triggered on Rendering Drops ({0})", skip);
-				    ForceSlowdown();
-				}*/
 			}
-			//m_TimeWatcher.LogTime("Exiting Rendering_Invodked.");
 		}
 		private void EndOfFile()
 		{
@@ -2395,7 +2308,6 @@ namespace Kinovea.ScreenManager
 		    // Forcing the rendering to synchronize with this event allows
 		    // the UI to have a chance to process non-rendering related events like
 		    // button clicks, mouse move, etc.
-		    m_bIsIdle = true;
 			lock(m_TimingSync)
 		        m_bIsBusyRendering = false;
 
@@ -2720,11 +2632,8 @@ namespace Kinovea.ScreenManager
 			
 			if (m_ActiveTool == m_PointerTool)
 			{
-				bool bDrawingHit = false;
-				
-				// Show the grabbing hand cursor.
 				SetCursor(m_PointerTool.GetCursor(1));
-				bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
+				m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
 			}
 			else if (m_ActiveTool == ToolManager.Chrono)
 			{
@@ -2992,7 +2901,7 @@ namespace Kinovea.ScreenManager
     			        IInitializable initializableDrawing = m_FrameServer.Metadata.SpotlightManager as IInitializable;
     			        initializableDrawing.ContinueSetup(m_DescaledMouse, ModifierKeys);
     			    }
-					else if (m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0 && !m_bIsCurrentlyPlaying)
+					else if (!m_bIsCurrentlyPlaying && m_iActiveKeyFrameIndex >= 0 && m_FrameServer.Metadata.SelectedDrawing >= 0)
 					{
 						// Currently setting the second point of a Drawing.
 						IInitializable initializableDrawing = m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings[m_FrameServer.Metadata.SelectedDrawing] as IInitializable;
@@ -3070,10 +2979,10 @@ namespace Kinovea.ScreenManager
 			}
 			else if (m_ActiveTool != m_PointerTool)
 			{
+			    // TODO: Review this !
+			    
 			    if(m_FrameServer.Metadata.SelectedExtraDrawing >= 0 && m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] is AbstractMultiDrawing)
 			    {
-			        AbstractMultiDrawing extraDrawing = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as AbstractMultiDrawing;
-			        
 			        IUndoableCommand cad = new CommandAddMultiDrawingItem(DoInvalidate, DoDrawingUndrawn, m_FrameServer.Metadata);
     				CommandManager cm = CommandManager.Instance();
     				cm.LaunchUndoableCommand(cad);
@@ -3558,10 +3467,10 @@ namespace Kinovea.ScreenManager
 				{
 					m_iActiveKeyFrameIndex = i;
 					if(_bAllowUIUpdate)
+					{
 						((KeyframeBox)pnlThumbnails.Controls[i]).DisplayAsSelected(true);
-
-					// Make sure the thumbnail is always in the visible area by auto scrolling.
-					if(_bAllowUIUpdate) pnlThumbnails.ScrollControlIntoView(pnlThumbnails.Controls[i]);
+						pnlThumbnails.ScrollControlIntoView(pnlThumbnails.Controls[i]);
+					}
 				}
 				else
 				{

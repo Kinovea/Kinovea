@@ -174,7 +174,6 @@ namespace Kinovea.ScreenManager
         }
 		public override void AddImageDrawing(Bitmap _bmp)
         {
-			// Implemented but currently not used.
         	m_CaptureScreenUI.AddImageDrawing(_bmp);
         }
 		public override void FullScreen(bool _bFullScreen)

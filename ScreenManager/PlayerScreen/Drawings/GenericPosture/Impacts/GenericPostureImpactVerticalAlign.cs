@@ -39,8 +39,8 @@ namespace Kinovea.ScreenManager
             
             r.ReadStartElement();
             
-            //if(!isEmpty)
-            //    r.ReadEndElement();
+            if(!isEmpty)
+                r.ReadEndElement();
         }
     }
 }
