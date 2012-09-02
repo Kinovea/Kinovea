@@ -328,7 +328,6 @@ namespace Kinovea.ScreenManager
             m_iSelectedDrawingFrame = keyframeIndex;
             m_iSelectedDrawing = 0;
             hitDrawing = drawing;
-            
             PostDrawingCreationHooks(drawing);
         }
         public void AddImageDrawing(string filename, bool isSVG, long time)
@@ -359,7 +358,12 @@ namespace Kinovea.ScreenManager
             }
             
             if(drawing != null)
+            {
                 m_Keyframes[m_iSelectedDrawingFrame].AddDrawing(drawing);
+                m_iSelectedDrawing = 0;
+                hitDrawing = drawing;
+                PostDrawingCreationHooks(drawing);
+            }
             
             UnselectAll();
         }
@@ -368,12 +372,28 @@ namespace Kinovea.ScreenManager
             AllDrawingTextToNormalMode();
             DrawingBitmap drawing = new DrawingBitmap(m_ImageSize.Width, m_ImageSize.Height, time, m_iAverageTimeStampsPerFrame, bmp);
 			m_Keyframes[m_iSelectedDrawingFrame].AddDrawing(drawing);
+            m_iSelectedDrawing = 0;
+            hitDrawing = drawing;
+            PostDrawingCreationHooks(drawing);
+                
 			UnselectAll();
         }
-
+        public void UndeleteDrawing(int frameIndex, int drawingIndex, AbstractDrawing drawing)
+        {
+            if(frameIndex >= m_Keyframes.Count)
+                return;
+            
+            m_Keyframes[frameIndex].Drawings.Insert(drawingIndex, drawing);
+            m_iSelectedDrawingFrame = frameIndex;
+            m_iSelectedDrawing = drawingIndex;
+            hitDrawing = drawing;
+            PostDrawingCreationHooks(drawing);
+        }
+        
         public void DeleteTrackableDrawing(ITrackable drawing)
         {
             // TODO: when removal of all regular drawings is handled here in Metadata, we can set this method to private.
+            // We'll also need to unhook from measurableDrawing.ShowMeasurableInfoChanged. 
             trackabilityManager.Remove(drawing);
         }
         
@@ -464,6 +484,8 @@ namespace Kinovea.ScreenManager
         
         public void DeleteDrawing(int _frameIndex, int _drawingIndex)
         {
+            // TODO: remove hooks.
+            
             m_Keyframes[_frameIndex].Drawings.RemoveAt(_drawingIndex);
             UnselectAll();
         }
@@ -1450,6 +1472,9 @@ namespace Kinovea.ScreenManager
         }
         private void PostDrawingCreationHooks(AbstractDrawing drawing)
         {
+            // When passing here, it is possible that the drawing has already been initialized.
+            // (for example, when undeleting a drawing).
+            
             if(drawing is IScalable)
 			    ((IScalable)drawing).Scale(this.ImageSize);
 			

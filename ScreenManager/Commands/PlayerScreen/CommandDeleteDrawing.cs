@@ -77,12 +77,12 @@ namespace Kinovea.ScreenManager
             // Recreate the drawing.
 
             // 1. Look for the keyframe
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
+            int index = GetKeyframeIndex();
+            if (index >= 0)
             {
                 // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
                 // We must still be able to undo any Add action that where performed before.
-                m_Metadata[iIndex].Drawings.Insert(m_iDrawingIndex, m_Drawing);
+                m_Metadata.UndeleteDrawing(index, m_iDrawingIndex, m_Drawing);
                 m_DoScreenInvalidate();
             }
             else
