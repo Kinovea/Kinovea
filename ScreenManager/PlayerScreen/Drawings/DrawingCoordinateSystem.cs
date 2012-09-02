@@ -65,15 +65,14 @@ namespace Kinovea.ScreenManager
                 // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
-                menuShowAxis.Text = "Show axis"; //ScreenManagerLang.mnuShowCoordinates;
-                menuShowGrid.Text = "Show grid";
-                menuShowGraduations.Text = "Show graduations";
-                menuHide.Text = ScreenManagerLang.mnuChronoHide;
+                menuShowAxis.Text = ScreenManagerLang.mnuCoordinateSystemShowAxis;
+                menuShowGrid.Text = ScreenManagerLang.mnuCoordinateSystemShowGrid;
+                menuShowGraduations.Text = ScreenManagerLang.mnuCoordinateSystemShowTickMarks;
+                menuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
                 
                 menuShowAxis.Checked = showAxis;
                 menuShowGrid.Checked = showGrid;
                 menuShowGraduations.Checked = showGraduations;
-                
                 
                 contextMenu.Add(menuShowAxis);
                 contextMenu.Add(menuShowGrid);
@@ -110,6 +109,7 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         
         private const int defaultBackgroundAlpha = 92;
+        private const int gridAlpha = 92;
         private const int textMargin = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -302,7 +302,7 @@ namespace Kinovea.ScreenManager
         }
         private void DrawGrid(Graphics canvas, CoordinateSystem transformer, Pen pen, Point origin, Size size, int stepSize)
         {
-            Pen p = new Pen(Color.FromArgb(128, pen.Color), pen.Width);
+            Pen p = new Pen(Color.FromArgb(gridAlpha, pen.Color), pen.Width);
             p.DashStyle = DashStyle.Dash;
             
             DrawLinesAtTicks(canvas, transformer, p, origin, size, stepSize, size.Height, size.Width, false);

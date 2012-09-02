@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Αναπαραγωγή video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Εμφάνιση/Απόκρυψη Κοινών στοιχείων Ελέγχου</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Ανίχνευση Διαδρομής</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Ένα Άγνωστοι Σφάλμα Συνέβη</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Σφάλμα Αναπαραγωγής.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Πρόσφατα χρησιμοποιημένα χρώματα:</value></data>

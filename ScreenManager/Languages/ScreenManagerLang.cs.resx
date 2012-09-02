@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Přehrát video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Zobrazit/Skrýt ovládací prvky</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Trasování</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Výskyt neznámé chyby</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - chyba přehrávání.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Naposledy použité barvy:</value></data>

@@ -322,6 +322,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Afspil video</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Vis/skjul almindlig styring</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Følg spor</value></data>
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Der opstod en ukendt fejl.</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Afspilningsfejl.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Tidligere anvendte farver:</value></data>

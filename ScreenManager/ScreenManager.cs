@@ -1675,7 +1675,7 @@ namespace Kinovea.ScreenManager
             mnuFormatForce169.Text = ScreenManagerLang.mnuFormatForce169;
             mnuFormat.Text = ScreenManagerLang.mnuFormat;
             mnuMirror.Text = ScreenManagerLang.mnuMirror;
-            mnuCoordinateAxis.Text = ScreenManagerLang.dlgConfigureTrajectory_SetOrigin;
+            mnuCoordinateAxis.Text = ScreenManagerLang.mnuCoordinateSystem;
             
             mnuSVGTools.Text = ScreenManagerLang.mnuSVGTools;
             mnuImportImage.Text = ScreenManagerLang.mnuImportImage;

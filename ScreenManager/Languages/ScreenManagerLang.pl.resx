@@ -322,6 +322,11 @@
    
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Pokaż/Ukryj wspólne sterowanie</value></data>
    
+   
+   
+   
+   
+   
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Wystąpił nieznany błąd</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - błąd odtwarzania</value></data>
    
