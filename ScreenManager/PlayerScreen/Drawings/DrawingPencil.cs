@@ -45,7 +45,7 @@ namespace Kinovea.ScreenManager
         {
         	get { return m_Style;}
         }
-        public override InfosFading infosFading
+        public override InfosFading InfosFading
         {
             get { return m_InfosFading; }
             set { m_InfosFading = value; }

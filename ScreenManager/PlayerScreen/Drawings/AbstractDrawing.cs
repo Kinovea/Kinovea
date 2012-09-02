@@ -40,7 +40,7 @@ namespace Kinovea.ScreenManager
     	/// Gets or set the fading object for this drawing. 
     	/// This is used in opacity calculation for Persistence.
     	/// </summary>
-        public abstract InfosFading infosFading
+        public abstract InfosFading InfosFading
         {
             get;
             set;
