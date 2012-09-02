@@ -59,12 +59,12 @@ namespace Kinovea.ScreenManager
 		{
 			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get 
 			{ 
 				// Rebuild the menu to get the localized text.
-				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+				List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         		
 				mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
 				mnuShowCoordinates.Checked = ShowMeasurableInfo;

@@ -246,11 +246,13 @@
     <Compile Include="PlayerScreen\Drawings\DrawingCapabilities.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingSVG.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolArrow.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolChrono.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolCircle.cs" />
+    <Compile Include="PlayerScreen\Drawings\DrawingToolCoordinateSystem.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolGrid.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolMagnifier.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolAutoNumbers.cs" />
@@ -347,7 +349,7 @@
     <Compile Include="PlayerScreen\Trackability\TrackResult.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTracker.cs" />
     <Compile Include="PlayerScreen\Tracking\AbstractTrackPoint.cs" />
-    <Compile Include="PlayerScreen\Tracking\Track.cs" />
+    <Compile Include="PlayerScreen\Tracking\DrawingTrack.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
     <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs" />
@@ -469,12 +471,6 @@
     <Compile Include="PlayerScreen\UserInterface\FormRafaleExport.Designer.cs">
       <DependentUpon>FormRafaleExport.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.Designer.cs">
-      <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormVideoExport.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -544,6 +540,7 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenManagerState.cs" />
+    <Compile Include="UserInterface\FormsHelper.cs" />
     <Compile Include="UserInterface\ScreenManagerUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -617,9 +614,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormProgressBar2.resx">
       <DependentUpon>FormProgressBar2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormSetTrajectoryOrigin.resx">
-      <DependentUpon>FormSetTrajectoryOrigin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormToolPresets.resx">
       <DependentUpon>FormToolPresets.cs</DependentUpon>

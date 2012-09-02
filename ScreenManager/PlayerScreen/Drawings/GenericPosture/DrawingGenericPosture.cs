@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
                     return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading;
             }
         }
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
         {
             get 
             {
@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
                     return null;
                 
                 // Rebuild the menu each time to get the localized text.
-                List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
                 if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
                 {

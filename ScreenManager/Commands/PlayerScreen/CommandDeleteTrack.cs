@@ -37,14 +37,14 @@ namespace Kinovea.ScreenManager
 
         private PlayerScreenUserInterface m_psui;
         private Metadata m_Metadata;
-        private Track m_Track;
+        private DrawingTrack m_Track;
         
         #region constructor
         public CommandDeleteTrack(PlayerScreenUserInterface _psui, Metadata _Metadata)
         {
             m_psui = _psui;
             m_Metadata = _Metadata;
-            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as Track;
+            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingTrack;
         }
         #endregion
 

@@ -405,6 +405,11 @@ namespace Kinovea.ScreenManager
         {
         	return m_PlayerScreenUI.GetFlushedImage();
         }
+        public void ShowCoordinateSystem()
+        {
+            m_FrameServer.Metadata.ShowCoordinateSystem();
+            m_PlayerScreenUI.RefreshImage();
+        }
         #endregion
    
         

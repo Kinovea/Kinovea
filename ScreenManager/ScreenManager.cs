@@ -1252,19 +1252,6 @@ namespace Kinovea.ScreenManager
         		
 			MessageBox.Show(msgText, msgTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
-        public static void LocateForm(Form _form)
-		{
-			// A helper function to locate the dialog box right under the mouse, or center of screen.
-			if (Cursor.Position.X + (_form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width || 
-			    Cursor.Position.Y + _form.Height >= SystemInformation.PrimaryMonitorSize.Height)
-			{
-				_form.StartPosition = FormStartPosition.CenterScreen;
-			}
-			else
-			{
-				_form.Location = new Point(Cursor.Position.X - (_form.Width / 2), Cursor.Position.Y - 20);
-			}
-		}
         
         #endregion
         
@@ -2574,16 +2561,8 @@ namespace Kinovea.ScreenManager
             PlayerScreen ps = m_ActiveScreen as PlayerScreen;
             if (ps == null)
                 return;
-            
-            Bitmap currentImage = ps.FrameServer.CurrentImage;
-            CalibrationHelper calibrationHelper = ps.FrameServer.Metadata.CalibrationHelper;
-            Size originalSize = ps.FrameServer.VideoReader.Info.AspectRatioSize;
-            
-            formSetTrajectoryOrigin fsto = new formSetTrajectoryOrigin(currentImage, calibrationHelper, originalSize);
-            fsto.StartPosition = FormStartPosition.CenterScreen;
-            fsto.ShowDialog();
-            fsto.Dispose();
-            ps.RefreshImage();
+
+            ps.ShowCoordinateSystem();
         }
         #endregion
 

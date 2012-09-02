@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
 		{
 			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get { return null; }
 		}

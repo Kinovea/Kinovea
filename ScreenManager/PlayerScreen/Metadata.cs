@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         public Size ImageSize
         {
             get { return m_ImageSize; }
-            set { m_ImageSize = value;}
+            set { m_ImageSize = value; }
         }
         public CoordinateSystem CoordinateSystem
 		{
@@ -114,7 +114,7 @@ namespace Kinovea.ScreenManager
             get { return Tracks().Any(t => t.Status == TrackStatus.Edit) || TrackabilityManager.Tracking; }
         }
         public bool HasTrack {
-            get { return m_ExtraDrawings.Any(drawing => drawing is Track); }
+            get { return m_ExtraDrawings.Any(drawing => drawing is DrawingTrack); }
         }
         public int SelectedDrawingFrame
         {
@@ -135,6 +135,10 @@ namespace Kinovea.ScreenManager
 			get { return m_iSelectedExtraDrawing; }
 			set { m_iSelectedExtraDrawing = value; }
 		}
+        public AbstractDrawing HitDrawing
+        {
+            get { return hitDrawing;}
+        }
         public Magnifier Magnifier
         {
         	get { return m_Magnifier;}
@@ -190,6 +194,7 @@ namespace Kinovea.ScreenManager
         private List<Keyframe> m_Keyframes = new List<Keyframe>();
         private int m_iSelectedDrawingFrame = -1;
         private int m_iSelectedDrawing = -1;
+        private AbstractDrawing hitDrawing;
         
         // Drawings not attached to any key image.
         private List<AbstractDrawing> m_ExtraDrawings = new List<AbstractDrawing>();
@@ -199,6 +204,7 @@ namespace Kinovea.ScreenManager
         private Magnifier m_Magnifier = new Magnifier();
         private SpotlightManager m_SpotlightManager;
         private AutoNumberManager m_AutoNumberManager;
+        private DrawingCoordinateSystem drawingCoordinateSystem;
         
         private bool m_Mirrored;
         private bool showingMeasurables;
@@ -229,8 +235,10 @@ namespace Kinovea.ScreenManager
         { 
             m_TimeStampsToTimecode = _TimeStampsToTimecodeCallback;
             m_ShowClosestFrameCallback = _ShowClosestFrameCallback;
-           
-            InitExtraDrawingTools();
+            
+            calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
+            
+            CreateStaticExtraDrawings();
             
             log.Debug("Constructing new Metadata object.");
             CleanupHash();
@@ -272,11 +280,11 @@ namespace Kinovea.ScreenManager
         {
             return m_Keyframes.Where(kf => !kf.Disabled).Select(kf => new VideoFrame(kf.Position, kf.FullFrame));
         }
-        public IEnumerable<Track> Tracks()
+        public IEnumerable<DrawingTrack> Tracks()
         {
             foreach (AbstractDrawing drawing in m_ExtraDrawings)
-                if(drawing is Track)
-                    yield return (Track)drawing;
+                if(drawing is DrawingTrack)
+                    yield return (DrawingTrack)drawing;
         }
         public IEnumerable<AbstractDrawing> AttachedDrawings()
         {
@@ -304,7 +312,7 @@ namespace Kinovea.ScreenManager
         	m_ExtraDrawings.Add(_chrono);
         	m_iSelectedExtraDrawing = m_ExtraDrawings.Count - 1;
         }
-        public void AddTrack(Track _track, ClosestFrameAction _showClosestFrame, Color _color)
+        public void AddTrack(DrawingTrack _track, ClosestFrameAction _showClosestFrame, Color _color)
         {
         	_track.ParentMetadata = this;
         	_track.Status = TrackStatus.Edit;
@@ -318,23 +326,9 @@ namespace Kinovea.ScreenManager
             m_Keyframes[keyframeIndex].AddDrawing(drawing);
             m_iSelectedDrawingFrame = keyframeIndex;
             m_iSelectedDrawing = 0;
+            hitDrawing = drawing;
             
-			if(drawing is IScalable)
-			    ((IScalable)drawing).Scale(this.ImageSize);
-			
-			if(drawing is ITrackable && AddTrackableDrawingCommand != null)
-			    AddTrackableDrawingCommand.Execute(drawing as ITrackable);
-            
-            if(drawing is IMeasurable)
-            {
-                IMeasurable measurableDrawing = drawing as IMeasurable;
-                measurableDrawing.CalibrationHelper = calibrationHelper;
-                measurableDrawing.ShowMeasurableInfo = showingMeasurables;
-                measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
-            }
-            
-            if(drawing is DrawingLine2D)
-				((DrawingLine2D)drawing).CalibrationChanged += Line_CalibrationChanged;
+            PostDrawingCreationHooks(drawing);
         }
         public void DeleteTrackableDrawing(ITrackable drawing)
         {
@@ -342,6 +336,11 @@ namespace Kinovea.ScreenManager
             trackabilityManager.Remove(drawing);
         }
         
+        public void PostSetup()
+        {
+            for(int i = 0; i<m_iStaticExtraDrawings;i++)
+                PostDrawingCreationHooks(m_ExtraDrawings[i]);
+        }
         public void Reset()
         {
             // Complete reset. (used when over loading a new video)
@@ -359,10 +358,14 @@ namespace Kinovea.ScreenManager
             ResetCoreContent();
             CleanupHash();
         }
+        public void ShowCoordinateSystem()
+        {
+            drawingCoordinateSystem.Visible = true;
+        }
         public void UpdateTrajectoriesForKeyframes()
         {
             // Called when keyframe added, removed or title changed
-            foreach(Track t in Tracks())
+            foreach(DrawingTrack t in Tracks())
                 t.IntegrateKeyframes();
         }
         public void AllDrawingTextToNormalMode()
@@ -372,13 +375,13 @@ namespace Kinovea.ScreenManager
         }
         public void PerformTracking(VideoFrame _current)
         {
-            foreach(Track t in Tracks())
+            foreach(DrawingTrack t in Tracks())
                 if (t.Status == TrackStatus.Edit)
                     t.TrackCurrentPosition(_current);
         }
         public void StopAllTracking()
         {
-            foreach(Track t in Tracks())
+            foreach(DrawingTrack t in Tracks())
                 t.StopTracking();
         }
         public void UpdateTrackPoint(Bitmap _bmp)
@@ -387,7 +390,7 @@ namespace Kinovea.ScreenManager
         	if(m_iSelectedExtraDrawing < 0)
         	    return;
         	
-        	Track t = m_ExtraDrawings[m_iSelectedExtraDrawing] as Track;
+        	DrawingTrack t = m_ExtraDrawings[m_iSelectedExtraDrawing] as DrawingTrack;
         	if(t != null && t.Status == TrackStatus.Edit)
                 t.UpdateTrackPoint(_bmp);
         }
@@ -417,13 +420,14 @@ namespace Kinovea.ScreenManager
         public void DeleteDrawing(int _frameIndex, int _drawingIndex)
         {
             m_Keyframes[_frameIndex].Drawings.RemoveAt(_drawingIndex);
-            Deselect();
+            UnselectAll();
         }
-        public void Deselect()
+        public void UnselectAll()
         {
             m_iSelectedDrawing = -1;
             m_iSelectedDrawingFrame = -1;
             m_iSelectedExtraDrawing = -1;
+            hitDrawing = null;
         }
         public void SelectExtraDrawing(AbstractDrawing drawing)
         {
@@ -452,9 +456,7 @@ namespace Kinovea.ScreenManager
                 {
                     bDrawingHit = DrawingsHitTest(zOrder[i], _MouseLocation, _iTimestamp);
                     if (bDrawingHit)
-                    {
                         break;
-                    }
                 }
             }
             else if (_iActiveKeyframeIndex >= 0)
@@ -471,26 +473,22 @@ namespace Kinovea.ScreenManager
         	// Returns the drawing on which we stand (or null if none), and select it on the way.
         	// the caller will then check its type and decide which action to perform.
 			
-        	AbstractDrawing hitDrawing = null;
+        	AbstractDrawing result = null;
 			
 			for(int i=m_ExtraDrawings.Count-1;i>=0;i--)
             {
-				int hitRes = m_ExtraDrawings[i].HitTest(_MouseLocation, _iTimestamp);
+			    AbstractDrawing candidate = m_ExtraDrawings[i];
+				int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp);
             	if(hitRes >= 0)
             	{
             		m_iSelectedExtraDrawing = i;
-            		hitDrawing = m_ExtraDrawings[i];
+            		result = candidate;
+            		hitDrawing = candidate;
             		break;
             	}
             }
 			
-			return hitDrawing;
-        }
-        public void UnselectAll()
-        {
-            m_iSelectedDrawingFrame = -1;
-            m_iSelectedDrawing = -1;
-            m_iSelectedExtraDrawing = -1;
+			return result;
         }
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
@@ -945,7 +943,7 @@ namespace Kinovea.ScreenManager
 			{
                 if(_xmlReader.Name == "Track")
 				{
-                    Track trk = new Track(_xmlReader, GetScaling(), DoRemapTimestamp, m_ImageSize);
+                    DrawingTrack trk = new DrawingTrack(_xmlReader, GetScaling(), DoRemapTimestamp, m_ImageSize);
                     
                     if (!trk.Invalid)
                     {
@@ -1118,7 +1116,7 @@ namespace Kinovea.ScreenManager
             bool atLeastOne = false;
             foreach(AbstractDrawing ad in m_ExtraDrawings)
             {
-            	Track trk = ad as Track;
+            	DrawingTrack trk = ad as DrawingTrack;
             	if(trk != null)
             	{
             		if(atLeastOne == false)
@@ -1515,10 +1513,9 @@ namespace Kinovea.ScreenManager
         }
         private bool DrawingsHitTest(int _iKeyFrameIndex, Point _MouseLocation, long _iTimestamp)
         {
-            //----------------------------------------------------------
             // Look for a hit in all drawings of a particular Key Frame.
-            // The drawing being hit becomes Selected.
-            //----------------------------------------------------------
+            // Important side effect : the drawing being hit becomes Selected. This is then used for right click menu.
+
             bool bDrawingHit = false;
             Keyframe kf = m_Keyframes[_iKeyFrameIndex];
             int hitRes = -1;
@@ -1526,12 +1523,15 @@ namespace Kinovea.ScreenManager
 
             while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
             {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseLocation, _iTimestamp);
+                AbstractDrawing drawing = kf.Drawings[iCurrentDrawing];
+                hitRes = drawing.HitTest(_MouseLocation, _iTimestamp);
                 if (hitRes >= 0)
                 {
                     bDrawingHit = true;
                     m_iSelectedDrawing = iCurrentDrawing;
                     m_iSelectedDrawingFrame = _iKeyFrameIndex;
+                    
+                    hitDrawing = drawing;
                 }
                 else
                 {
@@ -1563,37 +1563,54 @@ namespace Kinovea.ScreenManager
 
             return iHashCode;
         }
-        private void InitExtraDrawingTools()
+        private void CreateStaticExtraDrawings()
         {
-        	// Add the static extra drawing tools to the list of drawings.
+        	// Add the static extra drawings.
         	// These drawings are unique and not attached to any particular key image.
-        	// It could be "multi drawing", like SpotlightManager.
         	
-        	m_SpotlightManager = new SpotlightManager();
+            m_SpotlightManager = new SpotlightManager();
         	m_AutoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
+        	drawingCoordinateSystem = new DrawingCoordinateSystem(new Point(-1,-1), ToolManager.CoordinateSystem.StylePreset.Clone());
         	
         	m_ExtraDrawings.Add(m_SpotlightManager);
         	m_ExtraDrawings.Add(m_AutoNumberManager);
-            
-        	// m_iStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
-        	// and dynamic extra drawings like tracks and chronos.
+        	m_ExtraDrawings.Add(drawingCoordinateSystem);
+        	
+        	// m_iStaticExtraDrawings is used to differenciate between static extra drawings
+        	// like multidrawing managers and dynamic extra drawings like tracks and chronos.
         	m_iStaticExtraDrawings = m_ExtraDrawings.Count;
         	
-        	m_SpotlightManager.TrackableDrawingAdded += (s, e) => 
-        	{ 
+        	m_SpotlightManager.TrackableDrawingAdded += (s, e) =>
+        	{
         	    if(AddTrackableDrawingCommand != null) 
         	        AddTrackableDrawingCommand.Execute(e.TrackableDrawing); 
         	};
         	
         	m_SpotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
         }
-		private void Line_CalibrationChanged(object sender, EventArgs e)
+		private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
             UpdateTrajectoriesForKeyframes();
         }
         private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs e)
         {
             showingMeasurables = !showingMeasurables;
+        }
+        private void PostDrawingCreationHooks(AbstractDrawing drawing)
+        {
+            if(drawing is IScalable)
+			    ((IScalable)drawing).Scale(this.ImageSize);
+			
+			if(drawing is ITrackable && AddTrackableDrawingCommand != null)
+			    AddTrackableDrawingCommand.Execute(drawing as ITrackable);
+            
+            if(drawing is IMeasurable)
+            {
+                IMeasurable measurableDrawing = drawing as IMeasurable;
+                measurableDrawing.CalibrationHelper = calibrationHelper;
+                measurableDrawing.ShowMeasurableInfo = showingMeasurables;
+                measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
+            }
         }
         #endregion
     }

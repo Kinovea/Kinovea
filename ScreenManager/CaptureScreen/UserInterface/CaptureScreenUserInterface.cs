@@ -647,7 +647,7 @@ namespace Kinovea.ScreenManager
 			// This is used for drawings that must show extra stuff for being transformed, but we 
 			// don't want to show the extra stuff all the time for clarity.
 			
-			m_FrameServer.Metadata.Deselect();
+			m_FrameServer.Metadata.UnselectAll();
 			log.Debug("Deselection timer fired.");
 			m_DeselectionTimer.Stop();
 			pbSurfaceScreen.Invalidate();
@@ -1212,7 +1212,7 @@ namespace Kinovea.ScreenManager
 			{
 				// Launch FormToolPreset.
 				FormToolPresets ftp = new FormToolPresets(m_ActiveTool);
-				ScreenManagerKernel.LocateForm(ftp);
+				FormsHelper.Locate(ftp);
 				ftp.ShowDialog();
 				ftp.Dispose();
 				UpdateCursor();
@@ -1598,7 +1598,7 @@ namespace Kinovea.ScreenManager
 
 			// Load, save or modify current profile.
 			FormToolPresets ftp = new FormToolPresets();
-			ScreenManagerKernel.LocateForm(ftp);
+			FormsHelper.Locate(ftp);
 			ftp.ShowDialog();
 			ftp.Dispose();
 
@@ -1633,7 +1633,7 @@ namespace Kinovea.ScreenManager
 				if(decorableDrawing != null &&  decorableDrawing.DrawingStyle != null && decorableDrawing.DrawingStyle.Elements.Count > 0)
 				{
 					FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorableDrawing.DrawingStyle, DoInvalidate);
-					ScreenManagerKernel.LocateForm(fcd);
+					FormsHelper.Locate(fcd);
 					fcd.ShowDialog();
 					fcd.Dispose();
 					DoInvalidate();
@@ -1646,7 +1646,7 @@ namespace Kinovea.ScreenManager
 			if(m_FrameServer.Metadata.SelectedDrawing >= 0)
 			{
 				formConfigureOpacity fco = new formConfigureOpacity(m_FrameServer.Metadata[0].Drawings[m_FrameServer.Metadata.SelectedDrawing], pbSurfaceScreen);
-				ScreenManagerKernel.LocateForm(fco);
+				FormsHelper.Locate(fco);
 				fco.ShowDialog();
 				fco.Dispose();
 				pbSurfaceScreen.Invalidate();

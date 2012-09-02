@@ -43,7 +43,6 @@ namespace Kinovea.ScreenManager
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler CalibrationChanged;
         public event EventHandler ShowMeasurableInfoChanged;
         #endregion
         
@@ -61,12 +60,12 @@ namespace Kinovea.ScreenManager
 		{
 			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get 
 			{
         		// Rebuild the menu to get the localized text.
-				List<ToolStripMenuItem> contextMenu = new List<ToolStripMenuItem>();
+				List<ToolStripItem> contextMenu = new List<ToolStripItem>();
         		
 				mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
 				mnuShowMeasure.Checked = ShowMeasurableInfo;
@@ -397,13 +396,9 @@ namespace Kinovea.ScreenManager
 				dp.DeactivateKeyboardHandler();
 
 			formConfigureMeasure fcm = new formConfigureMeasure(CalibrationHelper, this);
-			ScreenManagerKernel.LocateForm(fcm);
+			FormsHelper.Locate(fcm);
 			fcm.ShowDialog();
 			fcm.Dispose();
-			
-			// Update traj for distance and speed after calibration.
-			if(CalibrationChanged != null)
-			    CalibrationChanged(this, EventArgs.Empty);
 			
 			CallInvalidateFromMenu(sender);
 			

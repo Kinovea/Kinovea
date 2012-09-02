@@ -108,6 +108,10 @@ namespace Kinovea.ScreenManager
 		{
 			get { return (DrawingToolMagnifier)Tools["Magnifier"]; }
 		}
+		public static DrawingToolCoordinateSystem CoordinateSystem
+		{
+		    get { return (DrawingToolCoordinateSystem)Tools["CoordinateSystem"]; }
+		}
 		#endregion
 		
 		#region Members
@@ -225,6 +229,7 @@ namespace Kinovea.ScreenManager
             m_Tools.Add("Spotlight", new DrawingToolSpotlight());
             m_Tools.Add("AutoNumbers", new DrawingToolAutoNumbers());
         	m_Tools.Add("Magnifier", new DrawingToolMagnifier());
+        	m_Tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
         	
         	LoadPresets();
         }

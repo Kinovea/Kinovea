@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
     	/// Gets the list of extra context menu specific to this drawing.
     	/// </summary>
-        public abstract List<ToolStripMenuItem> ContextMenu
+        public abstract List<ToolStripItem> ContextMenu
         {
             get;
         }

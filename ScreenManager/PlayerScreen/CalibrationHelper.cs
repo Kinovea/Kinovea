@@ -33,6 +33,11 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public class CalibrationHelper
 	{
+	    #region Events
+	    public event EventHandler CalibrationChanged;
+	    #endregion
+	    
+	    
 		#region Properties		
 		public LengthUnits CurrentLengthUnit 
 		{
@@ -42,7 +47,12 @@ namespace Kinovea.ScreenManager
 		public double PixelToUnit 
 		{
 			get { return m_fPixelToUnit; }
-			set { m_fPixelToUnit = value; }
+			set 
+			{ 
+			    m_fPixelToUnit = value; 
+			    if(CalibrationChanged != null)
+			        CalibrationChanged(this, EventArgs.Empty);
+			}
 		}
 		public SpeedUnits CurrentSpeedUnit 
 		{
@@ -56,7 +66,12 @@ namespace Kinovea.ScreenManager
 		public Point CoordinatesOrigin
 		{
 			get { return m_CoordinatesOrigin; }
-			set { m_CoordinatesOrigin = value; }
+			set 
+			{
+			    m_CoordinatesOrigin = value; 
+                if(CalibrationChanged != null)
+			        CalibrationChanged(this, EventArgs.Empty);
+			}
 		}
 		public double FramesPerSeconds
 		{
@@ -192,6 +207,10 @@ namespace Kinovea.ScreenManager
 		{
 			return _fPixelLength  * m_fPixelToUnit;
 		}
+		public double GetLengthInPixels(double unitLength)
+		{
+		    return unitLength / m_fPixelToUnit;
+		}
 		
 		public PointF GetPointInUserUnit(Point p)
 		{
@@ -271,6 +290,30 @@ namespace Kinovea.ScreenManager
 
 			return speedText;
 		}
+        
+        public static float RulerStepSize(float range, float targetSteps)
+        {
+            float minimum = range/targetSteps;
+
+            // Find magnitude of the initial guess.
+            float magnitude = (float)Math.Floor(Math.Log10(minimum));
+            float orderOfMagnitude = (float)Math.Pow(10, magnitude);
+
+            // Reduce the number of steps.
+            float residual = minimum / orderOfMagnitude;
+            float stepSize;
+            
+            if(residual > 5)
+                stepSize = 10 * orderOfMagnitude;
+            else if (residual > 2)
+                stepSize = 5 * orderOfMagnitude;
+            else if (residual > 1)
+                stepSize = 2 * orderOfMagnitude;
+            else
+                stepSize = orderOfMagnitude;
+                
+            return stepSize;
+        }
 		#endregion
 		
 		#region Private methods

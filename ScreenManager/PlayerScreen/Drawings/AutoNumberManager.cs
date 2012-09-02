@@ -57,14 +57,14 @@ namespace Kinovea.ScreenManager
 		// Fading is not currently modifiable from outside.
         public override InfosFading  infosFading
         {
-            get { throw new NotImplementedException("Autonumber, The method or operation is not implemented."); }
-            set { throw new NotImplementedException("Autonumber, The method or operation is not implemented."); }
+            get { return null;}
+            set { }
         }
         public override DrawingCapabilities Caps
 		{
 			get { return DrawingCapabilities.ConfigureColorSize; }
 		}
-        public override List<ToolStripMenuItem> ContextMenu
+        public override List<ToolStripItem> ContextMenu
 		{
 			get { return null; }
 		}
