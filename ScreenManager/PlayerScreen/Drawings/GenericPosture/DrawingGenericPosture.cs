@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public DrawingGenericPosture(Point _origin, GenericPosture _posture, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _stylePreset)
+        public DrawingGenericPosture(GenericPosture _posture, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _stylePreset)
         {
             m_GenericPosture = _posture;
             if(m_GenericPosture != null)
@@ -132,7 +132,7 @@ namespace Kinovea.ScreenManager
             menuFlipVertical.Image = Properties.Drawings.flipvertical;
         }
         public DrawingGenericPosture(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(Point.Empty, null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
+            : this(null, 0, 0, ToolManager.GenericPosture.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
             

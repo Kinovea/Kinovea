@@ -47,7 +47,6 @@ namespace Kinovea.ScreenManager
 		private InfosFading infosFading;
 		private int value = 1;
 		private StyleHelper styleHelper;
-		private double lastScaleFactor = 1.0;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
@@ -87,11 +86,6 @@ namespace Kinovea.ScreenManager
 			    return;
 		
 			int alpha = (int)(255 * fOpacityFactor);
-			
-			Color backColor = Color.FromArgb(alpha, Color.Black);
-			Color frontColor = Color.FromArgb(alpha, Color.White);
-			
-			lastScaleFactor = _transformer.Scale;
 			
 			using(SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(fOpacityFactor * 255)))
             using(SolidBrush brushFront = styleHelper.GetForegroundBrush((int)(fOpacityFactor * 255)))
@@ -142,10 +136,6 @@ namespace Kinovea.ScreenManager
 		{
 			background.Move(_deltaX, _deltaY);
 		}
-		public void MoveHandleTo(Point point)
-        {
-            // Not implemented.
-        }
 		public bool IsVisible(long _timestamp)
 		{
 			return infosFading.GetOpacityFactor(_timestamp) > 0;

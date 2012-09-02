@@ -60,8 +60,6 @@ namespace Kinovea.ScreenManager
         private ImageAttributes m_FadingImgAttr = new ImageAttributes();
         private Pen m_PenBoundingBox;
         private SolidBrush m_BrushBoundingBox;
-        // Instrumentation
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructors
@@ -114,7 +112,6 @@ namespace Kinovea.ScreenManager
 			m_FadingColorMatrix.Matrix44 = 1.0f;
 			m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 			
-			PreferencesManager pm = PreferencesManager.Instance();
 			m_PenBoundingBox = new Pen(Color.White, 1);
 		 	m_PenBoundingBox.DashStyle = DashStyle.Dash;
 		 	m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);        	

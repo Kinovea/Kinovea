@@ -109,8 +109,6 @@ namespace Kinovea.ScreenManager
 		}
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
-		    if(selected >= 0 && selected < autoNumbers.Count)
-				autoNumbers[selected].MoveHandleTo(point);
 		}
 		public override int HitTest(Point _point, long _iCurrentTimestamp)
         {
@@ -222,10 +220,10 @@ namespace Kinovea.ScreenManager
 		    }
 		    else
 		    {
-		        return NextValueVideo(_iPosition);
+		        return NextValueVideo();
 		    }
 		}
-		private int NextValueVideo(long _iPosition)
+		private int NextValueVideo()
 		{
 		    // Consider the whole video for increment and holes.
 		    int holeIndex = FindFirstHole();

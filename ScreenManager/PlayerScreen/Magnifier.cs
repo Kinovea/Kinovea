@@ -61,7 +61,6 @@ namespace Kinovea.ScreenManager
         #region Members
         private Guid id = Guid.NewGuid();
     	private Dictionary<string, Point> points = new Dictionary<string, Point>();
-    	private bool tracking;
     	
         private BoundingBox m_source = new BoundingBox();   // Wrapper for the region of interest in the original image.
         private Rectangle m_insert;                         // The location and size of the insert window, where we paint the region of interest magnified.
@@ -70,8 +69,6 @@ namespace Kinovea.ScreenManager
         private Point m_insertLastLocation;
         private int m_hitHandle = -1;
         private double m_magnificationFactor = MagnificationFactors[1];
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
         #endregion
        
         #region Constructor
@@ -176,7 +173,6 @@ namespace Kinovea.ScreenManager
         public void ResetData()
         {
             points["0"] = Point.Empty;
-            tracking = false;
             m_source.Rectangle = points["0"].Box(50);
             m_insert = new Rectangle(10, 10, (int)(m_source.Rectangle.Width * m_magnificationFactor), (int)(m_source.Rectangle.Height * m_magnificationFactor));
             
@@ -198,7 +194,6 @@ namespace Kinovea.ScreenManager
         }
         public void SetTracking(bool tracking)
         {
-            this.tracking = tracking;
         }
         public void SetTrackablePointValue(string name, Point value)
         {

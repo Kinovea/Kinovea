@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
                 switch(impact.Type)
                 {
                     case ImpactType.LineAlign:
-                        AlignPointSegment(posture, handle, impact as GenericPostureImpactLineAlign);
+                        AlignPointSegment(posture, impact as GenericPostureImpactLineAlign);
                         break;
                     case ImpactType.VerticalAlign:
                         AlignPointVertical(posture, handle, impact as GenericPostureImpactVerticalAlign);
@@ -113,11 +113,11 @@ namespace Kinovea.ScreenManager
                             PointF b = old;
                             PointF c = posture.Points[posture.Handles[handle].Reference];
                             float radians = GeometryHelper.GetAngle(a, b, c);
-                            PivotPoints(posture, handle, radians, impact as GenericPostureImpactPivot);
+                            PivotPoints(posture, radians, impact as GenericPostureImpactPivot);
                         }
                         break;
                     case ImpactType.KeepAngle:
-                        KeepPointAngle(posture, handle, impact as GenericPostureImpactKeepAngle);
+                        KeepPointAngle(posture, impact as GenericPostureImpactKeepAngle);
                         break;
                 } 
             }
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
                 switch(impact.Type)
                 {
                     case ImpactType.HorizontalSymmetry:
-                        MoveSegmentSymmetrically(posture, handle, impact as GenericPostureImpactHorizontalSymmetry);
+                        MoveSegmentSymmetrically(posture, impact as GenericPostureImpactHorizontalSymmetry);
                         break;
                 } 
             }
@@ -302,7 +302,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private static void AlignPointSegment(GenericPosture posture, int handle, GenericPostureImpactLineAlign impact)
+        private static void AlignPointSegment(GenericPosture posture, GenericPostureImpactLineAlign impact)
         {
             if(impact == null)
                 return;
@@ -339,7 +339,7 @@ namespace Kinovea.ScreenManager
             
             posture.Points[impact.PointRef] = new PointF(impacting.X, impacted.Y);
         }
-        private static void PivotPoints(GenericPosture posture, int handle, float radians, GenericPostureImpactPivot impact)
+        private static void PivotPoints(GenericPosture posture, float radians, GenericPostureImpactPivot impact)
         {
             // Rotates a series of point around a pivot point.
             PointF pivot = posture.Points[impact.Pivot];
@@ -349,7 +349,7 @@ namespace Kinovea.ScreenManager
                 posture.Points[pointRef] = GeometryHelper.Pivot(pivot, posture.Points[pointRef], radians);
             }
         }
-        private static void MoveSegmentSymmetrically(GenericPosture posture, int handle, GenericPostureImpactHorizontalSymmetry impact)
+        private static void MoveSegmentSymmetrically(GenericPosture posture, GenericPostureImpactHorizontalSymmetry impact)
         {
             // Moves a segment so it is symmetric to another segment relatively to a vertical symmetry axis.
             
@@ -363,7 +363,7 @@ namespace Kinovea.ScreenManager
             Vector vEnd = new Vector(posture.Points[impacting.End], posture.Points[axis.End]);
             posture.Points[impacted.End] = new PointF(posture.Points[axis.End].X + vEnd.X, posture.Points[impacting.End].Y);
         }
-        private static void KeepPointAngle(GenericPosture posture, int handle, GenericPostureImpactKeepAngle impact)
+        private static void KeepPointAngle(GenericPosture posture, GenericPostureImpactKeepAngle impact)
         {
             // The point is moved so that the angle between its leg and the other leg is kept.
             if(impact == null)

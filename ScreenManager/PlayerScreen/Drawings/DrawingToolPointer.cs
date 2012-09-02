@@ -328,6 +328,7 @@ namespace Kinovea.ScreenManager
                     m_SelectedObjectType = SelectedObjectType.Drawing;
                     _Metadata.SelectedDrawing = iCurrentDrawing;
                     _Metadata.SelectedDrawingFrame = _iKeyFrameIndex;
+                    //_Metadata.HitDrawing = kf.Drawings[iCurrentDrawing];
 
                     // Handler hit ?
                     if (hitRes > 0)

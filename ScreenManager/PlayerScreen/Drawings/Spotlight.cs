@@ -98,11 +98,9 @@ namespace Kinovea.ScreenManager
 			// Return the opacity factor at this spot so the spotlights manager is able to compute the global dim value.
 			return opacityFactor;
 		}
-		public void Draw(Graphics canvas, CoordinateSystem transformer, long timestamp)
+		public void Draw(Graphics canvas, long timestamp)
         {
 			// This just draws the border.
-			// Note: the coordinate system hasn't moved since AddSpot, but we recompute it anyway...
-			// This might be a good case where we should keep a global.
 			double opacityFactor = infosFading.GetOpacityFactor(timestamp);
 			
 			if(tracking)

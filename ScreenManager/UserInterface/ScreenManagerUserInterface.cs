@@ -64,7 +64,6 @@ namespace Kinovea.ScreenManager
             m_ThumbsViewer.Width = Width;
             m_ThumbsViewer.Height = Height - pbLogo.Height - 10;
             m_ThumbsViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-			m_ThumbsViewer.Closing += ThumbsViewer_Closing;
             this.Controls.Add(m_ThumbsViewer);
 
             m_DelegateUpdateTrkFrame = new DelegateUpdateTrkFrame(UpdateTrkFrame);
@@ -222,11 +221,6 @@ namespace Kinovea.ScreenManager
             this.Cursor = Cursors.WaitCursor;
             m_ThumbsViewer.DisplayThumbnails(m_FolderFileNames);
             this.Cursor = Cursors.Default;
-        }
-        private void ThumbsViewer_Closing(object sender, EventArgs e)
-        {
-            m_ThumbsViewer.Visible = false;
-            m_bThumbnailsWereVisible = false;
         }
         private void DoDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow)
         {

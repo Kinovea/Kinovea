@@ -135,7 +135,6 @@ namespace Kinovea.ScreenManager
 			m_FadingColorMatrix.Matrix44 = 1.0f;
 			m_FadingImgAttr.SetColorMatrix(m_FadingColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             
-			PreferencesManager pm = PreferencesManager.Instance();
 			m_PenBoundingBox = new Pen(Color.White, 1);
 		 	m_PenBoundingBox.DashStyle = DashStyle.Dash;
 		 	m_BrushBoundingBox = new SolidBrush(m_PenBoundingBox.Color);

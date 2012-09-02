@@ -342,13 +342,17 @@ namespace Kinovea.ScreenManager
         {
             m_PlayerScreenUI.RefreshImage();
         }
-        public override void AddImageDrawing(string _filename, bool _bIsSvg)
+        public override void AddImageDrawing(string filename, bool isSvg)
         {
-        	m_PlayerScreenUI.AddImageDrawing(_filename, _bIsSvg);
+            m_PlayerScreenUI.BeforeAddImageDrawing();
+        	m_FrameServer.Metadata.AddImageDrawing(filename, isSvg, m_FrameServer.VideoReader.Current.Timestamp);
+        	m_PlayerScreenUI.AfterAddImageDrawing();
         }
-        public override void AddImageDrawing(Bitmap _bmp)
+        public override void AddImageDrawing(Bitmap bmp)
         {
-        	m_PlayerScreenUI.AddImageDrawing(_bmp);
+            m_PlayerScreenUI.BeforeAddImageDrawing();
+            m_FrameServer.Metadata.AddImageDrawing(bmp, m_FrameServer.VideoReader.Current.Timestamp);
+        	m_PlayerScreenUI.AfterAddImageDrawing();
         }
         public override void FullScreen(bool _bFullScreen)
         {

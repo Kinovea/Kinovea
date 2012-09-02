@@ -53,11 +53,6 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public partial class ThumbListView : UserControl
 	{
-		#region Events
-		[Category("Action"), Browsable(true)]
-		public event EventHandler Closing;
-		#endregion
-		
 		#region Members
 		private int m_iLeftMargin = 30;
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
@@ -204,15 +199,6 @@ namespace Kinovea.ScreenManager
 		    if(done == m_Thumbnails.Count)
 		        pbFiles.Visible = false;
 		}
-		private void ToggleButtonsVisibility(bool bVisible)
-		{
-			//btnHideThumbView.Visible = bVisible;
-			btnExtraSmall.Visible = bVisible;
-			btnSmall.Visible = bVisible;
-			btnMedium.Visible = bVisible;
-			btnLarge.Visible = bVisible;
-			btnExtraLarge.Visible = bVisible;
-		}
 		private void UpSizeThumbs()
 		{
 			DeselectAllSizingButtons();
@@ -276,15 +262,6 @@ namespace Kinovea.ScreenManager
 		{
 			if(this.Visible)
 				UpdateView();
-		}
-		private bool IsLoading()
-		{
-			foreach (SummaryLoader loader in m_Loaders)
-			{
-				if(loader.IsAlive)
-					return true;
-			}
-			return false;
 		}
 		private void UpdateView()
 		{
@@ -412,11 +389,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 
 		#region Closing
-		private void btnShowThumbView_Click(object sender, EventArgs e)
-		{
-			CleanupThumbnails();
-			if (Closing != null) Closing(this, EventArgs.Empty);
-		}
 		private void SavePrefs()
 		{
 			m_PreferencesManager.ExplorerThumbsSize = (ExplorerThumbSizes)m_Columns;

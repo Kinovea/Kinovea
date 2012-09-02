@@ -43,11 +43,8 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		
 		private static Dictionary<Guid, string> m_files = null;
 		private static List<DrawingToolGenericPosture> m_tools = null;
-		
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Public methods

@@ -331,6 +331,46 @@ namespace Kinovea.ScreenManager
             
             PostDrawingCreationHooks(drawing);
         }
+        public void AddImageDrawing(string filename, bool isSVG, long time)
+        {
+            // TODO: Use a drawing tool to do that ?
+            
+            if(!File.Exists(filename))
+                return;
+            
+            AllDrawingTextToNormalMode();
+                
+            AbstractDrawing drawing = null;
+            if(isSVG)
+            {
+                try
+                {
+                    drawing = new DrawingSVG(m_ImageSize.Width, m_ImageSize.Height, time, m_iAverageTimeStampsPerFrame, filename);
+                }
+                catch
+                {
+                    // An error occurred during the creation. TODO: inform the user.
+                    // example : external DTD an no network or invalid svg file.
+                }
+            }
+            else
+            {
+                drawing = new DrawingBitmap(m_ImageSize.Width, m_ImageSize.Height, time, m_iAverageTimeStampsPerFrame, filename);
+            }
+            
+            if(drawing != null)
+                m_Keyframes[m_iSelectedDrawingFrame].AddDrawing(drawing);
+            
+            UnselectAll();
+        }
+        public void AddImageDrawing(Bitmap bmp, long time)
+        {
+            AllDrawingTextToNormalMode();
+            DrawingBitmap drawing = new DrawingBitmap(m_ImageSize.Width, m_ImageSize.Height, time, m_iAverageTimeStampsPerFrame, bmp);
+			m_Keyframes[m_iSelectedDrawingFrame].AddDrawing(drawing);
+			UnselectAll();
+        }
+
         public void DeleteTrackableDrawing(ITrackable drawing)
         {
             // TODO: when removal of all regular drawings is handled here in Metadata, we can set this method to private.
