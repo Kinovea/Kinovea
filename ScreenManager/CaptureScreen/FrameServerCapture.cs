@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
 		}
 		public CoordinateSystem CoordinateSystem
 		{
-			get { return m_CoordinateSystem; }
+			get { return transformDisplay; }
 		}
 		
 		// Saving to disk.
@@ -143,7 +143,8 @@ namespace Kinovea.ScreenManager
 		// Image, drawings and other screens overlays.
 		private bool m_bPainting;									// 'true' between paint requests.
 		private Metadata m_Metadata;
-		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
+		private CoordinateSystem transformDisplay = new CoordinateSystem();
+		private CoordinateSystem transformRecord = new CoordinateSystem();
 		
 		// Saving to disk
 		private bool m_bIsRecording;
@@ -251,8 +252,7 @@ namespace Kinovea.ScreenManager
 				{
 					try
 					{
-						Size outputSize = new Size((int)_canvas.ClipBounds.Width, (int)_canvas.ClipBounds.Height);
-						FlushOnGraphics(m_ImageToDisplay, _canvas, outputSize);
+						FlushOnGraphics(m_ImageToDisplay, _canvas, transformDisplay);
 					}
 					catch (Exception exp)
 					{
@@ -276,16 +276,12 @@ namespace Kinovea.ScreenManager
 			try
 			{
 				if(m_ImageToDisplay != null)
-				{
-					output.SetResolution(m_ImageToDisplay.HorizontalResolution, m_ImageToDisplay.VerticalResolution);
-					FlushOnGraphics(m_ImageToDisplay, Graphics.FromImage(output), output.Size);
-				}	
+					FlushOnGraphics(m_ImageToDisplay, Graphics.FromImage(output), transformRecord);
 			}
 			catch(Exception)
 			{
 				log.ErrorFormat("Exception while trying to get flushed image. Returning blank image.");
 			}
-			
 			
 			return output;
 		}
@@ -296,13 +292,11 @@ namespace Kinovea.ScreenManager
 			
 			// Restart capturing if needed.
 			if(!m_FrameGrabber.IsGrabbing)
-			{
 				m_FrameGrabber.StartGrabbing();
-			}
 			
 			// Prepare the recorder
 			m_VideoRecorder = new VideoRecorder();
-			double interval = (m_FrameGrabber.FramesInterval > 0) ? m_FrameGrabber.FramesInterval : 40;
+			double interval = m_FrameGrabber.FramesInterval > 0 ? m_FrameGrabber.FramesInterval : 40;
 			SaveResult result = m_VideoRecorder.Initialize(_filepath, interval, m_FrameGrabber.FrameSize);
 			
 			if(result == SaveResult.Success)
@@ -384,7 +378,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Final image creation
-		private void FlushOnGraphics(Bitmap _image, Graphics _canvas, Size _outputSize)
+		private void FlushOnGraphics(Bitmap _image, Graphics _canvas, CoordinateSystem transformer)
 		{
 			// Configure canvas.
 			_canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
@@ -392,44 +386,31 @@ namespace Kinovea.ScreenManager
 			_canvas.InterpolationMode = InterpolationMode.Bilinear;
 			_canvas.SmoothingMode = SmoothingMode.None;
 			
-			// Draw image.
-			Rectangle rDst;			
-			rDst = new Rectangle(0, 0, _outputSize.Width, _outputSize.Height);
-			
-			RectangleF rSrc;
-			if (m_CoordinateSystem.Zooming)
-				rSrc = m_CoordinateSystem.ZoomWindow;
-			else
-				rSrc = new Rectangle(0, 0, _image.Width, _image.Height);
+			Size displaySize = new Size((int)(m_ImageSize.Width * transformer.Stretch), (int)(m_ImageSize.Height * transformer.Stretch));
+			Rectangle rDst = new Rectangle(Point.Empty, displaySize);
+			RectangleF rSrc = transformer.Zooming ? transformer.ZoomWindow : new Rectangle(Point.Empty, _image.Size);
 			
 			_canvas.DrawImage(_image, rDst, rSrc, GraphicsUnit.Pixel);
 			
-			FlushDrawingsOnGraphics(_canvas);	
+			FlushDrawingsOnGraphics(_canvas, transformer);	
 			
 			// .Magnifier
 			// TODO: handle miroring.
 			if (m_Metadata.Magnifier.Mode != MagnifierMode.None)
-			{
-				m_Metadata.Magnifier.Draw(_image, _canvas, m_CoordinateSystem, false, _image.Size);
-			}
+				m_Metadata.Magnifier.Draw(_image, _canvas, transformer, false, _image.Size);
 		}
-		private void FlushDrawingsOnGraphics(Graphics _canvas)
+		private void FlushDrawingsOnGraphics(Graphics _canvas, CoordinateSystem transformer)
 		{
 			// Commit drawings on image.
 			_canvas.SmoothingMode = SmoothingMode.AntiAlias;
 
 			foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
-			{
-                ad.Draw(_canvas, m_CoordinateSystem, false, 0);
-			}
+                ad.Draw(_canvas, transformer, false, 0);
 			
 			// In capture mode, all drawings are gathered in a virtual key image at m_Metadata[0].
 			// Draw all drawings in reverse order to get first object on the top of Z-order.
 			for (int i = m_Metadata[0].Drawings.Count - 1; i >= 0; i--)
-			{
-				bool bSelected = (i == m_Metadata.SelectedDrawing);
-                m_Metadata[0].Drawings[i].Draw(_canvas, m_CoordinateSystem, bSelected, 0);
-			}
+                m_Metadata[0].Drawings[i].Draw(_canvas, transformer, i == m_Metadata.SelectedDrawing, 0);
 		}
 		#endregion
 		
@@ -506,7 +487,8 @@ namespace Kinovea.ScreenManager
 				}
 				
 				m_ImageSize = new Size(_size.Width, newHeight);
-				m_CoordinateSystem.SetOriginalSize(m_ImageSize);
+				transformDisplay.SetOriginalSize(m_ImageSize);
+				transformRecord.SetOriginalSize(m_ImageSize);
 				m_Container.DoInitDecodingSize();
 				m_Metadata.ImageSize = m_ImageSize;
 				m_FrameBuffer.UpdateFrameSize(m_ImageSize);
