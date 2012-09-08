@@ -101,21 +101,11 @@ namespace Kinovea.Updater
         	// Stop playing if needed.
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.StopPlaying != null)
-            {
                 dp.StopPlaying();
-            }
 
             // Download the update configuration file from the webserver.
-			HelpIndex hiRemote;
-            if(PreferencesManager.ExperimentalRelease)
-            {
-            	hiRemote = new HelpIndex("http://www.kinovea.org/setup/updatebeta.xml");
-            }
-            else
-            {
-            	hiRemote = new HelpIndex("http://www.kinovea.org/setup/update.xml");
-            }
-            
+            HelpIndex hiRemote = new HelpIndex(Software.RemoteHelpIndex);
+			
             if (hiRemote.LoadSuccess)
             {
                 if (dp.DeactivateKeyboardHandler != null)
@@ -126,7 +116,7 @@ namespace Kinovea.Updater
                 // Check if we are up to date.
                 bool testUpdate = false;
                 //testUpdate = true;
-                ThreePartsVersion currentVersion = new ThreePartsVersion(PreferencesManager.ReleaseVersion);
+                ThreePartsVersion currentVersion = new ThreePartsVersion(Software.Version);
                 if (hiRemote.AppInfos.Version > currentVersion || testUpdate)
             	{
                 	// We are not up to date, display the full dialog.

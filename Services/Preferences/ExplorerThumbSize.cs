@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2011.
+Copyright © Joan Charmant 2012.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -22,72 +22,17 @@ using System;
 
 namespace Kinovea.Services
 {
-    public enum TimeCodeFormat
-    {
-        ClassicTime,
-        Frames,
-        Milliseconds,
-        TenThousandthOfHours,
-        HundredthOfMinutes,
-        TimeAndFrames,
-        Timestamps,
-        Unknown,
-        NumberOfTimeCodeFormats
-    }
-    
-    public enum SpeedUnits
-	{
-		MetersPerSecond,
-		KilometersPerHour,
-		FeetPerSecond,
-		MilesPerHour,
-		Knots,
-		PixelsPerFrame,			// Native unit. 
-	}
-	
-    public enum TimeCodeType
-    {
-    	Number,
-    	String,
-    	Time
-    }
-	
-	public enum ActiveFileBrowserTab
-    {
-    	Explorer = 0,
-    	Shortcuts
-    }
-	
-	/// <summary>
+    /// <summary>
 	/// Size of the thumbnails in the explorer.
 	/// Sizes are expressed in number of thumbnails that should fit in the width of the explorer.
 	/// the actual size of any given thumbnail will change depending on the available space.
 	/// </summary>
-	public enum ExplorerThumbSizes
+	public enum ExplorerThumbSize
 	{
 		ExtraLarge = 4,
 		Large = 5,
 		Medium = 7,
 		Small = 10,
 		ExtraSmall = 14
-	};
-	
-	// Named with Kinovea to avoid conflict with System.Drawing.Imaging.
-	public enum KinoveaImageFormat
-	{
-		JPG,
-		PNG,
-		BMP
-	};
-    public enum KinoveaVideoFormat
-	{
-		MKV,
-		MP4,
-		AVI
-	};
-    public enum NetworkCameraFormat
-    {
-    	JPEG,
-    	MJPEG
-    };
+	}
 }

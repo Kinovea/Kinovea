@@ -43,100 +43,78 @@ namespace Kinovea.ScreenManager
 		// 
 		// When using pattern, both screen will use the same pattern and they will be updated after each save.
 		
-		#region Members
-		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
+		private PreferencesManager prefManager = PreferencesManager.Instance();
+		private static string defaultFileName = "Capture";
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
 		
-		#region Public Methods
 		public string InitImage()
 		{			
-			string next = "";
-			if(m_PrefManager.CaptureUsePattern)
-			{
-				next = ConvertPattern(m_PrefManager.CapturePattern, m_PrefManager.CaptureImageCounter);
-			}
-			else if(m_PrefManager.CaptureImageFile == "")
-			{
-				next = PreferencesManager.DefaultCaptureImageFile;
-				log.DebugFormat("We never saved a file before, return the default file name : {0}", next);
-			}
-			else
-			{
-				next = Next(m_PrefManager.CaptureImageFile);
-			}
-			
-			return next;
+		    if(prefManager.CaptureUsePattern)
+		        return ConvertPattern(prefManager.CapturePattern, prefManager.CaptureImageCounter);
+		    else if(!string.IsNullOrEmpty(prefManager.CaptureImageFile))
+                return Next(prefManager.CaptureImageFile);
+		    
+		    log.DebugFormat("We never saved a file before, return the default file name : {0}", defaultFileName);
+		    return defaultFileName;
 		}
 		public string InitVideo()
 		{
-			string next = "";
-			if(m_PrefManager.CaptureUsePattern)
-			{
-				next = ConvertPattern(m_PrefManager.CapturePattern, m_PrefManager.CaptureVideoCounter);
-			}
-			else if(m_PrefManager.CaptureVideoFile == "")
-			{
-				next = PreferencesManager.DefaultCaptureVideoFile;
-				log.DebugFormat("We never saved a file before, return the default file name : {0}", next);
-			}
-			else
-			{
-				next = Next(m_PrefManager.CaptureVideoFile);
-			}
-			
-			return next;
+		    if(prefManager.CaptureUsePattern)
+		        return ConvertPattern(prefManager.CapturePattern, prefManager.CaptureVideoCounter);
+		    else if(!string.IsNullOrEmpty(prefManager.CaptureVideoFile))
+		        return Next(prefManager.CaptureVideoFile);
+		    
+			log.DebugFormat("We never saved a file before, return the default file name : {0}", defaultFileName);
+		    return defaultFileName;
 		}
-		public string Next(string _current)
+		public string Next(string current)
 		{
 			//---------------------------------------------------------------------
 			// Increments an existing file name.
 			// DO NOT use this function when using naming pattern, always use InitImage/InitVideo.
-			// This function is oblivious to image/video.
+			// This function is oblivious to the type of file being recorded (image/video).
 			// if the existing name has a number in it, we increment this number.
         	// if not, we create a suffix.
         	// We do not care about extension here, it will be appended afterwards.
 			//---------------------------------------------------------------------
 			
-        	string next = "";
-        	if(m_PrefManager.CaptureUsePattern)
-        	{
+        	if(prefManager.CaptureUsePattern)
         		throw new NotImplementedException("Not implemented when using pattern. Use InitImage or InitVideo");
-        	}
-        	else if(!string.IsNullOrEmpty(_current))
+
+        	if(string.IsNullOrEmpty(current))
+        	    return "";
+        	
+        	string next = "";
+    	
+    		// Find all numbers in the name, if any.
+			Regex r = new Regex(@"\d+");
+			MatchCollection mc = r.Matches(current);
+        	
+			if(mc.Count > 0)
         	{
-        		// Find all numbers in the name, if any.
-				Regex r = new Regex(@"\d+");
-				MatchCollection mc = r.Matches(_current);
-	        	
-				if(mc.Count > 0)
-	        	{
-	        		// Number(s) found. Increment the last one.
-	        		// TODO: handle leading zeroes in the original (001 -> 002).
-	        		Match m = mc[mc.Count - 1];
-	        		int number = int.Parse(m.Value);
-	        		number++;
-	        		
-	        		// Replace the number in the original.
-	        		next = r.Replace(_current, number.ToString(), 1, m.Index );
-	        	}
-	        	else
-	        	{
-	        		// No number found, add suffix.
-	        		next = String.Format("{0} - 2", Path.GetFileNameWithoutExtension(_current));
-	        	}
-	        	
-	        	log.DebugFormat("Current file name : {0}, next file name : {1}", _current, next);
+        		// Number(s) found. Increment the last one.
+        		// TODO: handle leading zeroes in the original (001 -> 002).
+        		Match m = mc[mc.Count - 1];
+        		int number = int.Parse(m.Value);
+        		number++;
+        		
+        		// Replace the number in the original.
+        		next = r.Replace(current, number.ToString(), 1, m.Index );
+        	}
+        	else
+        	{
+        		// No number found, add suffix.
+        		next = String.Format("{0} - 2", Path.GetFileNameWithoutExtension(current));
         	}
         	
+        	log.DebugFormat("Current file name : {0}, next file name : {1}", current, next);
 			return next;
 		}
-		public bool ValidateFilename(string _filename, bool _allowEmpty)
+		public bool ValidateFilename(string filename, bool allowEmpty)
         {
-        	// Validate filename chars.
         	bool bIsValid = false;
         	
-        	if(_filename.Length == 0 && _allowEmpty)
+        	if(filename.Length == 0 && allowEmpty)
         	{
         		// special case for when the user is currently typing.
         		bIsValid = true;
@@ -145,32 +123,30 @@ namespace Kinovea.ScreenManager
         	{
 				try
 				{
-				  	new FileInfo(_filename);
+				  	new FileInfo(filename);
 				  	bIsValid = true;
 				}
 				catch (ArgumentException)
 				{
-					// filename is empty, only white spaces or contains invalid chars.
-					log.ErrorFormat("Capture filename has invalid characters. Proposed file was: {0}", _filename);
+					log.ErrorFormat("Capture filename has invalid characters. Proposed file was: {0}", filename);
 				}
 				catch (NotSupportedException)
 				{
-					// filename contains a colon in the middle of the string.
-					log.ErrorFormat("Capture filename has a colon in the middle. Proposed file was: {0}", _filename);
+					log.ErrorFormat("Capture filename has a colon in the middle. Proposed file was: {0}", filename);
 				}
         	}
 			
 			return bIsValid;
         }
-		public string ConvertPattern(string _input, long _iAutoIncrement)
+		public string ConvertPattern(string input, long autoIncrement)
 		{
 			// Convert pattern into file name.
 			// Codes : %y, %mo, %d, %h, %mi, %s, %i.
 			string output = "";
 			
-			if (!string.IsNullOrEmpty(_input))
+			if (!string.IsNullOrEmpty(input))
             {
-                StringBuilder sb = new StringBuilder(_input);
+                StringBuilder sb = new StringBuilder(input);
 				
                 // Date and time.
                 DateTime dt = DateTime.Now;
@@ -182,28 +158,23 @@ namespace Kinovea.ScreenManager
                 sb.Replace("%s", String.Format("{0:00}", dt.Second));
                
                 // auto-increment
-                sb.Replace("%i", String.Format("{0}", _iAutoIncrement));
+                sb.Replace("%i", String.Format("{0}", autoIncrement));
                 
                 output = sb.ToString();
             }
 			
 			return output;
 		}
-		public void AutoIncrement(bool _image)
+		public void AutoIncrement(bool isImage)
 		{
 			// Autoincrement (only if needed and only the corresponding type).
-			if(m_PrefManager.CapturePattern.Contains("%i"))
-			{
-				if(_image)
-				{
-					m_PrefManager.CaptureImageCounter++;
-				}
-				else
-				{
-					m_PrefManager.CaptureVideoCounter++;
-				}
-			}
+			if(!prefManager.CapturePattern.Contains("%i"))
+			    return;
+			
+			if(isImage)
+    			prefManager.CaptureImageCounter++;
+			else
+				prefManager.CaptureVideoCounter++;
 		}
-		#endregion
 	}
 }

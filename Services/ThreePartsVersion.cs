@@ -31,7 +31,7 @@ namespace Kinovea.Services
         public ThreePartsVersion() { }
         public ThreePartsVersion(string version)
         {
-            // _version takes the form : "0.6.1"
+            // version takes the form : "0.6.1"
             if (version != null && version.Length > 0)
             {
                 string[] split = version.Split(new Char[] { '.' });

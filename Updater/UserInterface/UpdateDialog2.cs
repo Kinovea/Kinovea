@@ -55,7 +55,7 @@ namespace Kinovea.Updater
 		public UpdateDialog2(HelpIndex _hiRemote)
 		{
 			m_hiRemote = _hiRemote;
-			m_currentVersion = new ThreePartsVersion(PreferencesManager.ReleaseVersion);
+			m_currentVersion = new ThreePartsVersion(Software.Version);
                 
             InitializeComponent();
 			

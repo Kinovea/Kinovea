@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
 		private int m_iTopMargin = 5;
 		private int m_iVertSpacing = 20;
-		private int m_Columns = (int)ExplorerThumbSizes.Large;
+		private int m_Columns = (int)ExplorerThumbSize.Large;
 		private static readonly Brush m_GradientBrush = new LinearGradientBrush(new Point(33, 0), new Point(350, 0), Color.LightSteelBlue, Color.White);
     	private static readonly Pen m_GradientPen = new Pen(m_GradientBrush);
     	private object m_Locker = new object();
@@ -205,21 +205,21 @@ namespace Kinovea.ScreenManager
 
 			switch (m_Columns)
 			{
-				case (int)ExplorerThumbSizes.ExtraSmall:
-					m_Columns = (int)ExplorerThumbSizes.Small;
+				case (int)ExplorerThumbSize.ExtraSmall:
+					m_Columns = (int)ExplorerThumbSize.Small;
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Small:
-					m_Columns = (int)ExplorerThumbSizes.Medium;
+				case (int)ExplorerThumbSize.Small:
+					m_Columns = (int)ExplorerThumbSize.Medium;
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Medium:
-					m_Columns = (int)ExplorerThumbSizes.Large;
+				case (int)ExplorerThumbSize.Medium:
+					m_Columns = (int)ExplorerThumbSize.Large;
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Large:
+				case (int)ExplorerThumbSize.Large:
 				default:
-					m_Columns = (int)ExplorerThumbSizes.ExtraLarge;
+					m_Columns = (int)ExplorerThumbSize.ExtraLarge;
 					btnExtraLarge.BackColor = Color.LightSteelBlue;
 					break;
 			}
@@ -232,25 +232,25 @@ namespace Kinovea.ScreenManager
 
 			switch (m_Columns)
 			{
-				case (int)ExplorerThumbSizes.Small:
-					m_Columns = (int)ExplorerThumbSizes.ExtraSmall;
+				case (int)ExplorerThumbSize.Small:
+					m_Columns = (int)ExplorerThumbSize.ExtraSmall;
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Medium:
-					m_Columns = (int)ExplorerThumbSizes.Small;
+				case (int)ExplorerThumbSize.Medium:
+					m_Columns = (int)ExplorerThumbSize.Small;
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Large:
-					m_Columns = (int)ExplorerThumbSizes.Medium;
+				case (int)ExplorerThumbSize.Large:
+					m_Columns = (int)ExplorerThumbSize.Medium;
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.ExtraLarge:
-					m_Columns = (int)ExplorerThumbSizes.Large;
+				case (int)ExplorerThumbSize.ExtraLarge:
+					m_Columns = (int)ExplorerThumbSize.Large;
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.ExtraSmall:
+				case (int)ExplorerThumbSize.ExtraSmall:
 				default:
-					m_Columns = (int)ExplorerThumbSizes.ExtraSmall;
+					m_Columns = (int)ExplorerThumbSize.ExtraSmall;
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
 			}
@@ -352,19 +352,19 @@ namespace Kinovea.ScreenManager
 		{
 			switch (m_Columns)
 			{
-				case (int)ExplorerThumbSizes.Small:
+				case (int)ExplorerThumbSize.Small:
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Medium:
+				case (int)ExplorerThumbSize.Medium:
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.Large:
+				case (int)ExplorerThumbSize.Large:
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.ExtraLarge:
+				case (int)ExplorerThumbSize.ExtraLarge:
 					btnExtraLarge.BackColor = Color.LightSteelBlue;
 					break;
-				case (int)ExplorerThumbSizes.ExtraSmall:
+				case (int)ExplorerThumbSize.ExtraSmall:
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
 				default:
@@ -391,7 +391,7 @@ namespace Kinovea.ScreenManager
 		#region Closing
 		private void SavePrefs()
 		{
-			m_PreferencesManager.ExplorerThumbsSize = (ExplorerThumbSizes)m_Columns;
+			m_PreferencesManager.ExplorerThumbsSize = (ExplorerThumbSize)m_Columns;
 			m_PreferencesManager.Export();
 		}
 		#endregion

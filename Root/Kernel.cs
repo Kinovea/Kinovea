@@ -93,29 +93,7 @@ namespace Kinovea.Root
         #region Constructor
         public RootKernel()
         {
-            // Store Kinovea's version from the assembly.
-            Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            PreferencesManager.ReleaseVersion = String.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build);
-            
-            // Set type of release (Experimental vs Production) 
-            PreferencesManager.ExperimentalRelease = true; 
-            
-            // Display some system infos in the log.
-            log.Info(String.Format("Kinovea version : {0}, ({1})", PreferencesManager.ReleaseVersion, PreferencesManager.ExperimentalRelease?"Experimental":"Production"));
-            log.Info(".NET Framework Version : " + Environment.Version.ToString());
-            log.Info("OS Version : " + System.Environment.OSVersion.ToString());
-            log.Info("Primary Screen : " + SystemInformation.PrimaryMonitorSize.ToString());
-            log.Info("Virtual Screen : " + SystemInformation.VirtualScreen.ToString());
-            
-            // Since it is the very first call, it will both instanciate and import.
-            // Previous calls were done on static prioperties, no instanciation. 
-            PreferencesManager pm = PreferencesManager.Instance();
-            
-            // Initialise command line parser and get the arguments.
-            CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
-            am.InitializeCommandLineParser();
-            string[] args = Environment.GetCommandLineArgs();
-            am.ParseArguments(args);
+            CommandLineArgumentManager.Instance().ParseArguments(Environment.GetCommandLineArgs());
             
             VideoTypeManager.LoadVideoReaders();
             BuildSubTree();
@@ -146,10 +124,9 @@ namespace Kinovea.Root
             
             m_ScreenManager.Prepare();
             LogInitialConfiguration();
+            
             if(CommandLineArgumentManager.Instance().InputFile != null)
-            {
             	m_ScreenManager.PrepareScreen();
-            }
         }
         public void Launch()
         {            
@@ -751,7 +728,7 @@ namespace Kinovea.Root
         	string resourceUri = "";
         	
         	// Load the help file system.
-        	HelpIndex hiLocal = new HelpIndex(Application.StartupPath + "\\" + PreferencesManager.ResourceManager.GetString("URILocalHelpIndex"));
+        	HelpIndex hiLocal = new HelpIndex(Software.LocalHelpIndex);
 
             if (hiLocal.LoadSuccess)
             {

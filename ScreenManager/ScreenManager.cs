@@ -1581,7 +1581,7 @@ namespace Kinovea.ScreenManager
 			    if(filter == null)
 			        continue;
 			    
-			    menu.Visible = filter.Experimental ? PreferencesManager.ExperimentalRelease : true;
+			    menu.Visible = filter.Experimental ? Software.Experimental : true;
 			    menu.Enabled = hasVideo ? _player.IsCaching : false;
 			}
         }

@@ -37,130 +37,103 @@ namespace Kinovea.Services
     	#region Properties
 		public bool ParametersParsed
 		{
-			get { return m_bParametersParsed; }
+			get { return parametersParsed; }
 		}
     	public string InputFile
     	{
     		get 
     		{ 
-    			if(m_InputFile == NoInputFile)
+    			if(inputFile == noInputFile)
     				return null;
     			else
-	    			return m_InputFile;
+	    			return inputFile;
     		}
     	}
     	public int SpeedPercentage
     	{
-    		get { return m_iSpeedPercentage;}
+    		get { return speedPercentage;}
     	}
     	public bool SpeedConsumed
     	{
     		// Indicates whether the SpeedPercentage argument has been used by a PlayerScreen.
-    		get { return m_bSpeedConsumed;}
-    		set { m_bSpeedConsumed = value;}
+    		get { return speedConsumed;}
+    		set { speedConsumed = value;}
     	}
     	public bool StretchImage
     	{
-    		get { return m_bStretchImage;}
+    		get { return stretchImage;}
     	}
     	public bool HideExplorer
     	{
-    		get { return m_bHideExplorer;}
+    		get { return hideExplorer;}
     	}
     	
     	#endregion
     	
         #region Members
-        private static readonly string NoInputFile = "none";
-        private string m_InputFile = NoInputFile;
-        private int m_iSpeedPercentage = 100;
-        private bool m_bStretchImage;
-        private bool m_bHideExplorer;
-		private bool m_bParametersParsed;
-		private bool m_bSpeedConsumed;
-        private static CommandLineArgumentManager _instance = null;
+        private static readonly string noInputFile = "none";
+        private string inputFile = noInputFile;
+        private int speedPercentage = 100;
+        private bool stretchImage;
+        private bool hideExplorer;
+		private bool parametersParsed;
+		private bool speedConsumed;
+        private static CommandLineArgumentManager instance = null;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        #region Instance and Ctor
         public static CommandLineArgumentManager Instance()
         {
-        	// get singleton instance.
-            if (_instance == null)
+        	if (instance == null)
             {
-                _instance = new CommandLineArgumentManager();
+                instance = new CommandLineArgumentManager();
+                instance.InitializeCommandLineParser();
             }
-            return _instance;
+        	
+            return instance;
         }
+
         private CommandLineArgumentManager()
         {
         }
-        #endregion
 
-        #region Implementation
-        public void InitializeCommandLineParser()
+        public void ParseArguments(string[] args)
         {
-        	// Define parameters and switches. (All optional).
+            if(args == null || args.Length < 2)
+                return;
+            
+            // Remove first argument (name of the executable) before parsing.
+        	string[] arguments = new string[args.Length - 1];
+        	Array.Copy(args, 1, arguments, 0, args.Length - 1);
         	
-        	// Parameters and their default values.
-        	CommandLineArgumentParser.DefineOptionalParameter(
-        		new string[]{	"-file = " + m_InputFile,
-        						"-speed = " + m_iSpeedPercentage.ToString()
-        	                 });
-
-        	// Switches. (default will be "false")
-        	CommandLineArgumentParser.DefineSwitches(
-        		new string[]{	"-stretch",
-           	 					"-noexp"
-        					 });
-        }
-        public void ParseArguments(string[] _args)
-        {
-        	// Log argumets.
-        	if(_args.Length > 1)
-        	{
-        		log.Debug("Command line arguments:");
-        		foreach(string arg in _args)
-	        	{
-	        		log.Debug(arg);	
-	        	}	
-        	}
-        	
-        	// Remove first argument (name of the executable) before parsing.
-        	string[] args = new string[_args.Length-1];        	
-        	for (int i = 1; i < _args.Length; i++)
-            {
-        		args[i-1] = _args[i];
-            }
+        	log.Debug("Command line arguments:");
+        	foreach(string arg in arguments)
+	        	log.Debug(arg);	
         	
         	try
         	{
         		// Check for the special case where the only argument is a filename.
         		// this happens when you drag a video on kinovea.exe
-        		if(args.Length == 1)
+        		if(arguments.Length == 1 && File.Exists(arguments[0]))
         		{
-        			if(File.Exists(args[0]))
-        			{
-        				m_InputFile = args[0];
-        			}
+       				inputFile = arguments[0];
         		}
-        		else if (args.Length == 1 && (args[0].Trim() == "-help" || args[0].Trim() == "-h"))
+        		else if (arguments.Length == 1 && (arguments[0].Trim() == "-help" || arguments[0].Trim() == "-h"))
 		        {
-        			// Check for the special parameter -help or -h, 
-        			// and then output info on supported params.
-		            PrintUsage();
+        			PrintUsage();
 		        }
 		        else
 		        {
-		            CommandLineArgumentParser.ParseArguments(args);
+		            CommandLineArgumentParser.ParseArguments(arguments);
 		            
 		            // Reparse the types, (we do that in the try catch block in case it fails.)
-		            m_InputFile = CommandLineArgumentParser.GetParamValue("-file");
-		            m_iSpeedPercentage = int.Parse(CommandLineArgumentParser.GetParamValue("-speed"));
-		            if(m_iSpeedPercentage > 200) m_iSpeedPercentage = 200;
-		            if(m_iSpeedPercentage < 1) m_iSpeedPercentage = 1;
-		            m_bStretchImage = CommandLineArgumentParser.IsSwitchOn("-stretch");
-		            m_bHideExplorer = CommandLineArgumentParser.IsSwitchOn("-noexp");
+		            inputFile = CommandLineArgumentParser.GetParamValue("-file");
+		            
+		            speedPercentage = int.Parse(CommandLineArgumentParser.GetParamValue("-speed"));
+		            speedPercentage = Math.Min(Math.Max(speedPercentage, 1), 200);
+		            
+		            stretchImage = CommandLineArgumentParser.IsSwitchOn("-stretch");
+		            hideExplorer = CommandLineArgumentParser.IsSwitchOn("-noexp");
 		        }
         	}
         	catch (CommandLineArgumentException e)
@@ -174,11 +147,28 @@ namespace Kinovea.Services
         	// Here maybe we should check for the coherence of what the user entered.
         	// for exemple if he entered a -speed but no -file...
         	
-        	m_bParametersParsed = true;
+        	parametersParsed = true;
         }
+        
+        private void InitializeCommandLineParser()
+        {
+        	// Define parameters and switches. (All optional).
+        	
+        	// Parameters and their default values.
+        	CommandLineArgumentParser.DefineOptionalParameter(
+        		new string[]{	"-file = " + inputFile,
+        						"-speed = " + speedPercentage.ToString()
+        	                 });
+
+        	// Switches. (default will be "false")
+        	CommandLineArgumentParser.DefineSwitches(
+        		new string[]{	"-stretch",
+           	 					"-noexp"
+        					 });
+        }
+        
         private static void PrintUsage()
 	    {
-        	// Doesn't work ?
 	        Console.WriteLine();
 	        Console.WriteLine("USAGE:");
 	        Console.WriteLine("kinovea.exe");
@@ -195,8 +185,6 @@ namespace Kinovea.Services
 	        Console.WriteLine();
 	        Console.WriteLine("2. > kinovea.exe -file test.mkv -stretch -noexp");
 	    }
-        #endregion
-
     }
 }
 
