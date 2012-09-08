@@ -17,3 +17,6 @@ Localization/WorkingDirectory/*.resx
 Root/Languages/RootLang.resources
 Localization/WorkingDirectory/content.xml
 Localization/WorkingDirectory/.~*
+FileBrowser/Languages/FileBrowserLang.resources
+ScreenManager/Languages/ScreenManagerLang.resources
+Updater/Languages/UpdaterLang.resources
