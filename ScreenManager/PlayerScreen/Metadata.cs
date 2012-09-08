@@ -1224,7 +1224,7 @@ namespace Kinovea.ScreenManager
         private void WriteGeneralInformation(XmlWriter w)
         {
             w.WriteElementString("FormatVersion", "2.0");
-			w.WriteElementString("Producer", "Kinovea." + PreferencesManager.ReleaseVersion);
+			w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
 			w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(m_FullPath));
 			
 			if(!string.IsNullOrEmpty(m_GlobalTitle))

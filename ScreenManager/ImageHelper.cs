@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace Kinovea.Services
+namespace Kinovea.ScreenManager
 {
 	/// <summary>
 	/// A static class with hepler functions related to Images, conversions, etc.

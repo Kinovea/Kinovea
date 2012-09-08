@@ -180,6 +180,7 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
+    <Compile Include="ImageHelper.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
@@ -237,7 +238,6 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
-    <Compile Include="PlayerScreen\AutoSaver.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="PlayerScreen\Drawings\AutoNumber.cs" />
     <Compile Include="PlayerScreen\Drawings\AutoNumberManager.cs" />
@@ -506,7 +506,6 @@
     </Compile>
     <Compile Include="SummaryLoadedEventArgs.cs" />
     <Compile Include="SummaryLoader.cs" />
-    <Compile Include="ToggleCommand.cs" />
     <Compile Include="UserInterface\ColorPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>

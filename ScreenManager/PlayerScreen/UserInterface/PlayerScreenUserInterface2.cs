@@ -496,11 +496,6 @@ namespace Kinovea.ScreenManager
 			    PostImportMetadata();
 			    m_FrameServer.Metadata.CleanupHash();
 			}
-			else
-			{
-                m_FrameServer.AutoSaver.Clean();
-                m_FrameServer.AutoSaver.Start();
-			}
 			
 			Application.Idle += PostLoad_Idle;
 			
@@ -580,9 +575,6 @@ namespace Kinovea.ScreenManager
 
 			m_FrameServer.SetupMetadata();
 			m_PointerTool.SetImageSize(m_FrameServer.Metadata.ImageSize);
-
-			m_FrameServer.AutoSaver.Clean();
-			m_FrameServer.AutoSaver.Start();
 			
 			DoInvalidate();
 		}

@@ -109,10 +109,9 @@
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="DeviceCapability.cs" />
     <Compile Include="DeviceConfiguration.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="ImageHelper.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="DelegatesPool.cs" />
+    <Compile Include="Software.cs" />
     <Compile Include="HelpIndex.cs" />
     <Compile Include="HelpItem.cs" />
     <Compile Include="IKernel.cs" />
@@ -121,21 +120,24 @@
     <Compile Include="Infrastructure\ToggleCommand.cs" />
     <Compile Include="LanguageIdentifier.cs" />
     <Compile Include="LanguageManager.cs" />
-    <Compile Include="PreferencesManager.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="IUndoableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="ShortcutFolder.cs" />
+    <Compile Include="Preferences\ActiveFileBrowserTab.cs" />
+    <Compile Include="Preferences\ExplorerThumbSize.cs" />
+    <Compile Include="Preferences\KinoveaImageFormat.cs" />
+    <Compile Include="Preferences\KinoveaVideoFormat.cs" />
+    <Compile Include="Preferences\NetworkCameraFormat.cs" />
+    <Compile Include="Preferences\PreferencesManager.cs" />
+    <Compile Include="Preferences\ShortcutFolder.cs" />
+    <Compile Include="Preferences\SpeedUnits.cs" />
+    <Compile Include="Preferences\TimeCodeFormat.cs" />
+    <Compile Include="Preferences\TimeCodeType.cs" />
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
     <Compile Include="XmlHelper.cs" />
@@ -148,13 +150,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Video\Video.csproj">
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
       <Name>Video</Name>
@@ -163,6 +158,7 @@
   <ItemGroup>
     <Folder Include="CommandLine" />
     <Folder Include="Infrastructure" />
+    <Folder Include="Preferences" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

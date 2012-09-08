@@ -261,12 +261,12 @@ namespace Kinovea.Services
             if(listId == 0)
             {
                 hiList = UserGuides;
-                szDownloadFolder = Application.StartupPath + "\\" + Properties.Resources.ManualsFolder;
+                szDownloadFolder = Software.ManualsDirectory;
             }
             else
             {
                 hiList = HelpVideos;
-                szDownloadFolder = Application.StartupPath + "\\" + Properties.Resources.HelpVideosFolder;
+                szDownloadFolder = Software.HelpVideosDirectory;
             }
 
             // 2. Recherche de l'Item.
@@ -309,7 +309,7 @@ namespace Kinovea.Services
         {
             try
             {
-                XmlTextWriter LocalHelpIndexWriter = new XmlTextWriter(Application.StartupPath + "\\" + Properties.Resources.URILocalHelpIndex, null);
+                XmlTextWriter LocalHelpIndexWriter = new XmlTextWriter(Software.LocalHelpIndex, null);
                 LocalHelpIndexWriter.Formatting = Formatting.Indented;
                 LocalHelpIndexWriter.WriteStartDocument();
 

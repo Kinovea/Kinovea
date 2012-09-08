@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
             openFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_LoadProfile;
             openFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
             openFileDialog.FilterIndex = 1;
-            openFileDialog.InitialDirectory = PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");
+            openFileDialog.InitialDirectory = Software.ColorProfileDirectory;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -234,7 +234,7 @@ namespace Kinovea.ScreenManager
             saveFileDialog.Title = ScreenManagerLang.dlgColorProfile_ToolTip_SaveProfile;
             saveFileDialog.Filter = ScreenManagerLang.dlgColorProfile_FileFilter;
             saveFileDialog.FilterIndex = 1;
-            saveFileDialog.InitialDirectory = Application.StartupPath + "\\" + PreferencesManager.ResourceManager.GetString("ColorProfilesFolder");
+            saveFileDialog.InitialDirectory = Software.ColorProfileDirectory;
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
