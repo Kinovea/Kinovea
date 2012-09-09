@@ -104,6 +104,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlphanumComparator.cs" />
     <Compile Include="CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />

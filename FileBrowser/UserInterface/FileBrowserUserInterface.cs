@@ -19,17 +19,19 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
  */
 
 
-using Kinovea.FileBrowser.Languages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-using System.Linq;
+
 using ExpTreeLib;
+using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 
@@ -43,10 +45,10 @@ namespace Kinovea.FileBrowser
 	public partial class FileBrowserUserInterface : UserControl
 	{
 		#region Members
-		private CShItem m_CurrentExptreeItem;	  // Current item in exptree tab.
-		private CShItem m_CurrentShortcutItem;	  // Current item in shortcuts tab.
-		private bool m_bExpanding;                // True if the exptree is currently auto expanding. To avoid reentry.
-		private bool m_bInitializing = true;
+		private CShItem currentExptreeItem;	  // Current item in exptree tab.
+		private CShItem currentShortcutItem;	  // Current item in shortcuts tab.
+		private bool expanding;                // True if the exptree is currently auto expanding. To avoid reentry.
+		private bool initializing = true;
 		private ContextMenuStrip  popMenu = new ContextMenuStrip();
 		private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
@@ -109,7 +111,7 @@ namespace Kinovea.FileBrowser
 			
 			// This is a one time only routine.
 			Application.Idle -= new EventHandler(this.IdleDetector);
-			m_bInitializing = false;
+			initializing = false;
 			
 			// Now that we are at full size, we can load splitters from prefs.
 			splitExplorerFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance;
@@ -122,7 +124,7 @@ namespace Kinovea.FileBrowser
 		#endregion
 
 		#region Public interface
-		public void DoRefreshFileList(bool _bRefreshThumbnails)
+		public void DoRefreshFileList(bool refreshThumbnails)
 		{
 			// Called when:
 			// - the user changes node in exptree, either explorer or shortcuts
@@ -133,32 +135,32 @@ namespace Kinovea.FileBrowser
 			
 			// We don't update during app start up, because we would most probably
 			// end up loading the desktop, and then the saved folder.
-			if(!m_bInitializing)
+			if(!initializing)
 			{
 				// Figure out which tab we are on to update the right listview.
 				if(tabControl.SelectedIndex == 0)
 				{
 					// ExpTree tab.
-					if(m_CurrentExptreeItem != null)
+					if(currentExptreeItem != null)
 					{
-						UpdateFileList(m_CurrentExptreeItem, lvExplorer, _bRefreshThumbnails);
+						UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails);
 					}
 				}
 				else if(tabControl.SelectedIndex == 1)
 				{
 					// Shortcuts tab.
-					if(m_CurrentShortcutItem != null)
+					if(currentShortcutItem != null)
 					{
-						UpdateFileList(m_CurrentShortcutItem, lvShortcuts, _bRefreshThumbnails);
+						UpdateFileList(currentShortcutItem, lvShortcuts, refreshThumbnails);
 					}
-					else if(m_CurrentExptreeItem != null)
+					else if(currentExptreeItem != null)
 					{
 						// This is the special case where we select a folder on the exptree tab
 						// and then move to the shortcuts tab.
 						// -> reload the hidden list of the exptree tab.
 						// We also force the thumbnail refresh, because in this case it is the only way to update the
 						// filename list held in ScreenManager...
-						UpdateFileList(m_CurrentExptreeItem, lvExplorer, true);
+						UpdateFileList(currentExptreeItem, lvExplorer, true);
 					}
 				}
 			}
@@ -201,8 +203,8 @@ namespace Kinovea.FileBrowser
 		}
 		public void Closing()
 		{
-			if(m_CurrentExptreeItem != null)
-				PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = m_CurrentExptreeItem.Path;
+			if(currentExptreeItem != null)
+				PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = currentExptreeItem.Path;
 			
 			PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance = splitExplorerFiles.SplitterDistance;
 			PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance = splitShortcutsFiles.SplitterDistance;
@@ -215,16 +217,16 @@ namespace Kinovea.FileBrowser
 		#region Explorer tab
 		
 		#region TreeView
-		private void etExplorer_ExpTreeNodeSelected(string _selPath, CShItem _item)
+		private void etExplorer_ExpTreeNodeSelected(string selectedPath, CShItem item)
 		{
-			m_CurrentExptreeItem = _item;
+			currentExptreeItem = item;
 			
 			// Update the list view and thumb page.
-			if(!m_bExpanding && !m_bInitializing)
+			if(!expanding && !initializing)
 			{
 				// We don't maintain synchronization with the Shortcuts tab. 
 				ResetShortcutList();
-				UpdateFileList(m_CurrentExptreeItem, lvExplorer, true);				
+				UpdateFileList(currentExptreeItem, lvExplorer, true);				
 			}
 		}
 		private void etExplorer_MouseEnter(object sender, EventArgs e)
@@ -241,7 +243,7 @@ namespace Kinovea.FileBrowser
 				// User must first select a node to add it to shortcuts.
 				if(etExplorer.IsOnSelectedItem(e.Location))
 				{
-					if(!m_CurrentExptreeItem.Path.StartsWith("::"))
+					if(!currentExptreeItem.Path.StartsWith("::"))
 					{
 						mnuAddToShortcuts.Visible = true;
 					}
@@ -302,12 +304,12 @@ namespace Kinovea.FileBrowser
 		}
 		private void DeleteSelectedShortcut()
 		{
-			if(m_CurrentShortcutItem == null)
+			if(currentShortcutItem == null)
 			    return;
 			
             foreach(ShortcutFolder sf in PreferencesManager.FileExplorerPreferences.ShortcutFolders)
 			{
-				if(sf.Location != m_CurrentShortcutItem.Path)
+				if(sf.Location != currentShortcutItem.Path)
 				    continue;
 				
 				IUndoableCommand cds = new CommandDeleteShortcut(this, sf);
@@ -323,10 +325,10 @@ namespace Kinovea.FileBrowser
         {
         	// Update the list view and thumb page.
         	log.Debug(String.Format("Shortcut Selected : {0}.", Path.GetFileName(_selPath)));
-			m_CurrentShortcutItem = _item;
+			currentShortcutItem = _item;
 			
 			// Initializing happens on the explorer tab. We'll refresh later.
-			if(!m_bInitializing)
+			if(!initializing)
 			{	
 				// The operation that will trigger the thumbnail refresh MUST only be called at the end. 
 				// Otherwise the other threads take precedence and the thumbnails are not 
@@ -334,15 +336,15 @@ namespace Kinovea.FileBrowser
 				
 				// Start by updating hidden explorer tab.
 				// Update list and maintain synchronization with the tree.
-				UpdateFileList(m_CurrentShortcutItem, lvExplorer, false);
+				UpdateFileList(currentShortcutItem, lvExplorer, false);
 				
-				m_bExpanding = true;
-				etExplorer.ExpandANode(m_CurrentShortcutItem);
-				m_bExpanding = false;
-				m_CurrentExptreeItem = etExplorer.SelectedItem;
+				expanding = true;
+				etExplorer.ExpandANode(currentShortcutItem);
+				expanding = false;
+				currentExptreeItem = etExplorer.SelectedItem;
 				
 				// Finally update the shortcuts tab, and refresh thumbs.
-				UpdateFileList(m_CurrentShortcutItem, lvShortcuts, true);
+				UpdateFileList(currentShortcutItem, lvShortcuts, true);
 			}
 			log.Debug("Shortcut Selected - Operations done.");
         }
@@ -356,14 +358,14 @@ namespace Kinovea.FileBrowser
         	if(e.Button != MouseButtons.Right)
         	    return;
         	
-        	if(m_CurrentExptreeItem == null || !etShortcuts.IsOnSelectedItem(e.Location) || m_CurrentExptreeItem.Path.StartsWith("::"))
+        	if(currentExptreeItem == null || !etShortcuts.IsOnSelectedItem(e.Location) || currentExptreeItem.Path.StartsWith("::"))
         	{
         	    mnuDeleteShortcut.Visible = false;	
 				mnuAddToShortcuts.Visible = false;
 				return;
         	}
         	
-        	bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(m_CurrentShortcutItem.Path);
+        	bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(currentShortcutItem.Path);
         	mnuAddToShortcuts.Visible = !known;
 			mnuDeleteShortcut.Visible = known;
         }
@@ -395,48 +397,57 @@ namespace Kinovea.FileBrowser
 			// Discard keyboard event as they interfere with player functions
 			e.Handled = true;
 		}
-		private void UpdateFileList(CShItem _folder, ListView _listView, bool _bRefreshThumbnails)
+		private void UpdateFileList(CShItem folder, ListView listView, bool refreshThumbnails)
 		{
 			// Update a file list with the given folder.
 			// Triggers an update of the thumbnails pane if requested.
-			if(_folder == null)
+			if(folder == null)
 			    return;
 			
-			log.Debug(String.Format("Updating file list : {0}", _listView.Name));
+			log.Debug(String.Format("Updating file list : {0}", listView.Name));
 			
 			this.Cursor = Cursors.WaitCursor;
 			
-			_listView.BeginUpdate();
-			_listView.Items.Clear();
+			listView.BeginUpdate();
+			listView.Items.Clear();
 			
 			// Each list element will store the CShItem it's referring to in its Tag property.
-			ArrayList fileList = _folder.GetFiles();
-			List<String> fileNames = new List<string>();
-			for (int i = 0; i < fileList.Count; i++)
+			ArrayList fileList = folder.GetFiles();
+			
+			List<string> fileNames = new List<string>();
+			foreach(object item in fileList)
 			{
-				CShItem shellItem = (CShItem)fileList[i];
-				
-                try
+			    CShItem shellItem = item as CShItem; 
+			    if(shellItem == null)
+			        continue;
+			    
+			    try
                 {
-					string extension = Path.GetExtension(shellItem.Path);
-					if (string.IsNullOrEmpty(extension) || !VideoTypeManager.IsSupported(extension))
-					    continue;
-					
-					ListViewItem lvi = new ListViewItem(shellItem.DisplayName);
-					
-					lvi.Tag = shellItem;
-					lvi.ImageIndex = 6;
-					_listView.Items.Add(lvi);
-					fileNames.Add(shellItem.Path);
-                }
-                catch(Exception)
+    			    string path = shellItem.Path;
+    			    string extension = Path.GetExtension(path);
+    			    if (string.IsNullOrEmpty(extension) || !VideoTypeManager.IsSupported(extension))
+    			        continue;
+    			        
+                    fileNames.Add(path);
+			    }
+			    catch(Exception)
                 {
                     // Known case : when we are in OS/X parallels context, the path of existing files are invalid.
                     log.ErrorFormat("An error happened while trying to add a file to the file list : {0}", shellItem.Path);
                 }
 			}
 			
-			_listView.EndUpdate();
+			fileNames.Sort(new AlphanumComparator());
+			
+			foreach(string filename in fileNames)
+			{
+			    ListViewItem lvi = new ListViewItem(Path.GetFileName(filename));
+			    lvi.Tag = filename;
+			    lvi.ImageIndex = 6;
+			    listView.Items.Add(lvi);
+			}
+			
+			listView.EndUpdate();
 			log.Debug("List updated");
 										
 			// Even if we don't want to reload the thumbnails, we must ensure that 
@@ -448,49 +459,37 @@ namespace Kinovea.FileBrowser
 			if (dp.DisplayThumbnails != null)
 			{
 				log.Debug("Asking the ScreenManager to refresh the thumbnails.");
-				dp.DisplayThumbnails(fileNames, _bRefreshThumbnails);
+				dp.DisplayThumbnails(fileNames, refreshThumbnails);
 			}
 			
 			this.Cursor = Cursors.Default;
 		}
 		private void lv_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			// Starting a drag drop.
 			ListViewItem lvi = e.Item as ListViewItem;
-			if (lvi != null)
-			{
-				CShItem item = lvi.Tag as CShItem;
-				if(item != null)
-				{
-					if (item.IsFileSystem)
-					{
-						DoDragDrop(item.Path, DragDropEffects.All);
-					}
-				}
-			}
+			if (lvi == null)
+			    return;
+			
+			string path = lvi.Tag as string;
+			if(path == null)
+			    return;
+			
+			DoDragDrop(path, DragDropEffects.All);
 		}
-		private void LaunchItemAt(ListView _listView, MouseEventArgs e)
+		private void LaunchItemAt(ListView listView, MouseEventArgs e)
 		{
-			// Launch the video.
+			ListViewItem lvi = listView.GetItemAt(e.X, e.Y);
 			
-			ListViewItem lvi = _listView.GetItemAt(e.X, e.Y);
+			if(lvi == null || listView.SelectedItems == null || listView.SelectedItems.Count != 1)
+			    return;
 			
-			if (lvi != null && _listView.SelectedItems != null && _listView.SelectedItems.Count == 1)
-			{
-				CShItem item = _listView.SelectedItems[0].Tag as CShItem;
-				
-				if(item != null)
-				{
-					if(item.IsFileSystem)
-					{
-						DelegatesPool dp = DelegatesPool.Instance();
-						if (dp.LoadMovieInScreen != null)
-						{
-							dp.LoadMovieInScreen(item.Path, -1, true);
-						}
-					}
-				}
-			}
+			string path = lvi.Tag as string;
+			if(path == null)
+			    return;
+
+			DelegatesPool dp = DelegatesPool.Instance();
+    		if (dp.LoadMovieInScreen != null)
+	       		dp.LoadMovieInScreen(path, -1, true);
 		}
 		#endregion
 		
@@ -500,25 +499,17 @@ namespace Kinovea.FileBrowser
 			CShItem itemToAdd;
 			
 			if(tabControl.SelectedIndex == (int)ActiveFileBrowserTab.Explorer)
-			{				
-				itemToAdd = m_CurrentExptreeItem;
-			}
+				itemToAdd = currentExptreeItem;
 			else
-			{
-				itemToAdd = m_CurrentShortcutItem;
-			}
+				itemToAdd = currentShortcutItem;
 			
-			if(itemToAdd != null)
-			{
-				// Don't add if root node. (Special Folder)
-				if(!itemToAdd.Path.StartsWith("::"))
-				{
-					ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(itemToAdd.Path), itemToAdd.Path);
-					PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
-					PreferencesManager.Save();
-					ReloadShortcuts();
-				}
-			}						
+			if(itemToAdd == null || itemToAdd.Path.StartsWith("::"))
+			    return;
+			
+			ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(itemToAdd.Path), itemToAdd.Path);
+			PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
+			PreferencesManager.Save();
+			ReloadShortcuts();
 		}
 		private void mnuDeleteShortcut_Click(object sender, EventArgs e)
 		{
