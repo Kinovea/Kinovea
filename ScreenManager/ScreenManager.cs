@@ -565,11 +565,11 @@ namespace Kinovea.ScreenManager
             if (!m_bSynching || screenList.Count != 2)
                 return;
             
-            // TODO: this is problematic when one of the video is a high speed camera and not the other.
-            
-            log.Debug("Speed percentage of one video changed. Force same percentage on the other.");
-            int otherScreen = _screen == screenList[0] ? 1 : 0;
-            ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)_screen).RealtimePercentage;
+            if(PreferencesManager.PlayerPreferences.SyncLockSpeed)
+            {
+                int otherScreen = _screen == screenList[0] ? 1 : 0;
+                ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)_screen).RealtimePercentage;
+            }
             
             SetSyncPoint(true);
         }

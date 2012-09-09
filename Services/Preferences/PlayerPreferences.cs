@@ -60,6 +60,11 @@ namespace Kinovea.Services
             get { return workingZoneMemory; }
             set { workingZoneMemory = value; }
         }
+        public bool SyncLockSpeed
+        {
+            get { return syncLockSpeed;}
+            set { syncLockSpeed = value;}
+        }
         public InfosFading DefaultFading
         {
             get { return defaultFading; }
@@ -92,6 +97,7 @@ namespace Kinovea.Services
         private bool drawOnPlay = true;
         private List<Color> recentColors = new List<Color>();
         private int maxRecentColors = 12;
+        private bool syncLockSpeed = true;
         
         public void AddRecentColor(Color _color)
     	{
@@ -106,6 +112,7 @@ namespace Kinovea.Services
             writer.WriteElementString("DeinterlaceByDefault", deinterlaceByDefault ? "true" : "false");
             writer.WriteElementString("WorkingZoneSeconds", workingZoneSeconds.ToString());
             writer.WriteElementString("WorkingZoneMemory", workingZoneMemory.ToString());
+            writer.WriteElementString("SyncLockSpeed", syncLockSpeed ? "true" : "false");
             
             writer.WriteStartElement("InfoFading");
             defaultFading.WriteXml(writer);
@@ -156,7 +163,10 @@ namespace Kinovea.Services
                         break;
                     case "WorkingZoneMemory":
                         workingZoneMemory = reader.ReadElementContentAsInt();
-                        break;                        
+                        break;
+                    case "SyncLockSpeed":
+                        syncLockSpeed = reader.ReadElementContentAsBoolean();
+                        break;
                     case "InfoFading":
                         defaultFading.ReadXml(reader);
                         break;
