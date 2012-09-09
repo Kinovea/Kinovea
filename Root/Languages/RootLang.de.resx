@@ -100,6 +100,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Zeige Zeichenelemente bei Wiedergabe</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Nachleuchten aktivieren</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Beim Öffnen eines neuen Videos Deinterlace verwenden</value></data>
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9 erzwingen</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3 erzwingen</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatisch erkennen</value></data>

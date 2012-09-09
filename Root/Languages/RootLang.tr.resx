@@ -100,6 +100,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Video oynatılırken çizimleri göster</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Kalıcılığı aktive et</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Yeni bir video açarken her zaman deinterlace et</value></data>
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>16:9'u Zorla</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>4:3'ü Zorla</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Otomatik Bulma</value></data>

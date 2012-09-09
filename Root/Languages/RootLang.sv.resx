@@ -100,6 +100,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Visa ritningar när video spelas</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Aktivera synlighet</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Utför alltid uppflätning när ny video hämtas.</value></data>
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Bildförhållande 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Bildförhållande 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatisk igenkänning</value></data>

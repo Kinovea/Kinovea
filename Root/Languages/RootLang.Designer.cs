@@ -556,6 +556,15 @@ namespace Kinovea.Root.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Link speed sliders when comparing videos..
+        /// </summary>
+        internal static string dlgPreferences_SyncLockSpeeds {
+            get {
+                return ResourceManager.GetString("dlgPreferences_SyncLockSpeeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Preferences….
         /// </summary>
         internal static string dlgPreferences_Title {

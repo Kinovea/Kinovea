@@ -100,6 +100,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Toon tekening als de video speelt</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Sta Persistentie toe</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Altijd deinterlace toepassen bij het openen van nieuwe video</value></data>
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forceer 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forceer 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Automatische Detectie</value></data>

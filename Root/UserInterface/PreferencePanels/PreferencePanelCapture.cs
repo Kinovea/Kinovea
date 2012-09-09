@@ -39,27 +39,27 @@ namespace Kinovea.Root
 		#region IPreferencePanel properties
 		public string Description
 		{
-			get { return m_Description;}
+			get { return description;}
 		}
 		public Bitmap Icon
 		{
-			get { return m_Icon;}
+			get { return icon;}
 		}
-		private string m_Description;
-		private Bitmap m_Icon;
 		#endregion
 		
 		#region Members
-		private string m_ImageDirectory;
-		private string m_VideoDirectory;
-		private KinoveaImageFormat m_ImageFormat;
-		private KinoveaVideoFormat m_VideoFormat;
-		private bool m_bUsePattern;
-		private string m_Pattern;
-		private bool m_bResetCounter;
-		private long m_iCounter;
-		private int m_iMemoryBuffer;
-		private FilenameHelper m_filenameHelper = new FilenameHelper();
+		private string description;
+		private Bitmap icon;
+		private string imageDirectory;
+		private string videoDirectory;
+		private KinoveaImageFormat imageFormat;
+		private KinoveaVideoFormat videoFormat;
+		private bool usePattern;
+		private string pattern;
+		private bool resetCounter;
+		private long counter;
+		private int memoryBuffer;
+		private FilenameHelper filenameHelper = new FilenameHelper();
 		#endregion
 		
 		#region Construction & Initialization
@@ -68,8 +68,8 @@ namespace Kinovea.Root
 			InitializeComponent();
 			this.BackColor = Color.White;
 			
-			m_Description = RootLang.dlgPreferences_btnCapture;
-			m_Icon = Resources.pref_capture;
+			description = RootLang.dlgPreferences_btnCapture;
+			icon = Resources.pref_capture;
 			
 			// Use the tag property of labels to store the actual marker.
 			lblYear.Tag = "%y";
@@ -85,14 +85,14 @@ namespace Kinovea.Root
 		}
 		private void ImportPreferences()
         {
-			m_ImageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
-			m_VideoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
-			m_ImageFormat = PreferencesManager.CapturePreferences.ImageFormat;
-			m_VideoFormat = PreferencesManager.CapturePreferences.VideoFormat;
-			m_bUsePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
-			m_Pattern = PreferencesManager.CapturePreferences.Pattern;
-			m_iCounter = PreferencesManager.CapturePreferences.CaptureImageCounter; // Use the image counter for sample.
-			m_iMemoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
+			imageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
+			videoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
+			imageFormat = PreferencesManager.CapturePreferences.ImageFormat;
+			videoFormat = PreferencesManager.CapturePreferences.VideoFormat;
+			usePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
+			pattern = PreferencesManager.CapturePreferences.Pattern;
+			counter = PreferencesManager.CapturePreferences.CaptureImageCounter; // Use the image counter for sample.
+			memoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
 		}
 		private void InitPage()
 		{
@@ -100,20 +100,20 @@ namespace Kinovea.Root
 			tabGeneral.Text = RootLang.dlgPreferences_ButtonGeneral;
 			lblImageDirectory.Text = RootLang.dlgPreferences_Capture_lblImageDirectory;
 			lblVideoDirectory.Text = RootLang.dlgPreferences_Capture_lblVideoDirectory;
-			tbImageDirectory.Text = m_ImageDirectory;
-			tbVideoDirectory.Text = m_VideoDirectory;
+			tbImageDirectory.Text = imageDirectory;
+			tbVideoDirectory.Text = videoDirectory;
 			
             lblImageFormat.Text = RootLang.dlgPreferences_Capture_lblImageFormat;
             cmbImageFormat.Items.Add("JPG");
             cmbImageFormat.Items.Add("PNG");
             cmbImageFormat.Items.Add("BMP");
-            cmbImageFormat.SelectedIndex = ((int)m_ImageFormat < cmbImageFormat.Items.Count) ? (int)m_ImageFormat : 0;
+            cmbImageFormat.SelectedIndex = ((int)imageFormat < cmbImageFormat.Items.Count) ? (int)imageFormat : 0;
             
 			lblVideoFormat.Text = RootLang.dlgPreferences_Capture_lblVideoFormat;
             cmbVideoFormat.Items.Add("MKV");
             cmbVideoFormat.Items.Add("MP4");
             cmbVideoFormat.Items.Add("AVI");
-            cmbVideoFormat.SelectedIndex = ((int)m_VideoFormat < cmbVideoFormat.Items.Count) ? (int)m_VideoFormat : 0;
+            cmbVideoFormat.SelectedIndex = ((int)videoFormat < cmbVideoFormat.Items.Count) ? (int)videoFormat : 0;
             
 			// Naming tab
 			tabNaming.Text = RootLang.dlgPreferences_Capture_tabNaming;
@@ -128,15 +128,15 @@ namespace Kinovea.Root
 			lblCounter.Text = RootLang.dlgPreferences_Capture_lblCounter;
 			btnResetCounter.Text = RootLang.dlgPreferences_Capture_btnResetCounter;
 			
-			tbPattern.Text = m_Pattern;
+			tbPattern.Text = pattern;
 			UpdateSample();
 			
-			rbPattern.Checked = m_bUsePattern;
-			rbFreeText.Checked = !m_bUsePattern;
+			rbPattern.Checked = usePattern;
+			rbFreeText.Checked = !usePattern;
 			
 			// Memory tab
 			tabMemory.Text = RootLang.dlgPreferences_Capture_tabMemory;
-			trkMemoryBuffer.Value = m_iMemoryBuffer;
+			trkMemoryBuffer.Value = memoryBuffer;
 			UpdateMemoryLabel();
 		}
 		#endregion
@@ -173,40 +173,40 @@ namespace Kinovea.Root
 		}
 		private void tbImageDirectory_TextChanged(object sender, EventArgs e)
 		{
-			if(!m_filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
+			if(!filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
         	{
         		ScreenManagerKernel.AlertInvalidFileName();
         	}
         	else
         	{
-        		m_ImageDirectory = tbImageDirectory.Text;	
+        		imageDirectory = tbImageDirectory.Text;	
         	}
 		}
 		private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
         {
-        	if(!m_filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
+        	if(!filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
         	{
         		ScreenManagerKernel.AlertInvalidFileName();
         	}
         	else
         	{
-        		m_VideoDirectory = tbVideoDirectory.Text;	
+        		videoDirectory = tbVideoDirectory.Text;	
         	}
         }
 		private void cmbImageFormat_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			m_ImageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
+			imageFormat = (KinoveaImageFormat)cmbImageFormat.SelectedIndex;
 		}
 		private void cmbVideoFormat_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			m_VideoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
+			videoFormat = (KinoveaVideoFormat)cmbVideoFormat.SelectedIndex;
 		}
 		#endregion
 		
 		#region Tab naming
 		private void tbPattern_TextChanged(object sender, EventArgs e)
 		{
-			if(m_filenameHelper.ValidateFilename(tbPattern.Text, true))
+			if(filenameHelper.ValidateFilename(tbPattern.Text, true))
 			{
 				UpdateSample();
 			}
@@ -241,21 +241,21 @@ namespace Kinovea.Root
 		}
 		private void btnResetCounter_Click(object sender, EventArgs e)
 		{
-			m_bResetCounter = true;
-			m_iCounter = 1;
+			resetCounter = true;
+			counter = 1;
 			UpdateSample();
 		}
 		private void radio_CheckedChanged(object sender, EventArgs e)
 		{
-			m_bUsePattern = rbPattern.Checked;
-			EnableDisablePattern(m_bUsePattern);
+			usePattern = rbPattern.Checked;
+			EnableDisablePattern(usePattern);
 		}
 		#endregion
 		
 		#region Tab Memory
 		private void trkMemoryBuffer_ValueChanged(object sender, EventArgs e)
 		{
-			m_iMemoryBuffer = trkMemoryBuffer.Value;
+			memoryBuffer = trkMemoryBuffer.Value;
 			UpdateMemoryLabel();
 		}
 		#endregion
@@ -265,9 +265,9 @@ namespace Kinovea.Root
 		#region Private methods
 		private void UpdateSample()
 		{
-			string sample = m_filenameHelper.ConvertPattern(tbPattern.Text, m_iCounter);
+			string sample = filenameHelper.ConvertPattern(tbPattern.Text, counter);
 			lblSample.Text = sample;
-			m_Pattern = tbPattern.Text;
+			pattern = tbPattern.Text;
 		}
 		private void EnableDisablePattern(bool _bEnable)
 		{
@@ -297,20 +297,20 @@ namespace Kinovea.Root
 		
 		public void CommitChanges()
 		{
-			PreferencesManager.CapturePreferences.ImageDirectory = m_ImageDirectory;
-			PreferencesManager.CapturePreferences.VideoDirectory = m_VideoDirectory;
-			PreferencesManager.CapturePreferences.ImageFormat = m_ImageFormat;
-			PreferencesManager.CapturePreferences.VideoFormat = m_VideoFormat;
+			PreferencesManager.CapturePreferences.ImageDirectory = imageDirectory;
+			PreferencesManager.CapturePreferences.VideoDirectory = videoDirectory;
+			PreferencesManager.CapturePreferences.ImageFormat = imageFormat;
+			PreferencesManager.CapturePreferences.VideoFormat = videoFormat;
 			
-			PreferencesManager.CapturePreferences.CaptureUsePattern = m_bUsePattern;
-			PreferencesManager.CapturePreferences.Pattern = m_Pattern;
-			if(m_bResetCounter)
+			PreferencesManager.CapturePreferences.CaptureUsePattern = usePattern;
+			PreferencesManager.CapturePreferences.Pattern = pattern;
+			if(resetCounter)
 			{
 				PreferencesManager.CapturePreferences.CaptureImageCounter = 1;
 				PreferencesManager.CapturePreferences.CaptureVideoCounter = 1;
 			}
 			
-			PreferencesManager.CapturePreferences.CaptureMemoryBuffer = m_iMemoryBuffer;
+			PreferencesManager.CapturePreferences.CaptureMemoryBuffer = memoryBuffer;
 		}
 	}
 }

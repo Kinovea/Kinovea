@@ -100,6 +100,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>Mostrar los dibujos durante la reproducción del vídeo</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>Activar persistencia</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>Siempre desentrelazar al abrir un vídeo nuevo</value></data>
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>Forzar 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>Forzar 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>Detección automática</value></data>
