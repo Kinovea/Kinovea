@@ -98,7 +98,7 @@ namespace Kinovea.Services
         public InfosFading(long _iReferenceTimestamp, long _iAverageTimeStampsPerFrame)
         {
             // This constructor is used by all drawings to get the default values.
-            FromInfosFading(PreferencesManager.Instance().DefaultFading);
+            FromInfosFading(PreferencesManager.PlayerPreferences.DefaultFading);
             m_iReferenceTimestamp = _iReferenceTimestamp;
             m_iAverageTimeStampsPerFrame = _iAverageTimeStampsPerFrame;
         }
@@ -158,7 +158,8 @@ namespace Kinovea.Services
 			_xmlReader.ReadEndElement();
 			
 			// Sanity check.
-            if (m_iFadingFrames < 1) m_iFadingFrames = 1;
+            if (m_iFadingFrames < 1) 
+                m_iFadingFrames = 1;
         }
         #endregion
 
@@ -181,7 +182,7 @@ namespace Kinovea.Services
             else if (m_bUseDefault)
             {
                 // Default value
-                InfosFading info = PreferencesManager.Instance().DefaultFading;
+                InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
                 if(info.AlwaysVisible)
                 {
                 	fOpacityFactor = 1.0f;

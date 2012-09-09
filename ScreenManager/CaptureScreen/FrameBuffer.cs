@@ -161,8 +161,7 @@ namespace Kinovea.ScreenManager
 		public void UpdateMemoryCapacity(bool _bShared)
 		{
 			// This is called when the memory cache size is changed in the preferences.
-			PreferencesManager pm = PreferencesManager.Instance();
-			int iAllocatedMemory = _bShared ? pm.CaptureMemoryBuffer / 2 : pm.CaptureMemoryBuffer;
+			int iAllocatedMemory = _bShared ? PreferencesManager.CapturePreferences.CaptureMemoryBuffer / 2 : PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
 			if(iAllocatedMemory != m_iCaptureMemoryBuffer)
 			{
 				log.DebugFormat("Changing memory capacity from {0} to {1}", m_iCaptureMemoryBuffer, iAllocatedMemory);

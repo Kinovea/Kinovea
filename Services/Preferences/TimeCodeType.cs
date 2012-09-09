@@ -22,7 +22,7 @@ using System;
 
 namespace Kinovea.Services
 {
-    public enum TimeCodeType
+    public enum TimecodeType
     {
     	Number,
     	String,

@@ -204,9 +204,6 @@ namespace Kinovea.ScreenManager
 		private IPlayerScreenUIHandler m_PlayerScreenUIHandler;
 		private FrameServerPlayer m_FrameServer;
 		
-		// General
-		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
-		
 		// Playback current state
 		private bool m_bIsCurrentlyPlaying;
 		private int m_iFramesToDecode = 1;
@@ -588,9 +585,7 @@ namespace Kinovea.ScreenManager
                 StopPlaying();
                 m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
                 VideoSection newZone = new VideoSection(m_iSelStart, m_iSelEnd);
-                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, m_PrefManager.WorkingZoneSeconds, m_PrefManager.WorkingZoneMemory, ProgressWorker);
-                //log.DebugFormat("After updating working zone. Asked:{0}, got: {1}", newZone, m_FrameServer.VideoReader.WorkingZone);
-                
+                m_FrameServer.VideoReader.UpdateWorkingZone(newZone, _bForceReload, PreferencesManager.PlayerPreferences.WorkingZoneSeconds, PreferencesManager.PlayerPreferences.WorkingZoneMemory, ProgressWorker);
                 ResizeUpdate(true);
             }
             
@@ -700,7 +695,7 @@ namespace Kinovea.ScreenManager
 				EnableDisableKeyframes();
 			}
 			
-			m_FrameServer.Metadata.CalibrationHelper.CurrentSpeedUnit = m_PrefManager.SpeedUnit;
+			m_FrameServer.Metadata.CalibrationHelper.CurrentSpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
 			// Refresh image to update timecode in chronos, grids colors, default fading, etc.
@@ -1290,7 +1285,7 @@ namespace Kinovea.ScreenManager
 				DockKeyframePanel(true);
 			}
 		}
-		private string TimeStampsToTimecode(long _iTimeStamp, TimeCodeFormat _timeCodeFormat, bool _bSynched)
+		private string TimeStampsToTimecode(long _iTimeStamp, TimecodeFormat _timeCodeFormat, bool _bSynched)
 		{
 			//-------------------------
 			// Input    : TimeStamp (might be a duration. If starting ts isn't 0, it should already be shifted.)
@@ -1300,10 +1295,10 @@ namespace Kinovea.ScreenManager
 			if(!m_FrameServer.Loaded)
                 return "0";
 
-			TimeCodeFormat tcf;
-			if (_timeCodeFormat == TimeCodeFormat.Unknown)
+			TimecodeFormat tcf;
+			if (_timeCodeFormat == TimecodeFormat.Unknown)
 			{
-				tcf = m_PrefManager.TimeCodeFormat;
+				tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
 			}
 			else
 			{
@@ -1328,26 +1323,26 @@ namespace Kinovea.ScreenManager
 			string outputTimeCode;
 			switch (tcf)
 			{
-				case TimeCodeFormat.ClassicTime:
+				case TimecodeFormat.ClassicTime:
 					outputTimeCode = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					break;
-				case TimeCodeFormat.Frames:
+				case TimecodeFormat.Frames:
 					outputTimeCode = String.Format("{0}", (int)((double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame) + 1);
 					break;
-				case TimeCodeFormat.Milliseconds:
+				case TimecodeFormat.Milliseconds:
 					outputTimeCode = String.Format("{0}", (int)Math.Round(fMilliseconds));
 					break;
-				case TimeCodeFormat.TenThousandthOfHours:
+				case TimecodeFormat.TenThousandthOfHours:
 					// 1 Ten Thousandth of Hour = 360 ms.
 					double fTth = fMilliseconds / 360.0;
 					outputTimeCode = String.Format("{0}:{1:00}", (int)fTth, Math.Floor((fTth - (int)fTth)*100));
 					break;
-				case TimeCodeFormat.HundredthOfMinutes:
+				case TimecodeFormat.HundredthOfMinutes:
 					// 1 Hundredth of minute = 600 ms.
 					double fCtm = fMilliseconds / 600.0;
 					outputTimeCode = String.Format("{0}:{1:00}", (int)fCtm, Math.Floor((fCtm - (int)fCtm) * 100));
 					break;
-				case TimeCodeFormat.TimeAndFrames:
+				case TimecodeFormat.TimeAndFrames:
 					String timeString = TimeHelper.MillisecondsToTimecode(fMilliseconds, bShowThousandth, true);
 					String frameString;
 					if (m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame != 0)
@@ -1360,7 +1355,7 @@ namespace Kinovea.ScreenManager
 					}
 					outputTimeCode = String.Format("{0} ({1})", timeString, frameString);
 					break;
-				case TimeCodeFormat.Timestamps:
+				case TimecodeFormat.Timestamps:
 					outputTimeCode = String.Format("{0}", (int)iTimeStamp);
 					break;
 				default :
@@ -1739,8 +1734,8 @@ namespace Kinovea.ScreenManager
 		{
 		    if(m_FrameServer.Loaded)
 		    {
-                lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(m_iSelStart - m_iStartingPosition, m_PrefManager.TimeCodeFormat, false);
-                lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(m_iSelDuration, m_PrefManager.TimeCodeFormat, false);
+                lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(m_iSelStart - m_iStartingPosition, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(m_iSelDuration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
 		    }
 		}
 		private void UpdateSelectionDataFromControl()
@@ -1825,7 +1820,7 @@ namespace Kinovea.ScreenManager
 		{
 		    // Note: among other places, this is run inside the playloop.
 			// Position is relative to working zone.
-			string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched);
+			string timecode = TimeStampsToTimecode(m_iCurrentPosition - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched);
 			lblTimeCode.Text = string.Format("{0} : {1}", ScreenManagerLang.lblTimeCode_Text, timecode);
 		}
 		private void UpdatePositionUI()
@@ -2625,7 +2620,7 @@ namespace Kinovea.ScreenManager
 			if (m_ActiveTool == m_PointerTool)
 			{
 				SetCursor(m_PointerTool.GetCursor(1));
-				m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, m_PrefManager.DefaultFading.Enabled);
+				m_PointerTool.OnMouseDown(m_FrameServer.Metadata, m_iActiveKeyFrameIndex, m_DescaledMouse, m_iCurrentPosition, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
 			}
 			else if (m_ActiveTool == ToolManager.Chrono)
 			{
@@ -2815,7 +2810,7 @@ namespace Kinovea.ScreenManager
                 popMenu.Items.Add(mnuConfigureDrawing);
             }
             
-            if(m_PrefManager.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
+            if(PreferencesManager.PlayerPreferences.DefaultFading.Enabled && ((drawing.Caps & DrawingCapabilities.Fading) == DrawingCapabilities.Fading))
             {
                 popMenu.Items.Add(mnuConfigureFading);
             }
@@ -2838,7 +2833,7 @@ namespace Kinovea.ScreenManager
             
             if(drawing.InfosFading != null)
             {
-                bool gotoVisible = (m_PrefManager.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition));
+                bool gotoVisible = (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && (drawing.InfosFading.ReferenceTimestamp != m_iCurrentPosition));
                 if(gotoVisible)
                 {
                     popMenu.Items.Add(mnuGotoKeyframe);
@@ -3266,7 +3261,7 @@ namespace Kinovea.ScreenManager
                 g.DrawImage(m_SyncMergeImage, rSyncDst, 0, 0, m_SyncMergeImage.Width, m_SyncMergeImage.Height, GraphicsUnit.Pixel, m_SyncMergeImgAttr);
 			}
 			
-			if ((m_bIsCurrentlyPlaying && m_PrefManager.DrawOnPlay) || !m_bIsCurrentlyPlaying)
+			if ((m_bIsCurrentlyPlaying && PreferencesManager.PlayerPreferences.DrawOnPlay) || !m_bIsCurrentlyPlaying)
 			{
                 FlushDrawingsOnGraphics(g, m_FrameServer.CoordinateSystem, _iKeyFrameIndex, _iPosition);
 				FlushMagnifierOnGraphics(_sourceImage, g, m_FrameServer.CoordinateSystem);
@@ -3286,7 +3281,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// 2. Drawings attached to key images.
-			if (m_PrefManager.DefaultFading.Enabled)
+			if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
 			{
 				// If fading is on, we ask all drawings to draw themselves with their respective
 				// fading factor for this position.
@@ -3494,7 +3489,7 @@ namespace Kinovea.ScreenManager
 				KeyframeBox tb = pnlThumbnails.Controls[i] as KeyframeBox;
 				if(tb != null)
 				{
-					m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, m_PrefManager.TimeCodeFormat, false);
+					m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
 					
 					// Enable thumbs that are within Working Zone, grey out others.
 					if (m_FrameServer.Metadata[i].Position >= m_iSelStart && m_FrameServer.Metadata[i].Position <= m_iSelEnd)
@@ -3601,7 +3596,7 @@ namespace Kinovea.ScreenManager
 			// Public because called from CommandAddKeyframe.Execute()
 			// Title becomes the current timecode. (relative to sel start or sel minimum ?)
 			
-			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, m_PrefManager.TimeCodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
+			Keyframe kf = new Keyframe(_iPosition, TimeStampsToTimecode(_iPosition - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, m_bSynched), m_FrameServer.CurrentImage, m_FrameServer.Metadata);
 			
 			if (_iPosition != m_iCurrentPosition)
 			{
@@ -4459,7 +4454,7 @@ namespace Kinovea.ScreenManager
 				if(InteractiveFiltering)
 					dlgSave.FileName = Path.GetFileNameWithoutExtension(m_FrameServer.VideoReader.FilePath);
 				else
-					dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, m_PrefManager.TimeCodeFormat);
+					dlgSave.FileName = BuildFilename(m_FrameServer.VideoReader.FilePath, m_iCurrentPosition, PreferencesManager.PlayerPreferences.TimecodeFormat);
 				
 				if (dlgSave.ShowDialog() == DialogResult.OK)
 				{
@@ -4523,12 +4518,12 @@ namespace Kinovea.ScreenManager
 			foreach(VideoFrame vf in frames)
             {
                 int iKeyFrameIndex = -1;
-                if(!m_PrefManager.DefaultFading.Enabled)
+                if(!PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
                     iKeyFrameIndex = GetKeyframeIndex(vf.Timestamp);
 
                 string fileName = string.Format("{0}\\{1}{2}",
                     Path.GetDirectoryName(_filepath), 
-                    BuildFilename(_filepath, vf.Timestamp, m_PrefManager.TimeCodeFormat), 
+                    BuildFilename(_filepath, vf.Timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat), 
                     Path.GetExtension(_filepath));
 
                 
@@ -4714,16 +4709,16 @@ namespace Kinovea.ScreenManager
 			
 			return output;
 		}
-		private string BuildFilename(string _FilePath, long _position, TimeCodeFormat _timeCodeFormat)
+		private string BuildFilename(string _FilePath, long _position, TimecodeFormat _timeCodeFormat)
 		{
 			//-------------------------------------------------------
 			// Build a file name, including extension
 			// inserting the current timecode in the given file name.
 			//-------------------------------------------------------
 
-			TimeCodeFormat tcf;
-			if(_timeCodeFormat == TimeCodeFormat.TimeAndFrames)
-				tcf = TimeCodeFormat.ClassicTime;
+			TimecodeFormat tcf;
+			if(_timeCodeFormat == TimecodeFormat.TimeAndFrames)
+				tcf = TimecodeFormat.ClassicTime;
 			else
 				tcf = _timeCodeFormat;
 			
@@ -4733,10 +4728,10 @@ namespace Kinovea.ScreenManager
 
 			switch (tcf)
 			{
-				case TimeCodeFormat.Frames:
-				case TimeCodeFormat.Milliseconds:
-				case TimeCodeFormat.TenThousandthOfHours:
-				case TimeCodeFormat.HundredthOfMinutes:
+				case TimecodeFormat.Frames:
+				case TimecodeFormat.Milliseconds:
+				case TimecodeFormat.TenThousandthOfHours:
+				case TimecodeFormat.HundredthOfMinutes:
 					
 					int iZerosToPad = maxSuffix.Length - suffix.Length;
 					for (int i = 0; i < iZerosToPad; i++)

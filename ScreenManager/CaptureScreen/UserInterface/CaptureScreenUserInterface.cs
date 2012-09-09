@@ -64,7 +64,6 @@ namespace Kinovea.ScreenManager
 		private FrameServerCapture m_FrameServer;
 
 		// General
-		private PreferencesManager m_PrefManager = PreferencesManager.Instance();
 		private bool m_bTryingToConnect;
 		private int m_iDelay;
 		// Image
@@ -380,7 +379,7 @@ namespace Kinovea.ScreenManager
 			// This screen is about to be closed.
 			tmrCaptureDeviceDetector.Stop();
 			tmrCaptureDeviceDetector.Dispose();
-			m_PrefManager.Export();
+			PreferencesManager.Save();
 		}
 		#endregion
 		
@@ -575,8 +574,8 @@ namespace Kinovea.ScreenManager
 			m_LastSavedVideo = m_FilenameHelper.InitVideo();
 			tbImageFilename.Text = m_LastSavedImage;
 			tbVideoFilename.Text = m_LastSavedVideo;
-			tbImageFilename.Enabled = !m_PrefManager.CaptureUsePattern;
-			tbVideoFilename.Enabled = !m_PrefManager.CaptureUsePattern;
+			tbImageFilename.Enabled = !PreferencesManager.CapturePreferences.CaptureUsePattern;
+			tbVideoFilename.Enabled = !PreferencesManager.CapturePreferences.CaptureUsePattern;
 		}
 		private void UpdateFilenameLabel()
 		{
@@ -1049,7 +1048,7 @@ namespace Kinovea.ScreenManager
 			
 				// Show the grabbing hand cursor.
 				SetCursor(m_PointerTool.GetCursor(1));
-				bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, 0, m_DescaledMouse, 0, m_PrefManager.DefaultFading.Enabled);
+				bDrawingHit = m_PointerTool.OnMouseDown(m_FrameServer.Metadata, 0, m_DescaledMouse, 0, PreferencesManager.PlayerPreferences.DefaultFading.Enabled);
 			}
 			else
 			{
@@ -1770,15 +1769,15 @@ namespace Kinovea.ScreenManager
 				{
 					ScreenManagerKernel.AlertInvalidFileName();
 				}
-				else if(Directory.Exists(m_PrefManager.CaptureImageDirectory))
+				else if(Directory.Exists(PreferencesManager.CapturePreferences.ImageDirectory))
 				{
 					// In the meantime the other screen could have make a snapshot too,
 					// which would have updated the last saved file name in the global prefs.
 					// However we keep using the name of the last file saved in this specific screen to keep them independant.
 					// for ex. the user might be saving to "Front - 4" on the left, and to "Side - 7" on the right.
 					// This doesn't apply if we are using a pattern though.
-					string filename = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitImage() : tbImageFilename.Text;
-					string filepath = m_PrefManager.CaptureImageDirectory + "\\" + filename + m_PrefManager.GetImageFormat();
+					string filename = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitImage() : tbImageFilename.Text;
+					string filepath = PreferencesManager.CapturePreferences.ImageDirectory + "\\" + filename + m_FilenameHelper.GetImageFileExtension();
 					
 					// Check if file already exists.
 					if(OverwriteOrCreateFile(filepath))
@@ -1788,7 +1787,7 @@ namespace Kinovea.ScreenManager
 						ImageHelper.Save(filepath, outputImage);
 						outputImage.Dispose();
 						
-						if(m_PrefManager.CaptureUsePattern)
+						if(PreferencesManager.CapturePreferences.CaptureUsePattern)
 						{
 							m_FilenameHelper.AutoIncrement(true);
 							m_ScreenUIHandler.CaptureScreenUI_FileSaved();
@@ -1797,11 +1796,11 @@ namespace Kinovea.ScreenManager
 						// Keep track of the last successful save.
 						// Each screen must keep its own independant history.
 						m_LastSavedImage = filename;
-						m_PrefManager.CaptureImageFile = filename;
-						m_PrefManager.Export();
+						PreferencesManager.CapturePreferences.ImageFile = filename;
+						PreferencesManager.Save();
 						
 						// Update the filename for the next snapshot.
-						tbImageFilename.Text = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitImage() : m_FilenameHelper.Next(m_LastSavedImage);
+						tbImageFilename.Text = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitImage() : m_FilenameHelper.Next(m_LastSavedImage);
 						
 						ToastImageSaved();
 					}
@@ -1819,11 +1818,11 @@ namespace Kinovea.ScreenManager
 					EnableVideoFileEdit(true);
 					
 					// Keep track of the last successful save.
-					m_PrefManager.CaptureVideoFile = m_LastSavedVideo;
-					m_PrefManager.Export();
+					PreferencesManager.CapturePreferences.VideoFile = m_LastSavedVideo;
+					PreferencesManager.Save();
 					
 					// update file name.
-					tbVideoFilename.Text = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitVideo() : m_FilenameHelper.Next(m_LastSavedVideo);
+					tbVideoFilename.Text = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitVideo() : m_FilenameHelper.Next(m_LastSavedVideo);
 					
 					DisplayAsRecording(false);
 				}
@@ -1836,15 +1835,15 @@ namespace Kinovea.ScreenManager
 					{
 						ScreenManagerKernel.AlertInvalidFileName();	
 					}
-					else if(Directory.Exists(m_PrefManager.CaptureVideoDirectory))
+					else if(Directory.Exists(PreferencesManager.CapturePreferences.VideoDirectory))
 					{
-						string filename = m_PrefManager.CaptureUsePattern ? m_FilenameHelper.InitVideo() : tbVideoFilename.Text;
-						string filepath = m_PrefManager.CaptureVideoDirectory + "\\" + filename + m_PrefManager.GetVideoFormat();
+						string filename = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitVideo() : tbVideoFilename.Text;
+						string filepath = PreferencesManager.CapturePreferences.VideoDirectory + "\\" + filename + m_FilenameHelper.GetVideoFileExtension();
 						
 						// Check if file already exists.
 						if(OverwriteOrCreateFile(filepath))
 						{
-							if(m_PrefManager.CaptureUsePattern)
+							if(PreferencesManager.CapturePreferences.CaptureUsePattern)
 							{
 								m_FilenameHelper.AutoIncrement(false);
 								m_ScreenUIHandler.CaptureScreenUI_FileSaved();
@@ -1889,7 +1888,7 @@ namespace Kinovea.ScreenManager
         private void EnableVideoFileEdit(bool _bEnable)
         {
         	lblVideoFile.Enabled = _bEnable;
-        	tbVideoFilename.Enabled = _bEnable && !m_PrefManager.CaptureUsePattern;
+        	tbVideoFilename.Enabled = _bEnable && !PreferencesManager.CapturePreferences.CaptureUsePattern;
 			btnSaveVideoLocation.Enabled = _bEnable;        	
         }
         private void TextBoxes_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1944,18 +1943,18 @@ namespace Kinovea.ScreenManager
         }
         private void BtnSaveImageLocationClick(object sender, EventArgs e)
         {
-            OpenInExplorer(m_PrefManager.CaptureImageDirectory);
+            OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
         }
         private void BtnSaveVideoLocationClick(object sender, EventArgs e)
         {
-            OpenInExplorer(m_PrefManager.CaptureVideoDirectory);
+            OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
         }
         private void OpenInExplorer(string path)
         {
             if (!Directory.Exists(path))
                 return;
 
-            string arg = "\"" + m_PrefManager.CaptureVideoDirectory +"\"";
+            string arg = "\"" + PreferencesManager.CapturePreferences.VideoDirectory +"\"";
             System.Diagnostics.Process.Start("explorer.exe", arg);
         }
         #endregion

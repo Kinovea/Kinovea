@@ -316,10 +316,8 @@ namespace Kinovea.ScreenManager
 
         private void SaveFileToHistory(string _FilePath)
         {
-            // Enregistrer le nom du fichier dans l'historique.
-            PreferencesManager pm = PreferencesManager.Instance();
-            pm.HistoryAdd(_FilePath);
-            pm.OrganizeHistoryMenu();
+            PreferencesManager.FileExplorerPreferences.AddRecentFile(_FilePath);
+            PreferencesManager.Save();
         }
 
         public void Unexecute()

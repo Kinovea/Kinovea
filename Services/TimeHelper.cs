@@ -112,24 +112,24 @@ namespace Kinovea.Services
 			return timecode;
 		}
 	
-		public static TimeCodeType GetTimecodeType(TimeCodeFormat _tcf)
+		public static TimecodeType GetTimecodeType(TimecodeFormat _tcf)
 		{
-			TimeCodeType tct = TimeCodeType.String;
+			TimecodeType tct = TimecodeType.String;
 			
 			switch(_tcf)
 			{
-				case TimeCodeFormat.Frames:
-				case TimeCodeFormat.Milliseconds:	
-				case TimeCodeFormat.HundredthOfMinutes:
-				case TimeCodeFormat.TenThousandthOfHours:
-				case TimeCodeFormat.Timestamps:
-					tct = TimeCodeType.Number;
+				case TimecodeFormat.Frames:
+				case TimecodeFormat.Milliseconds:	
+				case TimecodeFormat.HundredthOfMinutes:
+				case TimecodeFormat.TenThousandthOfHours:
+				case TimecodeFormat.Timestamps:
+					tct = TimecodeType.Number;
 					break;
 				
-				case TimeCodeFormat.ClassicTime:
-				case TimeCodeFormat.TimeAndFrames:
+				case TimecodeFormat.ClassicTime:
+				case TimecodeFormat.TimeAndFrames:
 				default:
-					tct = TimeCodeType.String;
+					tct = TimecodeType.String;
 					break;
 			}
 			

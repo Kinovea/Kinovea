@@ -188,7 +188,6 @@ namespace Kinovea.ScreenManager
         private TimeCodeBuilder m_TimeStampsToTimecode;
         private ClosestFrameAction m_ShowClosestFrameCallback;
         
-        private PreferencesManager m_PrefManager = PreferencesManager.Instance();
         private string m_FullPath;
         
         private List<Keyframe> m_Keyframes = new List<Keyframe>();
@@ -514,7 +513,7 @@ namespace Kinovea.ScreenManager
         	// Returns whether the mouse is on a drawing attached to a key image.
             bool bDrawingHit = false;
 
-            if (m_PrefManager.DefaultFading.Enabled && m_Keyframes.Count > 0)
+            if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && m_Keyframes.Count > 0)
             {
                 int[] zOrder = GetKeyframesZOrder(_iTimestamp);
 

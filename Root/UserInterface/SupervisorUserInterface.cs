@@ -38,7 +38,6 @@ namespace Kinovea.Root
         private bool m_bExplorerCollapsed;
         private RootKernel RootKernel;
         private bool isOpening;
-        private PreferencesManager m_PrefManager;
         private bool m_bInitialized;
         #endregion
 
@@ -50,8 +49,7 @@ namespace Kinovea.Root
             m_bInitialized = false;
 
             // Get Explorer values from settings.
-            m_PrefManager = PreferencesManager.Instance();
-            m_iOldSplitterDistance = m_PrefManager.ExplorerSplitterDistance;
+            m_iOldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
             
             // Services offered here
             DelegatesPool dp = DelegatesPool.Instance();
@@ -59,15 +57,12 @@ namespace Kinovea.Root
         }
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
-        	if(CommandLineArgumentManager.Instance().HideExplorer || !m_PrefManager.ExplorerVisible)
-        	{
+        	if(CommandLineArgumentManager.Instance().HideExplorer || !PreferencesManager.GeneralPreferences.ExplorerVisible)
         		CollapseExplorer();
-        	}
         	else
-            {
                 ExpandExplorer(true);
-            }
-            m_bInitialized = true;
+
+        	m_bInitialized = true;
         }
         #endregion
 
@@ -80,9 +75,9 @@ namespace Kinovea.Root
 
             if (m_bInitialized)
             {
-                m_PrefManager.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
-                m_PrefManager.ExplorerVisible = true;
-                m_PrefManager.Export();
+                PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
+                PreferencesManager.GeneralPreferences.ExplorerVisible = true;
+                PreferencesManager.Save();
             }
         }
         public void DoOpenVideoFile()
@@ -149,7 +144,7 @@ namespace Kinovea.Root
             }
             else
             {
-                m_iOldSplitterDistance = m_PrefManager.ExplorerSplitterDistance;
+                m_iOldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
             }
             m_bExplorerCollapsed = true;
             foreach (Control ctrl in splitWorkSpace.Panel1.Controls)
@@ -164,9 +159,9 @@ namespace Kinovea.Root
             splitWorkSpace.Panel1.ResumeLayout();
             splitWorkSpace.Panel2.ResumeLayout();
 
-            m_PrefManager.ExplorerSplitterDistance = m_iOldSplitterDistance;
-            m_PrefManager.ExplorerVisible = false;
-            m_PrefManager.Export();
+            PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = m_iOldSplitterDistance;
+            PreferencesManager.GeneralPreferences.ExplorerVisible = false;
+            PreferencesManager.Save();
         }
         public void ExpandExplorer(bool resetSplitter)
         {
@@ -188,9 +183,9 @@ namespace Kinovea.Root
                 splitWorkSpace.Panel1.ResumeLayout();
                 splitWorkSpace.Panel2.ResumeLayout();
 
-                m_PrefManager.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
-                m_PrefManager.ExplorerVisible = true;
-                m_PrefManager.Export();
+                PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
+                PreferencesManager.GeneralPreferences.ExplorerVisible = true;
+                PreferencesManager.Save();
             }
 
         }

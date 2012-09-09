@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
 			        CalibrationChanged(this, EventArgs.Empty);
 			}
 		}
-		public SpeedUnits CurrentSpeedUnit 
+		public SpeedUnit CurrentSpeedUnit 
 		{
 			get { return m_CurrentSpeedUnit; }
 			set { m_CurrentSpeedUnit = value; }
@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
 		private LengthUnits m_CurrentLengthUnit = LengthUnits.Pixels;
-		private SpeedUnits m_CurrentSpeedUnit = SpeedUnits.PixelsPerFrame;
+		private SpeedUnit m_CurrentSpeedUnit = SpeedUnit.PixelsPerFrame;
 		private double m_fPixelToUnit = 1.0;
 		private Point m_CoordinatesOrigin = new Point(-1,-1);
 		private double m_fFramesPerSeconds = 25;
@@ -95,8 +95,7 @@ namespace Kinovea.ScreenManager
 		#region Constructor
 		public CalibrationHelper()
 		{
-			PreferencesManager prefManager = PreferencesManager.Instance();
-			m_CurrentSpeedUnit = prefManager.SpeedUnit;
+			m_CurrentSpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
 		}
 		#endregion
 		
@@ -235,27 +234,27 @@ namespace Kinovea.ScreenManager
 			return pointText;
 		}
 		
-		public static string GetSpeedAbbreviationFromUnit(SpeedUnits _unit)
+		public static string GetSpeedAbbreviationFromUnit(SpeedUnit _unit)
 		{
 			string abbreviation = "";
 			switch(_unit)
 			{
-				case SpeedUnits.FeetPerSecond:
+				case SpeedUnit.FeetPerSecond:
 					abbreviation = "ft/s";
 					break;
-				case SpeedUnits.MetersPerSecond:
+				case SpeedUnit.MetersPerSecond:
 					abbreviation = "m/s";
 					break;
-				case SpeedUnits.KilometersPerHour:
+				case SpeedUnit.KilometersPerHour:
 					abbreviation = "km/h";
 					break;
-				case SpeedUnits.MilesPerHour:
+				case SpeedUnit.MilesPerHour:
 					abbreviation = "mph";
 					break;
-				case SpeedUnits.Knots:
+				case SpeedUnit.Knots:
 					abbreviation = "kn";
 					break;
-				case SpeedUnits.PixelsPerFrame:
+				case SpeedUnit.PixelsPerFrame:
 				default:
 					abbreviation = "px/f";
 					break;
@@ -275,14 +274,14 @@ namespace Kinovea.ScreenManager
 			}
 			else
 			{
-				SpeedUnits unitToUse = m_CurrentSpeedUnit;
+				SpeedUnit unitToUse = m_CurrentSpeedUnit;
 				
-				if(m_CurrentLengthUnit == LengthUnits.Pixels && m_CurrentSpeedUnit != SpeedUnits.PixelsPerFrame)
+				if(m_CurrentLengthUnit == LengthUnits.Pixels && m_CurrentSpeedUnit != SpeedUnit.PixelsPerFrame)
 				{
 					// The user may have configured a preferred speed unit that we can't use because no 
 					// calibration has been done on the video. In this case we use the px/f speed unit,
 					// but we don't change the user's preference.
-					unitToUse = SpeedUnits.PixelsPerFrame;
+					unitToUse = SpeedUnit.PixelsPerFrame;
 				}
 				
 				speedText = String.Format("{0:0.00} {1}", GetSpeedInUserUnit(p1, p2, frames, unitToUse), GetSpeedAbbreviationFromUnit(unitToUse));
@@ -317,7 +316,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Private methods
-		private double GetSpeedInUserUnit(Point p1, Point p2, int frames, SpeedUnits _SpeedUnit)
+		private double GetSpeedInUserUnit(Point p1, Point p2, int frames, SpeedUnit _SpeedUnit)
 		{
 			// Return the speed in the current user unit.
 			double fUnitSpeed = 0;
@@ -331,7 +330,7 @@ namespace Kinovea.ScreenManager
 			
 			return fUnitSpeed;
 		}
-		private double GetSpeedInUserUnit(double _fPixelLength, int frames, SpeedUnits _SpeedUnit)
+		private double GetSpeedInUserUnit(double _fPixelLength, int frames, SpeedUnit _SpeedUnit)
 		{
 			// Return the speed in the current user unit.
 			
@@ -358,7 +357,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Converters
-		private double ConvertLengthForSpeedUnit(double _fLength, LengthUnits _lengthUnit, SpeedUnits _speedUnits)
+		private double ConvertLengthForSpeedUnit(double _fLength, LengthUnits _lengthUnit, SpeedUnit _speedUnits)
 		{
 			// Convert from one length unit to another.
 			// For example: user calibrated the screen using centimeters and wants a speed in km/h.
@@ -378,27 +377,27 @@ namespace Kinovea.ScreenManager
 				case LengthUnits.Centimeters:
 					switch(_speedUnits)
 					{
-						case SpeedUnits.FeetPerSecond:
+						case SpeedUnit.FeetPerSecond:
 							//  Centimeters to feet.
 							fLength2 = _fLength / 30.48;
 							break;
-						case SpeedUnits.MetersPerSecond:
+						case SpeedUnit.MetersPerSecond:
 							//  Centimeters to meters.
 							fLength2 = _fLength / 100;
 							break;
-						case SpeedUnits.KilometersPerHour:
+						case SpeedUnit.KilometersPerHour:
 							// Centimeters to kilometers.
 							fLength2 = _fLength / 100000;
 							break;
-						case SpeedUnits.MilesPerHour:
+						case SpeedUnit.MilesPerHour:
 							// Centimeters to miles 
 							fLength2 = _fLength / 160934.4;
 							break;
-						case SpeedUnits.Knots:
+						case SpeedUnit.Knots:
 							// Centimeters to nautical miles
 							fLength2 = _fLength / 185200;
 							break;
-						case SpeedUnits.PixelsPerFrame:
+						case SpeedUnit.PixelsPerFrame:
 						default:
 							// Centimeters to Pixels. (?)
 							// User has calibrated the image but now wants the speed in px/f.
@@ -409,27 +408,27 @@ namespace Kinovea.ScreenManager
 				case LengthUnits.Meters:
 					switch(_speedUnits)
 					{
-						case SpeedUnits.FeetPerSecond:
+						case SpeedUnit.FeetPerSecond:
 							// Meters to feet.
 							fLength2 = _fLength / 0.3048;
 							break;
-						case SpeedUnits.MetersPerSecond:
+						case SpeedUnit.MetersPerSecond:
 							// Meters to meters.
 							fLength2 = _fLength;
 							break;
-						case SpeedUnits.KilometersPerHour:
+						case SpeedUnit.KilometersPerHour:
 							// Meters to kilometers.
 							fLength2 = _fLength / 1000;
 							break;
-						case SpeedUnits.MilesPerHour:
+						case SpeedUnit.MilesPerHour:
 							// Meters to miles.
 							fLength2 = _fLength / 1609.344;
 							break;
-						case SpeedUnits.Knots:
+						case SpeedUnit.Knots:
 							// Meters to nautical miles.
 							fLength2 = _fLength / 1852;
 							break;
-						case SpeedUnits.PixelsPerFrame:
+						case SpeedUnit.PixelsPerFrame:
 						default:
 							// Meters to Pixels. (revert)
 							fLength2 = _fLength / m_fPixelToUnit;
@@ -439,27 +438,27 @@ namespace Kinovea.ScreenManager
 				case LengthUnits.Inches:
 					switch(_speedUnits)
 					{
-						case SpeedUnits.FeetPerSecond:
+						case SpeedUnit.FeetPerSecond:
 							// Inches to feet.
 							fLength2 = _fLength / 12;
 							break;
-						case SpeedUnits.MetersPerSecond:
+						case SpeedUnit.MetersPerSecond:
 							// Inches to meters.
 							fLength2 = _fLength / 39.3700787;
 							break;
-						case SpeedUnits.KilometersPerHour:
+						case SpeedUnit.KilometersPerHour:
 							// Inches to kilometers.
 							fLength2 = _fLength / 39370.0787;
 							break;
-						case SpeedUnits.MilesPerHour:
+						case SpeedUnit.MilesPerHour:
 							// Inches to miles.
 							fLength2 = _fLength / 63360;
 							break;
-						case SpeedUnits.Knots:
+						case SpeedUnit.Knots:
 							// Inches to nautical miles.
 							fLength2 = _fLength / 72913.3858;
 							break;
-						case SpeedUnits.PixelsPerFrame:
+						case SpeedUnit.PixelsPerFrame:
 						default:
 							// Inches to Pixels. (revert)
 							fLength2 = _fLength / m_fPixelToUnit;
@@ -469,27 +468,27 @@ namespace Kinovea.ScreenManager
 				case LengthUnits.Feet:
 					switch(_speedUnits)
 					{
-						case SpeedUnits.FeetPerSecond:
+						case SpeedUnit.FeetPerSecond:
 							// Feet to feet.
 							fLength2 = _fLength;
 							break;
-						case SpeedUnits.MetersPerSecond:
+						case SpeedUnit.MetersPerSecond:
 							// Feet to meters.
 							fLength2 = _fLength / 3.2808399;
 							break;
-						case SpeedUnits.KilometersPerHour:
+						case SpeedUnit.KilometersPerHour:
 							// Feet to kilometers.
 							fLength2 = _fLength / 3280.8399;
 							break;
-						case SpeedUnits.MilesPerHour:
+						case SpeedUnit.MilesPerHour:
 							// Feet to miles.
 							fLength2 = _fLength / 5280;
 							break;
-						case SpeedUnits.Knots:
+						case SpeedUnit.Knots:
 							// Feet to nautical miles.
 							fLength2 = _fLength / 6076.11549;
 							break;
-						case SpeedUnits.PixelsPerFrame:
+						case SpeedUnit.PixelsPerFrame:
 						default:
 							// Feet to Pixels. (revert)
 							fLength2 = _fLength / m_fPixelToUnit;
@@ -499,27 +498,27 @@ namespace Kinovea.ScreenManager
 				case LengthUnits.Yards:
 					switch(_speedUnits)
 					{
-						case SpeedUnits.FeetPerSecond:
+						case SpeedUnit.FeetPerSecond:
 							// Yards to feet.
 							fLength2 = _fLength * 3;
 							break;
-						case SpeedUnits.MetersPerSecond:
+						case SpeedUnit.MetersPerSecond:
 							// Yards to meters.
 							fLength2 = _fLength / 1.0936133;
 							break;
-						case SpeedUnits.KilometersPerHour:
+						case SpeedUnit.KilometersPerHour:
 							// Yards to kilometers.
 							fLength2 = _fLength / 1093.6133;
 							break;
-						case SpeedUnits.MilesPerHour:
+						case SpeedUnit.MilesPerHour:
 							// Yards to miles.
 							fLength2 = _fLength / 1760;
 							break;
-						case SpeedUnits.Knots:
+						case SpeedUnit.Knots:
 							// Yards to nautical miles.
 							fLength2 = _fLength / 2025.37183;
 							break;
-						case SpeedUnits.PixelsPerFrame:
+						case SpeedUnit.PixelsPerFrame:
 						default:
 							// Yards to Pixels. (revert)
 							fLength2 = _fLength / m_fPixelToUnit;
@@ -531,7 +530,7 @@ namespace Kinovea.ScreenManager
 				default:
 					// If input length is in pixel, this means the image is not calibrated.
 					// Unless the target speed unit is pixel per frame, we can't compute the speed.
-					if(_speedUnits != SpeedUnits.PixelsPerFrame)
+					if(_speedUnits != SpeedUnit.PixelsPerFrame)
 					{
 						fLength2 = 0;
 						log.Error("Can't compute speed : image is not calibrated and speed is required in real world units.");
@@ -545,7 +544,7 @@ namespace Kinovea.ScreenManager
 			
 			return fLength2;
 		}
-		private double ConvertToSpeedUnit(double _fRawSpeed, int frames, SpeedUnits _speedUnit)
+		private double ConvertToSpeedUnit(double _fRawSpeed, int frames, SpeedUnit _speedUnit)
 		{
 			// We now have the right length unit, but for the total time between the frames. (e.g: km/x frames).
 			// Convert this to real world speed.
@@ -559,18 +558,18 @@ namespace Kinovea.ScreenManager
 			// 2. To required speed
 			switch(_speedUnit)
 			{
-				case SpeedUnits.FeetPerSecond:
-				case SpeedUnits.MetersPerSecond:
+				case SpeedUnit.FeetPerSecond:
+				case SpeedUnit.MetersPerSecond:
 					// To seconds.
 					fPerUserUnit = fPerSecond;
 					break;
-				case SpeedUnits.KilometersPerHour:
-				case SpeedUnits.MilesPerHour:
-				case SpeedUnits.Knots:
+				case SpeedUnit.KilometersPerHour:
+				case SpeedUnit.MilesPerHour:
+				case SpeedUnit.Knots:
 					// To hours.
 					fPerUserUnit = fPerSecond * 3600;
 					break;
-				case SpeedUnits.PixelsPerFrame:
+				case SpeedUnit.PixelsPerFrame:
 				default:
 					// To frames.
 					fPerUserUnit = _fRawSpeed / frames;

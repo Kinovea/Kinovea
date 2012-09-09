@@ -46,11 +46,10 @@ namespace Kinovea.Root
         }
         private void ChangeToCulture(CultureInfo _newCulture)
         {
-            PreferencesManager pm = PreferencesManager.Instance();
-            pm.UICultureName = _newCulture.Name;
-            thread.CurrentUICulture = pm.GetSupportedCulture();
+            PreferencesManager.GeneralPreferences.SetCulture(_newCulture.Name);
+            thread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             kernel.RefreshUICulture();
-            pm.Export();
+            PreferencesManager.Save();
         }
 
     }

@@ -47,7 +47,6 @@ namespace Kinovea.FileBrowser
 		private CShItem m_CurrentShortcutItem;	  // Current item in shortcuts tab.
 		private bool m_bExpanding;                // True if the exptree is currently auto expanding. To avoid reentry.
 		private bool m_bInitializing = true;
-		private PreferencesManager m_PreferencesManager = PreferencesManager.Instance();
 		private ContextMenuStrip  popMenu = new ContextMenuStrip();
 		private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
@@ -79,7 +78,7 @@ namespace Kinovea.FileBrowser
 			
 			// Reload last tab from prefs.
 			// We don't reload the splitters here, because we are not at full size yet and they are anchored.
-			tabControl.SelectedIndex = (int)m_PreferencesManager.ActiveTab;
+			tabControl.SelectedIndex = (int)PreferencesManager.FileExplorerPreferences.ActiveTab;
 			
 			Application.Idle += new EventHandler(this.IdleDetector);
 		}
@@ -113,8 +112,8 @@ namespace Kinovea.FileBrowser
 			m_bInitializing = false;
 			
 			// Now that we are at full size, we can load splitters from prefs.
-			splitExplorerFiles.SplitterDistance = m_PreferencesManager.ExplorerFilesSplitterDistance;
-			splitShortcutsFiles.SplitterDistance = m_PreferencesManager.ShortcutsFilesSplitterDistance;
+			splitExplorerFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance;
+			splitShortcutsFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance;
 			
 			// Load the initial directory.
 			log.Debug("Load initial directory.");
@@ -187,18 +186,11 @@ namespace Kinovea.FileBrowser
 		}		
 		public void ReloadShortcuts()
 		{
-			// Refresh the folder tree with data stored in prefs.
 			ArrayList shortcuts = new ArrayList();
-			List<ShortcutFolder> scuts = m_PreferencesManager.ShortcutFolders;
-			
-			// Sort by last folder name.
-			scuts.Sort();
-			
-			foreach(ShortcutFolder sf in scuts)
-			{
-				if(Directory.Exists(sf.Location))
-					shortcuts.Add(sf.Location);
-			}
+			List<ShortcutFolder> savedShortcuts = PreferencesManager.FileExplorerPreferences.ShortcutFolders;
+			foreach(ShortcutFolder shortcut in savedShortcuts)
+			    if(Directory.Exists(shortcut.Location))
+			        shortcuts.Add(shortcut.Location);
 			
 			etShortcuts.SetShortcuts(shortcuts);
 			etShortcuts.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
@@ -210,15 +202,13 @@ namespace Kinovea.FileBrowser
 		public void Closing()
 		{
 			if(m_CurrentExptreeItem != null)
-			{
-				m_PreferencesManager.LastBrowsedDirectory = m_CurrentExptreeItem.Path;
-			}
+				PreferencesManager.FileExplorerPreferences.LastBrowsedDirectory = m_CurrentExptreeItem.Path;
 			
-			m_PreferencesManager.ExplorerFilesSplitterDistance = splitExplorerFiles.SplitterDistance;
-			m_PreferencesManager.ShortcutsFilesSplitterDistance = splitShortcutsFiles.SplitterDistance;
+			PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance = splitExplorerFiles.SplitterDistance;
+			PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance = splitShortcutsFiles.SplitterDistance;
 			
 			// Flush all prefs not previoulsy flushed.
-			m_PreferencesManager.Export();
+			PreferencesManager.Save();
 		}
 		#endregion
 		
@@ -304,29 +294,27 @@ namespace Kinovea.FileBrowser
 
 			if (fbd.ShowDialog() == DialogResult.OK && fbd.SelectedPath.Length > 0)
 			{
-				// Default the friendly name to the folder name.
 				ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(fbd.SelectedPath), fbd.SelectedPath);
-				m_PreferencesManager.ShortcutFolders.Add(sf);
-				m_PreferencesManager.Export();
+				PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
+				PreferencesManager.Save();
 				ReloadShortcuts();
 			}
 		}
 		private void DeleteSelectedShortcut()
 		{
-			if(m_CurrentShortcutItem != null)
+			if(m_CurrentShortcutItem == null)
+			    return;
+			
+            foreach(ShortcutFolder sf in PreferencesManager.FileExplorerPreferences.ShortcutFolders)
 			{
-				// Find and delete the shortcut.
-				foreach(ShortcutFolder sf in m_PreferencesManager.ShortcutFolders)
-				{
-					if(sf.Location == m_CurrentShortcutItem.Path)
-					{
-						IUndoableCommand cds = new CommandDeleteShortcut(this, sf);
-				        CommandManager cm = CommandManager.Instance();
-				        cm.LaunchUndoableCommand(cds);
-						break;
-					}
-				}	
-			}
+				if(sf.Location != m_CurrentShortcutItem.Path)
+				    continue;
+				
+				IUndoableCommand cds = new CommandDeleteShortcut(this, sf);
+		        CommandManager cm = CommandManager.Instance();
+		        cm.LaunchUndoableCommand(cds);
+				break;
+			}	
 		}
 		#endregion
 		
@@ -365,51 +353,19 @@ namespace Kinovea.FileBrowser
         }
         private void etShortcuts_MouseDown(object sender, MouseEventArgs e)
         {
-        	if(e.Button == MouseButtons.Right)
-			{        		
-				// User must first select a node to add it to shortcuts.
-				// Otherwise we don't have the infos about the item.
-				if(m_CurrentExptreeItem != null && etShortcuts.IsOnSelectedItem(e.Location))
-				{
-					if(!m_CurrentExptreeItem.Path.StartsWith("::"))
-					{
-						// Do we have it already ?
-						bool bIsShortcutAlready = false;
-						foreach(ShortcutFolder sf in m_PreferencesManager.ShortcutFolders)
-						{
-							if(m_CurrentShortcutItem.Path == sf.Location)
-							{
-								bIsShortcutAlready = true;
-								break;
-							}
-						}
-						
-						if(bIsShortcutAlready)
-						{
-							// Cannot add, can delete.
-				        	mnuAddToShortcuts.Visible = false;
-							mnuDeleteShortcut.Visible = true;
-						}
-						else
-						{
-							// Can add, cannot delete.
-							mnuAddToShortcuts.Visible = true;
-							mnuDeleteShortcut.Visible = false;
-							
-						}
-					}
-					else
-					{
-						mnuDeleteShortcut.Visible = false;	
-						mnuAddToShortcuts.Visible = false;
-					}
-				}
-				else
-				{
-					mnuDeleteShortcut.Visible = false;	
-					mnuAddToShortcuts.Visible = false;
-				}
-			}	
+        	if(e.Button != MouseButtons.Right)
+        	    return;
+        	
+        	if(m_CurrentExptreeItem == null || !etShortcuts.IsOnSelectedItem(e.Location) || m_CurrentExptreeItem.Path.StartsWith("::"))
+        	{
+        	    mnuDeleteShortcut.Visible = false;	
+				mnuAddToShortcuts.Visible = false;
+				return;
+        	}
+        	
+        	bool known = PreferencesManager.FileExplorerPreferences.IsShortcutKnown(m_CurrentShortcutItem.Path);
+        	mnuAddToShortcuts.Visible = !known;
+			mnuDeleteShortcut.Visible = known;
         }
         #endregion
 		
@@ -432,7 +388,7 @@ namespace Kinovea.FileBrowser
 		{
 			// Active tab changed.
 			// We don't save to file now as this is not a critical data to loose.
-			m_PreferencesManager.ActiveTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+			PreferencesManager.FileExplorerPreferences.ActiveTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
 		}
 		private void _tabControl_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -558,8 +514,8 @@ namespace Kinovea.FileBrowser
 				if(!itemToAdd.Path.StartsWith("::"))
 				{
 					ShortcutFolder sf = new ShortcutFolder(Path.GetFileName(itemToAdd.Path), itemToAdd.Path);
-					m_PreferencesManager.ShortcutFolders.Add(sf);
-					m_PreferencesManager.Export();
+					PreferencesManager.FileExplorerPreferences.AddShortcut(sf);
+					PreferencesManager.Save();
 					ReloadShortcuts();
 				}
 			}						

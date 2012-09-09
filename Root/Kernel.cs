@@ -98,6 +98,7 @@ namespace Kinovea.Root
             VideoTypeManager.LoadVideoReaders();
             BuildSubTree();
             MainWindow = new KinoveaMainWindow(this);
+            NotificationCenter.RecentFilesChanged += RecentFilesChanged;
             
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(MainWindow.menuStrip);
@@ -109,6 +110,8 @@ namespace Kinovea.Root
             DelegatesPool dp = DelegatesPool.Instance();
             dp.UpdateStatusBar = DoUpdateStatusBar;
             dp.MakeTopMost = DoMakeTopMost;
+            
+            
         }
         #endregion
 
@@ -117,7 +120,7 @@ namespace Kinovea.Root
         {
             // Prepare the right strings before we open the curtains.
             log.Debug("Setting current ui culture.");
-            Thread.CurrentThread.CurrentUICulture = PreferencesManager.Instance().GetSupportedCulture();
+            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             RefreshUICulture();
             CheckLanguageMenu();
             CheckTimecodeMenu();
@@ -186,9 +189,6 @@ namespace Kinovea.Root
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
-            PreferencesManager pm = PreferencesManager.Instance();
-            pm.OrganizeHistoryMenu();
-                        
             CommandManager cm = CommandManager.Instance();
             cm.UpdateMenus();
 
@@ -252,30 +252,10 @@ namespace Kinovea.Root
             mnuOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
             mnuHistory.Image = Properties.Resources.time;
             
-            int maxHistory = 10;
-            for(int i = 0; i<maxHistory;i++)
-            {
-                ToolStripMenuItem mnu = new ToolStripMenuItem();
-                mnu.MergeAction = MergeAction.Append;
-                mnu.Visible = false;
-                mnu.Tag = i;
-                mnu.Click += mnuHistoryVideo_OnClick;
-                mnuHistory.DropDownItems.Add(mnu);
-            }
-            
-            ToolStripSeparator mnuSepHistory = new ToolStripSeparator();
-            mnuSepHistory.Visible = false;
-            mnuHistory.DropDownItems.Add(mnuSepHistory);
-
+            NotificationCenter.RaiseRecentFilesChanged(this);
             mnuHistoryReset.Image = Properties.Resources.bin_empty;
-            mnuHistoryReset.MergeAction = MergeAction.Append;
-            mnuHistoryReset.Visible = false;
-            mnuHistoryReset.Click += new EventHandler(mnuHistoryResetOnClick);
-            mnuHistory.DropDownItems.Add(mnuHistoryReset);
+            mnuHistoryReset.Click += mnuHistoryResetOnClick;
             
-            PreferencesManager pm = PreferencesManager.Instance();
-            pm.RegisterHistoryMenu(mnuHistory);
-
             mnuQuit.Image = Properties.Resources.quit;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
@@ -456,21 +436,10 @@ namespace Kinovea.Root
                 OpenFileFromPath(filePath);
             }
         }
-        private void mnuHistoryVideo_OnClick(object sender, EventArgs e)
-        {
-            ToolStripMenuItem mnu = sender as ToolStripMenuItem;
-            if(mnu != null)
-            {
-                PreferencesManager pm = PreferencesManager.Instance();
-                if(mnu.Tag is int)
-                    OpenFileFromPath(pm.GetFilePathAtIndex((int)mnu.Tag));
-            }
-        }
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
         {
-            PreferencesManager pm = PreferencesManager.Instance();
-            pm.HistoryReset();
-            pm.OrganizeHistoryMenu();
+            PreferencesManager.FileExplorerPreferences.ResetRecentFiles();
+            PreferencesManager.Save();
         }
         private void menuQuitOnClick(object sender, EventArgs e)
         {
@@ -544,7 +513,7 @@ namespace Kinovea.Root
             foreach(ToolStripMenuItem mnuLang in m_LanguageMenus.Values)
                 mnuLang.Checked = false;
             
-            CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();            
+            CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();            
             string cultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
             
             try
@@ -575,9 +544,8 @@ namespace Kinovea.Root
             }
 
             // Refresh Preferences
-            PreferencesManager pm = PreferencesManager.Instance();
             log.Debug("Setting current ui culture.");
-            Thread.CurrentThread.CurrentUICulture = pm.GetSupportedCulture();
+            Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             RefreshUICulture();
         }
         private void CheckTimecodeMenu()
@@ -587,20 +555,20 @@ namespace Kinovea.Root
         	mnuTimecodeMilliseconds.Checked = false;
         	mnuTimecodeTimeAndFrames.Checked = false;
         	
-            TimeCodeFormat tf = PreferencesManager.Instance().TimeCodeFormat;
+            TimecodeFormat tf = PreferencesManager.PlayerPreferences.TimecodeFormat;
             
             switch (tf)
             {
-                case TimeCodeFormat.ClassicTime:
+                case TimecodeFormat.ClassicTime:
                     mnuTimecodeClassic.Checked = true;
                     break;
-                case TimeCodeFormat.Frames:
+                case TimecodeFormat.Frames:
                     mnuTimecodeFrames.Checked = true;
                     break;
-                case TimeCodeFormat.Milliseconds:
+                case TimecodeFormat.Milliseconds:
                     mnuTimecodeMilliseconds.Checked = true;
                     break;
-                case TimeCodeFormat.TimeAndFrames:
+                case TimecodeFormat.TimeAndFrames:
                     mnuTimecodeTimeAndFrames.Checked = true;
                     break; 
                 default:
@@ -609,27 +577,25 @@ namespace Kinovea.Root
         }
         private void mnuTimecodeClassic_OnClick(object sender, EventArgs e)
         {
-            SwitchTimecode(TimeCodeFormat.ClassicTime);
+            SwitchTimecode(TimecodeFormat.ClassicTime);
         }
         private void mnuTimecodeFrames_OnClick(object sender, EventArgs e)
         {
-            SwitchTimecode(TimeCodeFormat.Frames);
+            SwitchTimecode(TimecodeFormat.Frames);
         }
         private void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
         {
-            SwitchTimecode(TimeCodeFormat.Milliseconds);
+            SwitchTimecode(TimecodeFormat.Milliseconds);
         }
         private void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
         {
-            SwitchTimecode(TimeCodeFormat.TimeAndFrames);
+            SwitchTimecode(TimecodeFormat.TimeAndFrames);
         }
-        private void SwitchTimecode(TimeCodeFormat _timecode)
+        private void SwitchTimecode(TimecodeFormat _timecode)
         {
-        	// Todo: turn this into a command ?
-        	PreferencesManager pm = PreferencesManager.Instance();
-            pm.TimeCodeFormat = _timecode;
+            PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
-            pm.Export();	
+            PreferencesManager.Save();	
         }
         #endregion
 
@@ -681,6 +647,45 @@ namespace Kinovea.Root
         #endregion
 
         #endregion        
+        
+        private void RecentFilesChanged(object sender, EventArgs e)
+        {
+            List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
+            int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
+            
+            mnuHistory.DropDownItems.Clear();
+            
+            if(recentFiles == null)
+            {
+                mnuHistory.Enabled = false;
+                return;
+            }
+            
+            int added = 0;
+            int current = 0;
+            while(added < maxRecentFiles && current < recentFiles.Count)
+            {
+                string file = recentFiles[current++];
+
+                if(string.IsNullOrEmpty(file) || !File.Exists(file))
+                    continue;
+                
+                ToolStripMenuItem menu = new ToolStripMenuItem();
+                menu.Text = Path.GetFileName(file);
+                menu.Click += (s, evt) => OpenFileFromPath(file);
+                
+                mnuHistory.DropDownItems.Add(menu);
+                added++;
+            }
+            
+            if(added > 0)
+            {
+                mnuHistory.DropDownItems.Add(new ToolStripSeparator());
+                mnuHistory.DropDownItems.Add(mnuHistoryReset);
+            }
+            
+            mnuHistory.Enabled = added > 0;
+        }
         
         #region Lower Level Methods
         private void OpenFileFromPath(string _FilePath)
@@ -738,7 +743,7 @@ namespace Kinovea.Root
                 bool bEnglishFound = false;
                 int i = 0;
 
-                CultureInfo ci = PreferencesManager.Instance().GetSupportedCulture();
+                CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
                 string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
                                 
                 // Look for a matching locale, or English.

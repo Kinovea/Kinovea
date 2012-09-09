@@ -52,18 +52,8 @@ namespace Kinovea.FileBrowser
 
         public void Execute()
         {
-        	PreferencesManager prefManager = PreferencesManager.Instance();
-        	
-        	// Parse the list and remove any match.
-        	for(int i=prefManager.ShortcutFolders.Count-1;i>=0;i--)
-			{
-        		if(prefManager.ShortcutFolders[i].Location == m_shortcut.Location)
-				{
-        			prefManager.ShortcutFolders.RemoveAt(i);
-        		}
-        	}
-        	
-        	prefManager.Export();
+            PreferencesManager.FileExplorerPreferences.RemoveShortcut(m_shortcut);
+            PreferencesManager.Save();
         	
         	// Refresh the list.
 			m_FbUi.ReloadShortcuts();
@@ -72,26 +62,9 @@ namespace Kinovea.FileBrowser
         public void Unexecute()
         {
         	// Add the shortcut back to the list (if it hasn't been added again in the meantime).
-        	PreferencesManager prefManager = PreferencesManager.Instance();
-        	
-			bool bIsShortcutAlready = false;
-			foreach(ShortcutFolder sf in prefManager.ShortcutFolders)
-			{
-				if(sf.Location == m_shortcut.Location)
-				{
-					bIsShortcutAlready = true;
-					break;
-				}
-			}
-        	
-			if(!bIsShortcutAlready)
-			{
-				prefManager.ShortcutFolders.Add(m_shortcut);
-				prefManager.Export();
-				
-				// Refresh the list.
-				m_FbUi.ReloadShortcuts();
-			}
+        	PreferencesManager.FileExplorerPreferences.AddShortcut(m_shortcut);
+        	PreferencesManager.Save();
+        	m_FbUi.ReloadShortcuts();
         }
     }
 }

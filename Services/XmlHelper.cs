@@ -61,6 +61,21 @@ namespace Kinovea.Services
 
             return point;
         }
+        public static Size ParseSize(string sizeString)
+        {
+            Size size = Size.Empty;
+            try
+            {
+                string[] a = sizeString.Split(new char[] {';'});
+                size = new Size(int.Parse(a[0]), int.Parse(a[1]));
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing Size value. ({0}).", sizeString));
+            }
+
+            return size;
+        }
         public static List<int> ParseIntList(string _intList)
         {
             List<int> l = new List<int>();

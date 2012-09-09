@@ -54,20 +54,16 @@ namespace Kinovea.Root
 		#region Members
 		private string m_UICultureName;
 		private int m_iFilesToSave;
-        private TimeCodeFormat m_TimeCodeFormat;
+        private TimecodeFormat m_TimeCodeFormat;
         private ImageAspectRatio m_ImageAspectRatio;
-		private SpeedUnits m_SpeedUnit;
-        
-        private PreferencesManager m_prefManager;
-		#endregion
+		private SpeedUnit m_SpeedUnit;
+        #endregion
 		
 		#region Construction & Initialization
 		public PreferencePanelGeneral()
 		{
 			InitializeComponent();
 			this.BackColor = Color.White;
-			
-			m_prefManager = PreferencesManager.Instance();
 			
 			m_Description = RootLang.dlgPreferences_ButtonGeneral;
 			m_Icon = Resources.pref_general;
@@ -77,12 +73,12 @@ namespace Kinovea.Root
 		}
 		private void ImportPreferences()
         {
-            CultureInfo ci = m_prefManager.GetSupportedCulture();
+            CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             m_UICultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
-            m_iFilesToSave = m_prefManager.HistoryCount;
-            m_TimeCodeFormat = m_prefManager.TimeCodeFormat;
-            m_ImageAspectRatio = m_prefManager.AspectRatio;       
-			m_SpeedUnit = m_prefManager.SpeedUnit;
+            m_iFilesToSave = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
+            m_TimeCodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
+            m_ImageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;       
+			m_SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
         }
 		private void InitPage()
 		{
@@ -109,10 +105,10 @@ namespace Kinovea.Root
             
             // Combo Speed units (MUST be filled in the order of the enum)
             lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.MetersPerSecond)));
-			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.KilometersPerHour)));
-			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.FeetPerSecond)));
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnits.MilesPerHour)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.MetersPerSecond)));
+			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.KilometersPerHour)));
+			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.FeetPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.MilesPerHour)));
             //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
             	
 	        // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
@@ -198,7 +194,7 @@ namespace Kinovea.Root
         private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
             // the combo box items have been filled in the order of the enum.
-            m_TimeCodeFormat = (TimeCodeFormat)cmbTimeCodeFormat.SelectedIndex;
+            m_TimeCodeFormat = (TimecodeFormat)cmbTimeCodeFormat.SelectedIndex;
         }
         private void cmbImageAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -208,17 +204,17 @@ namespace Kinovea.Root
 		private void cmbSpeedUnit_SelectedIndexChanged(object sender, EventArgs e)
         {
             // the combo box items have been filled in the order of the enum.
-            m_SpeedUnit = (SpeedUnits)cmbSpeedUnit.SelectedIndex;
+            m_SpeedUnit = (SpeedUnit)cmbSpeedUnit.SelectedIndex;
         }
 		#endregion
 		
 		public void CommitChanges()
 		{
-			m_prefManager.UICultureName = m_UICultureName;
-			m_prefManager.HistoryCount = m_iFilesToSave;
-            m_prefManager.TimeCodeFormat = m_TimeCodeFormat;
-            m_prefManager.AspectRatio = m_ImageAspectRatio;
-			m_prefManager.SpeedUnit = m_SpeedUnit;
+		    PreferencesManager.GeneralPreferences.SetCulture(m_UICultureName);
+			PreferencesManager.FileExplorerPreferences.MaxRecentFiles = m_iFilesToSave;
+            PreferencesManager.PlayerPreferences.TimecodeFormat = m_TimeCodeFormat;
+            PreferencesManager.PlayerPreferences.AspectRatio = m_ImageAspectRatio;
+			PreferencesManager.PlayerPreferences.SpeedUnit = m_SpeedUnit;
 		}
 	}
 }

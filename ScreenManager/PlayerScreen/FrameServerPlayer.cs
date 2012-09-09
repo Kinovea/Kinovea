@@ -92,15 +92,12 @@ namespace Kinovea.ScreenManager
 		#region Public
 		public OpenVideoResult Load(string _FilePath)
 		{
-			// Set global settings.
-			PreferencesManager pm = PreferencesManager.Instance();
-			
 			// Instanciate appropriate video reader class depending on extension.
 			string extension = Path.GetExtension(_FilePath);
 			m_VideoReader = VideoTypeManager.GetVideoReader(extension);
 			if(m_VideoReader != null)
 			{
-			    m_VideoReader.Options = new VideoOptions(pm.AspectRatio, pm.DeinterlaceByDefault);
+			    m_VideoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
                 return m_VideoReader.Open(_FilePath);
 			}
 			else
