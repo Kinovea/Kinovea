@@ -22,13 +22,14 @@ using System;
 
 namespace Kinovea.Services
 {
-    public enum SpeedUnits
-	{
-		MetersPerSecond,
-		KilometersPerHour,
-		FeetPerSecond,
-		MilesPerHour,
-		Knots,
-		PixelsPerFrame
-	}
+    public static class NotificationCenter
+    {
+        public static EventHandler RecentFilesChanged;
+        
+        public static void RaiseRecentFilesChanged(object sender)
+        {
+            if(RecentFilesChanged != null)
+                RecentFilesChanged(sender, EventArgs.Empty);
+        }
+    }
 }

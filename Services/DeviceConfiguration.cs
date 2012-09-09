@@ -26,70 +26,65 @@ namespace Kinovea.Services
 {
     public class DeviceConfiguration
 	{
-		public string id;
-		public DeviceCapability cap;
-		
-		public void ToXml(XmlTextWriter _writer)
+		public string ID
 		{
-			_writer.WriteStartElement("DeviceConfiguration");
-			
-			_writer.WriteStartElement("Identification");
-        	_writer.WriteString(id);
-        	_writer.WriteEndElement();
-        	
-        	_writer.WriteStartElement("Size");
-        	_writer.WriteString(cap.FrameSize.Width.ToString() + ";" + cap.FrameSize.Height.ToString());
-        	_writer.WriteEndElement();
-        	
-        	_writer.WriteStartElement("Framerate");
-        	_writer.WriteString(cap.Framerate.ToString());
-        	_writer.WriteEndElement();
-        	
-        	_writer.WriteEndElement();
+		    get { return id;}
 		}
-		public static DeviceConfiguration FromXml(XmlReader _xmlReader)
+		public DeviceCapability Capability
 		{
-			string id = "";
-			Size frameSize = Size.Empty;
-			int frameRate = 0;
-			
-			while (_xmlReader.Read())
+		    get { return capability; }
+		}
+		
+		private string id;
+		private DeviceCapability capability;
+		
+		public DeviceConfiguration(string id, DeviceCapability capability)
+		{
+		    this.id = id;
+		    this.capability = capability;
+		}
+		
+		public void UpdateCapability(DeviceCapability capability)
+		{
+		    this.capability = new DeviceCapability(capability.FrameSize, capability.Framerate);
+		}
+		
+		public void WriteXML(XmlWriter writer)
+		{
+		    writer.WriteElementString("Identification", ID);
+		    writer.WriteElementString("Size", string.Format("{0};{1}", Capability.FrameSize.Width, Capability.FrameSize.Height));
+		    writer.WriteElementString("Framerate", Capability.Framerate.ToString());
+		}
+		
+		public DeviceConfiguration(XmlReader reader)
+		{
+		    Size size = Size.Empty;
+		    int framerate = 0;
+		    
+		    reader.ReadStartElement();
+		    
+		    while(reader.NodeType == XmlNodeType.Element)
             {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "Identification")
-                    {
-                        id = _xmlReader.ReadString();
-                    }
-                    else if(_xmlReader.Name == "Size")
-                    {
-                    	Point p = XmlHelper.ParsePoint(_xmlReader.ReadString());
-                    	frameSize = new Size(p);
-                    }
-                    else if(_xmlReader.Name == "Framerate")
-                    {
-                    	frameRate = int.Parse(_xmlReader.ReadString());
-                    }
+                switch(reader.Name)
+				{
+                    case "Identification":
+                        id = reader.ReadElementContentAsString();
+                        break;
+                    case "Size":
+                        size = XmlHelper.ParseSize(reader.ReadElementContentAsString());
+                        break;
+                    case "Framerate":
+                        framerate = reader.ReadElementContentAsInt();
+                        break;
+                    default:
+                        reader.ReadOuterXml();
+                        break;
                 }
-                else if (_xmlReader.Name == "DeviceConfiguration")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-			}
-			
-			DeviceConfiguration conf = null;
-			if(id.Length > 0)
-			{
-				conf = new DeviceConfiguration();
-				conf.id = id;
-				conf.cap = new DeviceCapability(frameSize, frameRate);
-			}
-			
-			return conf;
+            }
+		    
+		    reader.ReadEndElement();
+		    
+		    capability = new DeviceCapability(size, framerate);
 		}
 	}
 }

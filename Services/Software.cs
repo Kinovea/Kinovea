@@ -70,9 +70,9 @@ namespace Kinovea.Services
         public static void LogInfo()
         {
              if(Experimental)
-                log.InfoFormat("{0} version {1}.");
+                 log.InfoFormat("{0} version {1}.", ApplicationName, Version.ToString());
             else
-                log.InfoFormat("{0} version {1} - Experimental release.");
+                log.InfoFormat("{0} version {1} - Experimental release.", ApplicationName, Version.ToString());
             
             log.Info(".NET Framework Version : " + Environment.Version.ToString());
             log.Info("OS Version : " + Environment.OSVersion.ToString());

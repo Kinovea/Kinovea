@@ -52,8 +52,6 @@ namespace Kinovea.Root
         private bool m_bDeinterlaceByDefault;
         private int m_iWorkingZoneSeconds;
         private int m_iWorkingZoneMemory;
-        
-        private PreferencesManager m_prefManager;
 		#endregion
 		
 		#region Construction & Initialization
@@ -61,8 +59,6 @@ namespace Kinovea.Root
 		{
 			InitializeComponent();
 			this.BackColor = Color.White;
-			
-			m_prefManager = PreferencesManager.Instance();
 			
 			m_Description = RootLang.dlgPreferences_ButtonPlayAnalyze;
 			m_Icon = Resources.video;
@@ -72,9 +68,9 @@ namespace Kinovea.Root
 		}
 		private void ImportPreferences()
         {
- 			m_bDeinterlaceByDefault = m_prefManager.DeinterlaceByDefault;
- 			m_iWorkingZoneSeconds = m_prefManager.WorkingZoneSeconds;
- 			m_iWorkingZoneMemory = m_prefManager.WorkingZoneMemory;
+ 			m_bDeinterlaceByDefault = PreferencesManager.PlayerPreferences.DeinterlaceByDefault;
+ 			m_iWorkingZoneSeconds = PreferencesManager.PlayerPreferences.WorkingZoneSeconds;
+ 			m_iWorkingZoneMemory = PreferencesManager.PlayerPreferences.WorkingZoneMemory;
 		}
 		private void InitPage()
 		{
@@ -110,9 +106,9 @@ namespace Kinovea.Root
 		
 		public void CommitChanges()
 		{
-            m_prefManager.DeinterlaceByDefault = m_bDeinterlaceByDefault;
-            m_prefManager.WorkingZoneSeconds = m_iWorkingZoneSeconds;
-            m_prefManager.WorkingZoneMemory = m_iWorkingZoneMemory;
+            PreferencesManager.PlayerPreferences.DeinterlaceByDefault = m_bDeinterlaceByDefault;
+            PreferencesManager.PlayerPreferences.WorkingZoneSeconds = m_iWorkingZoneSeconds;
+            PreferencesManager.PlayerPreferences.WorkingZoneMemory = m_iWorkingZoneMemory;
 		}
 	}
 }

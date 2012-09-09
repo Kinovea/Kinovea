@@ -51,8 +51,6 @@ namespace Kinovea.Root
 		#region Members
         private InfosFading m_DefaultFading;
         private bool m_bDrawOnPlay;
-        
-        private PreferencesManager m_prefManager;
 		#endregion
 		
 		#region Construction & Initialization
@@ -60,8 +58,6 @@ namespace Kinovea.Root
 		{
 			InitializeComponent();
 			this.BackColor = Color.White;
-			
-			m_prefManager = PreferencesManager.Instance();
 			
 			m_Description = RootLang.dlgPreferences_btnDrawings;
 			m_Icon = Resources.drawings;
@@ -71,7 +67,7 @@ namespace Kinovea.Root
 		}
 		private void ImportPreferences()
         {
-			m_bDrawOnPlay = m_prefManager.DrawOnPlay;
+			m_bDrawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
             m_DefaultFading = new InfosFading(0, 0);
 		}
 		private void InitPage()
@@ -85,7 +81,7 @@ namespace Kinovea.Root
 			
 			chkDrawOnPlay.Checked = m_bDrawOnPlay;
 			chkEnablePersistence.Checked = m_DefaultFading.Enabled;
-            trkFading.Maximum = m_prefManager.MaxFading;
+            trkFading.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
             trkFading.Value = Math.Min(m_DefaultFading.FadingFrames, trkFading.Maximum);
             chkAlwaysVisible.Checked = m_DefaultFading.AlwaysVisible;
             EnableDisableFadingOptions();
@@ -129,8 +125,8 @@ namespace Kinovea.Root
 	
 		public void CommitChanges()
 		{
-			m_prefManager.DrawOnPlay = m_bDrawOnPlay;
-			m_prefManager.DefaultFading.FromInfosFading(m_DefaultFading);
+			PreferencesManager.PlayerPreferences.DrawOnPlay = m_bDrawOnPlay;
+			PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(m_DefaultFading);
 		}
 	}
 }

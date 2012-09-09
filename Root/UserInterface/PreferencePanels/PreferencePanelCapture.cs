@@ -59,8 +59,6 @@ namespace Kinovea.Root
 		private bool m_bResetCounter;
 		private long m_iCounter;
 		private int m_iMemoryBuffer;
-		
-		private PreferencesManager m_prefManager;
 		private FilenameHelper m_filenameHelper = new FilenameHelper();
 		#endregion
 		
@@ -69,8 +67,6 @@ namespace Kinovea.Root
 		{
 			InitializeComponent();
 			this.BackColor = Color.White;
-			
-			m_prefManager = PreferencesManager.Instance();
 			
 			m_Description = RootLang.dlgPreferences_btnCapture;
 			m_Icon = Resources.pref_capture;
@@ -89,14 +85,14 @@ namespace Kinovea.Root
 		}
 		private void ImportPreferences()
         {
-			m_ImageDirectory = m_prefManager.CaptureImageDirectory;
-			m_VideoDirectory = m_prefManager.CaptureVideoDirectory;
-			m_ImageFormat = m_prefManager.CaptureImageFormat;
-			m_VideoFormat = m_prefManager.CaptureVideoFormat;
-			m_bUsePattern = m_prefManager.CaptureUsePattern;
-			m_Pattern = m_prefManager.CapturePattern;
-			m_iCounter = m_prefManager.CaptureImageCounter; // Use the image counter for sample.
-			m_iMemoryBuffer = m_prefManager.CaptureMemoryBuffer;
+			m_ImageDirectory = PreferencesManager.CapturePreferences.ImageDirectory;
+			m_VideoDirectory = PreferencesManager.CapturePreferences.VideoDirectory;
+			m_ImageFormat = PreferencesManager.CapturePreferences.ImageFormat;
+			m_VideoFormat = PreferencesManager.CapturePreferences.VideoFormat;
+			m_bUsePattern = PreferencesManager.CapturePreferences.CaptureUsePattern;
+			m_Pattern = PreferencesManager.CapturePreferences.Pattern;
+			m_iCounter = PreferencesManager.CapturePreferences.CaptureImageCounter; // Use the image counter for sample.
+			m_iMemoryBuffer = PreferencesManager.CapturePreferences.CaptureMemoryBuffer;
 		}
 		private void InitPage()
 		{
@@ -301,20 +297,20 @@ namespace Kinovea.Root
 		
 		public void CommitChanges()
 		{
-			m_prefManager.CaptureImageDirectory = m_ImageDirectory;
-			m_prefManager.CaptureVideoDirectory = m_VideoDirectory;
-			m_prefManager.CaptureImageFormat = m_ImageFormat;
-			m_prefManager.CaptureVideoFormat = m_VideoFormat;
+			PreferencesManager.CapturePreferences.ImageDirectory = m_ImageDirectory;
+			PreferencesManager.CapturePreferences.VideoDirectory = m_VideoDirectory;
+			PreferencesManager.CapturePreferences.ImageFormat = m_ImageFormat;
+			PreferencesManager.CapturePreferences.VideoFormat = m_VideoFormat;
 			
-			m_prefManager.CaptureUsePattern = m_bUsePattern;
-			m_prefManager.CapturePattern = m_Pattern;
+			PreferencesManager.CapturePreferences.CaptureUsePattern = m_bUsePattern;
+			PreferencesManager.CapturePreferences.Pattern = m_Pattern;
 			if(m_bResetCounter)
 			{
-				m_prefManager.CaptureImageCounter = 1;
-				m_prefManager.CaptureVideoCounter = 1;
+				PreferencesManager.CapturePreferences.CaptureImageCounter = 1;
+				PreferencesManager.CapturePreferences.CaptureVideoCounter = 1;
 			}
 			
-			m_prefManager.CaptureMemoryBuffer = m_iMemoryBuffer;
+			PreferencesManager.CapturePreferences.CaptureMemoryBuffer = m_iMemoryBuffer;
 		}
 	}
 }

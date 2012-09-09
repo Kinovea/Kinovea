@@ -29,82 +29,54 @@ namespace Kinovea.Services
 	/// </summary>
 	public class ShortcutFolder : IComparable
 	{
-		#region Properties
 		public string Location 
 		{
-			get { return m_Location; }
-			set { m_Location = value; }
+			get { return location; }
 		}
 		public string FriendlyName 
 		{
-			get { return m_FriendlyName; }
-			set { m_FriendlyName = value; }
+			get { return friendlyName; }
 		}
-		#endregion
 		
-		private string m_FriendlyName;		
-		private string m_Location;
+		private string friendlyName;		
+		private string location;
 		
-		public ShortcutFolder(string _friendlyName, string _location)
+		public ShortcutFolder(string friendlyName, string location)
 		{
-			m_FriendlyName = _friendlyName;
-			m_Location = _location;
+			this.friendlyName = friendlyName;
+			this.location = location;
 		}
 		public override string ToString()
 		{
-			return m_FriendlyName;
+			return friendlyName;
 		}
-		public void ToXml(XmlTextWriter _xmlWriter)
-		{
-			_xmlWriter.WriteStartElement("Shortcut");
-			
-			_xmlWriter.WriteStartElement("FriendlyName");
-            _xmlWriter.WriteString(m_FriendlyName);
-            _xmlWriter.WriteEndElement();
-            
-            _xmlWriter.WriteStartElement("Location");
-            _xmlWriter.WriteString(m_Location);
-            _xmlWriter.WriteEndElement();
-			
-			_xmlWriter.WriteEndElement();	
+		public void WriteXML(XmlWriter writer)
+        {
+		    writer.WriteElementString("FriendlyName", friendlyName);
+            writer.WriteElementString("Location", location);
 		}
-		public static ShortcutFolder FromXml(XmlReader _xmlReader)
-		{
-			// When we land in this method we MUST already be at the "Shortcut" node.
 		
-			string friendlyName = "";
-			string location = "";
-			
-			while (_xmlReader.Read())
+		public ShortcutFolder(XmlReader reader)
+		{
+		    reader.ReadStartElement();
+		    
+		    while(reader.NodeType == XmlNodeType.Element)
             {
-                if (_xmlReader.IsStartElement())
-                {
-                    if (_xmlReader.Name == "FriendlyName")
-                    {
-                        friendlyName = _xmlReader.ReadString();
-                    }
-                    else if(_xmlReader.Name == "Location")
-                    {
-                        location = _xmlReader.ReadString();
-                    }
+                switch(reader.Name)
+				{
+                    case "FriendlyName":
+                        friendlyName = reader.ReadElementContentAsString();
+                        break;
+                    case "Location":
+                        location = reader.ReadElementContentAsString();
+                        break;
+                    default:
+                        reader.ReadOuterXml();
+                        break;
                 }
-                else if (_xmlReader.Name == "Shortcut")
-                {
-                    break;
-                }
-                else
-                {
-                    // Fermeture d'un tag interne.
-                }
-			}
-			
-			ShortcutFolder sf = null;
-			if(location.Length > 0)
-			{
-				sf = new ShortcutFolder(friendlyName, location);
-			}
-			
-			return sf;
+            }
+		    
+		    reader.ReadEndElement();
 		}
 	
 		#region IComparable Implementation
@@ -113,7 +85,7 @@ namespace Kinovea.Services
         	ShortcutFolder sf = obj as ShortcutFolder;
             if(sf != null)
             {
-            	String path1 = Path.GetFileName(this.m_Location);
+            	String path1 = Path.GetFileName(this.location);
             	String path2 = Path.GetFileName(sf.Location);
             	return path1.CompareTo(path2);
             }

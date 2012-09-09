@@ -906,7 +906,7 @@ namespace Kinovea.ScreenManager
                     // - Time is absolute.
                     double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
                     double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
-                    string userT = m_ParentMetadata.TimeStampsToTimecode(tp.T, TimeCodeFormat.Unknown, false);
+                    string userT = m_ParentMetadata.TimeStampsToTimecode(tp.T, TimecodeFormat.Unknown, false);
         			
                     _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
                     _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userX));

@@ -57,8 +57,7 @@ namespace Kinovea.ScreenManager
         private void ConfigureForm()
         {
         	// Display current values.
-        	PreferencesManager pm = PreferencesManager.Instance();
-        	trkValue.Maximum = pm.MaxFading;
+        	trkValue.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
             trkValue.Value = Math.Min(m_Drawing.InfosFading.FadingFrames, trkValue.Maximum);
             chkDefault.Checked = m_Drawing.InfosFading.UseDefault;
             chkAlwaysVisible.Checked = m_Drawing.InfosFading.AlwaysVisible;
@@ -73,7 +72,7 @@ namespace Kinovea.ScreenManager
 
             chkEnable.Text = ScreenManagerLang.dlgConfigureFading_chkEnable;
             
-            InfosFading info = PreferencesManager.Instance().DefaultFading;
+            InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
             if(info.AlwaysVisible)
             {
             	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault;

@@ -159,13 +159,12 @@ namespace Kinovea.ScreenManager
 				if(_currentDevice.Network)
 				{
 					btnCamcorder.Image = Resources.camera_network2;
-					PreferencesManager pm = PreferencesManager.Instance();
 					
 					// Recently used cameras.
 					cmbUrl.Text = _currentDevice.NetworkCameraUrl;
-					if(pm.RecentNetworkCameras.Count > 0)
+					if(PreferencesManager.CapturePreferences.RecentNetworkCameras.Count > 0)
 					{
-						foreach(string url in pm.RecentNetworkCameras)
+						foreach(string url in PreferencesManager.CapturePreferences.RecentNetworkCameras)
 						{
 							cmbUrl.Items.Add(url);
 						}

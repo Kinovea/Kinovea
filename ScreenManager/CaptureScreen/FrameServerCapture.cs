@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
 		public FrameServerCapture()
 		{
 			m_FrameGrabber = new FrameGrabberAForge(this, m_FrameBuffer);
-			m_AspectRatio = PreferencesManager.Instance().AspectRatio;
+			m_AspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;
 			
 			IntPtr forceHandleCreation = m_DummyControl.Handle; // Needed to show that the main thread "owns" this Control.
 			m_EventFrameGrabbed = FrameGrabbed_Invoked;

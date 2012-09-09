@@ -42,27 +42,25 @@ namespace Kinovea.ScreenManager
 		// Each screen tracks his own file name.
 		// 
 		// When using pattern, both screen will use the same pattern and they will be updated after each save.
-		
-		private PreferencesManager prefManager = PreferencesManager.Instance();
 		private static string defaultFileName = "Capture";
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		public string InitImage()
 		{			
-		    if(prefManager.CaptureUsePattern)
-		        return ConvertPattern(prefManager.CapturePattern, prefManager.CaptureImageCounter);
-		    else if(!string.IsNullOrEmpty(prefManager.CaptureImageFile))
-                return Next(prefManager.CaptureImageFile);
+		    if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+		        return ConvertPattern(PreferencesManager.CapturePreferences.Pattern, PreferencesManager.CapturePreferences.CaptureImageCounter);
+		    else if(!string.IsNullOrEmpty(PreferencesManager.CapturePreferences.ImageFile))
+                return Next(PreferencesManager.CapturePreferences.ImageFile);
 		    
 		    log.DebugFormat("We never saved a file before, return the default file name : {0}", defaultFileName);
 		    return defaultFileName;
 		}
 		public string InitVideo()
 		{
-		    if(prefManager.CaptureUsePattern)
-		        return ConvertPattern(prefManager.CapturePattern, prefManager.CaptureVideoCounter);
-		    else if(!string.IsNullOrEmpty(prefManager.CaptureVideoFile))
-		        return Next(prefManager.CaptureVideoFile);
+		    if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+		        return ConvertPattern(PreferencesManager.CapturePreferences.Pattern, PreferencesManager.CapturePreferences.CaptureVideoCounter);
+		    else if(!string.IsNullOrEmpty(PreferencesManager.CapturePreferences.VideoFile))
+		        return Next(PreferencesManager.CapturePreferences.VideoFile);
 		    
 			log.DebugFormat("We never saved a file before, return the default file name : {0}", defaultFileName);
 		    return defaultFileName;
@@ -78,7 +76,7 @@ namespace Kinovea.ScreenManager
         	// We do not care about extension here, it will be appended afterwards.
 			//---------------------------------------------------------------------
 			
-        	if(prefManager.CaptureUsePattern)
+        	if(PreferencesManager.CapturePreferences.CaptureUsePattern)
         		throw new NotImplementedException("Not implemented when using pattern. Use InitImage or InitVideo");
 
         	if(string.IsNullOrEmpty(current))
@@ -168,13 +166,31 @@ namespace Kinovea.ScreenManager
 		public void AutoIncrement(bool isImage)
 		{
 			// Autoincrement (only if needed and only the corresponding type).
-			if(!prefManager.CapturePattern.Contains("%i"))
+			if(!PreferencesManager.CapturePreferences.Pattern.Contains("%i"))
 			    return;
 			
 			if(isImage)
-    			prefManager.CaptureImageCounter++;
+    			PreferencesManager.CapturePreferences.CaptureImageCounter++;
 			else
-				prefManager.CaptureVideoCounter++;
+				PreferencesManager.CapturePreferences.CaptureVideoCounter++;
 		}
+		public string GetImageFileExtension()
+    	{
+    		switch(PreferencesManager.CapturePreferences.ImageFormat)
+    		{
+    			case KinoveaImageFormat.PNG: return ".png";
+    			case KinoveaImageFormat.BMP: return ".bmp";
+    			default : return ".jpg";
+    		}
+    	}
+		public string GetVideoFileExtension()
+    	{
+    		switch(PreferencesManager.CapturePreferences.VideoFormat)
+    		{
+    			case KinoveaVideoFormat.MP4: return ".mp4";
+    			case KinoveaVideoFormat.AVI: return ".avi";
+    			default : return ".mkv";
+    		}
+    	}
 	}
 }

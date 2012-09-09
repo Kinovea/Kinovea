@@ -282,7 +282,7 @@ namespace Kinovea.ScreenManager
             string userDuration = "0";
             if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
             {
-             	userDuration = m_ParentMetadata.TimeStampsToTimecode(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimeCodeFormat.Unknown, false);
+             	userDuration = m_ParentMetadata.TimeStampsToTimecode(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimecodeFormat.Unknown, false);
             }
             _xmlWriter.WriteElementString("UserDuration", userDuration);
             
@@ -510,7 +510,7 @@ namespace Kinovea.ScreenManager
                 timestamps = m_bCountdown ? m_iStopCountingTimestamp - m_iStartCountingTimestamp : 0;
             }
 
-            return m_ParentMetadata.TimeStampsToTimecode(timestamps, TimeCodeFormat.Unknown, false);
+            return m_ParentMetadata.TimeStampsToTimecode(timestamps, TimecodeFormat.Unknown, false);
         }
         #endregion
     }

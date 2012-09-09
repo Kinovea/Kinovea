@@ -69,7 +69,6 @@ namespace Kinovea.ScreenManager
 				
 		private bool m_bEditMode;
 		private IScreenManagerUIContainer m_ScreenManagerUIContainer;
-		private PreferencesManager m_PreferencesManager = PreferencesManager.Instance();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -82,7 +81,7 @@ namespace Kinovea.ScreenManager
 			InitSizingButtons();
 			RefreshUICulture();
 
-			m_Columns = (int)m_PreferencesManager.ExplorerThumbsSize;
+			m_Columns = (int)PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
 			DeselectAllSizingButtons();
 			SelectSizingButton();
 		}
@@ -391,8 +390,8 @@ namespace Kinovea.ScreenManager
 		#region Closing
 		private void SavePrefs()
 		{
-			m_PreferencesManager.ExplorerThumbsSize = (ExplorerThumbSize)m_Columns;
-			m_PreferencesManager.Export();
+			PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = (ExplorerThumbSize)m_Columns;
+			PreferencesManager.Save();
 		}
 		#endregion
 

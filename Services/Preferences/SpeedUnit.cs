@@ -22,16 +22,13 @@ using System;
 
 namespace Kinovea.Services
 {
-    public enum TimecodeFormat
-    {
-        ClassicTime,
-        Frames,
-        Milliseconds,
-        TenThousandthOfHours,
-        HundredthOfMinutes,
-        TimeAndFrames,
-        Timestamps,
-        Unknown,
-        NumberOfTimeCodeFormats
-    }
+    public enum SpeedUnit
+	{
+		MetersPerSecond,
+		KilometersPerHour,
+		FeetPerSecond,
+		MilesPerHour,
+		Knots,
+		PixelsPerFrame
+	}
 }

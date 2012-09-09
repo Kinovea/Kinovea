@@ -111,6 +111,11 @@
     <Compile Include="DeviceConfiguration.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="DelegatesPool.cs" />
+    <Compile Include="NotificationCenter.cs" />
+    <Compile Include="Preferences\CapturePreferences.cs" />
+    <Compile Include="Preferences\FileExplorerPreferences.cs" />
+    <Compile Include="Preferences\GeneralPreferences.cs" />
+    <Compile Include="Preferences\PlayerPreferences.cs" />
     <Compile Include="Software.cs" />
     <Compile Include="HelpIndex.cs" />
     <Compile Include="HelpItem.cs" />
@@ -123,11 +128,6 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="IUndoableCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Preferences\ActiveFileBrowserTab.cs" />
     <Compile Include="Preferences\ExplorerThumbSize.cs" />
     <Compile Include="Preferences\KinoveaImageFormat.cs" />
@@ -135,19 +135,12 @@
     <Compile Include="Preferences\NetworkCameraFormat.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
     <Compile Include="Preferences\ShortcutFolder.cs" />
-    <Compile Include="Preferences\SpeedUnits.cs" />
-    <Compile Include="Preferences\TimeCodeFormat.cs" />
-    <Compile Include="Preferences\TimeCodeType.cs" />
+    <Compile Include="Preferences\SpeedUnit.cs" />
+    <Compile Include="Preferences\TimecodeFormat.cs" />
+    <Compile Include="Preferences\TimecodeType.cs" />
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
     <Compile Include="XmlHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Video\Video.csproj">

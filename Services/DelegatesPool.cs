@@ -55,21 +55,18 @@ namespace Kinovea.Services
         public ThumbnailsDisplayer DisplayThumbnails;
         public FileExplorerRefresher RefreshFileExplorer;
   
-        #region Instance & Constructor
         private static DelegatesPool _instance = null;
+        
         public static DelegatesPool Instance()
         {
             if (_instance == null)
-            {
                 _instance = new DelegatesPool();
-            }
+
             return _instance;
         }
-        // Private Ctor
+        
         private DelegatesPool()
         {
-
         }
-        #endregion
     }
 }

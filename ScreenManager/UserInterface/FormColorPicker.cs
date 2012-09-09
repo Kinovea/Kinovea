@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
 			this.ResumeLayout();
 			
 			// Recent colors.
-			m_RecentColors = PreferencesManager.Instance().RecentColors;
+			m_RecentColors = PreferencesManager.PlayerPreferences.RecentColors;
 			
 			m_ColorPicker.DisplayRecentColors(m_RecentColors);
 			this.Height = m_ColorPicker.Bottom + 20;
@@ -71,7 +71,8 @@ namespace Kinovea.ScreenManager
 		private void colorPicker_ColorPicked(object sender, System.EventArgs e)
 		{
 			m_PickedColor = m_ColorPicker.PickedColor;
-			PreferencesManager.Instance().AddRecentColor(m_ColorPicker.PickedColor);
+			PreferencesManager.PlayerPreferences.AddRecentColor(m_ColorPicker.PickedColor);
+			PreferencesManager.Save();
 			DialogResult = DialogResult.OK;
 			Close();
 		}
