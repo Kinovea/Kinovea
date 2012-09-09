@@ -41,22 +41,19 @@ namespace Kinovea.Root
 		#region IPreferencePanel properties
 		public string Description
 		{
-			get { return m_Description;}
+			get { return description;}
 		}
 		public Bitmap Icon
 		{
-			get { return m_Icon;}
+			get { return icon;}
 		}
-		private string m_Description;
-		private Bitmap m_Icon;
 		#endregion
 		
 		#region Members
-		private string m_UICultureName;
-		private int m_iFilesToSave;
-        private TimecodeFormat m_TimeCodeFormat;
-        private ImageAspectRatio m_ImageAspectRatio;
-		private SpeedUnit m_SpeedUnit;
+		private string description;
+		private Bitmap icon;
+		private string uiCultureName;
+		private int maxRecentFiles;
         #endregion
 		
 		#region Construction & Initialization
@@ -65,8 +62,8 @@ namespace Kinovea.Root
 			InitializeComponent();
 			this.BackColor = Color.White;
 			
-			m_Description = RootLang.dlgPreferences_ButtonGeneral;
-			m_Icon = Resources.pref_general;
+			description = RootLang.dlgPreferences_ButtonGeneral;
+			icon = Resources.pref_general;
 			
 			ImportPreferences();
 			InitPage();
@@ -74,11 +71,8 @@ namespace Kinovea.Root
 		private void ImportPreferences()
         {
             CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            m_UICultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
-            m_iFilesToSave = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
-            m_TimeCodeFormat = PreferencesManager.PlayerPreferences.TimecodeFormat;
-            m_ImageAspectRatio = PreferencesManager.PlayerPreferences.AspectRatio;       
-			m_SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            uiCultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+            maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
         }
 		private void InitPage()
 		{
@@ -93,36 +87,11 @@ namespace Kinovea.Root
             
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
 
-            // Combo TimeCodeFormats (MUST be filled in the order of the enum, see PreferencesManager.TimeCodeFormat)
-            lblTimeMarkersFormat.Text = RootLang.dlgPreferences_LabelTimeFormat + " :";
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Classic);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Frames);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Milliseconds);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TenThousandthOfHours);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_HundredthOfMinutes);
-            cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_TimeAndFrames);
-            //cmbTimeCodeFormat.Items.Add(RootLang.TimeCodeFormat_Timestamps);	// Debug purposes.
-            
-            // Combo Speed units (MUST be filled in the order of the enum)
-            lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.MetersPerSecond)));
-			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.KilometersPerHour)));
-			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.FeetPerSecond)));
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.MilesPerHour)));
-            //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
-            	
-	        // Combo Image Aspect Ratios (MUST be filled in the order of the enum)
-            lblImageFormat.Text = RootLang.dlgPreferences_LabelImageFormat;
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_FormatAuto);
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format43);
-            cmbImageFormats.Items.Add(RootLang.dlgPreferences_Format169);
             
             // Fill current values
             SelectCurrentLanguage();
-            cmbHistoryCount.SelectedIndex = m_iFilesToSave;
-            SelectCurrentTimecodeFormat();
-            SelectCurrentSpeedUnit();
-            SelectCurrentImageFormat();
+            cmbHistoryCount.SelectedIndex = maxRecentFiles;
+            
 		}
 		private void SelectCurrentLanguage()
         {
@@ -131,7 +100,7 @@ namespace Kinovea.Root
             {
                 LanguageIdentifier li = (LanguageIdentifier)cmbLanguage.Items[i];
                 
-                if (li.Culture.Equals(m_UICultureName))
+                if (li.Culture.Equals(uiCultureName))
                 {
                     // Matching
                     cmbLanguage.SelectedIndex = i;            
@@ -144,77 +113,23 @@ namespace Kinovea.Root
                 cmbLanguage.SelectedIndex = 0;   
             }
         }
-		private void SelectCurrentTimecodeFormat()
-        {
-            // the combo box items have been filled in the order of the enum.
-            if ((int)m_TimeCodeFormat < cmbTimeCodeFormat.Items.Count)
-            {
-                cmbTimeCodeFormat.SelectedIndex = (int)m_TimeCodeFormat;
-            }
-            else
-            {
-                cmbTimeCodeFormat.SelectedIndex = 0;
-            }
-        }
-		private void SelectCurrentSpeedUnit()
-        {
-            // the combo box items have been filled in the order of the enum.
-            if ((int)m_SpeedUnit < cmbSpeedUnit.Items.Count)
-            {
-                cmbSpeedUnit.SelectedIndex = (int)m_SpeedUnit;
-            }
-            else
-            {
-                cmbSpeedUnit.SelectedIndex = 0;
-            }
-        }
-        private void SelectCurrentImageFormat()
-        {
-        	// the combo box items have been filled in the order of the enum.
-            if ((int)m_ImageAspectRatio < cmbImageFormats.Items.Count)
-            {
-                cmbImageFormats.SelectedIndex = (int)m_ImageAspectRatio;
-            }
-            else
-            {
-                cmbImageFormats.SelectedIndex = 0;
-            }
-        }
 		#endregion
 		
 		#region Handlers
 		private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_UICultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).Culture;
+            uiCultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).Culture;
         }
         private void cmbHistoryCount_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_iFilesToSave = cmbHistoryCount.SelectedIndex;
-        }
-        private void cmbTimeCodeFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // the combo box items have been filled in the order of the enum.
-            m_TimeCodeFormat = (TimecodeFormat)cmbTimeCodeFormat.SelectedIndex;
-        }
-        private void cmbImageAspectRatio_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // the combo box items have been filled in the order of the enum.
-            m_ImageAspectRatio = (ImageAspectRatio)cmbImageFormats.SelectedIndex;
-        }
-		private void cmbSpeedUnit_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // the combo box items have been filled in the order of the enum.
-            m_SpeedUnit = (SpeedUnit)cmbSpeedUnit.SelectedIndex;
+            maxRecentFiles = cmbHistoryCount.SelectedIndex;
         }
 		#endregion
 		
 		public void CommitChanges()
 		{
-		    PreferencesManager.GeneralPreferences.SetCulture(m_UICultureName);
-			PreferencesManager.FileExplorerPreferences.MaxRecentFiles = m_iFilesToSave;
-            PreferencesManager.PlayerPreferences.TimecodeFormat = m_TimeCodeFormat;
-            PreferencesManager.PlayerPreferences.AspectRatio = m_ImageAspectRatio;
-			PreferencesManager.PlayerPreferences.SpeedUnit = m_SpeedUnit;
+		    PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
+			PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
 		}
 	}
 }

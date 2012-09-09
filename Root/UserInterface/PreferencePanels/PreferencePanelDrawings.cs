@@ -38,19 +38,19 @@ namespace Kinovea.Root
 		#region IPreferencePanel properties
 		public string Description
 		{
-			get { return m_Description;}
+			get { return description;}
 		}
 		public Bitmap Icon
 		{
-			get { return m_Icon;}
+			get { return icon;}
 		}
-		private string m_Description;
-		private Bitmap m_Icon;
 		#endregion
 		
 		#region Members
-        private InfosFading m_DefaultFading;
-        private bool m_bDrawOnPlay;
+        private string description;
+		private Bitmap icon;
+		private InfosFading defaultFading;
+        private bool drawOnPlay;
 		#endregion
 		
 		#region Construction & Initialization
@@ -59,16 +59,16 @@ namespace Kinovea.Root
 			InitializeComponent();
 			this.BackColor = Color.White;
 			
-			m_Description = RootLang.dlgPreferences_btnDrawings;
-			m_Icon = Resources.drawings;
+			description = RootLang.dlgPreferences_btnDrawings;
+			icon = Resources.drawings;
 			
 			ImportPreferences();
 			InitPage();
 		}
 		private void ImportPreferences()
         {
-			m_bDrawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
-            m_DefaultFading = new InfosFading(0, 0);
+			drawOnPlay = PreferencesManager.PlayerPreferences.DrawOnPlay;
+            defaultFading = new InfosFading(0, 0);
 		}
 		private void InitPage()
 		{
@@ -79,11 +79,11 @@ namespace Kinovea.Root
             chkEnablePersistence.Text = RootLang.dlgPreferences_chkEnablePersistence;
 			chkAlwaysVisible.Text = RootLang.dlgPreferences_chkAlwaysVisible;
 			
-			chkDrawOnPlay.Checked = m_bDrawOnPlay;
-			chkEnablePersistence.Checked = m_DefaultFading.Enabled;
+			chkDrawOnPlay.Checked = drawOnPlay;
+			chkEnablePersistence.Checked = defaultFading.Enabled;
             trkFading.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
-            trkFading.Value = Math.Min(m_DefaultFading.FadingFrames, trkFading.Maximum);
-            chkAlwaysVisible.Checked = m_DefaultFading.AlwaysVisible;
+            trkFading.Value = Math.Min(defaultFading.FadingFrames, trkFading.Maximum);
+            chkAlwaysVisible.Checked = defaultFading.AlwaysVisible;
             EnableDisableFadingOptions();
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
 		}
@@ -93,25 +93,25 @@ namespace Kinovea.Root
 		#region General
 		private void chkDrawOnPlay_CheckedChanged(object sender, EventArgs e)
         {
-            m_bDrawOnPlay = chkDrawOnPlay.Checked;
+            drawOnPlay = chkDrawOnPlay.Checked;
         }
 		#endregion
 		
 		#region Persistence
 		private void chkFading_CheckedChanged(object sender, EventArgs e)
         {
-            m_DefaultFading.Enabled = chkEnablePersistence.Checked;
+            defaultFading.Enabled = chkEnablePersistence.Checked;
             EnableDisableFadingOptions();
         }
         private void trkFading_ValueChanged(object sender, EventArgs e)
         {
             lblFading.Text = String.Format(RootLang.dlgPreferences_lblFading, trkFading.Value);
-            m_DefaultFading.FadingFrames = trkFading.Value;
+            defaultFading.FadingFrames = trkFading.Value;
             chkAlwaysVisible.Checked = false;
         }
         private void chkAlwaysVisible_CheckedChanged(object sender, EventArgs e)
         {
-        	m_DefaultFading.AlwaysVisible = chkAlwaysVisible.Checked;	
+        	defaultFading.AlwaysVisible = chkAlwaysVisible.Checked;	
         }
         #endregion
 		#endregion
@@ -125,8 +125,8 @@ namespace Kinovea.Root
 	
 		public void CommitChanges()
 		{
-			PreferencesManager.PlayerPreferences.DrawOnPlay = m_bDrawOnPlay;
-			PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(m_DefaultFading);
+			PreferencesManager.PlayerPreferences.DrawOnPlay = drawOnPlay;
+			PreferencesManager.PlayerPreferences.DefaultFading.FromInfosFading(defaultFading);
 		}
 	}
 }

@@ -100,6 +100,7 @@
    <data name="dlgPreferences_chkDrawOnPlay" xml:space="preserve"><value>当播放视频的时候显示绘制信息</value></data>
    <data name="dlgPreferences_chkEnablePersistence" xml:space="preserve"><value>允许持久性</value></data>
    <data name="dlgPreferences_DeinterlaceByDefault" xml:space="preserve"><value>当打开一个新视频的时候使用反交错.</value></data>
+   
    <data name="dlgPreferences_Format169" xml:space="preserve"><value>强制 16:9</value></data>
    <data name="dlgPreferences_Format43" xml:space="preserve"><value>强制 4:3</value></data>
    <data name="dlgPreferences_FormatAuto" xml:space="preserve"><value>自动识别</value></data>
