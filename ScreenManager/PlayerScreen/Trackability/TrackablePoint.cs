@@ -82,9 +82,7 @@ namespace Kinovea.ScreenManager
 	    public void Track(TrackingContext context)
 	    {
 	        this.context = context;
-	        
-	        log.DebugFormat("Track called. Context:{0}", context);
-	        
+	       
 	        if(!isTracking)
 	            return;
 	        

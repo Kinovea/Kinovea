@@ -223,6 +223,7 @@ namespace Kinovea.ScreenManager
 		private ImageAttributes m_SyncMergeImgAttr = new ImageAttributes();
 		private float m_SyncAlpha = 0.5f;
 		private bool m_DualSaveInProgress;
+		private bool saveInProgress;
 		
 		// Image
 		private ViewportManipulator m_viewportManipulator = new ViewportManipulator();
@@ -3085,7 +3086,7 @@ namespace Kinovea.ScreenManager
 			// We always draw at full SurfaceScreen size.
 			// It is the SurfaceScreen itself that is resized if needed.
 			//-------------------------------------------------------------------
-			if(!m_FrameServer.Loaded || m_DualSaveInProgress)
+			if(!m_FrameServer.Loaded || saveInProgress || m_DualSaveInProgress)
                 return;
             
 			m_TimeWatcher.LogTime("Actual start of paint");
@@ -3117,7 +3118,7 @@ namespace Kinovea.ScreenManager
 				}
 				catch (System.InvalidOperationException)
 				{
-					log.Error("Error while painting image. Object is currently in use elsewhere... ATI Drivers ?");
+					log.Error("Error while painting image. Object is currently in use elsewhere. ATI Drivers ?");
 				}
 				catch (Exception exp)
 				{
@@ -4603,8 +4604,10 @@ namespace Kinovea.ScreenManager
 			if (dp.DeactivateKeyboardHandler != null)
 				dp.DeactivateKeyboardHandler();
 				
+			saveInProgress = true;
 			m_FrameServer.SaveDiaporama(GetOutputBitmap, diaporama);
-
+            saveInProgress = false;
+            
 			if (dp.ActivateKeyboardHandler != null)
 				dp.ActivateKeyboardHandler();
 			
@@ -4614,7 +4617,9 @@ namespace Kinovea.ScreenManager
 		}
 		public void Save()
 		{
+		    saveInProgress = true;
 			m_FrameServer.Save(GetPlaybackFrameInterval(), m_fSlowmotionPercentage, GetOutputBitmap);
+			saveInProgress = false;
 		}
 		public long GetOutputBitmap(Graphics _canvas, Bitmap _source, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
 		{
