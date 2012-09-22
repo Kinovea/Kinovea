@@ -141,7 +141,7 @@ def RemoveGeneratedFiles():
 
 saxon = '"C:\\Program Files\\saxonhe9-2-1-5n\\bin\\Transform.exe"'
 helpCompiler = '"C:\\Program Files\\HTML Help Workshop\\hhc.exe"'
-lang = 'en'
+lang = 'es'
 
 RemoveGeneratedFiles()
 
@@ -180,6 +180,6 @@ for f in glob.glob('src/*.*'):
 chm = 'kinovea.%s.chm' % lang
 shutil.move(chm, os.path.join(lang, chm))
 shutil.copytree('web', os.path.join(lang, 'web'))
-shutil.rmtree(os.path.join(lang, 'web/.svn'), ignore_errors=False, onerror=handleRemoveReadonly)
+#shutil.rmtree(os.path.join(lang, 'web/.svn'), ignore_errors=False, onerror=handleRemoveReadonly)
 
 RemoveGeneratedFiles()

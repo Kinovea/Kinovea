@@ -24,7 +24,8 @@
         <a target="_top" href="http://www.kinovea.org/en/forum/">Forum</a> -&#160;
         <a href="http://www.kinovea.org/help/en/"><img style="border: 0px solid ; width: 16px; height: 11px;" alt="English Manual" src="flag_en.png" /></a>&#160;
         <a href="http://www.kinovea.org/help/fr/"><img style="border: 0px solid ; width: 16px; height: 11px;" alt="Manuel en français" src="flag_fr.png" /></a>&#160;
-        <a href="http://www.kinovea.org/help/it/"><img style="border: 0px solid ; width: 16px; height: 11px;" alt="Italiano" src="flag_it.png" /></a>
+        <a href="http://www.kinovea.org/help/it/"><img style="border: 0px solid ; width: 16px; height: 11px;" alt="Italiano" src="flag_it.png" /></a>&#160;
+        <a href="http://www.kinovea.org/help/es/"><img style="border: 0px solid ; width: 16px; height: 11px;" alt="Español" src="flag_es.png" /></a>
     </span></small>
     <div id="tree" style="top: 35px; left: 0px;" class="treeDiv">
         <div id="treeRoot" onselectstart="return false" ondragstart="return false">
