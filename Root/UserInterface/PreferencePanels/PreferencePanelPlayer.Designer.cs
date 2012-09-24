@@ -92,7 +92,7 @@ namespace Kinovea.Root
 		    this.grpSwitchToAnalysis.Controls.Add(this.lblWorkingZoneMemory);
 		    this.grpSwitchToAnalysis.Location = new System.Drawing.Point(7, 11);
 		    this.grpSwitchToAnalysis.Name = "grpSwitchToAnalysis";
-		    this.grpSwitchToAnalysis.Size = new System.Drawing.Size(405, 182);
+		    this.grpSwitchToAnalysis.Size = new System.Drawing.Size(405, 193);
 		    this.grpSwitchToAnalysis.TabIndex = 26;
 		    this.grpSwitchToAnalysis.TabStop = false;
 		    this.grpSwitchToAnalysis.Text = "Switch to Analysis Mode";
@@ -101,7 +101,7 @@ namespace Kinovea.Root
 		    // 
 		    this.lblWorkingZoneLogic.AutoSize = true;
 		    this.lblWorkingZoneLogic.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-		    this.lblWorkingZoneLogic.Location = new System.Drawing.Point(8, 84);
+		    this.lblWorkingZoneLogic.Location = new System.Drawing.Point(12, 93);
 		    this.lblWorkingZoneLogic.Name = "lblWorkingZoneLogic";
 		    this.lblWorkingZoneLogic.Size = new System.Drawing.Size(29, 13);
 		    this.lblWorkingZoneLogic.TabIndex = 37;
@@ -109,6 +109,7 @@ namespace Kinovea.Root
 		    // 
 		    // trkWorkingZoneSeconds
 		    // 
+		    this.trkWorkingZoneSeconds.BackColor = System.Drawing.Color.White;
 		    this.trkWorkingZoneSeconds.Location = new System.Drawing.Point(9, 43);
 		    this.trkWorkingZoneSeconds.Maximum = 30;
 		    this.trkWorkingZoneSeconds.Minimum = 1;
@@ -129,7 +130,8 @@ namespace Kinovea.Root
 		    // 
 		    // trkWorkingZoneMemory
 		    // 
-		    this.trkWorkingZoneMemory.Location = new System.Drawing.Point(10, 127);
+		    this.trkWorkingZoneMemory.BackColor = System.Drawing.Color.White;
+		    this.trkWorkingZoneMemory.Location = new System.Drawing.Point(10, 137);
 		    this.trkWorkingZoneMemory.Maximum = 1024;
 		    this.trkWorkingZoneMemory.Minimum = 16;
 		    this.trkWorkingZoneMemory.Name = "trkWorkingZoneMemory";
@@ -142,7 +144,7 @@ namespace Kinovea.Root
 		    // lblWorkingZoneMemory
 		    // 
 		    this.lblWorkingZoneMemory.AutoSize = true;
-		    this.lblWorkingZoneMemory.Location = new System.Drawing.Point(14, 109);
+		    this.lblWorkingZoneMemory.Location = new System.Drawing.Point(14, 119);
 		    this.lblWorkingZoneMemory.Name = "lblWorkingZoneMemory";
 		    this.lblWorkingZoneMemory.Size = new System.Drawing.Size(257, 13);
 		    this.lblWorkingZoneMemory.TabIndex = 17;

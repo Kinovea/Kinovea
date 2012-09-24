@@ -192,7 +192,9 @@ namespace Kinovea.Video
             else
             {
                 m_CurrentIndex = -1;
+                #if DEBUG
                 throw new IndexOutOfRangeException();
+                #endif
             }
         }
         private void UpdateWorkingZone()

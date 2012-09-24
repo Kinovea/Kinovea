@@ -735,47 +735,46 @@ namespace Kinovea.Root
         	// Load the help file system.
         	HelpIndex hiLocal = new HelpIndex(Software.LocalHelpIndex);
 
-            if (hiLocal.LoadSuccess)
-            {
-            	// Loop into the file to find the required resource in the matching locale, or fallback to english.
-                string EnglishUri = "";
-                bool bLocaleFound = false;
-                bool bEnglishFound = false;
-                int i = 0;
-
-                CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-                string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
-                                
-                // Look for a matching locale, or English.
-                int iTotalResource = _manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
-                while (!bLocaleFound && i < iTotalResource)
-                {
-                	HelpItem hi = _manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
-                	
-                	if (hi.Language == neutral)
-                    {
-                        bLocaleFound = true;
-                        resourceUri = hi.FileLocation;
-                        break;
-                    }
-
-                    if (hi.Language == "en")
-                    {
-                        bEnglishFound = true;
-                        EnglishUri = hi.FileLocation;
-                    }
-
-                    i++;
-                }
-
-                if (!bLocaleFound && bEnglishFound)
-                {
-                	resourceUri = EnglishUri;
-                }
-            }
-            else
-            {
+        	if(!hiLocal.LoadSuccess)
+        	{
                 log.Error("Cannot find the xml help index.");
+                return "";
+        	}
+        	    
+            // Loop into the file to find the required resource in the matching locale, or fallback to english.
+            string EnglishUri = "";
+            bool bLocaleFound = false;
+            bool bEnglishFound = false;
+            int i = 0;
+
+            CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
+            string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+                            
+            // Look for a matching locale, or English.
+            int iTotalResource = _manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
+            while (!bLocaleFound && i < iTotalResource)
+            {
+            	HelpItem hi = _manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
+            	
+            	if (hi.Language == neutral)
+                {
+                    bLocaleFound = true;
+                    resourceUri = hi.FileLocation;
+                    break;
+                }
+
+                if (hi.Language == "en")
+                {
+                    bEnglishFound = true;
+                    EnglishUri = hi.FileLocation;
+                }
+
+                i++;
+            }
+
+            if (!bLocaleFound && bEnglishFound)
+            {
+            	resourceUri = EnglishUri;
             }
             
             return resourceUri;

@@ -49,7 +49,7 @@ namespace Kinovea.Services
             PreferencesFile = SettingsDirectory + "Preferences.xml";
             TempDirectory = SettingsDirectory + "Temp\\";
             
-            string applicationDirectory = Application.StartupPath;
+            string applicationDirectory = Application.StartupPath + "\\";
             
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
