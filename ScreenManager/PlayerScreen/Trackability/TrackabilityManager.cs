@@ -38,7 +38,8 @@ namespace Kinovea.ScreenManager
         }
         
         private Dictionary<Guid, DrawingTracker> trackers = new Dictionary<Guid, DrawingTracker>();
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
         public void Add(ITrackable drawing, VideoFrame videoFrame)
         {
             if(trackers.ContainsKey(drawing.ID))
@@ -77,28 +78,42 @@ namespace Kinovea.ScreenManager
         
         public bool IsTracking(ITrackable drawing)
         {
-             if(!trackers.ContainsKey(drawing.ID))
-                throw new ArgumentException("This drawing was not registered for tracking.");
+            if(!SanityCheck(drawing.ID))
+                return false;
             
             return trackers[drawing.ID].IsTracking;
         }
         
         public void UpdateContext(ITrackable drawing, VideoFrame videoFrame)
         {
-            if(!trackers.ContainsKey(drawing.ID))
-                throw new ArgumentException("This drawing was not registered for tracking.");
+            if(!SanityCheck(drawing.ID))
+                return;
             
             TrackingContext context = new TrackingContext(videoFrame.Timestamp, videoFrame.Image);
-            
             trackers[drawing.ID].Track(context);
         }
         
         public void ToggleTracking(ITrackable drawing)
         {
-            if(!trackers.ContainsKey(drawing.ID))
-                throw new ArgumentException("This drawing was not registered for tracking.");
-            
+            if(!SanityCheck(drawing.ID))
+                return;
+           
             trackers[drawing.ID].ToggleTracking();
+        }
+        
+        private bool SanityCheck(Guid id)
+        {
+            bool contains = trackers.ContainsKey(id);
+            if(!contains)
+            {
+                log.Error("This drawing was not registered for tracking.");
+                
+                #if DEBUG
+                throw new ArgumentException("This drawing was not registered for tracking.");
+                #endif
+            }
+            
+            return contains;
         }
     }
 }

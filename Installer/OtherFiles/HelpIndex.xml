@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <kinovea>
-  <software release="0.8.15"> </software>
+  <software release="0.8.19"> </software>
   <lang id="fr">
     <manual id="0" revision="6">
       <title>Guide d'utilisation en français</title>
@@ -35,6 +35,13 @@
       <title>User's Guide in Italiano</title>
       <filesize>2686439</filesize>
       <location>.\Manuals\kinovea.it.chm</location>
+    </manual>
+  </lang>
+  <lang id="es">
+    <manual id="0" revision="6">
+      <title>Manual de usario en Español</title>
+      <filesize>2686439</filesize>
+      <location>.\Manuals\kinovea.es.chm</location>
     </manual>
   </lang>
 </kinovea>
