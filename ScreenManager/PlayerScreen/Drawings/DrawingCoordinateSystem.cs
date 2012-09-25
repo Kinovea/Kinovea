@@ -216,8 +216,8 @@ namespace Kinovea.ScreenManager
         }
         public override int GetHashCode()
         {
-            int iHash = points["0"].GetHashCode();
-            iHash ^= styleHelper.GetHashCode();
+            // The coordinate system position is not yet saved in preferences.
+            int iHash = styleHelper.GetHashCode();
             return iHash;
         }
         
