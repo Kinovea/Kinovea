@@ -241,7 +241,6 @@ namespace Kinovea.ScreenManager
             CreateStaticExtraDrawings();
             
             log.Debug("Constructing new Metadata object.");
-            CleanupHash();
         }
         public Metadata(string _kvaString,  VideoInfo _info, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
@@ -398,12 +397,14 @@ namespace Kinovea.ScreenManager
         
         public void PostSetup()
         {
-            if(!initialized)
-            {
-                for(int i = 0; i<m_iStaticExtraDrawings;i++)
-                    PostDrawingCreationHooks(m_ExtraDrawings[i]);
-                initialized = true;
-            }
+            if(initialized)
+                return;
+            
+            for(int i = 0; i<m_iStaticExtraDrawings;i++)
+                PostDrawingCreationHooks(m_ExtraDrawings[i]);
+            
+            CleanupHash();
+            initialized = true;
         }
         public void Reset()
         {
