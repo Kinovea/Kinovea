@@ -86,7 +86,13 @@ namespace Kinovea.ScreenManager
         public Keyframe this[int index]
         {
             // Indexor
-            get { return m_Keyframes[index]; }
+            get 
+            { 
+                if(index < 0 || index >= m_Keyframes.Count)
+                    return null;
+                else
+                    return m_Keyframes[index]; 
+            }
             set { m_Keyframes[index] = value; }
         }
         public List<Keyframe> Keyframes

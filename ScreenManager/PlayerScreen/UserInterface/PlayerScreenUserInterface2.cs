@@ -3997,6 +3997,8 @@ namespace Kinovea.ScreenManager
 		private void DeleteSelectedDrawing()
 		{
             AbstractDrawing drawing = m_FrameServer.Metadata.HitDrawing;
+            if(drawing == null)
+                return;
             
             if(drawing is AbstractMultiDrawing)
             {
