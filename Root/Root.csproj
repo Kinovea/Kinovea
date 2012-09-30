@@ -469,6 +469,10 @@
       <Visible>False</Visible>
       <InProject>false</InProject>
     </XSLTItem>
+    <XSLTItem Include="$(MSBuildProjectDirectory)\..\Tools\XML\Preferences\*.xsl">
+      <Visible>False</Visible>
+      <InProject>false</InProject>
+    </XSLTItem>
     <DrawingsItem Include="$(MSBuildProjectDirectory)\..\Tools\postures\*.xml">
       <Visible>False</Visible>
       <InProject>false</InProject>

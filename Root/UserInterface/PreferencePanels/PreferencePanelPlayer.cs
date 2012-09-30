@@ -131,7 +131,7 @@ namespace Kinovea.Root
 		private void SelectCurrentTimecodeFormat()
         {
             int selected = (int)timecodeFormat;
-            cmbTimeCodeFormat.SelectedIndex = selected < cmbImageFormats.Items.Count ? selected : 0;
+            cmbTimeCodeFormat.SelectedIndex = selected < cmbTimeCodeFormat.Items.Count ? selected : 0;
         }
 		private void SelectCurrentSpeedUnit()
         {
