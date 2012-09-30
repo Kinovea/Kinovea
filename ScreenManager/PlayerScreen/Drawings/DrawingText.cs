@@ -206,6 +206,8 @@ namespace Kinovea.ScreenManager
 			}
 			
 			_xmlReader.ReadEndElement();
+			
+			UpdateLabelRectangle();
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
