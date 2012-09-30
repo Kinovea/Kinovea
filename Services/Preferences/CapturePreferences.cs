@@ -152,7 +152,7 @@ namespace Kinovea.Services
             writer.WriteElementString("ImageFormat", imageFormat.ToString());
             writer.WriteElementString("ImageCounter", imageCounter.ToString());
             
-            writer.WriteElementString("videoDirectory", videoDirectory);
+            writer.WriteElementString("VideoDirectory", videoDirectory);
             if(!string.IsNullOrEmpty(videoFile))
                 writer.WriteElementString("VideoFile", videoFile);
             writer.WriteElementString("VideoFormat", videoFormat.ToString());
@@ -234,7 +234,7 @@ namespace Kinovea.Services
                         videoCounter = reader.ReadElementContentAsLong();
                         break;
                     case "UsePattern":
-                        usePattern = reader.ReadElementContentAsBoolean();
+                        usePattern = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "Pattern":
                         pattern = reader.ReadElementContentAsString();

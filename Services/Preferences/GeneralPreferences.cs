@@ -87,7 +87,7 @@ namespace Kinovea.Services
 				        uiCultureName = reader.ReadElementContentAsString();
                         break;
                     case "ExplorerVisible":
-                        explorerVisible = reader.ReadElementContentAsBoolean();
+                        explorerVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "ExplorerSplitterDistance":
                         explorerSplitterDistance = reader.ReadElementContentAsInt();

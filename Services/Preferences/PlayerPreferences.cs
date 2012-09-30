@@ -156,7 +156,7 @@ namespace Kinovea.Services
                         aspectRatio = (ImageAspectRatio) Enum.Parse(typeof(ImageAspectRatio), reader.ReadElementContentAsString());
                         break;
                     case "DeinterlaceByDefault":
-                        deinterlaceByDefault = reader.ReadElementContentAsBoolean();
+                        deinterlaceByDefault = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "WorkingZoneSeconds":
                         workingZoneSeconds = reader.ReadElementContentAsInt();
@@ -165,7 +165,7 @@ namespace Kinovea.Services
                         workingZoneMemory = reader.ReadElementContentAsInt();
                         break;
                     case "SyncLockSpeed":
-                        syncLockSpeed = reader.ReadElementContentAsBoolean();
+                        syncLockSpeed = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;
                     case "InfoFading":
                         defaultFading.ReadXml(reader);
@@ -174,7 +174,7 @@ namespace Kinovea.Services
                         maxFading = reader.ReadElementContentAsInt();
                         break;
                     case "DrawOnPlay":
-                        drawOnPlay = reader.ReadElementContentAsBoolean();
+                        drawOnPlay = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
                         break;                        
                     case "RecentColors":
                         ParseRecentColors(reader);

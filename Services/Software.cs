@@ -38,6 +38,7 @@ namespace Kinovea.Services
         public static string ManualsDirectory { get; private set; }
         public static string LocalHelpIndex { get; private set; }
         public static string RemoteHelpIndex { get; private set; }
+        public static string XSLTDirectory { get; private set; }
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -53,6 +54,7 @@ namespace Kinovea.Services
             
             HelpVideosDirectory = applicationDirectory + "HelpVideos\\";
             ManualsDirectory = applicationDirectory + "Manuals\\";
+            XSLTDirectory = applicationDirectory + "xslt\\";
             LocalHelpIndex = applicationDirectory + "HelpIndex.xml";
             
             RemoteHelpIndex = Experimental ? "http://www.kinovea.org/setup/updatebeta.xml" : "http://www.kinovea.org/setup/update.xml";

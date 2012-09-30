@@ -674,61 +674,59 @@ namespace Kinovea.ScreenManager
             else
                 kvaDoc.LoadXml(_kva);
             
-    		string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
-        	string tempFile = folder + "\\temp.kva";
+        	string tempFile = Software.SettingsDirectory + "\\temp.kva";
         	XmlWriterSettings settings = new XmlWriterSettings();
 			settings.Indent = true;
             
     		XmlNode formatNode = kvaDoc.DocumentElement.SelectSingleNode("descendant::FormatVersion");
             double format;
     		bool read = double.TryParse(formatNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
-    		if(read)
-    		{
-                if(format < 2.0 && format >= 1.3)
-                {
-                    log.DebugFormat("Older format detected ({0}). Starting conversion", format); 
-                    
-                    try
-    			    {
-                        XslCompiledTransform xslt = new XslCompiledTransform();
-                        string stylesheet = Application.StartupPath + "\\xslt\\kva-1.5to2.0.xsl";
-                        xslt.Load(stylesheet);
-                        
-                        if(_bIsFile)
-                        {
-                            using (XmlWriter xw = XmlWriter.Create(tempFile, settings))
-                            {
-                                xslt.Transform(kvaDoc, xw);
-                            } 
-                            result = tempFile;
-                        }
-                        else
-                        {
-                            StringBuilder builder = new StringBuilder();
-                            using(XmlWriter xw = XmlWriter.Create(builder, settings))
-			                {    
-                                xslt.Transform(kvaDoc, xw);
-                            }
-                            result = builder.ToString();
-                        }
-                        
-                        log.DebugFormat("Older format converted.");
-        			}
-        			catch(Exception)
-        			{
-        			    log.ErrorFormat("An error occurred during KVA conversion. Conversion aborted.", format.ToString());
-        			}
-                }
-                else if(format <= 1.2)
-                {
-                    log.ErrorFormat("Format too old ({0}). No conversion will be attempted.", format.ToString());
-                }
-    		}
-    		else
+    		if(!read)
     		{
     		    log.ErrorFormat("The format couldn't be read. No conversion will be attempted. Read:{0}", formatNode.InnerText);
+    		    return result;
     		}
-    		
+    		      
+    		if(format < 2.0 && format >= 1.3)
+            {
+                log.DebugFormat("Older format detected ({0}). Starting conversion", format); 
+                
+                try
+			    {
+                    XslCompiledTransform xslt = new XslCompiledTransform();
+                    string stylesheet = Application.StartupPath + "\\xslt\\kva-1.5to2.0.xsl";
+                    xslt.Load(stylesheet);
+                    
+                    if(_bIsFile)
+                    {
+                        using (XmlWriter xw = XmlWriter.Create(tempFile, settings))
+                        {
+                            xslt.Transform(kvaDoc, xw);
+                        } 
+                        result = tempFile;
+                    }
+                    else
+                    {
+                        StringBuilder builder = new StringBuilder();
+                        using(XmlWriter xw = XmlWriter.Create(builder, settings))
+		                {    
+                            xslt.Transform(kvaDoc, xw);
+                        }
+                        result = builder.ToString();
+                    }
+                    
+                    log.DebugFormat("Older format converted.");
+    			}
+    			catch(Exception)
+    			{
+    			    log.ErrorFormat("An error occurred during KVA conversion. Conversion aborted.", format.ToString());
+    			}
+            }
+            else if(format <= 1.2)
+            {
+                log.ErrorFormat("Format too old ({0}). No conversion will be attempted.", format.ToString());
+            }
+			
     		return result;
         }
         private void ReadXml(XmlReader r)
