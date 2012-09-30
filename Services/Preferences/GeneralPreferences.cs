@@ -48,11 +48,6 @@ namespace Kinovea.Services
             uiCultureName = Thread.CurrentThread.CurrentUICulture.Name;            
         }
         
-        public void Import()
-    	{
-    	    
-    	}
-        
         public void SetCulture(string cultureName)
         {
             uiCultureName = cultureName;

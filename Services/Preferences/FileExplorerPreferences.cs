@@ -34,7 +34,7 @@ namespace Kinovea.Services
             get { return maxRecentFiles; }
             set 
             { 
-                if(maxRecentFiles > value)
+                if(recentFiles.Count > value)
                 {
                     recentFiles.RemoveRange(value, recentFiles.Count - value);
                     NotificationCenter.RaiseRecentFilesChanged(this);
