@@ -18,6 +18,7 @@
     <Angle origin="4" leg1="1" leg2="5" relative="true" radius="30"/> <!-- hip -->
     <Angle origin="1" leg1="4" leg2="2" relative="true" radius="30"/> <!-- shoulder-->
     <Angle origin="2" leg1="1" leg2="3" relative="true" radius="20"/> <!-- elbow -->
+    <Angle origin="6" leg1="5" leg2="7" relative="true" radius="20"/> <!-- dorsiflexion-->
   </Angles>
   <Handles>
     <Handle type="Point" reference="0" trackable="false"/> <!-- tip of head -->
