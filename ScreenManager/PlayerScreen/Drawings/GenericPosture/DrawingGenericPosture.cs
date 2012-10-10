@@ -209,7 +209,9 @@ namespace Kinovea.ScreenManager
                 {
                     PointF a = points[distance.Point1];
                     PointF b = points[distance.Point2];
-                    DrawDistanceText(a, b, _canvas, fOpacityFactor, _transformer, brushFill);
+                    string label = CalibrationHelper.GetLengthText(m_GenericPosture.Points[distance.Point1], m_GenericPosture.Points[distance.Point2]);
+                    
+                    DrawDistanceText(a, b, label, _canvas, fOpacityFactor, _transformer, brushFill);
                 }
             }
         }
@@ -506,14 +508,12 @@ namespace Kinovea.ScreenManager
     		tempFont.Dispose();
             fontBrush.Dispose();
         }
-        private void DrawDistanceText(PointF a, PointF b, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        private void DrawDistanceText(PointF a, PointF b, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
         {
-            string label = CalibrationHelper.GetLengthText(a, b);
-            
             SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(opacity * 255));
             Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
-            
+
             PointF middle = GeometryHelper.GetMiddlePoint(a, b);
             PointF textOrigin = new PointF(middle.X - labelSize.Width / 2, middle.Y + 5);
             
