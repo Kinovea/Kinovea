@@ -48,10 +48,10 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public static GenericPosture Instanciate(Guid id)
+        public static GenericPosture Instanciate(Guid id, bool fromKVA)
         {
             if(m_files.ContainsKey(id))
-                return new GenericPosture(m_files[id], false);
+                return new GenericPosture(m_files[id], false, fromKVA);
             else
                 return null;
         }
@@ -74,7 +74,7 @@ namespace Kinovea.ScreenManager
                     continue;
 
                 // Extract icon and name.
-                GenericPosture posture = new GenericPosture(f, true);
+                GenericPosture posture = new GenericPosture(f, true, false);
                 if(posture == null || posture.Id == Guid.Empty)
                     continue;
 

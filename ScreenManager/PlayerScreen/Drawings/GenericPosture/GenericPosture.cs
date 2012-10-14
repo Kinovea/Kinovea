@@ -51,6 +51,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public GenericPostureCapabilities Capabilities { get; private set;}
         public bool Trackable { get; private set;}
+        public bool FromKVA { get; private set;}
         #endregion
         
         #region Members
@@ -59,11 +60,12 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Constructor
-        public GenericPosture(string descriptionFile, bool info)
+        public GenericPosture(string descriptionFile, bool info, bool fromKVA)
         {
             Id = Guid.Empty;
             Name = "";
             Icon = null;
+            this.FromKVA = fromKVA;
             
             Points = new List<PointF>();
             Segments = new List<GenericPostureSegment>();
