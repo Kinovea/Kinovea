@@ -86,7 +86,7 @@ namespace Kinovea.ScreenManager
 		{
 		    m_StylePreset = ToolManager.GenericPosture.m_StylePreset.Clone();
 		    
-		    GenericPosture posture = GenericPostureManager.Instanciate(id);
+		    GenericPosture posture = GenericPostureManager.Instanciate(id, false);
 		    return new DrawingGenericPosture(posture, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
 		}
 		public override Cursor GetCursor(double _fStretchFactor)

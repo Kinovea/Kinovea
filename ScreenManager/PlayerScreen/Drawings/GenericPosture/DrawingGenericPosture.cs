@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             if(m_GenericPosture != null)
                 InitAngles();
             else 
-                m_GenericPosture = new GenericPosture("", true);
+                m_GenericPosture = new GenericPosture("", true, false);
         }
         
         #region AbstractDrawing Implementation
@@ -297,7 +297,7 @@ namespace Kinovea.ScreenManager
                 {
                     case "ToolId":
                         toolId = new Guid(_xmlReader.ReadElementContentAsString());
-                        m_GenericPosture = GenericPostureManager.Instanciate(toolId);
+                        m_GenericPosture = GenericPostureManager.Instanciate(toolId, true);
                         break;
                     case "Positions":
                         if(m_GenericPosture != null)
@@ -379,6 +379,9 @@ namespace Kinovea.ScreenManager
         #region IScalable implementation
         public void Scale(Size imageSize)
         {
+            if(m_GenericPosture.FromKVA)
+                return;
+            
             // The coordinates are defined in a reference image of 800x600 (could be inside the posture file).
             // Scale the positions and angle radius according to the actual image size.
             Size referenceSize = new Size(800, 600);
