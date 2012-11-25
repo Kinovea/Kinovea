@@ -157,8 +157,11 @@ namespace Kinovea.ScreenManager
         }
         public void AddDrawing(AbstractDrawing obj)
         {
-            // insert to the top of z-order
-            m_Drawings.Insert(0, obj);
+            // insert to the top of z-order except for grids.
+            if(obj is DrawingPlane)
+                m_Drawings.Add(obj);
+            else
+                m_Drawings.Insert(0, obj);
         }
         public void WriteXml(XmlWriter w)
         {

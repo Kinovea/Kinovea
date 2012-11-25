@@ -303,6 +303,14 @@ namespace Kinovea.ScreenManager
                 if (drawing is DrawingText)
                     yield return (DrawingText)drawing;
         }
+        
+        public IEnumerable<DrawingPlane> Planes()
+        {
+            foreach (AbstractDrawing drawing in AttachedDrawings())
+                if (drawing is DrawingPlane)
+                    yield return (DrawingPlane)drawing;
+        }
+        
         public IEnumerable<DrawingSVG> SVGs()
         {
             foreach (AbstractDrawing drawing in AttachedDrawings())
@@ -812,7 +820,7 @@ namespace Kinovea.ScreenManager
 			{
 				switch(r.Name)
 				{
-					case "PixelToUnit":
+					/*case "PixelToUnit":
 				        double fPixelToUnit = double.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
 				        calibrationHelper.PixelToUnit = fPixelToUnit;
 						break;
@@ -823,7 +831,7 @@ namespace Kinovea.ScreenManager
 					case "CoordinatesOrigin":
 						// Note: we don't adapt to the destination image size. It makes little sense anyway.
                     	calibrationHelper.CoordinatesOrigin = XmlHelper.ParsePoint(r.ReadElementContentAsString());
-						break;
+						break;*/
 					default:
 						string unparsed = r.ReadOuterXml();
 						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
@@ -1249,7 +1257,7 @@ namespace Kinovea.ScreenManager
         {
             // TODO: Make Calbrabtion helper responsible for this.
             
-            w.WriteStartElement("CalibrationHelp");
+            /*w.WriteStartElement("CalibrationHelp");
             
             w.WriteElementString("PixelToUnit", calibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
             w.WriteStartElement("LengthUnit");
@@ -1262,7 +1270,7 @@ namespace Kinovea.ScreenManager
             w.WriteEndElement();
             w.WriteElementString("CoordinatesOrigin", String.Format("{0};{1}", calibrationHelper.CoordinatesOrigin.X, calibrationHelper.CoordinatesOrigin.Y));
 
-            w.WriteEndElement();
+            w.WriteEndElement();*/
         }
         #endregion
         

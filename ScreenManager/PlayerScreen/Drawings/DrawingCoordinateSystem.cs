@@ -145,9 +145,9 @@ namespace Kinovea.ScreenManager
             if(!Visible)
                 return;
             
-            float widthUserUnit = (float)CalibrationHelper.GetLengthInUserUnit((double)imageSize.Width);
-            float stepSizeUserUnit = CalibrationHelper.RulerStepSize(widthUserUnit, 10);
-            int stepSizePixels = (int)CalibrationHelper.GetLengthInPixels(stepSizeUserUnit);
+            float widthUserUnit = CalibrationHelper.GetLength(PointF.Empty, new PointF((float)imageSize.Width, 0));
+            float stepSizeUserUnit = RulerStepSize(widthUserUnit, 10);
+            int stepSizePixels = (int)CalibrationHelper.GetImageLength(PointF.Empty, new PointF(stepSizeUserUnit, 0));
             
             Point origin = transformer.Transform(points["0"]);
             Size size = transformer.Transform(imageSize);
@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
             else if(handleNumber == 3)
                 points["0"] = new Point(point.X, points["0"].Y);
             
-            CalibrationHelper.CoordinatesOrigin = point;
+            CalibrationHelper.CalibrationByLine_SetOrigin(point);
             SignalTrackablePointMoved();
         }
         public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
@@ -239,7 +239,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             points[name] = value;
-            CalibrationHelper.CoordinatesOrigin = value;
+            CalibrationHelper.CalibrationByLine_SetOrigin(value);
         }
         private void SignalTrackablePointMoved()
         {
@@ -280,6 +280,8 @@ namespace Kinovea.ScreenManager
             CallInvalidateFromMenu(sender);
         }
         #endregion
+        
+        
         
         #region Lower level helpers
         private void BindStyle()
@@ -448,6 +450,33 @@ namespace Kinovea.ScreenManager
             int widenRadius = 5;
             Rectangle axis = new Rectangle(points["0"].X - widenRadius, 0, widenRadius * 2, imageSize.Height);
             return axis.Contains(p);
+        }
+        
+        /// <summary>
+		/// Utility function to find nice spacing for tick marks.
+		/// </summary>
+        private static float RulerStepSize(float range, float targetSteps)
+        {
+            float minimum = range/targetSteps;
+
+            // Find magnitude of the initial guess.
+            float magnitude = (float)Math.Floor(Math.Log10(minimum));
+            float orderOfMagnitude = (float)Math.Pow(10, magnitude);
+
+            // Reduce the number of steps.
+            float residual = minimum / orderOfMagnitude;
+            float stepSize;
+            
+            if(residual > 5)
+                stepSize = 10 * orderOfMagnitude;
+            else if (residual > 2)
+                stepSize = 5 * orderOfMagnitude;
+            else if (residual > 1)
+                stepSize = 2 * orderOfMagnitude;
+            else
+                stepSize = orderOfMagnitude;
+                
+            return stepSize;
         }
         #endregion
         

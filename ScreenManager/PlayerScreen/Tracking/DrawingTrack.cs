@@ -586,13 +586,13 @@ namespace Kinovea.ScreenManager
         	    return "";
         	
         	if(_p1 < 0 || _p1 >= m_Positions.Count || _p2 < 0 || _p2 >= m_Positions.Count)
-        	    return m_ParentMetadata.CalibrationHelper.GetLengthText(0);
+        	    return m_ParentMetadata.CalibrationHelper.GetLengthText(PointF.Empty, PointF.Empty, false, true);
         	
-        	double fPixelDistance = 0;
+        	float length = 0;
     		for(int i = _p1; i < _p2; i++)
-    			fPixelDistance += GeometryHelper.GetDistance(m_Positions[i].Point, m_Positions[i+1].Point);
+    			length += GeometryHelper.GetDistance(m_Positions[i].Point, m_Positions[i+1].Point);
     		
-        	return m_ParentMetadata.CalibrationHelper.GetLengthText(fPixelDistance);
+    		return m_ParentMetadata.CalibrationHelper.GetLengthText(PointF.Empty, new PointF(length, 0), true, true);
         }
         private string GetSpeedText(int _p1, int _p2)
         {
@@ -604,9 +604,9 @@ namespace Kinovea.ScreenManager
         	    return "";
         	
         	if(_p1 < 0 || _p1 >= m_Positions.Count-1 || _p2 < 0 || _p2 >= m_Positions.Count)
-        	    return m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[0].Point, m_Positions[0].Point, 0);
+        	    return m_ParentMetadata.CalibrationHelper.GetSpeedText(PointF.Empty, PointF.Empty, 0);
         	
-    		return m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].Point, m_Positions[_p2].Point, _p2 - _p1);
+        	return m_ParentMetadata.CalibrationHelper.GetSpeedText(m_Positions[_p1].Point.ToPointF(), m_Positions[_p2].Point.ToPointF(), _p2 - _p1);
         }
 		#endregion
     
@@ -889,10 +889,13 @@ namespace Kinovea.ScreenManager
             
             // The coordinate system defaults to the first point,
             // but can be specified by user.
-            Point coordOrigin = m_Positions[0].Point;
+            //Point coordOrigin = m_Positions[0].Point;
 
-            if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 || m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
-            	coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
+            //if(m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.X >= 0 || m_ParentMetadata.CalibrationHelper.CoordinatesOrigin.Y >= 0)
+            //if(m_ParentMetadata.CalibrationHelper.IsCalibrated)
+            //    coordOrigin = m_ParentMetadata.CalibrationHelper.CoordinatesOrigin;
+            
+            //CalibrationLine calibrationLine = m_ParentMetadata.CalibrationHelper.GetCalibrationByLineOrigin();
             
             if(m_Positions.Count > 0)
             {
@@ -904,14 +907,16 @@ namespace Kinovea.ScreenManager
                     // - The origin of the coordinates system is given as parameter.
                     // - X goes left (same than internal), Y goes up (opposite than internal).
                     // - Time is absolute.
-                    double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
-                    double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
+                    //double userX = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)tp.X - (double)coordOrigin.X);
+                    //double userY = m_ParentMetadata.CalibrationHelper.GetLengthInUserUnit((double)coordOrigin.Y - (double)tp.Y);
+                    
+                    PointF p = m_ParentMetadata.CalibrationHelper.GetPoint(tp.Point.ToPointF());
                     string userT = m_ParentMetadata.TimeStampsToTimecode(tp.T, TimecodeFormat.Unknown, false);
         			
-                    _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", userX));
-                    _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userX));
-                    _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", userY));
-                    _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", userY));
+                    _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", p.X));
+                    _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.X));
+                    _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", p.Y));
+                    _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", p.Y));
                     _xmlWriter.WriteAttributeString("UserTime", userT);
             
             		tp.WriteXml(_xmlWriter);

@@ -233,11 +233,17 @@
     <Compile Include="Commands\ScreenManager\CommandToggleCommonControls.cs" />
     <Compile Include="CoordinateSystem.cs" />
     <Compile Include="Delegates.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
+    <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
+    <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />
+    <Compile Include="PlayerScreen\Calibration\CalibrationPlane.cs" />
+    <Compile Include="PlayerScreen\Calibration\CalibratorType.cs" />
+    <Compile Include="PlayerScreen\Calibration\ICalibrator.cs" />
+    <Compile Include="PlayerScreen\Calibration\LengthUnits.cs" />
+    <Compile Include="PlayerScreen\Calibration\UnitHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="PlayerScreen\Drawings\AutoNumber.cs" />
     <Compile Include="PlayerScreen\Drawings\AutoNumberManager.cs" />
@@ -331,15 +337,16 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolPencil.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolPointer.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
+    <Compile Include="PlayerScreen\Geometry\Angle.cs" />
     <Compile Include="PlayerScreen\Geometry\AngleHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\GeometryHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\PointLinePosition.cs" />
+    <Compile Include="PlayerScreen\Geometry\ProjectiveMapping.cs" />
     <Compile Include="PlayerScreen\Geometry\Quadrilateral.cs" />
     <Compile Include="PlayerScreen\Geometry\Vector.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />
     <Compile Include="PlayerScreen\KeyframeLabel.cs" />
-    <Compile Include="PlayerScreen\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\MemoPlayerScreen.cs" />
     <Compile Include="PlayerScreen\Metadata.cs" />
     <Compile Include="PlayerScreen\Timeline.cs" />
@@ -392,6 +399,10 @@
       <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs" />
+    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.Designer.cs">
+      <DependentUpon>FormCalibratePlane.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureDrawing2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -410,11 +421,11 @@
     <Compile Include="PlayerScreen\UserInterface\FormToolPresets.Designer.cs">
       <DependentUpon>FormToolPresets.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.cs">
+    <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\FormConfigureMeasure.Designer.cs">
-      <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
+    <Compile Include="PlayerScreen\UserInterface\FormCalibrateLine.Designer.cs">
+      <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureOpacity.cs">
       <SubType>Form</SubType>
@@ -604,11 +615,14 @@
       <DependentUpon>SpeedSlider.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibratePlane.resx">
+      <DependentUpon>FormCalibratePlane.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureDrawing2.resx">
       <DependentUpon>FormConfigureDrawing2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureMeasure.resx">
-      <DependentUpon>FormConfigureMeasure.cs</DependentUpon>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormCalibrateLine.resx">
+      <DependentUpon>FormCalibrateLine.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureOpacity.resx">
       <DependentUpon>FormConfigureOpacity.cs</DependentUpon>
@@ -747,6 +761,7 @@
     <Folder Include="PlayerScreen\Drawings\Styling" />
     <Folder Include="PlayerScreen\Geometry" />
     <Folder Include="PlayerScreen\Export" />
+    <Folder Include="PlayerScreen\Calibration" />
     <Folder Include="PlayerScreen\Trackability" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
