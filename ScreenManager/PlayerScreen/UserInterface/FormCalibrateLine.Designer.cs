@@ -22,7 +22,7 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	partial class formConfigureMeasure
+	partial class FormCalibrateLine
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.

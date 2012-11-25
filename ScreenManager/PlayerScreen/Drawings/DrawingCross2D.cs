@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
             
             if(ShowMeasurableInfo)
             {
-                m_LabelCoordinates.SetText(CalibrationHelper.GetPointText(points["0"], true));
+                m_LabelCoordinates.SetText(CalibrationHelper.GetPointText(new PointF(points["0"].X, points["0"].Y), true, true));
                 m_LabelCoordinates.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
@@ -232,7 +232,8 @@ namespace Kinovea.ScreenManager
             	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Coordinates");
             	
-            	PointF coords = CalibrationHelper.GetPointInUserUnit(points["0"]);
+            	PointF p = new PointF(points["0"].X, points["0"].Y);
+            	PointF coords = CalibrationHelper.GetPoint(p);
 	            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
 	            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));

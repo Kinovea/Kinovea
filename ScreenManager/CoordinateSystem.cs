@@ -219,11 +219,14 @@ namespace Kinovea.ScreenManager
 
 			return new Point((int)fStretchedX, (int)fStretchedY);
 		}
-		public Point Transform(PointF _point)
+		public Point Transform(PointF point)
 		{
+            float x = point.X;
+            float y = point.Y;
+            
 			// Zoom and translate
-            double fZoomedX = (_point.X - m_DirectZoomWindow.Left) * m_fZoom;
-			double fZoomedY = (_point.Y - m_DirectZoomWindow.Top) * m_fZoom;
+            double fZoomedX = (x - m_DirectZoomWindow.Left) * m_fZoom;
+            double fZoomedY = (y - m_DirectZoomWindow.Top) * m_fZoom;
 
             // Scale
             double fStretchedX = fZoomedX * m_fStretch;

@@ -82,6 +82,11 @@ namespace Kinovea.ScreenManager
             return new PointF(_point.X * _scaleX, _point.Y * _scaleY);
         }
         
+        public static PointF ToPointF(this Point point)
+        {
+            return new PointF(point.X, point.Y);
+        }
+        
         /// <summary>
         /// Get the complementary color.
         /// </summary>

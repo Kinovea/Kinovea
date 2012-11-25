@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2011.
+Copyright © Joan Charmant 2012.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -22,21 +22,10 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    // Some general enums used in this namespace.
-    // Some other enums might be in the file where the most related class is defined.
-    // But avoid declaring enums as nested types inside these classes.
-    
-	/// <summary>
-	/// Standards units for distance, restricted to sports range. (No microscopic or macroscopic).
-	/// </summary>
-	public enum LengthUnits
-	{
-		Centimeters,
-		Meters,
-		Inches,
-		Feet,
-		Yards,
-		Percentage,
-		Pixels		  // Native unit.
-	}
+    public enum CalibratorType
+    {
+        None,
+        Line,
+        Plane
+    }
 }

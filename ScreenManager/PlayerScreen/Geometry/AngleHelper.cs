@@ -26,8 +26,9 @@ namespace Kinovea.ScreenManager
 {
     public class AngleHelper
     {
-        public double Start { get; private set; }
-        public double Sweep { get; private set; }
+        public Angle Angle { get; private set;}
+        public Angle CalibratedAngle { get; private set;}
+        
         public Rectangle BoundingBox { get; private set; }
         public PointF TextPosition { get; private set;}
         public PointF Origin { get; private set;}
@@ -44,16 +45,30 @@ namespace Kinovea.ScreenManager
             this.textDistance = textDistance;
             this.Tenth = tenth;
         }
-        public void Update(PointF o, PointF a, PointF b, int radius)
+        public void Update(PointF o, PointF a, PointF b, int radius, CalibrationHelper calibration)
         {
             if(o == a || o == b)
                 return;
 
             Origin = o;
-            ComputeAngles(o, a, b);
+            Angle = ComputeAngle(o, a, b);
+            
+            if(calibration != null && calibration.CalibratorType == CalibratorType.Plane)
+            {
+                PointF calibratedO = calibration.GetPoint(o);
+                PointF calibratedA = calibration.GetPoint(a);
+                PointF calibratedB = calibration.GetPoint(b);
+                
+                CalibratedAngle = ComputeAngle(calibratedO, calibratedA, calibratedB);
+            }
+            else
+            {
+                CalibratedAngle = Angle;
+            }
+            
             ComputeBoundingBox(o, a, b, (float)radius);
-            ComputeTextPosition(Start, Sweep);
-            ComputeHitRegion(BoundingBox, Start, Sweep);
+            ComputeTextPosition(Angle);
+            ComputeHitRegion(BoundingBox, Angle);
         }
         public bool Hit(Point p)
         {
@@ -81,26 +96,31 @@ namespace Kinovea.ScreenManager
             
             return angle % 360;
         }
-        private void ComputeAngles(PointF o, PointF a, PointF b)
+        private Angle ComputeAngle(PointF o, PointF a, PointF b)
         {
-            double oa = GetAbsoluteAngle(o, a);
-            double ob = GetAbsoluteAngle(o, b);
+            float oa = (float)GetAbsoluteAngle(o, a);
+            float ob = (float)GetAbsoluteAngle(o, b);
             
-            Start = oa;
+            float start = 0;
+            float sweep = 0;
+            
+            start = oa;
             if(ob > oa)
             {
-                Sweep = ob - oa;
-                if(relative && Sweep > 180)
-                    Sweep = -(360 - Sweep);
+                sweep = ob - oa;
+                if(relative && sweep > 180)
+                    sweep = -(360 - sweep);
             }
             else
             {
-                Sweep = (360 - oa) + ob;
-                if(relative && Sweep > 180)
-                    Sweep = -(360 - Sweep);
+                sweep = (360 - oa) + ob;
+                if(relative && sweep > 180)
+                    sweep = -(360 - sweep);
             }
             
-            Sweep %= 360;
+            sweep %= 360;
+            
+            return new Angle(start, sweep);
         }
         private void ComputeBoundingBox(PointF o, PointF a, PointF b, float radius)
         {
@@ -115,15 +135,15 @@ namespace Kinovea.ScreenManager
             
             BoundingBox = o.Box((int)radius);
         }
-        private void ComputeTextPosition(double start, double sweep)
+        private void ComputeTextPosition(Angle angle)
         {
-            double bissect = (start + sweep/2) * GeometryHelper.DegreesToRadians;
+            double bissect = (angle.Start + angle.Sweep/2) * GeometryHelper.DegreesToRadians;
             int adjacent = (int)(Math.Cos(bissect) * textDistance);
             int opposed = (int)(Math.Sin(bissect) * textDistance);
             
             TextPosition = new Point(adjacent, opposed);
         }
-        private void ComputeHitRegion(Rectangle boundingBox, double start, double sweep)
+        private void ComputeHitRegion(Rectangle boundingBox, Angle angle)
         {
             if (BoundingBox == Rectangle.Empty)
                 return;
@@ -132,7 +152,7 @@ namespace Kinovea.ScreenManager
             {
                 using (GraphicsPath gp = new GraphicsPath())
                 {
-                    gp.AddPie(BoundingBox, (float)Start, (float)Sweep);
+                    gp.AddPie(BoundingBox, angle.Start, angle.Sweep);
                     if(hitRegion != null)
                         hitRegion.Dispose();
                     hitRegion = new Region(gp);

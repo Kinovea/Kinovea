@@ -99,10 +99,10 @@ namespace Kinovea.Root
             
             // Combo Speed units (MUST be filled in the order of the enum)
             lblSpeedUnit.Text = RootLang.dlgPreferences_LabelSpeedUnit;
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.MetersPerSecond)));
-			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.KilometersPerHour)));
-			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.FeetPerSecond)));
-            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, CalibrationHelper.GetSpeedAbbreviationFromUnit(SpeedUnit.MilesPerHour)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MetersPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.MetersPerSecond)));
+			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_KilometersPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.KilometersPerHour)));
+			cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_FeetPerSecond, UnitHelper.SpeedAbbreviation(SpeedUnit.FeetPerSecond)));
+            cmbSpeedUnit.Items.Add(String.Format(RootLang.dlgPreferences_Speed_MilesPerHour, UnitHelper.SpeedAbbreviation(SpeedUnit.MilesPerHour)));
             //cmbSpeedUnit.Items.Add(RootLang.dlgPreferences_Speed_Knots);		// Is this useful at all ?
             	
 	        // Combo Image Aspect Ratios (MUST be filled in the order of the enum)

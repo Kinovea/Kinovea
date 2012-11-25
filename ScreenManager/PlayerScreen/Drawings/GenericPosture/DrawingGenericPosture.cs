@@ -157,7 +157,9 @@ namespace Kinovea.ScreenManager
             
             List<Rectangle> boxes = new List<Rectangle>();
             foreach(AngleHelper angle in m_Angles)
+            {
                 boxes.Add(_transformer.Transform(angle.BoundingBox));
+            }
             
             using(Pen penEdge = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor * 255)))
             using(SolidBrush brushHandle = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*255)))
@@ -190,11 +192,14 @@ namespace Kinovea.ScreenManager
                 penEdge.DashStyle = DashStyle.Solid;
                 for(int i = 0; i<m_Angles.Count; i++)
                 {
-                    _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                    if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
+                        UpdateAngles();
+                    
+                    _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
                     
                     try
                     {
-                        _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Start, (float)m_Angles[i].Sweep);
+                        _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
                     }
                     catch(Exception e)
                     {
@@ -209,7 +214,7 @@ namespace Kinovea.ScreenManager
                 {
                     PointF a = points[distance.Point1];
                     PointF b = points[distance.Point2];
-                    string label = CalibrationHelper.GetLengthText(m_GenericPosture.Points[distance.Point1], m_GenericPosture.Points[distance.Point2]);
+                    string label = CalibrationHelper.GetLengthText(m_GenericPosture.Points[distance.Point1], m_GenericPosture.Points[distance.Point2], true, true);
                     
                     DrawDistanceText(a, b, label, _canvas, fOpacityFactor, _transformer, brushFill);
                 }
@@ -461,7 +466,7 @@ namespace Kinovea.ScreenManager
                 PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
                 PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
                 int radius = m_GenericPosture.Angles[i].Radius;
-                m_Angles[i].Update(origin, leg1, leg2, radius);
+                m_Angles[i].Update(origin, leg1, leg2, radius, CalibrationHelper);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)
@@ -483,7 +488,7 @@ namespace Kinovea.ScreenManager
             // FIXME: function duplicated. Move to AngleHelper.
             // This version is already more generic.
             //-------------------------------------------------
-            double value = angle.Sweep;
+            double value = angle.CalibratedAngle.Sweep;
             if(value < 0)
                 value = -value;
             

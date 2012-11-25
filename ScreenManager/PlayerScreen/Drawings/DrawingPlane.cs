@@ -29,13 +29,18 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Plane")]
-	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable
+	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable
     {
+	    #region Events
+        public event EventHandler ShowMeasurableInfoChanged;
+        #endregion
+        
         #region Properties
         public DrawingStyle DrawingStyle
         {
@@ -48,24 +53,41 @@ namespace Kinovea.ScreenManager
 		}
 		public override List<ToolStripItem> ContextMenu
 		{
-			get { return null; }
+            get
+            {
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                
+                mnuCalibrate.Text = ScreenManagerLang.mnuSealMeasure;
+                contextMenu.Add(mnuCalibrate);
+
+                return contextMenu;
+		    }
 		}
 		public override DrawingCapabilities Caps
 		{
 			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading; }
 		}
-        public int Divisions
+        public int Subdivisions
         {
-            get { return m_iDivisions; }
-            set { m_iDivisions = value; }
+            get { return subdivisions; }
+            set { subdivisions = value; }
         }
+        public CalibrationHelper CalibrationHelper { get; set; }
+        public bool ShowMeasurableInfo { get; set; }
+        public bool UsedForCalibration { get; set; }
         #endregion
 
         #region Members
-        private Quadrilateral m_Corners = Quadrilateral.UnitRectangle;
-        private Quadrilateral m_RefPlane = Quadrilateral.UnitRectangle;
+        private Quadrilateral m_Corners = Quadrilateral.UnitRectangle;  // Coordinates of corners in Image system.
+        private Quadrilateral m_RefPlane = Quadrilateral.UnitRectangle; // Corners in image system prior to expanding. (?)
         
-        private int m_iDivisions;
+        private int planeWidth;
+        private int planeHeight;
+        private Quadrilateral basePlane;                // Coordinates of corners in Plane system.
+        
+        private ProjectiveMapping projectiveMapping = new ProjectiveMapping();
+        
+        private int subdivisions;
         private bool m_bSupport3D;
         
         private InfosFading m_InfosFading;
@@ -77,6 +99,8 @@ namespace Kinovea.ScreenManager
         private bool m_bValidPlane = true;
         private float m_fShift = 0F;                     // used only for expand/retract, to stay relative to the original mapping.
 
+        private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
+        
         private const int m_iMinimumDivisions = 2;
         private const int m_iDefaultDivisions = 8;
         private const int m_iMaximumDivisions = 20;
@@ -86,7 +110,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingPlane(int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
         {
-            m_iDivisions = _divisions == 0 ? m_iDefaultDivisions : _divisions;
+            subdivisions = _divisions == 0 ? m_iDefaultDivisions : _divisions;
             m_bSupport3D = _support3D;
             
             // Decoration
@@ -100,8 +124,20 @@ namespace Kinovea.ScreenManager
 			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
 			m_InfosFading.UseDefault = false;
             m_InfosFading.AlwaysVisible = true;
+            
+            planeWidth = 200;
+            planeHeight = 100;
+            basePlane = new Quadrilateral(){
+                A = new Point(0, 0),
+                B = new Point(planeWidth, 0),
+                C = new Point(planeWidth, planeHeight),
+                D = new Point(0, planeHeight)
+            };
 			
             RedefineHomography();
+            
+            mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
+			mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
             : this(m_iDefaultDivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
@@ -125,28 +161,38 @@ namespace Kinovea.ScreenManager
                 // Handlers
                 foreach(Point p in quad)
                     _canvas.FillEllipse(br, p.Box(4));
-            
+                
                 // Grid
                 if (m_bValidPlane)
                 {
-                    float[] homography = GetHomographyMatrix(quad.ToArray());
+                    InitProjectiveMapping(m_Corners);
                     
                     // Rows
-                    for (int iRow = 0; iRow <= m_iDivisions; iRow++)
+                    //int start = - subdivisions;
+                    //int end = subdivisions * 2;
+                    //int total = subdivisions * 3;
+                    
+                    int start = 0;
+                    int end = subdivisions;
+                    int total = subdivisions;
+                    
+                    for (int i = start; i <= end; i++)
                     {
-                        float v = (float)iRow / m_iDivisions;
-                        PointF h1 = ProjectiveMapping(new PointF(0, v), homography);
-                        PointF h2 = ProjectiveMapping(new PointF(1, v), homography);
-                        _canvas.DrawLine(m_PenEdges, h1, h2);
+                        float v = i * ((float)planeHeight / total);
+                        PointF h1 = PlaneToImageTransform(new PointF(0, v));
+                        PointF h2 = PlaneToImageTransform(new PointF(planeWidth, v));
+                        
+                        _canvas.DrawLine(m_PenEdges, _transformer.Transform(h1), _transformer.Transform(h2));
                     }
                 
                     // Columns
-                    for (int iCol = 0; iCol <= m_iDivisions; iCol++)
+                    for (int i = start ; i <= end; i++)
                     {
-                        float h = (float)iCol / m_iDivisions;
-                        PointF h1 = ProjectiveMapping(new PointF(h, 0), homography);
-                        PointF h2 = ProjectiveMapping(new PointF(h, 1), homography);
-                        _canvas.DrawLine(m_PenEdges, h1, h2);
+                        float h = i * ((float)planeWidth / total);
+                        PointF h1 = PlaneToImageTransform(new PointF(h, 0));
+                        PointF h2 = PlaneToImageTransform(new PointF(h, planeHeight));
+                        
+                        _canvas.DrawLine(m_PenEdges, _transformer.Transform(h1), _transformer.Transform(h2));
                     }
                 }
                 else
@@ -183,8 +229,8 @@ namespace Kinovea.ScreenManager
 			if ((_ModifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Just change the number of divisions.
-                m_iDivisions = m_iDivisions + ((_deltaX - _deltaY)/4);
-                m_iDivisions = Math.Min(Math.Max(m_iDivisions, m_iMinimumDivisions), m_iMaximumDivisions);
+                subdivisions = subdivisions + ((_deltaX - _deltaY)/4);
+                subdivisions = Math.Min(Math.Max(subdivisions, m_iMinimumDivisions), m_iMaximumDivisions);
             }
             else if ((_ModifierKeys & Keys.Control) == Keys.Control)
             {
@@ -196,14 +242,14 @@ namespace Kinovea.ScreenManager
                     if (m_bValidPlane)
                     {
                         // find new corners by growing the current homography.
-                        float[] homography = GetHomographyMatrix(m_RefPlane.ToArray());
+                        InitProjectiveMapping(m_RefPlane);
                         float fShift = m_fShift + ((float)(_deltaX - _deltaY) / 200);
 
                         PointF[] shiftedCorners = new PointF[4];
-                        shiftedCorners[0] = ProjectiveMapping(new PointF(-fShift, -fShift), homography);
-                        shiftedCorners[1] = ProjectiveMapping(new PointF(1 + fShift, -fShift), homography);
-                        shiftedCorners[2] = ProjectiveMapping(new PointF(1 + fShift, 1 + fShift), homography);
-                        shiftedCorners[3] = ProjectiveMapping(new PointF(-fShift, 1 + fShift), homography);
+                        shiftedCorners[0] = PlaneToImageTransform(new PointF(-fShift, -fShift));
+                        shiftedCorners[1] = PlaneToImageTransform(new PointF(1 + fShift, -fShift));
+                        shiftedCorners[2] = PlaneToImageTransform(new PointF(1 + fShift, 1 + fShift));
+                        shiftedCorners[3] = PlaneToImageTransform(new PointF(-fShift, 1 + fShift));
                         
                         try
                         {
@@ -303,7 +349,7 @@ namespace Kinovea.ScreenManager
     				        break;
 				        }
 				    case "Divisions":
-				        m_iDivisions = _xmlReader.ReadElementContentAsInt();
+				        subdivisions = _xmlReader.ReadElementContentAsInt();
                         break;
                     case "Perspective":
                         m_bSupport3D = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
@@ -329,6 +375,7 @@ namespace Kinovea.ScreenManager
                 m_bSupport3D = true;
                 
 			RedefineHomography();
+			m_bInitialized = true;
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
@@ -337,7 +384,7 @@ namespace Kinovea.ScreenManager
 		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", m_Corners.C.X, m_Corners.C.Y));
 		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", m_Corners.D.X, m_Corners.D.Y));
 		    
-            _xmlWriter.WriteElementString("Divisions", m_iDivisions.ToString());
+            _xmlWriter.WriteElementString("Divisions", subdivisions.ToString());
             _xmlWriter.WriteElementString("Perspective", m_bSupport3D ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
@@ -388,11 +435,17 @@ namespace Kinovea.ScreenManager
         public void Reset()
         {
             // Used on metadata over load.
-            m_iDivisions = m_iDefaultDivisions;
+            subdivisions = m_iDefaultDivisions;
             m_fShift = 0.0F;
             m_bValidPlane = true;
             m_bInitialized = false;
-            m_Corners = Quadrilateral.UnitRectangle;
+            m_Corners = basePlane.Clone();
+        }
+        
+        public void SetUsedForCalibration(bool used)
+        {
+            UsedForCalibration = used;
+            RedefineHomography();
         }
         
         #region Private methods
@@ -403,60 +456,40 @@ namespace Kinovea.ScreenManager
         private void RedefineHomography()
         {
             m_RefPlane = m_Corners.Clone();
-        }
-        private float[] GetHomographyMatrix(Point[] _SourceCoords)
-        {
-            float[] homography = new float[18];
-
-            float sx = (_SourceCoords[0].X - _SourceCoords[1].X) + (_SourceCoords[2].X - _SourceCoords[3].X);
-            float sy = (_SourceCoords[0].Y - _SourceCoords[1].Y) + (_SourceCoords[2].Y - _SourceCoords[3].Y);
-            float dx1 = _SourceCoords[1].X - _SourceCoords[2].X;
-            float dx2 = _SourceCoords[3].X - _SourceCoords[2].X;
-            float dy1 = _SourceCoords[1].Y - _SourceCoords[2].Y;
-            float dy2 = _SourceCoords[3].Y - _SourceCoords[2].Y;
-
-            float z = (dx1 * dy2) - (dy1 * dx2);
-            float g = ((sx * dy2) - (sy * dx2)) / z;
-            float h = ((sy * dx1) - (sx * dy1)) / z;
-
-            // Transformation matrix. From the square to the quadrilateral.
-            float a = homography[0] = _SourceCoords[1].X - _SourceCoords[0].X + g * _SourceCoords[1].X;
-            float b = homography[1] = _SourceCoords[3].X - _SourceCoords[0].X + h * _SourceCoords[3].X;
-            float c = homography[2] = _SourceCoords[0].X;
-            float d = homography[3] = _SourceCoords[1].Y - _SourceCoords[0].Y + g * _SourceCoords[1].Y;
-            float e = homography[4] = _SourceCoords[3].Y - _SourceCoords[0].Y + h * _SourceCoords[3].Y;
-            float f = homography[5] = _SourceCoords[0].Y;
-            homography[6] = g;
-            homography[7] = h;
-            homography[8] = 1;
-
-            // Inverse Transformation Matrix. From the quadrilateral to our square.
-            homography[9] = e - f * h;
-            homography[10] = c * h - b;
-            homography[11] = b * f - c * e;
-            homography[12] = f * g - d;
-            homography[13] = a - c * g;
-            homography[14] = c * d - a * f;
-            homography[15] = d * h - e * g;
-            homography[16] = b * g - a * h;
-            homography[17] = a * e - b * d;
-
-            return homography;
-        }
-        private PointF ProjectiveMapping(PointF _SourcePoint, float[] _Homography) 
-        {
-            double x = (_Homography[0] * _SourcePoint.X + _Homography[1] * _SourcePoint.Y + _Homography[2]) / (_Homography[6] * _SourcePoint.X + _Homography[7] * _SourcePoint.Y + 1);
-            double y = (_Homography[3] * _SourcePoint.X + _Homography[4] * _SourcePoint.Y + _Homography[5]) / (_Homography[6] * _SourcePoint.X + _Homography[7] * _SourcePoint.Y + 1);
-
-            return new PointF((float)x, (float)y);
-        }
-        private PointF InverseProjectiveMapping(PointF _SourcePoint, float[] _Homography)
-        {
-            double x = (_Homography[9] * _SourcePoint.X + _Homography[10] * _SourcePoint.Y + _Homography[11]) / (_Homography[15] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + 1);
-            double y = (_Homography[12] * _SourcePoint.X + _Homography[13] * _SourcePoint.Y + _Homography[14]) / (_Homography[15] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + 1);
-            double z = (_Homography[18] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + _Homography[17]) / (_Homography[15] * _SourcePoint.X + _Homography[16] * _SourcePoint.Y + 1);
             
-            return new PointF((float)x / (float)z, (float)y / (float)z);
+            // If used for the main calibration.
+            if(UsedForCalibration && CalibrationHelper != null)
+                CalibrationHelper.CalibrationByPlane_InitProjection(m_Corners);
+        }
+        
+        private void InitProjectiveMapping(Quadrilateral quad)
+        {
+            projectiveMapping.Init(basePlane, quad);
+        }
+        
+        private PointF PlaneToImageTransform(PointF p) 
+        {
+            return projectiveMapping.Forward(p);
+        }
+        
+        private void mnuCalibrate_Click(object sender, EventArgs e)
+        {
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.DeactivateKeyboardHandler != null)
+                dp.DeactivateKeyboardHandler();
+            
+            FormCalibratePlane fcp = new FormCalibratePlane(CalibrationHelper, this);
+            FormsHelper.Locate(fcp);
+            fcp.ShowDialog();
+            fcp.Dispose();
+            
+            if(UsedForCalibration && CalibrationHelper != null)
+                CalibrationHelper.CalibrationByPlane_InitProjection(m_Corners);
+            
+            CallInvalidateFromMenu(sender);
+            
+            if (dp.ActivateKeyboardHandler != null)
+                dp.ActivateKeyboardHandler();
         }
         #endregion
 

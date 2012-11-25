@@ -162,7 +162,9 @@ namespace Kinovea.ScreenManager
             if(ShowMeasurableInfo)
             {
             	// Text of the measure. (The helpers knows the unit)
-            	m_LabelMeasure.SetText(CalibrationHelper.GetLengthText(points["a"], points["b"]));
+            	PointF a = new PointF(points["a"].X, points["a"].Y);
+            	PointF b = new PointF(points["b"].X, points["b"].Y);
+            	m_LabelMeasure.SetText(CalibrationHelper.GetLengthText(a, b, true, true));
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
@@ -291,7 +293,10 @@ namespace Kinovea.ScreenManager
             	// Spreadsheet support.
             	_xmlWriter.WriteStartElement("Measure");
             	
-            	double len = CalibrationHelper.GetLengthInUserUnit(points["a"], points["b"]);
+            	PointF a = new PointF(points["a"].X, points["a"].Y);
+            	PointF b = new PointF(points["b"].X, points["b"].Y);
+            	
+            	float len = CalibrationHelper.GetLength(a, b);
 	            string value = String.Format("{0:0.00}", len);
 	            string valueInvariant = String.Format(CultureInfo.InvariantCulture, "{0:0.00}", len);
 
@@ -311,7 +316,7 @@ namespace Kinovea.ScreenManager
 		}
         #endregion
         
-         #region ITrackable implementation and support.
+        #region ITrackable implementation and support.
         public Guid ID
         {
             get { return id; }
@@ -395,7 +400,7 @@ namespace Kinovea.ScreenManager
 			if (dp.DeactivateKeyboardHandler != null)
 				dp.DeactivateKeyboardHandler();
 
-			formConfigureMeasure fcm = new formConfigureMeasure(CalibrationHelper, this);
+			FormCalibrateLine fcm = new FormCalibrateLine(CalibrationHelper, this);
 			FormsHelper.Locate(fcm);
 			fcm.ShowDialog();
 			fcm.Dispose();

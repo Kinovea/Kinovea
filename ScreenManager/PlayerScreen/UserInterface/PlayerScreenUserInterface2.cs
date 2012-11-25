@@ -696,7 +696,7 @@ namespace Kinovea.ScreenManager
 				EnableDisableKeyframes();
 			}
 			
-			m_FrameServer.Metadata.CalibrationHelper.CurrentSpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+			m_FrameServer.Metadata.CalibrationHelper.SpeedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
 			m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
 
 			// Refresh image to update timecode in chronos, grids colors, default fading, etc.
@@ -1296,26 +1296,10 @@ namespace Kinovea.ScreenManager
 			if(!m_FrameServer.Loaded)
                 return "0";
 
-			TimecodeFormat tcf;
-			if (_timeCodeFormat == TimecodeFormat.Unknown)
-			{
-				tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
-			}
-			else
-			{
-				tcf = _timeCodeFormat;
-			}
-
-			long iTimeStamp;
-			if (_bSynched)
-			{
-				iTimeStamp = _iTimeStamp - m_iSyncPosition;
-			}
-			else
-			{
-				iTimeStamp = _iTimeStamp;
-			}
-
+			TimecodeFormat tcf = _timeCodeFormat == TimecodeFormat.Unknown ? PreferencesManager.PlayerPreferences.TimecodeFormat : _timeCodeFormat;
+			
+			long iTimeStamp = _bSynched ? _iTimeStamp - m_iSyncPosition : _iTimeStamp;
+			
 			// timestamp to milliseconds. (Needed for most formats)
 			double fSeconds = (double)iTimeStamp / m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds;
 			double fMilliseconds = (fSeconds * 1000) / m_fHighSpeedFactor;
@@ -1733,11 +1717,17 @@ namespace Kinovea.ScreenManager
 		}
 		private void UpdateSelectionLabels()
 		{
+		    long start = 0;
+		    long duration = 0;
+		    
 		    if(m_FrameServer.Loaded)
 		    {
-                lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(m_iSelStart - m_iStartingPosition, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
-                lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(m_iSelDuration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+		        start = m_iSelStart - m_iStartingPosition;
+		        duration = m_iSelDuration;
 		    }
+		    
+		    lblSelStartSelection.Text = ScreenManagerLang.lblSelStartSelection_Text + " : " + TimeStampsToTimecode(start, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+            lblSelDuration.Text = ScreenManagerLang.lblSelDuration_Text + " : " + TimeStampsToTimecode(duration, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
 		}
 		private void UpdateSelectionDataFromControl()
 		{
@@ -2429,7 +2419,7 @@ namespace Kinovea.ScreenManager
 			UpdateCurrentPositionLabel();
 			UpdateSpeedLabel();
 			m_PlayerScreenUIHandler.PlayerScreenUI_SpeedChanged(true);
-			m_FrameServer.Metadata.CalibrationHelper.FramesPerSeconds = m_FrameServer.VideoReader.Info.FramesPerSeconds * m_fHighSpeedFactor;
+			m_FrameServer.Metadata.CalibrationHelper.FramesPerSecond = m_FrameServer.VideoReader.Info.FramesPerSeconds * m_fHighSpeedFactor;
 			DoInvalidate();
 		}
 		private double GetPlaybackFrameInterval()
