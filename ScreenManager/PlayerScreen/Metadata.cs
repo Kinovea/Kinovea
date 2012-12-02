@@ -245,6 +245,7 @@ namespace Kinovea.ScreenManager
             calibrationHelper.CalibrationChanged += CalibrationHelper_CalibrationChanged;
             
             CreateStaticExtraDrawings();
+            CleanupHash();
             
             log.Debug("Constructing new Metadata object.");
         }
