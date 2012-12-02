@@ -284,13 +284,13 @@ namespace Kinovea.ScreenManager
             return rectangles;
         }
         
-        public Quadrilateral Transform(Quadrilateral _quad)
+        public QuadrilateralF Transform(QuadrilateralF quad)
         {
-            return new Quadrilateral() {
-                A=Transform(_quad.A),
-                B=Transform(_quad.B),
-                C=Transform(_quad.C),
-                D=Transform(_quad.D)
+            return new QuadrilateralF() {
+                A=Transform(quad.A),
+                B=Transform(quad.B),
+                C=Transform(quad.C),
+                D=Transform(quad.D)
             };
         }
 		#endregion

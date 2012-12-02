@@ -24,7 +24,7 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Maps a quadrilateral in image space to a unit square in user defined plane.
+    /// Maps a quadrilateral in image space to a quadrilateral in user defined plane.
     /// Used to process points through the perspective-grid-defined plane and get their 2D coordinates on this plane.
     /// Code mostly extracted from AForge.NET QuadTransformationCalcs.
     /// Based on Paul Heckbert "Projective Mappings for Image Warping".
@@ -35,7 +35,7 @@ namespace Kinovea.ScreenManager
         private double[,] mapMatrix;
         private double[,] unmapMatrix;
         
-        public void Init(Quadrilateral plane, Quadrilateral image)
+        public void Update(QuadrilateralF plane, QuadrilateralF image)
         {
            double[,] squareToInput = MapSquareToQuad(plane);
            double[,] squareToOutput = MapSquareToQuad(image);
@@ -45,7 +45,6 @@ namespace Kinovea.ScreenManager
 
            mapMatrix = MultiplyMatrix(squareToOutput, AdjugateMatrix(squareToInput));
            unmapMatrix = AdjugateMatrix(mapMatrix);
-           //unmapMatrix = MultiplyMatrix(AdjugateMatrix(squareToOutput), squareToInput);
         }
         
         /// <summary>
@@ -61,6 +60,18 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
+        /// Maps a quadrilateral from plane coordinates to image coordinates.
+        /// </summary>
+        public QuadrilateralF Forward(QuadrilateralF q)
+        {
+            PointF a = Forward(q.A);
+            PointF b = Forward(q.B);
+            PointF c = Forward(q.C);
+            PointF d = Forward(q.D);
+            return new QuadrilateralF(a, b, c, d);
+        }
+        
+        /// <summary>
         /// Maps a point from image coordinates to plane coordinates.
         /// </summary>
         public PointF Backward(PointF p)
@@ -72,8 +83,20 @@ namespace Kinovea.ScreenManager
            return new PointF((float)x, (float)y);
         }
         
+        /// <summary>
+        /// Maps a quadrilateral from image coordinates to plane coordinates.
+        /// </summary>
+        public QuadrilateralF Backward(QuadrilateralF q)
+        {
+            PointF a = Backward(q.A);
+            PointF b = Backward(q.B);
+            PointF c = Backward(q.C);
+            PointF d = Backward(q.D);
+            return new QuadrilateralF(a, b, c, d);
+        }
+        
         // Get the transform matrix from unit square to quad.
-        private static double[,] MapSquareToQuad(Quadrilateral quad)
+        private static double[,] MapSquareToQuad(QuadrilateralF quad)
         {
             double[,] sq = new double[3, 3];
             double px, py;

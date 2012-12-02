@@ -201,6 +201,7 @@ namespace Kinovea.ScreenManager
             else if(handleNumber == 3)
                 points["0"] = new Point(point.X, points["0"].Y);
             
+            CalibrationHelper.SetCalibratorFromType(CalibratorType.Line);
             CalibrationHelper.CalibrationByLine_SetOrigin(point);
             SignalTrackablePointMoved();
         }

@@ -50,7 +50,6 @@ namespace Kinovea.ScreenManager
         {
             this.grpConfig = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.tbB = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cbUnit = new System.Windows.Forms.ComboBox();
@@ -58,7 +57,7 @@ namespace Kinovea.ScreenManager
             this.lblRealSize = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pnlQuadrilateral = new System.Windows.Forms.Panel();
             this.grpConfig.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,7 +67,6 @@ namespace Kinovea.ScreenManager
                                     | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.grpConfig.Controls.Add(this.label3);
-            this.grpConfig.Controls.Add(this.label2);
             this.grpConfig.Controls.Add(this.tbB);
             this.grpConfig.Controls.Add(this.label1);
             this.grpConfig.Controls.Add(this.cbUnit);
@@ -76,7 +74,7 @@ namespace Kinovea.ScreenManager
             this.grpConfig.Controls.Add(this.lblRealSize);
             this.grpConfig.Location = new System.Drawing.Point(12, 204);
             this.grpConfig.Name = "grpConfig";
-            this.grpConfig.Size = new System.Drawing.Size(278, 110);
+            this.grpConfig.Size = new System.Drawing.Size(315, 67);
             this.grpConfig.TabIndex = 32;
             this.grpConfig.TabStop = false;
             this.grpConfig.Text = "Calibration";
@@ -84,36 +82,27 @@ namespace Kinovea.ScreenManager
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(126, 30);
+            this.label3.Location = new System.Drawing.Point(85, 28);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(13, 13);
             this.label3.TabIndex = 29;
             this.label3.Text = "×";
             this.label3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(42, 70);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(32, 13);
-            this.label2.TabIndex = 28;
-            this.label2.Text = "Unit :";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
             // tbB
             // 
             this.tbB.AcceptsReturn = true;
-            this.tbB.Location = new System.Drawing.Point(183, 25);
+            this.tbB.Location = new System.Drawing.Point(126, 25);
             this.tbB.MaxLength = 10;
             this.tbB.Name = "tbB";
-            this.tbB.Size = new System.Drawing.Size(65, 20);
-            this.tbB.TabIndex = 27;
+            this.tbB.Size = new System.Drawing.Size(40, 20);
+            this.tbB.TabIndex = 2;
+            this.tbB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(158, 28);
+            this.label1.Location = new System.Drawing.Point(103, 28);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(22, 13);
             this.label1.TabIndex = 26;
@@ -124,19 +113,20 @@ namespace Kinovea.ScreenManager
             // 
             this.cbUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbUnit.FormattingEnabled = true;
-            this.cbUnit.Location = new System.Drawing.Point(80, 67);
+            this.cbUnit.Location = new System.Drawing.Point(178, 24);
             this.cbUnit.Name = "cbUnit";
             this.cbUnit.Size = new System.Drawing.Size(125, 21);
-            this.cbUnit.TabIndex = 25;
+            this.cbUnit.TabIndex = 3;
             // 
             // tbA
             // 
             this.tbA.AcceptsReturn = true;
-            this.tbA.Location = new System.Drawing.Point(42, 25);
+            this.tbA.Location = new System.Drawing.Point(40, 25);
             this.tbA.MaxLength = 10;
             this.tbA.Name = "tbA";
-            this.tbA.Size = new System.Drawing.Size(65, 20);
-            this.tbA.TabIndex = 24;
+            this.tbA.Size = new System.Drawing.Size(40, 20);
+            this.tbA.TabIndex = 1;
+            this.tbA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // lblRealSize
             // 
@@ -152,10 +142,10 @@ namespace Kinovea.ScreenManager
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(93, 323);
+            this.btnOK.Location = new System.Drawing.Point(130, 280);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(92, 24);
-            this.btnOK.TabIndex = 31;
+            this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -164,29 +154,33 @@ namespace Kinovea.ScreenManager
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(198, 323);
+            this.btnCancel.Location = new System.Drawing.Point(235, 280);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(92, 24);
-            this.btnCancel.TabIndex = 33;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // panel1
+            // pnlQuadrilateral
             // 
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Location = new System.Drawing.Point(12, 14);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(277, 184);
-            this.panel1.TabIndex = 34;
+            this.pnlQuadrilateral.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlQuadrilateral.BackColor = System.Drawing.Color.Black;
+            this.pnlQuadrilateral.ForeColor = System.Drawing.Color.White;
+            this.pnlQuadrilateral.Location = new System.Drawing.Point(12, 12);
+            this.pnlQuadrilateral.Name = "pnlQuadrilateral";
+            this.pnlQuadrilateral.Size = new System.Drawing.Size(315, 186);
+            this.pnlQuadrilateral.TabIndex = 34;
+            this.pnlQuadrilateral.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlQuadrilateral_Paint);
             // 
             // FormCalibratePlane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(302, 356);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(339, 313);
+            this.Controls.Add(this.pnlQuadrilateral);
             this.Controls.Add(this.grpConfig);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
@@ -199,11 +193,10 @@ namespace Kinovea.ScreenManager
             this.grpConfig.PerformLayout();
             this.ResumeLayout(false);
         }
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlQuadrilateral;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbB;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lblRealSize;

@@ -42,16 +42,9 @@ namespace Kinovea.ScreenManager
             set { size = value;}
         }
         
-        public LengthUnits Unit
-        {
-            get { return unit; }
-			set { unit = value; }
-        }
-        
-        private SizeF size;
-        private LengthUnits unit;
-        private ProjectiveMapping mapping = new ProjectiveMapping();
         private bool initialized;
+        private SizeF size;
+        private ProjectiveMapping mapping;      // ProjectiveMapping owned and modified by a DrawingPlane.
         
         #region ICalibrator
         public PointF Transform(PointF p)
@@ -71,25 +64,11 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public void InitSize(SizeF size)
+        public void Initialize(SizeF size, ProjectiveMapping mapping)
         {
             this.size = size;
-        }
-        public void InitProjection(Quadrilateral quad)
-        {
-            if(size.IsEmpty)
-                size = new SizeF(100, 100);
-            
-            Quadrilateral plane = new Quadrilateral(){
-                A = new Point(0, 0),
-                B = new Point((int)size.Width, 0),
-                C = new Point((int)size.Width, (int)size.Height),
-                D = new Point(0, (int)size.Height)
-            };
-            
-            mapping.Init(plane, quad);
-            
-            initialized = true;
+            this.mapping = mapping;
+            this.initialized = true;
         }
     }
 }

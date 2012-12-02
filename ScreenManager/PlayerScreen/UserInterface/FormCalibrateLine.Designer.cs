@@ -106,7 +106,7 @@ namespace Kinovea.ScreenManager
 			this.tbMeasure.Name = "tbMeasure";
 			this.tbMeasure.Size = new System.Drawing.Size(65, 20);
 			this.tbMeasure.TabIndex = 24;
-			this.tbMeasure.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbFPSOriginal_KeyPress);
+			this.tbMeasure.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
 			// 
 			// lblRealSize
 			// 
