@@ -35,9 +35,10 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Plane")]
-	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable
+	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable, ITrackable
     {
 	    #region Events
+	    public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
         public event EventHandler ShowMeasurableInfoChanged;
         #endregion
         
@@ -65,7 +66,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override DrawingCapabilities Caps
 		{
-			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
 		}
         public int Subdivisions
         {
@@ -100,6 +101,9 @@ namespace Kinovea.ScreenManager
         private int subdivisions;
         private bool inPerspective;
         private bool planeIsConvex = true;
+        
+        private Guid id = Guid.NewGuid();
+        private bool tracking;
         
         private InfosFading infosFading;
         private StyleHelper styleHelper = new StyleHelper();
@@ -137,7 +141,6 @@ namespace Kinovea.ScreenManager
             planeWidth = 100;
             planeHeight = 100;
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
-            UpdateCalibration();
             
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
 			mnuCalibrate.Image = Properties.Drawings.linecalibrate;
@@ -239,7 +242,7 @@ namespace Kinovea.ScreenManager
                     quadImage.Translate(dx, dy);
             }
             
-            UpdateCalibration();
+            SignalAllTrackablePointsMoved();
 		}
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
@@ -258,7 +261,7 @@ namespace Kinovea.ScreenManager
                     quadImage.MakeRectangle(handle);
             }
             
-            UpdateCalibration();
+            SignalTrackablePointMoved(handle);
 		}
 		#endregion
 	
@@ -323,7 +326,6 @@ namespace Kinovea.ScreenManager
 			if(!inPerspective && !quadImage.IsRectangle)
                 inPerspective = true;
                 
-			UpdateCalibration();
 			initialized = true;
         }
 		public void WriteXml(XmlWriter _xmlWriter)
@@ -375,11 +377,55 @@ namespace Kinovea.ScreenManager
                     quadImage.D = new Point(2 * horzTenth, 8 * vertTenth);
                 }
             }
-            
-            UpdateCalibration();
 		}
 		#endregion
 		
+		 #region ITrackable implementation and support.
+        public Guid ID
+        {
+            get { return id; }
+        }
+        public Dictionary<string, Point> GetTrackablePoints()
+        {
+            Dictionary<string, Point> points = new Dictionary<string, Point>();
+
+            for(int i = 0; i<4; i++)
+                points.Add(i.ToString(), new Point((int)quadImage[i].X, (int)quadImage[i].Y));
+            
+            return points;
+        }
+        public void SetTracking(bool tracking)
+        {
+            this.tracking = tracking;
+        }
+        public void SetTrackablePointValue(string name, Point value)
+        {
+            int p = int.Parse(name);
+            quadImage[p] = new PointF(value.X, value.Y);
+
+            projectiveMapping.Update(quadPlane, quadImage);
+        }
+        private void SignalAllTrackablePointsMoved()
+        {
+            if(TrackablePointMoved == null)
+                return;
+            
+            for(int i = 0; i<4; i++)
+            {
+                Point p = new Point((int)quadImage[i].X, (int)quadImage[i].Y);
+                TrackablePointMoved(this, new TrackablePointMovedEventArgs(i.ToString(), p));
+            }
+        }
+        private void SignalTrackablePointMoved(int index)
+        {
+            if(TrackablePointMoved == null)
+                return;
+            
+            Point p = new Point((int)quadImage[index].X, (int)quadImage[index].Y);
+            TrackablePointMoved(this, new TrackablePointMovedEventArgs(index.ToString(), p));
+        }
+        #endregion
+        
         public void Reset()
         {
             // Used on metadata over load.
@@ -412,12 +458,6 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Color", "color");
         }   
-        private void UpdateCalibration()
-        {
-            // If used for the main calibration.
-            //if(UsedForCalibration && CalibrationHelper != null)
-            //    CalibrationHelper.CalibrationByPlane_InitProjection(quadImage);
-        }
         
         private void TranslateInPlane(int deltaX, int deltaY)
         {
