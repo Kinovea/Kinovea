@@ -43,11 +43,6 @@ namespace Kinovea.ScreenManager
              X = b.X - a.X;
              Y = b.Y - a.Y;
         }
-        /*public Vector(Point p)
-        {
-            X = p.X;
-            Y = p.Y;
-        }*/
         
         public static Vector operator -(Vector v1, Vector v2)
         {

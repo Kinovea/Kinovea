@@ -38,21 +38,8 @@ namespace Kinovea.ScreenManager
 			get { return (origin.X >= 0 && origin.Y >= 0); }
 		}
         
-        #region Private
         private PointF origin = new PointF(-1, -1);
         private float scale = 1.0f;
-        #endregion
-        
-        #region Public
-        public void SetOrigin(PointF p)
-        {
-            origin = p;
-        }
-        public void SetPixelToUnit(float ratio)
-        {
-            scale = ratio;
-        }
-        #endregion
         
         #region ICalibrator
         public PointF Transform(PointF p)
@@ -79,6 +66,13 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        
+        public void SetOrigin(PointF p)
+        {
+            origin = p;
+        }
+        public void SetPixelToUnit(float ratio)
+        {
+            scale = ratio;
+        }
     }
 }

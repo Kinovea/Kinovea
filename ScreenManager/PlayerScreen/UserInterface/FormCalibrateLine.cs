@@ -53,11 +53,11 @@ namespace Kinovea.ScreenManager
         	this.line = line;
         	
         	pixelLength = this.line.Length();
-        	calibratedLength = calibrationHelper.GetLength(PointF.Empty, new PointF(pixelLength, 0));
-        	log.Debug(calibrationHelper.GetLengthText(PointF.Empty, new PointF(pixelLength, 0), true, true));
+        	calibratedLength = pixelLength;
         	
             InitializeComponent();
             LocalizeForm();
+            InitializeValues();
         }
         private void LocalizeForm()
         {
@@ -74,25 +74,26 @@ namespace Kinovea.ScreenManager
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Feet + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Feet) + ")");
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Yards + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Yards) + ")");
             cbUnit.Items.Add("Percentage" + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Percentage) + ")");
-            
-            // Update with current values.
-            if(!calibrationHelper.IsCalibrated)
+        }
+        private void InitializeValues()
+        {
+            if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Line)
             {
-                // Default to 50 cm if no unit selected yet.
-            	tbMeasure.Text = "50";
-            	cbUnit.SelectedIndex = (int)LengthUnits.Centimeters;
+                calibratedLength = calibrationHelper.GetLength(PointF.Empty, new PointF(pixelLength, 0));
+                tbMeasure.Text = String.Format("{0:0.00}", calibratedLength);
+                
+                cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
             else
             {
-            	tbMeasure.Text = String.Format("{0:0.00}", calibratedLength);
-            	cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
+                tbMeasure.Text = "50";
+                cbUnit.SelectedIndex = (int)LengthUnits.Centimeters;
             }
-            
         }
         #endregion
 
         #region User choices handlers
-        private void tbFPSOriginal_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
         	// We only accept numbers, points and coma in there.
             char key = e.KeyChar;
@@ -106,29 +107,30 @@ namespace Kinovea.ScreenManager
         #region OK/Cancel Handlers
         private void btnOK_Click(object sender, EventArgs e)
         {
-        	if(tbMeasure.Text.Length > 0)
-        	{
-            	// Save value.
-	            try
-	            {
-	            	float fRealWorldMeasure = float.Parse(tbMeasure.Text);
-	            
-	            	if(fRealWorldMeasure > 0 && calibratedLength > 0)
-	            	{
-	            	    calibrationHelper.CalibrationByLine_SetPixelToUnit(fRealWorldMeasure / pixelLength);
-	            	    calibrationHelper.LengthUnit = (LengthUnits)cbUnit.SelectedIndex;
-	            	}
-	            }
-	            catch
-	            {
-	                // Failed : do nothing.
-	                log.Error(String.Format("Error while parsing measure. ({0}).", tbMeasure.Text));
-	            } 
-        	}
+        	if(tbMeasure.Text.Length == 0)
+        	    return;
+        	
+        	try
+            {
+            	float length = float.Parse(tbMeasure.Text);
+            	if(length <= 0)
+            	    return;
+            	
+            	float ratio = length / pixelLength;
+            	
+            	calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
+
+            	calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
+                calibrationHelper.LengthUnit = (LengthUnits)cbUnit.SelectedIndex;
+            }
+            catch
+            {
+                // Failed : do nothing.
+                log.Error(String.Format("Error while parsing measure. ({0}).", tbMeasure.Text));
+            }
         }
         private void btnCancel_Click(object sender, EventArgs e)
         {
-             // Nothing more to do.           
         }
         #endregion
     }

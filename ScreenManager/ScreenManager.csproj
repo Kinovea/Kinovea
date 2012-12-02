@@ -342,7 +342,7 @@
     <Compile Include="PlayerScreen\Geometry\GeometryHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\PointLinePosition.cs" />
     <Compile Include="PlayerScreen\Geometry\ProjectiveMapping.cs" />
-    <Compile Include="PlayerScreen\Geometry\Quadrilateral.cs" />
+    <Compile Include="PlayerScreen\Geometry\QuadrilateralF.cs" />
     <Compile Include="PlayerScreen\Geometry\Vector.cs" />
     <Compile Include="PlayerScreen\IPlayerScreenUIHandler.cs" />
     <Compile Include="PlayerScreen\Keyframe.cs" />

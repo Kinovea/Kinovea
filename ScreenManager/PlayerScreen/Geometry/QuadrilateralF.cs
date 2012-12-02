@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2011.
+Copyright © Joan Charmant 2012.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -34,33 +34,33 @@ namespace Kinovea.ScreenManager
     /// Points are defined clockwise, "A" being top left.
     /// Note that unlike Rectangle, this is a reference type.
     /// </summary>
-    public class Quadrilateral : IEnumerable
+    public class QuadrilateralF : IEnumerable
     {
         #region Properties
-        public Point A
+        public PointF A
         {
-            get { return m_Corners[0]; }
-            set { m_Corners[0] = value;}
+            get { return corners[0]; }
+            set { corners[0] = value;}
         }
-        public Point B
+        public PointF B
         {
-            get { return m_Corners[1]; }
-            set { m_Corners[1] = value;}
+            get { return corners[1]; }
+            set { corners[1] = value;}
         }
-        public Point C
+        public PointF C
         {
-            get { return m_Corners[2]; }
-            set { m_Corners[2] = value;}
+            get { return corners[2]; }
+            set { corners[2] = value;}
         }
-        public Point D
+        public PointF D
         {
-            get { return m_Corners[3]; }
-            set { m_Corners[3] = value;}
+            get { return corners[3]; }
+            set { corners[3] = value;}
         }
-        public Point this [int corner]
+        public PointF this [int corner]
         {
-            get { return m_Corners[corner]; }
-            set { m_Corners[corner] = value; }
+            get { return corners[corner]; }
+            set { corners[corner] = value; }
         }
         public bool IsConvex
         {
@@ -70,107 +70,121 @@ namespace Kinovea.ScreenManager
         {
             get { return (A.Y == B.Y && B.X == C.X && C.Y == D.Y && D.X == A.X); }
         }
-        public static Quadrilateral UnitRectangle
+        public static QuadrilateralF UnitRectangle
         {
             get 
             { 
-                Quadrilateral q =  new Quadrilateral() {
-                    A = new Point(0, 0), 
-                    B = new Point(1, 0), 
-                    C = new Point(1, 1), 
-                    D = new Point(0, 1) 
-                }; 
-                return q;
+                return new QuadrilateralF(1, 1);
             }
         }
         #endregion
         
         #region Members
-        private Point[] m_Corners = new Point[4];
+        private PointF[] corners = new PointF[4];
         private const double radToDeg = 180D / Math.PI;
         #endregion
         
+        public QuadrilateralF()
+        {
+        }
+        
+        public QuadrilateralF(PointF a, PointF b, PointF c, PointF d)
+        {
+            A = new PointF(a.X, a.Y);
+            B = new PointF(b.X, b.Y);
+            C = new PointF(c.X, c.Y);
+            D = new PointF(d.X, d.Y);
+        }
+        
+        public QuadrilateralF(float width, float height)
+        {
+            A = new PointF(0, 0);
+            B = new PointF(width, 0);
+            C = new PointF(width, height);
+            D = new PointF(0, height);
+        }
+        
         #region Public methods
-        public void Translate(int x, int y)
+        public void Translate(float x, float y)
         {
-            m_Corners = m_Corners.Select( p => p.Translate(x,y)).ToArray();
+            corners = corners.Select( p => p.Translate(x,y)).ToArray();
         }
-        public void Expand(int _width, int _height)
+        public void Expand(float width, float height)
         {
-            A = A.Translate(-_width, -_height);
-            B = B.Translate(_width, -_height);
-            C = C.Translate(_width, _height);
-            D = D.Translate(-_width, _height);
+            A = A.Translate(-width, -height);
+            B = B.Translate(width, -height);
+            C = C.Translate(width, height);
+            D = D.Translate(-width, height);
         }
-        public void MakeRectangle(int _anchor)
+        public void MakeRectangle(int anchor)
         {
             // Forces the other points to align with the anchor.
             // Assumes the opposite point is already aligned with the other two.
-            switch (_anchor)
+            switch (anchor)
             {
                 case 0:
-                    B = new Point(B.X, A.Y);
-                    D = new Point(A.X, D.Y);
+                    B = new PointF(B.X, A.Y);
+                    D = new PointF(A.X, D.Y);
                     break;
                 case 1:
-                    A = new Point(A.X, B.Y);
-                    C = new Point(B.X, C.Y);
+                    A = new PointF(A.X, B.Y);
+                    C = new PointF(B.X, C.Y);
                     break;
                 case 2:
-                    D = new Point(D.X, C.Y);
-                    B = new Point(C.X, B.Y);
+                    D = new PointF(D.X, C.Y);
+                    B = new PointF(C.X, B.Y);
                     break;
                 case 3:
-                    C = new Point(C.X, D.Y);
-                    A = new Point(D.X, A.Y);
+                    C = new PointF(C.X, D.Y);
+                    A = new PointF(D.X, A.Y);
                     break;
             }
         }
-        public void MakeSquare(int _anchor)
+        public void MakeSquare(int anchor)
         {
             // Forces the other points to align and makes square on the smallest side.
             // Assumes the opposite point is already aligned with the other two.
-            int width = 0;
-            int height = 0;
-            int side = 0;
+            float width = 0;
+            float height = 0;
+            float side = 0;
             
-            switch (_anchor)
+            switch (anchor)
             {
                 case 0:
                     width = C.X - A.X;
                     height = C.Y - A.Y;
                     side = Math.Min(width, height);
-                    A = new Point(C.X - side, C.Y - side);
-                    B = new Point(C.X, C.Y - side);
-                    D = new Point(C.X - side, C.Y);
+                    A = new PointF(C.X - side, C.Y - side);
+                    B = new PointF(C.X, C.Y - side);
+                    D = new PointF(C.X - side, C.Y);
                     break;
                 case 1:
                     width = B.X - D.X;
                     height = D.Y - B.Y;
                     side = Math.Min(width, height);
-                    A = new Point(D.X, D.Y - side);
-                    B = new Point(D.X + side, D.Y - side);
-                    C = new Point(D.X + side, D.Y);
+                    A = new PointF(D.X, D.Y - side);
+                    B = new PointF(D.X + side, D.Y - side);
+                    C = new PointF(D.X + side, D.Y);
                     break;
                 case 2:
                     width = C.X - A.X;
                     height = C.Y - A.Y;
                     side = Math.Min(width, height);
-                    B = new Point(A.X + side, A.Y);
-                    C = new Point(A.X + side, A.Y + side);
-                    D = new Point(A.X, A.Y + side);
+                    B = new PointF(A.X + side, A.Y);
+                    C = new PointF(A.X + side, A.Y + side);
+                    D = new PointF(A.X, A.Y + side);
                     break;
                 case 3:
                     width = B.X - D.X;
                     height = D.Y - B.Y;
                     side = Math.Min(width, height);
-                    A = new Point(B.X - side, B.Y);
-                    C = new Point(B.X, B.Y + side);
-                    D = new Point(B.X - side, B.Y + side);
+                    A = new PointF(B.X - side, B.Y);
+                    C = new PointF(B.X, B.Y + side);
+                    D = new PointF(B.X - side, B.Y + side);
                     break;
             }
         }
-        public bool Contains(Point _point)
+        public bool Contains(PointF point)
         {
             if (!IsQuadConvex())
                 return false;
@@ -178,32 +192,42 @@ namespace Kinovea.ScreenManager
             bool hit = false;
             using(GraphicsPath areaPath = new GraphicsPath())
             {
-                areaPath.AddPolygon(new Point[]{A,B,C,D});
+                areaPath.AddPolygon(corners.ToArray());
                 using(Region r = new Region(areaPath))
                 {
-                    hit = r.IsVisible(_point);
+                    hit = r.IsVisible(point);
                 }
             }
             return hit;
-                /*areaPath.AddLine(A, B);
-                areaPath.AddLine(B, C);
-                areaPath.AddLine(C, D);
-                areaPath.CloseAllFigures();
-                Region areaRegion = new Region(areaPath);
-                
-                return areaRegion.IsVisible(_point);*/
         }
-        public Quadrilateral Clone()
+        public QuadrilateralF Clone()
         {
-            return new Quadrilateral() {A=A, B=B, C=C, D=D};
+            return new QuadrilateralF(A,B,C,D);
         }
         public IEnumerator GetEnumerator()
         {
-            return m_Corners.GetEnumerator();
+            return corners.GetEnumerator();
         }
-        public Point[] ToArray()
+        public PointF[] ToArray()
         {
-            return m_Corners.ToArray();
+            return corners.ToArray();
+        }
+        public RectangleF GetBoundingBox()
+        {
+            float top = float.MaxValue;
+            float left = float.MaxValue;
+            float bottom = float.MinValue;
+            float right = float.MinValue;
+            
+            foreach(PointF corner in corners)
+            {
+                top = Math.Min(top, corner.Y);
+                left = Math.Min(left, corner.X);
+                bottom = Math.Max(bottom, corner.Y);
+                right = Math.Max(right, corner.X);
+            }
+            
+            return new RectangleF(left, top, right - left, bottom - top);
         }
         #endregion
         
@@ -227,17 +251,17 @@ namespace Kinovea.ScreenManager
                 return false;
             }
         }
-        private double GetAngle(Point _a, Point _b, Point _c)
+        private double GetAngle(PointF a, PointF b, PointF c)
         {
             // Compute the angle ABC.
             // using scalar and vector product between vectors BA and BC.
 
-            double bax = (double)(_a.X - _b.X);
-            double bcx = (double)(_c.X - _b.X);
+            double bax = (double)(a.X - b.X);
+            double bcx = (double)(c.X - b.X);
             double scalX =  bax * bcx;
 
-            double bay = (double)(_a.Y - _b.Y);
-            double bcy = (double)(_c.Y - _b.Y);
+            double bay = (double)(a.Y - b.Y);
+            double bcy = (double)(c.Y - b.Y);
             double scalY = bay * bcy;
             
             double scal = scalX + scalY;
@@ -258,3 +282,4 @@ namespace Kinovea.ScreenManager
         #endregion
    }
 }
+

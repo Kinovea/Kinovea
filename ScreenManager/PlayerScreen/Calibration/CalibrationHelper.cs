@@ -113,13 +113,13 @@ namespace Kinovea.ScreenManager
 		{
 		    calibrationLine.SetOrigin(p);
 		}
-		public void CalibrationByPlane_InitSize(SizeF size)
+		public void CalibrationByPlane_Initialize(SizeF size, ProjectiveMapping mapping)
 		{
-		    calibrationPlane.InitSize(size);
+		    calibrationPlane.Initialize(size, mapping);
 		}
-		public void CalibrationByPlane_InitProjection(Quadrilateral quad)
+		public SizeF CalibrationByPlane_GetRectangleSize()
 		{
-		    calibrationPlane.InitProjection(quad);
+		    return calibrationPlane.Size;
 		}
 		
 		#endregion

@@ -44,12 +44,12 @@ namespace Kinovea.ScreenManager
         #region Properties
         public DrawingStyle DrawingStyle
         {
-        	get { return m_Style;}
+        	get { return style;}
         }
 		public override InfosFading InfosFading
 		{
-			get { return m_InfosFading; }
-            set { m_InfosFading = value; }
+			get { return infosFading; }
+            set { infosFading = value; }
 		}
 		public override List<ToolStripItem> ContextMenu
 		{
@@ -72,244 +72,193 @@ namespace Kinovea.ScreenManager
             get { return subdivisions; }
             set { subdivisions = value; }
         }
+        public QuadrilateralF QuadPlane
+        {
+            get { return quadPlane; }
+        }
+        public QuadrilateralF QuadImage
+        {
+            get { return quadImage;}
+        }
+        public ProjectiveMapping Mapping
+        {
+            get { return projectiveMapping;}
+        }
+        
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
         public bool UsedForCalibration { get; set; }
         #endregion
 
         #region Members
-        private Quadrilateral m_Corners = Quadrilateral.UnitRectangle;  // Coordinates of corners in Image system.
-        private Quadrilateral m_RefPlane = Quadrilateral.UnitRectangle; // Corners in image system prior to expanding. (?)
-        
-        private int planeWidth;
-        private int planeHeight;
-        private Quadrilateral basePlane;                // Coordinates of corners in Plane system.
-        
-        private ProjectiveMapping projectiveMapping = new ProjectiveMapping();
+        private QuadrilateralF quadImage = QuadrilateralF.UnitRectangle;        // Quadrilateral defined by user.
+        private QuadrilateralF quadPlane;                                       // Corresponding rectangle in plane system.
+        private ProjectiveMapping projectiveMapping = new ProjectiveMapping();  // maps quadImage to quadPlane and back.
+        private float planeWidth;                                               // width and height of rectangle in plane system.
+        private float planeHeight;
         
         private int subdivisions;
-        private bool m_bSupport3D;
+        private bool inPerspective;
+        private bool planeIsConvex = true;
         
-        private InfosFading m_InfosFading;
-        private StyleHelper m_StyleHelper = new StyleHelper();
-        private DrawingStyle m_Style;
-        private Pen m_PenEdges = Pens.White;
+        private InfosFading infosFading;
+        private StyleHelper styleHelper = new StyleHelper();
+        private DrawingStyle style;
+        private Pen penEdges = Pens.White;
         
-        private bool m_bInitialized = false;
-        private bool m_bValidPlane = true;
-        private float m_fShift = 0F;                     // used only for expand/retract, to stay relative to the original mapping.
-
+        private bool initialized = false;
+        
         private ToolStripMenuItem mnuCalibrate = new ToolStripMenuItem();
         
-        private const int m_iMinimumDivisions = 2;
-        private const int m_iDefaultDivisions = 8;
-        private const int m_iMaximumDivisions = 20;
+        private const int minimumSubdivisions = 2;
+        private const int defaultSubdivisions = 8;
+        private const int maximumSubdivisions = 20;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public DrawingPlane(int _divisions, bool _support3D, long _iTimestamp, long _iAverageTimeStampsPerFrame, DrawingStyle _preset)
+        public DrawingPlane(int subdivisions, bool inPerspective, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
-            subdivisions = _divisions == 0 ? m_iDefaultDivisions : _divisions;
-            m_bSupport3D = _support3D;
+            this.subdivisions = subdivisions > 0 ? subdivisions : defaultSubdivisions;
+            this.inPerspective = inPerspective;
             
             // Decoration
-            m_StyleHelper.Color = Color.Empty;
-            if(_preset != null)
+            styleHelper.Color = Color.Empty;
+            if(preset != null)
             {
-			    m_Style = _preset.Clone();
+			    style = preset.Clone();
 			    BindStyle();
             }
 			
-			m_InfosFading = new InfosFading(_iTimestamp, _iAverageTimeStampsPerFrame);
-			m_InfosFading.UseDefault = false;
-            m_InfosFading.AlwaysVisible = true;
+			infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+			infosFading.UseDefault = false;
+            infosFading.AlwaysVisible = true;
             
-            planeWidth = 200;
+            planeWidth = 100;
             planeHeight = 100;
-            basePlane = new Quadrilateral(){
-                A = new Point(0, 0),
-                B = new Point(planeWidth, 0),
-                C = new Point(planeWidth, planeHeight),
-                D = new Point(0, planeHeight)
-            };
-			
-            RedefineHomography();
+            quadPlane = new QuadrilateralF(planeWidth, planeHeight);
+            UpdateCalibration();
             
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
 			mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(m_iDefaultDivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
+            : this(defaultSubdivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }
         #endregion
         
         #region AbstractDrawing implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp)
 		{
-        	double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-        	if(fOpacityFactor <= 0)
+        	double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+        	if(opacityFactor <= 0)
         	   return;
         	
-            Quadrilateral quad = _transformer.Transform(m_Corners);
+            QuadrilateralF quad = transformer.Transform(quadImage);
             
-            using(m_PenEdges = m_StyleHelper.GetPen(fOpacityFactor, 1.0))
-            using(SolidBrush br = m_StyleHelper.GetBrush(fOpacityFactor))
+            using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
+            using(SolidBrush br = styleHelper.GetBrush(opacityFactor))
             {
                 // Handlers
-                foreach(Point p in quad)
-                    _canvas.FillEllipse(br, p.Box(4));
+                foreach(PointF p in quad)
+                    canvas.FillEllipse(br, p.Box(4));
                 
                 // Grid
-                if (m_bValidPlane)
+                if (planeIsConvex)
                 {
-                    InitProjectiveMapping(m_Corners);
-                    
-                    // Rows
-                    //int start = - subdivisions;
-                    //int end = subdivisions * 2;
-                    //int total = subdivisions * 3;
+                    projectiveMapping.Update(quadPlane, quadImage);
                     
                     int start = 0;
                     int end = subdivisions;
                     int total = subdivisions;
                     
+                    // Rows
                     for (int i = start; i <= end; i++)
                     {
                         float v = i * ((float)planeHeight / total);
-                        PointF h1 = PlaneToImageTransform(new PointF(0, v));
-                        PointF h2 = PlaneToImageTransform(new PointF(planeWidth, v));
+                        PointF p1 = projectiveMapping.Forward(new PointF(0, v));
+                        PointF p2 = projectiveMapping.Forward(new PointF(planeWidth, v));
                         
-                        _canvas.DrawLine(m_PenEdges, _transformer.Transform(h1), _transformer.Transform(h2));
+                        canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
                     }
                 
                     // Columns
                     for (int i = start ; i <= end; i++)
                     {
-                        float h = i * ((float)planeWidth / total);
-                        PointF h1 = PlaneToImageTransform(new PointF(h, 0));
-                        PointF h2 = PlaneToImageTransform(new PointF(h, planeHeight));
+                        float h = i * (planeWidth / total);
+                        PointF p1 = projectiveMapping.Forward(new PointF(h, 0));
+                        PointF p2 = projectiveMapping.Forward(new PointF(h, planeHeight));
                         
-                        _canvas.DrawLine(m_PenEdges, _transformer.Transform(h1), _transformer.Transform(h2));
+                        canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
                     }
                 }
                 else
                 {
-                    // Non convex quadrilateral: only draw the borders
-                    _canvas.DrawLine(m_PenEdges, quad.A, quad.B);
-                    _canvas.DrawLine(m_PenEdges, quad.B, quad.C);
-                    _canvas.DrawLine(m_PenEdges, quad.C, quad.D);
-                    _canvas.DrawLine(m_PenEdges, quad.D, quad.A);
+                    // Non convex quadrilateral: only draw the edges.
+                    canvas.DrawLine(penEdges, quad.A, quad.B);
+                    canvas.DrawLine(penEdges, quad.B, quad.C);
+                    canvas.DrawLine(penEdges, quad.C, quad.D);
+                    canvas.DrawLine(penEdges, quad.D, quad.A);
                 }
             }
 		}
 		public override int HitTest(Point _point, long _iCurrentTimestamp)
 		{
 			int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double fOpacityFactor = infosFading.GetOpacityFactor(_iCurrentTimestamp);
             
             if(fOpacityFactor > 0)
             {
                 for(int i = 0; i < 4; i++)
                 {
-                    if(m_Corners[i].Box(6).Contains(_point))
+                    if(quadImage[i].Box(6).Contains(_point))
                         iHitResult = i+1;
                 }
                 
-	            if (iHitResult == -1 && m_Corners.Contains(_point))
+	            if (iHitResult == -1 && quadImage.Contains(_point))
 	                iHitResult = 0;
             }
             
             return iHitResult;
 		}
-		public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+		public override void MoveDrawing(int dx, int dy, Keys modifierKeys)
 		{
-			if ((_ModifierKeys & Keys.Alt) == Keys.Alt)
+			if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
-                // Just change the number of divisions.
-                subdivisions = subdivisions + ((_deltaX - _deltaY)/4);
-                subdivisions = Math.Min(Math.Max(subdivisions, m_iMinimumDivisions), m_iMaximumDivisions);
+                // Change the number of divisions.
+                subdivisions = subdivisions + ((dx - dy)/4);
+                subdivisions = Math.Min(Math.Max(subdivisions, minimumSubdivisions), maximumSubdivisions);
             }
-            else if ((_ModifierKeys & Keys.Control) == Keys.Control)
+			else
             {
-                // Expand the grid while staying on the same plane.
-                int Offset = _deltaX;
-                
-                if (m_bSupport3D)
-                {
-                    if (m_bValidPlane)
-                    {
-                        // find new corners by growing the current homography.
-                        InitProjectiveMapping(m_RefPlane);
-                        float fShift = m_fShift + ((float)(_deltaX - _deltaY) / 200);
-
-                        PointF[] shiftedCorners = new PointF[4];
-                        shiftedCorners[0] = PlaneToImageTransform(new PointF(-fShift, -fShift));
-                        shiftedCorners[1] = PlaneToImageTransform(new PointF(1 + fShift, -fShift));
-                        shiftedCorners[2] = PlaneToImageTransform(new PointF(1 + fShift, 1 + fShift));
-                        shiftedCorners[3] = PlaneToImageTransform(new PointF(-fShift, 1 + fShift));
-                        
-                        try
-                        {
-                            Quadrilateral expanded = new Quadrilateral() {
-                                A = new Point((int)shiftedCorners[0].X, (int)shiftedCorners[0].Y),
-                                B = new Point((int)shiftedCorners[1].X, (int)shiftedCorners[1].Y),
-                                C = new Point((int)shiftedCorners[2].X, (int)shiftedCorners[2].Y),
-                                D = new Point((int)shiftedCorners[3].X, (int)shiftedCorners[3].Y),
-                            };
-                            
-                            m_fShift = fShift;
-                            m_Corners = expanded.Clone();
-                        }
-                        catch(OverflowException)
-                        {
-                            log.Debug("Overflow during grid expansion");
-                        }
-                    }
-                }
+                if(inPerspective)
+                    TranslateInPlane(dx, dy);
                 else
-                {
-                    float fGrowFactor = 1 + ((float)Offset / 100); // for offset [-10;+10] => Growth [0.9;1.1]
-
-                    int width = m_Corners.B.X - m_Corners.A.X;
-                    int height = m_Corners.D.Y - m_Corners.A.Y;
-
-                    float fNewWidth = fGrowFactor * width;
-                    float fNewHeight = fGrowFactor * height;
-
-                    int shiftx = (int)((fNewWidth - width) / 2);
-                    int shifty = (int)((fNewHeight - height) / 2);
-                    
-                    m_Corners.Expand(shiftx, shifty);
-                }
+                    quadImage.Translate(dx, dy);
             }
-            else
-            {
-                m_Corners.Translate(_deltaX, _deltaY);
-                RedefineHomography();
-                m_fShift = 0F;
-            }
+            
+            UpdateCalibration();
 		}
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
-		    m_Corners[handleNumber - 1] = point;
-		
-			if (m_bSupport3D)
+		    int handle = handleNumber - 1;
+		    quadImage[handle] = point;
+		    
+			if (inPerspective)
 			{
-			    m_bValidPlane = m_Corners.IsConvex;
+                planeIsConvex = quadImage.IsConvex;
 			}
             else
             {
                 if((modifiers & Keys.Shift) == Keys.Shift)
-                    m_Corners.MakeSquare(handleNumber - 1);
+                    quadImage.MakeSquare(handle);
                 else
-                    m_Corners.MakeRectangle(handleNumber - 1);
+                    quadImage.MakeRectangle(handle);
             }
             
-            RedefineHomography();
-            m_fShift = 0F;
+            UpdateCalibration();
 		}
 		#endregion
 	
@@ -327,39 +276,39 @@ namespace Kinovea.ScreenManager
 					case "PointUpperLeft":
 				        {
 				            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            m_Corners.A = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.A = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
 				            break;
 				        }
 				    case "PointUpperRight":
 				        {
     				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            m_Corners.B = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.B = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
     				        break;
 				        }
 				    case "PointLowerRight":
 				        {
     				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            m_Corners.C = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.C = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
     				        break;
 				        }
 				    case "PointLowerLeft":
 				        {
     				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-                            m_Corners.D = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
+                            quadImage.D = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
     				        break;
 				        }
 				    case "Divisions":
 				        subdivisions = _xmlReader.ReadElementContentAsInt();
                         break;
                     case "Perspective":
-                        m_bSupport3D = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        inPerspective = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
 					case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
+						style = new DrawingStyle(_xmlReader);
 						BindStyle();
 						break;
 				    case "InfosFading":
-						m_InfosFading.ReadXml(_xmlReader);
+						infosFading.ReadXml(_xmlReader);
 						break;
 					default:
 						string unparsed = _xmlReader.ReadOuterXml();
@@ -371,28 +320,28 @@ namespace Kinovea.ScreenManager
 			_xmlReader.ReadEndElement();
             
 			// Sanity check for rectangular constraint.
-			if(!m_bSupport3D && !m_Corners.IsRectangle)
-                m_bSupport3D = true;
+			if(!inPerspective && !quadImage.IsRectangle)
+                inPerspective = true;
                 
-			RedefineHomography();
-			m_bInitialized = true;
+			UpdateCalibration();
+			initialized = true;
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format("{0};{1}", m_Corners.A.X, m_Corners.A.Y));
-		    _xmlWriter.WriteElementString("PointUpperRight", String.Format("{0};{1}", m_Corners.B.X, m_Corners.B.Y));
-		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", m_Corners.C.X, m_Corners.C.Y));
-		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", m_Corners.D.X, m_Corners.D.Y));
+		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format("{0};{1}", quadImage.A.X, quadImage.A.Y));
+		    _xmlWriter.WriteElementString("PointUpperRight", String.Format("{0};{1}", quadImage.B.X, quadImage.B.Y));
+		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", quadImage.C.X, quadImage.C.Y));
+		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", quadImage.D.X, quadImage.D.Y));
 		    
             _xmlWriter.WriteElementString("Divisions", subdivisions.ToString());
-            _xmlWriter.WriteElementString("Perspective", m_bSupport3D ? "true" : "false");
+            _xmlWriter.WriteElementString("Perspective", inPerspective ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
-            m_Style.WriteXml(_xmlWriter);
+            style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("InfosFading");
-            m_InfosFading.WriteXml(_xmlWriter);
+            infosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
         }
 		
@@ -402,74 +351,91 @@ namespace Kinovea.ScreenManager
 		public void Scale(Size imageSize)
 		{
 		    // Initialize corners positions
-            if (!m_bInitialized)
+            if (!initialized)
             {
-                m_bInitialized = true;
+                initialized = true;
 
                 int horzTenth = (int)(((double)imageSize.Width) / 10);
                 int vertTenth = (int)(((double)imageSize.Height) / 10);
 
-                if (m_bSupport3D)
+                if (inPerspective)
                 {
                     // Initialize with a faked perspective.
-                    m_Corners.A = new Point(3 * horzTenth, 4 * vertTenth);
-                    m_Corners.B = new Point(7 * horzTenth, 4 * vertTenth);
-                    m_Corners.C = new Point(9 * horzTenth, 8 * vertTenth);
-                    m_Corners.D = new Point(1 * horzTenth, 8 * vertTenth);
+                    quadImage.A = new Point(3 * horzTenth, 4 * vertTenth);
+                    quadImage.B = new Point(7 * horzTenth, 4 * vertTenth);
+                    quadImage.C = new Point(9 * horzTenth, 8 * vertTenth);
+                    quadImage.D = new Point(1 * horzTenth, 8 * vertTenth);
                 }
                 else
                 {
                     // initialize with a rectangle.
-                    m_Corners.A = new Point(2 * horzTenth, 2 * vertTenth);
-                    m_Corners.B = new Point(8 * horzTenth, 2 * vertTenth);
-                    m_Corners.C = new Point(8 * horzTenth, 8 * vertTenth);
-                    m_Corners.D = new Point(2 * horzTenth, 8 * vertTenth);
+                    quadImage.A = new Point(2 * horzTenth, 2 * vertTenth);
+                    quadImage.B = new Point(8 * horzTenth, 2 * vertTenth);
+                    quadImage.C = new Point(8 * horzTenth, 8 * vertTenth);
+                    quadImage.D = new Point(2 * horzTenth, 8 * vertTenth);
                 }
             }
             
-            RedefineHomography();
-            m_fShift = 0.0F;
+            UpdateCalibration();
 		}
 		#endregion
 		
         public void Reset()
         {
             // Used on metadata over load.
-            subdivisions = m_iDefaultDivisions;
-            m_fShift = 0.0F;
-            m_bValidPlane = true;
-            m_bInitialized = false;
-            m_Corners = basePlane.Clone();
+            subdivisions = defaultSubdivisions;
+            planeIsConvex = true;
+            initialized = false;
+            
+            quadImage = quadPlane.Clone();
         }
         
-        public void SetUsedForCalibration(bool used)
+        public void UpdateMapping(SizeF size)
         {
-            UsedForCalibration = used;
-            RedefineHomography();
+            planeWidth = size.Width;
+            planeHeight = size.Height;
+            quadPlane = new QuadrilateralF(planeWidth, planeHeight);
+            
+            projectiveMapping.Update(quadPlane, quadImage);
         }
         
         #region Private methods
         private void BindStyle()
         {
-            m_Style.Bind(m_StyleHelper, "Color", "color");
+            style.Bind(styleHelper, "Color", "color");
         }   
-        private void RedefineHomography()
+        private void UpdateCalibration()
         {
-            m_RefPlane = m_Corners.Clone();
-            
             // If used for the main calibration.
-            if(UsedForCalibration && CalibrationHelper != null)
-                CalibrationHelper.CalibrationByPlane_InitProjection(m_Corners);
+            //if(UsedForCalibration && CalibrationHelper != null)
+            //    CalibrationHelper.CalibrationByPlane_InitProjection(quadImage);
         }
         
-        private void InitProjectiveMapping(Quadrilateral quad)
+        private void TranslateInPlane(int deltaX, int deltaY)
         {
-            projectiveMapping.Init(basePlane, quad);
+            // Translate the plane but can't keep the grid sticky with the pointer.
+            // TODO: MoveDrawing() should receive the actual start and end points,
+            // because here a delta doesn't have the same meaning depending on its location.
+            PointF start = quadImage.A;
+            PointF end = quadImage.A.Translate(deltaX, deltaY);
+            TranslateInPlane(start, end);
         }
         
-        private PointF PlaneToImageTransform(PointF p) 
+        private void TranslateInPlane(PointF start, PointF end)
         {
-            return projectiveMapping.Forward(p);
+            // Translate grid on the plane, keeps the same part of the grid under the pointer.
+            PointF old = projectiveMapping.Backward(start);
+		    PointF now = projectiveMapping.Backward(end);
+		    float dx = now.X - old.X;
+		    float dy = now.Y - old.Y;
+		    QuadrilateralF grid = quadPlane.Clone();
+		    grid.Translate(dx, dy);
+		    
+		    PointF a = projectiveMapping.Forward(grid.A);
+    		PointF b = projectiveMapping.Forward(grid.B);
+    		PointF c = projectiveMapping.Forward(grid.C);
+    		PointF d = projectiveMapping.Forward(grid.D);
+    		quadImage = new QuadrilateralF(a, b, c, d);
         }
         
         private void mnuCalibrate_Click(object sender, EventArgs e)
@@ -482,9 +448,6 @@ namespace Kinovea.ScreenManager
             FormsHelper.Locate(fcp);
             fcp.ShowDialog();
             fcp.Dispose();
-            
-            if(UsedForCalibration && CalibrationHelper != null)
-                CalibrationHelper.CalibrationByPlane_InitProjection(m_Corners);
             
             CallInvalidateFromMenu(sender);
             

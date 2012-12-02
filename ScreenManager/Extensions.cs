@@ -73,6 +73,10 @@ namespace Kinovea.ScreenManager
         {
             return new Point((int)_point.X + _x, (int)_point.Y + _y);
         }
+        public static PointF Translate(this PointF _point, float _x, float _y)
+        {
+            return new PointF(_point.X + _x, _point.Y + _y);
+        }
         public static Point Scale(this Point _point, double _scaleX, double _scaleY)
         {
             return new Point((int)(_point.X * _scaleX), (int)(_point.Y * _scaleY));
