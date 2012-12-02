@@ -18,9 +18,11 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using Kinovea.Services;
 using System;
 using System.Drawing;
+using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -85,7 +87,6 @@ namespace Kinovea.ScreenManager
 		public CalibrationHelper()
 		{
 			speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
-			
 			calibrator = calibrationLine;
 		}
 		#endregion
@@ -113,9 +114,13 @@ namespace Kinovea.ScreenManager
 		{
 		    calibrationLine.SetOrigin(p);
 		}
-		public void CalibrationByPlane_Initialize(SizeF size, ProjectiveMapping mapping)
+		public PointF CalibrationByLine_GetOrigin()
 		{
-		    calibrationPlane.Initialize(size, mapping);
+		    return calibrationLine.Origin;
+		}
+		public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
+		{
+		    calibrationPlane.Initialize(size, quadImage);
 		}
 		public SizeF CalibrationByPlane_GetRectangleSize()
 		{
@@ -200,5 +205,58 @@ namespace Kinovea.ScreenManager
 		{
 		    return UnitHelper.LengthAbbreviation(lengthUnit);
 		}
+	   
+        #region Serialization
+        public void WriteXml(XmlWriter w)
+        {
+            if(calibratorType == CalibratorType.Line)
+            {
+                w.WriteStartElement("CalibrationLine");
+                calibrationLine.WriteXml(w);
+                w.WriteEndElement();
+            }
+            else if(calibratorType == CalibratorType.Plane)
+            {   
+                w.WriteStartElement("CalibrationPlane");                
+                calibrationPlane.WriteXml(w);
+                w.WriteEndElement();
+            }
+
+            w.WriteStartElement("Unit");
+            w.WriteAttributeString("Abbreviation", GetLengthAbbreviation());
+            w.WriteString(lengthUnit.ToString());
+            w.WriteEndElement();
+        }
+        public void ReadXml(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+			{
+                switch(r.Name)
+                {
+                    case "CalibrationPlane":
+                        calibratorType = CalibratorType.Plane;
+                        calibrator = calibrationPlane;
+            		    calibrationPlane.ReadXml(r);
+                        break;
+                    case "CalibrationLine":
+                        calibratorType = CalibratorType.Line;
+                        calibrator = calibrationLine;
+                        calibrationLine.ReadXml(r);
+                        break;
+                    case "Unit":
+                        lengthUnit = (LengthUnits) Enum.Parse(typeof(LengthUnits), r.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+				        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            r.ReadEndElement();
+        }
+        #endregion
 	}
 }

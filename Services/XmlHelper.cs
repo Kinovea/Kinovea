@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -52,7 +53,14 @@ namespace Kinovea.Services
             try
             {
                 string[] a = _sPoint.Split(new char[] {';'});
-                point = new PointF(float.Parse(a[0]), float.Parse(a[1]));
+                
+                float x;
+                float y;
+                bool readX = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
+                bool readY = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out y);
+                
+                if(readX && readY)
+                    point = new PointF(x, y);
             }
             catch (Exception)
             {
@@ -72,6 +80,28 @@ namespace Kinovea.Services
             catch (Exception)
             {
                 log.Error(String.Format("An error happened while parsing Size value. ({0}).", sizeString));
+            }
+
+            return size;
+        }
+        public static SizeF ParseSizeF(string sizeString)
+        {
+            SizeF size = SizeF.Empty;
+            try
+            {
+                string[] a = sizeString.Split(new char[] {';'});
+                
+                float width;
+                float height;
+                bool readWidth = float.TryParse(a[0], NumberStyles.Any, CultureInfo.InvariantCulture, out width);
+                bool readHeight = float.TryParse(a[1], NumberStyles.Any, CultureInfo.InvariantCulture, out height);
+                
+                if(readWidth && readHeight)
+                    size = new SizeF(width, height);
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing SizeF value. ({0}).", sizeString));
             }
 
             return size;

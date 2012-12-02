@@ -68,8 +68,8 @@ namespace Kinovea.ScreenManager
             if(calibrationHelper.IsCalibrated && calibrationHelper.CalibratorType == CalibratorType.Plane)
             {
                 SizeF size = calibrationHelper.CalibrationByPlane_GetRectangleSize();
-                tbA.Text = String.Format("{0:0.00}", size.Width);
-                tbB.Text = String.Format("{0:0.00}", size.Height);
+                tbA.Text = String.Format("{0:0.00}", size.Height);
+                tbB.Text = String.Format("{0:0.00}", size.Width);
                 
             	cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
@@ -134,7 +134,7 @@ namespace Kinovea.ScreenManager
                 drawingPlane.UpdateMapping(size);
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
-                calibrationHelper.CalibrationByPlane_Initialize(size, drawingPlane.Mapping);
+                calibrationHelper.CalibrationByPlane_Initialize(size, drawingPlane.QuadImage);
                 calibrationHelper.LengthUnit = (LengthUnits)cbUnit.SelectedIndex;
             }
             catch
@@ -150,7 +150,6 @@ namespace Kinovea.ScreenManager
         
         private void pnlQuadrilateral_Paint(object sender, PaintEventArgs e)
         {
-            //miniQuadrilateral
             Graphics canvas = e.Graphics;
             canvas.CompositingQuality = CompositingQuality.HighQuality;
             canvas.InterpolationMode = InterpolationMode.Bicubic;

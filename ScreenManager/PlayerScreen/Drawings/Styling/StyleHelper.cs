@@ -104,6 +104,11 @@ namespace Kinovea.ScreenManager
 			get { return m_TrackShape; }
 			set { m_TrackShape = value;}
 		}
+		public int GridDivisions
+		{
+		    get { return gridDivisions;}
+		    set { gridDivisions = value;}
+		}
 		#endregion
 		
 		#region Members
@@ -113,6 +118,7 @@ namespace Kinovea.ScreenManager
 		private Bicolor m_Bicolor;
 		private LineEnding m_LineEnding = LineEnding.None;
 		private TrackShape m_TrackShape = TrackShape.Solid;
+		private int gridDivisions;
 		
 		
 		// Internal only
@@ -360,6 +366,15 @@ namespace Kinovea.ScreenManager
 						}
 						break;	
 					}
+			    case "GridDivisions":
+			        {
+			            if(_value is int)
+			            {
+			                gridDivisions = (int)_value;
+			                imported = true;
+			            }
+			            break;
+			        }
 				default:
 					{
 						log.DebugFormat("Unknown target property \"{0}\"." , _targetProperty);
@@ -440,6 +455,15 @@ namespace Kinovea.ScreenManager
 						}
 						break;	
 					}
+			    case "GridDivisions":
+			        {
+			            if(_targetType == typeof(int))
+			            {
+			                result = gridDivisions;
+			                converted = true;
+			            }
+			            break;
+			        }
 				default:
 					{
 						log.DebugFormat("Unknown source property \"{0}\"." , _sourceProperty);
