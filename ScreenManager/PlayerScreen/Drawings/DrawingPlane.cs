@@ -380,7 +380,7 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		 #region ITrackable implementation and support.
+		#region ITrackable implementation and support.
         public Guid ID
         {
             get { return id; }
@@ -452,6 +452,16 @@ namespace Kinovea.ScreenManager
             else
                 return ToolManager.Grid.DisplayName;
         }
+        
+        public override int GetHashCode()
+        {
+            int iHash = quadImage.A.GetHashCode();
+            iHash ^= quadImage.B.GetHashCode();
+            iHash ^= quadImage.C.GetHashCode();
+            iHash ^= quadImage.D.GetHashCode();
+            iHash ^= styleHelper.GetHashCode();
+            return iHash;
+        }    
         
         #region Private methods
         private void BindStyle()
