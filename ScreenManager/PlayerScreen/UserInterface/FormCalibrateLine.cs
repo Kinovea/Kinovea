@@ -61,10 +61,10 @@ namespace Kinovea.ScreenManager
         }
         private void LocalizeForm()
         {
-            this.Text = "   " + ScreenManagerLang.dlgConfigureMeasure_Title;
+            this.Text = "   " + ScreenManagerLang.dlgCalibrateLine_Title;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
-            grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            grpConfig.Text = ScreenManagerLang.Generic_Calibration;
             lblRealSize.Text = ScreenManagerLang.dlgConfigureMeasure_lblRealSize.Replace("\\n", "\n");
             
             // Combo Units (MUST be filled in the order of the enum)

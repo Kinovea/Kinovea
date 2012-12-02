@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
-                mnuCalibrate.Text = ScreenManagerLang.mnuSealMeasure;
+                mnuCalibrate.Text = ScreenManagerLang.mnuCalibrate;
                 contextMenu.Add(mnuCalibrate);
 
                 return contextMenu;
@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
 		}
 		public override DrawingCapabilities Caps
 		{
-			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading; }
+			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
 		}
         public int Subdivisions
         {
@@ -397,6 +397,14 @@ namespace Kinovea.ScreenManager
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
             
             projectiveMapping.Update(quadPlane, quadImage);
+        }
+        
+        public override string ToString()
+        {
+            if(inPerspective)
+                return ToolManager.Plane.DisplayName;
+            else
+                return ToolManager.Grid.DisplayName;
         }
         
         #region Private methods

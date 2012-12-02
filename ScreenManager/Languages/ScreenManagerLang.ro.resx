@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Originea sistemului de coordonate</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Miscare de la dreapta la stanga</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Marimea reala a segmentului :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Calibrare</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibrare</value></data>
+   
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Sursa curentă</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Proprietăţi</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Nu există altă opţiune</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Închide</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Culoare :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuraţie</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensiune font :</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacitate </value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Viteză :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Poziţie</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Zonă de lucru:</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimetri</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Metri</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Inch</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Total necunoscut</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Blochează marginile zonei de lucru</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Deblochează marginile zonei de lucru</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Grilă de perspectivă</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Grilă de perspectivă</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Luminozitate...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurator</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mod contorizare la zero</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Încarc datele cadrelor cheie...</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Μεγέθυνση x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restartează ediţia traiectoriei</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salvează fişierul video sau datele cadrelor cheie...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Calibreaza...</value></data>
+   
    <data name="mnuSendPic" xml:space="preserve"><value>Trimite imaginea către alt fişier video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Cameră de mare viteză...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Setaţi sfârşitul zonei de lucru pe cadrul curent</value></data>

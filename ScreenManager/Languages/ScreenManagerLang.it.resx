@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Coordinate di origine</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Movimento da destra verso sinistra</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Dimensione reale del segmento :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Misura stabilita</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Misura stabilita</value></data>
+   
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Dispositivo corrente</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Proprieta'</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Nessun'altra opzione disponibile</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Chiudi</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Colore</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configurazione</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Dimensione del Font</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacita'</value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Velocita' :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Posizione</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Zona Lavoro:</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimetri</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Metri</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Pollici</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Totale sconosciuto</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Blocca confini della Zona Lavoro</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Sblocca confini della Zona Lavoro</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Griglia in prospettiva</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Griglia in prospettiva</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Luminosita'...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configura</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Modalita' Conteggio a ritroso</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Carica Immagini Chiave e loro Dati...</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Yaklaştır x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Riprendi tracciatura Traiettoria</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Salva...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Misura stabilita...</value></data>
+   
    <data name="mnuSendPic" xml:space="preserve"><value>Invia un'immagine all'altro video</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Videocamera ad alta velocita'...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Imposta il Fotogramma attuale come FINE (ULTIMO fotogramma) della Zona Lavoro </value></data>

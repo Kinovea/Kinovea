@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>标记系统原点坐标</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>从右到左的动作</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>片段真实大小 :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>校准测量</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>校准测量</value></data>
+   
    
    
    
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>关闭</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>颜色:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>配置</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>字体大小</value></data>
    
    
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>速度</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>位置</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>工作区</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>厘米</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>米</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>英寸</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>所有未知</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>锁定工作区界限</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>解锁工作区界限</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>透视网格</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>透视网格</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>亮度</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>配置</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>倒计时模式</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>载入关键图像数据...</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>放大 x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>放大 x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>放大 x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>放大 x2</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>重启路径</value></data>
    <data name="mnuSave" xml:space="preserve"><value>保存…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>校准测量...</value></data>
+   
    
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>设置原始速度...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>设置工作区的最后一帧为当前帧</value></data>

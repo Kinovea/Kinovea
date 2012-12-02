@@ -69,7 +69,7 @@ namespace Kinovea.ScreenManager
         		
 				mnuShowMeasure.Text = ScreenManagerLang.mnuShowMeasure;
 				mnuShowMeasure.Checked = ShowMeasurableInfo;
-        		mnuSealMeasure.Text = ScreenManagerLang.mnuSealMeasure;
+        		mnuSealMeasure.Text = ScreenManagerLang.mnuCalibrate;
         		
         		contextMenu.Add(mnuShowMeasure);
         		contextMenu.Add(mnuSealMeasure);

@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
 	            			{
 	            				// Carry on the memo so we can still do cancel and retrieve the old values.
 	            				DrawingStyle memo = tool.StylePreset.Clone();
-	            				tool.StylePreset = preset;
+	            				tool.StylePreset = ImportPreset(memo, preset);
 	            				tool.StylePreset.Memorize(memo);
 	            			}
 	            			else
@@ -230,6 +230,26 @@ namespace Kinovea.ScreenManager
         	m_Tools.Add("CoordinateSystem", new DrawingToolCoordinateSystem());
         	
         	LoadPresets();
+        }
+        private static DrawingStyle ImportPreset(DrawingStyle defaultStyle, DrawingStyle preset)
+        {
+            // Styling options may be added or removed between releases.
+            
+            // Add options unknown to the preset.
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in defaultStyle.Elements)
+            {
+                if(!preset.Elements.ContainsKey(pair.Key))
+                    preset.Elements.Add(pair.Key, pair.Value);
+            }
+
+            // Remove options unknown to the default.
+            foreach(KeyValuePair<string, AbstractStyleElement> pair in preset.Elements)
+            {
+                if(!defaultStyle.Elements.ContainsKey(pair.Key))
+                    preset.Elements.Remove(pair.Key);
+            }
+
+            return preset;
         }
         #endregion
 	}
