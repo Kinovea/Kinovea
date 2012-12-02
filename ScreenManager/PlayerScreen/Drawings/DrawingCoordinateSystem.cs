@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
         }
         
         public bool Visible { get; set; }
-        public CalibrationHelper CalibrationHelper { get; set; }
+        public CalibrationHelper CalibrationHelper {get; set;}
         public bool ShowMeasurableInfo { get; set; }
         #endregion
 
@@ -282,7 +282,14 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        
+        public void UpdateOrigin()
+        {
+            if(CalibrationHelper.IsCalibrated && CalibrationHelper.CalibratorType == CalibratorType.Line)
+            {
+                PointF p = CalibrationHelper.CalibrationByLine_GetOrigin();
+                points["0"] = new Point((int)p.X, (int)p.Y);
+            }
+        }
         
         #region Lower level helpers
         private void BindStyle()

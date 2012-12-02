@@ -677,6 +677,7 @@ namespace Kinovea.ScreenManager
             }
             
             UpdateTrajectoriesForKeyframes();
+            drawingCoordinateSystem.UpdateOrigin();
         }
         private string ConvertIfNeeded(string _kva, bool _bIsFile)
         {
@@ -785,8 +786,8 @@ namespace Kinovea.ScreenManager
                     case "DuplicationFactor":
 						m_iDuplicateFactor = r.ReadElementContentAsInt();
 						break;
-					case "CalibrationHelp":
-                        ParseCalibrationHelp(r);
+					case "Calibration":
+                        CalibrationHelper.ReadXml(r);
 						break;
 					case "Keyframes":
                         ParseKeyframes(r);
@@ -812,35 +813,6 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
-        }
-        private void ParseCalibrationHelp(XmlReader r)
-        {       
-            r.ReadStartElement();
-            
-			while(r.NodeType == XmlNodeType.Element)
-			{
-				switch(r.Name)
-				{
-					/*case "PixelToUnit":
-				        double fPixelToUnit = double.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
-				        calibrationHelper.PixelToUnit = fPixelToUnit;
-						break;
-					case "LengthUnit":
-						TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
-                        calibrationHelper.CurrentLengthUnit = (LengthUnits)enumConverter.ConvertFromString(r.ReadElementContentAsString());
-						break;
-					case "CoordinatesOrigin":
-						// Note: we don't adapt to the destination image size. It makes little sense anyway.
-                    	calibrationHelper.CoordinatesOrigin = XmlHelper.ParsePoint(r.ReadElementContentAsString());
-						break;*/
-					default:
-						string unparsed = r.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			r.ReadEndElement();
         }
         private void ParseKeyframes(XmlReader r)
         {
@@ -1256,22 +1228,9 @@ namespace Kinovea.ScreenManager
         }
         private void WriteCalibrationHelp(XmlWriter w)
         {
-            // TODO: Make Calbrabtion helper responsible for this.
-            
-            /*w.WriteStartElement("CalibrationHelp");
-            
-            w.WriteElementString("PixelToUnit", calibrationHelper.PixelToUnit.ToString(CultureInfo.InvariantCulture));
-            w.WriteStartElement("LengthUnit");
-            w.WriteAttributeString("UserUnitLength", calibrationHelper.GetLengthAbbreviation());
-            
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LengthUnits));
-            string unit = enumConverter.ConvertToString((LengthUnits)calibrationHelper.CurrentLengthUnit);
-            w.WriteString(unit);
-
+            w.WriteStartElement("Calibration");
+            CalibrationHelper.WriteXml(w);
             w.WriteEndElement();
-            w.WriteElementString("CoordinatesOrigin", String.Format("{0};{1}", calibrationHelper.CoordinatesOrigin.X, calibrationHelper.CoordinatesOrigin.Y));
-
-            w.WriteEndElement();*/
         }
         #endregion
         
@@ -1498,7 +1457,10 @@ namespace Kinovea.ScreenManager
             {
                 IMeasurable measurableDrawing = drawing as IMeasurable;
                 measurableDrawing.CalibrationHelper = calibrationHelper;
-                measurableDrawing.ShowMeasurableInfo = showingMeasurables;
+                
+                if(!measurableDrawing.ShowMeasurableInfo)
+                    measurableDrawing.ShowMeasurableInfo = showingMeasurables;
+                
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
         }

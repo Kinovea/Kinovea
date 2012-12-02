@@ -68,22 +68,9 @@ namespace Kinovea.ScreenManager
 		{
 			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
 		}
-        public int Subdivisions
-        {
-            get { return subdivisions; }
-            set { subdivisions = value; }
-        }
-        public QuadrilateralF QuadPlane
-        {
-            get { return quadPlane; }
-        }
         public QuadrilateralF QuadImage
         {
             get { return quadImage;}
-        }
-        public ProjectiveMapping Mapping
-        {
-            get { return projectiveMapping;}
         }
         
         public CalibrationHelper CalibrationHelper { get; set; }
@@ -98,7 +85,6 @@ namespace Kinovea.ScreenManager
         private float planeWidth;                                               // width and height of rectangle in plane system.
         private float planeHeight;
         
-        private int subdivisions;
         private bool inPerspective;
         private bool planeIsConvex = true;
         
@@ -121,13 +107,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public DrawingPlane(int subdivisions, bool inPerspective, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
+        public DrawingPlane(bool inPerspective, long timestamp, long averageTimeStampsPerFrame, DrawingStyle preset)
         {
-            this.subdivisions = subdivisions > 0 ? subdivisions : defaultSubdivisions;
             this.inPerspective = inPerspective;
             
             // Decoration
             styleHelper.Color = Color.Empty;
+            styleHelper.GridDivisions = 8;
             if(preset != null)
             {
 			    style = preset.Clone();
@@ -146,7 +132,7 @@ namespace Kinovea.ScreenManager
 			mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
-            : this(defaultSubdivisions, false, 0, 0, ToolManager.Grid.StylePreset.Clone())
+            : this(false, 0, 0, ToolManager.Grid.StylePreset.Clone())
         {
             ReadXml(_xmlReader, _scale);
         }
@@ -174,8 +160,8 @@ namespace Kinovea.ScreenManager
                     projectiveMapping.Update(quadPlane, quadImage);
                     
                     int start = 0;
-                    int end = subdivisions;
-                    int total = subdivisions;
+                    int end = styleHelper.GridDivisions;
+                    int total = styleHelper.GridDivisions;
                     
                     // Rows
                     for (int i = start; i <= end; i++)
@@ -231,8 +217,8 @@ namespace Kinovea.ScreenManager
 			if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.
-                subdivisions = subdivisions + ((dx - dy)/4);
-                subdivisions = Math.Min(Math.Max(subdivisions, minimumSubdivisions), maximumSubdivisions);
+                styleHelper.GridDivisions = styleHelper.GridDivisions + ((dx - dy)/4);
+                styleHelper.GridDivisions = Math.Min(Math.Max(styleHelper.GridDivisions, minimumSubdivisions), maximumSubdivisions);
             }
 			else
             {
@@ -300,10 +286,7 @@ namespace Kinovea.ScreenManager
                             quadImage.D = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
     				        break;
 				        }
-				    case "Divisions":
-				        subdivisions = _xmlReader.ReadElementContentAsInt();
-                        break;
-                    case "Perspective":
+				    case "Perspective":
                         inPerspective = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
 					case "DrawingStyle":
@@ -330,12 +313,11 @@ namespace Kinovea.ScreenManager
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format("{0};{1}", quadImage.A.X, quadImage.A.Y));
-		    _xmlWriter.WriteElementString("PointUpperRight", String.Format("{0};{1}", quadImage.B.X, quadImage.B.Y));
-		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", quadImage.C.X, quadImage.C.Y));
-		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", quadImage.D.X, quadImage.D.Y));
+		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format("{0};{1}", (int)quadImage.A.X, (int)quadImage.A.Y));
+		    _xmlWriter.WriteElementString("PointUpperRight", String.Format("{0};{1}", (int)quadImage.B.X, (int)quadImage.B.Y));
+		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", (int)quadImage.C.X, (int)quadImage.C.Y));
+		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", (int)quadImage.D.X, (int)quadImage.D.Y));
 		    
-            _xmlWriter.WriteElementString("Divisions", subdivisions.ToString());
             _xmlWriter.WriteElementString("Perspective", inPerspective ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
@@ -429,7 +411,6 @@ namespace Kinovea.ScreenManager
         public void Reset()
         {
             // Used on metadata over load.
-            subdivisions = defaultSubdivisions;
             planeIsConvex = true;
             initialized = false;
             
@@ -467,6 +448,7 @@ namespace Kinovea.ScreenManager
         private void BindStyle()
         {
             style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "GridDivisions", "divisions");
         }   
         
         private void TranslateInPlane(int deltaX, int deltaY)

@@ -21,7 +21,11 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -38,8 +42,14 @@ namespace Kinovea.ScreenManager
 			get { return (origin.X >= 0 && origin.Y >= 0); }
 		}
         
+        public PointF Origin 
+        {
+            get { return origin;}
+        }
         private PointF origin = new PointF(-1, -1);
         private float scale = 1.0f;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
         
         #region ICalibrator
         public PointF Transform(PointF p)
@@ -74,5 +84,36 @@ namespace Kinovea.ScreenManager
         {
             scale = ratio;
         }
+        
+        #region Serialization
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteElementString("Origin", String.Format(CultureInfo.InvariantCulture, "{0};{1}", origin.X, origin.Y));
+            w.WriteElementString("Scale", String.Format(CultureInfo.InvariantCulture, "{0}", scale));
+        }
+        public void ReadXml(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+			{
+                switch(r.Name)
+                {
+                    case "Origin":
+                        origin = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        break;
+                    case "Scale":
+                        scale = float.Parse(r.ReadElementContentAsString(), CultureInfo.InvariantCulture);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+				        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            r.ReadEndElement();
+        }
+        #endregion
     }
 }

@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
 			get { return value; }
 			set 
 			{ 
-				value = (value is int) ? (int)value : defaultValue;
+				this.value = (value is int) ? (int)value : defaultValue;
 				RaiseValueChanged();
 			}
 		}
@@ -70,11 +70,11 @@ namespace Kinovea.ScreenManager
 		public StyleElementGridDivisions(int initialValue)
 		{
 		    InitializeOptions();
-		    
 		    value = (Array.IndexOf(options, initialValue.ToString()) >= 0) ? initialValue : defaultValue;
 		}
 		public StyleElementGridDivisions(XmlReader _xmlReader)
 		{
+		    InitializeOptions();
 			ReadXML(_xmlReader);
 		}
 		private void InitializeOptions()
@@ -120,7 +120,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// Restrict to the actual list of "athorized" values.
-			value = (Array.IndexOf(options, value.ToString()) >= 0) ? value : defaultValue;
+			this.value = (Array.IndexOf(options, value.ToString()) >= 0) ? value : defaultValue;
 			
 			reader.ReadEndElement();
 		}
@@ -135,7 +135,7 @@ namespace Kinovea.ScreenManager
 		{
 			int i;
 			bool parsed = int.TryParse(((ComboBox)sender).Text, out i);
-			value = parsed ? i : defaultValue;
+			this.value = parsed ? i : defaultValue;
 			RaiseValueChanged();
 			((ComboBox)sender).Text = value.ToString();
 		}
