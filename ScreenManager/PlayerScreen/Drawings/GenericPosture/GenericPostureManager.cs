@@ -68,7 +68,10 @@ namespace Kinovea.ScreenManager
             if(!Directory.Exists(dir))
                 return;
             
-            foreach (string f in Directory.GetFiles(dir))
+            string[] files = Directory.GetFiles(dir);
+            Array.Sort(files, new AlphanumComparator());
+            
+            foreach (string f in files)
             {
                 if (!Path.GetExtension(f).ToLower().Equals(".xml"))
                     continue;
