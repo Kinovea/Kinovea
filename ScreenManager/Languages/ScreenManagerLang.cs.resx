@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Počátek koordinačního systému</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Pohyb zleva doprava</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Skutečná velikost segmentu:</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Kalibrace měření</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrace měření</value></data>
+   
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Stávající zařízení</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Vlastnosti</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Nejsou jiné možnosti</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Zavřít</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Barva:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfigurace</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Velikost fontu:</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Šířka:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacita</value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Rychlost:</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Pozice</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Pracovní oblast:</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimetry</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Metry</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Palce</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Celkem neznámé</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Uzamčít hranice pracovní oblasti</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odemčít hranice pracovní oblasti</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Perspektivní mřížka</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektivní mřížka</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Jas…</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurovat</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mód odpočítávání</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Nahrát data klíčových pozic</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"/>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom 1.5x</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom 1.75x</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom 2x</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Restart trasování</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Uložit…</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrovat měření…</value></data>
+   
    <data name="mnuSendPic" xml:space="preserve"><value>Poslat obraz do jiného videa</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Vysoce-rychlostní kamera</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Nastavit poslední snímek pracovní oblasti na stávající snímek</value></data>

@@ -312,6 +312,7 @@
     <Compile Include="PlayerScreen\Drawings\Styling\AbstractStyleElement.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementColor.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementFontSize.cs" />
+    <Compile Include="PlayerScreen\Drawings\Styling\StyleElementGridDivisions.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementLineEnding.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementLineSize.cs" />
     <Compile Include="PlayerScreen\Drawings\Styling\StyleElementPenSize.cs" />

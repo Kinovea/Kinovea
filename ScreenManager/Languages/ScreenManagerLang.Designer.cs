@@ -304,6 +304,24 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Line calibration.
+        /// </summary>
+        internal static string dlgCalibrateLine_Title {
+            get {
+                return ResourceManager.GetString("dlgCalibrateLine_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Plane calibration.
+        /// </summary>
+        internal static string dlgCalibratePlane_Title {
+            get {
+                return ResourceManager.GetString("dlgCalibratePlane_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Colors.
         /// </summary>
         internal static string dlgColorPicker_Title {
@@ -462,15 +480,6 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string dlgConfigureMeasure_lblRealSize {
             get {
                 return ResourceManager.GetString("dlgConfigureMeasure_lblRealSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Calibrate measure.
-        /// </summary>
-        internal static string dlgConfigureMeasure_Title {
-            get {
-                return ResourceManager.GetString("dlgConfigureMeasure_Title", resourceCulture);
             }
         }
         
@@ -1321,6 +1330,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibration.
+        /// </summary>
+        internal static string Generic_Calibration {
+            get {
+                return ResourceManager.GetString("Generic_Calibration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Cancel.
         /// </summary>
         internal static string Generic_Cancel {
@@ -1362,6 +1380,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string Generic_FontSizePicker {
             get {
                 return ResourceManager.GetString("Generic_FontSizePicker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Divisions:.
+        /// </summary>
+        internal static string Generic_GridDivisionsPicker {
+            get {
+                return ResourceManager.GetString("Generic_GridDivisionsPicker", resourceCulture);
             }
         }
         
@@ -1555,6 +1582,15 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Millimeters.
+        /// </summary>
+        internal static string LengthUnit_Millimeters {
+            get {
+                return ResourceManager.GetString("LengthUnit_Millimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Yards.
         /// </summary>
         internal static string LengthUnit_Yards {
@@ -1708,20 +1744,20 @@ namespace Kinovea.ScreenManager.Languages {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Perspective Grid.
-        /// </summary>
-        internal static string mnu3DPlane {
-            get {
-                return ResourceManager.GetString("mnu3DPlane", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à Brightness....
         /// </summary>
         internal static string mnuBrightness {
             get {
                 return ResourceManager.GetString("mnuBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Calibrate....
+        /// </summary>
+        internal static string mnuCalibrate {
+            get {
+                return ResourceManager.GetString("mnuCalibrate", resourceCulture);
             }
         }
         
@@ -2190,6 +2226,15 @@ namespace Kinovea.ScreenManager.Languages {
         internal static string mnuOnePlayer {
             get {
                 return ResourceManager.GetString("mnuOnePlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Perspective Grid.
+        /// </summary>
+        internal static string mnuPerspectiveGrid {
+            get {
+                return ResourceManager.GetString("mnuPerspectiveGrid", resourceCulture);
             }
         }
         

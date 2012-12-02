@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Koordinatsystemets ursprung</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Rörelse höger till vänster</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Verklig storlek av segmentet :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Kalibrera Längd</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrera Längd</value></data>
+   
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Aktuell enhet</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Egenskaper</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Inga fler alternativ finns</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Stäng</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Färg :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguration</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Fontstorlek</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Transparens</value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hastighet :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Position</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Arbetsområde:</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimeter</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Meter</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Tum</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Okänd total</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lås arbetszonens gränser</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Lås upp arbetszonens gränser</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Rutverk med perspektiv</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Rutverk med perspektiv</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Ljusstyrka...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfigurera</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Nedräknings Läge</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Ladda data för nyckelbild</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zooma x{0:0.00}</value></data>
+   
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zooma x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zooma x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zooma x2</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Återstarta banans editering</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Spara...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Kalibrera längd...</value></data>
+   
    <data name="mnuSendPic" xml:space="preserve"><value>Sänd bilden till andra videon</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Höghastighetskamera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Placera arbetszonens sista bild som nuvarande bild</value></data>

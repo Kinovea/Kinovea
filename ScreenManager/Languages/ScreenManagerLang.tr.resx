@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Sistem orijini koordinatları</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Sağdan sola hareket</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin gerçek büyüklüğü :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Ölçümü Kalibre Et</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Ölçümü Kalibre Et</value></data>
+   
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Geçerli aygıt</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Özellikler</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Başka bir seçenek yok</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Kapat</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Renk :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Ayarlamalar</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Yazıtipi Büyüklüğü :</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Opaklık</value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Hız :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Konum</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Çalışma Alanı:</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Santimetre</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Metre</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>İnç</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Toplam bilinmeyen</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Çalışma Alanı Sınırlarını Kilitle</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Çalışma Alanı Sınırlarının Kilidini Aç</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Perspektif Izgarası</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektif Izgarası</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Parlaklık...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Ayarla</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Geriye doğru sayma Modu</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Anahtar İmaj Verisini Yükle...</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Yaklaştır x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Yaklaştır x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Yaklaştır x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Yaklaştır x2</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Yol Düzenlemesini Baştan Başlat</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Kaydet...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Ölçümü Kalibre Et...</value></data>
+   
    <data name="mnuSendPic" xml:space="preserve"><value>İmajı diğer videoya gönder</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Yüksek-hızlı kamera...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Çalışma Alanının İlk Karesini Geçerli Kareye Denkleştir</value></data>

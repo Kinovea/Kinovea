@@ -90,7 +90,10 @@ namespace Kinovea.ScreenManager
 						break;
 					case "TrackShape":
 						styleElement = new StyleElementTrackShape(_xmlReader);
-						break;	
+						break;
+                    case "GridDivisions":
+						styleElement = new StyleElementGridDivisions(_xmlReader);
+						break;
 					default:
 						log.ErrorFormat("Could not import style element \"{0}\"", _xmlReader.Name);
 						log.ErrorFormat("Content was: {0}", _xmlReader.ReadOuterXml());

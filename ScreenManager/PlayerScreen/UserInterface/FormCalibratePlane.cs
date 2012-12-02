@@ -50,10 +50,10 @@ namespace Kinovea.ScreenManager
         
         private void LocalizeForm()
         {
-            //this.Text = "   " + ScreenManagerLang.dlgConfigureMeasure_Title;
+            this.Text = "   " + ScreenManagerLang.dlgCalibratePlane_Title;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
-            //grpConfig.Text = ScreenManagerLang.Generic_Calibration;
+            grpConfig.Text = ScreenManagerLang.Generic_Calibration;
             
             // Combo Units (MUST be filled in the order of the enum)
             cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Centimeters + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Centimeters) + ")");

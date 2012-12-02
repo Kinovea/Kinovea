@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Origine du repère de coordonnées</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Mouvement de droite à gauche</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Taille réelle du segment :</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Étalonner la mesure</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Calibration de ligne</value></data>
+   <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Calibration du plan</value></data>
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Source en cours</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Propriétés</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Pas d'autre option disponible</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Fermer</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Couleur :</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Configuration</value></data>
+   <data name="Generic_Calibration" xml:space="preserve"><value>Calibration</value></data>
+   <data name="Generic_GridDivisionsPicker" xml:space="preserve"><value>Divisions :</value></data>
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Taille de la police :</value></data>
    <data name="Generic_LineSizePicker" xml:space="preserve"><value>Épaisseur :</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Opacité</value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Vitesse :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Position</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Zone de Travail:</value></data>
+   <data name="LengthUnit_Millimeters" xml:space="preserve"><value>Millimètres</value></data>
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Centimètres</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Mètres</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Pouces</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Total Inconnu</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Vérouiller les Bornes de la Zone de Travail</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Dévérouiller les Bornes de la Zone de Travail</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Grille de Perspective</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Grille de Perspective</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Luminosité...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Configurer</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Mode Compte à Rebours</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Reprendre l'édition de la Trajectoire</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Enregistrer...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Étalonner la mesure...</value></data>
+   <data name="mnuCalibrate" xml:space="preserve"><value>Calibrer…</value></data>
    <data name="mnuSendPic" xml:space="preserve"><value>Envoyer l'image vers l'autre vidéo</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Caméra haute-vitesse...</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Positionner la Sortie de la Zone de Travail sur l'Image Courante</value></data>

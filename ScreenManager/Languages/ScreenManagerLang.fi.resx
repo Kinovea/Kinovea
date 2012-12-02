@@ -135,7 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Koordinaatiojärjestelmän origo</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Liike oikealta vasemmalle</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentin oikea koko:</value></data>
-   <data name="dlgConfigureMeasure_Title" xml:space="preserve"><value>Sulje mitta</value></data>
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Sulje mitta</value></data>
+   
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Käytössä oleva laite</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Ominaisuudet</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Ei muuta vaihtoehtoa käytettävissä</value></data>
@@ -211,6 +212,8 @@
    <data name="Generic_Close" xml:space="preserve"><value>Sulje</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Väri:</value></data>
    <data name="Generic_Configuration" xml:space="preserve"><value>Konfiguraatio</value></data>
+   
+   
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Fonttikoko:</value></data>
    
    <data name="Generic_Opacity" xml:space="preserve"><value>Läpinäkyvyys</value></data>
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Nopeus:</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Järjestys</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Työstettävä jakso:</value></data>
+   
    <data name="LengthUnit_Centimeters" xml:space="preserve"><value>Senttimetriä</value></data>
    <data name="LengthUnit_Meters" xml:space="preserve"><value>Metriä</value></data>
    <data name="LengthUnit_Inches" xml:space="preserve"><value>Tuumaa</value></data>
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Kaikki tuntemattomat</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Lukitse työstöjakson rajat.</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Avaa työstöjakson rajat.</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Perspektiiviruudukko</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Perspektiiviruudukko</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Kirkkaus...</value></data>
    <data name="mnuChronoConfigure" xml:space="preserve"><value>Konfiguroi</value></data>
    <data name="mnuChronoCountdown" xml:space="preserve"><value>Aikalaskennan tila</value></data>
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Lataa avainkuvien tiedot...</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Didinimas x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
@@ -306,6 +310,7 @@
    <data name="mnuRestartTracking" xml:space="preserve"><value>Uudelleenkäynnistä liikeradan editointi</value></data>
    <data name="mnuSave" xml:space="preserve"><value>Tallenna...</value></data>
    <data name="mnuSealMeasure" xml:space="preserve"><value>Sulje mitta...</value></data>
+   
    <data name="mnuSendPic" xml:space="preserve"><value>Lähetä kuva toiseen videoon</value></data>
    <data name="mnuSetCaptureSpeed" xml:space="preserve"><value>Suurnopeuskamera</value></data>
    <data name="mnuSetSelectionEnd" xml:space="preserve"><value>Aseta työstöjakson viimeinen kuva nykyiseksi kuvaksi</value></data>

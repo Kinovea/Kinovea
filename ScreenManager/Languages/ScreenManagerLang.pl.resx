@@ -142,6 +142,7 @@
    
    
    
+   
    <data name="dlgDiapoExport_LabelFrequencyHundredth" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0} setnych sekundy.</value></data>
    <data name="dlgDiapoExport_LabelFrequencySeconds" xml:space="preserve"><value>Czas trwania każdego diapozytywu : {0:0.00} sekund.</value></data>
    <data name="dlgDiapoExport_Title" xml:space="preserve"><value>Zapisz wideo</value></data>
@@ -215,6 +216,8 @@
    
    
    
+   
+   
    <data name="Generic_Save" xml:space="preserve"><value>Zapisz</value></data>
    
    
@@ -229,6 +232,7 @@
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Prędkość :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Pozycja</value></data>
    <data name="lblWorkingZone_Text" xml:space="preserve"><value>Obszar roboczy:</value></data>
+   
    
    
    
@@ -250,7 +254,7 @@
    <data name="LoadMovieProgress_TotalUnknown" xml:space="preserve"><value>Całkowicie nieznany</value></data>
    <data name="LockSelectionLock" xml:space="preserve"><value>Zablokuj granice obszaru roboczego</value></data>
    <data name="LockSelectionUnlock" xml:space="preserve"><value>Odblokuj granice obszaru roboczego</value></data>
-   <data name="mnu3DPlane" xml:space="preserve"><value>Widok 3D</value></data>
+   <data name="mnuPerspectiveGrid" xml:space="preserve"><value>Widok 3D</value></data>
    <data name="mnuBrightness" xml:space="preserve"><value>Jasność...</value></data>
    
    
@@ -291,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Wczytaj kluczowe dane obrazu</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>放大 x{0:0.00}</value></data>
    
    
    
@@ -305,6 +309,7 @@
    <data name="mnuPlayPause" xml:space="preserve"><value>Odtwarzaj | Pauza</value></data>
    
    <data name="mnuSave" xml:space="preserve"><value>Zapisz dane wideo albo kluczowych obrazów</value></data>
+   
    
    
    

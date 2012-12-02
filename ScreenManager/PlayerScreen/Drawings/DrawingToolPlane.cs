@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
 		#region Properties
 		public override string DisplayName
 		{
-			get { return ScreenManagerLang.mnu3DPlane; }
+			get { return ScreenManagerLang.mnuPerspectiveGrid; }
 		}
 		public override Bitmap Icon
 		{
@@ -71,7 +71,8 @@ namespace Kinovea.ScreenManager
 		public DrawingToolPlane()
 		{
 			m_DefaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CornflowerBlue));
-    		m_StylePreset = m_DefaultStylePreset.Clone();
+    		m_DefaultStylePreset.Elements.Add("divisions", new StyleElementGridDivisions(8));
+			m_StylePreset = m_DefaultStylePreset.Clone();
 		}
 		
 		#region Public Methods
