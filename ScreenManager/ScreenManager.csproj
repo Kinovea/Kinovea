@@ -340,7 +340,9 @@
     <Compile Include="PlayerScreen\Drawings\DrawingToolText.cs" />
     <Compile Include="PlayerScreen\Geometry\Angle.cs" />
     <Compile Include="PlayerScreen\Geometry\AngleHelper.cs" />
+    <Compile Include="PlayerScreen\Geometry\Ellipse.cs" />
     <Compile Include="PlayerScreen\Geometry\GeometryHelper.cs" />
+    <Compile Include="PlayerScreen\Geometry\MathHelper.cs" />
     <Compile Include="PlayerScreen\Geometry\PointLinePosition.cs" />
     <Compile Include="PlayerScreen\Geometry\ProjectiveMapping.cs" />
     <Compile Include="PlayerScreen\Geometry\QuadrilateralF.cs" />

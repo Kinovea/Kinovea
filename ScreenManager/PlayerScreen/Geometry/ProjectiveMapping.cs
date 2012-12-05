@@ -34,7 +34,8 @@ namespace Kinovea.ScreenManager
         private const double TOLERANCE = 1e-13;
         private double[,] mapMatrix;
         private double[,] unmapMatrix;
-        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		   
         public void Update(QuadrilateralF plane, QuadrilateralF image)
         {
            double[,] squareToInput = MapSquareToQuad(plane);
@@ -93,6 +94,71 @@ namespace Kinovea.ScreenManager
             PointF c = Backward(q.C);
             PointF d = Backward(q.D);
             return new QuadrilateralF(a, b, c, d);
+        }
+        
+        
+        public Ellipse Ellipse()
+        {
+            // Maps unit circle in plane (-1;+1) to ellipse in image.
+            // Used to draw angles in perspective.
+            
+            // Based on the following resources:
+            // http://chrisjones.id.au/Ellipses/ellipse.html
+            // http://mathworld.wolfram.com/Ellipse.html
+            
+            double j = unmapMatrix[0,0];
+            double k = unmapMatrix[0,1];
+            double l = unmapMatrix[0,2];
+            double m = unmapMatrix[1,0];
+            double n = unmapMatrix[1,1];
+            double o = unmapMatrix[1,2];
+            double p = unmapMatrix[2,0];
+            double q = unmapMatrix[2,1];
+            double r = unmapMatrix[2,2];
+            
+            // Ellipse : ax² + 2bxy + cy² + 2dx + 2fy + g = 0
+            
+            double a = (j*j) + (m*m) - (p*p);
+            double b = (j*k) + (m*n) - (p*q);
+            double c = (k*k) + (n*n) - (q*q);
+            double d = (j*l) + (m*o) - (p*r);
+            double f = (k*l) + (n*o) - (q*r);
+            double g = (l*l) + (o*o) - (r*r);
+            
+            double factor = b*b - a*c;
+            
+            double x0 = (c*d - b*f) / factor;
+            double y0 = (a*f - b*d) / factor;
+            PointF center = new PointF((float)x0, (float)y0);
+            
+            double num = 2 * (a*f*f + c*d*d + g*b*b - 2*b*d*f - a*c*g);
+            double factor2 = Math.Sqrt((a-c)*(a-c) + 4*b*b);
+            double semiMajorAxis = Math.Sqrt(num / (factor * (factor2 - (a+c))));
+            double semiMinorAxis = Math.Sqrt(num / (factor * (-factor2 - (a+c))));
+            
+            double rotation = 0;
+            if(b==0)
+            {
+                if(a<c)
+                    rotation = 0;
+                else
+                    rotation = Math.PI / 2;                    
+            }
+            else
+            {
+                if(a<c)
+                    rotation = 0.5 * MathHelper.Arccotan((a-c) / (2*b));
+                else
+                    rotation = Math.PI / 2 + 0.5 * MathHelper.Arccotan((a-c) / (2*b));
+                
+                // Hack to fix above formulas.
+                if(rotation > Math.PI / 4 && rotation < Math.PI / 2)
+                    rotation += (Math.PI/2);
+                else if(rotation > Math.PI*0.75 && rotation < Math.PI)
+                    rotation -= (Math.PI / 2);
+            }
+            
+            return new Ellipse(center, (float)semiMajorAxis, (float)semiMinorAxis, (float)rotation);
         }
         
         // Get the transform matrix from unit square to quad.

@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
         private double GetAbsoluteAngle(PointF o, PointF p)
         {
             double radians = Math.Atan((double)(p.Y - o.Y) / (double)(p.X - o.X));
-            double angle = radians * GeometryHelper.RadiansToDegrees;
+            double angle = radians * MathHelper.RadiansToDegrees;
             
             // We get a value between -90 and +90, depending on the quadrant.
             // Translate to 0 -> 360 clockwise with 0 at right.
@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
         }
         private void ComputeTextPosition(Angle angle)
         {
-            double bissect = (angle.Start + angle.Sweep/2) * GeometryHelper.DegreesToRadians;
+            double bissect = (angle.Start + angle.Sweep/2) * MathHelper.DegreesToRadians;
             int adjacent = (int)(Math.Cos(bissect) * textDistance);
             int opposed = (int)(Math.Sin(bissect) * textDistance);
             

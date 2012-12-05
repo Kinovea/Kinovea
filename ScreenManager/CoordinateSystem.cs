@@ -265,6 +265,11 @@ namespace Kinovea.ScreenManager
             return new Size(Transform(_size.Width), Transform(_size.Height));
         }
 
+        public Size Transform(SizeF _size)
+        {
+            return new Size(Transform((int)_size.Width), Transform((int)_size.Height));
+        }
+        
         /// <summary>
         /// Transform a rectangle from the image coordinate system to its equivalent in screen coordinate system.
         /// Uses stretch, zoom and translate.
@@ -282,6 +287,11 @@ namespace Kinovea.ScreenManager
                 rectangles.Add(Transform(r));
             
             return rectangles;
+        }
+        
+        public Rectangle Transform(RectangleF rect)
+        {
+            return new Rectangle(Transform(rect.Location), Transform(rect.Size));
         }
         
         public QuadrilateralF Transform(QuadrilateralF quad)
