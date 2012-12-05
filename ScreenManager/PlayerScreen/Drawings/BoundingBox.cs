@@ -34,28 +34,29 @@ namespace Kinovea.ScreenManager
             _canvas.FillEllipse(_brush, _rect.Right - _widen, _rect.Top - _widen, _widen * 2, _widen * 2);
             _canvas.FillEllipse(_brush, _rect.Right - _widen, _rect.Bottom - _widen, _widen * 2, _widen * 2);
         }
-        public int HitTest(Point _point)
+        public int HitTest(Point point, CoordinateSystem transformer)
         {
-            int iHitResult = -1;
-
+            int result = -1;
+            
             Point topLeft = m_Rectangle.Location;
             Point topRight = new Point(m_Rectangle.Right, m_Rectangle.Top);
             Point botRight = new Point(m_Rectangle.Right, m_Rectangle.Bottom);
             Point botLeft = new Point(m_Rectangle.Left, m_Rectangle.Bottom);
 
-            int widen = 6;
-            if (topLeft.Box(widen).Contains(_point))
-                iHitResult = 1;
-            else if (topRight.Box(widen).Contains(_point))
-                iHitResult = 2;
-            else if (botRight.Box(widen).Contains(_point))
-                iHitResult = 3;
-            else if (botLeft.Box(widen).Contains(_point))
-                iHitResult = 4;
-            else if (m_Rectangle.Contains(_point))
-                iHitResult = 0;
+            int boxSide = transformer.Untransform(6);
 
-            return iHitResult;
+            if (topLeft.Box(boxSide).Contains(point))
+                result = 1;
+            else if (topRight.Box(boxSide).Contains(point))
+                result = 2;
+            else if (botRight.Box(boxSide).Contains(point))
+                result = 3;
+            else if (botLeft.Box(boxSide).Contains(point))
+                result = 4;
+            else if (m_Rectangle.Contains(point))
+                result = 0;
+
+            return result;
         }
         public void MoveHandle(Point point, int handleNumber, Size _originalSize, bool keepAspectRatio)
         {

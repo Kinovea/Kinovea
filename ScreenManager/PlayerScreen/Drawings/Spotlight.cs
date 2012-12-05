@@ -116,20 +116,19 @@ namespace Kinovea.ScreenManager
     			canvas.DrawEllipse(penBorder, rescaledRect);
 			}
 		}
-		public int HitTest(Point point, long timeStamp)
+		public int HitTest(Point point, long timeStamp, CoordinateSystem transformer)
 		{
-			// Note: Coordinates are already descaled.
             // Hit Result: -1: miss, 0: on object, 1 on handle.
-			int hitResult = -1;
-			double opacityFactor = infosFading.GetOpacityFactor(timeStamp);
-			if(tracking || opacityFactor > 0)
+			int result = -1;
+			double opacity = infosFading.GetOpacityFactor(timeStamp);
+			if(tracking || opacity > 0)
 			{
 				if(IsPointOnHandler(point))
-                    hitResult = 1;
+                    result = 1;
 				else if (IsPointInObject(point))
-                    hitResult = 0;
+                    result = 0;
 			}
-			return hitResult;
+			return result;
 		}
 		public void MouseMove(int deltaX, int deltaY)
 		{

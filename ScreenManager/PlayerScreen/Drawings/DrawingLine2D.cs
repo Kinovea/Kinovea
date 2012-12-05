@@ -168,23 +168,25 @@ namespace Kinovea.ScreenManager
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (tracking || fOpacityFactor > 0)
+            int result = -1;
+            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            int boxSide = transformer.Untransform(6);
+            
+            if (tracking || opacity > 0)
             {
-            	if(ShowMeasurableInfo && m_LabelMeasure.HitTest(_point))
-            		iHitResult = 3;
-            	else if (points["a"].Box(6).Contains(_point))
-                    iHitResult = 1;
-            	else if (points["b"].Box(6).Contains(_point))
-                    iHitResult = 2;
-                else if (IsPointInObject(_point))
-                    iHitResult = 0;
+            	if(ShowMeasurableInfo && m_LabelMeasure.HitTest(point, transformer))
+            		result = 3;
+            	else if (points["a"].Box(boxSide).Contains(point))
+                    result = 1;
+            	else if (points["b"].Box(boxSide).Contains(point))
+                    result = 2;
+                else if (IsPointInObject(point))
+                    result = 0;
             }
             
-            return iHitResult;
+            return result;
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {

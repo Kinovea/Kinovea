@@ -164,20 +164,22 @@ namespace Kinovea.ScreenManager
             SignalTrackablePointMoved();
             m_LabelCoordinates.SetAttach(points["0"], true);
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (tracking || fOpacityFactor > 0)
+            int result = -1;
+            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            if (tracking || opacity > 0)
             {
-            	if(ShowMeasurableInfo && m_LabelCoordinates.HitTest(_point))
-            		iHitResult = 1;
-            	else if (points["0"].Box(m_iDefaultRadius + 10).Contains(_point))
-                    iHitResult = 0;
+                int boxSide = transformer.Untransform(m_iDefaultRadius + 10);
+            	
+                if(ShowMeasurableInfo && m_LabelCoordinates.HitTest(point, transformer))
+            		result = 1;
+            	else if (points["0"].Box(boxSide).Contains(point))
+                    result = 0;
             }
             
-            return iHitResult;
+            return result;
         }
         #endregion
         

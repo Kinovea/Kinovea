@@ -193,24 +193,23 @@ namespace Kinovea.ScreenManager
                 }
             }
 		}
-		public override int HitTest(Point _point, long _iCurrentTimestamp)
+		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
 		{
-			int iHitResult = -1;
-            double fOpacityFactor = infosFading.GetOpacityFactor(_iCurrentTimestamp);
+            if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
+                return -1;
             
-            if(fOpacityFactor > 0)
+            int boxSide = transformer.Untransform(6);
+            
+            for(int i = 0; i < 4; i++)
             {
-                for(int i = 0; i < 4; i++)
-                {
-                    if(quadImage[i].Box(6).Contains(_point))
-                        iHitResult = i+1;
-                }
-                
-	            if (iHitResult == -1 && quadImage.Contains(_point))
-	                iHitResult = 0;
+                if(quadImage[i].Box(boxSide).Contains(point))
+                    return i+1;
             }
             
-            return iHitResult;
+            if (quadImage.Contains(point))
+                return 0;
+            
+            return -1;
 		}
 		public override void MoveDrawing(int dx, int dy, Keys modifierKeys)
 		{

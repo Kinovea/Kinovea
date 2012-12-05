@@ -220,42 +220,44 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
-            int iHitResult = -1;
-            if (!tracking && m_InfosFading.GetOpacityFactor(_iCurrentTimestamp) <= 0)
+            int result = -1;
+            if (!tracking && m_InfosFading.GetOpacityFactor(currentTimestamp) <= 0)
                return -1;
+            
+            int boxSide = transformer.Untransform(10);
 
             for(int i = 0; i<m_GenericPosture.Handles.Count;i++)
             {
-                if(iHitResult >= 0)
+                if(result >= 0)
                     break;
                 
                 switch(m_GenericPosture.Handles[i].Type)
                 {
                     case HandleType.Point:
-                        if(m_GenericPosture.Points[m_GenericPosture.Handles[i].Reference].Box(10).Contains(_point))
-                            iHitResult = i+1;
+                        if(m_GenericPosture.Points[m_GenericPosture.Handles[i].Reference].Box(boxSide).Contains(point))
+                            result = i+1;
                         break;
                     case HandleType.Segment:
-                        if(IsPointOnSegment(m_GenericPosture.Segments[m_GenericPosture.Handles[i].Reference], _point))
+                        if(IsPointOnSegment(m_GenericPosture.Segments[m_GenericPosture.Handles[i].Reference], point))
                         {
-                            m_GenericPosture.Handles[i].GrabPoint = _point;
-                            iHitResult = i+1;
+                            m_GenericPosture.Handles[i].GrabPoint = point;
+                            result = i+1;
                         }
                         break;
                     case HandleType.Ellipse:
-                        if(IsPointOnEllipseArc(m_GenericPosture.Ellipses[m_GenericPosture.Handles[i].Reference], _point))
-                            iHitResult = i+1;
+                        if(IsPointOnEllipseArc(m_GenericPosture.Ellipses[m_GenericPosture.Handles[i].Reference], point))
+                            result = i+1;
                         break;
                 }
             }
             
-            if(iHitResult == -1 && IsPointInObject(_point))
-                iHitResult = 0;
+            if(result == -1 && IsPointInObject(point))
+                result = 0;
 
-            return iHitResult;
+            return result;
         }
         public override void MoveHandle(Point point, int handle, Keys modifiers)
         {

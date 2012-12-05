@@ -110,14 +110,14 @@ namespace Kinovea.ScreenManager
         {
             m_PointList = m_PointList.Select(p => p.Translate(_deltaX, _deltaY)).ToList();
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0 && IsPointInObject(_point))
-                iHitResult = 0;
+            int result = -1;
+            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            if (opacity > 0 && IsPointInObject(point))
+                result = 0;
                 
-            return iHitResult;
+            return result;
         }
         #endregion
 

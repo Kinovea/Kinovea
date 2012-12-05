@@ -71,7 +71,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_transformer">A helper object providing coordinate systems transformation</param>
         /// <param name="_bSelected">Whether the drawing is currently selected</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
-        public abstract void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp);
+        public abstract void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.
@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_point">The coordinates at original image scale of the point to evaluate</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
         /// <returns>-1 : missed. 0 : The drawing as a whole has been hit. n (with n>0) : The id of a manipulation handle that has been hit</returns>
-        public abstract int HitTest(Point _point, long _iCurrentTimestamp);
+        public abstract int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer);
         
         /// <summary>
         /// Move the specified handle to its new location.
@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_deltaX">Change in x coordinates</param>
         /// <param name="_deltaY">Change in y coordinates</param>
         /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
-        public abstract void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys);
+        public abstract void MoveDrawing(int dx, int dy, Keys modifierKeys);
         #endregion
 
         #region Concrete methods

@@ -298,7 +298,7 @@ namespace Kinovea.ScreenManager
 
                 for (int i = 0; i < zOrder.Length; i++)
                 {
-                    bIsOnDrawing = DrawingHitTest(_Metadata, zOrder[i], _MouseCoordinates, _iCurrentTimeStamp);
+                    bIsOnDrawing = DrawingHitTest(_Metadata, zOrder[i], _MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
                     if (bIsOnDrawing)
                     {
                         break;
@@ -307,12 +307,12 @@ namespace Kinovea.ScreenManager
             }
             else if (_iActiveKeyFrameIndex >= 0)
             {
-                bIsOnDrawing = DrawingHitTest(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _Metadata[_iActiveKeyFrameIndex].Position);
+                bIsOnDrawing = DrawingHitTest(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _Metadata[_iActiveKeyFrameIndex].Position, _Metadata.CoordinateSystem);
             }
 
             return bIsOnDrawing;
         }
-        private bool DrawingHitTest(Metadata _Metadata, int _iKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp)
+        private bool DrawingHitTest(Metadata _Metadata, int _iKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, CoordinateSystem transformer)
         {
             bool bDrawingHit = false;
             Keyframe kf = _Metadata.Keyframes[_iKeyFrameIndex];
@@ -321,7 +321,7 @@ namespace Kinovea.ScreenManager
 
             while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
             {
-                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp);
+                hitRes = kf.Drawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp, transformer);
                 if (hitRes >= 0)
                 {
                     bDrawingHit = true;
@@ -349,28 +349,28 @@ namespace Kinovea.ScreenManager
 
             return bDrawingHit;
         }
-        private bool IsOnExtraDrawing(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
+        private bool IsOnExtraDrawing(Metadata metadata, Point mouseCoordinates, long currentTimestamp)
         {
         	// Test if we hit an unattached drawing.
         	
-        	bool bIsOnDrawing = false;
-            int hitRes = -1;
-            int iCurrentDrawing = 0;
+        	bool isOnDrawing = false;
+            int hitResult = -1;
+            int currentDrawing = 0;
 
-            while (hitRes < 0 && iCurrentDrawing < _Metadata.ExtraDrawings.Count)
+            while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
-            	hitRes = _Metadata.ExtraDrawings[iCurrentDrawing].HitTest(_MouseCoordinates, _iCurrentTimeStamp);
-                if (hitRes >= 0)
+            	hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem);
+                if (hitResult >= 0)
                 {
-                	bIsOnDrawing = true;
+                	isOnDrawing = true;
                 	m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
-                	_Metadata.SelectedExtraDrawing = iCurrentDrawing;
+                	metadata.SelectedExtraDrawing = currentDrawing;
                 	
                 	// Handler hit ?
-	                if (hitRes > 0)
+	                if (hitResult > 0)
 	                {
 	                    m_UserAction = UserAction.Resize;
-	                    m_iResizingHandle = hitRes;
+	                    m_iResizingHandle = hitResult;
 	                }
 	                else
 	                {
@@ -379,11 +379,11 @@ namespace Kinovea.ScreenManager
                 }
                 else
                 {
-                    iCurrentDrawing++;
+                    currentDrawing++;
                 }
             }
             
-            return bIsOnDrawing;
+            return isOnDrawing;
         }
         private bool IsOnTrack(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
         {
@@ -398,7 +398,7 @@ namespace Kinovea.ScreenManager
             		// Result: 
 	            	// -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
 	            
-	                int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp);
+	                int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
 	
 	                if (handle >= 0)
 	                {

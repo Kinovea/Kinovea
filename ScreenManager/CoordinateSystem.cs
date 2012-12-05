@@ -202,6 +202,14 @@ namespace Kinovea.ScreenManager
 
 			return new Point((int)fUnzoomedX, (int)fUnzoomedY);	
 		}
+		
+		public int Untransform(int v)
+		{
+		    double unstretched = v / m_fStretch;
+		    double unzoomed = m_DirectZoomWindow.Left + (unstretched / m_fZoom);
+		    return (int)unzoomed;
+		}
+		
         /// <summary>
         /// Transform a point from image system to screen system. Handles scale, zoom and translate.
         /// </summary>

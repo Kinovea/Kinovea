@@ -119,18 +119,14 @@ namespace Kinovea.ScreenManager
                 _canvas.DrawString(text, f, brushFront, textLocation);
 			}
 		}
-		public int HitTest(Point _point, long _iCurrentTimeStamp)
+		public int HitTest(Point point, long currentTimeStamp, CoordinateSystem transformer)
 		{
-			// Note: Coordinates are already descaled.
-            // Hit Result: -1: miss, 0: on object, 1 on handle.
-			int iHitResult = -1;
-			double fOpacityFactor = infosFading.GetOpacityFactor(_iCurrentTimeStamp);
-			if(fOpacityFactor > 0)
-			{
-			    return background.HitTest(_point, false);
-			}
+			int result = -1;
+			double opacity = infosFading.GetOpacityFactor(currentTimeStamp);
+			if(opacity > 0)
+			    return background.HitTest(point, false, transformer);
 
-			return iHitResult;
+			return result;
 		}
 		public void MouseMove(int _deltaX, int _deltaY)
 		{
