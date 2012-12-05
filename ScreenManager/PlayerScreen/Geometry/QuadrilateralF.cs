@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
         {
             get { return (A.Y == B.Y && B.X == C.X && C.Y == D.Y && D.X == A.X); }
         }
-        public static QuadrilateralF UnitRectangle
+        public static QuadrilateralF UnitSquare
         {
             get 
             { 

@@ -26,9 +26,6 @@ namespace Kinovea.ScreenManager
 {
     public static class GeometryHelper
     {
-        public const float RadiansToDegrees = (float)(180 / Math.PI);
-        public const float DegreesToRadians = (float)(Math.PI / 180);
-        
         /// <summary>
         /// Gets the point on segment [AB] that is the closest from point C.
         /// </summary>
@@ -130,7 +127,7 @@ namespace Kinovea.ScreenManager
             if(angle < 0)
                 angle += (float)(2*Math.PI);
             
-            float degrees = angle * RadiansToDegrees;
+            float degrees = angle * (float)MathHelper.RadiansToDegrees;
             
             float step = 360 / subdivisions;
             int section = (int)(degrees / step);
@@ -139,7 +136,7 @@ namespace Kinovea.ScreenManager
             
             float deltaAngle = (section * step) - degrees;
             
-            return Pivot(pivot, point, deltaAngle * DegreesToRadians);
+            return Pivot(pivot, point, deltaAngle * (float)MathHelper.DegreesToRadians);
         }
         
         
