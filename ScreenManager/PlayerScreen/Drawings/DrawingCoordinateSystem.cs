@@ -171,15 +171,16 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(Point point, long currentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             if(!Visible)
                 return -1;
             
             int result = -1;
+            int boxSide = transformer.Untransform(10);
             
-            if (points["0"].Box(10).Contains(point))
+            if (points["0"].Box(boxSide).Contains(point))
                 return 1;
             
             if(showGrid || showGraduations || showAxis)

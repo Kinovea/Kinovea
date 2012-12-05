@@ -216,22 +216,22 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
-            int iHitResult = -1;
-            long iMaxHitTimeStamps = m_iInvisibleTimestamp;
-            if (iMaxHitTimeStamps != long.MaxValue)
-                iMaxHitTimeStamps += (m_iAllowedFramesOver * m_ParentMetadata.AverageTimeStampsPerFrame);
+            int result = -1;
+            long maxHitTimeStamps = m_iInvisibleTimestamp;
+            if (maxHitTimeStamps != long.MaxValue)
+                maxHitTimeStamps += (m_iAllowedFramesOver * m_ParentMetadata.AverageTimeStampsPerFrame);
 
-            if (_iCurrentTimestamp >= m_iVisibleTimestamp && _iCurrentTimestamp <= iMaxHitTimeStamps)
+            if (currentTimestamp >= m_iVisibleTimestamp && currentTimestamp <= maxHitTimeStamps)
             {
-                iHitResult = m_MainBackground.HitTest(_point, true);
-                if(iHitResult < 0) 
-                    iHitResult = m_lblBackground.HitTest(_point, false);
+                result = m_MainBackground.HitTest(point, true, transformer);
+                if(result < 0) 
+                    result = m_lblBackground.HitTest(point, false, transformer);
             }
 
-            return iHitResult;
+            return result;
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {

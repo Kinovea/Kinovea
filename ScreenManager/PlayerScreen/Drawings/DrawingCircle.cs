@@ -131,19 +131,19 @@ namespace Kinovea.ScreenManager
             m_Center.X += _deltaX;
             m_Center.Y += _deltaY;
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0)
+            int result = -1;
+            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            if (opacity > 0)
             {
-                if (m_bSelected && IsPointOnHandler(_point))
-                    iHitResult = 1;
-                else if (IsPointInObject(_point))
-                    iHitResult = 0;
+                if (m_bSelected && IsPointOnHandler(point))
+                    result = 1;
+                else if (IsPointInObject(point))
+                    result = 0;
             }
-            return iHitResult;
+            return result;
         }        
         #endregion
         

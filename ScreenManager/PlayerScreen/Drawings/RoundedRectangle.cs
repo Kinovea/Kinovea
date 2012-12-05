@@ -81,20 +81,21 @@ namespace Kinovea.ScreenManager
             
             gp.Dispose();
         }
-        public int HitTest(Point _point, bool _hiddenHandle)
+        public int HitTest(Point point, bool hiddenHandle, CoordinateSystem transformer)
         {
-            int iHitResult = -1;
-            if (_hiddenHandle)
+            int result = -1;
+            if (hiddenHandle)
             {
-                Point botRight = new Point(m_Rectangle.Right, m_Rectangle.Bottom);
-                if (botRight.Box(10).Contains(_point))
-                    iHitResult = 1;
+                int boxSide = transformer.Untransform(10);
+                Point bottomRight = new Point(m_Rectangle.Right, m_Rectangle.Bottom);
+                if (bottomRight.Box(boxSide).Contains(point))
+                    result = 1;
             }
 
-            if (iHitResult < 0 && m_Rectangle.Contains(_point))
-                iHitResult = 0;
+            if (result < 0 && m_Rectangle.Contains(point))
+                result = 0;
 
-            return iHitResult;
+            return result;
         }
         public void Move(int _deltaX, int _deltaY)
         {

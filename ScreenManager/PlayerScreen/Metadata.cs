@@ -559,7 +559,7 @@ namespace Kinovea.ScreenManager
 			for(int i=m_ExtraDrawings.Count-1;i>=0;i--)
             {
 			    AbstractDrawing candidate = m_ExtraDrawings[i];
-				int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp);
+				int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp, m_CoordinateSystem);
             	if(hitRes >= 0)
             	{
             		m_iSelectedExtraDrawing = i;
@@ -1370,7 +1370,7 @@ namespace Kinovea.ScreenManager
             while (hitRes < 0 && iCurrentDrawing < kf.Drawings.Count)
             {
                 AbstractDrawing drawing = kf.Drawings[iCurrentDrawing];
-                hitRes = drawing.HitTest(_MouseLocation, _iTimestamp);
+                hitRes = drawing.HitTest(_MouseLocation, _iTimestamp, m_CoordinateSystem);
                 if (hitRes >= 0)
                 {
                     bDrawingHit = true;

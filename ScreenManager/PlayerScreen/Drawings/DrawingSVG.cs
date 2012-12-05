@@ -166,14 +166,14 @@ namespace Kinovea.ScreenManager
                     m_BoundingBox.Draw(_canvas, rect, m_PenBoundingBox, m_BrushBoundingBox, 4);
 			}
         }
-        public override int HitTest(Point _point, long _iCurrentTimestamp)
+        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
-            int iHitResult = -1;
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
-            if (fOpacityFactor > 0)
-                iHitResult = m_BoundingBox.HitTest(_point);
+            int result = -1;
+            double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
+            if (opacity > 0)
+                result = m_BoundingBox.HitTest(point, transformer);
             
-            return iHitResult;
+            return result;
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {

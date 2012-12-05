@@ -136,39 +136,33 @@ namespace Kinovea.ScreenManager
             }
             return false;
         }
-        public bool OnMouseDown(Point _location)
+        public bool OnMouseDown(Point location, CoordinateSystem transformer)
         {
             if(m_mode != MagnifierMode.Indirect)
                 return false;
 
-            m_hitHandle = HitTest(_location);
+            m_hitHandle = HitTest(location, transformer);
             
             if(m_hitHandle == 0)
-                m_sourceLastLocation = _location;
+                m_sourceLastLocation = location;
             else if(m_hitHandle == 5)
-                m_insertLastLocation = _location;
+                m_insertLastLocation = location;
 
             return m_hitHandle >= 0;
         }
-        public bool IsOnObject(Point _location)
+        public bool IsOnObject(Point _location, CoordinateSystem transformer)
         {
-            return HitTest(_location) >= 0;
+            return HitTest(_location, transformer) >= 0;
         }
-        public int HitTest(Point _location)
+        public int HitTest(Point point, CoordinateSystem transformer)
         {
-            // Hit results : 
-            // -1: nothing.
-            // 0: source rectangle.
-            // 1 to 4: source corners, clockwise starting top-left.
-            // 5: insert picture.
-            
-            int hit = -1;
-            if(m_insert.Contains(_location))
-                hit = 5;
+            int result = -1;
+            if(m_insert.Contains(point))
+                result = 5;
             else
-                hit = m_source.HitTest(_location);
+                result = m_source.HitTest(point, transformer);
 
-            return hit;
+            return result;
         }
         public void ResetData()
         {

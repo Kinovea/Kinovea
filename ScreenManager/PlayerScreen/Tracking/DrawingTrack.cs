@@ -333,92 +333,91 @@ namespace Kinovea.ScreenManager
 				MoveCursor(point.X, point.Y);
 			}
 		}
-		public override int HitTest(Point _point, long _iCurrentTimestamp)
+		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
-            //---------------------------------------------------------
-            // Result: 
-            // -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
-            // _point is mouse coordinates already descaled.
-            //---------------------------------------------------------
-            int iHitResult = -1;
+            int result = -1;
 
-            if (_iCurrentTimestamp >= m_iBeginTimeStamp && _iCurrentTimestamp <= m_iEndTimeStamp)
+            if (currentTimestamp < m_iBeginTimeStamp && currentTimestamp > m_iEndTimeStamp)
             {
-                // We give priority to labels in case a label is on the trajectory,
-                // we need to be able to move it around.
-                // If label attach mode, this will tell if we are on the label.
-                if (m_TrackStatus == TrackStatus.Interactive)
-                    iHitResult = IsOnKeyframesLabels(_point);
-                    
-                if (iHitResult == -1)
+                m_iMovingHandler = -1;
+                return -1;
+            }
+            
+            // We give priority to labels in case a label is on the trajectory, we need to be able to move it around.
+            // If label attach mode, this will tell if we are on the label.
+            if (m_TrackStatus == TrackStatus.Interactive)
+                result = IsOnKeyframesLabels(point, transformer);
+                
+            if (result == -1)
+            {
+            	Rectangle rectangleTarget;
+            	int boxSide = transformer.Untransform(m_iDefaultCrossRadius + 3);
+            	
+            	if(m_TrackStatus == TrackStatus.Edit)
+            		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].Point);
+            	else
+                	rectangleTarget = m_Positions[m_iCurrentPoint].Box(boxSide);
+                
+                if (rectangleTarget.Contains(point))
                 {
-                	Rectangle rectangleTarget;
-                	if(m_TrackStatus == TrackStatus.Edit)
-                		rectangleTarget = m_Tracker.GetEditRectangle(m_Positions[m_iCurrentPoint].Point);
-                	else
-                    	rectangleTarget = m_Positions[m_iCurrentPoint].Box(m_iDefaultCrossRadius + 3);
-                    
-                    if (rectangleTarget.Contains(_point))
+                    result = 1;
+                }
+                else
+                {
+                    // TODO: investigate why this might crash sometimes.
+                    try
                     {
-                        iHitResult = 1;
-                    }
-                    else
-                    {
-                        // TODO: investigate why this might crash sometimes.
-                        try
-                        {
-                        	int iStart = GetFirstVisiblePoint();
-                        	int iEnd = GetLastVisiblePoint();
-			                
-                        	// Create path which contains wide line for easy mouse selection
-                            int iTotalVisiblePoints = iEnd - iStart;
-                        	Point[] points = new Point[iTotalVisiblePoints];
-                            for (int i = iStart; i < iEnd; i++)
-                                points[i-iStart] = m_Positions[i].Point;
+                    	int iStart = GetFirstVisiblePoint();
+                    	int iEnd = GetLastVisiblePoint();
+		                
+                    	// Create path which contains wide line for easy mouse selection
+                        int iTotalVisiblePoints = iEnd - iStart;
+                    	Point[] points = new Point[iTotalVisiblePoints];
+                        for (int i = iStart; i < iEnd; i++)
+                            points[i-iStart] = m_Positions[i].Point;
 
-                            using(GraphicsPath areaPath = new GraphicsPath())
+                        using(GraphicsPath areaPath = new GraphicsPath())
+                        {
+                            areaPath.AddCurve(points, 0.5f);
+                            RectangleF bounds = areaPath.GetBounds();
+                            if(!bounds.IsEmpty)
                             {
-                                areaPath.AddCurve(points, 0.5f);
-                                RectangleF bounds = areaPath.GetBounds();
-                                if(!bounds.IsEmpty)
+                                using(Pen tempPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
                                 {
-                                    using(Pen tempPen = new Pen(Color.Black, m_StyleHelper.LineSize + 7))
-                                    {
-                                        areaPath.Widen(tempPen);
-                                    }
-                                    using(Region areaRegion = new Region(areaPath))
-                                    {
-                                        iHitResult = areaRegion.IsVisible(_point) ? 0 : -1;
-                                    }
+                                    areaPath.Widen(tempPen);
+                                }
+                                using(Region areaRegion = new Region(areaPath))
+                                {
+                                    result = areaRegion.IsVisible(point) ? 0 : -1;
                                 }
                             }
                         }
-                        catch (Exception exp)
-                        {
-                            iHitResult = -1;
-                            log.Error("Error while hit testing track.");
-                            log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
-        					log.Error("Message : " + exp.Message.ToString());
-        					Exception inner = exp.InnerException;
-			     			while( inner != null )
-			     			{
-			          			log.Error("Inner exception : " + inner.Message.ToString());
-			          			inner = inner.InnerException;
-			     			}
-                        }
+                    }
+                    catch (Exception exp)
+                    {
+                        result = -1;
+                        log.Error("Error while hit testing track.");
+                        log.Error("Exception thrown : " + exp.GetType().ToString() + " in " + exp.Source.ToString() + exp.TargetSite.Name.ToString());
+    					log.Error("Message : " + exp.Message.ToString());
+    					Exception inner = exp.InnerException;
+		     			while( inner != null )
+		     			{
+		          			log.Error("Inner exception : " + inner.Message.ToString());
+		          			inner = inner.InnerException;
+		     			}
                     }
                 }
             }
-            
-            if(iHitResult == 0 && m_TrackStatus == TrackStatus.Interactive)
+        
+            if(result == 0 && m_TrackStatus == TrackStatus.Interactive)
             {
             	// Instantly jump to the frame.
-            	MoveCursor(_point.X, _point.Y);
+            	MoveCursor(point.X, point.Y);
             }
 
-            m_iMovingHandler = iHitResult;
+            m_iMovingHandler = result;
             
-            return iHitResult;
+            return result;
         }
        #endregion
         
@@ -652,13 +651,13 @@ namespace Kinovea.ScreenManager
             	m_MainLabel.MoveLabel(_deltaX, _deltaY);
             }
         }
-        private int IsOnKeyframesLabels(Point _point)
+        private int IsOnKeyframesLabels(Point _point, CoordinateSystem transformer)
         {
             // Convention: -1 = miss, 2 = on main label, 3+ = on keyframe label.
             int iHitResult = -1;
             if (m_TrackView == TrackView.Label)
             {
-                if (m_MainLabel.HitTest(_point))
+                if (m_MainLabel.HitTest(_point, transformer))
                     iHitResult = 2;
             }
             else
@@ -667,7 +666,7 @@ namespace Kinovea.ScreenManager
             	// if we are displaying the extra data (distance, speed).
             	if (m_TrackExtraData != TrackExtraData.None)
 	            {
-	                if (m_MainLabel.HitTest(_point))
+	                if (m_MainLabel.HitTest(_point, transformer))
 	                    iHitResult = 2;
 	            }	
             	
@@ -678,7 +677,7 @@ namespace Kinovea.ScreenManager
                                                              m_iFocusFadingFrames);
                     if(m_TrackView == TrackView.Complete || isVisible)
                 	{
-                		if (m_KeyframesLabels[i].HitTest(_point))
+                		if (m_KeyframesLabels[i].HitTest(_point, transformer))
 	                    {
 	                        iHitResult = i + 3;
 	                        break;

@@ -132,13 +132,13 @@ namespace Kinovea.ScreenManager
 		    if(selected >= 0 && selected < spotlights.Count)
 				spotlights[selected].MoveHandleTo(point);
 		}
-		public override int HitTest(Point point, long currentTimestamp)
+		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
 		    int currentSpot = 0;
 		    int handle = -1;
 		    foreach(Spotlight spot in spotlights)
 		    {
-		        handle = spot.HitTest(point, currentTimestamp);
+		        handle = spot.HitTest(point, currentTimestamp, transformer);
 		        if(handle >= 0)
 		        {
 		            selected = currentSpot;

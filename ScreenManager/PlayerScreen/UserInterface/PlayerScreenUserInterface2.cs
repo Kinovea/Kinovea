@@ -2592,7 +2592,7 @@ namespace Kinovea.ScreenManager
 		{
 			bool hitMagnifier = false;
             if(m_ActiveTool == m_PointerTool)
-                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse);
+                hitMagnifier = m_FrameServer.Metadata.Magnifier.OnMouseDown(m_DescaledMouse, m_FrameServer.Metadata.CoordinateSystem);
 				
             if(hitMagnifier || InteractiveFiltering)
                 return;
@@ -2663,7 +2663,7 @@ namespace Kinovea.ScreenManager
 				{
 					if (ad is DrawingText)
 					{
-						int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition);
+						int hitRes = ad.HitTest(m_DescaledMouse, m_iCurrentPosition, m_FrameServer.Metadata.CoordinateSystem);
 						if (hitRes >= 0)
 						{
 							bEdit = true;
@@ -2762,7 +2762,7 @@ namespace Kinovea.ScreenManager
 				    panelCenter.ContextMenuStrip = popMenuDrawings;
 				}
 			}
-			else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse))
+			else if (m_FrameServer.Metadata.Magnifier.Mode == MagnifierMode.Indirect && m_FrameServer.Metadata.Magnifier.IsOnObject(m_DescaledMouse, m_FrameServer.Metadata.CoordinateSystem))
 			{
 			    mnuMagnifierTrack.Checked = ToggleTrackingCommand.CurrentState(m_FrameServer.Metadata.Magnifier);
 			    panelCenter.ContextMenuStrip = popMenuMagnifier;

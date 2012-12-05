@@ -90,9 +90,9 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public methods
-        public bool HitTest(Point _point)
+        public bool HitTest(Point _point, CoordinateSystem transformer)
         {
-            return (m_Background.HitTest(_point, false) > -1);
+            return (m_Background.HitTest(_point, false, transformer) > -1);
         }
         public override int GetHashCode()
         {

@@ -110,13 +110,13 @@ namespace Kinovea.ScreenManager
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
 		}
-		public override int HitTest(Point _point, long _iCurrentTimestamp)
+		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
         {
 		    int currentNumber = 0;
 		    int handle = -1;
 		    foreach(AutoNumber number in autoNumbers)
 		    {
-		        handle = number.HitTest(_point, _iCurrentTimestamp);
+		        handle = number.HitTest(point, currentTimestamp, transformer);
 		        if(handle >= 0)
 		        {
 		            selected = currentNumber;
