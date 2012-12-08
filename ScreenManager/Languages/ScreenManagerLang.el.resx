@@ -295,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Φόρτωση Δεδομένων Βασικών Εικόνων…</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>확대 x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Μεγέθυνση x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Μεγέθυνση x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Μεγέθυνση x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Μεγέθυνση x2</value></data>
@@ -404,6 +404,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Περίληψη…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Αντιστροφή…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Αυτόματη Αντίθεση...</value></data>
+   
    
    
    

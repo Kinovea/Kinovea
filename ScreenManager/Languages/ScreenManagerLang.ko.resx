@@ -295,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>키 이미지'자료 가져오기…</value></data>
-   <data name="mnuMagnification" xml:space="preserve"/>
+   <data name="mnuMagnification" xml:space="preserve"><value>확대 x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>확대 x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>확대 x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>확대 x2</value></data>
@@ -404,6 +404,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>개관(overview)…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>반대(reverse)…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>자동 대비…</value></data>
+   
    
    
    

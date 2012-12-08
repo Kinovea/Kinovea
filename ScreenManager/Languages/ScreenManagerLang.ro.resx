@@ -295,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Încarc datele cadrelor cheie...</value></data>
-   <data name="mnuMagnification" xml:space="preserve"><value>Μεγέθυνση x{0:0.00}</value></data>
+   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom x1.75</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom x2</value></data>
@@ -404,6 +404,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Privire de ansamblu</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Inversează...</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Contrast automat...</value></data>
+   
    
    
    

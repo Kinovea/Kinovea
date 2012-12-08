@@ -115,6 +115,10 @@ namespace Kinovea.Services
 		{
 			get { return Languages["ko"]; }
 		}
+        public static string Russian
+		{
+			get { return Languages["ru"]; }
+		}
         #endregion
         
         private static Dictionary<string, string> m_Languages = null;
@@ -138,6 +142,7 @@ namespace Kinovea.Services
             m_Languages.Add("pl", "Polski");
             m_Languages.Add("pt", "Português");
             m_Languages.Add("ro", "Română");
+            m_Languages.Add("ru", "Русский");
             m_Languages.Add("fi", "Suomi");
             m_Languages.Add("sv", "Svenska");
             m_Languages.Add("tr", "Türkçe");

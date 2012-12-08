@@ -295,7 +295,7 @@
    
    
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Nahrát data klíčových pozic</value></data>
-   <data name="mnuMagnification" xml:space="preserve"/>
+   <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom 1.5x</value></data>
    <data name="mnuMagnifier175" xml:space="preserve"><value>Zoom 1.75x</value></data>
    <data name="mnuMagnifier200" xml:space="preserve"><value>Zoom 2x</value></data>
@@ -404,6 +404,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Celkový přehled</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Zpětné přehrávání…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast….</value></data>
+   
    
    
    
