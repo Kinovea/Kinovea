@@ -131,6 +131,7 @@
     <EmbeddedResource Include="Languages\UpdaterLang.ko.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.lt.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.no.resx" />
+    <EmbeddedResource Include="Languages\UpdaterLang.ru.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.sv.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.tr.resx" />
     <EmbeddedResource Include="Languages\UpdaterLang.Zh-CHS.resx" />

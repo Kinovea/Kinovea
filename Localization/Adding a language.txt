@@ -1,7 +1,8 @@
 1. merge column.
+1b. Double check culture Info code at http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo%28v=vs.71%29.aspx
 2. add line to ooo2resx.xsl
 3. exec deploy.py
 4. add new resx to projects.
 5. Add entry in Service > LanguageManager 
 6. Add entry in credits window.
-7. hg add files. (Add on main directory + "ko.resx" in filter box). => 4 files.
+7. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files.

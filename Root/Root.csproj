@@ -218,6 +218,7 @@
       <LastGenOutput>RootLang.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\RootLang.ru.resx" />
     <EmbeddedResource Include="Languages\RootLang.sv.resx" />
     <EmbeddedResource Include="Languages\RootLang.tr.resx" />
     <EmbeddedResource Include="Languages\RootLang.Zh-CHS.resx" />
@@ -489,11 +490,9 @@
     <RemoveDir Directories="$(OutputPath)guides" />
     <MakeDir Directories="$(OutputPath)guides" Condition="!Exists('$(OutputPath)guides')" />
     <Copy SourceFiles="@(SVGItem)" DestinationFolder="$(OutputPath)guides" />
-    
     <RemoveDir Directories="$(OutputPath)xslt" />
     <MakeDir Directories="$(OutputPath)xslt" Condition="!Exists('$(OutputPath)xslt')" />
     <Copy SourceFiles="@(XSLTItem)" DestinationFolder="$(OutputPath)xslt" />
-    
     <RemoveDir Directories="$(OutputPath)DrawingTools" />
     <MakeDir Directories="$(OutputPath)DrawingTools" Condition="!Exists('$(OutputPath)DrawingTools')" />
     <Copy SourceFiles="@(DrawingsItem)" DestinationFolder="$(OutputPath)DrawingTools" />
