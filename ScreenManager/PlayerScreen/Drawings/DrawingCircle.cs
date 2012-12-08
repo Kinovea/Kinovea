@@ -40,6 +40,20 @@ namespace Kinovea.ScreenManager
     public class DrawingCircle : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
+        public override string DisplayName
+        {
+            get {  return ScreenManagerLang.ToolTip_DrawingToolCircle; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int iHash = m_Center.GetHashCode();
+                iHash ^= m_iRadius.GetHashCode();
+                iHash ^= m_StyleHelper.ContentHash;
+                return iHash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
         	get { return m_Style;}
@@ -201,18 +215,6 @@ namespace Kinovea.ScreenManager
 			MoveHandle(point, 1, modifiers);
 		}
         #endregion
-        
-        public override string ToString()
-        {
-            return ScreenManagerLang.ToolTip_DrawingToolCircle;
-        }
-        public override int GetHashCode()
-        {
-            int iHash = m_Center.GetHashCode();
-            iHash ^= m_iRadius.GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
-            return iHash;
-        }
         
         #region Lower level helpers
         private void BindStyle()

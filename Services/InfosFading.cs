@@ -34,49 +34,62 @@ namespace Kinovea.Services
         #region Properties
         public bool Enabled
         {
-            get { return m_bEnabled; }
-            set { m_bEnabled = value; }
+            get { return enabled; }
+            set { enabled = value; }
         }
         public bool UseDefault
         {
-            get { return m_bUseDefault; }
-            set { m_bUseDefault = value; }
+            get { return useDefault; }
+            set { useDefault = value; }
         }
         public bool AlwaysVisible
         {
-            get { return m_bAlwaysVisible; }
-            set { m_bAlwaysVisible = value; }
+            get { return alwaysVisible; }
+            set { alwaysVisible = value; }
         }
         public int FadingFrames
         {
-            get { return m_iFadingFrames; }
-            set { m_iFadingFrames = value; }
+            get { return fadingFrames; }
+            set { fadingFrames = value; }
         }
         public long ReferenceTimestamp
         {
-            get { return m_iReferenceTimestamp; }
-            set { m_iReferenceTimestamp = value; }
+            get { return referenceTimestamp; }
+            set { referenceTimestamp = value; }
         }
         public long AverageTimeStampsPerFrame
         {
-            get { return m_iAverageTimeStampsPerFrame; }
-            set { m_iAverageTimeStampsPerFrame = value; }
+            get { return averageTimeStampsPerFrame; }
+            set { averageTimeStampsPerFrame = value; }
         }
 		public float MasterFactor
 		{
-			get { return m_fMasterFactor; }
-			set { m_fMasterFactor = value; }
+			get { return masterFactor; }
+			set { masterFactor = value; }
+		}
+		public int ContentHash
+		{
+		    get 
+		    { 
+		        int hash = enabled.GetHashCode();
+		        hash ^= useDefault.GetHashCode();
+		        hash ^= alwaysVisible.GetHashCode();
+		        hash ^= fadingFrames.GetHashCode();
+		        hash ^= referenceTimestamp.GetHashCode();
+		        hash ^= masterFactor.GetHashCode();
+                return hash;
+		    }
 		}
         #endregion
 
         #region Members
-        private bool m_bEnabled;
-        private bool m_bUseDefault;
-        private bool m_bAlwaysVisible;
-        private int m_iFadingFrames;
-        private long m_iReferenceTimestamp;
-        private long m_iAverageTimeStampsPerFrame;
-        private float m_fMasterFactor = 1.0f;
+        private bool enabled;
+        private bool useDefault;
+        private bool alwaysVisible;
+        private int fadingFrames;
+        private long referenceTimestamp;
+        private long averageTimeStampsPerFrame;
+        private float masterFactor = 1.0f;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -85,22 +98,21 @@ namespace Kinovea.Services
         {
             // this constructor is directly used only by the Preference manager 
             // to create the default fading values.
-
-            m_bEnabled = true;
-            m_bUseDefault = true;
-            m_bAlwaysVisible = false;
-            m_iFadingFrames = 20;
-            m_iReferenceTimestamp = 0;
-            m_iAverageTimeStampsPerFrame = 0;
-            m_fMasterFactor = 1.0f;
+            enabled = true;
+            useDefault = true;
+            alwaysVisible = false;
+            fadingFrames = 20;
+            referenceTimestamp = 0;
+            averageTimeStampsPerFrame = 0;
+            masterFactor = 1.0f;
 
         }
-        public InfosFading(long _iReferenceTimestamp, long _iAverageTimeStampsPerFrame)
+        public InfosFading(long referenceTimestamp, long averageTimeStampsPerFrame)
         {
             // This constructor is used by all drawings to get the default values.
             FromInfosFading(PreferencesManager.PlayerPreferences.DefaultFading);
-            m_iReferenceTimestamp = _iReferenceTimestamp;
-            m_iAverageTimeStampsPerFrame = _iAverageTimeStampsPerFrame;
+            this.referenceTimestamp = referenceTimestamp;
+            this.averageTimeStampsPerFrame = averageTimeStampsPerFrame;
         }
         #endregion
 
@@ -123,10 +135,10 @@ namespace Kinovea.Services
         }
         public void WriteXml(XmlWriter _xmlWriter)
         {
-            _xmlWriter.WriteElementString("Enabled", m_bEnabled ? "true" : "false");
-            _xmlWriter.WriteElementString("Frames", m_iFadingFrames.ToString());
-            _xmlWriter.WriteElementString("AlwaysVisible", m_bAlwaysVisible ? "true" : "false");
-            _xmlWriter.WriteElementString("UseDefault", m_bUseDefault ? "true" : "false");
+            _xmlWriter.WriteElementString("Enabled", enabled ? "true" : "false");
+            _xmlWriter.WriteElementString("Frames", fadingFrames.ToString());
+            _xmlWriter.WriteElementString("AlwaysVisible", alwaysVisible ? "true" : "false");
+            _xmlWriter.WriteElementString("UseDefault", useDefault ? "true" : "false");
         }
         public void ReadXml(XmlReader _xmlReader)
         {
@@ -137,16 +149,16 @@ namespace Kinovea.Services
 				switch(_xmlReader.Name)
 				{
 					case "Enabled":
-				        m_bEnabled = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+				        enabled = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
 					case "Frames":
-				        m_iFadingFrames = _xmlReader.ReadElementContentAsInt();
+				        fadingFrames = _xmlReader.ReadElementContentAsInt();
                         break;
 					case "UseDefault":
-				        m_bUseDefault = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+				        useDefault = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
                     case "AlwaysVisible":
-						m_bAlwaysVisible = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+						alwaysVisible = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
 						break;
 				    default:
 						string unparsed = _xmlReader.ReadOuterXml();
@@ -158,8 +170,8 @@ namespace Kinovea.Services
 			_xmlReader.ReadEndElement();
 			
 			// Sanity check.
-            if (m_iFadingFrames < 1) 
-                m_iFadingFrames = 1;
+            if (fadingFrames < 1) 
+                fadingFrames = 1;
         }
         #endregion
 
@@ -167,10 +179,10 @@ namespace Kinovea.Services
         {
             double fOpacityFactor = 0.0f;
 
-            if (!m_bEnabled)
+            if (!enabled)
             {
                 // No fading.
-                if (_iTimestamp == m_iReferenceTimestamp)
+                if (_iTimestamp == referenceTimestamp)
                 {
                     fOpacityFactor = 1.0f;
                 }
@@ -179,7 +191,7 @@ namespace Kinovea.Services
                     fOpacityFactor = 0.0f;
                 }
             }
-            else if (m_bUseDefault)
+            else if (useDefault)
             {
                 // Default value
                 InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
@@ -189,10 +201,10 @@ namespace Kinovea.Services
                 }
                 else
                 {
-                	fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, info.FadingFrames);
+                	fOpacityFactor = ComputeOpacityFactor(referenceTimestamp, _iTimestamp, info.FadingFrames);
                 }
             }
-            else if (m_bAlwaysVisible)
+            else if (alwaysVisible)
             {
                 // infinite fading. (= persisting drawing)
                 fOpacityFactor = 1.0f;
@@ -200,10 +212,10 @@ namespace Kinovea.Services
             else
             {
                 // Custom value.
-                fOpacityFactor = ComputeOpacityFactor(m_iReferenceTimestamp, _iTimestamp, m_iFadingFrames);
+                fOpacityFactor = ComputeOpacityFactor(referenceTimestamp, _iTimestamp, fadingFrames);
             }
 
-            return fOpacityFactor * m_fMasterFactor;
+            return fOpacityFactor * masterFactor;
         }
         public bool IsVisible(long _iRefTimestamp, long _iTestTimestamp, int iVisibleFrames)
         {
@@ -217,7 +229,7 @@ namespace Kinovea.Services
             double fOpacityFactor = 0.0f;
 
             long iDistanceTimestamps = Math.Abs(_iTestTimestamp - _iRefTimestamp);
-            long iFadingTimestamps = iFadingFrames * m_iAverageTimeStampsPerFrame;
+            long iFadingTimestamps = iFadingFrames * averageTimeStampsPerFrame;
 
             if (iDistanceTimestamps > iFadingTimestamps)
             {

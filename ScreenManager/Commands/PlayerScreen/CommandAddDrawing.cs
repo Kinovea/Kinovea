@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-            	return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + m_Drawing.ToString() + ")";
+            	return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + m_Drawing.DisplayName + ")";
             }
         }
 

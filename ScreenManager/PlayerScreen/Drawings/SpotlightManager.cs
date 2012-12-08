@@ -43,7 +43,16 @@ namespace Kinovea.ScreenManager
 	    #endregion
 	    
 		#region Properties
-		public override object SelectedItem {
+		public override string DisplayName
+        {
+		    get {  return ScreenManagerLang.ToolTip_DrawingToolSpotlight; }
+        }
+        public override int ContentHash
+        {
+            get { return 0; }
+        } 
+		public override object SelectedItem 
+		{
 		    get 
 		    {
                 if(selected >= 0 && selected < spotlights.Count)
@@ -52,7 +61,8 @@ namespace Kinovea.ScreenManager
                     return null;
 		    }
 		}
-        public override int Count {
+        public override int Count 
+        {
 		    get { return spotlights.Count; }
         }
 		
@@ -197,10 +207,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
 		#region Public methods
-		public override string ToString()
-        {
-            return "Spotlight"; //ScreenManagerLang.ToolTip_DrawingToolSpotlight;
-        }
 		public void Add(Point point, long position, long averageTimeStampsPerFrame)
 		{
 		    // Equivalent to GetNewDrawing() for regular drawing tools.

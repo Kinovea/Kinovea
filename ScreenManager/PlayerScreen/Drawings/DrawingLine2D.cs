@@ -47,6 +47,22 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string DisplayName
+        {
+            get {  return ScreenManagerLang.ToolTip_DrawingToolLine2D; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int iHash = points["a"].GetHashCode();
+                iHash ^= points["b"].GetHashCode();
+                iHash ^= m_StyleHelper.ContentHash;
+                iHash ^= ShowMeasurableInfo.GetHashCode();
+                iHash ^= m_InfosFading.ContentHash;
+                return iHash;
+            }
+        }
         public DrawingStyle DrawingStyle
         {
         	get { return m_Style;}
@@ -355,20 +371,6 @@ namespace Kinovea.ScreenManager
             TrackablePointMoved(this, new TrackablePointMovedEventArgs(name, points[name]));
         }
         #endregion
-        
-        public override string ToString()
-        {
-            return ScreenManagerLang.ToolTip_DrawingToolLine2D;
-        }
-        public override int GetHashCode()
-        {
-            // Combine all relevant fields with XOR to get the Hash.
-            int iHash = points["a"].GetHashCode();
-            iHash ^= points["b"].GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
-
-            return iHash;
-        }
         
         public float Length()
         {

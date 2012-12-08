@@ -43,6 +43,11 @@ namespace Kinovea.ScreenManager
             get { return new Point(X, Y);}
         }
         
+        public int ContentHash
+        {
+            get { return X.GetHashCode() ^ Y.GetHashCode() ^ T.GetHashCode();}
+        }
+        
         #region Members
 		public int X;
         public int Y;
@@ -85,10 +90,6 @@ namespace Kinovea.ScreenManager
                 // Conversion issue
                 // will default to {0,0,0}.
             }
-        }
-		public override int GetHashCode()
-        {
-            return X.GetHashCode() ^ Y.GetHashCode() ^ T.GetHashCode();
         }
 		public Rectangle Box(int _radius)
 		{

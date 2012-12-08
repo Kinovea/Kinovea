@@ -98,7 +98,7 @@ namespace Kinovea.ScreenManager
         {
             int iHash = 0;
             iHash ^= m_Background.Rectangle.Location.GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
+            iHash ^= m_StyleHelper.ContentHash;
             return iHash;
         }
         public void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fOpacityFactor)

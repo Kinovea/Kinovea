@@ -37,6 +37,14 @@ namespace Kinovea.ScreenManager
 	public class AutoNumberManager : AbstractMultiDrawing, IDecorable
 	{
 		#region Properties
+        public override string DisplayName
+        {
+		    get { return ScreenManagerLang.ToolTip_DrawingToolAutonumbers;}
+        }
+        public override int ContentHash
+        {
+            get { return 0; }
+        } 
 		public DrawingStyle DrawingStyle
         {
         	get { return style;}
@@ -157,10 +165,6 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public methods
-		public override string ToString()
-        {
-            return "Auto numbers"; //ScreenManagerLang.ToolTip_DrawingToolAutoNumbers;
-        }
 		public void Add(Point _point, long _iPosition, long _iAverageTimeStampsPerFrame)
 		{
 		    // Equivalent to GetNewDrawing() for regular drawing tools.

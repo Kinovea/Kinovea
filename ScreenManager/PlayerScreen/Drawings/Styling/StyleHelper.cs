@@ -109,6 +109,22 @@ namespace Kinovea.ScreenManager
 		    get { return gridDivisions;}
 		    set { gridDivisions = value;}
 		}
+		public int ContentHash
+		{
+		    get 
+		    {
+    			int iHash = 0;
+                
+    			iHash ^= m_Color.GetHashCode();
+                iHash ^= m_iLineSize.GetHashCode();
+    			iHash ^= m_Font.GetHashCode();
+    			iHash ^= m_Bicolor.ContentHash;
+    			iHash ^= m_LineEnding.GetHashCode();
+    			iHash ^= m_TrackShape.GetHashCode();
+    			
+    			return iHash;
+            }
+		}
 		#endregion
 		
 		#region Members
@@ -281,20 +297,6 @@ namespace Kinovea.ScreenManager
 			return NormalPen(new Pen(c, 1.0f));
 		}
 		#endregion
-		
-		public override int GetHashCode()
-		{
-			int iHash = 0;
-            
-			iHash ^= m_Color.GetHashCode();
-            iHash ^= m_iLineSize.GetHashCode();
-			iHash ^= m_Font.GetHashCode();
-            iHash ^= m_Bicolor.GetHashCode();
-			iHash ^= m_LineEnding.GetHashCode();
-			iHash ^= m_TrackShape.GetHashCode();
-			
-			return iHash;
-		}
 		
 		#endregion
 		
@@ -516,6 +518,13 @@ namespace Kinovea.ScreenManager
 				m_Background = value;
 				m_Foreground = value.GetBrightness() >= 0.5  ? Color.Black : Color.White;
 			}
+		}
+		public int ContentHash
+		{
+		    get 
+		    {
+		        return m_Background.GetHashCode() ^ m_Foreground.GetHashCode();
+		    }
 		}
 		
 		private Color m_Foreground;

@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
     public class CommandDeleteMultiDrawingItem : IUndoableCommand
     {
         public string FriendlyName {
-        	get { return ScreenManagerLang.mnuDeleteDrawing + " (" + m_MultiDrawing.ToString() + ")"; }
+        	get { return ScreenManagerLang.mnuDeleteDrawing + " (" + m_MultiDrawing.DisplayName + ")"; }
         }
 
         private PlayerScreenUserInterface m_psui;

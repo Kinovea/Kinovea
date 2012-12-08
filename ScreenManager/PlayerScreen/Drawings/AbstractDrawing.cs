@@ -61,6 +61,22 @@ namespace Kinovea.ScreenManager
         {
             get;
         }
+        
+        /// <summary>
+        /// The friendly name of the drawing tool. Used for undo menu for example.
+        /// </summary>
+        public abstract string DisplayName
+        {
+            get;
+        }
+        
+        /// <summary>
+        /// Hash of the significant values of the drawing. Used for detection of unsaved changes.
+        /// </summary>
+        public abstract int ContentHash
+        {
+            get;
+        }
         #endregion
     	
         #region Abstract Methods
@@ -96,6 +112,9 @@ namespace Kinovea.ScreenManager
         /// <param name="_deltaY">Change in y coordinates</param>
         /// <param name="_ModifierKeys">Modifiers key pressed while moving the drawing</param>
         public abstract void MoveDrawing(int dx, int dy, Keys modifierKeys);
+        
+        
+        
         #endregion
 
         #region Concrete methods

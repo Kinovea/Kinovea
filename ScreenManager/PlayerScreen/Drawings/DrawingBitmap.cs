@@ -31,6 +31,14 @@ namespace Kinovea.ScreenManager
     public class DrawingBitmap : AbstractDrawing
     {
         #region Properties
+        public override string DisplayName
+        {
+		    get {  return "Bitmap Drawing"; }
+        }
+        public override int ContentHash
+        {
+            get { return 0; }
+        } 
         public override InfosFading InfosFading
         {
             get { return m_InfosFading; }
@@ -159,16 +167,5 @@ namespace Kinovea.ScreenManager
             m_BoundingBox.MoveAndSnap(_deltaX, _deltaY, m_videoSize, m_snapMargin);
         }
         #endregion
-        
-        public override string ToString()
-        {
-            // Return the name of the tool used to draw this drawing.
-            return "Bitmap Drawing";
-        }
-        public override int GetHashCode()
-        {
-            // Should not trigger meta data changes.
-            return 0;
-        }
     }
 }

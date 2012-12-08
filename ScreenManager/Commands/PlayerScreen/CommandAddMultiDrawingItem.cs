@@ -30,7 +30,7 @@ namespace Kinovea.ScreenManager
     public class CommandAddMultiDrawingItem : IUndoableCommand
     {
         public string FriendlyName {
-            get { return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + m_MultiDrawing.ToString() + ")"; }
+            get { return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + m_MultiDrawing.DisplayName + ")"; }
         }
 
         private Action m_DoInvalidate;

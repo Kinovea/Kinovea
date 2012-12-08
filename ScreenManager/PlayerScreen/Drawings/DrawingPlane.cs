@@ -43,6 +43,29 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string DisplayName
+        {
+		    get 
+		    {  
+                if(inPerspective)
+                    return ToolManager.Plane.DisplayName;
+                else
+                    return ToolManager.Grid.DisplayName;
+		    }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int iHash = quadImage.A.GetHashCode();
+                iHash ^= quadImage.B.GetHashCode();
+                iHash ^= quadImage.C.GetHashCode();
+                iHash ^= quadImage.D.GetHashCode();
+                iHash ^= styleHelper.ContentHash;
+                iHash ^= infosFading.ContentHash;
+                return iHash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
         	get { return style;}
@@ -424,24 +447,6 @@ namespace Kinovea.ScreenManager
             
             projectiveMapping.Update(quadPlane, quadImage);
         }
-        
-        public override string ToString()
-        {
-            if(inPerspective)
-                return ToolManager.Plane.DisplayName;
-            else
-                return ToolManager.Grid.DisplayName;
-        }
-        
-        public override int GetHashCode()
-        {
-            int iHash = quadImage.A.GetHashCode();
-            iHash ^= quadImage.B.GetHashCode();
-            iHash ^= quadImage.C.GetHashCode();
-            iHash ^= quadImage.D.GetHashCode();
-            iHash ^= styleHelper.GetHashCode();
-            return iHash;
-        }    
         
         #region Private methods
         private void BindStyle()
