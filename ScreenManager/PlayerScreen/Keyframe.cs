@@ -109,6 +109,10 @@ namespace Kinovea.ScreenManager
             get { return m_ParentMetadata; }    // unused.
             set { m_ParentMetadata = value; }
         }
+        public int ContentHash
+        {
+            get { return GetContentHash();}
+        }
         #endregion
 
         #region Members
@@ -202,30 +206,6 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
         }
-        public override int GetHashCode()
-        {
-            // Combine (XOR) all hash code for drawings, then comments, then title.
-
-            int iHashCode = 0;
-            foreach (AbstractDrawing drawing in m_Drawings)
-            {
-                iHashCode ^= drawing.GetHashCode();
-            }
-
-            if(m_CommentRtf != null)
-            {
-            	iHashCode ^= m_CommentRtf.GetHashCode();
-            }
-            
-            if(m_Title != null)
-            {
-            	iHashCode ^= m_Title.GetHashCode();
-            }
-            
-            iHashCode ^= m_Timecode.GetHashCode();
-
-            return iHashCode;
-        }
         #endregion
 
         #region IComparable Implementation
@@ -243,7 +223,22 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region LowerLevel Helpers
-        
+        private int GetContentHash()
+        {
+            int iHashCode = 0;
+            foreach (AbstractDrawing drawing in m_Drawings)
+                iHashCode ^= drawing.ContentHash;
+
+            if(m_CommentRtf != null)
+            	iHashCode ^= m_CommentRtf.GetHashCode();
+            
+            if(m_Title != null)
+            	iHashCode ^= m_Title.GetHashCode();
+            
+            iHashCode ^= m_Timecode.GetHashCode();
+
+            return iHashCode;
+        }
         #endregion
     }
 }

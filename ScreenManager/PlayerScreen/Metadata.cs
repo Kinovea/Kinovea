@@ -58,9 +58,10 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-            	int iCurrentHash = GetHashCode();
-				log.Debug(String.Format("Reading hash for Metadata.IsDirty, Ref Hash:{0}, Current Hash:{1}",m_iLastCleanHash, iCurrentHash));
-            	return m_iLastCleanHash != iCurrentHash;
+            	int currentHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
+            
+				log.DebugFormat("IsDirty. Content hashes = reference:{0}, current:{1}.",referenceHash, currentHash);
+            	return currentHash != referenceHash;
             }
         }
         public string GlobalTitle
@@ -221,7 +222,7 @@ namespace Kinovea.ScreenManager
         private long m_iFirstTimeStamp;
         private long m_iSelectionStart;
         private int m_iDuplicateFactor = 1;
-        private int m_iLastCleanHash;
+        private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
 		private CoordinateSystem m_CoordinateSystem = new CoordinateSystem();
 		private TrackabilityManager trackabilityManager = new TrackabilityManager();
@@ -476,14 +477,8 @@ namespace Kinovea.ScreenManager
         }
         public void CleanupHash()
         {
-            m_iLastCleanHash = GetHashCode();
-            log.Debug(String.Format("Metadata hash reset. New reference hash is: {0}", m_iLastCleanHash));
-        }
-        public override int GetHashCode()
-        {
-            // Combine all fields hashes, using XOR operator.
-            int iHashCode = GetKeyframesHashCode() ^ GetExtraDrawingsHashCode();
-            return iHashCode;
+            referenceHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
+            log.Debug(String.Format("Metadata content hash reset:{0}.", referenceHash));
         }
         public List<Bitmap> GetFullImages()
         {
@@ -1391,21 +1386,19 @@ namespace Kinovea.ScreenManager
         {
             return m_Keyframes.Count(kf => !kf.Disabled);
         }
-        private int GetKeyframesHashCode()
+        private int GetKeyframesContentHash()
         {
-            // Keyframes hashcodes are XORed with one another. 
             int iHashCode = 0;
             foreach (Keyframe kf in m_Keyframes)
-            {
-                iHashCode ^= kf.GetHashCode();
-            }
-            return iHashCode;    
+                iHashCode ^= kf.ContentHash;
+
+            return iHashCode;
         }
-        private int GetExtraDrawingsHashCode()
+        private int GetExtraDrawingsContentHash()
         {
         	int iHashCode = 0;
             foreach (AbstractDrawing ad in m_ExtraDrawings)
-                iHashCode ^= ad.GetHashCode();
+                iHashCode ^= ad.ContentHash;
 
             return iHashCode;
         }

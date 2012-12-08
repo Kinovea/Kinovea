@@ -32,6 +32,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 
@@ -57,6 +58,30 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Properties
+        public override string DisplayName
+        {
+		    get {  return ScreenManagerLang.mnuTrackTrajectory; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                // Combine all relevant fields with XOR to get the Hash.
+                int iHash = 0;
+                iHash ^= m_TrackView.GetHashCode();
+                foreach (AbstractTrackPoint p in m_Positions)
+                    iHash ^= p.ContentHash;
+                
+                iHash ^= m_iDefaultCrossRadius.GetHashCode();
+                iHash ^= m_StyleHelper.ContentHash;
+                iHash ^= m_MainLabel.GetHashCode();
+                
+                foreach (KeyframeLabel kfl in m_KeyframesLabels)
+                    iHash ^= kfl.GetHashCode();
+                
+                return iHash;
+            }
+        }
         public TrackView View
         {
             get { return m_TrackView; }
@@ -1128,23 +1153,6 @@ namespace Kinovea.ScreenManager
 	                m_KeyframesLabels[iKfl].SetText(GetExtraDataText(m_KeyframesLabels[iKfl].AttachIndex));
             }
             
-        }
-        public override int GetHashCode()
-        {
-            // Combine all relevant fields with XOR to get the Hash.
-            int iHash = 0;
-            iHash ^= m_TrackView.GetHashCode();
-            foreach (AbstractTrackPoint p in m_Positions)
-                iHash ^= p.GetHashCode();
-
-            iHash ^= m_iDefaultCrossRadius.GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
-            iHash ^= m_MainLabel.GetHashCode();
-
-            foreach (KeyframeLabel kfl in m_KeyframesLabels)
-                iHash ^= kfl.GetHashCode();
-
-            return iHash;
         }
         public void MemorizeState()
         {

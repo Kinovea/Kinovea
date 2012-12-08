@@ -40,6 +40,26 @@ namespace Kinovea.ScreenManager
     public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
     {
         #region Properties
+        public override string DisplayName
+        {
+		    get {  return ScreenManagerLang.ToolTip_DrawingToolChrono; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int iHash = m_iStartCountingTimestamp.GetHashCode();
+                iHash ^= m_iStopCountingTimestamp.GetHashCode();
+                iHash ^= m_iVisibleTimestamp.GetHashCode();
+                iHash ^= m_iInvisibleTimestamp.GetHashCode();
+                iHash ^= m_bCountdown.GetHashCode();
+                iHash ^= m_StyleHelper.ContentHash;
+                iHash ^= m_Label.GetHashCode();
+                iHash ^= m_bShowLabel.GetHashCode();
+    
+                return iHash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
         	get { return m_Style;}
@@ -247,25 +267,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public override string ToString()
-        {
-            return ScreenManagerLang.ToolTip_DrawingToolChrono;
-        }
-        public override int GetHashCode()
-        {
-            int iHash = m_MainBackground.GetHashCode();
-            iHash ^= m_iStartCountingTimestamp.GetHashCode();
-            iHash ^= m_iStopCountingTimestamp.GetHashCode();
-            iHash ^= m_iVisibleTimestamp.GetHashCode();
-            iHash ^= m_iInvisibleTimestamp.GetHashCode();
-            iHash ^= m_bCountdown.GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
-            iHash ^= m_Label.GetHashCode();
-            iHash ^= m_bShowLabel.GetHashCode();
-
-            return iHash;
-        }
-		
 		#region KVA Serialization
 		public void WriteXml(XmlWriter _xmlWriter)
 		{

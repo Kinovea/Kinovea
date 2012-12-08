@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
     {
 
         public string FriendlyName {
-            get { return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + m_Drawing.ToString() + ")"; }
+            get { return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + m_Drawing.DisplayName + ")"; }
         }
 
         private Action m_DoScreenInvalidate;

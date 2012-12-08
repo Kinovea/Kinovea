@@ -41,6 +41,24 @@ namespace Kinovea.ScreenManager
     public class DrawingPencil : AbstractDrawing, IKvaSerializable, IDecorable, IInitializable
     {
         #region Properties
+        public override string DisplayName
+        {
+            get {  return ScreenManagerLang.ToolTip_DrawingToolPencil; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int hash = 0;
+                foreach (Point p in m_PointList)
+                    hash ^= p.GetHashCode();
+            
+                hash ^= m_StyleHelper.ContentHash;
+                hash ^= m_InfosFading.ContentHash;
+
+                return hash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
         	get { return m_Style;}
@@ -191,21 +209,6 @@ namespace Kinovea.ScreenManager
 		}
         #endregion
         
-        public override string ToString()
-        {
-            return ScreenManagerLang.ToolTip_DrawingToolPencil;
-        }
-        public override int GetHashCode()
-        {
-            int iHashCode = 0;
-            foreach (Point p in m_PointList)
-                iHashCode ^= p.GetHashCode();
-            
-            iHashCode ^= m_StyleHelper.GetHashCode();
-
-            return iHashCode;
-        }
-
         #region IInitializable implementation
         public void ContinueSetup(Point point, Keys modifiers)
 		{

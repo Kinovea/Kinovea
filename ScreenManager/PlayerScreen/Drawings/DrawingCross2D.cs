@@ -46,6 +46,20 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string DisplayName
+        {
+            get {  return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int hash = points["0"].GetHashCode();
+                hash ^= m_StyleHelper.ContentHash;
+                hash ^= m_InfosFading.ContentHash;
+                return hash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
         	get { return m_Style;}
@@ -246,17 +260,6 @@ namespace Kinovea.ScreenManager
             }
 		}
         #endregion
-        
-        public override string ToString()
-        {
-            return ScreenManagerLang.ToolTip_DrawingToolCross2D;
-        }
-        public override int GetHashCode()
-        {
-            int iHash = points["0"].GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
-            return iHash;
-        }
         
         #region ITrackable implementation and support.
         public Guid ID

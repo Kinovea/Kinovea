@@ -45,6 +45,18 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string DisplayName
+        {
+            get {  return ScreenManagerLang.mnuCoordinateSystem; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int iHash = styleHelper.ContentHash;
+                return iHash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
             get { return style;}
@@ -211,17 +223,6 @@ namespace Kinovea.ScreenManager
         }
         
         #endregion
-        
-        public override string ToString()
-        {
-            return "Coordinate System";
-        }
-        public override int GetHashCode()
-        {
-            // The coordinate system position is not yet saved in preferences.
-            int iHash = styleHelper.GetHashCode();
-            return iHash;
-        }
         
         #region ITrackable implementation and support.
         public Guid ID

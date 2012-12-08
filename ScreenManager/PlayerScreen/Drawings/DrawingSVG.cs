@@ -39,6 +39,14 @@ namespace Kinovea.ScreenManager
     public class DrawingSVG : AbstractDrawing
     {
         #region Properties
+        public override string DisplayName
+        {
+		    get {  return "SVG Drawing"; }
+        }
+        public override int ContentHash
+        {
+            get { return 0;}
+        }
         public override InfosFading InfosFading
         {
             get { return m_InfosFading; }
@@ -185,16 +193,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
        
-        public override string ToString()
-        {
-            // Return the name of the tool used to draw this drawing.
-            return "SVG Drawing";
-        }
-        public override int GetHashCode()
-        {
-            // Should not trigger meta data changes.
-            return 0;
-        }
         public void ResizeFinished()
         {
         	// While the user was resizing the drawing or the image, we didn't update / render the SVG image.

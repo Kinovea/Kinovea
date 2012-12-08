@@ -40,6 +40,21 @@ namespace Kinovea.ScreenManager
     public class DrawingText : AbstractDrawing, IKvaSerializable, IDecorable
     {
         #region Properties
+        public override string DisplayName
+        {
+		    get {  return ScreenManagerLang.ToolTip_DrawingToolText; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int hash = m_Text.GetHashCode();
+                hash ^= m_Background.Rectangle.Location.GetHashCode();
+                hash ^= m_StyleHelper.ContentHash;
+                hash ^= m_InfosFading.ContentHash;
+                return hash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
         	get { return m_Style;}
@@ -222,17 +237,6 @@ namespace Kinovea.ScreenManager
 		}
         #endregion
         
-        public override string ToString()
-        {
-            return ScreenManagerLang.ToolTip_DrawingToolText;
-        }
-        public override int GetHashCode()
-        {
-            int iHash = m_Text.GetHashCode();
-            iHash ^= m_Background.Rectangle.Location.GetHashCode();
-            iHash ^= m_StyleHelper.GetHashCode();
-            return iHash;
-        }
         public void SetEditMode(bool _bEdit, CoordinateSystem _transformer)
         {
             m_bEditMode = _bEdit;

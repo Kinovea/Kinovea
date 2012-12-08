@@ -44,6 +44,23 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Properties
+        public override string DisplayName
+        {
+		    get {  return m_GenericPosture.Name; }
+        }
+        public override int ContentHash
+        {
+            get 
+            { 
+                int hash = 0;
+                foreach(PointF p in m_GenericPosture.Points)
+                    hash ^= p.GetHashCode();
+                
+                hash ^= m_StyleHelper.ContentHash;
+                hash ^= m_InfosFading.ContentHash;
+                return hash;
+            }
+        } 
         public DrawingStyle DrawingStyle
         {
           get { return m_Style; }
@@ -276,18 +293,6 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        public override string ToString()
-        {
-            return m_GenericPosture.Name;
-        }
-        public override int GetHashCode()
-        {
-          int hash = 0;
-          foreach(PointF p in m_GenericPosture.Points)
-              hash ^= p.GetHashCode();
-          return hash;
-        }
-        
         #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
