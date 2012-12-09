@@ -83,7 +83,7 @@
    <data name="CommandAddCaptureScreen_FriendlyName" xml:space="preserve"><value>Voeg een Opnamescherm toe</value></data>
    <data name="CommandAddChrono_FriendlyName" xml:space="preserve"><value>Start Stopwatch</value></data>
    <data name="CommandAddDrawing_FriendlyName" xml:space="preserve"><value>Voeg een tekening toe</value></data>
-   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Voeg scherm toe voor afspelen/analyse </value></data>
+   <data name="CommandAddPlayerScreen_FriendlyName" xml:space="preserve"><value>Voeg scherm toe voor afspelen/analyse</value></data>
    <data name="CommandDeleteDrawing_FriendlyName" xml:space="preserve"><value>Verwijder tekening</value></data>
    <data name="CommandDeleteKeyframe_FriendlyName" xml:space="preserve"><value>Verwijder een Kernbeeld</value></data>
    <data name="CommandLoadMovie_FriendlyName" xml:space="preserve"><value>Laad video</value></data>
@@ -171,18 +171,18 @@
    <data name="dlgSaveAnalysisOrVideo_GroupOptions" xml:space="preserve"><value>Opties</value></data>
    <data name="dlgSaveAnalysisOrVideo_GroupSaveMethod" xml:space="preserve"><value>Opslagmethode</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioAnalysis" xml:space="preserve"><value>Bewaar alleen de Kernbeeldgegevens.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintAnalysis" xml:space="preserve"><value>Alleen de beschrijving van de tekeningen en andere onderdelen van de analyse worden opgeslagen.#Het bestand kan later in een video worden geïmporteerd.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioMuxed" xml:space="preserve"><value>Bewaar video en Kernbeeldgegevens in een enkel bestand.</value></data>
    
    <data name="dlgSaveAnalysisOrVideo_RadioBlended" xml:space="preserve"><value>Markeer permanent de Kernbeeld gegevens op de video.</value></data>
-   
+   <data name="dlgSaveAnalysisOrVideo_HintBlended" xml:space="preserve"><value>De onderdelen van de analyse zijn zichtbaar in de afspelers, maar niet meer bewerkbaar.# Extra commentaar verbonden aan de Kernbeelden worden niet opgeslagen.</value></data>
    <data name="dlgSaveAnalysisOrVideo_RadioVideo" xml:space="preserve"><value>Bewaar alleen video.</value></data>
    <data name="dlgSaveAnalysisOrVideo_Title" xml:space="preserve"><value>Bewaar video of Kernbeeldgegevens…</value></data>
    <data name="dlgSaveAnalysisTitle" xml:space="preserve"><value>Bewaar Kernbeeldgegegevens.</value></data>
    <data name="dlgSaveFilter" xml:space="preserve"><value>JPEG afbeeldingen (*.jpg,*.jpeg)|*.jpg;*.jpeg|PNG afbeeldingen (*.png)|*.png|Bitmap afbeeldingen (*.bmp)|*.bmp</value></data>
    <data name="dlgSaveSequenceTitle" xml:space="preserve"><value>Bewaar beeldmateriaal</value></data>
-   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi; </value></data>
-   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv; </value></data>
+   <data name="dlgSaveVideoFilterAlone" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv|MP4 (*.mp4)|*.mp4|AVI (*.avi)|*.avi;</value></data>
+   <data name="dlgSaveVideoFilterMuxed" xml:space="preserve"><value>Matroska (*.mkv)|*.mkv;</value></data>
    <data name="dlgSaveVideoTitle" xml:space="preserve"><value>Bewaar video</value></data>
    <data name="dlgSetTrajectoryOrigin_Title" xml:space="preserve"><value>Specificeer de originele trajectpad coördinaten</value></data>
    <data name="Error_Capture_CannotConnect_Title" xml:space="preserve"><value>Kan niet verbinden met video apparaat.</value></data>
@@ -207,7 +207,7 @@
    <data name="FormFramesImport_Title" xml:space="preserve"><value>Importeren van frames…</value></data>
    <data name="Generic_Appearance" xml:space="preserve"><value>Verschijning</value></data>
    <data name="Generic_Apply" xml:space="preserve"><value>Toepassen</value></data>
-   
+   <data name="Generic_ArrowPicker" xml:space="preserve"><value>Pijlen:</value></data>
    <data name="Generic_Cancel" xml:space="preserve"><value>Annuleer</value></data>
    <data name="Generic_Close" xml:space="preserve"><value>Sluiten</value></data>
    <data name="Generic_ColorPicker" xml:space="preserve"><value>Kleur:</value></data>
@@ -215,11 +215,11 @@
    
    
    <data name="Generic_FontSizePicker" xml:space="preserve"><value>Lettergrootte:</value></data>
-   
+   <data name="Generic_LineSizePicker" xml:space="preserve"><value>Breedte:</value></data>
    <data name="Generic_Opacity" xml:space="preserve"><value>Doorzichtigheid</value></data>
-   
+   <data name="Generic_PenSizePicker" xml:space="preserve"><value>Afmeting:</value></data>
    <data name="Generic_Save" xml:space="preserve"><value>Bewaar</value></data>
-   
+   <data name="Generic_TrackShapePicker" xml:space="preserve"><value>Lijnvorm:</value></data>
    <data name="Generic_Image" xml:space="preserve"><value>Beeld</value></data>
    <data name="Generic_Video" xml:space="preserve"><value>Video</value></data>
    <data name="Generic_SaveImage" xml:space="preserve"><value>Bewaar afbeelding</value></data>
@@ -227,7 +227,7 @@
    <data name="InfoBox_MetadataIsDirty_Title" xml:space="preserve"><value>Kernbeelden niet opgeslagen</value></data>
    <data name="lblDelay_Text" xml:space="preserve"><value>Vertraag weergave met: {0:0} s</value></data>
    <data name="lblInfo_Text" xml:space="preserve"><value>Standaard bediening:</value></data>
-   <data name="lblSelDuration_Text" xml:space="preserve"><value>Duur </value></data>
+   <data name="lblSelDuration_Text" xml:space="preserve"><value>Duur</value></data>
    <data name="lblSelStartSelection_Text" xml:space="preserve"><value>Start</value></data>
    <data name="lblSpeedTuner_Text" xml:space="preserve"><value>Snelheid :</value></data>
    <data name="lblTimeCode_Text" xml:space="preserve"><value>Positie</value></data>
@@ -292,8 +292,8 @@
    <data name="mnuHome" xml:space="preserve"><value>Bladeren</value></data>
    <data name="mnuImportImage" xml:space="preserve"><value>Importeer afbeelding…</value></data>
    <data name="mnuInvertAngle" xml:space="preserve"><value>Draai hoek om</value></data>
-   
-   
+   <data name="mnuFlipHorizontally" xml:space="preserve"><value>Spiegel horizontaal</value></data>
+   <data name="mnuFlipVertically" xml:space="preserve"><value>Spiegel verticaal</value></data>
    <data name="mnuLoadAnalysis" xml:space="preserve"><value>Laad kernbeeldgegevens…</value></data>
    <data name="mnuMagnification" xml:space="preserve"><value>Zoom x{0:0.00}</value></data>
    <data name="mnuMagnifier150" xml:space="preserve"><value>Zoom x1.5</value></data>
@@ -327,11 +327,11 @@
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Speel video af</value></data>
    <data name="mnuToggleCommonCtrls" xml:space="preserve"><value>Toon/Verberg standaard bediening</value></data>
    <data name="mnuTrackTrajectory" xml:space="preserve"><value>Baan Trajectpad</value></data>
-   
-   
-   
-   
-   
+   <data name="mnuCoordinateSystem" xml:space="preserve"><value>Coördinaten systeem</value></data>
+   <data name="mnuCoordinateSystemShowAxis" xml:space="preserve"><value>Assen</value></data>
+   <data name="mnuCoordinateSystemShowGrid" xml:space="preserve"><value>Raster</value></data>
+   <data name="mnuCoordinateSystemShowTickMarks" xml:space="preserve"><value>Stappen</value></data>
+   <data name="mnuCoordinateSystemHide" xml:space="preserve"><value>Verberg</value></data>
    <data name="PlayMovie_AccessViolation" xml:space="preserve"><value>Een onbekende fout is opgetreden</value></data>
    <data name="PlayMovie_Error" xml:space="preserve"><value>Kinovea - Afspeelfout.</value></data>
    <data name="RecentlyUsedColors" xml:space="preserve"><value>Recent gebruikte kleuren:</value></data>
@@ -368,9 +368,9 @@
    <data name="ToolTip_DrawingToolPencil" xml:space="preserve"><value>Potlood</value></data>
    <data name="ToolTip_DrawingToolPointer" xml:space="preserve"><value>Verplaats</value></data>
    <data name="ToolTip_DrawingToolText" xml:space="preserve"><value>Tekst</value></data>
-   
-   
-   
+   <data name="ToolTip_DrawingToolArrow" xml:space="preserve"><value>Pijl</value></data>
+   <data name="ToolTip_DrawingToolSpotlight" xml:space="preserve"><value>Spotlicht</value></data>
+   <data name="ToolTip_DrawingToolAutonumbers" xml:space="preserve"><value>Automatische nummering</value></data>
    <data name="ToolTip_First" xml:space="preserve"><value>Ga terug naar het begin</value></data>
    <data name="ToolTip_Last" xml:space="preserve"><value>Spring naar het eind</value></data>
    <data name="ToolTip_Magnifier" xml:space="preserve"><value>Vergrootglas</value></data>
@@ -404,6 +404,7 @@
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overzicht…</value></data>
    <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Keer om….</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Automatisch contrast…</value></data>
+   
    
    
    
