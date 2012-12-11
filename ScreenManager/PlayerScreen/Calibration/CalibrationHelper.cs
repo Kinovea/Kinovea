@@ -42,10 +42,10 @@ namespace Kinovea.ScreenManager
 		#region Properties
         public bool IsCalibrated
         {
-            get { return lengthUnit != LengthUnits.Pixels; }
+            get { return lengthUnit != LengthUnit.Pixels; }
         }
         
-        public LengthUnits LengthUnit
+        public LengthUnit LengthUnit
         {
             get { return lengthUnit; }
             set { lengthUnit = value;}
@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
 		private CalibrationLine calibrationLine = new CalibrationLine();
 		private CalibrationPlane calibrationPlane = new CalibrationPlane();
 		
-		private LengthUnits lengthUnit = LengthUnits.Pixels;
+		private LengthUnit lengthUnit = LengthUnit.Pixels;
 		private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
 		private double framesPerSecond = 25;
 		#endregion
@@ -175,7 +175,7 @@ namespace Kinovea.ScreenManager
             float length = GetLength(p1, p2);
             
             // The user may have configured a preferred speed unit but not done any space calibration. Force use of px/f.
-            SpeedUnit unit = (lengthUnit == LengthUnits.Pixels && speedUnit != SpeedUnit.PixelsPerFrame) ? SpeedUnit.PixelsPerFrame : speedUnit;
+            SpeedUnit unit = (lengthUnit == LengthUnit.Pixels && speedUnit != SpeedUnit.PixelsPerFrame) ? SpeedUnit.PixelsPerFrame : speedUnit;
             
             // Convert distance from length units to speed units, in case the user calibrated space in cm but want speed in m/s for example.
             double length2 = UnitHelper.ConvertLengthForSpeedUnit(length, lengthUnit, unit);
@@ -246,7 +246,7 @@ namespace Kinovea.ScreenManager
                         calibrationLine.ReadXml(r);
                         break;
                     case "Unit":
-                        lengthUnit = (LengthUnits) Enum.Parse(typeof(LengthUnits), r.ReadElementContentAsString());
+                        lengthUnit = (LengthUnit) Enum.Parse(typeof(LengthUnit), r.ReadElementContentAsString());
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();

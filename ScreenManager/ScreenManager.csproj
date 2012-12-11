@@ -242,7 +242,7 @@
     <Compile Include="PlayerScreen\Calibration\CalibrationPlane.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibratorType.cs" />
     <Compile Include="PlayerScreen\Calibration\ICalibrator.cs" />
-    <Compile Include="PlayerScreen\Calibration\LengthUnits.cs" />
+    <Compile Include="PlayerScreen\Calibration\LengthUnit.cs" />
     <Compile Include="PlayerScreen\Calibration\UnitHelper.cs" />
     <Compile Include="PlayerScreen\Drawings\AbstractMultiDrawing.cs" />
     <Compile Include="PlayerScreen\Drawings\AutoNumber.cs" />

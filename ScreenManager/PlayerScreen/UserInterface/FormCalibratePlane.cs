@@ -56,12 +56,13 @@ namespace Kinovea.ScreenManager
             grpConfig.Text = ScreenManagerLang.Generic_Calibration;
             
             // Combo Units (MUST be filled in the order of the enum)
-            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Centimeters + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Centimeters) + ")");
-            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Meters + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Meters) + ")");
-            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Inches + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Inches) + ")");
-            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Feet + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Feet) + ")");
-            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Yards + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Yards) + ")");
-            cbUnit.Items.Add("Percentage" + " (" + UnitHelper.LengthAbbreviation(LengthUnits.Percentage) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Millimeters + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Millimeters) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Centimeters + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Centimeters) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Meters + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Meters) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Inches + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Inches) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Feet + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Feet) + ")");
+            cbUnit.Items.Add(ScreenManagerLang.LengthUnit_Yards + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Yards) + ")");
+            cbUnit.Items.Add("Percentage" + " (" + UnitHelper.LengthAbbreviation(LengthUnit.Percentage) + ")");
         }
         private void InitializeValues()
         {
@@ -77,7 +78,7 @@ namespace Kinovea.ScreenManager
             {
                 tbA.Text = "100";
                 tbB.Text = "100";
-                cbUnit.SelectedIndex = (int)LengthUnits.Centimeters;
+                cbUnit.SelectedIndex = (int)LengthUnit.Centimeters;
             }
             
             // Prepare drawing.
@@ -135,7 +136,7 @@ namespace Kinovea.ScreenManager
                 
                 calibrationHelper.SetCalibratorFromType(CalibratorType.Plane);
                 calibrationHelper.CalibrationByPlane_Initialize(size, drawingPlane.QuadImage);
-                calibrationHelper.LengthUnit = (LengthUnits)cbUnit.SelectedIndex;
+                calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
             }
             catch
             {
