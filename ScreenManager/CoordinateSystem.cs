@@ -205,9 +205,8 @@ namespace Kinovea.ScreenManager
 		
 		public int Untransform(int v)
 		{
-		    double unstretched = v / m_fStretch;
-		    double unzoomed = m_DirectZoomWindow.Left + (unstretched / m_fZoom);
-		    return (int)unzoomed;
+		    double result = (v / m_fStretch) / m_fZoom;
+		    return (int)result;
 		}
 		
         /// <summary>
