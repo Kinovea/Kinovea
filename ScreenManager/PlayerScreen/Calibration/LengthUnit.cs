@@ -22,11 +22,9 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-	/// Standards units for distance, restricted to sports range. (No microscopic or macroscopic).
-	/// </summary>
-	public enum LengthUnits
+    public enum LengthUnit
 	{
+	    Millimeters,
 	    Centimeters,
 		Meters,
 		Inches,

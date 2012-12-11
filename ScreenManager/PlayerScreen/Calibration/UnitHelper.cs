@@ -25,30 +25,33 @@ namespace Kinovea.ScreenManager
 {
     public static class UnitHelper
     {
-        public static string LengthAbbreviation(LengthUnits unit)
+        public static string LengthAbbreviation(LengthUnit unit)
 		{
 			string result = "";
 			switch(unit)
 			{
-				case LengthUnits.Centimeters:
+			    case LengthUnit.Millimeters:
+			        result = "mm";
+			        break;
+				case LengthUnit.Centimeters:
 					result = "cm";
 					break;
-				case LengthUnits.Meters:
+				case LengthUnit.Meters:
 					result = "m";
 					break;
-				case LengthUnits.Inches:
+				case LengthUnit.Inches:
 					result = "in";
 					break;
-				case LengthUnits.Feet:
+				case LengthUnit.Feet:
 					result = "ft";
 					break;
-				case LengthUnits.Yards:
+				case LengthUnit.Yards:
 					result = "yd";
 					break;
-                case LengthUnits.Percentage:
+                case LengthUnit.Percentage:
 					result = "%";
 					break;
-				case LengthUnits.Pixels:
+				case LengthUnit.Pixels:
 				default:
 					result = "px";
 					break;
@@ -86,12 +89,14 @@ namespace Kinovea.ScreenManager
 			return abbreviation;
 		}
         
-		public static double ConvertLengthForSpeedUnit(double length, LengthUnits lengthUnit, SpeedUnit speedUnits)
+		public static double ConvertLengthForSpeedUnit(double length, LengthUnit lengthUnit, SpeedUnit speedUnits)
 		{
 			// Convert from one length unit to another.
-			// For example: user calibrated the screen using centimeters and wants a speed in km/h.
-			// We get a distance in centimeters, we convert it to kilometers.
+			// We first convert from whatever unit into meters, then from meters to the output.
 			// The scenario where the space is calibrated but the user wants the speed in pixels is not supported.
+			
+			if(lengthUnit == LengthUnit.Pixels || lengthUnit == LengthUnit.Percentage)
+			    return speedUnits == SpeedUnit.PixelsPerFrame ? length : 0;
 			
 			// http://en.wikipedia.org/wiki/Conversion_of_units
 			// 1 inch 			= 0.0254 m.
@@ -100,162 +105,62 @@ namespace Kinovea.ScreenManager
 			// 1 mile 			= 1 609.344 m.
 			// 1 nautical mile  = 1 852 m.
 			
-			double result = 0;
+			const double millimeterToMeters = 0.001;
+			const double centimeterToMeters = 0.01;
+			const double inchToMeters = 0.0254;
+			const double footToMeters = 0.3048;
+			const double yardToMeters = 0.9144;
+			const double kilometerToMeters = 1000;
+			const double mileToMeters = 1609.344;
+			const double nauticalMileToMeters = 1852;
+			
+			double meters = 0;
 			
 			switch(lengthUnit)
 			{
-				case LengthUnits.Centimeters:
-					switch(speedUnits)
-					{
-						case SpeedUnit.FeetPerSecond:
-							//  Centimeters to feet.
-							result = length / 30.48;
-							break;
-						case SpeedUnit.MetersPerSecond:
-							//  Centimeters to meters.
-							result = length / 100;
-							break;
-						case SpeedUnit.KilometersPerHour:
-							// Centimeters to kilometers.
-							result = length / 100000;
-							break;
-						case SpeedUnit.MilesPerHour:
-							// Centimeters to miles 
-							result = length / 160934.4;
-							break;
-						case SpeedUnit.Knots:
-							// Centimeters to nautical miles
-							result = length / 185200;
-							break;
-						case SpeedUnit.PixelsPerFrame:
-						default:
-							result = 0;
-							break;
-					}
-					break;
-				case LengthUnits.Meters:
-					switch(speedUnits)
-					{
-						case SpeedUnit.FeetPerSecond:
-							// Meters to feet.
-							result = length / 0.3048;
-							break;
-						case SpeedUnit.MetersPerSecond:
-							// Meters to meters.
-							result = length;
-							break;
-						case SpeedUnit.KilometersPerHour:
-							// Meters to kilometers.
-							result = length / 1000;
-							break;
-						case SpeedUnit.MilesPerHour:
-							// Meters to miles.
-							result = length / 1609.344;
-							break;
-						case SpeedUnit.Knots:
-							// Meters to nautical miles.
-							result = length / 1852;
-							break;
-						case SpeedUnit.PixelsPerFrame:
-						default:
-							result = 0;
-							break;
-					}
-					break;
-				case LengthUnits.Inches:
-					switch(speedUnits)
-					{
-						case SpeedUnit.FeetPerSecond:
-							// Inches to feet.
-							result = length / 12;
-							break;
-						case SpeedUnit.MetersPerSecond:
-							// Inches to meters.
-							result = length / 39.3700787;
-							break;
-						case SpeedUnit.KilometersPerHour:
-							// Inches to kilometers.
-							result = length / 39370.0787;
-							break;
-						case SpeedUnit.MilesPerHour:
-							// Inches to miles.
-							result = length / 63360;
-							break;
-						case SpeedUnit.Knots:
-							// Inches to nautical miles.
-							result = length / 72913.3858;
-							break;
-						case SpeedUnit.PixelsPerFrame:
-						default:
-							result = 0;
-							break;
-					}
-					break;
-				case LengthUnits.Feet:
-					switch(speedUnits)
-					{
-						case SpeedUnit.FeetPerSecond:
-							// Feet to feet.
-							result = length;
-							break;
-						case SpeedUnit.MetersPerSecond:
-							// Feet to meters.
-							result = length / 3.2808399;
-							break;
-						case SpeedUnit.KilometersPerHour:
-							// Feet to kilometers.
-							result = length / 3280.8399;
-							break;
-						case SpeedUnit.MilesPerHour:
-							// Feet to miles.
-							result = length / 5280;
-							break;
-						case SpeedUnit.Knots:
-							// Feet to nautical miles.
-							result = length / 6076.11549;
-							break;
-						case SpeedUnit.PixelsPerFrame:
-						default:
-							result = 0;
-							break;
-					}
-					break;
-				case LengthUnits.Yards:
-					switch(speedUnits)
-					{
-						case SpeedUnit.FeetPerSecond:
-							// Yards to feet.
-							result = length * 3;
-							break;
-						case SpeedUnit.MetersPerSecond:
-							// Yards to meters.
-							result = length / 1.0936133;
-							break;
-						case SpeedUnit.KilometersPerHour:
-							// Yards to kilometers.
-							result = length / 1093.6133;
-							break;
-						case SpeedUnit.MilesPerHour:
-							// Yards to miles.
-							result = length / 1760;
-							break;
-						case SpeedUnit.Knots:
-							// Yards to nautical miles.
-							result = length / 2025.37183;
-							break;
-						case SpeedUnit.PixelsPerFrame:
-						default:
-							result = 0;
-							break;
-					}
-					break;
-				case LengthUnits.Pixels:
-                case LengthUnits.Percentage:
-				default:
-					// If input length is in pixel, this means the image is not calibrated.
-					// Unless the target speed unit is pixel per frame, we can't compute the speed.
-					result = speedUnits != SpeedUnit.PixelsPerFrame ? 0 : length;
-					break;
+			    case LengthUnit.Millimeters:
+			        meters = length * millimeterToMeters;
+			        break;
+			    case LengthUnit.Centimeters:
+			        meters = length * centimeterToMeters;
+			        break;
+			    case LengthUnit.Meters:
+			        meters = length;
+			        break;
+			    case LengthUnit.Inches:
+			        meters = length * inchToMeters;
+			        break;
+			    case LengthUnit.Feet:
+			        meters = length * footToMeters;
+			        break;
+			    case LengthUnit.Yards:
+			        meters = length * yardToMeters;
+			        break;
+			}
+			
+            double result = 0;
+			
+            switch(speedUnits)
+			{
+                case SpeedUnit.FeetPerSecond:
+                    result = meters / footToMeters;
+                    break;
+                case SpeedUnit.MetersPerSecond:
+                    result = meters;
+                    break;
+                case SpeedUnit.KilometersPerHour:
+                    result = meters / kilometerToMeters;
+                    break;
+                case SpeedUnit.MilesPerHour:
+                    result = meters / mileToMeters;
+                    break;
+                case SpeedUnit.Knots:
+                    result = meters / nauticalMileToMeters;
+                    break;
+                case SpeedUnit.PixelsPerFrame:
+                default:
+                    result = 0;
+                    break;
 			}
 			
 			return result;
