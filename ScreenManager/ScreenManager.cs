@@ -193,7 +193,7 @@ namespace Kinovea.ScreenManager
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
+            //m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
         }
         private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
         {
