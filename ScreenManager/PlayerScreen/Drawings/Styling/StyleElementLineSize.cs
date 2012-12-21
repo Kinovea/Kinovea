@@ -65,6 +65,7 @@ namespace Kinovea.ScreenManager
 		private static readonly int[] m_Options = { 1, 2, 3, 4, 5, 7, 9, 11, 13 };
 		private static readonly int m_iDefaultSize = 3;
 		private int m_iPenSize;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -110,7 +111,7 @@ namespace Kinovea.ScreenManager
 			}
 			catch(Exception)
 			{
-				// The input XML couldn't be parsed. Keep the default value.
+				log.ErrorFormat("An error happened while parsing XML for Line size. {0}", s);
 			}
 			
 			// Restrict to the actual list of "athorized" values.

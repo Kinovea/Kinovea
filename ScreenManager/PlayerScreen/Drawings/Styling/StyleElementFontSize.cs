@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
 		private int m_iFontSize;
 		private static readonly int m_iDefaultFontSize = 10;
 		private static readonly string[] m_Options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -105,7 +106,7 @@ namespace Kinovea.ScreenManager
 			}
 			catch(Exception)
 			{
-				// The input XML couldn't be parsed. Keep the default value.
+			    log.ErrorFormat("An error happened while parsing XML for Font size. {0}", s);
 			}
 			
 			// Restrict to the actual list of "athorized" values.

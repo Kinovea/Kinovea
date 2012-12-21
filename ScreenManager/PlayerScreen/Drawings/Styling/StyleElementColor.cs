@@ -61,6 +61,7 @@ namespace Kinovea.ScreenManager
 		
 		#region Members
 		private Color m_Color;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -90,24 +91,10 @@ namespace Kinovea.ScreenManager
 		}
 		public override void ReadXML(XmlReader _xmlReader)
 		{
+		    // Do not use the .NET color converter at reading time either, it breaks on some installations.
 			_xmlReader.ReadStartElement();
 			string s = _xmlReader.ReadElementContentAsString("Value", "");
-			
-			Color value = Color.Black;
-			try
-			{
-				TypeConverter colorConverter = TypeDescriptor.GetConverter(typeof(Color));
-				value = (Color)colorConverter.ConvertFromString(s);
-				
-				if(value.A == 0)
-					value = Color.Black;
-			}
-			catch(Exception)
-			{
-				// The input XML couldn't be parsed. Keep the default value.
-			}
-			
-			m_Color = value;
+			m_Color = XmlHelper.ParseColor(s);
 			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)

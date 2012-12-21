@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
 		private TrackShape m_TrackShape;
 		private static readonly int m_iLineWidth = 3;
 		private static readonly TrackShape[] m_Options = { TrackShape.Solid, TrackShape.Dash, TrackShape.SolidSteps, TrackShape.DashSteps };
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -108,7 +109,7 @@ namespace Kinovea.ScreenManager
 			}
 			catch(Exception)
 			{
-				// The input XML couldn't be parsed. Keep the default value.
+				log.ErrorFormat("An error happened while parsing XML for Track shape. {0}", s);
 			}
 			
 			// Restrict to the actual list of "athorized" values.

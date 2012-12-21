@@ -121,13 +121,13 @@ namespace Kinovea.Services
             }
             return l;
         }
-        public static Color ParseColor(string _sColor)
+        public static Color ParseColor(string xmlColor)
         {
             Color output = Color.Black;
 
             try
             {
-                string[] a = _sColor.Split(new char[] {';'});
+                string[] a = xmlColor.Split(new char[] {';'});
                 if(a.Length == 3)
                 {
                     output = Color.FromArgb(255, byte.Parse(a[0]), byte.Parse(a[1]), byte.Parse(a[2]));
@@ -139,7 +139,7 @@ namespace Kinovea.Services
             }
             catch (Exception)
             {
-            	log.Error(String.Format("An error happened while parsing color value. ({0}).", _sColor));
+            	log.Error(String.Format("An error happened while parsing color value. ({0}).", xmlColor));
             }
 
             return output;
