@@ -3,6 +3,6 @@
 2. add line to ooo2resx.xsl
 3. exec deploy.py
 4. add new resx to projects.
-5. Add entry in Service > LanguageManager 
+5. Add entry in Service > LanguageManager (Initialize and new static property.)
 6. Add entry in credits window.
 7. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files.
