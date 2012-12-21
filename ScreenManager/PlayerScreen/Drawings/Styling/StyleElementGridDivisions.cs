@@ -64,6 +64,7 @@ namespace Kinovea.ScreenManager
 		private int value;
 		private string[] options;
 		private static readonly int defaultValue = 8;
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
@@ -116,7 +117,7 @@ namespace Kinovea.ScreenManager
 			}
 			catch(Exception)
 			{
-				// The input XML couldn't be parsed. Keep the default value.
+				log.ErrorFormat("An error happened while parsing XML for Grid divisions. {0}", s);
 			}
 			
 			// Restrict to the actual list of "athorized" values.
