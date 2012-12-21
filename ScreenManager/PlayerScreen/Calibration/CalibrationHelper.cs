@@ -118,6 +118,10 @@ namespace Kinovea.ScreenManager
 		{
 		    return calibrationLine.Origin;
 		}
+		public bool CalibrationByLine_GetIsOriginSet()
+		{
+		    return calibrationLine.IsOriginSet;
+		}
 		public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
 		{
 		    calibrationPlane.Initialize(size, quadImage);

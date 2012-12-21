@@ -649,13 +649,9 @@ namespace Kinovea.ScreenManager
 
             XmlReader reader = null;
             if(_bIsFile)
-            {
                 reader = XmlReader.Create(kva, settings);
-            }
             else
-            {
                reader = XmlReader.Create(new StringReader(kva), settings);
-            }
             
             try
             {
@@ -668,7 +664,14 @@ namespace Kinovea.ScreenManager
             }
             finally
             {
-                if(reader != null) reader.Close();
+                if(reader != null) 
+                    reader.Close();
+            }
+            
+            if(calibrationHelper.CalibratorType == CalibratorType.Line && !calibrationHelper.CalibrationByLine_GetIsOriginSet())
+            {
+                PointF origin = new Point(m_ImageSize.Width / 2, m_ImageSize.Height / 2);
+                calibrationHelper.CalibrationByLine_SetOrigin(origin);
             }
             
             UpdateTrajectoriesForKeyframes();
@@ -1441,8 +1444,8 @@ namespace Kinovea.ScreenManager
             // (for example, when undeleting a drawing).
             
             if(drawing is IScalable)
-			    ((IScalable)drawing).Scale(this.ImageSize);
-			
+                ((IScalable)drawing).Scale(this.ImageSize);
+            
 			if(drawing is ITrackable && AddTrackableDrawingCommand != null)
 			    AddTrackableDrawingCommand.Execute(drawing as ITrackable);
             
@@ -1455,7 +1458,7 @@ namespace Kinovea.ScreenManager
                     measurableDrawing.ShowMeasurableInfo = showingMeasurables;
                 
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
-            }
+            }            
         }
         #endregion
     }
