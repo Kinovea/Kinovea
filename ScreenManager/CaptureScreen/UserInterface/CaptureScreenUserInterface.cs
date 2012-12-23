@@ -1763,109 +1763,118 @@ namespace Kinovea.ScreenManager
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
 			// Export the current frame.
-			if(m_FrameServer.IsConnected)
+			if(!m_FrameServer.IsConnected)
+			    return;
+			
+			if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, false))
 			{
-				if(!m_FilenameHelper.ValidateFilename(tbImageFilename.Text, false))
-				{
-					ScreenManagerKernel.AlertInvalidFileName();
-				}
-				else if(Directory.Exists(PreferencesManager.CapturePreferences.ImageDirectory))
-				{
-					// In the meantime the other screen could have make a snapshot too,
-					// which would have updated the last saved file name in the global prefs.
-					// However we keep using the name of the last file saved in this specific screen to keep them independant.
-					// for ex. the user might be saving to "Front - 4" on the left, and to "Side - 7" on the right.
-					// This doesn't apply if we are using a pattern though.
-					string filename = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitImage() : tbImageFilename.Text;
-					string filepath = PreferencesManager.CapturePreferences.ImageDirectory + "\\" + filename + m_FilenameHelper.GetImageFileExtension();
-					
-					// Check if file already exists.
-					if(OverwriteOrCreateFile(filepath))
-					{
-						Bitmap outputImage = m_FrameServer.GetFlushedImage();
-						
-						ImageHelper.Save(filepath, outputImage);
-						outputImage.Dispose();
-						
-						if(PreferencesManager.CapturePreferences.CaptureUsePattern)
-						{
-							m_FilenameHelper.AutoIncrement(true);
-							m_ScreenUIHandler.CaptureScreenUI_FileSaved();
-						}
-						
-						// Keep track of the last successful save.
-						// Each screen must keep its own independant history.
-						m_LastSavedImage = filename;
-						PreferencesManager.CapturePreferences.ImageFile = filename;
-						PreferencesManager.Save();
-						
-						// Update the filename for the next snapshot.
-						tbImageFilename.Text = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitImage() : m_FilenameHelper.Next(m_LastSavedImage);
-						
-						ToastImageSaved();
-					}
-				}
+			    ScreenManagerKernel.AlertInvalidFileName();
+                return;
 			}
+
+			if(!Directory.Exists(PreferencesManager.CapturePreferences.ImageDirectory))
+			    Directory.CreateDirectory(PreferencesManager.CapturePreferences.ImageDirectory);
+			
+            // In the meantime the other screen could have make a snapshot too,
+            // which would have updated the last saved file name in the global prefs.
+            // However we keep using the name of the last file saved in this specific screen to keep them independant.
+            // for ex. the user might be saving to "Front - 4" on the left, and to "Side - 7" on the right.
+            // This doesn't apply if we are using a pattern though.
+            string filename = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitImage() : tbImageFilename.Text;
+            string filepath = PreferencesManager.CapturePreferences.ImageDirectory + "\\" + filename + m_FilenameHelper.GetImageFileExtension();
+            
+            if(!OverwriteOrCreateFile(filepath))
+                return;
+            
+            Bitmap outputImage = m_FrameServer.GetFlushedImage();
+            	
+        	ImageHelper.Save(filepath, outputImage);
+        	outputImage.Dispose();
+        	
+        	if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+        	{
+        		m_FilenameHelper.AutoIncrement(true);
+        		m_ScreenUIHandler.CaptureScreenUI_FileSaved();
+        	}
+        	
+        	// Keep track of the last successful save.
+        	// Each screen must keep its own independant history.
+        	m_LastSavedImage = filename;
+        	PreferencesManager.CapturePreferences.ImageFile = filename;
+        	PreferencesManager.Save();
+        	
+        	// Update the filename for the next snapshot.
+        	tbImageFilename.Text = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitImage() : m_FilenameHelper.Next(m_LastSavedImage);
+        	
+        	ToastImageSaved();
 		}
 		private void btnRecord_Click(object sender, EventArgs e)
         {
-			if(m_FrameServer.IsConnected)
-			{
-				if(m_FrameServer.IsRecording)
-				{
-					m_FrameServer.StopRecording();
-					btnCamSettings.Enabled = true;
-					EnableVideoFileEdit(true);
-					
-					// Keep track of the last successful save.
-					PreferencesManager.CapturePreferences.VideoFile = m_LastSavedVideo;
-					PreferencesManager.Save();
-					
-					// update file name.
-					tbVideoFilename.Text = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitVideo() : m_FilenameHelper.Next(m_LastSavedVideo);
-					
-					DisplayAsRecording(false);
-				}
-				else
-				{
-					// Start exporting frames to a video.
-				
-					// Check that the destination folder exists.
-					if(!m_FilenameHelper.ValidateFilename(tbVideoFilename.Text, false))
-					{
-						ScreenManagerKernel.AlertInvalidFileName();	
-					}
-					else if(Directory.Exists(PreferencesManager.CapturePreferences.VideoDirectory))
-					{
-						string filename = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitVideo() : tbVideoFilename.Text;
-						string filepath = PreferencesManager.CapturePreferences.VideoDirectory + "\\" + filename + m_FilenameHelper.GetVideoFileExtension();
-						
-						// Check if file already exists.
-						if(OverwriteOrCreateFile(filepath))
-						{
-							if(PreferencesManager.CapturePreferences.CaptureUsePattern)
-							{
-								m_FilenameHelper.AutoIncrement(false);
-								m_ScreenUIHandler.CaptureScreenUI_FileSaved();
-							}
-							
-							btnCamSettings.Enabled = false;
-							m_LastSavedVideo = filename;
-							m_FrameServer.CurrentCaptureFilePath = filepath;
-							bool bRecordingStarted = m_FrameServer.StartRecording(filepath);
-							if(bRecordingStarted)
-							{
-								// Record will force grabbing if needed.
-								btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;
-								EnableVideoFileEdit(false);
-								DisplayAsRecording(true);
-							}
-						}
-					}
-				}
-				
-				OnPoke();
-			}
+            if(!m_FrameServer.IsConnected)
+                return;
+            
+            if(m_FrameServer.IsRecording)
+            {
+                m_FrameServer.StopRecording();
+                btnCamSettings.Enabled = true;
+                EnableVideoFileEdit(true);
+            
+                // Keep track of the last successful save.
+                PreferencesManager.CapturePreferences.VideoFile = m_LastSavedVideo;
+                PreferencesManager.Save();
+            
+                // update file name.
+                tbVideoFilename.Text = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitVideo() : m_FilenameHelper.Next(m_LastSavedVideo);
+            
+                DisplayAsRecording(false);
+            }
+            else
+            {
+                // Start exporting frames to a video.
+            
+                if(!m_FilenameHelper.ValidateFilename(tbVideoFilename.Text, false))
+                {
+                    ScreenManagerKernel.AlertInvalidFileName();
+                    return;
+                }
+
+                
+                
+                if(!Directory.Exists(PreferencesManager.CapturePreferences.VideoDirectory))
+                    Directory.CreateDirectory(PreferencesManager.CapturePreferences.VideoDirectory);
+                
+                string filename = PreferencesManager.CapturePreferences.CaptureUsePattern ? m_FilenameHelper.InitVideo() : tbVideoFilename.Text;
+                string filepath = PreferencesManager.CapturePreferences.VideoDirectory + "\\" + filename + m_FilenameHelper.GetVideoFileExtension();
+             
+                // Create embedded directory if needed
+                string directory = Path.GetDirectoryName(filepath);
+                if(!Directory.Exists(directory))
+	               Directory.CreateDirectory(directory);
+                
+                // Check if file already exists.
+                if(!OverwriteOrCreateFile(filepath))
+                    return;
+                
+                if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+                {
+                    m_FilenameHelper.AutoIncrement(false);
+                    m_ScreenUIHandler.CaptureScreenUI_FileSaved();
+                }
+                    
+                btnCamSettings.Enabled = false;
+                m_LastSavedVideo = filename;
+                m_FrameServer.CurrentCaptureFilePath = filepath;
+                bool bRecordingStarted = m_FrameServer.StartRecording(filepath);
+                if(bRecordingStarted)
+                {
+                    // Record will force grabbing if needed.
+                    btnGrab.Image = Kinovea.ScreenManager.Properties.Resources.capturepause5;
+                    EnableVideoFileEdit(false);
+                    DisplayAsRecording(true);
+                }
+            }
+            
+            OnPoke();
         }
         private bool OverwriteOrCreateFile(string _filepath)
         {

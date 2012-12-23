@@ -32,6 +32,10 @@ namespace Kinovea.ScreenManager
 	{
 	    public static void Save(string _fileName, Bitmap _image)
 		{
+	        string directory = Path.GetDirectoryName(_fileName);
+	        if(!Directory.Exists(directory))
+	            Directory.CreateDirectory(directory);
+	            
 			string filenameToLower = _fileName.ToLower();
 			
 			if (filenameToLower.EndsWith("jpg") || filenameToLower.EndsWith("jpeg"))
