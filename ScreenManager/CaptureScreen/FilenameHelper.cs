@@ -83,10 +83,17 @@ namespace Kinovea.ScreenManager
         	    return "";
         	
         	string next = "";
+        	
+        	bool hasEmbeddedDirectory = false;
+        	string embeddedDirectory = Path.GetDirectoryName(current);
+        	if(!string.IsNullOrEmpty(embeddedDirectory))
+        	   hasEmbeddedDirectory = true;
+        	
+        	string currentFileName = hasEmbeddedDirectory ? Path.GetFileNameWithoutExtension(current) : current;
     	
     		// Find all numbers in the name, if any.
 			Regex r = new Regex(@"\d+");
-			MatchCollection mc = r.Matches(current);
+			MatchCollection mc = r.Matches(currentFileName);
         	
 			if(mc.Count > 0)
         	{
@@ -97,16 +104,18 @@ namespace Kinovea.ScreenManager
         		number++;
         		
         		// Replace the number in the original.
-        		next = r.Replace(current, number.ToString(), 1, m.Index );
+        		next = r.Replace(currentFileName, number.ToString(), 1, m.Index );
         	}
         	else
         	{
         		// No number found, add suffix.
-        		next = String.Format("{0} - 2", Path.GetFileNameWithoutExtension(current));
+        		next = String.Format("{0} - 2", Path.GetFileNameWithoutExtension(currentFileName));
         	}
         	
-        	log.DebugFormat("Current file name : {0}, next file name : {1}", current, next);
-			return next;
+        	string finalFileName = hasEmbeddedDirectory ? String.Format("{0}\\{1}", embeddedDirectory, next) : next;
+        	
+        	log.DebugFormat("Current file name : {0}, next file name : {1}", current, finalFileName);
+			return finalFileName;
 		}
 		public bool ValidateFilename(string filename, bool allowEmpty)
         {
