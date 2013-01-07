@@ -163,17 +163,19 @@ namespace Kinovea.ScreenManager
 		    splitResizeBar.Panel2.Controls.Clear();
 		}
 		
-		
 		private void CreateThumbs(List<String> _fileNames)
 		{
+		    int index = 0;
 		    foreach(string file in _fileNames)
 			{
 			    ThumbListViewItem tlvi = new ThumbListViewItem(file);
 				tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
 				tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
 				tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
+				tlvi.Tag = index;
 				m_Thumbnails.Add(tlvi);
 				splitResizeBar.Panel2.Controls.Add(tlvi);
+				index++;
 		    }
 		}
 		private void SummaryLoader_SummaryLoaded(object sender, SummaryLoadedEventArgs e)
@@ -408,7 +410,7 @@ namespace Kinovea.ScreenManager
 				{
 					case Keys.Left:
 						{
-							if (m_SelectedThumbnail == null)
+							if (m_SelectedThumbnail == null )
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
@@ -419,9 +421,7 @@ namespace Kinovea.ScreenManager
 								int iCol = index - (iRow * m_Columns);
 
 								if (iCol > 0)
-								{
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - 1]).SetSelected();
-								}
 							}
 							break;
 						}
@@ -438,9 +438,7 @@ namespace Kinovea.ScreenManager
 								int iCol = index - (iRow * m_Columns);
 
 								if (iCol < m_Columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
-								{
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
-								}
 							}
 							break;
 						}
