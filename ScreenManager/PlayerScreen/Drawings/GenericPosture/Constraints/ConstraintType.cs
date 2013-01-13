@@ -30,6 +30,8 @@ namespace Kinovea.ScreenManager
         VerticalSlide,
         HorizontalSlide,
         DistanceToPoint,
-        RotationSteps
+        RotationSteps,
+        PerpendicularSlide,
+        ParallelSlide
     }
 }

@@ -33,17 +33,19 @@ namespace Kinovea.ScreenManager
         public PointF TextPosition { get; private set;}
         public PointF Origin { get; private set;}
         public bool Tenth { get; private set;}
+        public string Symbol { get; private set;}
         
         private bool relative;
         private int textDistance;
         private Region hitRegion;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public AngleHelper(bool relative, int textDistance, bool tenth)
+        public AngleHelper(bool relative, int textDistance, bool tenth, string symbol)
         {
             this.relative = relative;
             this.textDistance = textDistance;
             this.Tenth = tenth;
+            this.Symbol = symbol;
         }
         public void Update(PointF o, PointF a, PointF b, int radius, CalibrationHelper calibration)
         {

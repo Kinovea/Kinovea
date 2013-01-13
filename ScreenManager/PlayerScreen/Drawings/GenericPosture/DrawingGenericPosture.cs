@@ -186,6 +186,11 @@ namespace Kinovea.ScreenManager
                 {
                     penEdge.Width = segment.Width;
                     penEdge.DashStyle = Convert(segment.Style);
+                    if(segment.ArrowBegin)
+                        penEdge.StartCap = LineCap.ArrowAnchor;
+                    if(segment.ArrowEnd)
+                        penEdge.EndCap = LineCap.ArrowAnchor;
+                    
                     _canvas.DrawLine(penEdge, points[segment.Start], points[segment.End]);
                 }
                 
@@ -232,6 +237,8 @@ namespace Kinovea.ScreenManager
                     PointF a = points[distance.Point1];
                     PointF b = points[distance.Point2];
                     string label = CalibrationHelper.GetLengthText(m_GenericPosture.Points[distance.Point1], m_GenericPosture.Points[distance.Point2], true, true);
+                    if(!string.IsNullOrEmpty(distance.Symbol))
+                        label = string.Format("{0} = {1}", distance.Symbol, label);
                     
                     DrawDistanceText(a, b, label, _canvas, fOpacityFactor, _transformer, brushFill);
                 }
@@ -279,7 +286,7 @@ namespace Kinovea.ScreenManager
         public override void MoveHandle(Point point, int handle, Keys modifiers)
         {
             int index = handle - 1;
-            GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, index, point, modifiers);
+            GenericPostureConstraintEngine.MoveHandle(m_GenericPosture, CalibrationHelper, index, point, modifiers);
             UpdateAngles();
             SignalAllTrackablePointsMoved();
         }
@@ -430,7 +437,7 @@ namespace Kinovea.ScreenManager
         }
         public void SetTrackablePointValue(string name, Point value)
         {
-            m_GenericPosture.SetTrackablePointValue(name, value);
+            m_GenericPosture.SetTrackablePointValue(name, value, CalibrationHelper);
             UpdateAngles();
         }
         private void SignalAllTrackablePointsMoved()
@@ -461,7 +468,7 @@ namespace Kinovea.ScreenManager
         private void InitAngles()
         {
             for(int i=0;i<m_GenericPosture.Angles.Count;i++)
-                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth));
+                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth, m_GenericPosture.Angles[i].Symbol));
 
             UpdateAngles();
         }
@@ -504,6 +511,9 @@ namespace Kinovea.ScreenManager
                 label = String.Format("{0:0.0}°", value);
             else
                 label = String.Format("{0}°", (int)Math.Round(value));
+            
+            if(!string.IsNullOrEmpty(angle.Symbol))
+                label = string.Format("{0} = {1}", angle.Symbol, label);
             
             SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_opacity * 255));
             Font tempFont = m_StyleHelper.GetFont(Math.Max((float)_transformer.Scale, 1.0F));

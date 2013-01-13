@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -16,6 +16,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
+
 */
 #endregion
 using System;
@@ -23,32 +24,33 @@ using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureDistance
+    public class GenericPostureConstraintParallelSlide : GenericPostureAbstractConstraint
     {
-        public int Point1 { get; private set;}
-        public int Point2 { get; private set;}
-        public string Symbol { get; private set;}
+        public int A { get; private set;}
+        public int B { get; private set;}
+        public int C { get; private set;}
         
-        public GenericPostureDistance(XmlReader r)
+        public GenericPostureConstraintParallelSlide(XmlReader r)
         {
-            //<Distance point1="2" point2="4" />
+            Type = ConstraintType.ParallelSlide;
             
             bool isEmpty = r.IsEmptyElement;
             
-            if(r.MoveToAttribute("point1"))
-                Point1 = r.ReadContentAsInt();
+            if(r.MoveToAttribute("a"))
+                A = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("point2"))
-                Point2 = r.ReadContentAsInt();
+            if(r.MoveToAttribute("b"))
+                B = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("symbol"))
-                Symbol = r.ReadContentAsString();
-
+            if(r.MoveToAttribute("c"))
+                C = r.ReadContentAsInt();
+            
             r.ReadStartElement();
             
-            if(isEmpty)
-                return;
-            
+            //if(!isEmpty)
+            //    r.ReadEndElement();
         }
     }
 }
+
+
