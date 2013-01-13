@@ -121,6 +121,12 @@ namespace Kinovea.ScreenManager
                 case ConstraintType.RotationSteps:
                     Constraint = new GenericPostureConstraintRotationSteps(r);
                     break;
+                case ConstraintType.PerpendicularSlide:
+                    Constraint = new GenericPostureConstraintPerpendicularSlide(r);
+                    break;
+                case ConstraintType.ParallelSlide:
+                    Constraint = new GenericPostureConstraintParallelSlide(r);
+                    break;
                 default:
                     string outerXml = r.ReadOuterXml();
                     log.DebugFormat("Unparsed content: {0}", outerXml);
@@ -165,6 +171,15 @@ namespace Kinovea.ScreenManager
                     break;
                 case ImpactType.HorizontalSymmetry:
                     impact = new GenericPostureImpactHorizontalSymmetry(r);
+                    break;
+                case ImpactType.SegmentCenter:
+                    impact = new GenericPostureImpactSegmentCenter(r);
+                    break;
+                case ImpactType.PerdpendicularAlign:
+                    impact = new GenericPosturePerpendicularAlign(r);
+                    break;
+                case ImpactType.ParallelAlign:
+                    impact = new GenericPostureParallelAlign(r);
                     break;
                 default:
                     string outerXml = r.ReadOuterXml();

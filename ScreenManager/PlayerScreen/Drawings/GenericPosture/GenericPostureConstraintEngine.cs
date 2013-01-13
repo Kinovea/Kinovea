@@ -29,7 +29,7 @@ namespace Kinovea.ScreenManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public static void MoveHandle(GenericPosture posture, int handle, Point point, Keys modifiers)
+        public static void MoveHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, Keys modifiers)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Kinovea.ScreenManager
                 switch(posture.Handles[handle].Type)
                 {
                     case HandleType.Point:
-                        MovePointHandle(posture, handle, point, modifiers);
+                        MovePointHandle(posture, calibrationHelper, handle, point, modifiers);
                         break;
                     case HandleType.Segment:
                         MoveSegmentHandle(posture, handle, point);
@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
                 log.DebugFormat(e.ToString());
             }
         }
-        private static void MovePointHandle(GenericPosture posture, int handle, Point point, Keys modifiers)
+        private static void MovePointHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, Keys modifiers)
         {
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
@@ -85,7 +85,13 @@ namespace Kinovea.ScreenManager
                         MovePointHandleAtDistance(posture, handle, point, constraint as GenericPostureConstraintDistanceToPoint, modifiers);
                         break;
                     case ConstraintType.RotationSteps:
-                        MovePointHandleByRotationSteps(posture, handle, point, constraint as GenericPostureConstraintRotationSteps);
+                        MovePointHandleByRotationSteps(posture, calibrationHelper, handle, point, constraint as GenericPostureConstraintRotationSteps);
+                        break;
+                    case ConstraintType.PerpendicularSlide:
+                        MovePointHandleAlongPerpendicular(posture, calibrationHelper, handle, point, constraint as GenericPostureConstraintPerpendicularSlide);
+                        break;
+                    case ConstraintType.ParallelSlide:
+                        MovePointHandleAlongParallel(posture, calibrationHelper, handle, point, constraint as GenericPostureConstraintParallelSlide);
                         break;
                 }
             }
@@ -118,6 +124,15 @@ namespace Kinovea.ScreenManager
                         break;
                     case ImpactType.KeepAngle:
                         KeepPointAngle(posture, impact as GenericPostureImpactKeepAngle);
+                        break;
+                    case ImpactType.SegmentCenter:
+                        SegmentCenter(posture, calibrationHelper, impact as GenericPostureImpactSegmentCenter);
+                        break;
+                    case ImpactType.PerdpendicularAlign:
+                        AlignPointPerpendicular(posture, calibrationHelper, impact as GenericPosturePerpendicularAlign);
+                        break;
+                    case ImpactType.ParallelAlign:
+                        AlignPointParallel(posture, calibrationHelper, impact as GenericPostureParallelAlign);
                         break;
                 } 
             }
@@ -264,7 +279,7 @@ namespace Kinovea.ScreenManager
             posture.Points[start] = posture.Points[start] + vector;
             posture.Points[end] = posture.Points[end] + vector;
         }
-        private static void MovePointHandleByRotationSteps(GenericPosture posture, int handle, Point point, GenericPostureConstraintRotationSteps constraint)
+        private static void MovePointHandleByRotationSteps(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, GenericPostureConstraintRotationSteps constraint)
         {
             if(constraint == null)
                 return;
@@ -277,6 +292,45 @@ namespace Kinovea.ScreenManager
             
             int constraintAngleSubdivisions = 360/constraint.Step;
             posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetPointAtClosestRotationStep(parent, leg1, point, constraintAngleSubdivisions);
+        }
+        private static void MovePointHandleAlongPerpendicular(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, GenericPostureConstraintPerpendicularSlide constraint)
+        {
+            if(constraint == null)
+                return;
+            
+            PointF pivot = posture.Points[constraint.Origin];
+            PointF leg1 = posture.Points[constraint.Leg1];
+            
+            if(pivot == leg1)
+                return;
+            
+            PointF pivotPlane = calibrationHelper.GetPoint(pivot);
+            PointF leg1Plane = calibrationHelper.GetPoint(leg1);
+            PointF pointPlane = calibrationHelper.GetPoint(point);
+            
+            PointF resultPlane = GeometryHelper.GetPointAtAngle(pivotPlane, leg1Plane, pointPlane, 90);
+            PointF result = calibrationHelper.GetImagePoint(resultPlane);
+            
+            posture.Points[posture.Handles[handle].Reference] = result;
+        }
+        private static void MovePointHandleAlongParallel(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point, GenericPostureConstraintParallelSlide constraint)
+        {
+            if(constraint == null)
+                return;
+            
+            PointF a = posture.Points[constraint.A];
+            PointF b = posture.Points[constraint.B];
+            PointF c = posture.Points[constraint.C];
+            
+            PointF aPlane = calibrationHelper.GetPoint(a);
+            PointF bPlane = calibrationHelper.GetPoint(b);
+            PointF cPlane = calibrationHelper.GetPoint(c);
+            PointF pointPlane = calibrationHelper.GetPoint(point);
+            
+            PointF resultPlane = GeometryHelper.GetPointOnParallel(aPlane, bPlane, cPlane, pointPlane);
+            PointF result = calibrationHelper.GetImagePoint(resultPlane);
+            
+            posture.Points[posture.Handles[handle].Reference] = result;
         }
         #endregion
 
@@ -377,6 +431,71 @@ namespace Kinovea.ScreenManager
              
             PointF result = GeometryHelper.GetPointAtAngleAndDistance(origin, leg1, impact.OldAngle, impact.OldDistance);
             posture.Points[impact.Leg2] = result;
+        }
+        private static void SegmentCenter(GenericPosture posture, CalibrationHelper calibrationHelper, GenericPostureImpactSegmentCenter impact)
+        {
+            // The point is moved so that it stays at the center of the specified segment.
+            // This should take perspective into account.
+            
+            if(impact == null)
+                return;
+            
+            PointF p1 = posture.Points[impact.Point1];
+            PointF p2 = posture.Points[impact.Point2];
+            
+            PointF p1Plane = calibrationHelper.GetPoint(p1);
+            PointF p2Plane = calibrationHelper.GetPoint(p2);
+            
+            PointF resultPlane = GeometryHelper.GetMiddlePoint(p1Plane, p2Plane);
+            
+            PointF result = calibrationHelper.GetImagePoint(resultPlane);
+            
+            posture.Points[impact.PointToMove] = result;
+        }
+        private static void AlignPointPerpendicular(GenericPosture posture, CalibrationHelper calibrationHelper, GenericPosturePerpendicularAlign impact)
+        {
+            // The point is moved so that it stays on a perpendicular segment relatively to another segment.
+            
+            if(impact == null)
+                return;
+            
+            PointF pivot = posture.Points[impact.Origin];
+            PointF leg1 = posture.Points[impact.Leg1];
+            PointF pointToMove = posture.Points[impact.PointToMove];
+            
+            if(pivot == leg1)
+                return;
+            
+            PointF pivotPlane = calibrationHelper.GetPoint(pivot);
+            PointF leg1Plane = calibrationHelper.GetPoint(leg1);
+            PointF pointPlane = calibrationHelper.GetPoint(pointToMove);
+            
+            PointF resultPlane = GeometryHelper.GetPointAtAngle(pivotPlane, leg1Plane, pointPlane, 90);
+            PointF result = calibrationHelper.GetImagePoint(resultPlane);
+            
+            posture.Points[impact.PointToMove] = result;
+        }
+        private static void AlignPointParallel(GenericPosture posture, CalibrationHelper calibrationHelper, GenericPostureParallelAlign impact)
+        {
+            // The point is moved so that it stays on a segment parallel to another segment.
+            
+            if(impact == null)
+                return;
+            
+            PointF a = posture.Points[impact.A];
+            PointF b = posture.Points[impact.B];
+            PointF c = posture.Points[impact.C];
+            PointF pointToMove = posture.Points[impact.PointToMove];
+            
+            PointF aPlane = calibrationHelper.GetPoint(a);
+            PointF bPlane = calibrationHelper.GetPoint(b);
+            PointF cPlane = calibrationHelper.GetPoint(c);
+            PointF pointPlane = calibrationHelper.GetPoint(pointToMove);
+            
+            PointF resultPlane = GeometryHelper.GetPointOnParallel(aPlane, bPlane, cPlane, pointPlane);
+            PointF result = calibrationHelper.GetImagePoint(resultPlane);
+            
+            posture.Points[impact.PointToMove] = result;
         }
         #endregion
 

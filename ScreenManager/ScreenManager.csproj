@@ -273,6 +273,8 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintDistanceToPoint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintHorizontalSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintLineSlide.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintParallelSlide.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintPerpendicularSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintRotationSteps.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintVerticalSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\DrawingGenericPosture.cs" />
@@ -290,6 +292,8 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureAbstractHitZone.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureHitZonePolygon.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\HitZoneType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactPerpendicularAlign.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactSegmentCenter.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureAbstractImpact.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactHorizontalSymmetry.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactHorizontalAlign.cs" />
@@ -297,6 +301,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactLineAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactPivot.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactVerticalAlign.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureParallelAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\ImpactType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\SegmentLineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />

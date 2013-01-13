@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
         public bool Relative { get; private set;}
         public int Radius { get; set;}
         public bool Tenth { get; private set;}
+        public string Symbol { get; private set;}
         
         public GenericPostureAngle(XmlReader r)
         {
@@ -62,6 +63,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("radius"))
                 Radius = r.ReadContentAsInt();
+            
+            if(r.MoveToAttribute("symbol"))
+                Symbol = r.ReadContentAsString();
 
             r.ReadStartElement();
             

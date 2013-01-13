@@ -139,6 +139,17 @@ namespace Kinovea.ScreenManager
             return Pivot(pivot, point, deltaAngle * (float)MathHelper.DegreesToRadians);
         }
         
+        /// <summary>
+        /// Returns the point that is at the specified angle relatively to the [origin, leg1] segment.
+        /// </summary>
+        public static PointF GetPointAtAngle(PointF pivot, PointF leg1, PointF point, float targetAngle)
+        {
+            float distance = GetDistance(pivot, point);
+            float angle = targetAngle * (float)MathHelper.DegreesToRadians;
+            PointF result = GetPointAtAngleAndDistance(pivot, leg1, angle, distance);
+            return result;
+        }
+        
         
         /// <summary>
         /// Gets the position of the point by restricting rotation steps allowed. 
@@ -149,17 +160,6 @@ namespace Kinovea.ScreenManager
             PointF zero = new PointF(pivot.X + 100, pivot.Y);
             return GetPointAtClosestRotationStep(pivot, zero, point, subdivisions);
         }
-        /*
-        /// <summary>
-        /// Gets the position of the point by restricting rotation steps allowed. 
-        /// In this version, steps are relative to the trig circle.
-        /// For integer coordinates points.
-        /// </summary>
-        public static Point GetPointAtClosestRotationStepCardinal(Point pivot, Point point, int subdivisions)
-        {
-            PointF result = GetPointAtClosestRotationStepCardinal(new PointF(pivot.X, pivot.Y), new PointF(point.X, point.Y), subdivisions);
-            return result.ToPoint();
-        }*/
         
         /// <summary>
         /// Returns the point that is at the specified angle relatively to the [origin,leg1] segment, and at the specified distance from origin.
@@ -169,6 +169,23 @@ namespace Kinovea.ScreenManager
             // First get a point in the right direction, then get the point in this direction that is at the right distance.
             PointF direction = Pivot(origin, leg1, angle);
             PointF result = GetPointAtDistance(origin, direction, distance);
+            return result;
+        }
+        
+        /// <summary>
+        /// Returns the point that is on a segment passing through c and parallel to [a,b].
+        /// The resulting point is at the same distance from c than the candidate point.
+        /// </summary>
+        public static PointF GetPointOnParallel(PointF a, PointF b, PointF c, PointF point)
+        {
+            // Find the fourth point of the parallelogram to have the parallel segment [c,d].
+            Vector ac = new Vector(a,c);
+            PointF d = b.Translate(ac.X, ac.Y);
+            
+            float angle = GetAngle(c, a, d);
+            float distance = GetDistance(c, point);
+            
+            PointF result = GetPointAtAngleAndDistance(c, a, angle, distance);
             return result;
         }
     }

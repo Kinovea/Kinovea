@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public class GenericPostureSegment
@@ -32,6 +34,8 @@ namespace Kinovea.ScreenManager
         public int End { get; private set;}
         public SegmentLineStyle Style { get; private set;}
         public int Width { get; private set;}
+        public bool ArrowEnd { get; private set; }
+        public bool ArrowBegin { get; private set; }
         
         private string name;
         
@@ -58,6 +62,12 @@ namespace Kinovea.ScreenManager
             if(r.MoveToAttribute("width"))
                 Width = r.ReadContentAsInt();
 
+            if(r.MoveToAttribute("arrowBegin"))
+                ArrowBegin = XmlHelper.ParseBoolean(r.ReadContentAsString());
+            
+            if(r.MoveToAttribute("arrowEnd"))
+                ArrowEnd = XmlHelper.ParseBoolean(r.ReadContentAsString());
+            
             r.ReadStartElement();
             
             if(isEmpty)

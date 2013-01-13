@@ -405,7 +405,7 @@ namespace Kinovea.ScreenManager
             }
         }
               
-        public void SetTrackablePointValue(string name, Point value)
+        public void SetTrackablePointValue(string name, Point value, CalibrationHelper calibrationHelper)
         {
             // Value coming from tracking.
             int pointIndex = int.Parse(name);
@@ -413,7 +413,7 @@ namespace Kinovea.ScreenManager
                 throw new ArgumentException("This point is not bound.");
             
             int handleIndex = Handles.FindIndex((h) => h.Reference == pointIndex);
-            GenericPostureConstraintEngine.MoveHandle(this, handleIndex, value, Keys.None);
+            GenericPostureConstraintEngine.MoveHandle(this, calibrationHelper, handleIndex, value, Keys.None);
         }
     
         public void FlipHorizontal()
