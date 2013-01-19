@@ -53,6 +53,8 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public partial class ThumbListView : UserControl
 	{
+	    public event EventHandler<LoadAskedEventArgs> LoadAsked;
+	    
 		#region Members
 		private int m_iLeftMargin = 30;
 		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
@@ -65,10 +67,9 @@ namespace Kinovea.ScreenManager
 
 		private List<SummaryLoader> m_Loaders = new List<SummaryLoader>();
 		private List<ThumbListViewItem> m_Thumbnails = new List<ThumbListViewItem>();
-		private ThumbListViewItem m_SelectedThumbnail;
+		private ThumbListViewItem selectedThumbnail;
 				
 		private bool m_bEditMode;
-		private IScreenManagerUIContainer m_ScreenManagerUIContainer;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -87,10 +88,6 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
-		public void SetScreenManagerUIContainer(IScreenManagerUIContainer _value)
-		{
-			m_ScreenManagerUIContainer = _value;
-		}
 		public void RefreshUICulture()
 		{
 			//btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
@@ -156,7 +153,7 @@ namespace Kinovea.ScreenManager
 		}
 		public void CleanupThumbnails()
 		{
-		    m_SelectedThumbnail = null;
+		    selectedThumbnail = null;
 		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
 		        tlvi.DisposeImages();
 		    m_Thumbnails.Clear();
@@ -303,10 +300,8 @@ namespace Kinovea.ScreenManager
 			CancelEditMode();
 			ThumbListViewItem tlvi = sender as ThumbListViewItem;
 			
-			if (tlvi != null && !tlvi.IsError)
-			{
-				m_ScreenManagerUIContainer.DropLoadMovie(tlvi.FileName, -1);
-			}
+			if (tlvi != null && !tlvi.IsError && LoadAsked != null)
+                LoadAsked(this, new LoadAskedEventArgs(tlvi.FileName, -1));
 		}
 		private void ThumbListViewItem_VideoSelected(object sender, EventArgs e)
 		{
@@ -315,12 +310,12 @@ namespace Kinovea.ScreenManager
 			
 			if(tlvi != null)
 			{
-				if (m_SelectedThumbnail != null && m_SelectedThumbnail != tlvi )
+				if (selectedThumbnail != null && selectedThumbnail != tlvi )
 				{
-					m_SelectedThumbnail.SetUnselected();
+					selectedThumbnail.SetUnselected();
 				}
 			
-				m_SelectedThumbnail = tlvi;
+				selectedThumbnail = tlvi;
 			}
 		}
 		private void ThumbListViewItem_FileNameEditing(object sender, EditingEventArgs e)
@@ -410,13 +405,13 @@ namespace Kinovea.ScreenManager
 				{
 					case Keys.Left:
 						{
-							if (m_SelectedThumbnail == null )
+							if (selectedThumbnail == null )
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedThumbnail.Tag;
+								int index = (int)selectedThumbnail.Tag;
 								int iRow = index / m_Columns;
 								int iCol = index - (iRow * m_Columns);
 
@@ -427,13 +422,13 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.Right:
 						{
-							if (m_SelectedThumbnail == null)
+							if (selectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedThumbnail.Tag;
+								int index = (int)selectedThumbnail.Tag;
 								int iRow = index / m_Columns;
 								int iCol = index - (iRow * m_Columns);
 
@@ -444,13 +439,13 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.Up:
 						{
-							if (m_SelectedThumbnail == null)
+							if (selectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedThumbnail.Tag;
+								int index = (int)selectedThumbnail.Tag;
 								int iRow = index / m_Columns;
 								int iCol = index - (iRow * m_Columns);
 
@@ -459,18 +454,18 @@ namespace Kinovea.ScreenManager
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - m_Columns]).SetSelected();
 								}
 							}
-							splitResizeBar.Panel2.ScrollControlIntoView(m_SelectedThumbnail);
+							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
 							break;
 						}
 					case Keys.Down:
 						{
-							if (m_SelectedThumbnail == null)
+							if (selectedThumbnail == null)
 							{
 								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
 							}
 							else
 							{
-								int index = (int)m_SelectedThumbnail.Tag;
+								int index = (int)selectedThumbnail.Tag;
 								int iRow = index / m_Columns;
 								int iCol = index - (iRow * m_Columns);
 
@@ -479,13 +474,13 @@ namespace Kinovea.ScreenManager
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + m_Columns]).SetSelected();
 								}
 							}
-							splitResizeBar.Panel2.ScrollControlIntoView(m_SelectedThumbnail);
+							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
 							break;
 						}
 					case Keys.Return:
 						{
-							if (m_SelectedThumbnail != null && !m_SelectedThumbnail.IsError)
-								m_ScreenManagerUIContainer.DropLoadMovie(m_SelectedThumbnail.FileName, -1);
+							if (selectedThumbnail != null && !selectedThumbnail.IsError && LoadAsked != null)
+							    LoadAsked(this, new LoadAskedEventArgs(selectedThumbnail.FileName, -1));
 							break;
 						}
 					case Keys.Add:
@@ -502,8 +497,8 @@ namespace Kinovea.ScreenManager
 						}
 					case Keys.F2:
 						{
-							if(m_SelectedThumbnail != null && !m_SelectedThumbnail.IsError)
-								m_SelectedThumbnail.StartRenaming();
+							if(selectedThumbnail != null && !selectedThumbnail.IsError)
+								selectedThumbnail.StartRenaming();
 							break;
 						}
 					default:
@@ -517,10 +512,10 @@ namespace Kinovea.ScreenManager
         private void Panel2MouseDown(object sender, MouseEventArgs e)
         {
         	// Clicked off nowhere.
-        	if(m_SelectedThumbnail != null)
+        	if(selectedThumbnail != null)
         	{
-        		m_SelectedThumbnail.SetUnselected();
-        		m_SelectedThumbnail = null;
+        		selectedThumbnail.SetUnselected();
+        		selectedThumbnail = null;
         	}
         	
         	CancelEditMode();

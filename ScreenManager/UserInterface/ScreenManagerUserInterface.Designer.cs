@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
             this.pnlScreens = new System.Windows.Forms.Panel();
             this.splitScreensPanel = new System.Windows.Forms.SplitContainer();
             this.splitScreens = new System.Windows.Forms.SplitContainer();
-            this.ComCtrls = new Kinovea.ScreenManager.CommonControls();
+            this.commonControls = new Kinovea.ScreenManager.CommonControls();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.pnlScreens.SuspendLayout();
             this.splitScreensPanel.Panel1.SuspendLayout();
@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
             // splitScreensPanel.Panel2
             // 
             this.splitScreensPanel.Panel2.BackColor = System.Drawing.Color.White;
-            this.splitScreensPanel.Panel2.Controls.Add(this.ComCtrls);
+            this.splitScreensPanel.Panel2.Controls.Add(this.commonControls);
             this.splitScreensPanel.Size = new System.Drawing.Size(574, 367);
             this.splitScreensPanel.SplitterDistance = 315;
             this.splitScreensPanel.TabIndex = 0;
@@ -86,28 +86,28 @@ namespace Kinovea.ScreenManager
             // 
             this.splitScreens.Panel1.BackColor = System.Drawing.Color.White;
             this.splitScreens.Panel1.DragDrop += new System.Windows.Forms.DragEventHandler(this.splitScreens_Panel1_DragDrop);
-            this.splitScreens.Panel1.DragOver += new System.Windows.Forms.DragEventHandler(this.splitScreens_Panel1_DragOver);
+            this.splitScreens.Panel1.DragOver += new System.Windows.Forms.DragEventHandler(this.DroppableArea_DragOver);
             // 
             // splitScreens.Panel2
             // 
             this.splitScreens.Panel2.BackColor = System.Drawing.Color.White;
             this.splitScreens.Panel2.DragDrop += new System.Windows.Forms.DragEventHandler(this.splitScreens_Panel2_DragDrop);
-            this.splitScreens.Panel2.DragOver += new System.Windows.Forms.DragEventHandler(this.splitScreens_Panel2_DragOver);
+            this.splitScreens.Panel2.DragOver += new System.Windows.Forms.DragEventHandler(this.DroppableArea_DragOver);
             this.splitScreens.Size = new System.Drawing.Size(574, 315);
             this.splitScreens.SplitterDistance = 287;
             this.splitScreens.TabIndex = 0;
             // 
-            // ComCtrls
+            // CommonControls
             // 
-            this.ComCtrls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.commonControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.ComCtrls.BackColor = System.Drawing.Color.White;
-            this.ComCtrls.Location = new System.Drawing.Point(0, 0);
-            this.ComCtrls.Name = "ComCtrls";
-            this.ComCtrls.Playing = false;
-            this.ComCtrls.Size = new System.Drawing.Size(545, 45);
-            this.ComCtrls.SyncMerging = false;
-            this.ComCtrls.TabIndex = 4;
+            this.commonControls.BackColor = System.Drawing.Color.White;
+            this.commonControls.Location = new System.Drawing.Point(0, 0);
+            this.commonControls.Name = "CommonControls";
+            this.commonControls.Playing = false;
+            this.commonControls.Size = new System.Drawing.Size(545, 45);
+            this.commonControls.SyncMerging = false;
+            this.commonControls.TabIndex = 4;
             // 
             // pbLogo
             // 
@@ -133,7 +133,7 @@ namespace Kinovea.ScreenManager
             this.Name = "ScreenManagerUserInterface";
             this.Size = new System.Drawing.Size(720, 560);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ScreenManagerUserInterface_DragDrop);
-            this.DragOver += new System.Windows.Forms.DragEventHandler(this.ScreenManagerUserInterface_DragOver);
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.DroppableArea_DragOver);
             this.DoubleClick += new System.EventHandler(this.ScreenManagerUserInterface_DoubleClick);
             this.pnlScreens.ResumeLayout(false);
             this.splitScreensPanel.Panel1.ResumeLayout(false);
@@ -150,7 +150,7 @@ namespace Kinovea.ScreenManager
         private System.Windows.Forms.SplitContainer splitScreensPanel;
         private System.Windows.Forms.SplitContainer splitScreens;
         private System.Windows.Forms.Panel pnlScreens;
-        public Kinovea.ScreenManager.CommonControls ComCtrls;
+        private Kinovea.ScreenManager.CommonControls commonControls;
 
     }
 }
