@@ -56,20 +56,17 @@ namespace Kinovea.ScreenManager
 	    public event EventHandler<LoadAskedEventArgs> LoadAsked;
 	    
 		#region Members
-		private int m_iLeftMargin = 30;
-		private int m_iRightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
-		private int m_iTopMargin = 5;
-		private int m_iVertSpacing = 20;
-		private int m_Columns = (int)ExplorerThumbSize.Large;
-		private static readonly Brush m_GradientBrush = new LinearGradientBrush(new Point(33, 0), new Point(350, 0), Color.LightSteelBlue, Color.White);
-    	private static readonly Pen m_GradientPen = new Pen(m_GradientBrush);
-    	private object m_Locker = new object();
-
-		private List<SummaryLoader> m_Loaders = new List<SummaryLoader>();
-		private List<ThumbListViewItem> m_Thumbnails = new List<ThumbListViewItem>();
+		private static readonly int leftMargin = 30;
+		private static readonly int rightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
+		private static readonly int topMargin = 5;
+		private static readonly Brush gradientBrush = new LinearGradientBrush(new Point(33, 0), new Point(350, 0), Color.LightSteelBlue, Color.White);
+    	private static readonly Pen gradientPen = new Pen(gradientBrush);
+    	private int columns = (int)ExplorerThumbSize.Large;
+    	private object locker = new object();
+		private List<SummaryLoader> loaders = new List<SummaryLoader>();
+		private List<ThumbListViewItem> thumbnails = new List<ThumbListViewItem>();
 		private ThumbListViewItem selectedThumbnail;
-				
-		private bool m_bEditMode;
+		private bool editMode;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -82,7 +79,7 @@ namespace Kinovea.ScreenManager
 			InitSizingButtons();
 			RefreshUICulture();
 
-			m_Columns = (int)PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
+			columns = (int)PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
 			DeselectAllSizingButtons();
 			SelectSizingButton();
 		}
@@ -92,7 +89,7 @@ namespace Kinovea.ScreenManager
 		{
 			//btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
 			
-			foreach(ThumbListViewItem tlvi in m_Thumbnails)
+			foreach(ThumbListViewItem tlvi in thumbnails)
 			    tlvi.RefreshUICulture();
 		}
 		
@@ -130,7 +127,7 @@ namespace Kinovea.ScreenManager
 				
 				SummaryLoader sl = new SummaryLoader(_fileNames);
 				sl.SummaryLoaded += SummaryLoader_SummaryLoaded;
-				m_Loaders.Add(sl);
+				loaders.Add(sl);
 				pbFiles.Visible = true;
 				sl.Run();
 			}
@@ -141,22 +138,22 @@ namespace Kinovea.ScreenManager
 		}
 		private void CleanupLoaders()
 		{
-			for(int i=m_Loaders.Count-1;i>=0;i--)
+			for(int i=loaders.Count-1;i>=0;i--)
 			{
-			    m_Loaders[i].SummaryLoaded -= SummaryLoader_SummaryLoaded;
+			    loaders[i].SummaryLoaded -= SummaryLoader_SummaryLoaded;
 			    
-				if (m_Loaders[i].IsAlive)
-					m_Loaders[i].Cancel();
+				if (loaders[i].IsAlive)
+					loaders[i].Cancel();
 				else
-				    m_Loaders.RemoveAt(i);
+				    loaders.RemoveAt(i);
 			}
 		}
 		public void CleanupThumbnails()
 		{
 		    selectedThumbnail = null;
-		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
+		    foreach(ThumbListViewItem tlvi in thumbnails)
 		        tlvi.DisposeImages();
-		    m_Thumbnails.Clear();
+		    thumbnails.Clear();
 		    splitResizeBar.Panel2.Controls.Clear();
 		}
 		
@@ -170,7 +167,7 @@ namespace Kinovea.ScreenManager
 				tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
 				tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
 				tlvi.Tag = index;
-				m_Thumbnails.Add(tlvi);
+				thumbnails.Add(tlvi);
 				splitResizeBar.Panel2.Controls.Add(tlvi);
 				index++;
 		    }
@@ -180,7 +177,7 @@ namespace Kinovea.ScreenManager
 		    if(e.Summary == null)
 		        return;
 		 
-		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
+		    foreach(ThumbListViewItem tlvi in thumbnails)
 		    {
 		        if(tlvi.FileName == e.Summary.Filename)
 		        {
@@ -191,33 +188,33 @@ namespace Kinovea.ScreenManager
 		    
 		    int done = e.Progress+1;
 		    
-		    log.DebugFormat("progress: {0}/{1}", done, m_Thumbnails.Count);
-		    pbFiles.Value = (int)(((float)done / m_Thumbnails.Count) * 100);
+		    log.DebugFormat("progress: {0}/{1}", done, thumbnails.Count);
+		    pbFiles.Value = (int)(((float)done / thumbnails.Count) * 100);
 		    
-		    if(done == m_Thumbnails.Count)
+		    if(done == thumbnails.Count)
 		        pbFiles.Visible = false;
 		}
 		private void UpSizeThumbs()
 		{
 			DeselectAllSizingButtons();
 
-			switch (m_Columns)
+			switch (columns)
 			{
 				case (int)ExplorerThumbSize.ExtraSmall:
-					m_Columns = (int)ExplorerThumbSize.Small;
+					columns = (int)ExplorerThumbSize.Small;
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.Small:
-					m_Columns = (int)ExplorerThumbSize.Medium;
+					columns = (int)ExplorerThumbSize.Medium;
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.Medium:
-					m_Columns = (int)ExplorerThumbSize.Large;
+					columns = (int)ExplorerThumbSize.Large;
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.Large:
 				default:
-					m_Columns = (int)ExplorerThumbSize.ExtraLarge;
+					columns = (int)ExplorerThumbSize.ExtraLarge;
 					btnExtraLarge.BackColor = Color.LightSteelBlue;
 					break;
 			}
@@ -228,27 +225,27 @@ namespace Kinovea.ScreenManager
 		{
 			DeselectAllSizingButtons();
 
-			switch (m_Columns)
+			switch (columns)
 			{
 				case (int)ExplorerThumbSize.Small:
-					m_Columns = (int)ExplorerThumbSize.ExtraSmall;
+					columns = (int)ExplorerThumbSize.ExtraSmall;
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.Medium:
-					m_Columns = (int)ExplorerThumbSize.Small;
+					columns = (int)ExplorerThumbSize.Small;
 					btnSmall.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.Large:
-					m_Columns = (int)ExplorerThumbSize.Medium;
+					columns = (int)ExplorerThumbSize.Medium;
 					btnMedium.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.ExtraLarge:
-					m_Columns = (int)ExplorerThumbSize.Large;
+					columns = (int)ExplorerThumbSize.Large;
 					btnLarge.BackColor = Color.LightSteelBlue;
 					break;
 				case (int)ExplorerThumbSize.ExtraSmall:
 				default:
-					m_Columns = (int)ExplorerThumbSize.ExtraSmall;
+					columns = (int)ExplorerThumbSize.ExtraSmall;
 					btnExtraSmall.BackColor = Color.LightSteelBlue;
 					break;
 			}
@@ -264,12 +261,10 @@ namespace Kinovea.ScreenManager
 		private void UpdateView()
 		{
 		    // Set location and size of each thumbnails depending on available width and options.
-		    int columns = m_Columns;
-		    int colWidth = (splitResizeBar.Panel2.Width - m_iLeftMargin - m_iRightMargin) / columns;
-            int horzSpacing = colWidth / 20;
-		    int vertSpacing = horzSpacing;
-            
-            int thumbWidth = colWidth - horzSpacing;
+		    int colWidth = (splitResizeBar.Panel2.Width - leftMargin - rightMargin) / columns;
+            int spacing = colWidth / 20;
+		    
+            int thumbWidth = colWidth - spacing;
             int thumbHeight = (thumbWidth * 3 / 4) + 15;
 				
             int current = 0;
@@ -280,8 +275,8 @@ namespace Kinovea.ScreenManager
 		        
 		        int row = current / columns;
                 int col = current - (row * columns);
-                int left = col * colWidth + m_iLeftMargin;
-				int top = m_iTopMargin + (row * (thumbHeight + m_iVertSpacing));
+                int left = col * colWidth + leftMargin;
+				int top = topMargin + (row * (thumbHeight + spacing));
 				tlvi.Location = new Point(left, top);
 				current++;
 		    }
@@ -289,7 +284,7 @@ namespace Kinovea.ScreenManager
 		}
 		private IEnumerable<ThumbListViewItem> SortedAndFilteredThumbs()
 		{
-		    foreach(ThumbListViewItem tlvi in m_Thumbnails)
+		    foreach(ThumbListViewItem tlvi in thumbnails)
 		        yield return tlvi;
 		}
 		#endregion
@@ -323,7 +318,7 @@ namespace Kinovea.ScreenManager
 			// Make sure the keyboard handling doesn't interfere 
 			// if one thumbnail is in edit mode.
         	// There should only be one thumbnail in edit mode at a time.
-			m_bEditMode = e.Editing;
+			editMode = e.Editing;
         }
 		#endregion
 		
@@ -346,7 +341,7 @@ namespace Kinovea.ScreenManager
 		}
 		private void SelectSizingButton()
 		{
-			switch (m_Columns)
+			switch (columns)
 			{
 				case (int)ExplorerThumbSize.Small:
 					btnSmall.BackColor = Color.LightSteelBlue;
@@ -373,7 +368,7 @@ namespace Kinovea.ScreenManager
 		    Button btn = sender as Button;
 		    if(btn != null)
 		    {
-		        m_Columns = (int)btn.Tag;
+		        columns = (int)btn.Tag;
 		        //OrganizeThumbnailsByColumns(m_iThumbWidth);
 		        UpdateView();
     			DeselectAllSizingButtons();
@@ -387,7 +382,7 @@ namespace Kinovea.ScreenManager
 		#region Closing
 		private void SavePrefs()
 		{
-			PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = (ExplorerThumbSize)m_Columns;
+			PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = (ExplorerThumbSize)columns;
 			PreferencesManager.Save();
 		}
 		#endregion
@@ -397,7 +392,7 @@ namespace Kinovea.ScreenManager
 		{
 			// Method called from the Screen Manager's PreFilterMessage.
 			bool bWasHandled = false;
-			if(splitResizeBar.Panel2.Controls.Count > 0 && !m_bEditMode)
+			if(splitResizeBar.Panel2.Controls.Count > 0 && !editMode)
 			{
 				// Note that ESC key to cancel editing is handled directly in
 				// each thumbnail item.
@@ -412,8 +407,8 @@ namespace Kinovea.ScreenManager
 							else
 							{
 								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / m_Columns;
-								int iCol = index - (iRow * m_Columns);
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
 
 								if (iCol > 0)
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - 1]).SetSelected();
@@ -429,10 +424,10 @@ namespace Kinovea.ScreenManager
 							else
 							{
 								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / m_Columns;
-								int iCol = index - (iRow * m_Columns);
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
 
-								if (iCol < m_Columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
+								if (iCol < columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
 									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
 							}
 							break;
@@ -446,12 +441,12 @@ namespace Kinovea.ScreenManager
 							else
 							{
 								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / m_Columns;
-								int iCol = index - (iRow * m_Columns);
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
 
 								if (iRow > 0)
 								{
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - m_Columns]).SetSelected();
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - columns]).SetSelected();
 								}
 							}
 							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
@@ -466,12 +461,12 @@ namespace Kinovea.ScreenManager
 							else
 							{
 								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / m_Columns;
-								int iCol = index - (iRow * m_Columns);
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
 
-								if ((iRow < splitResizeBar.Panel2.Controls.Count / m_Columns) && index + m_Columns  < splitResizeBar.Panel2.Controls.Count)
+								if ((iRow < splitResizeBar.Panel2.Controls.Count / columns) && index + columns  < splitResizeBar.Panel2.Controls.Count)
 								{
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + m_Columns]).SetSelected();
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + columns]).SetSelected();
 								}
 							}
 							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
@@ -522,7 +517,7 @@ namespace Kinovea.ScreenManager
         }
         private void CancelEditMode()
         {
-        	m_bEditMode = false;
+        	editMode = false;
         	
         	// Browse all thumbs and make sure they are all in normal mode.
         	for (int i = 0; i < splitResizeBar.Panel2.Controls.Count; i++)
@@ -535,13 +530,13 @@ namespace Kinovea.ScreenManager
         private void Panel2MouseEnter(object sender, EventArgs e)
         {
         	// Give focus to enbale mouse scroll
-        	if(!m_bEditMode)
+        	if(!editMode)
         		splitResizeBar.Panel2.Focus();
         }
         
         private void Panel2Paint(object sender, PaintEventArgs e)
         {
-    		e.Graphics.DrawLine(m_GradientPen, 33, 0, 350, 0);
+    		e.Graphics.DrawLine(gradientPen, 33, 0, 350, 0);
         }
 	}
 }
