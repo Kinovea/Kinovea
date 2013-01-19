@@ -34,38 +34,30 @@ namespace Kinovea.ScreenManager
         	get { return ScreenManagerLang.CommandSwapScreens_FriendlyName; }
         }
 
-        ScreenManagerKernel m_ScreenManagerKernel;
+        ScreenManagerKernel screenManagerKernel;
 
         #region constructor
         public CommandSwapScreens(ScreenManagerKernel _smk)
         {
-            m_ScreenManagerKernel = _smk;
+            screenManagerKernel = _smk;
         }
         #endregion
 
         public void Execute()
         {
             // We keep the list ordered. [0] = left.
-            AbstractScreen temp = m_ScreenManagerKernel.screenList[0];
-            m_ScreenManagerKernel.screenList[0] = m_ScreenManagerKernel.screenList[1];
-            m_ScreenManagerKernel.screenList[1] = temp;
+            AbstractScreen temp = screenManagerKernel.screenList[0];
+            screenManagerKernel.screenList[0] = screenManagerKernel.screenList[1];
+            screenManagerKernel.screenList[1] = temp;
 
             // Show new disposition.
-            ScreenManagerUserInterface smui = m_ScreenManagerKernel.UI as ScreenManagerUserInterface;
-            if(smui != null)
-            {
-            	smui.splitScreens.Panel1.Controls.Clear();
-            	smui.splitScreens.Panel2.Controls.Clear();
-            	
-            	smui.splitScreens.Panel1.Controls.Add(m_ScreenManagerKernel.screenList[0].UI);
-            	smui.splitScreens.Panel2.Controls.Add(m_ScreenManagerKernel.screenList[1].UI);
-            }
+            screenManagerKernel.View.OrganizeScreens(screenManagerKernel.screenList);
             
             // the following lines are placed here so they also get called at unexecute.
-            m_ScreenManagerKernel.OrganizeMenus();
-            m_ScreenManagerKernel.UpdateStatusBar();
-            m_ScreenManagerKernel.SwapSync();
-            m_ScreenManagerKernel.SetSyncPoint(true);
+            screenManagerKernel.OrganizeMenus();
+            screenManagerKernel.UpdateStatusBar();
+            screenManagerKernel.SwapSync();
+            screenManagerKernel.SetSyncPoint(true);
         }
 
         public void Unexecute()

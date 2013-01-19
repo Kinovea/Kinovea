@@ -1,3 +1,4 @@
+#region License
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -15,10 +16,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
+#endregion
 
-using Kinovea.ScreenManager.Languages;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,6 +26,9 @@ using System.IO;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
+
+using Kinovea.Camera;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -33,56 +36,181 @@ namespace Kinovea.ScreenManager
     public partial class ScreenManagerUserInterface : UserControl
     {
         #region Delegates
-        public delegate void DelegateUpdateTrkFrame(long _iFrame);
-        public DelegateUpdateTrkFrame m_DelegateUpdateTrkFrame;
+        public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
         #endregion
 
-        public ThumbListView m_ThumbsViewer = new ThumbListView();
+        #region Properties
+        public bool CommonControlsVisible 
+        {
+            get { return !splitScreensPanel.Panel2Collapsed; }
+        }
+        public bool ThumbnailsViewerVisible
+        {
+            get { return thumbnailsViewer.Visible;}
+        }
+        #endregion
         
         #region Members
-        private List<String> m_FolderFileNames = new List<String>();
-        private bool m_bThumbnailsWereVisible;
-        private IScreenManagerUIContainer m_ScreenManagerUIContainer;
+        public ThumbListView thumbnailsViewer = new ThumbListView();
+        private List<String> filenames = new List<String>();
+        private bool thumbnailsWereVisible;
+        private IScreenManagerUIContainer controller;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
-		public ScreenManagerUserInterface(IScreenManagerUIContainer _ScreenManagerUIContainer)
+		public ScreenManagerUserInterface(IScreenManagerUIContainer controller)
         {
         	log.Debug("Constructing ScreenManagerUserInterface.");
 
-        	m_ScreenManagerUIContainer = _ScreenManagerUIContainer;
-        	
+        	this.controller = controller;
+
             InitializeComponent();
-            ComCtrls.ScreenManagerUIContainer = m_ScreenManagerUIContainer;
-            m_ThumbsViewer.SetScreenManagerUIContainer(m_ScreenManagerUIContainer);
+            ComCtrls.ScreenManagerUIContainer = controller;
             
             BackColor = Color.White;
             Dock = DockStyle.Fill;
             
-            m_ThumbsViewer.Top = 0;
-            m_ThumbsViewer.Left = 0;
-            m_ThumbsViewer.Width = Width;
-            m_ThumbsViewer.Height = Height - pbLogo.Height - 10;
-            m_ThumbsViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-            this.Controls.Add(m_ThumbsViewer);
-
-            m_DelegateUpdateTrkFrame = new DelegateUpdateTrkFrame(UpdateTrkFrame);
+            InitializeThumbnailsViewer();
+            
+            delegateUpdateTrackerFrame = UpdateTrkFrame;
 
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
             dp.DisplayThumbnails = DoDisplayThumbnails;
-                        
+
             // Thumbs are enabled by default.
-            m_ThumbsViewer.Visible = true;
-            m_bThumbnailsWereVisible = true;
-            m_ThumbsViewer.BringToFront();
-            
+            thumbnailsWereVisible = true;
+            thumbnailsViewer.BringToFront();
+
             pnlScreens.BringToFront();
             pnlScreens.Dock     = DockStyle.Fill;
-             
-            Application.Idle += new EventHandler(this.IdleDetector);
+
+            Application.Idle += this.IdleDetector;
         }
-		private void IdleDetector(object sender, EventArgs e)
+		
+        
+        #region Public methods
+        public void RefreshUICulture()
+        {
+            ComCtrls.RefreshUICulture();
+            thumbnailsViewer.RefreshUICulture();
+        }
+        public void UpdateSyncPosition(long position)
+        {
+        	ComCtrls.trkFrame.UpdateSyncPointMarker(position);
+        	ComCtrls.trkFrame.Invalidate();
+        }
+        public void SetupTrkFrame(long min, long max, long pos)
+        {
+            ComCtrls.trkFrame.Minimum = min;
+            ComCtrls.trkFrame.Maximum = max;
+            ComCtrls.trkFrame.Position = pos;
+            ComCtrls.trkFrame.Invalidate();
+        }
+        public void UpdateTrkFrame(long position)
+        {
+            ComCtrls.trkFrame.Position = position;
+            ComCtrls.trkFrame.Invalidate();
+        }
+        public void ShowCommonControls(bool show)
+        {
+            splitScreensPanel.Panel2Collapsed = show;
+        }
+        public void ToggleCommonControls()
+        {
+            splitScreensPanel.Panel2Collapsed = !splitScreensPanel.Panel2Collapsed;
+        }
+        public void DisplayAsPaused()
+        {
+            ComCtrls.Playing = false;
+        }
+        public bool OnKeyPress(Keys key)
+        {
+            bool bWasHandled = false;
+            switch (key)
+            {
+                case Keys.Space:
+                case Keys.Return:
+                {
+                    ComCtrls.buttonPlay_Click(null, EventArgs.Empty);
+                    bWasHandled = true;
+                    break;
+                }
+                case Keys.Left:
+                {
+                    ComCtrls.buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    bWasHandled = true;
+                    break;
+                }
+                case Keys.Right:
+                {
+                    ComCtrls.buttonGotoNext_Click(null, EventArgs.Empty);
+                    bWasHandled = true;
+                    break;
+                }
+                case Keys.End:
+                {
+                    ComCtrls.buttonGotoLast_Click(null, EventArgs.Empty);
+                    bWasHandled = true;
+                    break;
+                }
+                case Keys.Home:
+                {
+                    ComCtrls.buttonGotoFirst_Click(null, EventArgs.Empty);
+                    bWasHandled = true;
+                    break;
+                }
+                default:
+                    break;
+            }
+            
+            return bWasHandled;
+        }
+        public void OrganizeScreens(List<AbstractScreen> screenList)
+        {
+            if(screenList.Count == 0)
+            {
+                pnlScreens.Visible = false;
+                this.AllowDrop = true;
+                ClearLeftScreen();
+                ClearRightScreen();
+
+                thumbnailsViewer.Visible = true;
+                this.Cursor = Cursors.WaitCursor;
+                thumbnailsViewer.DisplayThumbnails(filenames);
+                this.Cursor = Cursors.Default;
+            }
+            else
+            {
+                pnlScreens.Visible = true;
+                this.AllowDrop = false;
+                
+                thumbnailsViewer.Visible = false;
+                thumbnailsViewer.StopLoading();
+                
+                splitScreens.Panel1.Controls.Clear();
+                PrepareLeftScreen(screenList[0].UI);
+                
+                if(screenList.Count == 2)
+                    PrepareRightScreen(screenList[1].UI);
+                else
+                    ClearRightScreen();
+            }
+        }
+        #endregion
+
+        private void InitializeThumbnailsViewer()
+        {
+            thumbnailsViewer.SetScreenManagerUIContainer(controller);
+            thumbnailsViewer.Top = 0;
+            thumbnailsViewer.Left = 0;
+            thumbnailsViewer.Width = Width;
+            thumbnailsViewer.Height = Height - pbLogo.Height - 10;
+            thumbnailsViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            thumbnailsViewer.Visible = true;
+            this.Controls.Add(thumbnailsViewer);
+		}
+        private void IdleDetector(object sender, EventArgs e)
 		{
 			log.Debug("Application is idle in ScreenManagerUserInterface.");
 			
@@ -92,83 +220,61 @@ namespace Kinovea.ScreenManager
 			// Launch file.
 			string filePath = CommandLineArgumentManager.Instance().InputFile;
 			if(filePath != null && File.Exists(filePath))
-			{
-				m_ScreenManagerUIContainer.DropLoadMovie(filePath, -1);
-			}
+				controller.DropLoadMovie(filePath, -1);
+			
+// ----------- TEMPORARY -----------------------------------.
+			// Check for cameras connected to the system.
+			CameraTypeManager.DiscoverCameras();
 		}
-        
-        #region public, called from Kernel
-        public void RefreshUICulture()
-        {
-            ComCtrls.RefreshUICulture();
-            btnShowThumbView.Text = ScreenManagerLang.btnShowThumbView;
-            m_ThumbsViewer.RefreshUICulture();
-        }
-        public void DisplaySyncLag(long _iOffset)
-        {
-            ComCtrls.SyncOffset = _iOffset;
-        }
-        public void UpdateSyncPosition(long _iPosition)
-        {
-        	ComCtrls.trkFrame.UpdateSyncPointMarker(_iPosition);
-        	ComCtrls.trkFrame.Invalidate();
-        }
-        public void SetupTrkFrame(long _iMinimum, long _iMaximum, long _iPosition)
-        {
-            ComCtrls.trkFrame.Minimum = _iMinimum;
-            ComCtrls.trkFrame.Maximum = _iMaximum;
-            ComCtrls.trkFrame.Position = _iPosition;
-            ComCtrls.trkFrame.Invalidate();
-        }
-        public void UpdateTrkFrame(long _iPosition)
-        {
-            ComCtrls.trkFrame.Position = _iPosition;
-            ComCtrls.trkFrame.Invalidate();
-        }
-        public void OrganizeMenuProxy(Delegate _method)
-        {
-            _method.DynamicInvoke();
-        }
-        public void DisplayAsPaused()
-        {
-            ComCtrls.Playing = false;
-        }
-        #endregion
-
         private void pnlScreens_Resize(object sender, EventArgs e)
         {
-            // Reposition Common Controls panel so it doesn't take 
-            // more space than necessary.
+            // Reposition Common Controls panel so it doesn't take more space than necessary.
             splitScreensPanel.SplitterDistance = pnlScreens.Height - 50;
-        }
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            // Hide Common Controls Panel
-            IUndoableCommand ctcc = new CommandToggleCommonControls(splitScreensPanel);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(ctcc);
         }
         private void ScreenManagerUserInterface_DoubleClick(object sender, EventArgs e)
         {
          	DelegatesPool dp = DelegatesPool.Instance();
             if (dp.OpenVideoFile != null)
-            {
                 dp.OpenVideoFile();
-            }   
         }
 
+        private void PrepareLeftScreen(UserControl screenUI)
+        {
+            splitScreens.Panel1Collapsed = false;
+            splitScreens.Panel1.AllowDrop = true;
+            splitScreens.Panel1.Controls.Add(screenUI);
+        }
+        private void PrepareRightScreen(UserControl screenUI)
+        {
+            splitScreens.Panel2Collapsed = false;
+            splitScreens.Panel2.AllowDrop = true;
+            splitScreens.Panel2.Controls.Add(screenUI);
+        }
+        private void ClearLeftScreen()
+        {
+            splitScreens.Panel1.Controls.Clear();
+            splitScreens.Panel1Collapsed = true;
+            splitScreens.Panel1.AllowDrop = false;
+        }
+        private void ClearRightScreen()
+        {
+            splitScreens.Panel2.Controls.Clear();
+            splitScreens.Panel2Collapsed = true;
+            splitScreens.Panel2.AllowDrop = false;
+        }
+        
         #region DragDrop
         private void ScreenManagerUserInterface_DragOver(object sender, DragEventArgs e)
         {
-        	e.Effect = m_ScreenManagerUIContainer.GetDragDropEffects(-1);
+        	e.Effect = controller.GetDragDropEffects(-1);
         }
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {
-                CommitDrop(e, -1);
+            CommitDrop(e, -1);
         }
         private void splitScreens_Panel1_DragOver(object sender, DragEventArgs e)
         {
-        	e.Effect = m_ScreenManagerUIContainer.GetDragDropEffects(0);
+            e.Effect = controller.GetDragDropEffects(0);
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
@@ -176,7 +282,7 @@ namespace Kinovea.ScreenManager
         }
         private void splitScreens_Panel2_DragOver(object sender, DragEventArgs e)
         {
-        	e.Effect = m_ScreenManagerUIContainer.GetDragDropEffects(1);
+        	e.Effect = controller.GetDragDropEffects(1);
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
@@ -194,7 +300,7 @@ namespace Kinovea.ScreenManager
             {
                 // String. Coming from the file explorer.
                 string filePath = (string)e.Data.GetData(DataFormats.StringFormat);
-                m_ScreenManagerUIContainer.DropLoadMovie(filePath, _iScreen);
+                controller.DropLoadMovie(filePath, _iScreen);
             }
             else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -208,7 +314,7 @@ namespace Kinovea.ScreenManager
                     // (ignore all files except first if number of files are dropped).
                     //----------------------------------------------------------------
                     string filePath = fileArray.GetValue(0).ToString();
-                    m_ScreenManagerUIContainer.DropLoadMovie(filePath, _iScreen);
+                    controller.DropLoadMovie(filePath, _iScreen);
                 }
             }
 
@@ -217,23 +323,22 @@ namespace Kinovea.ScreenManager
 
         private void btnShowThumbView_Click(object sender, EventArgs e)
         {
-            m_ThumbsViewer.Visible = true;
+            thumbnailsViewer.Visible = true;
             this.Cursor = Cursors.WaitCursor;
-            m_ThumbsViewer.DisplayThumbnails(m_FolderFileNames);
+            thumbnailsViewer.DisplayThumbnails(filenames);
             this.Cursor = Cursors.Default;
         }
         private void DoDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow)
         {
         	// Keep track of the files, in case we need to bring them back
         	// after closing a screen.
-            m_FolderFileNames = _fileNames;
+            filenames = _fileNames;
 
             if(_bRefreshNow)
             {
 	            if (_fileNames.Count > 0)
 	            {
-	            	m_ThumbsViewer.Height = Height - 20; // margin for cosmetic
-	                btnShowThumbView.Visible = true;
+	            	thumbnailsViewer.Height = Height - 20; // margin for cosmetic
 	                
 	            	// We keep the Kinovea logo until there is at least 1 thumbnail to show.
 	            	// After that we never display it again.
@@ -241,52 +346,23 @@ namespace Kinovea.ScreenManager
 	            }
 	            else
 	            {
-	                // If no thumbs are to be displayed, enable the drag & drop and double click on background.
-	                m_ThumbsViewer.Height = 1;
-	                btnShowThumbView.Visible = false;
-	
-	                // TODO: info message.
-	                //"No files to display in this folder."
+	                thumbnailsViewer.Height = 1;
 	            }
 	
-	            if (m_ThumbsViewer.Visible)
+	            if (thumbnailsViewer.Visible)
 	            {
 	                this.Cursor = Cursors.WaitCursor;
-	                m_ThumbsViewer.DisplayThumbnails(_fileNames);
+	                thumbnailsViewer.DisplayThumbnails(_fileNames);
 	                this.Cursor = Cursors.Default;
 	            }
-	            else if (m_bThumbnailsWereVisible)
+	            else if (thumbnailsWereVisible)
 	            {
 	                // Thumbnail pane was hidden to show player screen
 	                // Then we changed folder and we don't have anything to show. 
 	                // Let's clean older thumbnails now.
-	                m_ThumbsViewer.CleanupThumbnails();
+	                thumbnailsViewer.CleanupThumbnails();
 	            }
             }
         }
-        public void CloseThumbnails()
-        {
-            // This happens when the Thumbnail view is closed by another component
-            // (e.g: When we need to show screens)
-            log.Debug("Closing thumbnails to display screen.");
-            if (m_ThumbsViewer.Visible)
-            {
-                m_bThumbnailsWereVisible = true;
-            }
-            
-            m_ThumbsViewer.Visible = false;
-            m_ThumbsViewer.StopLoading();
-        }
-        public void BringBackThumbnails()
-        {
-            if (m_bThumbnailsWereVisible)
-            {
-                m_ThumbsViewer.Visible = true;
-                this.Cursor = Cursors.WaitCursor;
-                m_ThumbsViewer.DisplayThumbnails(m_FolderFileNames);
-                this.Cursor = Cursors.Default;
-            }
-        }
-        
     }
 }

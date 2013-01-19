@@ -53,15 +53,6 @@ namespace Kinovea.ScreenManager
 				RefreshMergeTooltip();
 			}
 		}
-
-        public long SyncOffset
-        {
-            set 
-            {
-                lblSyncOffset.Text = "SyncOffset : " + value;
-                lblSyncOffset.Invalidate();
-            }
-        }
         #endregion
 
         #region Members
