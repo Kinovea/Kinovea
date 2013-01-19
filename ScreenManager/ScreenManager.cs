@@ -1,3 +1,4 @@
+#region License
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com 
@@ -15,8 +16,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -42,8 +43,11 @@ namespace Kinovea.ScreenManager
         #region Properties
         public UserControl UI
         {
-            get { return _UI; }
-            set { _UI = value; }
+            get { return (UserControl)view; }
+        }
+        public ScreenManagerUserInterface View
+        {
+            get { return view;}
         }
         public ResourceManager resManager
         {
@@ -57,13 +61,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private UserControl _UI;
+        private ScreenManagerUserInterface view;
         private bool m_bCancelLastCommand;			// true when a RemoveScreen command was canceled by user.
 
         //List of screens ( 0..n )
         public List<AbstractScreen> screenList = new List<AbstractScreen>();
         public AbstractScreen m_ActiveScreen = null;
-        private bool m_bCanShowCommonControls;
+        private bool canShowCommonControls;
         
         // Dual saving
         private string m_DualSaveFileName;
@@ -159,7 +163,7 @@ namespace Kinovea.ScreenManager
 
             m_bAllowKeyboardHandler = true;
 
-            UI = new ScreenManagerUserInterface(this);
+            view = new ScreenManagerUserInterface(this);
             
             InitializeVideoFilters();
             
@@ -483,13 +487,10 @@ namespace Kinovea.ScreenManager
             OrganizeMenus();
             RefreshCultureToolbar();
             UpdateStatusBar();
-
-            ((ScreenManagerUserInterface)this.UI).RefreshUICulture();
+            view.RefreshUICulture();
 
             foreach (AbstractScreen screen in screenList)
                 screen.refreshUICulture();
-
-            ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
         }
         public bool CloseSubModules()
         {
@@ -576,9 +577,9 @@ namespace Kinovea.ScreenManager
         public void Player_PauseAsked(PlayerScreen _screen)
         {
         	// An individual player asks for a global pause.
-        	if (m_bSynching && ((ScreenManagerUserInterface)UI).ComCtrls.Playing)
+        	if (m_bSynching && view.ComCtrls.Playing)
             {
-        		((ScreenManagerUserInterface)UI).ComCtrls.Playing = false;
+        		view.ComCtrls.Playing = false;
         		CommonCtrl_Play();
         	}
         }
@@ -697,7 +698,7 @@ namespace Kinovea.ScreenManager
             {
                 m_iCurrentFrame = 0;
                 OnCommonPositionChanged(m_iCurrentFrame, true);
-                ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                view.UpdateTrkFrame(m_iCurrentFrame);
                 
             }
             else
@@ -722,7 +723,7 @@ namespace Kinovea.ScreenManager
                 {
                     m_iCurrentFrame--;
                     OnCommonPositionChanged(m_iCurrentFrame, true);
-                    ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                    view.UpdateTrkFrame(m_iCurrentFrame);
                 }
             }
             else
@@ -747,7 +748,7 @@ namespace Kinovea.ScreenManager
                 {
                     m_iCurrentFrame++;
                     OnCommonPositionChanged(-1, true);
-                    ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                    view.UpdateTrkFrame(m_iCurrentFrame);
                 }
             }
             else
@@ -770,7 +771,7 @@ namespace Kinovea.ScreenManager
             {
                 m_iCurrentFrame = m_iMaxFrame;
                 OnCommonPositionChanged(m_iCurrentFrame, true);
-                ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+                view.UpdateTrkFrame(m_iCurrentFrame);
                 
             }
             else
@@ -787,7 +788,7 @@ namespace Kinovea.ScreenManager
         }
 		public void CommonCtrl_Play()
         {
-			bool bPlaying = ((ScreenManagerUserInterface)UI).ComCtrls.Playing;
+			bool bPlaying = view.ComCtrls.Playing;
         	if (m_bSynching)
             {
                 if (bPlaying)
@@ -822,23 +823,17 @@ namespace Kinovea.ScreenManager
         {
 			if (m_bSynching && screenList.Count == 2)
             {
-                // Mise à jour : m_iLeftSyncFrame, m_iRightSyncFrame, m_iSyncLag, m_iCurrentFrame. m_iMaxFrame.
                 log.Debug("Sync point change.");
                 SetSyncPoint(false);
                 SetSyncLimits();
-
-                // Mise à jour des Players.
                 OnCommonPositionChanged(m_iCurrentFrame, true);
-
-                // debug
-                ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
             }
         }
 		public void CommonCtrl_Merge()
         {
         	if (m_bSynching && screenList.Count == 2)
             {
-        		m_bSyncMerging = ((ScreenManagerUserInterface)UI).ComCtrls.SyncMerging;
+        		m_bSyncMerging = view.ComCtrls.SyncMerging;
         		log.Debug(String.Format("SyncMerge videos is now {0}", m_bSyncMerging.ToString()));
         		
         		// This will also do a full refresh, and triggers Player_ImageChanged().
@@ -856,7 +851,7 @@ namespace Kinovea.ScreenManager
                 EnsurePause(0);
                 EnsurePause(1);
 
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+                view.DisplayAsPaused();
 
                 m_iCurrentFrame = _iPosition;
                 OnCommonPositionChanged(m_iCurrentFrame, true);
@@ -980,20 +975,13 @@ namespace Kinovea.ScreenManager
             // bypass this handler.
             //----------------------------------------------------------------------------
             
-            if ( m.Msg != WM_KEYDOWN || !m_bAllowKeyboardHandler)
-			    return false;
-			
-			ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
-			if(smui == null)
-			    return false;
-			
-			bool bWasHandled = false;
-			bool bCommonControlsVisible = !smui.splitScreensPanel.Panel2Collapsed;
-            bool bThumbnailsViewerVisible = smui.m_ThumbsViewer.Visible;
-			
-            if ((screenList.Count == 0 || m_ActiveScreen == null) && !bThumbnailsViewerVisible)
+            if (m.Msg != WM_KEYDOWN || !m_bAllowKeyboardHandler || view == null)
                 return false;
-            
+
+            if ((screenList.Count == 0 || m_ActiveScreen == null) && !view.ThumbnailsViewerVisible)
+                return false;
+
+            bool bWasHandled = false;
             Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
 
             switch (keyCode)
@@ -1008,15 +996,12 @@ namespace Kinovea.ScreenManager
             			//------------------------------------------------
             			// These keystrokes impact only the active screen.
             			//------------------------------------------------
-            			if(!bThumbnailsViewerVisible)
-            			{       
+            			if(!view.ThumbnailsViewerVisible)
 							bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);
-            			}
 						else
-            			{
-            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
-            			}
-            			break;
+            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);
+
+						break;
                     }
             	case Keys.Escape:
             	case Keys.F6:
@@ -1024,16 +1009,14 @@ namespace Kinovea.ScreenManager
             			//---------------------------------------------------
             			// These keystrokes impact each screen independently.
             			//---------------------------------------------------
-            			if(!bThumbnailsViewerVisible)
+            			if(!view.ThumbnailsViewerVisible)
             			{
-                            foreach (AbstractScreen abScreen in screenList)
-                            {
-                                bWasHandled = abScreen.OnKeyPress(keyCode);
-                            }
+                            foreach (AbstractScreen screen in screenList)
+                                bWasHandled = screen.OnKeyPress(keyCode);
             			}
             			else
             			{
-            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);
             			}
                         break;
                     }
@@ -1044,16 +1027,14 @@ namespace Kinovea.ScreenManager
             			// These keystrokes impact only one screen, because it will automatically 
             			// trigger the same change in the other screen.
             			//------------------------------------------------------------------------
-            			if(!bThumbnailsViewerVisible)
+            			if(!view.ThumbnailsViewerVisible)
             			{
             				if(screenList.Count > 0)
-            				{
             					bWasHandled = screenList[0].OnKeyPress(keyCode);
-            				}
             			}
             			else
             			{
-            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);
+            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);
             			}
                         break;
                     }
@@ -1067,18 +1048,14 @@ namespace Kinovea.ScreenManager
                         //---------------------------------------------------
             			// These keystrokes impact both screens as a whole.
             			//---------------------------------------------------
-                       	if(!bThumbnailsViewerVisible)
+                       	if(!view.ThumbnailsViewerVisible)
             			{
                        		if (screenList.Count == 2)
                             {
-                       			if(bCommonControlsVisible)
-                       			{
-                       				bWasHandled = OnKeyPress(keyCode);
-                       			}
+                       			if(view.CommonControlsVisible)
+                       				bWasHandled = view.OnKeyPress(keyCode);
                        			else
-                       			{
                        				bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
-                       			}
                             }
                             else if(screenList.Count == 1)
                             {
@@ -1087,7 +1064,7 @@ namespace Kinovea.ScreenManager
                        	}
             			else
             			{
-            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
             			}
                         break;
                     }
@@ -1100,7 +1077,7 @@ namespace Kinovea.ScreenManager
             			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
 						{
                 			// Change active screen.
-                			if(!bThumbnailsViewerVisible)
+                			if(!view.ThumbnailsViewerVisible)
                 			{
                 				if(screenList.Count == 2)
                            		{
@@ -1110,7 +1087,7 @@ namespace Kinovea.ScreenManager
                 			}
                 			else
                 			{
-                				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+                				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
                 			}
             			}
             			break;
@@ -1118,28 +1095,21 @@ namespace Kinovea.ScreenManager
                 case Keys.F8:
                 	{
                         // Go to sync frame. 
-                        if(!bThumbnailsViewerVisible)
+                        if(!view.ThumbnailsViewerVisible)
                 		{
                         	if(m_bSynching)
                        		{
-                                if (m_iSyncLag > 0)
-                                {
-                                    m_iCurrentFrame = m_iRightSyncFrame;
-                                }
-                                else
-                                {
-                                    m_iCurrentFrame = m_iLeftSyncFrame;
-                                }
-
+                                m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
+                                
                                 // Update
                                 OnCommonPositionChanged(m_iCurrentFrame, true);
-                                smui.UpdateTrkFrame(m_iCurrentFrame);
+                                view.UpdateTrkFrame(m_iCurrentFrame);
                                 bWasHandled = true;
                         	}
                         }
                         else
             			{
-            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
             			}
                         break;
                 	}
@@ -1149,7 +1119,7 @@ namespace Kinovea.ScreenManager
                         // Fonctions associées : 
                         // Resynchroniser après déplacement individuel
                         //---------------------------------------
-                       	if(!bThumbnailsViewerVisible)
+                       	if(!view.ThumbnailsViewerVisible)
                         {
                        		if(m_bSynching)
                        		{
@@ -1159,7 +1129,7 @@ namespace Kinovea.ScreenManager
                         }
                        	else
             			{
-            				bWasHandled = smui.m_ThumbsViewer.OnKeyPress(keyCode);	
+            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
             			}
                         break;
                     }
@@ -1201,27 +1171,8 @@ namespace Kinovea.ScreenManager
         }
         public void OrganizeCommonControls()
         {
-        	m_bCanShowCommonControls = false;
-        	
-        	switch (screenList.Count)
-            {
-                case 0:
-        		case 1:
-        		default:
-        			((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = true;
-        			break;
-        		case 2:
-        			if (screenList[0] is PlayerScreen && screenList[1] is PlayerScreen)
-        			{
-        				((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = false;	
-        				m_bCanShowCommonControls = true;
-        			}
-        			else
-        			{
-        				((ScreenManagerUserInterface)UI).splitScreensPanel.Panel2Collapsed = true;	
-        			}
-        			break;
-        	}
+            view.ShowCommonControls(screenList.Count == 2);
+            canShowCommonControls = screenList.Count == 2 && screenList[0] is PlayerScreen && screenList[1] is PlayerScreen;
         }
         public void UpdateCaptureBuffers()
         {
@@ -1497,7 +1448,7 @@ namespace Kinovea.ScreenManager
 
                     // Two screens
                     mnuSwapScreens.Enabled = true;
-                    mnuToggleCommonCtrls.Enabled = m_bCanShowCommonControls;
+                    mnuToggleCommonCtrls.Enabled = canShowCommonControls;
                     
                     // Left Screen
                     if (screenList[0] is PlayerScreen)
@@ -1627,7 +1578,8 @@ namespace Kinovea.ScreenManager
         	if(!m_BuildingSVGMenu)
         	{
 				m_BuildingSVGMenu = true;
-				((ScreenManagerUserInterface)UI).BeginInvoke((MethodInvoker) delegate {DoSVGFilesChanged();});
+				// Use "view" object just to merge back into the UI thread.
+				view.BeginInvoke((MethodInvoker) delegate {DoSVGFilesChanged();});
         	}
 	    }
         public void DoSVGFilesChanged()
@@ -2472,9 +2424,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
-            IUndoableCommand ctcc = new CommandToggleCommonControls(((ScreenManagerUserInterface)UI).splitScreensPanel);
-            CommandManager cm = CommandManager.Instance();
-            cm.LaunchUndoableCommand(ctcc);
+            view.ToggleCommonControls();
         }
         #endregion
 
@@ -2601,7 +2551,7 @@ namespace Kinovea.ScreenManager
 
             // 2. Stop the common timer.
             StopDynamicSync();
-            ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+            view.DisplayAsPaused();
         }
         public void DoDeactivateKeyboardHandler()
         {
@@ -2614,56 +2564,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Keyboard Handling
-        private bool OnKeyPress(Keys _keycode)
-        {
-        	//---------------------------------------------------------
-        	// Here are grouped the handling of the keystrokes that are 
-        	// screen manager's responsibility.
-        	// And only when the common controls are actually visible.
-        	//---------------------------------------------------------
-        	ScreenManagerUserInterface smui = UI as ScreenManagerUserInterface;
-			if (smui == null)
-			    return false;
-
-			bool bWasHandled = false;
-			switch (_keycode)
-			{
-        		case Keys.Space:
-        		case Keys.Return:
-        			{
-                        smui.ComCtrls.buttonPlay_Click(null, EventArgs.Empty);
-                        bWasHandled = true;
-                    	break;
-        			}
-        		case Keys.Left:
-        			{
-						smui.ComCtrls.buttonGotoPrevious_Click(null, EventArgs.Empty);
-                    	bWasHandled = true;
-        				break;
-        			}
-        		case Keys.Right:
-        			{
-                       	smui.ComCtrls.buttonGotoNext_Click(null, EventArgs.Empty);
-                   		bWasHandled = true;
-						break;
-        			}
-        		case Keys.End:
-                    {
-        				smui.ComCtrls.buttonGotoLast_Click(null, EventArgs.Empty);
-        				bWasHandled = true;
-						break;
-        			}
-        		case Keys.Home:
-        			{
-        				smui.ComCtrls.buttonGotoFirst_Click(null, EventArgs.Empty);
-                        bWasHandled = true;
-                        break;
-        			}
-        		default:
-        			break;
-        	}
-        	return bWasHandled;
-        }
         private void ActivateOtherScreen()
         {
         	if (screenList.Count != 2)
@@ -2707,7 +2607,7 @@ namespace Kinovea.ScreenManager
                             
                             ((PlayerScreen)screenList[0]).SyncPosition = 0;
 	                		((PlayerScreen)screenList[1]).SyncPosition = 0;
-	                		((ScreenManagerUserInterface)UI).UpdateSyncPosition(m_iCurrentFrame);
+	                		view.UpdateSyncPosition(m_iCurrentFrame);
 
                             // Dynamic Sync
                             ResetDynamicSyncFlags();
@@ -2715,7 +2615,7 @@ namespace Kinovea.ScreenManager
                             // Sync Merging
                             ((PlayerScreen)screenList[0]).SyncMerge = false;
 	                		((PlayerScreen)screenList[1]).SyncMerge = false;
-	                		((ScreenManagerUserInterface)UI).ComCtrls.SyncMerging = false;
+	                		view.ComCtrls.SyncMerging = false;
                         }
 
                         // Mise à jour trkFrame
@@ -2723,9 +2623,6 @@ namespace Kinovea.ScreenManager
 
                         // Mise à jour Players
                         OnCommonPositionChanged(m_iCurrentFrame, true);
-
-                        // debug
-                        ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
                     }
                     else
                     {
@@ -2764,7 +2661,7 @@ namespace Kinovea.ScreenManager
             if (!m_bSynching) 
             { 
                 StopDynamicSync();
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+                view.DisplayAsPaused();
             }
         }
         public void SetSyncPoint(bool _bIntervalOnly)
@@ -2818,8 +2715,7 @@ namespace Kinovea.ScreenManager
 	            // Update common position (sign of m_iSyncLag might have changed.)
 	            m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
 	            
-	            ((ScreenManagerUserInterface)UI).UpdateSyncPosition(m_iCurrentFrame);  // <-- expects timestamp ?
-	            ((ScreenManagerUserInterface)UI).DisplaySyncLag(m_iSyncLag);
+	            view.UpdateSyncPosition(m_iCurrentFrame);  // <-- expects timestamp ?
             }
         }
         private void SetSyncLimits()
@@ -2860,7 +2756,7 @@ namespace Kinovea.ScreenManager
             }
 
             m_iMaxFrame = (int)Math.Max(leftEstimatedFrames, rightEstimatedFrames);
-            ((ScreenManagerUserInterface)UI).SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
+            view.SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
 
             log.DebugFormat("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", m_iSyncLag, m_iSyncLagMilliseconds, m_iMaxFrame);
         }
@@ -3189,7 +3085,9 @@ namespace Kinovea.ScreenManager
 
                 // Update position for trkFrame.
                 object[] parameters = new object[] { m_iCurrentFrame };
-                ((ScreenManagerUserInterface)UI).BeginInvoke(((ScreenManagerUserInterface)UI).m_DelegateUpdateTrkFrame, parameters);
+                
+                // Note: do we need to begin invoke here ?
+                view.BeginInvoke(view.delegateUpdateTrackerFrame, parameters);
 
                 //log.Debug(String.Format("Tick:[{0}][{1}], Starting:[{2}][{3}], Catching up:[{4}][{5}]", iLeftPosition, iRightPosition, m_bLeftIsStarting, m_bRightIsStarting, m_bLeftIsCatchingUp, m_bRightIsCatchingUp));
             }
@@ -3198,7 +3096,7 @@ namespace Kinovea.ScreenManager
                 // This can happen when a screen is closed on the fly while synching.
                 StopDynamicSync();
                 m_bSynching = false;
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+                view.DisplayAsPaused();
             }
         }
         private void EnsurePause(int _iScreen)
@@ -3214,7 +3112,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 m_bSynching = false;
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+                view.DisplayAsPaused();
             }
         }
         private void EnsurePlay(int _iScreen)
@@ -3230,7 +3128,7 @@ namespace Kinovea.ScreenManager
             else
             {
                 m_bSynching = false;
-                ((ScreenManagerUserInterface)UI).DisplayAsPaused();
+                view.DisplayAsPaused();
             }
         }
         private void ResetDynamicSyncFlags()
@@ -3288,7 +3186,7 @@ namespace Kinovea.ScreenManager
             }
 
             OnCommonPositionChanged(m_iCurrentFrame, true);
-            ((ScreenManagerUserInterface)UI).UpdateTrkFrame(m_iCurrentFrame);
+            view.UpdateTrkFrame(m_iCurrentFrame);
 
         }
         #endregion
@@ -3691,7 +3589,7 @@ namespace Kinovea.ScreenManager
             ICommand clmis = new CommandLoadMovieInScreen(this, _OldScreen.FilePath, _iNewPosition, false);
             CommandManager.LaunchCommand(clmis);
             
-            // Check that everything went well 
+            // Check that everything went well
             // Potential problem : the video was deleted between do and undo.
             // _iNewPosition should always point to a valid position here.
             if (screenList[_iNewPosition-1].Full)

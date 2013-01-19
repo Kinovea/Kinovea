@@ -36,6 +36,7 @@ using Kinovea.ScreenManager;
 using Kinovea.Services;
 using Kinovea.Updater;
 using Kinovea.Video;
+using Kinovea.Camera;
 
 namespace Kinovea.Root
 {
@@ -96,6 +97,8 @@ namespace Kinovea.Root
             CommandLineArgumentManager.Instance().ParseArguments(Environment.GetCommandLineArgs());
             
             VideoTypeManager.LoadVideoReaders();
+            CameraTypeManager.LoadCameraManagers();
+            
             BuildSubTree();
             MainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += RecentFilesChanged;
@@ -110,8 +113,6 @@ namespace Kinovea.Root
             DelegatesPool dp = DelegatesPool.Instance();
             dp.UpdateStatusBar = DoUpdateStatusBar;
             dp.MakeTopMost = DoMakeTopMost;
-            
-            
         }
         #endregion
 

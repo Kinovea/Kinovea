@@ -334,6 +334,10 @@
       <Project>{85924D93-541A-46E6-BF9A-EBE3B73887EC}</Project>
       <Name>FileBrowser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
+      <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
+      <Name>Kinovea.Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScreenManager\ScreenManager.csproj">
       <Project>{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}</Project>
       <Name>ScreenManager</Name>

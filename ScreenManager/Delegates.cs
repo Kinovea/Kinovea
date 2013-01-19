@@ -42,4 +42,5 @@ namespace Kinovea.ScreenManager
     public delegate object BindReader(string _sourceProperty, Type _targetType);
     public delegate void BindWriter(string _targetProperty, object _value);
     public delegate void ImageProcessor(Bitmap _src);
+    public delegate void DelegateUpdateTrackerFrame(long _iFrame);
 }
