@@ -39,6 +39,8 @@ namespace Kinovea.ScreenManager
         public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
         #endregion
 
+        public event EventHandler<LoadAskedEventArgs> LoadAsked;
+        
         #region Properties
         public bool CommonControlsVisible 
         {
@@ -48,24 +50,30 @@ namespace Kinovea.ScreenManager
         {
             get { return thumbnailsViewer.Visible;}
         }
+        public bool CommonPlaying
+        {
+            get { return commonControls.Playing; }
+            set { commonControls.Playing = value; }
+        }
+        public bool Merging
+        {
+            get { return commonControls.SyncMerging; }
+            set { commonControls.SyncMerging = value; }
+        }
         #endregion
         
         #region Members
         public ThumbListView thumbnailsViewer = new ThumbListView();
         private List<String> filenames = new List<String>();
         private bool thumbnailsWereVisible;
-        private IScreenManagerUIContainer controller;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
 		public ScreenManagerUserInterface(IScreenManagerUIContainer controller)
         {
         	log.Debug("Constructing ScreenManagerUserInterface.");
-
-        	this.controller = controller;
-
             InitializeComponent();
-            ComCtrls.ScreenManagerUIContainer = controller;
+            commonControls.Controller = controller;
             
             BackColor = Color.White;
             Dock = DockStyle.Fill;
@@ -87,34 +95,28 @@ namespace Kinovea.ScreenManager
 
             Application.Idle += this.IdleDetector;
         }
-		
         
         #region Public methods
         public void RefreshUICulture()
         {
-            ComCtrls.RefreshUICulture();
+            commonControls.RefreshUICulture();
             thumbnailsViewer.RefreshUICulture();
         }
         public void UpdateSyncPosition(long position)
         {
-        	ComCtrls.trkFrame.UpdateSyncPointMarker(position);
-        	ComCtrls.trkFrame.Invalidate();
+            commonControls.UpdateSyncPosition(position);
         }
         public void SetupTrkFrame(long min, long max, long pos)
         {
-            ComCtrls.trkFrame.Minimum = min;
-            ComCtrls.trkFrame.Maximum = max;
-            ComCtrls.trkFrame.Position = pos;
-            ComCtrls.trkFrame.Invalidate();
+            commonControls.SetupTrkFrame(min, max, pos);
         }
         public void UpdateTrkFrame(long position)
         {
-            ComCtrls.trkFrame.Position = position;
-            ComCtrls.trkFrame.Invalidate();
+            commonControls.UpdateTrkFrame(position);
         }
         public void ShowCommonControls(bool show)
         {
-            splitScreensPanel.Panel2Collapsed = show;
+            splitScreensPanel.Panel2Collapsed = !show;
         }
         public void ToggleCommonControls()
         {
@@ -122,49 +124,11 @@ namespace Kinovea.ScreenManager
         }
         public void DisplayAsPaused()
         {
-            ComCtrls.Playing = false;
+            commonControls.Playing = false;
         }
         public bool OnKeyPress(Keys key)
         {
-            bool bWasHandled = false;
-            switch (key)
-            {
-                case Keys.Space:
-                case Keys.Return:
-                {
-                    ComCtrls.buttonPlay_Click(null, EventArgs.Empty);
-                    bWasHandled = true;
-                    break;
-                }
-                case Keys.Left:
-                {
-                    ComCtrls.buttonGotoPrevious_Click(null, EventArgs.Empty);
-                    bWasHandled = true;
-                    break;
-                }
-                case Keys.Right:
-                {
-                    ComCtrls.buttonGotoNext_Click(null, EventArgs.Empty);
-                    bWasHandled = true;
-                    break;
-                }
-                case Keys.End:
-                {
-                    ComCtrls.buttonGotoLast_Click(null, EventArgs.Empty);
-                    bWasHandled = true;
-                    break;
-                }
-                case Keys.Home:
-                {
-                    ComCtrls.buttonGotoFirst_Click(null, EventArgs.Empty);
-                    bWasHandled = true;
-                    break;
-                }
-                default:
-                    break;
-            }
-            
-            return bWasHandled;
+            return commonControls.OnKeyPress(key);
         }
         public void OrganizeScreens(List<AbstractScreen> screenList)
         {
@@ -201,7 +165,6 @@ namespace Kinovea.ScreenManager
 
         private void InitializeThumbnailsViewer()
         {
-            thumbnailsViewer.SetScreenManagerUIContainer(controller);
             thumbnailsViewer.Top = 0;
             thumbnailsViewer.Left = 0;
             thumbnailsViewer.Width = Width;
@@ -219,8 +182,8 @@ namespace Kinovea.ScreenManager
 			
 			// Launch file.
 			string filePath = CommandLineArgumentManager.Instance().InputFile;
-			if(filePath != null && File.Exists(filePath))
-				controller.DropLoadMovie(filePath, -1);
+			if(filePath != null && File.Exists(filePath) && LoadAsked != null)
+			    LoadAsked(this, new LoadAskedEventArgs(filePath, -1));
 			
 // ----------- TEMPORARY -----------------------------------.
 			// Check for cameras connected to the system.
@@ -238,6 +201,7 @@ namespace Kinovea.ScreenManager
                 dp.OpenVideoFile();
         }
 
+        #region Screen management
         private void PrepareLeftScreen(UserControl screenUI)
         {
             splitScreens.Panel1Collapsed = false;
@@ -262,62 +226,43 @@ namespace Kinovea.ScreenManager
             splitScreens.Panel2Collapsed = true;
             splitScreens.Panel2.AllowDrop = false;
         }
+        #endregion
         
         #region DragDrop
-        private void ScreenManagerUserInterface_DragOver(object sender, DragEventArgs e)
+        private void DroppableArea_DragOver(object sender, DragEventArgs e)
         {
-        	e.Effect = controller.GetDragDropEffects(-1);
+        	e.Effect = DragDropEffects.All;
         }
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {
-            CommitDrop(e, -1);
-        }
-        private void splitScreens_Panel1_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effect = controller.GetDragDropEffects(0);
+            if(LoadAsked != null)
+                LoadAsked(this, new LoadAskedEventArgs(GetDroppedObject(e), -1));
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
-            CommitDrop(e, 1);
-        }
-        private void splitScreens_Panel2_DragOver(object sender, DragEventArgs e)
-        {
-        	e.Effect = controller.GetDragDropEffects(1);
+            if(LoadAsked != null)
+                LoadAsked(this, new LoadAskedEventArgs( GetDroppedObject(e), 1));
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
-            CommitDrop(e, 2);
+            if(LoadAsked != null)
+                LoadAsked(this, new LoadAskedEventArgs(GetDroppedObject(e), 2));
         }
-        private void CommitDrop(DragEventArgs e, int _iScreen)
+        private string GetDroppedObject(DragEventArgs e)
         {
-            //-----------------------------------------------------------
-            // An object has been dropped.
-            // Support drag & drop from the FileExplorer module (listview)
-            // or from the Windows Explorer.
-            // Not between screens.
-            //-----------------------------------------------------------
+            string result = "";
             if (e.Data.GetDataPresent(DataFormats.StringFormat))
             {
-                // String. Coming from the file explorer.
-                string filePath = (string)e.Data.GetData(DataFormats.StringFormat);
-                controller.DropLoadMovie(filePath, _iScreen);
+                result = (string)e.Data.GetData(DataFormats.StringFormat);
             }
             else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // File. Coming from Windows Explorer.
                 Array fileArray = (Array)e.Data.GetData(DataFormats.FileDrop);
-
                 if (fileArray != null)
-                {
-                    //----------------------------------------------------------------
-                    // Extract string from first array element
-                    // (ignore all files except first if number of files are dropped).
-                    //----------------------------------------------------------------
-                    string filePath = fileArray.GetValue(0).ToString();
-                    controller.DropLoadMovie(filePath, _iScreen);
-                }
+                   result = fileArray.GetValue(0).ToString();
             }
-
+            
+            return result;
         }
         #endregion
 

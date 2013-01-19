@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2009.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -18,27 +18,22 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+
 using System;
-using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Backward reference to the controller of the common controls UI.
-	/// TODO: use events instead of this injection ?
-	/// </summary>
-	public interface IScreenManagerUIContainer
-	{
-		void CommonCtrl_GotoFirst();
-		void CommonCtrl_GotoPrev();
-		void CommonCtrl_GotoNext();
-		void CommonCtrl_GotoLast();
-		void CommonCtrl_Play();
-		void CommonCtrl_Swap();
-		void CommonCtrl_Sync();
-		void CommonCtrl_Merge();
-		void CommonCtrl_PositionChanged(long _iPosition);
-		void CommonCtrl_Snapshot();
-		void CommonCtrl_DualVideo();
-	}
+    /// <summary>
+    /// Event raised when the user wants to load a video in a screen.
+    /// </summary>
+    public class LoadAskedEventArgs : EventArgs
+    {
+        public readonly string Source;
+        public readonly int Target;
+        public LoadAskedEventArgs(string source, int target)
+        {
+            this.Source = source;
+            this.Target = target;
+        }
+    }
 }

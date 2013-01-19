@@ -164,6 +164,9 @@ namespace Kinovea.ScreenManager
             m_bAllowKeyboardHandler = true;
 
             view = new ScreenManagerUserInterface(this);
+            view.LoadAsked += View_LoadAsked;
+            
+            view.thumbnailsViewer.LoadAsked += View_LoadAsked;
             
             InitializeVideoFilters();
             
@@ -577,9 +580,9 @@ namespace Kinovea.ScreenManager
         public void Player_PauseAsked(PlayerScreen _screen)
         {
         	// An individual player asks for a global pause.
-        	if (m_bSynching && view.ComCtrls.Playing)
+        	if (m_bSynching && view.CommonPlaying)
             {
-        		view.ComCtrls.Playing = false;
+        		view.CommonPlaying = false;
         		CommonCtrl_Play();
         	}
         }
@@ -673,22 +676,9 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ICommonControlsHandler Implementation
-        public void DropLoadMovie(string _FilePath, int _iScreen)
+        public void View_LoadAsked(object source, LoadAskedEventArgs e)
         {
-            // End of drag and drop between FileManager and ScreenManager
-            DoLoadMovieInScreen(_FilePath, _iScreen, true);
-        }
-        public DragDropEffects GetDragDropEffects(int _screen)
-        {
-        	DragDropEffects effects = DragDropEffects.All;
-        	
-        	// If the screen we are dragging over is a capture screen, we can't drop.
-			if(_screen >= 0 && screenList.Count >= _screen && screenList[_screen] is CaptureScreen)
-        	{
-        		effects = DragDropEffects.None;
-        	}
-			
-			return effects;
+            DoLoadMovieInScreen(e.Source, e.Target, true);
         }
         public void CommonCtrl_GotoFirst()
         {
@@ -788,10 +778,9 @@ namespace Kinovea.ScreenManager
         }
 		public void CommonCtrl_Play()
         {
-			bool bPlaying = view.ComCtrls.Playing;
         	if (m_bSynching)
             {
-                if (bPlaying)
+                if (view.CommonPlaying)
                 {
 					// On play, simply launch the dynamic sync.
 					// It will handle which video can start right away.
@@ -806,7 +795,7 @@ namespace Kinovea.ScreenManager
             }
 
         	// On stop, propagate the call to screens.
-        	if(!bPlaying)
+        	if(!view.CommonPlaying)
         	{	
         		if(screenList[0] is PlayerScreen)
 	        		EnsurePause(0);
@@ -833,7 +822,7 @@ namespace Kinovea.ScreenManager
         {
         	if (m_bSynching && screenList.Count == 2)
             {
-        		m_bSyncMerging = view.ComCtrls.SyncMerging;
+        		m_bSyncMerging = view.Merging;
         		log.Debug(String.Format("SyncMerge videos is now {0}", m_bSyncMerging.ToString()));
         		
         		// This will also do a full refresh, and triggers Player_ImageChanged().
@@ -957,7 +946,7 @@ namespace Kinovea.ScreenManager
             m_iCurrentFrame = iCurrentFrame;
             OnCommonPositionChanged(m_iCurrentFrame, true);
         }
-   	#endregion
+        #endregion
         
         #region IMessageFilter Implementation
         public bool PreFilterMessage(ref Message m)
@@ -1171,8 +1160,9 @@ namespace Kinovea.ScreenManager
         }
         public void OrganizeCommonControls()
         {
-            view.ShowCommonControls(screenList.Count == 2);
-            canShowCommonControls = screenList.Count == 2 && screenList[0] is PlayerScreen && screenList[1] is PlayerScreen;
+            bool show = screenList.Count == 2 && screenList[0] is PlayerScreen && screenList[1] is PlayerScreen;
+            view.ShowCommonControls(show);
+            canShowCommonControls = show;
         }
         public void UpdateCaptureBuffers()
         {
@@ -2615,7 +2605,7 @@ namespace Kinovea.ScreenManager
                             // Sync Merging
                             ((PlayerScreen)screenList[0]).SyncMerge = false;
 	                		((PlayerScreen)screenList[1]).SyncMerge = false;
-	                		view.ComCtrls.SyncMerging = false;
+	                		view.Merging = false;
                         }
 
                         // Mise à jour trkFrame

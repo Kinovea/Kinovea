@@ -31,40 +31,40 @@ namespace Kinovea.ScreenManager
     public partial class CommonControls : UserControl
     {
         #region Properties
-        public IScreenManagerUIContainer ScreenManagerUIContainer
+        public IScreenManagerUIContainer Controller
 		{
-			set { m_ScreenManagerUIContainer = value; }
+			set { controller = value; }
 		}
         public bool Playing
         {
-            get { return m_bPlaying;  }
+            get { return playing;  }
             set 
             { 
-                m_bPlaying = value;
+                playing = value;
                 RefreshPlayButton();
             }
         }
         public bool SyncMerging
 		{
-			get { return m_bSyncMerging; }
+			get { return syncMerging; }
 			set 
 			{ 
-				m_bSyncMerging = value; 
+				syncMerging = value; 
 				RefreshMergeTooltip();
 			}
 		}
         #endregion
 
         #region Members
-        private bool m_bPlaying;
-        private bool m_bSyncMerging;
-		private long m_iOldPosition;
-		private IScreenManagerUIContainer m_ScreenManagerUIContainer;
+        private bool playing;
+        private bool syncMerging;
+		private long oldPosition;
+		private IScreenManagerUIContainer controller;
 		private Button btnSnapShot = new Button();
 		private Button btnDualVideo = new Button();
         #endregion
 
-        #region Construction & Culture
+        #region Construction
         public CommonControls()
         {
             InitializeComponent();
@@ -105,6 +105,9 @@ namespace Kinovea.ScreenManager
         	this.Controls.Add(btnSnapShot);
         	this.Controls.Add(btnDualVideo);
         }
+		#endregion
+		
+        #region Public methods
         public void RefreshUICulture()
         {
             // Labels
@@ -123,127 +126,190 @@ namespace Kinovea.ScreenManager
             
             RefreshMergeTooltip();
 		}
-		#endregion
+        public void First()
+        {
+            if(controller != null)
+            {
+                controller.CommonCtrl_GotoFirst();
+                trkFrame.Position = trkFrame.Minimum;
+                trkFrame.Invalidate();
+                PlayStopped();
+            }
+        }
+        public void Previous()
+        {
+            if(controller != null)
+            { 
+                controller.CommonCtrl_GotoPrev(); 
+                trkFrame.Position--;
+                trkFrame.Invalidate();
+            }
+        }
+        public void Play()
+        {
+            if(controller != null)
+            {
+                playing = !playing;
+                RefreshPlayButton();
+                controller.CommonCtrl_Play(); 
+            }
+        }
+        public void Next()
+        {
+            if(controller != null)
+            { 
+                controller.CommonCtrl_GotoNext(); 
+                trkFrame.Position++;
+                trkFrame.Invalidate();
+            }
+        }
+        public void Last()
+        {
+            if(controller != null)
+            {
+                controller.CommonCtrl_GotoLast(); 
+                trkFrame.Position = trkFrame.Maximum;
+                trkFrame.Invalidate();
+            }
+        }
+        public bool OnKeyPress(Keys key)
+        {
+            bool wasHandled = false;
+            switch (key)
+            {
+                case Keys.Space:
+                case Keys.Return:
+                {
+                    Play();
+                    wasHandled = true;
+                    break;
+                }
+                case Keys.Left:
+                {
+                    Previous();
+                    wasHandled = true;
+                    break;
+                }
+                case Keys.Right:
+                {
+                    Next();
+                    wasHandled = true;
+                    break;
+                }
+                case Keys.End:
+                {
+                    Last();
+                    wasHandled = true;
+                    break;
+                }
+                case Keys.Home:
+                {
+                    First();
+                    wasHandled = true;
+                    break;
+                }
+                default:
+                    break;
+            }
+            
+            return wasHandled;
+		}
+        public void UpdateSyncPosition(long position)
+        {
+            trkFrame.UpdateSyncPointMarker(position);
+            trkFrame.Invalidate();
+        }
+        public void SetupTrkFrame(long min, long max, long pos)
+        {
+            trkFrame.Minimum = min;
+            trkFrame.Maximum = max;
+            trkFrame.Position = pos;
+            trkFrame.Invalidate();
+        }
+        public void UpdateTrkFrame(long position)
+        {
+            trkFrame.Position = position;
+            trkFrame.Invalidate();
+        }
+        #endregion
         
-		private void CommonControls_Resize(object sender, EventArgs e)
+        #region UI Handlers
+        private void CommonControls_Resize(object sender, EventArgs e)
 		{
 			btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
 			btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnMerge.Top);
 		}
-		
-        #region Buttons Handlers
-        public void buttonGotoFirst_Click(object sender, EventArgs e)
+        private void buttonGotoFirst_Click(object sender, EventArgs e)
         {
-        	if(m_ScreenManagerUIContainer != null)
-        	{
-        		m_ScreenManagerUIContainer.CommonCtrl_GotoFirst();
-        		trkFrame.Position = trkFrame.Minimum;
-        		trkFrame.Invalidate();
-            	PlayStopped();
-        	}
+            First();
         }
-        public void buttonGotoPrevious_Click(object sender, EventArgs e)
+        private void buttonGotoPrevious_Click(object sender, EventArgs e)
         {
-            if(m_ScreenManagerUIContainer != null)
-            { 
-            	m_ScreenManagerUIContainer.CommonCtrl_GotoPrev(); 
-            	trkFrame.Position--;
-            	trkFrame.Invalidate();
-            }
+            Previous();
         }
-        public void buttonPlay_Click(object sender, EventArgs e)
+        private void buttonPlay_Click(object sender, EventArgs e)
         {
-            if(m_ScreenManagerUIContainer != null)
-        	{
-                m_bPlaying = !m_bPlaying;
-                RefreshPlayButton();
-                m_ScreenManagerUIContainer.CommonCtrl_Play(); 
-            }
+            Play();
         }
-        public void buttonGotoNext_Click(object sender, EventArgs e)
+        private void buttonGotoNext_Click(object sender, EventArgs e)
         {
-            if(m_ScreenManagerUIContainer != null)
-        	{ 
-            	m_ScreenManagerUIContainer.CommonCtrl_GotoNext(); 
-            	trkFrame.Position++;
-            	trkFrame.Invalidate();
-            }
+            Next();
         }
-        public void buttonGotoLast_Click(object sender, EventArgs e)
+        private void buttonGotoLast_Click(object sender, EventArgs e)
         {
-            if(m_ScreenManagerUIContainer != null)
-        	{
-            	m_ScreenManagerUIContainer.CommonCtrl_GotoLast(); 
-            	trkFrame.Position = trkFrame.Maximum;
-            	trkFrame.Invalidate();
-            }
+            Last();
         }
         private void btnSwap_Click(object sender, EventArgs e)
         {
-            if(m_ScreenManagerUIContainer != null)
-        	{ 
-            	m_ScreenManagerUIContainer.CommonCtrl_Swap(); 
-            }
+            if(controller != null)
+            	controller.CommonCtrl_Swap(); 
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
-            if(m_ScreenManagerUIContainer != null)
-        	{ 
-            	m_ScreenManagerUIContainer.CommonCtrl_Sync(); 
-            }
+            if(controller != null)
+            	controller.CommonCtrl_Sync(); 
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-       		if(m_ScreenManagerUIContainer != null)
+       		if(controller != null)
         	{ 
-       			m_bSyncMerging = !m_bSyncMerging;
-       			m_ScreenManagerUIContainer.CommonCtrl_Merge();
+       			syncMerging = !syncMerging;
+       			controller.CommonCtrl_Merge();
        			RefreshMergeTooltip();
        		}
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-       		if(m_ScreenManagerUIContainer != null)
-        	{ 
-       			m_ScreenManagerUIContainer.CommonCtrl_Snapshot();
-       		}
+       		if(controller != null)
+       			controller.CommonCtrl_Snapshot();
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
-       		if(m_ScreenManagerUIContainer != null)
-        	{ 
-       			m_ScreenManagerUIContainer.CommonCtrl_DualVideo();
-       		}
+       		if(controller != null)
+       			controller.CommonCtrl_DualVideo();
         }
-        
-        
+        private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
+        {
+            if(e.Position != oldPosition)
+        	{
+        		oldPosition = e.Position;
+            	if(controller != null)
+            		controller.CommonCtrl_PositionChanged(e.Position); 
+        	}
+        }
         #endregion
         
         #region TrkFrame Handlers
-        private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
-        {
-            if(e.Position != m_iOldPosition)
-        	{
-        		m_iOldPosition = e.Position;
-            	if(m_ScreenManagerUIContainer != null)
-        		{ 
-            		m_ScreenManagerUIContainer.CommonCtrl_PositionChanged(e.Position); 
-            	}
-        	}
-        }
+        
         #endregion
         
         #region Lower level helpers
         private void RefreshPlayButton()
         {
-            if (m_bPlaying)
-            {
+            if (playing)
                 buttonPlay.Image = Kinovea.ScreenManager.Properties.Resources.liqpause6;
-            }
             else
-            {
                 buttonPlay.Image = Kinovea.ScreenManager.Properties.Resources.liqplay17;
-            }
         }
         private void PlayStopped()
         {
@@ -251,14 +317,10 @@ namespace Kinovea.ScreenManager
         }
         private void RefreshMergeTooltip()
         {
-        	if(m_bSyncMerging)
-            {
+        	if(syncMerging)
             	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge);
-            }
             else
-            {
             	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge);	
-            }
         }
 		#endregion
     }
