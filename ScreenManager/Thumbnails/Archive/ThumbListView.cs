@@ -70,7 +70,7 @@ namespace Kinovea.ScreenManager
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
-		#region Construction & initialization
+		#region Construction 
 		public ThumbListView()
 		{
 			log.Debug("Constructing ThumbListView");
@@ -85,6 +85,7 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 		
+		#region Public methods
 		public void RefreshUICulture()
 		{
 			//btnHideThumbView.Text = ScreenManagerLang.btnHideThumbView;
@@ -92,26 +93,6 @@ namespace Kinovea.ScreenManager
 			foreach(ThumbListViewItem tlvi in thumbnails)
 			    tlvi.RefreshUICulture();
 		}
-		
-		#region RAM Monitoring
-		/*private void TraceRamUsage(int id)
-        {
-            float iCurrentRam = m_RamCounter.NextValue();
-            if (id >= 0)
-            {
-                Console.WriteLine("id:{0}, RAM: {1}", id.ToString(), m_fLastRamValue - iCurrentRam);
-            }
-            m_fLastRamValue = iCurrentRam;
-        }
-        private void InitRamCounter()
-        {
-            m_RamCounter = new PerformanceCounter("Memory", "Available KBytes");
-            m_fLastRamValue = m_RamCounter.NextValue();
-            Console.WriteLine("Initial state, Available RAM: {0}", m_fLastRamValue);
-        }*/
-		#endregion
-
-		#region Organize and Display
 		public void DisplayThumbnails(List<String> _fileNames)
 		{
 		    pbFiles.Visible = false;
@@ -136,6 +117,149 @@ namespace Kinovea.ScreenManager
 		{
 		    CleanupLoaders();
 		}
+		public void CleanupThumbnails()
+		{
+		    selectedThumbnail = null;
+		    foreach(ThumbListViewItem tlvi in thumbnails)
+		        tlvi.DisposeImages();
+		    thumbnails.Clear();
+		    splitResizeBar.Panel2.Controls.Clear();
+		}
+		public bool OnKeyPress(Keys _keycode)
+		{
+			// Method called from the Screen Manager's PreFilterMessage.
+			bool bWasHandled = false;
+			if(splitResizeBar.Panel2.Controls.Count > 0 && !editMode)
+			{
+				// Note that ESC key to cancel editing is handled directly in
+				// each thumbnail item.
+				switch (_keycode)
+				{
+					case Keys.Left:
+						{
+							if (selectedThumbnail == null )
+							{
+								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
+							}
+							else
+							{
+								int index = (int)selectedThumbnail.Tag;
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
+
+								if (iCol > 0)
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - 1]).SetSelected();
+							}
+							break;
+						}
+					case Keys.Right:
+						{
+							if (selectedThumbnail == null)
+							{
+								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
+							}
+							else
+							{
+								int index = (int)selectedThumbnail.Tag;
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
+
+								if (iCol < columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
+							}
+							break;
+						}
+					case Keys.Up:
+						{
+							if (selectedThumbnail == null)
+							{
+								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
+							}
+							else
+							{
+								int index = (int)selectedThumbnail.Tag;
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
+
+								if (iRow > 0)
+								{
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - columns]).SetSelected();
+								}
+							}
+							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
+							break;
+						}
+					case Keys.Down:
+						{
+							if (selectedThumbnail == null)
+							{
+								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
+							}
+							else
+							{
+								int index = (int)selectedThumbnail.Tag;
+								int iRow = index / columns;
+								int iCol = index - (iRow * columns);
+
+								if ((iRow < splitResizeBar.Panel2.Controls.Count / columns) && index + columns  < splitResizeBar.Panel2.Controls.Count)
+								{
+									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + columns]).SetSelected();
+								}
+							}
+							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
+							break;
+						}
+					case Keys.Return:
+						{
+							if (selectedThumbnail != null && !selectedThumbnail.IsError && LoadAsked != null)
+							    LoadAsked(this, new LoadAskedEventArgs(selectedThumbnail.FileName, -1));
+							break;
+						}
+					case Keys.Add:
+						{
+							if ((ModifierKeys & Keys.Control) == Keys.Control)
+								UpSizeThumbs();
+							break;
+						}
+					case Keys.Subtract:
+						{
+							if ((ModifierKeys & Keys.Control) == Keys.Control)
+								DownSizeThumbs();
+							break;
+						}
+					case Keys.F2:
+						{
+							if(selectedThumbnail != null && !selectedThumbnail.IsError)
+								selectedThumbnail.StartRenaming();
+							break;
+						}
+					default:
+						break;
+				}
+			}
+			return bWasHandled;
+		}
+		#endregion
+		
+		#region RAM Monitoring
+		/*private void TraceRamUsage(int id)
+        {
+            float iCurrentRam = m_RamCounter.NextValue();
+            if (id >= 0)
+            {
+                Console.WriteLine("id:{0}, RAM: {1}", id.ToString(), m_fLastRamValue - iCurrentRam);
+            }
+            m_fLastRamValue = iCurrentRam;
+        }
+        private void InitRamCounter()
+        {
+            m_RamCounter = new PerformanceCounter("Memory", "Available KBytes");
+            m_fLastRamValue = m_RamCounter.NextValue();
+            Console.WriteLine("Initial state, Available RAM: {0}", m_fLastRamValue);
+        }*/
+		#endregion
+
+		#region Organize and Display
 		private void CleanupLoaders()
 		{
 			for(int i=loaders.Count-1;i>=0;i--)
@@ -148,15 +272,6 @@ namespace Kinovea.ScreenManager
 				    loaders.RemoveAt(i);
 			}
 		}
-		public void CleanupThumbnails()
-		{
-		    selectedThumbnail = null;
-		    foreach(ThumbListViewItem tlvi in thumbnails)
-		        tlvi.DisposeImages();
-		    thumbnails.Clear();
-		    splitResizeBar.Panel2.Controls.Clear();
-		}
-		
 		private void CreateThumbs(List<String> _fileNames)
 		{
 		    int index = 0;
@@ -306,9 +421,7 @@ namespace Kinovea.ScreenManager
 			if(tlvi != null)
 			{
 				if (selectedThumbnail != null && selectedThumbnail != tlvi )
-				{
 					selectedThumbnail.SetUnselected();
-				}
 			
 				selectedThumbnail = tlvi;
 			}
@@ -379,130 +492,11 @@ namespace Kinovea.ScreenManager
 		}
 		#endregion
 
-		#region Closing
 		private void SavePrefs()
 		{
 			PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = (ExplorerThumbSize)columns;
 			PreferencesManager.Save();
 		}
-		#endregion
-
-		#region Keyboard Handling
-		public bool OnKeyPress(Keys _keycode)
-		{
-			// Method called from the Screen Manager's PreFilterMessage.
-			bool bWasHandled = false;
-			if(splitResizeBar.Panel2.Controls.Count > 0 && !editMode)
-			{
-				// Note that ESC key to cancel editing is handled directly in
-				// each thumbnail item.
-				switch (_keycode)
-				{
-					case Keys.Left:
-						{
-							if (selectedThumbnail == null )
-							{
-								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-							}
-							else
-							{
-								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / columns;
-								int iCol = index - (iRow * columns);
-
-								if (iCol > 0)
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - 1]).SetSelected();
-							}
-							break;
-						}
-					case Keys.Right:
-						{
-							if (selectedThumbnail == null)
-							{
-								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-							}
-							else
-							{
-								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / columns;
-								int iCol = index - (iRow * columns);
-
-								if (iCol < columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
-							}
-							break;
-						}
-					case Keys.Up:
-						{
-							if (selectedThumbnail == null)
-							{
-								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-							}
-							else
-							{
-								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / columns;
-								int iCol = index - (iRow * columns);
-
-								if (iRow > 0)
-								{
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - columns]).SetSelected();
-								}
-							}
-							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
-							break;
-						}
-					case Keys.Down:
-						{
-							if (selectedThumbnail == null)
-							{
-								((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-							}
-							else
-							{
-								int index = (int)selectedThumbnail.Tag;
-								int iRow = index / columns;
-								int iCol = index - (iRow * columns);
-
-								if ((iRow < splitResizeBar.Panel2.Controls.Count / columns) && index + columns  < splitResizeBar.Panel2.Controls.Count)
-								{
-									((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + columns]).SetSelected();
-								}
-							}
-							splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
-							break;
-						}
-					case Keys.Return:
-						{
-							if (selectedThumbnail != null && !selectedThumbnail.IsError && LoadAsked != null)
-							    LoadAsked(this, new LoadAskedEventArgs(selectedThumbnail.FileName, -1));
-							break;
-						}
-					case Keys.Add:
-						{
-							if ((ModifierKeys & Keys.Control) == Keys.Control)
-								UpSizeThumbs();
-							break;
-						}
-					case Keys.Subtract:
-						{
-							if ((ModifierKeys & Keys.Control) == Keys.Control)
-								DownSizeThumbs();
-							break;
-						}
-					case Keys.F2:
-						{
-							if(selectedThumbnail != null && !selectedThumbnail.IsError)
-								selectedThumbnail.StartRenaming();
-							break;
-						}
-					default:
-						break;
-				}
-			}
-			return bWasHandled;
-		}
-		#endregion
 		
         private void Panel2MouseDown(object sender, MouseEventArgs e)
         {

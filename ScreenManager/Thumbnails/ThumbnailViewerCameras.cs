@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,13 +19,18 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
-namespace Kinovea.Services
+namespace Kinovea.ScreenManager
 {
-    public enum ActiveFileBrowserTab
+    public partial class ThumbnailViewerCameras : UserControl
     {
-    	Explorer,
-    	Shortcuts,
-    	Cameras
+        public ThumbnailViewerCameras()
+        {
+            InitializeComponent();
+            this.Dock = DockStyle.Fill;
+        }
     }
 }

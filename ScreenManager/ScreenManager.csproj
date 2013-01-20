@@ -236,6 +236,7 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
+    <Compile Include="LoadAskedEventArgs.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationPlane.cs" />
@@ -519,6 +520,36 @@
     </Compile>
     <Compile Include="SummaryLoadedEventArgs.cs" />
     <Compile Include="SummaryLoader.cs" />
+    <Compile Include="Thumbnails\Archive\ThumbListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Thumbnails\Archive\ThumbListView.Designer.cs">
+      <DependentUpon>ThumbListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails\Archive\ThumbListViewItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Thumbnails\Archive\ThumbListViewItem.Designer.cs">
+      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails\Selector.cs" />
+    <Compile Include="Thumbnails\Selector.Designer.cs">
+      <DependentUpon>Selector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails\SelectorOption.cs" />
+    <Compile Include="Thumbnails\ThumbnailContent.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerCameras.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerCameras.Designer.cs">
+      <DependentUpon>ThumbnailViewerCameras.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails\ThumbnailViewerContainer.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerContainer.Designer.cs">
+      <DependentUpon>ThumbnailViewerContainer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails\ThumbnailViewerFiles.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerFiles.Designer.cs">
+      <DependentUpon>ThumbnailViewerFiles.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\ColorPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -558,24 +589,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenManagerState.cs" />
     <Compile Include="UserInterface\FormsHelper.cs" />
-    <Compile Include="UserInterface\LoadAskedEventArgs.cs" />
     <Compile Include="UserInterface\ScreenManagerUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UserInterface\ScreenManagerUserInterface.Designer.cs">
       <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserInterface\ThumbListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserInterface\ThumbListView.Designer.cs">
-      <DependentUpon>ThumbListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserInterface\ThumbListViewItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserInterface\ThumbListViewItem.Designer.cs">
-      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\MessageToaster.cs" />
     <EmbeddedResource Include="CaptureScreen\UserInterface\CapturedVideoBox.resx">
@@ -646,6 +664,23 @@
     <EmbeddedResource Include="Properties\Drawings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Drawings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\Archive\ThumbListView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThumbListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\Archive\ThumbListViewItem.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\Selector.resx">
+      <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\ThumbnailViewerContainer.resx">
+      <DependentUpon>ThumbnailViewerContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\ThumbnailViewerFiles.resx">
+      <DependentUpon>ThumbnailViewerFiles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
@@ -750,16 +785,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>FormVideoExport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\ThumbListView.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ThumbListView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserInterface\ThumbListViewItem.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Thumbnails" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
@@ -771,6 +799,7 @@
     <Folder Include="PlayerScreen\Export" />
     <Folder Include="PlayerScreen\Calibration" />
     <Folder Include="PlayerScreen\Trackability" />
+    <Folder Include="Thumbnails\Archive" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
