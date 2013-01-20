@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -18,27 +18,21 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
+
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Kinovea.Camera
 {
-    /// <summary>
-    /// Small info to display the camera in the UI.
-    /// </summary>
-    public class CameraSummary
+    public class CameraImageReceivedEventArgs : EventArgs
     {
-        public string Alias { get; private set;}
-        public string Identifier { get; private set;}
-        public Bitmap Icon { get; private set; }
-        public CameraManager Manager { get; private set;}
-        
-        public CameraSummary(string alias, string identifier, Bitmap icon, CameraManager manager)
+        public readonly CameraSummary Summary;
+        public readonly Bitmap Image;
+        public CameraImageReceivedEventArgs(CameraSummary summary, Bitmap image)
         {
-            this.Alias = alias;
-            this.Identifier = identifier;
-            this.Icon = icon;
-            this.Manager = manager;
+            this.Summary = summary;
+            this.Image = image;
         }
     }
 }

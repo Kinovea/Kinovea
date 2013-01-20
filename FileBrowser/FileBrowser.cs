@@ -22,6 +22,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 using System;
 using System.Windows.Forms;
+using Kinovea.Camera;
 using Kinovea.Services;
 
 // Note: this assembly is only about the side panel for explorer tree and shortcuts tree.
@@ -42,6 +43,11 @@ namespace Kinovea.FileBrowser
         private FileBrowserUserInterface view = new FileBrowserUserInterface();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
+        
+        public FileBrowserKernel()
+        {
+            CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+        }
 
         #region IKernel Implementation
         public void BuildSubTree()
@@ -79,5 +85,12 @@ namespace Kinovea.FileBrowser
         }
         #endregion
 
+        private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
+        {
+            // Update list of cameras.
+            int dbg = 42;
+            
+            view.CamerasDiscovered(e.Summaries);
+        }
     }
 }

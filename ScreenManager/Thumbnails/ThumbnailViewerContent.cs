@@ -22,7 +22,7 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ThumbnailContent
+    public enum ThumbnailViewerContent
     {
         Files,
         Shortcuts,

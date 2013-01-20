@@ -49,6 +49,8 @@ namespace Kinovea.FileBrowser
             this.tabPageCameras = new System.Windows.Forms.TabPage();
             this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
             this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
+            this.lvCameras = new System.Windows.Forms.ListView();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageClassic.SuspendLayout();
             this.splitExplorerFiles.Panel1.SuspendLayout();
@@ -58,6 +60,7 @@ namespace Kinovea.FileBrowser
             this.splitShortcutsFiles.Panel1.SuspendLayout();
             this.splitShortcutsFiles.Panel2.SuspendLayout();
             this.splitShortcutsFiles.SuspendLayout();
+            this.tabPageCameras.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -316,6 +319,8 @@ namespace Kinovea.FileBrowser
             // 
             // tabPageCameras
             // 
+            this.tabPageCameras.Controls.Add(this.label1);
+            this.tabPageCameras.Controls.Add(this.lvCameras);
             this.tabPageCameras.ImageKey = "tab_camera.png";
             this.tabPageCameras.Location = new System.Drawing.Point(4, 23);
             this.tabPageCameras.Name = "tabPageCameras";
@@ -331,6 +336,39 @@ namespace Kinovea.FileBrowser
             this.imgListTabs.Images.SetKeyName(0, "tab_video.png");
             this.imgListTabs.Images.SetKeyName(1, "tab_shortcuts.png");
             this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
+            // 
+            // lvCameras
+            // 
+            this.lvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvCameras.BackColor = System.Drawing.Color.White;
+            this.lvCameras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lvCameras.GridLines = true;
+            this.lvCameras.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvCameras.Location = new System.Drawing.Point(2, 31);
+            this.lvCameras.MultiSelect = false;
+            this.lvCameras.Name = "lvCameras";
+            this.lvCameras.ShowGroups = false;
+            this.lvCameras.Size = new System.Drawing.Size(305, 198);
+            this.lvCameras.SmallImageList = this.imgListFiles;
+            this.lvCameras.TabIndex = 1;
+            this.lvCameras.UseCompatibleStateImageBehavior = false;
+            this.lvCameras.View = System.Windows.Forms.View.List;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.SteelBlue;
+            this.label1.Location = new System.Drawing.Point(0, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(305, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Cameras :   ";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // FileBrowserUserInterface
             // 
@@ -349,8 +387,11 @@ namespace Kinovea.FileBrowser
             this.splitShortcutsFiles.Panel1.ResumeLayout(false);
             this.splitShortcutsFiles.Panel2.ResumeLayout(false);
             this.splitShortcutsFiles.ResumeLayout(false);
+            this.tabPageCameras.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.ListView lvCameras;
+        public System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPageCameras;
         private System.Windows.Forms.ImageList imgListFiles;
         private System.Windows.Forms.SplitContainer splitShortcutsFiles;

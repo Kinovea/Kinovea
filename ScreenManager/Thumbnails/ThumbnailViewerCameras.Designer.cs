@@ -48,11 +48,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.SuspendLayout();
             // 
             // ThumbnailViewerCameras
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "ThumbnailViewerCameras";
+            this.Resize += new System.EventHandler(this.ThumbnailViewerCameras_Resize);
+            this.ResumeLayout(false);
         }
     }
 }

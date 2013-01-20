@@ -180,10 +180,6 @@ namespace Kinovea.ScreenManager
 			string filePath = CommandLineArgumentManager.Instance().InputFile;
 			if(filePath != null && File.Exists(filePath) && LoadAsked != null)
 			    LoadAsked(this, new LoadAskedEventArgs(filePath, -1));
-			
-// ----------- TEMPORARY -----------------------------------.
-			// Check for cameras connected to the system.
-			CameraTypeManager.DiscoverCameras();
 		}
         private void pnlScreens_Resize(object sender, EventArgs e)
         {

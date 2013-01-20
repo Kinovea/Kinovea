@@ -20,7 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 namespace Kinovea.ScreenManager
 {
-    partial class ThumbnailViewerFiles
+    partial class ThumbnailCamera
     {
         /// <summary>
         /// Designer variable used to keep track of non-visual components.
@@ -48,18 +48,11 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
             // 
-            // ThumbnailViewerFiles
+            // CameraThumbnail
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.Name = "ThumbnailViewerFiles";
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel2MouseDown);
-            this.MouseEnter += new System.EventHandler(this.Panel2MouseEnter);
-            this.Resize += new System.EventHandler(this.ThumbnailViewerFiles_Resize);
-            this.ResumeLayout(false);
+            this.Name = "CameraThumbnail";
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
 	/// Thumbnail control.
 	/// 
 	/// </summary>
-	public partial class ThumbListViewItem : UserControl
+	public partial class ThumbnailFile : UserControl
 	{
 		#region Events
 		[Category("Action"), Browsable(true)]
@@ -109,7 +109,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Construction & initialization
-		public ThumbListViewItem(string _fileName)
+		public ThumbnailFile(string _fileName)
 		{
 		    InitializeComponent();
 		    

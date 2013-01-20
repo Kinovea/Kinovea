@@ -40,14 +40,11 @@ namespace Kinovea.ScreenManager
         public event EventHandler AfterLoad;
         
         #region Members
-        private static readonly int leftMargin = 30;
-		private static readonly int rightMargin = 20;  	// Allow for potential scrollbar. This value doesn't include the last pic spacing.
-		private static readonly int topMargin = 5;
 		private int columns = (int)ExplorerThumbSize.Large;
     	private object locker = new object();
 		private List<SummaryLoader> loaders = new List<SummaryLoader>();
-		private List<ThumbListViewItem> thumbnails = new List<ThumbListViewItem>();
-		private ThumbListViewItem selectedThumbnail;
+		private List<ThumbnailFile> thumbnails = new List<ThumbnailFile>();
+		private ThumbnailFile selectedThumbnail;
 		private bool editMode;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -73,7 +70,7 @@ namespace Kinovea.ScreenManager
             if (files.Count > 0)
             {
                 CreateThumbs(files);
-                UpdateView();
+                DoLayout();
             
                 SummaryLoader sl = new SummaryLoader(files);
                 sl.SummaryLoaded += SummaryLoader_SummaryLoaded;
@@ -94,7 +91,7 @@ namespace Kinovea.ScreenManager
         public void Clear()
         {
             selectedThumbnail = null;
-            foreach(ThumbListViewItem tlvi in thumbnails)
+            foreach(ThumbnailFile tlvi in thumbnails)
                 tlvi.DisposeImages();
             
             thumbnails.Clear();
@@ -217,7 +214,7 @@ namespace Kinovea.ScreenManager
         }
         public void RefreshUICulture()
 		{
-			foreach(ThumbListViewItem tlvi in thumbnails)
+			foreach(ThumbnailFile tlvi in thumbnails)
 			    tlvi.RefreshUICulture();
 		}
         #endregion
@@ -242,7 +239,7 @@ namespace Kinovea.ScreenManager
 		    int index = 0;
 		    foreach(string file in _fileNames)
 			{
-			    ThumbListViewItem tlvi = new ThumbListViewItem(file);
+			    ThumbnailFile tlvi = new ThumbnailFile(file);
 				tlvi.LaunchVideo += ThumbListViewItem_LaunchVideo;
 				tlvi.VideoSelected += ThumbListViewItem_VideoSelected;
 				tlvi.FileNameEditing += ThumbListViewItem_FileNameEditing;
@@ -254,18 +251,17 @@ namespace Kinovea.ScreenManager
 		}
 		private void SummaryLoader_SummaryLoaded(object sender, SummaryLoadedEventArgs e)
 		{
-            // One of the summaries was loaded, push it into a thumbnail.
-            
+            // One of the summaries was loaded, push it into its thumbnail.
 		    if(e.Summary == null)
 		        return;
 		 
             // TODO: keep the controls in a dictionary indexed by the filename instead of a raw list.
-		    foreach(ThumbListViewItem tlvi in thumbnails)
+		    foreach(ThumbnailFile thumbnail in thumbnails)
 		    {
-		        if(tlvi.FileName == e.Summary.Filename)
+		        if(thumbnail.FileName == e.Summary.Filename)
 		        {
-		            tlvi.Populate(e.Summary);
-		            tlvi.Invalidate();
+		            thumbnail.Populate(e.Summary);
+		            thumbnail.Invalidate();
 		        }
 		    }
 		    
@@ -275,7 +271,7 @@ namespace Kinovea.ScreenManager
 		    if(ProgressChanged != null)
 		        ProgressChanged(this, new ProgressChangedEventArgs(percentage, null));
 		    
-		    if(done == thumbnails.Count && AfterLoad != null)
+		    if(done >= thumbnails.Count && AfterLoad != null)
 		        AfterLoad(this, EventArgs.Empty);
 		}
 		
@@ -338,23 +334,21 @@ namespace Kinovea.ScreenManager
 			//OrganizeThumbnailsByColumns(m_Columns);
 			splitResizeBar.Panel2.Invalidate();
 		}*/
-		/*private void splitResizeBar_Panel2_Resize(object sender, EventArgs e)
+		private void DoLayout()
 		{
-			if(this.Visible)
-				UpdateView();
-		}*/
-		private void UpdateView()
-		{
-		    // Set location and size of each thumbnails depending on available width and options.
-		    int colWidth = (this.Width - leftMargin - rightMargin) / columns;
+            int leftMargin = 30;
+            int rightMargin = 20;
+            int topMargin = 5;
+            
+            int colWidth = (this.Width - leftMargin - rightMargin) / columns;
             int spacing = colWidth / 20;
-		    
+
             int thumbWidth = colWidth - spacing;
             int thumbHeight = (thumbWidth * 3 / 4) + 15;
-				
+
             int current = 0;
             this.SuspendLayout();
-		    foreach(ThumbListViewItem tlvi in SortedAndFilteredThumbs())
+		    foreach(ThumbnailFile tlvi in SortedAndFilteredThumbs())
 		    {
 		        tlvi.SetSize(thumbWidth, thumbHeight);
 		        
@@ -367,9 +361,9 @@ namespace Kinovea.ScreenManager
 		    }
 		    this.ResumeLayout();
 		}
-		private IEnumerable<ThumbListViewItem> SortedAndFilteredThumbs()
+		private IEnumerable<ThumbnailFile> SortedAndFilteredThumbs()
 		{
-		    foreach(ThumbListViewItem tlvi in thumbnails)
+		    foreach(ThumbnailFile tlvi in thumbnails)
 		        yield return tlvi;
 		}
 		#endregion
@@ -378,7 +372,7 @@ namespace Kinovea.ScreenManager
 		private void ThumbListViewItem_LaunchVideo(object sender, EventArgs e)
 		{
 			CancelEditMode();
-			ThumbListViewItem tlvi = sender as ThumbListViewItem;
+			ThumbnailFile tlvi = sender as ThumbnailFile;
 			
 			if (tlvi != null && !tlvi.IsError && LoadAsked != null)
                 LoadAsked(this, new LoadAskedEventArgs(tlvi.FileName, -1));
@@ -386,7 +380,7 @@ namespace Kinovea.ScreenManager
 		private void ThumbListViewItem_VideoSelected(object sender, EventArgs e)
 		{
 			CancelEditMode();
-			ThumbListViewItem tlvi = sender as ThumbListViewItem;
+			ThumbnailFile tlvi = sender as ThumbnailFile;
 			
 			if(tlvi != null)
 			{
@@ -430,7 +424,7 @@ namespace Kinovea.ScreenManager
         	// Browse all thumbs and make sure they are all in normal mode.
         	for (int i = 0; i < this.Controls.Count; i++)
 			{
-				ThumbListViewItem tlvi = this.Controls[i] as ThumbListViewItem;
+				ThumbnailFile tlvi = this.Controls[i] as ThumbnailFile;
 				if(tlvi != null)
 					tlvi.CancelEditMode();
 			}	
@@ -443,5 +437,11 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
+        
+        private void ThumbnailViewerFiles_Resize(object sender, EventArgs e)
+        {
+            if(this.Visible)
+                DoLayout();
+        }
     }
 }

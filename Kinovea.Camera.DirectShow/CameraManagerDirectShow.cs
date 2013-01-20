@@ -20,6 +20,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Threading;
+
 using AForge.Video.DirectShow;
 
 namespace Kinovea.Camera.DirectShow
@@ -29,8 +32,10 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class CameraManagerDirectShow : CameraManager
     {
+        #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraBlurb> blurbCache = new Dictionary<string, CameraBlurb>();
+        #endregion
         
         public override List<CameraSummary> DiscoverCameras(List<CameraBlurb> previouslySeen)
         {
@@ -65,13 +70,22 @@ namespace Kinovea.Camera.DirectShow
                 CameraBlurb blurb = new CameraBlurb("DirectShow", identifier, alias, null);
                 blurbCache.Add(identifier, blurb);
                 
-                CameraSummary summary = new CameraSummary(alias, identifier, this);
+                Bitmap defaultIcon = Camera.IconLibrary.GetIcon("webcam");
+                CameraSummary summary = new CameraSummary(alias, identifier, defaultIcon, this);
                 summaries.Add(summary);
                 
                 // Spawn a thread to get a snapshot.
+                SnapshotRetriever retriever = new SnapshotRetriever(summary, camera.MonikerString);
+                retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
+                ThreadPool.QueueUserWorkItem(retriever.Run);
             }
 
             return summaries;
+        }
+
+        private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        {
+            OnCameraImageReceived(e);
         }
         
         public override FrameGrabber Connect(string identifier)
