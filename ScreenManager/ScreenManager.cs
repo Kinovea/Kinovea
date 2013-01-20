@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public UserControl UI
         {
-            get { return (UserControl)view; }
+            get { return view; }
         }
         public ScreenManagerUserInterface View
         {

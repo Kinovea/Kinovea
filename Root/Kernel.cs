@@ -178,9 +178,7 @@ namespace Kinovea.Root
             m_ScreenManager.ExtendUI();
 
             // Integrate the sub modules UI into the main kernel UI.
-            MainWindow.SupervisorControl.splitWorkSpace.Panel1.Controls.Add(m_FileBrowser.UI);
-            MainWindow.SupervisorControl.splitWorkSpace.Panel2.Controls.Add(m_ScreenManager.UI);
-            
+            MainWindow.PlugUI(m_FileBrowser.UI, m_ScreenManager.UI);
 			MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()

@@ -34,12 +34,12 @@ namespace Kinovea.FileBrowser
         #region Properties
         public UserControl UI
         {
-            get { return m_Fbui; }
+            get { return view; }
         }
         #endregion
 
         #region Members
-        private FileBrowserUserInterface m_Fbui = new FileBrowserUserInterface();
+        private FileBrowserUserInterface view = new FileBrowserUserInterface();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -69,12 +69,12 @@ namespace Kinovea.FileBrowser
         }
         public void RefreshUICulture()
         {
-            m_Fbui.RefreshUICulture();
+            view.RefreshUICulture();
         }
         public bool CloseSubModules()
         {
             // Save last browsed directory
-            m_Fbui.Closing();
+            view.Closing();
             return false;
         }
         #endregion
