@@ -40,8 +40,9 @@ namespace Kinovea.Services
     public delegate void MovieLoader(string _filePath, int _iForceScreen, bool _bStoreState);
     public delegate void StatusBarUpdater(string _status);
     public delegate void TopMostMaker(Form _form);
-    public delegate void ThumbnailsDisplayer(List<String> _fileNames, bool _bRefreshNow);
+    public delegate void ThumbnailsContainer(bool shortcuts, List<String> files, bool refresh);
     public delegate void FileExplorerRefresher(bool _bRefreshThumbnails);
+    public delegate void FileExplorerTabChanger(ActiveFileBrowserTab tab);
     
     public class DelegatesPool
     {
@@ -52,8 +53,9 @@ namespace Kinovea.Services
         public TopMostMaker MakeTopMost;
         public Action DeactivateKeyboardHandler;
         public Action ActivateKeyboardHandler;
-        public ThumbnailsDisplayer DisplayThumbnails;
+        public ThumbnailsContainer CurrentDirectoryChanged;
         public FileExplorerRefresher RefreshFileExplorer;
+        public FileExplorerTabChanger ChangeFileExplorerTab;
   
         private static DelegatesPool _instance = null;
         

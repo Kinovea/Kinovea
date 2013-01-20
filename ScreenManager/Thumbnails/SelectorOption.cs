@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,13 +19,21 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 
-namespace Kinovea.Services
+namespace Kinovea.ScreenManager
 {
-    public enum ActiveFileBrowserTab
+    public class SelectorOption
     {
-    	Explorer,
-    	Shortcuts,
-    	Cameras
+        public Bitmap Image { get; private set;}
+        public string Text { get; private set;}
+        public object Data { get; private set;}
+        
+        public SelectorOption(Bitmap image, string text, object data)
+        {
+            this.Image = image;
+            this.Text = text;
+            this.Data = data;
+        }
     }
 }

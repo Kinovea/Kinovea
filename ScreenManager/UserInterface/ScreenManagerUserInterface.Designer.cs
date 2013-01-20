@@ -97,13 +97,13 @@ namespace Kinovea.ScreenManager
             this.splitScreens.SplitterDistance = 287;
             this.splitScreens.TabIndex = 0;
             // 
-            // CommonControls
+            // commonControls
             // 
             this.commonControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.commonControls.BackColor = System.Drawing.Color.White;
             this.commonControls.Location = new System.Drawing.Point(0, 0);
-            this.commonControls.Name = "CommonControls";
+            this.commonControls.Name = "commonControls";
             this.commonControls.Playing = false;
             this.commonControls.Size = new System.Drawing.Size(545, 45);
             this.commonControls.SyncMerging = false;
@@ -120,6 +120,7 @@ namespace Kinovea.ScreenManager
             this.pbLogo.Size = new System.Drawing.Size(362, 126);
             this.pbLogo.TabIndex = 1;
             this.pbLogo.TabStop = false;
+            this.pbLogo.Visible = false;
             // 
             // ScreenManagerUserInterface
             // 

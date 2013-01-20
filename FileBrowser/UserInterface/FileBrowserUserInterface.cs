@@ -74,6 +74,7 @@ namespace Kinovea.FileBrowser
 			// Registers our exposed functions to the DelegatePool.
 			DelegatesPool dp = DelegatesPool.Instance();
 			dp.RefreshFileExplorer = DoRefreshFileList;
+            dp.ChangeFileExplorerTab = DoChangeFileExplorerTab;
 			
 			// Take the list of shortcuts from the prefs and load them.
 			ReloadShortcuts();
@@ -143,7 +144,7 @@ namespace Kinovea.FileBrowser
 					// ExpTree tab.
 					if(currentExptreeItem != null)
 					{
-						UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails);
+						UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails, false);
 					}
 				}
 				else if(tabControl.SelectedIndex == 1)
@@ -151,7 +152,7 @@ namespace Kinovea.FileBrowser
 					// Shortcuts tab.
 					if(currentShortcutItem != null)
 					{
-						UpdateFileList(currentShortcutItem, lvShortcuts, refreshThumbnails);
+						UpdateFileList(currentShortcutItem, lvShortcuts, refreshThumbnails, true);
 					}
 					else if(currentExptreeItem != null)
 					{
@@ -160,7 +161,7 @@ namespace Kinovea.FileBrowser
 						// -> reload the hidden list of the exptree tab.
 						// We also force the thumbnail refresh, because in this case it is the only way to update the
 						// filename list held in ScreenManager...
-						UpdateFileList(currentExptreeItem, lvExplorer, true);
+						UpdateFileList(currentExptreeItem, lvExplorer, true, false);
 					}
 				}
 			}
@@ -226,7 +227,7 @@ namespace Kinovea.FileBrowser
 			{
 				// We don't maintain synchronization with the Shortcuts tab. 
 				ResetShortcutList();
-				UpdateFileList(currentExptreeItem, lvExplorer, true);				
+				UpdateFileList(currentExptreeItem, lvExplorer, true, false);
 			}
 		}
 		private void etExplorer_MouseEnter(object sender, EventArgs e)
@@ -336,7 +337,7 @@ namespace Kinovea.FileBrowser
 				
 				// Start by updating hidden explorer tab.
 				// Update list and maintain synchronization with the tree.
-				UpdateFileList(currentShortcutItem, lvExplorer, false);
+				UpdateFileList(currentShortcutItem, lvExplorer, false, false);
 				
 				expanding = true;
 				etExplorer.ExpandANode(currentShortcutItem);
@@ -344,7 +345,7 @@ namespace Kinovea.FileBrowser
 				currentExptreeItem = etExplorer.SelectedItem;
 				
 				// Finally update the shortcuts tab, and refresh thumbs.
-				UpdateFileList(currentShortcutItem, lvShortcuts, true);
+				UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
 			}
 			log.Debug("Shortcut Selected - Operations done.");
         }
@@ -397,7 +398,7 @@ namespace Kinovea.FileBrowser
 			// Discard keyboard event as they interfere with player functions
 			e.Handled = true;
 		}
-		private void UpdateFileList(CShItem folder, ListView listView, bool refreshThumbnails)
+		private void UpdateFileList(CShItem folder, ListView listView, bool refreshThumbnails, bool shortcuts)
 		{
 			// Update a file list with the given folder.
 			// Triggers an update of the thumbnails pane if requested.
@@ -456,10 +457,10 @@ namespace Kinovea.FileBrowser
 			// the screenmanager backup list is used at BringBackThumbnail,
 			// (i.e. when we close a screen)
 			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DisplayThumbnails != null)
+			if (dp.CurrentDirectoryChanged != null)
 			{
 				log.Debug("Asking the ScreenManager to refresh the thumbnails.");
-				dp.DisplayThumbnails(fileNames, refreshThumbnails);
+				dp.CurrentDirectoryChanged(shortcuts, fileNames, refreshThumbnails);
 			}
 			
 			this.Cursor = Cursors.Default;
@@ -517,5 +518,9 @@ namespace Kinovea.FileBrowser
 		}
 		#endregion
         
+		private void DoChangeFileExplorerTab(ActiveFileBrowserTab tab)
+		{
+            tabControl.SelectedIndex = (int)tab;
+		}
 	}
 }
