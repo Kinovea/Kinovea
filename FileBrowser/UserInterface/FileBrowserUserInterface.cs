@@ -59,7 +59,6 @@ namespace Kinovea.FileBrowser
 		public FileBrowserUserInterface()
 		{
 			InitializeComponent();
-			this.Dock = DockStyle.Fill;
 			btnAddShortcut.Parent = lblFavFolders;
 			btnDeleteShortcut.Parent = lblFavFolders;
 
@@ -136,54 +135,55 @@ namespace Kinovea.FileBrowser
 			
 			// We don't update during app start up, because we would most probably
 			// end up loading the desktop, and then the saved folder.
-			if(!initializing)
+            if(initializing)
+                return;
+			
+			// Figure out which tab we are on to update the right listview.
+			if(tabControl.SelectedIndex == 0)
 			{
-				// Figure out which tab we are on to update the right listview.
-				if(tabControl.SelectedIndex == 0)
+				if(currentExptreeItem != null)
+					UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails, false);
+			}
+			else if(tabControl.SelectedIndex == 1)
+			{
+				if(currentShortcutItem != null)
 				{
-					// ExpTree tab.
-					if(currentExptreeItem != null)
-					{
-						UpdateFileList(currentExptreeItem, lvExplorer, refreshThumbnails, false);
-					}
+					UpdateFileList(currentShortcutItem, lvShortcuts, refreshThumbnails, true);
 				}
-				else if(tabControl.SelectedIndex == 1)
+				else if(currentExptreeItem != null)
 				{
-					// Shortcuts tab.
-					if(currentShortcutItem != null)
-					{
-						UpdateFileList(currentShortcutItem, lvShortcuts, refreshThumbnails, true);
-					}
-					else if(currentExptreeItem != null)
-					{
-						// This is the special case where we select a folder on the exptree tab
-						// and then move to the shortcuts tab.
-						// -> reload the hidden list of the exptree tab.
-						// We also force the thumbnail refresh, because in this case it is the only way to update the
-						// filename list held in ScreenManager...
-						UpdateFileList(currentExptreeItem, lvExplorer, true, false);
-					}
+					// This is the special case where we select a folder on the exptree tab
+					// and then move to the shortcuts tab.
+					// -> reload the hidden list of the exptree tab.
+					// We also force the thumbnail refresh, because in this case it is the only way to update the
+					// filename list held in ScreenManager...
+					UpdateFileList(currentExptreeItem, lvExplorer, true, false);
 				}
 			}
 		}
 		public void RefreshUICulture()
 		{
 			// ExpTree tab.
-			tabPageClassic.Text = FileBrowserLang.tabExplorer;
+			//tabPageClassic.Text = FileBrowserLang.tabExplorer;
+			tabPageClassic.Text = "";
 			lblFolders.Text = FileBrowserLang.lblFolders;
 			lblVideoFiles.Text = FileBrowserLang.lblVideoFiles;
 			
 			// Shortcut tab.
-			tabPageShortcuts.Text = FileBrowserLang.tabShortcuts;
+			//tabPageShortcuts.Text = FileBrowserLang.tabShortcuts;
+			tabPageShortcuts.Text = "";
 			lblFavFolders.Text = lblFolders.Text;
 			lblFavFiles.Text = lblVideoFiles.Text;
 			etShortcuts.RootDisplayName = tabPageShortcuts.Text;
+			
+			tabPageCameras.Text = "";
 			
 			// Menus
 			mnuAddToShortcuts.Text = FileBrowserLang.mnuAddToShortcuts;
 			mnuDeleteShortcut.Text = FileBrowserLang.mnuDeleteShortcut;
 			
 			// ToolTips
+			ttTabs.SetToolTip(tabPageClassic, FileBrowserLang.tabExplorer);
 			ttTabs.SetToolTip(btnAddShortcut, FileBrowserLang.mnuAddShortcut);
 			ttTabs.SetToolTip(btnDeleteShortcut, FileBrowserLang.mnuDeleteShortcut);
 		}		
@@ -392,6 +392,8 @@ namespace Kinovea.FileBrowser
 			// Active tab changed.
 			// We don't save to file now as this is not a critical data to loose.
 			PreferencesManager.FileExplorerPreferences.ActiveTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+			
+			DoRefreshFileList(true);
 		}
 		private void _tabControl_KeyDown(object sender, KeyEventArgs e)
 		{

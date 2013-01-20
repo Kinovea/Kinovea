@@ -66,6 +66,19 @@ namespace Kinovea.Root
         }
         #endregion
 
+        public void PlugUI(UserControl fileExplorer, UserControl screenManager)
+        {
+            splitWorkSpace.Panel1.Controls.Add(fileExplorer);
+            splitWorkSpace.Panel2.Controls.Add(screenManager);
+            
+            int topMargin = 2;
+            fileExplorer.Top = topMargin;
+            fileExplorer.Left = 0;
+            fileExplorer.Width = splitWorkSpace.Panel1.Width;
+            fileExplorer.Height = splitWorkSpace.Panel1.Height - topMargin;
+            fileExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+        }
+
         #region Event Handlers
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {

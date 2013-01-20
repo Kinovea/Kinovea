@@ -30,31 +30,18 @@ namespace Kinovea.Root
         #region Properties
         public SupervisorUserInterface SupervisorControl
         {
-            get { return sui; }
-            set { sui = value;}
+            get { return supervisorView; }
+            set { supervisorView = value;}
         }
         public bool FullScreen
         {
             get { return m_bFullScreen; }
         }
-        /*protected override CreateParams CreateParams 
-        {
-            // Fix flickering of controls during resize.
-            // Ref. http://social.msdn.microsoft.com/forums/en-US/winforms/thread/aaed00ce-4bc9-424e-8c05-c30213171c2c/
-            // Unfortunately this seems not too reliable. 
-            // It induce 100% CPU load from time to time, and flickering of the splitters.
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
-                return cp;
-            }
-        }*/
         #endregion
 
         #region Members
         private RootKernel mRootKernel;
-        private SupervisorUserInterface sui;
+        private SupervisorUserInterface supervisorView;
         private bool m_bFullScreen;
         private Rectangle m_MemoBounds;
         private FormWindowState m_MemoWindowState;
@@ -113,7 +100,10 @@ namespace Kinovea.Root
             
             this.ResumeLayout();
         }
-        
+        public void PlugUI(UserControl fileExplorer, UserControl screenManager)
+        {
+            supervisorView.PlugUI(fileExplorer, screenManager);
+        }
         #region Event Handlers
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
