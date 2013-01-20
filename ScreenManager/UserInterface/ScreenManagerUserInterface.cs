@@ -46,10 +46,6 @@ namespace Kinovea.ScreenManager
         {
             get { return !splitScreensPanel.Panel2Collapsed; }
         }
-        public bool ThumbnailsViewerVisible
-        {
-            get { return thumbnailsViewer.Visible;}
-        }
         public bool CommonPlaying
         {
             get { return commonControls.Playing; }
@@ -63,9 +59,8 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        public ThumbListView thumbnailsViewer = new ThumbListView();
+        private ThumbListView thumbnailViewer = new ThumbListView();
         private List<String> filenames = new List<String>();
-        private bool thumbnailsWereVisible;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
         
@@ -87,9 +82,7 @@ namespace Kinovea.ScreenManager
             dp.DisplayThumbnails = DoDisplayThumbnails;
 
             // Thumbs are enabled by default.
-            thumbnailsWereVisible = true;
-            thumbnailsViewer.BringToFront();
-
+            thumbnailViewer.BringToFront();
             pnlScreens.BringToFront();
             pnlScreens.Dock     = DockStyle.Fill;
 
@@ -100,7 +93,7 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             commonControls.RefreshUICulture();
-            thumbnailsViewer.RefreshUICulture();
+            thumbnailViewer.RefreshUICulture();
         }
         public void UpdateSyncPosition(long position)
         {
@@ -128,6 +121,13 @@ namespace Kinovea.ScreenManager
         }
         public bool OnKeyPress(Keys key)
         {
+            if(!thumbnailViewer.Visible)
+                return false;
+            
+            return thumbnailViewer.OnKeyPress(key);
+        }
+        public bool CommonKeyPress(Keys key)
+        {
             return commonControls.OnKeyPress(key);
         }
         public void OrganizeScreens(List<AbstractScreen> screenList)
@@ -139,9 +139,9 @@ namespace Kinovea.ScreenManager
                 ClearLeftScreen();
                 ClearRightScreen();
 
-                thumbnailsViewer.Visible = true;
+                thumbnailViewer.Visible = true;
                 this.Cursor = Cursors.WaitCursor;
-                thumbnailsViewer.DisplayThumbnails(filenames);
+                thumbnailViewer.DisplayThumbnails(filenames);
                 this.Cursor = Cursors.Default;
             }
             else
@@ -149,8 +149,8 @@ namespace Kinovea.ScreenManager
                 pnlScreens.Visible = true;
                 this.AllowDrop = false;
                 
-                thumbnailsViewer.Visible = false;
-                thumbnailsViewer.StopLoading();
+                thumbnailViewer.StopLoading();
+                thumbnailViewer.Visible = false;
                 
                 splitScreens.Panel1.Controls.Clear();
                 PrepareLeftScreen(screenList[0].UI);
@@ -165,13 +165,18 @@ namespace Kinovea.ScreenManager
 
         private void InitializeThumbnailsViewer()
         {
-            thumbnailsViewer.Top = 0;
-            thumbnailsViewer.Left = 0;
-            thumbnailsViewer.Width = Width;
-            thumbnailsViewer.Height = Height - pbLogo.Height - 10;
-            thumbnailsViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-            thumbnailsViewer.Visible = true;
-            this.Controls.Add(thumbnailsViewer);
+            thumbnailViewer.Top = 0;
+            thumbnailViewer.Left = 0;
+            thumbnailViewer.Width = Width;
+            thumbnailViewer.Height = Height - pbLogo.Height - 10;
+            thumbnailViewer.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            thumbnailViewer.Visible = true;
+            thumbnailViewer.LoadAsked += (s,e) => {
+                if(LoadAsked != null)
+                    LoadAsked(this, e);
+            };
+            
+            this.Controls.Add(thumbnailViewer);
 		}
         private void IdleDetector(object sender, EventArgs e)
 		{
@@ -266,47 +271,40 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private void btnShowThumbView_Click(object sender, EventArgs e)
-        {
-            thumbnailsViewer.Visible = true;
-            this.Cursor = Cursors.WaitCursor;
-            thumbnailsViewer.DisplayThumbnails(filenames);
-            this.Cursor = Cursors.Default;
-        }
         private void DoDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow)
         {
         	// Keep track of the files, in case we need to bring them back
         	// after closing a screen.
             filenames = _fileNames;
 
-            if(_bRefreshNow)
+            if(!_bRefreshNow)
+                return;
+            
+            if (_fileNames.Count > 0)
             {
-	            if (_fileNames.Count > 0)
-	            {
-	            	thumbnailsViewer.Height = Height - 20; // margin for cosmetic
-	                
-	            	// We keep the Kinovea logo until there is at least 1 thumbnail to show.
-	            	// After that we never display it again.
-	                pbLogo.Visible = false;
-	            }
-	            else
-	            {
-	                thumbnailsViewer.Height = 1;
-	            }
-	
-	            if (thumbnailsViewer.Visible)
-	            {
-	                this.Cursor = Cursors.WaitCursor;
-	                thumbnailsViewer.DisplayThumbnails(_fileNames);
-	                this.Cursor = Cursors.Default;
-	            }
-	            else if (thumbnailsWereVisible)
-	            {
-	                // Thumbnail pane was hidden to show player screen
-	                // Then we changed folder and we don't have anything to show. 
-	                // Let's clean older thumbnails now.
-	                thumbnailsViewer.CleanupThumbnails();
-	            }
+            	thumbnailViewer.Height = Height - 20; // margin for cosmetic
+                
+            	// We keep the Kinovea logo until there is at least 1 thumbnail to show.
+            	// After that we never display it again.
+                pbLogo.Visible = false;
+            }
+            else
+            {
+                thumbnailViewer.Height = 1;
+            }
+
+            if (thumbnailViewer.Visible)
+            {
+                this.Cursor = Cursors.WaitCursor;
+                thumbnailViewer.DisplayThumbnails(_fileNames);
+                this.Cursor = Cursors.Default;
+            }
+            else
+            {
+                // Thumbnail pane was hidden to show player screen
+                // Then we changed folder and we don't have anything to show.
+                // Let's clean older thumbnails now.
+                thumbnailViewer.CleanupThumbnails();
             }
         }
     }

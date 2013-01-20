@@ -166,8 +166,6 @@ namespace Kinovea.ScreenManager
             view = new ScreenManagerUserInterface(this);
             view.LoadAsked += View_LoadAsked;
             
-            view.thumbnailsViewer.LoadAsked += View_LoadAsked;
-            
             InitializeVideoFilters();
             
             // Registers our exposed functions to the DelegatePool.
@@ -967,12 +965,14 @@ namespace Kinovea.ScreenManager
             if (m.Msg != WM_KEYDOWN || !m_bAllowKeyboardHandler || view == null)
                 return false;
 
-            if ((screenList.Count == 0 || m_ActiveScreen == null) && !view.ThumbnailsViewerVisible)
-                return false;
-
-            bool bWasHandled = false;
             Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
+            
+            bool wasHandled = false;
+            wasHandled = view.OnKeyPress(keyCode);
 
+            if(wasHandled)
+                return true;
+            
             switch (keyCode)
             {
             	case Keys.Delete:
@@ -982,50 +982,27 @@ namespace Kinovea.ScreenManager
             	case Keys.F2:
             	case Keys.F7:
                     {
-            			//------------------------------------------------
             			// These keystrokes impact only the active screen.
-            			//------------------------------------------------
-            			if(!view.ThumbnailsViewerVisible)
-							bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);
-						else
-            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);
-
+            			wasHandled = m_ActiveScreen.OnKeyPress(keyCode);
 						break;
                     }
             	case Keys.Escape:
             	case Keys.F6:
                     {
-            			//---------------------------------------------------
             			// These keystrokes impact each screen independently.
-            			//---------------------------------------------------
-            			if(!view.ThumbnailsViewerVisible)
-            			{
-                            foreach (AbstractScreen screen in screenList)
-                                bWasHandled = screen.OnKeyPress(keyCode);
-            			}
-            			else
-            			{
-            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);
-            			}
+            			foreach (AbstractScreen screen in screenList)
+                            wasHandled = screen.OnKeyPress(keyCode);
                         break;
                     }
             	case Keys.Down:
             	case Keys.Up:
             		{
-            			//-----------------------------------------------------------------------
             			// These keystrokes impact only one screen, because it will automatically 
             			// trigger the same change in the other screen.
-            			//------------------------------------------------------------------------
-            			if(!view.ThumbnailsViewerVisible)
-            			{
-            				if(screenList.Count > 0)
-            					bWasHandled = screenList[0].OnKeyPress(keyCode);
-            			}
-            			else
-            			{
-            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);
-            			}
-                        break;
+            			if(screenList.Count > 0)
+            				wasHandled = screenList[0].OnKeyPress(keyCode);
+            			
+            			break;
                     }
                 case Keys.Space:
             	case Keys.Return:
@@ -1034,99 +1011,64 @@ namespace Kinovea.ScreenManager
             	case Keys.End:
             	case Keys.Home:
                     {
-                        //---------------------------------------------------
-            			// These keystrokes impact both screens as a whole.
-            			//---------------------------------------------------
-                       	if(!view.ThumbnailsViewerVisible)
-            			{
-                       		if (screenList.Count == 2)
-                            {
-                       			if(view.CommonControlsVisible)
-                       				bWasHandled = view.OnKeyPress(keyCode);
-                       			else
-                       				bWasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
-                            }
-                            else if(screenList.Count == 1)
-                            {
-                            	bWasHandled = screenList[0].OnKeyPress(keyCode);
-                            }	
-                       	}
-            			else
-            			{
-            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
-            			}
-                        break;
+            			// These keystrokes impact both screens, but only if common controls are visible,
+            			// otherwise only the active screen.
+                       	if (screenList.Count == 2)
+                        {
+                   			if(view.CommonControlsVisible)
+                   				wasHandled = view.CommonKeyPress(keyCode);
+                   			else
+                   				wasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
+                        }
+                        else if(screenList.Count == 1)
+                        {
+                        	wasHandled = screenList[0].OnKeyPress(keyCode);
+                        }	
+            			break;
                     }
-            	//-------------------------------------------------
-            	// All the remaining keystrokes impact both screen, 
-            	// even if the common controls aren't visible.
-            	//-------------------------------------------------
+                    
+            	// All the remaining keystrokes impact both screen, even if the common controls aren't visible.
             	case Keys.Tab:
             	    {
-            			if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-						{
-                			// Change active screen.
-                			if(!view.ThumbnailsViewerVisible)
-                			{
-                				if(screenList.Count == 2)
-                           		{
-                					ActivateOtherScreen();
-                					bWasHandled = true;
-                				}
-                			}
-                			else
-                			{
-                				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
-                			}
-            			}
-            			break;
+            			if ((Control.ModifierKeys & Keys.Control) != Keys.Control)
+            			    return false;
+                        
+            			if(screenList.Count == 2)
+                        {
+            			    // Change active screen.
+                            ActivateOtherScreen();
+                            wasHandled = true;
+                        }
+                        break;
             		}
                 case Keys.F8:
-                	{
-                        // Go to sync frame. 
-                        if(!view.ThumbnailsViewerVisible)
-                		{
-                        	if(m_bSynching)
-                       		{
-                                m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
-                                
-                                // Update
-                                OnCommonPositionChanged(m_iCurrentFrame, true);
-                                view.UpdateTrkFrame(m_iCurrentFrame);
-                                bWasHandled = true;
-                        	}
+                    {
+                        if(m_bSynching)
+                        {
+                            // Go to sync frame. 
+                        	m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
+                            
+                            // Update
+                            OnCommonPositionChanged(m_iCurrentFrame, true);
+                            view.UpdateTrkFrame(m_iCurrentFrame);
+                            wasHandled = true;
                         }
-                        else
-            			{
-            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
-            			}
                         break;
                 	}
                 case Keys.F9:
                     {
-                        //---------------------------------------
-                        // Fonctions associées : 
-                        // Resynchroniser après déplacement individuel
-                        //---------------------------------------
-                       	if(!view.ThumbnailsViewerVisible)
+                        if(m_bSynching)
                         {
-                       		if(m_bSynching)
-                       		{
-                       			SyncCatch();
-                       			bWasHandled = true;
-                       		}
+                            SyncCatch();
+                            wasHandled = true;
                         }
-                       	else
-            			{
-            				bWasHandled = view.thumbnailsViewer.OnKeyPress(keyCode);	
-            			}
                         break;
                     }
                 default:
                     break;
             }
 
-            return bWasHandled;
+            return wasHandled;
         }
         #endregion
         
