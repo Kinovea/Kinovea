@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -19,26 +19,32 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
-namespace Kinovea.Camera
+using Kinovea.Camera;
+
+namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// Small info to display the camera in the UI.
-    /// </summary>
-    public class CameraSummary
+    public partial class ThumbnailCamera : UserControl
     {
-        public string Alias { get; private set;}
-        public string Identifier { get; private set;}
-        public Bitmap Icon { get; private set; }
-        public CameraManager Manager { get; private set;}
+        public CameraSummary Summary { get; private set;}
         
-        public CameraSummary(string alias, string identifier, Bitmap icon, CameraManager manager)
+        public ThumbnailCamera(CameraSummary summary)
         {
-            this.Alias = alias;
-            this.Identifier = identifier;
-            this.Icon = icon;
-            this.Manager = manager;
+            InitializeComponent();
+            this.Summary = summary;
+        }
+        
+        public void SetSize(int width, int height)
+        {
+        
+        }
+        
+        public void UpdateImage(Bitmap image)
+        {
+        
         }
     }
 }

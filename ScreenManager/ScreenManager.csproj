@@ -526,18 +526,22 @@
     <Compile Include="Thumbnails\Archive\ThumbListView.Designer.cs">
       <DependentUpon>ThumbListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\Archive\ThumbListViewItem.cs">
+    <Compile Include="Thumbnails\ThumbnailCamera.cs" />
+    <Compile Include="Thumbnails\ThumbnailCamera.Designer.cs">
+      <DependentUpon>ThumbnailCamera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Thumbnails\ThumbnailFile.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Thumbnails\Archive\ThumbListViewItem.Designer.cs">
-      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
+    <Compile Include="Thumbnails\ThumbnailFile.Designer.cs">
+      <DependentUpon>ThumbnailFile.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\Selector.cs" />
     <Compile Include="Thumbnails\Selector.Designer.cs">
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\SelectorOption.cs" />
-    <Compile Include="Thumbnails\ThumbnailContent.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerContent.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerCameras.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerCameras.Designer.cs">
       <DependentUpon>ThumbnailViewerCameras.cs</DependentUpon>
@@ -669,12 +673,11 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Thumbnails\Archive\ThumbListViewItem.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ThumbListViewItem.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\Selector.resx">
       <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\ThumbnailViewerCameras.resx">
+      <DependentUpon>ThumbnailViewerCameras.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\ThumbnailViewerContainer.resx">
       <DependentUpon>ThumbnailViewerContainer.cs</DependentUpon>

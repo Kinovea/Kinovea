@@ -31,6 +31,7 @@ using System.Threading;
 using System.Windows.Forms;
 
 using ExpTreeLib;
+using Kinovea.Camera;
 using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -52,6 +53,7 @@ namespace Kinovea.FileBrowser
 		private ContextMenuStrip  popMenu = new ContextMenuStrip();
 		private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
+		private ImageList cameraIcons = new ImageList();
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -160,6 +162,10 @@ namespace Kinovea.FileBrowser
 					UpdateFileList(currentExptreeItem, lvExplorer, true, false);
 				}
 			}
+			else if(tabControl.SelectedIndex == 2)
+			{
+                // Refresh for cameras.
+			}
 		}
 		public void RefreshUICulture()
 		{
@@ -202,6 +208,11 @@ namespace Kinovea.FileBrowser
 		{
 			lvShortcuts.Clear();
 		}
+		public void CamerasDiscovered(List<CameraSummary> summaries)
+        {
+            // TODO: Consolidate summaries with the known list.
+		    UpdateCameraList(summaries);
+        }
 		public void Closing()
 		{
 			if(currentExptreeItem != null)
@@ -385,6 +396,30 @@ namespace Kinovea.FileBrowser
 		#endregion
 		
 		#endregion
+		
+		#region Camera tab
+		public void UpdateCameraList(List<CameraSummary> summaries)
+        {
+            lvCameras.BeginUpdate();
+            lvCameras.Items.Clear();
+            lvCameras.SmallImageList = cameraIcons;
+            
+            cameraIcons.Images.Clear();
+            
+            foreach(CameraSummary summary in summaries)
+            {
+                cameraIcons.Images.Add(summary.Identifier, summary.Icon);
+                
+                ListViewItem lvi = new ListViewItem(summary.Alias);
+                lvi.Tag = summary;
+                lvi.ImageKey = summary.Identifier;
+                lvCameras.Items.Add(lvi);
+            }
+            
+            lvCameras.EndUpdate();
+        }
+		#endregion
+		
 		
 		#region Common
 		private void TabControlSelectedIndexChanged(object sender, EventArgs e)

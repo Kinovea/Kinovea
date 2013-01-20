@@ -60,11 +60,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraBlurb.cs" />
+    <Compile Include="CameraImageReceivedEventArgs.cs" />
     <Compile Include="CameraManager.cs" />
+    <Compile Include="CamerasDiscoveredEventArgs.cs" />
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraTypeManager.cs" />
     <Compile Include="FrameGrabber.cs" />
+    <Compile Include="IconLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Icons.Designer.cs">
+      <DependentUpon>Icons.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Icons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

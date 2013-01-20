@@ -30,6 +30,14 @@ namespace Kinovea.Camera
     /// </summary>
     public abstract class CameraManager
     {
+        public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        protected virtual void OnCameraImageReceived(CameraImageReceivedEventArgs e)
+        {
+            EventHandler<CameraImageReceivedEventArgs> invoker = CameraImageReceived;
+            if(invoker != null) 
+                invoker(this, e);
+        }
+        
         /// <summary>
         /// Get the list of reachable cameras, try to connect to each of them to get a snapshot, and return a small summary of the device.
         /// Knowing about the camera is enough, the camera managers should cache the snapshots to avoid connecting to the camera each time.

@@ -32,6 +32,11 @@ namespace Kinovea.Camera
     /// </summary>
     public static class CameraTypeManager
     {
+        #region Events
+        public static event EventHandler<CamerasDiscoveredEventArgs> CamerasDiscovered;
+        public static event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        #endregion
+        
         #region Properties
         public static ReadOnlyCollection<CameraManager> CameraManagers 
         { 
@@ -75,20 +80,33 @@ namespace Kinovea.Camera
                         continue;
                     
                     CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
+                    manager.CameraImageReceived += CameraManager_CameraImageReceived;
                     cameraManagers.Add(manager);
                 }
             }
         }
+
+        private static void CameraManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        {
+            // This runs in a worker thread.
+            // Merge back into the UI thread before sending to thumbnail viewer.
+            if(CameraImageReceived != null)
+                CameraImageReceived(sender, e);
+        }
         
-        public static List<CameraSummary> DiscoverCameras()
+        public static void DiscoverCameras()
         {
             // Read the list of cameras previously seen.
             // Ask each plug-in to discover its cameras.
+            
+            // Problem: the images may start to come in before we finished the tour of all cameras.
+            
             List<CameraSummary> summaries = new List<CameraSummary>();
             foreach(CameraManager manager in cameraManagers)
                 summaries.AddRange(manager.DiscoverCameras(null));
             
-            return summaries;
+            if(CamerasDiscovered != null)
+                CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
         }
         
         #endregion
