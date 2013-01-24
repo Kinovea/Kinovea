@@ -372,7 +372,9 @@
     <Compile Include="PlayerScreen\Tracking\DrawingTrack.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
-    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.Designer.cs">
       <DependentUpon>DropDownMenuContainer.cs</DependentUpon>
     </Compile>
@@ -406,8 +408,12 @@
     <Compile Include="PlayerScreen\UserInterface\Controls\SpeedSlider.designer.cs">
       <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.Designer.cs">
       <DependentUpon>FormCalibratePlane.cs</DependentUpon>
     </Compile>
@@ -759,19 +765,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListViewItem.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PlayerScreen\Drawings\GenericPosture" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\HitZones" />
-    <Folder Include="PlayerScreen\Drawings\Interfaces" />
-    <Folder Include="PlayerScreen\Drawings\Events" />
-    <Folder Include="PlayerScreen\Drawings\Styling" />
-    <Folder Include="PlayerScreen\Geometry" />
-    <Folder Include="PlayerScreen\Export" />
-    <Folder Include="PlayerScreen\Calibration" />
-    <Folder Include="PlayerScreen\Trackability" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
