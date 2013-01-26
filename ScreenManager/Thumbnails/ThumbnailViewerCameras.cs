@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 using Kinovea.Camera;
 using Kinovea.Services;
@@ -32,16 +33,16 @@ namespace Kinovea.ScreenManager
     public partial class ThumbnailViewerCameras : UserControl
     {
         #region Events
-        //public event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
+        public event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         public event ProgressChangedEventHandler ProgressChanged;
         public event EventHandler BeforeLoad;
         public event EventHandler AfterLoad;
         #endregion
         
         #region Members
-        private ThumbnailFile selectedThumbnail;
+        private ThumbnailCamera selectedThumbnail;
         private int columns = (int)ExplorerThumbSize.Large;
-        private Dictionary<string, ThumbnailCamera> thumbnails = new Dictionary<string, ThumbnailCamera>();
+        private List<ThumbnailCamera> thumbnailControls = new List<ThumbnailCamera>();
         private int imageReceived;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -49,10 +50,11 @@ namespace Kinovea.ScreenManager
         public ThumbnailViewerCameras()
         {
             InitializeComponent();
+            //RefreshUICulture();
             this.Dock = DockStyle.Fill;
-            columns = (int)PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
         }
         
+        #region Public methods
         public void CamerasDiscovered(List<CameraSummary> summaries)
         {
             UpdateThumbnailList(summaries);
@@ -60,27 +62,147 @@ namespace Kinovea.ScreenManager
         }
         public void CameraImageReceived(CameraSummary summary, Bitmap image)
         {
-            UpdateThumbnail(summary, image);
+            // This generally runs in a worker thread in the camera manager plug-in.
+            if(this.InvokeRequired)
+                this.BeginInvoke((Action) delegate {UpdateThumbnailImage(summary, image);});
+            else
+                UpdateThumbnailImage(summary, image);
         }
-        
-        private void UpdateThumbnailList(List<CameraSummary> summaries)
+        public bool OnKeyPress(Keys keyCode)
         {
-            // TODO: merge instead of reset.
+            bool handled = false;
             
-            thumbnails.Clear();
-            imageReceived = 0;
-            if(BeforeLoad != null)
-                BeforeLoad(this, EventArgs.Empty);
-
-            foreach(CameraSummary summary in summaries)
+            if(selectedThumbnail == null)
             {
-                ThumbnailCamera thumbnail = new ThumbnailCamera(summary);
-                thumbnail.BackColor = Color.LightGray;
-                thumbnails.Add(summary.Identifier, thumbnail);
-                this.Controls.Add(thumbnail);
+                if(thumbnailControls.Count > 0)
+                    thumbnailControls[0].SetSelected();
+                
+                return true;
             }
             
-            selectedThumbnail = null;
+            int index = IndexOf(selectedThumbnail.Summary.Identifier);
+            int row = index / columns;
+            int col = index - (row * columns);
+            
+            switch (keyCode)
+            {
+                case Keys.Left:
+                {
+                    if(col > 0)
+                        thumbnailControls[index - 1].SetSelected();
+                    handled = true;
+                    break;
+                }
+                case Keys.Right:
+                {
+                    if (col < columns - 1 && index + 1 < thumbnailControls.Count)
+                        thumbnailControls[index + 1].SetSelected();
+                    handled = true;
+                    break;
+                }
+                case Keys.Up:
+                {
+                    if (row > 0)
+                        thumbnailControls[index - columns].SetSelected();
+                    this.ScrollControlIntoView(selectedThumbnail);
+                    handled = true;
+                    break;
+                }
+                case Keys.Down:
+                {
+                    if (index + columns  < thumbnailControls.Count)
+                        thumbnailControls[index + columns].SetSelected();
+                    this.ScrollControlIntoView(selectedThumbnail);
+                    handled = true;
+                    break;
+                }
+                case Keys.Return:
+                {
+                    if (CameraLoadAsked != null)
+                        CameraLoadAsked(this, new CameraLoadAskedEventArgs(selectedThumbnail.Summary, -1));
+                    handled = true;
+                    break;
+                }   
+                case Keys.F2:
+                {
+                    // TODO: launch the alias dialog.
+                    handled = true;
+                    break;
+                }
+                default:
+                    break;
+            }
+            
+            return handled;
+        }
+        
+        public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
+        {
+            this.columns = (int)newSize;
+            if(thumbnailControls.Count > 0)
+                DoLayout();
+        }
+        #endregion
+
+        #region Private methods
+        private void UpdateThumbnailList(List<CameraSummary> summaries)
+        {
+            if(summaries.Count == 0)
+            {
+                if(BeforeLoad != null)
+                    BeforeLoad(this, EventArgs.Empty);
+                    
+                imageReceived = 0;
+            }
+            
+            // Add new cameras.
+            List<string> found = new List<string>();
+            foreach(CameraSummary summary in summaries)
+            {
+                found.Add(summary.Identifier);
+                
+                int index = IndexOf(summary.Identifier);
+                
+                if(index >= 0)
+                {
+                    //if(thumbnailControls[index].Image == null)
+                    //    summary.Manager.GetSingleImage(summary);
+                        
+                    continue;
+                }
+                
+                ThumbnailCamera thumbnail = new ThumbnailCamera(summary);
+                thumbnail.LaunchCamera += Thumbnail_LaunchCamera;
+				thumbnail.CameraSelected += Thumbnail_CameraSelected;
+				
+                thumbnailControls.Add(thumbnail);
+                this.Controls.Add(thumbnail);
+                
+                summary.Manager.GetSingleImage(summary);
+            }
+            
+            // Remove cameras that were disconnected.
+            List<ThumbnailCamera> lost = new List<ThumbnailCamera>();
+            foreach(ThumbnailCamera thumbnail in thumbnailControls)
+            {
+                if(!found.Contains(thumbnail.Summary.Identifier))
+                    lost.Add(thumbnail);
+            }
+            
+            foreach(ThumbnailCamera thumbnail in lost)
+            {
+                this.Controls.Remove(thumbnail);
+                thumbnailControls.Remove(thumbnail);
+            }
+        }
+        
+        private int IndexOf(string identifier)
+        {
+            for(int i = 0; i<thumbnailControls.Count; i++)
+                if(thumbnailControls[i].Summary.Identifier == identifier)
+                    return i;
+            
+            return -1;
         }
         
         private void DoLayout()
@@ -98,7 +220,7 @@ namespace Kinovea.ScreenManager
             int current = 0;
             
             this.SuspendLayout();
-            foreach(ThumbnailCamera thumbnail in thumbnails.Values)
+            foreach(ThumbnailCamera thumbnail in thumbnailControls)
             {
                 thumbnail.SetSize(thumbWidth, thumbHeight);
 
@@ -113,21 +235,28 @@ namespace Kinovea.ScreenManager
             this.ResumeLayout();
         }
         
-        private void UpdateThumbnail(CameraSummary summary, Bitmap image)
+        private void UpdateThumbnailImage(CameraSummary summary, Bitmap image)
         {
             if(summary == null)
                 return;
             
-            if(thumbnails.ContainsKey(summary.Identifier))
-                thumbnails[summary.Identifier].UpdateImage(image);
+            int index = IndexOf(summary.Identifier);
+            if(index < 0)
+                return;
+                
+            bool hasImage = thumbnailControls[index].Image != null;
+            thumbnailControls[index].UpdateImage(image);
+            
+            if(hasImage)
+                return;
             
             imageReceived++;
-            int percentage = (int)(((float)imageReceived / thumbnails.Count) * 100);
+            int percentage = (int)(((float)imageReceived / thumbnailControls.Count) * 100);
             
             if(ProgressChanged != null)
                 ProgressChanged(this, new ProgressChangedEventArgs(percentage, null));
             
-            if(imageReceived >= thumbnails.Count && AfterLoad != null)
+            if(imageReceived >= thumbnailControls.Count && AfterLoad != null)
                 AfterLoad(this, EventArgs.Empty);
         }
         
@@ -135,5 +264,26 @@ namespace Kinovea.ScreenManager
         {
             DoLayout();
         }
+        
+        private void Thumbnail_LaunchCamera(object sender, EventArgs e)
+        {
+            ThumbnailCamera thumbnail = sender as ThumbnailCamera;
+        
+            if (thumbnail != null && CameraLoadAsked != null)
+                CameraLoadAsked(this, new CameraLoadAskedEventArgs(thumbnail.Summary, -1));
+        }
+        private void Thumbnail_CameraSelected(object sender, EventArgs e)
+        {
+            ThumbnailCamera thumbnail = sender as ThumbnailCamera;
+        
+            if(thumbnail == null)
+                return;
+                
+            if (selectedThumbnail != null && selectedThumbnail != thumbnail )
+                selectedThumbnail.SetUnselected();
+        
+            selectedThumbnail = thumbnail;
+        }
+        #endregion
     }
 }

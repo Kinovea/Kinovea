@@ -674,7 +674,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ICommonControlsHandler Implementation
-        public void View_LoadAsked(object source, LoadAskedEventArgs e)
+        public void View_LoadAsked(object source, FileLoadAskedEventArgs e)
         {
             DoLoadMovieInScreen(e.Source, e.Target, true);
         }

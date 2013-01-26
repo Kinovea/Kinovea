@@ -44,11 +44,8 @@ namespace Kinovea.ScreenManager
 	public partial class ThumbnailFile : UserControl
 	{
 		#region Events
-		[Category("Action"), Browsable(true)]
 		public event EventHandler LaunchVideo;
-		[Category("Action"), Browsable(true)]
 		public event EventHandler VideoSelected;
-		[Category("Action"), Browsable(true)]
 		public event EventHandler<EditingEventArgs> FileNameEditing;
 		#endregion
 		
@@ -60,12 +57,6 @@ namespace Kinovea.ScreenManager
 		public bool IsError {
 		    get { return m_IsError;}
 		}
-		/*public ToolTip ToolTipHandler
-		{
-			get { return m_ToolTipHandler; }
-			set { m_ToolTipHandler = value; }
-		}
-		*/
 		#endregion
 		
 		#region Members

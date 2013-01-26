@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
 	/// </summary>
 	public partial class ThumbListView : UserControl
 	{
-	    public event EventHandler<LoadAskedEventArgs> LoadAsked;
+	    public event EventHandler<FileLoadAskedEventArgs> LoadAsked;
 	    
 		#region Members
 		private static readonly int leftMargin = 30;
@@ -212,7 +212,7 @@ namespace Kinovea.ScreenManager
 					case Keys.Return:
 						{
 							if (selectedThumbnail != null && !selectedThumbnail.IsError && LoadAsked != null)
-							    LoadAsked(this, new LoadAskedEventArgs(selectedThumbnail.FileName, -1));
+							    LoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FileName, -1));
 							break;
 						}
 					case Keys.Add:
@@ -411,7 +411,7 @@ namespace Kinovea.ScreenManager
 			ThumbnailFile tlvi = sender as ThumbnailFile;
 			
 			if (tlvi != null && !tlvi.IsError && LoadAsked != null)
-                LoadAsked(this, new LoadAskedEventArgs(tlvi.FileName, -1));
+                LoadAsked(this, new FileLoadAskedEventArgs(tlvi.FileName, -1));
 		}
 		private void ThumbListViewItem_VideoSelected(object sender, EventArgs e)
 		{

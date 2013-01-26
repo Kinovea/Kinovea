@@ -30,6 +30,9 @@ namespace Kinovea.Camera
     /// </summary>
     public abstract class CameraManager
     {
+        /// <summary>
+        /// Event raised by Camera managers to report a new image. (events can't be inherited).
+        /// </summary>
         public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
         protected virtual void OnCameraImageReceived(CameraImageReceivedEventArgs e)
         {
@@ -46,8 +49,15 @@ namespace Kinovea.Camera
         /// <returns></returns>
         public abstract List<CameraSummary> DiscoverCameras(List<CameraBlurb> previouslySeen);
         
-        public abstract FrameGrabber Connect(string identifier);
+        /// <summary>
+        /// Get a single image for thumbnail refresh.
+        /// The function is asynchronous and should raise CameraImageReceived when done.
+        /// </summary>
+        public abstract void GetSingleImage(CameraSummary summary);
         
+        
+        // TODO:
+        public abstract FrameGrabber Connect(string identifier);
         public abstract void ExportCameraBlurb(string identifier);
     }
 }

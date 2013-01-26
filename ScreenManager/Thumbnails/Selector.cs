@@ -27,7 +27,7 @@ using System.Windows.Forms;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// A simple visual selector with buttons.
+    /// A simple generic visual selector with buttons.
     /// </summary>
     public partial class Selector : UserControl
     {

@@ -35,10 +35,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class ThumbnailViewerContainer : UserControl
     {
-        public event EventHandler<LoadAskedEventArgs> LoadAsked;
+        public event EventHandler<FileLoadAskedEventArgs> LoadAsked;
         
         #region Members
         private Selector selector;
+        private SizeSelector sizeSelector = new SizeSelector();
         private ThumbnailViewerContent currentContent = ThumbnailViewerContent.Files;
         private List<string> files;
         private ThumbnailViewerFiles viewerFiles = new ThumbnailViewerFiles();
@@ -50,7 +51,8 @@ namespace Kinovea.ScreenManager
         public ThumbnailViewerContainer()
         {
             InitializeComponent();
-            InitializeSelector();
+            InitializeSizeSelector();
+            InitializeViewerSelector();
             InitializeViewers();
             progressBar.Left = selector.Right + 10;
             progressBar.Visible = false;
@@ -58,28 +60,17 @@ namespace Kinovea.ScreenManager
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
             dp.CurrentDirectoryChanged = CurrentDirectoryChanged;
-            //dp.CameraListChanged
             
-            viewer = viewerFiles;
+            viewer = viewerCameras;
+            currentContent = ThumbnailViewerContent.Cameras;
+            
             this.splitMain.Panel2.Controls.Add(viewer);
             viewer.BringToFront();
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraImageReceived += CameraTypeManager_CameraImageReceived;
-            
-            // TODO: not necessarily the final place for this call.
-            CameraTypeManager.DiscoverCameras();
         }
 
-        private void CameraTypeManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
-        {
-            //e.Image.Save(string.Format("{0}.bmp", e.Summary.Alias));
-            
-            // TODO: this still runs in a worker thread.
-            
-            
-        }
-        
         #region Public methods
         public void RefreshUICulture()
         {
@@ -176,132 +167,75 @@ namespace Kinovea.ScreenManager
             thumbnails.Clear();
             splitResizeBar.Panel2.Controls.Clear();*/
         }
-        public bool OnKeyPress(Keys _keycode)
+        public bool OnKeyPress(Keys keyCode)
         {
-            return false;
-            // Method called from the Screen Manager's PreFilterMessage.
-            /*bool bWasHandled = false;
-            if(splitResizeBar.Panel2.Controls.Count > 0 && !editMode)
-            {
-            // Note that ESC key to cancel editing is handled directly in
-            // each thumbnail item.
-            switch (_keycode)
-            {
-            case Keys.Left:
-            {
-            if (selectedThumbnail == null )
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-            }
-            else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
+            bool handled = false;
             
-            if (iCol > 0)
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - 1]).SetSelected();
-            }
-            break;
-            }
-            case Keys.Right:
+            switch(keyCode)
             {
-            if (selectedThumbnail == null)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
+                case Keys.Add:
+                {
+                    if ((ModifierKeys & Keys.Control) == Keys.Control)
+                    {
+                        sizeSelector.Increase();
+                        handled = true;
+                    }
+                    
+                    break;
+                }
+                case Keys.Subtract:
+                {
+                    if ((ModifierKeys & Keys.Control) == Keys.Control)
+                    {
+                        sizeSelector.Decrease();
+                        handled = true;
+                    }
+                    
+                    break;
+                }
             }
-            else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
             
-            if (iCol < columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
-            }
-            break;
-            }
-            case Keys.Up:
-            {
-            if (selectedThumbnail == null)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-            }
+            if(handled)
+                return true;
+                
+            if (currentContent == ThumbnailViewerContent.Files)
+                return viewerFiles.OnKeyPress(keyCode);
+            else if (currentContent == ThumbnailViewerContent.Shortcuts)
+                return viewerShortcuts.OnKeyPress(keyCode);
             else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
-            
-            if (iRow > 0)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - columns]).SetSelected();
-            }
-            }
-            splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
-            break;
-            }
-            case Keys.Down:
-            {
-            if (selectedThumbnail == null)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-            }
-            else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
-            
-            if ((iRow < splitResizeBar.Panel2.Controls.Count / columns) && index + columns  < splitResizeBar.Panel2.Controls.Count)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + columns]).SetSelected();
-            }
-            }
-            splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
-            break;
-            }
-            case Keys.Return:
-            {
-            if (selectedThumbnail != null && !selectedThumbnail.IsError && LoadAsked != null)
-            LoadAsked(this, new LoadAskedEventArgs(selectedThumbnail.FileName, -1));
-            break;
-            }
-            case Keys.Add:
-            {
-            if ((ModifierKeys & Keys.Control) == Keys.Control)
-            UpSizeThumbs();
-            break;
-            }
-            case Keys.Subtract:
-            {
-            if ((ModifierKeys & Keys.Control) == Keys.Control)
-            DownSizeThumbs();
-            break;
-            }
-            case Keys.F2:
-            {
-            if(selectedThumbnail != null && !selectedThumbnail.IsError)
-            selectedThumbnail.StartRenaming();
-            break;
-            }
-            default:
-            break;
-            }
-            }
-            return bWasHandled;*/
+                return viewerCameras.OnKeyPress(keyCode);
         }
         #endregion
         
         #region Private methods
         private void CameraTypeManager_CamerasDiscovered(object sender,  CamerasDiscoveredEventArgs e)
         {
-            //if(currentContent != ThumbnailViewerContent.Cameras)
-            //    return;
+            if(currentContent != ThumbnailViewerContent.Cameras)
+                return;
                 
             viewerCameras.CamerasDiscovered(e.Summaries);
         }
-        private void InitializeSelector()
+        private void InitializeSizeSelector()
+        {
+            sizeSelector.Left = 30;
+            sizeSelector.SelectionChanged += SizeSelector_SelectionChanged;
+            splitMain.Panel1.Controls.Add(sizeSelector);
+        }
+
+        private void SizeSelector_SelectionChanged(object sender, EventArgs e)
+        {
+            if (currentContent == ThumbnailViewerContent.Files)
+                viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
+            else if (currentContent == ThumbnailViewerContent.Shortcuts)
+                viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
+            else
+                viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
+                
+            PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize = sizeSelector.SelectedSize;
+            PreferencesManager.Save();
+        }
+        
+        private void InitializeViewerSelector()
         {
             SelectorOption optionFiles = new SelectorOption(ScreenManager.Properties.Resources.explorer_video, "", ThumbnailViewerContent.Files);
             SelectorOption optionShortcuts = new SelectorOption(ScreenManager.Properties.Resources.explorer_shortcut, "", ThumbnailViewerContent.Shortcuts);
@@ -328,19 +262,24 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeViewers()
         {
-            viewerFiles.LoadAsked += Viewer_FileLoadAsked;
+            ExplorerThumbSize newSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
+            sizeSelector.ForceSelect(newSize);
+            
+            viewerFiles.UpdateThumbnailsSize(newSize);
+            viewerFiles.FileLoadAsked += Viewer_FileLoadAsked;
             viewerFiles.BeforeLoad += Viewer_BeforeLoad;
             viewerFiles.ProgressChanged += Viewer_ProgressChanged;
             viewerFiles.AfterLoad += Viewer_AfterLoad;
             
-            viewerShortcuts.LoadAsked += Viewer_FileLoadAsked;
+            viewerShortcuts.UpdateThumbnailsSize(newSize);
+            viewerShortcuts.FileLoadAsked += Viewer_FileLoadAsked;
             viewerShortcuts.BeforeLoad += Viewer_BeforeLoad;
             viewerShortcuts.ProgressChanged += Viewer_ProgressChanged;
             viewerShortcuts.AfterLoad += Viewer_AfterLoad;
             
-            // TODO: Events of the camera viewer.
+            viewerCameras.UpdateThumbnailsSize(newSize);
         }
-        private void Viewer_FileLoadAsked(object sender, LoadAskedEventArgs e)
+        private void Viewer_FileLoadAsked(object sender, FileLoadAskedEventArgs e)
         {
             if(LoadAsked != null)
                 LoadAsked(sender, e);
@@ -387,16 +326,19 @@ namespace Kinovea.ScreenManager
             {
                 case ThumbnailViewerContent.Files:
                     {
+                        viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerFiles;
                         break;
                     }
                 case ThumbnailViewerContent.Shortcuts:
                     {
+                        viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerShortcuts;
                         break;
                     }
                 case ThumbnailViewerContent.Cameras:
                     {
+                        viewerCameras.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerCameras;
                         break;
                     }
@@ -424,6 +366,17 @@ namespace Kinovea.ScreenManager
             }
             
             return tab;
+        }
+        private void CameraTypeManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        {
+            // TODO: this still runs in a worker thread.
+            if(currentContent == ThumbnailViewerContent.Cameras)
+                viewerCameras.CameraImageReceived(e.Summary, e.Image);
+        }
+        private void ThumbnailViewerContainerLoad(object sender, EventArgs e)
+        {
+            // TODO: not necessarily the final place for this call.
+            CameraTypeManager.DiscoverCameras();
         }
         #endregion
     }

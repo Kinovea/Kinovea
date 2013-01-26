@@ -50,6 +50,7 @@ namespace Kinovea.Camera
         #region Members
         private static List<CameraManager> cameraManagers = new List<CameraManager>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static Timer timerDiscovery = new Timer();
         #endregion
         
         #region Public methods
@@ -86,29 +87,19 @@ namespace Kinovea.Camera
             }
         }
 
-        private static void CameraManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
-        {
-            // This runs in a worker thread.
-            // Merge back into the UI thread before sending to thumbnail viewer.
-            if(CameraImageReceived != null)
-                CameraImageReceived(sender, e);
-        }
-        
         public static void DiscoverCameras()
         {
-            // Read the list of cameras previously seen.
-            // Ask each plug-in to discover its cameras.
-            
-            // Problem: the images may start to come in before we finished the tour of all cameras.
-            
-            List<CameraSummary> summaries = new List<CameraSummary>();
-            foreach(CameraManager manager in cameraManagers)
-                summaries.AddRange(manager.DiscoverCameras(null));
-            
-            if(CamerasDiscovered != null)
-                CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
+            timerDiscovery.Interval = 1000;
+            timerDiscovery.Tick += timerDiscovery_Tick;
+            timerDiscovery.Enabled = true;
         }
         
+        public static void StopDiscoveringCameras()
+        {
+            timerDiscovery.Enabled = false;
+            timerDiscovery.Tick -= timerDiscovery_Tick;
+        }
+
         #endregion
         
         #region Private methods
@@ -123,6 +114,35 @@ namespace Kinovea.Camera
             {
                 log.ErrorFormat("Could not load assembly {0} for camera types plugin", filename);
             }
+        }
+        
+        private static void timerDiscovery_Tick(object sender, EventArgs e)
+        {
+            CheckCameras();
+         }
+        
+        private static void CheckCameras()
+        {
+            // Ask each plug-in to discover its cameras.
+            // This can be dynamic or based on previously saved data.
+            // Camera managers should also try to connect to the cameras and raise the CameraImageReceived event.
+            List<CameraSummary> summaries = new List<CameraSummary>();
+            foreach(CameraManager manager in cameraManagers)
+                summaries.AddRange(manager.DiscoverCameras(null));
+            
+            if(CamerasDiscovered != null)
+                CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
+        }
+        
+        /// <summary>
+        /// Receive a single image from a camera and forward it upstream.
+        /// </summary>
+        private static void CameraManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        {
+            // This runs in a worker thread.
+            // The final event handler will have to merge back into the UI thread before using the bitmap.
+            if(CameraImageReceived != null /*&& timerDiscovery.Enabled*/)
+                CameraImageReceived(sender, e);
         }
         #endregion
     }
