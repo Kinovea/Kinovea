@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
         public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
         #endregion
 
-        public event EventHandler<LoadAskedEventArgs> LoadAsked;
+        public event EventHandler<FileLoadAskedEventArgs> LoadAsked;
         
         #region Properties
         public bool CommonControlsVisible 
@@ -179,7 +179,7 @@ namespace Kinovea.ScreenManager
 			// Launch file.
 			string filePath = CommandLineArgumentManager.Instance().InputFile;
 			if(filePath != null && File.Exists(filePath) && LoadAsked != null)
-			    LoadAsked(this, new LoadAskedEventArgs(filePath, -1));
+			    LoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
 		}
         private void pnlScreens_Resize(object sender, EventArgs e)
         {
@@ -228,17 +228,17 @@ namespace Kinovea.ScreenManager
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {
             if(LoadAsked != null)
-                LoadAsked(this, new LoadAskedEventArgs(GetDroppedObject(e), -1));
+                LoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), -1));
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
             if(LoadAsked != null)
-                LoadAsked(this, new LoadAskedEventArgs( GetDroppedObject(e), 1));
+                LoadAsked(this, new FileLoadAskedEventArgs( GetDroppedObject(e), 1));
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
             if(LoadAsked != null)
-                LoadAsked(this, new LoadAskedEventArgs(GetDroppedObject(e), 2));
+                LoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), 2));
         }
         private string GetDroppedObject(DragEventArgs e)
         {

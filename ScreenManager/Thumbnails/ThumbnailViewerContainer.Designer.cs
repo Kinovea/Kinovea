@@ -50,11 +50,6 @@ namespace Kinovea.ScreenManager
         {
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.btnLarge = new System.Windows.Forms.Button();
-            this.btnMedium = new System.Windows.Forms.Button();
-            this.btnSmall = new System.Windows.Forms.Button();
-            this.btnExtraLarge = new System.Windows.Forms.Button();
-            this.btnExtraSmall = new System.Windows.Forms.Button();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.SuspendLayout();
             this.SuspendLayout();
@@ -73,11 +68,6 @@ namespace Kinovea.ScreenManager
             // 
             this.splitMain.Panel1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.splitMain.Panel1.Controls.Add(this.progressBar);
-            this.splitMain.Panel1.Controls.Add(this.btnLarge);
-            this.splitMain.Panel1.Controls.Add(this.btnMedium);
-            this.splitMain.Panel1.Controls.Add(this.btnSmall);
-            this.splitMain.Panel1.Controls.Add(this.btnExtraLarge);
-            this.splitMain.Panel1.Controls.Add(this.btnExtraSmall);
             this.splitMain.Size = new System.Drawing.Size(553, 387);
             this.splitMain.SplitterDistance = 30;
             this.splitMain.TabIndex = 0;
@@ -91,81 +81,6 @@ namespace Kinovea.ScreenManager
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 24;
             // 
-            // btnLarge
-            // 
-            this.btnLarge.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnLarge.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnLarge.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnLarge.FlatAppearance.BorderSize = 0;
-            this.btnLarge.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnLarge.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnLarge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLarge.Location = new System.Drawing.Point(87, 10);
-            this.btnLarge.Name = "btnLarge";
-            this.btnLarge.Size = new System.Drawing.Size(20, 15);
-            this.btnLarge.TabIndex = 23;
-            this.btnLarge.UseVisualStyleBackColor = false;
-            // 
-            // btnMedium
-            // 
-            this.btnMedium.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnMedium.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnMedium.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnMedium.FlatAppearance.BorderSize = 0;
-            this.btnMedium.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnMedium.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnMedium.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMedium.Location = new System.Drawing.Point(65, 13);
-            this.btnMedium.Name = "btnMedium";
-            this.btnMedium.Size = new System.Drawing.Size(16, 12);
-            this.btnMedium.TabIndex = 22;
-            this.btnMedium.UseVisualStyleBackColor = false;
-            // 
-            // btnSmall
-            // 
-            this.btnSmall.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnSmall.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSmall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSmall.FlatAppearance.BorderSize = 0;
-            this.btnSmall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnSmall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnSmall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSmall.Location = new System.Drawing.Point(47, 16);
-            this.btnSmall.Name = "btnSmall";
-            this.btnSmall.Size = new System.Drawing.Size(12, 9);
-            this.btnSmall.TabIndex = 21;
-            this.btnSmall.UseVisualStyleBackColor = false;
-            // 
-            // btnExtraLarge
-            // 
-            this.btnExtraLarge.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnExtraLarge.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnExtraLarge.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExtraLarge.FlatAppearance.BorderSize = 0;
-            this.btnExtraLarge.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnExtraLarge.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnExtraLarge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExtraLarge.Location = new System.Drawing.Point(113, 7);
-            this.btnExtraLarge.Name = "btnExtraLarge";
-            this.btnExtraLarge.Size = new System.Drawing.Size(24, 18);
-            this.btnExtraLarge.TabIndex = 20;
-            this.btnExtraLarge.UseVisualStyleBackColor = false;
-            // 
-            // btnExtraSmall
-            // 
-            this.btnExtraSmall.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnExtraSmall.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnExtraSmall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExtraSmall.FlatAppearance.BorderSize = 0;
-            this.btnExtraSmall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnExtraSmall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightSteelBlue;
-            this.btnExtraSmall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExtraSmall.Location = new System.Drawing.Point(33, 19);
-            this.btnExtraSmall.Name = "btnExtraSmall";
-            this.btnExtraSmall.Size = new System.Drawing.Size(8, 6);
-            this.btnExtraSmall.TabIndex = 19;
-            this.btnExtraSmall.UseVisualStyleBackColor = false;
-            // 
             // ThumbnailViewerContainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -173,15 +88,11 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(this.splitMain);
             this.Name = "ThumbnailViewerContainer";
             this.Size = new System.Drawing.Size(553, 387);
+            this.Load += new System.EventHandler(this.ThumbnailViewerContainerLoad);
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.ResumeLayout(false);
             this.ResumeLayout(false);
         }
-        private System.Windows.Forms.Button btnExtraSmall;
-        private System.Windows.Forms.Button btnExtraLarge;
-        private System.Windows.Forms.Button btnSmall;
-        private System.Windows.Forms.Button btnMedium;
-        private System.Windows.Forms.Button btnLarge;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.SplitContainer splitMain;
     }

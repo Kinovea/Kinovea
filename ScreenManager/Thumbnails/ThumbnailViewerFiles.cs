@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class ThumbnailViewerFiles : UserControl
     {
-        public event EventHandler<LoadAskedEventArgs> LoadAsked;
+        public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
         public event ProgressChangedEventHandler ProgressChanged;
         public event EventHandler BeforeLoad;
         public event EventHandler AfterLoad;
@@ -45,19 +45,16 @@ namespace Kinovea.ScreenManager
 		private List<SummaryLoader> loaders = new List<SummaryLoader>();
 		private List<ThumbnailFile> thumbnails = new List<ThumbnailFile>();
 		private ThumbnailFile selectedThumbnail;
-		private bool editMode;
+		private bool editing;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         public ThumbnailViewerFiles()
         {
             log.Debug("Constructing ThumbListView");
-			
-			InitializeComponent();
-			RefreshUICulture();
-
-			columns = (int)PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
-			
+            
+            InitializeComponent();
+            RefreshUICulture();
             this.Dock = DockStyle.Fill;
         }
         
@@ -97,126 +94,88 @@ namespace Kinovea.ScreenManager
             thumbnails.Clear();
             this.Controls.Clear();
         }
-        public bool OnKeyPress(Keys _keycode)
+        public bool OnKeyPress(Keys keyCode)
         {
-            return false;
-            // Method called from the Screen Manager's PreFilterMessage.
-            /*bool bWasHandled = false;
-            if(splitResizeBar.Panel2.Controls.Count > 0 && !editMode)
-            {
-            // Note that ESC key to cancel editing is handled directly in
-            // each thumbnail item.
-            switch (_keycode)
-            {
-            case Keys.Left:
-            {
-            if (selectedThumbnail == null )
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-            }
-            else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
+            bool handled = false;
             
-            if (iCol > 0)
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - 1]).SetSelected();
-            }
-            break;
-            }
-            case Keys.Right:
+            if(selectedThumbnail == null)
             {
-            if (selectedThumbnail == null)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
+                if(thumbnails.Count > 0)
+                    thumbnails[0].SetSelected();
+                
+                return true;
             }
-            else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
             
-            if (iCol < columns - 1 && index + 1 < splitResizeBar.Panel2.Controls.Count)
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + 1]).SetSelected();
-            }
-            break;
-            }
-            case Keys.Up:
-            {
-            if (selectedThumbnail == null)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-            }
-            else
-            {
+            if(editing)
+                return true;
+                
             int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
+            int row = index / columns;
+            int col = index - (row * columns);
             
-            if (iRow > 0)
+            switch (keyCode)
             {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index - columns]).SetSelected();
+                case Keys.Left:
+                {
+                    if(col > 0)
+                        thumbnails[index - 1].SetSelected();
+                    handled = true;
+                    break;
+                }
+                case Keys.Right:
+                {
+                    if (col < columns - 1 && index + 1 < thumbnails.Count)
+                        thumbnails[index + 1].SetSelected();
+                    handled = true;
+                    break;
+                }
+                case Keys.Up:
+                {
+                    if (row > 0)
+                        thumbnails[index - columns].SetSelected();
+                    this.ScrollControlIntoView(selectedThumbnail);
+                    handled = true;
+                    break;
+                }
+                case Keys.Down:
+                {
+                    if (index + columns  < thumbnails.Count)
+                        thumbnails[index + columns].SetSelected();
+                    this.ScrollControlIntoView(selectedThumbnail);
+                    handled = true;
+                    break;
+                }
+                case Keys.Return:
+                {
+                    if (!selectedThumbnail.IsError && FileLoadAsked != null)
+                        FileLoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FileName, -1));
+                    handled = true;
+                    break;
+                }   
+                case Keys.F2:
+                {
+                    if(!selectedThumbnail.IsError)
+                        selectedThumbnail.StartRenaming();
+                    handled = true;
+                    break;
+                }
+                default:
+                    break;
             }
-            }
-            splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
-            break;
-            }
-            case Keys.Down:
-            {
-            if (selectedThumbnail == null)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[0]).SetSelected();
-            }
-            else
-            {
-            int index = (int)selectedThumbnail.Tag;
-            int iRow = index / columns;
-            int iCol = index - (iRow * columns);
             
-            if ((iRow < splitResizeBar.Panel2.Controls.Count / columns) && index + columns  < splitResizeBar.Panel2.Controls.Count)
-            {
-            ((ThumbListViewItem)splitResizeBar.Panel2.Controls[index + columns]).SetSelected();
-            }
-            }
-            splitResizeBar.Panel2.ScrollControlIntoView(selectedThumbnail);
-            break;
-            }
-            case Keys.Return:
-            {
-            if (selectedThumbnail != null && !selectedThumbnail.IsError && LoadAsked != null)
-            LoadAsked(this, new LoadAskedEventArgs(selectedThumbnail.FileName, -1));
-            break;
-            }
-            case Keys.Add:
-            {
-            if ((ModifierKeys & Keys.Control) == Keys.Control)
-            UpSizeThumbs();
-            break;
-            }
-            case Keys.Subtract:
-            {
-            if ((ModifierKeys & Keys.Control) == Keys.Control)
-            DownSizeThumbs();
-            break;
-            }
-            case Keys.F2:
-            {
-            if(selectedThumbnail != null && !selectedThumbnail.IsError)
-            selectedThumbnail.StartRenaming();
-            break;
-            }
-            default:
-            break;
-            }
-            }
-            return bWasHandled;*/
+            return handled;
         }
         public void RefreshUICulture()
 		{
 			foreach(ThumbnailFile tlvi in thumbnails)
 			    tlvi.RefreshUICulture();
 		}
+        public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
+        {
+            this.columns = (int)newSize;
+            if(thumbnails.Count > 0)
+                DoLayout();
+        }
         #endregion
         
         #region Private methods
@@ -275,65 +234,6 @@ namespace Kinovea.ScreenManager
 		        AfterLoad(this, EventArgs.Empty);
 		}
 		
-		/*private void UpSizeThumbs()
-		{
-			DeselectAllSizingButtons();
-
-			switch (columns)
-			{
-				case (int)ExplorerThumbSize.ExtraSmall:
-					columns = (int)ExplorerThumbSize.Small;
-					btnSmall.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.Small:
-					columns = (int)ExplorerThumbSize.Medium;
-					btnMedium.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.Medium:
-					columns = (int)ExplorerThumbSize.Large;
-					btnLarge.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.Large:
-				default:
-					columns = (int)ExplorerThumbSize.ExtraLarge;
-					btnExtraLarge.BackColor = Color.LightSteelBlue;
-					break;
-			}
-
-			splitResizeBar.Panel2.Invalidate();
-		}*/
-		/*private void DownSizeThumbs()
-		{
-			DeselectAllSizingButtons();
-
-			switch (columns)
-			{
-				case (int)ExplorerThumbSize.Small:
-					columns = (int)ExplorerThumbSize.ExtraSmall;
-					btnExtraSmall.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.Medium:
-					columns = (int)ExplorerThumbSize.Small;
-					btnSmall.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.Large:
-					columns = (int)ExplorerThumbSize.Medium;
-					btnMedium.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.ExtraLarge:
-					columns = (int)ExplorerThumbSize.Large;
-					btnLarge.BackColor = Color.LightSteelBlue;
-					break;
-				case (int)ExplorerThumbSize.ExtraSmall:
-				default:
-					columns = (int)ExplorerThumbSize.ExtraSmall;
-					btnExtraSmall.BackColor = Color.LightSteelBlue;
-					break;
-			}
-
-			//OrganizeThumbnailsByColumns(m_Columns);
-			splitResizeBar.Panel2.Invalidate();
-		}*/
 		private void DoLayout()
 		{
             int leftMargin = 30;
@@ -374,8 +274,8 @@ namespace Kinovea.ScreenManager
 			CancelEditMode();
 			ThumbnailFile tlvi = sender as ThumbnailFile;
 			
-			if (tlvi != null && !tlvi.IsError && LoadAsked != null)
-                LoadAsked(this, new LoadAskedEventArgs(tlvi.FileName, -1));
+			if (tlvi != null && !tlvi.IsError && FileLoadAsked != null)
+                FileLoadAsked(this, new FileLoadAskedEventArgs(tlvi.FileName, -1));
 		}
 		private void ThumbListViewItem_VideoSelected(object sender, EventArgs e)
 		{
@@ -395,7 +295,7 @@ namespace Kinovea.ScreenManager
 			// Make sure the keyboard handling doesn't interfere 
 			// if one thumbnail is in edit mode.
         	// There should only be one thumbnail in edit mode at a time.
-			editMode = e.Editing;
+			editing = e.Editing;
         }
 		#endregion
 
@@ -419,7 +319,7 @@ namespace Kinovea.ScreenManager
         
         private void CancelEditMode()
         {
-        	editMode = false;
+        	editing = false;
         	
         	// Browse all thumbs and make sure they are all in normal mode.
         	for (int i = 0; i < this.Controls.Count; i++)

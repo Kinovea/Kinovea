@@ -57,7 +57,7 @@ namespace Kinovea.Camera
         public void Run(object data)
         {
             device.Start();
-            waitHandle.WaitOne(1000);
+            waitHandle.WaitOne(5000);
             
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
@@ -69,6 +69,8 @@ namespace Kinovea.Camera
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
+            // Note: unfortunately some devices need several frames to have a usable image.
+            
             // A full copy of the image seems to be needed.
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);

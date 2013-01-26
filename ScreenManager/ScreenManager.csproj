@@ -236,7 +236,6 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
-    <Compile Include="LoadAskedEventArgs.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationPlane.cs" />
@@ -526,6 +525,12 @@
     <Compile Include="Thumbnails\Archive\ThumbListView.Designer.cs">
       <DependentUpon>ThumbListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Thumbnails\CameraLoadAskedEventArgs.cs" />
+    <Compile Include="Thumbnails\FileLoadAskedEventArgs.cs" />
+    <Compile Include="Thumbnails\SizeSelector.cs" />
+    <Compile Include="Thumbnails\SizeSelector.Designer.cs">
+      <DependentUpon>SizeSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="Thumbnails\ThumbnailCamera.cs" />
     <Compile Include="Thumbnails\ThumbnailCamera.Designer.cs">
       <DependentUpon>ThumbnailCamera.cs</DependentUpon>
@@ -675,6 +680,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\Selector.resx">
       <DependentUpon>Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\SizeSelector.resx">
+      <DependentUpon>SizeSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\ThumbnailCamera.resx">
+      <DependentUpon>ThumbnailCamera.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\ThumbnailViewerCameras.resx">
       <DependentUpon>ThumbnailViewerCameras.cs</DependentUpon>

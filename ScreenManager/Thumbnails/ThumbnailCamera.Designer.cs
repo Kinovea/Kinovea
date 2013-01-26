@@ -48,11 +48,60 @@ namespace Kinovea.ScreenManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.lblAlias = new System.Windows.Forms.Label();
+            this.picBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
+            this.SuspendLayout();
             // 
-            // CameraThumbnail
+            // lblAlias
             // 
+            this.lblAlias.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAlias.BackColor = System.Drawing.Color.White;
+            this.lblAlias.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblAlias.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAlias.ForeColor = System.Drawing.Color.Black;
+            this.lblAlias.Location = new System.Drawing.Point(0, 178);
+            this.lblAlias.Name = "lblAlias";
+            this.lblAlias.Size = new System.Drawing.Size(240, 15);
+            this.lblAlias.TabIndex = 5;
+            this.lblAlias.Text = "Camera Alias";
+            this.lblAlias.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblAlias.Click += new System.EventHandler(this.AllControls_Click);
+            this.lblAlias.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+            // 
+            // picBox
+            // 
+            this.picBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.picBox.BackColor = System.Drawing.Color.Transparent;
+            this.picBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.picBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.picBox.Location = new System.Drawing.Point(3, 1);
+            this.picBox.Name = "picBox";
+            this.picBox.Size = new System.Drawing.Size(234, 174);
+            this.picBox.TabIndex = 4;
+            this.picBox.TabStop = false;
+            this.picBox.Click += new System.EventHandler(this.AllControls_Click);
+            this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBox_Paint);
+            this.picBox.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+            // 
+            // ThumbnailCamera
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "CameraThumbnail";
+            this.BackColor = System.Drawing.Color.Transparent;
+            this.Controls.Add(this.lblAlias);
+            this.Controls.Add(this.picBox);
+            this.Name = "ThumbnailCamera";
+            this.Size = new System.Drawing.Size(240, 195);
+            this.Click += new System.EventHandler(this.AllControls_Click);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbnailCamera_Paint);
+            this.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+            ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
+            this.ResumeLayout(false);
         }
+        public System.Windows.Forms.PictureBox picBox;
+        public System.Windows.Forms.Label lblAlias;
     }
 }

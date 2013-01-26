@@ -35,12 +35,19 @@ namespace Kinovea.Camera.DirectShow
         #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraBlurb> blurbCache = new Dictionary<string, CameraBlurb>();
+        private Bitmap defaultIcon;
         #endregion
+        
+        public CameraManagerDirectShow()
+        {
+            defaultIcon = IconLibrary.GetIcon("webcam");
+        }
         
         public override List<CameraSummary> DiscoverCameras(List<CameraBlurb> previouslySeen)
         {
             // DirectShow has active discovery. We just ask for the list of cameras connected to the PC.
             List<CameraSummary> summaries = new List<CameraSummary>();
+            List<CameraBlurb> found = new List<CameraBlurb>();
             
             FilterInfoCollection cameras = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             
@@ -51,41 +58,63 @@ namespace Kinovea.Camera.DirectShow
                 // Check if we should extract the serial number part so that we don't change id when changing USB port.
                 string identifier = camera.MonikerString;
                 
-                if(blurbCache.ContainsKey(identifier))
-                    continue;
-                
-                log.DebugFormat("DirectShow camera. Name:{0}, Moniker:{1}", camera.Name, camera.MonikerString);
-                
                 string alias = camera.Name;
-                bool known = false;
-                if(previouslySeen != null)
+                bool cached = blurbCache.ContainsKey(identifier);
+                
+                //log.DebugFormat("DirectShow camera. Name:{0}, Moniker:{1}", camera.Name, camera.MonikerString);
+                log.DebugFormat("DirectShow camera. Name:{0}.", camera.Name);
+                
+                /*if(previouslySeen != null)
                 {
+                    // This will allow to retrieve the customised alias/icon.
                     foreach(CameraBlurb b in previouslySeen)
                     {
                         if(b.Identifier == identifier)
+                        {
                             alias = b.Alias;
+                            icon = b.Icon;
+                        }
                     }
-                }
+                }*/
                 
-                CameraBlurb blurb = new CameraBlurb("DirectShow", identifier, alias, null);
-                blurbCache.Add(identifier, blurb);
-                
-                Bitmap defaultIcon = Camera.IconLibrary.GetIcon("webcam");
                 CameraSummary summary = new CameraSummary(alias, identifier, defaultIcon, this);
                 summaries.Add(summary);
                 
-                // Spawn a thread to get a snapshot.
-                SnapshotRetriever retriever = new SnapshotRetriever(summary, camera.MonikerString);
-                retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
-                ThreadPool.QueueUserWorkItem(retriever.Run);
+                if(cached)
+                    found.Add(blurbCache[identifier]);
+                    
+                if(!cached)
+                {
+                    CameraBlurb blurb = new CameraBlurb("DirectShow", identifier, alias, null);
+                    blurbCache.Add(identifier, blurb);
+                    found.Add(blurb);
+                    
+                    //GetSingleImage(summary);
+                }
             }
+            
+            List<CameraBlurb> lost = new List<CameraBlurb>();
+            foreach(CameraBlurb blurb in blurbCache.Values)
+            {
+                if(!found.Contains(blurb))
+                   lost.Add(blurb);
+            }
+            
+            foreach(CameraBlurb blurb in lost)
+                blurbCache.Remove(blurb.Identifier);
 
             return summaries;
         }
-
-        private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        
+        public override void GetSingleImage(CameraSummary summary)
         {
-            OnCameraImageReceived(e);
+            // TODO: Retrieve moniker from identifier.
+            string moniker = summary.Identifier;
+            
+            // Spawn a thread to get a snapshot.
+            SnapshotRetriever retriever = new SnapshotRetriever(summary, moniker);
+            retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
+            ThreadPool.QueueUserWorkItem(retriever.Run);
         }
         
         public override FrameGrabber Connect(string identifier)
@@ -101,6 +130,15 @@ namespace Kinovea.Camera.DirectShow
                 
             //}
             throw new NotImplementedException();
+        }
+        
+        private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
+        {
+            SnapshotRetriever retriever = sender as SnapshotRetriever;
+            if(retriever != null)
+                retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
+                
+            OnCameraImageReceived(e);
         }
     }
 }

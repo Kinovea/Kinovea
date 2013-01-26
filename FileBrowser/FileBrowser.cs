@@ -88,8 +88,6 @@ namespace Kinovea.FileBrowser
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
         {
             // Update list of cameras.
-            int dbg = 42;
-            
             view.CamerasDiscovered(e.Summaries);
         }
     }
