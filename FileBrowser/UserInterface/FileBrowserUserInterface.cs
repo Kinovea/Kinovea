@@ -426,8 +426,13 @@ namespace Kinovea.FileBrowser
 		{
 			// Active tab changed.
 			// We don't save to file now as this is not a critical data to loose.
-			PreferencesManager.FileExplorerPreferences.ActiveTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+			ActiveFileBrowserTab newTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+			PreferencesManager.FileExplorerPreferences.ActiveTab = newTab;
 			
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.ExplorerTabChanged != null)
+                dp.ExplorerTabChanged(newTab);
+		
 			DoRefreshFileList(true);
 		}
 		private void _tabControl_KeyDown(object sender, KeyEventArgs e)
