@@ -43,6 +43,7 @@ namespace Kinovea.Services
     public delegate void ThumbnailsContainer(bool shortcuts, List<String> files, bool refresh);
     public delegate void FileExplorerRefresher(bool _bRefreshThumbnails);
     public delegate void FileExplorerTabChanger(ActiveFileBrowserTab tab);
+    public delegate void ExplorerTabChanged(ActiveFileBrowserTab tab);
     
     public class DelegatesPool
     {
@@ -56,6 +57,7 @@ namespace Kinovea.Services
         public ThumbnailsContainer CurrentDirectoryChanged;
         public FileExplorerRefresher RefreshFileExplorer;
         public FileExplorerTabChanger ChangeFileExplorerTab;
+        public ExplorerTabChanged ExplorerTabChanged;
   
         private static DelegatesPool _instance = null;
         

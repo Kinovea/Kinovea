@@ -60,6 +60,7 @@ namespace Kinovea.ScreenManager
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
             dp.CurrentDirectoryChanged = CurrentDirectoryChanged;
+            dp.ExplorerTabChanged = ExplorerTab_Changed;
             
             viewer = viewerCameras;
             currentContent = ThumbnailViewerContent.Cameras;
@@ -84,8 +85,8 @@ namespace Kinovea.ScreenManager
             if(!refresh)
                 return;
             
-            ThumbnailViewerContent newContent = shortcuts ? ThumbnailViewerContent.Shortcuts : ThumbnailViewerContent.Files;
-            SwitchContent(newContent);
+            if(currentContent != ThumbnailViewerContent.Files && currentContent != ThumbnailViewerContent.Shortcuts)
+                return;
             
             if(shortcuts)
                 viewerShortcuts.CurrentDirectoryChanged(files);
@@ -208,6 +209,11 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
+        private void ExplorerTab_Changed(ActiveFileBrowserTab newTab)
+        {
+            SwitchContent(GetThumbnailViewerContent(newTab));
+        }
+
         private void CameraTypeManager_CamerasDiscovered(object sender,  CamerasDiscoveredEventArgs e)
         {
             if(currentContent != ThumbnailViewerContent.Cameras)
@@ -215,6 +221,7 @@ namespace Kinovea.ScreenManager
                 
             viewerCameras.CamerasDiscovered(e.Summaries);
         }
+
         private void InitializeSizeSelector()
         {
             sizeSelector.Left = 30;
@@ -254,12 +261,18 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(selector);
             selector.BringToFront();
         }
+        
         private void Selector_SelectionChanged(object sender, EventArgs e)
         {
             SelectorOption option = selector.Selected;
             ThumbnailViewerContent selectedContent = (ThumbnailViewerContent)option.Data;
             SwitchContent(selectedContent);
+            
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.ChangeFileExplorerTab != null)
+                dp.ChangeFileExplorerTab(GetFileExplorerTab(selectedContent));
         }
+        
         private void InitializeViewers()
         {
             ExplorerThumbSize newSize = PreferencesManager.FileExplorerPreferences.ExplorerThumbsSize;
@@ -279,6 +292,7 @@ namespace Kinovea.ScreenManager
             
             viewerCameras.UpdateThumbnailsSize(newSize);
         }
+        
         private void Viewer_FileLoadAsked(object sender, FileLoadAskedEventArgs e)
         {
             if(LoadAsked != null)
@@ -313,10 +327,6 @@ namespace Kinovea.ScreenManager
                 viewerShortcuts.CancelLoading();
                 viewerShortcuts.Clear();
             }
-            
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ChangeFileExplorerTab != null)
-                dp.ChangeFileExplorerTab(GetFileExplorerTab(newContent));
             
             this.splitMain.Panel2.Controls.Clear();
             
@@ -367,9 +377,27 @@ namespace Kinovea.ScreenManager
             
             return tab;
         }
+        private ThumbnailViewerContent GetThumbnailViewerContent(ActiveFileBrowserTab tab)
+        {
+            ThumbnailViewerContent content = ThumbnailViewerContent.Files;
+            
+            switch(tab)
+            {
+                case ActiveFileBrowserTab.Explorer:
+                    content = ThumbnailViewerContent.Files;
+                    break;
+                case ActiveFileBrowserTab.Shortcuts:
+                    content = ThumbnailViewerContent.Shortcuts;
+                    break;
+                case ActiveFileBrowserTab.Cameras:
+                    content = ThumbnailViewerContent.Cameras;
+                    break;
+            }
+            
+            return content;
+        }
         private void CameraTypeManager_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
-            // TODO: this still runs in a worker thread.
             if(currentContent == ThumbnailViewerContent.Cameras)
                 viewerCameras.CameraImageReceived(e.Summary, e.Image);
         }
