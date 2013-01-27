@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         #region Events
         public event EventHandler LaunchCamera;
         public event EventHandler CameraSelected;
+        public event EventHandler SummaryUpdated;
         #endregion
         
         #region Properties
@@ -42,7 +43,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private ContextMenuStrip  popMenu = new ContextMenuStrip();
+        private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
         private bool selected;
@@ -56,7 +57,9 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             this.Summary = summary;
             BuildContextMenus();
+            
             RefreshUICulture();
+            btnIcon.BackgroundImage = summary.Icon;
         }
         
         #region Public methods
@@ -65,18 +68,21 @@ namespace Kinovea.ScreenManager
             this.Width = width;
             this.Height = height;
             RatioStretch();
+            RelocateInfo();
         }
         
         public void UpdateImage(Bitmap image)
         {
             this.Image = image;
+            RatioStretch();
+            RelocateInfo();
             this.Invalidate();
         }
         public void RefreshUICulture()
         {
             lblAlias.Text = Summary.Alias;
-            mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
-            mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
+            mnuLaunch.Text = "Open"; //ScreenManagerLang.mnuThumbnailPlay;
+            mnuRename.Text = "Rename"; //ScreenManagerLang.mnuThumbnailRename;
         }
         public void SetUnselected()
         {
@@ -114,13 +120,21 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             mnuLaunch.Image = Properties.Resources.film_go;
-            mnuLaunch.Click += new EventHandler(mnuLaunch_Click);
+            mnuLaunch.Click += mnuLaunch_Click;
             mnuRename.Image = Properties.Resources.rename;
-            mnuRename.Click += new EventHandler(mnuRename_Click);
+            mnuRename.Click += mnuRename_Click;
             popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename});
             this.ContextMenuStrip = popMenu;
         }
         
+        private void RelocateInfo()
+        {
+            int infoSize = btnIcon.Width + lblAlias.Width + 5;
+            int infoLeft = (this.Width - infoSize)/2;
+            infoLeft = Math.Max(0, infoLeft);
+            btnIcon.Left = infoLeft;
+            lblAlias.Left = btnIcon.Right + 5;
+        }
         private void AllControls_DoubleClick(object sender, EventArgs e)
         {
             if (LaunchCamera == null)
@@ -138,7 +152,23 @@ namespace Kinovea.ScreenManager
 
         private void mnuRename_Click(object sender, EventArgs e)
         {
+            FormsHelper.BeforeShow();
+            FormCameraAlias fca = new FormCameraAlias(Summary);
+            FormsHelper.Locate(fca);
+            if(fca.ShowDialog() == DialogResult.OK)
+            {
+                Summary.UpdateAlias(fca.Alias, fca.PickedIcon);
+                
+                lblAlias.Text = Summary.Alias;
+                btnIcon.BackgroundImage = Summary.Icon;
+                RelocateInfo();
+                
+                if(SummaryUpdated != null)
+                    SummaryUpdated(this, EventArgs.Empty);
+            }
             
+            fca.Dispose();
+            FormsHelper.AfterShow();
         }
         
         private void mnuLaunch_Click(object sender, EventArgs e)
@@ -154,6 +184,7 @@ namespace Kinovea.ScreenManager
         private void RatioStretch()
         {
             lblAlias.Visible = this.Width >= 110;
+            btnIcon.Visible = lblAlias.Visible;
             
             if(Image == null)
             {
@@ -162,7 +193,7 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            int imageMargin = 6;
+            int imageMargin = 30;
             int containerWidth = this.Width - imageMargin;
             int containerHeight = this.Height - lblAlias.Height - imageMargin;
             

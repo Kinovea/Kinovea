@@ -47,6 +47,7 @@ namespace Kinovea.FileBrowser
         public FileBrowserKernel()
         {
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+            CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
         }
 
         #region IKernel Implementation
@@ -90,5 +91,12 @@ namespace Kinovea.FileBrowser
             // Update list of cameras.
             view.CamerasDiscovered(e.Summaries);
         }
+        
+        
+        private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
+        {
+            view.CameraSummaryUpdated(e.Summary);
+        }
+
     }
 }

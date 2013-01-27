@@ -74,7 +74,7 @@ namespace Kinovea.Camera.DirectShow
                     }
                 }*/
                 
-                CameraSummary summary = new CameraSummary(alias, identifier, defaultIcon, this);
+                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, defaultIcon, this);
                 summaries.Add(summary);
                 
                 if(cached)
@@ -85,8 +85,6 @@ namespace Kinovea.Camera.DirectShow
                     CameraBlurb blurb = new CameraBlurb("DirectShow", identifier, alias, null);
                     blurbCache.Add(identifier, blurb);
                     found.Add(blurb);
-                    
-                    //GetSingleImage(summary);
                 }
             }
             
@@ -114,18 +112,27 @@ namespace Kinovea.Camera.DirectShow
             ThreadPool.QueueUserWorkItem(retriever.Run);
         }
         
-        public override FrameGrabber Connect(string identifier)
+        public override void UpdatedCameraSummary(CameraSummary summary)
         {
-            throw new NotImplementedException();
+            // Save the camera to disk.
+            //PreferencesManager.CapturePreferences.UpdateDeviceConfiguration(m_CurrentVideoDevice.Identification, cap);
+            //PreferencesManager.Save();
+            
+            
+            
+            
+            
         }
         
-        public override void ExportCameraBlurb(string identifier)
+        
+        
+        
+        
+        
+        
+        
+        public override FrameGrabber Connect(string identifier)
         {
-            // Save blurb to XML.
-            //if(!blurbCache.ContainsKey(identifier))
-            //{
-                
-            //}
             throw new NotImplementedException();
         }
         

@@ -215,9 +215,12 @@ namespace Kinovea.FileBrowser
 		}
 		public void CamerasDiscovered(List<CameraSummary> summaries)
         {
-            // TODO: Consolidate summaries with the known list.
 		    UpdateCameraList(summaries);
         }
+		public void CameraSummaryUpdated(CameraSummary summary)
+		{
+		    UpdateCamera(summary);
+		}
 		public void Closing()
 		{
 			if(currentExptreeItem != null)
@@ -401,7 +404,7 @@ namespace Kinovea.FileBrowser
 		#endregion
 		
         #region Camera tab
-        public void UpdateCameraList(List<CameraSummary> summaries)
+        private void UpdateCameraList(List<CameraSummary> summaries)
         {
             // Add new cameras.
             foreach(CameraSummary summary in summaries)
@@ -423,9 +426,28 @@ namespace Kinovea.FileBrowser
 
             foreach(string id in lost)
             {
+                cameraIcons.Images.RemoveByKey(lvCameras.Items[id].ImageKey);
                 lvCameras.Items.RemoveByKey(id);
-                cameraIcons.Images.RemoveByKey(id);
             }
+        }
+        
+        private void UpdateCamera(CameraSummary summary)
+        {
+            if(!lvCameras.Items.ContainsKey(summary.Identifier))
+                return;
+
+            cameraIcons.Images.RemoveByKey(lvCameras.Items[summary.Identifier].ImageKey);
+            cameraIcons.Images.Add(summary.Identifier, summary.Icon);
+            
+            lvCameras.Items[summary.Identifier].Text = summary.Alias;
+            
+            // We specify the image by key, but the ListView actually uses the index to 
+            // refer to the image. So when we alter the image list, everything is scrambled.
+            // Assigning the key again must go through the piece of code that recomputes the index and fixes things.
+            foreach(ListViewItem item in lvCameras.Items)
+                item.ImageKey = item.ImageKey;
+            
+            lvCameras.Invalidate();
         }
         
         private int IndexOfCamera(List<CameraSummary> summaries, string id)

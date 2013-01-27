@@ -123,6 +123,15 @@ namespace Kinovea.Camera.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap construction
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("construction", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap footprint
         {
             get
@@ -146,6 +155,15 @@ namespace Kinovea.Camera.Properties
             get
             {
                 object obj = ResourceManager.GetObject("memory", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap na
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("na", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -177,6 +195,96 @@ namespace Kinovea.Camera.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap number01
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number01", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number02
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number02", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number03
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number03", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number04
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number04", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number05
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number05", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number06
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number06", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number07
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number07", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number08
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number08", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number09
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number09", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap number10
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("number10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap pda
         {
             get
@@ -191,6 +299,33 @@ namespace Kinovea.Camera.Properties
             get
             {
                 object obj = ResourceManager.GetObject("processor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap spectrum
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("spectrum", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap system_monitor
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("system-monitor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap target
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("target", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

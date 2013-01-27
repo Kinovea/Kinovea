@@ -83,7 +83,7 @@ namespace Kinovea.Services
             get { return memoryBuffer; }
             set { memoryBuffer = value; }
         }
-        public List<DeviceConfiguration> DeviceConfigurations
+        /*public List<DeviceConfiguration> DeviceConfigurations
         {
         	get { return deviceConfigurations; }	
         }
@@ -100,7 +100,7 @@ namespace Kinovea.Services
 		public List<string> RecentNetworkCameras
         {
         	get{ return recentNetworkCameras;}
-        }
+        }*/
         #endregion
 		
 		#region Members
@@ -115,14 +115,14 @@ namespace Kinovea.Services
         private long imageCounter = 1;
         private long videoCounter = 1;
         private int memoryBuffer = 768;
-        private List<DeviceConfiguration> deviceConfigurations = new List<DeviceConfiguration>();
-        private string networkCameraUrl = "http://localhost:8080/cam_1.jpg";
-        private NetworkCameraFormat networkCameraFormat = NetworkCameraFormat.JPEG;
-        private List<string> recentNetworkCameras = new List<string>();
-        private int maxRecentNetworkCameras = 5;
+        //private List<DeviceConfiguration> deviceConfigurations = new List<DeviceConfiguration>();
+        //private string networkCameraUrl = "http://localhost:8080/cam_1.jpg";
+        //private NetworkCameraFormat networkCameraFormat = NetworkCameraFormat.JPEG;
+        //private List<string> recentNetworkCameras = new List<string>();
+        //private int maxRecentNetworkCameras = 5;
 		#endregion
         
-        public void AddRecentCamera(string _url)
+        /*public void AddRecentCamera(string _url)
     	{
     	    PreferencesManager.UpdateRecents(_url, recentNetworkCameras, maxRecentNetworkCameras);
     	}
@@ -142,7 +142,7 @@ namespace Kinovea.Services
     		
     		if(!known)
     			deviceConfigurations.Add(new DeviceConfiguration(id, new DeviceCapability(capability.FrameSize, capability.Framerate)));
-    	}
+    	}*/
     	
     	public void WriteXML(XmlWriter writer)
         {
@@ -163,7 +163,7 @@ namespace Kinovea.Services
         
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
-            if(deviceConfigurations.Count > 0)
+            /*if(deviceConfigurations.Count > 0)
             {
                 writer.WriteStartElement("DeviceConfigurations");
                 
@@ -198,7 +198,7 @@ namespace Kinovea.Services
                 writer.WriteEndElement();
             }
             
-            writer.WriteElementString("MaxRecentNetworkCameras", maxRecentNetworkCameras.ToString());
+            writer.WriteElementString("MaxRecentNetworkCameras", maxRecentNetworkCameras.ToString());*/
         }
     	
     	public void ReadXML(XmlReader reader)
@@ -242,7 +242,7 @@ namespace Kinovea.Services
                     case "MemoryBuffer":
                         memoryBuffer = reader.ReadElementContentAsInt();
                         break;
-                    case "DeviceConfigurations":
+                    /*case "DeviceConfigurations":
                         ParseDeviceConfigurations(reader);
                         break;
                     case "NetworkCameraUrl":
@@ -256,7 +256,7 @@ namespace Kinovea.Services
                         break;
                     case "MaxRecentNetworkCameras":
                         maxRecentNetworkCameras = reader.ReadElementContentAsInt();
-                        break;
+                        break;*/
                     default:
                         reader.ReadOuterXml();
                         break;
@@ -266,7 +266,7 @@ namespace Kinovea.Services
             reader.ReadEndElement();
         }
         
-        private void ParseDeviceConfigurations(XmlReader reader)
+        /*private void ParseDeviceConfigurations(XmlReader reader)
         {
     	    deviceConfigurations.Clear();
     	    bool empty = reader.IsEmptyElement;
@@ -291,9 +291,9 @@ namespace Kinovea.Services
             }
             
             reader.ReadEndElement();
-        }
+        }*/
         
-        private void ParseRecentNetworkCameras(XmlReader reader)
+        /*private void ParseRecentNetworkCameras(XmlReader reader)
         {
     	    recentNetworkCameras.Clear();
     	    bool empty = reader.IsEmptyElement;
@@ -312,6 +312,6 @@ namespace Kinovea.Services
             }
             
             reader.ReadEndElement();
-        }
+        }*/
     }
 }

@@ -22,10 +22,26 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public static class FormsHelper
     {
+        public static void BeforeShow()
+        {
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.DeactivateKeyboardHandler != null)
+                dp.DeactivateKeyboardHandler();
+        }
+        
+        public static void AfterShow()
+        {
+            DelegatesPool dp = DelegatesPool.Instance();
+            if (dp.ActivateKeyboardHandler != null)
+                dp.ActivateKeyboardHandler();
+        }
+        
         /// <summary>
         /// Locate the form under the mouse or center of screen if too close to border.
         /// </summary>

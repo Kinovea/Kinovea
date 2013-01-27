@@ -35,6 +35,7 @@ namespace Kinovea.Camera
         #region Events
         public static event EventHandler<CamerasDiscoveredEventArgs> CamerasDiscovered;
         public static event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public static event EventHandler<CameraSummaryUpdatedEventArgs> CameraSummaryUpdated;
         #endregion
         
         #region Properties
@@ -100,6 +101,13 @@ namespace Kinovea.Camera
             timerDiscovery.Tick -= timerDiscovery_Tick;
         }
 
+        public static void UpdatedCameraSummary(CameraSummary summary)
+        {
+            summary.Manager.UpdatedCameraSummary(summary);
+            
+            if(CameraSummaryUpdated != null)
+                CameraSummaryUpdated(null, new CameraSummaryUpdatedEventArgs(summary));
+        }
         #endregion
         
         #region Private methods
