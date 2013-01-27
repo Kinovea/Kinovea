@@ -75,7 +75,7 @@ namespace Kinovea.FileBrowser
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(319, 560);
             this.tabControl.TabIndex = 0;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControlSelectedIndexChanged);
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControlSelected_IndexChanged);
             this.tabControl.KeyDown += new System.Windows.Forms.KeyEventHandler(this._tabControl_KeyDown);
             // 
             // tabPageClassic

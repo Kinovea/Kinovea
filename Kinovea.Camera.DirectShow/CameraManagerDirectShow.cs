@@ -61,9 +61,6 @@ namespace Kinovea.Camera.DirectShow
                 string alias = camera.Name;
                 bool cached = blurbCache.ContainsKey(identifier);
                 
-                //log.DebugFormat("DirectShow camera. Name:{0}, Moniker:{1}", camera.Name, camera.MonikerString);
-                log.DebugFormat("DirectShow camera. Name:{0}.", camera.Name);
-                
                 /*if(previouslySeen != null)
                 {
                     // This will allow to retrieve the customised alias/icon.
