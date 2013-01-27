@@ -54,6 +54,8 @@ namespace Kinovea.FileBrowser
 		private ToolStripMenuItem mnuAddToShortcuts = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
 		private ImageList cameraIcons = new ImageList();
+		private List<CameraSummary> cameraSummaries = new List<CameraSummary>();
+		private bool programmaticTabChange = false;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 
@@ -61,6 +63,7 @@ namespace Kinovea.FileBrowser
 		public FileBrowserUserInterface()
 		{
 			InitializeComponent();
+			lvCameras.SmallImageList = cameraIcons;
 			btnAddShortcut.Parent = lblFavFolders;
 			btnDeleteShortcut.Parent = lblFavFolders;
 
@@ -119,8 +122,12 @@ namespace Kinovea.FileBrowser
 			splitExplorerFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance;
 			splitShortcutsFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance;
 			
+			// Switch thumbnail area to the right tab.
+			DelegatesPool dp = DelegatesPool.Instance();
+			if (dp.ExplorerTabChanged != null)
+			    dp.ExplorerTabChanged((ActiveFileBrowserTab)tabControl.SelectedIndex);
+                
 			// Load the initial directory.
-			log.Debug("Load initial directory.");
 			DoRefreshFileList(true);
 		}
 		#endregion
@@ -132,8 +139,6 @@ namespace Kinovea.FileBrowser
 			// - the user changes node in exptree, either explorer or shortcuts
 			// - a file modification happens in the thumbnails page. (delete/rename)
 			// - a capture is completed.
-			
-			log.Debug("DoRefreshFileList called");
 			
 			// We don't update during app start up, because we would most probably
 			// end up loading the desktop, and then the saved folder.
@@ -336,7 +341,6 @@ namespace Kinovea.FileBrowser
 		private void etShortcuts_ExpTreeNodeSelected(string _selPath, CShItem _item)
         {
         	// Update the list view and thumb page.
-        	log.Debug(String.Format("Shortcut Selected : {0}.", Path.GetFileName(_selPath)));
 			currentShortcutItem = _item;
 			
 			// Initializing happens on the explorer tab. We'll refresh later.
@@ -358,7 +362,6 @@ namespace Kinovea.FileBrowser
 				// Finally update the shortcuts tab, and refresh thumbs.
 				UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
 			}
-			log.Debug("Shortcut Selected - Operations done.");
         }
         private void etShortcuts_MouseEnter(object sender, EventArgs e)
         {
@@ -397,44 +400,66 @@ namespace Kinovea.FileBrowser
 		
 		#endregion
 		
-		#region Camera tab
-		public void UpdateCameraList(List<CameraSummary> summaries)
+        #region Camera tab
+        public void UpdateCameraList(List<CameraSummary> summaries)
         {
-            lvCameras.BeginUpdate();
-            lvCameras.Items.Clear();
-            lvCameras.SmallImageList = cameraIcons;
-            
-            cameraIcons.Images.Clear();
-            
+            // Add new cameras.
             foreach(CameraSummary summary in summaries)
             {
+                if(lvCameras.Items.ContainsKey(summary.Identifier))
+                    continue;
+
                 cameraIcons.Images.Add(summary.Identifier, summary.Icon);
-                
-                ListViewItem lvi = new ListViewItem(summary.Alias);
-                lvi.Tag = summary;
-                lvi.ImageKey = summary.Identifier;
-                lvCameras.Items.Add(lvi);
+                lvCameras.Items.Add(summary.Identifier, summary.Alias, summary.Identifier);
             }
             
-            lvCameras.EndUpdate();
+            // Remove lost cameras.
+            List<string> lost = new List<string>();
+            foreach(ListViewItem lvi in lvCameras.Items)
+            {
+                if(IndexOfCamera(summaries, lvi.Name) < 0)
+                    lost.Add(lvi.Name);
+            }
+
+            foreach(string id in lost)
+            {
+                lvCameras.Items.RemoveByKey(id);
+                cameraIcons.Images.RemoveByKey(id);
+            }
+        }
+        
+        private int IndexOfCamera(List<CameraSummary> summaries, string id)
+        {
+            for(int i = 0; i<summaries.Count; i++)
+                if(summaries[i].Identifier == id)
+                    return i;
+            return -1;
         }
 		#endregion
 		
 		
 		#region Common
-		private void TabControlSelectedIndexChanged(object sender, EventArgs e)
+		private void TabControlSelected_IndexChanged(object sender, EventArgs e)
 		{
-			// Active tab changed.
-			// We don't save to file now as this is not a critical data to loose.
-			ActiveFileBrowserTab newTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
-			PreferencesManager.FileExplorerPreferences.ActiveTab = newTab;
-			
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ExplorerTabChanged != null)
-                dp.ExplorerTabChanged(newTab);
-		
-			DoRefreshFileList(true);
-		}
+            // Active tab changed.
+            // We don't save to file now as this is not a critical data to loose.
+            ActiveFileBrowserTab newTab = (ActiveFileBrowserTab)tabControl.SelectedIndex;
+            PreferencesManager.FileExplorerPreferences.ActiveTab = newTab;
+            
+            if(programmaticTabChange)
+            {
+                programmaticTabChange = false;
+            }
+            else
+            {
+                DelegatesPool dp = DelegatesPool.Instance();
+                if (dp.ExplorerTabChanged != null)
+                    dp.ExplorerTabChanged(newTab);
+            }
+            
+            DoRefreshFileList(true);
+        }
+        
 		private void _tabControl_KeyDown(object sender, KeyEventArgs e)
 		{
 			// Discard keyboard event as they interfere with player functions
@@ -446,8 +471,6 @@ namespace Kinovea.FileBrowser
 			// Triggers an update of the thumbnails pane if requested.
 			if(folder == null)
 			    return;
-			
-			log.Debug(String.Format("Updating file list : {0}", listView.Name));
 			
 			this.Cursor = Cursors.WaitCursor;
 			
@@ -491,7 +514,6 @@ namespace Kinovea.FileBrowser
 			}
 			
 			listView.EndUpdate();
-			log.Debug("List updated");
 										
 			// Even if we don't want to reload the thumbnails, we must ensure that 
 			// the screen manager backup list is in sync with the actual file list.
@@ -500,10 +522,7 @@ namespace Kinovea.FileBrowser
 			// (i.e. when we close a screen)
 			DelegatesPool dp = DelegatesPool.Instance();
 			if (dp.CurrentDirectoryChanged != null)
-			{
-				log.Debug("Asking the ScreenManager to refresh the thumbnails.");
 				dp.CurrentDirectoryChanged(shortcuts, fileNames, refreshThumbnails);
-			}
 			
 			this.Cursor = Cursors.Default;
 		}
@@ -562,6 +581,7 @@ namespace Kinovea.FileBrowser
         
 		private void DoChangeFileExplorerTab(ActiveFileBrowserTab tab)
 		{
+            programmaticTabChange = true;
             tabControl.SelectedIndex = (int)tab;
 		}
 	}

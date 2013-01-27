@@ -88,7 +88,7 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(this.splitMain);
             this.Name = "ThumbnailViewerContainer";
             this.Size = new System.Drawing.Size(553, 387);
-            this.Load += new System.EventHandler(this.ThumbnailViewerContainerLoad);
+            this.Load += new System.EventHandler(this.ThumbnailViewerContainer_Load);
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.ResumeLayout(false);
             this.ResumeLayout(false);
