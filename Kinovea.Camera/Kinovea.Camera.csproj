@@ -64,6 +64,7 @@
     <Compile Include="CameraManager.cs" />
     <Compile Include="CamerasDiscoveredEventArgs.cs" />
     <Compile Include="CameraSummary.cs" />
+    <Compile Include="CameraSummaryUpdatedEventArgs.cs" />
     <Compile Include="CameraTypeManager.cs" />
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="IconLibrary.cs" />

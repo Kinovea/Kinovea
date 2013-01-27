@@ -2385,11 +2385,7 @@ namespace Kinovea.ScreenManager
 			if (!m_FrameServer.Loaded)
 			    return;
 			
-			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
-			{
-				dp.DeactivateKeyboardHandler();
-			}
+			FormsHelper.BeforeShow();
 
 			formConfigureSpeed fcs = new formConfigureSpeed(m_FrameServer.VideoReader.Info.FramesPerSeconds, m_fHighSpeedFactor);
 			if (_center)
@@ -2409,10 +2405,7 @@ namespace Kinovea.ScreenManager
 			
 			fcs.Dispose();
 
-			if (dp.ActivateKeyboardHandler != null)
-			{
-				dp.ActivateKeyboardHandler();
-			}
+			FormsHelper.AfterShow();
 
 			// Update times.
 			UpdateSelectionLabels();
@@ -4180,23 +4173,14 @@ namespace Kinovea.ScreenManager
 			DrawingChrono dc = m_FrameServer.Metadata.ExtraDrawings[m_FrameServer.Metadata.SelectedExtraDrawing] as DrawingChrono;
 			if(dc != null)
 			{
-				DelegatesPool dp = DelegatesPool.Instance();
-				if (dp.DeactivateKeyboardHandler != null)
-				{
-					dp.DeactivateKeyboardHandler();
-				}
-				
-				// Change this chrono display.
+			    // Change this chrono display.
+			    FormsHelper.BeforeShow();
 				formConfigureChrono fcc = new formConfigureChrono(dc, DoInvalidate);
 				FormsHelper.Locate(fcc);
 				fcc.ShowDialog();
 				fcc.Dispose();
 				DoInvalidate();
-	
-				if (dp.ActivateKeyboardHandler != null)
-				{
-					dp.ActivateKeyboardHandler();
-				}	
+				FormsHelper.AfterShow();
 			}
 		}
 		#endregion

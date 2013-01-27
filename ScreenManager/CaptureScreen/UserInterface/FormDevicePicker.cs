@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
 					
 					// Recently used cameras.
 					cmbUrl.Text = _currentDevice.NetworkCameraUrl;
-					if(PreferencesManager.CapturePreferences.RecentNetworkCameras.Count > 0)
+					/*if(PreferencesManager.CapturePreferences.RecentNetworkCameras.Count > 0)
 					{
 						foreach(string url in PreferencesManager.CapturePreferences.RecentNetworkCameras)
 						{
@@ -172,7 +172,7 @@ namespace Kinovea.ScreenManager
 					else
 					{
 						cmbUrl.Items.Add(_currentDevice.NetworkCameraUrl);
-					}
+					}*/
 					
 					// Type of streams supported.
 					cmbStreamType.Items.Add("JPEG");

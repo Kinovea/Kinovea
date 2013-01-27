@@ -484,19 +484,14 @@ namespace Kinovea.ScreenManager
         
         private void mnuCalibrate_Click(object sender, EventArgs e)
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.DeactivateKeyboardHandler != null)
-                dp.DeactivateKeyboardHandler();
-            
+            FormsHelper.BeforeShow();
             FormCalibratePlane fcp = new FormCalibratePlane(CalibrationHelper, this);
             FormsHelper.Locate(fcp);
             fcp.ShowDialog();
             fcp.Dispose();
             
             CallInvalidateFromMenu(sender);
-            
-            if (dp.ActivateKeyboardHandler != null)
-                dp.ActivateKeyboardHandler();
+            FormsHelper.AfterShow();
         }
         #endregion
 

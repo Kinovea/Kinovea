@@ -155,8 +155,8 @@ namespace Kinovea.ScreenManager
 							log.DebugFormat("Capture device, capability changed.");
 							
 							m_CurrentVideoDevice.SelectedCapability = cap;
-							PreferencesManager.CapturePreferences.UpdateDeviceConfiguration(m_CurrentVideoDevice.Identification, cap);
-							PreferencesManager.Save();
+							//PreferencesManager.CapturePreferences.UpdateDeviceConfiguration(m_CurrentVideoDevice.Identification, cap);
+							//PreferencesManager.Save();
 							
 							if(m_bIsGrabbing)
 							{
@@ -392,7 +392,7 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// Special entry for network cameras.
-			devices.Add(new DeviceDescriptor(ScreenManagerLang.Capture_NetworkCamera, PreferencesManager.CapturePreferences.NetworkCameraUrl, PreferencesManager.CapturePreferences.NetworkCameraFormat));
+			//devices.Add(new DeviceDescriptor(ScreenManagerLang.Capture_NetworkCamera, PreferencesManager.CapturePreferences.NetworkCameraUrl, PreferencesManager.CapturePreferences.NetworkCameraFormat));
 
 			return devices;
 		}
@@ -444,9 +444,9 @@ namespace Kinovea.ScreenManager
 					
 					m_VideoSource = source;
 				}
-				PreferencesManager.CapturePreferences.NetworkCameraFormat = _device.NetworkCameraFormat;
+				/*PreferencesManager.CapturePreferences.NetworkCameraFormat = _device.NetworkCameraFormat;
 				PreferencesManager.CapturePreferences.NetworkCameraUrl = _device.NetworkCameraUrl;
-				PreferencesManager.Save();
+				PreferencesManager.Save();*/
 				
 				created = true;
 			}
@@ -470,7 +470,7 @@ namespace Kinovea.ScreenManager
 						DeviceCapability selectedCapability = null;
 						
 						// Check if we already know this device and have a preferred configuration.
-						foreach(DeviceConfiguration conf in PreferencesManager.CapturePreferences.DeviceConfigurations)
+						/*foreach(DeviceConfiguration conf in PreferencesManager.CapturePreferences.DeviceConfigurations)
 						{
 							if(conf.ID == _device.Identification)
 							{							
@@ -479,16 +479,16 @@ namespace Kinovea.ScreenManager
 								if(selectedCapability != null)
 									log.Debug(String.Format("Picking capability from preferences: {0}", selectedCapability.ToString()));
 							}
-						}
+						}*/
 	
-						if(selectedCapability == null)
+						/*if(selectedCapability == null)
 						{
 							// Pick the one with max frame size.
 							selectedCapability = _device.GetBestSizeCapability();
 							log.Debug(String.Format("Picking a default capability (best size): {0}", selectedCapability.ToString()));
 							PreferencesManager.CapturePreferences.UpdateDeviceConfiguration(_device.Identification, selectedCapability);
 							PreferencesManager.Save();
-						}
+						}*/
 						
 						_device.SelectedCapability = selectedCapability;
 						captureDevice.DesiredFrameSize = selectedCapability.FrameSize;
@@ -565,10 +565,10 @@ namespace Kinovea.ScreenManager
 				if(m_CurrentVideoDevice.Network)
 				{
 					// This source is now officially working. Save the parameters to prefs.
-					PreferencesManager.CapturePreferences.NetworkCameraUrl = m_CurrentVideoDevice.NetworkCameraUrl;
+					/*PreferencesManager.CapturePreferences.NetworkCameraUrl = m_CurrentVideoDevice.NetworkCameraUrl;
 					PreferencesManager.CapturePreferences.NetworkCameraFormat = m_CurrentVideoDevice.NetworkCameraFormat;
 					PreferencesManager.CapturePreferences.AddRecentCamera(m_CurrentVideoDevice.NetworkCameraUrl);
-					PreferencesManager.Save();
+					PreferencesManager.Save();*/
 				}
 			}
 			

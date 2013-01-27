@@ -55,9 +55,13 @@ namespace Kinovea.Camera
         /// </summary>
         public abstract void GetSingleImage(CameraSummary summary);
         
+        /// <summary>
+        /// Called after the user personalize a camera. Should persist the customized information.
+        /// </summary>
+        public abstract void UpdatedCameraSummary(CameraSummary summary);
+        
         
         // TODO:
         public abstract FrameGrabber Connect(string identifier);
-        public abstract void ExportCameraBlurb(string identifier);
     }
 }

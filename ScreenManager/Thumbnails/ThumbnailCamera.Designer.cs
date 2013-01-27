@@ -50,20 +50,21 @@ namespace Kinovea.ScreenManager
         {
             this.lblAlias = new System.Windows.Forms.Label();
             this.picBox = new System.Windows.Forms.PictureBox();
+            this.btnIcon = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             this.SuspendLayout();
             // 
             // lblAlias
             // 
-            this.lblAlias.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAlias.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblAlias.AutoSize = true;
             this.lblAlias.BackColor = System.Drawing.Color.White;
             this.lblAlias.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblAlias.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAlias.ForeColor = System.Drawing.Color.Black;
-            this.lblAlias.Location = new System.Drawing.Point(0, 178);
+            this.lblAlias.Location = new System.Drawing.Point(27, 178);
             this.lblAlias.Name = "lblAlias";
-            this.lblAlias.Size = new System.Drawing.Size(240, 15);
+            this.lblAlias.Size = new System.Drawing.Size(61, 12);
             this.lblAlias.TabIndex = 5;
             this.lblAlias.Text = "Camera Alias";
             this.lblAlias.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -86,11 +87,29 @@ namespace Kinovea.ScreenManager
             this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBox_Paint);
             this.picBox.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
             // 
+            // btnIcon
+            // 
+            this.btnIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnIcon.BackColor = System.Drawing.Color.Transparent;
+            this.btnIcon.BackgroundImage = global::Kinovea.ScreenManager.Properties.Resources.explorer_camera;
+            this.btnIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnIcon.FlatAppearance.BorderSize = 0;
+            this.btnIcon.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.btnIcon.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.btnIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnIcon.Location = new System.Drawing.Point(5, 176);
+            this.btnIcon.Name = "btnIcon";
+            this.btnIcon.Size = new System.Drawing.Size(16, 16);
+            this.btnIcon.TabIndex = 37;
+            this.btnIcon.UseVisualStyleBackColor = false;
+            // 
             // ThumbnailCamera
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
+            this.Controls.Add(this.btnIcon);
             this.Controls.Add(this.lblAlias);
             this.Controls.Add(this.picBox);
             this.Name = "ThumbnailCamera";
@@ -100,7 +119,9 @@ namespace Kinovea.ScreenManager
             this.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
+        private System.Windows.Forms.Button btnIcon;
         public System.Windows.Forms.PictureBox picBox;
         public System.Windows.Forms.Label lblAlias;
     }

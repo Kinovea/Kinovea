@@ -527,6 +527,10 @@
     </Compile>
     <Compile Include="Thumbnails\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Thumbnails\FileLoadAskedEventArgs.cs" />
+    <Compile Include="Thumbnails\FormCameraAlias.cs" />
+    <Compile Include="Thumbnails\FormCameraAlias.Designer.cs">
+      <DependentUpon>FormCameraAlias.cs</DependentUpon>
+    </Compile>
     <Compile Include="Thumbnails\SizeSelector.cs" />
     <Compile Include="Thumbnails\SizeSelector.Designer.cs">
       <DependentUpon>SizeSelector.cs</DependentUpon>
@@ -597,6 +601,10 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenManagerState.cs" />
+    <Compile Include="UserInterface\FormIconPicker.cs" />
+    <Compile Include="UserInterface\FormIconPicker.Designer.cs">
+      <DependentUpon>FormIconPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FormsHelper.cs" />
     <Compile Include="UserInterface\ScreenManagerUserInterface.cs">
       <SubType>UserControl</SubType>
@@ -678,6 +686,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThumbListView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\FormCameraAlias.resx">
+      <DependentUpon>FormCameraAlias.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\Selector.resx">
       <DependentUpon>Selector.cs</DependentUpon>
     </EmbeddedResource>
@@ -698,6 +709,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormColorPicker.resx">
       <DependentUpon>FormColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FormIconPicker.resx">
+      <DependentUpon>FormIconPicker.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

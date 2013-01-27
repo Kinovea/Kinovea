@@ -57,8 +57,9 @@ namespace Kinovea.ScreenManager
         #region Public methods
         public void CamerasDiscovered(List<CameraSummary> summaries)
         {
-            UpdateThumbnailList(summaries);
-            DoLayout();
+            bool updated = UpdateThumbnailList(summaries);
+            if(updated)
+                DoLayout();
         }
         public void CameraImageReceived(CameraSummary summary, Bitmap image)
         {
@@ -145,8 +146,10 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Private methods
-        private void UpdateThumbnailList(List<CameraSummary> summaries)
+        private bool UpdateThumbnailList(List<CameraSummary> summaries)
         {
+            bool updated = false;
+            
             if(summaries.Count == 0)
             {
                 if(BeforeLoad != null)
@@ -164,16 +167,14 @@ namespace Kinovea.ScreenManager
                 int index = IndexOf(summary.Identifier);
                 
                 if(index >= 0)
-                {
-                    //if(thumbnailControls[index].Image == null)
-                    //    summary.Manager.GetSingleImage(summary);
-                        
                     continue;
-                }
+                
+                updated = true;
                 
                 ThumbnailCamera thumbnail = new ThumbnailCamera(summary);
                 thumbnail.LaunchCamera += Thumbnail_LaunchCamera;
 				thumbnail.CameraSelected += Thumbnail_CameraSelected;
+				thumbnail.SummaryUpdated += Thumbnail_SummaryUpdated;
 				
                 thumbnailControls.Add(thumbnail);
                 this.Controls.Add(thumbnail);
@@ -189,11 +190,16 @@ namespace Kinovea.ScreenManager
                     lost.Add(thumbnail);
             }
             
+            if(lost.Count > 0)
+                updated = true;
+                
             foreach(ThumbnailCamera thumbnail in lost)
             {
                 this.Controls.Remove(thumbnail);
                 thumbnailControls.Remove(thumbnail);
             }
+            
+            return updated;
         }
         
         private int IndexOf(string identifier)
@@ -283,6 +289,11 @@ namespace Kinovea.ScreenManager
                 selectedThumbnail.SetUnselected();
         
             selectedThumbnail = thumbnail;
+        }
+        private void Thumbnail_SummaryUpdated(object sender, EventArgs e)
+        {
+            ThumbnailCamera thumbnail = sender as ThumbnailCamera;
+            CameraTypeManager.UpdatedCameraSummary(thumbnail.Summary);
         }
         #endregion
     }

@@ -29,16 +29,24 @@ namespace Kinovea.Camera
     public class CameraSummary
     {
         public string Alias { get; private set;}
+        public string Name { get; private set;}
         public string Identifier { get; private set;}
         public Bitmap Icon { get; private set; }
         public CameraManager Manager { get; private set;}
         
-        public CameraSummary(string alias, string identifier, Bitmap icon, CameraManager manager)
+        public CameraSummary(string alias, string name, string identifier, Bitmap icon, CameraManager manager)
         {
             this.Alias = alias;
+            this.Name = name;
             this.Identifier = identifier;
             this.Icon = icon;
             this.Manager = manager;
+        }
+        
+        public void UpdateAlias(string alias, Bitmap icon)
+        {
+            this.Alias = alias;
+            this.Icon = icon;
         }
     }
 }

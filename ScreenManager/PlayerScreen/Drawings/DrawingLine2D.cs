@@ -400,19 +400,14 @@ namespace Kinovea.ScreenManager
 			        ShowMeasurableInfoChanged(this, EventArgs.Empty);
 			}
 			
-			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
-				dp.DeactivateKeyboardHandler();
-
+			FormsHelper.BeforeShow();
 			FormCalibrateLine fcm = new FormCalibrateLine(CalibrationHelper, this);
 			FormsHelper.Locate(fcm);
 			fcm.ShowDialog();
 			fcm.Dispose();
 			
 			CallInvalidateFromMenu(sender);
-			
-			if (dp.ActivateKeyboardHandler != null)
-				dp.ActivateKeyboardHandler();
+			FormsHelper.AfterShow();
 		}
         #endregion
         
