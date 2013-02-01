@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Threading;
 
 using AForge.Video.DirectShow;
+using Kinovea.Services;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -32,9 +33,16 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class CameraManagerDirectShow : CameraManager
     {
+        #region Properties
+        public override string CameraType 
+        { 
+            get { return "4602B70E-8FDD-47FF-B012-7C38BB2A16B9";}
+        }
+        #endregion
+    
         #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private Dictionary<string, CameraBlurb> blurbCache = new Dictionary<string, CameraBlurb>();
+        private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
         private Bitmap defaultIcon;
         #endregion
         
@@ -43,11 +51,11 @@ namespace Kinovea.Camera.DirectShow
             defaultIcon = IconLibrary.GetIcon("webcam");
         }
         
-        public override List<CameraSummary> DiscoverCameras(List<CameraBlurb> previouslySeen)
+        public override List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs)
         {
             // DirectShow has active discovery. We just ask for the list of cameras connected to the PC.
             List<CameraSummary> summaries = new List<CameraSummary>();
-            List<CameraBlurb> found = new List<CameraBlurb>();
+            List<CameraSummary> found = new List<CameraSummary>();
             
             FilterInfoCollection cameras = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             
@@ -59,44 +67,46 @@ namespace Kinovea.Camera.DirectShow
                 string identifier = camera.MonikerString;
                 
                 string alias = camera.Name;
-                bool cached = blurbCache.ContainsKey(identifier);
+                Bitmap icon = null;
+                bool cached = cache.ContainsKey(identifier);
                 
-                /*if(previouslySeen != null)
+                if(blurbs != null)
                 {
-                    // This will allow to retrieve the customised alias/icon.
-                    foreach(CameraBlurb b in previouslySeen)
+                    foreach(CameraBlurb blurb in blurbs)
                     {
-                        if(b.Identifier == identifier)
-                        {
-                            alias = b.Alias;
-                            icon = b.Icon;
-                        }
+                        if(blurb.Identifier != identifier)
+                            continue;
+                            
+                        alias = blurb.Alias;
+                        icon = blurb.Icon ?? defaultIcon;
+                        break;
                     }
-                }*/
+                }
                 
-                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, defaultIcon, this);
+                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, this);
                 summaries.Add(summary);
                 
                 if(cached)
-                    found.Add(blurbCache[identifier]);
+                    found.Add(cache[identifier]);
                     
                 if(!cached)
                 {
-                    CameraBlurb blurb = new CameraBlurb("DirectShow", identifier, alias, null);
-                    blurbCache.Add(identifier, blurb);
-                    found.Add(blurb);
+                    cache.Add(identifier, summary);
+                    found.Add(summary);
                 }
             }
             
-            List<CameraBlurb> lost = new List<CameraBlurb>();
-            foreach(CameraBlurb blurb in blurbCache.Values)
+            // TODO: do we need to do all this. Just replace the cache with the current list.
+            
+            List<CameraSummary> lost = new List<CameraSummary>();
+            foreach(CameraSummary summary in cache.Values)
             {
-                if(!found.Contains(blurb))
-                   lost.Add(blurb);
+                if(!found.Contains(summary))
+                   lost.Add(summary);
             }
             
-            foreach(CameraBlurb blurb in lost)
-                blurbCache.Remove(blurb.Identifier);
+            foreach(CameraSummary summary in lost)
+                cache.Remove(summary.Identifier);
 
             return summaries;
         }
@@ -112,29 +122,17 @@ namespace Kinovea.Camera.DirectShow
             ThreadPool.QueueUserWorkItem(retriever.Run);
         }
         
-        public override void UpdatedCameraSummary(CameraSummary summary)
+        public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
-            // Save the camera to disk.
-            //PreferencesManager.CapturePreferences.UpdateDeviceConfiguration(m_CurrentVideoDevice.Identification, cap);
-            //PreferencesManager.Save();
-            
-            
-            
-            
-            
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon);
+            // TODO: Add information specific to DirectShow plug-in. (In the form of an XML node ?)
+            return blurb;
         }
         
-        
-        
-        
-        
-        
-        
-        
-        public override FrameGrabber Connect(string identifier)
+        /*public override FrameGrabber Connect(string identifier)
         {
             throw new NotImplementedException();
-        }
+        }*/
         
         private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {

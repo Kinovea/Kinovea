@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Xml;
 
 namespace Kinovea.Services
@@ -150,6 +152,32 @@ namespace Kinovea.Services
             // - Boolean.ToString() which returns "False" or "True",
             // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" as per XML spec and throws an exception otherwise.
             return (_str != "false" && _str != "False" && _str != "0");
+        }
+        
+        public static string ImageToBase64(Bitmap bmp, ImageFormat imageFormat)
+        {
+            MemoryStream stream = new MemoryStream();
+            bmp.Save(stream, imageFormat);
+            byte[] bytes = stream.ToArray();
+            string base64 = Convert.ToBase64String(bytes);
+            return base64;
+        }
+        
+        public static Bitmap ParseImageFromBase64(string base64)
+        {
+            Bitmap result = null;
+            
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(base64);
+                result = (Bitmap)Image.FromStream(new MemoryStream(bytes));
+            }
+            catch(Exception)
+            {
+                log.Error("An error happened while parsing bitmap value.");
+            }
+            
+            return result;
         }
     }
 }

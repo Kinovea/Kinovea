@@ -25,6 +25,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
+using Kinovea.Services;
+
 namespace Kinovea.Camera
 {
     /// <summary>
@@ -72,18 +74,31 @@ namespace Kinovea.Camera
             // Register the camera managers.
             foreach (Assembly a in assemblies)
             {
-                foreach(Type t in a.GetTypes())
+                try
                 {
-                    if(!t.IsSubclassOf(typeof(CameraManager)) || t.IsAbstract)
-                        continue;
-                    
-                    ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
-                    if(ci == null)
-                        continue;
-                    
-                    CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
-                    manager.CameraImageReceived += CameraManager_CameraImageReceived;
-                    cameraManagers.Add(manager);
+                    foreach(Type t in a.GetTypes())
+                    {
+                        if(t.Name == "CameraManagerDirectShow")
+                        {
+                            log.DebugFormat("");
+                        }
+                        
+                        if(!t.IsSubclassOf(typeof(CameraManager)) || t.IsAbstract)
+                            continue;
+                        
+                        ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
+                        if(ci == null)
+                            continue;
+                        
+                        CameraManager manager = (CameraManager)Activator.CreateInstance(t, null);
+                        manager.CameraImageReceived += CameraManager_CameraImageReceived;
+                        cameraManagers.Add(manager);
+                    }
+                }
+                catch (ReflectionTypeLoadException ex)
+                {        
+                    foreach (Exception exception in ex.LoaderExceptions)
+                        log.ErrorFormat(exception.Message.ToString());
                 }
             }
         }
@@ -134,9 +149,12 @@ namespace Kinovea.Camera
             // Ask each plug-in to discover its cameras.
             // This can be dynamic or based on previously saved data.
             // Camera managers should also try to connect to the cameras and raise the CameraImageReceived event.
+            
+            IEnumerable<CameraBlurb> cameraBlurbs = PreferencesManager.CapturePreferences.CameraBlurbs;
+            
             List<CameraSummary> summaries = new List<CameraSummary>();
             foreach(CameraManager manager in cameraManagers)
-                summaries.AddRange(manager.DiscoverCameras(null));
+                summaries.AddRange(manager.DiscoverCameras(cameraBlurbs));
             
             if(CamerasDiscovered != null)
                 CamerasDiscovered(null, new CamerasDiscoveredEventArgs(summaries));
