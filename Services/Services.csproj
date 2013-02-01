@@ -108,11 +108,13 @@
     <Compile Include="CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
-    <Compile Include="DeviceCapability.cs" />
-    <Compile Include="DeviceConfiguration.cs" />
+    <Compile Include="Deprecated\DeviceCapability.cs" />
+    <Compile Include="Deprecated\DeviceConfiguration.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="DelegatesPool.cs" />
+    <Compile Include="Deprecated\NetworkCameraFormat.cs" />
     <Compile Include="NotificationCenter.cs" />
+    <Compile Include="Preferences\CameraBlurb.cs" />
     <Compile Include="Preferences\CapturePreferences.cs" />
     <Compile Include="Preferences\FileExplorerPreferences.cs" />
     <Compile Include="Preferences\GeneralPreferences.cs" />
@@ -133,7 +135,6 @@
     <Compile Include="Preferences\ExplorerThumbSize.cs" />
     <Compile Include="Preferences\KinoveaImageFormat.cs" />
     <Compile Include="Preferences\KinoveaVideoFormat.cs" />
-    <Compile Include="Preferences\NetworkCameraFormat.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
     <Compile Include="Preferences\ShortcutFolder.cs" />
     <Compile Include="Preferences\SpeedUnit.cs" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <Folder Include="CommandLine" />
     <Folder Include="Infrastructure" />
+    <Folder Include="Deprecated" />
     <Folder Include="Preferences" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

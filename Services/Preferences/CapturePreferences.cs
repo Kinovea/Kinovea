@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
+using System.Linq;
 
 namespace Kinovea.Services
 {
@@ -101,6 +102,10 @@ namespace Kinovea.Services
         {
         	get{ return recentNetworkCameras;}
         }*/
+        public IEnumerable<CameraBlurb> CameraBlurbs
+        {
+            get { return cameraBlurbs.Values.Cast<CameraBlurb>(); }
+        }
         #endregion
 		
 		#region Members
@@ -115,34 +120,18 @@ namespace Kinovea.Services
         private long imageCounter = 1;
         private long videoCounter = 1;
         private int memoryBuffer = 768;
-        //private List<DeviceConfiguration> deviceConfigurations = new List<DeviceConfiguration>();
-        //private string networkCameraUrl = "http://localhost:8080/cam_1.jpg";
-        //private NetworkCameraFormat networkCameraFormat = NetworkCameraFormat.JPEG;
-        //private List<string> recentNetworkCameras = new List<string>();
-        //private int maxRecentNetworkCameras = 5;
+        private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
+        
 		#endregion
         
-        /*public void AddRecentCamera(string _url)
-    	{
-    	    PreferencesManager.UpdateRecents(_url, recentNetworkCameras, maxRecentNetworkCameras);
-    	}
-        
-    	public void UpdateDeviceConfiguration(string id, DeviceCapability capability)
-    	{
-    		bool known = false;
-    		foreach(DeviceConfiguration conf in deviceConfigurations)
-    		{
-    			if(conf.ID == id)
-    			{
-    				known = true;
-    				conf.UpdateCapability(capability);
-    				break;
-    			}
-    		}
-    		
-    		if(!known)
-    			deviceConfigurations.Add(new DeviceConfiguration(id, new DeviceCapability(capability.FrameSize, capability.Framerate)));
-    	}*/
+        public void AddCamera(CameraBlurb blurb)
+        {
+            // Note: there should be a way to remove old entries.
+            if(cameraBlurbs.ContainsKey(blurb.Identifier))
+                cameraBlurbs.Remove(blurb.Identifier);
+                
+            cameraBlurbs.Add(blurb.Identifier, blurb);
+        }
     	
     	public void WriteXML(XmlWriter writer)
         {
@@ -163,42 +152,19 @@ namespace Kinovea.Services
         
             writer.WriteElementString("MemoryBuffer", memoryBuffer.ToString());
             
-            /*if(deviceConfigurations.Count > 0)
+            if(cameraBlurbs.Count > 0)
             {
-                writer.WriteStartElement("DeviceConfigurations");
+                writer.WriteStartElement("Cameras");
                 
-                foreach(DeviceConfiguration deviceConfiguration in deviceConfigurations)
+                foreach(CameraBlurb blurb in cameraBlurbs.Values)
                 {
-                    writer.WriteStartElement("DeviceConfiguration");
-                    deviceConfiguration.WriteXML(writer);
+                    writer.WriteStartElement("Camera");
+                    blurb.WriteXML(writer);
                     writer.WriteEndElement();
                 }
                 
                 writer.WriteEndElement();
             }
-            
-            writer.WriteElementString("NetworkCameraUrl", networkCameraUrl);
-            writer.WriteElementString("NetworkCameraFormat", networkCameraFormat.ToString());
-            
-            if(recentNetworkCameras.Count > 0)
-            {
-                writer.WriteStartElement("RecentNetworkCameras");
-                
-                for(int i=0; i<maxRecentNetworkCameras; i++)
-                {
-                    if(i >= recentNetworkCameras.Count)
-                        break;
-                    
-                    if(string.IsNullOrEmpty(recentNetworkCameras[i]))
-                        continue;
-                    
-                    writer.WriteElementString("RecentNetworkCamera", recentNetworkCameras[i]);
-                }
-                
-                writer.WriteEndElement();
-            }
-            
-            writer.WriteElementString("MaxRecentNetworkCameras", maxRecentNetworkCameras.ToString());*/
         }
     	
     	public void ReadXML(XmlReader reader)
@@ -257,61 +223,43 @@ namespace Kinovea.Services
                     case "MaxRecentNetworkCameras":
                         maxRecentNetworkCameras = reader.ReadElementContentAsInt();
                         break;*/
+                    case "Cameras":
+                        ParseCameras(reader);
+                        break;
                     default:
                         reader.ReadOuterXml();
                         break;
-				}
+                }
             }
             
             reader.ReadEndElement();
         }
         
-        /*private void ParseDeviceConfigurations(XmlReader reader)
+        private void ParseCameras(XmlReader reader)
         {
-    	    deviceConfigurations.Clear();
-    	    bool empty = reader.IsEmptyElement;
+            cameraBlurbs.Clear();
+            bool empty = reader.IsEmptyElement;
             
-    	    reader.ReadStartElement();
-    	    
-    	    if(empty)
-    	        return;
+            reader.ReadStartElement();
             
+            if(empty)
+                return;
+
             while(reader.NodeType == XmlNodeType.Element)
             {
-                if(reader.Name == "DeviceConfiguration")
+                if(reader.Name == "Camera")
                 {
-                    DeviceConfiguration deviceConfiguration = new DeviceConfiguration(reader);
-                    if(!string.IsNullOrEmpty(deviceConfiguration.ID) && deviceConfiguration.Capability.FrameSize != Size.Empty)
-                        deviceConfigurations.Add(deviceConfiguration);
+                    CameraBlurb blurb = CameraBlurb.FromXML(reader);
+                    if(blurb != null)
+                        cameraBlurbs.Add(blurb.Identifier, blurb);
                 }
                 else
                 {
                     reader.ReadOuterXml();
                 }
             }
-            
+
             reader.ReadEndElement();
-        }*/
-        
-        /*private void ParseRecentNetworkCameras(XmlReader reader)
-        {
-    	    recentNetworkCameras.Clear();
-    	    bool empty = reader.IsEmptyElement;
-            
-    	    reader.ReadStartElement();
-    	    
-    	    if(empty)
-    	        return;
-            
-            while(reader.NodeType == XmlNodeType.Element)
-            {
-                if(reader.Name == "RecentNetworkCamera")
-                    recentNetworkCameras.Add(reader.ReadElementContentAsString());
-                else
-                    reader.ReadOuterXml();
-            }
-            
-            reader.ReadEndElement();
-        }*/
+        }
     }
 }

@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using Kinovea.Services;
 
 namespace Kinovea.Camera
 {
@@ -41,13 +42,14 @@ namespace Kinovea.Camera
                 invoker(this, e);
         }
         
+        public abstract string CameraType { get; }
+        
+        
         /// <summary>
         /// Get the list of reachable cameras, try to connect to each of them to get a snapshot, and return a small summary of the device.
         /// Knowing about the camera is enough, the camera managers should cache the snapshots to avoid connecting to the camera each time.
         /// </summary>
-        /// <param name="previouslySeen"></param>
-        /// <returns></returns>
-        public abstract List<CameraSummary> DiscoverCameras(List<CameraBlurb> previouslySeen);
+        public abstract List<CameraSummary> DiscoverCameras(IEnumerable<CameraBlurb> blurbs);
         
         /// <summary>
         /// Get a single image for thumbnail refresh.
@@ -56,12 +58,21 @@ namespace Kinovea.Camera
         public abstract void GetSingleImage(CameraSummary summary);
         
         /// <summary>
-        /// Called after the user personalize a camera. Should persist the customized information.
+        /// Extract a camera blurb (used for XML persistence) from a camera summary.
         /// </summary>
-        public abstract void UpdatedCameraSummary(CameraSummary summary);
-        
+        public abstract CameraBlurb BlurbFromSummary(CameraSummary summary);
         
         // TODO:
-        public abstract FrameGrabber Connect(string identifier);
+        //public abstract FrameGrabber Connect(string identifier);
+        
+        /// <summary>
+        /// Called after the user personalize a camera. Should persist the customized information.
+        /// </summary>
+        public void UpdatedCameraSummary(CameraSummary summary)
+        {
+            PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
+            PreferencesManager.Save();
+        }
+
     }
 }
