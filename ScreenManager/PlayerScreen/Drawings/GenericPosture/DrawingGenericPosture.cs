@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -382,7 +383,7 @@ namespace Kinovea.ScreenManager
             
             _xmlWriter.WriteStartElement("Positions");
             foreach (PointF p in m_GenericPosture.Points)
-                _xmlWriter.WriteElementString("Point", String.Format("{0};{1}", p.X, p.Y));
+                _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("DrawingStyle");
