@@ -294,8 +294,8 @@ namespace Kinovea.ScreenManager
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-            _xmlWriter.WriteElementString("Start", String.Format("{0};{1}", points["a"].X, points["a"].Y));
-            _xmlWriter.WriteElementString("End", String.Format("{0};{1}", points["b"].X, points["b"].Y));
+            _xmlWriter.WriteElementString("Start", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["a"].X, points["a"].Y));
+            _xmlWriter.WriteElementString("End", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["b"].X, points["b"].Y));
             _xmlWriter.WriteElementString("MeasureVisible", ShowMeasurableInfo ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");

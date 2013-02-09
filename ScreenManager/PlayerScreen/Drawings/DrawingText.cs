@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -225,7 +226,7 @@ namespace Kinovea.ScreenManager
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
 		    _xmlWriter.WriteElementString("Text", m_Text);
-            _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_Background.Rectangle.X, m_Background.Rectangle.Y));
+            _xmlWriter.WriteElementString("Position", String.Format(CultureInfo.InvariantCulture, "{0};{1}", m_Background.Rectangle.X, m_Background.Rectangle.Y));
             
 		    _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
