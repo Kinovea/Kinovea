@@ -19,13 +19,25 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-    public class VideoRecorder
+    public interface ICaptureScreenView
     {
-        public VideoRecorder()
-        {
-        }
+        void DisplayAsActiveScreen(bool active);
+        void FullScreen(bool fullScreen);
+        void RefreshUICulture();
+        
+        bool OnKeyPress(Keys key);
+        void AddImageDrawing(string filename, bool svg);
+        void AddImageDrawing(Bitmap bmp);
+        
+        void BeforeClose();
+        
+        void SetViewport(Viewport viewport);
+        void UpdateTitle(string title);
+        void UpdateGrabbingStatus(bool grabbing);
     }
 }

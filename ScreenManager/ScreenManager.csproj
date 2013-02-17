@@ -118,16 +118,10 @@
     <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\Refs\AForge.Video.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'Debug' ">
-      <HintPath>..\Refs\AForge.Video.dll</HintPath>
-    </Reference>
     <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'DebugExternals' ">
       <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Video\bin\Debug\AForge.Video.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'Debug' ">
       <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'DebugExternals' ">
@@ -180,38 +174,28 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
-    <Compile Include="ImageHelper.cs" />
-    <Compile Include="ListExtensions.cs" />
     <Compile Include="CaptureScreen\CapturedVideo.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FilenameHelper.cs" />
-    <Compile Include="CaptureScreen\FrameBuffer.cs" />
-    <Compile Include="CaptureScreen\FrameGrabbers\DeviceDescriptor.cs" />
-    <Compile Include="CaptureScreen\FrameGrabbers\AbstractFrameGrabber.cs" />
-    <Compile Include="CaptureScreen\FrameGrabbers\FrameGrabberAForge.cs" />
-    <Compile Include="CaptureScreen\FrameGrabbers\IFrameGrabberContainer.cs" />
-    <Compile Include="CaptureScreen\FrameServerCapture.cs" />
-    <Compile Include="CaptureScreen\ICaptureScreenUIHandler.cs" />
-    <Compile Include="CaptureScreen\IFrameServerCaptureContainer.cs" />
-    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="CaptureScreen\Averager.cs" />
+    <Compile Include="CaptureScreen\Frame buffers\CircularBufferMemory.cs" />
+    <Compile Include="CaptureScreen\Frame buffers\IFrameBuffer.cs" />
+    <Compile Include="CaptureScreen\ImageManipulator.cs" />
+    <Compile Include="CaptureScreen\ViewportController.cs" />
+    <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.cs" />
+    <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.Designer.cs">
+      <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\UserInterface\CapturedVideoBox.Designer.cs">
-      <DependentUpon>CapturedVideoBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.Designer.cs">
-      <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CaptureScreen\UserInterface\FormDevicePicker.Designer.cs">
-      <DependentUpon>FormDevicePicker.cs</DependentUpon>
-    </Compile>
+    <Compile Include="CaptureScreen\Views\CaptureScreen views\ICaptureScreenView.cs" />
     <Compile Include="CaptureScreen\VideoRecorder.cs" />
+    <Compile Include="CaptureScreen\Views\FilenameBox.cs" />
+    <Compile Include="CaptureScreen\Views\FilenameBox.Designer.cs">
+      <DependentUpon>FilenameBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\Views\ViewPort.cs" />
+    <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddMultiDrawingItem.cs" />
@@ -514,17 +498,19 @@
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterReverse.cs" />
     <Compile Include="PlayerScreen\VideoFilters\VideoFilterSharpen.cs" />
     <Compile Include="PlayerScreen\ViewportManipulator.cs" />
+    <Compile Include="Properties\Backgrounds.Designer.cs">
+      <DependentUpon>Backgrounds.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Properties\Capture.Designer.cs">
+      <DependentUpon>Capture.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Properties\Drawings.Designer.cs">
       <DependentUpon>Drawings.resx</DependentUpon>
     </Compile>
     <Compile Include="SummaryLoadedEventArgs.cs" />
     <Compile Include="SummaryLoader.cs" />
-    <Compile Include="Thumbnails\Archive\ThumbListView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Thumbnails\Archive\ThumbListView.Designer.cs">
-      <DependentUpon>ThumbListView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Thumbnails\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Thumbnails\FileLoadAskedEventArgs.cs" />
     <Compile Include="Thumbnails\FormCameraAlias.cs" />
@@ -613,15 +599,13 @@
       <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\MessageToaster.cs" />
-    <EmbeddedResource Include="CaptureScreen\UserInterface\CapturedVideoBox.resx">
-      <DependentUpon>CapturedVideoBox.cs</DependentUpon>
+    <Compile Include="UserInterface\SliderLogScale.cs" />
+    <Compile Include="UserInterface\UIHelper.cs" />
+    <EmbeddedResource Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.resx">
+      <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CaptureScreen\UserInterface\CaptureScreenUserInterface.resx">
-      <DependentUpon>CaptureScreenUserInterface.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CaptureScreen\UserInterface\FormDevicePicker.resx">
-      <DependentUpon>FormDevicePicker.cs</DependentUpon>
+    <EmbeddedResource Include="CaptureScreen\Views\FilenameBox.resx">
+      <DependentUpon>FilenameBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.da.resx" />
@@ -678,13 +662,17 @@
     <EmbeddedResource Include="PlayerScreen\VideoFilters\FormPreviewVideoFilter.resx">
       <DependentUpon>FormPreviewVideoFilter.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Backgrounds.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Backgrounds.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Capture.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Capture.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Drawings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Drawings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Thumbnails\Archive\ThumbListView.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ThumbListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\FormCameraAlias.resx">
       <DependentUpon>FormCameraAlias.cs</DependentUpon>
@@ -712,6 +700,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\FormIconPicker.resx">
       <DependentUpon>FormIconPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\SliderLogScale.resx">
+      <DependentUpon>SliderLogScale.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -815,6 +806,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="CaptureScreen" />
+    <Folder Include="CaptureScreen\Frame buffers" />
+    <Folder Include="CaptureScreen\Views\CaptureScreen views" />
+    <Folder Include="CaptureScreen\Views" />
     <Folder Include="Thumbnails" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
@@ -827,7 +822,6 @@
     <Folder Include="PlayerScreen\Export" />
     <Folder Include="PlayerScreen\Calibration" />
     <Folder Include="PlayerScreen\Trackability" />
-    <Folder Include="Thumbnails\Archive" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

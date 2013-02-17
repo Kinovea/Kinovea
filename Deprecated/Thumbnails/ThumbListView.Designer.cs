@@ -1,4 +1,4 @@
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
     partial class ThumbListView
     {

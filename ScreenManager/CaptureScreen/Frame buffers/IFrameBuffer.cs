@@ -22,10 +22,12 @@ using System;
 
 namespace Kinovea.ScreenManager
 {
-    public class VideoRecorder
+    /// <summary>
+    /// Describe the interface of a frame buffer used to buffer frames during capture.
+    /// The buffer is used to support delayed viewing.
+    /// </summary>
+    public interface IFrameBuffer
     {
-        public VideoRecorder()
-        {
-        }
+        
     }
 }

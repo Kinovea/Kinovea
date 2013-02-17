@@ -29,15 +29,9 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    //--------------------------------------------
-    // CommandLoadMovieInScreen.
-    //
-    // Gestion des écrans.
-    // Charge le fichier spécifié dans un écran, en créé un si besoin.
-    // Ou demande ce qu'il faut faire en fonction des options de config.
-    // Affiche le nouvel écran avec la vidéo dedans, prête.
-    // Utilise la commande LoadMovie.
-    //--------------------------------------------
+    /// <summary>
+    /// Loads a file in a screen, create the screen if needed.
+    /// </summary>
     public class CommandLoadMovieInScreen : IUndoableCommand
     {
         public string FriendlyName
@@ -47,22 +41,19 @@ namespace Kinovea.ScreenManager
 
         private String filePath;
         private ScreenManagerKernel screenManagerKernel;
-        private int ForceScreen;
+        private int targetScreen;
 
         #region constructor
-        public CommandLoadMovieInScreen(ScreenManagerKernel _smk, String _filePath, int _iForceScreen, bool _bStoreState)
+        public CommandLoadMovieInScreen(ScreenManagerKernel screenManagerKernel, String filePath, int targetScreen, bool storeState)
         {
-            screenManagerKernel = _smk;
-            filePath = _filePath;
-            ForceScreen = _iForceScreen;
-            if (_bStoreState) { screenManagerKernel.StoreCurrentState(); }
+            this.screenManagerKernel = screenManagerKernel;
+            this.filePath = filePath;
+            this.targetScreen = targetScreen;
+            if (storeState) 
+                screenManagerKernel.StoreCurrentState();
         }
         #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// Si ok, enregistrement du path dans l'historique.
-        /// </summary>
         public void Execute()
         {
             //-----------------------------------------------------------------------------------------------
@@ -85,11 +76,11 @@ namespace Kinovea.ScreenManager
             CommandManager cm = CommandManager.Instance();
             ICommand css = new CommandShowScreens(screenManagerKernel);
 
-            if (ForceScreen != -1)
+            if (targetScreen != -1)
             {
                 // Position d'écran forcée: Vérifier s'il y a des choses à enregistrer.
 
-                PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[ForceScreen-1];
+                PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[targetScreen-1];
                 bool bLoad = true;
                 if (ps.FrameServer.Metadata.IsDirty)
                 {
@@ -98,7 +89,7 @@ namespace Kinovea.ScreenManager
                     {
                         // Launch the save dialog.
                         // Note: if we cancel this one, we will go on without saving...
-                        screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
+                        screenManagerKernel.SaveData();
                     }
                     else if (dr == DialogResult.Cancel)
                     {
@@ -141,7 +132,7 @@ namespace Kinovea.ScreenManager
 	                            if (ps.FrameServer.Loaded)
 	                                SaveFileToHistory(filePath);
 
-                            	//Afficher l'écran qu'on vient de le créer.
+                            	//Afficher l'écran qu'on vient de créer.
                             	CommandManager.LaunchCommand(css);
                             }
                             break;
@@ -159,7 +150,7 @@ namespace Kinovea.ScreenManager
 	                                {
 	                                    // Launch the save dialog.
 	                                    // Note: if we cancel this one, we will go on without saving...
-	                                    screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
+	                                    screenManagerKernel.SaveData();
 	                                }
 	                                else if (dr == DialogResult.Cancel)
 	                                {
@@ -264,7 +255,7 @@ namespace Kinovea.ScreenManager
 	                                    {
 	                                        // Launch the save dialog.
 	                                        // Note: if we cancel this one, we will go on without saving...
-	                                        screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
+	                                        screenManagerKernel.SaveData();
 	                                    }
 	                                    else if (dr == DialogResult.Cancel)
 	                                    {

@@ -27,11 +27,11 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// FilenameHelper computes the next file name.
-    /// </summary>
-    public class FilenameHelper
-    {
+	/// <summary>
+	/// FlienameHelper computes the next file name.
+	/// </summary>
+	public class FilenameHelper
+	{
 		// The goal of this class is to compute the next file name for snapshot and recording feature on capture screen.
 		// For "free text with increment" type of naming (default) :
 		// We try to make it look like "it just works" for the user.
@@ -203,4 +203,3 @@ namespace Kinovea.ScreenManager
     	}
 	}
 }
-
