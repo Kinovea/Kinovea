@@ -20,69 +20,101 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
-using System.Threading;
-
 using AForge.Video;
 using AForge.Video.DirectShow;
 
 namespace Kinovea.Camera.DirectShow
 {
     /// <summary>
-    /// Retrieve a single snapshot, simulating a synchronous function.
+    /// The main grabbing class for devices with a DirectShow interface.
     /// </summary>
-    public class SnapshotRetriever
+    public class FrameGrabber : IFrameGrabber
     {
         public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        
+        #region Property
+        public bool Grabbing
+        { 
+            get { return grabbing;}
+        }
+        
+        public Size Size
+        {
+            get { return device.DesiredFrameSize; }
+        }
+        
+        public float Framerate
+        {
+            get { return device.DesiredFrameRate;}
+        }
+        /*public string ErrorDescription
+        {
+            get { return errorDescription;}
+        }*/
+        #endregion
         
         #region Members
         private Bitmap image;
         private string moniker;
         private CameraSummary summary;
         private object locker = new object();
-        private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private VideoCaptureDevice device;
+        private bool grabbing;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
-        
-        public SnapshotRetriever(CameraSummary summary, string moniker)
+
+        public FrameGrabber(CameraSummary summary, string moniker)
         {
             this.moniker = moniker;
             this.summary = summary;
-            
-            device = new VideoCaptureDevice(moniker);
-            device.NewFrame += Device_NewFrame;
-            device.VideoSourceError += Device_VideoSourceError;
         }
 
-        public void Run(object data)
+        public void Start()
         {
+            log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
+            CreateDevice();
+            device.NewFrame += Device_NewFrame;
+            device.VideoSourceError += Device_VideoSourceError;
+            grabbing = true;
             device.Start();
-            waitHandle.WaitOne(5000);
-            
+        }
+
+        public void Stop()
+        {
+            log.DebugFormat("Stopping device {0}", summary.Alias);
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
-            device.SignalToStop();
+            device.Stop();
+            grabbing = false;
+        }
+        
+        private void CreateDevice()
+        {
+            device = new VideoCaptureDevice(moniker);
             
-            if(image != null && CameraImageReceived != null)
-                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if(info != null && info.SelectedCapability != null)
+            {
+                device.DesiredFrameSize = info.SelectedCapability.FrameSize;
+                device.DesiredFrameRate = info.SelectedCapability.FrameRate;
+                log.DebugFormat("Device desired configuration: {0} @ {1} fps", device.DesiredFrameSize, device.DesiredFrameRate);
+            }
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
-            // Note: unfortunately some devices need several frames to have a usable image.
-            
-            // A full copy of the image seems to be needed.
+            // TODO: see if unsafe deep copy from AForge is faster.
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
             g.DrawImageUnscaled(e.Frame, Point.Empty);
-            waitHandle.Set();
+            
+            if(CameraImageReceived != null)
+                CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
         }
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
-            log.DebugFormat("Error received");
-            waitHandle.Set();
+            log.DebugFormat("Error from device {0}: {1}", summary.Alias, e.Description);
         }
-
     }
 }

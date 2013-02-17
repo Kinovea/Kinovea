@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
+using System.Windows.Forms;
 
 using AForge.Video.DirectShow;
 using Kinovea.Services;
@@ -83,7 +84,10 @@ namespace Kinovea.Camera.DirectShow
                     }
                 }
                 
-                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, this);
+                if(icon == null)
+                    icon = defaultIcon;
+                
+                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, null, this);
                 summaries.Add(summary);
                 
                 if(cached)
@@ -129,10 +133,59 @@ namespace Kinovea.Camera.DirectShow
             return blurb;
         }
         
-        /*public override FrameGrabber Connect(string identifier)
+        public override IFrameGrabber Connect(CameraSummary summary)
         {
-            throw new NotImplementedException();
-        }*/
+            // TODO: Retrieve moniker from identifier.
+            string moniker = summary.Identifier;
+            
+            FrameGrabber grabber = new FrameGrabber(summary, moniker);
+            return grabber;
+        }
+        
+        public override bool Configure(CameraSummary summary)
+        {
+            bool needsReconnection = false;
+            FormConfiguration form = new FormConfiguration(summary);
+            if(form.ShowDialog() == DialogResult.OK)
+            {
+                if(form.AliasChanged)
+                    summary.UpdateAlias(form.Alias, form.PickedIcon);
+                
+                if(form.SpecificChanged)
+                {
+                    SpecificInfo info = new SpecificInfo();
+                    info.SelectedCapability = form.Capability;
+                    summary.UpdateSpecific(info);
+
+                    needsReconnection = true;
+                }
+                
+                CameraTypeManager.UpdatedCameraSummary(summary);
+            }
+            
+            form.Dispose();
+            return needsReconnection;
+        }
+        
+        public override string GetSummaryAsText(CameraSummary summary)
+        {
+            string result = "";
+            string alias = summary.Alias;
+            
+            SpecificInfo info = summary.Specific as SpecificInfo;
+            if(info != null && info.SelectedCapability != null)
+            {
+                Size size = info.SelectedCapability.FrameSize;
+                float fps = (float)info.SelectedCapability.FrameRate;
+                result = string.Format("{0} - {1}×{2} @ {3}fps", alias, size.Width, size.Height, fps);
+            }
+            else
+            {
+                result = string.Format("{0}", alias);
+            }
+            
+            return result;
+        }
         
         private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {

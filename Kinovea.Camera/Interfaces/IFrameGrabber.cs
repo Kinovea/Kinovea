@@ -19,17 +19,25 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 
 namespace Kinovea.Camera
 {
     /// <summary>
-    /// Class connecting the actual camera. Responsible for getting the stream of images and
-    /// forwarding commands to the camera.
+    /// Interface for classes connecting the actual camera. 
+    /// Responsible for getting the stream of images and forwarding commands to the camera.
     /// </summary>
-    public class FrameGrabber
+    public interface IFrameGrabber
     {
-        public FrameGrabber()
-        {
-        }
+        event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        //event EventHandler CameraErrorReceived;
+        
+        bool Grabbing { get; }
+        Size Size { get;}
+        float Framerate { get; }
+        //string ErrorDescription { get;}
+        
+        void Start();
+        void Stop();
     }
 }

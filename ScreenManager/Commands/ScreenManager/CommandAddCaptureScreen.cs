@@ -39,27 +39,31 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        ScreenManagerKernel m_ScreenManagerKernel;
+        ScreenManagerKernel screenManagerKernel;
 		#endregion
         
 		#region constructor
         public CommandAddCaptureScreen(ScreenManagerKernel _smk, bool _bStoreState)
         {
-            m_ScreenManagerKernel = _smk;
-            if (_bStoreState) { m_ScreenManagerKernel.StoreCurrentState(); }
+            this.screenManagerKernel = _smk;
+            if (_bStoreState) 
+                screenManagerKernel.StoreCurrentState();
         }
         #endregion
 
         public void Execute()
         {
-            CaptureScreen screen = new CaptureScreen(m_ScreenManagerKernel);
-            if(m_ScreenManagerKernel.screenList.Count > 1) screen.Shared = true;
+            CaptureScreen screen = new CaptureScreen();
+            if(screenManagerKernel.screenList.Count > 1) 
+                screen.SetShared(true);
+            
             screen.refreshUICulture();
-            m_ScreenManagerKernel.screenList.Add(screen);
+            screenManagerKernel.AddScreen(screen);
+            
         }
         public void Unexecute()
         {
-            m_ScreenManagerKernel.RecallState();
+            screenManagerKernel.RecallState();
         }
     }
 }

@@ -39,7 +39,8 @@ namespace Kinovea.ScreenManager
         public DelegateUpdateTrackerFrame delegateUpdateTrackerFrame;
         #endregion
 
-        public event EventHandler<FileLoadAskedEventArgs> LoadAsked;
+        public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
+        public event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         
         #region Properties
         public bool CommonControlsVisible 
@@ -124,6 +125,8 @@ namespace Kinovea.ScreenManager
                 thumbnailViewerContainer.HideContent();
                 
                 splitScreens.Panel1.Controls.Clear();
+                splitScreens.Panel2.Controls.Clear();
+                
                 PrepareLeftScreen(screenList[0].UI);
                 
                 if(screenList.Count == 2)
@@ -162,9 +165,13 @@ namespace Kinovea.ScreenManager
         {
             thumbnailViewerContainer.Dock = DockStyle.Fill;
             thumbnailViewerContainer.Visible = true;
-            thumbnailViewerContainer.LoadAsked += (s,e) => {
-                if(LoadAsked != null)
-                    LoadAsked(this, e);
+            thumbnailViewerContainer.FileLoadAsked += (s,e) => {
+                if(FileLoadAsked != null)
+                    FileLoadAsked(this, e);
+            };
+            thumbnailViewerContainer.CameraLoadAsked += (s,e) => {
+                if(CameraLoadAsked != null)
+                    CameraLoadAsked(this, e);
             };
             
             this.Controls.Add(thumbnailViewerContainer);
@@ -178,8 +185,8 @@ namespace Kinovea.ScreenManager
 			
 			// Launch file.
 			string filePath = CommandLineArgumentManager.Instance().InputFile;
-			if(filePath != null && File.Exists(filePath) && LoadAsked != null)
-			    LoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
+			if(filePath != null && File.Exists(filePath) && FileLoadAsked != null)
+			    FileLoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
 		}
         private void pnlScreens_Resize(object sender, EventArgs e)
         {
@@ -199,12 +206,14 @@ namespace Kinovea.ScreenManager
             splitScreens.Panel1Collapsed = false;
             splitScreens.Panel1.AllowDrop = true;
             splitScreens.Panel1.Controls.Add(screenUI);
+            screenUI.Dock = DockStyle.Fill;
         }
         private void PrepareRightScreen(UserControl screenUI)
         {
             splitScreens.Panel2Collapsed = false;
             splitScreens.Panel2.AllowDrop = true;
             splitScreens.Panel2.Controls.Add(screenUI);
+            screenUI.Dock = DockStyle.Fill;
         }
         private void ClearLeftScreen()
         {
@@ -227,18 +236,18 @@ namespace Kinovea.ScreenManager
         }
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {
-            if(LoadAsked != null)
-                LoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), -1));
+            if(FileLoadAsked != null)
+                FileLoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), -1));
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
-            if(LoadAsked != null)
-                LoadAsked(this, new FileLoadAskedEventArgs( GetDroppedObject(e), 1));
+            if(FileLoadAsked != null)
+                FileLoadAsked(this, new FileLoadAskedEventArgs( GetDroppedObject(e), 1));
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
-            if(LoadAsked != null)
-                LoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), 2));
+            if(FileLoadAsked != null)
+                FileLoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), 2));
         }
         private string GetDroppedObject(DragEventArgs e)
         {

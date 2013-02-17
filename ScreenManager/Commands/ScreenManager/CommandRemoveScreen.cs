@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
                         {
                             // Launch the save dialog.
                             // Note: if user cancels this one, we will not save anything...
-                            screenManagerKernel.mnuSaveOnClick(null, EventArgs.Empty);
+                            screenManagerKernel.SaveData();
                         }
                         else if (dr == DialogResult.Cancel)
                         {

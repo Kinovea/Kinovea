@@ -1,0 +1,7 @@
+﻿
+2013-02-03
+
+This assembly is a temporary place for deprecated code.
+When rewriting a piece of code from scratch, move the old code here to keep it as reference.
+This assembly should never be linked from any other.
+All dependent code will have missing references, which acts as a check list for the rewrite.

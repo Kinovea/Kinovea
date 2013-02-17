@@ -19,13 +19,17 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using AForge.Video.DirectShow;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Camera.DirectShow
 {
-    public class VideoRecorder
+    /// <summary>
+    /// Information about a camera that is specific to the DirectShow plugin.
+    /// This info is opaquely transported inside the CameraSummary.
+    /// </summary>
+    public class SpecificInfo
     {
-        public VideoRecorder()
-        {
-        }
+        public VideoCapabilities SelectedCapability { get; set;}
+        
     }
 }

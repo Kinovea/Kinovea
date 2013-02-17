@@ -32,7 +32,7 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.ScreenManager.Deprecated
 {
 	/// <summary>
 	/// A control that let the user explore a folder.

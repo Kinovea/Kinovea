@@ -65,8 +65,12 @@
     <Compile Include="CameraSummary.cs" />
     <Compile Include="CameraSummaryUpdatedEventArgs.cs" />
     <Compile Include="CameraTypeManager.cs" />
-    <Compile Include="FrameGrabber.cs" />
+    <Compile Include="FormIconPicker.cs" />
+    <Compile Include="FormIconPicker.Designer.cs">
+      <DependentUpon>FormIconPicker.cs</DependentUpon>
+    </Compile>
     <Compile Include="IconLibrary.cs" />
+    <Compile Include="Interfaces\IFrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Icons.Designer.cs">
       <DependentUpon>Icons.resx</DependentUpon>
@@ -84,6 +88,9 @@
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
       <Name>Services</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

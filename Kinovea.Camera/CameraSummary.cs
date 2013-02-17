@@ -32,14 +32,17 @@ namespace Kinovea.Camera
         public string Name { get; private set;}
         public string Identifier { get; private set;}
         public Bitmap Icon { get; private set; }
+        public object Specific { get; private set;}
         public CameraManager Manager { get; private set;}
         
-        public CameraSummary(string alias, string name, string identifier, Bitmap icon, CameraManager manager)
+        
+        public CameraSummary(string alias, string name, string identifier, Bitmap icon, object specific, CameraManager manager)
         {
             this.Alias = alias;
             this.Name = name;
             this.Identifier = identifier;
             this.Icon = icon;
+            this.Specific = specific;
             this.Manager = manager;
         }
         
@@ -47,6 +50,11 @@ namespace Kinovea.Camera
         {
             this.Alias = alias;
             this.Icon = icon;
+        }
+        
+        public void UpdateSpecific(object specific)
+        {
+            this.Specific = specific;
         }
     }
 }

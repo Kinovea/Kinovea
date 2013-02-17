@@ -177,51 +177,6 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
-        internal static System.Drawing.Bitmap capture_close2
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("capture_close2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap capture_settings5
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("capture_settings5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap capturedock3
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("capturedock3", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap capturegrab5
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("capturegrab5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap capturepause5
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("capturepause5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap chart_bar
         {
             get
@@ -272,24 +227,6 @@ namespace Kinovea.ScreenManager.Properties
             get
             {
                 object obj = ResourceManager.GetObject("contrast", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap control_rec
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("control_rec", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap control_recstop
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("control_recstop", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -983,6 +920,24 @@ namespace Kinovea.ScreenManager.Properties
             get
             {
                 object obj = ResourceManager.GetObject("savevideo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap section_fold
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("section_fold", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap section_unfold
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("section_unfold", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

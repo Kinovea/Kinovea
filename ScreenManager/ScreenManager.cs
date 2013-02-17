@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
+using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
@@ -57,6 +58,10 @@ namespace Kinovea.ScreenManager
         {
             get { return m_bCancelLastCommand; } // Unused.
             set { m_bCancelLastCommand = value; }
+        }
+        public int ScreenCount
+        {
+            get { return screenList.Count;}
         }
         #endregion
 
@@ -164,7 +169,8 @@ namespace Kinovea.ScreenManager
             m_bAllowKeyboardHandler = true;
 
             view = new ScreenManagerUserInterface(this);
-            view.LoadAsked += View_LoadAsked;
+            view.FileLoadAsked += View_FileLoadAsked;
+            view.CameraLoadAsked += View_CameraLoadAsked;
             
             InitializeVideoFilters();
             
@@ -536,9 +542,16 @@ namespace Kinovea.ScreenManager
 
             OrganizeMenus();
         }
+        public void Screen_CloseAsked(object sender, EventArgs e)
+        {
+            AbstractScreen screen = sender as AbstractScreen;
+            Screen_CloseAsked(screen);
+        }
         public void Screen_CloseAsked(AbstractScreen _sender)
         {
-        	// If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
+            // Should be phased out soon in favor of the event handler above.
+        
+            // If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
         	if(_sender is PlayerScreen && ((PlayerScreen)_sender).InteractiveFiltering)
         	{
         	    Screen_SetActiveScreen(_sender);
@@ -674,9 +687,13 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region ICommonControlsHandler Implementation
-        public void View_LoadAsked(object source, FileLoadAskedEventArgs e)
+        public void View_FileLoadAsked(object source, FileLoadAskedEventArgs e)
         {
             DoLoadMovieInScreen(e.Source, e.Target, true);
+        }
+        public void View_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
+        {
+            DoLoadCameraInScreen(e.Source, e.Target);
         }
         public void CommonCtrl_GotoFirst()
         {
@@ -1073,6 +1090,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
+        public AbstractScreen GetScreenAt(int index)
+        {
+            return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
+        }
+        public void AddScreen(AbstractScreen screen)
+        {
+            screen.CloseAsked += Screen_CloseAsked;
+            screenList.Add(screen);
+        }
         public void UpdateStatusBar()
         {
             //------------------------------------------------------------------
@@ -1108,17 +1134,15 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateCaptureBuffers()
         {
-        	// The screen list has changed and involve capture screens.
-        	// Update their shared state to trigger a memory buffer reset.
-        	bool shared = screenList.Count == 2;
-        	foreach(AbstractScreen screen in screenList)
-        	{
-        		CaptureScreen capScreen = screen as CaptureScreen;
-        		if(capScreen != null)
-        		{
-        			capScreen.Shared = shared;
-        		}
-        	}
+            // The screen list has changed and involve capture screens.
+            // Update their shared state to trigger a memory buffer reset.
+            bool shared = screenList.Count == 2;
+            foreach(AbstractScreen screen in screenList)
+            {
+                CaptureScreen capScreen = screen as CaptureScreen;
+                if(capScreen != null)
+                    capScreen.SetShared(shared);
+            }
         }
         public void FullScreen(bool _bFullScreen)
         {
@@ -1746,17 +1770,21 @@ namespace Kinovea.ScreenManager
             OrganizeCommonControls();
             OrganizeMenus();
         }
-        public void mnuSaveOnClick(object sender, EventArgs e)
+        private void mnuSaveOnClick(object sender, EventArgs e)
         {
-        	// Public because accessed from the closing command when we realize there are 
-            // unsaved modified data.
-            PlayerScreen ps = m_ActiveScreen as PlayerScreen;
-            if (ps == null)
+            SaveData();
+        }
+        
+        public void SaveData()
+        {
+            PlayerScreen player = m_ActiveScreen as PlayerScreen;
+            if (player == null)
                 return;
             
+            // Accessed from the load command.
             DoStopPlaying();
             DoDeactivateKeyboardHandler();
-            ps.Save();
+            player.Save();
             DoActivateKeyboardHandler();
         }
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
@@ -2461,15 +2489,26 @@ namespace Kinovea.ScreenManager
         #region Services
         public void DoLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState)
         {
-        	if(File.Exists(_filePath))
-            {
-            	IUndoableCommand clmis = new CommandLoadMovieInScreen(this, _filePath, _iForceScreen, _bStoreState);
-            	CommandManager cm = CommandManager.Instance();
-            	cm.LaunchUndoableCommand(clmis);
-            	
-            	// No need to call PrepareSync here because it will be called when the working zone is set anyway.
-        	}
+            if(!File.Exists(_filePath))
+                return;
+                
+            IUndoableCommand clmis = new CommandLoadMovieInScreen(this, _filePath, _iForceScreen, _bStoreState);
+            CommandManager cm = CommandManager.Instance();
+            cm.LaunchUndoableCommand(clmis);
+            
+            // No need to call PrepareSync here because it will be called when the working zone is set anyway.
         }
+        
+        public void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
+        {
+            if(summary == null)
+                return;
+                
+            IUndoableCommand clmis = new CommandLoadCameraInScreen(this, summary, targetScreen);
+            CommandManager cm = CommandManager.Instance();
+            cm.LaunchUndoableCommand(clmis);
+        }
+        
         public void DoStopPlaying()
         {
             // Called from Supervisor, when user launch open dialog box.

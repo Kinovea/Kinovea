@@ -62,8 +62,20 @@ namespace Kinovea.Camera
         /// </summary>
         public abstract CameraBlurb BlurbFromSummary(CameraSummary summary);
         
-        // TODO:
-        //public abstract FrameGrabber Connect(string identifier);
+        /// <summary>
+        /// Connect to a camera and return the frame grabbing object.
+        /// </summary>
+        public abstract IFrameGrabber Connect(CameraSummary summary);
+        
+        /// <summary>
+        /// Launch a dialog to configure the device. Returns true if the configuration has changed.
+        /// </summary>
+        public abstract bool Configure(CameraSummary summary);
+        
+        /// <summary>
+        /// Returns a small non-translatable text to be displayed in the header line above the image.
+        /// </summary>
+        public abstract string GetSummaryAsText(CameraSummary summary);
         
         /// <summary>
         /// Called after the user personalize a camera. Should persist the customized information.
@@ -73,6 +85,9 @@ namespace Kinovea.Camera
             PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
             PreferencesManager.Save();
         }
+        
+        
+        
 
     }
 }

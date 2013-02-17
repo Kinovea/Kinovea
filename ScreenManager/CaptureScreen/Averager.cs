@@ -19,13 +19,38 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 
 namespace Kinovea.ScreenManager
 {
-    public class VideoRecorder
+    public class Averager
     {
-        public VideoRecorder()
+        public double Average
         {
+            get { return avg;}
+        }
+        
+        private List<double> intervals = new List<double>();
+        private int max;
+        private double total;
+        private double avg;
+        
+        public Averager(int max)
+        {
+            this.max = max;
+        }
+        
+        public void Add(double interval)
+        {
+            if(intervals.Count == max)
+            {
+                total -= intervals[0];
+                intervals.RemoveAt(0);
+            }
+            
+            intervals.Add(interval);
+            total += interval;
+            avg = total / intervals.Count;
         }
     }
 }
