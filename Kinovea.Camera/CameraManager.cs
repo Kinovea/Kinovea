@@ -85,9 +85,5 @@ namespace Kinovea.Camera
             PreferencesManager.CapturePreferences.AddCamera(BlurbFromSummary(summary));
             PreferencesManager.Save();
         }
-        
-        
-        
-
     }
 }

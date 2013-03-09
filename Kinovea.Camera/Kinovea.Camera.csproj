@@ -59,12 +59,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraImageReceivedEventArgs.cs" />
     <Compile Include="CameraManager.cs" />
-    <Compile Include="CamerasDiscoveredEventArgs.cs" />
     <Compile Include="CameraSummary.cs" />
-    <Compile Include="CameraSummaryUpdatedEventArgs.cs" />
     <Compile Include="CameraTypeManager.cs" />
+    <Compile Include="Events\CameraImageReceivedEventArgs.cs" />
+    <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
+    <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
+    <Compile Include="Events\CameraSummaryUpdatedEventArgs.cs" />
     <Compile Include="FormIconPicker.cs" />
     <Compile Include="FormIconPicker.Designer.cs">
       <DependentUpon>FormIconPicker.cs</DependentUpon>
@@ -91,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces" />
+    <Folder Include="Events" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

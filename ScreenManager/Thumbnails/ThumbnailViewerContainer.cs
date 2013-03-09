@@ -36,7 +36,6 @@ namespace Kinovea.ScreenManager
     public partial class ThumbnailViewerContainer : UserControl
     {
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
-        public event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         
         #region Members
         private Selector selector;
@@ -150,8 +149,8 @@ namespace Kinovea.ScreenManager
                 viewerFiles.CurrentDirectoryChanged(files);
             else if (currentContent == ThumbnailViewerContent.Shortcuts)
                 viewerShortcuts.CurrentDirectoryChanged(files);
-            //else
-                //viewerCameras.Update();
+            else if(currentContent == ThumbnailViewerContent.Cameras)
+                viewerCameras.Unhide();
                 
             this.Cursor = Cursors.Default;
         }
@@ -286,7 +285,6 @@ namespace Kinovea.ScreenManager
             viewerShortcuts.AfterLoad += Viewer_AfterLoad;
             
             viewerCameras.UpdateThumbnailsSize(newSize);
-            viewerCameras.CameraLoadAsked += Viewer_CameraLoadAsked;
             viewerCameras.BeforeLoad += Viewer_BeforeLoad;
             viewerCameras.ProgressChanged += Viewer_ProgressChanged;
             viewerCameras.AfterLoad += Viewer_AfterLoad;
@@ -296,11 +294,6 @@ namespace Kinovea.ScreenManager
         {
             if(FileLoadAsked != null)
                 FileLoadAsked(sender, e);
-        }
-        private void Viewer_CameraLoadAsked(object sender, CameraLoadAskedEventArgs e)
-        {
-            if(CameraLoadAsked != null)
-                CameraLoadAsked(sender, e);
         }
         private void Viewer_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {

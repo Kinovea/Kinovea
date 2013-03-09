@@ -28,7 +28,7 @@ using AForge.Video.DirectShow;
 namespace Kinovea.Camera.DirectShow
 {
     /// <summary>
-    /// Retrieve a single snapshot, simulating a synchronous function.
+    /// Retrieve a single snapshot, simulating a synchronous function. Used for thumbnails.
     /// </summary>
     public class SnapshotRetriever
     {
@@ -40,6 +40,7 @@ namespace Kinovea.Camera.DirectShow
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
+        private bool cancelled;
         private VideoCaptureDevice device;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -63,15 +64,19 @@ namespace Kinovea.Camera.DirectShow
             device.VideoSourceError -= Device_VideoSourceError;
             device.SignalToStop();
             
-            if(image != null && CameraImageReceived != null)
+            if(!cancelled && image != null && CameraImageReceived != null)
                 CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+        }
+        
+        public void Cancel()
+        {
+            cancelled = true;
+            waitHandle.Set();
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
-            // Note: unfortunately some devices need several frames to have a usable image.
-            
-            // A full copy of the image seems to be needed.
+            // Note: unfortunately some devices need several frames to have a usable image. (e.g: PS3 Eye).
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
             g.DrawImageUnscaled(e.Frame, Point.Empty);

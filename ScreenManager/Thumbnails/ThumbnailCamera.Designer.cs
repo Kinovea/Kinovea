@@ -1,4 +1,5 @@
-﻿#region License
+﻿using System.Windows.Forms;
+#region License
 /*
 Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
@@ -68,8 +69,8 @@ namespace Kinovea.ScreenManager
             this.lblAlias.TabIndex = 5;
             this.lblAlias.Text = "Camera Alias";
             this.lblAlias.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblAlias.Click += new System.EventHandler(this.AllControls_Click);
-            this.lblAlias.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+            this.lblAlias.MouseClick += new MouseEventHandler(this.AllControls_Click);
+            this.lblAlias.MouseDoubleClick += new MouseEventHandler(this.AllControls_DoubleClick);
             // 
             // picBox
             // 
@@ -83,9 +84,9 @@ namespace Kinovea.ScreenManager
             this.picBox.Size = new System.Drawing.Size(234, 174);
             this.picBox.TabIndex = 4;
             this.picBox.TabStop = false;
-            this.picBox.Click += new System.EventHandler(this.AllControls_Click);
+            this.picBox.MouseClick += new MouseEventHandler(this.AllControls_Click);
             this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBox_Paint);
-            this.picBox.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+            this.picBox.MouseDoubleClick += new MouseEventHandler(this.AllControls_DoubleClick);
             // 
             // btnIcon
             // 
@@ -114,9 +115,9 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(this.picBox);
             this.Name = "ThumbnailCamera";
             this.Size = new System.Drawing.Size(240, 195);
-            this.Click += new System.EventHandler(this.AllControls_Click);
+            this.MouseClick += new MouseEventHandler(this.AllControls_Click);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbnailCamera_Paint);
-            this.DoubleClick += new System.EventHandler(this.AllControls_DoubleClick);
+            this.MouseDoubleClick += new MouseEventHandler(this.AllControls_DoubleClick);
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

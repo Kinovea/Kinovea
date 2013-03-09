@@ -68,10 +68,12 @@ namespace Kinovea.FileBrowser
 			btnDeleteShortcut.Parent = lblFavFolders;
 
 			// Drag Drop handling.
-			lvExplorer.ItemDrag += new ItemDragEventHandler(lv_ItemDrag);
-			lvShortcuts.ItemDrag += new ItemDragEventHandler(lv_ItemDrag);
+			lvExplorer.ItemDrag += lv_ItemDrag;
+			lvShortcuts.ItemDrag += lv_ItemDrag;
             etExplorer.AllowDrop = false;
 			etShortcuts.AllowDrop = false;
+			
+			lvCameras.ItemDrag += lvCameras_ItemDrag;
 			
 			BuildContextMenu();
 			
@@ -89,6 +91,7 @@ namespace Kinovea.FileBrowser
 			
 			Application.Idle += new EventHandler(this.IdleDetector);
 		}
+
 		private void BuildContextMenu()
 		{
 			// Add an item to shortcuts
@@ -406,9 +409,13 @@ namespace Kinovea.FileBrowser
         #region Camera tab
         private void UpdateCameraList(List<CameraSummary> summaries)
         {
+            cameraSummaries.Clear();
+            
             // Add new cameras.
             foreach(CameraSummary summary in summaries)
             {
+                cameraSummaries.Add(summary);
+                
                 if(lvCameras.Items.ContainsKey(summary.Identifier))
                     continue;
 
@@ -435,15 +442,20 @@ namespace Kinovea.FileBrowser
         {
             if(!lvCameras.Items.ContainsKey(summary.Identifier))
                 return;
+            
+            ListViewItem lvi = lvCameras.Items[summary.Identifier];
+            int index = IndexOfCamera(cameraSummaries, summary.Identifier);
 
-            cameraIcons.Images.RemoveByKey(lvCameras.Items[summary.Identifier].ImageKey);
+            cameraSummaries[index] = summary;
+
+            cameraIcons.Images.RemoveByKey(lvi.ImageKey);
             cameraIcons.Images.Add(summary.Identifier, summary.Icon);
             
-            lvCameras.Items[summary.Identifier].Text = summary.Alias;
+            lvi.Text = summary.Alias;
             
             // We specify the image by key, but the ListView actually uses the index to 
             // refer to the image. So when we alter the image list, everything is scrambled.
-            // Assigning the key again must go through the piece of code that recomputes the index and fixes things.
+            // Assigning the key again seems to go through the piece of code that recomputes the index and fixes things.
             foreach(ListViewItem item in lvCameras.Items)
                 item.ImageKey = item.ImageKey;
             
@@ -457,6 +469,31 @@ namespace Kinovea.FileBrowser
                     return i;
             return -1;
         }
+		
+        private void LvCameras_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewItem lvi = lvCameras.GetItemAt(e.X, e.Y);
+            
+            if(lvi == null || lvCameras.SelectedItems == null || lvCameras.SelectedItems.Count != 1)
+                return;
+            
+            int index = IndexOfCamera(cameraSummaries, lvi.Name);
+            
+            if(index >= 0)
+                CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
+        }
+        
+        private void lvCameras_ItemDrag(object sender, ItemDragEventArgs e)
+		{
+            ListViewItem lvi = e.Item as ListViewItem;
+
+            if(lvi == null || lvCameras.SelectedItems == null || lvCameras.SelectedItems.Count != 1)
+                return;
+            
+            int index = IndexOfCamera(cameraSummaries, lvi.Name);
+            if(index >= 0)
+                DoDragDrop(cameraSummaries[index], DragDropEffects.All);
+		}
 		#endregion
 		
 		
@@ -548,6 +585,7 @@ namespace Kinovea.FileBrowser
 			
 			this.Cursor = Cursors.Default;
 		}
+		
 		private void lv_ItemDrag(object sender, ItemDragEventArgs e)
 		{
 			ListViewItem lvi = e.Item as ListViewItem;
@@ -560,6 +598,7 @@ namespace Kinovea.FileBrowser
 			
 			DoDragDrop(path, DragDropEffects.All);
 		}
+		
 		private void LaunchItemAt(ListView listView, MouseEventArgs e)
 		{
 			ListViewItem lvi = listView.GetItemAt(e.X, e.Y);

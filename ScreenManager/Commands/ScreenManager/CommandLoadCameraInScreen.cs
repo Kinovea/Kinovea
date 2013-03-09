@@ -44,12 +44,12 @@ namespace Kinovea.ScreenManager
         {
             this.manager = manager;
             this.summary = summary;
-            this.targetScreen = targetScreen;
+            this.targetScreen = targetScreen - 1;
         }
         
         public void Execute()
         {
-            if (targetScreen == -1)
+            if (targetScreen < 0)
                 LoadUnspecified();
             else
                 LoadInSpecificTarget(targetScreen);

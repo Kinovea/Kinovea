@@ -28,14 +28,15 @@ namespace Kinovea.ScreenManager
 {
     /// <summary>
     /// Viewport is the core viewer for the image and drawing tools.
-    /// This class should be only concerned with display, the actual intelligence being in FrameViewController.
-    /// TODO: make it a custom control instead ?
+    /// This class should be only concerned with display, the actual intelligence being in ViewportController.
+    /// Interactions only concerned with moving the image around, zoom window, etc. are handled here.
     /// </summary>
     public partial class Viewport : Control
     {
         private ViewportController controller;
         private Size imageSize;
         private Rectangle displayRectangle; // Position and size of the region of the viewport where we draw the image.
+        private Rectangle unstretchedDisplayRectangle;
         private ImageManipulator manipulator = new ImageManipulator(); // This will ultimately be the responsibility of the hand tool.
         private bool filling;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -47,11 +48,11 @@ namespace Kinovea.ScreenManager
             this.DoubleBuffered = true;
         }
         
-        public void SetImageSize(Size imageSize)
+        public void InitializeDisplayRectangle(Rectangle saved, Size imageSize)
         {
             this.imageSize = imageSize;
             filling = false;
-            InitializeDisplayRectangle();
+            InitializeDisplayRectangle(saved);
         }
         
         #region Drawing
@@ -96,7 +97,8 @@ namespace Kinovea.ScreenManager
             if(e.Button != MouseButtons.Left)
                 return;
             
-            manipulator.Start(e.Location, displayRectangle.Location);
+            if(displayRectangle.Contains(e.Location))
+                manipulator.Start(e.Location, displayRectangle.Location);
         }
         
         protected override void OnMouseMove(MouseEventArgs e)
@@ -106,7 +108,8 @@ namespace Kinovea.ScreenManager
             if(e.Button != MouseButtons.Left)
                 return;
             
-            if(displayRectangle.Contains(e.Location))
+            //if(displayRectangle.Contains(e.Location))
+            if(manipulator.Started)
             {
                 filling = false;
                 bool sticky = true; // depends on SHIFT.
@@ -119,29 +122,42 @@ namespace Kinovea.ScreenManager
         {
             base.OnMouseUp(e);
             manipulator.End();
+            controller.UpdateDisplayRectangle(displayRectangle);
         }
         
         protected override void OnDoubleClick(EventArgs e)
         {
             base.OnDoubleClick(e);
             
-            filling = !filling;
-            if(filling)
-                Fill();
-            else
-                InitializeDisplayRectangle();
+            if(displayRectangle.Contains(this.PointToClient(Control.MousePosition)))
+            {
+                filling = !filling;
+                if(filling)
+                    Fill();
+                else
+                    InitializeDisplayRectangle(unstretchedDisplayRectangle);
+            }
         }
         
-        private void InitializeDisplayRectangle()
+        private void InitializeDisplayRectangle(Rectangle saved)
         {
-            int left = (this.Size.Width - imageSize.Width)/2;
-            int top = (this.Size.Height - imageSize.Height)/2;
-            displayRectangle = new Rectangle(left, top, imageSize.Width, imageSize.Height);
+            if(saved.Size != Size.Empty)
+            {
+                displayRectangle = saved;
+            }
+            else
+            {
+                int left = (this.Size.Width - imageSize.Width)/2;
+                int top = (this.Size.Height - imageSize.Height)/2;
+                displayRectangle = new Rectangle(left, top, imageSize.Width, imageSize.Height);
+            }
         }
         
         private void Fill()
         {
+            unstretchedDisplayRectangle = displayRectangle;
             displayRectangle = UIHelper.RatioStretch(displayRectangle.Size, this.Size);
+            controller.UpdateDisplayRectangle(displayRectangle);
         }
         #endregion
         

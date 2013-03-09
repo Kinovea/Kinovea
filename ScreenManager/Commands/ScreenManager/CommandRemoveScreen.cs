@@ -134,8 +134,6 @@ namespace Kinovea.ScreenManager
 	                // TODO: Remove all commands that were executed during this screen life from the command history.
 	                // But to do that we'll need a way to tell apart commands based on their parent screen...
             	}
-                
-            	
             }
         	else
             {

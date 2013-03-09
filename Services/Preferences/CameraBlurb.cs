@@ -29,6 +29,7 @@ namespace Kinovea.Services
     /// <summary>
     /// Small info about a camera, allowing the Camera Manager to match it against discovered camera.
     /// Can also contain necessary info to try to connect to a camera, for types that don't have passive discovery.
+    /// The opaque field is kept in the serialized form until the actual camera manager instanciate a CameraSummary from the blurb.
     /// </summary>
     public class CameraBlurb
     {
@@ -36,14 +37,17 @@ namespace Kinovea.Services
         public string Identifier { get; private set;}
         public string Alias { get; private set;}
         public Bitmap Icon { get; private set;}
-        //public object Opaque { get; private set;}
+        public Rectangle DisplayRectangle { get; private set; }
+        public string Specific { get; private set;}
         
-        public CameraBlurb(string cameraType, string identifier, string alias, Bitmap icon)
+        public CameraBlurb(string cameraType, string identifier, string alias, Bitmap icon, Rectangle displayRectangle, string specific)
         {
             this.CameraType = cameraType;
             this.Identifier = identifier;
             this.Alias = alias;
             this.Icon = icon;
+            this.DisplayRectangle = displayRectangle;
+            this.Specific = specific;
         }
         
         public void WriteXML(XmlWriter writer)
@@ -55,7 +59,15 @@ namespace Kinovea.Services
             string iconBase64 = XmlHelper.ImageToBase64(Icon, ImageFormat.Png);
             writer.WriteElementString("Icon", iconBase64);
             
-            // TODO: add special info.
+            string displayRectangle = string.Format("{0};{1};{2};{3}", DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width, DisplayRectangle.Height);
+            writer.WriteElementString("DisplayRectangle", displayRectangle);
+            
+            if(!string.IsNullOrEmpty(Specific))
+            {
+                writer.WriteStartElement("Specific");
+                writer.WriteRaw(Specific);
+                writer.WriteEndElement();
+            }
         }
         
         public static CameraBlurb FromXML(XmlReader reader)
@@ -65,6 +77,8 @@ namespace Kinovea.Services
             string identifier = "";
             string alias = "";
             Bitmap icon = null;
+            Rectangle displayRectangle = Rectangle.Empty;
+            string specific = "";
             
             while(reader.NodeType == XmlNodeType.Element)
             {
@@ -82,6 +96,12 @@ namespace Kinovea.Services
                 case "Icon":
                     icon = XmlHelper.ParseImageFromBase64(reader.ReadElementContentAsString());
                     break;
+                case "DisplayRectangle":
+                    displayRectangle = XmlHelper.ParseRectangle(reader.ReadElementContentAsString());
+                    break;
+                case "Specific":
+                    specific = reader.ReadInnerXml();
+                    break;
                 default:
                     reader.ReadOuterXml();
                     break;
@@ -90,11 +110,7 @@ namespace Kinovea.Services
             
             reader.ReadEndElement();  
             
-            return new CameraBlurb(cameraType, identifier, alias, icon);
+            return new CameraBlurb(cameraType, identifier, alias, icon, displayRectangle, specific);
         }
-        
-        
-        
-        
     }
 }

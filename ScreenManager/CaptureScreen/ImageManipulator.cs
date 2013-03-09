@@ -28,6 +28,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ImageManipulator
     {
+        public bool Started
+        {
+            get { return moving;}
+        }
+        
         public Point ImageLocation
         {
             get { return imageLocation;}

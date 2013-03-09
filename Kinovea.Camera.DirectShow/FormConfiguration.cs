@@ -30,7 +30,6 @@ namespace Kinovea.Camera.DirectShow
 {
     public partial class FormConfiguration : Form
     {
-    
         public bool AliasChanged
         {
             get { return iconChanged || tbAlias.Text != summary.Alias;}
@@ -60,6 +59,7 @@ namespace Kinovea.Camera.DirectShow
         private bool specificChanged;
         private CameraSummary summary;
         private List<VideoCapabilities> capabilities = new List<VideoCapabilities>();
+        private bool loaded;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FormConfiguration(CameraSummary summary)
@@ -71,13 +71,10 @@ namespace Kinovea.Camera.DirectShow
             tbAlias.Text = summary.Alias;
             lblSystemName.Text = summary.Name;
             btnIcon.BackgroundImage = summary.Icon;
-            
+
             // TODO: Get moniker from identifier.
             PopulateCapabilities();
-            
-            
-            
-            
+            loaded = true;
         }
         
         void BtnIconClick(object sender, EventArgs e)
@@ -111,12 +108,20 @@ namespace Kinovea.Camera.DirectShow
             if(device.VideoCapabilities == null || device.VideoCapabilities.Length == 0)
                 return;
             
-            VideoCapabilities selected = null;
+            Size selectedFrameSize = Size.Empty;
+            int selectedFrameRate = 0;
+            
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null && info.SelectedCapability != null)
-                selected = info.SelectedCapability;
+            if(info != null)
+            {
+                selectedFrameSize = info.SelectedFrameSize;
+                selectedFrameRate = info.SelectedFrameRate;
+            }
             else
-                selected = device.VideoCapabilities[0];
+            {
+                selectedFrameSize = device.VideoCapabilities[0].FrameSize;
+                selectedFrameRate = device.VideoCapabilities[0].FrameRate;
+            }
             
             for(int i = 0; i<device.VideoCapabilities.Length; i++)
             {
@@ -125,7 +130,7 @@ namespace Kinovea.Camera.DirectShow
                 capabilities.Add(capability);
                 cmbCapabilities.Items.Add(CapabilityToString(capability));
                 
-                if(capability.FrameSize == selected.FrameSize && capability.FrameRate == selected.FrameRate)
+                if(capability.FrameSize == selectedFrameSize && capability.FrameRate == selectedFrameRate)
                     cmbCapabilities.SelectedIndex = i;
             }
         }
@@ -137,10 +142,11 @@ namespace Kinovea.Camera.DirectShow
         
         private void CmbCapabilitiesSelectedIndexChanged(object sender, EventArgs e)
         {
-            specificChanged = true;
+            if(loaded)
+                specificChanged = true;
         }
         
-        void BtnDevicePropertiesClick(object sender, EventArgs e)
+        private void BtnDevicePropertiesClick(object sender, EventArgs e)
         {
             VideoCaptureDevice device = new VideoCaptureDevice(summary.Identifier);
             
