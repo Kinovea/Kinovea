@@ -47,10 +47,10 @@ namespace Kinovea.FileBrowser
             this.lblFavFiles = new System.Windows.Forms.Label();
             this.lvShortcuts = new System.Windows.Forms.ListView();
             this.tabPageCameras = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lvCameras = new System.Windows.Forms.ListView();
             this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
             this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
-            this.lvCameras = new System.Windows.Forms.ListView();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageClassic.SuspendLayout();
             this.splitExplorerFiles.Panel1.SuspendLayout();
@@ -329,13 +329,19 @@ namespace Kinovea.FileBrowser
             this.tabPageCameras.TabIndex = 2;
             this.tabPageCameras.UseVisualStyleBackColor = true;
             // 
-            // imgListTabs
+            // label1
             // 
-            this.imgListTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListTabs.ImageStream")));
-            this.imgListTabs.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgListTabs.Images.SetKeyName(0, "tab_video.png");
-            this.imgListTabs.Images.SetKeyName(1, "tab_shortcuts.png");
-            this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.SteelBlue;
+            this.label1.Location = new System.Drawing.Point(0, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(305, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Cameras :   ";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lvCameras
             // 
@@ -355,20 +361,15 @@ namespace Kinovea.FileBrowser
             this.lvCameras.TabIndex = 1;
             this.lvCameras.UseCompatibleStateImageBehavior = false;
             this.lvCameras.View = System.Windows.Forms.View.List;
+            this.lvCameras.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LvCameras_MouseDoubleClick);
             // 
-            // label1
+            // imgListTabs
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label1.Location = new System.Drawing.Point(0, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(305, 20);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Cameras :   ";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.imgListTabs.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgListTabs.ImageStream")));
+            this.imgListTabs.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgListTabs.Images.SetKeyName(0, "tab_video.png");
+            this.imgListTabs.Images.SetKeyName(1, "tab_shortcuts.png");
+            this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
             // 
             // FileBrowserUserInterface
             // 

@@ -30,6 +30,8 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ViewportController
     {
+        public event EventHandler DisplayRectangleUpdated;
+        
         public Viewport View
         {
             get { return view;}
@@ -41,8 +43,14 @@ namespace Kinovea.ScreenManager
             set { bitmap = value;}
         }
         
+        public Rectangle DisplayRectangle
+        {
+            get { return displayRectangle;}
+        }
+        
         private Viewport view;
         private Bitmap bitmap;
+        private Rectangle displayRectangle;
         
         public ViewportController()
         {
@@ -54,9 +62,16 @@ namespace Kinovea.ScreenManager
             view.Invalidate();
         }
         
-        public void SetImageSize(Size size)
+        public void InitializeDisplayRectangle(Rectangle displayRectangle, Size size)
         {
-            view.SetImageSize(size);
+            view.InitializeDisplayRectangle(displayRectangle, size);
+        }
+        
+        public void UpdateDisplayRectangle(Rectangle rectangle)
+        {
+            displayRectangle = rectangle;
+            if(DisplayRectangleUpdated != null)
+                DisplayRectangleUpdated(this, EventArgs.Empty);
         }
     }
 }

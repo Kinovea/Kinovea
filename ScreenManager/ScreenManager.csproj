@@ -511,7 +511,6 @@
     </Compile>
     <Compile Include="SummaryLoadedEventArgs.cs" />
     <Compile Include="SummaryLoader.cs" />
-    <Compile Include="Thumbnails\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Thumbnails\FileLoadAskedEventArgs.cs" />
     <Compile Include="Thumbnails\FormCameraAlias.cs" />
     <Compile Include="Thumbnails\FormCameraAlias.Designer.cs">

@@ -97,7 +97,6 @@ namespace Kinovea.ScreenManager
         
         private CameraManager manager;
         private IFrameGrabber grabber;
-        //private IFrameBuffer buffer;
         private CircularBufferMemory<Bitmap> buffer = new CircularBufferMemory<Bitmap>();
         private VideoRecorder recorder;
         private ViewportController viewportController;
@@ -108,6 +107,7 @@ namespace Kinovea.ScreenManager
         private bool loaded;
         private int displayImageAge = 0;
         private int recordImageAge = 0;
+        private Size currentImageSize;
         private bool firstImageReceived;
         private Control dummy = new Control();
         private Timer nonGrabbingInteractionTimer = new Timer();
@@ -130,7 +130,6 @@ namespace Kinovea.ScreenManager
             nonGrabbingInteractionTimer.Interval = 15;
             nonGrabbingInteractionTimer.Tick += NonGrabbingInteractionTimer_Tick;
         }
- 
         #region Public methods
         
         public void LoadCamera(CameraSummary summary)
@@ -139,13 +138,14 @@ namespace Kinovea.ScreenManager
             if(loaded)
                 Clean();
             
+            loaded = true;
             this.summary = summary;
             manager = summary.Manager;
             grabber = manager.Connect(summary);
-            grabber.CameraImageReceived += Grabber_CameraImageReceived;
-            //grabber.CameraErrorReceived += Grabber_CameraErrorReceived;
-            grabber.Start();
             
+            viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
+            
+            StartGrabber();
             UpdateTitle();
         }
 
@@ -241,9 +241,10 @@ namespace Kinovea.ScreenManager
         private void Clean()
         {
             // Clean all resources before switching camera.
-            // Close camera, empty buffers, etc.
-            
-            loaded = false;
+            StopGrabber();
+            buffer.Clear();
+            firstImageReceived = false;
+            currentImageSize = Size.Empty;
         }
         private void Grabber_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
@@ -255,8 +256,7 @@ namespace Kinovea.ScreenManager
             
             if(!grabber.Grabbing)
                 return;
-                
-            // Push to circular buffer.
+
             buffer.Write(image);
             
             Bitmap recordImage = buffer.Read(recordImageAge);
@@ -264,11 +264,12 @@ namespace Kinovea.ScreenManager
 
             viewportController.Bitmap = displayImage;
             
-            if(!firstImageReceived)
+            if(currentImageSize != displayImage.Size)
             {
-                log.DebugFormat("first image received, {0}, {1}", image.Size, displayImage.Size);
-                viewportController.SetImageSize(displayImage.Size);
+                log.DebugFormat("new size of image received, {0}, {1}", image.Size, displayImage.Size);
+                viewportController.InitializeDisplayRectangle(summary.DisplayRectangle, displayImage.Size);
                 firstImageReceived = true;
+                currentImageSize = displayImage.Size;
             }
             
             viewportController.Refresh();
@@ -293,19 +294,36 @@ namespace Kinovea.ScreenManager
         {
             view.UpdateTitle(manager.GetSummaryAsText(summary));
         }
+        private void StartGrabber()
+        {
+            grabber.CameraImageReceived += Grabber_CameraImageReceived;
+            grabber.Start();
+        }
+        private void StopGrabber()
+        {
+            if(grabber == null)
+                return;
+
+            grabber.CameraImageReceived -= Grabber_CameraImageReceived;
+
+           if(grabber.Grabbing)
+                grabber.Stop();
+        }
         private void Reconnect()
         {
-            if(grabber.Grabbing)
-                grabber.Stop();
-                
-            buffer.Clear();
-            
-            firstImageReceived = false;
-            grabber.Start();
+            Clean();
+            StartGrabber();
+            UpdateTitle();
         }
         private void NonGrabbingInteractionTimer_Tick(object sender, EventArgs e)
         {
             viewportController.Refresh();
+        }
+        
+        private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
+        {
+            summary.UpdateDisplayRectangle(viewportController.DisplayRectangle);
+            CameraTypeManager.UpdatedCameraSummary(summary);
         }
         #endregion
     }

@@ -67,12 +67,13 @@ namespace Kinovea.Camera.DirectShow
         {
             this.moniker = moniker;
             this.summary = summary;
+            device = new VideoCaptureDevice(moniker);
         }
 
         public void Start()
         {
             log.DebugFormat("Starting device {0}, {1}", summary.Alias, summary.Identifier);
-            CreateDevice();
+            ConfigureDevice();
             device.NewFrame += Device_NewFrame;
             device.VideoSourceError += Device_VideoSourceError;
             grabbing = true;
@@ -88,22 +89,25 @@ namespace Kinovea.Camera.DirectShow
             grabbing = false;
         }
         
-        private void CreateDevice()
+        private void ConfigureDevice()
         {
-            device = new VideoCaptureDevice(moniker);
-            
             SpecificInfo info = summary.Specific as SpecificInfo;
-            if(info != null && info.SelectedCapability != null)
+            if(info != null)
             {
-                device.DesiredFrameSize = info.SelectedCapability.FrameSize;
-                device.DesiredFrameRate = info.SelectedCapability.FrameRate;
+                device.DesiredFrameSize = info.SelectedFrameSize;
+                device.DesiredFrameRate = info.SelectedFrameRate;
                 log.DebugFormat("Device desired configuration: {0} @ {1} fps", device.DesiredFrameSize, device.DesiredFrameRate);
+            }
+            else
+            {
+                
             }
         }
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
             // TODO: see if unsafe deep copy from AForge is faster.
+            //log.DebugFormat("New frame received, size:{0}", e.Frame.Size);
             image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
             g.DrawImageUnscaled(e.Frame, Point.Empty);
@@ -114,7 +118,7 @@ namespace Kinovea.Camera.DirectShow
         
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
-            log.DebugFormat("Error from device {0}: {1}", summary.Alias, e.Description);
+            log.ErrorFormat("Error from device {0}: {1}", summary.Alias, e.Description);
         }
     }
 }

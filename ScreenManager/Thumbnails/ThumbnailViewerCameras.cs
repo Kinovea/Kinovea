@@ -33,7 +33,6 @@ namespace Kinovea.ScreenManager
     public partial class ThumbnailViewerCameras : UserControl
     {
         #region Events
-        public event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         public event ProgressChangedEventHandler ProgressChanged;
         public event EventHandler BeforeLoad;
         public event EventHandler AfterLoad;
@@ -44,6 +43,7 @@ namespace Kinovea.ScreenManager
         private int columns = (int)ExplorerThumbSize.Large;
         private List<ThumbnailCamera> thumbnailControls = new List<ThumbnailCamera>();
         private int imageReceived;
+        private bool refreshImages;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -52,9 +52,15 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             //RefreshUICulture();
             this.Dock = DockStyle.Fill;
+            refreshImages = true;
         }
         
         #region Public methods
+        public void Unhide()
+        {
+            refreshImages = true;
+            CameraTypeManager.DiscoverCameras();
+        }
         public void CamerasDiscovered(List<CameraSummary> summaries)
         {
             bool updated = UpdateThumbnailList(summaries);
@@ -119,8 +125,7 @@ namespace Kinovea.ScreenManager
                 }
                 case Keys.Return:
                 {
-                    if (CameraLoadAsked != null)
-                        CameraLoadAsked(this, new CameraLoadAskedEventArgs(selectedThumbnail.Summary, -1));
+                    CameraTypeManager.LoadCamera(selectedThumbnail.Summary, -1);
                     handled = true;
                     break;
                 }   
@@ -164,8 +169,10 @@ namespace Kinovea.ScreenManager
             {
                 found.Add(summary.Identifier);
                 
-                int index = IndexOf(summary.Identifier);
+                if(refreshImages)
+                    summary.Manager.GetSingleImage(summary);
                 
+                int index = IndexOf(summary.Identifier);
                 if(index >= 0)
                     continue;
                 
@@ -181,6 +188,8 @@ namespace Kinovea.ScreenManager
                 
                 summary.Manager.GetSingleImage(summary);
             }
+            
+            refreshImages = false;
             
             // Remove cameras that were disconnected.
             List<ThumbnailCamera> lost = new List<ThumbnailCamera>();
@@ -274,9 +283,9 @@ namespace Kinovea.ScreenManager
         private void Thumbnail_LaunchCamera(object sender, EventArgs e)
         {
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
-        
-            if (thumbnail != null && CameraLoadAsked != null)
-                CameraLoadAsked(this, new CameraLoadAskedEventArgs(thumbnail.Summary, -1));
+
+            if (thumbnail != null)
+                CameraTypeManager.LoadCamera(thumbnail.Summary, -1);
         }
         private void Thumbnail_CameraSelected(object sender, EventArgs e)
         {

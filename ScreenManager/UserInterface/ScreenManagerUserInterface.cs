@@ -40,7 +40,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
-        public event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         
         #region Properties
         public bool CommonControlsVisible 
@@ -169,10 +168,6 @@ namespace Kinovea.ScreenManager
                 if(FileLoadAsked != null)
                     FileLoadAsked(this, e);
             };
-            thumbnailViewerContainer.CameraLoadAsked += (s,e) => {
-                if(CameraLoadAsked != null)
-                    CameraLoadAsked(this, e);
-            };
             
             this.Controls.Add(thumbnailViewerContainer);
 		}
@@ -236,34 +231,38 @@ namespace Kinovea.ScreenManager
         }
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {
-            if(FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), -1));
+            Drop(e, -1);
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
-            if(FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs( GetDroppedObject(e), 1));
+            Drop(e, 1);
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
-            if(FileLoadAsked != null)
-                FileLoadAsked(this, new FileLoadAskedEventArgs(GetDroppedObject(e), 2));
+            Drop(e, -1);
         }
-        private string GetDroppedObject(DragEventArgs e)
+        private void Drop(DragEventArgs e, int target)
         {
-            string result = "";
-            if (e.Data.GetDataPresent(DataFormats.StringFormat))
+            if(e.Data.GetDataPresent(typeof(CameraSummary)))
             {
-                result = (string)e.Data.GetData(DataFormats.StringFormat);
+                CameraSummary summary = (CameraSummary)e.Data.GetData(typeof(CameraSummary));
+                if(summary != null)
+                    CameraTypeManager.LoadCamera(summary, target);
             }
-            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            else if(e.Data.GetDataPresent(DataFormats.StringFormat))
+            {
+                string filename = (string)e.Data.GetData(DataFormats.StringFormat);
+                FileLoadAsked(this, new FileLoadAskedEventArgs(filename, target));
+            }
+            else if(e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 Array fileArray = (Array)e.Data.GetData(DataFormats.FileDrop);
                 if (fileArray != null)
-                   result = fileArray.GetValue(0).ToString();
+                {
+                   string filename = fileArray.GetValue(0).ToString();
+                   FileLoadAsked(this, new FileLoadAskedEventArgs(filename, target));
+                }
             }
-            
-            return result;
         }
         #endregion
 

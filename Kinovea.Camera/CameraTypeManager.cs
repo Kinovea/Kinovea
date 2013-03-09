@@ -31,6 +31,7 @@ namespace Kinovea.Camera
 {
     /// <summary>
     /// Load and provide access to the list of camera types (DirectShow, HTTP, etc.).
+    /// It also serves as a notification center for lateral communication between modules with regards to camera functions.
     /// </summary>
     public static class CameraTypeManager
     {
@@ -38,6 +39,7 @@ namespace Kinovea.Camera
         public static event EventHandler<CamerasDiscoveredEventArgs> CamerasDiscovered;
         public static event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
         public static event EventHandler<CameraSummaryUpdatedEventArgs> CameraSummaryUpdated;
+        public static event EventHandler<CameraLoadAskedEventArgs> CameraLoadAsked;
         #endregion
         
         #region Properties
@@ -105,6 +107,9 @@ namespace Kinovea.Camera
 
         public static void DiscoverCameras()
         {
+            if(timerDiscovery.Enabled)
+                return;
+                
             timerDiscovery.Interval = 1000;
             timerDiscovery.Tick += timerDiscovery_Tick;
             timerDiscovery.Enabled = true;
@@ -123,6 +128,13 @@ namespace Kinovea.Camera
             if(CameraSummaryUpdated != null)
                 CameraSummaryUpdated(null, new CameraSummaryUpdatedEventArgs(summary));
         }
+        
+        public static void LoadCamera(CameraSummary summary, int target)
+        {
+            if(CameraLoadAsked != null)
+                CameraLoadAsked(null, new CameraLoadAskedEventArgs(summary, target));
+        }
+        
         #endregion
         
         #region Private methods

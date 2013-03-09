@@ -179,5 +179,26 @@ namespace Kinovea.Services
             
             return result;
         }
+        
+        public static Rectangle ParseRectangle(string rectangleString)
+        {
+            Rectangle rectangle = Rectangle.Empty;
+            try
+            {
+                string[] a = rectangleString.Split(new char[] {';'});
+                rectangle = new Rectangle(
+                    int.Parse(a[0]), 
+                    int.Parse(a[1]),
+                    int.Parse(a[2]),
+                    int.Parse(a[3]));
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing Rectangle value. ({0}).", rectangleString));
+            }
+
+            return rectangle;
+        }
+        
     }
 }

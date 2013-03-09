@@ -24,6 +24,12 @@ using System.Windows.Forms;
 
 namespace Kinovea.Services
 {
+    
+    // 2013-03-06 - Before adding to this file, see if it makes more sense to use the Notification Center instead.
+    // Ultimately the DelegatesPool will be phased out in favor of the Notification Center.
+    // A notification center can also be set up in a lower level module. See Kinovea.Camera.CameraTypeManager for example.
+    
+    
     //----------------------------------------------------------------------------------------------------------
     // The delegates pool is an area to share services between distant modules.
     // When a module exposes functionnality that will be accessed from an lower level

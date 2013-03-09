@@ -93,8 +93,7 @@ namespace Kinovea.ScreenManager
         public void SetSelected()
         {
             // This method triggers an event to notify the container.
-            Summary.Manager.GetSingleImage(Summary);
-            
+
             if (selected)
                 return;
 
@@ -135,18 +134,20 @@ namespace Kinovea.ScreenManager
             btnIcon.Left = infoLeft;
             lblAlias.Left = btnIcon.Right + 5;
         }
-        private void AllControls_DoubleClick(object sender, EventArgs e)
+        
+        private void AllControls_DoubleClick(object sender, MouseEventArgs e)
         {
             if (LaunchCamera == null)
                 return;
-        
+
             this.Cursor = Cursors.WaitCursor;
             LaunchCamera(this, EventArgs.Empty);
             this.Cursor = Cursors.Default;
         }
         
-        private void AllControls_Click(object sender, EventArgs e)
+        private void AllControls_Click(object sender, MouseEventArgs e)
         {
+            // TODO: this is fired in the context of double click, which may prevent the camera from working.
             SetSelected();
         }
 

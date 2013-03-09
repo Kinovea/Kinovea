@@ -170,7 +170,7 @@ namespace Kinovea.ScreenManager
 
             view = new ScreenManagerUserInterface(this);
             view.FileLoadAsked += View_FileLoadAsked;
-            view.CameraLoadAsked += View_CameraLoadAsked;
+            CameraTypeManager.CameraLoadAsked += View_CameraLoadAsked;
             
             InitializeVideoFilters();
             
@@ -693,6 +693,7 @@ namespace Kinovea.ScreenManager
         }
         public void View_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
         {
+            CameraTypeManager.StopDiscoveringCameras();
             DoLoadCameraInScreen(e.Source, e.Target);
         }
         public void CommonCtrl_GotoFirst()

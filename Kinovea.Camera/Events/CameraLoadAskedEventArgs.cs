@@ -22,7 +22,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using Kinovea.Camera;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Camera
 {
     /// <summary>
     /// Event raised when the user wants to load a camera in a screen.

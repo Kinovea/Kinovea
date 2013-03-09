@@ -19,7 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using AForge.Video.DirectShow;
+using System.Drawing;
 
 namespace Kinovea.Camera.DirectShow
 {
@@ -29,7 +29,7 @@ namespace Kinovea.Camera.DirectShow
     /// </summary>
     public class SpecificInfo
     {
-        public VideoCapabilities SelectedCapability { get; set;}
-        
+        public int SelectedFrameRate { get; set; }
+        public Size SelectedFrameSize { get; set; }
     }
 }
