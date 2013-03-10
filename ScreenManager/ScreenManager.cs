@@ -497,7 +497,7 @@ namespace Kinovea.ScreenManager
             view.RefreshUICulture();
 
             foreach (AbstractScreen screen in screenList)
-                screen.refreshUICulture();
+                screen.RefreshUICulture();
         }
         public bool CloseSubModules()
         {
@@ -510,6 +510,13 @@ namespace Kinovea.ScreenManager
             }
             
             return screenList.Count != 0;
+        }
+        public void PreferencesUpdated()
+        {
+            foreach (AbstractScreen screen in screenList)
+                screen.PreferencesUpdated();
+                
+            RefreshUICulture();
         }
         #endregion
         
@@ -645,7 +652,7 @@ namespace Kinovea.ScreenManager
             {
         		if (screenList[i] != _screen && screenList[i] is CaptureScreen)
                 {
-                	screenList[i].refreshUICulture();
+                	screenList[i].RefreshUICulture();
                 }
             }
         }
@@ -2508,6 +2515,8 @@ namespace Kinovea.ScreenManager
             IUndoableCommand clmis = new CommandLoadCameraInScreen(this, summary, targetScreen);
             CommandManager cm = CommandManager.Instance();
             cm.LaunchUndoableCommand(clmis);
+            
+            UpdateCaptureBuffers();
         }
         
         public void DoStopPlaying()

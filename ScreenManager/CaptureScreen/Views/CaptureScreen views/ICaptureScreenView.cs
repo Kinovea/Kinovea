@@ -38,6 +38,9 @@ namespace Kinovea.ScreenManager
         
         void SetViewport(Viewport viewport);
         void UpdateTitle(string title);
+        void UpdateInfo(string info);
         void UpdateGrabbingStatus(bool grabbing);
+        void UpdateDelayLabel(double delaySeconds, int delayFrames);
+        void UpdateDelayMaxAge(double max);
     }
 }

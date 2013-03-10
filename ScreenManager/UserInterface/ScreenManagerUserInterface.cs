@@ -235,11 +235,11 @@ namespace Kinovea.ScreenManager
         }
         private void splitScreens_Panel1_DragDrop(object sender, DragEventArgs e)
         {
-            Drop(e, 1);
+            Drop(e, 0);
         }
         private void splitScreens_Panel2_DragDrop(object sender, DragEventArgs e)
         {
-            Drop(e, -1);
+            Drop(e, 1);
         }
         private void Drop(DragEventArgs e, int target)
         {

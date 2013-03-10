@@ -25,10 +25,14 @@ namespace Kinovea.ScreenManager
     /// <summary>
     /// Circular buffer in RAM.
     /// The class itself is not thread safe, locking and multithreading should be handled at the caller level.
-    /// The capacity in elements must be computed by the caller depending on the size of each element and the total target size.
+    /// The capacity in elements must be computed by the caller depending on the size of each element and the total size.
     /// </summary>
     public class CircularBufferMemory<T>
     {
+        public float Fill
+        {
+            get { return (float)total / capacity;}
+        }
         private T[] buffer;
         private int capacity = 25;
         private int newest = -1;
@@ -40,6 +44,15 @@ namespace Kinovea.ScreenManager
             buffer = new T[capacity];
         }
         
+        public void ChangeCapacity(int capacity)
+        {
+            if(this.capacity == capacity)
+                return;
+            
+            Clear();
+            this.capacity = capacity;
+            buffer = new T[capacity];
+        }
         public void Write(T data)
         {
             bool hadRoom = MakeRoom();
@@ -53,6 +66,12 @@ namespace Kinovea.ScreenManager
         
         public T Read(int age)
         {
+            if(total == 0)
+                return default(T);
+                
+            if(age >= total)
+                return buffer[0];
+                
             int index = mod(newest - age, total);
             return buffer[index];
         }
@@ -62,14 +81,12 @@ namespace Kinovea.ScreenManager
             for(int i = 0; i < buffer.Length; i++)
                 if(buffer[i] != null)
                     ClearAt(i);
+
+            newest = -1;
+            total = 0;
+            insertPoint = 0;
         }
-        
-        public void ChangeCapacity(int capacity)
-        {
-            this.capacity = capacity;
-            buffer = new T[capacity];
-        }
-        
+
         private bool MakeRoom()
         {
             if(buffer[insertPoint] == null)

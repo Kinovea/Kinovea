@@ -61,6 +61,7 @@ namespace Kinovea.ScreenManager
             this.pnlCapturedVideos = new System.Windows.Forms.Panel();
             this.pnlTitle = new System.Windows.Forms.Panel();
             this.lblCameraInfo = new System.Windows.Forms.Label();
+            this.lblCameraTitle = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
             this.pnlViewport = new System.Windows.Forms.Panel();
             this.pnlDrawingToolsBar = new System.Windows.Forms.Panel();
@@ -96,7 +97,7 @@ namespace Kinovea.ScreenManager
             this.sldrDelay.Size = new System.Drawing.Size(198, 23);
             this.sldrDelay.TabIndex = 43;
             this.sldrDelay.Text = "sliderLogScale1";
-            this.sldrDelay.Value = 10D;
+            this.sldrDelay.Value = 0D;
             // 
             // filenameBox2
             // 
@@ -230,6 +231,7 @@ namespace Kinovea.ScreenManager
             // 
             this.pnlTitle.BackColor = System.Drawing.Color.White;
             this.pnlTitle.Controls.Add(this.lblCameraInfo);
+            this.pnlTitle.Controls.Add(this.lblCameraTitle);
             this.pnlTitle.Controls.Add(this.btnClose);
             this.pnlTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTitle.Location = new System.Drawing.Point(0, 0);
@@ -241,12 +243,23 @@ namespace Kinovea.ScreenManager
             // 
             this.lblCameraInfo.AutoSize = true;
             this.lblCameraInfo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblCameraInfo.Location = new System.Drawing.Point(12, 6);
+            this.lblCameraInfo.Location = new System.Drawing.Point(81, 6);
             this.lblCameraInfo.Name = "lblCameraInfo";
             this.lblCameraInfo.Size = new System.Drawing.Size(63, 13);
-            this.lblCameraInfo.TabIndex = 4;
+            this.lblCameraInfo.TabIndex = 5;
             this.lblCameraInfo.Text = "Camera info";
             this.lblCameraInfo.Click += new System.EventHandler(this.LblCameraInfoClick);
+            // 
+            // lblCameraTitle
+            // 
+            this.lblCameraTitle.AutoSize = true;
+            this.lblCameraTitle.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblCameraTitle.Location = new System.Drawing.Point(12, 6);
+            this.lblCameraTitle.Name = "lblCameraTitle";
+            this.lblCameraTitle.Size = new System.Drawing.Size(62, 13);
+            this.lblCameraTitle.TabIndex = 4;
+            this.lblCameraTitle.Text = "Camera title";
+            this.lblCameraTitle.Click += new System.EventHandler(this.LblCameraInfoClick);
             // 
             // btnClose
             // 
@@ -329,12 +342,13 @@ namespace Kinovea.ScreenManager
             this.pnlDrawingToolsBar.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Label lblCameraInfo;
         private Kinovea.ScreenManager.SliderLogScale sldrDelay;
         private Kinovea.ScreenManager.FilenameBox filenameBox1;
         private Kinovea.ScreenManager.FilenameBox filenameBox2;
         private System.Windows.Forms.Button btnFoldCapturedVideosPanel;
         private System.Windows.Forms.Panel pnlDrawingToolsBar;
-        private System.Windows.Forms.Label lblCameraInfo;
+        private System.Windows.Forms.Label lblCameraTitle;
         private System.Windows.Forms.Panel pnlViewport;
         private System.Windows.Forms.Panel pnlTitle;
         private System.Windows.Forms.Panel pnlCapturedVideos;

@@ -23,6 +23,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     /// <summary>
@@ -32,7 +34,6 @@ namespace Kinovea.ScreenManager
     public partial class CaptureScreenView : UserControl, ICaptureScreenView
     {
         #region Members
-        private SliderLogScale slider = new SliderLogScale();
         private CaptureScreen presenter;
         #endregion
         
@@ -40,11 +41,9 @@ namespace Kinovea.ScreenManager
         {
             InitializeComponent();
             this.presenter = presenter;
+            ToggleCapturedVideosPanel();
             
-            // TEST
-            sldrDelay.Minimum = 0;
-            sldrDelay.Maximum = 3600;
-            sldrDelay.Value = 0;
+            //sldrDelay.Maximum = 250;
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
         }
 
@@ -94,7 +93,13 @@ namespace Kinovea.ScreenManager
         
         public void UpdateTitle(string title)
         {
-            lblCameraInfo.Text = title;
+            lblCameraTitle.Text = title;
+            lblCameraInfo.Left = lblCameraTitle.Right + 5;
+        }
+        
+        public void UpdateInfo(string info)
+        {
+            lblCameraInfo.Text = info;
         }
         
         public void UpdateGrabbingStatus(bool grabbing)
@@ -103,6 +108,21 @@ namespace Kinovea.ScreenManager
                 btnGrab.Image = Properties.Capture.grab_pause;
             else
                 btnGrab.Image = Properties.Capture.grab_start;
+        }
+        public void UpdateDelayLabel(double delaySeconds, int delayFrames)
+        {
+            double round = Math.Round(delaySeconds);
+            
+            if(round < 10)
+                lblDelay.Text = string.Format("Delay: {0:0.00} ({1})", delaySeconds, delayFrames);
+            else
+                lblDelay.Text = string.Format("Delay: {0} ({1})", round, delayFrames);
+            
+            //lblDelay.Text = String.Format(ScreenManagerLang.lblDelay_Text, delay);
+        }
+        public void UpdateDelayMaxAge(double delay)
+        {
+            sldrDelay.Maximum = delay;
         }
         #endregion
         
@@ -119,8 +139,7 @@ namespace Kinovea.ScreenManager
         }
         private void SldrDelay_ValueChanged(object sender, EventArgs e)
         {
-            //throw new NotImplementedException();
-            lblDelay.Text = sldrDelay.Value.ToString("0.00");
+            presenter.ViewDelayChanged(sldrDelay.Value);
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {

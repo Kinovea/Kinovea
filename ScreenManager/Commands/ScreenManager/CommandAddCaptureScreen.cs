@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
             if(screenManagerKernel.screenList.Count > 1) 
                 screen.SetShared(true);
             
-            screen.refreshUICulture();
+            screen.RefreshUICulture();
             screenManagerKernel.AddScreen(screen);
             
         }

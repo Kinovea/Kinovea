@@ -73,7 +73,8 @@ namespace Kinovea.ScreenManager
         }
 
         public abstract void DisplayAsActiveScreen(bool _bActive);
-        public abstract void refreshUICulture();
+        public abstract void RefreshUICulture();
+        public abstract void PreferencesUpdated();
         public abstract void BeforeClose();
         public abstract void AfterClose();
         public abstract bool OnKeyPress(Keys _key);

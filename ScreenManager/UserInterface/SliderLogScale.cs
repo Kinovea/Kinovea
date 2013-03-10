@@ -48,7 +48,7 @@ namespace Kinovea.ScreenManager
             get { return max;}
             set 
             { 
-                max = value;
+                max = value <= min ? max = min + 1 : value;
                 Remap();
             }
         }
@@ -77,6 +77,7 @@ namespace Kinovea.ScreenManager
         private Bitmap gutterLeft;
         private Bitmap gutterRight;
         private Bitmap gutterCenter;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         public SliderLogScale()
@@ -95,7 +96,7 @@ namespace Kinovea.ScreenManager
             
             min = 0;
             max = 100;
-            val = 10;
+            val = 0;
             
             Remap();
             

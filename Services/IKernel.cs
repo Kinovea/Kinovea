@@ -31,6 +31,7 @@ namespace Kinovea.Services
         void ExtendStatusBar(ToolStrip _statusbar);
         void ExtendUI();
         void RefreshUICulture();
+        void PreferencesUpdated();
         bool CloseSubModules();
         
     }

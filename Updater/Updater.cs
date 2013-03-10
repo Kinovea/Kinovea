@@ -93,6 +93,10 @@ namespace Kinovea.Updater
             // Nothing more to do here.
             return false;
         }
+        public void PreferencesUpdated()
+        {
+            RefreshUICulture();
+        }
         #endregion
 
         #region Menu Event Handlers
