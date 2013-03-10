@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -124,6 +125,20 @@ namespace Kinovea.ScreenManager
         {
             sldrDelay.Maximum = delay;
         }
+        public void UpdateNextImageFilename(string filename, bool editable)
+        {
+            fnbImage.Filename = filename;
+            fnbImage.Editable = editable;
+        }
+        public void UpdateNextVideoFilename(string filename, bool editable)
+        {
+            fnbVideo.Filename = filename;
+            fnbVideo.Editable = editable;
+        }
+        public void Toast(string message, int duration)
+        {
+            
+        }
         #endregion
         
         #endregion
@@ -153,6 +168,18 @@ namespace Kinovea.ScreenManager
         {
             presenter.ViewConfigure();
         }
+        private void FNBImage_ImageClick(object sender, EventArgs e)
+        {
+            presenter.OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
+        }
+        private void FNBVideo_ImageClick(object sender, EventArgs e)
+        {
+            presenter.OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
+        }
+        private void BtnSnapshot_Click(object sender, EventArgs e)
+        {
+            presenter.ViewSnapshot(fnbImage.Filename);
+        }
         #endregion
         
         #region Private methods (pure Form logic)
@@ -174,6 +201,7 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+        
         
     }
 }

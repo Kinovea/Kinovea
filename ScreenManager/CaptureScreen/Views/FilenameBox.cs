@@ -58,7 +58,14 @@ namespace Kinovea.ScreenManager
         public string Filename
         {
             get { return tbFilename.Text;}
-            set { tbFilename.Text = value;}
+            set { tbFilename.Text = value; }
+        }
+        
+        [Category("Appearance")]
+        public bool Editable
+        {
+            get { return tbFilename.Enabled;}
+            set { tbFilename.Enabled = value; }
         }
         
         [Browsable(false)]
@@ -66,6 +73,8 @@ namespace Kinovea.ScreenManager
         {
             get { return tbFilename.Focused;}
         }
+        
+        
         #endregion
 
         public FilenameBox()

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -100,9 +101,11 @@ namespace Kinovea.ScreenManager
         private CameraManager manager;
         private IFrameGrabber grabber;
         private CircularBufferMemory<Bitmap> buffer = new CircularBufferMemory<Bitmap>();
-        private int bufferCapacity = 1;
         private VideoRecorder recorder;
         private ViewportController viewportController;
+        private FilenameHelper filenameHelper = new FilenameHelper();
+        
+        private int bufferCapacity = 1;
         private double availableMemory;
         private double frameMemory;
         private bool shared;
@@ -131,6 +134,7 @@ namespace Kinovea.ScreenManager
             
             viewportController = new ViewportController();
             view.SetViewport(viewportController.View);
+            InitializeCaptureFilenames();
             
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
             
@@ -168,6 +172,7 @@ namespace Kinovea.ScreenManager
         public override void PreferencesUpdated()
         {
             UpdateMemory();
+            InitializeCaptureFilenames();
         }
         public override void BeforeClose()
         {
@@ -256,6 +261,18 @@ namespace Kinovea.ScreenManager
                 viewportController.Bitmap = displayImage;
                 viewportController.Refresh();
             }
+        }
+        public void ViewSnapshot(string filename)
+        {
+            MakeSnapshot(filename);
+        }
+        public void OpenInExplorer(string path)
+        {
+            if (!Directory.Exists(path))
+                return;
+
+            string arg = "\"" + path +"\"";
+            System.Diagnostics.Process.Start("explorer.exe", arg);
         }
         #endregion
         #endregion
@@ -421,6 +438,70 @@ namespace Kinovea.ScreenManager
                 maxAge = 0.9999;
 
             view.UpdateDelayMaxAge(maxAge);
+        }
+        
+        private void InitializeCaptureFilenames()
+        {
+            string imageFilename = filenameHelper.GetImageFilename();
+            view.UpdateNextImageFilename(imageFilename, !PreferencesManager.CapturePreferences.CaptureUsePattern);
+            string videoFilename = filenameHelper.GetVideoFilename();
+            view.UpdateNextVideoFilename(videoFilename, !PreferencesManager.CapturePreferences.CaptureUsePattern);
+        }
+        private void MakeSnapshot(string filename)
+        {
+            if(grabber == null)
+                return;
+            
+            if(!filenameHelper.ValidateFilename(filename, false))
+            {
+                ScreenManagerKernel.AlertInvalidFileName();
+                return;
+            }
+            
+            if(!Directory.Exists(PreferencesManager.CapturePreferences.ImageDirectory))
+                Directory.CreateDirectory(PreferencesManager.CapturePreferences.ImageDirectory);
+            
+            if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+                filename = filenameHelper.GetImageFilename();
+                
+            string filepath = PreferencesManager.CapturePreferences.ImageDirectory + "\\" + filename + filenameHelper.GetImageFileExtension();
+            
+            if(!OverwriteOrCreateFile(filepath))
+                return;
+            
+            Bitmap outputImage = buffer.Read(displayImageAge);
+            
+            ImageHelper.Save(filepath, outputImage);
+            
+            if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+            {
+                filenameHelper.AutoIncrement(true);
+                //m_ScreenUIHandler.CaptureScreenUI_FileSaved();
+            }
+            
+            PreferencesManager.CapturePreferences.ImageFile = filename;
+            PreferencesManager.Save();
+            
+            // Update view with the next filename.
+            string nextFilename = "";
+            if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+                nextFilename = filenameHelper.GetImageFilename();
+            else
+                nextFilename = filenameHelper.ComputeNextFilename(filename);
+            
+            view.UpdateNextImageFilename(nextFilename, !PreferencesManager.CapturePreferences.CaptureUsePattern);
+            view.Toast(ScreenManagerLang.Toast_ImageSaved, 750);
+        }
+        private bool OverwriteOrCreateFile(string filepath)
+        {
+            if(!File.Exists(filepath))
+                return true;
+            
+            string msgTitle = ScreenManagerLang.Error_Capture_FileExists_Title;
+            string msgText = String.Format(ScreenManagerLang.Error_Capture_FileExists_Text, filepath).Replace("\\n", "\n");
+        
+            DialogResult result = MessageBox.Show(msgText, msgTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            return result == DialogResult.Yes;
         }
         #endregion
     }
