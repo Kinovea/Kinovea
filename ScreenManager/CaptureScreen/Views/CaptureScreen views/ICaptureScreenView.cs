@@ -42,5 +42,9 @@ namespace Kinovea.ScreenManager
         void UpdateGrabbingStatus(bool grabbing);
         void UpdateDelayLabel(double delaySeconds, int delayFrames);
         void UpdateDelayMaxAge(double max);
+        void UpdateNextImageFilename(string filename, bool editable);
+        void UpdateNextVideoFilename(string filename, bool editable);
+        
+        void Toast(string message, int duration);
     }
 }
