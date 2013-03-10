@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             {
                 // Position d'écran forcée: Vérifier s'il y a des choses à enregistrer.
 
-                PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[targetScreen-1];
+                PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[targetScreen];
                 bool bLoad = true;
                 if (ps.FrameServer.Metadata.IsDirty)
                 {

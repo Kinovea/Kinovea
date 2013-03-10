@@ -330,9 +330,12 @@ namespace Kinovea.ScreenManager
                 m_PlayerScreenUI.ResetToEmptyState();
             }
         }
-        public override void refreshUICulture()
+        public override void RefreshUICulture()
         {
             m_PlayerScreenUI.RefreshUICulture();
+        }
+        public override void PreferencesUpdated()
+        {
         }
         public override bool OnKeyPress(Keys _key)
         {

@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         {
             this.manager = manager;
             this.summary = summary;
-            this.targetScreen = targetScreen - 1;
+            this.targetScreen = targetScreen;
         }
         
         public void Execute()

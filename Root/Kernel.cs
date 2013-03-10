@@ -200,6 +200,14 @@ namespace Kinovea.Root
             
             log.Debug("RefreshUICulture - Whole tree culture reloaded.");
         }
+        public void PreferencesUpdated()
+        {
+            RefreshUICulture();
+            
+            m_FileBrowser.PreferencesUpdated();
+            m_Updater.PreferencesUpdated();
+            m_ScreenManager.PreferencesUpdated();
+        }
         public bool CloseSubModules()
         {
             log.Debug("Root is closing. Call close on all sub modules.");
@@ -545,7 +553,7 @@ namespace Kinovea.Root
             // Refresh Preferences
             log.Debug("Setting current ui culture.");
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
-            RefreshUICulture();
+            PreferencesUpdated();
         }
         private void CheckTimecodeMenu()
         {
@@ -685,7 +693,7 @@ namespace Kinovea.Root
             
             mnuHistory.Enabled = added > 0;
         }
-        
+       
         #region Lower Level Methods
         private void OpenFileFromPath(string _FilePath)
         {

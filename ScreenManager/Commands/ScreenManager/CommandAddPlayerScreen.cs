@@ -57,7 +57,7 @@ namespace Kinovea.ScreenManager
         public void Execute()
         {
             PlayerScreen screen = new PlayerScreen(m_ScreenManagerKernel);
-            screen.refreshUICulture();
+            screen.RefreshUICulture();
             m_ScreenManagerKernel.screenList.Add(screen);
         }
         public void Unexecute()

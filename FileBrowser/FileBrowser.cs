@@ -84,6 +84,10 @@ namespace Kinovea.FileBrowser
             view.Closing();
             return false;
         }
+        public void PreferencesUpdated()
+        {
+            RefreshUICulture();
+        }
         #endregion
 
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)

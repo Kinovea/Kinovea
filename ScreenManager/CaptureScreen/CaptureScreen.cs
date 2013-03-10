@@ -22,11 +22,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Windows.Forms;
 
 using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
+using Kinovea.Services;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
@@ -98,8 +100,12 @@ namespace Kinovea.ScreenManager
         private CameraManager manager;
         private IFrameGrabber grabber;
         private CircularBufferMemory<Bitmap> buffer = new CircularBufferMemory<Bitmap>();
+        private int bufferCapacity = 1;
         private VideoRecorder recorder;
         private ViewportController viewportController;
+        private double availableMemory;
+        private double frameMemory;
+        private bool shared;
         
         private CameraSummary summary;
         private Metadata metadata;
@@ -109,6 +115,7 @@ namespace Kinovea.ScreenManager
         private int recordImageAge = 0;
         private Size currentImageSize;
         private bool firstImageReceived;
+        private double computedFps = 0;
         private Control dummy = new Control();
         private Timer nonGrabbingInteractionTimer = new Timer();
         private DateTime lastImageTime;
@@ -154,9 +161,13 @@ namespace Kinovea.ScreenManager
         {
             view.DisplayAsActiveScreen(active);
         }
-        public override void refreshUICulture() 
+        public override void RefreshUICulture() 
         {
             view.RefreshUICulture();
+        }
+        public override void PreferencesUpdated()
+        {
+            UpdateMemory();
         }
         public override void BeforeClose()
         {
@@ -197,8 +208,8 @@ namespace Kinovea.ScreenManager
         
         public void SetShared(bool shared)
         {
-            // Compute new buffer size.
-            //buffer.UpdateMemoryCapacity();
+            this.shared = shared;
+            UpdateMemory();
         }
         
         #region Methods called from the view. These could be events or commands.
@@ -223,16 +234,28 @@ namespace Kinovea.ScreenManager
         {
              if(grabber.Grabbing)
              {
-                grabber.Stop();
+                StopGrabber();
                 nonGrabbingInteractionTimer.Enabled = true;
              }
              else
              {
                 nonGrabbingInteractionTimer.Enabled = false;
-                grabber.Start();
+                StartGrabber();
              }
              
              view.UpdateGrabbingStatus(grabber.Grabbing);
+        }
+        public void ViewDelayChanged(double value)
+        {
+            displayImageAge = (int)Math.Round(value);
+            view.UpdateDelayLabel(AgeToSeconds(displayImageAge), displayImageAge);
+            
+            if(grabber != null && !grabber.Grabbing)
+            {
+                Bitmap displayImage = buffer.Read(displayImageAge);
+                viewportController.Bitmap = displayImage;
+                viewportController.Refresh();
+            }
         }
         #endregion
         #endregion
@@ -245,6 +268,24 @@ namespace Kinovea.ScreenManager
             buffer.Clear();
             firstImageReceived = false;
             currentImageSize = Size.Empty;
+            frameMemory = 0;
+            
+            // Reset buffer capacity until we have the official image size and depth.
+            bufferCapacity = 1;
+            buffer.ChangeCapacity(bufferCapacity);
+            UpdateDelayMaxAge();
+            log.ErrorFormat("Buffer capacity changed to {0}", bufferCapacity);
+        }
+        private void UpdateMemory()
+        {
+            double totalMemory = PreferencesManager.CapturePreferences.CaptureMemoryBuffer * 1024 * 1024;
+            double availableMemory = shared ? totalMemory / 2 : totalMemory;
+            
+            if(this.availableMemory != availableMemory)
+            {
+                this.availableMemory = availableMemory;
+                UpdateBufferCapacity();
+            }
         }
         private void Grabber_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
@@ -270,7 +311,11 @@ namespace Kinovea.ScreenManager
                 viewportController.InitializeDisplayRectangle(summary.DisplayRectangle, displayImage.Size);
                 firstImageReceived = true;
                 currentImageSize = displayImage.Size;
+                frameMemory = (double)currentImageSize.Height * currentImageSize.Width * BytesPerPixel(image.PixelFormat);
+                UpdateBufferCapacity();
             }
+            
+            UpdateInfo();
             
             viewportController.Refresh();
         }
@@ -282,7 +327,7 @@ namespace Kinovea.ScreenManager
             {
                 TimeSpan span = now - lastImageTime;
                 averager.Add(span.TotalSeconds);
-                double fps = 1.0/averager.Average;
+                computedFps = 1.0/averager.Average;
                 
                 // Find a way to report the measured fps.
                 //view.UpdateTitle(string.Format("{0} - (measured: {1:0.00})", manager.GetSummaryAsText(summary), fps));
@@ -293,6 +338,18 @@ namespace Kinovea.ScreenManager
         private void UpdateTitle()
         {
             view.UpdateTitle(manager.GetSummaryAsText(summary));
+        }
+        private void UpdateInfo()
+        {
+            string info = "";
+            float fill = buffer.Fill * 100;
+            
+            if(fill == 100)
+                info = string.Format("Actual: {0}×{1} @ {2:0.00}fps, Buffer: 100%", currentImageSize.Width, currentImageSize.Height, computedFps);
+            else
+                info = string.Format("Actual: {0}×{1} @ {2:0.00}fps, Buffer: {3:0.00}%", currentImageSize.Width, currentImageSize.Height, computedFps, fill);
+            
+            view.UpdateInfo(info);
         }
         private void StartGrabber()
         {
@@ -319,11 +376,51 @@ namespace Kinovea.ScreenManager
         {
             viewportController.Refresh();
         }
-        
         private void ViewportController_DisplayRectangleUpdated(object sender, EventArgs e)
         {
             summary.UpdateDisplayRectangle(viewportController.DisplayRectangle);
             CameraTypeManager.UpdatedCameraSummary(summary);
+        }
+        private double AgeToSeconds(int age)
+        {
+            return age / computedFps;
+        }
+        private void UpdateBufferCapacity()
+        {
+            // This should only be done when we are actually sure of what the camera is sending us,
+            // and not solely based on the desired options.
+            
+            if(frameMemory == 0)
+                bufferCapacity = 1;
+            else
+                bufferCapacity = (int)(Math.Max(1, availableMemory / frameMemory));
+            
+            buffer.ChangeCapacity(bufferCapacity);
+            UpdateDelayMaxAge();
+            log.DebugFormat("Buffer capacity changed to {0}", bufferCapacity);
+        }
+        private int BytesPerPixel(PixelFormat pixelFormat)
+        {
+            switch(pixelFormat)
+            {
+                case PixelFormat.Format8bppIndexed:
+                    return 1;
+                case PixelFormat.Format24bppRgb:
+                    return 3;
+                case PixelFormat.Format32bppArgb:
+                case PixelFormat.Format32bppPArgb:
+                    return 4;
+                default:
+                    return 0;
+            }
+        }
+        private void UpdateDelayMaxAge()
+        {
+            double maxAge = bufferCapacity - 1;
+            if(maxAge == 0)
+                maxAge = 0.9999;
+
+            view.UpdateDelayMaxAge(maxAge);
         }
         #endregion
     }
