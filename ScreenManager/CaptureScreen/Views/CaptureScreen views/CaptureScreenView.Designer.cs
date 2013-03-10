@@ -102,6 +102,7 @@ namespace Kinovea.ScreenManager
             // fnbVideo
             // 
             this.fnbVideo.BackColor = System.Drawing.Color.Transparent;
+            this.fnbVideo.Editable = true;
             this.fnbVideo.Filename = "";
             this.fnbVideo.Image = global::Kinovea.ScreenManager.Properties.Capture.folder_camera;
             this.fnbVideo.InfoText = "Video:";
@@ -110,10 +111,12 @@ namespace Kinovea.ScreenManager
             this.fnbVideo.Size = new System.Drawing.Size(222, 27);
             this.fnbVideo.TabIndex = 42;
             this.fnbVideo.ImageClick += new System.EventHandler(this.FNBVideo_ImageClick);
+            this.fnbVideo.FilenameChanged += new System.EventHandler(this.FnbVideo_FilenameChanged);
             // 
             // fnbImage
             // 
             this.fnbImage.BackColor = System.Drawing.Color.Transparent;
+            this.fnbImage.Editable = true;
             this.fnbImage.Filename = "";
             this.fnbImage.Image = global::Kinovea.ScreenManager.Properties.Capture.folder_image;
             this.fnbImage.InfoText = "Image:";
@@ -122,6 +125,7 @@ namespace Kinovea.ScreenManager
             this.fnbImage.Size = new System.Drawing.Size(222, 27);
             this.fnbImage.TabIndex = 41;
             this.fnbImage.ImageClick += new System.EventHandler(this.FNBImage_ImageClick);
+            this.fnbImage.FilenameChanged += new System.EventHandler(this.FnbImage_FilenameChanged);
             // 
             // pnlCaptureDock
             // 

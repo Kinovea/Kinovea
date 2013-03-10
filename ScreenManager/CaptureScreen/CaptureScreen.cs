@@ -262,9 +262,15 @@ namespace Kinovea.ScreenManager
                 viewportController.Refresh();
             }
         }
-        public void ViewSnapshot(string filename)
+        public void ViewSnapshotAsked(string filename)
         {
             MakeSnapshot(filename);
+        }
+        public void ValidateFilename(string filename)
+        {
+            bool allowEmpty = true;
+            if(!filenameHelper.ValidateFilename(filename, allowEmpty))
+                ScreenManagerKernel.AlertInvalidFileName();
         }
         public void OpenInExplorer(string path)
         {
