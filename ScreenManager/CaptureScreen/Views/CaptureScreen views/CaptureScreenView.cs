@@ -176,9 +176,17 @@ namespace Kinovea.ScreenManager
         {
             presenter.OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
         }
+        private void FnbImage_FilenameChanged(object sender, EventArgs e)
+        {
+            presenter.ValidateFilename(fnbImage.Filename);
+        }
+        private void FnbVideo_FilenameChanged(object sender, EventArgs e)
+        {
+            presenter.ValidateFilename(fnbVideo.Filename);
+        }
         private void BtnSnapshot_Click(object sender, EventArgs e)
         {
-            presenter.ViewSnapshot(fnbImage.Filename);
+            presenter.ViewSnapshotAsked(fnbImage.Filename);
         }
         #endregion
         
@@ -201,7 +209,5 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
-        
     }
 }
