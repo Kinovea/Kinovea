@@ -25,9 +25,8 @@ using System.Windows.Forms;
 namespace Kinovea.Services
 {
     
-    // 2013-03-06 - Before adding to this file, see if it makes more sense to use the Notification Center instead.
-    // Ultimately the DelegatesPool will be phased out in favor of the Notification Center.
-    // A notification center can also be set up in a lower level module. See Kinovea.Camera.CameraTypeManager for example.
+    // 2013-03-06 - Deprecated. Use the Notification Center instead.
+    // A more specialized notification center can also be set up in a lower level module. See Kinovea.Camera.CameraTypeManager for example.
     
     
     //----------------------------------------------------------------------------------------------------------
@@ -43,25 +42,20 @@ namespace Kinovea.Services
     // the prototype of the delegate is the only place where he can guess the purpose of the parameters.
     //----------------------------------------------------------------------------------------------------------
     
-    public delegate void MovieLoader(string _filePath, int _iForceScreen, bool _bStoreState);
     public delegate void StatusBarUpdater(string _status);
     public delegate void TopMostMaker(Form _form);
     public delegate void ThumbnailsContainer(bool shortcuts, List<String> files, bool refresh);
-    public delegate void FileExplorerRefresher(bool _bRefreshThumbnails);
     public delegate void FileExplorerTabChanger(ActiveFileBrowserTab tab);
     public delegate void ExplorerTabChanged(ActiveFileBrowserTab tab);
     
     public class DelegatesPool
     {
-        public Action OpenVideoFile;
-        public MovieLoader LoadMovieInScreen;
         public StatusBarUpdater UpdateStatusBar;
         public Action StopPlaying;
         public TopMostMaker MakeTopMost;
         public Action DeactivateKeyboardHandler;
         public Action ActivateKeyboardHandler;
         public ThumbnailsContainer CurrentDirectoryChanged;
-        public FileExplorerRefresher RefreshFileExplorer;
         public FileExplorerTabChanger ChangeFileExplorerTab;
         public ExplorerTabChanged ExplorerTabChanged;
   

@@ -21,6 +21,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Windows.Forms;
 using Kinovea.Services;
+using Kinovea.Video;
 
 namespace Kinovea.Root
 {
@@ -51,9 +52,7 @@ namespace Kinovea.Root
             // Get Explorer values from settings.
             m_iOldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
             
-            // Services offered here
-            DelegatesPool dp = DelegatesPool.Instance();
-            dp.OpenVideoFile = DoOpenVideoFile;
+            NotificationCenter.LaunchOpenDialog += NotificationCenter_LaunchOpenDialog;
         }
         private void SupervisorUserInterface_Load(object sender, EventArgs e)
         {
@@ -93,25 +92,18 @@ namespace Kinovea.Root
                 PreferencesManager.Save();
             }
         }
-        public void DoOpenVideoFile()
+        private void NotificationCenter_LaunchOpenDialog(object sender, EventArgs e)
         {
-            // Open a video.
-            if ((RootKernel.ScreenManager.screenList.Count == 0) && (!isOpening))
-            {
-                isOpening = true;
+            if(isOpening || RootKernel.ScreenManager.screenList.Count != 0)
+                return;
+            
+            isOpening = true;
 
-                string filePath = RootKernel.LaunchOpenFileDialog();
-                if (filePath.Length > 0)
-                {
-                    DelegatesPool dp = DelegatesPool.Instance();
-                    if (dp.LoadMovieInScreen != null)
-                    {
-                        dp.LoadMovieInScreen(filePath, -1, true);
-                    }
-                }
-
-                isOpening = false;
-            }
+            string filepath = RootKernel.LaunchOpenFileDialog();
+            if (filepath.Length > 0)
+                VideoTypeManager.LoadVideo(filepath, -1);
+                
+            isOpening = false;
         }
         private void buttonCloseExplo_Click(object sender, EventArgs e)
         {
@@ -120,13 +112,9 @@ namespace Kinovea.Root
         private void _splitWorkSpace_DoubleClick(object sender, EventArgs e)
         {
             if (m_bExplorerCollapsed)
-            {
                 ExpandExplorer(true);
-            }
             else
-            {
                 CollapseExplorer();
-            }            
         }
         private void _splitWorkSpace_MouseMove(object sender, MouseEventArgs e)
         {

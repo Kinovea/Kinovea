@@ -174,7 +174,8 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
-    <Compile Include="CaptureScreen\CapturedVideo.cs" />
+    <Compile Include="CaptureScreen\CapturedFile.cs" />
+    <Compile Include="CaptureScreen\CapturedFiles.cs" />
     <Compile Include="CaptureScreen\CaptureScreen.cs" />
     <Compile Include="CaptureScreen\FilenameHelper.cs" />
     <Compile Include="CaptureScreen\Averager.cs" />
@@ -182,18 +183,28 @@
     <Compile Include="CaptureScreen\Frame buffers\IFrameBuffer.cs" />
     <Compile Include="CaptureScreen\ImageManipulator.cs" />
     <Compile Include="CaptureScreen\ViewportController.cs" />
+    <Compile Include="CaptureScreen\Views\CapturedFilesView.cs" />
+    <Compile Include="CaptureScreen\Views\CapturedFilesView.Designer.cs">
+      <DependentUpon>CapturedFilesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaptureScreen\Views\CapturedFileView.cs" />
+    <Compile Include="CaptureScreen\Views\CapturedFileView.Designer.cs">
+      <DependentUpon>CapturedFileView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.cs" />
     <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.Designer.cs">
       <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </Compile>
     <Compile Include="CaptureScreen\Views\CaptureScreen views\ICaptureScreenView.cs" />
     <Compile Include="CaptureScreen\VideoRecorder.cs" />
+    <Compile Include="CaptureScreen\Views\EmbeddedButton.cs" />
     <Compile Include="CaptureScreen\Views\FilenameBox.cs" />
     <Compile Include="CaptureScreen\Views\FilenameBox.Designer.cs">
       <DependentUpon>FilenameBox.cs</DependentUpon>
     </Compile>
     <Compile Include="CaptureScreen\Views\ViewPort.cs" />
     <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
+    <Compile Include="FilesystemHelper.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
@@ -600,6 +611,12 @@
     <Compile Include="UserInterface\MessageToaster.cs" />
     <Compile Include="UserInterface\SliderLogScale.cs" />
     <Compile Include="UserInterface\UIHelper.cs" />
+    <EmbeddedResource Include="CaptureScreen\Views\CapturedFilesView.resx">
+      <DependentUpon>CapturedFilesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaptureScreen\Views\CapturedFileView.resx">
+      <DependentUpon>CapturedFileView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.resx">
       <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </EmbeddedResource>

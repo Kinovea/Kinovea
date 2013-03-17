@@ -73,6 +73,7 @@
     <Compile Include="Base\DropWatcher.cs" />
     <Compile Include="Base\LoopWatcher.cs" />
     <Compile Include="Base\TimeWatcher.cs" />
+    <Compile Include="Events\VideoLoadAskedEventArgs.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FrameContainers\Cache.cs" />
     <Compile Include="FrameContainers\IVideoFramesContainer.cs" />
@@ -99,6 +100,9 @@
     <Compile Include="VideoSection.cs" />
     <Compile Include="VideoSummary.cs" />
     <Compile Include="VideoTypeManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Events" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

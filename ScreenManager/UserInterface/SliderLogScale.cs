@@ -49,6 +49,8 @@ namespace Kinovea.ScreenManager
             set 
             { 
                 max = value <= min ? max = min + 1 : value;
+                if(val > max)
+                    val = max;
                 Remap();
             }
         }

@@ -111,9 +111,10 @@
     <Compile Include="Deprecated\DeviceCapability.cs" />
     <Compile Include="Deprecated\DeviceConfiguration.cs" />
     <Compile Include="CommandManager.cs" />
-    <Compile Include="DelegatesPool.cs" />
     <Compile Include="Deprecated\NetworkCameraFormat.cs" />
-    <Compile Include="NotificationCenter.cs" />
+    <Compile Include="Events\DelegatesPool.cs" />
+    <Compile Include="Events\NotificationCenter.cs" />
+    <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
     <Compile Include="Preferences\CameraBlurb.cs" />
     <Compile Include="Preferences\CapturePreferences.cs" />
     <Compile Include="Preferences\FileExplorerPreferences.cs" />
@@ -154,6 +155,7 @@
     <Folder Include="CommandLine" />
     <Folder Include="Infrastructure" />
     <Folder Include="Deprecated" />
+    <Folder Include="Events" />
     <Folder Include="Preferences" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

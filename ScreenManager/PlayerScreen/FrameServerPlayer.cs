@@ -182,11 +182,8 @@ namespace Kinovea.ScreenManager
 		        Metadata.CleanupHash();
 		        m_SavingMetada = false;
 		    }
-		        
-			// Ask the Explorer tree to refresh itself, (but not the thumbnails pane.)
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.RefreshFileExplorer != null)
-                dp.RefreshFileExplorer(false);
+
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
 		}
 		#endregion
 		

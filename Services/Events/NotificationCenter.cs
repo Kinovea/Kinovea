@@ -25,11 +25,24 @@ namespace Kinovea.Services
     public static class NotificationCenter
     {
         public static EventHandler RecentFilesChanged;
-        
         public static void RaiseRecentFilesChanged(object sender)
         {
             if(RecentFilesChanged != null)
                 RecentFilesChanged(sender, EventArgs.Empty);
+        }
+        
+        public static EventHandler<RefreshFileExplorerEventArgs> RefreshFileExplorer;
+        public static void RaiseRefreshFileExplorer(object sender, bool refreshThumbnails)
+        {
+            if(RefreshFileExplorer != null)
+                RefreshFileExplorer(sender, new RefreshFileExplorerEventArgs(refreshThumbnails));
+        }
+        
+        public static EventHandler LaunchOpenDialog;
+        public static void RaiseLaunchOpenDialog(object sender)
+        {
+            if(LaunchOpenDialog != null)
+                LaunchOpenDialog(sender, EventArgs.Empty);
         }
     }
 }

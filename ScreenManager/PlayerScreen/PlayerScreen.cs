@@ -37,6 +37,9 @@ namespace Kinovea.ScreenManager
 {
     public class PlayerScreen : AbstractScreen, IPlayerScreenUIHandler
     {
+        #region Events
+        #endregion
+        
         #region Properties
         public override bool Full
         {
@@ -274,7 +277,7 @@ namespace Kinovea.ScreenManager
         }
         public void ScreenUI_SetAsActiveScreen()
         {
-        	m_ScreenHandler.Screen_SetActiveScreen(this);
+            OnActivated(EventArgs.Empty);
         }
         public void ScreenUI_UpdateStatusBarAsked()
         {

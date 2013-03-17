@@ -70,7 +70,6 @@ namespace Kinovea.ScreenManager
             RatioStretch();
             RelocateInfo();
         }
-        
         public void UpdateImage(Bitmap image)
         {
             this.Image = image;

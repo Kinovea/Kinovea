@@ -192,6 +192,7 @@ namespace Kinovea.ScreenManager
             this.btnRecord.Size = new System.Drawing.Size(25, 25);
             this.btnRecord.TabIndex = 24;
             this.btnRecord.UseVisualStyleBackColor = false;
+            this.btnRecord.Click += new System.EventHandler(this.BtnRecordClick);
             // 
             // btnSnapshot
             // 
@@ -228,7 +229,7 @@ namespace Kinovea.ScreenManager
             this.pnlCapturedVideos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlCapturedVideos.AutoScroll = true;
-            this.pnlCapturedVideos.BackColor = System.Drawing.Color.DimGray;
+            this.pnlCapturedVideos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
             this.pnlCapturedVideos.Location = new System.Drawing.Point(0, 345);
             this.pnlCapturedVideos.Name = "pnlCapturedVideos";
             this.pnlCapturedVideos.Size = new System.Drawing.Size(665, 100);
@@ -291,7 +292,7 @@ namespace Kinovea.ScreenManager
             this.pnlViewport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                                     | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlViewport.BackColor = System.Drawing.Color.DimGray;
+            this.pnlViewport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
             this.pnlViewport.Location = new System.Drawing.Point(0, 25);
             this.pnlViewport.MinimumSize = new System.Drawing.Size(345, 25);
             this.pnlViewport.Name = "pnlViewport";
