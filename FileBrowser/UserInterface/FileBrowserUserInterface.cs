@@ -79,8 +79,11 @@ namespace Kinovea.FileBrowser
 			
 			// Registers our exposed functions to the DelegatePool.
 			DelegatesPool dp = DelegatesPool.Instance();
-			dp.RefreshFileExplorer = DoRefreshFileList;
+			//dp.RefreshFileExplorer = DoRefreshFileList;
             dp.ChangeFileExplorerTab = DoChangeFileExplorerTab;
+            NotificationCenter.RefreshFileExplorer += NotificationCenter_RefreshFileExplorer;
+			
+			
 			
 			// Take the list of shortcuts from the prefs and load them.
 			ReloadShortcuts();
@@ -136,7 +139,11 @@ namespace Kinovea.FileBrowser
 		#endregion
 
 		#region Public interface
-		public void DoRefreshFileList(bool refreshThumbnails)
+		private void NotificationCenter_RefreshFileExplorer(object sender, RefreshFileExplorerEventArgs e)
+        {
+            DoRefreshFileList(e.RefreshThumbnails);
+        }
+		private void DoRefreshFileList(bool refreshThumbnails)
 		{
 			// Called when:
 			// - the user changes node in exptree, either explorer or shortcuts
@@ -496,7 +503,6 @@ namespace Kinovea.FileBrowser
 		}
 		#endregion
 		
-		
 		#region Common
 		private void TabControlSelected_IndexChanged(object sender, EventArgs e)
 		{
@@ -609,10 +615,8 @@ namespace Kinovea.FileBrowser
 			string path = lvi.Tag as string;
 			if(path == null)
 			    return;
-
-			DelegatesPool dp = DelegatesPool.Instance();
-    		if (dp.LoadMovieInScreen != null)
-	       		dp.LoadMovieInScreen(path, -1, true);
+			    
+			VideoTypeManager.LoadVideo(path, -1);
 		}
 		#endregion
 		

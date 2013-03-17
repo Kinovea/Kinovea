@@ -37,9 +37,13 @@ namespace Kinovea.ScreenManager
         void BeforeClose();
         
         void SetViewport(Viewport viewport);
+        void SetCapturedFilesView(CapturedFilesView capturedFilesView);
+        void ShowThumbnails();
+        
         void UpdateTitle(string title);
         void UpdateInfo(string info);
         void UpdateGrabbingStatus(bool grabbing);
+        void UpdateRecordingStatus(bool recording);
         void UpdateDelayLabel(double delaySeconds, int delayFrames);
         void UpdateDelayMaxAge(double max);
         void UpdateNextImageFilename(string filename, bool editable);

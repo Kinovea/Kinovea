@@ -203,5 +203,14 @@ namespace Kinovea.ScreenManager.Properties
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap thumb_close
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("thumb_close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

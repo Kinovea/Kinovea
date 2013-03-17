@@ -117,6 +117,16 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Current file name : {0}, next file name : {1}", current, finalFileName);
             return finalFileName;
         }
+        public string Next(string filename, bool video)
+        {
+            string next = "";
+            if(PreferencesManager.CapturePreferences.CaptureUsePattern)
+                next = video ? GetVideoFilename() : GetImageFilename();
+            else
+                next = ComputeNextFilename(filename);
+            
+            return next;
+        }
         public bool ValidateFilename(string filename, bool allowEmpty)
         {
             bool bIsValid = false;
@@ -145,6 +155,12 @@ namespace Kinovea.ScreenManager
             
             return bIsValid;
         }
+        public void CreateDirectory(string filepath)
+        {
+            string directory = Path.GetDirectoryName(filepath);
+            if(!Directory.Exists(directory))
+               Directory.CreateDirectory(directory);
+        }
         public string ConvertPattern(string input, long autoIncrement)
         {
             // Convert pattern into file name.
@@ -172,16 +188,16 @@ namespace Kinovea.ScreenManager
             
             return output;
         }
-        public void AutoIncrement(bool isImage)
+        public void AutoIncrement(bool video)
         {
             // Autoincrement (only if needed and only the corresponding type).
             if(!PreferencesManager.CapturePreferences.Pattern.Contains("%i"))
                 return;
             
-            if(isImage)
-                PreferencesManager.CapturePreferences.CaptureImageCounter++;
-            else
+            if(video)
                 PreferencesManager.CapturePreferences.CaptureVideoCounter++;
+            else
+                PreferencesManager.CapturePreferences.CaptureImageCounter++;
         }
         public string GetImageFileExtension()
         {

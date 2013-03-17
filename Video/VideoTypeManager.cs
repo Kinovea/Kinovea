@@ -28,9 +28,14 @@ namespace Kinovea.Video
 {
     /// <summary>
     /// Load and provide access to the list of video readers.
+    /// Also serves as a notification center for lateral communication between modules with regards to video functions.
     /// </summary>
     public static class VideoTypeManager
     {
+        #region Events
+        public static event EventHandler<VideoLoadAskedEventArgs> VideoLoadAsked;
+        #endregion
+        
         #region Members
         private static Dictionary<string, Type> m_VideoReaders = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -104,6 +109,12 @@ namespace Kinovea.Video
         public static bool IsSupported(string _extension)
         {
             return m_VideoReaders.ContainsKey(_extension);
+        }
+        
+        public static void LoadVideo(string path, int target)
+        {
+            if(VideoLoadAsked != null)
+                VideoLoadAsked(null, new VideoLoadAskedEventArgs(path, target));
         }
         
         #endregion

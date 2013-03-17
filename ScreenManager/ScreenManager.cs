@@ -170,14 +170,15 @@ namespace Kinovea.ScreenManager
 
             view = new ScreenManagerUserInterface(this);
             view.FileLoadAsked += View_FileLoadAsked;
-            CameraTypeManager.CameraLoadAsked += View_CameraLoadAsked;
+            CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
+            VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             
             InitializeVideoFilters();
             
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
 
-            dp.LoadMovieInScreen = DoLoadMovieInScreen;
+            //dp.LoadMovieInScreen = DoLoadMovieInScreen;
             dp.StopPlaying = DoStopPlaying;
             dp.DeactivateKeyboardHandler = DoDeactivateKeyboardHandler;
             dp.ActivateKeyboardHandler = DoActivateKeyboardHandler;
@@ -196,6 +197,7 @@ namespace Kinovea.ScreenManager
         	m_SVGFilesWatcher.Renamed += OnSVGFilesChanged;
         	
         }
+
         private void InitializeVideoFilters()
         {
             m_filterMenus.Add(CreateFilterMenu(new VideoFilterAutoLevels()));
@@ -521,38 +523,15 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region IScreenHandler Implementation
-        public void Screen_SetActiveScreen(AbstractScreen _ActiveScreen)
-        {
-            //-------------------------------------------------------------
-        	// /!\ Calls in OrganizeMenu which is a bit heavy on the UI.
-            // Screen_SetActiveScreen should only be called when necessary.
-			//-------------------------------------------------------------
-            
-			if (m_ActiveScreen != _ActiveScreen )
-            {
-                m_ActiveScreen = _ActiveScreen;
-                
-                if (screenList.Count > 1)
-                {
-                    m_ActiveScreen.DisplayAsActiveScreen(true);
-
-                    // Make other screens inactive.
-                    foreach (AbstractScreen screen in screenList)
-                    {
-                        if (screen != _ActiveScreen)
-                        {
-                            screen.DisplayAsActiveScreen(false);
-                        }
-                    }
-                }
-            }
-
-            OrganizeMenus();
-        }
         public void Screen_CloseAsked(object sender, EventArgs e)
         {
             AbstractScreen screen = sender as AbstractScreen;
             Screen_CloseAsked(screen);
+        }
+        public void Screen_Activated(object sender, EventArgs e)
+        {
+            AbstractScreen screen = sender as AbstractScreen;
+            SetActiveScreen(screen);
         }
         public void Screen_CloseAsked(AbstractScreen _sender)
         {
@@ -561,7 +540,7 @@ namespace Kinovea.ScreenManager
             // If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
         	if(_sender is PlayerScreen && ((PlayerScreen)_sender).InteractiveFiltering)
         	{
-        	    Screen_SetActiveScreen(_sender);
+        	    SetActiveScreen(_sender);
         	    ((PlayerScreen)_sender).DeactivateInteractiveEffect();
         	    return;
         	}
@@ -698,7 +677,7 @@ namespace Kinovea.ScreenManager
         {
             DoLoadMovieInScreen(e.Source, e.Target, true);
         }
-        public void View_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
+        public void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
         {
             CameraTypeManager.StopDiscoveringCameras();
             DoLoadCameraInScreen(e.Source, e.Target);
@@ -903,8 +882,7 @@ namespace Kinovea.ScreenManager
 				leftImage.Dispose();
 				rightImage.Dispose();
 				
-				DelegatesPool dp = DelegatesPool.Instance();
-        		if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
+                NotificationCenter.RaiseRefreshFileExplorer(this, false);
    			}
    		}
    	}
@@ -1098,6 +1076,31 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public Methods
+        public void SetActiveScreen(AbstractScreen screen)
+        {
+            //-------------------------------------------------------------
+            // /!\ Calls in OrganizeMenu which is a bit heavy on the UI.
+            // Should only be called when necessary.
+            //-------------------------------------------------------------
+            if(screen == null)
+                return;
+ 
+            m_ActiveScreen = screen;
+            
+            if (screenList.Count == 1 || m_ActiveScreen == screen)
+            {
+                OrganizeMenus();
+                return;
+            }
+            
+            foreach (AbstractScreen s in screenList)
+                if (s != screen)
+                    s.DisplayAsActiveScreen(false);
+
+           
+            m_ActiveScreen.DisplayAsActiveScreen(true);
+            OrganizeMenus();
+        }
         public AbstractScreen GetScreenAt(int index)
         {
             return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
@@ -1105,7 +1108,9 @@ namespace Kinovea.ScreenManager
         public void AddScreen(AbstractScreen screen)
         {
             screen.CloseAsked += Screen_CloseAsked;
+            screen.Activated += Screen_Activated;
             screenList.Add(screen);
+            
         }
         public void UpdateStatusBar()
         {
@@ -1725,8 +1730,7 @@ namespace Kinovea.ScreenManager
     			m_VideoFileWriter.CloseSavingContext((int)e.Result == 0);
     		}
     		
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.RefreshFileExplorer != null) dp.RefreshFileExplorer(false);
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
         private void dualSave_CancelAsked(object sender, EventArgs e)
 		{
@@ -2495,7 +2499,11 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Services
-        public void DoLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState)
+        private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
+        {
+            DoLoadMovieInScreen(e.Path, e.Target, false);
+        }
+        private void DoLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState)
         {
             if(!File.Exists(_filePath))
                 return;
@@ -2551,9 +2559,9 @@ namespace Kinovea.ScreenManager
         	    return;
             
             if (m_ActiveScreen == screenList[0])
-                Screen_SetActiveScreen(screenList[1]);
+                SetActiveScreen(screenList[1]);
             else
-                Screen_SetActiveScreen(screenList[0]);
+                SetActiveScreen(screenList[0]);
         }
         #endregion
 

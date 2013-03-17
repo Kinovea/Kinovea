@@ -284,7 +284,7 @@ namespace Kinovea.ScreenManager
 	                                        //----------------------------------------------------------------------------
 	                                        if (screenManagerKernel.m_ActiveScreen == ps)
 	                                        {
-	                                            screenManagerKernel.Screen_SetActiveScreen(screenManagerKernel.screenList[0]);
+	                                            screenManagerKernel.SetActiveScreen(screenManagerKernel.screenList[0]);
 	                                        }
 	                                    }
 	                                }

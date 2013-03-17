@@ -190,9 +190,7 @@ namespace Kinovea.ScreenManager
         }
         private void ScreenManagerUserInterface_DoubleClick(object sender, EventArgs e)
         {
-         	DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.OpenVideoFile != null)
-                dp.OpenVideoFile();
+            NotificationCenter.RaiseLaunchOpenDialog(this);
         }
 
         #region Screen management

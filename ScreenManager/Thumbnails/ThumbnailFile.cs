@@ -506,11 +506,8 @@ namespace Kinovea.ScreenManager
 	        		    m_FileName = newFileName;
 	        		    lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
 	        		}
-	        		// Ask the Explorer tree to refresh itself...
-					// But not the thumbnails pane.
-		            DelegatesPool dp = DelegatesPool.Instance();
-		            if (dp.RefreshFileExplorer != null)
-		                dp.RefreshFileExplorer(false);
+
+                    NotificationCenter.RaiseRefreshFileExplorer(this, false);
 				}
 				catch(ArgumentException)
 				{
@@ -541,28 +538,9 @@ namespace Kinovea.ScreenManager
 		}
 		private void mnuDelete_Click(object sender, EventArgs e)
 		{
-			// Use the built-in dialogs to confirm (or not).
-			// Delete is done through moving to recycle bin.
-			try
-			{
-				FileSystem.DeleteFile(m_FileName, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
-			}
-			catch(OperationCanceledException)
-			{
-				// User cancelled confirmation box.
-			}
-
-			// Other possible error case: the file couldn't be deleted because it's still in use.
-			
-			// If file was effectively moved to trash, reload the folder.
-			if(!File.Exists(m_FileName))
-			{
-				// Ask the Explorer tree to refresh itself...
-				// This will in turn refresh the thumbnails pane.
-	            DelegatesPool dp = DelegatesPool.Instance();
-	            if (dp.RefreshFileExplorer != null)
-	                dp.RefreshFileExplorer(true);
-			}
+            FilesystemHelper.DeleteFile(m_FileName);
+            if(!File.Exists(m_FileName))
+                NotificationCenter.RaiseRefreshFileExplorer(this, true);
 		}
 		private void mnuLaunch_Click(object sender, EventArgs e)
 		{

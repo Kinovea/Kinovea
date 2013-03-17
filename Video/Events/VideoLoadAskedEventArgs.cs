@@ -20,15 +20,19 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Video
 {
     /// <summary>
-    /// A small pack of info to help launching a recently captured video.
+    /// Event raised when the user wants to load a video in a screen.
     /// </summary>
-    public class CapturedVideo
+    public class VideoLoadAskedEventArgs : EventArgs
     {
-        public CapturedVideo()
+        public readonly string Path;
+        public readonly int Target;
+        public VideoLoadAskedEventArgs(string path, int target)
         {
+            this.Path = path;
+            this.Target = target;
         }
     }
 }

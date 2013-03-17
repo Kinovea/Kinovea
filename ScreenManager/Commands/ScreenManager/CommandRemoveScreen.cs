@@ -157,7 +157,7 @@ namespace Kinovea.ScreenManager
         	// Handle the remaining screen.
             if (screenManagerKernel.screenList.Count > 0)
             {
-                screenManagerKernel.Screen_SetActiveScreen(screenManagerKernel.screenList[0]);
+                screenManagerKernel.SetActiveScreen(screenManagerKernel.screenList[0]);
             }
             else
             {

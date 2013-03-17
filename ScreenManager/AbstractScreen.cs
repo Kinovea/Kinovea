@@ -29,13 +29,25 @@ namespace Kinovea.ScreenManager
 {
     public abstract class AbstractScreen
     {
+        #region Events
+        public event EventHandler Activated;
+        protected virtual void OnActivated(EventArgs e)
+        {
+            RaiseEvent(Activated, e);
+        }
+        
         public event EventHandler CloseAsked;
         protected virtual void OnCloseAsked(EventArgs e)
         {
-            EventHandler invoker = CloseAsked;
+            RaiseEvent(CloseAsked, e);
+        }
+        
+        private void RaiseEvent(EventHandler invoker, EventArgs e)
+        {
             if(invoker != null)
                 invoker(this, e);
         }
+        #endregion
     
         public abstract Guid UniqueId
         {

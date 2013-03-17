@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public interface IScreenHandler
     {
-        void Screen_SetActiveScreen(AbstractScreen _ActiveScreen);
+        //void Screen_SetActiveScreen(AbstractScreen _ActiveScreen);
         void Screen_CloseAsked(AbstractScreen _SenderScreen);
         void Screen_UpdateStatusBarAsked(AbstractScreen _SenderScreen);
         
@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
         void Player_SendImage(PlayerScreen _screen, Bitmap _image);
         void Player_Reset(PlayerScreen _screen);
         
-        void Capture_FileSaved(CaptureScreen _screen);
-        void Capture_LoadVideo(CaptureScreen _screen, string _filepath);
+        //void Capture_FileSaved(CaptureScreen _screen);
+        //void Capture_LoadVideo(CaptureScreen _screen, string _filepath);
     }
 }

@@ -36,6 +36,7 @@ namespace Kinovea.ScreenManager
     {
         #region Members
         private CaptureScreen presenter;
+        private CapturedFilesView capturedFilesView;
         #endregion
         
         public CaptureScreenView(CaptureScreen presenter)
@@ -43,8 +44,6 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
-            
-            //sldrDelay.Maximum = 250;
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
         }
 
@@ -63,7 +62,7 @@ namespace Kinovea.ScreenManager
         
         public void RefreshUICulture()
         {
-        
+            capturedFilesView.RefreshUICulture();
         }
         
         public bool OnKeyPress(Keys key)
@@ -91,6 +90,12 @@ namespace Kinovea.ScreenManager
             pnlViewport.Controls.Add(viewport);
             viewport.Dock = DockStyle.Fill;
         }
+        public void SetCapturedFilesView(CapturedFilesView capturedFilesView)
+        {
+            this.capturedFilesView = capturedFilesView;
+            pnlCapturedVideos.Controls.Add(capturedFilesView);
+            capturedFilesView.Dock = DockStyle.Fill;
+        }
         
         public void UpdateTitle(string title)
         {
@@ -101,6 +106,19 @@ namespace Kinovea.ScreenManager
         public void UpdateInfo(string info)
         {
             lblCameraInfo.Text = info;
+            
+            if(capturedFilesView.HorizontalScroll.Visible)
+            {
+                //pnlCapturedVideos.Height = 120;
+                //pnlCapturedVideos.Top -= 20;
+                AfterCapturedVideosChange();
+            }
+            else
+            {
+                //pnlCapturedVideos.Height = 100;
+                //pnlCapturedVideos.Top += 20;
+                AfterCapturedVideosChange();
+            }
         }
         
         public void UpdateGrabbingStatus(bool grabbing)
@@ -109,6 +127,23 @@ namespace Kinovea.ScreenManager
                 btnGrab.Image = Properties.Capture.grab_pause;
             else
                 btnGrab.Image = Properties.Capture.grab_start;
+        }
+        public void UpdateRecordingStatus(bool recording)
+        {
+            if(recording)
+            {
+                btnRecord.Image = Properties.Capture.record_stop;
+                //toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStop);
+            }
+            else
+            {
+                btnRecord.Image = Properties.Capture.record_start;
+                //toolTips.SetToolTip(btnRecord, ScreenManagerLang.ToolTip_RecordStart);
+            }
+            
+            btnSettings.Enabled = !recording;
+            fnbImage.Enabled = !recording;
+            fnbVideo.Enabled = !recording;
         }
         public void UpdateDelayLabel(double delaySeconds, int delayFrames)
         {
@@ -139,6 +174,11 @@ namespace Kinovea.ScreenManager
         {
             
         }
+        public void ShowThumbnails()
+        {
+            if(!pnlCapturedVideos.Visible)
+                ToggleCapturedVideosPanel();
+        }
         #endregion
         
         #endregion
@@ -150,43 +190,47 @@ namespace Kinovea.ScreenManager
         }
         private void BtnClose_Click(object sender, EventArgs e)
         {
-            presenter.ViewClose();
+            presenter.View_Close();
         }
         private void SldrDelay_ValueChanged(object sender, EventArgs e)
         {
-            presenter.ViewDelayChanged(sldrDelay.Value);
+            presenter.View_DelayChanged(sldrDelay.Value);
         }
         private void BtnSettingsClick(object sender, EventArgs e)
         {
-            presenter.ViewConfigure();
+            presenter.View_Configure();
         }
         private void BtnGrabClick(object sender, EventArgs e)
         {
-            presenter.ViewToggleGrabbing();
+            presenter.View_ToggleGrabbing();
         }
         private void LblCameraInfoClick(object sender, EventArgs e)
         {
-            presenter.ViewConfigure();
+            presenter.View_Configure();
         }
         private void FNBImage_ImageClick(object sender, EventArgs e)
         {
-            presenter.OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
+            presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.ImageDirectory);
         }
         private void FNBVideo_ImageClick(object sender, EventArgs e)
         {
-            presenter.OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
+            presenter.View_OpenInExplorer(PreferencesManager.CapturePreferences.VideoDirectory);
         }
         private void FnbImage_FilenameChanged(object sender, EventArgs e)
         {
-            presenter.ValidateFilename(fnbImage.Filename);
+            presenter.View_ValidateFilename(fnbImage.Filename);
         }
         private void FnbVideo_FilenameChanged(object sender, EventArgs e)
         {
-            presenter.ValidateFilename(fnbVideo.Filename);
+            presenter.View_ValidateFilename(fnbVideo.Filename);
         }
         private void BtnSnapshot_Click(object sender, EventArgs e)
         {
-            presenter.ViewSnapshotAsked(fnbImage.Filename);
+            presenter.View_SnapshotAsked(fnbImage.Filename);
+        }
+        private void BtnRecordClick(object sender, EventArgs e)
+        {
+            presenter.View_ToggleRecording(fnbVideo.Filename);
         }
         #endregion
         
@@ -194,7 +238,10 @@ namespace Kinovea.ScreenManager
         private void ToggleCapturedVideosPanel()
         {
             pnlCapturedVideos.Visible = !pnlCapturedVideos.Visible;
-            
+            AfterCapturedVideosChange();
+        }
+        private void AfterCapturedVideosChange()
+        {
             if(pnlCapturedVideos.Visible)
             {
                 btnFoldCapturedVideosPanel.BackgroundImage = Properties.Capture.section_fold;
@@ -209,5 +256,7 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
+        
+        
     }
 }
