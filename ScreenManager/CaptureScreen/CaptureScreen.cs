@@ -488,6 +488,8 @@ namespace Kinovea.ScreenManager
                 return;
             
             Bitmap outputImage = buffer.Read(displayImageAge);
+            if(outputImage == null)
+                return;
             
             ImageHelper.Save(filepath, outputImage);
             
