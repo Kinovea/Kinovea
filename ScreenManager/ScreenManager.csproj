@@ -197,6 +197,8 @@
     </Compile>
     <Compile Include="CaptureScreen\Views\CaptureScreen views\ICaptureScreenView.cs" />
     <Compile Include="CaptureScreen\VideoRecorder.cs" />
+    <Compile Include="CaptureScreen\Views\ControlAnimation.cs" />
+    <Compile Include="CaptureScreen\Views\ControlAnimator.cs" />
     <Compile Include="CaptureScreen\Views\EmbeddedButton.cs" />
     <Compile Include="CaptureScreen\Views\FilenameBox.cs" />
     <Compile Include="CaptureScreen\Views\FilenameBox.Designer.cs">

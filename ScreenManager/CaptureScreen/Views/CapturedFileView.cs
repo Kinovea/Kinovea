@@ -60,6 +60,7 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLoadVideo = new ToolStripMenuItem();
         private ToolStripMenuItem mnuLocate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -106,21 +107,24 @@ namespace Kinovea.ScreenManager
                 mnuLocate.Image = Properties.Capture.folder_camera;
             else
                 mnuLocate.Image = Properties.Capture.folder_image;
+            mnuRename.Click += mnuRename_Click;
+            mnuRename.Image = Properties.Capture.rename;
             mnuHide.Click += mnuHide_Click;
             mnuHide.Image = Properties.Resources.hide;
             mnuDelete.Click += mnuDelete_Click;
             mnuDelete.Image = Properties.Resources.delete;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuLocate, mnuHide, mnuDelete }); 
+            popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuLocate, mnuRename, mnuHide, mnuDelete }); 
             this.ContextMenuStrip = popMenu;
         }
         private void ReloadMenusCulture()
         {
             // Reload the text for each menu.
             // this is done at construction time and at RefreshUICulture time.
-            mnuLoadVideo.Text = ScreenManagerLang.mnuThumbnailPlay;
+            mnuLoadVideo.Text = "Launch playback"; //ScreenManagerLang.mnuThumbnailPlay;
             mnuLocate.Text = "Locate on disk";
-            mnuHide.Text = ScreenManagerLang.mnuGridsHide;
-            mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
+            mnuRename.Text = "Rename file";
+            mnuHide.Text = "Remove thumbnail"; //ScreenManagerLang.mnuGridsHide;
+            mnuDelete.Text = "Remove thumbnail and delete file"; //ScreenManagerLang.mnuThumbnailDelete;
         }
         private void Close()
         {
@@ -207,19 +211,25 @@ namespace Kinovea.ScreenManager
         }
         private void LblFilename_Click(object sender, EventArgs e)
         {
-            if(!selected && SelectAsked != null)
-            {
-                SelectAsked(this, EventArgs.Empty);
-                StartEditing();
-            }
-            else if(selected && !editing)
-                StartEditing();
+            EditingAsked();
         }
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
         }
         
+        private void EditingAsked()
+        {
+            if(!selected && SelectAsked != null)
+            {
+                SelectAsked(this, EventArgs.Empty);
+                StartEditing();
+            }
+            else if(selected && !editing)
+            {
+                StartEditing();
+            }
+        }
         private void StartEditing()
         {
             lblFilename.Visible = false;
@@ -283,6 +293,10 @@ namespace Kinovea.ScreenManager
         {
             if (LocateAsked != null)
                 LocateAsked(this, EventArgs.Empty);
+        }
+        private void mnuRename_Click(object sender, EventArgs e)
+        {
+            EditingAsked();
         }
         private void mnuHide_Click(object sender, EventArgs e)
         {
