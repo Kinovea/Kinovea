@@ -63,6 +63,7 @@ namespace Kinovea.ScreenManager
             dp.ExplorerTabChanged = ExplorerTab_Changed;
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
+            CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraImageReceived += CameraTypeManager_CameraImageReceived;
         }
 
@@ -214,6 +215,14 @@ namespace Kinovea.ScreenManager
                 return;
                 
             viewerCameras.CamerasDiscovered(e.Summaries);
+        }
+        
+        private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
+        {
+            if(currentContent != ThumbnailViewerContent.Cameras)
+                return;
+                
+            viewerCameras.CameraSummaryUpdated(e.Summary);
         }
 
         private void InitializeSizeSelector()
