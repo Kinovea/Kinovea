@@ -69,8 +69,8 @@ namespace Kinovea.ScreenManager
             this.lblAlias.TabIndex = 5;
             this.lblAlias.Text = "Camera Alias";
             this.lblAlias.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblAlias.MouseClick += new MouseEventHandler(this.AllControls_Click);
-            this.lblAlias.MouseDoubleClick += new MouseEventHandler(this.AllControls_DoubleClick);
+            this.lblAlias.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AllControls_Click);
+            this.lblAlias.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AllControls_DoubleClick);
             // 
             // picBox
             // 
@@ -84,9 +84,9 @@ namespace Kinovea.ScreenManager
             this.picBox.Size = new System.Drawing.Size(234, 174);
             this.picBox.TabIndex = 4;
             this.picBox.TabStop = false;
-            this.picBox.MouseClick += new MouseEventHandler(this.AllControls_Click);
             this.picBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PicBox_Paint);
-            this.picBox.MouseDoubleClick += new MouseEventHandler(this.AllControls_DoubleClick);
+            this.picBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AllControls_Click);
+            this.picBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AllControls_DoubleClick);
             // 
             // btnIcon
             // 
@@ -104,6 +104,7 @@ namespace Kinovea.ScreenManager
             this.btnIcon.Size = new System.Drawing.Size(16, 16);
             this.btnIcon.TabIndex = 37;
             this.btnIcon.UseVisualStyleBackColor = false;
+            this.btnIcon.Click += new System.EventHandler(this.BtnIconClick);
             // 
             // ThumbnailCamera
             // 
@@ -115,9 +116,9 @@ namespace Kinovea.ScreenManager
             this.Controls.Add(this.picBox);
             this.Name = "ThumbnailCamera";
             this.Size = new System.Drawing.Size(240, 195);
-            this.MouseClick += new MouseEventHandler(this.AllControls_Click);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbnailCamera_Paint);
-            this.MouseDoubleClick += new MouseEventHandler(this.AllControls_DoubleClick);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AllControls_Click);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.AllControls_DoubleClick);
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

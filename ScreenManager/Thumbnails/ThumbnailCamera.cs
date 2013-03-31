@@ -79,6 +79,13 @@ namespace Kinovea.ScreenManager
             RelocateInfo();
             this.Invalidate();
         }
+        public void UpdateSummary(CameraSummary summary)
+        {
+            this.Summary = summary;
+            lblAlias.Text = summary.Alias;
+            btnIcon.BackgroundImage = summary.Icon;
+            RelocateInfo();
+        }
         public void RefreshUICulture()
         {
             lblAlias.Text = Summary.Alias;
@@ -252,5 +259,21 @@ namespace Kinovea.ScreenManager
             canvas.DrawRectangle(Pens.White, 2, 2, picBox.Width-5, picBox.Height-5);
         }
         #endregion
+        
+        private void BtnIconClick(object sender, EventArgs e)
+        {
+            FormIconPicker fip = new FormIconPicker(IconLibrary.Icons, 5, "Icons");
+            FormsHelper.Locate(fip);
+            if(fip.ShowDialog() == DialogResult.OK)
+            {
+                Summary.UpdateAlias(Summary.Alias, fip.PickedIcon);
+                btnIcon.BackgroundImage = Summary.Icon;
+                RelocateInfo();
+                
+                if(SummaryUpdated != null)
+                    SummaryUpdated(this, EventArgs.Empty);
+            }
+            fip.Dispose();
+        }
     }
 }

@@ -75,6 +75,14 @@ namespace Kinovea.ScreenManager
             else
                 UpdateThumbnailImage(summary, image);
         }
+        public void CameraSummaryUpdated(CameraSummary summary)
+        {
+             int index = IndexOf(summary.Identifier);
+             if(index < 0)
+                return;
+                
+             thumbnailControls[index].UpdateSummary(summary);
+        }
         public bool OnKeyPress(Keys keyCode)
         {
             bool handled = false;
@@ -186,8 +194,6 @@ namespace Kinovea.ScreenManager
                
                 thumbnailControls.Add(thumbnail);
                 this.Controls.Add(thumbnail);
-                
-                summary.Manager.GetSingleImage(summary);
             }
             
             refreshImages = false;
