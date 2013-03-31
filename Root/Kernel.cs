@@ -534,22 +534,12 @@ namespace Kinovea.Root
         }
         private void mnuPreferencesOnClick(object sender, EventArgs e)
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.StopPlaying != null && dp.DeactivateKeyboardHandler != null)
-            {
-                dp.StopPlaying();
-                dp.DeactivateKeyboardHandler();
-			}
-            
+            FormsHelper.BeforeShow();
             FormPreferences2 fp = new FormPreferences2(-1);
             fp.ShowDialog();
             fp.Dispose();
+            FormsHelper.AfterShow();
             
-            if(dp.ActivateKeyboardHandler != null)
-            {
-            	dp.ActivateKeyboardHandler();
-            }
-
             // Refresh Preferences
             log.Debug("Setting current ui culture.");
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();

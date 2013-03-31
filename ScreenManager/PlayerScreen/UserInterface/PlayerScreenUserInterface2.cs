@@ -4050,17 +4050,14 @@ namespace Kinovea.ScreenManager
 			if(trk == null)
 			    return;
 			
-			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
-				dp.DeactivateKeyboardHandler();
-
+            NotificationCenter.RaiseDisableKeyboardHandler(this);
+			
 			formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, DoInvalidate);
 			fctd.StartPosition = FormStartPosition.CenterScreen;
 			fctd.ShowDialog();
 			fctd.Dispose();
-
-			if (dp.ActivateKeyboardHandler != null)
-				dp.ActivateKeyboardHandler();
+			
+            NotificationCenter.RaiseEnableKeyboardHandler(this);
 		}
 		private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
 		{
@@ -4462,8 +4459,7 @@ namespace Kinovea.ScreenManager
 			StopPlaying();
 			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
-				dp.DeactivateKeyboardHandler();
+			NotificationCenter.RaiseDisableKeyboardHandler(this);
 			
 			// Launch sequence saving configuration dialog
 			formRafaleExport fre = new formRafaleExport(this, 
@@ -4475,8 +4471,7 @@ namespace Kinovea.ScreenManager
 			fre.Dispose();
 			m_FrameServer.AfterSave();
 			
-			if (dp.ActivateKeyboardHandler != null)
-				dp.ActivateKeyboardHandler();
+			NotificationCenter.RaiseEnableKeyboardHandler(this);
 			
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iSelStart, true);
@@ -4543,14 +4538,9 @@ namespace Kinovea.ScreenManager
 			StopPlaying();
 			m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
 			
-			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
-				dp.DeactivateKeyboardHandler();
-			
+			NotificationCenter.RaiseDisableKeyboardHandler(this);
 			Save();
-			
-			if (dp.ActivateKeyboardHandler != null)
-				dp.ActivateKeyboardHandler();
+			NotificationCenter.RaiseEnableKeyboardHandler(this);
 			
 			m_iFramesToDecode = 1;
 			ShowNextFrame(m_iSelStart, true);
@@ -4577,17 +4567,14 @@ namespace Kinovea.ScreenManager
 			}
 			
 			DelegatesPool dp = DelegatesPool.Instance();
-			if (dp.DeactivateKeyboardHandler != null)
-				dp.DeactivateKeyboardHandler();
-				
+			NotificationCenter.RaiseDisableKeyboardHandler(this);
+			
 			saveInProgress = true;
 			m_FrameServer.SaveDiaporama(GetOutputBitmap, diaporama);
             saveInProgress = false;
             
-			if (dp.ActivateKeyboardHandler != null)
-				dp.ActivateKeyboardHandler();
-			
-			m_iFramesToDecode = 1;
+            NotificationCenter.RaiseEnableKeyboardHandler(this);
+            m_iFramesToDecode = 1;
 			ShowNextFrame(m_iSelStart, true);
 			ActivateKeyframe(m_iCurrentPosition, true);
 		}

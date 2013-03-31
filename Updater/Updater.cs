@@ -112,11 +112,8 @@ namespace Kinovea.Updater
 			
             if (hiRemote.LoadSuccess)
             {
-                if (dp.DeactivateKeyboardHandler != null)
-                {
-                    dp.DeactivateKeyboardHandler();
-                }
-
+                NotificationCenter.RaiseDisableKeyboardHandler(this);
+                
                 // Check if we are up to date.
                 bool testUpdate = false;
                 //testUpdate = true;
@@ -137,10 +134,7 @@ namespace Kinovea.Updater
                     
 	            }
                 
-                if (dp.ActivateKeyboardHandler != null)
-                {
-                    dp.ActivateKeyboardHandler();
-                }
+               NotificationCenter.RaiseEnableKeyboardHandler(this);
             }
             else
             {

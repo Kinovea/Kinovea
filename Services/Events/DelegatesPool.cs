@@ -53,8 +53,6 @@ namespace Kinovea.Services
         public StatusBarUpdater UpdateStatusBar;
         public Action StopPlaying;
         public TopMostMaker MakeTopMost;
-        public Action DeactivateKeyboardHandler;
-        public Action ActivateKeyboardHandler;
         public ThumbnailsContainer CurrentDirectoryChanged;
         public FileExplorerTabChanger ChangeFileExplorerTab;
         public ExplorerTabChanged ExplorerTabChanged;

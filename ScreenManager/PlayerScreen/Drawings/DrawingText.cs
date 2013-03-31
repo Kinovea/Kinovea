@@ -244,20 +244,14 @@ namespace Kinovea.ScreenManager
             if(m_CoordinateSystem == null)
                m_CoordinateSystem = _transformer; 
 
-            // Activate or deactivate the ScreenManager Keyboard Handler, 
-            // so we can use <space>, <return>, etc.
-            DelegatesPool dp = DelegatesPool.Instance();
             if (m_bEditMode)
             {    
-                if (dp.DeactivateKeyboardHandler != null)
-                    dp.DeactivateKeyboardHandler();
-
+                NotificationCenter.RaiseDisableKeyboardHandler(this);
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
             }
             else
             {
-                if (dp.ActivateKeyboardHandler != null)
-                    dp.ActivateKeyboardHandler();
+                NotificationCenter.RaiseEnableKeyboardHandler(this);
             }
             
             m_TextBox.Visible = m_bEditMode;

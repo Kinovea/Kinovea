@@ -30,16 +30,12 @@ namespace Kinovea.ScreenManager
     {
         public static void BeforeShow()
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.DeactivateKeyboardHandler != null)
-                dp.DeactivateKeyboardHandler();
+            NotificationCenter.RaiseDisableKeyboardHandler(null);
         }
         
         public static void AfterShow()
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ActivateKeyboardHandler != null)
-                dp.ActivateKeyboardHandler();
+            NotificationCenter.RaiseEnableKeyboardHandler(null);
         }
         
         /// <summary>

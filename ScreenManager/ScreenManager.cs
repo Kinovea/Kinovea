@@ -177,12 +177,7 @@ namespace Kinovea.ScreenManager
             
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
-
-            //dp.LoadMovieInScreen = DoLoadMovieInScreen;
             dp.StopPlaying = DoStopPlaying;
-            dp.DeactivateKeyboardHandler = DoDeactivateKeyboardHandler;
-            dp.ActivateKeyboardHandler = DoActivateKeyboardHandler;
-            
             NotificationCenter.DisableKeyboardHandler += DisableKeyboardHandler;
             NotificationCenter.EnableKeyboardHandler += EnableKeyboardHandler;
             
