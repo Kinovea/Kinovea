@@ -43,7 +43,7 @@ namespace Kinovea.Camera
         #endregion
         
         #region Properties
-        public static ReadOnlyCollection<CameraManager> CameraManagers 
+        public static ReadOnlyCollection<CameraManager> CameraManagers
         { 
             get
             {
@@ -66,7 +66,7 @@ namespace Kinovea.Camera
         {
             List<Assembly> assemblies = new List<Assembly>();
             
-            string dir = Path.GetDirectoryName(Application.ExecutablePath) + "\\CameraTypes\\";
+            string dir = Path.GetDirectoryName(Application.ExecutablePath);
             if(Directory.Exists(dir))
             {
                 foreach (string fileName in Directory.GetFiles(dir, "*.dll"))
@@ -80,12 +80,7 @@ namespace Kinovea.Camera
                 {
                     foreach(Type t in a.GetTypes())
                     {
-                        if(t.Name == "CameraManagerDirectShow")
-                        {
-                            log.DebugFormat("");
-                        }
-                        
-                        if(!t.IsSubclassOf(typeof(CameraManager)) || t.IsAbstract)
+                        if(t.BaseType == null || t.BaseType.Name != "CameraManager" || t.IsAbstract)
                             continue;
                         
                         ConstructorInfo ci = t.GetConstructor(System.Type.EmptyTypes);
@@ -133,6 +128,12 @@ namespace Kinovea.Camera
         {
             if(CameraLoadAsked != null)
                 CameraLoadAsked(null, new CameraLoadAskedEventArgs(summary, target));
+        }
+        
+        public static void DeleteCamera(CameraSummary summary)
+        {
+            PreferencesManager.CapturePreferences.RemoveCamera(summary.Identifier);
+            PreferencesManager.Save();
         }
         
         #endregion

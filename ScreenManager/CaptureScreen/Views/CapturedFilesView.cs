@@ -44,7 +44,7 @@ namespace Kinovea.ScreenManager
         private int first = -1;
         private int last = -1;
         private bool alignLeft = true;
-        private int top = 7;
+        private int top = 10;
         private int margin = 10;
         private int masterMargin = 10;
         private int spotWidth = 100;

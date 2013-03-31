@@ -132,6 +132,12 @@ namespace Kinovea.Services
                 
             cameraBlurbs.Add(blurb.Identifier, blurb);
         }
+        
+        public void RemoveCamera(string identifier)
+        {
+            if(cameraBlurbs.ContainsKey(identifier))
+               cameraBlurbs.Remove(identifier);
+        }
     	
     	public void WriteXML(XmlWriter writer)
         {

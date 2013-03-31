@@ -21,11 +21,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Threading;
-
 using AForge.Video;
-using AForge.Video.DirectShow;
 
-namespace Kinovea.Camera.DirectShow
+namespace Kinovea.Camera.HTTP
 {
     /// <summary>
     /// Retrieve a single snapshot, simulating a synchronous function. Used for thumbnails.
@@ -33,35 +31,53 @@ namespace Kinovea.Camera.DirectShow
     public class SnapshotRetriever
     {
         public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler CameraImageTimedOut;
+        public event EventHandler CameraImageError;
         
         public string Identifier 
         { 
             get { return this.summary.Identifier;}
         }
         
+        public string Error
+        {
+            get { return error;}
+        }
+        
         #region Members
         private Bitmap image;
-        private string moniker;
         private CameraSummary summary;
         private object locker = new object();
         private EventWaitHandle waitHandle = new AutoResetEvent(false);
         private bool cancelled;
-        private VideoCaptureDevice device;
+        private IVideoSource device;
+        private string error;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public SnapshotRetriever(CameraSummary summary, string moniker)
+        public SnapshotRetriever(CameraManagerHTTP manager, CameraSummary summary)
         {
-            this.moniker = moniker;
             this.summary = summary;
+
+            string url = "";
+            SpecificInfo specific = summary.Specific as SpecificInfo;
+            if(specific != null)
+                url = manager.BuildURL(specific);
             
-            device = new VideoCaptureDevice(moniker);
-            device.NewFrame += Device_NewFrame;
-            device.VideoSourceError += Device_VideoSourceError;
+            if(specific.Format == "MJPEG")
+                device = new MJPEGStream(url);
+            else if(specific.Format == "JPEG")
+                device = new JPEGStream(url);
         }
 
         public void Run(object data)
         {
+            if(device == null)
+                return;
+
+            device.NewFrame += Device_NewFrame;
+            device.VideoSourceError += Device_VideoSourceError;
+            
             device.Start();
             waitHandle.WaitOne(5000);
             
@@ -69,12 +85,19 @@ namespace Kinovea.Camera.DirectShow
             device.VideoSourceError -= Device_VideoSourceError;
             device.SignalToStop();
             
-            if(!cancelled && image != null && CameraImageReceived != null)
+            if(!cancelled && !string.IsNullOrEmpty(error) && CameraImageError != null)
+                CameraImageError(this, EventArgs.Empty);
+            else if(!cancelled && image != null && CameraImageReceived != null)
                 CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
+            else if(!cancelled && image == null && CameraImageTimedOut != null)
+                CameraImageTimedOut(this, EventArgs.Empty);
         }
         
         public void Cancel()
         {
+            if(device == null)
+                return;
+
             cancelled = true;
             waitHandle.Set();
         }
@@ -91,8 +114,10 @@ namespace Kinovea.Camera.DirectShow
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
             log.DebugFormat("Error received");
+            error = e.Description;
             waitHandle.Set();
         }
 
     }
 }
+

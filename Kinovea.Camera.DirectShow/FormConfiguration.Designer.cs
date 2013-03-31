@@ -127,7 +127,7 @@ namespace Kinovea.Camera.DirectShow
             this.btnIcon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIcon.FlatAppearance.BorderSize = 0;
             this.btnIcon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnIcon.Location = new System.Drawing.Point(49, 29);
+            this.btnIcon.Location = new System.Drawing.Point(24, 26);
             this.btnIcon.Name = "btnIcon";
             this.btnIcon.Size = new System.Drawing.Size(16, 16);
             this.btnIcon.TabIndex = 83;
@@ -156,9 +156,9 @@ namespace Kinovea.Camera.DirectShow
             this.tbAlias.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbAlias.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbAlias.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.tbAlias.Location = new System.Drawing.Point(127, 26);
+            this.tbAlias.Location = new System.Drawing.Point(73, 26);
             this.tbAlias.Name = "tbAlias";
-            this.tbAlias.Size = new System.Drawing.Size(173, 15);
+            this.tbAlias.Size = new System.Drawing.Size(223, 15);
             this.tbAlias.TabIndex = 86;
             this.tbAlias.Text = "Alias";
             // 
@@ -168,7 +168,7 @@ namespace Kinovea.Camera.DirectShow
             this.lblSystemName.BackColor = System.Drawing.Color.Transparent;
             this.lblSystemName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSystemName.ForeColor = System.Drawing.Color.Black;
-            this.lblSystemName.Location = new System.Drawing.Point(122, 45);
+            this.lblSystemName.Location = new System.Drawing.Point(68, 45);
             this.lblSystemName.Name = "lblSystemName";
             this.lblSystemName.Size = new System.Drawing.Size(70, 13);
             this.lblSystemName.TabIndex = 85;

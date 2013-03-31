@@ -35,6 +35,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler LaunchCamera;
         public event EventHandler CameraSelected;
         public event EventHandler SummaryUpdated;
+        public event EventHandler DeleteCamera;
         #endregion
         
         #region Properties
@@ -46,6 +47,7 @@ namespace Kinovea.ScreenManager
         private ContextMenuStrip popMenu = new ContextMenuStrip();
         private ToolStripMenuItem mnuLaunch = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
         private bool selected;
         private static readonly Pen penSelected = new Pen(Color.DodgerBlue, 2);
         private static readonly Pen penUnselected = new Pen(Color.Silver, 2);
@@ -82,6 +84,7 @@ namespace Kinovea.ScreenManager
             lblAlias.Text = Summary.Alias;
             mnuLaunch.Text = "Open"; //ScreenManagerLang.mnuThumbnailPlay;
             mnuRename.Text = "Rename"; //ScreenManagerLang.mnuThumbnailRename;
+            mnuDelete.Text = "Delete"; //ScreenManagerLang.mnuThumbnailDelete;
         }
         public void SetUnselected()
         {
@@ -121,7 +124,13 @@ namespace Kinovea.ScreenManager
             mnuLaunch.Click += mnuLaunch_Click;
             mnuRename.Image = Properties.Resources.rename;
             mnuRename.Click += mnuRename_Click;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename});
+            mnuDelete.Image = Properties.Resources.delete;
+            mnuDelete.Click += mnuDelete_Click;
+            if(Summary.Manager.HasConnectionWizard)
+                popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename, new ToolStripSeparator(), mnuDelete});
+            else
+                popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuRename});
+            
             this.ContextMenuStrip = popMenu;
         }
         
@@ -179,6 +188,12 @@ namespace Kinovea.ScreenManager
             this.Cursor = Cursors.WaitCursor;
             LaunchCamera(this, EventArgs.Empty);
             this.Cursor = Cursors.Default;
+        }
+        
+        private void mnuDelete_Click(object sender, EventArgs e)
+        {
+            if(DeleteCamera != null)
+                DeleteCamera(this, EventArgs.Empty);
         }
         
         private void RatioStretch()

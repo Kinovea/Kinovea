@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera", "Kinovea.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.DirectShow", "Kinovea.Camera.DirectShow\Kinovea.Camera.DirectShow.csproj", "4F3A60A3-7E73-4087-897C-6DEC24614A2E"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Camera.HTTP", "Kinovea.Camera.HTTP\Kinovea.Camera.HTTP.csproj", "{7B8CF26D-B8AF-4914-B395-93661D225EA3}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileBrowser", "FileBrowser\FileBrowser.csproj", "{85924D93-541A-46E6-BF9A-EBE3B73887EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Root", "Root\Root.csproj", "{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}"
@@ -94,6 +96,14 @@ Global
 		4F3A60A3-7E73-4087-897C-6DEC24614A2E.Release|Any CPU.ActiveCfg = Release|x86
 		4F3A60A3-7E73-4087-897C-6DEC24614A2E.Release|x86.Build.0 = Release|x86
 		4F3A60A3-7E73-4087-897C-6DEC24614A2E.Release|x86.ActiveCfg = Release|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Debug|Any CPU.Build.0 = Debug|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Debug|x86.Build.0 = Debug|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Debug|x86.ActiveCfg = Debug|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Release|Any CPU.Build.0 = Release|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Release|Any CPU.ActiveCfg = Release|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Release|x86.Build.0 = Release|x86
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,5 +111,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D = {4CCC6C98-26BD-4804-8282-5BCF71344499}
 		4F3A60A3-7E73-4087-897C-6DEC24614A2E = {4CCC6C98-26BD-4804-8282-5BCF71344499}
+		{7B8CF26D-B8AF-4914-B395-93661D225EA3} = {4CCC6C98-26BD-4804-8282-5BCF71344499}
 	EndGlobalSection
 EndGlobal

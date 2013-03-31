@@ -58,9 +58,9 @@ namespace Kinovea.ScreenManager
         {
             get { return cancelReason; }
         }
-        public bool Full
+        public bool OverCapacity
         {
-            get { return frameQueue.Count > capacity; }
+            get { return overCapacity; }
         }
         public string Filepath
         {
@@ -85,12 +85,14 @@ namespace Kinovea.ScreenManager
         private Queue<Bitmap> frameQueue = new Queue<Bitmap>();
         private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private string filepath;
+        private string filename;
         private bool initialized;
         private bool cancelling;
         private SaveResult cancelReason = SaveResult.UnknownError;
         private bool captureThumbSet;
         private Bitmap captureThumb;
-        private static readonly int capacity = 5;
+        private static readonly int capacity = 10;
+        private bool overCapacity;
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -113,6 +115,7 @@ namespace Kinovea.ScreenManager
             // TODO: Check if this is due to non even height.
             VideoInfo vi = new VideoInfo { OriginalSize = frameSize};
             SaveResult result = videoFileWriter.OpenSavingContext(filepath, vi, interval, false);
+            filename = Path.GetFileName(filepath);
             
             if(result == SaveResult.Success)
             {
@@ -146,13 +149,20 @@ namespace Kinovea.ScreenManager
             // Push a frame and signal the consumer thread that some new stuff is ready to be consummed.
             // FIXME: currently there is no mechanism to limit the size of the queue.
             
-            log.DebugFormat("Enqueing a frame.");
+            //log.DebugFormat("Enqueing a frame.");
             
             if(cancelling || !initialized)
                 return;
             
             lock (locker)
-                frameQueue.Enqueue(frame);
+            {
+                if(frameQueue.Count < capacity)
+                    frameQueue.Enqueue(frame);
+                else
+                    log.DebugFormat("Recording buffer over capacity for {0}. Frame dropped.", filename);
+                
+                overCapacity = frameQueue.Count == capacity;
+            }
             
             waitHandle.Set();
         }
@@ -188,9 +198,7 @@ namespace Kinovea.ScreenManager
                 if (bmp == null)
                 {
                     // Nothing to eat. Wait for the producer to push a new frame and go on.
-                    log.DebugFormat("Waiting for a frame.");
                     waitHandle.WaitOne();
-                    log.DebugFormat("A frame has been pushed, roll up.");
                     continue;
                 }
                 

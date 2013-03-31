@@ -157,10 +157,12 @@ namespace Kinovea.ScreenManager
             this.summary = summary;
             manager = summary.Manager;
             grabber = manager.Connect(summary);
+            if(grabber != null)
+            {
+                viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
+                StartGrabber();
+            }
             
-            viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
-            
-            StartGrabber();
             UpdateTitle();
             
             OnActivated(EventArgs.Empty);

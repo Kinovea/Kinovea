@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
             mnuHide.Image = Properties.Resources.hide;
             mnuDelete.Click += mnuDelete_Click;
             mnuDelete.Image = Properties.Resources.delete;
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuLocate, mnuRename, mnuHide, mnuDelete }); 
+            popMenu.Items.AddRange(new ToolStripItem[] { mnuLoadVideo, new ToolStripSeparator(), mnuLocate, mnuRename, new ToolStripSeparator(), mnuHide, mnuDelete }); 
             this.ContextMenuStrip = popMenu;
         }
         private void ReloadMenusCulture()

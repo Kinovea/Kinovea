@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        private bool m_bAllowKeyboardHandler;
+        private bool handleKeyboard;
 
         private List<ScreenManagerState> m_StoredStates  = new List<ScreenManagerState>();
         private const int WM_KEYDOWN = 0x0100;
@@ -166,7 +166,7 @@ namespace Kinovea.ScreenManager
         {
             log.Debug("Module Construction : ScreenManager.");
 
-            m_bAllowKeyboardHandler = true;
+            handleKeyboard = true;
 
             view = new ScreenManagerUserInterface(this);
             view.FileLoadAsked += View_FileLoadAsked;
@@ -182,6 +182,9 @@ namespace Kinovea.ScreenManager
             dp.StopPlaying = DoStopPlaying;
             dp.DeactivateKeyboardHandler = DoDeactivateKeyboardHandler;
             dp.ActivateKeyboardHandler = DoActivateKeyboardHandler;
+            
+            NotificationCenter.DisableKeyboardHandler += DisableKeyboardHandler;
+            NotificationCenter.EnableKeyboardHandler += EnableKeyboardHandler;
             
             // Watch for changes in the guides directory.
             m_SvgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
@@ -965,7 +968,7 @@ namespace Kinovea.ScreenManager
             // bypass this handler.
             //----------------------------------------------------------------------------
             
-            if (m.Msg != WM_KEYDOWN || !m_bAllowKeyboardHandler || view == null)
+            if (m.Msg != WM_KEYDOWN || !handleKeyboard || view == null)
                 return false;
 
             Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
@@ -1110,7 +1113,6 @@ namespace Kinovea.ScreenManager
             screen.CloseAsked += Screen_CloseAsked;
             screen.Activated += Screen_Activated;
             screenList.Add(screen);
-            
         }
         public void UpdateStatusBar()
         {
@@ -2544,15 +2546,23 @@ namespace Kinovea.ScreenManager
         }
         public void DoDeactivateKeyboardHandler()
         {
-            m_bAllowKeyboardHandler = false;
+            handleKeyboard = false;
         }
         public void DoActivateKeyboardHandler()
         {
-            m_bAllowKeyboardHandler = true;
+            handleKeyboard = true;
         }
         #endregion
 
         #region Keyboard Handling
+        private void DisableKeyboardHandler(object sender, EventArgs e)
+        {
+            handleKeyboard = false;
+        }
+        private void EnableKeyboardHandler(object sender, EventArgs e)
+        {
+            handleKeyboard = true;
+        }
         private void ActivateOtherScreen()
         {
         	if (screenList.Count != 2)
