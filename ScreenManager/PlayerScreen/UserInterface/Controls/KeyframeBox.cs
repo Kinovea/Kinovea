@@ -138,23 +138,11 @@ namespace Kinovea.ScreenManager
         }
         private void DeactivateKeyboardHandler()
         {
-            // Mouse enters the info box : deactivate the keyboard handling for the screens
-            // so we can use <space>, <return>, etc. here.
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.DeactivateKeyboardHandler != null)
-            {
-                dp.DeactivateKeyboardHandler();
-            }
+            NotificationCenter.RaiseDisableKeyboardHandler(this);
         }
         private void ActivateKeyboardHandler()
         {
-            // Mouse leave the info box : reactivate the keyboard handling for the screens
-            // so we can use <space>, <return>, etc. as player shortcuts
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ActivateKeyboardHandler != null)
-            {
-                dp.ActivateKeyboardHandler();
-            }
+            NotificationCenter.RaiseEnableKeyboardHandler(this);
         }
         private void StopEditing()
         {

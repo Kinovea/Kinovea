@@ -173,19 +173,11 @@ namespace Kinovea.ScreenManager
             // we have to do this because placing the mouse over the text boxes will raise a
             // formKeyframeComments_MouseLeave event...
             if (!this.Bounds.Contains(Control.MousePosition))
-            {
                 ActivateKeyboardHandler(); 
-            }
         }
         private void DeactivateKeyboardHandler()
         {
-            // Mouse enters the info box : deactivate the keyboard handling for the screens
-            // so we can use <space>, <return>, etc. here.
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.DeactivateKeyboardHandler != null)
-            {
-                dp.DeactivateKeyboardHandler();
-            }
+            NotificationCenter.RaiseDisableKeyboardHandler(this);
         }
         private void ActivateKeyboardHandler()
         {
@@ -193,12 +185,7 @@ namespace Kinovea.ScreenManager
             // so we can use <space>, <return>, etc. as player shortcuts.
             // This is sometimes strange. You put the mouse away to start typing, 
             // and the first carriage return triggers the playback leaving the key image.
-            
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ActivateKeyboardHandler != null)
-            {
-                dp.ActivateKeyboardHandler();
-            }
+            NotificationCenter.RaiseEnableKeyboardHandler(this);
         }
         private void LoadInfos()
         {
