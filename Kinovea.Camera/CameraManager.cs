@@ -20,6 +20,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
+
 using Kinovea.Services;
 
 namespace Kinovea.Camera
@@ -43,6 +45,13 @@ namespace Kinovea.Camera
         }
         
         public abstract string CameraType { get; }
+        
+        public abstract string CameraTypeFriendlyName { get; }
+        
+        /// <summary>
+        /// Whether cameras of this type can be manually connected from the wizard.
+        /// </summary>
+        public abstract bool HasConnectionWizard { get; }
         
         
         /// <summary>
@@ -77,6 +86,16 @@ namespace Kinovea.Camera
         /// </summary>
         public abstract string GetSummaryAsText(CameraSummary summary);
         
+        /// <summary>
+        /// Returns a piece of user interface that will be presented in the main connection wizard.
+        /// </summary>
+        public abstract Control GetConnectionWizard();
+        
+        public override string ToString()
+        {
+            return CameraTypeFriendlyName;
+        }
+
         /// <summary>
         /// Called after the user personalize a camera. Should persist the customized information.
         /// </summary>

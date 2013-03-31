@@ -649,5 +649,22 @@ namespace Kinovea.FileBrowser
             programmaticTabChange = true;
             tabControl.SelectedIndex = (int)tab;
 		}
+        
+        private void BtnManualClick(object sender, EventArgs e)
+        {
+            NotificationCenter.RaiseDisableKeyboardHandler(this);
+            
+            FormCameraWizard wizard = new FormCameraWizard();
+            if(wizard.ShowDialog() == DialogResult.OK)
+            {
+                CameraSummary summary = wizard.Result;
+                if(summary != null)
+                    CameraTypeManager.UpdatedCameraSummary(summary);
+            }
+            
+            wizard.Dispose();
+            
+            NotificationCenter.RaiseEnableKeyboardHandler(this);
+        }
 	}
 }

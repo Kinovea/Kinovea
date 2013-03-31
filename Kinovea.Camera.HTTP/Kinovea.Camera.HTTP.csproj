@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
-    <ProjectGuid>{104B98B4-961D-4ED4-B7C3-7E790065AAED}</ProjectGuid>
+    <ProjectGuid>{7B8CF26D-B8AF-4914-B395-93661D225EA3}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
-    <RootNamespace>Kinovea.Camera.DirectShow</RootNamespace>
-    <AssemblyName>Kinovea.Camera.DirectShow</AssemblyName>
+    <RootNamespace>Kinovea.Camera.HTTP</RootNamespace>
+    <AssemblyName>Kinovea.Camera.HTTP</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -15,10 +15,6 @@
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <OutputPath>..\Root\bin\x86\Debug\CameraTypes\</OutputPath>
-    <SignAssembly>False</SignAssembly>
-    <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -34,11 +30,10 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>..\Root\bin\x86\Release\CameraTypes\</OutputPath>
-    <DebugSymbols>False</DebugSymbols>
+    <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
@@ -47,10 +42,6 @@
   <ItemGroup>
     <Reference Include="AForge.Video">
       <HintPath>..\Refs\AForge.Video.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow">
-      <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LinqBridge">
@@ -67,10 +58,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraManagerDirectShow.cs" />
+    <Compile Include="CameraManagerHTTP.cs" />
+    <Compile Include="ConnectionWizard.cs" />
+    <Compile Include="ConnectionWizard.Designer.cs">
+      <DependentUpon>ConnectionWizard.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormConfiguration.cs" />
     <Compile Include="FormConfiguration.Designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormHandshakeResult.cs" />
+    <Compile Include="FormHandshakeResult.Designer.cs">
+      <DependentUpon>FormHandshakeResult.cs</DependentUpon>
     </Compile>
     <Compile Include="FrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,8 +88,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ConnectionWizard.resx">
+      <DependentUpon>ConnectionWizard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormConfiguration.resx">
-      <DependentUpon>FormConfiguration.cs</DependentUpon>
+      <DependentUpon>FormConfiguration.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormHandshakeResult.resx">
+      <DependentUpon>FormHandshakeResult.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />

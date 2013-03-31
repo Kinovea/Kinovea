@@ -51,6 +51,7 @@ namespace Kinovea.FileBrowser
             this.lvCameras = new System.Windows.Forms.ListView();
             this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
             this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
+            this.btnManual = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageClassic.SuspendLayout();
             this.splitExplorerFiles.Panel1.SuspendLayout();
@@ -319,6 +320,7 @@ namespace Kinovea.FileBrowser
             // 
             // tabPageCameras
             // 
+            this.tabPageCameras.Controls.Add(this.btnManual);
             this.tabPageCameras.Controls.Add(this.label1);
             this.tabPageCameras.Controls.Add(this.lvCameras);
             this.tabPageCameras.ImageKey = "tab_camera.png";
@@ -345,8 +347,7 @@ namespace Kinovea.FileBrowser
             // 
             // lvCameras
             // 
-            this.lvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
+            this.lvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lvCameras.BackColor = System.Drawing.Color.White;
             this.lvCameras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -371,6 +372,16 @@ namespace Kinovea.FileBrowser
             this.imgListTabs.Images.SetKeyName(1, "tab_shortcuts.png");
             this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
             // 
+            // btnManual
+            // 
+            this.btnManual.Location = new System.Drawing.Point(6, 235);
+            this.btnManual.Name = "btnManual";
+            this.btnManual.Size = new System.Drawing.Size(132, 23);
+            this.btnManual.TabIndex = 4;
+            this.btnManual.Text = "Manual connection";
+            this.btnManual.UseVisualStyleBackColor = true;
+            this.btnManual.Click += new System.EventHandler(this.BtnManualClick);
+            // 
             // FileBrowserUserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -391,6 +402,7 @@ namespace Kinovea.FileBrowser
             this.tabPageCameras.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Button btnManual;
         private System.Windows.Forms.ListView lvCameras;
         public System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPageCameras;

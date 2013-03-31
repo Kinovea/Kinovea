@@ -44,5 +44,19 @@ namespace Kinovea.Services
             if(LaunchOpenDialog != null)
                 LaunchOpenDialog(sender, EventArgs.Empty);
         }
+        
+        public static EventHandler DisableKeyboardHandler;
+        public static void RaiseDisableKeyboardHandler(object sender)
+        {
+            if(DisableKeyboardHandler != null)
+                DisableKeyboardHandler(sender, EventArgs.Empty);
+        }
+        
+        public static EventHandler EnableKeyboardHandler;
+        public static void RaiseEnableKeyboardHandler(object sender)
+        {
+            if(EnableKeyboardHandler != null)
+                EnableKeyboardHandler(sender, EventArgs.Empty);
+        }
     }
 }

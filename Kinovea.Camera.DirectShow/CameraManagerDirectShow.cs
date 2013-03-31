@@ -42,11 +42,20 @@ namespace Kinovea.Camera.DirectShow
         { 
             get { return "4602B70E-8FDD-47FF-B012-7C38BB2A16B9";}
         }
+        public override string CameraTypeFriendlyName 
+        { 
+            get { return "DirectShow"; }
+        }
+        public override bool HasConnectionWizard
+        {
+            get { return false;}
+        }
         #endregion
     
         #region Members
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Dictionary<string, CameraSummary> cache = new Dictionary<string, CameraSummary>();
+        private List<string> snapshotting = new List<string>();
         private Bitmap defaultIcon;
         #endregion
         
@@ -80,7 +89,7 @@ namespace Kinovea.Camera.DirectShow
                 {
                     foreach(CameraBlurb blurb in blurbs)
                     {
-                        if(blurb.Identifier != identifier)
+                        if(blurb.CameraType != this.CameraType || blurb.Identifier != identifier)
                             continue;
                             
                         alias = blurb.Alias;
@@ -124,12 +133,16 @@ namespace Kinovea.Camera.DirectShow
         
         public override void GetSingleImage(CameraSummary summary)
         {
+            if(snapshotting.IndexOf(summary.Identifier) >= 0)
+                return;
+            
             // TODO: Retrieve moniker from identifier.
             string moniker = summary.Identifier;
             
             // Spawn a thread to get a snapshot.
             SnapshotRetriever retriever = new SnapshotRetriever(summary, moniker);
             retriever.CameraImageReceived += SnapshotRetriever_CameraImageReceived;
+            snapshotting.Add(summary.Identifier);
             ThreadPool.QueueUserWorkItem(retriever.Run);
         }
         
@@ -196,12 +209,20 @@ namespace Kinovea.Camera.DirectShow
             return result;
         }
         
+        public override Control GetConnectionWizard()
+        {
+            throw new NotImplementedException();
+        }
+        
         private void SnapshotRetriever_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
             SnapshotRetriever retriever = sender as SnapshotRetriever;
             if(retriever != null)
+            {
                 retriever.CameraImageReceived -= SnapshotRetriever_CameraImageReceived;
-                
+                snapshotting.Remove(retriever.Identifier);
+            }
+            
             OnCameraImageReceived(e);
         }
         

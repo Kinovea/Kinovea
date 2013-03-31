@@ -104,6 +104,10 @@
   <ItemGroup>
     <Compile Include="Commands\CommandDeleteShortcut.cs" />
     <Compile Include="FileBrowser.cs" />
+    <Compile Include="UserInterface\FormCameraWizard.cs" />
+    <Compile Include="UserInterface\FormCameraWizard.Designer.cs">
+      <DependentUpon>FormCameraWizard.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FileBrowserUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -133,6 +137,9 @@
     <EmbeddedResource Include="Languages\FileBrowserLang.sv.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.tr.resx" />
     <EmbeddedResource Include="Languages\FileBrowserLang.zh-CHS.resx" />
+    <EmbeddedResource Include="UserInterface\FormCameraWizard.resx">
+      <DependentUpon>FormCameraWizard.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
