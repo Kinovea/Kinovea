@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -34,11 +35,13 @@ namespace Kinovea.ScreenManager
     public partial class Viewport : Control
     {
         private ViewportController controller;
-        private Size imageSize;
+        private Size imageSize;             // Original image size. (Reference size).
         private Rectangle displayRectangle; // Position and size of the region of the viewport where we draw the image.
-        private Rectangle unstretchedDisplayRectangle;
-        private ImageManipulator manipulator = new ImageManipulator(); // This will ultimately be the responsibility of the hand tool.
-        private bool filling;
+        private ImageManipulator manipulator = new ImageManipulator();
+        private ZoomHelper zoomHelper = new ZoomHelper();
+        private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
+        private static Bitmap resizerBitmap = Properties.Resources.resizer;
+        private static int resizerOffset = resizerBitmap.Width / 2;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public Viewport(ViewportController controller)
@@ -46,13 +49,20 @@ namespace Kinovea.ScreenManager
             this.controller = controller;
             this.BackColor = Color.FromArgb(255, 44, 44, 44);
             this.DoubleBuffered = true;
+            this.MouseWheel += Viewport_MouseWheel;
+            
+            resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNWSE));
+            resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNESW));
+            resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNWSE));
+            resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNESW));
         }
+
         
         public void InitializeDisplayRectangle(Rectangle saved, Size imageSize)
         {
             this.imageSize = imageSize;
-            filling = false;
             InitializeDisplayRectangle(saved);
+            ForceZoomValue();
         }
         
         #region Drawing
@@ -64,6 +74,7 @@ namespace Kinovea.ScreenManager
             e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
             
             DrawImage(e.Graphics);
+            DrawResizers(e.Graphics);
         }
         
         private void DrawImage(Graphics canvas)
@@ -74,18 +85,19 @@ namespace Kinovea.ScreenManager
             try
             {
                 if(displayRectangle.Size == controller.Bitmap.Size)
-                {
                     canvas.DrawImageUnscaled(controller.Bitmap, displayRectangle.Location);
-                }
                 else
-                {
                     canvas.DrawImage(controller.Bitmap, displayRectangle);
-                }
             }
             catch(Exception e)
             {
                 log.ErrorFormat(e.Message);
             }
+        }
+        private void DrawResizers(Graphics canvas)
+        {
+            foreach(EmbeddedButton resizer in resizers)
+                resizer.Draw(canvas);
         }
         #endregion
         
@@ -97,24 +109,34 @@ namespace Kinovea.ScreenManager
             if(e.Button != MouseButtons.Left)
                 return;
             
-            if(displayRectangle.Contains(e.Location))
-                manipulator.Start(e.Location, displayRectangle.Location);
+            if(manipulator.Started)
+                return;
+            
+            int hit = HitTest(e.Location);
+            if(hit >= 0)
+                manipulator.Start(e.Location, hit, displayRectangle);
         }
         
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            this.Focus();
+
+            if(e.Button == MouseButtons.None)
+            {
+                UpdateCursor(e.Location);
+                return;
+            }
 
             if(e.Button != MouseButtons.Left)
                 return;
-            
-            //if(displayRectangle.Contains(e.Location))
+
             if(manipulator.Started)
             {
-                filling = false;
-                bool sticky = true; // depends on SHIFT.
-                manipulator.Pan(e.Location, sticky, displayRectangle.Size, this.Size);
-                displayRectangle.Location = manipulator.ImageLocation;
+                bool sticky = true;
+                manipulator.Move(e.Location, sticky, this.Size);
+                displayRectangle = manipulator.DisplayRectangle;
+                AfterDisplayRectangleChanged();
             }
         }
         
@@ -122,21 +144,62 @@ namespace Kinovea.ScreenManager
         {
             base.OnMouseUp(e);
             manipulator.End();
+            ForceZoomValue();
             controller.UpdateDisplayRectangle(displayRectangle);
         }
         
         protected override void OnDoubleClick(EventArgs e)
         {
             base.OnDoubleClick(e);
-            
-            if(displayRectangle.Contains(this.PointToClient(Control.MousePosition)))
+            Point mouse = this.PointToClient(Control.MousePosition);
+            if(displayRectangle.Contains(mouse))
             {
-                filling = !filling;
-                if(filling)
-                    Fill();
-                else
-                    InitializeDisplayRectangle(unstretchedDisplayRectangle);
+                manipulator.Expand(imageSize, displayRectangle, this.Size);
+                displayRectangle = manipulator.DisplayRectangle;
+                AfterDisplayRectangleChanged();
+                ForceZoomValue();
+                controller.UpdateDisplayRectangle(displayRectangle);
             }
+        }
+        
+        private void Viewport_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if ((ModifierKeys & Keys.Control) == Keys.Control)
+                Zoom(e);
+        }
+        
+        private int HitTest(Point mouse)
+        {
+            int hit = -1;
+            for(int i = 0; i < resizers.Count; i++)
+            {
+                if(resizers[i].HitTest(mouse))
+                {
+                    hit = i+1;
+                    break;
+                }
+            }
+            
+            if(hit < 0 && displayRectangle.Contains(mouse))
+                hit = 0;
+            
+            return hit;
+        }
+        
+        private void Zoom(MouseEventArgs e)
+        {
+            int steps = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+            if(steps > 0)
+                zoomHelper.Increase();
+            else
+                zoomHelper.Decrease();
+            
+            RecomputeDisplayRectangle(imageSize, displayRectangle, e.Location);
+        }
+        
+        private void ForceZoomValue()
+        {
+            zoomHelper.Value = (float)displayRectangle.Size.Width / imageSize.Width;
         }
         
         private void InitializeDisplayRectangle(Rectangle saved)
@@ -151,22 +214,52 @@ namespace Kinovea.ScreenManager
                 int top = (this.Size.Height - imageSize.Height)/2;
                 displayRectangle = new Rectangle(left, top, imageSize.Width, imageSize.Height);
             }
+            
+            AfterDisplayRectangleChanged();
         }
         
-        private void Fill()
+        private void RecomputeDisplayRectangle(Size imageSize, Rectangle displayRectangle, Point mouse)
         {
-            unstretchedDisplayRectangle = displayRectangle;
-            displayRectangle = UIHelper.RatioStretch(displayRectangle.Size, this.Size);
-            controller.UpdateDisplayRectangle(displayRectangle);
+            // Resize display rectangle while keeping it centerer on the mouse.
+            PointF normalizedMouse = new PointF((mouse.X - displayRectangle.X) / (float)displayRectangle.Width, (mouse.Y - displayRectangle.Y) / (float)displayRectangle.Height);
+            Size size = imageSize.Scale(zoomHelper.Value);
+            int left = (int)Math.Round((mouse.X - (size.Width * normalizedMouse.X)));
+            int top = (int)Math.Round((mouse.Y - (size.Height * normalizedMouse.Y)));
+            Point location = new Point(left, top);
+            this.displayRectangle = new Rectangle(location, size);
+            
+            AfterDisplayRectangleChanged();
+        }
+        
+        private void AfterDisplayRectangleChanged()
+        {
+            resizers[0].Location = new Point(displayRectangle.Left - resizerOffset, displayRectangle.Top - resizerOffset);
+            resizers[1].Location = new Point(displayRectangle.Right - resizerOffset, displayRectangle.Top - resizerOffset);
+            resizers[2].Location = new Point(displayRectangle.Right - resizerOffset, displayRectangle.Bottom - resizerOffset);
+            resizers[3].Location = new Point(displayRectangle.Left - resizerOffset, displayRectangle.Bottom - resizerOffset);
+        }
+        
+        private void UpdateCursor(Point mouse)
+        {
+            bool handled = false;
+            for(int i = 0; i < resizers.Count; i++)
+            {
+                if(resizers[i].HitTest(mouse))
+                {
+                    Cursor = resizers[i].CursorMouseOver;
+                    handled = true;
+                    break;
+                }
+            }
+            
+            if(!handled)
+                Cursor = Cursors.Default;
         }
         #endregion
         
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            
-            if(filling)
-                Fill();
         }
         
     }

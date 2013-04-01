@@ -29,12 +29,6 @@ namespace Kinovea.ScreenManager
     public class DrawingToolPointer : AbstractDrawingTool
     {
     	#region Enum
-		private enum UserAction
-        {
-            None,
-            Move,           
-            Resize
-        }
         private enum SelectedObjectType
         {
             None,
@@ -89,7 +83,7 @@ namespace Kinovea.ScreenManager
         // We do not keep the strecth/zoom factor here.
         // All coordinates must be given already descaled to image coordinates.
         //--------------------------------------------------------------------
-        private UserAction m_UserAction;
+        private ManipulationType manipulationType;
         private SelectedObjectType m_SelectedObjectType;
         private Point m_lastPoint;
         private Point m_MouseDelta;
@@ -104,7 +98,7 @@ namespace Kinovea.ScreenManager
         #region Constructor
         public DrawingToolPointer()
         {
-            m_UserAction = UserAction.None;
+            manipulationType = ManipulationType.None;
             m_SelectedObjectType = SelectedObjectType.None;
             m_lastPoint = new Point(0, 0);
             m_iResizingHandle = 0;
@@ -130,13 +124,13 @@ namespace Kinovea.ScreenManager
         #region Public Interface
         public void OnMouseUp()
         {
-            m_UserAction = UserAction.None;
+            manipulationType = ManipulationType.None;
         }
         public bool OnMouseDown(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
         {
             //--------------------------------------------------------------------------------------
-            // Change the UserAction if we are on a Drawing, Track, etc.
-            // When we later pass in the MouseMove function, we will have the right UserAction set
+            // Change the ManipulationType if we are on a Drawing, Track, etc.
+            // When we later pass in the MouseMove function, we will have the right ManipulationType set
             // and we will be able to do the right thing.
             //
             // We give priority to Keyframes Drawings because they can be moved...
@@ -146,7 +140,7 @@ namespace Kinovea.ScreenManager
             //--------------------------------------------------------------------------------------
 
             bool bHit = true;
-            m_UserAction = UserAction.None;
+            manipulationType = ManipulationType.None;
 
             _Metadata.UnselectAll();
 
@@ -202,9 +196,9 @@ namespace Kinovea.ScreenManager
 
             if (deltaX != 0 || deltaY != 0)
             {
-                switch (m_UserAction)
+                switch (manipulationType)
                 {
-                    case UserAction.Move:
+                    case ManipulationType.Move:
                         {
                             switch (m_SelectedObjectType)
                             {
@@ -226,7 +220,7 @@ namespace Kinovea.ScreenManager
                             }
                         }
                         break;
-                    case UserAction.Resize:
+                    case ManipulationType.Resize:
                         {
                             switch (m_SelectedObjectType)
                             {
@@ -333,12 +327,12 @@ namespace Kinovea.ScreenManager
                     // Handler hit ?
                     if (hitRes > 0)
                     {
-                        m_UserAction = UserAction.Resize;
+                        manipulationType = ManipulationType.Resize;
                         m_iResizingHandle = hitRes;
                     }
                     else
                     {
-                        m_UserAction = UserAction.Move;
+                        manipulationType = ManipulationType.Move;
                     }
                 }
                 else
@@ -369,12 +363,12 @@ namespace Kinovea.ScreenManager
                 	// Handler hit ?
 	                if (hitResult > 0)
 	                {
-	                    m_UserAction = UserAction.Resize;
+	                    manipulationType = ManipulationType.Resize;
 	                    m_iResizingHandle = hitResult;
 	                }
 	                else
 	                {
-	                    m_UserAction = UserAction.Move;
+	                    manipulationType = ManipulationType.Move;
 	                }
                 }
                 else
@@ -410,17 +404,17 @@ namespace Kinovea.ScreenManager
 	                	{
 	                		// Touched target or handler.
 	                    	// The handler would have been saved inside the track object.
-	                		m_UserAction = UserAction.Move;	
+	                		manipulationType = ManipulationType.Move;	
 	                	}
 	                    else if (trk.Status == TrackStatus.Interactive)
 	                    {
-	                    	m_UserAction = UserAction.Resize;
+	                    	manipulationType = ManipulationType.Resize;
 	                    	m_iResizingHandle = handle;	
 	                    }
 	                    else
 	                    {
 	                    	// edit mode + 0 or 1.
-	                    	m_UserAction = UserAction.Move;
+	                    	manipulationType = ManipulationType.Move;
 	                    }
 	                   
 	                    break;

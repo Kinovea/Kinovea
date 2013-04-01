@@ -843,6 +843,15 @@ namespace Kinovea.ScreenManager.Properties
             }
         }
         
+        internal static System.Drawing.Bitmap resizer
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("resizer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap resizer4
         {
             get
