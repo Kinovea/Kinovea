@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -31,22 +32,37 @@ namespace Kinovea.ScreenManager
     {
         public EventHandler Click;
         
+        public Point Location { get; set; }
+        public Cursor CursorMouseOver { get; private set;}
+
         private Bitmap image;
-        private Point location;
             
         public EmbeddedButton(Bitmap image, int x, int y)
         {
             this.image = image;
-            location = new Point(x,y);
+            this.Location = new Point(x,y);
+            this.CursorMouseOver = Cursors.Hand;
+        }
+        public EmbeddedButton(Bitmap image, int x, int y, Cursor cursorMouseOver)
+        {
+            this.image = image;
+            this.Location = new Point(x,y);
+            this.CursorMouseOver = cursorMouseOver;
         }
         public void Draw(Graphics canvas)
         {
-            canvas.DrawImageUnscaled(image, location.X, location.Y);
+            canvas.DrawImageUnscaled(image, Location.X, Location.Y);
+        }
+        public bool HitTest(Point mouse)
+        {
+            Rectangle r = new Rectangle(Location, image.Size);
+            r = r.Center().Box(image.Size.Width/2 + 4);
+            return r.Contains(mouse);
         }
         public bool ClickTest(Point mouse)
         {
             bool handled = false;
-            if(Click != null && mouse.X >= location.X && mouse.X <= location.X + image.Width && mouse.Y >= location.Y && mouse.Y <= location.Y + image.Height)
+            if(Click != null && mouse.X >= Location.X && mouse.X <= Location.X + image.Width && mouse.Y >= Location.Y && mouse.Y <= Location.Y + image.Height)
             {
                 handled = true;
                 Click(this, EventArgs.Empty);

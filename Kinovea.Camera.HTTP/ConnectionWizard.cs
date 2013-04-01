@@ -47,6 +47,7 @@ namespace Kinovea.Camera.HTTP
         {
             this.manager = manager;
             InitializeComponent();
+            BackColor = Color.White;
             host = "192.168.0.10";
             path = "/mjpg/video.mjpg";
             tbHost.Text = host;

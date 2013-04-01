@@ -79,7 +79,7 @@ namespace Kinovea.Camera.HTTP
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.tbURL.Location = new System.Drawing.Point(6, 20);
             this.tbURL.Name = "tbURL";
-            this.tbURL.Size = new System.Drawing.Size(365, 20);
+            this.tbURL.Size = new System.Drawing.Size(353, 20);
             this.tbURL.TabIndex = 0;
             this.tbURL.TextChanged += new System.EventHandler(this.TbURLTextChanged);
             // 
@@ -88,7 +88,7 @@ namespace Kinovea.Camera.HTTP
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.tbURL);
-            this.groupBox1.Location = new System.Drawing.Point(14, 264);
+            this.groupBox1.Location = new System.Drawing.Point(14, 267);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(377, 53);
             this.groupBox1.TabIndex = 3;
@@ -116,7 +116,7 @@ namespace Kinovea.Camera.HTTP
             // 
             this.tbPassword.Location = new System.Drawing.Point(254, 26);
             this.tbPassword.Name = "tbPassword";
-            this.tbPassword.Size = new System.Drawing.Size(117, 20);
+            this.tbPassword.Size = new System.Drawing.Size(105, 20);
             this.tbPassword.TabIndex = 1;
             this.tbPassword.TextChanged += new System.EventHandler(this.TbPasswordTextChanged);
             // 
@@ -137,7 +137,7 @@ namespace Kinovea.Camera.HTTP
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.tbUser);
-            this.groupBox2.Location = new System.Drawing.Point(14, 186);
+            this.groupBox2.Location = new System.Drawing.Point(14, 193);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(377, 63);
             this.groupBox2.TabIndex = 2;
@@ -146,7 +146,6 @@ namespace Kinovea.Camera.HTTP
             // 
             // label3
             // 
-            this.label3.Enabled = false;
             this.label3.Location = new System.Drawing.Point(12, 22);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 20);
@@ -156,7 +155,6 @@ namespace Kinovea.Camera.HTTP
             // 
             // label4
             // 
-            this.label4.Enabled = false;
             this.label4.Location = new System.Drawing.Point(190, 21);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(46, 20);
@@ -173,25 +171,23 @@ namespace Kinovea.Camera.HTTP
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Enabled = false;
-            this.groupBox3.Location = new System.Drawing.Point(14, 9);
+            this.groupBox3.Location = new System.Drawing.Point(14, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(377, 57);
+            this.groupBox3.Size = new System.Drawing.Size(377, 63);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "From known model";
             // 
             // comboBox2
             // 
-            this.comboBox2.Enabled = false;
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Location = new System.Drawing.Point(242, 21);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(129, 21);
+            this.comboBox2.Size = new System.Drawing.Size(117, 21);
             this.comboBox2.TabIndex = 1;
             // 
             // comboBox1
             // 
-            this.comboBox1.Enabled = false;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(69, 23);
             this.comboBox1.Name = "comboBox1";
@@ -208,7 +204,7 @@ namespace Kinovea.Camera.HTTP
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.tbHost);
-            this.groupBox4.Location = new System.Drawing.Point(14, 80);
+            this.groupBox4.Location = new System.Drawing.Point(14, 84);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(377, 100);
             this.groupBox4.TabIndex = 1;
@@ -275,7 +271,7 @@ namespace Kinovea.Camera.HTTP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);

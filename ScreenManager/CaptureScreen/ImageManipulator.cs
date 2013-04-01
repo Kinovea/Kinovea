@@ -28,92 +28,225 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ImageManipulator
     {
+        #region Properties
         public bool Started
         {
-            get { return moving;}
+            get { return started;}
         }
-        
-        public Point ImageLocation
+        /*public Point ImageLocation
         {
             get { return imageLocation;}
         }
-        
         public Size ImageSize
         {
             get { return ImageSize;}
+        }*/
+        public Rectangle DisplayRectangle
+        {
+            get { return displayRectangle;}
         }
+        #endregion
     
+        #region Members
+        private bool started;
+        private ManipulationType manipulationType = ManipulationType.None;
         private Point mouseStart;
-        private Point imageStart;
-        private bool moving;
-        private Point imageLocation;
-        private Size imageSize;
+        private Point mousePrevious;
+        private Rectangle refDisplayRectangle;
+        private Rectangle displayRectangle;
+        private int handle;
+        //private float zoom = 1.0f;
+        private bool expanded = false;
         private int stickyMarginInside = 17;
         private int stickyMarginOutside = 17;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
         
-        public ImageManipulator()
+        #region Public methods
+        public void Start(Point mouse, int hit, Rectangle displayRectangle)
         {
+            if(hit < 0)
+            {
+                manipulationType = ManipulationType.None;
+                return;
+            }
+            
+            manipulationType = hit == 0 ? ManipulationType.Move : ManipulationType.Resize;
+            mouseStart = mouse;
+            mousePrevious = mouse;
+            handle = hit;
+            refDisplayRectangle = displayRectangle;
+            this.displayRectangle = displayRectangle;
+            started = true;
         }
         
-        public void Start(Point mousePoint, Point imagePoint)
+        public void Move(Point mouse, bool sticky, Size containerSize)
         {
-            mouseStart = mousePoint;
-            imageStart = imagePoint;
-            moving = true;
-        }
-        public void End()
-        {
-            moving = false;
-        }
-        public void Pan(Point mousePoint, bool sticky, Size imageSize, Size containerSize)
-        {
-            if(!moving)
+            if(!started)
                 return;
                 
-            int dx = mousePoint.X - mouseStart.X;
-            int dy = mousePoint.Y - mouseStart.Y;
+            Point deltaStart = mouse.Subtract(mouseStart);
+            Point delta = mouse.Subtract(mousePrevious);
+            mousePrevious = mouse;
             
-            imageLocation = imageStart.Translate(dx, dy);
-            
-            if(sticky)
-                imageLocation = StickToBorders(imageLocation, imageSize, containerSize);
+            if(manipulationType == ManipulationType.Move)
+                DoMove(deltaStart, sticky, containerSize);
+            else if(manipulationType == ManipulationType.Resize)
+                DoResize(handle, deltaStart);
         }
         
-        private Point StickToBorders(Point imageStart, Size imageSize, Size containerSize)
+        public void End()
         {
-            Point result = imageStart;
+            manipulationType = ManipulationType.None;
+            started = false;
+        }
+        
+        public void Expand(Size imageSize, Rectangle displayRectangle, Size containerSize)
+        {
+            if(!displayRectangle.Size.FitsIn(containerSize))
+            {
+                Maximize(displayRectangle, containerSize);
+            }
+            else if(!imageSize.FitsIn(displayRectangle.Size))
+            {
+                Reset(imageSize, containerSize);
+            }
+            else
+            {
+                if(expanded)
+                    Reset(imageSize, containerSize);
+                else
+                    Maximize(displayRectangle, containerSize);
+            }
+        }
+        
+        private void Maximize(Rectangle displayRectangle, Size containerSize)
+        {
+            float ratioWidth = (float)containerSize.Width / displayRectangle.Size.Width;
+            float ratioHeight = (float)containerSize.Height / displayRectangle.Size.Height;
+            float ratio = Math.Min(ratioWidth, ratioHeight);
+            Size size = displayRectangle.Size.Scale(ratio);
+            Point location = new Point((containerSize.Width - size.Width)/ 2, (containerSize.Height - size.Height) / 2);
+            this.displayRectangle = new Rectangle(location, size);
+            expanded = true;
+        }
+        
+        private void Reset(Size size, Size containerSize)
+        {
+            Point location = new Point((containerSize.Width - size.Width)/ 2, (containerSize.Height - size.Height) / 2);
+            this.displayRectangle = new Rectangle(location, size);
+            expanded = false;
+        }
+        
+        public void UpdateZoom(float zoom)
+        {
+            //this.zoom = zoom;
+        }
+        #endregion
+        
+        private void DoMove(Point delta, bool sticky, Size containerSize)
+        {
+            displayRectangle = refDisplayRectangle.Translate(delta);
+            if(sticky)
+                displayRectangle.Location = StickToBorders(displayRectangle, containerSize);
+        }
+        
+        private void DoResize(int handle, Point delta)
+        {
             
-            if(imageStart.X > -stickyMarginOutside && imageStart.X < stickyMarginInside)
+            int left = refDisplayRectangle.Left;
+            int top = refDisplayRectangle.Top;
+            int width = refDisplayRectangle.Width;
+            int height = refDisplayRectangle.Height;
+            
+            float dx = (float)delta.X / refDisplayRectangle.Width;
+            float dy = (float)delta.Y / refDisplayRectangle.Height;
+            float d = Extremum(dx, dy);
+
+            switch(handle)
+            {
+                case 1:
+                {
+                    int x = (int)(d * refDisplayRectangle.Width);
+                    int y = (int)(d * refDisplayRectangle.Height);
+                    left = refDisplayRectangle.Left + x;
+                    top = refDisplayRectangle.Top + y;
+                    width = refDisplayRectangle.Right - left;
+                    height = refDisplayRectangle.Bottom - top;
+                    
+                    break;
+                }
+                case 2:
+                {
+                    int x = d == dx ? (int)(d * refDisplayRectangle.Width) : (int)(-d * refDisplayRectangle.Width);
+                    int y = d == dy ? (int)(d * refDisplayRectangle.Height) : (int)(-d * refDisplayRectangle.Height);
+                    left = refDisplayRectangle.Left;
+                    top = refDisplayRectangle.Top + y;
+                    width = refDisplayRectangle.Width + x;
+                    height = refDisplayRectangle.Bottom - top;
+                    break;
+                }
+                case 3:
+                {
+                    int x = (int)(d * refDisplayRectangle.Width);
+                    int y = (int)(d * refDisplayRectangle.Height);
+                    left = refDisplayRectangle.Left;
+                    top = refDisplayRectangle.Top;
+                    width = refDisplayRectangle.Width + x;
+                    height = refDisplayRectangle.Height + y;
+                    break;
+                }
+                case 4:
+                {
+                    int x = d == dx ? (int)(d * refDisplayRectangle.Width) : (int)(-d * refDisplayRectangle.Width);
+                    int y = d == dy ? (int)(d * refDisplayRectangle.Height) : (int)(-d * refDisplayRectangle.Height);
+                    left = refDisplayRectangle.Left + x;
+                    top = refDisplayRectangle.Top;
+                    width = refDisplayRectangle.Right - left;
+                    height = refDisplayRectangle.Height + y;
+                    break;
+                }
+            }
+            
+            displayRectangle = new Rectangle(left, top, width, height);
+            log.DebugFormat("Delta:{0}, Rectangle ref:{1}, New:{2}", delta, refDisplayRectangle, displayRectangle);
+        }
+        
+        private int Extremum(int a, int b)
+        {
+            if(Math.Abs(a) > Math.Abs(b))
+                return a;
+            else
+                return b;
+        }
+        
+        private float Extremum(float a, float b)
+        {
+            if(Math.Abs(a) > Math.Abs(b))
+                return a;
+            else
+                return b;
+        }
+        
+        private Point StickToBorders(Rectangle rect, Size container)
+        {
+            Point result = rect.Location;
+            
+            if(rect.X > -stickyMarginOutside && rect.X < stickyMarginInside)
                 result.X = 0;
             
-            if(imageStart.Y > -stickyMarginOutside && imageStart.Y < stickyMarginInside)
+            if(rect.Y > -stickyMarginOutside && rect.Y < stickyMarginInside)
                 result.Y = 0;
             
-            if(imageStart.X + imageSize.Width > containerSize.Width - stickyMarginInside && 
-               imageStart.X + imageSize.Width < containerSize.Width + stickyMarginOutside)
-                result.X = containerSize.Width - imageSize.Width;
+            if(rect.X + rect.Width > container.Width - stickyMarginInside && 
+               rect.X + rect.Width < container.Width + stickyMarginOutside)
+                result.X = container.Width - rect.Width;
 
-            if(imageStart.Y + imageSize.Height > containerSize.Height - stickyMarginInside && 
-               imageStart.Y + imageSize.Height < containerSize.Height + stickyMarginOutside)
-                result.Y = containerSize.Height - imageSize.Height;
+            if(rect.Y + rect.Height > container.Height - stickyMarginInside && 
+               rect.Y + rect.Height < container.Height + stickyMarginOutside)
+                result.Y = container.Height - rect.Height;
 
             return result;
-        }
-        
-        private Point StickToCenter(Point imageStart, Size imageSize, Size containerSize)
-        {
-            Point result = imageStart;
-            
-            if(imageStart.X + imageSize.Width/2 > containerSize.Width/2 - stickyMarginInside && 
-               imageStart.X + imageSize.Width/2 < containerSize.Width/2 + stickyMarginInside)
-                result.X = (containerSize.Width - imageSize.Width)/2;
-
-            if(imageStart.Y + imageSize.Height/2 > containerSize.Height/2 - stickyMarginInside && 
-               imageStart.Y + imageSize.Height/2 < containerSize.Height/2 + stickyMarginInside)
-                result.Y = (containerSize.Height - imageSize.Height)/2;
-                
-           return result;
         }
     }
 }

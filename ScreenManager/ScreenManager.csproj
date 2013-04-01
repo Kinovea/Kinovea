@@ -182,6 +182,7 @@
     <Compile Include="CaptureScreen\Frame buffers\CircularBufferMemory.cs" />
     <Compile Include="CaptureScreen\Frame buffers\IFrameBuffer.cs" />
     <Compile Include="CaptureScreen\ImageManipulator.cs" />
+    <Compile Include="CaptureScreen\ZoomHelper.cs" />
     <Compile Include="CaptureScreen\ViewportController.cs" />
     <Compile Include="CaptureScreen\Views\CapturedFilesView.cs" />
     <Compile Include="CaptureScreen\Views\CapturedFilesView.Designer.cs">
@@ -233,6 +234,7 @@
     <Compile Include="IScreenManagerUIContainer.cs" />
     <Compile Include="IScreenHandler.cs" />
     <Compile Include="IScreenUIHandler.cs" />
+    <Compile Include="ManipulationType.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationHelper.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationLine.cs" />
     <Compile Include="PlayerScreen\Calibration\CalibrationPlane.cs" />
