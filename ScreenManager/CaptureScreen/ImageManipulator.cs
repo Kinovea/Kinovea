@@ -165,6 +165,9 @@ namespace Kinovea.ScreenManager
             int dxRef = referenceSize.Width - refDisplayRectangle.Width;
             int dyRef = referenceSize.Height - refDisplayRectangle.Height;
             int stickyPixels = 30;
+            
+            int minWidth = referenceSize.Width / 10;
+            int minHeight = referenceSize.Height / 10;
 
             switch(handle)
             {
@@ -181,6 +184,12 @@ namespace Kinovea.ScreenManager
                             y = -dyRef;
                         }
                     }
+                    
+                    if(refDisplayRectangle.Width - x < minWidth)
+                        x = refDisplayRectangle.Width - minWidth;
+                        
+                    if(refDisplayRectangle.Height - y < minHeight)
+                        y = refDisplayRectangle.Height - minHeight;
                     
                     left = refDisplayRectangle.Left + x;
                     top = refDisplayRectangle.Top + y;
@@ -202,6 +211,12 @@ namespace Kinovea.ScreenManager
                         }
                     }
                     
+                    if(refDisplayRectangle.Right + x - refDisplayRectangle.Left < minWidth)
+                        x = minWidth + refDisplayRectangle.Left - refDisplayRectangle.Right;
+                    
+                    if(refDisplayRectangle.Height - y < minHeight)
+                        y = refDisplayRectangle.Height - minHeight;
+                    
                     left = refDisplayRectangle.Left;
                     top = refDisplayRectangle.Top + y;
                     width = refDisplayRectangle.Width + x;
@@ -221,6 +236,12 @@ namespace Kinovea.ScreenManager
                             y = dyRef;
                         }
                     }
+                    
+                    if(refDisplayRectangle.Right + x - refDisplayRectangle.Left < minWidth)
+                        x = minWidth + refDisplayRectangle.Left - refDisplayRectangle.Right;
+                        
+                    if(refDisplayRectangle.Bottom + y - refDisplayRectangle.Top < minHeight)
+                        y = minHeight + refDisplayRectangle.Top - refDisplayRectangle.Bottom;
                     
                     left = refDisplayRectangle.Left;
                     top = refDisplayRectangle.Top;
@@ -242,6 +263,12 @@ namespace Kinovea.ScreenManager
                         }
                     }
                     
+                    if(refDisplayRectangle.Width - x < minWidth)
+                        x = refDisplayRectangle.Width - minWidth;
+                    
+                    if(refDisplayRectangle.Bottom + y - refDisplayRectangle.Top < minHeight)
+                        y = minHeight + refDisplayRectangle.Top - refDisplayRectangle.Bottom;
+                    
                     left = refDisplayRectangle.Left + x;
                     top = refDisplayRectangle.Top;
                     width = refDisplayRectangle.Right - left;
@@ -252,7 +279,7 @@ namespace Kinovea.ScreenManager
             
             displayRectangle = new Rectangle(left, top, width, height);
             
-            log.DebugFormat("Delta:{0}, Rectangle ref:{1}, New:{2}", delta, refDisplayRectangle, displayRectangle);
+            //log.DebugFormat("Delta:{0}, Rectangle ref:{1}, New:{2}", delta, refDisplayRectangle, displayRectangle);
         }
         
         private int Extremum(int a, int b)
