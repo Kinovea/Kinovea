@@ -42,6 +42,7 @@ namespace Kinovea.ScreenManager
         private List<EmbeddedButton> resizers = new List<EmbeddedButton>();
         private static Bitmap resizerBitmap = Properties.Resources.resizer;
         private static int resizerOffset = resizerBitmap.Width / 2;
+        private MessageToaster toaster;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public Viewport(ViewportController controller)
@@ -55,8 +56,9 @@ namespace Kinovea.ScreenManager
             resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNESW));
             resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNWSE));
             resizers.Add(new EmbeddedButton(resizerBitmap, 0, 0, Cursors.SizeNESW));
+            
+            toaster = new MessageToaster(this);
         }
-
         
         public void InitializeDisplayRectangle(Rectangle saved, Size imageSize)
         {
@@ -75,6 +77,7 @@ namespace Kinovea.ScreenManager
             
             DrawImage(e.Graphics);
             DrawResizers(e.Graphics);
+            toaster.Draw(e.Graphics);
         }
         
         private void DrawImage(Graphics canvas)
@@ -195,11 +198,34 @@ namespace Kinovea.ScreenManager
                 zoomHelper.Decrease();
             
             RecomputeDisplayRectangle(imageSize, displayRectangle, e.Location);
+            ToastZoom();
+        }
+        
+        private void ToastZoom()
+        {
+            toaster.SetDuration(750);
+            string message = "";
+            if(zoomHelper.Value <= 1.0f)
+                message = string.Format("{0:0}%", Math.Round(zoomHelper.Value * 100));
+            else if(zoomHelper.Value < 10.0f)
+                message = string.Format("{0:0.0}x", Math.Round(zoomHelper.Value, 1));
+            else
+                message = string.Format("{0:0}x", Math.Round(zoomHelper.Value));
+            
+            message = string.Format("Zoom:{0}", message);
+            toaster.Show(message);
         }
         
         private void ForceZoomValue()
         {
-            zoomHelper.Value = (float)displayRectangle.Size.Width / imageSize.Width;
+            float oldZoom = zoomHelper.Value;
+            float newZoom = (float)displayRectangle.Size.Width / imageSize.Width;
+            
+            zoomHelper.Value = newZoom;
+            
+            float maxDifference = 0.1f;
+            if (Math.Abs(newZoom - oldZoom) > maxDifference)
+                ToastZoom();
         }
         
         private void InitializeDisplayRectangle(Rectangle saved)

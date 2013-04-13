@@ -25,96 +25,104 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// MessageToaster.
-	/// A class to encapsulate the display of a message to be painted directly on a canvas,
-	/// for a given duration.
-	/// Used to indicate a change in the state of a screen for example. (Pause, Zoom factor).
-	/// The same object is reused for various messages. Each screen should have its own instance.
-	/// </summary>
-	public class MessageToaster
-	{
-		#region Properties
-		public bool Enabled
-		{
-			get { return m_bEnabled; }
-		}
-		#endregion
-		
-		#region Members
-		private string m_Message;
-		private Timer m_Timer = new Timer();
-		private Font m_Font;
-		private bool m_bEnabled;
-		private Control m_CanvasHolder;
-		private static readonly int m_DefaultDuration = 1000;
-		private static readonly int m_DefaultFontSize = 24;
-		private Brush m_ForeBrush = new SolidBrush(Color.FromArgb(255, Color.White));
-		private Brush m_BackBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region Constructor
-		public MessageToaster(Control _canvasHolder)
-		{
-			m_CanvasHolder = _canvasHolder;
-			m_Font = new Font("Arial", m_DefaultFontSize, FontStyle.Bold);
-			m_Timer.Interval = m_DefaultDuration;
-			m_Timer.Tick += new EventHandler(Timer_OnTick); 
-		}
-		#endregion
-		
-		#region Public Methods
-		public void SetDuration(int _duration)
-		{
-			m_Timer.Interval = _duration;
-		}
-		public void Show(string _message)
-		{
-			log.Debug(String.Format("Toasting message: {0}", _message));
-			m_Message = _message;
-			m_bEnabled = true;
-			StartStopTimer();
-		}
-		public void Draw(Graphics _canvas)
-		{
-			if(m_Message != "" && m_CanvasHolder != null)
-			{
-				SizeF bgSize = _canvas.MeasureString(m_Message, m_Font);
-				bgSize = new SizeF(bgSize.Width, bgSize.Height + 3);
-				PointF location = new PointF((m_CanvasHolder.Width - bgSize.Width)/2, (m_CanvasHolder.Height - bgSize.Height)/2);
-				RectangleF bg = new RectangleF(location.X - 5, location.Y - 5, bgSize.Width + 10, bgSize.Height + 5);
-	            int radius = (int)(m_Font.Size / 2);
-	            RoundedRectangle.Draw(_canvas, bg, (SolidBrush)m_BackBrush, radius, false, false, null);
-	            _canvas.DrawString(m_Message, m_Font, m_ForeBrush, location.X, location.Y);
-			}
-		}
-		#endregion
-		
-		#region Private methods
-		private void Timer_OnTick(object sender, EventArgs e)
-		{
-			// Timer fired : Time to hide the message.
-			m_bEnabled = false;
-			StartStopTimer();
-		}
-		private void StartStopTimer()
-		{
-			if(m_bEnabled)
-			{
-				if(m_Timer.Enabled)
-				{	
-					m_Timer.Stop();
-				}
-				
-				m_Timer.Start();
-			}
-			else
-			{
-				m_Timer.Stop();
-				if(m_CanvasHolder != null)	m_CanvasHolder.Invalidate();
-			}
-		}
-		#endregion
-	}
+    /// <summary>
+    /// MessageToaster.
+    /// A class to encapsulate the display of a message to be painted directly on a canvas, for a given duration.
+    /// Used to indicate a change in the state of a screen for example. (Pause, Zoom factor).
+    /// The same object is reused for various messages. Each screen should have its own instance.
+    /// 
+    /// Exemple use:
+    /// MessageToaster toaster = new MessageToaster(control);
+    /// 
+    /// In the OnPaint event of the control:
+    /// toaster.Draw(e.Graphics);
+    /// 
+    /// To display a message:
+    /// toaster.SetDuration(750);
+    /// toaster.Show("hello");
+    /// </summary>
+    public class MessageToaster
+    {
+        #region Properties
+        public bool Enabled
+        {
+            get { return enabled; }
+        }
+        #endregion
+        
+        #region Members
+        private string message;
+        private Timer timer = new Timer();
+        private Font font;
+        private bool enabled;
+        private Control canvasHolder;
+        private static readonly int defaultDuration = 1000;
+        private static readonly int defaultFontSize = 24;
+        private Brush foreBrush = new SolidBrush(Color.FromArgb(255, Color.White));
+        private Brush backBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
+        
+        #region Constructor
+        public MessageToaster(Control canvasHolder)
+        {
+            this.canvasHolder = canvasHolder;
+            font = new Font("Arial", defaultFontSize, FontStyle.Bold);
+            timer.Interval = defaultDuration;
+            timer.Tick += new EventHandler(Timer_OnTick); 
+        }
+        #endregion
+        
+        #region Public Methods
+        public void SetDuration(int duration)
+        {
+            timer.Interval = duration;
+        }
+        public void Show(string message)
+        {
+            log.Debug(String.Format("Toasting message: {0}", message));
+            this.message = message;
+            enabled = true;
+            StartStopTimer();
+        }
+        public void Draw(Graphics canvas)
+        {
+            if(!enabled || string.IsNullOrEmpty(message) || canvasHolder == null)
+                return;
+            
+            SizeF bgSize = canvas.MeasureString(message, font);
+            bgSize = new SizeF(bgSize.Width, bgSize.Height + 3);
+            PointF location = new PointF((canvasHolder.Width - bgSize.Width)/2, (canvasHolder.Height - bgSize.Height)/2);
+            RectangleF bg = new RectangleF(location.X - 5, location.Y - 5, bgSize.Width + 10, bgSize.Height + 5);
+            int radius = (int)(font.Size / 2);
+            RoundedRectangle.Draw(canvas, bg, (SolidBrush)backBrush, radius, false, false, null);
+            canvas.DrawString(message, font, foreBrush, location.X, location.Y);
+        }
+        #endregion
+        
+        #region Private methods
+        private void Timer_OnTick(object sender, EventArgs e)
+        {
+            // Timer fired : Time to hide the message.
+            enabled = false;
+            StartStopTimer();
+        }
+        private void StartStopTimer()
+        {
+            if(enabled)
+            {
+                if(timer.Enabled)
+                    timer.Stop();
+                
+                timer.Start();
+            }
+            else
+            {
+                timer.Stop();
+                if(canvasHolder != null)
+                    canvasHolder.Invalidate();
+            }
+        }
+        #endregion
+    }
 }
