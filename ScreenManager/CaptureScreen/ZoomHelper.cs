@@ -40,14 +40,20 @@ namespace Kinovea.ScreenManager
         private float step = 0.05f;
         private float min = -1.0f;
         private float max = 1.0f;
-        
+        private bool roundToNearest = true;
         public void Increase()
         {
             linearValue = Clamp(linearValue + step);
+            
+            if(roundToNearest)
+                linearValue = RoundToNearest(linearValue);
         }
         public void Decrease()
         {
             linearValue = Clamp(linearValue - step);
+            
+            if(roundToNearest)
+                linearValue = RoundToNearest(linearValue);
         }
         
         private static float Map(float linearValue)
@@ -62,6 +68,11 @@ namespace Kinovea.ScreenManager
         private float Clamp(float value)
         {
             return Math.Max(min, Math.Min(max, value));
+        }
+        
+        private float RoundToNearest(float value)
+        {
+            return (float)Math.Round(linearValue / step) * step;
         }
         
     }

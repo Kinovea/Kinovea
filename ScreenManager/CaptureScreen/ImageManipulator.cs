@@ -80,7 +80,7 @@ namespace Kinovea.ScreenManager
             started = true;
         }
         
-        public void Move(Point mouse, bool sticky, Size containerSize)
+        public void Move(Point mouse, bool sticky, Size containerSize, Size referenceSize)
         {
             if(!started)
                 return;
@@ -92,7 +92,7 @@ namespace Kinovea.ScreenManager
             if(manipulationType == ManipulationType.Move)
                 DoMove(deltaStart, sticky, containerSize);
             else if(manipulationType == ManipulationType.Resize)
-                DoResize(handle, deltaStart);
+                DoResize(handle, deltaStart, sticky, referenceSize);
         }
         
         public void End()
@@ -151,9 +151,8 @@ namespace Kinovea.ScreenManager
                 displayRectangle.Location = StickToBorders(displayRectangle, containerSize);
         }
         
-        private void DoResize(int handle, Point delta)
+        private void DoResize(int handle, Point delta, bool sticky, Size referenceSize)
         {
-            
             int left = refDisplayRectangle.Left;
             int top = refDisplayRectangle.Top;
             int width = refDisplayRectangle.Width;
@@ -163,23 +162,46 @@ namespace Kinovea.ScreenManager
             float dy = (float)delta.Y / refDisplayRectangle.Height;
             float d = Extremum(dx, dy);
 
+            int dxRef = referenceSize.Width - refDisplayRectangle.Width;
+            int dyRef = referenceSize.Height - refDisplayRectangle.Height;
+            int stickyPixels = 30;
+
             switch(handle)
             {
                 case 1:
                 {
                     int x = (int)(d * refDisplayRectangle.Width);
                     int y = (int)(d * refDisplayRectangle.Height);
+                    
+                    if(sticky)
+                    {
+                        if(Math.Abs(dxRef + x) < stickyPixels || Math.Abs(dyRef + y) < stickyPixels)
+                        {
+                            x = -dxRef;
+                            y = -dyRef;
+                        }
+                    }
+                    
                     left = refDisplayRectangle.Left + x;
                     top = refDisplayRectangle.Top + y;
                     width = refDisplayRectangle.Right - left;
                     height = refDisplayRectangle.Bottom - top;
-                    
                     break;
                 }
                 case 2:
                 {
                     int x = d == dx ? (int)(d * refDisplayRectangle.Width) : (int)(-d * refDisplayRectangle.Width);
                     int y = d == dy ? (int)(d * refDisplayRectangle.Height) : (int)(-d * refDisplayRectangle.Height);
+                    
+                    if(sticky)
+                    {
+                        if(Math.Abs(dxRef - x) < stickyPixels || Math.Abs(dyRef + y) < stickyPixels)
+                        {
+                            x = dxRef;
+                            y = -dyRef;
+                        }
+                    }
+                    
                     left = refDisplayRectangle.Left;
                     top = refDisplayRectangle.Top + y;
                     width = refDisplayRectangle.Width + x;
@@ -190,6 +212,16 @@ namespace Kinovea.ScreenManager
                 {
                     int x = (int)(d * refDisplayRectangle.Width);
                     int y = (int)(d * refDisplayRectangle.Height);
+                    
+                    if(sticky)
+                    {
+                        if(Math.Abs(dxRef - x) < stickyPixels || Math.Abs(dyRef - y) < stickyPixels)
+                        {
+                            x = dxRef;
+                            y = dyRef;
+                        }
+                    }
+                    
                     left = refDisplayRectangle.Left;
                     top = refDisplayRectangle.Top;
                     width = refDisplayRectangle.Width + x;
@@ -200,6 +232,16 @@ namespace Kinovea.ScreenManager
                 {
                     int x = d == dx ? (int)(d * refDisplayRectangle.Width) : (int)(-d * refDisplayRectangle.Width);
                     int y = d == dy ? (int)(d * refDisplayRectangle.Height) : (int)(-d * refDisplayRectangle.Height);
+                    
+                    if(sticky)
+                    {
+                        if(Math.Abs(dxRef + x) < stickyPixels || Math.Abs(dyRef - y) < stickyPixels)
+                        {
+                            x = -dxRef;
+                            y = dyRef;
+                        }
+                    }
+                    
                     left = refDisplayRectangle.Left + x;
                     top = refDisplayRectangle.Top;
                     width = refDisplayRectangle.Right - left;
@@ -209,6 +251,7 @@ namespace Kinovea.ScreenManager
             }
             
             displayRectangle = new Rectangle(left, top, width, height);
+            
             log.DebugFormat("Delta:{0}, Rectangle ref:{1}, New:{2}", delta, refDisplayRectangle, displayRectangle);
         }
         

@@ -137,7 +137,7 @@ namespace Kinovea.ScreenManager
             if(manipulator.Started)
             {
                 bool sticky = true;
-                manipulator.Move(e.Location, sticky, this.Size);
+                manipulator.Move(e.Location, sticky, this.Size, imageSize);
                 displayRectangle = manipulator.DisplayRectangle;
                 AfterDisplayRectangleChanged();
             }
