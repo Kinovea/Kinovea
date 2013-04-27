@@ -26,6 +26,11 @@ namespace Kinovea.ScreenManager
 {
     public class MetadataManipulator
     {
+        public bool IsUsingHandTool
+        {
+            get { return toolManager == null ? true : toolManager.IsUsingHandTool;}
+        }
+        
         private Metadata metadata;
         private ScreenToolManager toolManager;
         
@@ -51,7 +56,7 @@ namespace Kinovea.ScreenManager
             
             metadata.AllDrawingTextToNormalMode();
             
-            if(toolManager.UsingHand)
+            if(toolManager.IsUsingHandTool)
             {
                 // TODO: Change cursor.
                 handled = toolManager.HandTool.OnMouseDown(metadata, 0, imagePoint, 0, false);
@@ -74,7 +79,7 @@ namespace Kinovea.ScreenManager
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             Point imagePoint = transformer.Untransform(mouse);
             
-            if(toolManager.UsingHand)
+            if(toolManager.IsUsingHandTool)
             {
                 // TODO: handle magnifier.
                 handled = toolManager.HandTool.OnMouseMove(metadata, imagePoint, Point.Empty, modifiers);
@@ -94,13 +99,17 @@ namespace Kinovea.ScreenManager
             // TODO: keep tool or change tool.
             // m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
             
-            if(toolManager.UsingHand)
+            if(toolManager.IsUsingHandTool)
             {
-                // TODO: set cursor.
                 toolManager.HandTool.OnMouseUp();
                 
                 // Force render if drawing is SVG.
             }
+        }
+        
+        public Cursor GetCursor(float scale)
+        {
+            return toolManager.GetCursor(scale);
         }
         
         private void CreateNewDrawing()

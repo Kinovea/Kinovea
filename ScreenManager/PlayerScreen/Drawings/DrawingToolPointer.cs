@@ -90,9 +90,9 @@ namespace Kinovea.ScreenManager
         private Point m_DirectZoomTopLeft;
         private int m_iResizingHandle;
         private Size m_ImgSize;
-        Cursor m_curHandOpen;
-        Cursor m_curHandClose;
-        int m_iLastCursorType = 0;
+        private Cursor cursorHandOpen;
+        private Cursor cursorHandClose;
+        private int m_iLastCursorType = 0;
         #endregion
 
         #region Constructor
@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         }
         public override Cursor GetCursor(double _fStretchFactor)
         {
-        	throw new NotImplementedException();
+            return manipulationType == ManipulationType.None ? cursorHandOpen : cursorHandClose;
         }
         #endregion
 
@@ -261,14 +261,14 @@ namespace Kinovea.ScreenManager
         {
             // 0: Open hand, 1: Closed hand, -1: same as last time.
             
-            Cursor cur = m_curHandOpen;
+            Cursor cur = cursorHandOpen;
             switch(_type)
             {
             	case -1:
-            		cur = (m_iLastCursorType == 0)?m_curHandOpen:m_curHandClose;
+            		cur = (m_iLastCursorType == 0)?cursorHandOpen:cursorHandClose;
             		break;
             	case 1:
-            		cur = m_curHandClose;
+            		cur = cursorHandClose;
 					break;
             }
 
@@ -423,10 +423,10 @@ namespace Kinovea.ScreenManager
         {
         	// Hand cursor.
         	Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Drawings.handopen24c;
-            m_curHandOpen = new Cursor(bmpOpen.GetHicon());
+            cursorHandOpen = new Cursor(bmpOpen.GetHicon());
             
             Bitmap bmpClose = Kinovea.ScreenManager.Properties.Drawings.handclose24b;
-            m_curHandClose = new Cursor(bmpClose.GetHicon());
+            cursorHandClose = new Cursor(bmpClose.GetHicon());
 
             m_iLastCursorType = 0;
         }

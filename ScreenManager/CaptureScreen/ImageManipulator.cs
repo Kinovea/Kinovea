@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -57,8 +58,15 @@ namespace Kinovea.ScreenManager
         private int handle;
         private bool expanded = false;
         private int stickyMargin = 17;
+        private Cursor cursorClosedHand;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
+        
+        public ImageManipulator()
+        {
+            Bitmap bmp = Properties.Drawings.handclose24b;
+            cursorClosedHand = new Cursor(bmp.GetHicon());
+        }
         
         #region Public methods
         public void Start(Point mouse, int hit, Rectangle displayRectangle)
@@ -118,6 +126,14 @@ namespace Kinovea.ScreenManager
             }
         }
         
+        public Cursor GetCursorClosedHand()
+        {
+            // temporary hack.
+            // Ultimately the hand tool would be responsible for image manipulation.
+            return cursorClosedHand;
+        }
+        #endregion
+       
         private void Maximize(Rectangle displayRectangle, Size containerSize)
         {
             float ratioWidth = (float)containerSize.Width / displayRectangle.Size.Width;
@@ -135,8 +151,6 @@ namespace Kinovea.ScreenManager
             this.displayRectangle = new Rectangle(location, size);
             expanded = false;
         }
-        
-        #endregion
         
         private void DoMove(Point delta, bool sticky, Size containerSize)
         {

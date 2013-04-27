@@ -20,12 +20,13 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
     public class ScreenToolManager
     {
-        public bool UsingHand
+        public bool IsUsingHandTool
         {
             get { return activeTool == handTool;}
         }
@@ -46,9 +47,14 @@ namespace Kinovea.ScreenManager
             activeTool = handTool;
         }
         
-        public void AddSupportedTool(AbstractDrawingTool tool)
+        public void SetActiveTool(AbstractDrawingTool tool)
         {
-            tools.Add(tool);
+            activeTool = tool ?? handTool;
+        }
+        
+        public Cursor GetCursor(float scale)
+        {
+            return activeTool.GetCursor(scale);
         }
     }
 }

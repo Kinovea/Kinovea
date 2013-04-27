@@ -38,6 +38,7 @@ namespace Kinovea.ScreenManager
         
         void SetViewport(Viewport viewport);
         void SetCapturedFilesView(CapturedFilesView capturedFilesView);
+        void SetToolbarView(Control toolbarView);
         void ShowThumbnails();
         
         void UpdateTitle(string title);

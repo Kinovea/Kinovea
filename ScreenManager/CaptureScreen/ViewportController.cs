@@ -61,6 +61,11 @@ namespace Kinovea.ScreenManager
             set { metadataManipulator = value; }
         }
         
+        public bool IsUsingHandTool
+        {
+            get { return metadataManipulator == null ? true : metadataManipulator.IsUsingHandTool; }
+        }
+        
         private Viewport view;
         private Bitmap bitmap;
         private Rectangle displayRectangle;
@@ -118,7 +123,15 @@ namespace Kinovea.ScreenManager
             if(metadataManipulator == null)
                 return;
             
-            MetadataManipulator.OnMouseUp();
+            metadataManipulator.OnMouseUp();
+        }
+        
+        public Cursor GetCursor(float imageZoom)
+        {
+            if(metadataManipulator == null)
+                return Cursors.Default;
+            
+            return metadataManipulator.GetCursor(imageZoom);
         }
     }
 }
