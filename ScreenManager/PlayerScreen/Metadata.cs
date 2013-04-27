@@ -43,7 +43,7 @@ using Kinovea.Video;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Main class responsible for KVA import, export, and add/remove drawangs.
+    /// Main class responsible for KVA import, export, and add/remove drawings.
     /// </summary>
     public class Metadata
     {

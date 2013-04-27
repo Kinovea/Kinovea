@@ -133,15 +133,10 @@ namespace Kinovea.ScreenManager
         {
             base.OnMouseDown(e);
             
-            if(e.Button != MouseButtons.Left)
-                return;
-            
-            if(manipulator.Started)
-                return;
-            
-            int hit = HitTest(e.Location);
-            if(hit >= 0)
-                manipulator.Start(e.Location, hit, displayRectangle);
+            if(e.Button == MouseButtons.Left)
+                OnMouseLeftDown(e);
+            /*else if(e.Button == MouseButtons.Right)
+                OnMouseRightDown(e);*/
         }
         
         protected override void OnMouseMove(MouseEventArgs e)
@@ -149,27 +144,21 @@ namespace Kinovea.ScreenManager
             base.OnMouseMove(e);
             this.Focus();
 
-            if(e.Button == MouseButtons.None)
+            if(e.Button == MouseButtons.Left)
+            {
+                OnMouseLeftMove(e);
+            }
+            else if(e.Button == MouseButtons.None)
             {
                 UpdateCursor(e.Location);
                 return;
-            }
-
-            if(e.Button != MouseButtons.Left)
-                return;
-
-            if(manipulator.Started)
-            {
-                bool sticky = true;
-                manipulator.Move(e.Location, sticky, this.Size, imageSize);
-                displayRectangle = manipulator.DisplayRectangle;
-                AfterDisplayRectangleChanged();
             }
         }
         
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            controller.OnMouseUp();
             manipulator.End();
             ForceZoomValue();
             controller.UpdateDisplayRectangle(displayRectangle);
@@ -195,7 +184,7 @@ namespace Kinovea.ScreenManager
                 Zoom(e);
         }
         
-        private int HitTest(Point mouse)
+        private int HitTestImage(Point mouse)
         {
             int hit = -1;
             for(int i = 0; i < resizers.Count; i++)
@@ -308,6 +297,37 @@ namespace Kinovea.ScreenManager
                 Cursor = Cursors.Default;
         }
         #endregion
+        
+        private void OnMouseLeftDown(MouseEventArgs e)
+        {
+            if(manipulator.Started)
+                return;
+            
+            bool handled = controller.OnMouseLeftDown(e.Location, displayRectangle.Location, zoomHelper.Value);
+            
+            if(handled)
+                return;
+            
+            int hit = HitTestImage(e.Location);
+            if(hit >= 0)
+                manipulator.Start(e.Location, hit, displayRectangle);
+        }
+        
+        private void OnMouseLeftMove(MouseEventArgs e)
+        {
+            bool handled = controller.OnMouseLeftMove(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
+            if(handled)
+                return;
+            
+            if(!manipulator.Started)
+                return;
+                
+            
+            bool sticky = true;
+            manipulator.Move(e.Location, sticky, this.Size, imageSize);
+            displayRectangle = manipulator.DisplayRectangle;
+            AfterDisplayRectangleChanged();
+        }
         
         protected override void OnResize(EventArgs e)
         {

@@ -114,6 +114,9 @@ namespace Kinovea.ScreenManager
         
         private CameraSummary summary;
         private Metadata metadata;
+        private MetadataRenderer metadataRenderer;
+        private MetadataManipulator metadataManipulator;
+        private ScreenToolManager screenToolManager = new ScreenToolManager();
         private bool loaded;
         private int displayImageAge = 0;
         private int recordImageAge = 0;
@@ -138,6 +141,7 @@ namespace Kinovea.ScreenManager
             view.SetCapturedFilesView(capturedFiles.View);
             
             InitializeCaptureFilenames();
+            InitializeTools();
             InitializeMetadata();
             
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
@@ -483,7 +487,11 @@ namespace Kinovea.ScreenManager
                 metadata.Add(kf);
             }
             
-            viewportController.Metadata = metadata;
+            metadataRenderer = new MetadataRenderer(metadata);
+            metadataManipulator = new MetadataManipulator(metadata, screenToolManager);
+            
+            viewportController.MetadataRenderer = metadataRenderer;
+            viewportController.MetadataManipulator = metadataManipulator;
         }
         private void LoadCompanionKVA()
         {
@@ -494,6 +502,11 @@ namespace Kinovea.ScreenManager
                 
             if(metadata.Count > 1)
                 metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
+        }
+        private void InitializeTools()
+        {
+            // todo : should we handle grouping here ?
+            //screenToolManager.AddSupportedTool(ToolManager.Label);
         }
         
         #region Recording/Snapshoting

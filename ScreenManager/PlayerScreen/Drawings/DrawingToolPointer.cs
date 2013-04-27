@@ -126,7 +126,7 @@ namespace Kinovea.ScreenManager
         {
             manipulationType = ManipulationType.None;
         }
-        public bool OnMouseDown(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
+        public bool OnMouseDown(Metadata metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
         {
             //--------------------------------------------------------------------------------------
             // Change the ManipulationType if we are on a Drawing, Track, etc.
@@ -137,18 +137,19 @@ namespace Kinovea.ScreenManager
             // If a Drawing is under a Trajectory or Chrono, we have to be able to move it around...
             //
             // Maybe we could reuse the IsOndrawing, etc. functions from MetaData...
+            // TODO: see if some code can be shared or homogenized with whole image manipulation in ImageManipulator.
             //--------------------------------------------------------------------------------------
 
             bool bHit = true;
             manipulationType = ManipulationType.None;
 
-            _Metadata.UnselectAll();
+            metadata.UnselectAll();
 
-            if (!IsOnDrawing(_Metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
+            if (!IsOnDrawing(metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
 			{
-            	if (!IsOnTrack(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
+            	if (!IsOnTrack(metadata, _MouseCoordinates, _iCurrentTimeStamp))
                 {
-            		if (!IsOnExtraDrawing(_Metadata, _MouseCoordinates, _iCurrentTimeStamp))
+            		if (!IsOnExtraDrawing(metadata, _MouseCoordinates, _iCurrentTimeStamp))
                 	{
             			// Moving the whole image (Direct Zoom)
 						m_SelectedObjectType = SelectedObjectType.None;
@@ -163,7 +164,7 @@ namespace Kinovea.ScreenManager
 
             return bHit;
         }
-        public bool OnMouseMove(Metadata _Metadata, Point _MouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
+        public bool OnMouseMove(Metadata metadata, Point _MouseLocation, Point _DirectZoomTopLeft, Keys _ModifierKeys)
         {
             // Note: We work with descaled coordinates.
             // Note: We only get here if left mouse button is down.
@@ -179,18 +180,12 @@ namespace Kinovea.ScreenManager
             }
 
             // Find difference between previous and current position
-            // X and Y are independant so we can slide on the edges in case of DrawingMove.
-            if (_MouseLocation.X >= 0 && _MouseLocation.X <= m_ImgSize.Width)
-            {
-                deltaX = (_MouseLocation.X - m_lastPoint.X) - (_DirectZoomTopLeft.X - m_DirectZoomTopLeft.X);
-                m_lastPoint.X = _MouseLocation.X;
-            }
-            if(_MouseLocation.Y >= 0 && _MouseLocation.Y <= m_ImgSize.Height)
-            {
-                deltaY = (_MouseLocation.Y - m_lastPoint.Y) - (_DirectZoomTopLeft.Y - m_DirectZoomTopLeft.Y);
-                m_lastPoint.Y = _MouseLocation.Y;
-            }
-
+            deltaX = (_MouseLocation.X - m_lastPoint.X) - (_DirectZoomTopLeft.X - m_DirectZoomTopLeft.X);
+            m_lastPoint.X = _MouseLocation.X;
+            
+            deltaY = (_MouseLocation.Y - m_lastPoint.Y) - (_DirectZoomTopLeft.Y - m_DirectZoomTopLeft.Y);
+            m_lastPoint.Y = _MouseLocation.Y;
+            
             m_MouseDelta = new Point(deltaX, deltaY);
             m_DirectZoomTopLeft = new Point(_DirectZoomTopLeft.X, _DirectZoomTopLeft.Y);
 
@@ -203,15 +198,15 @@ namespace Kinovea.ScreenManager
                             switch (m_SelectedObjectType)
                             {
                             	case SelectedObjectType.ExtraDrawing:
-                            		if (_Metadata.SelectedExtraDrawing >= 0)
+                            		if (metadata.SelectedExtraDrawing >= 0)
                             		{
-                            			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
+                            			metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
                             		}
                             		break;
                                 case SelectedObjectType.Drawing:
-                                    if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
+                                    if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
                                     {
-                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
+                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
                                     }
                                     break;
                                 default:
@@ -225,15 +220,15 @@ namespace Kinovea.ScreenManager
                             switch (m_SelectedObjectType)
                             {
                             	case SelectedObjectType.ExtraDrawing:
-                            		if (_Metadata.SelectedExtraDrawing >= 0)
+                            		if (metadata.SelectedExtraDrawing >= 0)
                             		{
-                            			_Metadata.ExtraDrawings[_Metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);		
+                            			metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);		
                             		}
                             		break;
                                 case SelectedObjectType.Drawing:
-                                    if (_Metadata.SelectedDrawingFrame >= 0 && _Metadata.SelectedDrawing >= 0)
+                                    if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
                                     {
-                                        _Metadata.Keyframes[_Metadata.SelectedDrawingFrame].Drawings[_Metadata.SelectedDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);
+                                        metadata.Keyframes[metadata.SelectedDrawingFrame].Drawings[metadata.SelectedDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);
                                     }
                                     break;
                                 default:
