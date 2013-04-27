@@ -160,7 +160,7 @@ namespace Kinovea.ScreenManager
         }
         
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
         
@@ -489,7 +489,7 @@ namespace Kinovea.ScreenManager
         {
           m_Style.Bind(m_StyleHelper, "Bicolor", "line color");
         }
-        private void DrawAngleText(Graphics _canvas, double _opacity, CoordinateSystem _transformer, AngleHelper angle, SolidBrush _brushFill)
+        private void DrawAngleText(Graphics _canvas, double _opacity, IImageToViewportTransformer _transformer, AngleHelper angle, SolidBrush _brushFill)
         {
             //-------------------------------------------------
             // FIXME: function duplicated. Move to AngleHelper.
@@ -523,7 +523,7 @@ namespace Kinovea.ScreenManager
     		tempFont.Dispose();
             fontBrush.Dispose();
         }
-        private void DrawDistanceText(PointF a, PointF b, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        private void DrawDistanceText(PointF a, PointF b, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)
         {
             SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(opacity * 255));
             Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));

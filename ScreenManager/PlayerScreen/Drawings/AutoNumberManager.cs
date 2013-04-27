@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
 		
 		
 		#region AbstractDrawing Implementation
-		public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
+		public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
 		{
 		    foreach(AutoNumber number in autoNumbers)
                 number.Draw(_canvas, _transformer, _iCurrentTimestamp);

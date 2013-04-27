@@ -152,7 +152,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             if(!Visible)
                 return;
@@ -286,7 +286,7 @@ namespace Kinovea.ScreenManager
         
         public void UpdateOrigin()
         {
-            if(CalibrationHelper.IsCalibrated && CalibrationHelper.CalibratorType == CalibratorType.Line)
+            if(CalibrationHelper != null && CalibrationHelper.IsCalibrated && CalibrationHelper.CalibratorType == CalibratorType.Line)
             {
                 PointF p = CalibrationHelper.CalibrationByLine_GetOrigin();
                 points["0"] = new Point((int)p.X, (int)p.Y);

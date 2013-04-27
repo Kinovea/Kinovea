@@ -63,7 +63,7 @@ namespace Kinovea.ScreenManager
 		/// Draw a visual representation of the tracking taking place.
 		/// This may only make sense for users having an idea of how the tracking works.
 		/// </summary>
-		public abstract void Draw(Graphics _canvas, Point _point, CoordinateSystem _transformer, Color _color, double _fOpacityFactor);
+		public abstract void Draw(Graphics _canvas, Point _point, IImageToViewportTransformer _transformer, Color _color, double _fOpacityFactor);
 		
 		/// <summary>
 		/// Retrieve the target rectangle for easy mouse manipulation.

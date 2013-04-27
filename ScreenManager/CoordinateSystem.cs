@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
 	/// 
 	/// The image ratio is never altered. Skew is not supported.
 	/// </summary>
-	public class CoordinateSystem
+	public class CoordinateSystem : IImageToViewportTransformer
 	{
 		#region Properties
         /// <summary>

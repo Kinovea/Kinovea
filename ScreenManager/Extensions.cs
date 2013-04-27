@@ -34,9 +34,17 @@ namespace Kinovea.ScreenManager
         {
             return new Point(_point.X + _x, _point.Y + _y);
         }
+        public static Point Translate(this Point point, Point translation)
+        {
+            return new Point(point.X + translation.X, point.Y + translation.Y);
+        }
         public static Point Scale(this Point _point, double _scaleX, double _scaleY)
         {
             return new Point((int)(_point.X * _scaleX), (int)(_point.Y * _scaleY));
+        }
+        public static Point Scale(this Point point, double scale)
+        {
+            return new Point((int)(point.X * scale), (int)(point.Y * scale));
         }
         public static PointF ToPointF(this Point point)
         {
@@ -56,6 +64,7 @@ namespace Kinovea.ScreenManager
         }
         
         // PointF
+        // TODO: check if the PointF to Point extensions are really needed.
         public static Point Translate(this PointF _point, int _x, int _y)
         {
             return new Point((int)_point.X + _x, (int)_point.Y + _y);
@@ -64,9 +73,17 @@ namespace Kinovea.ScreenManager
         {
             return new PointF(_point.X + _x, _point.Y + _y);
         }
+        public static Point Translate(this PointF point, Point translation)
+        {
+            return new Point((int)point.X + translation.X, (int)point.Y + translation.Y);
+        }
         public static PointF Scale(this PointF _point, float _scaleX, float _scaleY)
         {
             return new PointF(_point.X * _scaleX, _point.Y * _scaleY);
+        }
+        public static PointF Scale(this PointF point, float scale)
+        {
+            return new PointF(point.X * scale, point.Y * scale);
         }
         public static Rectangle Box(this PointF _point, int _radius)
         {
@@ -94,6 +111,12 @@ namespace Kinovea.ScreenManager
             return widthDifference > -4 && widthDifference < 4 && heightDifference > -4 && heightDifference < 4;
         }
         public static Size Scale(this Size s, float scale)
+        {
+            return new Size((int)(s.Width * scale), (int)(s.Height * scale));
+        }
+        
+        // SizeF
+        public static Size Scale(this SizeF s, float scale)
         {
             return new Size((int)(s.Width * scale), (int)(s.Height * scale));
         }

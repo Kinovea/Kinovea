@@ -34,24 +34,28 @@ namespace Kinovea.ScreenManager
 		public static List<DrawingToolGenericPosture> Tools
 		{
 		    get {
-		        if(object.ReferenceEquals(m_tools, null))
+		        if(!initialized)
 		            Initialize();
 		        
-		        return m_tools;
+		        return tools;
 		    }
 		}
 		#endregion
 		
 		#region Members
-		private static Dictionary<Guid, string> m_files = null;
-		private static List<DrawingToolGenericPosture> m_tools = null;
+		private static Dictionary<Guid, string> files = null;
+		private static List<DrawingToolGenericPosture> tools = null;
+		private static bool initialized = false;
         #endregion
         
         #region Public methods
         public static GenericPosture Instanciate(Guid id, bool fromKVA)
         {
-            if(m_files.ContainsKey(id))
-                return new GenericPosture(m_files[id], false, fromKVA);
+            if(!initialized)
+                Initialize();
+            
+            if(files.ContainsKey(id))
+                return new GenericPosture(files[id], false, fromKVA);
             else
                 return null;
         }
@@ -60,18 +64,18 @@ namespace Kinovea.ScreenManager
         #region Private Methods
         private static void Initialize()
         {
-        	m_files = new Dictionary<Guid, string>();
-        	m_tools = new List<DrawingToolGenericPosture>();
+            files = new Dictionary<Guid, string>();
+        	tools = new List<DrawingToolGenericPosture>();
         	
         	string dir = Path.GetDirectoryName(Application.ExecutablePath) + "\\DrawingTools";
         	
             if(!Directory.Exists(dir))
                 return;
             
-            string[] files = Directory.GetFiles(dir);
-            Array.Sort(files, new AlphanumComparator());
+            string[] fileList = Directory.GetFiles(dir);
+            Array.Sort(fileList, new AlphanumComparator());
             
-            foreach (string f in files)
+            foreach (string f in fileList)
             {
                 if (!Path.GetExtension(f).ToLower().Equals(".xml"))
                     continue;
@@ -81,11 +85,11 @@ namespace Kinovea.ScreenManager
                 if(posture == null || posture.Id == Guid.Empty)
                     continue;
 
-                m_files[posture.Id] = f;
+                files[posture.Id] = f;
                 
                 DrawingToolGenericPosture tool = new DrawingToolGenericPosture();
                 tool.SetInfo(posture);
-                m_tools.Add(tool);
+                tools.Add(tool);
             }
         }
         #endregion

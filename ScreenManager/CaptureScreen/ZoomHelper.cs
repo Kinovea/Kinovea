@@ -55,6 +55,10 @@ namespace Kinovea.ScreenManager
             if(roundToNearest)
                 linearValue = RoundToNearest(linearValue);
         }
+        public void Reset()
+        {
+            linearValue = 0;
+        }
         
         private static float Map(float linearValue)
         {

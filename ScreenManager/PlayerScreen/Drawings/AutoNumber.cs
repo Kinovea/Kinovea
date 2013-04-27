@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public methods
-		public void Draw(Graphics _canvas, CoordinateSystem _transformer, long _timestamp)
+		public void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, long _timestamp)
         {
 			double fOpacityFactor = infosFading.GetOpacityFactor(_timestamp);
 			if(fOpacityFactor <= 0)

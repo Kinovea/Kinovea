@@ -89,7 +89,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region AbstractDrawing Implementation
-		public override void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp)
+		public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
 		{
 		    // We draw a single translucent black rectangle to cover the whole image.
 			// (Opacity varies between 0% and 50%, depending on the opacity factor of the closest spotlight in time)
