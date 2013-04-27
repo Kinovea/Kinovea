@@ -43,5 +43,7 @@ namespace Kinovea.ScreenManager
         Rectangle Transform(RectangleF rectangle);
         List<Rectangle> Transform(List<Rectangle> rectangles);
         QuadrilateralF Transform(QuadrilateralF quadrilateral);
+        
+        Point Untransform(Point point);
     }
 }

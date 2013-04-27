@@ -28,7 +28,8 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
 	/// <summary>
-	/// Host of the list of tools. 
+	/// Host of the global list of tools.
+	/// Each screen type will have its own subset of supported tools.
 	/// </summary>
 	public static class ToolManager
 	{

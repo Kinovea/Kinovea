@@ -24,28 +24,37 @@ using System.Drawing.Drawing2D;
 
 namespace Kinovea.ScreenManager
 {
-    public class KVARenderer
+    public class MetadataRenderer
     {
-        public static void Render(Metadata metadata, long timestamp, Graphics canvas, Point location, float zoom)
+        private Metadata metadata;
+    
+        public MetadataRenderer(Metadata metadata)
+        {
+            this.metadata = metadata;
+        }
+    
+        public void Render(Graphics viewportCanvas, Point imageLocation, float imageZoom)
         {
             if(metadata == null)
                 return;
             
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(zoom, location);
+            long timestamp = 0;
             
-            canvas.SmoothingMode = SmoothingMode.AntiAlias;
-            RenderExtraDrawings(metadata, timestamp, canvas, transformer);
-            RenderDrawings(metadata, timestamp, canvas, transformer);
+            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            
+            viewportCanvas.SmoothingMode = SmoothingMode.AntiAlias;
+            RenderExtraDrawings(metadata, timestamp, viewportCanvas, transformer);
+            RenderDrawings(metadata, timestamp, viewportCanvas, transformer);
             //RenderMagnifier();
         }
         
-        private static void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
+        private void RenderExtraDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
             foreach(AbstractDrawing ad in metadata.ExtraDrawings)
                 ad.Draw(canvas, transformer, false, timestamp);
         }
         
-        private static void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
+        private void RenderDrawings(Metadata metadata, long timestamp, Graphics canvas, ImageToViewportTransformer transformer)
         {
             foreach(Keyframe keyframe in metadata.Keyframes)
                 for (int i = keyframe.Drawings.Count - 1; i >= 0; i--)

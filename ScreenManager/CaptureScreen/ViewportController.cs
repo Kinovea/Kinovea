@@ -20,6 +20,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
@@ -48,16 +49,23 @@ namespace Kinovea.ScreenManager
             get { return displayRectangle;}
         }
         
-        public Metadata Metadata
+        public MetadataRenderer MetadataRenderer
         {
-            get { return metadata;}
-            set { metadata = value;}
+            get { return metadataRenderer; }
+            set { metadataRenderer = value; }
+        }
+
+        public MetadataManipulator MetadataManipulator
+        {
+            get { return metadataManipulator; }
+            set { metadataManipulator = value; }
         }
         
         private Viewport view;
         private Bitmap bitmap;
         private Rectangle displayRectangle;
-        private Metadata metadata;
+        private MetadataRenderer metadataRenderer;
+        private MetadataManipulator metadataManipulator;
         
         public ViewportController()
         {
@@ -83,7 +91,34 @@ namespace Kinovea.ScreenManager
         
         public void DrawKVA(Graphics canvas, Point location, float zoom)
         {
-            KVARenderer.Render(metadata, 0, canvas, location, zoom);
+            if(metadataRenderer == null)
+                return;
+            
+            metadataRenderer.Render(canvas, location, zoom);
+        }
+        
+        public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
+        {
+            if(metadataManipulator == null)
+                return false;
+                
+            return metadataManipulator.OnMouseLeftDown(mouse, imageLocation, imageZoom);
+        }
+        
+        public bool OnMouseLeftMove(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
+        {
+            if(metadataManipulator == null)
+                return false;
+                
+            return metadataManipulator.OnMouseLeftMove(mouse, modifiers, imageLocation, imageZoom);
+        }
+        
+        public void OnMouseUp()
+        {
+            if(metadataManipulator == null)
+                return;
+            
+            MetadataManipulator.OnMouseUp();
         }
     }
 }

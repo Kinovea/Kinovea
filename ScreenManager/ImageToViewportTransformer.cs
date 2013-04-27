@@ -35,17 +35,17 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private double scale;
         private Point location;
+        private double scale;
         #endregion
     
-        public ImageToViewportTransformer(double scale, Point location)
+        public ImageToViewportTransformer(Point location, double scale)
         {
-            this.scale = scale;
             this.location = location;
+            this.scale = scale;
         }
 
-        #region Public methods
+        #region Transform
         public Point Transform(Point point)
         {
             return point.Scale(scale).Translate(location);
@@ -89,6 +89,13 @@ namespace Kinovea.ScreenManager
             Point c = Transform(quadrilateral.C);
             Point d = Transform(quadrilateral.D);
             return new QuadrilateralF(a, b, c, d);
+        }
+        #endregion
+        
+        #region Untransform
+        public Point Untransform(Point point)
+        {
+            return point.Translate(-location.X, -location.Y).Scale(1/scale);
         }
         #endregion
     }
