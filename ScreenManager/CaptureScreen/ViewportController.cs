@@ -48,9 +48,16 @@ namespace Kinovea.ScreenManager
             get { return displayRectangle;}
         }
         
+        public Metadata Metadata
+        {
+            get { return metadata;}
+            set { metadata = value;}
+        }
+        
         private Viewport view;
         private Bitmap bitmap;
         private Rectangle displayRectangle;
+        private Metadata metadata;
         
         public ViewportController()
         {
@@ -72,6 +79,11 @@ namespace Kinovea.ScreenManager
             displayRectangle = rectangle;
             if(DisplayRectangleUpdated != null)
                 DisplayRectangleUpdated(this, EventArgs.Empty);
+        }
+        
+        public void DrawKVA(Graphics canvas, Point location, float zoom)
+        {
+            KVARenderer.Render(metadata, 0, canvas, location, zoom);
         }
     }
 }

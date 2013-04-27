@@ -192,7 +192,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
             if (_iCurrentTimestamp < m_iVisibleTimestamp)
                 return;

@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
             iHash ^= m_StyleHelper.ContentHash;
             return iHash;
         }
-        public void Draw(Graphics _canvas, CoordinateSystem _transformer, double _fOpacityFactor)
+        public void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, double _fOpacityFactor)
         {
         	using(SolidBrush fillBrush = m_StyleHelper.GetBackgroundBrush((int)(_fOpacityFactor*255)))
         	using(Pen p = m_StyleHelper.GetBackgroundPen((int)(_fOpacityFactor*64)))

@@ -42,6 +42,9 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Main class responsible for KVA import, export, and add/remove drawangs.
+    /// </summary>
     public class Metadata
     {
         #region Events and commands
@@ -58,9 +61,9 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-            	int currentHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
-            
-				log.DebugFormat("IsDirty. Content hashes = reference:{0}, current:{1}.",referenceHash, currentHash);
+                int currentHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
+
+                log.DebugFormat("IsDirty. Content hashes = reference:{0}, current:{1}.",referenceHash, currentHash);
             	return currentHash != referenceHash;
             }
         }

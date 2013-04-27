@@ -138,6 +138,7 @@ namespace Kinovea.ScreenManager
             view.SetCapturedFilesView(capturedFiles.View);
             
             InitializeCaptureFilenames();
+            InitializeMetadata();
             
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
             
@@ -468,6 +469,31 @@ namespace Kinovea.ScreenManager
                 maxAge = 0.9999;
 
             view.UpdateDelayMaxAge(maxAge);
+        }
+        private void InitializeMetadata()
+        {
+            metadata = new Metadata(null, null);
+            
+            LoadCompanionKVA();
+            
+            if(metadata.Count == 0)
+            {
+                Keyframe kf = new Keyframe(metadata);
+                kf.Position = 0;
+                metadata.Add(kf);
+            }
+            
+            viewportController.Metadata = metadata;
+        }
+        private void LoadCompanionKVA()
+        {
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\";
+            string startupFile = folder + "\\capture.kva";
+            if(File.Exists(startupFile))
+                metadata.Load(startupFile, true);
+                
+            if(metadata.Count > 1)
+                metadata.Keyframes.RemoveRange(1, metadata.Keyframes.Count - 1);
         }
         
         #region Recording/Snapshoting

@@ -24,7 +24,7 @@ using System.Drawing;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Simple helper for image panning.
+    /// Helper for image panning and resizing.
     /// </summary>
     public class ImageManipulator
     {
@@ -55,10 +55,8 @@ namespace Kinovea.ScreenManager
         private Rectangle refDisplayRectangle;
         private Rectangle displayRectangle;
         private int handle;
-        //private float zoom = 1.0f;
         private bool expanded = false;
-        private int stickyMarginInside = 17;
-        private int stickyMarginOutside = 17;
+        private int stickyMargin = 17;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -138,10 +136,6 @@ namespace Kinovea.ScreenManager
             expanded = false;
         }
         
-        public void UpdateZoom(float zoom)
-        {
-            //this.zoom = zoom;
-        }
         #endregion
         
         private void DoMove(Point delta, bool sticky, Size containerSize)
@@ -302,18 +296,18 @@ namespace Kinovea.ScreenManager
         {
             Point result = rect.Location;
             
-            if(rect.X > -stickyMarginOutside && rect.X < stickyMarginInside)
+            if(rect.X > -stickyMargin && rect.X < stickyMargin)
                 result.X = 0;
             
-            if(rect.Y > -stickyMarginOutside && rect.Y < stickyMarginInside)
+            if(rect.Y > -stickyMargin && rect.Y < stickyMargin)
                 result.Y = 0;
             
-            if(rect.X + rect.Width > container.Width - stickyMarginInside && 
-               rect.X + rect.Width < container.Width + stickyMarginOutside)
+            if(rect.X + rect.Width > container.Width - stickyMargin && 
+               rect.X + rect.Width < container.Width + stickyMargin)
                 result.X = container.Width - rect.Width;
 
-            if(rect.Y + rect.Height > container.Height - stickyMarginInside && 
-               rect.Y + rect.Height < container.Height + stickyMarginOutside)
+            if(rect.Y + rect.Height > container.Height - stickyMargin && 
+               rect.Y + rect.Height < container.Height + stickyMargin)
                 result.Y = container.Height - rect.Height;
 
             return result;

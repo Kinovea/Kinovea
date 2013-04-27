@@ -162,7 +162,7 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractDrawing implementation
-        public override void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
 		{
         	double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
         	if(opacityFactor <= 0)

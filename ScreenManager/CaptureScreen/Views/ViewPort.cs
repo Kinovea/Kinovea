@@ -67,19 +67,35 @@ namespace Kinovea.ScreenManager
             ForceZoomValue();
         }
         
+        public void ResetZoom()
+        {
+            zoomHelper.Increase();
+            RecomputeDisplayRectangle(imageSize, displayRectangle, displayRectangle.Center());
+            ToastZoom();
+        }
+        
         #region Drawing
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             
-            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-            e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-            
+            ConfigureCanvas(e.Graphics);
+
             DrawImage(e.Graphics);
+            DrawKVA(e.Graphics);
             DrawResizers(e.Graphics);
             toaster.Draw(e.Graphics);
         }
-        
+        private void ConfigureCanvas(Graphics canvas)
+        {
+            canvas.InterpolationMode = InterpolationMode.NearestNeighbor;
+            canvas.PixelOffsetMode = PixelOffsetMode.Half;
+            canvas.CompositingQuality = CompositingQuality.HighSpeed;
+            canvas.SmoothingMode = SmoothingMode.None;
+            
+            //canvas.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+            //canvas.InterpolationMode = InterpolationMode.Bilinear;
+        }
         private void DrawImage(Graphics canvas)
         {
             if(controller.Bitmap == null)
@@ -95,6 +111,14 @@ namespace Kinovea.ScreenManager
             catch(Exception e)
             {
                 log.ErrorFormat(e.Message);
+            }
+        }
+        private void DrawKVA(Graphics canvas)
+        {
+            if(imageSize.Width != 0)
+            {
+                float zoom = (float)displayRectangle.Size.Width / imageSize.Width;
+                controller.DrawKVA(canvas, displayRectangle.Location, zoom);
             }
         }
         private void DrawResizers(Graphics canvas)
@@ -218,6 +242,8 @@ namespace Kinovea.ScreenManager
         
         private void ForceZoomValue()
         {
+            // The display rectangle has changed size outside the context of zoom (e.g: dragging corners).
+            // Recompute the current zoom value to keep it in sync.
             float oldZoom = zoomHelper.Value;
             float newZoom = (float)displayRectangle.Size.Width / imageSize.Width;
             

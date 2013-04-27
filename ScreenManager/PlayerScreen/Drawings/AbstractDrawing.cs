@@ -87,7 +87,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_transformer">A helper object providing coordinate systems transformation</param>
         /// <param name="_bSelected">Whether the drawing is currently selected</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
-        public abstract void Draw(Graphics canvas, CoordinateSystem transformer, bool selected, long currentTimestamp);
+        public abstract void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp);
         
         /// <summary>
         /// Evaluates if a particular point is inside the drawing, on a handler, or completely outside the drawing.

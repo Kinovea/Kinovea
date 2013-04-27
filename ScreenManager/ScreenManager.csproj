@@ -182,6 +182,7 @@
     <Compile Include="CaptureScreen\Frame buffers\CircularBufferMemory.cs" />
     <Compile Include="CaptureScreen\Frame buffers\IFrameBuffer.cs" />
     <Compile Include="CaptureScreen\ImageManipulator.cs" />
+    <Compile Include="CaptureScreen\KVARenderer.cs" />
     <Compile Include="CaptureScreen\ZoomHelper.cs" />
     <Compile Include="CaptureScreen\ViewportController.cs" />
     <Compile Include="CaptureScreen\Views\CapturedFilesView.cs" />
@@ -208,7 +209,9 @@
     <Compile Include="CaptureScreen\Views\ViewPort.cs" />
     <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
     <Compile Include="FilesystemHelper.cs" />
+    <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
+    <Compile Include="ImageToViewportTransformer.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddDrawing.cs" />
     <Compile Include="Commands\PlayerScreen\CommandAddKeyframe.cs" />

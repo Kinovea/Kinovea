@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Public methods
-		public double AddSpot(long timestamp, GraphicsPath path, CoordinateSystem transformer)
+		public double AddSpot(long timestamp, GraphicsPath path, IImageToViewportTransformer transformer)
 		{
 			// Add the shape of this spotlight to the global mask for the frame.
 			// The dim rectangle is added separately in Spotlights class.

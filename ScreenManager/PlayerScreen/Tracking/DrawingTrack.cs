@@ -267,7 +267,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region AbstractDrawing implementation
-        public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
 		{
             if (_iCurrentTimestamp < m_iBeginTimeStamp)
                 return;
@@ -447,7 +447,7 @@ namespace Kinovea.ScreenManager
        #endregion
         
         #region Drawing routines
-        private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor, CoordinateSystem _transformer)
+        private void DrawTrajectory(Graphics _canvas, int _start, int _end, bool _before, double _fFadingFactor, IImageToViewportTransformer _transformer)
         {
         	// Points are drawn with various alpha values, possibly 0:
         	// In edit mode, all segments are drawn at 64 alpha.
@@ -481,7 +481,7 @@ namespace Kinovea.ScreenManager
             	}
             }
         }
-        private void DrawMarker(Graphics _canvas,  double _fFadingFactor, CoordinateSystem _transformer)
+        private void DrawMarker(Graphics _canvas,  double _fFadingFactor, IImageToViewportTransformer _transformer)
         { 
         	int radius = m_iDefaultCrossRadius;
         	Point location = _transformer.Transform(m_Positions[m_iCurrentPoint].Point);
@@ -506,7 +506,7 @@ namespace Kinovea.ScreenManager
     		    _canvas.DrawEllipse(Pens.White, location.Box(radius + 2));
         	}
         }
-        private void DrawKeyframesTitles(Graphics _canvas, double _fFadingFactor, CoordinateSystem _transformer)
+        private void DrawKeyframesTitles(Graphics _canvas, double _fFadingFactor, IImageToViewportTransformer _transformer)
         {
             //------------------------------------------------------------
             // Draw the Keyframes labels
@@ -528,7 +528,7 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private void DrawMainLabel(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor, CoordinateSystem _transformer)
+        private void DrawMainLabel(Graphics _canvas, int _iCurrentPoint, double _fFadingFactor, IImageToViewportTransformer _transformer)
         {
             // Draw the main label and its connector to the current point.
             if (_fFadingFactor == 1.0f)

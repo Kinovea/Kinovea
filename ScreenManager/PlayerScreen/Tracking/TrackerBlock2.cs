@@ -313,7 +313,7 @@ namespace Kinovea.ScreenManager
         	// We'll need to reconstruct it when we have the corresponding image.
         	return new TrackPointBlock(_x, _y, _t);
         }
-		public override void Draw(Graphics _canvas, Point _point, CoordinateSystem _transformer, Color _color, double _fOpacityFactor)
+		public override void Draw(Graphics _canvas, Point _point, IImageToViewportTransformer _transformer, Color _color, double _fOpacityFactor)
 		{
 			// Draw the search and template boxes around the point.
 			Point p = _transformer.Transform(_point);
