@@ -145,14 +145,9 @@ namespace Kinovea.ScreenManager
             this.Focus();
 
             if(e.Button == MouseButtons.Left)
-            {
                 OnMouseLeftMove(e);
-            }
             else if(e.Button == MouseButtons.None)
-            {
-                UpdateCursor(e.Location);
-                return;
-            }
+                OnMouseNoneMove(e);
         }
         
         protected override void OnMouseUp(MouseEventArgs e)
@@ -184,7 +179,7 @@ namespace Kinovea.ScreenManager
                 Zoom(e);
         }
         
-        private int HitTestImage(Point mouse)
+        private int HitTestResizers(Point mouse)
         {
             int hit = -1;
             for(int i = 0; i < resizers.Count; i++)
@@ -195,11 +190,15 @@ namespace Kinovea.ScreenManager
                     break;
                 }
             }
-            
-            if(hit < 0 && displayRectangle.Contains(mouse))
-                hit = 0;
-            
             return hit;
+        }
+        
+        private int HitTestImage(Point mouse)
+        {
+            if(displayRectangle.Contains(mouse))
+                return 0;
+            
+            return -1;
         }
         
         private void Zoom(MouseEventArgs e)
@@ -282,19 +281,19 @@ namespace Kinovea.ScreenManager
         
         private void UpdateCursor(Point mouse)
         {
-            bool handled = false;
+            bool onResizer = false;
             for(int i = 0; i < resizers.Count; i++)
             {
                 if(resizers[i].HitTest(mouse))
                 {
+                    onResizer = true;
                     Cursor = resizers[i].CursorMouseOver;
-                    handled = true;
                     break;
                 }
             }
             
-            if(!handled)
-                Cursor = Cursors.Default;
+            if(!onResizer)
+                Cursor = controller.GetCursor(zoomHelper.Value);
         }
         #endregion
         
@@ -303,32 +302,47 @@ namespace Kinovea.ScreenManager
             if(manipulator.Started)
                 return;
             
-            bool handled = controller.OnMouseLeftDown(e.Location, displayRectangle.Location, zoomHelper.Value);
-            
-            if(handled)
-                return;
-            
-            int hit = HitTestImage(e.Location);
-            if(hit >= 0)
+            int hit = HitTestResizers(e.Location);
+            if(hit > 0)
+            {
+                // Cursor should be resizer cursor.
                 manipulator.Start(e.Location, hit, displayRectangle);
+                return;
+            }
+            
+            bool handled = controller.OnMouseLeftDown(e.Location, displayRectangle.Location, zoomHelper.Value);
+            if(handled)
+            {
+                Cursor = controller.GetCursor(zoomHelper.Value);
+                return;
+            }
+            
+            hit = HitTestImage(e.Location);
+            if(hit == 0)
+            {
+                manipulator.Start(e.Location, hit, displayRectangle);
+                Cursor = manipulator.GetCursorClosedHand();
+            }
         }
         
         private void OnMouseLeftMove(MouseEventArgs e)
         {
-            bool handled = controller.OnMouseLeftMove(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
-            if(handled)
+            if(manipulator.Started)
+            {
+                bool sticky = true;
+                manipulator.Move(e.Location, sticky, this.Size, imageSize);
+                displayRectangle = manipulator.DisplayRectangle;
+                AfterDisplayRectangleChanged();
                 return;
+            }
             
-            if(!manipulator.Started)
-                return;
-                
-            
-            bool sticky = true;
-            manipulator.Move(e.Location, sticky, this.Size, imageSize);
-            displayRectangle = manipulator.DisplayRectangle;
-            AfterDisplayRectangleChanged();
+            controller.OnMouseLeftMove(e.Location, ModifierKeys, displayRectangle.Location, zoomHelper.Value);
         }
         
+        private void OnMouseNoneMove(MouseEventArgs e)
+        {
+            UpdateCursor(e.Location);
+        }
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);

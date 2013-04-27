@@ -117,6 +117,7 @@ namespace Kinovea.ScreenManager
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         private ScreenToolManager screenToolManager = new ScreenToolManager();
+        private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
         private bool loaded;
         private int displayImageAge = 0;
         private int recordImageAge = 0;
@@ -143,6 +144,8 @@ namespace Kinovea.ScreenManager
             InitializeCaptureFilenames();
             InitializeTools();
             InitializeMetadata();
+            
+            view.SetToolbarView(drawingToolbarPresenter.View);
             
             IntPtr forceHandleCreation = dummy.Handle; // Needed to show that the main thread "owns" this Control.
             
@@ -187,6 +190,7 @@ namespace Kinovea.ScreenManager
         public override void RefreshUICulture() 
         {
             view.RefreshUICulture();
+            drawingToolbarPresenter.RefreshUICulture();
         }
         public override void PreferencesUpdated()
         {
@@ -505,8 +509,35 @@ namespace Kinovea.ScreenManager
         }
         private void InitializeTools()
         {
-            // todo : should we handle grouping here ?
-            //screenToolManager.AddSupportedTool(ToolManager.Label);
+            drawingToolbarPresenter.AddToolButton(screenToolManager.HandTool, DrawingTool_Click);
+            drawingToolbarPresenter.AddSeparator();
+            drawingToolbarPresenter.AddToolButton(ToolManager.Label, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButton(ToolManager.Pencil, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButtonPosture(DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Line, ToolManager.Circle}, 0, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButton(ToolManager.Arrow, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButton(ToolManager.CrossMark, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButton(ToolManager.Angle, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Plane, ToolManager.Grid}, 0, DrawingTool_Click);
+            drawingToolbarPresenter.AddToolButton(ToolManager.Magnifier, MagnifierTool_Click);
+            
+            // TODO: tool presets.
+        }
+        
+        private void DrawingTool_Click(object sender, EventArgs e)
+        {
+            // Disable magnifier.
+            // TODO: when we have a user control for the whole strip, it should directly
+            // pass the tool as sender.
+            AbstractDrawingTool tool = ((ToolStripItem)sender).Tag as AbstractDrawingTool;
+            screenToolManager.SetActiveTool(tool);
+            // Update cursor
+            // refresh for cursor.
+        }
+        
+        private void MagnifierTool_Click(object sender, EventArgs e)
+        {
+        
         }
         
         #region Recording/Snapshoting

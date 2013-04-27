@@ -96,6 +96,10 @@ namespace Kinovea.ScreenManager
             pnlCapturedVideos.Controls.Add(capturedFilesView);
             capturedFilesView.Dock = DockStyle.Fill;
         }
+        public void SetToolbarView(Control toolbar)
+        {
+            pnlDrawingToolsBar.Controls.Add(toolbar);
+        }
         
         public void UpdateTitle(string title)
         {

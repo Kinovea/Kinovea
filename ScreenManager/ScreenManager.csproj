@@ -174,6 +174,7 @@
   <ItemGroup>
     <Compile Include="AbstractFrameServer.cs" />
     <Compile Include="AbstractScreen.cs" />
+    <Compile Include="CaptureScreen\DrawingToolbarPresenter.cs" />
     <Compile Include="CaptureScreen\ScreenToolManager.cs" />
     <Compile Include="CaptureScreen\CapturedFile.cs" />
     <Compile Include="CaptureScreen\CapturedFiles.cs" />

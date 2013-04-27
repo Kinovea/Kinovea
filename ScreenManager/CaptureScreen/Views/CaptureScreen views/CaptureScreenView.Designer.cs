@@ -296,7 +296,7 @@ namespace Kinovea.ScreenManager
             this.pnlViewport.Location = new System.Drawing.Point(0, 25);
             this.pnlViewport.MinimumSize = new System.Drawing.Size(345, 25);
             this.pnlViewport.Name = "pnlViewport";
-            this.pnlViewport.Size = new System.Drawing.Size(665, 295);
+            this.pnlViewport.Size = new System.Drawing.Size(665, 292);
             this.pnlViewport.TabIndex = 6;
             // 
             // pnlDrawingToolsBar
@@ -306,9 +306,9 @@ namespace Kinovea.ScreenManager
             this.pnlDrawingToolsBar.AutoScroll = true;
             this.pnlDrawingToolsBar.BackColor = System.Drawing.Color.White;
             this.pnlDrawingToolsBar.Controls.Add(this.btnFoldCapturedVideosPanel);
-            this.pnlDrawingToolsBar.Location = new System.Drawing.Point(0, 320);
+            this.pnlDrawingToolsBar.Location = new System.Drawing.Point(0, 317);
             this.pnlDrawingToolsBar.Name = "pnlDrawingToolsBar";
-            this.pnlDrawingToolsBar.Size = new System.Drawing.Size(665, 25);
+            this.pnlDrawingToolsBar.Size = new System.Drawing.Size(665, 28);
             this.pnlDrawingToolsBar.TabIndex = 5;
             this.pnlDrawingToolsBar.DoubleClick += new System.EventHandler(this.BtnCapturedVideosFold_Click);
             // 
