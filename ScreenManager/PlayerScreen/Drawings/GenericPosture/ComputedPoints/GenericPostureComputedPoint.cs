@@ -36,7 +36,7 @@ namespace Kinovea.ScreenManager
         
         public GenericPostureComputedPoint(XmlReader r)
         {
-            Weight = 1.0F;
+            Weight = 0.0F;
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -45,6 +45,8 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("weight"))
                 Weight = r.ReadContentAsFloat();
+                
+            Weight = Math.Max(0.0F, Math.Min(1.0F, Weight));
             
             r.ReadStartElement();
             
@@ -81,11 +83,35 @@ namespace Kinovea.ScreenManager
             
             PointF result = PointF.Empty;
 
-            foreach(IWeightedPoint weightedPoint in weightedPoints)
+            if(weightedPoints.Count == 2)
             {
-                PointF location = weightedPoint.ComputeLocation(posture);
-                PointF scaled = location.Scale(weightedPoint.Weight, weightedPoint.Weight);
-                result = result.Translate(scaled.X, scaled.Y);
+                // Special case, weight is optionnal if the other point is weighted.
+                IWeightedPoint p0 = weightedPoints[0];
+                IWeightedPoint p1 = weightedPoints[1];
+                
+                float w0 = p0.Weight;
+                float w1 = p1.Weight;
+                
+                if(w0 == 0)
+                    w0 = 1-w1;
+                else if(w1 == 0)
+                    w1 = 1-w0;
+                
+                PointF l0 = p0.ComputeLocation(posture);
+                PointF l1 = p1.ComputeLocation(posture);
+                
+                float x = (l0.X * w0) + (l1.X * w1);
+                float y = (l0.Y * w0) + (l1.Y * w1);
+                result = new PointF(x,y);
+            }
+            else
+            {
+                foreach(IWeightedPoint weightedPoint in weightedPoints)
+                {
+                    PointF location = weightedPoint.ComputeLocation(posture);
+                    PointF scaled = location.Scale(weightedPoint.Weight, weightedPoint.Weight);
+                    result = result.Translate(scaled.X, scaled.Y);
+                }
             }
             
             return result;
@@ -93,6 +119,14 @@ namespace Kinovea.ScreenManager
         
         private void CheckTotalWeight()
         {
+            if(weightedPoints.Count == 2)
+            {
+                if(weightedPoints[0].Weight + weightedPoints[1].Weight == 0)
+                    log.ErrorFormat("Warning: total weight for \"{0}\" is 0.", Name);
+                
+                return;
+            }
+                
             float totalWeight = 0;
             
             foreach(IWeightedPoint weightedPoint in weightedPoints)
