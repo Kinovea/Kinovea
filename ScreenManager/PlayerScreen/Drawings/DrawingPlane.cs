@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -335,10 +336,10 @@ namespace Kinovea.ScreenManager
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format("{0};{1}", (int)quadImage.A.X, (int)quadImage.A.Y));
-		    _xmlWriter.WriteElementString("PointUpperRight", String.Format("{0};{1}", (int)quadImage.B.X, (int)quadImage.B.Y));
-		    _xmlWriter.WriteElementString("PointLowerRight", String.Format("{0};{1}", (int)quadImage.C.X, (int)quadImage.C.Y));
-		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format("{0};{1}", (int)quadImage.D.X, (int)quadImage.D.Y));
+		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.A.X, (int)quadImage.A.Y));
+		    _xmlWriter.WriteElementString("PointUpperRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.B.X, (int)quadImage.B.Y));
+		    _xmlWriter.WriteElementString("PointLowerRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.C.X, (int)quadImage.C.Y));
+		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.D.X, (int)quadImage.D.Y));
 		    
             _xmlWriter.WriteElementString("Perspective", inPerspective ? "true" : "false");
             

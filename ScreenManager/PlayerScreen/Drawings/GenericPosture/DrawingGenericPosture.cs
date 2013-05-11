@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -169,7 +170,7 @@ namespace Kinovea.ScreenManager
             
             if (fOpacityFactor <= 0)
                 return;
-        
+            
             List<Point> points = _transformer.Transform(m_GenericPosture.Points);
             
             List<Rectangle> boxes = new List<Rectangle>();
@@ -182,6 +183,8 @@ namespace Kinovea.ScreenManager
             using(SolidBrush brushHandle = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*255)))
             using(SolidBrush brushFill = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*m_iDefaultBackgroundAlpha)))
             {
+            
+                // Segments
                 foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
                 {
                     penEdge.Width = segment.Width;
@@ -194,6 +197,7 @@ namespace Kinovea.ScreenManager
                     _canvas.DrawLine(penEdge, points[segment.Start], points[segment.End]);
                 }
                 
+                // Ellipses.
                 foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
                 {
                     penEdge.Width = ellipse.Width;
@@ -203,9 +207,10 @@ namespace Kinovea.ScreenManager
                     _canvas.DrawEllipse(penEdge, center.Box(radius));
                 }
                 
+                // Handles
                 foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
                 {
-                    if(handle.Type == HandleType.Point)
+                    if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count)
                         _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
                 }
                 
@@ -242,6 +247,15 @@ namespace Kinovea.ScreenManager
                     
                     DrawDistanceText(a, b, label, _canvas, fOpacityFactor, _transformer, brushFill);
                 }
+                
+                // Computed points
+                foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
+                {
+                    PointF p = computedPoint.ComputeLocation(m_GenericPosture);
+                    PointF p2 = _transformer.Transform(p);
+                    _canvas.DrawEllipse(penEdge, p2.Box(3));
+                }
+                
             }
         }
         public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
@@ -257,22 +271,26 @@ namespace Kinovea.ScreenManager
             {
                 if(result >= 0)
                     break;
+                    
+                int reference = m_GenericPosture.Handles[i].Reference;
+                if(reference < 0)
+                    continue;
                 
                 switch(m_GenericPosture.Handles[i].Type)
                 {
                     case HandleType.Point:
-                        if(m_GenericPosture.Points[m_GenericPosture.Handles[i].Reference].Box(boxSide).Contains(point))
+                        if(reference < m_GenericPosture.Points.Count && m_GenericPosture.Points[reference].Box(boxSide).Contains(point))
                             result = i+1;
                         break;
                     case HandleType.Segment:
-                        if(IsPointOnSegment(m_GenericPosture.Segments[m_GenericPosture.Handles[i].Reference], point))
+                        if(reference < m_GenericPosture.Segments.Count && IsPointOnSegment(m_GenericPosture.Segments[reference], point))
                         {
                             m_GenericPosture.Handles[i].GrabPoint = point;
                             result = i+1;
                         }
                         break;
                     case HandleType.Ellipse:
-                        if(IsPointOnEllipseArc(m_GenericPosture.Ellipses[m_GenericPosture.Handles[i].Reference], point))
+                        if(reference < m_GenericPosture.Ellipses.Count && IsPointOnEllipseArc(m_GenericPosture.Ellipses[reference], point))
                             result = i+1;
                         break;
                 }
@@ -382,7 +400,7 @@ namespace Kinovea.ScreenManager
             
             _xmlWriter.WriteStartElement("Positions");
             foreach (PointF p in m_GenericPosture.Points)
-                _xmlWriter.WriteElementString("Point", String.Format("{0};{1}", p.X, p.Y));
+                _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("DrawingStyle");
