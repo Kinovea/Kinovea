@@ -624,14 +624,10 @@ namespace Kinovea.ScreenManager
 			m_FrameServer.Metadata.AllDrawingTextToNormalMode();
 			m_ActiveTool = m_ActiveTool.KeepToolFrameChanged ? m_ActiveTool : m_PointerTool;
 			if(m_ActiveTool == m_PointerTool)
-			{
 				SetCursor(m_PointerTool.GetCursor(-1));
-			}
 
 			if (m_FrameServer.RecentlyCapturedVideos.Count < 1)
-			{
 				DockKeyframePanel(true);
-			}
 		}
 		private void DoDrawingUndrawn()
 		{
@@ -1963,7 +1959,7 @@ namespace Kinovea.ScreenManager
             if (!Directory.Exists(path))
                 return;
 
-            string arg = "\"" + PreferencesManager.CapturePreferences.VideoDirectory +"\"";
+            string arg = "\"" + path +"\"";
             System.Diagnostics.Process.Start("explorer.exe", arg);
         }
         #endregion

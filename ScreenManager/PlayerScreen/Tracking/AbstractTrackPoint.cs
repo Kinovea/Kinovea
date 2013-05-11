@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
 		#region Concrete Public Methods
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-			_xmlWriter.WriteString(String.Format("{0};{1};{2}", X, Y, T));
+			_xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2}", X, Y, T));
 		}
 		public void ReadXml(XmlReader _xmlReader)
         {
