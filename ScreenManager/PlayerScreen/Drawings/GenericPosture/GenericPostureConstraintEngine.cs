@@ -76,7 +76,7 @@ namespace Kinovea.ScreenManager
                         MovePointHandleAlongLine(posture, handle, point, constraint as GenericPostureConstraintLineSlide);
                         break;
                     case ConstraintType.VerticalSlide:
-                        MovePointHandleAlongVertical(posture, handle, point);
+                        MovePointHandleAlongVertical(posture, calibrationHelper, handle, point);
                         break;
                     case ConstraintType.HorizontalSlide:
                         MovePointHandleAlongHorizontal(posture, handle, point);
@@ -105,7 +105,7 @@ namespace Kinovea.ScreenManager
                         AlignPointSegment(posture, impact as GenericPostureImpactLineAlign);
                         break;
                     case ImpactType.VerticalAlign:
-                        AlignPointVertical(posture, handle, impact as GenericPostureImpactVerticalAlign);
+                        AlignPointVertical(posture, calibrationHelper, handle, impact as GenericPostureImpactVerticalAlign);
                         break;
                     case ImpactType.HorizontalAlign:
                         AlignPointHorizontal(posture, handle, impact as GenericPostureImpactHorizontalAlign);
@@ -225,8 +225,16 @@ namespace Kinovea.ScreenManager
             
             posture.Points[posture.Handles[handle].Reference] = GeometryHelper.GetClosestPoint(start, end, point, constraint.AllowedPosition, constraint.Margin);
         }
-        private static void MovePointHandleAlongVertical(GenericPosture posture, int handle, Point point)
+        private static void MovePointHandleAlongVertical(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point)
         {
+            /*PointF source = calibrationHelper.GetPoint(posture.Points[posture.Handles[handle].Reference]);
+            PointF target = calibrationHelper.GetPoint(point.ToPointF());
+        
+            PointF result = new PointF(source.X, target.Y);
+            PointF resultImage = calibrationHelper.GetImagePoint(result);
+            
+            posture.Points[posture.Handles[handle].Reference] = resultImage;*/
+            
             posture.Points[posture.Handles[handle].Reference] = new PointF(posture.Points[posture.Handles[handle].Reference].X, point.Y);
         }
         private static void MovePointHandleAlongHorizontal(GenericPosture posture, int handle, Point point)
@@ -373,10 +381,16 @@ namespace Kinovea.ScreenManager
             PointF result = GeometryHelper.GetClosestPoint(start, end, posture.Points[impact.PointToAlign], PointLinePosition.Anywhere, 10);
             posture.Points[impact.PointToAlign] = result;
         }
-        private static void AlignPointVertical(GenericPosture posture, int handle, GenericPostureImpactVerticalAlign impact)
+        private static void AlignPointVertical(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, GenericPostureImpactVerticalAlign impact)
         {
             if(impact == null)
                 return;
+            
+            /*PointF impacted = calibrationHelper.GetPoint(posture.Points[impact.PointRef]);
+            PointF impacting = calibrationHelper.GetPoint(posture.Points[posture.Handles[handle].Reference]);
+            
+            PointF result = calibrationHelper.GetImagePoint(new PointF(impacted.X, impacting.Y));
+            posture.Points[impact.PointRef] = result;*/
             
             PointF impacted = posture.Points[impact.PointRef];
             PointF impacting = posture.Points[posture.Handles[handle].Reference];
