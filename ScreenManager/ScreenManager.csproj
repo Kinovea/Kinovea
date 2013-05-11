@@ -268,6 +268,9 @@
     <Compile Include="PlayerScreen\Drawings\Events\MeasurableDrawingEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\TrackableDrawingEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\TrackablePointMovedEventArgs.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints\GenericPostureComputedPoint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints\GenericPostureReferencePoint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints\IWeightedPoint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\ConstraintType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureAbstractConstraint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintDistanceToPoint.cs" />
@@ -765,6 +768,7 @@
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\HitZones" />
+    <Folder Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints" />
     <Folder Include="PlayerScreen\Drawings\Interfaces" />
     <Folder Include="PlayerScreen\Drawings\Events" />
     <Folder Include="PlayerScreen\Drawings\Styling" />

@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureDistance> Distances { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
+        public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public GenericPostureCapabilities Capabilities { get; private set;}
         public bool Trackable { get; private set;}
@@ -73,6 +74,7 @@ namespace Kinovea.ScreenManager
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
             Distances = new List<GenericPostureDistance>();
+            ComputedPoints = new List<GenericPostureComputedPoint>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             Capabilities = GenericPostureCapabilities.None;
             
@@ -181,6 +183,9 @@ namespace Kinovea.ScreenManager
     						break;
     					case "Handles":
     						ParseHandles(r);
+    						break;
+                        case "ComputedPoints":
+    						ParseComputedPoints(r);
     						break;
                         case "HitZone":
     						ParseHitZone(r);
@@ -303,6 +308,25 @@ namespace Kinovea.ScreenManager
                 if(r.Name == "Handle")
                 {
                     Handles.Add(new GenericPostureHandle(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
+        private void ParseComputedPoints(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                if(r.Name == "ComputedPoint")
+                {
+                    ComputedPoints.Add(new GenericPostureComputedPoint(r));
                 }
                 else
                 {
