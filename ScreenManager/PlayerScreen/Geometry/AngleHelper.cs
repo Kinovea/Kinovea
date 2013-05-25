@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         public PointF Origin { get; private set;}
         public bool Tenth { get; private set;}
         public string Symbol { get; private set;}
+        public Color Color { get; private set;}
         
         private bool relative;
         private int textDistance;
@@ -47,13 +48,14 @@ namespace Kinovea.ScreenManager
             this.Tenth = tenth;
             this.Symbol = symbol;
         }
-        public void Update(PointF o, PointF a, PointF b, int radius, CalibrationHelper calibration)
+        public void Update(PointF o, PointF a, PointF b, int radius, Color color, CalibrationHelper calibration)
         {
             if(o == a || o == b)
                 return;
 
             Origin = o;
             Angle = ComputeAngle(o, a, b);
+            Color = color;
             
             if(calibration != null && calibration.CalibratorType == CalibratorType.Plane)
             {

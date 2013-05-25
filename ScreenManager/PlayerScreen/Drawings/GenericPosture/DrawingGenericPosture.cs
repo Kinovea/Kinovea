@@ -179,16 +179,27 @@ namespace Kinovea.ScreenManager
                 boxes.Add(_transformer.Transform(angle.BoundingBox));
             }
             
-            using(Pen penEdge = m_StyleHelper.GetBackgroundPen((int)(fOpacityFactor * 255)))
-            using(SolidBrush brushHandle = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*255)))
-            using(SolidBrush brushFill = m_StyleHelper.GetBackgroundBrush((int)(fOpacityFactor*m_iDefaultBackgroundAlpha)))
-            {
+            int alpha = (int)(fOpacityFactor * 255);
+            int alphaBackground = (int)(fOpacityFactor*m_iDefaultBackgroundAlpha);
             
+            alpha = Math.Max(0, Math.Min(255, alpha));
+            alphaBackground = Math.Max(0, Math.Min(255, alphaBackground));
+            
+            using(Pen penEdge = m_StyleHelper.GetBackgroundPen(alpha))
+            using(SolidBrush brushHandle = m_StyleHelper.GetBackgroundBrush(alpha))
+            using(SolidBrush brushFill = m_StyleHelper.GetBackgroundBrush(alphaBackground))
+            {
+                Color basePenEdgeColor = penEdge.Color;
+                Color baseBrushHandleColor = brushHandle.Color;
+                Color baseBrushFillColor = brushFill.Color;
+                
                 // Segments
                 foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
                 {
                     penEdge.Width = segment.Width;
                     penEdge.DashStyle = Convert(segment.Style);
+                    penEdge.Color = segment.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, segment.Color);
+
                     if(segment.ArrowBegin)
                         penEdge.StartCap = LineCap.ArrowAnchor;
                     if(segment.ArrowEnd)
@@ -197,35 +208,53 @@ namespace Kinovea.ScreenManager
                     _canvas.DrawLine(penEdge, points[segment.Start], points[segment.End]);
                 }
                 
+                penEdge.Color = basePenEdgeColor;
+                penEdge.StartCap = LineCap.NoAnchor;
+                penEdge.EndCap = LineCap.NoAnchor;
+                
                 // Ellipses.
                 foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
                 {
                     penEdge.Width = ellipse.Width;
                     penEdge.DashStyle = Convert(ellipse.Style);
+                    penEdge.Color = ellipse.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, ellipse.Color);
                     Point center = points[ellipse.Center];
                     int radius = _transformer.Transform(ellipse.Radius);
                     _canvas.DrawEllipse(penEdge, center.Box(radius));
                 }
                 
+                penEdge.Color = basePenEdgeColor;
+                
+                
                 // Handles
                 foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
                 {
                     if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count)
+                    {
+                        brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
                         _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
+                    }
                 }
+                
+                brushHandle.Color = baseBrushHandleColor;
                 
                 // Angles
                 penEdge.Width = 2;
                 penEdge.DashStyle = DashStyle.Solid;
                 for(int i = 0; i<m_Angles.Count; i++)
                 {
+                    AngleHelper angle = m_Angles[i];
+                    
                     if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
                         UpdateAngles();
+                    
+                    brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
                     
                     _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
                     
                     try
                     {
+                        penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
                         _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
                     }
                     catch(Exception e)
@@ -236,6 +265,9 @@ namespace Kinovea.ScreenManager
                     DrawAngleText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
                 }
                 
+                brushFill.Color = baseBrushFillColor;
+                penEdge.Color = basePenEdgeColor;
+                
                 // Distances
                 foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
                 {
@@ -245,17 +277,22 @@ namespace Kinovea.ScreenManager
                     if(!string.IsNullOrEmpty(distance.Symbol))
                         label = string.Format("{0} = {1}", distance.Symbol, label);
                     
+                    brushFill.Color = distance.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, distance.Color);
                     DrawDistanceText(a, b, label, _canvas, fOpacityFactor, _transformer, brushFill);
                 }
+                
+                brushFill.Color = baseBrushFillColor;
                 
                 // Computed points
                 foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
                 {
                     PointF p = computedPoint.ComputeLocation(m_GenericPosture);
                     PointF p2 = _transformer.Transform(p);
+                    penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
                     _canvas.DrawEllipse(penEdge, p2.Box(3));
                 }
                 
+                penEdge.Color = basePenEdgeColor;
             }
         }
         public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
@@ -498,7 +535,8 @@ namespace Kinovea.ScreenManager
                 PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
                 PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
                 int radius = m_GenericPosture.Angles[i].Radius;
-                m_Angles[i].Update(origin, leg1, leg2, radius, CalibrationHelper);
+                Color color = m_GenericPosture.Angles[i].Color;
+                m_Angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper);
             }
         }
         private DashStyle Convert(SegmentLineStyle style)

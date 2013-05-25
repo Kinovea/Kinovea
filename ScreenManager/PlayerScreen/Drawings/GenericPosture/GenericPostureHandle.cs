@@ -24,11 +24,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public class GenericPostureHandle
     {
         public HandleType Type { get; private set;}
+        public Color Color { get; private set; }
         public int Reference { get; private set;}
         public bool Trackable { get; private set;}
         public PointF GrabPoint { get; set;}
@@ -52,6 +55,7 @@ namespace Kinovea.ScreenManager
             
             Constraint = null;
             Impacts = new List<GenericPostureAbstractImpact>();
+            Color = Color.Transparent;
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -63,6 +67,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("trackable"))
                 Trackable = r.ReadContentAsBoolean();
+            
+            if(r.MoveToAttribute("color"))
+                Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
             
             r.ReadStartElement();
             

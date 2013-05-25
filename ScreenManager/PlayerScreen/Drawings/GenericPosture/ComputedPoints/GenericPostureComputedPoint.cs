@@ -23,12 +23,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public class GenericPostureComputedPoint : IWeightedPoint
     {
         public float Weight { get; private set;}
         public string Name { get; private set;}
+        public Color Color { get; private set; }
         
         private List<IWeightedPoint> weightedPoints = new List<IWeightedPoint>();
         
@@ -37,6 +40,7 @@ namespace Kinovea.ScreenManager
         public GenericPostureComputedPoint(XmlReader r)
         {
             Weight = 0.0F;
+            Color = Color.Transparent;
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -47,6 +51,9 @@ namespace Kinovea.ScreenManager
                 Weight = r.ReadContentAsFloat();
                 
             Weight = Math.Max(0.0F, Math.Min(1.0F, Weight));
+            
+            if(r.MoveToAttribute("color"))
+                Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
             
             r.ReadStartElement();
             
