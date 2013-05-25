@@ -84,9 +84,11 @@ namespace Kinovea.ScreenManager
                 }
                 else if(r.Name == "Impact")
                 {
-                    GenericPostureAbstractImpact impact = ParseImpact(r);
-                    if(impact != null)
-                        Impacts.Add(impact);
+                    ParseImpacts(r);
+                }
+                else if(r.Name == "Impacts")
+                {
+                    ParseImpacts(r);
                 }
                 else
                 {
@@ -143,61 +145,74 @@ namespace Kinovea.ScreenManager
             if(!isEmpty)
                 r.ReadEndElement();
         }
-        private GenericPostureAbstractImpact ParseImpact(XmlReader r)
+        private void ParseImpacts(XmlReader r)
         {
-            // An "impact" reprsent how other points are constrained by the position of this handle.
-            GenericPostureAbstractImpact impact = null;
-            ImpactType type = ImpactType.None;
-            
-            bool isEmpty = r.IsEmptyElement;
-            
-            if(r.MoveToAttribute("type"))
-                type = (ImpactType) Enum.Parse(typeof(ImpactType), r.ReadContentAsString());
-            
             r.ReadStartElement();
             
-            switch(type)
+            while(r.NodeType == XmlNodeType.Element)
             {
-                case ImpactType.None:
-                    impact = null;
-                    break;
-                case ImpactType.LineAlign:
-                    impact = new GenericPostureImpactLineAlign(r);
-                    break;
-                case ImpactType.VerticalAlign:
-                    impact = new GenericPostureImpactVerticalAlign(r);
-                    break;
-                case ImpactType.HorizontalAlign:
-                    impact = new GenericPostureImpactHorizontalAlign(r);
-                    break;
-                case ImpactType.Pivot:
-                    impact = new GenericPostureImpactPivot(r);
-                    break;
-                case ImpactType.KeepAngle:
-                    impact = new GenericPostureImpactKeepAngle(r);
-                    break;
-                case ImpactType.HorizontalSymmetry:
-                    impact = new GenericPostureImpactHorizontalSymmetry(r);
-                    break;
-                case ImpactType.SegmentCenter:
-                    impact = new GenericPostureImpactSegmentCenter(r);
-                    break;
-                case ImpactType.PerdpendicularAlign:
-                    impact = new GenericPosturePerpendicularAlign(r);
-                    break;
-                case ImpactType.ParallelAlign:
-                    impact = new GenericPostureParallelAlign(r);
-                    break;
-                default:
+                if(r.Name == "Align")
+                {
+                    GenericPostureImpactLineAlign impact = new GenericPostureImpactLineAlign(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "VerticalAlign")
+                {
+                    GenericPostureImpactVerticalAlign impact = new GenericPostureImpactVerticalAlign(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "HorizontalAlign")
+                {
+                    GenericPostureImpactHorizontalAlign impact = new GenericPostureImpactHorizontalAlign(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "Pivot")
+                {
+                    GenericPostureImpactPivot impact = new GenericPostureImpactPivot(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "KeepAngle")
+                {
+                    GenericPostureImpactKeepAngle impact = new GenericPostureImpactKeepAngle(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "HorizontalSymmetry")
+                {
+                    GenericPostureImpactHorizontalSymmetry impact = new GenericPostureImpactHorizontalSymmetry(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "SegmentCenter")
+                {
+                    GenericPostureImpactSegmentCenter impact = new GenericPostureImpactSegmentCenter(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "PerdpendicularAlign")
+                {
+                    GenericPosturePerpendicularAlign impact = new GenericPosturePerpendicularAlign(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else if(r.Name == "ParallelAlign")
+                {
+                    GenericPostureParallelAlign impact = new GenericPostureParallelAlign(r);
+                    if(impact != null)
+                        Impacts.Add(impact);
+                }
+                else
+                {
                     string outerXml = r.ReadOuterXml();
-                    log.DebugFormat("Unparsed content: {0}", outerXml);
-                    break;
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
             }
             
-            if(!isEmpty)
-                r.ReadEndElement();
-            
-            return impact;
+            r.ReadEndElement();
         }
     }
 }
