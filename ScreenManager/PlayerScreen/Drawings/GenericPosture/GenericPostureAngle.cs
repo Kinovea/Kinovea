@@ -37,12 +37,14 @@ namespace Kinovea.ScreenManager
         public int Radius { get; set;}
         public bool Tenth { get; private set;}
         public string Symbol { get; private set;}
+        public Color Color { get; private set; }
         
         public GenericPostureAngle(XmlReader r)
         {
             //<Angle origin="1" leg1="2" leg2="3" relative="true" />
             
             Relative = true;
+            Color = Color.Transparent;
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -66,6 +68,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("symbol"))
                 Symbol = r.ReadContentAsString();
+                
+            if(r.MoveToAttribute("color"))
+                Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
 
             r.ReadStartElement();
             

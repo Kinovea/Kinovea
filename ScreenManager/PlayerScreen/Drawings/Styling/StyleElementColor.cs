@@ -94,7 +94,7 @@ namespace Kinovea.ScreenManager
 		    // Do not use the .NET color converter at reading time either, it breaks on some installations.
 			_xmlReader.ReadStartElement();
 			string s = _xmlReader.ReadElementContentAsString("Value", "");
-			m_Color = XmlHelper.ParseColor(s);
+			m_Color = XmlHelper.ParseColor(s, Color.Black);
 			_xmlReader.ReadEndElement();
 		}
 		public override void WriteXml(XmlWriter _xmlWriter)

@@ -204,7 +204,7 @@ namespace Kinovea.Services
             while(reader.NodeType == XmlNodeType.Element)
             {
                 if(reader.Name == "RecentColor")
-                    recentColors.Add(XmlHelper.ParseColor(reader.ReadElementContentAsString()));
+                    recentColors.Add(XmlHelper.ParseColor(reader.ReadElementContentAsString(), Color.Black));
                 else
                     reader.ReadOuterXml();
             }

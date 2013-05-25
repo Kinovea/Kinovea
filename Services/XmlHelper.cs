@@ -121,9 +121,9 @@ namespace Kinovea.Services
             }
             return l;
         }
-        public static Color ParseColor(string xmlColor)
+        public static Color ParseColor(string xmlColor, Color byDefault)
         {
-            Color output = Color.Black;
+            Color output = byDefault;
 
             try
             {
@@ -135,6 +135,11 @@ namespace Kinovea.Services
                 else if(a.Length == 4)
                 {
                     output = Color.FromArgb(byte.Parse(a[0]), byte.Parse(a[1]), byte.Parse(a[2]), byte.Parse(a[3]));
+                }
+                else
+                {
+                    ColorConverter converter = new ColorConverter();
+                    output = (Color)converter.ConvertFromString(xmlColor);
                 }
             }
             catch (Exception)
