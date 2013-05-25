@@ -34,7 +34,6 @@ namespace Kinovea.ScreenManager
         public GenericPostureConstraintLineSlide(XmlReader r)
         {
             // <LineSlide point1="0" point2="2" position="Inbetween"/>
-            Type = ConstraintType.LineSlide;
             Margin = 10;
             
             bool isEmpty = r.IsEmptyElement;

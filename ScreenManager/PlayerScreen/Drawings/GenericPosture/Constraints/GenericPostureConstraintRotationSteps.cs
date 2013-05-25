@@ -32,8 +32,6 @@ namespace Kinovea.ScreenManager
         
         public GenericPostureConstraintRotationSteps(XmlReader r)
         {
-            Type = ConstraintType.RotationSteps;
-            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("origin"))

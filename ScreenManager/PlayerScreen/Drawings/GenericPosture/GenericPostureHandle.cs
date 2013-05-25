@@ -104,9 +104,13 @@ namespace Kinovea.ScreenManager
             // A "constraint" represents the valid positions where the handle can go.
             bool isEmpty = r.IsEmptyElement;
             ConstraintType type = ConstraintType.None;
+            string group = "";
             
             if(r.MoveToAttribute("type"))
                 type = (ConstraintType) Enum.Parse(typeof(ConstraintType), r.ReadContentAsString());
+            
+            if(r.MoveToAttribute("group"))
+                group = r.ReadContentAsString();
             
             r.ReadStartElement();
             
@@ -140,6 +144,14 @@ namespace Kinovea.ScreenManager
                     string outerXml = r.ReadOuterXml();
                     log.DebugFormat("Unparsed content: {0}", outerXml);
                     break;
+            }
+            
+            if(Constraint != null)
+            {
+                Constraint.Type = type;
+                
+                if(!string.IsNullOrEmpty(group))
+                    Constraint.Group = group;
             }
             
             if(!isEmpty)

@@ -28,7 +28,6 @@ namespace Kinovea.ScreenManager
     {
         public GenericPostureConstraintHorizontalSlide()
         {
-            Type = ConstraintType.HorizontalSlide;
         }
     }
 }

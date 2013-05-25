@@ -30,8 +30,6 @@ namespace Kinovea.ScreenManager
         
         public GenericPostureConstraintDistanceToPoint(XmlReader r)
         {
-            Type = ConstraintType.DistanceToPoint;
-            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("point"))
