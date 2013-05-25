@@ -97,7 +97,7 @@
   </Handles>
 
   <ComputedPoints>
-    <ComputedPoint name="Center of mass" color="#2aa198">
+    <ComputedPoint name="Center of mass" color="#2aa198" displayCoordinates="false">
       <ComputedPoint name="Head" weight="0.073">
         <ReferencePoint ref="0" weight="0.536" />
         <ReferencePoint ref="1" weight="0.464" />

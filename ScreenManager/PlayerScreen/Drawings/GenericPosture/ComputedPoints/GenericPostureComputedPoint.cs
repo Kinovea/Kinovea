@@ -32,6 +32,8 @@ namespace Kinovea.ScreenManager
         public float Weight { get; private set;}
         public string Name { get; private set;}
         public Color Color { get; private set; }
+        public string Symbol { get; private set;}
+        public bool DisplayCoordinates { get; set;}
         
         private List<IWeightedPoint> weightedPoints = new List<IWeightedPoint>();
         
@@ -41,6 +43,9 @@ namespace Kinovea.ScreenManager
         {
             Weight = 0.0F;
             Color = Color.Transparent;
+            Symbol = "";
+            DisplayCoordinates = false;
+            
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -55,6 +60,12 @@ namespace Kinovea.ScreenManager
             if(r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
             
+            if(r.MoveToAttribute("symbol"))
+                Symbol = r.ReadContentAsString();
+                
+            if(r.MoveToAttribute("displayCoordinates"))
+                DisplayCoordinates = XmlHelper.ParseBoolean(r.ReadContentAsString());
+                
             r.ReadStartElement();
             
             if(isEmpty)
