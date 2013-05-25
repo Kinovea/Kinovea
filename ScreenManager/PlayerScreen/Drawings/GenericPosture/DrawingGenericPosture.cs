@@ -289,7 +289,23 @@ namespace Kinovea.ScreenManager
                     PointF p = computedPoint.ComputeLocation(m_GenericPosture);
                     PointF p2 = _transformer.Transform(p);
                     penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
-                    _canvas.DrawEllipse(penEdge, p2.Box(3));
+                    
+                    if(computedPoint.DisplayCoordinates)
+                    {
+                        string label = CalibrationHelper.GetPointText(p, true, true);
+                        brushFill.Color = computedPoint.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, computedPoint.Color);
+                        DrawPointText(p2, label, computedPoint.Symbol, _canvas, fOpacityFactor, _transformer, brushFill);
+                        _canvas.DrawEllipse(penEdge, p2.Box(3));
+                    }
+                    else if (!string.IsNullOrEmpty(computedPoint.Symbol))
+                    {
+                        brushHandle.Color = computedPoint.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, computedPoint.Color);
+                        DrawSimpleText(p2, computedPoint.Symbol, _canvas, fOpacityFactor, _transformer, brushHandle);
+                    }
+                    else
+                    {
+                        _canvas.DrawEllipse(penEdge, p2.Box(3));
+                    }
                 }
                 
                 penEdge.Color = basePenEdgeColor;
@@ -591,21 +607,45 @@ namespace Kinovea.ScreenManager
         }
         private void DrawDistanceText(PointF a, PointF b, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
         {
-            SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(opacity * 255));
+            PointF middle = GeometryHelper.GetMiddlePoint(a, b);
+            PointF offset = new PointF(0, 15);
+            
+            DrawTextOnBackground(middle, offset, label, canvas, opacity, transformer, brushFill);
+        }
+        private void DrawPointText(PointF location, string label, string symbol, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        {
+            if(!string.IsNullOrEmpty(symbol))
+                label = string.Format("{0} = {1}", symbol, label);
+            
+            PointF offset = new PointF(0, -20);
+            
+            DrawTextOnBackground(location, offset, label, canvas, opacity, transformer, brushFill);
+        }
+        private void DrawTextOnBackground(PointF location, PointF offset, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        {
             Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
-
-            PointF middle = GeometryHelper.GetMiddlePoint(a, b);
-            PointF textOrigin = new PointF(middle.X - labelSize.Width / 2, middle.Y + 5);
+            PointF textOrigin = new PointF(location.X - (labelSize.Width / 2) + offset.X, location.Y - (labelSize.Height / 2) + offset.Y);
             
+            Bicolor bicolor = new Bicolor(brushFill.Color);
+            SolidBrush fontBrush = new SolidBrush(Color.FromArgb((int)(opacity*255), bicolor.Foreground));
+
             RectangleF backRectangle = new RectangleF(textOrigin, labelSize);
             RoundedRectangle.Draw(canvas, backRectangle, brushFill, tempFont.Height/4, false, false, null);
 
             // Text
-			canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
+            canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
             
-            tempFont.Dispose();
             fontBrush.Dispose();
+            tempFont.Dispose();
+        }
+        private void DrawSimpleText(PointF location, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brush)
+        {
+            Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
+            SizeF labelSize = canvas.MeasureString(label, tempFont);
+            PointF textOrigin = new PointF(location.X - labelSize.Width / 2, location.Y - labelSize.Height / 2);
+            canvas.DrawString(label, tempFont, brush, textOrigin);
+            tempFont.Dispose();
         }
         private bool IsPointInObject(Point _point)
         {
