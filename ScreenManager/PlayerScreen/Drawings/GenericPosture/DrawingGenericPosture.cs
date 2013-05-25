@@ -85,11 +85,14 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-                if(m_GenericPosture.Capabilities == GenericPostureCapabilities.None)
-                    return null;
-                
                 // Rebuild the menu each time to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                
+                if(m_GenericPosture.OptionnalConstraintsGroups.Count > 0)
+                {
+                    menuOptionnalConstraints.Text = "Optionnal Constraints";
+                    contextMenu.Add(menuOptionnalConstraints);
+                }
                 
                 if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
                 {
@@ -103,7 +106,10 @@ namespace Kinovea.ScreenManager
                     contextMenu.Add(menuFlipVertical);
                 }
 
-                return contextMenu; 
+                if(contextMenu.Count == 0)
+                    return null;
+                else 
+                    return contextMenu; 
             }
         }
         public CalibrationHelper CalibrationHelper { get; set; }
@@ -116,6 +122,7 @@ namespace Kinovea.ScreenManager
     	private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
         
+        private ToolStripMenuItem menuOptionnalConstraints = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipHorizontal = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipVertical = new ToolStripMenuItem();
         
@@ -130,7 +137,7 @@ namespace Kinovea.ScreenManager
         {
             m_GenericPosture = _posture;
             if(m_GenericPosture != null)
-                InitAngles();
+                Init();
             
             // Decoration and binding to mini editors.
             m_StyleHelper.Bicolor = new Bicolor(Color.Empty);
@@ -155,7 +162,7 @@ namespace Kinovea.ScreenManager
             ReadXml(_xmlReader, _scale);
             
             if(m_GenericPosture != null)
-                InitAngles();
+                Init();
             else 
                 m_GenericPosture = new GenericPosture("", true, false);
         }
@@ -536,6 +543,33 @@ namespace Kinovea.ScreenManager
         }
         
         #region Lower level helpers
+        private void Init()
+        {
+            InitAngles();
+            InitMenus();
+        }
+        private void InitMenus()
+        {
+            // optionnal constraints
+            if(m_GenericPosture == null || m_GenericPosture.OptionnalConstraintsGroups == null || m_GenericPosture.OptionnalConstraintsGroups.Count == 0)
+                return;
+            
+            foreach(string option in m_GenericPosture.OptionnalConstraintsGroups.Keys)
+            {
+                ToolStripMenuItem menu = new ToolStripMenuItem();
+                menu.Text = option;
+                string closureOption = option;
+                //menu.Image
+                menu.Click += (s, e) => {
+                    m_GenericPosture.OptionnalConstraintsGroups[closureOption] = !m_GenericPosture.OptionnalConstraintsGroups[closureOption];
+                    menu.Checked = m_GenericPosture.OptionnalConstraintsGroups[closureOption];
+                };
+                
+                menuOptionnalConstraints.DropDownItems.Add(menu);
+            }
+            
+            //menuOptionnalConstraints.Image
+        }
         private void InitAngles()
         {
             for(int i=0;i<m_GenericPosture.Angles.Count;i++)

@@ -31,8 +31,6 @@ namespace Kinovea.ScreenManager
         
         public GenericPostureConstraintPerpendicularSlide(XmlReader r)
         {
-            Type = ConstraintType.PerpendicularSlide;
-            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("origin"))

@@ -61,7 +61,8 @@ namespace Kinovea.ScreenManager
             PointF old = posture.Points[posture.Handles[handle].Reference];
             PrepareImpacts(posture, handle);
             
-            if(constraint == null)
+            if(constraint == null || 
+               (!string.IsNullOrEmpty(constraint.Group) && !posture.OptionnalConstraintsGroups[constraint.Group]))
             {
                 MovePointHandleFreely(posture, handle, point);
             }

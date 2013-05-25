@@ -51,6 +51,8 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public GenericPostureCapabilities Capabilities { get; private set;}
+        public Dictionary<string, bool> OptionnalConstraintsGroups { get; private set;}
+        
         public bool Trackable { get; private set;}
         public bool FromKVA { get; private set;}
         #endregion
@@ -77,6 +79,7 @@ namespace Kinovea.ScreenManager
             ComputedPoints = new List<GenericPostureComputedPoint>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             Capabilities = GenericPostureCapabilities.None;
+            OptionnalConstraintsGroups = new Dictionary<string, bool>();
             
             if(string.IsNullOrEmpty(descriptionFile))
                 return;
@@ -317,6 +320,18 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+            
+            ImportConstraintsOptionGroups();
+        }
+        private void ImportConstraintsOptionGroups()
+        {
+            foreach(GenericPostureHandle handle in Handles)
+            {
+                if(handle.Constraint == null || string.IsNullOrEmpty(handle.Constraint.Group) || OptionnalConstraintsGroups.ContainsKey(handle.Constraint.Group))
+                    continue;
+                
+                OptionnalConstraintsGroups.Add(handle.Constraint.Group, false);
+            }
         }
         private void ParseComputedPoints(XmlReader r)
         {

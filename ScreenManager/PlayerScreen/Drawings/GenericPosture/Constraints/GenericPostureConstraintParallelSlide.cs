@@ -32,8 +32,6 @@ namespace Kinovea.ScreenManager
         
         public GenericPostureConstraintParallelSlide(XmlReader r)
         {
-            Type = ConstraintType.ParallelSlide;
-            
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("a"))
