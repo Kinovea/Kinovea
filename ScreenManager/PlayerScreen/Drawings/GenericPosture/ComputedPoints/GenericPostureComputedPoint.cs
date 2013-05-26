@@ -33,6 +33,8 @@ namespace Kinovea.ScreenManager
         public string Name { get; private set;}
         public Color Color { get; private set; }
         public string Symbol { get; private set;}
+        public string OptionGroup { get; private set;}
+        
         public bool DisplayCoordinates { get; set;}
         
         private List<IWeightedPoint> weightedPoints = new List<IWeightedPoint>();
@@ -42,8 +44,9 @@ namespace Kinovea.ScreenManager
         public GenericPostureComputedPoint(XmlReader r)
         {
             Weight = 0.0F;
-            Color = Color.Transparent;
             Symbol = "";
+            Color = Color.Transparent;
+            OptionGroup = "";
             DisplayCoordinates = false;
             
             
@@ -57,11 +60,14 @@ namespace Kinovea.ScreenManager
                 
             Weight = Math.Max(0.0F, Math.Min(1.0F, Weight));
             
+            if(r.MoveToAttribute("symbol"))
+                Symbol = r.ReadContentAsString();
+            
             if(r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
             
-            if(r.MoveToAttribute("symbol"))
-                Symbol = r.ReadContentAsString();
+            if(r.MoveToAttribute("optionGroup"))
+                OptionGroup = r.ReadContentAsString();
                 
             if(r.MoveToAttribute("displayCoordinates"))
                 DisplayCoordinates = XmlHelper.ParseBoolean(r.ReadContentAsString());

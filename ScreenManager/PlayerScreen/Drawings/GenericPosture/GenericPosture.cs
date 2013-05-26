@@ -51,7 +51,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
         public GenericPostureCapabilities Capabilities { get; private set;}
-        public Dictionary<string, bool> OptionnalConstraintsGroups { get; private set;}
+        public Dictionary<string, bool> OptionGroups { get; private set;}
         
         public bool Trackable { get; private set;}
         public bool FromKVA { get; private set;}
@@ -59,6 +59,7 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private List<int> trackableIndices = new List<int>();
+        private List<string> defaultOptions = new List<string>();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -79,7 +80,7 @@ namespace Kinovea.ScreenManager
             ComputedPoints = new List<GenericPostureComputedPoint>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             Capabilities = GenericPostureCapabilities.None;
-            OptionnalConstraintsGroups = new Dictionary<string, bool>();
+            OptionGroups = new Dictionary<string, bool>();
             
             if(string.IsNullOrEmpty(descriptionFile))
                 return;
@@ -193,6 +194,9 @@ namespace Kinovea.ScreenManager
                         case "HitZone":
     						ParseHitZone(r);
     						break;
+                        case "DefaultOptions":
+    						ParseDefaultOptions(r);
+    						break;
     		            case "Capabilities":
     						ParseCapabilities(r);
     						break;
@@ -207,6 +211,8 @@ namespace Kinovea.ScreenManager
                 }
                 
                 r.ReadEndElement();
+                
+                ImportOptionGroups();
             }
             catch(Exception e)
             {
@@ -327,10 +333,10 @@ namespace Kinovea.ScreenManager
         {
             foreach(GenericPostureHandle handle in Handles)
             {
-                if(handle.Constraint == null || string.IsNullOrEmpty(handle.Constraint.Group) || OptionnalConstraintsGroups.ContainsKey(handle.Constraint.Group))
+                if(handle.Constraint == null || string.IsNullOrEmpty(handle.Constraint.OptionGroup) || OptionGroups.ContainsKey(handle.Constraint.OptionGroup))
                     continue;
                 
-                OptionnalConstraintsGroups.Add(handle.Constraint.Group, false);
+                OptionGroups.Add(handle.Constraint.OptionGroup, false);
             }
         }
         private void ParseComputedPoints(XmlReader r)
@@ -361,6 +367,25 @@ namespace Kinovea.ScreenManager
                 if(r.Name == "Polygon")
                 {
                     HitZones.Add(new GenericPostureHitZonePolygon(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
+        private void ParseDefaultOptions(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                if(r.Name == "OptionGroup")
+                {
+                    defaultOptions.Add(r.ReadElementContentAsString());
                 }
                 else
                 {
@@ -417,6 +442,37 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
+        }
+        private void ImportOptionGroups()
+        {
+            foreach(GenericPostureSegment segment in Segments)
+                AddOption(segment.OptionGroup);
+                
+            foreach(GenericPostureHandle handle in Handles)
+                AddOption(handle.OptionGroup);
+            
+            foreach(GenericPostureEllipse ellipse in Ellipses)
+                AddOption(ellipse.OptionGroup);
+                
+            foreach(GenericPostureAngle angle in Angles)
+                AddOption(angle.OptionGroup);
+            
+            foreach(GenericPostureDistance distance in Distances)
+                AddOption(distance.OptionGroup);
+            
+            foreach(GenericPostureComputedPoint computedPoint in ComputedPoints)
+                AddOption(computedPoint.OptionGroup);
+            
+            foreach(string defaultOption in defaultOptions)
+            {
+                if(OptionGroups.ContainsKey(defaultOption))
+                    OptionGroups[defaultOption] = true;
+            }
+        }
+        private void AddOption(string option)
+        {
+            if(!string.IsNullOrEmpty(option) && !OptionGroups.ContainsKey(option))
+               OptionGroups.Add(option, false);
         }
         #endregion
    

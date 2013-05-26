@@ -88,10 +88,10 @@ namespace Kinovea.ScreenManager
                 // Rebuild the menu each time to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
                 
-                if(m_GenericPosture.OptionnalConstraintsGroups.Count > 0)
+                if(m_GenericPosture.OptionGroups.Count > 0)
                 {
-                    menuOptionnalConstraints.Text = "Optionnal Constraints";
-                    contextMenu.Add(menuOptionnalConstraints);
+                    menuOptions.Text = "Options"; // TODO: translate.
+                    contextMenu.Add(menuOptions);
                 }
                 
                 if((m_GenericPosture.Capabilities & GenericPostureCapabilities.FlipHorizontal) == GenericPostureCapabilities.FlipHorizontal)
@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
     	private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
         
-        private ToolStripMenuItem menuOptionnalConstraints = new ToolStripMenuItem();
+        private ToolStripMenuItem menuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipHorizontal = new ToolStripMenuItem();
         private ToolStripMenuItem menuFlipVertical = new ToolStripMenuItem();
         
@@ -203,6 +203,9 @@ namespace Kinovea.ScreenManager
                 // Segments
                 foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
                 {
+                    if(!HasActiveOption(segment.OptionGroup))
+                        continue;
+                        
                     penEdge.Width = segment.Width;
                     penEdge.DashStyle = Convert(segment.Style);
                     penEdge.Color = segment.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, segment.Color);
@@ -222,6 +225,9 @@ namespace Kinovea.ScreenManager
                 // Ellipses.
                 foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
                 {
+                    if(!HasActiveOption(ellipse.OptionGroup))
+                        continue;
+                        
                     penEdge.Width = ellipse.Width;
                     penEdge.DashStyle = Convert(ellipse.Style);
                     penEdge.Color = ellipse.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, ellipse.Color);
@@ -236,6 +242,9 @@ namespace Kinovea.ScreenManager
                 // Handles
                 foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
                 {
+                    if(!HasActiveOption(handle.OptionGroup))
+                        continue;
+                        
                     if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count)
                     {
                         brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
@@ -250,6 +259,9 @@ namespace Kinovea.ScreenManager
                 penEdge.DashStyle = DashStyle.Solid;
                 for(int i = 0; i<m_Angles.Count; i++)
                 {
+                    if(!HasActiveOption(m_GenericPosture.Angles[i].OptionGroup))
+                        continue;
+                    
                     AngleHelper angle = m_Angles[i];
                     
                     if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
@@ -278,6 +290,9 @@ namespace Kinovea.ScreenManager
                 // Distances
                 foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
                 {
+                    if(!HasActiveOption(distance.OptionGroup))
+                        continue;
+                        
                     PointF a = points[distance.Point1];
                     PointF b = points[distance.Point2];
                     string label = CalibrationHelper.GetLengthText(m_GenericPosture.Points[distance.Point1], m_GenericPosture.Points[distance.Point2], true, true);
@@ -293,6 +308,9 @@ namespace Kinovea.ScreenManager
                 // Computed points
                 foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
                 {
+                    if(!HasActiveOption(computedPoint.OptionGroup))
+                        continue;
+                        
                     PointF p = computedPoint.ComputeLocation(m_GenericPosture);
                     PointF p2 = _transformer.Transform(p);
                     penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
@@ -331,7 +349,10 @@ namespace Kinovea.ScreenManager
             {
                 if(result >= 0)
                     break;
-                    
+                
+                if(!HasActiveOption(m_GenericPosture.Handles[i].OptionGroup))
+                    continue;
+            
                 int reference = m_GenericPosture.Handles[i].Reference;
                 if(reference < 0)
                     continue;
@@ -546,29 +567,31 @@ namespace Kinovea.ScreenManager
         private void Init()
         {
             InitAngles();
-            InitMenus();
+            InitOptionMenus();
         }
-        private void InitMenus()
+        private void InitOptionMenus()
         {
-            // optionnal constraints
-            if(m_GenericPosture == null || m_GenericPosture.OptionnalConstraintsGroups == null || m_GenericPosture.OptionnalConstraintsGroups.Count == 0)
+            // Options
+            if(m_GenericPosture == null || m_GenericPosture.OptionGroups == null || m_GenericPosture.OptionGroups.Count == 0)
                 return;
             
-            foreach(string option in m_GenericPosture.OptionnalConstraintsGroups.Keys)
+            foreach(string option in m_GenericPosture.OptionGroups.Keys)
             {
                 ToolStripMenuItem menu = new ToolStripMenuItem();
                 menu.Text = option;
+                menu.Checked = m_GenericPosture.OptionGroups[option];
+                
                 string closureOption = option;
-                //menu.Image
                 menu.Click += (s, e) => {
-                    m_GenericPosture.OptionnalConstraintsGroups[closureOption] = !m_GenericPosture.OptionnalConstraintsGroups[closureOption];
-                    menu.Checked = m_GenericPosture.OptionnalConstraintsGroups[closureOption];
+                    m_GenericPosture.OptionGroups[closureOption] = !m_GenericPosture.OptionGroups[closureOption];
+                    menu.Checked = m_GenericPosture.OptionGroups[closureOption];
+                    CallInvalidateFromMenu(s);
                 };
                 
-                menuOptionnalConstraints.DropDownItems.Add(menu);
+                menuOptions.DropDownItems.Add(menu);
             }
             
-            //menuOptionnalConstraints.Image
+            menuOptions.Image = Properties.Drawings.eye;
         }
         private void InitAngles()
         {
@@ -680,6 +703,13 @@ namespace Kinovea.ScreenManager
             PointF textOrigin = new PointF(location.X - labelSize.Width / 2, location.Y - labelSize.Height / 2);
             canvas.DrawString(label, tempFont, brush, textOrigin);
             tempFont.Dispose();
+        }
+        private bool HasActiveOption(string option)
+        {
+            if(string.IsNullOrEmpty(option))
+                return true;
+            
+            return m_GenericPosture.OptionGroups[option];
         }
         private bool IsPointInObject(Point _point)
         {

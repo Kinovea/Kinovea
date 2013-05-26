@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         public Color Color { get; private set; }
         public int Reference { get; private set;}
         public bool Trackable { get; private set;}
+        public string OptionGroup { get; private set;}
         public PointF GrabPoint { get; set;}
         public GenericPostureAbstractConstraint Constraint { get; private set;}
         public List<GenericPostureAbstractImpact> Impacts { get; private set;}
@@ -56,6 +57,7 @@ namespace Kinovea.ScreenManager
             Constraint = null;
             Impacts = new List<GenericPostureAbstractImpact>();
             Color = Color.Transparent;
+            OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -67,6 +69,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("trackable"))
                 Trackable = r.ReadContentAsBoolean();
+                
+            if(r.MoveToAttribute("optionGroup"))
+                OptionGroup = r.ReadContentAsString();
             
             if(r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
@@ -104,13 +109,13 @@ namespace Kinovea.ScreenManager
             // A "constraint" represents the valid positions where the handle can go.
             bool isEmpty = r.IsEmptyElement;
             ConstraintType type = ConstraintType.None;
-            string group = "";
+            string optionGroup = "";
             
             if(r.MoveToAttribute("type"))
                 type = (ConstraintType) Enum.Parse(typeof(ConstraintType), r.ReadContentAsString());
             
-            if(r.MoveToAttribute("group"))
-                group = r.ReadContentAsString();
+            if(r.MoveToAttribute("optionGroup"))
+                optionGroup = r.ReadContentAsString();
             
             r.ReadStartElement();
             
@@ -150,8 +155,8 @@ namespace Kinovea.ScreenManager
             {
                 Constraint.Type = type;
                 
-                if(!string.IsNullOrEmpty(group))
-                    Constraint.Group = group;
+                if(!string.IsNullOrEmpty(optionGroup))
+                    Constraint.OptionGroup = optionGroup;
             }
             
             if(!isEmpty)
