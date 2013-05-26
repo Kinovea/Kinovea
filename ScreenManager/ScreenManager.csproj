@@ -285,6 +285,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureConstraintEngine.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPosturePosition.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureDistance.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureEllipse.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureHandle.cs" />

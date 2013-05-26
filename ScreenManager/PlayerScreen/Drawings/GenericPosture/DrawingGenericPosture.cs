@@ -305,6 +305,25 @@ namespace Kinovea.ScreenManager
                 
                 brushFill.Color = baseBrushFillColor;
                 
+                // Positions
+                foreach(GenericPosturePosition position in m_GenericPosture.Positions)
+                {
+                    if(!HasActiveOption(position.OptionGroup))
+                        continue;
+                    
+                    // TODO: find if point is ref point or computed point.
+                    PointF p = points[position.Point];
+                    
+                    string label = CalibrationHelper.GetPointText(p, true, true);
+                    if(!string.IsNullOrEmpty(position.Symbol))
+                        label = string.Format("{0} = {1}", position.Symbol, label);
+                    
+                    brushFill.Color = position.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, position.Color);
+                    DrawPointText(p, label, _canvas, fOpacityFactor, _transformer, brushFill);
+                }
+                
+                brushFill.Color = baseBrushFillColor;
+                
                 // Computed points
                 foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
                 {
@@ -313,22 +332,15 @@ namespace Kinovea.ScreenManager
                         
                     PointF p = computedPoint.ComputeLocation(m_GenericPosture);
                     PointF p2 = _transformer.Transform(p);
-                    penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
                     
-                    if(computedPoint.DisplayCoordinates)
-                    {
-                        string label = CalibrationHelper.GetPointText(p, true, true);
-                        brushFill.Color = computedPoint.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, computedPoint.Color);
-                        DrawPointText(p2, label, computedPoint.Symbol, _canvas, fOpacityFactor, _transformer, brushFill);
-                        _canvas.DrawEllipse(penEdge, p2.Box(3));
-                    }
-                    else if (!string.IsNullOrEmpty(computedPoint.Symbol))
+                    if (!string.IsNullOrEmpty(computedPoint.Symbol))
                     {
                         brushHandle.Color = computedPoint.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, computedPoint.Color);
                         DrawSimpleText(p2, computedPoint.Symbol, _canvas, fOpacityFactor, _transformer, brushHandle);
                     }
                     else
                     {
+                        penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
                         _canvas.DrawEllipse(penEdge, p2.Box(3));
                     }
                 }
@@ -669,14 +681,10 @@ namespace Kinovea.ScreenManager
             
             DrawTextOnBackground(middle, offset, label, canvas, opacity, transformer, brushFill);
         }
-        private void DrawPointText(PointF location, string label, string symbol, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        private void DrawPointText(PointF a, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
         {
-            if(!string.IsNullOrEmpty(symbol))
-                label = string.Format("{0} = {1}", symbol, label);
-            
             PointF offset = new PointF(0, -20);
-            
-            DrawTextOnBackground(location, offset, label, canvas, opacity, transformer, brushFill);
+            DrawTextOnBackground(a, offset, label, canvas, opacity, transformer, brushFill);
         }
         private void DrawTextOnBackground(PointF location, PointF offset, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
         {
