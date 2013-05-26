@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
             PrepareImpacts(posture, handle);
             
             if(constraint == null || 
-               (!string.IsNullOrEmpty(constraint.Group) && !posture.OptionnalConstraintsGroups[constraint.Group]))
+               (!string.IsNullOrEmpty(constraint.OptionGroup) && !posture.OptionGroups[constraint.OptionGroup]))
             {
                 MovePointHandleFreely(posture, handle, point);
             }

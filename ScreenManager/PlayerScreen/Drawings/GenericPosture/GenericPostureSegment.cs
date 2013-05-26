@@ -37,6 +37,7 @@ namespace Kinovea.ScreenManager
         public bool ArrowEnd { get; private set; }
         public bool ArrowBegin { get; private set; }
         public Color Color { get; private set; }
+        public string OptionGroup { get; private set;}
         
         private string name;
         
@@ -46,6 +47,7 @@ namespace Kinovea.ScreenManager
             Width = 2;
             Style = SegmentLineStyle.Solid;
             Color = Color.Transparent;
+            OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
             
@@ -72,6 +74,9 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("color"))
                 Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
+            
+            if(r.MoveToAttribute("optionGroup"))
+                OptionGroup = r.ReadContentAsString();
                 
             r.ReadStartElement();
             
