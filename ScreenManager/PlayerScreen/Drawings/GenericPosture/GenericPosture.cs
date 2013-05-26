@@ -47,6 +47,7 @@ namespace Kinovea.ScreenManager
         public List<GenericPostureEllipse> Ellipses { get; private set;}
         public List<GenericPostureAngle> Angles { get; private set;}
         public List<GenericPostureDistance> Distances { get; private set;}
+        public List<GenericPosturePosition> Positions { get; private set;}
         public List<GenericPostureHandle> Handles { get; private set; }
         public List<GenericPostureComputedPoint> ComputedPoints { get; private set;}
         public List<GenericPostureAbstractHitZone> HitZones { get; private set;}
@@ -77,6 +78,7 @@ namespace Kinovea.ScreenManager
             Handles = new List<GenericPostureHandle>();
             Angles = new List<GenericPostureAngle>();
             Distances = new List<GenericPostureDistance>();
+            Positions = new List<GenericPosturePosition>();
             ComputedPoints = new List<GenericPostureComputedPoint>();
             HitZones = new List<GenericPostureAbstractHitZone>();
             Capabilities = GenericPostureCapabilities.None;
@@ -184,6 +186,9 @@ namespace Kinovea.ScreenManager
     						break;
     				    case "Distances":
     						ParseDistances(r);
+    						break;
+    				    case "Positions":
+    						ParsePositions(r);
     						break;
     					case "Handles":
     						ParseHandles(r);
@@ -308,6 +313,25 @@ namespace Kinovea.ScreenManager
             
             r.ReadEndElement();
         }
+        private void ParsePositions(XmlReader r)
+        {
+            r.ReadStartElement();
+            
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                if(r.Name == "Position")
+                {
+                    Positions.Add(new GenericPosturePosition(r));
+                }
+                else
+                {
+                    string outerXml = r.ReadOuterXml();
+                    log.DebugFormat("Unparsed content in XML: {0}", outerXml);
+                }
+            }
+            
+            r.ReadEndElement();
+        }
         private void ParseHandles(XmlReader r)
         {
             r.ReadStartElement();
@@ -326,18 +350,6 @@ namespace Kinovea.ScreenManager
             }
             
             r.ReadEndElement();
-            
-            ImportConstraintsOptionGroups();
-        }
-        private void ImportConstraintsOptionGroups()
-        {
-            foreach(GenericPostureHandle handle in Handles)
-            {
-                if(handle.Constraint == null || string.IsNullOrEmpty(handle.Constraint.OptionGroup) || OptionGroups.ContainsKey(handle.Constraint.OptionGroup))
-                    continue;
-                
-                OptionGroups.Add(handle.Constraint.OptionGroup, false);
-            }
         }
         private void ParseComputedPoints(XmlReader r)
         {
@@ -449,7 +461,12 @@ namespace Kinovea.ScreenManager
                 AddOption(segment.OptionGroup);
                 
             foreach(GenericPostureHandle handle in Handles)
+            {
                 AddOption(handle.OptionGroup);
+                
+                if(handle.Constraint != null)
+                    AddOption(handle.Constraint.OptionGroup);
+            }
             
             foreach(GenericPostureEllipse ellipse in Ellipses)
                 AddOption(ellipse.OptionGroup);
@@ -459,6 +476,9 @@ namespace Kinovea.ScreenManager
             
             foreach(GenericPostureDistance distance in Distances)
                 AddOption(distance.OptionGroup);
+            
+            foreach(GenericPosturePosition position in Positions)
+                AddOption(position.OptionGroup);
             
             foreach(GenericPostureComputedPoint computedPoint in ComputedPoints)
                 AddOption(computedPoint.OptionGroup);
