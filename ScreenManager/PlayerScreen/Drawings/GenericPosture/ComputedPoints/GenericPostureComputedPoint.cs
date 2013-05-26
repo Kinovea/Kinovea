@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
         public Color Color { get; private set; }
         public string Symbol { get; private set;}
         public string OptionGroup { get; private set;}
+        public PointF LastPoint { get; private set;}
         
         public bool DisplayCoordinates { get; set;}
         
@@ -103,8 +104,6 @@ namespace Kinovea.ScreenManager
     
         public PointF ComputeLocation(GenericPosture posture)
         {
-            // TODO: if there are only two weighted points, allow for the specification of only one weight.
-            
             PointF result = PointF.Empty;
 
             if(weightedPoints.Count == 2)
@@ -137,6 +136,8 @@ namespace Kinovea.ScreenManager
                     result = result.Translate(scaled.X, scaled.Y);
                 }
             }
+            
+            LastPoint = result;
             
             return result;
         }

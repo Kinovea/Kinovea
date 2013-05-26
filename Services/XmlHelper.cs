@@ -156,5 +156,30 @@ namespace Kinovea.Services
             // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" as per XML spec and throws an exception otherwise.
             return (_str != "false" && _str != "False" && _str != "0");
         }
+        public static int ParsePointReference(string content)
+        {
+            // Parse a direct point referenc (ex: 12) or a variable name (ex: $12).
+            
+            int output = 0;
+            
+            try
+            {
+                if(content.StartsWith("$"))
+                {
+                    int variable = int.Parse(content.Substring(1));
+                    output = - (variable + 1);
+                }
+                else
+                {
+                    output = int.Parse(content);
+                }
+            }
+            catch (Exception)
+            {
+            	log.Error(String.Format("An error happened while parsing point reference. ({0}).", content));
+            }
+            
+            return output;
+        }
     }
 }

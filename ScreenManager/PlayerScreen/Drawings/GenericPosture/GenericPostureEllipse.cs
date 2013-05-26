@@ -50,7 +50,7 @@ namespace Kinovea.ScreenManager
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("center"))
-                Center = r.ReadContentAsInt();
+                Center = XmlHelper.ParsePointReference(r.ReadContentAsString());
             
             if(r.MoveToAttribute("radius"))
                 Radius = r.ReadContentAsInt();
