@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <KinoveaPostureTool>
   <FormatVersion>1.0</FormatVersion>
-  <Name>Human model 3</Name>
+  <Name>Human model 4</Name>
   <Id>5723BACC-91B0-4172-8EA0-0BF2A5A27EDA</Id>
   <PointCount>20</PointCount>
   
@@ -96,8 +96,20 @@
     <Handle type="Point" reference="19" color="#d33682"/>
   </Handles>
 
+  <Positions>
+    <Position point="$0" color="#2aa198" optionGroup="Display coordinates of center of mass"/>
+  </Positions>
+
+  <Ellipses>
+    <Ellipse center="$0" radius="20" name="" style="Dash" width="2"/>
+  </Ellipses>
+
+  <Distances>
+    <Distance point1="1" point2="$0" />
+  </Distances>
+
   <ComputedPoints>
-    <ComputedPoint name="Center of mass" color="#2aa198" displayCoordinates="false">
+    <ComputedPoint name="Center of mass" symbol="G" color="#2aa198">
       <ComputedPoint name="Head" weight="0.073">
         <ReferencePoint ref="0" weight="0.536" />
         <ReferencePoint ref="1" weight="0.464" />

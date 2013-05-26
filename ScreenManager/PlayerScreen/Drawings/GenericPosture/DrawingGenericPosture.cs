@@ -170,26 +170,20 @@ namespace Kinovea.ScreenManager
         #region AbstractDrawing Implementation
         public override void Draw(Graphics _canvas, CoordinateSystem _transformer, bool _bSelected, long _iCurrentTimestamp)
         {
-            double fOpacityFactor = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
+            double opacity = m_InfosFading.GetOpacityFactor(_iCurrentTimestamp);
         
             if(tracking)
-                fOpacityFactor = 1.0;
+                opacity = 1.0;
             
-            if (fOpacityFactor <= 0)
+            if (opacity <= 0)
                 return;
             
             List<Point> points = _transformer.Transform(m_GenericPosture.Points);
             
-            List<Rectangle> boxes = new List<Rectangle>();
-            foreach(AngleHelper angle in m_Angles)
-            {
-                boxes.Add(_transformer.Transform(angle.BoundingBox));
-            }
-            
-            int alpha = (int)(fOpacityFactor * 255);
-            int alphaBackground = (int)(fOpacityFactor*m_iDefaultBackgroundAlpha);
-            
+            int alpha = (int)(opacity * 255);
             alpha = Math.Max(0, Math.Min(255, alpha));
+
+            int alphaBackground = (int)(opacity*m_iDefaultBackgroundAlpha);
             alphaBackground = Math.Max(0, Math.Min(255, alphaBackground));
             
             using(Pen penEdge = m_StyleHelper.GetBackgroundPen(alpha))
@@ -200,152 +194,13 @@ namespace Kinovea.ScreenManager
                 Color baseBrushHandleColor = brushHandle.Color;
                 Color baseBrushFillColor = brushFill.Color;
                 
-                // Segments
-                foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
-                {
-                    if(!HasActiveOption(segment.OptionGroup))
-                        continue;
-                        
-                    penEdge.Width = segment.Width;
-                    penEdge.DashStyle = Convert(segment.Style);
-                    penEdge.Color = segment.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, segment.Color);
-
-                    if(segment.ArrowBegin)
-                        penEdge.StartCap = LineCap.ArrowAnchor;
-                    if(segment.ArrowEnd)
-                        penEdge.EndCap = LineCap.ArrowAnchor;
-                    
-                    _canvas.DrawLine(penEdge, points[segment.Start], points[segment.End]);
-                }
-                
-                penEdge.Color = basePenEdgeColor;
-                penEdge.StartCap = LineCap.NoAnchor;
-                penEdge.EndCap = LineCap.NoAnchor;
-                
-                // Ellipses.
-                foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
-                {
-                    if(!HasActiveOption(ellipse.OptionGroup))
-                        continue;
-                        
-                    penEdge.Width = ellipse.Width;
-                    penEdge.DashStyle = Convert(ellipse.Style);
-                    penEdge.Color = ellipse.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, ellipse.Color);
-                    Point center = points[ellipse.Center];
-                    int radius = _transformer.Transform(ellipse.Radius);
-                    _canvas.DrawEllipse(penEdge, center.Box(radius));
-                }
-                
-                penEdge.Color = basePenEdgeColor;
-                
-                
-                // Handles
-                foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
-                {
-                    if(!HasActiveOption(handle.OptionGroup))
-                        continue;
-                        
-                    if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count)
-                    {
-                        brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
-                        _canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
-                    }
-                }
-                
-                brushHandle.Color = baseBrushHandleColor;
-                
-                // Angles
-                penEdge.Width = 2;
-                penEdge.DashStyle = DashStyle.Solid;
-                for(int i = 0; i<m_Angles.Count; i++)
-                {
-                    if(!HasActiveOption(m_GenericPosture.Angles[i].OptionGroup))
-                        continue;
-                    
-                    AngleHelper angle = m_Angles[i];
-                    
-                    if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
-                        UpdateAngles();
-                    
-                    brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
-                    
-                    _canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
-                    
-                    try
-                    {
-                        penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
-                        _canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
-                    }
-                    catch(Exception e)
-                    {
-                        log.DebugFormat(e.ToString());
-                    }
-                    
-                    DrawAngleText(_canvas, fOpacityFactor, _transformer, m_Angles[i], brushFill);
-                }
-                
-                brushFill.Color = baseBrushFillColor;
-                penEdge.Color = basePenEdgeColor;
-                
-                // Distances
-                foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
-                {
-                    if(!HasActiveOption(distance.OptionGroup))
-                        continue;
-                        
-                    PointF a = points[distance.Point1];
-                    PointF b = points[distance.Point2];
-                    string label = CalibrationHelper.GetLengthText(m_GenericPosture.Points[distance.Point1], m_GenericPosture.Points[distance.Point2], true, true);
-                    if(!string.IsNullOrEmpty(distance.Symbol))
-                        label = string.Format("{0} = {1}", distance.Symbol, label);
-                    
-                    brushFill.Color = distance.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, distance.Color);
-                    DrawDistanceText(a, b, label, _canvas, fOpacityFactor, _transformer, brushFill);
-                }
-                
-                brushFill.Color = baseBrushFillColor;
-                
-                // Positions
-                foreach(GenericPosturePosition position in m_GenericPosture.Positions)
-                {
-                    if(!HasActiveOption(position.OptionGroup))
-                        continue;
-                    
-                    // TODO: find if point is ref point or computed point.
-                    PointF p = points[position.Point];
-                    
-                    string label = CalibrationHelper.GetPointText(p, true, true);
-                    if(!string.IsNullOrEmpty(position.Symbol))
-                        label = string.Format("{0} = {1}", position.Symbol, label);
-                    
-                    brushFill.Color = position.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, position.Color);
-                    DrawPointText(p, label, _canvas, fOpacityFactor, _transformer, brushFill);
-                }
-                
-                brushFill.Color = baseBrushFillColor;
-                
-                // Computed points
-                foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
-                {
-                    if(!HasActiveOption(computedPoint.OptionGroup))
-                        continue;
-                        
-                    PointF p = computedPoint.ComputeLocation(m_GenericPosture);
-                    PointF p2 = _transformer.Transform(p);
-                    
-                    if (!string.IsNullOrEmpty(computedPoint.Symbol))
-                    {
-                        brushHandle.Color = computedPoint.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, computedPoint.Color);
-                        DrawSimpleText(p2, computedPoint.Symbol, _canvas, fOpacityFactor, _transformer, brushHandle);
-                    }
-                    else
-                    {
-                        penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
-                        _canvas.DrawEllipse(penEdge, p2.Box(3));
-                    }
-                }
-                
-                penEdge.Color = basePenEdgeColor;
+                DrawComputedPoints(penEdge, basePenEdgeColor, brushHandle, baseBrushHandleColor, alpha, opacity, _canvas, _transformer);
+                DrawSegments(penEdge, basePenEdgeColor, alpha, _canvas, _transformer, points);
+                DrawEllipses(penEdge, basePenEdgeColor, alpha, _canvas, _transformer, points);
+                DrawHandles(brushHandle, baseBrushHandleColor, alpha, _canvas, points);
+                DrawAngles(penEdge, basePenEdgeColor, brushFill, baseBrushFillColor, alpha, alphaBackground, opacity, _canvas, _transformer, points);
+                DrawDistances(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
+                DrawPositions(brushFill, baseBrushFillColor, alphaBackground, opacity, _canvas, _transformer, points);
             }
         }
         public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
@@ -575,67 +430,179 @@ namespace Kinovea.ScreenManager
             CallInvalidateFromMenu(sender);
         }
         
-        #region Lower level helpers
-        private void Init()
+        #region Drawing helpers
+        private void DrawComputedPoints(Pen penEdge, Color basePenEdgeColor, SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, double opacity, Graphics canvas, CoordinateSystem transformer)
         {
-            InitAngles();
-            InitOptionMenus();
-        }
-        private void InitOptionMenus()
-        {
-            // Options
-            if(m_GenericPosture == null || m_GenericPosture.OptionGroups == null || m_GenericPosture.OptionGroups.Count == 0)
-                return;
+            penEdge.Width = 2;
             
-            foreach(string option in m_GenericPosture.OptionGroups.Keys)
+            foreach(GenericPostureComputedPoint computedPoint in m_GenericPosture.ComputedPoints)
             {
-                ToolStripMenuItem menu = new ToolStripMenuItem();
-                menu.Text = option;
-                menu.Checked = m_GenericPosture.OptionGroups[option];
+                if(!HasActiveOption(computedPoint.OptionGroup))
+                    continue;
+                    
+                PointF p = computedPoint.ComputeLocation(m_GenericPosture);
+                PointF p2 = transformer.Transform(p);
                 
-                string closureOption = option;
-                menu.Click += (s, e) => {
-                    m_GenericPosture.OptionGroups[closureOption] = !m_GenericPosture.OptionGroups[closureOption];
-                    menu.Checked = m_GenericPosture.OptionGroups[closureOption];
-                    CallInvalidateFromMenu(s);
-                };
-                
-                menuOptions.DropDownItems.Add(menu);
+                if (!string.IsNullOrEmpty(computedPoint.Symbol))
+                {
+                    brushHandle.Color = computedPoint.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, computedPoint.Color);
+                    DrawSimpleText(p2, computedPoint.Symbol, canvas, opacity, transformer, brushHandle);
+                }
+                else
+                {
+                    penEdge.Color = computedPoint.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, computedPoint.Color);
+                    canvas.DrawEllipse(penEdge, p2.Box(3));
+                }
             }
             
-            menuOptions.Image = Properties.Drawings.eye;
+            brushHandle.Color = baseBrushHandleColor;
+            penEdge.Color = basePenEdgeColor;
+            penEdge.Width = 1;
         }
-        private void InitAngles()
+        private void DrawSegments(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, CoordinateSystem transformer, List<Point> points)
         {
-            for(int i=0;i<m_GenericPosture.Angles.Count;i++)
-                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth, m_GenericPosture.Angles[i].Symbol));
+            foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
+            {
+                if(!HasActiveOption(segment.OptionGroup))
+                    continue;
+                    
+                penEdge.Width = segment.Width;
+                penEdge.DashStyle = Convert(segment.Style);
+                penEdge.Color = segment.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, segment.Color);
 
-            UpdateAngles();
-        }
-        private void UpdateAngles()
-        {
-            for(int i = 0; i<m_Angles.Count;i++)
-            {
-                PointF origin = m_GenericPosture.Points[m_GenericPosture.Angles[i].Origin];
-                PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
-                PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
-                int radius = m_GenericPosture.Angles[i].Radius;
-                Color color = m_GenericPosture.Angles[i].Color;
-                m_Angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper);
+                if(segment.ArrowBegin)
+                    penEdge.StartCap = LineCap.ArrowAnchor;
+                if(segment.ArrowEnd)
+                    penEdge.EndCap = LineCap.ArrowAnchor;
+
+                PointF start = segment.Start >= 0 ? points[segment.Start] : GetComputedPoint(segment.Start, transformer);
+                PointF end = segment.End >= 0 ? points[segment.End] : GetComputedPoint(segment.End, transformer);
+
+                canvas.DrawLine(penEdge, start, end);
             }
+            
+            penEdge.Color = basePenEdgeColor;
+            penEdge.StartCap = LineCap.NoAnchor;
+            penEdge.EndCap = LineCap.NoAnchor;
         }
-        private DashStyle Convert(SegmentLineStyle style)
+        private void DrawEllipses(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, CoordinateSystem transformer, List<Point> points)
         {
-            switch(style)
+            foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
             {
-            case SegmentLineStyle.Dash:     return DashStyle.Dash;
-            case SegmentLineStyle.Solid:    return DashStyle.Solid;
-            default: return DashStyle.Solid;
+                if(!HasActiveOption(ellipse.OptionGroup))
+                    continue;
+                    
+                penEdge.Width = ellipse.Width;
+                penEdge.DashStyle = Convert(ellipse.Style);
+                penEdge.Color = ellipse.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, ellipse.Color);
+                
+                PointF center = ellipse.Center >= 0 ? points[ellipse.Center] : GetComputedPoint(ellipse.Center, transformer);
+                
+                int radius = transformer.Transform(ellipse.Radius);
+                canvas.DrawEllipse(penEdge, center.Box(radius));
             }
+            
+            penEdge.Color = basePenEdgeColor;
         }
-        private void BindStyle()
+        private void DrawHandles(SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, Graphics canvas, List<Point> points)
         {
-          m_Style.Bind(m_StyleHelper, "Bicolor", "line color");
+            foreach(GenericPostureHandle handle in m_GenericPosture.Handles)
+            {
+                if(!HasActiveOption(handle.OptionGroup))
+                    continue;
+                    
+                if(handle.Type == HandleType.Point && handle.Reference >= 0 && handle.Reference < points.Count)
+                {
+                    brushHandle.Color = handle.Color == Color.Transparent ? baseBrushHandleColor : Color.FromArgb(alpha, handle.Color);
+                    canvas.FillEllipse(brushHandle, points[handle.Reference].Box(3));
+                }
+            }
+            
+            brushHandle.Color = baseBrushHandleColor;
+        }
+        private void DrawAngles(Pen penEdge, Color basePenEdgeColor, SolidBrush brushFill, Color baseBrushFillColor, int alpha, int alphaBackground, double opacity, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        {
+            List<Rectangle> boxes = new List<Rectangle>();
+            foreach(AngleHelper angle in m_Angles)
+                boxes.Add(transformer.Transform(angle.BoundingBox));
+            
+            penEdge.Width = 2;
+            penEdge.DashStyle = DashStyle.Solid;
+            
+            for(int i = 0; i<m_Angles.Count; i++)
+            {
+                if(!HasActiveOption(m_GenericPosture.Angles[i].OptionGroup))
+                    continue;
+                
+                AngleHelper angle = m_Angles[i];
+                
+                if(CalibrationHelper != null && CalibrationHelper.CalibratorType == CalibratorType.Plane)
+                    UpdateAngles();
+                
+                brushFill.Color = angle.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, angle.Color);
+                
+                canvas.FillPie(brushFill, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
+                
+                try
+                {
+                    penEdge.Color = angle.Color == Color.Transparent ? basePenEdgeColor : Color.FromArgb(alpha, angle.Color);
+                    canvas.DrawArc(penEdge, boxes[i], (float)m_Angles[i].Angle.Start, (float)m_Angles[i].Angle.Sweep);
+                }
+                catch(Exception e)
+                {
+                    log.DebugFormat(e.ToString());
+                }
+                
+                DrawAngleText(canvas, opacity, transformer, m_Angles[i], brushFill);
+            }
+            
+            brushFill.Color = baseBrushFillColor;
+            penEdge.Width = 1;
+            penEdge.Color = basePenEdgeColor;
+        }
+        private void DrawDistances(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        {
+            foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
+            {
+                if(!HasActiveOption(distance.OptionGroup))
+                    continue;
+                
+                PointF untransformedA = distance.Point1 >= 0 ? m_GenericPosture.Points[distance.Point1] : GetUntransformedComputedPoint(distance.Point1);
+                PointF untransformedB = distance.Point2 >= 0 ? m_GenericPosture.Points[distance.Point2] : GetUntransformedComputedPoint(distance.Point2);
+                string label = CalibrationHelper.GetLengthText(untransformedA, untransformedB, true, true);
+                
+                if(!string.IsNullOrEmpty(distance.Symbol))
+                    label = string.Format("{0} = {1}", distance.Symbol, label);
+                
+                PointF a = distance.Point1 >= 0 ? points[distance.Point1] : GetComputedPoint(distance.Point1, transformer);
+                PointF b = distance.Point2 >= 0 ? points[distance.Point2] : GetComputedPoint(distance.Point2, transformer);
+
+                brushFill.Color = distance.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, distance.Color);
+                DrawDistanceText(a, b, label, canvas, opacity, transformer, brushFill);
+            }
+            
+            brushFill.Color = baseBrushFillColor;
+        }
+        private void DrawPositions(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        {
+            foreach(GenericPosturePosition position in m_GenericPosture.Positions)
+            {
+                if(!HasActiveOption(position.OptionGroup))
+                    continue;
+                
+                PointF untransformedP = position.Point >= 0 ? m_GenericPosture.Points[position.Point] : GetUntransformedComputedPoint(position.Point);
+                string label = CalibrationHelper.GetPointText(untransformedP, true, true);
+                
+                if(!string.IsNullOrEmpty(position.Symbol))
+                    label = string.Format("{0} = {1}", position.Symbol, label);
+                
+                PointF p = position.Point >= 0 ? points[position.Point] : GetComputedPoint(position.Point, transformer);
+                
+                brushFill.Color = position.Color == Color.Transparent ? baseBrushFillColor : Color.FromArgb(alphaBackground, position.Color);
+                DrawPointText(p, label, canvas, opacity, transformer, brushFill);
+            }
+            
+            brushFill.Color = baseBrushFillColor;
         }
         private void DrawAngleText(Graphics _canvas, double _opacity, CoordinateSystem _transformer, AngleHelper angle, SolidBrush _brushFill)
         {
@@ -712,12 +679,97 @@ namespace Kinovea.ScreenManager
             canvas.DrawString(label, tempFont, brush, textOrigin);
             tempFont.Dispose();
         }
+        #endregion
+        
+        #region Lower level helpers
+        private void Init()
+        {
+            InitAngles();
+            InitOptionMenus();
+        }
+        private void InitOptionMenus()
+        {
+            // Options
+            if(m_GenericPosture == null || m_GenericPosture.OptionGroups == null || m_GenericPosture.OptionGroups.Count == 0)
+                return;
+            
+            foreach(string option in m_GenericPosture.OptionGroups.Keys)
+            {
+                ToolStripMenuItem menu = new ToolStripMenuItem();
+                menu.Text = option;
+                menu.Checked = m_GenericPosture.OptionGroups[option];
+                
+                string closureOption = option;
+                menu.Click += (s, e) => {
+                    m_GenericPosture.OptionGroups[closureOption] = !m_GenericPosture.OptionGroups[closureOption];
+                    menu.Checked = m_GenericPosture.OptionGroups[closureOption];
+                    CallInvalidateFromMenu(s);
+                };
+                
+                menuOptions.DropDownItems.Add(menu);
+            }
+            
+            menuOptions.Image = Properties.Drawings.eye;
+        }
+        private void InitAngles()
+        {
+            for(int i=0;i<m_GenericPosture.Angles.Count;i++)
+                m_Angles.Add(new AngleHelper(m_GenericPosture.Angles[i].Relative, 40, m_GenericPosture.Angles[i].Tenth, m_GenericPosture.Angles[i].Symbol));
+
+            UpdateAngles();
+        }
+        private void UpdateAngles()
+        {
+            for(int i = 0; i<m_Angles.Count;i++)
+            {
+                PointF origin = m_GenericPosture.Points[m_GenericPosture.Angles[i].Origin];
+                PointF leg1 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg1];
+                PointF leg2 = m_GenericPosture.Points[m_GenericPosture.Angles[i].Leg2];
+                int radius = m_GenericPosture.Angles[i].Radius;
+                Color color = m_GenericPosture.Angles[i].Color;
+                m_Angles[i].Update(origin, leg1, leg2, radius, color, CalibrationHelper);
+            }
+        }
+        private DashStyle Convert(SegmentLineStyle style)
+        {
+            switch(style)
+            {
+            case SegmentLineStyle.Dash:     return DashStyle.Dash;
+            case SegmentLineStyle.Solid:    return DashStyle.Solid;
+            default: return DashStyle.Solid;
+            }
+        }
+        private void BindStyle()
+        {
+          m_Style.Bind(m_StyleHelper, "Bicolor", "line color");
+        }
+        
         private bool HasActiveOption(string option)
         {
             if(string.IsNullOrEmpty(option))
                 return true;
             
             return m_GenericPosture.OptionGroups[option];
+        }
+        private PointF GetComputedPoint(int index, CoordinateSystem transformer)
+        {
+            PointF result = PointF.Empty;
+            
+            int computedPointIndex = - index - 1;
+            if(computedPointIndex < m_GenericPosture.ComputedPoints.Count)
+                result = m_GenericPosture.ComputedPoints[computedPointIndex].LastPoint;
+            
+            return transformer.Transform(result);
+        }
+        private PointF GetUntransformedComputedPoint(int index)
+        {
+            PointF result = PointF.Empty;
+            
+            int computedPointIndex = - index - 1;
+            if(computedPointIndex < m_GenericPosture.ComputedPoints.Count)
+                result = m_GenericPosture.ComputedPoints[computedPointIndex].LastPoint;
+            
+            return result;
         }
         private bool IsPointInObject(Point _point)
         {
@@ -793,12 +845,16 @@ namespace Kinovea.ScreenManager
         private bool IsPointOnSegment(GenericPostureSegment _segment, Point _point)
         {
             bool hit = false;
-            if(m_GenericPosture.Points[_segment.Start] == m_GenericPosture.Points[_segment.End])
+            
+            PointF start = _segment.Start >= 0 ? m_GenericPosture.Points[_segment.Start] : GetUntransformedComputedPoint(_segment.Start);
+            PointF end = _segment.End >= 0 ? m_GenericPosture.Points[_segment.End] : GetUntransformedComputedPoint(_segment.End);
+            
+            if(start == end)
                 return false;
             
             using(GraphicsPath segmentPath = new GraphicsPath())
             {
-                segmentPath.AddLine(m_GenericPosture.Points[_segment.Start], m_GenericPosture.Points[_segment.End]);
+                segmentPath.AddLine(start, end);
                 using(Pen p = new Pen(Color.Black, 7))
                 {
                     segmentPath.Widen(p);
@@ -817,7 +873,8 @@ namespace Kinovea.ScreenManager
             
             using(GraphicsPath path = new GraphicsPath())
             {
-                path.AddEllipse(m_GenericPosture.Points[_ellipse.Center].Box(_ellipse.Radius));
+                PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
+                path.AddEllipse(center.Box(_ellipse.Radius));
                 using(Region region = new Region(path))
                 {
                      hit = region.IsVisible(_point);
@@ -830,18 +887,20 @@ namespace Kinovea.ScreenManager
         {
             bool hit = false;
             
-        	using(GraphicsPath path = new GraphicsPath())
-            {        	
-        		path.AddArc(m_GenericPosture.Points[_ellipse.Center].Box(_ellipse.Radius), 0, 360);
-        		using(Pen p = new Pen(Color.Black, 7))
+            using(GraphicsPath path = new GraphicsPath())
+            {
+                PointF center = _ellipse.Center >= 0 ? m_GenericPosture.Points[_ellipse.Center] : GetUntransformedComputedPoint(_ellipse.Center);
+                
+                path.AddArc(center.Box(_ellipse.Radius), 0, 360);
+                using(Pen p = new Pen(Color.Black, 7))
                 {
                     path.Widen(p);
                 }
-        		using(Region region = new Region(path))
+                using(Region region = new Region(path))
                 {
-                     hit = region.IsVisible(_point);
+                    hit = region.IsVisible(_point);
                 }
-        	}
+            }
             return hit;
         }
         #endregion

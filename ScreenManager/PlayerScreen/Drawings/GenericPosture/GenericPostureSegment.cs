@@ -52,10 +52,10 @@ namespace Kinovea.ScreenManager
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("point1"))
-                Start = r.ReadContentAsInt();
+                Start = XmlHelper.ParsePointReference(r.ReadContentAsString());
             
             if(r.MoveToAttribute("point2"))
-                End = r.ReadContentAsInt();
+                End = XmlHelper.ParsePointReference(r.ReadContentAsString());
 
             if(r.MoveToAttribute("name"))
                 name = r.ReadContentAsString();
