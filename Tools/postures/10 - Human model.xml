@@ -97,19 +97,11 @@
   </Handles>
 
   <Positions>
-    <Position point="$0" color="#2aa198" optionGroup="Display coordinates of center of mass"/>
+    <Position point="$0" color="#000000" symbol="G" optionGroup="Display coordinates of center of mass"/>
   </Positions>
 
-  <Ellipses>
-    <Ellipse center="$0" radius="20" name="" style="Dash" width="2"/>
-  </Ellipses>
-
-  <Distances>
-    <Distance point1="1" point2="$0" />
-  </Distances>
-
   <ComputedPoints>
-    <ComputedPoint name="Center of mass" symbol="G" color="#2aa198">
+    <ComputedPoint name="Center of mass" color="#2aa198">
       <ComputedPoint name="Head" weight="0.073">
         <ReferencePoint ref="0" weight="0.536" />
         <ReferencePoint ref="1" weight="0.464" />
