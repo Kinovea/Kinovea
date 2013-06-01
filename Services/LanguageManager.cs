@@ -47,6 +47,10 @@ namespace Kinovea.Services
 		{
 			get { return Languages["en"]; }
 		}
+        public static string Catalan
+        {
+            get { return Languages["ca"]; }
+        }
         public static string Czech
 		{
 			get { return Languages["cs"]; }
@@ -127,6 +131,7 @@ namespace Kinovea.Services
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
             m_Languages = new Dictionary<string, string>();
+            m_Languages.Add("ca", "Català");
             m_Languages.Add("cs", "Čeština");
             m_Languages.Add("da", "Dansk");
             m_Languages.Add("de", "Deutsch");
