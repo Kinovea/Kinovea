@@ -74,14 +74,17 @@ namespace Kinovea.Camera.DirectShow
             
             foreach(FilterInfo camera in cameras)
             {
+                if(BypassCamera(camera))
+                    continue;
+
                 // For now consider that the moniker string is like a serial number.
                 // Apparently this is only true for certain models.
                 // Check if we should extract the serial number part so that we don't change id when changing USB port.
                 string identifier = camera.MonikerString;
+                bool cached = cache.ContainsKey(identifier);
                 
                 string alias = camera.Name;
                 Bitmap icon = null;
-                bool cached = cache.ContainsKey(identifier);
                 SpecificInfo specific = null;
                 Rectangle displayRectangle = Rectangle.Empty;
                 CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
@@ -227,6 +230,11 @@ namespace Kinovea.Camera.DirectShow
             }
             
             OnCameraImageReceived(e);
+        }
+        
+        private bool BypassCamera(FilterInfo camera)
+        {
+            return camera.Name == "Basler GenICam Source";
         }
         
         private SpecificInfo SpecificInfoDeserialize(string xml)
