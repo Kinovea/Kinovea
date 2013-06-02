@@ -86,6 +86,9 @@ namespace Kinovea.ScreenManager
         {
             base.OnPaint(e);
             
+            if(controller.Bitmap == null)
+                return;
+                
             ConfigureCanvas(e.Graphics);
 
             DrawImage(e.Graphics);
@@ -105,9 +108,6 @@ namespace Kinovea.ScreenManager
         }
         private void DrawImage(Graphics canvas)
         {
-            if(controller.Bitmap == null)
-                return;
-
             try
             {
                 if(displayRectangle.Size == controller.Bitmap.Size)
@@ -150,6 +150,9 @@ namespace Kinovea.ScreenManager
         {
             base.OnMouseMove(e);
             this.Focus();
+            
+            if(controller.Bitmap == null)
+                return;
 
             if(e.Button == MouseButtons.Left)
                 OnMouseLeftMove(e);
@@ -160,6 +163,10 @@ namespace Kinovea.ScreenManager
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            
+            if(controller.Bitmap == null)
+                return;
+                
             controller.OnMouseUp();
             manipulator.End();
             ForceZoomValue();
@@ -175,6 +182,9 @@ namespace Kinovea.ScreenManager
         
         protected override void OnDoubleClick(EventArgs e)
         {
+            if(controller.Bitmap == null)
+                return;
+                
             base.OnDoubleClick(e);
             Point mouse = this.PointToClient(Control.MousePosition);
             if(displayRectangle.Contains(mouse))
@@ -189,6 +199,9 @@ namespace Kinovea.ScreenManager
         
         private void Viewport_MouseWheel(object sender, MouseEventArgs e)
         {
+            if(controller.Bitmap == null)
+                return;
+                
             if ((ModifierKeys & Keys.Control) == Keys.Control)
                 Zoom(e);
         }
@@ -313,6 +326,9 @@ namespace Kinovea.ScreenManager
         
         private void OnMouseLeftDown(MouseEventArgs e)
         {
+            if(controller.Bitmap == null)
+                return;
+                
             if(manipulator.Started)
                 return;
             
@@ -341,6 +357,9 @@ namespace Kinovea.ScreenManager
         
         private void OnMouseRightDown(MouseEventArgs e)
         {
+            if(controller.Bitmap == null)
+                return;
+                
             controller.OnMouseRightDown(e.Location, displayRectangle.Location, zoomHelper.Value);
         }
         
