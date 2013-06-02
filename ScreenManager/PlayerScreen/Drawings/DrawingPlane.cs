@@ -216,7 +216,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 		}
-		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+		public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
 		{
             if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                 return -1;

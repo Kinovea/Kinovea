@@ -34,6 +34,7 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public partial class Viewport : Control
     {
+        #region Members
         private ViewportController controller;
         private Size imageSize;             // Original image size. (Reference size).
         private Rectangle displayRectangle; // Position and size of the region of the viewport where we draw the image.
@@ -44,6 +45,7 @@ namespace Kinovea.ScreenManager
         private static int resizerOffset = resizerBitmap.Width / 2;
         private MessageToaster toaster;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
         
         public Viewport(ViewportController controller)
         {
@@ -72,6 +74,11 @@ namespace Kinovea.ScreenManager
             zoomHelper.Increase();
             RecomputeDisplayRectangle(imageSize, displayRectangle, displayRectangle.Center());
             ToastZoom();
+        }
+        
+        public void SetContextMenu(ContextMenuStrip menuStrip)
+        {
+            this.ContextMenuStrip = menuStrip;
         }
         
         #region Drawing
@@ -135,8 +142,8 @@ namespace Kinovea.ScreenManager
             
             if(e.Button == MouseButtons.Left)
                 OnMouseLeftDown(e);
-            /*else if(e.Button == MouseButtons.Right)
-                OnMouseRightDown(e);*/
+            else if(e.Button == MouseButtons.Right)
+                OnMouseRightDown(e);
         }
         
         protected override void OnMouseMove(MouseEventArgs e)
@@ -157,7 +164,14 @@ namespace Kinovea.ScreenManager
             manipulator.End();
             ForceZoomValue();
             controller.UpdateDisplayRectangle(displayRectangle);
+            Cursor = controller.GetCursor(zoomHelper.Value);
+            
         }
+        
+        /*protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+        }*/
         
         protected override void OnDoubleClick(EventArgs e)
         {
@@ -323,6 +337,11 @@ namespace Kinovea.ScreenManager
                 manipulator.Start(e.Location, hit, displayRectangle);
                 Cursor = manipulator.GetCursorClosedHand();
             }
+        }
+        
+        private void OnMouseRightDown(MouseEventArgs e)
+        {
+            controller.OnMouseRightDown(e.Location, displayRectangle.Location, zoomHelper.Value);
         }
         
         private void OnMouseLeftMove(MouseEventArgs e)

@@ -184,7 +184,7 @@ namespace Kinovea.ScreenManager
                 m_LabelMeasure.Draw(_canvas, _transformer, fOpacityFactor);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);

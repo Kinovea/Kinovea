@@ -34,7 +34,7 @@ namespace Kinovea.ScreenManager
             _canvas.FillEllipse(_brush, _rect.Right - _widen, _rect.Top - _widen, _widen * 2, _widen * 2);
             _canvas.FillEllipse(_brush, _rect.Right - _widen, _rect.Bottom - _widen, _widen * 2, _widen * 2);
         }
-        public int HitTest(Point point, CoordinateSystem transformer)
+        public int HitTest(Point point, IImageToViewportTransformer transformer)
         {
             int result = -1;
             

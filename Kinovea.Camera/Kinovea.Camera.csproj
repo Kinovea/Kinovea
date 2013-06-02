@@ -71,6 +71,7 @@
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="IconLibrary.cs" />
+    <Compile Include="ImageAspectRatio.cs" />
     <Compile Include="Interfaces\IConnectionWizard.cs" />
     <Compile Include="Interfaces\IFrameGrabber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

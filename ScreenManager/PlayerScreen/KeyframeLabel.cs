@@ -90,7 +90,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Public methods
-        public bool HitTest(Point _point, CoordinateSystem transformer)
+        public bool HitTest(Point _point, IImageToViewportTransformer transformer)
         {
             return (m_Background.HitTest(_point, false, transformer) > -1);
         }

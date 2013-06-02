@@ -22,6 +22,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using Kinovea.ScreenManager.Languages;
+
 namespace Kinovea.ScreenManager
 {
     /// <summary>
@@ -31,8 +33,11 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ViewportController
     {
+        #region Events
         public event EventHandler DisplayRectangleUpdated;
-        
+        #endregion
+
+        #region Properties
         public Viewport View
         {
             get { return view;}
@@ -58,23 +63,44 @@ namespace Kinovea.ScreenManager
         public MetadataManipulator MetadataManipulator
         {
             get { return metadataManipulator; }
-            set { metadataManipulator = value; }
+            set 
+            { 
+                if(metadataManipulator != null)
+                    metadataManipulator.LabelAdded -= LabelAdded;
+
+                metadataManipulator = value; 
+                metadataManipulator.LabelAdded += LabelAdded;
+            }
         }
         
         public bool IsUsingHandTool
         {
             get { return metadataManipulator == null ? true : metadataManipulator.IsUsingHandTool; }
         }
+        #endregion
         
+        #region Members
         private Viewport view;
         private Bitmap bitmap;
         private Rectangle displayRectangle;
         private MetadataRenderer metadataRenderer;
         private MetadataManipulator metadataManipulator;
         
+        private ContextMenuStrip popMenu = new ContextMenuStrip();
+        private ToolStripMenuItem mnuConfigureDrawing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuConfigureOpacity = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteDrawing = new ToolStripMenuItem();
+        #endregion
+        
         public ViewportController()
         {
             view = new Viewport(this);
+            InitializeContextMenu();
+        }
+
+        public void ReloadUICulture()
+        {
+            ReloadMenuCulture();
         }
         
         public void Refresh()
@@ -124,6 +150,17 @@ namespace Kinovea.ScreenManager
                 return;
             
             metadataManipulator.OnMouseUp();
+            Refresh();
+        }
+        
+        public void OnMouseRightDown(Point mouse, Point imageLocation, float imageZoom)
+        {
+            if(metadataManipulator == null)
+                return;
+                
+            metadataManipulator.HitTest(mouse, imageLocation, imageZoom);
+            PrepareContextMenu();
+            view.SetContextMenu(popMenu);
         }
         
         public Cursor GetCursor(float imageZoom)
@@ -133,5 +170,115 @@ namespace Kinovea.ScreenManager
             
             return metadataManipulator.GetCursor(imageZoom);
         }
+        
+        #region Private methods
+        private void InitializeContextMenu()
+        {
+            mnuConfigureDrawing.Click += mnuConfigureDrawing_Click;
+            mnuConfigureDrawing.Image = Properties.Drawings.configure;
+            mnuConfigureOpacity.Click += mnuConfigureOpacity_Click;
+            mnuConfigureOpacity.Image = Properties.Drawings.persistence;
+            mnuDeleteDrawing.Click += mnuDeleteDrawing_Click;
+            mnuDeleteDrawing.Image = Properties.Drawings.delete;
+            ReloadMenuCulture();
+        }
+
+        private void ReloadMenuCulture()
+        {
+            mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+            mnuConfigureOpacity.Text = ScreenManagerLang.Generic_Opacity;
+            mnuDeleteDrawing.Text = ScreenManagerLang.mnuDeleteDrawing;
+        }
+
+        private void PrepareContextMenu()
+        {
+            popMenu.Items.Clear();
+            // TODO: Add general menus from the screen. (close, snapshot, settings.)
+            PrepareContextMenuDrawing(metadataManipulator.HitDrawing);
+        }
+        
+        private void PrepareContextMenuDrawing(AbstractDrawing drawing)
+        {
+            // Add menus depending on drawing capabilities and its own menus.
+            if(drawing == null)
+                return;
+
+            if((drawing.Caps & DrawingCapabilities.ConfigureColor) == DrawingCapabilities.ConfigureColor)
+            {
+                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_Color;
+                popMenu.Items.Add(mnuConfigureDrawing);
+            }
+            
+            if((drawing.Caps & DrawingCapabilities.ConfigureColorSize) == DrawingCapabilities.ConfigureColorSize)
+            {
+                mnuConfigureDrawing.Text = ScreenManagerLang.mnuConfigureDrawing_ColorSize;
+                popMenu.Items.Add(mnuConfigureDrawing);
+            }
+            
+            if((drawing.Caps & DrawingCapabilities.Opacity) == DrawingCapabilities.Opacity)
+                popMenu.Items.Add(mnuConfigureOpacity);
+            
+            popMenu.Items.Add(new ToolStripSeparator());
+            
+            bool hasExtraMenu = (drawing.ContextMenu != null && drawing.ContextMenu.Count > 0);
+            if(hasExtraMenu)
+            {
+                foreach(ToolStripMenuItem tsmi in drawing.ContextMenu)
+                    popMenu.Items.Add(tsmi);
+                
+                popMenu.Items.Add(new ToolStripSeparator());
+            }
+            
+            popMenu.Items.Add(mnuDeleteDrawing);
+        }
+        private void LabelAdded(object sender, DrawingEventArgs e)
+        {
+            //AbstractDrawing drawing, int keyframeIndex)
+            
+            
+            DrawingText label = e.Drawing as DrawingText;
+            if(label == null)
+                return;
+                
+            label.ContainerScreen = view;
+            view.Controls.Add(label.EditBox);
+            label.EditBox.BringToFront();
+            label.EditBox.Focus();
+        }
+        
+        #region Menu handlers
+        private void mnuConfigureDrawing_Click(object sender, EventArgs e)
+        {
+            IDecorable drawing = metadataManipulator.HitDrawing as IDecorable;
+            if(drawing == null || drawing.DrawingStyle == null || drawing.DrawingStyle.Elements.Count == 0)
+                return;
+
+            FormConfigureDrawing2 fcd = new FormConfigureDrawing2(drawing.DrawingStyle, Refresh);
+            FormsHelper.Locate(fcd);
+            fcd.ShowDialog();
+            fcd.Dispose();
+            Refresh();
+        }
+        private void mnuConfigureOpacity_Click(object sender, EventArgs e)
+        {
+            /*AbstractDrawing drawing = metadataManipulator.HitDrawing;
+            
+            formConfigureOpacity fco = new formConfigureOpacity(drawing, pbSurfaceScreen);
+            FormsHelper.Locate(fco);
+            fco.ShowDialog();
+            fco.Dispose();
+            Refresh();*/
+        }
+        private void mnuDeleteDrawing_Click(object sender, EventArgs e)
+        {
+            // FIXME: undo is temporarily disabled until the player also uses Viewport.
+            // Undo and redo needs to know the exact position of the drawing in the list of drawings for this keyframe.
+            metadataManipulator.DeleteHitDrawing();
+            Refresh();
+        }
+        #endregion
+		
+        
+        #endregion
     }
 }

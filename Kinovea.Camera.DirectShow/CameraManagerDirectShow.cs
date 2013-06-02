@@ -84,6 +84,7 @@ namespace Kinovea.Camera.DirectShow
                 bool cached = cache.ContainsKey(identifier);
                 SpecificInfo specific = null;
                 Rectangle displayRectangle = Rectangle.Empty;
+                CaptureAspectRatio aspectRatio = CaptureAspectRatio.Auto;
                 
                 if(blurbs != null)
                 {
@@ -95,6 +96,8 @@ namespace Kinovea.Camera.DirectShow
                         alias = blurb.Alias;
                         icon = blurb.Icon ?? defaultIcon;
                         displayRectangle = blurb.DisplayRectangle;
+                        if(!string.IsNullOrEmpty(blurb.AspectRatio))
+                            aspectRatio = (CaptureAspectRatio)Enum.Parse(typeof(CaptureAspectRatio), blurb.AspectRatio);
                         specific = SpecificInfoDeserialize(blurb.Specific);
                         break;
                     }
@@ -103,7 +106,7 @@ namespace Kinovea.Camera.DirectShow
                 if(icon == null)
                     icon = defaultIcon;
                 
-                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, displayRectangle, specific, this);
+                CameraSummary summary = new CameraSummary(alias, camera.Name, identifier, icon, displayRectangle, aspectRatio, specific, this);
                 summaries.Add(summary);
                 
                 if(cached)
@@ -149,7 +152,7 @@ namespace Kinovea.Camera.DirectShow
         public override CameraBlurb BlurbFromSummary(CameraSummary summary)
         {
             string specific = SpecificInfoSerialize(summary);
-            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, specific);
+            CameraBlurb blurb = new CameraBlurb(CameraType, summary.Identifier, summary.Alias, summary.Icon, summary.DisplayRectangle, summary.AspectRatio.ToString(), specific);
             return blurb;
         }
         

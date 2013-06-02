@@ -26,24 +26,36 @@ namespace Kinovea.ScreenManager
 {
     public class MetadataManipulator
     {
+        #region Events
+        public event EventHandler<DrawingEventArgs> LabelAdded;
+        #endregion
+    
+        #region Properties
         public bool IsUsingHandTool
         {
-            get { return toolManager == null ? true : toolManager.IsUsingHandTool;}
+            get { return screenToolManager == null ? true : screenToolManager.IsUsingHandTool;}
         }
         
-        private Metadata metadata;
-        private ScreenToolManager toolManager;
+        public AbstractDrawing HitDrawing
+        {
+            get { return metadata.HitDrawing;}
+        }
+        #endregion
         
-        public MetadataManipulator(Metadata metadata, ScreenToolManager toolManager)
+        #region Members
+        private Metadata metadata;
+        private ScreenToolManager screenToolManager;
+        #endregion
+        
+        public MetadataManipulator(Metadata metadata, ScreenToolManager screenToolManager)
         {
             this.metadata = metadata;
-            this.toolManager = toolManager;
+            this.screenToolManager = screenToolManager;
         }
-    
     
         public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
         {
-            if(metadata == null || toolManager == null)
+            if(metadata == null || screenToolManager == null)
                 return false;
                 
             // At this point we must know the current timestamp and metadata should be valid.
@@ -56,15 +68,15 @@ namespace Kinovea.ScreenManager
             
             metadata.AllDrawingTextToNormalMode();
             
-            if(toolManager.IsUsingHandTool)
+            if(screenToolManager.IsUsingHandTool)
             {
                 // TODO: Change cursor.
-                handled = toolManager.HandTool.OnMouseDown(metadata, 0, imagePoint, 0, false);
+                handled = screenToolManager.HandTool.OnMouseDown(metadata, 0, imagePoint, 0, false);
             }
             else
             {
                 handled = true;
-                //CreateNewDrawing();
+                CreateNewDrawing(imagePoint, transformer);
             }
             
             return handled;
@@ -72,21 +84,24 @@ namespace Kinovea.ScreenManager
         
         public bool OnMouseLeftMove(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
         {
-            if(metadata == null || toolManager == null)
+            if(metadata == null || screenToolManager == null)
                 return false;
             
             bool handled = false;
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
             Point imagePoint = transformer.Untransform(mouse);
             
-            if(toolManager.IsUsingHandTool)
+            if(screenToolManager.IsUsingHandTool)
             {
                 // TODO: handle magnifier.
-                handled = toolManager.HandTool.OnMouseMove(metadata, imagePoint, Point.Empty, modifiers);
+                handled = screenToolManager.HandTool.OnMouseMove(metadata, imagePoint, Point.Empty, modifiers);
             }
             else
             {
-                
+                // Setting second point of a drawing.
+                IInitializable drawing = metadata.HitDrawing as IInitializable;
+                if(drawing != null)
+                    drawing.ContinueSetup(imagePoint, modifiers);
             }
             
             return handled;
@@ -99,24 +114,103 @@ namespace Kinovea.ScreenManager
             // TODO: keep tool or change tool.
             // m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
             
-            if(toolManager.IsUsingHandTool)
+            if(screenToolManager.IsUsingHandTool)
             {
-                toolManager.HandTool.OnMouseUp();
+                screenToolManager.HandTool.OnMouseUp();
+                // On Poke.
+                // magnifier on mouse up.
                 
-                // Force render if drawing is SVG.
+                // If we were resizing an SVG drawing, trigger a render.
+                // TODO: this is currently triggered on every mouse up, not only on resize !
+                /*int selectedFrame = m_FrameServer.Metadata.SelectedDrawingFrame;
+                int selectedDrawing = m_FrameServer.Metadata.SelectedDrawing;
+                if(selectedFrame != -1 && selectedDrawing  != -1)
+                {
+                    DrawingSVG d = m_FrameServer.Metadata.Keyframes[selectedFrame].Drawings[selectedDrawing] as DrawingSVG;
+                    if(d != null)
+                    {
+                        d.ResizeFinished();
+                    }
+                }*/
             }
+            else
+            {
+                // todo: save tool addition as a command.
+                screenToolManager.AfterToolUse();
+                // todo: start deselection timer.
+            }
+        }
+        
+        public bool HitTest(Point mouse, Point imageLocation, float imageZoom)
+        {
+            if(metadata == null)
+                return false;
+            
+            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            Point imagePoint = transformer.Untransform(mouse);
+            
+            int keyframeIndex = 0;
+            long timestamp = 0;
+            return metadata.IsOnDrawing(keyframeIndex, imagePoint, timestamp);
         }
         
         public Cursor GetCursor(float scale)
         {
-            return toolManager.GetCursor(scale);
+            return screenToolManager.GetCursor(scale);
         }
         
-        private void CreateNewDrawing()
+        public void DeleteHitDrawing()
         {
-        
+            metadata.DeleteHitDrawing();
         }
         
+        
+        private void CreateNewDrawing(Point imagePoint, ImageToViewportTransformer transformer)
+        {
+            int keyframeIndex = 0;
+            int timestampPerFrame = 1;
+            long currentTimestamp = 0;
+            bool editingLabel = false;
+            
+            if(screenToolManager.ActiveTool == ToolManager.Label)
+                editingLabel = LabelMouseDown(imagePoint, currentTimestamp, transformer);
+
+            if(editingLabel)
+                return;
+                
+            AddDrawing(imagePoint, keyframeIndex, timestampPerFrame, transformer);
+        }
+        
+        private bool LabelMouseDown(Point imagePoint, long currentTimestamp, ImageToViewportTransformer transformer)
+        {
+            bool hitExisting = false;
+            foreach(DrawingText label in metadata.Labels())
+            {
+                int hit = label.HitTest(imagePoint, currentTimestamp, transformer);
+                if(hit >= 0)
+                {
+                    hitExisting = true;
+                    label.SetEditMode(true, transformer);
+                }
+            }
+            
+            return hitExisting;
+        }
+        
+        private void AddDrawing(Point imagePoint, int keyframeIndex, int timestampPerFrame, ImageToViewportTransformer transformer)
+        {
+            AbstractDrawing drawing = screenToolManager.ActiveTool.GetNewDrawing(imagePoint, keyframeIndex, timestampPerFrame);
+            metadata.AddDrawing(drawing, keyframeIndex);
+            
+            // Special cases
+            if(screenToolManager.ActiveTool == ToolManager.Label)
+            {
+                if(LabelAdded != null)
+                    LabelAdded(this, new DrawingEventArgs(drawing, keyframeIndex));
+                
+                ((DrawingText)drawing).SetEditMode(true, transformer);
+            }
+        }
         
         
     }

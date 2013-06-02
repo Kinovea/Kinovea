@@ -38,15 +38,17 @@ namespace Kinovea.Services
         public string Alias { get; private set;}
         public Bitmap Icon { get; private set;}
         public Rectangle DisplayRectangle { get; private set; }
+        public string AspectRatio { get; private set;}
         public string Specific { get; private set;}
         
-        public CameraBlurb(string cameraType, string identifier, string alias, Bitmap icon, Rectangle displayRectangle, string specific)
+        public CameraBlurb(string cameraType, string identifier, string alias, Bitmap icon, Rectangle displayRectangle, string aspectRatio, string specific)
         {
             this.CameraType = cameraType;
             this.Identifier = identifier;
             this.Alias = alias;
             this.Icon = icon;
             this.DisplayRectangle = displayRectangle;
+            this.AspectRatio = aspectRatio;
             this.Specific = specific;
         }
         
@@ -61,6 +63,8 @@ namespace Kinovea.Services
             
             string displayRectangle = string.Format("{0};{1};{2};{3}", DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width, DisplayRectangle.Height);
             writer.WriteElementString("DisplayRectangle", displayRectangle);
+            
+            writer.WriteElementString("AspectRatio", AspectRatio);
             
             if(!string.IsNullOrEmpty(Specific))
             {
@@ -78,6 +82,7 @@ namespace Kinovea.Services
             string alias = "";
             Bitmap icon = null;
             Rectangle displayRectangle = Rectangle.Empty;
+            string aspectRatio = "";
             string specific = "";
             
             while(reader.NodeType == XmlNodeType.Element)
@@ -99,6 +104,9 @@ namespace Kinovea.Services
                 case "DisplayRectangle":
                     displayRectangle = XmlHelper.ParseRectangle(reader.ReadElementContentAsString());
                     break;
+                case "AspectRatio":
+                    aspectRatio = reader.ReadElementContentAsString();
+                    break;
                 case "Specific":
                     specific = reader.ReadInnerXml();
                     break;
@@ -110,7 +118,7 @@ namespace Kinovea.Services
             
             reader.ReadEndElement();  
             
-            return new CameraBlurb(cameraType, identifier, alias, icon, displayRectangle, specific);
+            return new CameraBlurb(cameraType, identifier, alias, icon, displayRectangle, aspectRatio, specific);
         }
     }
 }

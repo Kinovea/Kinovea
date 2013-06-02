@@ -77,7 +77,7 @@ namespace Kinovea.ScreenManager
             get { return m_TextBox; }
             set { m_TextBox = value;}
         }
-        public PictureBox ContainerScreen
+        public Control ContainerScreen
         {
             get { return m_ContainerScreen; }
             set { m_ContainerScreen = value;}
@@ -94,11 +94,11 @@ namespace Kinovea.ScreenManager
         private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
       	private bool m_bEditMode;
-      	private CoordinateSystem m_CoordinateSystem;
+      	private IImageToViewportTransformer imageToViewportTransformer;
       	
       	private RoundedRectangle m_Background = new RoundedRectangle();
         private TextBox m_TextBox;
-      	private PictureBox m_ContainerScreen;
+      	private Control m_ContainerScreen;
         
         private const int m_iDefaultFontSize = 16;    		// will also be used for the text box.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -164,7 +164,7 @@ namespace Kinovea.ScreenManager
                 _canvas.DrawString(m_Text, fontText, brushText, rect.Location);
             }
         }
-        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);
@@ -237,12 +237,12 @@ namespace Kinovea.ScreenManager
 		}
         #endregion
         
-        public void SetEditMode(bool _bEdit, CoordinateSystem _transformer)
+        public void SetEditMode(bool _bEdit, IImageToViewportTransformer _transformer)
         {
             m_bEditMode = _bEdit;
 
-            if(m_CoordinateSystem == null)
-               m_CoordinateSystem = _transformer; 
+            if(imageToViewportTransformer == null)
+               imageToViewportTransformer = _transformer; 
 
             if (m_bEditMode)
             {    
@@ -258,9 +258,9 @@ namespace Kinovea.ScreenManager
         }
         public void RelocateEditbox()
         {
-            if(m_CoordinateSystem != null)
+            if(imageToViewportTransformer != null && m_ContainerScreen != null)
             {
-                Rectangle rect =  m_CoordinateSystem.Transform(m_Background.Rectangle);
+                Rectangle rect =  imageToViewportTransformer.Transform(m_Background.Rectangle);
                 m_TextBox.Location = rect.Location.Translate(m_ContainerScreen.Left, m_ContainerScreen.Top);
             }
         }

@@ -42,7 +42,7 @@ namespace Kinovea.Camera.HTTP
         
         public Size Size
         {
-            get { return Size.Empty; }
+            get { return actualSize; }
         }
         
         public float Framerate
@@ -62,6 +62,7 @@ namespace Kinovea.Camera.HTTP
         private object locker = new object();
         private IVideoSource device;
         private bool grabbing;
+        private Size actualSize;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -114,11 +115,16 @@ namespace Kinovea.Camera.HTTP
         
         private void Device_NewFrame(object sender, NewFrameEventArgs e)
         {
-            // TODO: see if unsafe deep copy from AForge is faster.
-            //log.DebugFormat("New frame received, size:{0}", e.Frame.Size);
-            image = new Bitmap(e.Frame.Width, e.Frame.Height, e.Frame.PixelFormat);
+            int finalHeight = SetFinalHeight(e.Frame.Width, e.Frame.Height);
+            bool anamorphic = e.Frame.Height != finalHeight;
+            actualSize = new Size(e.Frame.Width, finalHeight);
+            
+            image = new Bitmap(e.Frame.Width, finalHeight, e.Frame.PixelFormat);
             Graphics g = Graphics.FromImage(image);
-            g.DrawImageUnscaled(e.Frame, Point.Empty);
+            if(!anamorphic)
+                g.DrawImageUnscaled(e.Frame, Point.Empty);
+            else
+                g.DrawImage(e.Frame, 0, 0, e.Frame.Width, finalHeight);
             
             if(CameraImageReceived != null)
                 CameraImageReceived(this, new CameraImageReceivedEventArgs(summary, image));
@@ -127,6 +133,23 @@ namespace Kinovea.Camera.HTTP
         private void Device_VideoSourceError(object sender, VideoSourceErrorEventArgs e)
         {
             log.ErrorFormat("Error from device {0}: {1}", summary.Alias, e.Description);
+        }
+        
+        private int SetFinalHeight(int width, int height)
+        {
+            int finalHeight = height;
+            
+            switch(summary.AspectRatio)
+            {
+                case CaptureAspectRatio.Force43:
+                    finalHeight = (int)((width / 4.0) * 3);
+                    break;
+                case CaptureAspectRatio.Force169:
+                    finalHeight = (int)((width / 16.0) * 9);
+                    break;
+            }
+            
+            return finalHeight;
         }
     }
 }
