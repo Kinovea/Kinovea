@@ -253,6 +253,9 @@ namespace Kinovea.ScreenManager
         }
         public void View_ToggleGrabbing()
         {
+             if(grabber == null)
+                return;
+                
              if(grabber.Grabbing)
              {
                 StopGrabber(true);
