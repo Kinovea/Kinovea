@@ -24,6 +24,9 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Simple accessor to the hand tool and the currently active tool.
+    /// </summary>
     public class ScreenToolManager
     {
         public bool IsUsingHandTool
@@ -35,10 +38,13 @@ namespace Kinovea.ScreenManager
         {
             get { return handTool; }
         }
+        public AbstractDrawingTool ActiveTool
+        {
+            get { return activeTool;}
+        }
     
         private AbstractDrawingTool activeTool;
         private DrawingToolPointer handTool;
-        
         private List<AbstractDrawingTool> tools = new List<AbstractDrawingTool>();
         
         public ScreenToolManager()
@@ -51,7 +57,10 @@ namespace Kinovea.ScreenManager
         {
             activeTool = tool ?? handTool;
         }
-        
+        public void AfterToolUse()
+        {
+            activeTool = activeTool.KeepTool ? activeTool : handTool;
+        }
         public Cursor GetCursor(float scale)
         {
             return activeTool.GetCursor(scale);

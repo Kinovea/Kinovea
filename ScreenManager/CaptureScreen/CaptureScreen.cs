@@ -40,9 +40,6 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class CaptureScreen : AbstractScreen
     {
-        #region events
-        #endregion
-        
         #region Properties
         public override Guid UniqueId
         {
@@ -87,10 +84,8 @@ namespace Kinovea.ScreenManager
         }
         public override ImageAspectRatio AspectRatio
         {
-            //get { return frameServer.AspectRatio; }
-            //set { frameServer.AspectRatio = value; }
-            get { return ImageAspectRatio.Auto;}
-            set { }
+            get { return summary == null ? ImageAspectRatio.Auto : Convert(summary.AspectRatio); }
+            set { ChangeAspectRatio(value); }
         }
         #endregion
         
@@ -242,6 +237,9 @@ namespace Kinovea.ScreenManager
         }
         public void View_Configure()
         {
+            if(manager == null)
+                return;
+                
             FormsHelper.BeforeShow();
             bool needsReconnect = manager.Configure(summary);
             FormsHelper.AfterShow();
@@ -355,6 +353,7 @@ namespace Kinovea.ScreenManager
                 viewportController.InitializeDisplayRectangle(summary.DisplayRectangle, displayImage.Size);
                 firstImageReceived = true;
                 currentImageSize = displayImage.Size;
+                metadata.ImageSize = currentImageSize;
                 frameMemory = (double)currentImageSize.Height * currentImageSize.Width * BytesPerPixel(image.PixelFormat);
                 UpdateBufferCapacity();
             }
@@ -403,6 +402,40 @@ namespace Kinovea.ScreenManager
                 info = string.Format("Actual: {0}×{1} @ {2:0.00}fps, Buffer: {3:0.00}%", currentImageSize.Width, currentImageSize.Height, computedFps, fill);
             
             view.UpdateInfo(info);
+        }
+        private void ChangeAspectRatio(ImageAspectRatio aspectRatio)
+        {
+            CaptureAspectRatio ratio = Convert(aspectRatio);
+            if(ratio == summary.AspectRatio)
+                return;
+            
+            summary.UpdateAspectRatio(ratio);
+            summary.UpdateDisplayRectangle(Rectangle.Empty);
+            
+            // update display rectangle.
+            
+            
+            Reconnect();
+        }
+        private CaptureAspectRatio Convert(ImageAspectRatio aspectRatio)
+        {
+            switch(aspectRatio)
+            {
+                case ImageAspectRatio.Auto: return CaptureAspectRatio.Auto;
+                case ImageAspectRatio.Force43: return CaptureAspectRatio.Force43;
+                case ImageAspectRatio.Force169: return CaptureAspectRatio.Force169;
+                default: return CaptureAspectRatio.Auto;
+            }
+        }
+        private ImageAspectRatio Convert(CaptureAspectRatio aspectRatio)
+        {
+            switch(aspectRatio)
+            {
+                case CaptureAspectRatio.Auto: return ImageAspectRatio.Auto;
+                case CaptureAspectRatio.Force43: return ImageAspectRatio.Force43;
+                case CaptureAspectRatio.Force169: return ImageAspectRatio.Force169;
+                default: return ImageAspectRatio.Auto;
+            }
         }
         private void StartGrabber()
         {
@@ -519,9 +552,9 @@ namespace Kinovea.ScreenManager
             drawingToolbarPresenter.AddToolButton(ToolManager.CrossMark, DrawingTool_Click);
             drawingToolbarPresenter.AddToolButton(ToolManager.Angle, DrawingTool_Click);
             drawingToolbarPresenter.AddToolButtonGroup(new AbstractDrawingTool[]{ToolManager.Plane, ToolManager.Grid}, 0, DrawingTool_Click);
-            drawingToolbarPresenter.AddToolButton(ToolManager.Magnifier, MagnifierTool_Click);
             
-            // TODO: tool presets.
+            // TODO: magnifier, tool presets.
+            //drawingToolbarPresenter.AddToolButton(ToolManager.Magnifier, MagnifierTool_Click);
         }
         
         private void DrawingTool_Click(object sender, EventArgs e)

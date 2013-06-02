@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
         /// <param name="_point">The coordinates at original image scale of the point to evaluate</param>
         /// <param name="_iCurrentTimestamp">The current time position in the video</param>
         /// <returns>-1 : missed. 0 : The drawing as a whole has been hit. n (with n>0) : The id of a manipulation handle that has been hit</returns>
-        public abstract int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer);
+        public abstract int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer);
         
         /// <summary>
         /// Move the specified handle to its new location.

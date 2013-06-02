@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
                     m_BoundingBox.Draw(_canvas, rect, m_PenBoundingBox, m_BrushBoundingBox, 4);
 			}
         }
-        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);

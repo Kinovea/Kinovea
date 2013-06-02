@@ -33,16 +33,18 @@ namespace Kinovea.Camera
         public string Identifier { get; private set;}
         public Bitmap Icon { get; private set; }
         public Rectangle DisplayRectangle { get; set; }
+        public CaptureAspectRatio AspectRatio { get; private set; }
         public object Specific { get; private set;}
         public CameraManager Manager { get; private set;}
         
-        public CameraSummary(string alias, string name, string identifier, Bitmap icon, Rectangle displayRectangle, object specific, CameraManager manager)
+        public CameraSummary(string alias, string name, string identifier, Bitmap icon, Rectangle displayRectangle, CaptureAspectRatio aspectRatio, object specific, CameraManager manager)
         {
             this.Alias = alias;
             this.Name = name;
             this.Identifier = identifier;
             this.Icon = icon;
             this.DisplayRectangle = displayRectangle;
+            this.AspectRatio = aspectRatio;
             this.Specific = specific;
             this.Manager = manager;
         }
@@ -53,14 +55,24 @@ namespace Kinovea.Camera
             this.Icon = icon;
         }
         
+        public void UpdateDisplayRectangle(Rectangle imageLocation)
+        {
+            this.DisplayRectangle = imageLocation;
+        }
+        
+        public void UpdateAspectRatio(CaptureAspectRatio aspectRatio)
+        {
+            if(aspectRatio == this.AspectRatio)
+                return;
+                
+            this.AspectRatio = aspectRatio;
+        }
+        
         public void UpdateSpecific(object specific)
         {
             this.Specific = specific;
         }
         
-        public void UpdateDisplayRectangle(Rectangle imageLocation)
-        {
-            this.DisplayRectangle = imageLocation;
-        }
+        
     }
 }

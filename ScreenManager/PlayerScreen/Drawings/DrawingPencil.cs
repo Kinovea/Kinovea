@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
         {
             m_PointList = m_PointList.Select(p => p.Translate(_deltaX, _deltaY)).ToList();
         }
-        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             int result = -1;
             double opacity = m_InfosFading.GetOpacityFactor(currentTimestamp);

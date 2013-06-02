@@ -358,7 +358,7 @@ namespace Kinovea.ScreenManager
 				MoveCursor(point.X, point.Y);
 			}
 		}
-		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+		public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             int result = -1;
 
@@ -676,7 +676,7 @@ namespace Kinovea.ScreenManager
             	m_MainLabel.MoveLabel(_deltaX, _deltaY);
             }
         }
-        private int IsOnKeyframesLabels(Point _point, CoordinateSystem transformer)
+        private int IsOnKeyframesLabels(Point _point, IImageToViewportTransformer transformer)
         {
             // Convention: -1 = miss, 2 = on main label, 3+ = on keyframe label.
             int iHitResult = -1;

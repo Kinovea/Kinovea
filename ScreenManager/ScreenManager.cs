@@ -2419,7 +2419,7 @@ namespace Kinovea.ScreenManager
         {
         	ChangeAspectRatio(ImageAspectRatio.Force169);
         }      
-        private void ChangeAspectRatio(ImageAspectRatio _aspectRatio)
+        private void ChangeAspectRatio(Video.ImageAspectRatio _aspectRatio)
         {
         	if(m_ActiveScreen == null)
         	    return;

@@ -25,6 +25,10 @@ using System.Linq;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// Converts image coordinates to viewport coordinates and back.
+    /// Helpers methods to directly transform points, rectangles, length, etc.
+    /// </summary>
     public class ImageToViewportTransformer : IImageToViewportTransformer
     {
         #region Properties
@@ -96,6 +100,10 @@ namespace Kinovea.ScreenManager
         public Point Untransform(Point point)
         {
             return point.Translate(-location.X, -location.Y).Scale(1/scale);
+        }
+        public int Untransform(int distance)
+        {
+            return (int)(distance / scale);
         }
         #endregion
     }

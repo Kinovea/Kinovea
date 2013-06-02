@@ -148,7 +148,7 @@ namespace Kinovea.ScreenManager
                     
 			}
         }
-        public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
             // Convention: miss = -1, object = 0, handle = n.
             int result = -1;

@@ -118,7 +118,7 @@ namespace Kinovea.ScreenManager
 		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
 		{
 		}
-		public override int HitTest(Point point, long currentTimestamp, CoordinateSystem transformer)
+		public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
         {
 		    int currentNumber = 0;
 		    int handle = -1;

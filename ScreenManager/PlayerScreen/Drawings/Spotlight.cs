@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
     			canvas.DrawEllipse(penBorder, rescaledRect);
 			}
 		}
-		public int HitTest(Point point, long timeStamp, CoordinateSystem transformer)
+		public int HitTest(Point point, long timeStamp, IImageToViewportTransformer transformer)
 		{
             // Hit Result: -1: miss, 0: on object, 1 on handle.
 			int result = -1;
