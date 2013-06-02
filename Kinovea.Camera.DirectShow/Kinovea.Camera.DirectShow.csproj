@@ -37,8 +37,8 @@
     <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>..\Root\bin\x86\Release\CameraTypes\</OutputPath>
-    <DebugSymbols>False</DebugSymbols>
+    <OutputPath>..\Root\bin\x86\Release\</OutputPath>
+    <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>

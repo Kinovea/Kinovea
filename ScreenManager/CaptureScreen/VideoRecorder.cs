@@ -171,8 +171,12 @@ namespace Kinovea.ScreenManager
             if(cancelling)
                 return;
             
-            EnqueueFrame(null);     // Signal the consumer to exit.
-            workerThread.Join();    // Wait for the consumer's thread to finish.
+            if(workerThread.IsAlive)
+            {
+                EnqueueFrame(null);     // Signal the consumer to exit.
+                workerThread.Join();    // Wait for the consumer's thread to finish.
+            }
+            
             waitHandle.Close();     // Release any OS resources.
             
             if(initialized)
