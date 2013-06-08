@@ -475,6 +475,9 @@ namespace Kinovea.ScreenManager
         }
         private double AgeToSeconds(int age)
         {
+            if(computedFps == 0)
+                return 0;
+                
             return age / computedFps;
         }
         private void UpdateBufferCapacity()
