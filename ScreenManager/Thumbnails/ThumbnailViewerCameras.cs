@@ -215,6 +215,12 @@ namespace Kinovea.ScreenManager
                 thumbnailControls.Remove(thumbnail);
             }
             
+            if(summaries.Count == 0)
+            {
+                if(AfterLoad != null)
+                    AfterLoad(this, EventArgs.Empty);
+            }
+            
             return updated;
         }
         
