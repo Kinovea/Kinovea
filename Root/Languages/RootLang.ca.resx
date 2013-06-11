@@ -73,7 +73,7 @@
    <data name="dlgAbout_Info2" xml:space="preserve"><value>El Kinovea utilitza els següents component de programari</value></data>
    <data name="dlgAbout_Info3" xml:space="preserve"><value>Us convidem a contribuir en la traducció, testeig, millores o a donar suport al Kinovea</value></data>
    <data name="dlgAbout_Info4" xml:space="preserve"><value>Traduccioions:</value></data>
-   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)*.*</value></data>
+   <data name="dlgOpenFile_Filter" xml:space="preserve"><value>Tots els fitxers (*.*)|*.*</value></data>
    <data name="dlgOpenFile_Title" xml:space="preserve"><value>Obrir un arxiu de video</value></data>
    <data name="dlgPreferences_btnCapture" xml:space="preserve"><value>Capturar</value></data>
    <data name="dlgPreferences_btnDrawings" xml:space="preserve"><value>Dibuixos</value></data>
