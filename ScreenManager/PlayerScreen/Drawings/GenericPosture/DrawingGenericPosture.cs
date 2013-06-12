@@ -431,7 +431,7 @@ namespace Kinovea.ScreenManager
         }
         
         #region Drawing helpers
-        private void DrawComputedPoints(Pen penEdge, Color basePenEdgeColor, SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, double opacity, Graphics canvas, CoordinateSystem transformer)
+        private void DrawComputedPoints(Pen penEdge, Color basePenEdgeColor, SolidBrush brushHandle, Color baseBrushHandleColor, int alpha, double opacity, Graphics canvas, IImageToViewportTransformer transformer)
         {
             penEdge.Width = 2;
             
@@ -459,7 +459,7 @@ namespace Kinovea.ScreenManager
             penEdge.Color = basePenEdgeColor;
             penEdge.Width = 1;
         }
-        private void DrawSegments(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        private void DrawSegments(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
             {
@@ -485,7 +485,7 @@ namespace Kinovea.ScreenManager
             penEdge.StartCap = LineCap.NoAnchor;
             penEdge.EndCap = LineCap.NoAnchor;
         }
-        private void DrawEllipses(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        private void DrawEllipses(Pen penEdge, Color basePenEdgeColor, int alpha, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
             {
@@ -520,7 +520,7 @@ namespace Kinovea.ScreenManager
             
             brushHandle.Color = baseBrushHandleColor;
         }
-        private void DrawAngles(Pen penEdge, Color basePenEdgeColor, SolidBrush brushFill, Color baseBrushFillColor, int alpha, int alphaBackground, double opacity, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        private void DrawAngles(Pen penEdge, Color basePenEdgeColor, SolidBrush brushFill, Color baseBrushFillColor, int alpha, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             List<Rectangle> boxes = new List<Rectangle>();
             foreach(AngleHelper angle in m_Angles)
@@ -560,7 +560,7 @@ namespace Kinovea.ScreenManager
             penEdge.Width = 1;
             penEdge.Color = basePenEdgeColor;
         }
-        private void DrawDistances(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        private void DrawDistances(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             foreach(GenericPostureDistance distance in m_GenericPosture.Distances)
             {
@@ -583,7 +583,7 @@ namespace Kinovea.ScreenManager
             
             brushFill.Color = baseBrushFillColor;
         }
-        private void DrawPositions(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, CoordinateSystem transformer, List<Point> points)
+        private void DrawPositions(SolidBrush brushFill, Color baseBrushFillColor, int alphaBackground, double opacity, Graphics canvas, IImageToViewportTransformer transformer, List<Point> points)
         {
             foreach(GenericPosturePosition position in m_GenericPosture.Positions)
             {
@@ -648,12 +648,12 @@ namespace Kinovea.ScreenManager
             
             DrawTextOnBackground(middle, offset, label, canvas, opacity, transformer, brushFill);
         }
-        private void DrawPointText(PointF a, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        private void DrawPointText(PointF a, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)
         {
             PointF offset = new PointF(0, -20);
             DrawTextOnBackground(a, offset, label, canvas, opacity, transformer, brushFill);
         }
-        private void DrawTextOnBackground(PointF location, PointF offset, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brushFill)
+        private void DrawTextOnBackground(PointF location, PointF offset, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)
         {
             Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
@@ -671,7 +671,7 @@ namespace Kinovea.ScreenManager
             fontBrush.Dispose();
             tempFont.Dispose();
         }
-        private void DrawSimpleText(PointF location, string label, Graphics canvas, double opacity, CoordinateSystem transformer, SolidBrush brush)
+        private void DrawSimpleText(PointF location, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brush)
         {
             Font tempFont = m_StyleHelper.GetFont(Math.Max((float)transformer.Scale, 1.0F));
             SizeF labelSize = canvas.MeasureString(label, tempFont);
@@ -751,7 +751,7 @@ namespace Kinovea.ScreenManager
             
             return m_GenericPosture.OptionGroups[option];
         }
-        private PointF GetComputedPoint(int index, CoordinateSystem transformer)
+        private PointF GetComputedPoint(int index, IImageToViewportTransformer transformer)
         {
             PointF result = PointF.Empty;
             
