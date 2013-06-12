@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -24,28 +24,20 @@ using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureConstraintLineSlide : GenericPostureAbstractConstraint
+    public class GenericPostureConstraintPerpendicularSlide : GenericPostureAbstractConstraint
     {
-        public int Start { get; private set;}
-        public int End { get; private set;}
-        public PointLinePosition AllowedPosition { get; private set;}
-        public int Margin { get; private set;}
+        public int Origin { get; private set;}
+        public int Leg1 { get; private set;}
         
-        public GenericPostureConstraintLineSlide(XmlReader r)
+        public GenericPostureConstraintPerpendicularSlide(XmlReader r)
         {
-            // <LineSlide point1="0" point2="2" position="Inbetween"/>
-            Margin = 10;
-            
             bool isEmpty = r.IsEmptyElement;
             
-            if(r.MoveToAttribute("point1"))
-                Start = r.ReadContentAsInt();
+            if(r.MoveToAttribute("origin"))
+                Origin = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("point2"))
-                End = r.ReadContentAsInt();
-            
-            if(r.MoveToAttribute("position"))
-                AllowedPosition = (PointLinePosition) Enum.Parse(typeof(PointLinePosition), r.ReadContentAsString());
+            if(r.MoveToAttribute("leg1"))
+                Leg1 = r.ReadContentAsInt();
             
             r.ReadStartElement();
             
@@ -54,3 +46,5 @@ namespace Kinovea.ScreenManager
         }
     }
 }
+
+

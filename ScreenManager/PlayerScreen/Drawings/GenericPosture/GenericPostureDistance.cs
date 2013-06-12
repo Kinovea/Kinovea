@@ -19,7 +19,10 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Drawing;
 using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
@@ -27,18 +30,32 @@ namespace Kinovea.ScreenManager
     {
         public int Point1 { get; private set;}
         public int Point2 { get; private set;}
+        public string Symbol { get; private set;}
+        public Color Color { get; private set; }
+        public string OptionGroup { get; private set;}
         
         public GenericPostureDistance(XmlReader r)
         {
             //<Distance point1="2" point2="4" />
+            Color = Color.Transparent;
+            OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("point1"))
-                Point1 = r.ReadContentAsInt();
+                Point1 = XmlHelper.ParsePointReference(r.ReadContentAsString());
             
             if(r.MoveToAttribute("point2"))
-                Point2 = r.ReadContentAsInt();
+                Point2 = XmlHelper.ParsePointReference(r.ReadContentAsString());
+            
+            if(r.MoveToAttribute("symbol"))
+                Symbol = r.ReadContentAsString();
+            
+            if(r.MoveToAttribute("color"))
+                Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
+            
+            if(r.MoveToAttribute("optionGroup"))
+                OptionGroup = r.ReadContentAsString();
 
             r.ReadStartElement();
             

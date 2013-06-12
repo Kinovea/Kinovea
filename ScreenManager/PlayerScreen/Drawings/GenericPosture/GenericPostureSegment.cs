@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public class GenericPostureSegment
@@ -32,6 +34,10 @@ namespace Kinovea.ScreenManager
         public int End { get; private set;}
         public SegmentLineStyle Style { get; private set;}
         public int Width { get; private set;}
+        public bool ArrowEnd { get; private set; }
+        public bool ArrowBegin { get; private set; }
+        public Color Color { get; private set; }
+        public string OptionGroup { get; private set;}
         
         private string name;
         
@@ -40,14 +46,16 @@ namespace Kinovea.ScreenManager
             //<Segment point1="0" point2="1" name="" style="Solid" width="1"/>
             Width = 2;
             Style = SegmentLineStyle.Solid;
+            Color = Color.Transparent;
+            OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("point1"))
-                Start = r.ReadContentAsInt();
+                Start = XmlHelper.ParsePointReference(r.ReadContentAsString());
             
             if(r.MoveToAttribute("point2"))
-                End = r.ReadContentAsInt();
+                End = XmlHelper.ParsePointReference(r.ReadContentAsString());
 
             if(r.MoveToAttribute("name"))
                 name = r.ReadContentAsString();
@@ -58,6 +66,18 @@ namespace Kinovea.ScreenManager
             if(r.MoveToAttribute("width"))
                 Width = r.ReadContentAsInt();
 
+            if(r.MoveToAttribute("arrowBegin"))
+                ArrowBegin = XmlHelper.ParseBoolean(r.ReadContentAsString());
+            
+            if(r.MoveToAttribute("arrowEnd"))
+                ArrowEnd = XmlHelper.ParseBoolean(r.ReadContentAsString());
+            
+            if(r.MoveToAttribute("color"))
+                Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
+            
+            if(r.MoveToAttribute("optionGroup"))
+                OptionGroup = r.ReadContentAsString();
+                
             r.ReadStartElement();
             
             if(isEmpty)

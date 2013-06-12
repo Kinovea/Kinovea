@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -24,28 +24,29 @@ using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureConstraintLineSlide : GenericPostureAbstractConstraint
+    /// <summary>
+    /// The target point must be kept at the center of a given segment. The impacting point would be the extremities of the segment.
+    /// </summary>
+    public class GenericPostureImpactSegmentCenter : GenericPostureAbstractImpact
     {
-        public int Start { get; private set;}
-        public int End { get; private set;}
-        public PointLinePosition AllowedPosition { get; private set;}
-        public int Margin { get; private set;}
+        public int PointToMove { get; private set;}
+        public int Point1 { get; private set;}
+        public int Point2 { get; private set;}
         
-        public GenericPostureConstraintLineSlide(XmlReader r)
+        public GenericPostureImpactSegmentCenter(XmlReader r)
         {
-            // <LineSlide point1="0" point2="2" position="Inbetween"/>
-            Margin = 10;
+            Type = ImpactType.SegmentCenter;
             
             bool isEmpty = r.IsEmptyElement;
             
+            if(r.MoveToAttribute("pointToMove"))
+                PointToMove = r.ReadContentAsInt();
+            
             if(r.MoveToAttribute("point1"))
-                Start = r.ReadContentAsInt();
+                Point1 = r.ReadContentAsInt();
             
             if(r.MoveToAttribute("point2"))
-                End = r.ReadContentAsInt();
-            
-            if(r.MoveToAttribute("position"))
-                AllowedPosition = (PointLinePosition) Enum.Parse(typeof(PointLinePosition), r.ReadContentAsString());
+                Point2 = r.ReadContentAsInt();
             
             r.ReadStartElement();
             
@@ -54,3 +55,7 @@ namespace Kinovea.ScreenManager
         }
     }
 }
+
+
+
+

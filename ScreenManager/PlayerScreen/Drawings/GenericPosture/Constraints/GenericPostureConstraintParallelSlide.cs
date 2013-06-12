@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -24,28 +24,24 @@ using System.Xml;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureConstraintLineSlide : GenericPostureAbstractConstraint
+    public class GenericPostureConstraintParallelSlide : GenericPostureAbstractConstraint
     {
-        public int Start { get; private set;}
-        public int End { get; private set;}
-        public PointLinePosition AllowedPosition { get; private set;}
-        public int Margin { get; private set;}
+        public int A { get; private set;}
+        public int B { get; private set;}
+        public int C { get; private set;}
         
-        public GenericPostureConstraintLineSlide(XmlReader r)
+        public GenericPostureConstraintParallelSlide(XmlReader r)
         {
-            // <LineSlide point1="0" point2="2" position="Inbetween"/>
-            Margin = 10;
-            
             bool isEmpty = r.IsEmptyElement;
             
-            if(r.MoveToAttribute("point1"))
-                Start = r.ReadContentAsInt();
+            if(r.MoveToAttribute("a"))
+                A = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("point2"))
-                End = r.ReadContentAsInt();
+            if(r.MoveToAttribute("b"))
+                B = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("position"))
-                AllowedPosition = (PointLinePosition) Enum.Parse(typeof(PointLinePosition), r.ReadContentAsString());
+            if(r.MoveToAttribute("c"))
+                C = r.ReadContentAsInt();
             
             r.ReadStartElement();
             
@@ -54,3 +50,5 @@ namespace Kinovea.ScreenManager
         }
     }
 }
+
+

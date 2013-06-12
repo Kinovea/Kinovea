@@ -24,13 +24,14 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Linq;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -195,7 +196,7 @@ namespace Kinovea.ScreenManager
 		    _xmlWriter.WriteStartElement("PointList");
             _xmlWriter.WriteAttributeString("Count", m_PointList.Count.ToString());
             foreach (Point p in m_PointList)
-                _xmlWriter.WriteElementString("Point", String.Format("{0};{1}", p.X, p.Y));
+                _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
 
             _xmlWriter.WriteEndElement();
             

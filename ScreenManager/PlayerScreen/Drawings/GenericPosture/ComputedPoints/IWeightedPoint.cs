@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -16,24 +16,16 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
 #endregion
 using System;
+using System.Drawing;
 
 namespace Kinovea.ScreenManager
 {
-    public enum ImpactType
+    public interface IWeightedPoint
     {
-        None,
-        LineAlign,
-        VerticalAlign,
-        HorizontalAlign,
-        Pivot,
-        KeepAngle,          // (similar to pivot but more explicitly defined)
-        HorizontalSymmetry,
-        SegmentCenter,
-        PerdpendicularAlign,
-        ParallelAlign
+        float Weight { get; }
+        PointF ComputeLocation(GenericPosture posture);
     }
 }

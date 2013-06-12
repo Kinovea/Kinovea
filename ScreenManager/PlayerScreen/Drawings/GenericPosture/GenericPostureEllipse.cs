@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 
+using Kinovea.Services;
+
 namespace Kinovea.ScreenManager
 {
     public class GenericPostureEllipse
@@ -32,6 +34,8 @@ namespace Kinovea.ScreenManager
         public int Radius { get; set;}
         public SegmentLineStyle Style { get; private set;}
         public int Width { get; private set;}
+        public Color Color { get; private set; }
+        public string OptionGroup { get; private set;}
         
         private string name;
         
@@ -40,11 +44,13 @@ namespace Kinovea.ScreenManager
             //<Ellipse center="6" radius="15" name="" style="Solid" width="2"/>
             Width = 2;
             Style = SegmentLineStyle.Solid;
+            Color = Color.Transparent;
+            OptionGroup = "";
             
             bool isEmpty = r.IsEmptyElement;
             
             if(r.MoveToAttribute("center"))
-                Center = r.ReadContentAsInt();
+                Center = XmlHelper.ParsePointReference(r.ReadContentAsString());
             
             if(r.MoveToAttribute("radius"))
                 Radius = r.ReadContentAsInt();
@@ -57,6 +63,12 @@ namespace Kinovea.ScreenManager
             
             if(r.MoveToAttribute("width"))
                 Width = r.ReadContentAsInt();
+                
+            if(r.MoveToAttribute("color"))
+                Color = XmlHelper.ParseColor(r.ReadContentAsString(), Color);
+            
+            if(r.MoveToAttribute("optionGroup"))
+                OptionGroup = r.ReadContentAsString();
 
             r.ReadStartElement();
             
