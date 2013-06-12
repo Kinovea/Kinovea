@@ -155,7 +155,7 @@ namespace Kinovea.Camera
         private static void timerDiscovery_Tick(object sender, EventArgs e)
         {
             CheckCameras();
-         }
+        }
         
         private static void CheckCameras()
         {

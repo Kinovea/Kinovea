@@ -158,5 +158,76 @@ namespace Kinovea.Services
             // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" as per XML spec and throws an exception otherwise.
             return (_str != "false" && _str != "False" && _str != "0");
         }
-        public static int ParsePointReference(string content)        {            // Parse a direct point referenc (ex: 12) or a variable name (ex: $12).                        int output = 0;                        try            {                if(content.StartsWith("$"))                {                    int variable = int.Parse(content.Substring(1));                    output = - (variable + 1);                }                else                {                    output = int.Parse(content);                }            }            catch (Exception)            {            	log.Error(String.Format("An error happened while parsing point reference. ({0}).", content));            }                        return output;        }        public static string ImageToBase64(Bitmap bmp, ImageFormat imageFormat)        {            MemoryStream stream = new MemoryStream();            bmp.Save(stream, imageFormat);            byte[] bytes = stream.ToArray();            string base64 = Convert.ToBase64String(bytes);            return base64;        }                public static Bitmap ParseImageFromBase64(string base64)        {            Bitmap result = null;                        try            {                byte[] bytes = Convert.FromBase64String(base64);                result = (Bitmap)Image.FromStream(new MemoryStream(bytes));            }            catch(Exception)            {                log.Error("An error happened while parsing bitmap value.");            }                        return result;        }                public static Rectangle ParseRectangle(string rectangleString)        {            Rectangle rectangle = Rectangle.Empty;            try            {                string[] a = rectangleString.Split(new char[] {';'});                rectangle = new Rectangle(                    int.Parse(a[0]),                     int.Parse(a[1]),                    int.Parse(a[2]),                    int.Parse(a[3]));            }            catch (Exception)            {                log.Error(String.Format("An error happened while parsing Rectangle value. ({0}).", rectangleString));            }            return rectangle;        }    }
+        
+        public static int ParsePointReference(string content)
+        {            
+            // Parse a direct point reference (ex: 12) or a variable identifier (ex: $12).
+            // Variable identifier are transported as negative numbers.
+            int output = 0;
+            try            
+            {                
+                if(content.StartsWith("$"))
+                {                    
+                    int variable = int.Parse(content.Substring(1));
+                    output = - (variable + 1);
+                }
+                else                
+                {                    
+                    output = int.Parse(content);
+                }            
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing point reference. ({0}).", content));
+            }
+            
+            return output;
+        }
+        
+        public static string ImageToBase64(Bitmap bmp, ImageFormat imageFormat)
+        {
+            MemoryStream stream = new MemoryStream();
+            bmp.Save(stream, imageFormat);
+            byte[] bytes = stream.ToArray();
+            string base64 = Convert.ToBase64String(bytes);
+            return base64;
+        }
+        
+        public static Bitmap ParseImageFromBase64(string base64)
+        {
+            Bitmap result = null;
+            
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(base64);
+                result = (Bitmap)Image.FromStream(new MemoryStream(bytes));
+            }
+            catch(Exception)
+            {
+                log.Error("An error happened while parsing bitmap value.");
+            }
+            
+            return result;
+        }
+        
+        public static Rectangle ParseRectangle(string rectangleString)
+        {
+            Rectangle rectangle = Rectangle.Empty;
+            try
+            {
+                string[] a = rectangleString.Split(new char[] {';'});
+                rectangle = new Rectangle(
+                    int.Parse(a[0]), 
+                    int.Parse(a[1]),
+                    int.Parse(a[2]),
+                    int.Parse(a[3]));
+            }
+            catch (Exception)
+            {
+                log.Error(String.Format("An error happened while parsing Rectangle value. ({0}).", rectangleString));
+            }
+
+            return rectangle;
+        }
+    }
 }
