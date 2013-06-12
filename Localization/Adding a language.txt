@@ -1,3 +1,4 @@
+0. Check everything is commited.
 1. merge column.
 1b. Double check culture Info code at http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo%28v=vs.71%29.aspx
 2. add line to ooo2resx.xsl
@@ -5,4 +6,5 @@
 4. add new resx to projects.
 5. Add entry in Service > LanguageManager (Initialize and new static property.)
 6. Add entry in credits window.
-7. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files.
+7. hg add files. (Add on main directory + "<code>.resx" in filter box). => 4 files. 
+	If there are other languages modified, there is the issue of cell merging. All cells in a language column should have a Cell Format > Font > language selected.

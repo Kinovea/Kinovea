@@ -135,8 +135,8 @@
    <data name="dlgConfigureTrajectory_SetOrigin" xml:space="preserve"><value>Sæt udgangspunkt for koordinatsystem</value></data>
    <data name="dlgConfigureMosaic_cbRightToLeft" xml:space="preserve"><value>Venstre mod højre bevægelse</value></data>
    <data name="dlgConfigureMeasure_lblRealSize" xml:space="preserve"><value>Segmentets naturlige størrelse</value></data>
-   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>kalibrering af måling</value></data>
-   
+   <data name="dlgCalibrateLine_Title" xml:space="preserve"><value>Kalibrering af linje</value></data>
+   <data name="dlgCalibratePlane_Title" xml:space="preserve"><value>Kalibrering af plan</value></data>
    <data name="dlgDevicePicker_CurrentDevice" xml:space="preserve"><value>Nuværende enhed</value></data>
    <data name="dlgDevicePicker_DeviceProperties" xml:space="preserve"><value>Egenskaber</value></data>
    <data name="dlgDevicePicker_NoConf" xml:space="preserve"><value>Ingen andre valgmuligheder tilgængelig</value></data>
@@ -283,7 +283,7 @@
    <data name="mnuExportTEXT" xml:space="preserve"><value>Baner til simpel tekst</value></data>
    <data name="mnuFluidify" xml:space="preserve"><value>Gør flydende</value></data>
    <data name="mnuFormat" xml:space="preserve"><value>Billedformat</value></data>
-   <data name="mnuFormatAuto" xml:space="preserve"><value>Auto genkendelse</value></data>
+   <data name="mnuFormatAuto" xml:space="preserve"><value>Automatisk</value></data>
    <data name="mnuFormatForce43" xml:space="preserve"><value>Gennemtving 4:3</value></data>
    <data name="mnuFormatForce169" xml:space="preserve"><value>Gennemtving 16:9</value></data>
    <data name="mnuGotoKeyframe" xml:space="preserve"><value>Gå til nøglebillede</value></data>
@@ -321,7 +321,7 @@
    <data name="mnuStabilize" xml:space="preserve"><value>Stabiliser</value></data>
    <data name="mnuStopTracking" xml:space="preserve"><value>Afslut editering af spor</value></data>
    <data name="mnuSVGTools" xml:space="preserve"><value>Observationsreference</value></data>
-   <data name="mnuSwapScreens" xml:space="preserve"><value>Inverter Vidoers Positioner</value></data>
+   <data name="mnuSwapScreens" xml:space="preserve"><value>Byt om på vinduer</value></data>
    <data name="mnuThumbnailDelete" xml:space="preserve"><value>Slet fil</value></data>
    <data name="mnuThumbnailRename" xml:space="preserve"><value>Omdøb fil</value></data>
    <data name="mnuThumbnailPlay" xml:space="preserve"><value>Afspil video</value></data>
@@ -359,7 +359,7 @@
    <data name="ToolTip_ColorProfile" xml:space="preserve"><value>Farveprofil</value></data>
    <data name="ToolTip_CommonCtrl_DisableMerge" xml:space="preserve"><value>Aktiver "overlay" af billeder</value></data>
    <data name="ToolTip_CommonCtrl_EnableMerge" xml:space="preserve"><value>Deaktiver "overlay" af billeder</value></data>
-   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Vælg kilde</value></data>
+   <data name="ToolTip_DevicePicker" xml:space="preserve"><value>Vælg videokilde</value></data>
    <data name="ToolTip_DrawingToolAngle2D" xml:space="preserve"><value>Vinkel</value></data>
    <data name="ToolTip_DrawingToolChrono" xml:space="preserve"><value>Stopur</value></data>
    <data name="ToolTip_DrawingToolCircle" xml:space="preserve"><value>Cirkel</value></data>
@@ -391,18 +391,18 @@
    <data name="ToolTip_SaveDiaporama" xml:space="preserve"><value>Gem nøglebilleder som slide show</value></data>
    <data name="ToolTip_SavePausedVideo" xml:space="preserve"><value>Gem video med en pause for hver nøglebillede</value></data>
    <data name="ToolTip_SelectFolder" xml:space="preserve"><value>Vælg katalog</value></data>
-   <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Set dette billede som første billede i arbejdszone</value></data>
-   <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Set dette billede som sidste billede i arbejdszone</value></data>
+   <data name="ToolTip_SetHandlerLeft" xml:space="preserve"><value>Sæt start på arbejdszone</value></data>
+   <data name="ToolTip_SetHandlerRight" xml:space="preserve"><value>Sæt slut på arbejdszone</value></data>
    <data name="ToolTip_ShowComments" xml:space="preserve"><value>Vis kommentarer</value></data>
    <data name="ToolTip_sldrSpeed" xml:space="preserve"><value>Varier afspilningshastighed</value></data>
    <data name="ToolTip_SideBySideSnapshot" xml:space="preserve"><value>Gem begge billeder i et sammensat billede</value></data>
    <data name="ToolTip_SideBySideVideo" xml:space="preserve"><value>Gem begge videoer i en sammensat video</value></data>
-   <data name="ToolTip_trkSelection" xml:space="preserve"><value>Sæt arbejdszonen</value></data>
+   <data name="ToolTip_trkSelection" xml:space="preserve"><value>Flyt Start/Slut for arbejdszonen</value></data>
    <data name="VideoFilterEdgesOnly_FriendlyName" xml:space="preserve"><value>Kun kanter…</value></data>
    <data name="VideoFilterAutoLevels_FriendlyName" xml:space="preserve"><value>Auto niveauer…</value></data>
    <data name="VideoFilterSharpen_FriendlyName" xml:space="preserve"><value>Gør skarp…</value></data>
    <data name="VideoFilterMosaic_FriendlyName" xml:space="preserve"><value>Overblik…</value></data>
-   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Modsat…</value></data>
+   <data name="VideoFilterReverse_FriendlyName" xml:space="preserve"><value>Omvendt rækkefølge…</value></data>
    <data name="VideoFilterContrast_FriendlyName" xml:space="preserve"><value>Auto kontrast…</value></data>
    
    

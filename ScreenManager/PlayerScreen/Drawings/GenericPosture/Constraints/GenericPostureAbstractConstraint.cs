@@ -28,6 +28,7 @@ namespace Kinovea.ScreenManager
 {
     public class GenericPostureAbstractConstraint
     {
-        public ConstraintType Type { get; protected set;}
+        public ConstraintType Type { get; set;}
+        public string OptionGroup { get; set;}
     }
 }

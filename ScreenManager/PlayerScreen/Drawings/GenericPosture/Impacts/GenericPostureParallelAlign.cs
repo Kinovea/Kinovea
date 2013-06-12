@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2012.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -16,36 +16,41 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
 */
 #endregion
+
 using System;
+using System.Collections.Generic;
 using System.Xml;
+
+using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public class GenericPostureConstraintLineSlide : GenericPostureAbstractConstraint
+    public class GenericPostureParallelAlign : GenericPostureAbstractImpact
     {
-        public int Start { get; private set;}
-        public int End { get; private set;}
-        public PointLinePosition AllowedPosition { get; private set;}
-        public int Margin { get; private set;}
+        public int PointToMove { get; private set;}
+        public int A { get; private set;}
+        public int B { get; private set;}
+        public int C { get; private set;}
         
-        public GenericPostureConstraintLineSlide(XmlReader r)
+        public GenericPostureParallelAlign(XmlReader r)
         {
-            // <LineSlide point1="0" point2="2" position="Inbetween"/>
-            Margin = 10;
+            Type = ImpactType.ParallelAlign;
             
             bool isEmpty = r.IsEmptyElement;
             
-            if(r.MoveToAttribute("point1"))
-                Start = r.ReadContentAsInt();
+            if(r.MoveToAttribute("pointToMove"))
+                PointToMove = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("point2"))
-                End = r.ReadContentAsInt();
+            if(r.MoveToAttribute("a"))
+                A = r.ReadContentAsInt();
             
-            if(r.MoveToAttribute("position"))
-                AllowedPosition = (PointLinePosition) Enum.Parse(typeof(PointLinePosition), r.ReadContentAsString());
+            if(r.MoveToAttribute("b"))
+                B = r.ReadContentAsInt();
+            
+            if(r.MoveToAttribute("c"))
+                C = r.ReadContentAsInt();
             
             r.ReadStartElement();
             
@@ -54,3 +59,5 @@ namespace Kinovea.ScreenManager
         }
     }
 }
+
+

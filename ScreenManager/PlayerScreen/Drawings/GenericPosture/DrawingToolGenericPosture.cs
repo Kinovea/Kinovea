@@ -29,8 +29,6 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-    // A sandbox for the generic posture tool.
-    
     public class DrawingToolGenericPosture : AbstractDrawingTool
     {
     	#region Properties

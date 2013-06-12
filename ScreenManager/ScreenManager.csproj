@@ -272,11 +272,16 @@
     <Compile Include="PlayerScreen\Drawings\Events\MeasurableDrawingEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\TrackableDrawingEventArgs.cs" />
     <Compile Include="PlayerScreen\Drawings\Events\TrackablePointMovedEventArgs.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints\GenericPostureComputedPoint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints\GenericPostureReferencePoint.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints\IWeightedPoint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\ConstraintType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureAbstractConstraint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintDistanceToPoint.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintHorizontalSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintLineSlide.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintParallelSlide.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintPerpendicularSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintRotationSteps.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Constraints\GenericPostureConstraintVerticalSlide.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\DrawingGenericPosture.cs" />
@@ -284,6 +289,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPosture.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureAngle.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureConstraintEngine.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPosturePosition.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureDistance.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureEllipse.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\GenericPostureHandle.cs" />
@@ -294,6 +300,8 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureAbstractHitZone.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\GenericPostureHitZonePolygon.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\HitZones\HitZoneType.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactPerpendicularAlign.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactSegmentCenter.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureAbstractImpact.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactHorizontalSymmetry.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactHorizontalAlign.cs" />
@@ -301,6 +309,7 @@
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactLineAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactPivot.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureImpactVerticalAlign.cs" />
+    <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\GenericPostureParallelAlign.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\Impacts\ImpactType.cs" />
     <Compile Include="PlayerScreen\Drawings\GenericPosture\SegmentLineStyle.cs" />
     <Compile Include="PlayerScreen\Drawings\DrawingPlane.cs" />
@@ -371,7 +380,9 @@
     <Compile Include="PlayerScreen\Tracking\DrawingTrack.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackerBlock2.cs" />
     <Compile Include="PlayerScreen\Tracking\TrackPointBlock.cs" />
-    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\Controls\DropDownMenuContainer.Designer.cs">
       <DependentUpon>DropDownMenuContainer.cs</DependentUpon>
     </Compile>
@@ -405,8 +416,12 @@
     <Compile Include="PlayerScreen\UserInterface\Controls\SpeedSlider.designer.cs">
       <DependentUpon>SpeedSlider.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs" />
-    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs" />
+    <Compile Include="PlayerScreen\UserInterface\Controls\ToolStripButtonWithDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormCalibratePlane.Designer.cs">
       <DependentUpon>FormCalibratePlane.cs</DependentUpon>
     </Compile>
@@ -633,6 +648,7 @@
     <EmbeddedResource Include="CaptureScreen\Views\FilenameBox.resx">
       <DependentUpon>FilenameBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Languages\ScreenManagerLang.ca.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.cs.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.da.resx" />
     <EmbeddedResource Include="Languages\ScreenManagerLang.el.resx" />
@@ -841,6 +857,7 @@
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
     <Folder Include="PlayerScreen\Drawings\GenericPosture\HitZones" />
+    <Folder Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints" />
     <Folder Include="PlayerScreen\Drawings\Interfaces" />
     <Folder Include="PlayerScreen\Drawings\Events" />
     <Folder Include="PlayerScreen\Drawings\Styling" />

@@ -232,7 +232,7 @@ namespace Kinovea.ScreenManager
         }
 		public void WriteXml(XmlWriter _xmlWriter)
 		{
-		    _xmlWriter.WriteElementString("CenterPoint", String.Format("{0};{1}", points["0"].X, points["0"].Y));
+		    _xmlWriter.WriteElementString("CenterPoint", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["0"].X, points["0"].Y));
             _xmlWriter.WriteElementString("CoordinatesVisible", ShowMeasurableInfo ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");

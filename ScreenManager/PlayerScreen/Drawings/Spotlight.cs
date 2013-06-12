@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Xml;
 
 using Kinovea.Services;
@@ -244,7 +245,7 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter xmlWriter)
 		{
             xmlWriter.WriteElementString("Time", position.ToString());
-            xmlWriter.WriteElementString("Center", string.Format("{0};{1}", points["o"].X, points["o"].Y));
+            xmlWriter.WriteElementString("Center", string.Format(CultureInfo.InvariantCulture, "{0};{1}", points["o"].X, points["o"].Y));
             xmlWriter.WriteElementString("Radius", radius.ToString());
         }
         #endregion

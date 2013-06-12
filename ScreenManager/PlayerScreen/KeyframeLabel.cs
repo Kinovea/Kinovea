@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -156,7 +157,7 @@ namespace Kinovea.ScreenManager
         }
         public void WriteXml(XmlWriter _xmlWriter)
         {
-            _xmlWriter.WriteElementString("SpacePosition", String.Format("{0};{1}", m_Background.X, m_Background.Y));
+            _xmlWriter.WriteElementString("SpacePosition", String.Format(CultureInfo.InvariantCulture, "{0};{1}", m_Background.X, m_Background.Y));
             _xmlWriter.WriteElementString("TimePosition", m_iTimestamp.ToString());
         }
         public void ReadXml(XmlReader _xmlReader, PointF _scale)

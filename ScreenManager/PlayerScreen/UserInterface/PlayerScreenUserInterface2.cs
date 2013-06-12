@@ -2836,7 +2836,14 @@ namespace Kinovea.ScreenManager
             
             foreach(ToolStripItem tsmi in drawing.ContextMenu)
             {
-                tsmi.Tag = (Action)DoInvalidate;	// Inject dependency on this screen's invalidate method.
+                ToolStripMenuItem menuItem = tsmi as ToolStripMenuItem;
+                if(menuItem != null && menuItem.DropDownItems.Count > 0)
+                {
+                    foreach(ToolStripItem subMenu in menuItem.DropDownItems)
+                        subMenu.Tag = (Action)DoInvalidate;
+                }
+                
+                tsmi.Tag = (Action)DoInvalidate;    // Inject dependency on this screen's invalidate method.
                 menuItems.Add(tsmi);
             }
             
