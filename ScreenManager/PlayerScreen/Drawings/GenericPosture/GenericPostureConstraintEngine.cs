@@ -41,7 +41,7 @@ namespace Kinovea.ScreenManager
                         MovePointHandle(posture, calibrationHelper, handle, point, modifiers);
                         break;
                     case HandleType.Segment:
-                        MoveSegmentHandle(posture, handle, point);
+                        MoveSegmentHandle(posture, calibrationHelper, handle, point);
                         break;
                     case HandleType.Ellipse:
                         MoveEllipseHandle(posture, handle, point);
@@ -97,51 +97,61 @@ namespace Kinovea.ScreenManager
                 }
             }
             
-            // Impacts. (positions of other points).
-            foreach(GenericPostureAbstractImpact impact in posture.Handles[handle].Impacts)
-            {
-                switch(impact.Type)
-                {
-                    case ImpactType.LineAlign:
-                        AlignPointSegment(posture, impact as GenericPostureImpactLineAlign);
-                        break;
-                    case ImpactType.VerticalAlign:
-                        AlignPointVertical(posture, calibrationHelper, handle, impact as GenericPostureImpactVerticalAlign);
-                        break;
-                    case ImpactType.HorizontalAlign:
-                        AlignPointHorizontal(posture, handle, impact as GenericPostureImpactHorizontalAlign);
-                        break;
-                    case ImpactType.Pivot:
-                        // Get rotation that was applied. Apply same rotation on all points.
-                        GenericPostureImpactPivot impactPivot = impact as GenericPostureImpactPivot;
-                        if(impact != null)
-                        {
-                            PointF a = posture.Points[impactPivot.Pivot];
-                            PointF b = old;
-                            PointF c = posture.Points[posture.Handles[handle].Reference];
-                            float radians = GeometryHelper.GetAngle(a, b, c);
-                            PivotPoints(posture, radians, impact as GenericPostureImpactPivot);
-                        }
-                        break;
-                    case ImpactType.KeepAngle:
-                        KeepPointAngle(posture, impact as GenericPostureImpactKeepAngle);
-                        break;
-                    case ImpactType.SegmentCenter:
-                        SegmentCenter(posture, calibrationHelper, impact as GenericPostureImpactSegmentCenter);
-                        break;
-                    case ImpactType.PerdpendicularAlign:
-                        AlignPointPerpendicular(posture, calibrationHelper, impact as GenericPosturePerpendicularAlign);
-                        break;
-                    case ImpactType.ParallelAlign:
-                        AlignPointParallel(posture, calibrationHelper, impact as GenericPostureParallelAlign);
-                        break;
-                } 
-            }
-            
+            ProcessPointImpacts(posture, calibrationHelper, handle, old);
         }
         
-        private static void MoveSegmentHandle(GenericPosture posture, int handle, Point point)
+        private static void ProcessPointImpacts(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, PointF old)
         {
+            foreach(GenericPostureAbstractImpact impact in posture.Handles[handle].Impacts)
+                ProcessPointImpact(posture, calibrationHelper, impact, handle, old);
+        }
+        private static void ProcessPointImpact(GenericPosture posture, CalibrationHelper calibrationHelper, GenericPostureAbstractImpact impact, int handle, PointF old)
+        {
+            switch(impact.Type)
+            {
+                case ImpactType.LineAlign:
+                    AlignPointSegment(posture, impact as GenericPostureImpactLineAlign);
+                    break;
+                case ImpactType.VerticalAlign:
+                    AlignPointVertical(posture, calibrationHelper, handle, impact as GenericPostureImpactVerticalAlign);
+                    break;
+                case ImpactType.HorizontalAlign:
+                    AlignPointHorizontal(posture, handle, impact as GenericPostureImpactHorizontalAlign);
+                    break;
+                case ImpactType.Pivot:
+                    // Get rotation that was applied. Apply same rotation on all points.
+                    GenericPostureImpactPivot impactPivot = impact as GenericPostureImpactPivot;
+                    if(impact != null)
+                    {
+                        PointF a = posture.Points[impactPivot.Pivot];
+                        PointF b = old;
+                        PointF c = posture.Points[posture.Handles[handle].Reference];
+                        float radians = GeometryHelper.GetAngle(a, b, c);
+                        PivotPoints(posture, radians, impact as GenericPostureImpactPivot);
+                    }
+                    break;
+                case ImpactType.KeepAngle:
+                    KeepPointAngle(posture, impact as GenericPostureImpactKeepAngle);
+                    break;
+                case ImpactType.SegmentCenter:
+                    SegmentCenter(posture, calibrationHelper, impact as GenericPostureImpactSegmentCenter);
+                    break;
+                case ImpactType.PerdpendicularAlign:
+                    AlignPointPerpendicular(posture, calibrationHelper, impact as GenericPosturePerpendicularAlign);
+                    break;
+                case ImpactType.ParallelAlign:
+                    AlignPointParallel(posture, calibrationHelper, impact as GenericPostureParallelAlign);
+                    break;
+            }
+        }
+        
+        private static void MoveSegmentHandle(GenericPosture posture, CalibrationHelper calibrationHelper, int handle, Point point)
+        {
+            int start = posture.Segments[posture.Handles[handle].Reference].Start;
+            int end = posture.Segments[posture.Handles[handle].Reference].End;
+            PointF oldStart = posture.Points[start];
+            PointF oldEnd = posture.Points[end];
+        
             // Constraints. (position of the point managed by this handle).
             GenericPostureAbstractConstraint constraint = posture.Handles[handle].Constraint;
             
@@ -174,6 +184,26 @@ namespace Kinovea.ScreenManager
                         MoveSegmentSymmetrically(posture, impact as GenericPostureImpactHorizontalSymmetry);
                         break;
                 } 
+            }
+            
+            // Check if segments start and end points are handles, and apply impacts.
+            foreach(GenericPostureHandle h in posture.Handles)
+            {
+                if(h.Type != HandleType.Point)
+                    continue;
+                
+                int handleReference = h.Reference;
+
+                if(handleReference == start)
+                {
+                    PrepareImpacts(posture, handleReference);
+                    ProcessPointImpacts(posture, calibrationHelper, handleReference, oldStart);
+                }
+                else if(h.Reference == end)
+                {
+                    PrepareImpacts(posture, handleReference);
+                    ProcessPointImpacts(posture, calibrationHelper, handleReference, oldEnd);
+                }
             }
         }
         private static void MoveEllipseHandle(GenericPosture posture, int handle, Point point)
