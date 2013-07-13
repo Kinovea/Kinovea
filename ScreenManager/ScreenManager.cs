@@ -1109,6 +1109,40 @@ namespace Kinovea.ScreenManager
             screen.Activated += Screen_Activated;
             screenList.Add(screen);
         }
+        public void RemoveFirstEmpty(bool storeState)
+        {
+            for(int i=0;i<screenList.Count;i++)
+            {
+                if(screenList[i].Full)
+                    continue;
+                
+                // We store the current state now.
+                // (We don't store it at construction time to handle the redo case better)
+                if (storeState) 
+                    StoreCurrentState();
+                
+                RemoveScreen(screenList[i]);
+                break;
+            }
+            
+            AfterRemoveScreen();
+        }
+        public void RemoveScreen(AbstractScreen screen)
+        {
+            screen.CloseAsked -= Screen_CloseAsked;
+            screen.Activated -= Screen_Activated;
+            
+            screen.BeforeClose();
+            screenList.Remove(screen);
+            screen.AfterClose();
+            
+            AfterRemoveScreen();
+        }
+        private void AfterRemoveScreen()
+        {
+            if (screenList.Count > 0)
+                SetActiveScreen(screenList[0]);
+        }
         public void UpdateStatusBar()
         {
             //------------------------------------------------------------------

@@ -326,11 +326,11 @@ namespace Kinovea.ScreenManager
         }
         public override void AfterClose()
         {
-            if(m_FrameServer.Loaded)
-            {
-                m_FrameServer.VideoReader.Close();
-                m_PlayerScreenUI.ResetToEmptyState();
-            }
+            if(!m_FrameServer.Loaded)
+                return;
+            
+            m_FrameServer.VideoReader.Close();
+            m_PlayerScreenUI.ResetToEmptyState();
         }
         public override void RefreshUICulture()
         {

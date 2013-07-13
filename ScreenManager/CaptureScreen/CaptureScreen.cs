@@ -204,7 +204,7 @@ namespace Kinovea.ScreenManager
         }
         public override void AfterClose()
         {
-            // Fixme: all the stopping and cleaning is implemented in BeforeClose instead of AfterClose. 
+            // All the stopping and cleaning is implemented in BeforeClose.
             // It works while there is no cancellation possible.
         }
         public override bool OnKeyPress(Keys key)
