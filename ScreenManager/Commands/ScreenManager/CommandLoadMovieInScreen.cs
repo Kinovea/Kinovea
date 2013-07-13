@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
             if (targetScreen != -1)
             {
                 // Position d'écran forcée: Vérifier s'il y a des choses à enregistrer.
-
+                //todo: screenManagerKernel.GetScreenAt(targetScreen);
                 PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[targetScreen];
                 bool bLoad = true;
                 if (ps.FrameServer.Metadata.IsDirty)
@@ -113,7 +113,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-                switch (screenManagerKernel.screenList.Count)
+                switch (screenManagerKernel.ScreenCount)
                 {
                     case 0:
                         {
@@ -185,7 +185,7 @@ namespace Kinovea.ScreenManager
                             	screenManagerKernel.UpdateCaptureBuffers();
 
                             	// load video.
-                            	PlayerScreen newScreen = (screenManagerKernel.screenList.Count > 0) ? (screenManagerKernel.screenList[1] as PlayerScreen) : null;
+                            	PlayerScreen newScreen = (screenManagerKernel.ScreenCount > 0) ? (screenManagerKernel.screenList[1] as PlayerScreen) : null;
                             	if(newScreen != null)
                             	{
 	                            	clm = new CommandLoadMovie(newScreen, filePath);
@@ -301,7 +301,7 @@ namespace Kinovea.ScreenManager
             }
 
             screenManagerKernel.OrganizeCommonControls();
-            screenManagerKernel.OrganizeMenus();
+            //screenManagerKernel.OrganizeMenus();
             screenManagerKernel.UpdateStatusBar();
         }
 

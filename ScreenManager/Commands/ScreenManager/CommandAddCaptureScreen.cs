@@ -54,7 +54,7 @@ namespace Kinovea.ScreenManager
         public void Execute()
         {
             CaptureScreen screen = new CaptureScreen();
-            if(screenManagerKernel.screenList.Count > 1) 
+            if(screenManagerKernel.ScreenCount > 1) 
                 screen.SetShared(true);
             
             screen.RefreshUICulture();
