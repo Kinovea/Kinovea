@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
         	// explicit-close ask for a specific screen to be closed.
         	// implicit-close just ask for a close, we choose which one here.
         	
-            if (iScreenToRemove >= 0 && iScreenToRemove < screenManagerKernel.screenList.Count)
+            if (iScreenToRemove >= 0 && iScreenToRemove < screenManagerKernel.ScreenCount)
             {
             	// Explicit. Make the other one the "active" screen if necessary.
                 // For now, we do different actions based on screen type. (fixme?)
@@ -139,7 +139,7 @@ namespace Kinovea.ScreenManager
             {
                 // Implicit close. Find the empty screen.
                 // (We actually know for sure that there is indeed an empty screen).
-                for(int i=0;i<screenManagerKernel.screenList.Count;i++)
+                for(int i=0;i<screenManagerKernel.ScreenCount;i++)
                 {
                 	if(!screenManagerKernel.screenList[i].Full)
                 	{
@@ -155,7 +155,7 @@ namespace Kinovea.ScreenManager
             }
 
         	// Handle the remaining screen.
-            if (screenManagerKernel.screenList.Count > 0)
+            if (screenManagerKernel.ScreenCount > 0)
             {
                 screenManagerKernel.SetActiveScreen(screenManagerKernel.screenList[0]);
             }

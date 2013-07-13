@@ -89,6 +89,7 @@ namespace Kinovea.ScreenManager
                     {
                         // Try to load first frame and other inits.
                         int iPostLoadProcess = m_PlayerScreen.m_PlayerScreenUI.PostLoadProcess();
+                        m_PlayerScreen.AfterLoad();
 
                         switch (iPostLoadProcess)
                         {

@@ -266,7 +266,6 @@ namespace Kinovea.ScreenManager
             
         }
         
-        
         #region IPlayerScreenUIHandler (and IScreenUIHandler) implementation
         
         // TODO: turn all these dependencies into commands.
@@ -421,9 +420,12 @@ namespace Kinovea.ScreenManager
             m_PlayerScreenUI.RefreshImage();
         }
         #endregion
-   
-        
-        
+
+        public void AfterLoad()
+        {
+            OnActivated(EventArgs.Empty);
+        }
+
         private void AddTrackableDrawing(ITrackable trackableDrawing)
 		{
 		    m_FrameServer.Metadata.TrackabilityManager.Add(trackableDrawing, m_FrameServer.VideoReader.Current);

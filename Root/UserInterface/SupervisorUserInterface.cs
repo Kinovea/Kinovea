@@ -94,7 +94,7 @@ namespace Kinovea.Root
         }
         private void NotificationCenter_LaunchOpenDialog(object sender, EventArgs e)
         {
-            if(isOpening || RootKernel.ScreenManager.screenList.Count != 0)
+            if(isOpening || RootKernel.ScreenManager.ScreenCount != 0)
                 return;
             
             isOpening = true;
