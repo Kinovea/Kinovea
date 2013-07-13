@@ -79,7 +79,7 @@ namespace Kinovea.Camera.HTTP
             device.VideoSourceError += Device_VideoSourceError;
             
             device.Start();
-            waitHandle.WaitOne(5000);
+            waitHandle.WaitOne(5000, false);
             
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;

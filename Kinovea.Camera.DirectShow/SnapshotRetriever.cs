@@ -63,7 +63,7 @@ namespace Kinovea.Camera.DirectShow
         public void Run(object data)
         {
             device.Start();
-            waitHandle.WaitOne(5000);
+            waitHandle.WaitOne(5000, false);
             
             device.NewFrame -= Device_NewFrame;
             device.VideoSourceError -= Device_VideoSourceError;
