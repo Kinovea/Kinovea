@@ -42,15 +42,15 @@ namespace Kinovea.ScreenManager
         	get { return ScreenManagerLang.CommandRemoveScreen_FriendlyName; }
         }
         private ScreenManagerKernel screenManagerKernel;
-        private int iScreenToRemove;
-        private bool m_bStoreState;
+        private int screenToRemoveIndex;
+        private bool storeState;
 
         #region constructor
-        public CommandRemoveScreen(ScreenManagerKernel _smk, int _iScreenToRemove, bool _bStoreState)
+        public CommandRemoveScreen(ScreenManagerKernel screenManagerKernel, int screenToRemoveIndex, bool storeState)
         {
-            screenManagerKernel = _smk;
-            iScreenToRemove = _iScreenToRemove;
-            m_bStoreState = _bStoreState;
+            this.screenManagerKernel = screenManagerKernel;
+            this.screenToRemoveIndex = screenToRemoveIndex;
+            this.storeState = storeState;
         }
         #endregion
 
@@ -67,22 +67,28 @@ namespace Kinovea.ScreenManager
             {
                 screen.DisplayAsActiveScreen(false);
             }
-
-        	// There are two types of closing demands: explicit and implicit.
-        	// explicit-close ask for a specific screen to be closed.
-        	// implicit-close just ask for a close, we choose which one here.
-        	
-            if (iScreenToRemove >= 0 && iScreenToRemove < screenManagerKernel.ScreenCount)
+            
+            // There are two types of closing demands: explicit and implicit.
+            // explicit-close ask for a specific screen to be closed.
+            // implicit-close just ask for a close, we choose which one here.
+            
+            if(screenToRemoveIndex == -1)
             {
-            	// Explicit. Make the other one the "active" screen if necessary.
+                screenManagerKernel.RemoveFirstEmpty(storeState);
+            }
+            else
+            {
+                AbstractScreen screenToRemove = screenManagerKernel.GetScreenAt(screenToRemoveIndex);
+                
+                // Explicit. Make the other one the "active" screen if necessary.
                 // For now, we do different actions based on screen type. (fixme?)
-            	
-            	if (screenManagerKernel.screenList[iScreenToRemove] is PlayerScreen)
+
+                if (screenToRemove is PlayerScreen)
                 {
-            		// PlayerScreen, check if dirty and ask for saving if so.
-            		
-                    PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[iScreenToRemove];
-                    bool bRemove = true;
+                    // check if dirty and ask for saving if so.
+                    PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[screenToRemoveIndex];
+
+                    bool shouldRemove = true;
                     if (ps.FrameServer.Metadata.IsDirty)
                     {
                         DialogResult dr = MessageBox.Show(ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
@@ -99,69 +105,30 @@ namespace Kinovea.ScreenManager
                         else if (dr == DialogResult.Cancel)
                         {
                             // Cancel the close.
-                            bRemove = false;
+                            shouldRemove = false;
                             screenManagerKernel.CancelLastCommand = true;
                         }
                     }
 
-                    if (bRemove)
+                    if (shouldRemove)
                     {
                         // We store the current state now.
                         // (We don't store it at construction time to handle the redo case better)
-                        if (m_bStoreState) 
-                        	screenManagerKernel.StoreCurrentState(); 
+                        if (storeState)
+                            screenManagerKernel.StoreCurrentState(); 
                         
-                        ps.AfterClose();
-                        screenManagerKernel.screenList.RemoveAt(iScreenToRemove);
-
-                        // TODO: Remove all commands that were executed during this screen life from the command history.
-                        // But to do that we'll need a way to tell apart commands based on their parent screen...
+                        screenManagerKernel.RemoveScreen(screenToRemove);
                     }
                 }
-            	else if(screenManagerKernel.screenList[iScreenToRemove] is CaptureScreen)
-            	{
-            		// Capture.
-            		// We store the current state now.
-                    // (We don't store it at construction time to handle the redo case better)
-                    if (m_bStoreState) 
-                    { 
-                    	screenManagerKernel.StoreCurrentState(); 
-                    }
-                    
-                    screenManagerKernel.screenList[iScreenToRemove].BeforeClose();
-                    screenManagerKernel.screenList.RemoveAt(iScreenToRemove);
-
-	                // TODO: Remove all commands that were executed during this screen life from the command history.
-	                // But to do that we'll need a way to tell apart commands based on their parent screen...
-            	}
-            }
-        	else
-            {
-                // Implicit close. Find the empty screen.
-                // (We actually know for sure that there is indeed an empty screen).
-                for(int i=0;i<screenManagerKernel.ScreenCount;i++)
+                else if(screenToRemove is CaptureScreen)
                 {
-                	if(!screenManagerKernel.screenList[i].Full)
-                	{
-                		// We store the current state now.
-                    	// (We don't store it at construction time to handle the redo case better)
-                    	if (m_bStoreState) { screenManagerKernel.StoreCurrentState(); }
-                    	screenManagerKernel.screenList.RemoveAt(i);
-                    	// TODO: Remove all commands that were executed during this screen life from the command history.
-	               		// But to do that we'll need a way to tell apart commands based on their parent screen...
-                		break;
-                	}
+                    // We store the current state now.
+                    // (We don't store it at construction time to handle the redo case better)
+                    if (storeState) 
+                        screenManagerKernel.StoreCurrentState(); 
+                    
+                    screenManagerKernel.RemoveScreen(screenToRemove);
                 }
-            }
-
-        	// Handle the remaining screen.
-            if (screenManagerKernel.ScreenCount > 0)
-            {
-                screenManagerKernel.SetActiveScreen(screenManagerKernel.screenList[0]);
-            }
-            else
-            {
-                // Show back the Thumbnails...
             }
         }
         public void Unexecute()
