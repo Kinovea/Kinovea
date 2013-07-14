@@ -385,10 +385,7 @@ namespace Kinovea.ScreenManager
         }
         private Bitmap CopyImage(Bitmap original)
         {
-            Bitmap copy = new Bitmap(original.Width, original.Height, original.PixelFormat);
-            Graphics g = Graphics.FromImage(copy);
-            g.DrawImageUnscaled(original, Point.Empty);
-            return copy;
+            return AForge.Imaging.Image.Clone(original, original.PixelFormat);
         }
         private void UpdateTitle()
         {

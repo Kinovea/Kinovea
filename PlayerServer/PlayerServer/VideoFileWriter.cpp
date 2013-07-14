@@ -683,13 +683,11 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 	enum PixelFormat pixelFormatFFmpeg;
 
 	if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format32bppPArgb)
-	{
 		pixelFormatFFmpeg = PIX_FMT_BGRA;	
-	}
-	else
-	{
+	else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format24bppRgb)
 		pixelFormatFFmpeg = PIX_FMT_BGR24;
-	}
+	else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format8bppIndexed)
+		pixelFormatFFmpeg = PIX_FMT_BGR8;
 
 	do
 	{
