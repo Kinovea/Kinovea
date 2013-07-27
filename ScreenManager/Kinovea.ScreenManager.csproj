@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,12 +11,32 @@
     <RootNamespace>Kinovea.ScreenManager</RootNamespace>
     <AssemblyName>Kinovea.ScreenManager</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\Administrateur\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -25,6 +45,7 @@
     <ErrorReport>prompt</ErrorReport>
     <BaseAddress>18153472</BaseAddress>
     <DebugSymbols>true</DebugSymbols>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +53,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <BaseAddress>18153472</BaseAddress>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -41,6 +63,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <DebugSymbols>true</DebugSymbols>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -49,6 +73,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <DebugSymbols>false</DebugSymbols>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>False</Optimize>
@@ -74,6 +99,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugExternals|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +112,7 @@
     <DebugType>Full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge" Condition=" '$(Configuration)' == 'Release' ">
@@ -115,18 +142,6 @@
     <Reference Include="AForge.Math" Condition=" '$(Configuration)' == 'DebugExternals' ">
       <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Math\bin\Debug\AForge.Math.dll</HintPath>
     </Reference>
-    <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\Refs\AForge.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video" Condition=" '$(Configuration)' == 'DebugExternals' ">
-      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Video\bin\Debug\AForge.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\Refs\AForge.Video.DirectShow.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow" Condition=" '$(Configuration)' == 'DebugExternals' ">
-      <HintPath>..\..\..\ExternalCode\AForge.NET\Sources\Video.DirectShow\bin\Debug\AForge.Video.DirectShow.dll</HintPath>
-    </Reference>
     <Reference Include="Emgu.CV">
       <HintPath>..\Refs\Emgu.CV.dll</HintPath>
     </Reference>
@@ -135,12 +150,6 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Refs\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Kinovea.Video.FFMpeg">
-      <HintPath>..\PlayerServer\bin\Kinovea.Video.FFMpeg.dll</HintPath>
-    </Reference>
-    <Reference Include="LinqBridge">
-      <HintPath>..\Refs\LinqBridge.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -188,15 +197,21 @@
     <Compile Include="CaptureScreen\MetadataRenderer.cs" />
     <Compile Include="CaptureScreen\ZoomHelper.cs" />
     <Compile Include="CaptureScreen\ViewportController.cs" />
-    <Compile Include="CaptureScreen\Views\CapturedFilesView.cs" />
+    <Compile Include="CaptureScreen\Views\CapturedFilesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\Views\CapturedFilesView.Designer.cs">
       <DependentUpon>CapturedFilesView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\Views\CapturedFileView.cs" />
+    <Compile Include="CaptureScreen\Views\CapturedFileView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\Views\CapturedFileView.Designer.cs">
       <DependentUpon>CapturedFileView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.cs" />
+    <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\Views\CaptureScreen views\CaptureScreenView.Designer.cs">
       <DependentUpon>CaptureScreenView.cs</DependentUpon>
     </Compile>
@@ -205,11 +220,15 @@
     <Compile Include="CaptureScreen\Views\ControlAnimation.cs" />
     <Compile Include="CaptureScreen\Views\ControlAnimator.cs" />
     <Compile Include="CaptureScreen\Views\EmbeddedButton.cs" />
-    <Compile Include="CaptureScreen\Views\FilenameBox.cs" />
+    <Compile Include="CaptureScreen\Views\FilenameBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="CaptureScreen\Views\FilenameBox.Designer.cs">
       <DependentUpon>FilenameBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="CaptureScreen\Views\ViewPort.cs" />
+    <Compile Include="CaptureScreen\Views\ViewPort.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
     <Compile Include="FilesystemHelper.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
@@ -537,26 +556,36 @@
     <Compile Include="Properties\Backgrounds.Designer.cs">
       <DependentUpon>Backgrounds.resx</DependentUpon>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\Capture.Designer.cs">
       <DependentUpon>Capture.resx</DependentUpon>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\Drawings.Designer.cs">
       <DependentUpon>Drawings.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="SummaryLoadedEventArgs.cs" />
     <Compile Include="SummaryLoader.cs" />
     <Compile Include="Thumbnails\FileLoadAskedEventArgs.cs" />
-    <Compile Include="Thumbnails\FormCameraAlias.cs" />
+    <Compile Include="Thumbnails\FormCameraAlias.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Thumbnails\FormCameraAlias.Designer.cs">
       <DependentUpon>FormCameraAlias.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\SizeSelector.cs" />
+    <Compile Include="Thumbnails\SizeSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Thumbnails\SizeSelector.Designer.cs">
       <DependentUpon>SizeSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\ThumbnailCamera.cs" />
+    <Compile Include="Thumbnails\ThumbnailCamera.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Thumbnails\ThumbnailCamera.Designer.cs">
       <DependentUpon>ThumbnailCamera.cs</DependentUpon>
     </Compile>
@@ -566,21 +595,29 @@
     <Compile Include="Thumbnails\ThumbnailFile.Designer.cs">
       <DependentUpon>ThumbnailFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\Selector.cs" />
+    <Compile Include="Thumbnails\Selector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Thumbnails\Selector.Designer.cs">
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\SelectorOption.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerContent.cs" />
-    <Compile Include="Thumbnails\ThumbnailViewerCameras.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerCameras.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Thumbnails\ThumbnailViewerCameras.Designer.cs">
       <DependentUpon>ThumbnailViewerCameras.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\ThumbnailViewerContainer.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Thumbnails\ThumbnailViewerContainer.Designer.cs">
       <DependentUpon>ThumbnailViewerContainer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Thumbnails\ThumbnailViewerFiles.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerFiles.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Thumbnails\ThumbnailViewerFiles.Designer.cs">
       <DependentUpon>ThumbnailViewerFiles.cs</DependentUpon>
     </Compile>
@@ -622,7 +659,9 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenManagerState.cs" />
-    <Compile Include="UserInterface\FormIconPicker.cs" />
+    <Compile Include="UserInterface\FormIconPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UserInterface\FormIconPicker.Designer.cs">
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </Compile>
@@ -634,7 +673,9 @@
       <DependentUpon>ScreenManagerUserInterface.cs</DependentUpon>
     </Compile>
     <Compile Include="UserInterface\MessageToaster.cs" />
-    <Compile Include="UserInterface\SliderLogScale.cs" />
+    <Compile Include="UserInterface\SliderLogScale.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UserInterface\UIHelper.cs" />
     <EmbeddedResource Include="CaptureScreen\Views\CapturedFilesView.resx">
       <DependentUpon>CapturedFilesView.cs</DependentUpon>
@@ -752,13 +793,17 @@
       <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
       <Name>Kinovea.Camera</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Services\Services.csproj">
-      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
-      <Name>Services</Name>
+    <ProjectReference Include="..\PlayerServer\PlayerServer\PlayerServer.vcxproj">
+      <Project>{F80DBE6D-D394-4811-B5E6-7528F849C71A}</Project>
+      <Name>Kinovea.Video.FFMpeg</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Video\Video.csproj">
+    <ProjectReference Include="..\Services\Kinovea.Services.csproj">
+      <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
+      <Name>Kinovea.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Video\Kinovea.Video.csproj">
       <Project>{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}</Project>
-      <Name>Video</Name>
+      <Name>Kinovea.Video</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -848,23 +893,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CaptureScreen" />
-    <Folder Include="CaptureScreen\Frame buffers" />
-    <Folder Include="CaptureScreen\Views\CaptureScreen views" />
-    <Folder Include="CaptureScreen\Views" />
-    <Folder Include="Thumbnails" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\Constraints" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\Impacts" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\HitZones" />
-    <Folder Include="PlayerScreen\Drawings\GenericPosture\ComputedPoints" />
-    <Folder Include="PlayerScreen\Drawings\Interfaces" />
-    <Folder Include="PlayerScreen\Drawings\Events" />
-    <Folder Include="PlayerScreen\Drawings\Styling" />
-    <Folder Include="PlayerScreen\Geometry" />
-    <Folder Include="PlayerScreen\Export" />
-    <Folder Include="PlayerScreen\Calibration" />
-    <Folder Include="PlayerScreen\Trackability" />
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

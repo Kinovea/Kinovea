@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Kinovea.Camera</RootNamespace>
     <AssemblyName>Kinovea.Camera</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -46,10 +46,10 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinqBridge">
-      <HintPath>..\Refs\LinqBridge.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
@@ -66,7 +66,9 @@
     <Compile Include="Events\CameraLoadAskedEventArgs.cs" />
     <Compile Include="Events\CamerasDiscoveredEventArgs.cs" />
     <Compile Include="Events\CameraSummaryUpdatedEventArgs.cs" />
-    <Compile Include="FormIconPicker.cs" />
+    <Compile Include="FormIconPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormIconPicker.Designer.cs">
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </Compile>
@@ -78,6 +80,7 @@
     <Compile Include="Properties\Icons.Designer.cs">
       <DependentUpon>Icons.resx</DependentUpon>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -87,14 +90,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Services\Services.csproj">
+    <ProjectReference Include="..\Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
-      <Name>Services</Name>
+      <Name>Kinovea.Services</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces" />
-    <Folder Include="Events" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
