@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Kinovea.Camera.HTTP</RootNamespace>
     <AssemblyName>Kinovea.Camera.HTTP</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -39,13 +39,12 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge.Video">
       <HintPath>..\Refs\AForge.Video.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="LinqBridge">
-      <HintPath>..\Refs\LinqBridge.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net">
@@ -59,15 +58,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManagerHTTP.cs" />
-    <Compile Include="ConnectionWizard.cs" />
+    <Compile Include="ConnectionWizard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ConnectionWizard.Designer.cs">
       <DependentUpon>ConnectionWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormConfiguration.cs" />
+    <Compile Include="FormConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormConfiguration.Designer.cs">
       <DependentUpon>FormConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormHandshakeResult.cs" />
+    <Compile Include="FormHandshakeResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormHandshakeResult.Designer.cs">
       <DependentUpon>FormHandshakeResult.cs</DependentUpon>
     </Compile>
@@ -81,9 +86,9 @@
       <Project>7EC5DEBF-DF52-40F5-A9FE-1B2007B6116D</Project>
       <Name>Kinovea.Camera</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Services\Services.csproj">
+    <ProjectReference Include="..\Services\Kinovea.Services.csproj">
       <Project>{8AA92254-A016-4A84-925C-F5B07E02F8A8}</Project>
-      <Name>Services</Name>
+      <Name>Kinovea.Services</Name>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

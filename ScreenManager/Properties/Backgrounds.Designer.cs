@@ -8,8 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Kinovea.ScreenManager.Properties
-{
+namespace Kinovea.ScreenManager.Properties {
     using System;
     
     
@@ -23,28 +22,23 @@ namespace Kinovea.ScreenManager.Properties
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Backgrounds
-    {
+    internal class Backgrounds {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Backgrounds()
-        {
+        internal Backgrounds() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if (object.ReferenceEquals(resourceMan, null))
-                {
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.ScreenManager.Properties.Backgrounds", typeof(Backgrounds).Assembly);
                     resourceMan = temp;
                 }
@@ -57,76 +51,59 @@ namespace Kinovea.ScreenManager.Properties
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
             }
         }
         
-        internal static System.Drawing.Bitmap classy_fabric
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap classy_fabric {
+            get {
                 object obj = ResourceManager.GetObject("classy_fabric", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap dark_Tire
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap dark_Tire {
+            get {
                 object obj = ResourceManager.GetObject("dark_Tire", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap darkdenim3
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap darkdenim3 {
+            get {
                 object obj = ResourceManager.GetObject("darkdenim3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap debut_dark
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap debut_dark {
+            get {
                 object obj = ResourceManager.GetObject("debut_dark", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap inflicted
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap inflicted {
+            get {
                 object obj = ResourceManager.GetObject("inflicted", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap irongrip
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap irongrip {
+            get {
                 object obj = ResourceManager.GetObject("irongrip", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap low_contrast_linen
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap low_contrast_linen {
+            get {
                 object obj = ResourceManager.GetObject("low_contrast_linen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }

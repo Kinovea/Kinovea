@@ -8,8 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Kinovea.Camera.Properties
-{
+namespace Kinovea.Camera.Properties {
     using System;
     
     
@@ -23,28 +22,23 @@ namespace Kinovea.Camera.Properties
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Icons
-    {
+    internal class Icons {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Icons()
-        {
+        internal Icons() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if (object.ReferenceEquals(resourceMan, null))
-                {
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Kinovea.Camera.Properties.Icons", typeof(Icons).Assembly);
                     resourceMan = temp;
                 }
@@ -57,301 +51,234 @@ namespace Kinovea.Camera.Properties
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
             }
         }
         
-        internal static System.Drawing.Bitmap camcorder
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap camcorder {
+            get {
                 object obj = ResourceManager.GetObject("camcorder", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap camera
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap camera {
+            get {
                 object obj = ResourceManager.GetObject("camera", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap camera_black
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap camera_black {
+            get {
                 object obj = ResourceManager.GetObject("camera-black", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap camera_lens
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap camera_lens {
+            get {
                 object obj = ResourceManager.GetObject("camera-lens", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap camera_small
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap camera_small {
+            get {
                 object obj = ResourceManager.GetObject("camera-small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap camera_small_black
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap camera_small_black {
+            get {
                 object obj = ResourceManager.GetObject("camera-small-black", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap construction
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap construction {
+            get {
                 object obj = ResourceManager.GetObject("construction", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap footprint
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap footprint {
+            get {
                 object obj = ResourceManager.GetObject("footprint", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap media_player_phone
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap media_player_phone {
+            get {
                 object obj = ResourceManager.GetObject("media-player-phone", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap memory
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap memory {
+            get {
                 object obj = ResourceManager.GetObject("memory", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap na
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap na {
+            get {
                 object obj = ResourceManager.GetObject("na", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap network
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap network {
+            get {
                 object obj = ResourceManager.GetObject("network", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap network_cloud
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap network_cloud {
+            get {
                 object obj = ResourceManager.GetObject("network-cloud", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap network_wireless
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap network_wireless {
+            get {
                 object obj = ResourceManager.GetObject("network-wireless", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number01
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number01 {
+            get {
                 object obj = ResourceManager.GetObject("number01", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number02
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number02 {
+            get {
                 object obj = ResourceManager.GetObject("number02", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number03
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number03 {
+            get {
                 object obj = ResourceManager.GetObject("number03", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number04
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number04 {
+            get {
                 object obj = ResourceManager.GetObject("number04", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number05
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number05 {
+            get {
                 object obj = ResourceManager.GetObject("number05", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number06
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number06 {
+            get {
                 object obj = ResourceManager.GetObject("number06", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number07
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number07 {
+            get {
                 object obj = ResourceManager.GetObject("number07", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number08
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number08 {
+            get {
                 object obj = ResourceManager.GetObject("number08", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number09
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number09 {
+            get {
                 object obj = ResourceManager.GetObject("number09", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap number10
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap number10 {
+            get {
                 object obj = ResourceManager.GetObject("number10", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap pda
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap pda {
+            get {
                 object obj = ResourceManager.GetObject("pda", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap processor
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap processor {
+            get {
                 object obj = ResourceManager.GetObject("processor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap spectrum
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap spectrum {
+            get {
                 object obj = ResourceManager.GetObject("spectrum", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap system_monitor
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap system_monitor {
+            get {
                 object obj = ResourceManager.GetObject("system-monitor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap target
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap target {
+            get {
                 object obj = ResourceManager.GetObject("target", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap usb_flash_drive_logo
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap usb_flash_drive_logo {
+            get {
                 object obj = ResourceManager.GetObject("usb-flash-drive-logo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap webcam
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap webcam {
+            get {
                 object obj = ResourceManager.GetObject("webcam", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap wi_fi
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap wi_fi {
+            get {
                 object obj = ResourceManager.GetObject("wi-fi", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
