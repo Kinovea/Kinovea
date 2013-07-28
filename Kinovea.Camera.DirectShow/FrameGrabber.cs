@@ -31,6 +31,7 @@ namespace Kinovea.Camera.DirectShow
     public class FrameGrabber : IFrameGrabber
     {
         public event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
+        public event EventHandler GrabbingStatusChanged;
         
         #region Property
         public bool Grabbing
@@ -80,6 +81,8 @@ namespace Kinovea.Camera.DirectShow
             device.VideoSourceError += Device_VideoSourceError;
             grabbing = true;
             device.Start();
+            if (GrabbingStatusChanged != null)
+                GrabbingStatusChanged(this, EventArgs.Empty);
         }
 
         public void Stop()
@@ -89,6 +92,8 @@ namespace Kinovea.Camera.DirectShow
             device.VideoSourceError -= Device_VideoSourceError;
             device.Stop();
             grabbing = false;
+            if (GrabbingStatusChanged != null)
+                GrabbingStatusChanged(this, EventArgs.Empty);
         }
         
         private void ConfigureDevice()

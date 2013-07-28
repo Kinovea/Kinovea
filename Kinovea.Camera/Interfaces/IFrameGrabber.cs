@@ -30,12 +30,11 @@ namespace Kinovea.Camera
     public interface IFrameGrabber
     {
         event EventHandler<CameraImageReceivedEventArgs> CameraImageReceived;
-        //event EventHandler CameraErrorReceived;
+        event EventHandler GrabbingStatusChanged;
         
         bool Grabbing { get; }
         Size Size { get;}
         float Framerate { get; }
-        //string ErrorDescription { get;}
         
         void Start();
         void Stop();
