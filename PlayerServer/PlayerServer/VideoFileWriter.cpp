@@ -189,7 +189,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 		}
 
 		// 6. Allocate encoder parameters object.
-		if ((m_SavingContext->pOutputCodecContext = avcodec_alloc_context()) == nullptr) 
+		if ((m_SavingContext->pOutputCodecContext = avcodec_alloc_context3(nullptr)) == nullptr) 
 		{
 			result = SaveResult::EncoderParametersNotAllocated;
 			log->Error("Encoder parameters object not allocated");
@@ -205,7 +205,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 		}
 
 		// 8. Open encoder.
-		if (avcodec_open(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec) < 0)
+		if (avcodec_open2(m_SavingContext->pOutputCodecContext, m_SavingContext->pOutputCodec, nullptr) < 0)
 		{
 			result = SaveResult::EncoderNotOpened;
 			log->Error("Encoder not opened");
@@ -217,35 +217,10 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 		// 9. Associate encoder to stream.
 		m_SavingContext->pOutputVideoStream->codec = m_SavingContext->pOutputCodecContext;
 
-		
-		if(_bHasMetadata)
-		{
-			log->Debug("Muxing metadata into a subtitle stream.");
-
-			// Create metadata stream.
-			if ((m_SavingContext->pOutputDataStream = av_new_stream(m_SavingContext->pOutputFormatContext, 1)) == nullptr) 
-			{
-				result = SaveResult::MetadataStreamNotCreated;
-				log->Error("metadata stream not created");
-				break;
-			}
-
-			// Get default configuration for subtitle streams.
-			// (Will allocate pointed CodecCtx)
-			avcodec_get_context_defaults2(m_SavingContext->pOutputDataStream->codec, AVMEDIA_TYPE_SUBTITLE);
-			
-			// Identify codec. Will show as "S_TEXT/UTF8" for Matroska.
-			m_SavingContext->pOutputDataStream->codec->codec_id = CODEC_ID_TEXT;
-
-			// ISO 639 code for subtitle language. ( -> en.wikipedia.org/wiki/List_of_ISO_639-3_codes)	 
-			// => "Malaysian Sign Language" code is "XML" :-)
-			av_metadata_set2(&m_SavingContext->pOutputDataStream->metadata, "language", "XML", 0);
-		}
-
 		int iFFMpegResult;
 
 		// 10. Open the file.
-		if ((iFFMpegResult = url_fopen(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, URL_WRONLY)) < 0) 
+		if ((iFFMpegResult = avio_open(&(m_SavingContext->pOutputFormatContext)->pb, m_SavingContext->pFilePath, AVIO_FLAG_WRITE)) < 0) 
 		{
 			result = SaveResult::FileNotOpened;
 			log->Error(String::Format("File not opened, AVERROR:{0}", iFFMpegResult));
@@ -254,7 +229,7 @@ SaveResult VideoFileWriter::OpenSavingContext(String^ _FilePath, VideoInfo _info
 
 		// 11. Write file header.
 		SanityCheck(m_SavingContext->pOutputFormatContext);
-		if((iFFMpegResult = av_write_header(m_SavingContext->pOutputFormatContext)) < 0)
+		if((iFFMpegResult = avformat_write_header(m_SavingContext->pOutputFormatContext, nullptr)) < 0)
 		{
 			result = SaveResult::FileHeaderNotWritten;
 			log->Error(String::Format("File header not written, AVERROR:{0}", iFFMpegResult));
@@ -348,7 +323,7 @@ SaveResult VideoFileWriter::CloseSavingContext(bool _bEncodingSuccess)
 	}
 
 	// Close file.
-	url_fclose(m_SavingContext->pOutputFormatContext->pb);
+	avio_close(m_SavingContext->pOutputFormatContext->pb);
 
 	// Release muxer parameter object.
 	av_free(m_SavingContext->pOutputFormatContext);
@@ -442,22 +417,21 @@ bool VideoFileWriter::SetupMuxer(SavingContext^ _SavingContext)
 	
 	av_strlcpy(_SavingContext->pOutputFormatContext->filename, _SavingContext->pFilePath, sizeof(_SavingContext->pOutputFormatContext->filename));
 		
-	_SavingContext->pOutputFormatContext->timestamp = 0;
-		
 	_SavingContext->pOutputFormatContext->bit_rate = _SavingContext->iBitrate;
-
-		
+	
 	// Paramètres (par défaut ?) du muxeur
-	AVFormatParameters	fpOutFile;
-	memset(&fpOutFile, 0, sizeof(AVFormatParameters));
-	if (av_set_parameters(_SavingContext->pOutputFormatContext, &fpOutFile) < 0)
+	//AVFormatParameters	fpOutFile;
+	//AVDictionary *pOptions = NULL;
+	//memset(&pOptions, 0, sizeof(AVDictionary));
+	//if (av_set_parameters(_SavingContext->pOutputFormatContext, &pOptions) < 0)
+	/*if(av_dict_set(
 	{
 		log->Error("muxer parameters not set");
 		return false;
-	}
+	}*/
 
 	// ?
-	_SavingContext->pOutputFormatContext->preload   = (int)(0.5 * AV_TIME_BASE);
+	//_SavingContext->pOutputFormatContext->preload   = (int)(0.5 * AV_TIME_BASE);
 	_SavingContext->pOutputFormatContext->max_delay = (int)(0.7 * AV_TIME_BASE); 
 
 	return bResult;
@@ -556,7 +530,7 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 
 	// Pixel format
 	// src:ffmpeg.
-	_SavingContext->pOutputCodecContext->pix_fmt = PIX_FMT_YUV420P; 	
+	_SavingContext->pOutputCodecContext->pix_fmt = AV_PIX_FMT_YUV420P; 	
 
 
 	// Frame rate emulation. If not zero, the lower layer (i.e. format handler) has to read frames at native frame rate.
@@ -623,8 +597,8 @@ bool VideoFileWriter::SetupEncoder(SavingContext^ _SavingContext)
 	// h. Other settings. (From MEncoder) 
 	//-----------------------------------
 	_SavingContext->pOutputCodecContext->strict_std_compliance= -1;		// strictly follow the standard (MPEG4, ...)
-	_SavingContext->pOutputCodecContext->luma_elim_threshold = 0;		// luma single coefficient elimination threshold
-	_SavingContext->pOutputCodecContext->chroma_elim_threshold = 0;		// chroma single coeff elimination threshold
+	//_SavingContext->pOutputCodecContext->i_luma_elim = 0;		// luma single coefficient elimination threshold
+	//_SavingContext->pOutputCodecContext->i_chroma_elim = 0;		// chroma single coeff elimination threshold
 	_SavingContext->pOutputCodecContext->lumi_masking = 0.0;;
 	_SavingContext->pOutputCodecContext->dark_masking = 0.0;
 	// codecContext->codec_tag							// 4CC : if not set then the default based on codec_id will be used.
@@ -680,16 +654,16 @@ bool VideoFileWriter::EncodeAndWriteVideoFrame(SavingContext^ _SavingContext, Bi
 	AVFrame* pOutputFrame;
 	uint8_t* pOutputFrameBuffer;
 	System::Drawing::Imaging::BitmapData^ InputDataBitmap;
-	enum PixelFormat pixelFormatFFmpeg;
+	enum AVPixelFormat pixelFormatFFmpeg;
 
 	if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format32bppPArgb)
-		pixelFormatFFmpeg = PIX_FMT_BGRA;	
+		pixelFormatFFmpeg = AV_PIX_FMT_BGRA;
 	else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format24bppRgb)
-		pixelFormatFFmpeg = PIX_FMT_BGR24;
+		pixelFormatFFmpeg = AV_PIX_FMT_BGR24;
 	else if(_InputBitmap->PixelFormat == Imaging::PixelFormat::Format8bppIndexed)
 		pixelFormatFFmpeg = PIX_FMT_BGR8;
-
-	do
+	
+    do
 	{
 		// Allocate the input frame that we will fill up with the bitmap.
 		if ((pInputFrame = avcodec_alloc_frame()) == nullptr) 

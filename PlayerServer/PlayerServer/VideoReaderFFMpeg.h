@@ -49,10 +49,16 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 extern "C" {
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
-#include <avformat.h>
 #include <avcodec.h>
-#include <avstring.h>
-#include <swscale.h> 
+#include <avdevice.h>
+#include <avfilter.h>
+#include <avfiltergraph.h>
+#include <buffersink.h>
+#include <avformat.h>
+#include <avutil.h>
+#include <postprocess.h>
+#include <swresample.h>
+#include <swscale.h>
 }
 
 #include "Enums.h"
@@ -191,7 +197,7 @@ namespace Kinovea { namespace Video { namespace FFMpeg
 		AVFormatContext* m_pFormatCtx;
 		AVCodecContext* m_pCodecCtx;
 		TimestampInfo m_TimestampInfo;
-		static const enum PixelFormat m_PixelFormatFFmpeg = PIX_FMT_BGRA;
+		static const enum AVPixelFormat m_PixelFormatFFmpeg = AV_PIX_FMT_BGRA;
 		static const int DecodingQuality = SWS_FAST_BILINEAR;
 
 		// Others

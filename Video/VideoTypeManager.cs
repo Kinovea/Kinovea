@@ -52,24 +52,23 @@ namespace Kinovea.Video
             List<Assembly> assemblies = new List<Assembly>();
             assemblies.Add(typeof(VideoTypeManager).Assembly);
             
-            string dir = Path.GetDirectoryName(Application.ExecutablePath) + "\\filetypes\\";
-            if(Directory.Exists(dir))
-            {
-                foreach (string fileName in Directory.GetFiles(dir, "*.dll"))
-                    AddAssembly(fileName, assemblies);
-            }
-            
-            // Also import from the FFMpeg assembly separately since it doesn't live in the plug-in folder.
-            string ffmpeg = Path.GetDirectoryName(Application.ExecutablePath) + "\\Kinovea.Video.FFMpeg.dll";
-            AddAssembly(ffmpeg, assemblies);
+            string dir = Path.GetDirectoryName(Application.ExecutablePath);
+            IEnumerable<string> files = Directory.GetFiles(dir, "Kinovea.Video.*.dll");
+            foreach (string fileName in files)
+                AddAssembly(fileName, assemblies);
             
             // Register the VideoReaders implementations with the extensions they support.
             foreach (Assembly a in assemblies)
             {
-                foreach(Type t in a.GetTypes())
+                try
                 {
-                    if(t.IsSubclassOf(typeof(VideoReader)) && !t.IsAbstract)
+                    foreach(Type t in a.GetTypes())
                     {
+                        if (t.BaseType == null || 
+                            (t.BaseType.Name != "VideoReader" && t.BaseType.Name != "VideoReaderAlwaysCaching") || 
+                            t.IsAbstract)
+                            continue;
+
                         // Retrieve the extension list from the attribute, add each entry to the readers dictionary.
                         object[] attributes = t.GetCustomAttributes(typeof(SupportedExtensionsAttribute), false);
                         if(attributes.Length > 0)
@@ -78,6 +77,11 @@ namespace Kinovea.Video
                            RegisterExtensions(extensions, t);
                         }
                     }
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    foreach (Exception exception in ex.LoaderExceptions)
+                        log.ErrorFormat(exception.Message.ToString());
                 }
             }
         }

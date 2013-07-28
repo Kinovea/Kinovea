@@ -44,7 +44,7 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
@@ -58,7 +58,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libswresample;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -67,7 +67,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>avformat.lib;avdevice.lib;avcodec.lib;avfilter.lib;avutil.lib;swscale.lib;postproc.lib;Gdi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>avformat.lib;avdevice.lib;avcodec.lib;avfilter.lib;avutil.lib;swscale.lib;swresample.lib;postproc.lib;Gdi32.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)Kinovea.Video.FFMpeg.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Refs\FFmpeg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -81,7 +81,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Refs\FFmpeg\include;..\..\Refs\FFmpeg\include\libswresample;..\..\Refs\FFmpeg\include\libswscale\;..\..\Refs\FFmpeg\include\libpostproc\;..\..\Refs\FFmpeg\include\libavutil\;..\..\Refs\FFmpeg\include\libavdevice\;..\..\Refs\FFmpeg\include\libavfilter\;..\..\Refs\FFmpeg\include\libavformat\;..\..\Refs\FFmpeg\include\libavcodec\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -93,7 +93,7 @@
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <Link>
-      <AdditionalDependencies>avformat.lib;avdevice.lib;avcodec.lib;avfilter.lib;avutil.lib;swscale.lib;postproc.lib</AdditionalDependencies>
+      <AdditionalDependencies>avformat.lib;avdevice.lib;avcodec.lib;avfilter.lib;avutil.lib;swscale.lib;swresample.lib;postproc.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)Kinovea.Video.FFMpeg.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Refs\FFmpeg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -143,16 +143,20 @@
     <ClCompile Include="VideoReaderFFMpeg.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavcodec\avcodec.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavdevice\avdevice.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavfilter\avfilter.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavformat\avformat.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avutil.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\error.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libpostproc\postprocess.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libswresample\swresample.h" />
+    <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="SavingContext.h" />
     <ClInclude Include="TimestampInfo.h" />
     <ClInclude Include="VideoFileWriter.h" />
     <ClInclude Include="VideoReaderFFMpeg.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavcodec\avcodec.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavformat\avformat.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avstring.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libavutil\avutil.h" />
-    <ClInclude Include="..\..\Refs\FFmpeg\include\libswscale\swscale.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

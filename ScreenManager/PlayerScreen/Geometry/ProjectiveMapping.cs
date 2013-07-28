@@ -142,7 +142,7 @@ namespace Kinovea.ScreenManager
                 if(a<c)
                     rotation = 0;
                 else
-                    rotation = Math.PI / 2;                    
+                    rotation = Math.PI / 2;
             }
             else
             {

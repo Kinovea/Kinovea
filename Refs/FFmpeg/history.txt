@@ -1,3 +1,14 @@
+2013-07-28
+- Sync to latest build from Kyle Schwarz.
+- http://ffmpeg.zeranoe.com/builds/
+    libavutil      52. 40.100 / 52. 40.100
+    libavcodec     55. 19.100 / 55. 19.100
+    libavformat    55. 12.102 / 55. 12.102
+    libavdevice    55.  3.100 / 55.  3.100
+    libavfilter     3. 81.103 /  3. 81.103
+    libswscale      2.  4.100 /  2.  4.100
+    libswresample   0. 17.103 /  0. 17.103
+    libpostproc    52.  3.100 / 52.  3.100
 
 
 2011-05-18
