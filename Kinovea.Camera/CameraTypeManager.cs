@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Linq;
 
 using Kinovea.Services;
 
@@ -67,12 +68,10 @@ namespace Kinovea.Camera
             List<Assembly> assemblies = new List<Assembly>();
             
             string dir = Path.GetDirectoryName(Application.ExecutablePath);
-            if(Directory.Exists(dir))
-            {
-                foreach (string fileName in Directory.GetFiles(dir, "*.dll"))
-                    AddAssembly(fileName, assemblies);
-            }
-            
+            IEnumerable<string> files = Directory.GetFiles(dir, "Kinovea.Camera.*.dll");
+            foreach (string fileName in files)
+                AddAssembly(fileName, assemblies);
+                        
             // Register the camera managers.
             foreach (Assembly a in assemblies)
             {

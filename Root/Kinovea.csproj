@@ -288,39 +288,59 @@
       <Link>cxcore200.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avcodec-53.dll">
+    <None Include="..\Refs\FFmpeg\bin\avcodec-55.dll">
       <Visible>False</Visible>
-      <Link>avcodec-53.dll</Link>
+      <Link>avcodec-55.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avdevice-53.dll">
+    <None Include="..\Refs\FFmpeg\bin\avdevice-55.dll">
       <Visible>False</Visible>
-      <Link>avdevice-53.dll</Link>
+      <Link>avdevice-55.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avfilter-2.dll">
+    <None Include="..\Refs\FFmpeg\bin\avfilter-3.dll">
       <Visible>False</Visible>
-      <Link>avfilter-2.dll</Link>
+      <Link>avfilter-3.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avformat-53.dll">
+    <None Include="..\Refs\FFmpeg\bin\avformat-55.dll">
       <Visible>False</Visible>
-      <Link>avformat-53.dll</Link>
+      <Link>avformat-55.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\avutil-51.dll">
+    <None Include="..\Refs\FFmpeg\bin\avutil-52.dll">
       <Visible>False</Visible>
-      <Link>avutil-51.dll</Link>
+      <Link>avutil-52.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\postproc-51.dll">
+    <None Include="..\Refs\FFmpeg\bin\postproc-52.dll">
       <Visible>False</Visible>
-      <Link>postproc-51.dll</Link>
+      <Link>postproc-52.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Refs\FFmpeg\bin\swscale-0.dll">
+    <None Include="..\Refs\FFmpeg\bin\swresample-0.dll">
       <Visible>False</Visible>
-      <Link>swscale-0.dll</Link>
+      <Link>swresample-0.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\FFmpeg\bin\swscale-2.dll">
+      <Visible>False</Visible>
+      <Link>swscale-2.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\msvcm90.dll">
+      <Visible>False</Visible>
+      <Link>msvcm90.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\msvcp90.dll">
+      <Visible>False</Visible>
+      <Link>msvcp90.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Refs\msvcr90.dll">
+      <Visible>False</Visible>
+      <Link>msvcr90.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />
