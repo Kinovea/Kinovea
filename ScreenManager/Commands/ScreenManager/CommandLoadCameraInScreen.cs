@@ -62,20 +62,28 @@ namespace Kinovea.ScreenManager
         
         private void LoadInSpecificTarget(int targetScreen)
         {
-            bool confirmed = BeforeReplacingContent(targetScreen);
-            if (!confirmed)
-                return;
-            
-            ReplaceScreenType(targetScreen);
-            
-            CaptureScreen screen = manager.GetScreenAt(targetScreen) as CaptureScreen;
-            if(screen != null)
-                screen.LoadCamera(summary);
-            
-            ShowScreens();
-            manager.OrganizeCommonControls();
-            manager.OrganizeMenus();
-            manager.UpdateStatusBar();
+            AbstractScreen screen = manager.GetScreenAt(targetScreen);
+
+            if (screen is CaptureScreen)
+            {
+                CaptureScreen captureScreen = screen as CaptureScreen;
+                captureScreen.LoadCamera(summary);
+                
+                ShowScreens();
+                manager.OrganizeCommonControls();
+                manager.OrganizeMenus();
+                manager.UpdateStatusBar();
+            }
+            else if (screen is PlayerScreen)
+            {
+                // Loading a camera onto a video should not close the video.
+                // We only load the camera if there is room to create a new capture screen.
+                if(manager.ScreenCount == 1)
+                {
+                    AddScreen();
+                    LoadInSpecificTarget(1);
+                }
+            }
         }
         
         private void LoadUnspecified()
