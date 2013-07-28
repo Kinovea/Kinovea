@@ -153,9 +153,12 @@ namespace Kinovea.ScreenManager
         public void LoadCamera(CameraSummary summary)
         {
             // Initialize everything and start grabbing.
-            if(loaded)
+            if (loaded)
+            {
                 Clean();
-            
+                grabber.GrabbingStatusChanged -= Grabber_GrabbingStatusChanged;
+            }
+
             loaded = true;
             this.summary = summary;
             manager = summary.Manager;
@@ -163,6 +166,7 @@ namespace Kinovea.ScreenManager
             if(grabber != null)
             {
                 viewportController.DisplayRectangleUpdated += ViewportController_DisplayRectangleUpdated;
+                grabber.GrabbingStatusChanged += Grabber_GrabbingStatusChanged;
                 StartGrabber();
             }
             
@@ -193,11 +197,11 @@ namespace Kinovea.ScreenManager
             InitializeCaptureFilenames();
         }
         public override void BeforeClose()
-        {
-            // recorder.Stop();
-            
+        {   
             if(grabber != null)
                 grabber.Stop();
+
+            grabber.GrabbingStatusChanged -= Grabber_GrabbingStatusChanged;
             
             buffer.Clear();
             view.BeforeClose();
@@ -265,9 +269,6 @@ namespace Kinovea.ScreenManager
              {
                 StartGrabber();
              }
-             
-             view.UpdateGrabbingStatus(grabber.Grabbing);
-             
         }
         public void View_DelayChanged(double value)
         {
@@ -333,6 +334,10 @@ namespace Kinovea.ScreenManager
                 this.availableMemory = availableMemory;
                 UpdateBufferCapacity();
             }
+        }
+        private void Grabber_GrabbingStatusChanged(object sender, EventArgs e)
+        {
+            view.UpdateGrabbingStatus(grabber.Grabbing);
         }
         private void Grabber_CameraImageReceived(object sender, CameraImageReceivedEventArgs e)
         {
