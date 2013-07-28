@@ -206,34 +206,6 @@ namespace Kinovea.ScreenManager
                         
                         canvas.DrawLine(penEdges, transformer.Transform(p1), transformer.Transform(p2));
                     }
-                    
-                    
-                    // Testing Ellipse drawing
-                    QuadrilateralF test = new QuadrilateralF(new PointF(-1, 1), new PointF(1, 1), new PointF(1, -1), new PointF(-1, -1));
-                    ProjectiveMapping ellipseMapping = new ProjectiveMapping();
-                    ellipseMapping.Update(test, quadImage);
-                    Ellipse ellipse = ellipseMapping.Ellipse();
-                    
-                    RectangleF rect = new RectangleF(- ellipse.SemiMajorAxis, - ellipse.SemiMinorAxis, ellipse.SemiMajorAxis * 2, ellipse.SemiMinorAxis * 2);
-                    canvas.DrawEllipse(Pens.Blue, rect);
-                    
-                    float angle = (float)(ellipse.Rotation * MathHelper.RadiansToDegrees);
-                    
-                    canvas.TranslateTransform(ellipse.Center.X, ellipse.Center.Y);
-                    canvas.RotateTransform(angle);
-                    
-                    SolidBrush brushEllipse = new SolidBrush(Color.FromArgb(128, 255, 0, 0));
-                    Font fontEllipse = new Font("Arial", 12, FontStyle.Regular);
-                    canvas.DrawString(angle.ToString(), fontEllipse, brushEllipse, 0, 0);
-                    canvas.DrawEllipse(Pens.Blue, rect);
-                    
-                    canvas.RotateTransform(-angle);
-                    canvas.TranslateTransform(-ellipse.Center.X, -ellipse.Center.Y);
-                    
-                    brushEllipse.Dispose();
-                    fontEllipse.Dispose();
-                    
-                    log.DebugFormat("{0}", ellipse);
                 }
                 else
                 {
