@@ -40,291 +40,155 @@ namespace Kinovea.ScreenManager
         }
 
         private String filePath;
-        private ScreenManagerKernel screenManagerKernel;
+        private ScreenManagerKernel manager;
         private int targetScreen;
 
         #region constructor
-        public CommandLoadMovieInScreen(ScreenManagerKernel screenManagerKernel, String filePath, int targetScreen, bool storeState)
+        public CommandLoadMovieInScreen(ScreenManagerKernel manager, String filePath, int targetScreen, bool storeState)
         {
-            this.screenManagerKernel = screenManagerKernel;
+            this.manager = manager;
             this.filePath = filePath;
             this.targetScreen = targetScreen;
             if (storeState) 
-                screenManagerKernel.StoreCurrentState();
+                manager.StoreCurrentState();
         }
         #endregion
 
         public void Execute()
         {
-            //-----------------------------------------------------------------------------------------------
-            // Principes d'ouverture.
-            //
-            // 1. Si il n'y a qu'un seul écran, on ouvre sur place.
-            //      On part du principe que l'utilisateur peut se placer en mode DualScreen s'il le souhaite.
-            //      Sinon on doit demander si il veut charger sur place ou pas...
-            //      Si c'est un écran Capture -> idem.
-            //      On offre de plus la possibilité d'annuler l'action au cas où.
-            //
-            // 2. Si il y a deux players, dont au moins un vide, on ouvre dans le premier vide trouvé.
-            //
-            // 3. Si il y a deux players plein, on pose à droite.
-            //
-            // 4+ Variations à définir...
-            // 4. Si il y a 1 player plein et un capture vide, on ouvre dans le player. 
-            //-----------------------------------------------------------------------------------------------
-            ICommand clm;
-            CommandManager cm = CommandManager.Instance();
-            ICommand css = new CommandShowScreens(screenManagerKernel);
-
-            if (targetScreen != -1)
+            if (targetScreen < 0)
+                LoadUnspecified();
+            else
+                LoadInSpecificTarget(targetScreen);
+        }
+        
+        private void LoadUnspecified()
+        {
+            if (manager.ScreenCount == 0)
             {
-                // Position d'écran forcée: Vérifier s'il y a des choses à enregistrer.
-                //todo: screenManagerKernel.GetScreenAt(targetScreen);
-                PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[targetScreen];
-                bool bLoad = true;
-                if (ps.FrameServer.Metadata.IsDirty)
-                {
-                    DialogResult dr = ConfirmDirty();
-                    if (dr == DialogResult.Yes)
-                    {
-                        // Launch the save dialog.
-                        // Note: if we cancel this one, we will go on without saving...
-                        screenManagerKernel.SaveData();
-                    }
-                    else if (dr == DialogResult.Cancel)
-                    {
-                        // Cancel the load.
-                        bLoad = false;
-                        screenManagerKernel.CancelLastCommand = true;
-                    }
-                    // else (DialogResult.No) => Do nothing.
-                }
+                AddScreen();
+                LoadInSpecificTarget(0);
+            }
+            else if (manager.ScreenCount == 1)
+            {
+                LoadInSpecificTarget(0);
+            }
+            else if (manager.ScreenCount == 2)
+            {
+                int emptyScreen = FindEmptyScreen();
 
-                if (bLoad)
-                {
-                    // Utiliser l'écran, qu'il soit vide ou plein.
-                    clm = new CommandLoadMovie(ps, filePath);
-                    CommandManager.LaunchCommand(clm);
+                if (emptyScreen != -1)
+                    LoadInSpecificTarget(emptyScreen);
+                else
+                    LoadInSpecificTarget(1);
+            }
+        }
 
-                    //Si on a pu charger la vidéo, sauver dans l'historique
-                    if (ps.FrameServer.Loaded)
-                        SaveFileToHistory(filePath);
+        private void AddScreen()
+        {
+            CommandManager.LaunchCommand(new CommandAddPlayerScreen(manager, false));
+        }
+
+        private int FindEmptyScreen()
+        {
+            AbstractScreen screen0 = manager.GetScreenAt(0);
+            if (!screen0.Full)
+                return 0;
+
+            AbstractScreen screen1 = manager.GetScreenAt(1);
+            if (!screen1.Full)
+                return 1;
+
+            return -1;
+        }
+
+        private void ShowScreens()
+        {
+            CommandManager.LaunchCommand(new CommandShowScreens(manager));
+        }
+
+        private void LoadInSpecificTarget(int targetScreen)
+        {
+            AbstractScreen screen = manager.GetScreenAt(targetScreen);
+
+            if (screen is CaptureScreen)
+            {
+                // loading a video onto a capture screen should not close the capture screen.
+                // If there is room to add a second screen, we add a playback screen and load the video there,
+                // otherwise, we don't do anything.
+                if (manager.ScreenCount == 1)
+                {
+                    AddScreen();
+                    manager.UpdateCaptureBuffers();
+                    LoadInSpecificTarget(1);
                 }
+            }
+            else if (screen is PlayerScreen)
+            {
+                PlayerScreen playerScreen = screen as PlayerScreen;
+                bool confirmed = BeforeReplacingContent(targetScreen);
+                if (!confirmed)
+                    return;
+
+                CommandManager.LaunchCommand(new CommandLoadMovie(playerScreen, filePath));
+
+                if (playerScreen.FrameServer.Loaded)
+                    SaveFileToHistory(filePath);
+            
+                ShowScreens();
+                manager.OrganizeCommonControls();
+                manager.OrganizeMenus();
+                manager.UpdateStatusBar();
+            }
+        }
+
+        private bool BeforeReplacingContent(int targetScreen)
+        {
+            // FIXME: duplicated with CommandLoadCameraInScreen. Move to manager ?
+
+            // Check if we are overloading on a non-empty player. Propose to save data.
+            // Returns true if the loading can go on.
+            
+            PlayerScreen player = manager.GetScreenAt(targetScreen) as PlayerScreen;
+            if(player == null || !player.FrameServer.Metadata.IsDirty)
+                return true;
+    
+            DialogResult save = ConfirmDirty();
+            if (save == DialogResult.No)
+            {
+                return true;
+            }
+            else if(save == DialogResult.Cancel)
+            {
+                manager.CancelLastCommand = true;
+                return false;
             }
             else
             {
-                switch (screenManagerKernel.ScreenCount)
-                {
-                    case 0:
-                        {
-                            // Ajouter le premier écran
-                            ICommand caps = new CommandAddPlayerScreen(screenManagerKernel, false);
-                            CommandManager.LaunchCommand(caps);
-
-                            // Charger la vidéo dedans
-                            PlayerScreen ps = screenManagerKernel.screenList[0] as PlayerScreen;
-                            if(ps != null)
-                            {
-	                            clm = new CommandLoadMovie(ps, filePath);
-	                            CommandManager.LaunchCommand(clm);
-	
-	                            //Si on a pu charger la vidéo, sauver dans l'historique
-	                            if (ps.FrameServer.Loaded)
-	                                SaveFileToHistory(filePath);
-
-                            	//Afficher l'écran qu'on vient de créer.
-                            	CommandManager.LaunchCommand(css);
-                            }
-                            break;
-                        }
-                    case 1:
-                        {
-                			PlayerScreen ps = screenManagerKernel.screenList[0] as PlayerScreen;
-                			if(ps!=null)
-                			{
-	                            bool bLoad = true;
-	                            if (ps.FrameServer.Metadata.IsDirty)
-	                            {
-	                                DialogResult dr = ConfirmDirty();
-	                                if (dr == DialogResult.Yes)
-	                                {
-	                                    // Launch the save dialog.
-	                                    // Note: if we cancel this one, we will go on without saving...
-	                                    screenManagerKernel.SaveData();
-	                                }
-	                                else if (dr == DialogResult.Cancel)
-	                                {
-	                                    // Cancel the load.
-	                                    bLoad = false;
-	                                    screenManagerKernel.CancelLastCommand = true;
-	                                }
-	                                // else (DialogResult.No) => Do nothing.
-	                            }
-	
-	                            if (bLoad)
-	                            {
-	                                clm = new CommandLoadMovie(ps, filePath);
-	                                CommandManager.LaunchCommand(clm);
-	
-	                                //Si on a pu charger la vidéo, sauver dans l'historique
-	                                if (ps.FrameServer.VideoReader.Loaded)
-	                                {
-	                                    SaveFileToHistory(filePath);
-	                                }
-	                            }
-                			}
-                			else
-                			{
-                				// Only screen is a capture screen and we try to play a video.
-                				// In that case we create a new player screen and load the video in it.
-                				
-                            	ICommand caps = new CommandAddPlayerScreen(screenManagerKernel, false);
-                            	CommandManager.LaunchCommand(caps);
-                            	
-                            	// Reset the buffer before the video is loaded.
-                            	screenManagerKernel.UpdateCaptureBuffers();
-
-                            	// load video.
-                            	PlayerScreen newScreen = (screenManagerKernel.ScreenCount > 0) ? (screenManagerKernel.screenList[1] as PlayerScreen) : null;
-                            	if(newScreen != null)
-                            	{
-	                            	clm = new CommandLoadMovie(newScreen, filePath);
-	                            	CommandManager.LaunchCommand(clm);
-	
-	                            	//video loaded finely, save in history.
-	                            	if (newScreen.FrameServer.Loaded)
-	                                	SaveFileToHistory(filePath);
-
-                            		// Display screens.
-                            		CommandManager.LaunchCommand(css);
-                            	}
-                			}
-                            
-                            break;
-                        }
-                    case 2:
-                        {
-                            //Chercher un écran vide. 
-                            int iEmptyScreen = -1;
-
-                            PlayerScreen ps0 = screenManagerKernel.screenList[0] as PlayerScreen;
-                            PlayerScreen ps1 = screenManagerKernel.screenList[1] as PlayerScreen;
-                            
-                            if (ps0 != null && !ps0.FrameServer.Loaded)
-                            {
-                                iEmptyScreen = 0;
-                            }
-                            else if (ps1 != null && !ps1.FrameServer.Loaded)
-                            {
-                                iEmptyScreen = 1;
-                            }
-
-
-                            if (iEmptyScreen >= 0)
-                            {
-                                // On a trouvé un écran vide, charger la vidéo dedans.
-                                clm = new CommandLoadMovie((PlayerScreen)screenManagerKernel.screenList[iEmptyScreen], filePath);
-                                CommandManager.LaunchCommand(clm);
-
-                                //Si on a pu charger la vidéo, sauver dans l'historique
-                                if (((PlayerScreen)screenManagerKernel.screenList[iEmptyScreen]).FrameServer.Loaded)
-                                {
-                                    SaveFileToHistory(filePath);
-                                }
-
-                                //--------------------------------------------
-                                // Sur échec, on ne modifie pas l'écran actif.
-                                // normalement c'est toujours l'autre écran.
-                                //--------------------------------------------
-                            }
-                            else
-                            {
-                                // On a pas trouvé d'écran vide...
-                                // Par défaut : toujours à droite.
-                                // (étant donné que l'utilisateur à la possibilité d'annuler l'opération
-                                // et de revenir à l'ancienne vidéo facilement, autant éviter une boîte de dialogue.)
-
-                                PlayerScreen ps = screenManagerKernel.screenList[1] as PlayerScreen;
-                                if(ps != null)
-                                {
-	                                bool bLoad = true;
-	                                if (ps.FrameServer.Metadata.IsDirty)
-	                                {
-	                                    DialogResult dr = ConfirmDirty();
-	                                    if (dr == DialogResult.Yes)
-	                                    {
-	                                        // Launch the save dialog.
-	                                        // Note: if we cancel this one, we will go on without saving...
-	                                        screenManagerKernel.SaveData();
-	                                    }
-	                                    else if (dr == DialogResult.Cancel)
-	                                    {
-	                                        // Cancel the load.
-	                                        bLoad = false;
-	                                        screenManagerKernel.CancelLastCommand = true;
-	                                    }
-	                                    // else (DialogResult.No) => Do nothing.
-	                                }
-	
-	                                if (bLoad)
-	                                {
-	
-	                                    clm = new CommandLoadMovie(ps, filePath);
-	                                    CommandManager.LaunchCommand(clm);
-	
-	                                    //Si on a pu charger la vidéo, sauver dans l'historique
-	                                    if (ps.FrameServer.Loaded)
-	                                    {
-	                                        SaveFileToHistory(filePath);
-	                                    }
-	                                    else
-	                                    {
-	                                        //----------------------------------------------------------------------------
-	                                        // Echec de chargement, vérifier si on ne vient pas d'invalider l'écran actif.
-	                                        //----------------------------------------------------------------------------
-	                                        if (screenManagerKernel.m_ActiveScreen == ps)
-	                                        {
-	                                            screenManagerKernel.SetActiveScreen(screenManagerKernel.screenList[0]);
-	                                        }
-	                                    }
-	                                }
-	                            }
-                            }
-
-                            // Vérifier qu'on a un écran actif.
-                            // sinon, positionner le premier comme actif.
-                            break;
-                        }
-                    default:
-                        break;
-                }
+                // TODO: shouldn't we save the right screen instead of just the active one ?
+                manager.SaveData();
+                return true;
             }
-
-            screenManagerKernel.OrganizeCommonControls();
-            //screenManagerKernel.OrganizeMenus();
-            screenManagerKernel.UpdateStatusBar();
         }
 
-        private void SaveFileToHistory(string _FilePath)
+        private DialogResult ConfirmDirty()
         {
-            PreferencesManager.FileExplorerPreferences.AddRecentFile(_FilePath);
+            return MessageBox.Show(
+                ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
+                ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
+
+        private void SaveFileToHistory(string filepath)
+        {
+            PreferencesManager.FileExplorerPreferences.AddRecentFile(filepath);
             PreferencesManager.Save();
         }
 
         public void Unexecute()
         {
-            screenManagerKernel.RecallState();
-        }
-        
-        private DialogResult ConfirmDirty()
-        {
-            return MessageBox.Show(ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
-                                   ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
-                                   MessageBoxButtons.YesNoCancel,
-                                   MessageBoxIcon.Question);
-            
-            
-            
+            manager.RecallState();
         }
     }
 }

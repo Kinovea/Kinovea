@@ -68,9 +68,6 @@ namespace Kinovea.ScreenManager
             
             ReplaceScreenType(targetScreen);
             
-            //clm = new CommandLoadMovie(ps, filePath);
-            //CommandManager.LaunchCommand(clm);
-            
             CaptureScreen screen = manager.GetScreenAt(targetScreen) as CaptureScreen;
             if(screen != null)
                 screen.LoadCamera(summary);
