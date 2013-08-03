@@ -100,10 +100,10 @@
     <Compile Include="FrameContainers\IWorkingZoneContainer.cs" />
     <Compile Include="FrameContainers\SingleFrame.cs" />
     <Compile Include="FrameContainers\PreBuffer.cs" />
-    <Compile Include="Readers\CapabilityNotSupportedException.cs" />
-    <Compile Include="Readers\IFrameGenerator.cs" />
-    <Compile Include="Readers\VideoReaderAlwaysCaching.cs" />
-    <Compile Include="Readers\VideoReader.cs" />
+    <Compile Include="CapabilityNotSupportedException.cs" />
+    <Compile Include="IFrameGenerator.cs" />
+    <Compile Include="VideoReaderAlwaysCaching.cs" />
+    <Compile Include="VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Enums.cs" />

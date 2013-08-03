@@ -40,7 +40,12 @@ namespace Kinovea.Video.SVG
         }
         public override VideoCapabilities Flags
         {
-            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone; }
+            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone | 
+                VideoCapabilities.CanChangeDecodingSize | VideoCapabilities.CanScaleIndefinitely; }
+        }
+        public override bool CanDrawUnscaled
+        {
+            get { return true; }
         }
         public override VideoInfo Info
         {
@@ -66,6 +71,7 @@ namespace Kinovea.Video.SVG
         private VideoFrame current = new VideoFrame();
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
+        private Size decodingSize = new Size(640, 480);
         #endregion
 
         #region Public methods
@@ -111,12 +117,19 @@ namespace Kinovea.Video.SVG
         {
             return UpdateCurrent(timestamp);
         }
+        
         public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxSeconds, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {
             workingZone = newZone;
         }
+
         public override void BeforeFrameEnumeration() { }
         public override void AfterFrameEnumeration() { }
+
+        public override void ChangeDecodingSize(Size size)
+        {
+            decodingSize = size;
+        }
         #endregion
 
         #region Private methods
@@ -149,7 +162,8 @@ namespace Kinovea.Video.SVG
                 videoInfo.OriginalSize = generator.Size;
             else
                 videoInfo.OriginalSize = new Size(640, 480);
-
+            
+            decodingSize = videoInfo.OriginalSize;
             videoInfo.AspectRatioSize = videoInfo.OriginalSize;
         }
 
@@ -164,7 +178,7 @@ namespace Kinovea.Video.SVG
             if (current != null && current.Image != null)
                 generator.DisposePrevious(current.Image);
 
-            Bitmap bmp = generator.Generate(timestamp);
+            Bitmap bmp = generator.Generate(timestamp, decodingSize);
             current.Image = bmp;
             current.Timestamp = timestamp;
             return true;
