@@ -63,7 +63,7 @@ namespace Kinovea.Video
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-		}
+        }
         ~Cache()
         {
             Dispose(false);

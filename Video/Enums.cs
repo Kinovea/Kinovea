@@ -27,18 +27,18 @@ namespace Kinovea.Video
     /// </summary>
     [Flags]
     public enum VideoCapabilities : int
-	{
-		None = 0,
-		CanDecodeOnDemand = 1,
-		CanPreBuffer = 2,
-		CanCache = 4,
-		CanChangeWorkingZone = 8,
-		CanChangeAspectRatio = 16,
-		CanChangeDeinterlacing = 32,
-		CanChangeVideoDuration = 64,
-		CanChangeFrameRate = 128,
-		CanChangeDecodingSize = 256
-	}
+    {
+        None = 0,
+        CanDecodeOnDemand = 1,
+        CanPreBuffer = 2,
+        CanCache = 4,
+        CanChangeWorkingZone = 8,
+        CanChangeAspectRatio = 16,
+        CanChangeDeinterlacing = 32,
+        CanChangeVideoDuration = 64,
+        CanChangeFrameRate = 128,
+        CanChangeDecodingSize = 256
+    }
     
     /// <summary>
     /// The current decoding mode the video reader is in.
@@ -53,10 +53,10 @@ namespace Kinovea.Video
     
     public enum ImageAspectRatio
     {
-    	Auto,
-    	Force43,
-    	Force169,
-    	ForcedSquarePixels
+        Auto,
+        Force43,
+        Force169,
+        ForcedSquarePixels
     }
     
     public enum OpenVideoResult
@@ -65,34 +65,34 @@ namespace Kinovea.Video
         UnknownError,
         NotSupported,
         FileNotOpenned,
-		StreamInfoNotFound,
-		VideoStreamNotFound,
-		CodecNotFound,
-		CodecNotOpened,
-		CodecNotSupported,
-		Cancelled
+        StreamInfoNotFound,
+        VideoStreamNotFound,
+        CodecNotFound,
+        CodecNotOpened,
+        CodecNotSupported,
+        Cancelled
     }
     
     public enum SaveResult
-	{
-		Success,
-		MuxerNotFound,
-		MuxerParametersNotAllocated,
-		MuxerParametersNotSet,
-		VideoStreamNotCreated,
-		EncoderNotFound,
-		EncoderParametersNotAllocated,
-		EncoderParametersNotSet,
-		EncoderNotOpened,
-		FileNotOpened,
-		FileHeaderNotWritten,
-		InputFrameNotAllocated,
-		MetadataStreamNotCreated,
-		MetadataNotWritten,
-		ReadingError,
-		UnknownError,
-		MovieNotLoaded,
-		TranscodeNotFinished,
-		Cancelled
-	}
+    {
+        Success,
+        MuxerNotFound,
+        MuxerParametersNotAllocated,
+        MuxerParametersNotSet,
+        VideoStreamNotCreated,
+        EncoderNotFound,
+        EncoderParametersNotAllocated,
+        EncoderParametersNotSet,
+        EncoderNotOpened,
+        FileNotOpened,
+        FileHeaderNotWritten,
+        InputFrameNotAllocated,
+        MetadataStreamNotCreated,
+        MetadataNotWritten,
+        ReadingError,
+        UnknownError,
+        MovieNotLoaded,
+        TranscodeNotFinished,
+        Cancelled
+    }
 }

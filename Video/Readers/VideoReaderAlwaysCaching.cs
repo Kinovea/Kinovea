@@ -34,14 +34,14 @@ namespace Kinovea.Video
     {
         #region Properties
         public override VideoFrame Current {
-		    get { return m_Cache.CurrentFrame;}
-		}
+            get { return m_Cache.CurrentFrame;}
+        }
         public override VideoSection WorkingZone {
             get { return m_Cache.WorkingZone; }
         }
         public override IWorkingZoneFramesContainer WorkingZoneFrames {
-		    get { return m_Cache;}
-		}
+            get { return m_Cache;}
+        }
         protected Cache Cache {
             get { return m_Cache;}
         }

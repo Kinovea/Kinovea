@@ -38,7 +38,7 @@ namespace Kinovea.Video
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-		}
+        }
         ~SingleFrame()
         {
             Dispose(false);
