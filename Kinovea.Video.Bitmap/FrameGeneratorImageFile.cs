@@ -20,8 +20,9 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 using System;
 using System.Drawing;
+using SystemBitmap = System.Drawing.Bitmap;
 
-namespace Kinovea.Video
+namespace Kinovea.Video.Bitmap
 {
     /// <summary>
     /// Provide access to a single image. Used to turn an image into a video.
@@ -29,44 +30,44 @@ namespace Kinovea.Video
     public class FrameGeneratorImageFile : IFrameGenerator
     {
         public Size Size {
-            get { return (m_Bitmap != null) ? m_Bitmap.Size : m_ErrorBitmap.Size; }
+            get { return (bitmap != null) ? bitmap.Size : errorBitmap.Size; }
         }
-        private Bitmap m_Bitmap;
-        private Bitmap m_ErrorBitmap;
+        private SystemBitmap bitmap;
+        private SystemBitmap errorBitmap;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public FrameGeneratorImageFile()
         {
-            m_ErrorBitmap = new Bitmap(640, 480);
+            errorBitmap = new SystemBitmap(640, 480);
         }
-        public OpenVideoResult Initialize(string _init)
+        public OpenVideoResult Initialize(string init)
         {
             OpenVideoResult res = OpenVideoResult.NotSupported;
             try
             {
-                m_Bitmap = new Bitmap(_init);
-                if(m_Bitmap != null)
+                bitmap = new SystemBitmap(init);
+                if(bitmap != null)
                     res = OpenVideoResult.Success;
             }
             catch(Exception e)
             {
-                log.ErrorFormat("An error occured while trying to open {0}", _init);
+                log.ErrorFormat("An error occured while trying to open {0}", init);
                 log.Error(e);
             }
             return res;
         }
-        public Bitmap Generate(long _timestamp)
+        public SystemBitmap Generate(long timestamp)
         {
-            return (m_Bitmap != null) ? m_Bitmap : m_ErrorBitmap;
+            return (bitmap != null) ? bitmap : errorBitmap;
         }
-        public void DisposePrevious(Bitmap _previous){}
+        public void DisposePrevious(SystemBitmap _previous){}
         public void Close()
         {
-            if(m_Bitmap != null)
-                m_Bitmap.Dispose();
+            if(bitmap != null)
+                bitmap.Dispose();
             
-            if(m_ErrorBitmap != null)
-                m_ErrorBitmap.Dispose();
+            if(errorBitmap != null)
+                errorBitmap.Dispose();
         }
     }
 }

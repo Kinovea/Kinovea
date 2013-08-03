@@ -44,7 +44,7 @@ namespace Kinovea.Video.Gif
         }
         public override VideoDecodingMode DecodingMode { 
             get { return m_Loaded ? VideoDecodingMode.Caching : VideoDecodingMode.NotInitialized; }
-		}
+        }
         #endregion
         
         #region Members
@@ -130,28 +130,28 @@ namespace Kinovea.Video.Gif
                 // .NET bitmaps actually have several lists of multiple images inside a single Bitmap.
                 // For example, to hold the sequence of frames, the layers, or the different resolutions for icons.
                 // FrameDimension is used to access the list of frames.
-        		FrameDimension dimension = new FrameDimension(m_Gif.FrameDimensionsList[0]);
-        		m_Count = m_Gif.GetFrameCount(dimension);
-        		    
+                FrameDimension dimension = new FrameDimension(m_Gif.FrameDimensionsList[0]);
+                m_Count = m_Gif.GetFrameCount(dimension);
+                    
                 // Duration of first interval. (PropertyTagFrameDelay)
                 // The byte array returned by the Value property contains 32bits integers for each frame interval (in 1/100th).
                 PropertyItem pi = m_Gif.GetPropertyItem(0x5100);
-		        int interval = BitConverter.ToInt32(pi.Value, 0);
-		        if(interval <= 0)
-		            interval = 5;
+                int interval = BitConverter.ToInt32(pi.Value, 0);
+                if(interval <= 0)
+                    interval = 5;
                 m_VideoInfo.DurationTimeStamps = m_Count * interval;
-		        m_VideoInfo.FrameIntervalMilliseconds = interval * 10;
-        		
+                m_VideoInfo.FrameIntervalMilliseconds = interval * 10;
+                
                 m_VideoInfo.FramesPerSeconds = 100D/interval;
-        		m_VideoInfo.AverageTimeStampsPerFrame = interval;
+                m_VideoInfo.AverageTimeStampsPerFrame = interval;
 
                 m_VideoInfo.AspectRatioSize = m_Gif.Size;
                 m_VideoInfo.OriginalSize = m_Gif.Size;
-        		
+                
                 if(_cache)
                     LoadCache(dimension);
                 
-        		m_Loaded = true;
+                m_Loaded = true;
                 result = OpenVideoResult.Success;
             }
             while(false);

@@ -23,8 +23,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using SystemBitmap = System.Drawing.Bitmap;
 
-namespace Kinovea.Video
+namespace Kinovea.Video.Bitmap
 {
     /// <summary>
     /// A video reader that is capable of providing a frame for any arbitrary timestamp.
@@ -37,27 +38,27 @@ namespace Kinovea.Video
     /// Usage for generators is: random images, images with the timestamp painted on for tests, single image file.
     /// </summary>
     [SupportedExtensions(".jpg;.jpeg;.png;.bmp")]
-    public class VideoReaderGenerator : VideoReader
+    public class VideoReaderBitmap : VideoReader
     {
         #region Properties
         public override VideoFrame Current { 
             get { return m_Current; }
         }
-	    public override VideoCapabilities Flags { 
+        public override VideoCapabilities Flags { 
             get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone;}
         }
         public override VideoInfo Info { 
             get { return m_VideoInfo;} 
         }
-	    public override bool Loaded { 
+        public override bool Loaded { 
             get{ return m_Initialized; } 
         }
-		public override VideoSection WorkingZone { 
+        public override VideoSection WorkingZone { 
             get { return m_WorkingZone; }
         }
         public override VideoDecodingMode DecodingMode { 
             get { return m_Initialized ? VideoDecodingMode.OnDemand : VideoDecodingMode.NotInitialized; }
-		}
+        }
         #endregion
         
         #region Members
@@ -91,12 +92,12 @@ namespace Kinovea.Video
             if(res != OpenVideoResult.Success || m_Generator == null)
                 return VideoSummary.GetInvalid(_filePath);
             
-            Bitmap bmp = m_Generator.Generate(0);
+            SystemBitmap bmp = m_Generator.Generate(0);
             Size size = bmp.Size;
             
             int height = (int)(size.Height / ((float)size.Width / _width));
             
-            Bitmap thumb = new Bitmap(_width, height);
+            SystemBitmap thumb = new SystemBitmap(_width, height);
             Graphics g = Graphics.FromImage(thumb);
             g.DrawImage(bmp, 0, 0, _width, height);
             g.Dispose();
@@ -104,7 +105,7 @@ namespace Kinovea.Video
             
             bool hasKva = VideoSummary.HasCompanionKva(_filePath);
 
-            return new VideoSummary(_filePath, true, hasKva, size, 0, new List<Bitmap>{ thumb });
+            return new VideoSummary(_filePath, true, hasKva, size, 0, new List<SystemBitmap>{ thumb });
         }
         public override void PostLoad(){}
         public override bool MoveNext(int _skip, bool _decodeIfNecessary)
@@ -116,9 +117,9 @@ namespace Kinovea.Video
             return UpdateCurrent(_timestamp);
         }
         public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
-		{
+        {
             m_WorkingZone = _newZone;
-		}
+        }
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
         #endregion
@@ -180,7 +181,7 @@ namespace Kinovea.Video
             if(m_Current != null && m_Current.Image != null)
                 m_Generator.DisposePrevious(m_Current.Image);
 
-            Bitmap bmp = m_Generator.Generate(_timestamp);
+            SystemBitmap bmp = m_Generator.Generate(_timestamp);
             m_Current.Image = bmp;
             m_Current.Timestamp = _timestamp;
             return true;
