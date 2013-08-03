@@ -37,89 +37,89 @@ namespace Kinovea.Video.Gif
             get { return VideoCapabilities.CanCache; }
         }
         public override bool Loaded {
-            get { return m_Loaded; }
+            get { return loaded; }
         }
         public override VideoInfo Info {
-            get { return m_VideoInfo; }
+            get { return videoInfo; }
         }
         public override VideoDecodingMode DecodingMode { 
-            get { return m_Loaded ? VideoDecodingMode.Caching : VideoDecodingMode.NotInitialized; }
+            get { return loaded ? VideoDecodingMode.Caching : VideoDecodingMode.NotInitialized; }
         }
         #endregion
         
         #region Members
-        private bool m_Loaded;
-        private VideoInfo m_VideoInfo;
-        private int m_Count;
-        private Image m_Gif;
+        private bool loaded;
+        private VideoInfo videoInfo;
+        private int count;
+        private Image gif;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Public Methods
-        public override OpenVideoResult Open(string _filePath)
+        public override OpenVideoResult Open(string filePath)
         {
-            if(m_Loaded)
+            if(loaded)
                 Close();
                 
-            m_VideoInfo.FirstTimeStamp = 0;
-            m_VideoInfo.AverageTimeStampsPerSeconds = 100;
-            m_VideoInfo.FilePath = _filePath;
+            videoInfo.FirstTimeStamp = 0;
+            videoInfo.AverageTimeStampsPerSeconds = 100;
+            videoInfo.FilePath = filePath;
             
             // This reader can only function in frozen cache mode,
             // so we systematically load the cache during opening.
-            OpenVideoResult res = LoadFile(_filePath, true);
-            m_Gif.Dispose();
+            OpenVideoResult res = LoadFile(filePath, true);
+            gif.Dispose();
             DumpInfo();
             return res;
         }
-        public override VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width)
+        public override VideoSummary ExtractSummary(string filePath, int thumbsToGet, int width)
         {
            VideoSummary summary = null;
            
-            OpenVideoResult res = LoadFile(_filePath, false);
-            FrameDimension dimension = new FrameDimension(m_Gif.FrameDimensionsList[0]);
+            OpenVideoResult res = LoadFile(filePath, false);
+            FrameDimension dimension = new FrameDimension(gif.FrameDimensionsList[0]);
             
             if(res == OpenVideoResult.Success)
             {
-                bool hasKva = VideoSummary.HasCompanionKva(_filePath);
-                bool isImage = m_Count == 1;
-                int durationMillisecs = (int)((double)m_Count * m_VideoInfo.FrameIntervalMilliseconds);
+                bool hasKva = VideoSummary.HasCompanionKva(filePath);
+                bool isImage = count == 1;
+                int durationMillisecs = (int)((double)count * videoInfo.FrameIntervalMilliseconds);
                 
                 List<Bitmap> thumbs = new List<Bitmap>();
-                if(_thumbs > 0)
+                if (thumbsToGet > 0)
                 {
-                    int step = (int)Math.Ceiling(m_Count / (double)_thumbs);
-                    for(int i = 0; i<m_Count; i+=step)
+                    int step = (int)Math.Ceiling(count / (double)thumbsToGet);
+                    for(int i = 0; i<count; i+=step)
                         thumbs.Add(GetFrameAt(dimension, i));
                 }
                 
-                summary = new VideoSummary(_filePath, isImage, hasKva, m_VideoInfo.OriginalSize, durationMillisecs, thumbs);
+                summary = new VideoSummary(filePath, isImage, hasKva, videoInfo.OriginalSize, durationMillisecs, thumbs);
             }
             else
             {
-                summary = VideoSummary.GetInvalid(_filePath);
+                summary = VideoSummary.GetInvalid(filePath);
             }
             
-            if(m_Loaded)
+            if(loaded)
                 Close();
             
-            m_Gif.Dispose();
+            gif.Dispose();
             return summary;
         }
         #endregion
         
         #region Private Methods
-        private OpenVideoResult LoadFile(string _filePath, bool _cache)
+        private OpenVideoResult LoadFile(string filePath, bool cache)
         {
             OpenVideoResult result = OpenVideoResult.UnknownError;
             
             do
             {
-                if(m_Gif != null)
-                    m_Gif.Dispose();
+                if(gif != null)
+                    gif.Dispose();
                 
-                m_Gif = Image.FromFile(_filePath);
-                if(m_Gif == null)
+                gif = Image.FromFile(filePath);
+                if(gif == null)
                 {
                     result = OpenVideoResult.FileNotOpenned;
                     log.ErrorFormat("The file could not be openned.");
@@ -130,63 +130,63 @@ namespace Kinovea.Video.Gif
                 // .NET bitmaps actually have several lists of multiple images inside a single Bitmap.
                 // For example, to hold the sequence of frames, the layers, or the different resolutions for icons.
                 // FrameDimension is used to access the list of frames.
-                FrameDimension dimension = new FrameDimension(m_Gif.FrameDimensionsList[0]);
-                m_Count = m_Gif.GetFrameCount(dimension);
+                FrameDimension dimension = new FrameDimension(gif.FrameDimensionsList[0]);
+                count = gif.GetFrameCount(dimension);
                     
                 // Duration of first interval. (PropertyTagFrameDelay)
                 // The byte array returned by the Value property contains 32bits integers for each frame interval (in 1/100th).
-                PropertyItem pi = m_Gif.GetPropertyItem(0x5100);
+                PropertyItem pi = gif.GetPropertyItem(0x5100);
                 int interval = BitConverter.ToInt32(pi.Value, 0);
                 if(interval <= 0)
                     interval = 5;
-                m_VideoInfo.DurationTimeStamps = m_Count * interval;
-                m_VideoInfo.FrameIntervalMilliseconds = interval * 10;
+                videoInfo.DurationTimeStamps = count * interval;
+                videoInfo.FrameIntervalMilliseconds = interval * 10;
                 
-                m_VideoInfo.FramesPerSeconds = 100D/interval;
-                m_VideoInfo.AverageTimeStampsPerFrame = interval;
+                videoInfo.FramesPerSeconds = 100D/interval;
+                videoInfo.AverageTimeStampsPerFrame = interval;
 
-                m_VideoInfo.AspectRatioSize = m_Gif.Size;
-                m_VideoInfo.OriginalSize = m_Gif.Size;
+                videoInfo.AspectRatioSize = gif.Size;
+                videoInfo.OriginalSize = gif.Size;
                 
-                if(_cache)
+                if(cache)
                     LoadCache(dimension);
                 
-                m_Loaded = true;
+                loaded = true;
                 result = OpenVideoResult.Success;
             }
             while(false);
 
             return result;
         }
-        private void LoadCache(FrameDimension _dimension)
+        private void LoadCache(FrameDimension dimension)
         {
             Cache.Clear();
-            for(int i = 0; i<m_Count; i++)
+            for(int i = 0; i<count; i++)
             {
                 VideoFrame vf = new VideoFrame();
-                vf.Timestamp = i * m_VideoInfo.AverageTimeStampsPerFrame;
-                vf.Image = GetFrameAt(_dimension, i);
+                vf.Timestamp = i * videoInfo.AverageTimeStampsPerFrame;
+                vf.Image = GetFrameAt(dimension, i);
                 Cache.Add(vf);
             }
         }
-        private Bitmap GetFrameAt(FrameDimension _dimension, int _target)
+        private Bitmap GetFrameAt(FrameDimension dimension, int target)
         {
-            m_Gif.SelectActiveFrame(_dimension, _target);
-            Bitmap bmp = new Bitmap(m_VideoInfo.AspectRatioSize.Width, m_VideoInfo.AspectRatioSize.Height, PixelFormat.Format32bppPArgb);
+            gif.SelectActiveFrame(dimension, target);
+            Bitmap bmp = new Bitmap(videoInfo.AspectRatioSize.Width, videoInfo.AspectRatioSize.Height, PixelFormat.Format32bppPArgb);
             Graphics g = Graphics.FromImage(bmp);
-            g.DrawImage(m_Gif, 0, 0, m_VideoInfo.AspectRatioSize.Width, m_VideoInfo.AspectRatioSize.Height);
+            g.DrawImage(gif, 0, 0, videoInfo.AspectRatioSize.Width, videoInfo.AspectRatioSize.Height);
             return bmp;
         }
         private void DumpInfo()
         {
             log.Debug("---------------------------------------------------");
-            log.DebugFormat("[File] - Filename : {0}", Path.GetFileName(m_VideoInfo.FilePath));
-            log.DebugFormat("[GIF] - First interval (ms): {0}", m_VideoInfo.FrameIntervalMilliseconds);
-            log.DebugFormat("[GIF] - Duration (frames): {0}", m_Count);
-            log.DebugFormat("[GIF] - Duration (ts): {0}", m_VideoInfo.DurationTimeStamps);
-            log.DebugFormat("[GIF] - Duration (s): {0}", (double)m_VideoInfo.DurationTimeStamps/(double)m_VideoInfo.AverageTimeStampsPerSeconds);
-            log.DebugFormat("[GIF] - Computed fps: {0}", m_VideoInfo.FramesPerSeconds);
-            log.DebugFormat("[GIF] - Size (pixels): {0}", m_VideoInfo.AspectRatioSize);
+            log.DebugFormat("[File] - Filename : {0}", Path.GetFileName(videoInfo.FilePath));
+            log.DebugFormat("[GIF] - First interval (ms): {0}", videoInfo.FrameIntervalMilliseconds);
+            log.DebugFormat("[GIF] - Duration (frames): {0}", count);
+            log.DebugFormat("[GIF] - Duration (ts): {0}", videoInfo.DurationTimeStamps);
+            log.DebugFormat("[GIF] - Duration (s): {0}", (double)videoInfo.DurationTimeStamps/(double)videoInfo.AverageTimeStampsPerSeconds);
+            log.DebugFormat("[GIF] - Computed fps: {0}", videoInfo.FramesPerSeconds);
+            log.DebugFormat("[GIF] - Size (pixels): {0}", videoInfo.AspectRatioSize);
             log.Debug("---------------------------------------------------");
         }
         #endregion

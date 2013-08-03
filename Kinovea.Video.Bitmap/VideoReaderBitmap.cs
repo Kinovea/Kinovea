@@ -42,93 +42,93 @@ namespace Kinovea.Video.Bitmap
     {
         #region Properties
         public override VideoFrame Current { 
-            get { return m_Current; }
+            get { return current; }
         }
         public override VideoCapabilities Flags { 
             get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone;}
         }
         public override VideoInfo Info { 
-            get { return m_VideoInfo;} 
+            get { return videoInfo;} 
         }
         public override bool Loaded { 
-            get{ return m_Initialized; } 
+            get{ return initialized; } 
         }
         public override VideoSection WorkingZone { 
-            get { return m_WorkingZone; }
+            get { return workingZone; }
         }
         public override VideoDecodingMode DecodingMode { 
-            get { return m_Initialized ? VideoDecodingMode.OnDemand : VideoDecodingMode.NotInitialized; }
+            get { return initialized ? VideoDecodingMode.OnDemand : VideoDecodingMode.NotInitialized; }
         }
         #endregion
         
         #region Members
-        private IFrameGenerator m_Generator;
-        private bool m_Initialized;
-        private VideoFrame m_Current = new VideoFrame();
-        private VideoSection m_WorkingZone;
-        private VideoInfo m_VideoInfo = new VideoInfo();
+        private IFrameGenerator generator;
+        private bool initialized;
+        private VideoFrame current = new VideoFrame();
+        private VideoSection workingZone;
+        private VideoInfo videoInfo = new VideoInfo();
         #endregion
         
         #region Public methods
-        public override OpenVideoResult Open(string _filePath)
+        public override OpenVideoResult Open(string filePath)
         {
-            OpenVideoResult res = InstanciateGenerator(_filePath);
+            OpenVideoResult res = InstanciateGenerator(filePath);
             if(res != OpenVideoResult.Success)
                 return res;
             
-            SetupVideoInfo(_filePath);
-            m_WorkingZone = new VideoSection(0, m_VideoInfo.DurationTimeStamps - m_VideoInfo.AverageTimeStampsPerFrame);
+            SetupVideoInfo(filePath);
+            workingZone = new VideoSection(0, videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame);
             
             return res;
         }
         public override void Close()
         {
-            m_Generator.Close();
+            generator.Close();
         }
-        public override VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width)
+        public override VideoSummary ExtractSummary(string filePath, int thumbs, int width)
         {
-            OpenVideoResult res = Open(_filePath);
+            OpenVideoResult res = Open(filePath);
             
-            if(res != OpenVideoResult.Success || m_Generator == null)
-                return VideoSummary.GetInvalid(_filePath);
+            if(res != OpenVideoResult.Success || generator == null)
+                return VideoSummary.GetInvalid(filePath);
             
-            SystemBitmap bmp = m_Generator.Generate(0);
+            SystemBitmap bmp = generator.Generate(0);
             Size size = bmp.Size;
             
-            int height = (int)(size.Height / ((float)size.Width / _width));
+            int height = (int)(size.Height / ((float)size.Width / width));
             
-            SystemBitmap thumb = new SystemBitmap(_width, height);
+            SystemBitmap thumb = new SystemBitmap(width, height);
             Graphics g = Graphics.FromImage(thumb);
-            g.DrawImage(bmp, 0, 0, _width, height);
+            g.DrawImage(bmp, 0, 0, width, height);
             g.Dispose();
             Close();
             
-            bool hasKva = VideoSummary.HasCompanionKva(_filePath);
+            bool hasKva = VideoSummary.HasCompanionKva(filePath);
 
-            return new VideoSummary(_filePath, true, hasKva, size, 0, new List<SystemBitmap>{ thumb });
+            return new VideoSummary(filePath, true, hasKva, size, 0, new List<SystemBitmap>{ thumb });
         }
         public override void PostLoad(){}
-        public override bool MoveNext(int _skip, bool _decodeIfNecessary)
+        public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
-            return UpdateCurrent(Current.Timestamp + m_VideoInfo.AverageTimeStampsPerFrame);
+            return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
         }
-        public override bool MoveTo(long _timestamp)
+        public override bool MoveTo(long timestamp)
         {
-            return UpdateCurrent(_timestamp);
+            return UpdateCurrent(timestamp);
         }
-        public override void UpdateWorkingZone(VideoSection _newZone, bool _forceReload, int _maxSeconds, int _maxMemory, Action<DoWorkEventHandler> _workerFn)
+        public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxSeconds, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {
-            m_WorkingZone = _newZone;
+            workingZone = newZone;
         }
         public override void BeforeFrameEnumeration(){}
         public override void AfterFrameEnumeration(){}
         #endregion
         
         #region Private methods
-        private OpenVideoResult InstanciateGenerator(string _filePath)
+        private OpenVideoResult InstanciateGenerator(string filePath)
         {
             OpenVideoResult res = OpenVideoResult.NotSupported;
-            string extension = Path.GetExtension(_filePath).ToLower();
+            string extension = Path.GetExtension(filePath).ToLower();
             switch(extension)
             {
                 case ".jpg":
@@ -136,54 +136,54 @@ namespace Kinovea.Video.Bitmap
                 case ".png":
                 case ".bmp":
                 {
-                    m_Generator = new FrameGeneratorImageFile();
+                    generator = new FrameGeneratorImageFile();
                     break;
                 }
                 default:
                     throw new NotImplementedException();
             }
             
-            if(m_Generator != null)
+            if(generator != null)
             {
-                res = m_Generator.Initialize(_filePath);
-                m_Initialized = res == OpenVideoResult.Success;
+                res = generator.Initialize(filePath);
+                initialized = res == OpenVideoResult.Success;
             }
             return res;
         }
-        private void SetupVideoInfo(string _filePath)
+        private void SetupVideoInfo(string filePath)
         {
-            m_VideoInfo.AverageTimeStampsPerFrame = 1;
-            m_VideoInfo.FilePath = _filePath;
-            m_VideoInfo.FirstTimeStamp = 0;
+            videoInfo.AverageTimeStampsPerFrame = 1;
+            videoInfo.FilePath = filePath;
+            videoInfo.FirstTimeStamp = 0;
             
             // Testing: 10 seconds @ 25fps.
-            m_VideoInfo.DurationTimeStamps = 251;
-            m_VideoInfo.FramesPerSeconds = 25;
-            m_VideoInfo.FrameIntervalMilliseconds = 1000 / m_VideoInfo.FramesPerSeconds;
-            m_VideoInfo.AverageTimeStampsPerSeconds = m_VideoInfo.FramesPerSeconds * m_VideoInfo.AverageTimeStampsPerFrame;
+            videoInfo.DurationTimeStamps = 251;
+            videoInfo.FramesPerSeconds = 25;
+            videoInfo.FrameIntervalMilliseconds = 1000 / videoInfo.FramesPerSeconds;
+            videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
             
             // Testing 640x480.
-            if(m_Generator.Size != Size.Empty)
-                m_VideoInfo.OriginalSize = m_Generator.Size;
+            if(generator.Size != Size.Empty)
+                videoInfo.OriginalSize = generator.Size;
             else
-                m_VideoInfo.OriginalSize = new Size(640, 480);
-            m_VideoInfo.AspectRatioSize = m_VideoInfo.OriginalSize;
+                videoInfo.OriginalSize = new Size(640, 480);
+            videoInfo.AspectRatioSize = videoInfo.OriginalSize;
             
         }
-        private bool UpdateCurrent(long _timestamp)
+        private bool UpdateCurrent(long timestamp)
         {
             // We can generate at any timestamp, but we still need to report when the
             // end of the working zone is reached. Otherwise frame enumerators like
             // in video save would just go on for ever.
-            if(m_Generator == null || !m_WorkingZone.Contains(_timestamp))
+            if(generator == null || !workingZone.Contains(timestamp))
                 return false;
             
-            if(m_Current != null && m_Current.Image != null)
-                m_Generator.DisposePrevious(m_Current.Image);
+            if(current != null && current.Image != null)
+                generator.DisposePrevious(current.Image);
 
-            SystemBitmap bmp = m_Generator.Generate(_timestamp);
-            m_Current.Image = bmp;
-            m_Current.Timestamp = _timestamp;
+            SystemBitmap bmp = generator.Generate(timestamp);
+            current.Image = bmp;
+            current.Timestamp = timestamp;
             return true;
         }
         #endregion

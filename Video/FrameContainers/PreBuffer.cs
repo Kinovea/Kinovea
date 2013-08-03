@@ -89,7 +89,7 @@ namespace Kinovea.Video
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-		}
+        }
         ~PreBuffer()
         {
             Dispose(false);

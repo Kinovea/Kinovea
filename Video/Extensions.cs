@@ -41,7 +41,7 @@ namespace Kinovea.Video
             Bitmap clone = new Bitmap(_bmp.Width, _bmp.Height, _bmp.PixelFormat);
             Graphics g = Graphics.FromImage(clone);
             g.DrawImageUnscaled(_bmp, 0, 0);
-			return clone;
+            return clone;
         }
         
         /// <summary>
@@ -54,10 +54,10 @@ namespace Kinovea.Video
             Bitmap template = new Bitmap(region.Width, region.Height, PixelFormat.Format32bppPArgb);
             
             BitmapData imageData = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), ImageLockMode.ReadOnly, image.PixelFormat );
-			BitmapData templateData = template.LockBits(new Rectangle( 0, 0, template.Width, template.Height ), ImageLockMode.ReadWrite, template.PixelFormat );
-				
+            BitmapData templateData = template.LockBits(new Rectangle( 0, 0, template.Width, template.Height ), ImageLockMode.ReadWrite, template.PixelFormat );
+                
             int pixelSize = 4;
-	            
+                
             int tplStride = templateData.Stride;
             int templateWidthInBytes = region.Width * pixelSize;
             int tplOffset = tplStride - templateWidthInBytes;
@@ -69,28 +69,28 @@ namespace Kinovea.Video
             int startY = Math.Max(0, region.Top);
             int startX = Math.Max(0, region.Left);
             
-			unsafe
-			{
-				byte* pTpl = (byte*) templateData.Scan0.ToPointer();
-				byte* pImg = (byte*) imageData.Scan0.ToPointer()  + (imgStride * startY) + (pixelSize * startX);
-				
-				for ( int row = 0; row < region.Height; row++ )
+            unsafe
+            {
+                byte* pTpl = (byte*) templateData.Scan0.ToPointer();
+                byte* pImg = (byte*) imageData.Scan0.ToPointer()  + (imgStride * startY) + (pixelSize * startX);
+                
+                for ( int row = 0; row < region.Height; row++ )
                 {
-					if(startY + row > imageData.Height - 1)
-						break;
+                    if(startY + row > imageData.Height - 1)
+                        break;
                     
-					for ( int col = 0; col < templateWidthInBytes; col++, pTpl++, pImg++ )
+                    for ( int col = 0; col < templateWidthInBytes; col++, pTpl++, pImg++ )
                     {
-						if(startX * pixelSize + col < imageWidthInBytes)
-							*pTpl = *pImg;	
+                        if(startX * pixelSize + col < imageWidthInBytes)
+                            *pTpl = *pImg;	
                     }
                     
                     pTpl += tplOffset;
                     pImg += imgOffset;
-				}
-			}
-			
-			image.UnlockBits(imageData);
+                }
+            }
+            
+            image.UnlockBits(imageData);
             template.UnlockBits(templateData);
             
             return template;
