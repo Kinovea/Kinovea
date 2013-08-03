@@ -1,6 +1,6 @@
 ﻿#region License
 /*
-Copyright © Joan Charmant 2011.
+Copyright © Joan Charmant 2013.
 joan.charmant@gmail.com 
  
 This file is part of Kinovea.
@@ -23,44 +23,43 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using SystemBitmap = System.Drawing.Bitmap;
 
-namespace Kinovea.Video.Bitmap
+namespace Kinovea.Video.SVG
 {
     /// <summary>
-    /// A video reader that is capable of providing a frame for any arbitrary timestamp.
+    /// A video reader to convert an SVG file into a video.
     /// This reader is actually a shell around a generator object that will provide the actual behavior.
-    /// 
-    /// Avoid using this to wrap regular video sources.
-    /// Rule of thumb to decide between a generator or a full video reader:
-    /// A generator must be able to create a frame for an arbitrary timestamp.
-    /// If the underlying source is limited in time, it should be exposed through a VideoReader.
-    /// Usage for generators is: random images, images with the timestamp painted on for tests, single image file.
     /// </summary>
-    [SupportedExtensions(".jpg;.jpeg;.png;.bmp")]
-    public class VideoReaderBitmap : VideoReader
+    [SupportedExtensions(".svg;")]
+    public class VideoReaderSVG : VideoReader
     {
         #region Properties
-        public override VideoFrame Current { 
+        public override VideoFrame Current
+        {
             get { return current; }
         }
-        public override VideoCapabilities Flags { 
-            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone;}
+        public override VideoCapabilities Flags
+        {
+            get { return VideoCapabilities.CanDecodeOnDemand | VideoCapabilities.CanChangeWorkingZone; }
         }
-        public override VideoInfo Info { 
-            get { return videoInfo;} 
+        public override VideoInfo Info
+        {
+            get { return videoInfo; }
         }
-        public override bool Loaded { 
-            get{ return initialized; } 
+        public override bool Loaded
+        {
+            get { return initialized; }
         }
-        public override VideoSection WorkingZone { 
+        public override VideoSection WorkingZone
+        {
             get { return workingZone; }
         }
-        public override VideoDecodingMode DecodingMode { 
+        public override VideoDecodingMode DecodingMode
+        {
             get { return initialized ? VideoDecodingMode.OnDemand : VideoDecodingMode.NotInitialized; }
         }
         #endregion
-        
+
         #region Members
         private IFrameGenerator generator;
         private bool initialized;
@@ -68,17 +67,17 @@ namespace Kinovea.Video.Bitmap
         private VideoSection workingZone;
         private VideoInfo videoInfo = new VideoInfo();
         #endregion
-        
+
         #region Public methods
         public override OpenVideoResult Open(string filePath)
         {
             OpenVideoResult res = InstanciateGenerator(filePath);
-            if(res != OpenVideoResult.Success)
+            if (res != OpenVideoResult.Success)
                 return res;
-            
+
             SetupVideoInfo(filePath);
             workingZone = new VideoSection(0, videoInfo.DurationTimeStamps - videoInfo.AverageTimeStampsPerFrame);
-            
+
             return res;
         }
         public override void Close()
@@ -88,28 +87,22 @@ namespace Kinovea.Video.Bitmap
         public override VideoSummary ExtractSummary(string filePath, int thumbs, Size maxSize)
         {
             OpenVideoResult res = Open(filePath);
-            
-            if(res != OpenVideoResult.Success || generator == null)
-                return VideoSummary.GetInvalid(filePath);
-            
-            SystemBitmap bmp = generator.Generate(0);
-            Size size = bmp.Size;
 
-            // TODO: compute the correct ratio stretched size. Currently this uses the maxSize.width
-            // which is not the actual final width of the thumbnail if the ratio is more vertical than 4:3.
-            int height = (int)(size.Height / ((float)size.Width / maxSize.Width));
-            
-            SystemBitmap thumb = new SystemBitmap(maxSize.Width, height);
+            if (res != OpenVideoResult.Success || generator == null)
+                return VideoSummary.GetInvalid(filePath);
+
+            Bitmap bmp = generator.Generate(0, maxSize);
+            Bitmap thumb = new Bitmap(bmp.Width, bmp.Height);
             Graphics g = Graphics.FromImage(thumb);
-            g.DrawImage(bmp, 0, 0, maxSize.Width, height);
+            g.DrawImage(bmp, 0, 0, bmp.Width, bmp.Height);
             g.Dispose();
             Close();
-            
+
             bool hasKva = VideoSummary.HasCompanionKva(filePath);
 
-            return new VideoSummary(filePath, true, hasKva, size, 0, new List<SystemBitmap>{ thumb });
+            return new VideoSummary(filePath, true, hasKva, Size.Empty, 0, new List<Bitmap> { thumb });
         }
-        public override void PostLoad(){}
+        public override void PostLoad() { }
         public override bool MoveNext(int skip, bool decodeIfNecessary)
         {
             return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
@@ -122,68 +115,56 @@ namespace Kinovea.Video.Bitmap
         {
             workingZone = newZone;
         }
-        public override void BeforeFrameEnumeration(){}
-        public override void AfterFrameEnumeration(){}
+        public override void BeforeFrameEnumeration() { }
+        public override void AfterFrameEnumeration() { }
         #endregion
-        
+
         #region Private methods
         private OpenVideoResult InstanciateGenerator(string filePath)
         {
             OpenVideoResult res = OpenVideoResult.NotSupported;
             string extension = Path.GetExtension(filePath).ToLower();
-            switch(extension)
-            {
-                case ".jpg":
-                case ".jpeg":
-                case ".png":
-                case ".bmp":
-                {
-                    generator = new FrameGeneratorImageFile();
-                    break;
-                }
-                default:
-                    throw new NotImplementedException();
-            }
-            
-            if(generator != null)
-            {
-                res = generator.Initialize(filePath);
-                initialized = res == OpenVideoResult.Success;
-            }
+            if (extension != ".svg")
+                throw new NotImplementedException();
+
+            generator = new FrameGeneratorSVG();
+            res = generator.Initialize(filePath);
+            initialized = res == OpenVideoResult.Success;
             return res;
         }
+
         private void SetupVideoInfo(string filePath)
         {
             videoInfo.AverageTimeStampsPerFrame = 1;
             videoInfo.FilePath = filePath;
             videoInfo.FirstTimeStamp = 0;
-            
-            // Testing: 10 seconds @ 25fps.
+
+            // Testing: 10 seconds @ 25fps @ 640x480.
             videoInfo.DurationTimeStamps = 251;
             videoInfo.FramesPerSeconds = 25;
             videoInfo.FrameIntervalMilliseconds = 1000 / videoInfo.FramesPerSeconds;
             videoInfo.AverageTimeStampsPerSeconds = videoInfo.FramesPerSeconds * videoInfo.AverageTimeStampsPerFrame;
-            
-            // Testing 640x480.
-            if(generator.Size != Size.Empty)
+
+            if (generator.Size != Size.Empty)
                 videoInfo.OriginalSize = generator.Size;
             else
                 videoInfo.OriginalSize = new Size(640, 480);
+
             videoInfo.AspectRatioSize = videoInfo.OriginalSize;
-            
         }
+
         private bool UpdateCurrent(long timestamp)
         {
             // We can generate at any timestamp, but we still need to report when the
             // end of the working zone is reached. Otherwise frame enumerators like
             // in video save would just go on for ever.
-            if(generator == null || !workingZone.Contains(timestamp))
+            if (generator == null || !workingZone.Contains(timestamp))
                 return false;
-            
-            if(current != null && current.Image != null)
+
+            if (current != null && current.Image != null)
                 generator.DisposePrevious(current.Image);
 
-            SystemBitmap bmp = generator.Generate(timestamp);
+            Bitmap bmp = generator.Generate(timestamp);
             current.Image = bmp;
             current.Timestamp = timestamp;
             return true;
@@ -191,3 +172,4 @@ namespace Kinovea.Video.Bitmap
         #endregion
     }
 }
+

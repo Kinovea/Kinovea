@@ -115,7 +115,7 @@ namespace Kinovea.Video
         #region Methods
         public abstract OpenVideoResult Open(string _filePath);
         public abstract void Close();
-        public abstract VideoSummary ExtractSummary(string _filePath, int _thumbs, int _width);
+        public abstract VideoSummary ExtractSummary(string filePath, int thumbsToLoad, Size maxImageSize);
         
         /// <summary>
         /// Set the "Current" property to hold the next video frame.

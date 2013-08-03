@@ -5,14 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B2F5C3EB-9F9E-4B7A-ACBB-55781E62957C}</ProjectGuid>
+    <ProjectGuid>{2507E203-236D-4B02-8477-5FCBC30A670C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kinovea.Video.GIF</RootNamespace>
-    <AssemblyName>Kinovea.Video.GIF</AssemblyName>
+    <RootNamespace>Kinovea.Video.SVG</RootNamespace>
+    <AssemblyName>Kinovea.Video.SVG</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,12 +34,32 @@
     <Reference Include="log4net">
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="SharpVectorBindings, Version=0.3.1.41361, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorCss, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <HintPath>..\Refs\SharpVectorCss.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorDom, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <HintPath>..\Refs\SharpVectorDom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorObjectModel, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <HintPath>..\Refs\SharpVectorObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorRenderingEngine, Version=0.3.1.34123, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\Refs\SharpVectorRenderingEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectorUtil, Version=0.3.1.41362, Culture=neutral, PublicKeyToken=a8855419d33ac940, processorArchitecture=MSIL">
+      <HintPath>..\Refs\SharpVectorUtil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrameGeneratorSVG.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VideoReaderGIF.cs" />
+    <Compile Include="VideoReaderSVG.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Video\Kinovea.Video.csproj">

@@ -29,9 +29,11 @@ namespace Kinovea.Video
     /// </summary>
     public interface IFrameGenerator
     {
-        Bitmap Generate(long _timestamp);
-        void DisposePrevious(Bitmap _previous);
-        OpenVideoResult Initialize(string _init);
+        Bitmap Generate(long timestamp);
+        Bitmap Generate(long timestamp, Size maxSize);
+
+        void DisposePrevious(Bitmap previous);
+        OpenVideoResult Initialize(string init);
         void Close();
         Size Size {get;}
     }

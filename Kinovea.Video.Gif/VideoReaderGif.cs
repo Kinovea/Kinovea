@@ -26,11 +26,11 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
-namespace Kinovea.Video.Gif
+namespace Kinovea.Video.GIF
 {
     // A video reader for animated GIFs.
     [SupportedExtensions(".gif")]
-    public class VideoReaderGif : VideoReaderAlwaysCaching
+    public class VideoReaderGIF : VideoReaderAlwaysCaching
     {
         #region Properties
         public override VideoCapabilities Flags {
@@ -72,7 +72,7 @@ namespace Kinovea.Video.Gif
             DumpInfo();
             return res;
         }
-        public override VideoSummary ExtractSummary(string filePath, int thumbsToGet, int width)
+        public override VideoSummary ExtractSummary(string filePath, int thumbsToGet, Size maxSize)
         {
            VideoSummary summary = null;
            
