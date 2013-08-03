@@ -60,7 +60,13 @@ namespace Kinovea.Video.Bitmap
         {
             return (bitmap != null) ? bitmap : errorBitmap;
         }
-        public void DisposePrevious(SystemBitmap _previous){}
+
+        public SystemBitmap Generate(long timestamp, Size maxWidth)
+        {
+            return Generate(timestamp);
+        }
+
+        public void DisposePrevious(SystemBitmap previous){}
         public void Close()
         {
             if(bitmap != null)

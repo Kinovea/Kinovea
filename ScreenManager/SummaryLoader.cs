@@ -18,37 +18,39 @@ namespace Kinovea.ScreenManager
     public class SummaryLoader
     {
         public bool IsAlive {
-            get { return m_IsAlive; }
+            get { return isAlive; }
         }
         public event EventHandler<SummaryLoadedEventArgs> SummaryLoaded;
         
-        private bool m_IsAlive;
-        private bool m_CancellationPending;
-        private List<String> m_FileNames;
-        private BackgroundWorker m_Worker = new BackgroundWorker();
+        private bool isAlive;
+        private bool cancellationPending;
+        private List<String> fileNames;
+        private Size maxImageSize;
+        private BackgroundWorker bgWorker = new BackgroundWorker();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public SummaryLoader(List<String> _fileNames)
+        public SummaryLoader(List<String> fileNames, Size maxImageSize)
         {
-            m_FileNames = _fileNames;
+            this.fileNames = fileNames;
+            this.maxImageSize = maxImageSize;
         }
         public void Run()
         {
-            if(m_FileNames.Count < 1)
+            if(fileNames.Count < 1)
                 return;
             
-            m_IsAlive = true;
-            m_Worker.RunWorkerCompleted += bgWorker_RunWorkerCompleted;
-            m_Worker.ProgressChanged += bgWorker_ProgressChanged;
-            m_Worker.DoWork += bgWorker_DoWork;
-            m_Worker.WorkerSupportsCancellation = true;
-            m_Worker.WorkerReportsProgress = true;
-            m_Worker.RunWorkerAsync(m_FileNames);
+            isAlive = true;
+            bgWorker.RunWorkerCompleted += bgWorker_RunWorkerCompleted;
+            bgWorker.ProgressChanged += bgWorker_ProgressChanged;
+            bgWorker.DoWork += bgWorker_DoWork;
+            bgWorker.WorkerSupportsCancellation = true;
+            bgWorker.WorkerReportsProgress = true;
+            bgWorker.RunWorkerAsync(fileNames);
         }
         public void Cancel()
         {
-            m_CancellationPending = true;
-            m_Worker.CancelAsync();
+            cancellationPending = true;
+            bgWorker.CancelAsync();
         }
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -78,9 +80,11 @@ namespace Kinovea.ScreenManager
                     
                     string extension = Path.GetExtension(filename);
                     VideoReader reader = VideoTypeManager.GetVideoReader(extension);
-        			
+
+                    int numberOfThumbnails = 5;
+                    
         			if(reader != null)
-                        summary = reader.ExtractSummary(filename, 5, 200);
+                        summary = reader.ExtractSummary(filename, numberOfThumbnails, maxImageSize);
                 }
                 catch(Exception exp)
                 {
@@ -96,14 +100,14 @@ namespace Kinovea.ScreenManager
         }
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if(m_CancellationPending || SummaryLoaded == null)
+            if(cancellationPending || SummaryLoaded == null)
                 return;
             
             SummaryLoaded(this, new SummaryLoadedEventArgs(e.UserState as VideoSummary, e.ProgressPercentage));
         }
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            m_IsAlive = false;
+            isAlive = false;
         }
     }
 }
