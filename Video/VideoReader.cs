@@ -106,6 +106,10 @@ namespace Kinovea.Video
         public bool CanChangeDecodingSize {
             get { return (Flags & VideoCapabilities.CanChangeDecodingSize) != 0; }
         }
+        public bool CanScaleIndefinitely
+        {
+            get { return (Flags & VideoCapabilities.CanScaleIndefinitely) != 0; }
+        }
         #endregion
 
         #region Members

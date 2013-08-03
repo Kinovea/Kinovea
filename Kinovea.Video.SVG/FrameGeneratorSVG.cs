@@ -133,25 +133,17 @@ namespace Kinovea.Video.SVG
             svgWindow.Document.RootElement.CurrentScale = sizeInPercentage ? 1.0f : scale;
             svgWindow.InnerWidth = size.Width;
             svgWindow.InnerHeight = size.Height;
-            currentBitmap = renderer.Render(svgWindow.Document as SvgDocument);
-
-            /*m_fDrawingScale = (float)m_BoundingBox.Rectangle.Width / (float)m_iOriginalWidth;
-            m_fDrawingRenderingScale = (float)(_fScreenScaling * m_fDrawingScale * m_fInitialScale);
-
-            if (m_svgRendered == null || m_fDrawingRenderingScale != m_SvgWindow.Document.RootElement.CurrentScale)
+            try
             {
-                // In the case of percentage, CurrentScale is always 100%. But since there is a cache for the transformation matrix,
-                // we need to set it anyway to clear the cache.
-                m_SvgWindow.Document.RootElement.CurrentScale = m_bSizeInPercentage ? 1.0f : (float)m_fDrawingRenderingScale;
+                currentBitmap = renderer.Render(svgWindow.Document as SvgDocument);
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Error while rendering SVG. {0}", e.ToString());
+                currentBitmap = null;
+            }
 
-                m_SvgWindow.InnerWidth = _size.Width;
-                m_SvgWindow.InnerHeight = _size.Height;
-
-                m_svgRendered = m_Renderer.Render(m_SvgWindow.Document as SvgDocument);
-
-                log.Debug(String.Format("Rendering SVG ({0};{1}), Initial scaling to fit video: {2:0.00}. User scaling: {3:0.00}. Video image scaling: {4:0.00}, Final transformation: {5:0.00}.",
-                                        m_iOriginalWidth, m_iOriginalHeight, m_fInitialScale, m_fDrawingScale, _fScreenScaling, m_fDrawingRenderingScale));
-            }*/
+            //currentBitmap.Save(string.Format("{0}.png", Guid.NewGuid().ToString()));
         }
 
         private Size GetRatioStretchedSize(Size maxSize)

@@ -67,13 +67,13 @@ namespace Kinovea.ScreenManager
             m_reader = _videoReader;
         }
         
-        public void Manipulate(Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize)
+        public void Manipulate(Size _containerSize, double _stretchFactor, bool _fillContainer, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
             // One of the constraint has changed, recompute the sizes.
             Size aspectRatioSize = m_reader.Info.AspectRatioSize;
             
             ComputeRenderingSize(aspectRatioSize, _containerSize, _stretchFactor, _fillContainer);
-            ComputeDecodingSize(aspectRatioSize, _containerSize, _zoomFactor, _enableCustomDecodingSize);
+            ComputeDecodingSize(aspectRatioSize, _containerSize, _zoomFactor, _enableCustomDecodingSize, _scalable);
         }
         
         private void ComputeRenderingSize(Size _aspectRatioSize, Size _containerSize, double _stretchFactor, bool _fillContainer)
@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
             
             m_renderingLocation = new Point((_containerSize.Width - m_renderingSize.Width) / 2, (_containerSize.Height - m_renderingSize.Height) / 2);
         }
-        private void ComputeDecodingSize(Size _aspectRatioSize, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize)
+        private void ComputeDecodingSize(Size _aspectRatioSize, Size _containerSize, double _zoomFactor, bool _enableCustomDecodingSize, bool _scalable)
         {
             // Updates the following globals: m_decodingSize, m_mayDrawUnscaled, m_renderingZoomFactor.
             
@@ -141,7 +141,7 @@ namespace Kinovea.ScreenManager
                     
                     // We don't actually care if the scaled image fits in the container, but we use the container size as the
                     // upper boundary to what we allow the decoding size to be, in order not to put too much load on the decoder.
-                    if(!scaledSize.FitsIn(_containerSize) && !scaledSize.FitsIn(_aspectRatioSize))
+                    if(!_scalable && !scaledSize.FitsIn(_containerSize) && !scaledSize.FitsIn(_aspectRatioSize))
                     {
                         // Here we could also use _containerSize at right ratio. Will have to test perfs to know which is better.
                         // If in this branch, we cannot draw unscaled.
