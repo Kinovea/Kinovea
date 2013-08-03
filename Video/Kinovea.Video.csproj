@@ -101,11 +101,8 @@
     <Compile Include="FrameContainers\SingleFrame.cs" />
     <Compile Include="FrameContainers\PreBuffer.cs" />
     <Compile Include="Readers\CapabilityNotSupportedException.cs" />
-    <Compile Include="Readers\Generators\FrameGeneratorImageFile.cs" />
-    <Compile Include="Readers\Generators\IFrameGenerator.cs" />
+    <Compile Include="Readers\IFrameGenerator.cs" />
     <Compile Include="Readers\VideoReaderAlwaysCaching.cs" />
-    <Compile Include="Readers\VideoReaderGenerator.cs" />
-    <Compile Include="Readers\VideoReaderGif.cs" />
     <Compile Include="Readers\VideoReader.cs" />
     <Compile Include="ThreadCanceler.cs" />
     <Compile Include="Delegates.cs" />
