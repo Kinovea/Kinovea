@@ -197,11 +197,12 @@ namespace Kinovea.ScreenManager
             InitializeCaptureFilenames();
         }
         public override void BeforeClose()
-        {   
-            if(grabber != null)
+        {
+            if (grabber != null)
+            {
                 grabber.Stop();
-
-            grabber.GrabbingStatusChanged -= Grabber_GrabbingStatusChanged;
+                grabber.GrabbingStatusChanged -= Grabber_GrabbingStatusChanged;
+            }
             
             buffer.Clear();
             view.BeforeClose();
