@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 using Kinovea.Services;
 
@@ -345,8 +346,15 @@ namespace Kinovea.ScreenManager
         private void Panel2MouseEnter(object sender, EventArgs e)
         {
             // Give focus to enbale mouse scroll
-            //if(!editMode)
-            //	this.Focus();
+            if (editing)
+                return;
+
+            // Focus() will jump the panel back to the currently selected control, or the first one if none is selected.
+            // We must select one manually to avoid jumping to top.
+            ThumbnailFile first = thumbnails.First(t => t.Top >= 0);
+            first.Select();
+            
+            this.Focus();
         }
         #endregion
         
