@@ -185,17 +185,15 @@ namespace Kinovea.FileBrowser
 		public void RefreshUICulture()
 		{
 			// ExpTree tab.
-			//tabPageClassic.Text = FileBrowserLang.tabExplorer;
 			tabPageClassic.Text = "";
 			lblFolders.Text = FileBrowserLang.lblFolders;
 			lblVideoFiles.Text = FileBrowserLang.lblVideoFiles;
 			
 			// Shortcut tab.
-			//tabPageShortcuts.Text = FileBrowserLang.tabShortcuts;
 			tabPageShortcuts.Text = "";
 			lblFavFolders.Text = lblFolders.Text;
 			lblFavFiles.Text = lblVideoFiles.Text;
-			etShortcuts.RootDisplayName = tabPageShortcuts.Text;
+            etShortcuts.RootDisplayName = FileBrowserLang.tabShortcuts;
 			
 			tabPageCameras.Text = "";
 			
