@@ -79,11 +79,8 @@ namespace Kinovea.FileBrowser
             
             // Registers our exposed functions to the DelegatePool.
             DelegatesPool dp = DelegatesPool.Instance();
-            //dp.RefreshFileExplorer = DoRefreshFileList;
             dp.ChangeFileExplorerTab = DoChangeFileExplorerTab;
             NotificationCenter.RefreshFileExplorer += NotificationCenter_RefreshFileExplorer;
-            
-            
             
             // Take the list of shortcuts from the prefs and load them.
             ReloadShortcuts();
@@ -538,7 +535,13 @@ namespace Kinovea.FileBrowser
             this.Cursor = Cursors.WaitCursor;
             
             listView.BeginUpdate();
+            listView.View = View.Details;
             listView.Items.Clear();
+            listView.Columns.Clear();
+            listView.Columns.Add("", listView.Width);
+            listView.GridLines = true;
+            listView.HeaderStyle = ColumnHeaderStyle.None;
+
             
             // Each list element will store the CShItem it's referring to in its Tag property.
             ArrayList fileList = folder.GetFiles();

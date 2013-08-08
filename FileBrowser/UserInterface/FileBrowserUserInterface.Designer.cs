@@ -47,11 +47,11 @@ namespace Kinovea.FileBrowser
             this.lblFavFiles = new System.Windows.Forms.Label();
             this.lvShortcuts = new System.Windows.Forms.ListView();
             this.tabPageCameras = new System.Windows.Forms.TabPage();
+            this.btnManual = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lvCameras = new System.Windows.Forms.ListView();
             this.imgListTabs = new System.Windows.Forms.ImageList(this.components);
             this.ttTabs = new System.Windows.Forms.ToolTip(this.components);
-            this.btnManual = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabPageClassic.SuspendLayout();
             this.splitExplorerFiles.Panel1.SuspendLayout();
@@ -112,9 +112,9 @@ namespace Kinovea.FileBrowser
             // 
             // etExplorer
             // 
-            this.etExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.etExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.etExplorer.BackColor = System.Drawing.Color.White;
             this.etExplorer.Cursor = System.Windows.Forms.Cursors.Default;
             this.etExplorer.Location = new System.Drawing.Point(0, 31);
@@ -122,7 +122,6 @@ namespace Kinovea.FileBrowser
             this.etExplorer.RootDisplayName = "Bureau";
             this.etExplorer.ShowRootLines = false;
             this.etExplorer.Size = new System.Drawing.Size(305, 271);
-            this.etExplorer.StartUpDirectory = ExpTreeLib.ExpTree.StartDir.Desktop;
             this.etExplorer.TabIndex = 0;
             this.etExplorer.ExpTreeNodeSelected += new ExpTreeLib.ExpTree.ExpTreeNodeSelectedEventHandler(this.etExplorer_ExpTreeNodeSelected);
             this.etExplorer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.etExplorer_MouseDown);
@@ -130,8 +129,8 @@ namespace Kinovea.FileBrowser
             // 
             // lblFolders
             // 
-            this.lblFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFolders.BackColor = System.Drawing.Color.WhiteSmoke;
             this.lblFolders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFolders.ForeColor = System.Drawing.Color.SteelBlue;
@@ -144,9 +143,9 @@ namespace Kinovea.FileBrowser
             // 
             // lvExplorer
             // 
-            this.lvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvExplorer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvExplorer.BackColor = System.Drawing.Color.White;
             this.lvExplorer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lvExplorer.GridLines = true;
@@ -159,7 +158,7 @@ namespace Kinovea.FileBrowser
             this.lvExplorer.SmallImageList = this.imgListFiles;
             this.lvExplorer.TabIndex = 0;
             this.lvExplorer.UseCompatibleStateImageBehavior = false;
-            this.lvExplorer.View = System.Windows.Forms.View.List;
+            this.lvExplorer.View = System.Windows.Forms.View.Details;
             this.lvExplorer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvExplorer_MouseDoubleClick);
             this.lvExplorer.MouseEnter += new System.EventHandler(this.lvExplorer_MouseEnter);
             // 
@@ -223,9 +222,9 @@ namespace Kinovea.FileBrowser
             // 
             // etShortcuts
             // 
-            this.etShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.etShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.etShortcuts.Cursor = System.Windows.Forms.Cursors.Default;
             this.etShortcuts.Location = new System.Drawing.Point(0, 34);
             this.etShortcuts.Name = "etShortcuts";
@@ -276,8 +275,8 @@ namespace Kinovea.FileBrowser
             // 
             // lblFavFolders
             // 
-            this.lblFavFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFavFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFavFolders.BackColor = System.Drawing.Color.WhiteSmoke;
             this.lblFavFolders.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFavFolders.ForeColor = System.Drawing.Color.SteelBlue;
@@ -303,9 +302,9 @@ namespace Kinovea.FileBrowser
             // 
             // lvShortcuts
             // 
-            this.lvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvShortcuts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvShortcuts.BackColor = System.Drawing.Color.White;
             this.lvShortcuts.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lvShortcuts.Location = new System.Drawing.Point(0, 23);
@@ -331,10 +330,20 @@ namespace Kinovea.FileBrowser
             this.tabPageCameras.TabIndex = 2;
             this.tabPageCameras.UseVisualStyleBackColor = true;
             // 
+            // btnManual
+            // 
+            this.btnManual.Location = new System.Drawing.Point(6, 235);
+            this.btnManual.Name = "btnManual";
+            this.btnManual.Size = new System.Drawing.Size(132, 23);
+            this.btnManual.TabIndex = 4;
+            this.btnManual.Text = "Manual connection";
+            this.btnManual.UseVisualStyleBackColor = true;
+            this.btnManual.Click += new System.EventHandler(this.BtnManualClick);
+            // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.SteelBlue;
@@ -347,8 +356,8 @@ namespace Kinovea.FileBrowser
             // 
             // lvCameras
             // 
-            this.lvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvCameras.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvCameras.BackColor = System.Drawing.Color.White;
             this.lvCameras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lvCameras.GridLines = true;
@@ -372,16 +381,6 @@ namespace Kinovea.FileBrowser
             this.imgListTabs.Images.SetKeyName(1, "tab_shortcuts.png");
             this.imgListTabs.Images.SetKeyName(2, "tab_camera.png");
             // 
-            // btnManual
-            // 
-            this.btnManual.Location = new System.Drawing.Point(6, 235);
-            this.btnManual.Name = "btnManual";
-            this.btnManual.Size = new System.Drawing.Size(132, 23);
-            this.btnManual.TabIndex = 4;
-            this.btnManual.Text = "Manual connection";
-            this.btnManual.UseVisualStyleBackColor = true;
-            this.btnManual.Click += new System.EventHandler(this.BtnManualClick);
-            // 
             // FileBrowserUserInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,6 +400,7 @@ namespace Kinovea.FileBrowser
             this.splitShortcutsFiles.ResumeLayout(false);
             this.tabPageCameras.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
         private System.Windows.Forms.Button btnManual;
         private System.Windows.Forms.ListView lvCameras;
