@@ -71,7 +71,10 @@ namespace Kinovea.Services
         
         public static void LogInfo()
         {
-             if(Experimental)
+            log.Info("");
+            log.Info("--------------------------------------------------");
+            
+            if(Experimental)
                  log.InfoFormat("{0} version {1}.", ApplicationName, Version.ToString());
             else
                 log.InfoFormat("{0} version {1} - Experimental release.", ApplicationName, Version.ToString());
