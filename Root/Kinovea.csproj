@@ -486,7 +486,7 @@
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
     <None Include="..\Installer\OtherFiles\LogConf.xml">
-      <Visible>False</Visible>
+      <Visible>True</Visible>
       <Link>LogConf.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
