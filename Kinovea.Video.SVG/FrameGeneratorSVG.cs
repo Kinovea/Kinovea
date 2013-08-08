@@ -89,8 +89,16 @@ namespace Kinovea.Video.SVG
                 return errorBitmap;
 
             Size ratioStretchedSize = GetRatioStretchedSize(maxSize);
-            if(currentBitmap == null || currentBitmap.Size != ratioStretchedSize)
-                Render(ratioStretchedSize);
+
+            try
+            {
+                if (currentBitmap == null || currentBitmap.Size != ratioStretchedSize)
+                    Render(ratioStretchedSize);
+            }
+            catch (Exception)
+            {
+                log.ErrorFormat("Error while generating SVG image.");
+            }
 
             return (currentBitmap != null) ? currentBitmap : errorBitmap;
         }
