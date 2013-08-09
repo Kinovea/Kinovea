@@ -984,7 +984,8 @@ namespace Kinovea.ScreenManager
                 case Keys.F7:
                     {
                         // These keystrokes impact only the active screen.
-                        wasHandled = m_ActiveScreen.OnKeyPress(keyCode);
+                        if(m_ActiveScreen != null)
+                            wasHandled = m_ActiveScreen.OnKeyPress(keyCode);
                         break;
                     }
                 case Keys.Escape:
