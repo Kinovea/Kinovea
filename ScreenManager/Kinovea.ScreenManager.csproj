@@ -769,6 +769,9 @@
     <EmbeddedResource Include="Thumbnails\ThumbnailCamera.resx">
       <DependentUpon>ThumbnailCamera.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Thumbnails\ThumbnailFile.resx">
+      <DependentUpon>ThumbnailFile.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Thumbnails\ThumbnailViewerCameras.resx">
       <DependentUpon>ThumbnailViewerCameras.cs</DependentUpon>
     </EmbeddedResource>

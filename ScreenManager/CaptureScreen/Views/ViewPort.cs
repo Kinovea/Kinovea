@@ -149,7 +149,7 @@ namespace Kinovea.ScreenManager
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            this.Focus();
+            //this.Focus();
             
             if(controller.Bitmap == null)
                 return;

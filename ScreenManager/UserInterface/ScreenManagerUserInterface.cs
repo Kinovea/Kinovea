@@ -98,13 +98,6 @@ namespace Kinovea.ScreenManager
         {
             splitScreensPanel.Panel2Collapsed = !splitScreensPanel.Panel2Collapsed;
         }
-        public bool OnKeyPress(Keys key)
-        {
-            if(!thumbnailViewerContainer.Visible)
-                return false;
-            
-            return thumbnailViewerContainer.OnKeyPress(key);
-        }
         public void OrganizeScreens(List<AbstractScreen> screenList)
         {
             if(screenList.Count == 0)
@@ -263,42 +256,5 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-
-        /*private void DoDisplayThumbnails(List<String> _fileNames, bool _bRefreshNow)
-        {
-        	// Keep track of the files, in case we need to bring them back
-        	// after closing a screen.
-            filenames = _fileNames;
-
-            if(!_bRefreshNow)
-                return;
-            
-            if (_fileNames.Count > 0)
-            {
-            	thumbnailViewerContainer.Height = Height - 20; // margin for cosmetic
-                
-            	// We keep the Kinovea logo until there is at least 1 thumbnail to show.
-            	// After that we never display it again.
-                pbLogo.Visible = false;
-            }
-            else
-            {
-                thumbnailViewerContainer.Height = 1;
-            }
-
-            if (thumbnailViewerContainer.Visible)
-            {
-                this.Cursor = Cursors.WaitCursor;
-                thumbnailViewerContainer.DisplayThumbnails(_fileNames);
-                this.Cursor = Cursors.Default;
-            }
-            else
-            {
-                // Thumbnail pane was hidden to show player screen
-                // Then we changed folder and we don't have anything to show.
-                // Let's clean older thumbnails now.
-                thumbnailViewerContainer.CleanupThumbnails();
-            }
-        }*/
     }
 }

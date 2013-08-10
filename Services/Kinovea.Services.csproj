@@ -137,8 +137,16 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Deprecated\NetworkCameraFormat.cs" />
     <Compile Include="Events\DelegatesPool.cs" />
+    <Compile Include="Events\FileSelectedEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
+    <Compile Include="WinForms\Commands.cs" />
+    <Compile Include="WinForms\HotkeyCommand.cs" />
+    <Compile Include="WinForms\HotkeySettings.cs" />
+    <Compile Include="WinForms\HotkeySettingsManager.cs" />
+    <Compile Include="WinForms\KinoveaControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Preferences\CameraBlurb.cs" />
     <Compile Include="Preferences\CapturePreferences.cs" />
     <Compile Include="Preferences\FileExplorerPreferences.cs" />
@@ -192,6 +200,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

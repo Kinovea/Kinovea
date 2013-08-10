@@ -1257,7 +1257,7 @@ namespace Kinovea.ScreenManager
 		private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
 		{
 			// Set focus to enable mouse scroll
-			panelVideoControls.Focus();
+			//panelVideoControls.Focus();
 		}
 		#endregion
 		
@@ -3159,7 +3159,7 @@ namespace Kinovea.ScreenManager
 			
 			if(!bEditing)
 			{
-				pbSurfaceScreen.Focus();
+				//pbSurfaceScreen.Focus();
 			}
 			
 		}
@@ -3328,7 +3328,7 @@ namespace Kinovea.ScreenManager
 		private void PanelCenter_MouseEnter(object sender, EventArgs e)
 		{
 			// Give focus to enable mouse scroll.
-			panelCenter.Focus();
+			//panelCenter.Focus();
 		}
 		private void PanelCenter_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -3351,7 +3351,7 @@ namespace Kinovea.ScreenManager
 		private void pnlThumbnails_MouseEnter(object sender, EventArgs e)
 		{
 			// Give focus to disable keyframe box editing.
-			pnlThumbnails.Focus();
+			//pnlThumbnails.Focus();
 		}
 		private void splitKeyframes_Resize(object sender, EventArgs e)
 		{

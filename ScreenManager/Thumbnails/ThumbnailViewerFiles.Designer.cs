@@ -57,9 +57,9 @@ namespace Kinovea.ScreenManager
             this.AutoScroll = true;
             this.Name = "ThumbnailViewerFiles";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel2MouseDown);
-            this.MouseEnter += new System.EventHandler(this.Panel2MouseEnter);
             this.Resize += new System.EventHandler(this.ThumbnailViewerFiles_Resize);
             this.ResumeLayout(false);
+
         }
     }
 }

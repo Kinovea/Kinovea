@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
         	ShowButtons();
-        	this.Focus();
+        	//this.Focus();
         }
         private void Controls_MouseLeave(object sender, EventArgs e)
         {
