@@ -16,7 +16,8 @@ namespace Kinovea.Services
     {
         Rename,
         Launch,
-        Delete
+        Delete,
+        Refresh
     }
 
     public enum ThumbnailViewerCameraCommands
