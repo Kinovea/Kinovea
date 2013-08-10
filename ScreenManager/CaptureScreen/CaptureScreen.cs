@@ -212,10 +212,6 @@ namespace Kinovea.ScreenManager
             // All the stopping and cleaning is implemented in BeforeClose.
             // It works while there is no cancellation possible.
         }
-        public override bool OnKeyPress(Keys key)
-        {
-            return view.OnKeyPress(key);
-        }
         public override void RefreshImage()
         {
             // Not implemented.
@@ -311,6 +307,10 @@ namespace Kinovea.ScreenManager
         public void View_OpenInExplorer(string path)
         {
             FilesystemHelper.LocateDirectory(path);
+        }
+        public void View_DeselectTool()
+        {
+            metadataManipulator.DeselectTool();
         }
         #endregion
         #endregion

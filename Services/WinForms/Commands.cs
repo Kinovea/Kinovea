@@ -53,4 +53,17 @@ namespace Kinovea.Services
         Close
     }
 
+    public enum CaptureScreenCommands
+    {
+        ToggleGrabbing,
+        ToggleRecording,
+        ResetView,
+        IncreaseZoom,
+        DecreaseZoom,
+        ResetZoom,
+        IncreaseDelay,
+        DecreaseDelay,
+        Close
+    }
+
 }

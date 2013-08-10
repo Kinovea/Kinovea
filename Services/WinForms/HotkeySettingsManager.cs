@@ -74,6 +74,18 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.DecreaseSpeedRound10, Keys.Shift | Keys.Down),
                     hk(PlayerScreenCommands.DecreaseSpeedRound25, Keys.Down),
                     hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
+                ),
+                new HotkeySettings("CaptureScreen",
+                    hk(CaptureScreenCommands.ToggleGrabbing, Keys.Space), 
+                    hk(CaptureScreenCommands.ToggleGrabbing, Keys.Return), 
+                    hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
+                    hk(CaptureScreenCommands.ResetView, Keys.Escape), 
+                    hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
+                    hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
+                    hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
+                    hk(CaptureScreenCommands.IncreaseDelay, Keys.Control | Keys.Up),
+                    hk(CaptureScreenCommands.DecreaseDelay, Keys.Control | Keys.Down), 
+                    hk(CaptureScreenCommands.Close, Keys.Control | Keys.F4) 
                 )
             };
 
