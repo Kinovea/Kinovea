@@ -33,7 +33,6 @@ using Kinovea.ScreenManager.Languages;
 using Kinovea.ScreenManager.Properties;
 using Kinovea.Services;
 using Kinovea.Video;
-using Microsoft.VisualBasic.FileIO;
 
 namespace Kinovea.ScreenManager
 {

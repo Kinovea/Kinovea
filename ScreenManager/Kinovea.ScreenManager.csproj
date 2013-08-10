@@ -155,7 +155,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="SharpVectorBindings">
       <HintPath>..\Refs\SharpVectorBindings.dll</HintPath>
     </Reference>
@@ -231,7 +230,6 @@
     </Compile>
     <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
-    <Compile Include="FilesystemHelper.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
