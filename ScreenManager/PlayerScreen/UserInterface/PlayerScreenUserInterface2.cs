@@ -1010,7 +1010,7 @@ namespace Kinovea.ScreenManager
             mnuCopyPic.Image = Properties.Resources.clipboard_block;
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
 			mnuCloseScreen.Image = Properties.Resources.film_close3;
-			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSetCaptureSpeed, mnuSavePic, mnuSendPic, mnuCopyPic, new ToolStripSeparator(), mnuCloseScreen });
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSavePic, mnuSendPic, mnuCopyPic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
