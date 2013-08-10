@@ -49,6 +49,7 @@ namespace Kinovea.ScreenManager
         private ThumbnailFile selectedThumbnail;
         private bool editing;
         private bool externalSelection;
+        private string lastSelectedFile;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -167,6 +168,9 @@ namespace Kinovea.ScreenManager
                 {
                     thumbnail.Populate(e.Summary);
                     thumbnail.Invalidate();
+                    
+                    if (thumbnail.FileName == lastSelectedFile)
+                        thumbnail.SetSelected();
                 }
             }
             
@@ -264,7 +268,7 @@ namespace Kinovea.ScreenManager
 
             Deselect(false);
             selectedThumbnail = tlvi;
-
+            lastSelectedFile = tlvi.FileName;
             if (!externalSelection)
             {
                 // Force focus so the hotkeys can be received.
