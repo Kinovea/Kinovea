@@ -84,11 +84,11 @@ namespace Kinovea.ScreenManager
         private ToolStripSeparator mnuSep = new ToolStripSeparator();
         private ToolStripMenuItem mnuRename = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDelete = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuOpenInExplorer = new ToolStripMenuItem();
         #endregion
         
         private bool m_bEditMode;
         
-        private static readonly int m_iFilenameMaxCharacters = 18;
         private static readonly int m_iTimerInterval = 700;
         private static readonly Pen m_PenSelected = new Pen(Color.DodgerBlue, 2);
         private static readonly Pen m_PenUnselected = new Pen(Color.Silver, 2);
@@ -135,12 +135,20 @@ namespace Kinovea.ScreenManager
         private void BuildContextMenus()
         {
             mnuLaunch.Image = Properties.Resources.film_go;
-            mnuLaunch.Click += new EventHandler(mnuLaunch_Click);
+            mnuLaunch.Click += mnuLaunch_Click;
             mnuRename.Image = Properties.Resources.rename;
-            mnuRename.Click += new EventHandler(mnuRename_Click);
+            mnuRename.Click += mnuRename_Click;
             mnuDelete.Image = Properties.Resources.delete;
-            mnuDelete.Click += new EventHandler(mnuDelete_Click);
-            popMenu.Items.AddRange(new ToolStripItem[] { mnuLaunch, mnuSep, mnuRename, mnuDelete});
+            mnuDelete.Click += mnuDelete_Click;
+            mnuOpenInExplorer.Click += mnuOpenInExplorer_Click;
+            mnuOpenInExplorer.Image = Properties.Resources.folder_new;
+            popMenu.Items.AddRange(new ToolStripItem[] { 
+                mnuLaunch, 
+                mnuSep, 
+                mnuRename, 
+                mnuDelete, 
+                new ToolStripSeparator(),
+                mnuOpenInExplorer });
             this.ContextMenuStrip = popMenu;
         }
         #endregion
@@ -273,6 +281,7 @@ namespace Kinovea.ScreenManager
             mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
             mnuDelete.Text = ScreenManagerLang.mnuThumbnailDelete;
+            mnuOpenInExplorer.Text = "Locate file in Windows Explorer";
             
             // The # char is just a placeholder for a space,
             // Because MeasureString doesn't support trailing spaces. 
@@ -561,7 +570,10 @@ namespace Kinovea.ScreenManager
                 this.Cursor = Cursors.Default;
             }
         }
-        
+        private void mnuOpenInExplorer_Click(object sender, EventArgs e)
+        {
+            FilesystemHelper.LocateFile(m_FileName);
+        }
         #endregion
         
         #region Edit mode
