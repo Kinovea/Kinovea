@@ -283,6 +283,9 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.ResetZoom:
                     // Not supported currently, will need to be a command at viewport level.
                     break;
+                case CaptureScreenCommands.OpenConfiguration:
+                    presenter.View_Configure();
+                    break;
                 case CaptureScreenCommands.IncreaseDelay:
                     sldrDelay.Value = sldrDelay.Value + 1;
                     sldrDelay.Invalidate();

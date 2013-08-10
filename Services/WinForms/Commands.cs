@@ -73,6 +73,7 @@ namespace Kinovea.Services
         ToggleGrabbing,
         ToggleRecording,
         ResetView,
+        OpenConfiguration,
         IncreaseZoom,
         DecreaseZoom,
         ResetZoom,
