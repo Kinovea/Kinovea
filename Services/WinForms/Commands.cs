@@ -12,6 +12,12 @@ namespace Kinovea.Services
         Delete
     }
 
+    public enum ThumbnailViewerCameraCommands
+    {
+        Rename,
+        Launch,
+    }
+
     public enum ThumbnailViewerContainerCommands
     {
         IncreaseSize,

@@ -178,7 +178,7 @@ namespace Kinovea.ScreenManager
 
             if (done >= thumbnails.Count && AfterLoad != null)
             {
-                if (thumbnails.Count > 0)
+                if (selectedThumbnail == null && thumbnails.Count > 0)
                     thumbnails[0].SetSelected();
 
                 AfterLoad(this, EventArgs.Empty);
