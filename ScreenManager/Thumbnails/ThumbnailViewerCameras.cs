@@ -30,7 +30,7 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    public partial class ThumbnailViewerCameras : UserControl
+    public partial class ThumbnailViewerCameras : KinoveaControl
     {
         #region Events
         public event ProgressChangedEventHandler ProgressChanged;
@@ -53,6 +53,7 @@ namespace Kinovea.ScreenManager
             //RefreshUICulture();
             this.Dock = DockStyle.Fill;
             refreshImages = true;
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerCamera");
         }
         
         #region Public methods
@@ -60,6 +61,7 @@ namespace Kinovea.ScreenManager
         {
             refreshImages = true;
             CameraTypeManager.DiscoverCameras();
+            this.Focus();
         }
         public void CamerasDiscovered(List<CameraSummary> summaries)
         {
@@ -82,72 +84,6 @@ namespace Kinovea.ScreenManager
                 return;
                 
              thumbnailControls[index].UpdateSummary(summary);
-        }
-        public bool OnKeyPress(Keys keyCode)
-        {
-            bool handled = false;
-            
-            if(selectedThumbnail == null)
-            {
-                if(thumbnailControls.Count > 0)
-                    thumbnailControls[0].SetSelected();
-                
-                return true;
-            }
-            
-            int index = IndexOf(selectedThumbnail.Summary.Identifier);
-            int row = index / columns;
-            int col = index - (row * columns);
-            
-            switch (keyCode)
-            {
-                case Keys.Left:
-                {
-                    if(col > 0)
-                        thumbnailControls[index - 1].SetSelected();
-                    handled = true;
-                    break;
-                }
-                case Keys.Right:
-                {
-                    if (col < columns - 1 && index + 1 < thumbnailControls.Count)
-                        thumbnailControls[index + 1].SetSelected();
-                    handled = true;
-                    break;
-                }
-                case Keys.Up:
-                {
-                    if (row > 0)
-                        thumbnailControls[index - columns].SetSelected();
-                    this.ScrollControlIntoView(selectedThumbnail);
-                    handled = true;
-                    break;
-                }
-                case Keys.Down:
-                {
-                    if (index + columns  < thumbnailControls.Count)
-                        thumbnailControls[index + columns].SetSelected();
-                    this.ScrollControlIntoView(selectedThumbnail);
-                    handled = true;
-                    break;
-                }
-                case Keys.Return:
-                {
-                    CameraTypeManager.LoadCamera(selectedThumbnail.Summary, -1);
-                    handled = true;
-                    break;
-                }   
-                case Keys.F2:
-                {
-                    // TODO: launch the alias dialog.
-                    handled = true;
-                    break;
-                }
-                default:
-                    break;
-            }
-            
-            return handled;
         }
         
         public void UpdateThumbnailsSize(ExplorerThumbSize newSize)
@@ -221,7 +157,7 @@ namespace Kinovea.ScreenManager
                     AfterLoad(this, EventArgs.Empty);
             }
 
-            if (thumbnailControls.Count > 0)
+            if (selectedThumbnail == null && thumbnailControls.Count > 0)
                 thumbnailControls[0].SetSelected();
             
             return updated;
@@ -329,6 +265,88 @@ namespace Kinovea.ScreenManager
         {
             ThumbnailCamera thumbnail = sender as ThumbnailCamera;
             CameraTypeManager.UpdatedCameraSummary(thumbnail.Summary);
+        }
+        #endregion
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (selectedThumbnail == null)
+            {
+                if (thumbnailControls.Count > 0 && (keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down))
+                {
+                    thumbnailControls[0].SetSelected();
+                    return true;
+                }
+                else
+                {
+                    return base.ProcessCmdKey(ref msg, keyData);
+                }
+            }
+
+            // Keyboard navigation (bypass the hotkey system).
+            int index = IndexOf(selectedThumbnail.Summary.Identifier);
+            int row = index / columns;
+            int col = index - (row * columns);
+            bool handled = false;
+
+            switch (keyData)
+            {
+                case Keys.Left:
+                    {
+                        if (col > 0)
+                            thumbnailControls[index - 1].SetSelected();
+                        handled = true;
+                        break;
+                    }
+                case Keys.Right:
+                    {
+                        if (col < columns - 1 && index + 1 < thumbnailControls.Count)
+                            thumbnailControls[index + 1].SetSelected();
+                        handled = true;
+                        break;
+                    }
+                case Keys.Up:
+                    {
+                        if (row > 0)
+                            thumbnailControls[index - columns].SetSelected();
+                        this.ScrollControlIntoView(selectedThumbnail);
+                        handled = true;
+                        break;
+                    }
+                case Keys.Down:
+                    {
+                        if (index + columns < thumbnailControls.Count)
+                            thumbnailControls[index + columns].SetSelected();
+                        this.ScrollControlIntoView(selectedThumbnail);
+                        handled = true;
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            return handled || base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #region Commands
+        protected override bool ExecuteCommand(int cmd)
+        {
+            ThumbnailViewerFilesCommands command = (ThumbnailViewerFilesCommands)cmd;
+
+            switch (command)
+            {
+                case ThumbnailViewerFilesCommands.Rename:
+                    if (selectedThumbnail != null)
+                        selectedThumbnail.StartRenaming();
+                    break;
+                case ThumbnailViewerFilesCommands.Launch:
+                    CameraTypeManager.LoadCamera(selectedThumbnail.Summary, -1);
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            return true;
         }
         #endregion
     }
