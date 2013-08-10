@@ -91,6 +91,7 @@ namespace Kinovea.Services
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Return), 
                     hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
                     hk(CaptureScreenCommands.ResetView, Keys.Escape), 
+                    hk(CaptureScreenCommands.OpenConfiguration, Keys.F12), 
                     hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
                     hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
                     hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
