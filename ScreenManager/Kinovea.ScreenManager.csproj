@@ -229,6 +229,7 @@
     <Compile Include="CaptureScreen\Views\ViewPort.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CommandProcessedEventArgs.cs" />
     <Compile Include="Commands\ScreenManager\CommandLoadCameraInScreen.cs" />
     <Compile Include="FilesystemHelper.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />

@@ -505,7 +505,6 @@ namespace Kinovea.ScreenManager
         	this.sldrSpeed.TabIndex = 15;
         	this.sldrSpeed.Value = 100;
         	this.sldrSpeed.ValueChanged += this.sldrSpeed_ValueChanged;
-        	this.sldrSpeed.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sldrSpeed_KeyDown);
         	// 
         	// lblSpeedTuner
         	// 

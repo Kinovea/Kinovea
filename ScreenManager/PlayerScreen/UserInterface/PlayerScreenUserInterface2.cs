@@ -46,7 +46,7 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-	public partial class PlayerScreenUserInterface : UserControl
+	public partial class PlayerScreenUserInterface : KinoveaControl
 	{
 		#region Imports Win32
 		[DllImport("winmm.dll", SetLastError = true)]
@@ -77,6 +77,7 @@ namespace Kinovea.ScreenManager
 		public event EventHandler<DrawingEventArgs> DrawingAdded;
 		public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
 		public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingDeleted;
+        public event EventHandler<CommandProcessedEventArgs> CommandProcessed;
 		#endregion
 		
 		#region Commands encapsulating domain logic implemented in the presenter.
@@ -354,6 +355,8 @@ namespace Kinovea.ScreenManager
 			m_DeselectionTimer.Tick += DeselectionTimer_OnTick;
 
 			EnableDisableActions(false);
+
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("PlayerScreen");
 		}
 		
 		#endregion
@@ -861,7 +864,7 @@ namespace Kinovea.ScreenManager
 				case Keys.Down:
 				case Keys.Up:
 					{
-						sldrSpeed_KeyDown(null, new KeyEventArgs(_keycode));
+						//sldrSpeed_KeyDown(null, new KeyEventArgs(_keycode));
 						bWasHandled = true;
 						break;
 					}
@@ -1246,9 +1249,110 @@ namespace Kinovea.ScreenManager
 			ResizeUpdate(true);
 		}
         #endregion
-		
-		#region Misc Events
-		private void btnClose_Click(object sender, EventArgs e)
+
+        #region Commands
+        protected override bool ExecuteCommand(int cmd)
+        {
+            // Command directly comming from hotkey: can propagate to the other screen.
+            return ExecuteCommand(cmd, true);
+        }
+
+        public bool ExecuteCommand(int cmd, bool propagate)
+        {
+            PlayerScreenCommands command = (PlayerScreenCommands)cmd;
+
+            switch (command)
+            {
+                case PlayerScreenCommands.TogglePlay:
+                    OnButtonPlay();
+                    break;
+                case PlayerScreenCommands.ResetView:
+                    DisablePlayAndDraw();
+				    DoInvalidate();
+                    break;
+                case PlayerScreenCommands.GotoPreviousImage:
+                    buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoPreviousImageForceLoop:
+                    if (m_iCurrentPosition <= m_iSelStart)
+                        buttonGotoLast_Click(null, EventArgs.Empty);
+                    else
+                        buttonGotoPrevious_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoFirstImage:
+                    buttonGotoFirst_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoPreviousKeyframe:
+                    GotoPreviousKeyframe();
+                    break;
+                case PlayerScreenCommands.GotoNextImage:
+                    buttonGotoNext_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoLastImage:
+                    buttonGotoLast_Click(null, EventArgs.Empty);
+                    break;
+                case PlayerScreenCommands.GotoNextKeyframe:
+                    GotoNextKeyframe();
+                    break;
+                case PlayerScreenCommands.IncreaseZoom:
+                    IncreaseDirectZoom();
+                    break;
+                case PlayerScreenCommands.DecreaseZoom:
+                    DecreaseDirectZoom();
+                    break;
+                case PlayerScreenCommands.ResetZoom:
+                    UnzoomDirectZoom(true);
+                    break;
+                case PlayerScreenCommands.IncreaseSyncAlpha:
+                    IncreaseSyncAlpha();
+                    break;
+                case PlayerScreenCommands.DecreaseSyncAlpha:
+                    DecreaseSyncAlpha();
+                    break;
+                case PlayerScreenCommands.AddKeyframe:
+                    AddKeyframe();
+                    break;
+                case PlayerScreenCommands.DeleteKeyframe:
+                    if (m_iActiveKeyFrameIndex >= 0)
+                        RemoveKeyframe(m_iActiveKeyFrameIndex);
+                    break;
+                case PlayerScreenCommands.DeleteDrawing:
+                    DeleteSelectedDrawing();
+                    break;
+                case PlayerScreenCommands.IncreaseSpeed1:
+                    ChangeSpeed(1);
+                    break;
+                case PlayerScreenCommands.IncreaseSpeedRound10:
+                    ChangeSpeed(10);
+                    break;
+                case PlayerScreenCommands.IncreaseSpeedRound25:
+                    ChangeSpeed(25);
+                    break;
+                case PlayerScreenCommands.DecreaseSpeed1:
+                    ChangeSpeed(-1);
+                    break;
+                case PlayerScreenCommands.DecreaseSpeedRound10:
+                    ChangeSpeed(-10);
+                    break;
+                case PlayerScreenCommands.DecreaseSpeedRound25:
+                    ChangeSpeed(-25);
+                    break;
+                case PlayerScreenCommands.Close:
+                    btnClose_Click(this, EventArgs.Empty);
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            if (propagate && CommandProcessed != null)
+                CommandProcessed(this, new CommandProcessedEventArgs(cmd));
+
+            return true;
+        }
+        #endregion
+
+        #region Misc Events
+        private void btnClose_Click(object sender, EventArgs e)
 		{
 			// If we currently are in DrawTime filter, we just close this and return to normal playback.
 			// Propagate to PlayerScreen which will report to ScreenManager.
@@ -1257,7 +1361,7 @@ namespace Kinovea.ScreenManager
 		private void PanelVideoControls_MouseEnter(object sender, EventArgs e)
 		{
 			// Set focus to enable mouse scroll
-			//panelVideoControls.Focus();
+			panelVideoControls.Focus();
 		}
 		#endregion
 		
@@ -1849,33 +1953,16 @@ namespace Kinovea.ScreenManager
 
 			UpdateSpeedLabel();
 		}
-		private void sldrSpeed_KeyDown(object sender, KeyEventArgs e)
-		{
-			// Increase/Decrease speed on UP/DOWN Arrows.
-			if (m_FrameServer.Loaded)
-			{
-				int jumpFactor = 25;
-				if( (ModifierKeys & Keys.Control) == Keys.Control)
-				{
-					jumpFactor = 1;
-				}
-				else if((ModifierKeys & Keys.Shift) == Keys.Shift)
-				{
-					jumpFactor = 10;
-				}
-			
-				if (e.KeyCode == Keys.Down)
-				{
-					sldrSpeed.ForceValue(jumpFactor * ((sldrSpeed.Value-1) / jumpFactor));
-					e.Handled = true;
-				}
-				else if (e.KeyCode == Keys.Up)
-				{
-					sldrSpeed.ForceValue(jumpFactor * ((sldrSpeed.Value / jumpFactor) + 1));
-					e.Handled = true;
-				}
-			}
-		}
+        private void ChangeSpeed(int change)
+        {
+            if (change == 0)
+                return;
+
+            if (change < 0)
+                sldrSpeed.ForceValue(change * ((sldrSpeed.Value - 1) / change));
+            else
+                sldrSpeed.ForceValue(change * ((sldrSpeed.Value / change) + 1));
+        }
 		private void lblSpeedTuner_DoubleClick(object sender, EventArgs e)
 		{
 			// Double click on the speed label : Back to 100%
@@ -3159,7 +3246,7 @@ namespace Kinovea.ScreenManager
 			
 			if(!bEditing)
 			{
-				//pbSurfaceScreen.Focus();
+				pbSurfaceScreen.Focus();
 			}
 			
 		}
@@ -3327,8 +3414,7 @@ namespace Kinovea.ScreenManager
 		#region PanelCenter Events
 		private void PanelCenter_MouseEnter(object sender, EventArgs e)
 		{
-			// Give focus to enable mouse scroll.
-			//panelCenter.Focus();
+			panelCenter.Focus();
 		}
 		private void PanelCenter_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -3351,7 +3437,7 @@ namespace Kinovea.ScreenManager
 		private void pnlThumbnails_MouseEnter(object sender, EventArgs e)
 		{
 			// Give focus to disable keyframe box editing.
-			//pnlThumbnails.Focus();
+			pnlThumbnails.Focus();
 		}
 		private void splitKeyframes_Resize(object sender, EventArgs e)
 		{
