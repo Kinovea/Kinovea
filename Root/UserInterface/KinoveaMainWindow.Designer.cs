@@ -30,44 +30,48 @@ namespace Kinovea.Root
         /// </summary>
         private void InitializeComponent()
         {
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KinoveaMainWindow));
-        	this.menuStrip = new System.Windows.Forms.MenuStrip();
-        	this.statusStrip = new System.Windows.Forms.StatusStrip();
-        	this.toolStrip = new System.Windows.Forms.ToolStrip();
-        	this.SuspendLayout();
-        	// 
-        	// menuStrip
-        	// 
-        	resources.ApplyResources(this.menuStrip, "menuStrip");
-        	this.menuStrip.Name = "menuStrip";
-        	// 
-        	// statusStrip
-        	// 
-        	resources.ApplyResources(this.statusStrip, "statusStrip");
-        	this.statusStrip.Name = "statusStrip";
-        	// 
-        	// toolStrip
-        	// 
-        	this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-        	resources.ApplyResources(this.toolStrip, "toolStrip");
-        	this.toolStrip.Name = "toolStrip";
-        	this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
-        	// 
-        	// KinoveaMainWindow
-        	// 
-        	resources.ApplyResources(this, "$this");
-        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.Controls.Add(this.toolStrip);
-        	this.Controls.Add(this.menuStrip);
-        	this.Controls.Add(this.statusStrip);
-        	this.IsMdiContainer = true;
-        	this.KeyPreview = true;
-        	this.MainMenuStrip = this.menuStrip;
-        	this.Name = "KinoveaMainWindow";
-        	this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-        	this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserInterface_FormClosing);
-        	this.ResumeLayout(false);
-        	this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KinoveaMainWindow));
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.SuspendLayout();
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(188)))), ((int)(((byte)(199)))), ((int)(((byte)(216)))));
+            resources.ApplyResources(this.menuStrip, "menuStrip");
+            this.menuStrip.Name = "menuStrip";
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(57)))), ((int)(((byte)(85)))));
+            resources.ApplyResources(this.statusStrip, "statusStrip");
+            this.statusStrip.Name = "statusStrip";
+            // 
+            // toolStrip
+            // 
+            this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(227)))), ((int)(((byte)(237)))));
+            resources.ApplyResources(this.toolStrip, "toolStrip");
+            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip.Name = "toolStrip";
+            // 
+            // KinoveaMainWindow
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.toolStrip);
+            this.Controls.Add(this.menuStrip);
+            this.Controls.Add(this.statusStrip);
+            this.IsMdiContainer = true;
+            this.KeyPreview = true;
+            this.MainMenuStrip = this.menuStrip;
+            this.Name = "KinoveaMainWindow";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserInterface_FormClosing);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion

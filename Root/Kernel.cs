@@ -37,6 +37,7 @@ using Kinovea.Services;
 using Kinovea.Updater;
 using Kinovea.Video;
 using Kinovea.Camera;
+using System.Drawing;
 
 namespace Kinovea.Root
 {
@@ -167,6 +168,7 @@ namespace Kinovea.Root
             {
                 // This level
                 m_StatusLabel = new ToolStripStatusLabel();
+                m_StatusLabel.ForeColor = Color.White;
                 _statusbar.Items.AddRange(new ToolStripItem[] { m_StatusLabel });
             }
         }
