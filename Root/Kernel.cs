@@ -127,7 +127,6 @@ namespace Kinovea.Root
             CheckLanguageMenu();
             CheckTimecodeMenu();
             
-            m_ScreenManager.Prepare();
             LogInitialConfiguration();
             
             if(CommandLineArgumentManager.Instance().InputFile != null)

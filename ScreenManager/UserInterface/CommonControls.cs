@@ -172,48 +172,6 @@ namespace Kinovea.ScreenManager
                 trkFrame.Invalidate();
             }
         }
-        public bool OnKeyPress(Keys key)
-        {
-            bool wasHandled = false;
-            switch (key)
-            {
-                case Keys.Space:
-                case Keys.Return:
-                {
-                    Play();
-                    wasHandled = true;
-                    break;
-                }
-                case Keys.Left:
-                {
-                    Previous();
-                    wasHandled = true;
-                    break;
-                }
-                case Keys.Right:
-                {
-                    Next();
-                    wasHandled = true;
-                    break;
-                }
-                case Keys.End:
-                {
-                    Last();
-                    wasHandled = true;
-                    break;
-                }
-                case Keys.Home:
-                {
-                    First();
-                    wasHandled = true;
-                    break;
-                }
-                default:
-                    break;
-            }
-            
-            return wasHandled;
-		}
         public void UpdateSyncPosition(long position)
         {
             trkFrame.UpdateSyncPointMarker(position);

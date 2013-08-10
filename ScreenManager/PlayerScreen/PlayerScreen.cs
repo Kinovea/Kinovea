@@ -365,6 +365,7 @@ namespace Kinovea.ScreenManager
 
             switch (command)
             {
+                // Forwarded commands. (all others are ignored).
                 case PlayerScreenCommands.TogglePlay:
                 case PlayerScreenCommands.ResetView:
                 case PlayerScreenCommands.GotoPreviousImage:
@@ -374,6 +375,7 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.GotoNextImage:
                 case PlayerScreenCommands.GotoLastImage:
                 case PlayerScreenCommands.GotoNextKeyframe:
+                case PlayerScreenCommands.GotoSyncPoint:
                 case PlayerScreenCommands.AddKeyframe:
                     m_PlayerScreenUI.ExecuteCommand(cmd, false);
                     break;

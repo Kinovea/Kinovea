@@ -45,6 +45,8 @@ namespace Kinovea.Services
         GotoLastImage,
         GotoNextKeyframe,
 
+        GotoSyncPoint,
+
         IncreaseZoom,
         DecreaseZoom,
         ResetZoom,
