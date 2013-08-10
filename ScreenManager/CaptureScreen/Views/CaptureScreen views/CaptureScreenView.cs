@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
     /// This is the main implementation of ICaptureScreenView.
     /// This implementation is used in the actual capture screens.
     /// </summary>
-    public partial class CaptureScreenView : UserControl, ICaptureScreenView
+    public partial class CaptureScreenView : KinoveaControl, ICaptureScreenView
     {
         #region Members
         private CaptureScreen presenter;
@@ -45,6 +45,7 @@ namespace Kinovea.ScreenManager
             this.presenter = presenter;
             ToggleCapturedVideosPanel();
             sldrDelay.ValueChanged += SldrDelay_ValueChanged;
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("CaptureScreen");
         }
 
         #region Public methods
@@ -63,11 +64,6 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             capturedFilesView.RefreshUICulture();
-        }
-        
-        public bool OnKeyPress(Keys key)
-        {
-            return false;
         }
         
         public void AddImageDrawing(string filename, bool svg)
@@ -89,6 +85,7 @@ namespace Kinovea.ScreenManager
         {
             pnlViewport.Controls.Add(viewport);
             viewport.Dock = DockStyle.Fill;
+            viewport.MouseEnter += (s, e) => { pnlViewport.Focus(); };
         }
         public void SetCapturedFilesView(CapturedFilesView capturedFilesView)
         {
@@ -260,7 +257,50 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-        
-        
+
+        #region Commands
+        protected override bool ExecuteCommand(int cmd)
+        {
+            CaptureScreenCommands command = (CaptureScreenCommands)cmd;
+
+            switch (command)
+            {
+                case CaptureScreenCommands.ToggleGrabbing:
+                    presenter.View_ToggleGrabbing();
+                    break;
+                case CaptureScreenCommands.ToggleRecording:
+                    presenter.View_ToggleRecording(fnbVideo.Filename);
+                    break;
+                case CaptureScreenCommands.ResetView:
+                    presenter.View_DeselectTool();
+                    break;
+                case CaptureScreenCommands.IncreaseZoom:
+                    // Not supported currently, will need to be a command at viewport level.
+                    break;
+                case CaptureScreenCommands.DecreaseZoom:
+                    // Not supported currently, will need to be a command at viewport level.
+                    break;
+                case CaptureScreenCommands.ResetZoom:
+                    // Not supported currently, will need to be a command at viewport level.
+                    break;
+                case CaptureScreenCommands.IncreaseDelay:
+                    sldrDelay.Value = sldrDelay.Value + 1;
+                    sldrDelay.Invalidate();
+                    break;
+                case CaptureScreenCommands.DecreaseDelay:
+                    sldrDelay.Value = sldrDelay.Value - 1;
+                    sldrDelay.Invalidate();
+                    break;
+                case CaptureScreenCommands.Close:
+                    presenter.View_Close();
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }

@@ -164,6 +164,10 @@ namespace Kinovea.ScreenManager
             metadata.DeleteHitDrawing();
         }
         
+        public void DeselectTool()
+        {
+            screenToolManager.SetActiveTool(null);
+        }
         
         private void CreateNewDrawing(Point imagePoint, ImageToViewportTransformer transformer)
         {

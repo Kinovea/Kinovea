@@ -30,7 +30,6 @@ namespace Kinovea.ScreenManager
         void FullScreen(bool fullScreen);
         void RefreshUICulture();
         
-        bool OnKeyPress(Keys key);
         void AddImageDrawing(string filename, bool svg);
         void AddImageDrawing(Bitmap bmp);
         

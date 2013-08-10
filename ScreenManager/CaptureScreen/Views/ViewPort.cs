@@ -69,11 +69,22 @@ namespace Kinovea.ScreenManager
             ForceZoomValue();
         }
         
+        public void IncreaseZoom()
+        {
+            zoomHelper.Increase();
+            AfterZoomChanged(displayRectangle.Center());
+        }
+
+        public void DecreaseZoom()
+        {
+            zoomHelper.Decrease();
+            AfterZoomChanged(displayRectangle.Center());
+        }
+
         public void ResetZoom()
         {
             zoomHelper.Increase();
-            RecomputeDisplayRectangle(imageSize, displayRectangle, displayRectangle.Center());
-            ToastZoom();
+            AfterZoomChanged(displayRectangle.Center());
         }
         
         public void SetContextMenu(ContextMenuStrip menuStrip)
@@ -235,8 +246,13 @@ namespace Kinovea.ScreenManager
                 zoomHelper.Increase();
             else
                 zoomHelper.Decrease();
-            
-            RecomputeDisplayRectangle(imageSize, displayRectangle, e.Location);
+
+            AfterZoomChanged(e.Location);
+        }
+
+        private void AfterZoomChanged(Point location)
+        {
+            RecomputeDisplayRectangle(imageSize, displayRectangle, location);
             ToastZoom();
         }
         

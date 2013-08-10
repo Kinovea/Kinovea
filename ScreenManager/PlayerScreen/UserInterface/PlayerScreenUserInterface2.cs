@@ -737,152 +737,6 @@ namespace Kinovea.ScreenManager
 				DoInvalidate();
 			}
 		}
-		public bool OnKeyPress(Keys _keycode)
-		{
-		    if (!m_FrameServer.Loaded)
-		        return false;
-			
-		    bool bWasHandled = false;
-			
-			// Note: All keystrokes handled here must first be registered in ScreenManager's PrefilterMessage.
-			switch (_keycode)
-			{
-				case Keys.Space:
-				case Keys.Return:
-					{
-						OnButtonPlay();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Escape:
-					{
-						DisablePlayAndDraw();
-						DoInvalidate();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Left:
-					{
-						if ((ModifierKeys & Keys.Control) == Keys.Control)
-						{
-							// Previous keyframe
-							GotoPreviousKeyframe();
-						}
-						else
-						{
-							if (((ModifierKeys & Keys.Shift) == Keys.Shift) && m_iCurrentPosition <= m_iSelStart)
-							{
-								// Shift + Left on first = loop backward.
-								buttonGotoLast_Click(null, EventArgs.Empty);
-							}
-							else
-							{
-								// Previous frame
-								buttonGotoPrevious_Click(null, EventArgs.Empty);
-							}
-						}
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Right:
-					{
-						if ((ModifierKeys & Keys.Control) == Keys.Control)
-						{
-							// Next keyframe
-							GotoNextKeyframe();
-						}
-						else
-						{
-							// Next frame
-							buttonGotoNext_Click(null, EventArgs.Empty);
-						}
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Add:
-					{
-			            if((ModifierKeys & Keys.Alt) == Keys.Alt)
-			                IncreaseSyncAlpha();
-			            else if ((ModifierKeys & Keys.Control) == Keys.Control)
-                            IncreaseDirectZoom();
-						
-			            bWasHandled = true;
-						break;
-					}
-				case Keys.Subtract:
-					{
-						if((ModifierKeys & Keys.Alt) == Keys.Alt)
-			                DecreaseSyncAlpha();
-			            else if ((ModifierKeys & Keys.Control) == Keys.Control)
-                            DecreaseDirectZoom();
-						
-			            bWasHandled = true;
-						break;
-					}
-				case Keys.F6:
-					{
-						AddKeyframe();
-						bWasHandled = true;
-						break;
-					}
-				case Keys.F7:
-					{
-						// Unused.
-						break;
-					}
-				case Keys.Delete:
-					{
-						if ((ModifierKeys & Keys.Control) == Keys.Control)
-						{
-							// Remove Keyframe
-							if (m_iActiveKeyFrameIndex >= 0)
-							{
-								RemoveKeyframe(m_iActiveKeyFrameIndex);
-							}
-						}
-						else
-						{
-							// Remove selected Drawing
-							// Note: Should only work if the Drawing is currently being moved...
-							DeleteSelectedDrawing();
-						}
-						bWasHandled = true;
-						break;
-					}
-				case Keys.End:
-					{
-						buttonGotoLast_Click(null, EventArgs.Empty);
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Home:
-					{
-						buttonGotoFirst_Click(null, EventArgs.Empty);
-						bWasHandled = true;
-						break;
-					}
-				case Keys.Down:
-				case Keys.Up:
-					{
-						//sldrSpeed_KeyDown(null, new KeyEventArgs(_keycode));
-						bWasHandled = true;
-						break;
-					}
-			    case Keys.NumPad0:
-                    {
-			            if ((ModifierKeys & Keys.Control) == Keys.Control)
-			            {
-			                UnzoomDirectZoom(true);
-			                bWasHandled = true;
-			            }
-			            break;
-			        }
-				default:
-					break;
-			}
-
-			return bWasHandled;
-		}
 		public void AspectRatioChanged()
 		{
 			m_FrameServer.Metadata.ImageSize = m_FrameServer.VideoReader.Info.AspectRatioSize;
@@ -1259,6 +1113,9 @@ namespace Kinovea.ScreenManager
 
         public bool ExecuteCommand(int cmd, bool propagate)
         {
+            if (!m_FrameServer.Loaded)
+                return false;
+
             PlayerScreenCommands command = (PlayerScreenCommands)cmd;
 
             switch (command)

@@ -994,7 +994,7 @@ namespace Kinovea.ScreenManager
             if(wasHandled)
                 return true;
             
-            switch (keyCode)
+            /*switch (keyCode)
             {
                 case Keys.Delete:
                 case Keys.Add:
@@ -1088,7 +1088,7 @@ namespace Kinovea.ScreenManager
                     }
                 default:
                     break;
-            }
+            }*/
 
             return wasHandled;
         }

@@ -338,10 +338,6 @@ namespace Kinovea.ScreenManager
         public override void PreferencesUpdated()
         {
         }
-        public override bool OnKeyPress(Keys _key)
-        {
-        	return m_PlayerScreenUI.OnKeyPress(_key);
-        }
         public override void RefreshImage()
         {
             m_PlayerScreenUI.RefreshImage();
