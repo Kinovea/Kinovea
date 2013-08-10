@@ -220,6 +220,9 @@ namespace Kinovea.ScreenManager
                 if(AfterLoad != null)
                     AfterLoad(this, EventArgs.Empty);
             }
+
+            if (thumbnailControls.Count > 0)
+                thumbnailControls[0].SetSelected();
             
             return updated;
         }
