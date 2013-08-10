@@ -1,3 +1,4 @@
+#region license
 /*
 Copyright © Joan Charmant 2008.
 joan.charmant@gmail.com
@@ -15,9 +16,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
-
- */
-
+*/
+#endregion
 
 using System;
 using System.Collections;
@@ -35,6 +35,7 @@ using Kinovea.Camera;
 using Kinovea.FileBrowser.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
+using System.Drawing;
 
 namespace Kinovea.FileBrowser
 {
@@ -55,7 +56,8 @@ namespace Kinovea.FileBrowser
         private ToolStripMenuItem mnuDeleteShortcut = new ToolStripMenuItem();
         private ImageList cameraIcons = new ImageList();
         private List<CameraSummary> cameraSummaries = new List<CameraSummary>();
-        private bool programmaticTabChange = false;
+        private bool programmaticTabChange;
+        private bool externalSelection;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -63,6 +65,7 @@ namespace Kinovea.FileBrowser
         public FileBrowserUserInterface()
         {
             InitializeComponent();
+            
             lvCameras.SmallImageList = cameraIcons;
             btnAddShortcut.Parent = lblFavFolders;
             btnDeleteShortcut.Parent = lblFavFolders;
@@ -81,6 +84,7 @@ namespace Kinovea.FileBrowser
             DelegatesPool dp = DelegatesPool.Instance();
             dp.ChangeFileExplorerTab = DoChangeFileExplorerTab;
             NotificationCenter.RefreshFileExplorer += NotificationCenter_RefreshFileExplorer;
+            NotificationCenter.FileSelected += NotificationCenter_FileSelected;
             
             // Take the list of shortcuts from the prefs and load them.
             ReloadShortcuts();
@@ -139,6 +143,33 @@ namespace Kinovea.FileBrowser
         private void NotificationCenter_RefreshFileExplorer(object sender, RefreshFileExplorerEventArgs e)
         {
             DoRefreshFileList(e.RefreshThumbnails);
+        }
+        private void NotificationCenter_FileSelected(object sender, FileSelectedEventArgs e)
+        {
+            if (sender == this)
+                return;
+
+            if (tabControl.SelectedIndex == 2)
+                return;
+
+            // Find the file and select it here.
+            ListView lv = tabControl.SelectedIndex == 0 ? lvExplorer : lvShortcuts;
+            lv.SelectedItems.Clear();
+
+            if (string.IsNullOrEmpty(e.File))
+                return;
+
+
+            foreach (ListViewItem item in lv.Items)
+            {
+                if ((string)item.Tag == e.File)
+                {
+                    externalSelection = true;
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    break;
+                }
+            }
         }
         private void DoRefreshFileList(bool refreshThumbnails)
         {
@@ -257,7 +288,7 @@ namespace Kinovea.FileBrowser
         private void etExplorer_MouseEnter(object sender, EventArgs e)
         {
             // Give focus to enable mouse scroll.
-            etExplorer.Focus();
+            //etExplorer.Focus();
         }
         private void etExplorer_MouseDown(object sender, MouseEventArgs e)
         {
@@ -294,7 +325,7 @@ namespace Kinovea.FileBrowser
         private void lvExplorer_MouseEnter(object sender, EventArgs e)
         {
             // Give focus to enable mouse scroll.
-            lvExplorer.Focus();
+            //lvExplorer.Focus();
         }
         #endregion
         
@@ -374,7 +405,7 @@ namespace Kinovea.FileBrowser
         private void etShortcuts_MouseEnter(object sender, EventArgs e)
         {
             // Give focus to enable mouse scroll.
-            etShortcuts.Focus();	
+            //etShortcuts.Focus();	
         }
         private void etShortcuts_MouseDown(object sender, MouseEventArgs e)
         {
@@ -402,7 +433,7 @@ namespace Kinovea.FileBrowser
         private void lvShortcuts_MouseEnter(object sender, EventArgs e)
         {
             // Give focus to enable mouse scroll.
-            lvShortcuts.Focus();
+            //lvShortcuts.Focus();
         }
         #endregion
         
@@ -520,11 +551,6 @@ namespace Kinovea.FileBrowser
             DoRefreshFileList(true);
         }
         
-        private void _tabControl_KeyDown(object sender, KeyEventArgs e)
-        {
-            // Discard keyboard event as they interfere with player functions
-            e.Handled = true;
-        }
         private void UpdateFileList(CShItem folder, ListView listView, bool refreshThumbnails, bool shortcuts)
         {
             // Update a file list with the given folder.
@@ -666,6 +692,31 @@ namespace Kinovea.FileBrowser
             wizard.Dispose();
             
             NotificationCenter.RaiseEnableKeyboardHandler(this);
+        }
+
+        private void listViews_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListView lv = sender as ListView;
+            if (lv == null || lv.SelectedItems.Count != 1)
+                return;
+
+            string file = lv.SelectedItems[0].Tag as string;
+            if (string.IsNullOrEmpty(file))
+                return;
+
+            foreach (ListViewItem item in lv.Items)
+            {
+                item.BackColor = Color.White;
+                item.ForeColor = Color.Black;
+            }
+
+            lv.SelectedItems[0].BackColor = SystemColors.Highlight;
+            lv.SelectedItems[0].ForeColor = SystemColors.HighlightText;
+
+            if (!externalSelection)
+                NotificationCenter.RaiseFileSelected(this, file);
+
+            externalSelection = false;
         }
     }
 }

@@ -58,5 +58,12 @@ namespace Kinovea.Services
             if(EnableKeyboardHandler != null)
                 EnableKeyboardHandler(sender, EventArgs.Empty);
         }
+
+        public static EventHandler<FileSelectedEventArgs> FileSelected;
+        public static void RaiseFileSelected(object sender, string file)
+        {
+            if (FileSelected != null)
+                FileSelected(sender, new FileSelectedEventArgs(file));
+        }
     }
 }

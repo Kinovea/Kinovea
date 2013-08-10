@@ -33,7 +33,7 @@ namespace Kinovea.ScreenManager
     /// Host the current thumbnail viewer and exposes some common controls to change size,
     /// type of content, etc.
     /// </summary>
-    public partial class ThumbnailViewerContainer : UserControl
+    public partial class ThumbnailViewerContainer : KinoveaControl
     {
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
         
@@ -65,6 +65,8 @@ namespace Kinovea.ScreenManager
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
             CameraTypeManager.CameraImageReceived += CameraTypeManager_CameraImageReceived;
+
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerContainer");
         }
 
         #region Public methods
@@ -89,46 +91,6 @@ namespace Kinovea.ScreenManager
                 viewerFiles.CurrentDirectoryChanged(files);
         }
         
-        /*public void DisplayThumbnailsFiles(bool shortcuts, List<string> files, bool refresh)
-        {
-            // Keep track of the files since we'll have to bring them back.
-            this.files = files;
-            
-            if(!refresh)
-                return;
-            
-            /*if (files.Count > 0)
-            {
-            	this.Height = Height - 20; // margin for cosmetic
-                
-            	// We keep the Kinovea logo until there is at least 1 thumbnail to show.
-            	// After that we never display it again.
-                pbLogo.Visible = false;
-            }
-            else
-            {
-                thumbnailViewerContainer.Height = 1;
-            }* /
-
-            if(this.Visible)
-            {
-                this.Cursor = Cursors.WaitCursor;
-                DisplayThumbnails(_fileNames);
-                this.Cursor = Cursors.Default;
-            }
-
-            if (thumbnailViewerContainer.Visible)
-            {
-                
-            }
-            else
-            {
-                // Thumbnail pane was hidden to show player screen
-                // Then we changed folder and we don't have anything to show.
-                // Let's clean older thumbnails now.
-                thumbnailViewerContainer.CleanupThumbnails();
-            }
-        }*/
         public void HideContent()
         {
             this.Visible = false;
@@ -154,52 +116,6 @@ namespace Kinovea.ScreenManager
                 viewerCameras.Unhide();
                 
             this.Cursor = Cursors.Default;
-        }
-        public void CleanupThumbnails()
-        {
-            /*selectedThumbnail = null;
-            foreach(ThumbListViewItem tlvi in thumbnails)
-            tlvi.DisposeImages();
-            thumbnails.Clear();
-            splitResizeBar.Panel2.Controls.Clear();*/
-        }
-        public bool OnKeyPress(Keys keyCode)
-        {
-            bool handled = false;
-            
-            switch(keyCode)
-            {
-                case Keys.Add:
-                {
-                    if ((ModifierKeys & Keys.Control) == Keys.Control)
-                    {
-                        sizeSelector.Increase();
-                        handled = true;
-                    }
-                    
-                    break;
-                }
-                case Keys.Subtract:
-                {
-                    if ((ModifierKeys & Keys.Control) == Keys.Control)
-                    {
-                        sizeSelector.Decrease();
-                        handled = true;
-                    }
-                    
-                    break;
-                }
-            }
-            
-            if(handled)
-                return true;
-                
-            if (currentContent == ThumbnailViewerContent.Files)
-                return viewerFiles.OnKeyPress(keyCode);
-            else if (currentContent == ThumbnailViewerContent.Shortcuts)
-                return viewerShortcuts.OnKeyPress(keyCode);
-            else
-                return viewerCameras.OnKeyPress(keyCode);
         }
         #endregion
         
@@ -418,6 +334,37 @@ namespace Kinovea.ScreenManager
         {
             // TODO: not necessarily the final place for this call.
             CameraTypeManager.DiscoverCameras();
+        }
+        #endregion
+
+        #region Commands
+        protected override bool ExecuteCommand(int cmd)
+        {
+            ThumbnailViewerContainerCommands command = (ThumbnailViewerContainerCommands)cmd;
+
+            switch (command)
+            {
+                case ThumbnailViewerContainerCommands.DecreaseSize:
+                    CommandDecreaseSize();
+                    break;
+                case ThumbnailViewerContainerCommands.IncreaseSize:
+                    CommandIncreaseSize();
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            return true;
+        }
+
+        private void CommandIncreaseSize()
+        {
+            sizeSelector.Increase();
+        }
+
+        private void CommandDecreaseSize()
+        {
+            sizeSelector.Decrease();
         }
         #endregion
     }

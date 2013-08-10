@@ -66,7 +66,7 @@ namespace Kinovea.ScreenManager
             // 
             // splitMain.Panel1
             // 
-            this.splitMain.Panel1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.splitMain.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(237)))), ((int)(((byte)(244)))));
             this.splitMain.Panel1.Controls.Add(this.progressBar);
             this.splitMain.Size = new System.Drawing.Size(553, 387);
             this.splitMain.SplitterDistance = 30;
@@ -92,6 +92,7 @@ namespace Kinovea.ScreenManager
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.SplitContainer splitMain;

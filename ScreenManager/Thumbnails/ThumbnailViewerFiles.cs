@@ -33,13 +33,13 @@ namespace Kinovea.ScreenManager
     /// A thumbnail viewer for files.
     /// Used for explorer and shortcuts content.
     /// </summary>
-    public partial class ThumbnailViewerFiles : UserControl
+    public partial class ThumbnailViewerFiles : KinoveaControl
     {
         public event EventHandler<FileLoadAskedEventArgs> FileLoadAsked;
         public event ProgressChangedEventHandler ProgressChanged;
         public event EventHandler BeforeLoad;
         public event EventHandler AfterLoad;
-        
+
         #region Members
         private int columns = (int)ExplorerThumbSize.Large;
         private object locker = new object();
@@ -48,6 +48,7 @@ namespace Kinovea.ScreenManager
         private List<string> files;
         private ThumbnailFile selectedThumbnail;
         private bool editing;
+        private bool externalSelection;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -58,8 +59,12 @@ namespace Kinovea.ScreenManager
             InitializeComponent();
             RefreshUICulture();
             this.Dock = DockStyle.Fill;
+
+            NotificationCenter.FileSelected += NotificationCenter_FileSelected;
+
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("ThumbnailViewerFiles");
         }
-        
+
         #region Public methods
         public void CurrentDirectoryChanged(List<string> files)
         {
@@ -77,83 +82,14 @@ namespace Kinovea.ScreenManager
         public void Clear()
         {
             selectedThumbnail = null;
+            NotificationCenter.RaiseFileSelected(this, null);
             foreach(ThumbnailFile tlvi in thumbnails)
                 tlvi.DisposeImages();
             
             thumbnails.Clear();
             this.Controls.Clear();
         }
-        public bool OnKeyPress(Keys keyCode)
-        {
-            bool handled = false;
-            
-            if(selectedThumbnail == null)
-            {
-                if(thumbnails.Count > 0)
-                    thumbnails[0].SetSelected();
-                
-                return true;
-            }
-            
-            if(editing)
-                return true;
-                
-            int index = (int)selectedThumbnail.Tag;
-            int row = index / columns;
-            int col = index - (row * columns);
-            
-            switch (keyCode)
-            {
-                case Keys.Left:
-                {
-                    if(col > 0)
-                        thumbnails[index - 1].SetSelected();
-                    handled = true;
-                    break;
-                }
-                case Keys.Right:
-                {
-                    if (col < columns - 1 && index + 1 < thumbnails.Count)
-                        thumbnails[index + 1].SetSelected();
-                    handled = true;
-                    break;
-                }
-                case Keys.Up:
-                {
-                    if (row > 0)
-                        thumbnails[index - columns].SetSelected();
-                    this.ScrollControlIntoView(selectedThumbnail);
-                    handled = true;
-                    break;
-                }
-                case Keys.Down:
-                {
-                    if (index + columns  < thumbnails.Count)
-                        thumbnails[index + columns].SetSelected();
-                    this.ScrollControlIntoView(selectedThumbnail);
-                    handled = true;
-                    break;
-                }
-                case Keys.Return:
-                {
-                    if (!selectedThumbnail.IsError && FileLoadAsked != null)
-                        FileLoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FileName, -1));
-                    handled = true;
-                    break;
-                }   
-                case Keys.F2:
-                {
-                    if(!selectedThumbnail.IsError)
-                        selectedThumbnail.StartRenaming();
-                    handled = true;
-                    break;
-                }
-                default:
-                    break;
-            }
-            
-            return handled;
-        }
+
         public void RefreshUICulture()
         {
             foreach(ThumbnailFile tlvi in thumbnails)
@@ -168,7 +104,7 @@ namespace Kinovea.ScreenManager
             PopulateViewer();
         }
         #endregion
-        
+
         #region Private methods
         
         #region Organize and Display
@@ -282,6 +218,28 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        private void NotificationCenter_FileSelected(object sender, FileSelectedEventArgs e)
+        {
+            if (sender == this)
+                return;
+
+            if(string.IsNullOrEmpty(e.File))
+            {
+                Deselect(false);
+                return;
+            }
+
+            foreach (ThumbnailFile tlvi in thumbnails)
+            {
+                if (tlvi.FileName == e.File)
+                {
+                    externalSelection = true;
+                    tlvi.SetSelected();
+                    break;
+                }
+            }
+        }
+
         #region Thumbnails items events handlers
         private void ThumbListViewItem_LaunchVideo(object sender, EventArgs e)
         {
@@ -295,14 +253,27 @@ namespace Kinovea.ScreenManager
         {
             CancelEditMode();
             ThumbnailFile tlvi = sender as ThumbnailFile;
-            
-            if(tlvi != null)
+
+            if (tlvi == null || selectedThumbnail == tlvi)
+                return;
+
+            Deselect(false);
+            selectedThumbnail = tlvi;
+
+            if (!externalSelection)
             {
-                if (selectedThumbnail != null && selectedThumbnail != tlvi )
-                    selectedThumbnail.SetUnselected();
-            
-                selectedThumbnail = tlvi;
+                // Force focus so the hotkeys can be received.
+                // Select the control so the whole page doesn't jump up to the top when we set focus.
+                tlvi.Select();
+                this.Focus();
+                NotificationCenter.RaiseFileSelected(this, tlvi.FileName);
             }
+            else
+            {
+                this.ScrollControlIntoView(tlvi);
+            }
+
+            externalSelection = false;
         }
         private void ThumbListViewItem_FileNameEditing(object sender, EditingEventArgs e)
         {
@@ -322,13 +293,20 @@ namespace Kinovea.ScreenManager
         private void Panel2MouseDown(object sender, MouseEventArgs e)
         {
             // Clicked off nowhere.
-            if(selectedThumbnail != null)
-            {
-                selectedThumbnail.SetUnselected();
-                selectedThumbnail = null;
-            }
-            
+            Deselect(true);
             CancelEditMode();
+        }
+
+        private void Deselect(bool raiseEvent)
+        {
+            if (selectedThumbnail == null)
+                return;
+            
+            selectedThumbnail.SetUnselected();
+            selectedThumbnail = null;
+
+            if (raiseEvent)
+                NotificationCenter.RaiseFileSelected(this, null);
         }
         
         private void CancelEditMode()
@@ -343,21 +321,7 @@ namespace Kinovea.ScreenManager
                     tlvi.CancelEditMode();
             }	
         }
-        private void Panel2MouseEnter(object sender, EventArgs e)
-        {
-            // Give focus to enbale mouse scroll
-            if (editing)
-                return;
-
-            // Focus() will jump the panel back to the currently selected control, or the first one if none is selected.
-            // We must select one manually to avoid jumping to top.
-            ThumbnailFile first = thumbnails.First(t => t.Top >= 0);
-            first.Select();
-            
-            this.Focus();
-        }
         #endregion
-        
         
         private void ThumbnailViewerFiles_Resize(object sender, EventArgs e)
         {
@@ -365,5 +329,112 @@ namespace Kinovea.ScreenManager
             if(this.Visible)
                 DoLayout();
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            log.DebugFormat("ProcessCmdKey of ThumbnailViewerFiles. Keys:{0}", keyData.ToString());
+
+            if (editing)
+                return base.ProcessCmdKey(ref msg, keyData);
+
+            if (selectedThumbnail == null)
+            {
+                if (thumbnails.Count > 0 && (keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down))
+                {
+                    thumbnails[0].SetSelected();
+                    return true;
+                }
+                else
+                {
+                    return base.ProcessCmdKey(ref msg, keyData);
+                }
+            }
+
+            // Keyboard navigation.
+            int index = (int)selectedThumbnail.Tag;
+            int row = index / columns;
+            int col = index - (row * columns);
+            bool handled = false;
+
+            switch (keyData)
+            {
+                case Keys.Left:
+                    {
+                        if (col > 0)
+                            thumbnails[index - 1].SetSelected();
+                        handled = true;
+                        break;
+                    }
+                case Keys.Right:
+                    {
+                        if (col < columns - 1 && index + 1 < thumbnails.Count)
+                            thumbnails[index + 1].SetSelected();
+                        handled = true;
+                        break;
+                    }
+                case Keys.Up:
+                    {
+                        if (row > 0)
+                            thumbnails[index - columns].SetSelected();
+                        this.ScrollControlIntoView(selectedThumbnail);
+                        handled = true;
+                        break;
+                    }
+                case Keys.Down:
+                    {
+                        if (index + columns < thumbnails.Count)
+                            thumbnails[index + columns].SetSelected();
+                        this.ScrollControlIntoView(selectedThumbnail);
+                        handled = true;
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            return handled || base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #region Commands
+        protected override bool ExecuteCommand(int cmd)
+        {
+            ThumbnailViewerFilesCommands command = (ThumbnailViewerFilesCommands)cmd;
+
+            switch (command)
+            {
+                case ThumbnailViewerFilesCommands.Rename:
+                    CommandRename();
+                    break;
+                case ThumbnailViewerFilesCommands.Launch:
+                    CommandLaunch();
+                    break;
+                case ThumbnailViewerFilesCommands.Delete:
+                    CommandDelete();
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            return true;
+        }
+
+        private void CommandRename()
+        {
+            if (!selectedThumbnail.IsError)
+                selectedThumbnail.StartRenaming();
+        }
+
+        private void CommandLaunch()
+        {
+            if (!selectedThumbnail.IsError && FileLoadAsked != null)
+                FileLoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FileName, -1));
+        }
+        
+        private void CommandDelete()
+        {
+            if (!selectedThumbnail.IsError)
+                selectedThumbnail.Delete();
+        }
+        #endregion
     }
 }

@@ -99,6 +99,7 @@ namespace Kinovea.ScreenManager
         private static readonly SolidBrush m_BrushQuickPreviewInactive = new SolidBrush(Color.FromArgb(128, Color.LightSteelBlue));
         private static readonly SolidBrush m_BrushDuration = new SolidBrush(Color.FromArgb(150, Color.Black));
         private Pen m_PenDuration = new Pen(m_BrushDuration);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Construction & initialization
@@ -125,9 +126,11 @@ namespace Kinovea.ScreenManager
         {
             // Make the editbox follow the same layout pattern than the label.
             // except that its minimal height is depending on font.
+            tbFileName.Font = lblFileName.Font;
             tbFileName.Left = lblFileName.Left;
             tbFileName.Width = lblFileName.Width;
             tbFileName.Top = this.Height - tbFileName.Height;
+            //tbFileName.Height = lblFileName.Height;
             tbFileName.Anchor = lblFileName.Anchor;
         }
         private void BuildContextMenus()
@@ -202,7 +205,7 @@ namespace Kinovea.ScreenManager
                 picBox.Height = (int)(picBox.Width * 0.75f);
             }
 
-            HideFilenameIfNeeded();
+            TruncateFilename();
             picBox.Invalidate();
         }
 
@@ -266,6 +269,7 @@ namespace Kinovea.ScreenManager
         public void RefreshUICulture()
         {
             lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
+            TruncateFilename();
             
             mnuLaunch.Text = ScreenManagerLang.mnuThumbnailPlay;
             mnuRename.Text = ScreenManagerLang.mnuThumbnailRename;
@@ -322,12 +326,7 @@ namespace Kinovea.ScreenManager
                     StartRenaming();
             }
         }
-        private void lblFileName_TextChanged(object sender, EventArgs e)
-        {
-            // Re check if we need to elid it.
-            if (lblFileName.Text.Length > m_iFilenameMaxCharacters)
-                lblFileName.Text = lblFileName.Text.Substring(0, m_iFilenameMaxCharacters) + "...";
-        }
+
         private void PicBoxPaint(object sender, PaintEventArgs e)
         {
             // Configure for speed. These are thumbnails anyway.
@@ -518,6 +517,7 @@ namespace Kinovea.ScreenManager
                     {
                         m_FileName = newFileName;
                         lblFileName.Text = Path.GetFileNameWithoutExtension(m_FileName);
+                        TruncateFilename();
                     }
 
                     NotificationCenter.RaiseRefreshFileExplorer(this, false);
@@ -551,9 +551,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuDelete_Click(object sender, EventArgs e)
         {
-            FilesystemHelper.DeleteFile(m_FileName);
-            if(!File.Exists(m_FileName))
-                NotificationCenter.RaiseRefreshFileExplorer(this, true);
+            Delete();
         }
         private void mnuLaunch_Click(object sender, EventArgs e)
         {
@@ -606,10 +604,34 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        private void HideFilenameIfNeeded()
+        private void TruncateFilename()
         {
-            lblFileName.Visible = (this.Width >= 110);
+            string text = Path.GetFileNameWithoutExtension(m_FileName);
+            using (Graphics g = lblFileName.CreateGraphics())
+            {
+                bool fits = true;
+                float maxWidth = this.Width - paddingHorizontal;
+                while (g.MeasureString(text + "#", lblFileName.Font).Width >= maxWidth)
+                {
+                    text = text.Substring(0, text.Length - 1);
+                    fits = false;
+                    
+                    if (text.Length == 0)
+                        break;
+                    
+                }
+
+                lblFileName.Text = fits ? text : text + "…";
+            }
         }
+
+        public void Delete()
+        {
+            FilesystemHelper.DeleteFile(m_FileName);
+            if (!File.Exists(m_FileName))
+                NotificationCenter.RaiseRefreshFileExplorer(this, true);
+        }
+
     }
     
     #region EventArgs classe used here

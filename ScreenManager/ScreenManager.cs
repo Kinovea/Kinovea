@@ -243,7 +243,7 @@ namespace Kinovea.ScreenManager
         }
         public void Prepare()
         {
-            Application.AddMessageFilter(this);
+            //Application.AddMessageFilter(this);
         }
         #endregion
 
@@ -965,11 +965,19 @@ namespace Kinovea.ScreenManager
             
             if (m.Msg != WM_KEYDOWN || !handleKeyboard || view == null)
                 return false;
+            
+            //--------------------
+            // WORK IN PROGRESS.
+            //--------------------
+
+            return false;
+
+
+            //--------------------------
 
             Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
             
             bool wasHandled = false;
-            wasHandled = view.OnKeyPress(keyCode);
 
             if(wasHandled)
                 return true;
