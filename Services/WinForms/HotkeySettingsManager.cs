@@ -39,6 +39,11 @@ namespace Kinovea.Services
             Func<object, Keys, HotkeyCommand> hk = (en, k) => new HotkeyCommand((int)en, en.ToString()) { KeyData = k };
 
             HotkeySettings[] result = new HotkeySettings[] { 
+                new HotkeySettings("FileExplorer",
+                    hk(FileExplorerCommands.Launch, Keys.Enter),
+                    hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),
+                    hk(FileExplorerCommands.Delete, Keys.Delete)
+                ),
                 new HotkeySettings("ThumbnailViewerFiles",
                     hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 
                     hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),

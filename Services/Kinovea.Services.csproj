@@ -121,6 +121,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
@@ -140,6 +141,7 @@
     <Compile Include="Events\FileSelectedEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
+    <Compile Include="FilesystemHelper.cs" />
     <Compile Include="WinForms\Commands.cs" />
     <Compile Include="WinForms\HotkeyCommand.cs" />
     <Compile Include="WinForms\HotkeySettings.cs" />

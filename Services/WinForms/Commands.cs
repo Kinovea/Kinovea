@@ -5,6 +5,13 @@ using System.Text;
 
 namespace Kinovea.Services
 {
+    public enum FileExplorerCommands
+    {
+        Rename,
+        Launch,
+        Delete
+    }
+
     public enum ThumbnailViewerFilesCommands
     {
         Rename,

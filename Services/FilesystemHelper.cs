@@ -22,7 +22,7 @@ using System;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
 
-namespace Kinovea.ScreenManager
+namespace Kinovea.Services
 {
     public static class FilesystemHelper
     {

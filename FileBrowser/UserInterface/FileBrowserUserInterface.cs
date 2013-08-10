@@ -44,7 +44,7 @@ namespace Kinovea.FileBrowser
     /// We maintain the synchronization between the shortcut and exptree tab
     /// when we move between shortcuts. We don't maintain it the other way around.
     /// </summary>
-    public partial class FileBrowserUserInterface : UserControl
+    public partial class FileBrowserUserInterface : KinoveaControl
     {
         #region Members
         private CShItem currentExptreeItem;	  // Current item in exptree tab.
@@ -94,6 +94,7 @@ namespace Kinovea.FileBrowser
             tabControl.SelectedIndex = (int)PreferencesManager.FileExplorerPreferences.ActiveTab;
             
             Application.Idle += new EventHandler(this.IdleDetector);
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys("FileExplorer");
         }
 
         private void BuildContextMenu()
@@ -718,5 +719,84 @@ namespace Kinovea.FileBrowser
 
             externalSelection = false;
         }
+
+
+        #region Commands
+        protected override bool ExecuteCommand(int cmd)
+        {
+            FileExplorerCommands command = (FileExplorerCommands)cmd;
+
+            switch (command)
+            {
+                case FileExplorerCommands.Rename:
+                    // TODO.
+                    break;
+                case FileExplorerCommands.Launch:
+                    CommandLaunch();
+                    break;
+                case FileExplorerCommands.Delete:
+                    CommandDelete();
+                    break;
+                default:
+                    return base.ExecuteCommand(cmd);
+            }
+
+            return true;
+        }
+
+        private void CommandLaunch()
+        {
+            if (tabControl.SelectedIndex == 0)
+                LaunchSelectedVideo(lvExplorer);
+            else if (tabControl.SelectedIndex == 1)
+                LaunchSelectedVideo(lvShortcuts);
+            else if (tabControl.SelectedIndex == 2)
+                LaunchSelectedCamera(lvCameras);
+        }
+
+        private string GetSelectedVideoPath(ListView lv)
+        {
+            if (lv == null || lv.SelectedItems == null || lv.SelectedItems.Count != 1)
+                return null;
+
+            return lv.SelectedItems[0].Tag as string;
+        }
+
+        private void LaunchSelectedVideo(ListView lv)
+        {
+            string path = GetSelectedVideoPath(lv);
+            if (path != null)
+                VideoTypeManager.LoadVideo(path, -1);
+        }
+
+        private void LaunchSelectedCamera(ListView lv)
+        {
+            if (lv == null || lv.SelectedItems == null || lv.SelectedItems.Count != 1)
+                return;
+
+            int index = IndexOfCamera(cameraSummaries, lv.SelectedItems[0].Name);
+            if (index >= 0)
+                CameraTypeManager.LoadCamera(cameraSummaries[index], -1);
+        }
+
+        private void CommandDelete()
+        {
+            if (tabControl.SelectedIndex == 0)
+                DeleteSelectedVideo(lvExplorer);
+            else if (tabControl.SelectedIndex == 1)
+                DeleteSelectedVideo(lvShortcuts);
+        }
+
+        private void DeleteSelectedVideo(ListView lv)
+        {
+            string path = GetSelectedVideoPath(lv);
+            if (path == null)
+                return;
+
+            FilesystemHelper.DeleteFile(path);
+            if (!File.Exists(path))
+                DoRefreshFileList(true);
+        }
+        #endregion
     }
 }
