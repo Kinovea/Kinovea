@@ -47,7 +47,8 @@ namespace Kinovea.Services
                 new HotkeySettings("ThumbnailViewerFiles",
                     hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 
                     hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),
-                    hk(ThumbnailViewerFilesCommands.Delete, Keys.Delete)
+                    hk(ThumbnailViewerFilesCommands.Delete, Keys.Delete),
+                    hk(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
                 ),
                 new HotkeySettings("ThumbnailViewerCamera",
                     hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 

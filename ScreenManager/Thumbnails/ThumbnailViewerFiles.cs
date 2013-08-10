@@ -418,6 +418,9 @@ namespace Kinovea.ScreenManager
                 case ThumbnailViewerFilesCommands.Delete:
                     CommandDelete();
                     break;
+                case ThumbnailViewerFilesCommands.Refresh:
+                    NotificationCenter.RaiseRefreshFileExplorer(this, true);
+                    break;
                 default:
                     return base.ExecuteCommand(cmd);
             }
