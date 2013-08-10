@@ -1151,6 +1151,10 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.GotoNextKeyframe:
                     GotoNextKeyframe();
                     break;
+                case PlayerScreenCommands.GotoSyncPoint:
+                    if (m_bSynched)
+                        SyncSetCurrentFrame(m_iSyncPosition, true);
+                    break;
                 case PlayerScreenCommands.IncreaseZoom:
                     IncreaseDirectZoom();
                     break;

@@ -145,10 +145,6 @@ namespace Kinovea.ScreenManager
         {
             commonControls.Playing = false;
         }
-        public bool CommonKeyPress(Keys key)
-        {
-            return commonControls.OnKeyPress(key);
-        }
         #endregion
 
         #endregion

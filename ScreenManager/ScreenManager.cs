@@ -39,7 +39,7 @@ using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
-    public class ScreenManagerKernel : IKernel, IScreenHandler, IScreenManagerUIContainer, IMessageFilter
+    public class ScreenManagerKernel : IKernel, IScreenHandler, IScreenManagerUIContainer
     {
         #region Properties
         public UserControl UI
@@ -239,10 +239,6 @@ namespace Kinovea.ScreenManager
             
             OrganizeCommonControls();
             OrganizeMenus();
-        }
-        public void Prepare()
-        {
-            //Application.AddMessageFilter(this);
         }
         #endregion
 
@@ -956,141 +952,6 @@ namespace Kinovea.ScreenManager
             ps2.DualSaveInProgress = false;
             m_iCurrentFrame = iCurrentFrame;
             OnCommonPositionChanged(m_iCurrentFrame, true);
-        }
-        #endregion
-        
-        #region IMessageFilter Implementation
-        public bool PreFilterMessage(ref Message m)
-        {
-            //----------------------------------------------------------------------------
-            // Main keyboard handler.
-            //
-            // We must be careful with performances with this function.
-            // As it will intercept every WM_XXX Windows message, 
-            // incuding WM_PAINT, WM_MOUSEMOVE, etc. from each control.
-            // 
-            // If the function interfere with other parts of the application (because it
-            // handles Return, Space, etc.) Use the DeactivateKeyboardHandler and 
-            // ActivateKeyboardHandler delegates from the delegate pool, to temporarily 
-            // bypass this handler.
-            //----------------------------------------------------------------------------
-            
-            if (m.Msg != WM_KEYDOWN || !handleKeyboard || view == null)
-                return false;
-            
-            //--------------------
-            // WORK IN PROGRESS.
-            //--------------------
-
-            return false;
-
-
-            //--------------------------
-
-            Keys keyCode = (Keys)(int)m.WParam & Keys.KeyCode;
-            
-            bool wasHandled = false;
-
-            if(wasHandled)
-                return true;
-            
-            /*switch (keyCode)
-            {
-                case Keys.Delete:
-                case Keys.Add:
-                case Keys.Subtract:
-                case Keys.NumPad0:
-                case Keys.F2:
-                case Keys.F7:
-                    {
-                        // These keystrokes impact only the active screen.
-                        if(m_ActiveScreen != null)
-                            wasHandled = m_ActiveScreen.OnKeyPress(keyCode);
-                        break;
-                    }
-                case Keys.Escape:
-                case Keys.F6:
-                    {
-                        // These keystrokes impact each screen independently.
-                        foreach (AbstractScreen screen in screenList)
-                            wasHandled = screen.OnKeyPress(keyCode);
-                        break;
-                    }
-                case Keys.Down:
-                case Keys.Up:
-                    {
-                        // These keystrokes impact only one screen, because it will automatically 
-                        // trigger the same change in the other screen.
-                        if(screenList.Count > 0)
-                            wasHandled = screenList[0].OnKeyPress(keyCode);
-                        
-                        break;
-                    }
-                case Keys.Space:
-                case Keys.Return:
-                case Keys.Left:
-                case Keys.Right:
-                case Keys.End:
-                case Keys.Home:
-                    {
-                        // These keystrokes impact both screens, but only if common controls are visible,
-                        // otherwise only the active screen.
-                        if (screenList.Count == 2)
-                        {
-                            if(view.CommonControlsVisible)
-                                wasHandled = view.CommonKeyPress(keyCode);
-                            else
-                                wasHandled = m_ActiveScreen.OnKeyPress(keyCode);	
-                        }
-                        else if(screenList.Count == 1)
-                        {
-                            wasHandled = screenList[0].OnKeyPress(keyCode);
-                        }	
-                        break;
-                    }
-                    
-                // All the remaining keystrokes impact both screen, even if the common controls aren't visible.
-                case Keys.Tab:
-                    {
-                        if ((Control.ModifierKeys & Keys.Control) != Keys.Control)
-                            return false;
-                        
-                        if(screenList.Count == 2)
-                        {
-                            // Change active screen.
-                            ActivateOtherScreen();
-                            wasHandled = true;
-                        }
-                        break;
-                    }
-                case Keys.F8:
-                    {
-                        if(m_bSynching)
-                        {
-                            // Go to sync frame. 
-                            m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
-                            
-                            // Update
-                            OnCommonPositionChanged(m_iCurrentFrame, true);
-                            view.UpdateTrkFrame(m_iCurrentFrame);
-                            wasHandled = true;
-                        }
-                        break;
-                    }
-                case Keys.F9:
-                    {
-                        if(m_bSynching)
-                        {
-                            SyncCatch();
-                            wasHandled = true;
-                        }
-                        break;
-                    }
-                default:
-                    break;
-            }*/
-
-            return wasHandled;
         }
         #endregion
         
