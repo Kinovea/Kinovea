@@ -273,6 +273,7 @@ namespace Kinovea.ScreenManager
 		private ToolStripMenuItem mnuSetCaptureSpeed = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSavePic = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuSendPic = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCopyPic = new ToolStripMenuItem();
 		private ToolStripMenuItem mnuCloseScreen = new ToolStripMenuItem();
 
 		private ContextMenuStrip popMenuDrawings = new ContextMenuStrip();
@@ -1005,9 +1006,11 @@ namespace Kinovea.ScreenManager
 			mnuSavePic.Image = Properties.Resources.picture_save;
 			mnuSendPic.Click += new EventHandler(mnuSendPic_Click);
 			mnuSendPic.Image = Properties.Resources.image;
+            mnuCopyPic.Click += (s, e) => { CopyImageToClipboard(); };
+            mnuCopyPic.Image = Properties.Resources.clipboard_block;
 			mnuCloseScreen.Click += new EventHandler(btnClose_Click);
 			mnuCloseScreen.Image = Properties.Resources.film_close3;
-			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSetCaptureSpeed, mnuSavePic, mnuSendPic, new ToolStripSeparator(), mnuCloseScreen });
+			popMenu.Items.AddRange(new ToolStripItem[] { mnuDirectTrack, mnuSetCaptureSpeed, mnuSavePic, mnuSendPic, mnuCopyPic, new ToolStripSeparator(), mnuCloseScreen });
 
 			// 2. Drawings context menu (Configure, Delete, Track this)
 			mnuConfigureDrawing.Click += new EventHandler(mnuConfigureDrawing_Click);
@@ -1179,6 +1182,9 @@ namespace Kinovea.ScreenManager
                     break;
                 case PlayerScreenCommands.DeleteDrawing:
                     DeleteSelectedDrawing();
+                    break;
+                case PlayerScreenCommands.CopyImage:
+                    CopyImageToClipboard();
                     break;
                 case PlayerScreenCommands.IncreaseSpeed1:
                     ChangeSpeed(1);
@@ -2402,6 +2408,7 @@ namespace Kinovea.ScreenManager
 			mnuSetCaptureSpeed.Text = ScreenManagerLang.mnuSetCaptureSpeed;
 			mnuSavePic.Text = ScreenManagerLang.Generic_SaveImage;
 			mnuSendPic.Text = ScreenManagerLang.mnuSendPic;
+            mnuCopyPic.Text = "Copy image to clipboard";
 			mnuCloseScreen.Text = ScreenManagerLang.mnuCloseScreen;
 			
 			// 2. Drawings context menu.
@@ -4363,9 +4370,21 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Export video and frames
+        private void CopyImageToClipboard()
+        {
+            if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
+                return;
+
+            StopPlaying();
+            m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
+
+            Bitmap outputImage = GetFlushedImage();
+            Clipboard.SetImage(outputImage);
+            outputImage.Dispose();
+        }
 		private void btnSnapShot_Click(object sender, EventArgs e)
 		{
-			// Export the current frame.
+            // Export the current frame.
 			if (!m_FrameServer.Loaded || m_FrameServer.CurrentImage == null)
 			    return;
 			
