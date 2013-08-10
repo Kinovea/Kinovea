@@ -59,8 +59,8 @@ namespace Kinovea.ScreenManager
         {
             get { return val;}
             set 
-            { 
-                val = value;
+            {
+                val = Math.Min(Math.Max(value, min), max);
                 Remap();
             }
         }
@@ -108,6 +108,8 @@ namespace Kinovea.ScreenManager
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            if (double.IsNaN(valPix))
+                return;
             
             e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
