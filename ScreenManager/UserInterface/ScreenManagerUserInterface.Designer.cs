@@ -136,7 +136,6 @@ namespace Kinovea.ScreenManager
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ScreenManagerUserInterface_DragDrop);
             this.DragOver += new System.Windows.Forms.DragEventHandler(this.DroppableArea_DragOver);
             this.DoubleClick += new System.EventHandler(this.ScreenManagerUserInterface_DoubleClick);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScreenManagerUserInterface_KeyDown);
             this.pnlScreens.ResumeLayout(false);
             this.splitScreensPanel.Panel1.ResumeLayout(false);
             this.splitScreensPanel.Panel2.ResumeLayout(false);

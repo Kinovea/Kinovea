@@ -193,7 +193,6 @@ namespace Kinovea.ScreenManager
             m_SVGFilesWatcher.Created += OnSVGFilesChanged;
             m_SVGFilesWatcher.Deleted += OnSVGFilesChanged;
             m_SVGFilesWatcher.Renamed += OnSVGFilesChanged;
-            
         }
 
         private void InitializeVideoFilters()
@@ -530,6 +529,19 @@ namespace Kinovea.ScreenManager
         {
             AbstractScreen screen = sender as AbstractScreen;
             SetActiveScreen(screen);
+        }
+        public void Screen_CommandProcessed(object sender, CommandProcessedEventArgs e)
+        {
+            // Propagate the command to the other screen.
+            AbstractScreen screen = sender as AbstractScreen;
+
+            if (screenList.Count != 2 || screen == null)
+                return;
+
+            int otherScreen = sender == screenList[0] ? 1 : 0;
+            
+            if (screenList[0].GetType() == screenList[1].GetType())
+                screenList[otherScreen].ExecuteCommand(e.Command);
         }
         public void Screen_CloseAsked(AbstractScreen _sender)
         {
@@ -1116,6 +1128,7 @@ namespace Kinovea.ScreenManager
         {
             screen.CloseAsked += Screen_CloseAsked;
             screen.Activated += Screen_Activated;
+            screen.CommandProcessed += Screen_CommandProcessed;
             screenList.Add(screen);
         }
         public void RemoveFirstEmpty(bool storeState)
@@ -1140,6 +1153,7 @@ namespace Kinovea.ScreenManager
         {
             screen.CloseAsked -= Screen_CloseAsked;
             screen.Activated -= Screen_Activated;
+            screen.CommandProcessed -= Screen_CommandProcessed;
             
             screen.BeforeClose();
             screenList.Remove(screen);

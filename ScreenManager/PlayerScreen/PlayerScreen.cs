@@ -37,9 +37,6 @@ namespace Kinovea.ScreenManager
 {
     public class PlayerScreen : AbstractScreen, IPlayerScreenUIHandler
     {
-        #region Events
-        #endregion
-        
         #region Properties
         public override bool Full
         {
@@ -249,6 +246,7 @@ namespace Kinovea.ScreenManager
             
             // Event handlers
             m_PlayerScreenUI.DrawingAdded += (s, e) => m_FrameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
+            m_PlayerScreenUI.CommandProcessed += (s, e) => OnCommandProcessed(e);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
             m_PlayerScreenUI.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
@@ -282,6 +280,7 @@ namespace Kinovea.ScreenManager
         {
         	m_ScreenHandler.Screen_UpdateStatusBarAsked(this);
         }
+
         public void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly)
         {
             // Used for synchronisation handling.
@@ -363,6 +362,29 @@ namespace Kinovea.ScreenManager
         {
             m_PlayerScreenUI.FullScreen(_bFullScreen);
         }
+        public override void ExecuteCommand(int cmd)
+        {
+            // Propagate command from the other screen only if it makes sense.
+            PlayerScreenCommands command = (PlayerScreenCommands)cmd;
+
+            switch (command)
+            {
+                case PlayerScreenCommands.TogglePlay:
+                case PlayerScreenCommands.ResetView:
+                case PlayerScreenCommands.GotoPreviousImage:
+                case PlayerScreenCommands.GotoPreviousImageForceLoop:
+                case PlayerScreenCommands.GotoFirstImage:
+                case PlayerScreenCommands.GotoPreviousKeyframe:
+                case PlayerScreenCommands.GotoNextImage:
+                case PlayerScreenCommands.GotoLastImage:
+                case PlayerScreenCommands.GotoNextKeyframe:
+                case PlayerScreenCommands.AddKeyframe:
+                    m_PlayerScreenUI.ExecuteCommand(cmd, false);
+                    break;
+                default:
+                    break;
+            }
+        }
         #endregion
         
         #region Other public methods called from the ScreenManager
@@ -430,7 +452,7 @@ namespace Kinovea.ScreenManager
 		{
 		    m_FrameServer.Metadata.TrackabilityManager.Add(trackableDrawing, m_FrameServer.VideoReader.Current);
 		}
-        
+
         private void ToggleTracking(object parameter)
         {
             ITrackable trackableDrawing = ConvertToTrackable(parameter);

@@ -47,6 +47,33 @@ namespace Kinovea.Services
                 new HotkeySettings("ThumbnailViewerContainer",
                     hk(ThumbnailViewerContainerCommands.DecreaseSize, Keys.Control | Keys.Subtract), 
                     hk(ThumbnailViewerContainerCommands.IncreaseSize, Keys.Control | Keys.Add)
+                ),
+                new HotkeySettings("PlayerScreen",
+                    hk(PlayerScreenCommands.TogglePlay, Keys.Space), 
+                    hk(PlayerScreenCommands.TogglePlay, Keys.Return), 
+                    hk(PlayerScreenCommands.ResetView, Keys.Escape), 
+                    hk(PlayerScreenCommands.GotoPreviousImage, Keys.Left), 
+                    hk(PlayerScreenCommands.GotoPreviousImageForceLoop, Keys.Shift | Keys.Left), 
+                    hk(PlayerScreenCommands.GotoFirstImage, Keys.Home), 
+                    hk(PlayerScreenCommands.GotoPreviousKeyframe, Keys.Control | Keys.Left), 
+                    hk(PlayerScreenCommands.GotoNextImage, Keys.Right), 
+                    hk(PlayerScreenCommands.GotoLastImage, Keys.End), 
+                    hk(PlayerScreenCommands.GotoNextKeyframe, Keys.Control | Keys.Right), 
+                    hk(PlayerScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
+                    hk(PlayerScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
+                    hk(PlayerScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
+                    hk(PlayerScreenCommands.IncreaseSyncAlpha, Keys.Alt | Keys.Add), 
+                    hk(PlayerScreenCommands.DecreaseSyncAlpha, Keys.Alt | Keys.Subtract), 
+                    hk(PlayerScreenCommands.AddKeyframe, Keys.F6), 
+                    hk(PlayerScreenCommands.DeleteKeyframe, Keys.Control | Keys.Delete), 
+                    hk(PlayerScreenCommands.DeleteDrawing, Keys.Delete), 
+                    hk(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up), 
+                    hk(PlayerScreenCommands.IncreaseSpeedRound10, Keys.Shift | Keys.Up), 
+                    hk(PlayerScreenCommands.IncreaseSpeedRound25, Keys.Up), 
+                    hk(PlayerScreenCommands.DecreaseSpeed1, Keys.Control | Keys.Down),
+                    hk(PlayerScreenCommands.DecreaseSpeedRound10, Keys.Shift | Keys.Down),
+                    hk(PlayerScreenCommands.DecreaseSpeedRound25, Keys.Down),
+                    hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
                 )
             };
 

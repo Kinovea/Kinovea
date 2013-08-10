@@ -233,6 +233,12 @@ namespace Kinovea.ScreenManager
         {
             view.FullScreen(fullScreen);
         }
+        
+        public override void ExecuteCommand(int cmd)
+        {
+            // propagate command from the other capture screen.
+        }
+
         #endregion
         
         #region Methods called from the view. These could also be events or commands.

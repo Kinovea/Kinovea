@@ -175,9 +175,14 @@ namespace Kinovea.ScreenManager
             
             if(ProgressChanged != null)
                 ProgressChanged(this, new ProgressChangedEventArgs(percentage, null));
-            
-            if(done >= thumbnails.Count && AfterLoad != null)
+
+            if (done >= thumbnails.Count && AfterLoad != null)
+            {
+                if (thumbnails.Count > 0)
+                    thumbnails[0].SetSelected();
+
                 AfterLoad(this, EventArgs.Empty);
+            }
         }
         
         private Size DoLayout()
@@ -332,8 +337,6 @@ namespace Kinovea.ScreenManager
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            log.DebugFormat("ProcessCmdKey of ThumbnailViewerFiles. Keys:{0}", keyData.ToString());
-
             if (editing)
                 return base.ProcessCmdKey(ref msg, keyData);
 
@@ -350,7 +353,7 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            // Keyboard navigation.
+            // Keyboard navigation (bypass the hotkey system).
             int index = (int)selectedThumbnail.Tag;
             int row = index / columns;
             int col = index - (row * columns);
@@ -420,19 +423,19 @@ namespace Kinovea.ScreenManager
 
         private void CommandRename()
         {
-            if (!selectedThumbnail.IsError)
+            if (selectedThumbnail != null && !selectedThumbnail.IsError)
                 selectedThumbnail.StartRenaming();
         }
 
         private void CommandLaunch()
         {
-            if (!selectedThumbnail.IsError && FileLoadAsked != null)
+            if (selectedThumbnail != null && !selectedThumbnail.IsError && FileLoadAsked != null)
                 FileLoadAsked(this, new FileLoadAskedEventArgs(selectedThumbnail.FileName, -1));
         }
         
         private void CommandDelete()
         {
-            if (!selectedThumbnail.IsError)
+            if (selectedThumbnail != null && !selectedThumbnail.IsError)
                 selectedThumbnail.Delete();
         }
         #endregion
