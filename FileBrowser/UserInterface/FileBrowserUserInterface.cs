@@ -728,13 +728,13 @@ namespace Kinovea.FileBrowser
 
             switch (command)
             {
-                case FileExplorerCommands.Rename:
+                case FileExplorerCommands.RenameSelected:
                     // TODO.
                     break;
-                case FileExplorerCommands.Launch:
+                case FileExplorerCommands.LaunchSelected:
                     CommandLaunch();
                     break;
-                case FileExplorerCommands.Delete:
+                case FileExplorerCommands.DeleteSelected:
                     CommandDelete();
                     break;
                 default:

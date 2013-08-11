@@ -30,6 +30,58 @@ namespace Kinovea.Services
             hotkeys = imported ?? CreateDefaultSettings();
         }
 
+        /// <summary>
+        /// Returns false if there is a conflict on the hotkey for this category.
+        /// </summary>
+        public static bool IsUnique(string category, HotkeyCommand command)
+        {
+            if (!hotkeys.ContainsKey(category) || command.KeyData == Keys.None)
+                return true;
+
+            foreach (HotkeyCommand c in hotkeys[category])
+            {
+                if (c.CommandCode == command.CommandCode || c.KeyData != command.KeyData)
+                    continue;
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public static void Update(string category, HotkeyCommand command)
+        {
+            // By convention only one hotkey is supported for each command.
+            if (!hotkeys.ContainsKey(category))
+                return;
+
+            foreach (HotkeyCommand c in hotkeys[category])
+            {
+                if (c.CommandCode == command.CommandCode)
+                {
+                    c.KeyData = command.KeyData;
+                    break;
+                }
+            }
+        }
+
+        public static void ResetToDefault(string category, HotkeyCommand command)
+        {
+            Dictionary<string, HotkeyCommand[]> defaultHotkeys = CreateDefaultSettings();
+
+            if (!defaultHotkeys.ContainsKey(category))
+                return;
+
+            foreach (HotkeyCommand c in defaultHotkeys[category])
+            {
+                if (c.CommandCode == command.CommandCode)
+                {
+                    command.KeyData = c.KeyData;
+                    break;
+                }
+            }
+        }
+
         private static Dictionary<string, HotkeyCommand[]> CreateDefaultSettings()
         {
             Func<object, Keys, HotkeyCommand> hk = (en, k) => new HotkeyCommand((int)en, en.ToString(), k);
@@ -37,21 +89,9 @@ namespace Kinovea.Services
             Dictionary<string, HotkeyCommand[]> result = new Dictionary<string, HotkeyCommand[]>
             {
                 { "FileExplorer", new HotkeyCommand[]{
-                    hk(FileExplorerCommands.Launch, Keys.Enter),
-                    hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),
-                    hk(FileExplorerCommands.Delete, Keys.Delete)
-                    }
-                },
-                { "ThumbnailViewerFiles", new HotkeyCommand[]{
-                    hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 
-                    hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),
-                    hk(ThumbnailViewerFilesCommands.Delete, Keys.Delete),
-                    hk(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
-                    }
-                },
-                { "ThumbnailViewerCamera", new HotkeyCommand[]{
-                    hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 
-                    hk(ThumbnailViewerFilesCommands.Rename, Keys.F2)
+                    hk(FileExplorerCommands.LaunchSelected, Keys.Enter),
+                    //hk(FileExplorerCommands.RenameSelected, Keys.F2),
+                    hk(FileExplorerCommands.DeleteSelected, Keys.Delete)
                     }
                 },
                 { "ThumbnailViewerContainer", new HotkeyCommand[]{
@@ -59,10 +99,21 @@ namespace Kinovea.Services
                     hk(ThumbnailViewerContainerCommands.IncreaseSize, Keys.Control | Keys.Add)
                     }
                 },
+                { "ThumbnailViewerFiles", new HotkeyCommand[]{
+                    hk(ThumbnailViewerFilesCommands.LaunchSelected, Keys.Enter), 
+                    hk(ThumbnailViewerFilesCommands.RenameSelected, Keys.F2),
+                    hk(ThumbnailViewerFilesCommands.DeleteSelected, Keys.Delete),
+                    hk(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
+                    }
+                },
+                { "ThumbnailViewerCamera", new HotkeyCommand[]{
+                    hk(ThumbnailViewerCameraCommands.LaunchSelected, Keys.Enter), 
+                    hk(ThumbnailViewerCameraCommands.RenameSelected, Keys.F2)
+                    }
+                },
                 { "PlayerScreen", new HotkeyCommand[]{
                     hk(PlayerScreenCommands.TogglePlay, Keys.Space), 
-                    hk(PlayerScreenCommands.TogglePlay, Keys.Return), 
-                    hk(PlayerScreenCommands.ResetView, Keys.Escape), 
+                    hk(PlayerScreenCommands.ResetViewport, Keys.Escape), 
                     hk(PlayerScreenCommands.GotoPreviousImage, Keys.Left), 
                     hk(PlayerScreenCommands.GotoPreviousImageForceLoop, Keys.Shift | Keys.Left), 
                     hk(PlayerScreenCommands.GotoFirstImage, Keys.Home), 
@@ -76,29 +127,27 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
                     hk(PlayerScreenCommands.IncreaseSyncAlpha, Keys.Alt | Keys.Add), 
                     hk(PlayerScreenCommands.DecreaseSyncAlpha, Keys.Alt | Keys.Subtract), 
-                    hk(PlayerScreenCommands.AddKeyframe, Keys.F6), 
                     hk(PlayerScreenCommands.AddKeyframe, Keys.Insert), 
                     hk(PlayerScreenCommands.DeleteKeyframe, Keys.Control | Keys.Delete), 
                     hk(PlayerScreenCommands.DeleteDrawing, Keys.Delete), 
                     hk(PlayerScreenCommands.CopyImage, Keys.Control | Keys.Shift | Keys.C), 
                     hk(PlayerScreenCommands.IncreaseSpeed1, Keys.Control | Keys.Up), 
-                    hk(PlayerScreenCommands.IncreaseSpeedRound10, Keys.Shift | Keys.Up), 
-                    hk(PlayerScreenCommands.IncreaseSpeedRound25, Keys.Up), 
+                    hk(PlayerScreenCommands.IncreaseSpeedRoundTo10, Keys.Shift | Keys.Up), 
+                    hk(PlayerScreenCommands.IncreaseSpeedRoundTo25, Keys.Up), 
                     hk(PlayerScreenCommands.DecreaseSpeed1, Keys.Control | Keys.Down),
-                    hk(PlayerScreenCommands.DecreaseSpeedRound10, Keys.Shift | Keys.Down),
-                    hk(PlayerScreenCommands.DecreaseSpeedRound25, Keys.Down),
+                    hk(PlayerScreenCommands.DecreaseSpeedRoundTo10, Keys.Shift | Keys.Down),
+                    hk(PlayerScreenCommands.DecreaseSpeedRoundTo25, Keys.Down),
                     hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
                     }
                 },
                 { "CaptureScreen", new HotkeyCommand[]{
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Space), 
-                    hk(CaptureScreenCommands.ToggleGrabbing, Keys.Return), 
                     hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
-                    hk(CaptureScreenCommands.ResetView, Keys.Escape), 
+                    hk(CaptureScreenCommands.ResetViewport, Keys.Escape), 
                     hk(CaptureScreenCommands.OpenConfiguration, Keys.F12), 
-                    hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
-                    hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
-                    hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
+                    //hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
+                    //hk(CaptureScreenCommands.DecreaseZoom, Keys.Control | Keys.Subtract), 
+                    //hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
                     hk(CaptureScreenCommands.IncreaseDelay, Keys.Control | Keys.Up),
                     hk(CaptureScreenCommands.DecreaseDelay, Keys.Control | Keys.Down), 
                     hk(CaptureScreenCommands.Close, Keys.Control | Keys.F4)

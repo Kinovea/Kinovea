@@ -7,23 +7,23 @@ namespace Kinovea.Services
 {
     public enum FileExplorerCommands
     {
-        Rename,
-        Launch,
-        Delete
+        RenameSelected,
+        LaunchSelected,
+        DeleteSelected
     }
 
     public enum ThumbnailViewerFilesCommands
     {
-        Rename,
-        Launch,
-        Delete,
+        RenameSelected,
+        LaunchSelected,
+        DeleteSelected,
         Refresh
     }
 
     public enum ThumbnailViewerCameraCommands
     {
-        Rename,
-        Launch,
+        RenameSelected,
+        LaunchSelected,
     }
 
     public enum ThumbnailViewerContainerCommands
@@ -35,7 +35,7 @@ namespace Kinovea.Services
     public enum PlayerScreenCommands
     {
         TogglePlay,
-        ResetView,
+        ResetViewport,
         
         GotoPreviousImage,
         GotoPreviousImageForceLoop,
@@ -61,11 +61,11 @@ namespace Kinovea.Services
         CopyImage,
 
         IncreaseSpeed1,
-        IncreaseSpeedRound10,
-        IncreaseSpeedRound25,
+        IncreaseSpeedRoundTo10,
+        IncreaseSpeedRoundTo25,
         DecreaseSpeed1,
-        DecreaseSpeedRound10,
-        DecreaseSpeedRound25,
+        DecreaseSpeedRoundTo10,
+        DecreaseSpeedRoundTo25,
 
         Close
     }
@@ -74,7 +74,7 @@ namespace Kinovea.Services
     {
         ToggleGrabbing,
         ToggleRecording,
-        ResetView,
+        ResetViewport,
         OpenConfiguration,
         IncreaseZoom,
         DecreaseZoom,

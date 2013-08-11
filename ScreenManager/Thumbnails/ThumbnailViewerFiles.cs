@@ -409,13 +409,13 @@ namespace Kinovea.ScreenManager
 
             switch (command)
             {
-                case ThumbnailViewerFilesCommands.Rename:
+                case ThumbnailViewerFilesCommands.RenameSelected:
                     CommandRename();
                     break;
-                case ThumbnailViewerFilesCommands.Launch:
+                case ThumbnailViewerFilesCommands.LaunchSelected:
                     CommandLaunch();
                     break;
-                case ThumbnailViewerFilesCommands.Delete:
+                case ThumbnailViewerFilesCommands.DeleteSelected:
                     CommandDelete();
                     break;
                 case ThumbnailViewerFilesCommands.Refresh:

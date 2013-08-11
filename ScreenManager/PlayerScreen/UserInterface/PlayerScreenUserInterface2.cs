@@ -1126,7 +1126,7 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.TogglePlay:
                     OnButtonPlay();
                     break;
-                case PlayerScreenCommands.ResetView:
+                case PlayerScreenCommands.ResetViewport:
                     DisablePlayAndDraw();
 				    DoInvalidate();
                     break;
@@ -1189,19 +1189,19 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.IncreaseSpeed1:
                     ChangeSpeed(1);
                     break;
-                case PlayerScreenCommands.IncreaseSpeedRound10:
+                case PlayerScreenCommands.IncreaseSpeedRoundTo10:
                     ChangeSpeed(10);
                     break;
-                case PlayerScreenCommands.IncreaseSpeedRound25:
+                case PlayerScreenCommands.IncreaseSpeedRoundTo25:
                     ChangeSpeed(25);
                     break;
                 case PlayerScreenCommands.DecreaseSpeed1:
                     ChangeSpeed(-1);
                     break;
-                case PlayerScreenCommands.DecreaseSpeedRound10:
+                case PlayerScreenCommands.DecreaseSpeedRoundTo10:
                     ChangeSpeed(-10);
                     break;
-                case PlayerScreenCommands.DecreaseSpeedRound25:
+                case PlayerScreenCommands.DecreaseSpeedRoundTo25:
                     ChangeSpeed(-25);
                     break;
                 case PlayerScreenCommands.Close:
