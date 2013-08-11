@@ -8,57 +8,58 @@ namespace Kinovea.Services
 {
     public static class HotkeySettingsManager
     {
-        // Reload the hotkeys each time a control is instanciated, so we don't need to 
-        // restart the application when mapping is changed.
+        public static Dictionary<string, HotkeyCommand[]> Hotkeys
+        {
+            get { return hotkeys; }
+        }
+
+        private static Dictionary<string, HotkeyCommand[]> hotkeys;
+
         public static HotkeyCommand[] LoadHotkeys(string name)
         {
-            HotkeySettings settings = new HotkeySettings();
-            HotkeySettings[] allSettings = LoadSettings();
+            if (hotkeys == null)
+                hotkeys = CreateDefaultSettings();
 
-            foreach (HotkeySettings s in allSettings)
+            HotkeyCommand[] result = null;
+            hotkeys.TryGetValue(name, out result);
+            return result;
+        }
+
+        public static void Import(Dictionary<string, HotkeyCommand[]> imported)
+        {
+            hotkeys = imported ?? CreateDefaultSettings();
+        }
+
+        private static Dictionary<string, HotkeyCommand[]> CreateDefaultSettings()
+        {
+            Func<object, Keys, HotkeyCommand> hk = (en, k) => new HotkeyCommand((int)en, en.ToString(), k);
+
+            Dictionary<string, HotkeyCommand[]> result = new Dictionary<string, HotkeyCommand[]>
             {
-                if (s.Name == name)
-                {
-                    settings = s;
-                    break;
-                }
-            }
-
-            return settings != null ? settings.Commands : null;
-        }
-
-        private static HotkeySettings[] LoadSettings()
-        {
-            HotkeySettings[] defaultSettings = CreateDefaultSettings();
-            return defaultSettings;
-        }
-
-        private static HotkeySettings[] CreateDefaultSettings()
-        {
-            // TODO: Check if we can set KeyData in the constructor of HotkeyCommand instead.
-            Func<object, Keys, HotkeyCommand> hk = (en, k) => new HotkeyCommand((int)en, en.ToString()) { KeyData = k };
-
-            HotkeySettings[] result = new HotkeySettings[] { 
-                new HotkeySettings("FileExplorer",
+                { "FileExplorer", new HotkeyCommand[]{
                     hk(FileExplorerCommands.Launch, Keys.Enter),
                     hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),
                     hk(FileExplorerCommands.Delete, Keys.Delete)
-                ),
-                new HotkeySettings("ThumbnailViewerFiles",
+                    }
+                },
+                { "ThumbnailViewerFiles", new HotkeyCommand[]{
                     hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 
                     hk(ThumbnailViewerFilesCommands.Rename, Keys.F2),
                     hk(ThumbnailViewerFilesCommands.Delete, Keys.Delete),
                     hk(ThumbnailViewerFilesCommands.Refresh, Keys.F5)
-                ),
-                new HotkeySettings("ThumbnailViewerCamera",
+                    }
+                },
+                { "ThumbnailViewerCamera", new HotkeyCommand[]{
                     hk(ThumbnailViewerFilesCommands.Launch, Keys.Enter), 
                     hk(ThumbnailViewerFilesCommands.Rename, Keys.F2)
-                ),
-                new HotkeySettings("ThumbnailViewerContainer",
+                    }
+                },
+                { "ThumbnailViewerContainer", new HotkeyCommand[]{
                     hk(ThumbnailViewerContainerCommands.DecreaseSize, Keys.Control | Keys.Subtract), 
                     hk(ThumbnailViewerContainerCommands.IncreaseSize, Keys.Control | Keys.Add)
-                ),
-                new HotkeySettings("PlayerScreen",
+                    }
+                },
+                { "PlayerScreen", new HotkeyCommand[]{
                     hk(PlayerScreenCommands.TogglePlay, Keys.Space), 
                     hk(PlayerScreenCommands.TogglePlay, Keys.Return), 
                     hk(PlayerScreenCommands.ResetView, Keys.Escape), 
@@ -87,8 +88,9 @@ namespace Kinovea.Services
                     hk(PlayerScreenCommands.DecreaseSpeedRound10, Keys.Shift | Keys.Down),
                     hk(PlayerScreenCommands.DecreaseSpeedRound25, Keys.Down),
                     hk(PlayerScreenCommands.Close, Keys.Control | Keys.F4)
-                ),
-                new HotkeySettings("CaptureScreen",
+                    }
+                },
+                { "CaptureScreen", new HotkeyCommand[]{
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Space), 
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Return), 
                     hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
@@ -99,8 +101,9 @@ namespace Kinovea.Services
                     hk(CaptureScreenCommands.ResetZoom, Keys.Control | Keys.NumPad0), 
                     hk(CaptureScreenCommands.IncreaseDelay, Keys.Control | Keys.Up),
                     hk(CaptureScreenCommands.DecreaseDelay, Keys.Control | Keys.Down), 
-                    hk(CaptureScreenCommands.Close, Keys.Control | Keys.F4) 
-                )
+                    hk(CaptureScreenCommands.Close, Keys.Control | Keys.F4)
+                    }
+                }
             };
 
             return result;

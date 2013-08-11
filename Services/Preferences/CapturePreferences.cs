@@ -26,9 +26,13 @@ using System.Linq;
 
 namespace Kinovea.Services
 {
-    public class CapturePreferences
+    public class CapturePreferences : IPreferenceSerializer
     {
         #region Properties
+        public string Name
+        {
+            get { return "Capture"; }
+        }
         public string ImageDirectory
         {
         	get { return imageDirectory; }
@@ -84,24 +88,6 @@ namespace Kinovea.Services
             get { return memoryBuffer; }
             set { memoryBuffer = value; }
         }
-        /*public List<DeviceConfiguration> DeviceConfigurations
-        {
-        	get { return deviceConfigurations; }	
-        }
-		public string NetworkCameraUrl
-		{
-			get { return networkCameraUrl; }
-			set { networkCameraUrl = value; }
-		}      
-		public NetworkCameraFormat NetworkCameraFormat
-		{
-			get { return networkCameraFormat; }
-			set { networkCameraFormat = value; }
-		}
-		public List<string> RecentNetworkCameras
-        {
-        	get{ return recentNetworkCameras;}
-        }*/
         public IEnumerable<CameraBlurb> CameraBlurbs
         {
             get { return cameraBlurbs.Values.Cast<CameraBlurb>(); }

@@ -8,22 +8,15 @@ namespace Kinovea.Services
 {
     public class HotkeyCommand
     {
-        public string Name { get; set; }
         public int CommandCode { get; set; }
+        public string Name { get; set; }
         public Keys KeyData { get; set; }
         
-        public HotkeyCommand()
-        {
-        }
-        public HotkeyCommand(int commandCode, string name)
+        public HotkeyCommand(int commandCode, string name, Keys keyData)
         {
             this.CommandCode = commandCode;
             this.Name = name;
-        }
-
-        public static HotkeyCommand[] FromEnum(Type enumType)
-        {
-            return Enum.GetValues(enumType).Cast<object>().Select(c => new HotkeyCommand((int)c, c.ToString())).ToArray();
+            this.KeyData = keyData;
         }
     }
 }
