@@ -270,6 +270,10 @@ namespace Kinovea.ScreenManager
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+
+            if (thumbnailControls.Count == 0)
+                return base.ProcessCmdKey(ref msg, keyData);
+
             if (selectedThumbnail == null)
             {
                 if (thumbnailControls.Count > 0 && (keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down))
@@ -319,6 +323,16 @@ namespace Kinovea.ScreenManager
                             thumbnailControls[index + columns].SetSelected();
                         this.ScrollControlIntoView(selectedThumbnail);
                         handled = true;
+                        break;
+                    }
+                case Keys.Home:
+                    {
+                        thumbnailControls[0].SetSelected();
+                        break;
+                    }
+                case Keys.End:
+                    {
+                        thumbnailControls[thumbnailControls.Count - 1].SetSelected();
                         break;
                     }
                 default:
