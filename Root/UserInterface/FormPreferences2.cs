@@ -68,7 +68,6 @@ namespace Kinovea.Root
 			// Unfortunately, in this case, #Develop wouldn't let us graphically design the individual panels.
 			// To work around this and still retain the designer, we use UserControl as the base class.
 			// Each panel should implement the IPreferencePanel interface to conform to the architecture.
-			// (If you wonder, directly creating a List<> from an interface is not allowed in .NET)
 			// 
 			// To create a new Preference page: Add a new file from UserControl template, add IPreferencePanel as an interface.
 			// Implement the functions and finally add it to the list here.
@@ -78,6 +77,7 @@ namespace Kinovea.Root
 			m_PrefPages.Add(new PreferencePanelPlayer());
 			m_PrefPages.Add(new PreferencePanelDrawings());
 			m_PrefPages.Add(new PreferencePanelCapture());
+            m_PrefPages.Add(new PreferencePanelKeyboard());
 			
 			AddPages();
 		}

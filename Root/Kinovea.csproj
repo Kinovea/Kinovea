@@ -126,13 +126,16 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Kinovea.Camera, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandSwitchUICulture.cs" />
@@ -180,11 +183,20 @@
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelGeneral.Designer.cs">
       <DependentUpon>PreferencePanelGeneral.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelKeyboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\PreferencePanelKeyboard.Designer.cs">
+      <DependentUpon>PreferencePanelKeyboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UserInterface\PreferencePanels\PreferencePanelPlayer.Designer.cs">
       <DependentUpon>PreferencePanelPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PreferencePanels\TextboxHotkey.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UserInterface\SplashScreen.cs">
       <SubType>Form</SubType>
@@ -251,6 +263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelGeneral.resx">
       <DependentUpon>PreferencePanelGeneral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelKeyboard.resx">
+      <DependentUpon>PreferencePanelKeyboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\PreferencePanels\PreferencePanelPlayer.resx">
       <DependentUpon>PreferencePanelPlayer.cs</DependentUpon>
@@ -485,6 +500,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\keyboard.png" />
     <None Include="..\Installer\OtherFiles\LogConf.xml">
       <Visible>True</Visible>
       <Link>LogConf.xml</Link>

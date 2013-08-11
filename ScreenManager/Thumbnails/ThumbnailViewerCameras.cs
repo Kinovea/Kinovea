@@ -331,15 +331,15 @@ namespace Kinovea.ScreenManager
         #region Commands
         protected override bool ExecuteCommand(int cmd)
         {
-            ThumbnailViewerFilesCommands command = (ThumbnailViewerFilesCommands)cmd;
+            ThumbnailViewerCameraCommands command = (ThumbnailViewerCameraCommands)cmd;
 
             switch (command)
             {
-                case ThumbnailViewerFilesCommands.Rename:
+                case ThumbnailViewerCameraCommands.RenameSelected:
                     if (selectedThumbnail != null)
                         selectedThumbnail.StartRenaming();
                     break;
-                case ThumbnailViewerFilesCommands.Launch:
+                case ThumbnailViewerCameraCommands.LaunchSelected:
                     CameraTypeManager.LoadCamera(selectedThumbnail.Summary, -1);
                     break;
                 default:

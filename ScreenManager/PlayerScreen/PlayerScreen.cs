@@ -367,7 +367,7 @@ namespace Kinovea.ScreenManager
             {
                 // Forwarded commands. (all others are ignored).
                 case PlayerScreenCommands.TogglePlay:
-                case PlayerScreenCommands.ResetView:
+                case PlayerScreenCommands.ResetViewport:
                 case PlayerScreenCommands.GotoPreviousImage:
                 case PlayerScreenCommands.GotoPreviousImageForceLoop:
                 case PlayerScreenCommands.GotoFirstImage:

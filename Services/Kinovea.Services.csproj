@@ -148,6 +148,7 @@
     <Compile Include="WinForms\HotkeyCommand.cs" />
     <Compile Include="WinForms\HotkeySettings.cs" />
     <Compile Include="WinForms\HotkeySettingsManager.cs" />
+    <Compile Include="WinForms\KeysExtensions.cs" />
     <Compile Include="WinForms\KinoveaControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
