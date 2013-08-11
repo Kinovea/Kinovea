@@ -344,6 +344,9 @@ namespace Kinovea.ScreenManager
             if (editing)
                 return base.ProcessCmdKey(ref msg, keyData);
 
+            if (thumbnails.Count == 0)
+                return base.ProcessCmdKey(ref msg, keyData);
+
             if (selectedThumbnail == null)
             {
                 if (thumbnails.Count > 0 && (keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down))
@@ -393,6 +396,16 @@ namespace Kinovea.ScreenManager
                             thumbnails[index + columns].SetSelected();
                         this.ScrollControlIntoView(selectedThumbnail);
                         handled = true;
+                        break;
+                    }
+                case Keys.Home:
+                    {
+                        thumbnails[0].SetSelected();
+                        break;
+                    }
+                case Keys.End:
+                    {
+                        thumbnails[thumbnails.Count - 1].SetSelected();
                         break;
                     }
                 default:
