@@ -85,7 +85,6 @@ namespace Kinovea.ScreenManager
         {
             pnlViewport.Controls.Add(viewport);
             viewport.Dock = DockStyle.Fill;
-            viewport.MouseEnter += (s, e) => { pnlViewport.Focus(); };
         }
         public void SetCapturedFilesView(CapturedFilesView capturedFilesView)
         {
