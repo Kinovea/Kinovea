@@ -25,8 +25,13 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-    public class GeneralPreferences
+    public class GeneralPreferences : IPreferenceSerializer
     {
+        public string Name
+        {
+            get { return "General"; }
+        }
+
         public bool ExplorerVisible
         {
             get { return explorerVisible; }

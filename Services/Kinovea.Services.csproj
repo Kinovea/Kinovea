@@ -142,6 +142,8 @@
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
     <Compile Include="FilesystemHelper.cs" />
+    <Compile Include="Preferences\IPreferenceSerializer.cs" />
+    <Compile Include="Preferences\KeyboardPreferences.cs" />
     <Compile Include="WinForms\Commands.cs" />
     <Compile Include="WinForms\HotkeyCommand.cs" />
     <Compile Include="WinForms\HotkeySettings.cs" />

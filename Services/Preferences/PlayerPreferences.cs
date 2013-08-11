@@ -27,9 +27,13 @@ using Kinovea.Video;
 
 namespace Kinovea.Services
 {
-    public class PlayerPreferences
+    public class PlayerPreferences : IPreferenceSerializer
     {
         #region Properties
+        public string Name
+        {
+            get { return "Player"; }
+        }
         public TimecodeFormat TimecodeFormat
         {
             get { return timecodeFormat; }

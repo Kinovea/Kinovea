@@ -27,8 +27,13 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-    public class FileExplorerPreferences
+    public class FileExplorerPreferences : IPreferenceSerializer
     {
+        public string Name
+        {
+            get { return "FileExplorer"; }
+        }
+
         public int MaxRecentFiles
         {
             get { return maxRecentFiles; }
