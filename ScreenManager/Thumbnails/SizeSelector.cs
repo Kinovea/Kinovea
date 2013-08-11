@@ -53,6 +53,9 @@ namespace Kinovea.ScreenManager
         
         public void Increase()
         {
+            if (SelectedSize == ExplorerThumbSize.ExtraLarge)
+                return;
+
             DeselectAll();
             
             switch(SelectedSize)
@@ -79,6 +82,9 @@ namespace Kinovea.ScreenManager
         
         public void Decrease()
         {
+            if (SelectedSize == ExplorerThumbSize.ExtraSmall)
+                return;
+
             DeselectAll();
             
             switch(SelectedSize)
