@@ -500,6 +500,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinoveabundle.ico" />
+    <None Include="Resources\home2.png" />
     <None Include="Resources\keyboard.png" />
     <None Include="..\Installer\OtherFiles\LogConf.xml">
       <Visible>True</Visible>
