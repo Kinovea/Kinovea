@@ -83,6 +83,7 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuHelpContents = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTutorialVideos = new ToolStripMenuItem();
         private ToolStripMenuItem mnuApplicationFolder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuWebsite = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
         #endregion
         
@@ -130,7 +131,7 @@ namespace Kinovea.Root
             LogInitialConfiguration();
             
             if(CommandLineArgumentManager.Instance().InputFile != null)
-            	m_ScreenManager.PrepareScreen();
+                m_ScreenManager.PrepareScreen();
         }
         public void Launch()
         {            
@@ -143,8 +144,8 @@ namespace Kinovea.Root
         public void BuildSubTree()
         {   
             log.Debug("Building the modules tree.");            
-        	m_FileBrowser     = new FileBrowserKernel();
-        	m_Updater         = new UpdaterKernel();
+            m_FileBrowser     = new FileBrowserKernel();
+            m_Updater         = new UpdaterKernel();
             m_ScreenManager   = new ScreenManagerKernel();
             log.Debug("Modules tree built.");
         }
@@ -156,8 +157,8 @@ namespace Kinovea.Root
         }
         public void ExtendToolBar(ToolStrip _toolbar)
         {
-        	_toolbar.AllowMerge = true;
-        	GetModuleToolBar(_toolbar);
+            _toolbar.AllowMerge = true;
+            GetModuleToolBar(_toolbar);
             GetSubModulesToolBars(_toolbar);
             _toolbar.Visible = true;
         }
@@ -180,7 +181,7 @@ namespace Kinovea.Root
 
             // Integrate the sub modules UI into the main kernel UI.
             MainWindow.PlugUI(m_FileBrowser.UI, m_ScreenManager.UI);
-			MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+            MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
@@ -267,12 +268,13 @@ namespace Kinovea.Root
             mnuQuit.Image = Properties.Resources.quit;
             mnuQuit.Click += new EventHandler(menuQuitOnClick);
 
-            mnuFile.DropDownItems.AddRange(new ToolStripItem[] { 	mnuOpenFile, 
-                                           							mnuHistory, 
-                                           							new ToolStripSeparator(),
-                                           							// -> Here will be plugged the other file menus (save, export)
-                                           							new ToolStripSeparator(), 
-                                           							mnuQuit });
+            mnuFile.DropDownItems.AddRange(new ToolStripItem[] {
+                mnuOpenFile, 
+                mnuHistory, 
+                new ToolStripSeparator(),
+                // -> Here will be plugged the other file menus (save, export)
+                new ToolStripSeparator(), 
+                mnuQuit });
             
             #endregion
 
@@ -302,7 +304,7 @@ namespace Kinovea.Root
             mnuToggleFileExplorer.CheckState = System.Windows.Forms.CheckState.Checked;
             mnuToggleFileExplorer.ShortcutKeys = System.Windows.Forms.Keys.F4;
             mnuToggleFileExplorer.Click += new EventHandler(mnuToggleFileExplorerOnClick);
-			mnuFullScreen.Image = Properties.Resources.fullscreen;
+            mnuFullScreen.Image = Properties.Resources.fullscreen;
             mnuFullScreen.ShortcutKeys = System.Windows.Forms.Keys.F11;
             mnuFullScreen.Click += new EventHandler(mnuFullScreenOnClick);
             
@@ -331,10 +333,11 @@ namespace Kinovea.Root
             
             mnuTimecode.DropDownItems.AddRange(new ToolStripItem[] { mnuTimecodeClassic, mnuTimecodeFrames, mnuTimecodeMilliseconds, mnuTimecodeTimeAndFrames});
             
-            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { mnuLanguages, 
-                                              						mnuTimecode, 
-                                              						new ToolStripSeparator(), 
-                                              						mnuPreferences});                     						
+            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuLanguages, 
+                mnuTimecode, 
+                new ToolStripSeparator(), 
+                mnuPreferences});                     						
             #endregion
 
             #region Help
@@ -344,17 +347,23 @@ namespace Kinovea.Root
             mnuTutorialVideos.Image = Properties.Resources.film;
             mnuTutorialVideos.Click += new EventHandler(mnuTutorialVideos_OnClick);
             mnuApplicationFolder.Image = Properties.Resources.bug;
-            mnuApplicationFolder.Click += new EventHandler(mnuApplicationFolder_OnClick);
+            mnuApplicationFolder.Click += (s, e) =>
+            {
+                FilesystemHelper.LocateFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\log.txt");
+            };
+            mnuWebsite.Image = Properties.Resources.website;
+            mnuWebsite.Click += (s,e) => Process.Start("http://www.kinovea.org");
             mnuAbout.Image = Properties.Resources.information;
             mnuAbout.Click += new EventHandler(mnuAbout_OnClick);
 
             mnuHelp.DropDownItems.AddRange(new ToolStripItem[] { 
-												mnuHelpContents, 
-												mnuTutorialVideos, 
-												new ToolStripSeparator(), 
-												mnuApplicationFolder, 
-												new ToolStripSeparator(),
-												mnuAbout });
+                mnuHelpContents, 
+                mnuTutorialVideos, 
+                new ToolStripSeparator(), 
+                mnuApplicationFolder, 
+                new ToolStripSeparator(),
+                mnuWebsite,
+                mnuAbout });
             #endregion
 
             // Top level merge.
@@ -375,8 +384,8 @@ namespace Kinovea.Root
         }
         private void GetModuleToolBar(ToolStrip _toolbar)
         {
-        	// Open.
-        	m_ToolOpenFile.DisplayStyle          = ToolStripItemDisplayStyle.Image;
+            // Open.
+            m_ToolOpenFile.DisplayStyle          = ToolStripItemDisplayStyle.Image;
             m_ToolOpenFile.Image                 = Properties.Resources.folder;
             m_ToolOpenFile.ToolTipText           = RootLang.mnuOpenFile;
             m_ToolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
@@ -422,6 +431,7 @@ namespace Kinovea.Root
             mnuHelpContents.Text = RootLang.mnuHelpContents;
             mnuTutorialVideos.Text = RootLang.mnuTutorialVideos;
             mnuApplicationFolder.Text = RootLang.mnuApplicationFolder;
+            mnuWebsite.Text = "www.kinovea.org";
             mnuAbout.Text = RootLang.mnuAbout;
             mnuHelp.Text = RootLang.mnuHelp;
         }
@@ -548,11 +558,11 @@ namespace Kinovea.Root
         }
         private void CheckTimecodeMenu()
         {
-        	mnuTimecodeClassic.Checked = false;
-        	mnuTimecodeFrames.Checked = false;
-        	mnuTimecodeMilliseconds.Checked = false;
-        	mnuTimecodeTimeAndFrames.Checked = false;
-        	
+            mnuTimecodeClassic.Checked = false;
+            mnuTimecodeFrames.Checked = false;
+            mnuTimecodeMilliseconds.Checked = false;
+            mnuTimecodeTimeAndFrames.Checked = false;
+            
             TimecodeFormat tf = PreferencesManager.PlayerPreferences.TimecodeFormat;
             
             switch (tf)
@@ -604,37 +614,31 @@ namespace Kinovea.Root
             string resourceUri = GetLocalizedHelpResource(true);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-            	Help.ShowHelp(MainWindow, resourceUri);
+                Help.ShowHelp(MainWindow, resourceUri);
             }
             else
             {
-            	log.Error(String.Format("Cannot find the manual. ({0}).", resourceUri));
+                log.Error(String.Format("Cannot find the manual. ({0}).", resourceUri));
             }
         }
         private void mnuTutorialVideos_OnClick(object sender, EventArgs e)
         {
-        	// Launch help video from current UI language.
-			string resourceUri = GetLocalizedHelpResource(false);
+            // Launch help video from current UI language.
+            string resourceUri = GetLocalizedHelpResource(false);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-	        	IUndoableCommand clmis = new CommandLoadMovieInScreen(m_ScreenManager, resourceUri, -1, true);
-	            CommandManager cm = CommandManager.Instance();
-	            cm.LaunchUndoableCommand(clmis);
-        	}
-        	else
-        	{
-        		log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
-        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
+                IUndoableCommand clmis = new CommandLoadMovieInScreen(m_ScreenManager, resourceUri, -1, true);
+                CommandManager cm = CommandManager.Instance();
+                cm.LaunchUndoableCommand(clmis);
+            }
+            else
+            {
+                log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
+                MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
                                     m_ScreenManager.resManager.GetString("LoadMovie_Error"),
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation);
-        	}
-        }
-        private void mnuApplicationFolder_OnClick(object sender, EventArgs e)
-        {
-            // Launch Windows Explorer on App folder.
-			Process.Start(  "explorer.exe", 
-                          	 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Kinovea\\");
+            }
         }
         private void mnuAbout_OnClick(object sender, EventArgs e)
         {
@@ -688,7 +692,7 @@ namespace Kinovea.Root
         #region Lower Level Methods
         private void OpenFileFromPath(string _FilePath)
         {
-        	if (File.Exists(_FilePath))
+            if (File.Exists(_FilePath))
             {
                 //--------------------------------------------------------------------------
                 // CommandLoadMovieInScreen est une commande du ScreenManager.
@@ -708,7 +712,7 @@ namespace Kinovea.Root
             }
             else
             {
-        		MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
+                MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
                                 m_ScreenManager.resManager.GetString("LoadMovie_Error"),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Exclamation);
@@ -716,8 +720,8 @@ namespace Kinovea.Root
         }
         private void LogInitialConfiguration()
         {
-        	CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
-        	
+            CommandLineArgumentManager am = CommandLineArgumentManager.Instance();
+            
             log.Debug("Initial configuration:");
             log.Debug("InputFile : " + am.InputFile);
             log.Debug("SpeedPercentage : " + am.SpeedPercentage.ToString());
@@ -726,19 +730,19 @@ namespace Kinovea.Root
         }
         private string GetLocalizedHelpResource(bool _manual)
         {
-        	// Find the local file path of a help resource (manual or help video) according to what is saved in the help index.
-        	
-        	string resourceUri = "";
-        	
-        	// Load the help file system.
-        	HelpIndex hiLocal = new HelpIndex(Software.LocalHelpIndex);
+            // Find the local file path of a help resource (manual or help video) according to what is saved in the help index.
+            
+            string resourceUri = "";
+            
+            // Load the help file system.
+            HelpIndex hiLocal = new HelpIndex(Software.LocalHelpIndex);
 
-        	if(!hiLocal.LoadSuccess)
-        	{
+            if(!hiLocal.LoadSuccess)
+            {
                 log.Error("Cannot find the xml help index.");
                 return "";
-        	}
-        	    
+            }
+                
             // Loop into the file to find the required resource in the matching locale, or fallback to english.
             string EnglishUri = "";
             bool bLocaleFound = false;
@@ -752,9 +756,9 @@ namespace Kinovea.Root
             int iTotalResource = _manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
             while (!bLocaleFound && i < iTotalResource)
             {
-            	HelpItem hi = _manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
-            	
-            	if (hi.Language == neutral)
+                HelpItem hi = _manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
+                
+                if (hi.Language == neutral)
                 {
                     bLocaleFound = true;
                     resourceUri = hi.FileLocation;
@@ -772,7 +776,7 @@ namespace Kinovea.Root
 
             if (!bLocaleFound && bEnglishFound)
             {
-            	resourceUri = EnglishUri;
+                resourceUri = EnglishUri;
             }
             
             return resourceUri;
