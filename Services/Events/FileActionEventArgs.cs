@@ -23,10 +23,10 @@ using System;
 
 namespace Kinovea.Services
 {
-    public class FileSelectedEventArgs : EventArgs
+    public class FileActionEventArgs : EventArgs
     {
         public readonly string File;
-        public FileSelectedEventArgs(string file)
+        public FileActionEventArgs(string file)
         {
             this.File = file;
         }

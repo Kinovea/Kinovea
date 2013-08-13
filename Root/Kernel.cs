@@ -103,7 +103,7 @@ namespace Kinovea.Root
             
             BuildSubTree();
             MainWindow = new KinoveaMainWindow(this);
-            NotificationCenter.RecentFilesChanged += RecentFilesChanged;
+            NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(MainWindow.menuStrip);
@@ -650,7 +650,7 @@ namespace Kinovea.Root
 
         #endregion        
         
-        private void RecentFilesChanged(object sender, EventArgs e)
+        private void NotificationCenter_RecentFilesChanged(object sender, EventArgs e)
         {
             List<string> recentFiles = PreferencesManager.FileExplorerPreferences.RecentFiles;
             int maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;

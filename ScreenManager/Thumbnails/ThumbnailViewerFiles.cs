@@ -227,7 +227,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-        private void NotificationCenter_FileSelected(object sender, FileSelectedEventArgs e)
+        private void NotificationCenter_FileSelected(object sender, FileActionEventArgs e)
         {
             if (sender == this)
                 return;

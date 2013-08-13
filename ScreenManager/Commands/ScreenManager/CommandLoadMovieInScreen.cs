@@ -133,7 +133,10 @@ namespace Kinovea.ScreenManager
                 CommandManager.LaunchCommand(new CommandLoadMovie(playerScreen, filePath));
 
                 if (playerScreen.FrameServer.Loaded)
+                {
+                    NotificationCenter.RaiseFileOpened(this, filePath);
                     SaveFileToHistory(filePath);
+                }
             
                 ShowScreens();
                 manager.OrganizeCommonControls();
