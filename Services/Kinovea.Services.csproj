@@ -138,7 +138,7 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Deprecated\NetworkCameraFormat.cs" />
     <Compile Include="Events\DelegatesPool.cs" />
-    <Compile Include="Events\FileSelectedEventArgs.cs" />
+    <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
     <Compile Include="FilesystemHelper.cs" />
