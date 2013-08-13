@@ -79,7 +79,7 @@ namespace Kinovea.ScreenManager
         {
             this.files = files;
             
-            if(!refresh)
+            if(!refresh || !this.Visible)
                 return;
             
             if(currentContent != ThumbnailViewerContent.Files && currentContent != ThumbnailViewerContent.Shortcuts)
