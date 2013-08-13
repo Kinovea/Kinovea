@@ -394,7 +394,20 @@ XIT:    tv1.EndUpdate()
     End Sub
 #End Region
 
-
+#Region "   SelectNode"
+    Public Sub SelectNode(ByVal path As String)
+        'Find first level node matching path and select it.
+        Dim root As TreeNode = tv1.Nodes(0)
+        Dim node As TreeNode
+        For Each node In root.Nodes
+            Dim CSI As CShItem = node.Tag
+            If String.Compare(CSI.Path, path) = 0 Then
+                tv1.SelectedNode = node
+                Exit For
+            End If
+        Next
+    End Sub
+#End Region
 
 #End Region
 
@@ -404,52 +417,43 @@ XIT:    tv1.EndUpdate()
         If Not IsNothing(Root) Then
             ClearTree()
         End If
-        
+
         If m_bShortcutsMode Then
-			' Special mode for shortcuts, 
-			' add root, then each shortcut as child node and expand them.
-        	
-        	'We give root the desktop icon + no text.
-        	'we don't build tree automatically.
-        	Dim special As CShItem
-        	special = GetCShItem(CType(Val(StartDir.Desktop), ShellDll.CSIDL))
-        	If IsNothing(m_RootDisplayName)  Then
-    			m_RootDisplayName = "Root"
-        	End If
-        	Root = New TreeNode(m_RootDisplayName)
-        	Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
-	        Root.SelectedImageIndex = Root.ImageIndex
-	        Root.Tag = special
-	        
-	        'Build subtree from shortcuts
-	        Dim test As Boolean = False
-	        If test Then
-	        	Dim testlist As new ArrayList()
-	        	testlist.Add("C:\Documents And Settings\Administrateur\Mes documents\Mes Podcasts")
-				testlist.Add("C:\Documents And Settings\Administrateur\Mes documents\My Dropbox")
-	        	SetShortcuts(testlist)
-	        End If
-	        
-	        'Build tree (no sort)
-	        Dim CSI As CShItem
-	        For Each CSI In m_shortcuts
-            	Root.Nodes.Add(MakeNode(CSI))
+            ' Special mode for shortcuts, 
+            ' add root, then each shortcut as child node and expand them.
+
+            'We give root the desktop icon + no text.
+            'we don't build tree automatically.
+            Dim special As CShItem
+            special = GetCShItem(CType(Val(StartDir.Desktop), ShellDll.CSIDL))
+            If IsNothing(m_RootDisplayName) Then
+                m_RootDisplayName = "Root"
+            End If
+            Root = New TreeNode(m_RootDisplayName)
+            Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
+            Root.SelectedImageIndex = Root.ImageIndex
+            Root.Tag = special
+
+            'Build tree (no sort)
+            Dim CSI As CShItem
+            For Each CSI In m_shortcuts
+                Root.Nodes.Add(MakeNode(CSI))
             Next
-        
-	        tv1.Nodes.Add(Root)
-	        Root.Expand()
-        	
-		Else
-        	' Normal mode, add the root and expand it.
-			Dim special As CShItem
-        	special = GetCShItem(CType(Val(m_StartUpDirectory), ShellDll.CSIDL))
+
+            tv1.Nodes.Add(Root)
+            Root.Expand()
+
+        Else
+            ' Normal mode, add the root and expand it.
+            Dim special As CShItem
+            special = GetCShItem(CType(Val(m_StartUpDirectory), ShellDll.CSIDL))
             Root = New TreeNode(special.DisplayName)
-	        Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
-	        Root.SelectedImageIndex = Root.ImageIndex
-	        Root.Tag = special
-	        BuildTree(special.GetDirectories())	        
-	        tv1.Nodes.Add(Root)
-	        Root.Expand()        	
+            Root.ImageIndex = SystemImageListManager.GetIconIndex(special, False)
+            Root.SelectedImageIndex = Root.ImageIndex
+            Root.Tag = special
+            BuildTree(special.GetDirectories())
+            tv1.Nodes.Add(Root)
+            Root.Expand()
         End If
     End Sub
 
@@ -514,7 +518,7 @@ XIT:    tv1.EndUpdate()
                 Next
             End If
 
-			m_bManualCollapse = False
+            m_bManualCollapse = False
             tv1.SelectedNode = e.Node
 
         Else    'Ensure content is accurate
@@ -544,8 +548,8 @@ XIT:    tv1.EndUpdate()
         End If
 
         'Always expand and scroll
-        If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then 
-        	tv1.SelectedNode.Expand()
+        If Not m_bManualCollapse And Not tv1.SelectedNode.IsExpanded Then
+            tv1.SelectedNode.Expand()
         End If
         tv1.SelectedNode.EnsureVisible()
         m_bManualCollapse = False
@@ -563,60 +567,60 @@ XIT:    tv1.EndUpdate()
 #Region "   RefreshNode Sub"
 
     Private Sub RefreshNode(ByVal thisRoot As TreeNode)
-        
+
         If thisRoot Is Root AndAlso m_bShortcutsMode Then
-        	'Do not get directories.	
+            'Do not get directories.	
         Else
-	        'Debug.WriteLine("In RefreshNode: Node = " & thisRoot.Tag.path & " -- " & thisRoot.Tag.displayname)
-	        If Not (thisRoot.Nodes.Count = 1 AndAlso thisRoot.Nodes(0).Text.Equals(" : ")) Then
-	            Dim thisItem As CShItem = thisRoot.Tag
-	            If thisItem.RefreshDirectories Then   'RefreshDirectories True = the contained list of Directories has changed
-	                Dim curDirs As ArrayList = thisItem.GetDirectories(False) 'suppress 2nd refresh
-	                Dim delNodes As New ArrayList()
-	                Dim node As TreeNode
-	                For Each node In thisRoot.Nodes 'this is the old node contents
-	                    Dim i As Integer
-	                    For i = 0 To curDirs.Count - 1
-	                        If CType(curDirs(i), CShItem).Equals(node.Tag) Then
-	                            curDirs.RemoveAt(i)   'found it, don't compare again
-	                            GoTo NXTOLD
-	                        End If
-	                    Next
-	                    'fall thru = node no longer here
-	                    delNodes.Add(node)
-	NXTOLD:         Next
-	                If delNodes.Count + curDirs.Count > 0 Then  'had changes
-	                    Try
-	                        tv1.BeginUpdate()
-	                        For Each node In delNodes 'dir not here anymore, delete node
-	                            thisRoot.Nodes.Remove(node)
-	                        Next
-	                        'any CShItems remaining in curDirs is a new dir under thisRoot
-	                        Dim csi As CShItem
-	                        For Each csi In curDirs
-	                            If Not (csi.IsHidden And Not m_showHiddenFolders) Then
-	                                thisRoot.Nodes.Add(MakeNode(csi))
-	                            End If
-	                        Next
-	                        'we only need to resort if we added
-	                        'sort is based on CShItem in .Tag
-	                        If curDirs.Count > 0 Then
-	                            Dim tmpA(thisRoot.Nodes.Count - 1) As TreeNode
-	                            thisRoot.Nodes.CopyTo(tmpA, 0)
-	                            Array.Sort(tmpA, New TagComparer())
-	                            thisRoot.Nodes.Clear()
-	                            thisRoot.Nodes.AddRange(tmpA)
-	                        End If
-	                    Catch ex As Exception
-	                        Debug.WriteLine("Error in RefreshNode -- " & ex.ToString _
-	                                        & vbCrLf & ex.StackTrace)
-	                    Finally
-	                        tv1.EndUpdate()
-	                    End Try
-	                End If
-	            End If
-	        End If
-	    End If
+            'Debug.WriteLine("In RefreshNode: Node = " & thisRoot.Tag.path & " -- " & thisRoot.Tag.displayname)
+            If Not (thisRoot.Nodes.Count = 1 AndAlso thisRoot.Nodes(0).Text.Equals(" : ")) Then
+                Dim thisItem As CShItem = thisRoot.Tag
+                If thisItem.RefreshDirectories Then   'RefreshDirectories True = the contained list of Directories has changed
+                    Dim curDirs As ArrayList = thisItem.GetDirectories(False) 'suppress 2nd refresh
+                    Dim delNodes As New ArrayList()
+                    Dim node As TreeNode
+                    For Each node In thisRoot.Nodes 'this is the old node contents
+                        Dim i As Integer
+                        For i = 0 To curDirs.Count - 1
+                            If CType(curDirs(i), CShItem).Equals(node.Tag) Then
+                                curDirs.RemoveAt(i)   'found it, don't compare again
+                                GoTo NXTOLD
+                            End If
+                        Next
+                        'fall thru = node no longer here
+                        delNodes.Add(node)
+NXTOLD:             Next
+                    If delNodes.Count + curDirs.Count > 0 Then  'had changes
+                        Try
+                            tv1.BeginUpdate()
+                            For Each node In delNodes 'dir not here anymore, delete node
+                                thisRoot.Nodes.Remove(node)
+                            Next
+                            'any CShItems remaining in curDirs is a new dir under thisRoot
+                            Dim csi As CShItem
+                            For Each csi In curDirs
+                                If Not (csi.IsHidden And Not m_showHiddenFolders) Then
+                                    thisRoot.Nodes.Add(MakeNode(csi))
+                                End If
+                            Next
+                            'we only need to resort if we added
+                            'sort is based on CShItem in .Tag
+                            If curDirs.Count > 0 Then
+                                Dim tmpA(thisRoot.Nodes.Count - 1) As TreeNode
+                                thisRoot.Nodes.CopyTo(tmpA, 0)
+                                Array.Sort(tmpA, New TagComparer())
+                                thisRoot.Nodes.Clear()
+                                thisRoot.Nodes.AddRange(tmpA)
+                            End If
+                        Catch ex As Exception
+                            Debug.WriteLine("Error in RefreshNode -- " & ex.ToString _
+                                            & vbCrLf & ex.StackTrace)
+                        Finally
+                            tv1.EndUpdate()
+                        End Try
+                    End If
+                End If
+            End If
+        End If
     End Sub
 
 #End Region
@@ -653,18 +657,18 @@ XIT:    tv1.EndUpdate()
         If Not tv1.ShowRootLines AndAlso e.Node Is Root Then
             e.Cancel = True
         End If
-        
+
         m_bManualCollapse = True
-        
+
     End Sub
 #End Region
 
 #Region "   TreeView AfterCollapse Event"
     Private Sub tv1_AfterCollapse(ByVal sender As Object, ByVal e As TreeViewEventArgs) Handles tv1.AfterCollapse
-		'Reset the ManualCollapse if we were already selected.
-		' (won't be reseted in AfterSelect as usual).
+        'Reset the ManualCollapse if we were already selected.
+        ' (won't be reseted in AfterSelect as usual).
         If e.Node Is tv1.SelectedNode Then
-        	m_bManualCollapse = False
+            m_bManualCollapse = False
         End If
     End Sub
 #End Region
