@@ -36,104 +36,91 @@ namespace Kinovea.Services
 		/// and needs to show it in the time returned.
 		/// This can happen when the user manually tune the input fps.	
 		/// </summary>
-		public static string MillisecondsToTimecode(double _fTotalMilliseconds, bool _bThousandth, bool _bLeadingZeroes)
+		public static string MillisecondsToTimecode(double totalMilliseconds, bool thousandth, bool leadingZeroes)
 		{
-			int iMinutes, iSeconds, iMilliseconds;
-			int iTotalHours, iTotalMinutes, iTotalSeconds;
+			int minutes, seconds, milliseconds;
+			int totalHours, totalMinutes, totalSeconds;
 			string timecode;
-			bool bNegative = (_fTotalMilliseconds < 0);
+			bool negative = totalMilliseconds < 0;
 			
 			//Computes the total of hours, minutes, seconds, milliseconds.
-			iTotalSeconds   = (int)(Math.Round(_fTotalMilliseconds) / 1000);
-			iTotalMinutes   = iTotalSeconds / 60;
-			iTotalHours     = iTotalMinutes / 60;
-
-			iMinutes        = iTotalMinutes - (iTotalHours * 60);
-			iSeconds        = iTotalSeconds - (iTotalMinutes * 60);
-			iMilliseconds = (int)Math.Round(_fTotalMilliseconds % 1000);
+			totalSeconds = (int)(Math.Round(totalMilliseconds) / 1000);
+			totalMinutes = totalSeconds / 60;
+			totalHours = totalMinutes / 60;
+			minutes = totalMinutes - (totalHours * 60);
+			seconds = totalSeconds - (totalMinutes * 60);
+			milliseconds = (int)Math.Round(totalMilliseconds % 1000);
 						
 			// Since the time can be relative to a sync point, it can be negative.
-			string negativeSign = bNegative ? "- " : "";
+			string negativeSign = negative ? "- " : "";
 			
-			if (bNegative)
+			if (negative)
 			{
-				iTotalHours = -iTotalHours;
-				iMinutes = -iMinutes;
-				iSeconds = -iSeconds;
-				iMilliseconds = -iMilliseconds;
+				totalHours = -totalHours;
+				minutes = -minutes;
+				seconds = -seconds;
+				milliseconds = -milliseconds;
 			}
 
-			if (!_bThousandth)
+			if (!thousandth)
 			{
-				int iHundredth = (int) Math.Round((float)iMilliseconds / 10);
-				if(_bLeadingZeroes || iTotalHours > 0)
+				int hundredth = (int) Math.Round((float)milliseconds / 10);
+				if(leadingZeroes || totalHours > 0)
 				{
-					timecode = String.Format("{0}{1:0}:{2:00}:{3:00}:{4:00}", negativeSign, iTotalHours, iMinutes, iSeconds, iHundredth);
+					timecode = String.Format("{0}{1:0}:{2:00}:{3:00}:{4:00}", negativeSign, totalHours, minutes, seconds, hundredth);
 				}
 				else
 				{
-					if(iMinutes > 0)
-					{
-						timecode = String.Format("{0}{1:00}:{2:00}:{3:00}", negativeSign, iMinutes, iSeconds, iHundredth);
-					}
-					else if(iSeconds > 0)
-					{
-						timecode = String.Format("{0}{1:00}:{2:00}", negativeSign, iSeconds, iHundredth);
-					}
+					if(minutes > 0)
+						timecode = String.Format("{0}{1:00}:{2:00}:{3:00}", negativeSign, minutes, seconds, hundredth);
+					else if(seconds > 0)
+						timecode = String.Format("{0}{1:00}:{2:00}", negativeSign, seconds, hundredth);
 					else
-					{
-						timecode = String.Format("{0}{1:00}", negativeSign, iHundredth);
-					}
+						timecode = String.Format("{0}{1:00}", negativeSign, hundredth);
 				}
 			}
 			else
 			{
-				if(_bLeadingZeroes || iTotalHours > 0)
+				if(leadingZeroes || totalHours > 0)
 				{
-					timecode = String.Format("{0}{1:0}:{2:00}:{3:00}:{4:000}", negativeSign, iTotalHours, iMinutes, iSeconds, iMilliseconds);
+					timecode = String.Format("{0}{1:0}:{2:00}:{3:00}:{4:000}", negativeSign, totalHours, minutes, seconds, milliseconds);
 				}
 				else
 				{
-					if(iMinutes > 0)
-					{
-						timecode = String.Format("{0}{1:00}:{2:00}:{3:000}", negativeSign, iMinutes, iSeconds, iMilliseconds);
-					}
-					else if(iSeconds > 0)
-					{
-						timecode = String.Format("{0}{1:00}:{2:000}", negativeSign, iSeconds, iMilliseconds);
-					}
+					if(minutes > 0)
+						timecode = String.Format("{0}{1:00}:{2:00}:{3:000}", negativeSign, minutes, seconds, milliseconds);
+					else if(seconds > 0)
+						timecode = String.Format("{0}{1:00}:{2:000}", negativeSign, seconds, milliseconds);
 					else
-					{
-						timecode = String.Format("{0}{1:000}", negativeSign, iMilliseconds);
-					}
+						timecode = String.Format("{0}{1:000}", negativeSign, milliseconds);
 				}
 			}
 			
 			return timecode;
 		}
 	
-		public static TimecodeType GetTimecodeType(TimecodeFormat _tcf)
+		public static TimecodeType GetTimecodeType(TimecodeFormat format)
 		{
-			TimecodeType tct = TimecodeType.String;
+			TimecodeType type = TimecodeType.String;
 			
-			switch(_tcf)
+			switch(format)
 			{
 				case TimecodeFormat.Frames:
 				case TimecodeFormat.Milliseconds:	
 				case TimecodeFormat.HundredthOfMinutes:
 				case TimecodeFormat.TenThousandthOfHours:
 				case TimecodeFormat.Timestamps:
-					tct = TimecodeType.Number;
+					type = TimecodeType.Number;
 					break;
 				
 				case TimecodeFormat.ClassicTime:
 				case TimecodeFormat.TimeAndFrames:
 				default:
-					tct = TimecodeType.String;
+					type = TimecodeType.String;
 					break;
 			}
 			
-			return tct;
+			return type;
 		}
 	
 	}

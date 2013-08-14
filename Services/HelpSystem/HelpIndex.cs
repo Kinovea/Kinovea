@@ -34,6 +34,7 @@ namespace Kinovea.Services
         public String FileLocation;
         public String ChangelogLocation;
     }
+
     public class LangGroup
     {
         public string Lang;
@@ -45,11 +46,11 @@ namespace Kinovea.Services
     {
         #region Members
         public ApplicationInfos AppInfos;
-        public List<HelpItem>   UserGuides;
-        public List<HelpItem>   HelpVideos;
-        public bool             LoadSuccess;
+        public List<HelpItem> UserGuides;
+        public List<HelpItem> HelpVideos;
+        public bool LoadSuccess;
 
-        private XmlTextReader   m_XmlReader;
+        private XmlTextReader   xmlReader;
         #endregion
 
         #region Construction
@@ -63,10 +64,9 @@ namespace Kinovea.Services
             // Used to read conf from file.
             Init();
 
-            // If we can't 
             try
             {
-                m_XmlReader = new XmlTextReader(filePath);
+                xmlReader = new XmlTextReader(filePath);
                 ParseConfigFile();
             }
             catch (System.Exception)
@@ -92,29 +92,29 @@ namespace Kinovea.Services
             //-----------------------------------------------------------
             // Fill the local variables with infos found in the XML file.
             //-----------------------------------------------------------
-            if (m_XmlReader != null)
+            if (xmlReader != null)
             {
                 try
                 {
-                    while (m_XmlReader.Read())
+                    while (xmlReader.Read())
                     {
-                        if ((m_XmlReader.IsStartElement()) && (m_XmlReader.Name == "kinovea"))
+                        if ((xmlReader.IsStartElement()) && (xmlReader.Name == "kinovea"))
                         {
-                            while (m_XmlReader.Read())
+                            while (xmlReader.Read())
                             {
-                                if (m_XmlReader.IsStartElement())
+                                if (xmlReader.IsStartElement())
                                 {
-                                    if (m_XmlReader.Name == "software")
+                                    if (xmlReader.Name == "software")
                                     {
                                         AppInfos = ParseAppInfos(); 
                                     }
 
-                                    if (m_XmlReader.Name == "lang")
+                                    if (xmlReader.Name == "lang")
                                     {
                                         ParseHelpItems();
                                     }
                                 }
-                                else if (m_XmlReader.Name == "kinovea")
+                                else if (xmlReader.Name == "kinovea")
                                 {
                                     break;
                                 }
@@ -134,7 +134,7 @@ namespace Kinovea.Services
                 }
                 finally
                 {
-                    m_XmlReader.Close();
+                    xmlReader.Close();
                 }
             }
         }
@@ -142,28 +142,28 @@ namespace Kinovea.Services
         {
             ApplicationInfos ai = new ApplicationInfos();
             
-            ai.Version = new ThreePartsVersion(m_XmlReader.GetAttribute("release"));
+            ai.Version = new ThreePartsVersion(xmlReader.GetAttribute("release"));
 
-            while (m_XmlReader.Read())
+            while (xmlReader.Read())
             {
-                if (m_XmlReader.IsStartElement())
+                if (xmlReader.IsStartElement())
                 {
-                    if (m_XmlReader.Name == "filesize")
+                    if (xmlReader.Name == "filesize")
                     {
-                        ai.FileSizeInBytes = int.Parse(m_XmlReader.ReadString());
+                        ai.FileSizeInBytes = int.Parse(xmlReader.ReadString());
                     }
 
-                    if (m_XmlReader.Name == "location")
+                    if (xmlReader.Name == "location")
                     {
-                        ai.FileLocation = m_XmlReader.ReadString();
+                        ai.FileLocation = xmlReader.ReadString();
                     }
 
-                    if (m_XmlReader.Name == "changelog")
+                    if (xmlReader.Name == "changelog")
                     {
-                        ai.ChangelogLocation = m_XmlReader.ReadString();
+                        ai.ChangelogLocation = xmlReader.ReadString();
                     }
                 }
-                else if (m_XmlReader.Name == "software")
+                else if (xmlReader.Name == "software")
                 {
                     break;
                 }
@@ -177,25 +177,25 @@ namespace Kinovea.Services
         }
         private void ParseHelpItems()
         {
-            string lang = m_XmlReader.GetAttribute("id");
+            string lang = xmlReader.GetAttribute("id");
 
-            while (m_XmlReader.Read())
+            while (xmlReader.Read())
             {
-                if (m_XmlReader.IsStartElement())
+                if (xmlReader.IsStartElement())
                 {
-                    if (m_XmlReader.Name == "manual")
+                    if (xmlReader.Name == "manual")
                     {
-                        HelpItem hi = ParseHelpItem(lang, m_XmlReader.Name);
+                        HelpItem hi = ParseHelpItem(lang, xmlReader.Name);
                         UserGuides.Add(hi);  
                     }
 
-                    if (m_XmlReader.Name == "video")
+                    if (xmlReader.Name == "video")
                     {
-                        HelpItem hi = ParseHelpItem(lang, m_XmlReader.Name);
+                        HelpItem hi = ParseHelpItem(lang, xmlReader.Name);
                         HelpVideos.Add(hi);  
                     }
                 }
-                else if (m_XmlReader.Name == "lang")
+                else if (xmlReader.Name == "lang")
                 {
                     break;
                 }
@@ -209,32 +209,32 @@ namespace Kinovea.Services
         {
             HelpItem hi = new HelpItem();
 
-            hi.Identification   = int.Parse(m_XmlReader.GetAttribute("id"));
-            hi.Revision         = int.Parse(m_XmlReader.GetAttribute("revision"));
+            hi.Identification   = int.Parse(xmlReader.GetAttribute("id"));
+            hi.Revision         = int.Parse(xmlReader.GetAttribute("revision"));
             hi.Language         = lang;
 
-            while (m_XmlReader.Read())
+            while (xmlReader.Read())
             {
-                if (m_XmlReader.IsStartElement())
+                if (xmlReader.IsStartElement())
                 {
-                    if (m_XmlReader.Name == "title")
+                    if (xmlReader.Name == "title")
                     {
-                        hi.LocalizedTitle = m_XmlReader.ReadString(); 
+                        hi.LocalizedTitle = xmlReader.ReadString(); 
                     }
-                    if (m_XmlReader.Name == "filesize")
+                    if (xmlReader.Name == "filesize")
                     {
-                        hi.FileSizeInBytes = int.Parse(m_XmlReader.ReadString());
+                        hi.FileSizeInBytes = int.Parse(xmlReader.ReadString());
                     }
-                    if (m_XmlReader.Name == "location")
+                    if (xmlReader.Name == "location")
                     {
-                        hi.FileLocation = m_XmlReader.ReadString();
+                        hi.FileLocation = xmlReader.ReadString();
                     }
-                    if (m_XmlReader.Name == "comment")
+                    if (xmlReader.Name == "comment")
                     {
-                        hi.Comment = m_XmlReader.ReadString();
+                        hi.Comment = xmlReader.ReadString();
                     }
                 }
-                else if (m_XmlReader.Name == tag)
+                else if (xmlReader.Name == tag)
                 {
                     break;
                 }
