@@ -34,7 +34,6 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public abstract class AbstractFrameServer
     {
-        public abstract void Draw(Graphics _canvas);
-        
+        public abstract void Draw(Graphics canvas);
     }
 }
