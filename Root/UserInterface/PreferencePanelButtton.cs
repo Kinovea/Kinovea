@@ -34,58 +34,54 @@ namespace Kinovea.Root
 		#region Properties
 		public IPreferencePanel PreferencePanel
 		{
-			get { return m_PreferencePanel; }
+			get { return preferencePanel; }
 		}
 		#endregion
 		
 		#region Members
-		private bool m_bSelected;
-		private IPreferencePanel m_PreferencePanel;
-		private static readonly Font m_FontLabel = new Font("Arial", 8, FontStyle.Regular);
+		private bool isSelected;
+		private IPreferencePanel preferencePanel;
+		private static readonly Font fontLabel = new Font("Arial", 8, FontStyle.Regular);
 		#endregion
 		
 		#region Construction
-		public PreferencePanelButtton(IPreferencePanel _PreferencePanel)
+		public PreferencePanelButtton(IPreferencePanel preferencePanel)
 		{
 			InitializeComponent();
-			m_PreferencePanel = _PreferencePanel;
+			this.preferencePanel = preferencePanel;
 		}
 		#endregion
 		
 		#region Public Methods
-		public void SetSelected(bool _bSelected)
+		public void SetSelected(bool isSelected)
 		{
-			m_bSelected = _bSelected;
-			this.BackColor = _bSelected ? Color.LightSteelBlue : Color.White;
+			this.isSelected = isSelected;
+			this.BackColor = isSelected ? Color.LightSteelBlue : Color.White;
 		}
 		#endregion
 		
-		#region Private Methods		
+		#region Private Methods
 		private void preferencePanelButtton_Paint(object sender, PaintEventArgs e)
 		{
-			if(m_PreferencePanel.Icon != null)
+			if(preferencePanel.Icon != null)
 			{
-				Point iconStart = new Point((this.Width - m_PreferencePanel.Icon.Width) / 2, 10);
-				e.Graphics.DrawImage(m_PreferencePanel.Icon, iconStart);
+				Point iconStart = new Point((this.Width - preferencePanel.Icon.Width) / 2, 10);
+				e.Graphics.DrawImage(preferencePanel.Icon, iconStart);
 			}
 			
-			SizeF textSize = e.Graphics.MeasureString(m_PreferencePanel.Description, m_FontLabel);
+			SizeF textSize = e.Graphics.MeasureString(preferencePanel.Description, fontLabel);
 			PointF textStart = new PointF(((float)this.Width - textSize.Width) / 2, 50.0F);
-			e.Graphics.DrawString(m_PreferencePanel.Description, m_FontLabel, Brushes.Black, textStart);
+			e.Graphics.DrawString(preferencePanel.Description, fontLabel, Brushes.Black, textStart);
 		}		
 		private void PreferencePanelButttonMouseEnter(object sender, EventArgs e)
 		{
-			if(!m_bSelected)
-			{
+			if(!isSelected)
 				this.BackColor = Color.FromArgb(224,232,246);
-			}
 		}
 		void PreferencePanelButttonMouseLeave(object sender, EventArgs e)
 		{
-			if(!m_bSelected)
-			{
+			if(!isSelected)
 				this.BackColor = Color.White;	
-			}
 		}
 		#endregion
 	}

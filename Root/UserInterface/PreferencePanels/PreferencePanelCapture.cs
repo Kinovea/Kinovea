@@ -146,52 +146,38 @@ namespace Kinovea.Root
         #region Tab general
         private void btnBrowseImageLocation_Click(object sender, EventArgs e)
         {
-            // Select the image snapshot folder.	
             SelectSavingDirectory(tbImageDirectory);
         }
         private void btnBrowseVideoLocation_Click(object sender, EventArgs e)
         {
-            // Select the video capture folder.	
             SelectSavingDirectory(tbVideoDirectory);
         }
-        private void SelectSavingDirectory(TextBox _tb)
+        private void SelectSavingDirectory(TextBox tb)
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             folderBrowserDialog.Description = ""; // TODO.
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
 
-            if(Directory.Exists(_tb.Text))
-            {
-                folderBrowserDialog.SelectedPath = _tb.Text;
-            }
+            if(Directory.Exists(tb.Text))
+                folderBrowserDialog.SelectedPath = tb.Text;
             
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                _tb.Text = folderBrowserDialog.SelectedPath;
-            }			
+                tb.Text = folderBrowserDialog.SelectedPath;
         }
         private void tbImageDirectory_TextChanged(object sender, EventArgs e)
         {
             if(!filenameHelper.ValidateFilename(tbImageDirectory.Text, true))
-            {
                 ScreenManagerKernel.AlertInvalidFileName();
-            }
             else
-            {
                 imageDirectory = tbImageDirectory.Text;	
-            }
         }
         private void tbVideoDirectory_TextChanged(object sender, EventArgs e)
         {
             if(!filenameHelper.ValidateFilename(tbVideoDirectory.Text, true))
-            {
                 ScreenManagerKernel.AlertInvalidFileName();
-            }
             else
-            {
                 videoDirectory = tbVideoDirectory.Text;	
-            }
         }
         private void cmbImageFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -207,37 +193,33 @@ namespace Kinovea.Root
         private void tbPattern_TextChanged(object sender, EventArgs e)
         {
             if(filenameHelper.ValidateFilename(tbPattern.Text, true))
-            {
                 UpdateSample();
-            }
             else
-            {
                 ScreenManager.ScreenManagerKernel.AlertInvalidFileName();
-            }
         }
         private void btnMarker_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
-            if(btn != null)
-            {
-                int selStart = tbPattern.SelectionStart;
-                tbPattern.Text = tbPattern.Text.Insert(selStart, btn.Text);
-                tbPattern.SelectionStart = selStart + btn.Text.Length;
-            }
+            if (btn == null)
+                return;
+            
+            int selStart = tbPattern.SelectionStart;
+            tbPattern.Text = tbPattern.Text.Insert(selStart, btn.Text);
+            tbPattern.SelectionStart = selStart + btn.Text.Length;
         }
         private void lblMarker_Click(object sender, EventArgs e)
         {
             Label lbl = sender as Label;
-            if(lbl != null)
-            {
-                string macro = lbl.Tag as string;
-                if(macro != null)
-                {
-                    int selStart = tbPattern.SelectionStart;
-                    tbPattern.Text = tbPattern.Text.Insert(selStart, macro);
-                    tbPattern.SelectionStart = selStart + macro.Length;
-                }
-            }	
+            if (lbl == null)
+                return;
+            
+            string macro = lbl.Tag as string;
+            if (macro == null)
+                return;
+            
+            int selStart = tbPattern.SelectionStart;
+            tbPattern.Text = tbPattern.Text.Insert(selStart, macro);
+            tbPattern.SelectionStart = selStart + macro.Length;
         }
         private void btnResetCounter_Click(object sender, EventArgs e)
         {
