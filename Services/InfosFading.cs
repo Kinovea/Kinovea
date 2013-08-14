@@ -30,7 +30,6 @@ namespace Kinovea.Services
     /// </summary>
     public class InfosFading
     {
-        
         #region Properties
         public bool Enabled
         {
@@ -105,8 +104,8 @@ namespace Kinovea.Services
             referenceTimestamp = 0;
             averageTimeStampsPerFrame = 0;
             masterFactor = 1.0f;
-
         }
+
         public InfosFading(long referenceTimestamp, long averageTimeStampsPerFrame)
         {
             // This constructor is used by all drawings to get the default values.
