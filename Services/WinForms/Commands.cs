@@ -74,6 +74,7 @@ namespace Kinovea.Services
     {
         ToggleGrabbing,
         ToggleRecording,
+        TakeSnapshot,
         ResetViewport,
         OpenConfiguration,
         IncreaseZoom,

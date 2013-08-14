@@ -270,6 +270,9 @@ namespace Kinovea.ScreenManager
                 case CaptureScreenCommands.ToggleRecording:
                     presenter.View_ToggleRecording(fnbVideo.Filename);
                     break;
+                case CaptureScreenCommands.TakeSnapshot:
+                    presenter.View_SnapshotAsked(fnbImage.Filename);
+                    break;
                 case CaptureScreenCommands.ResetViewport:
                     presenter.View_DeselectTool();
                     break;
