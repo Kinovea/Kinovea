@@ -27,7 +27,9 @@ namespace Kinovea.Services
 
         public static void Import(Dictionary<string, HotkeyCommand[]> imported)
         {
-            hotkeys = imported ?? CreateDefaultSettings();
+            foreach (string category in imported.Keys)
+                foreach (HotkeyCommand command in imported[category])
+                    Update(category, command);
         }
 
         /// <summary>
@@ -143,6 +145,7 @@ namespace Kinovea.Services
                 { "CaptureScreen", new HotkeyCommand[]{
                     hk(CaptureScreenCommands.ToggleGrabbing, Keys.Space), 
                     hk(CaptureScreenCommands.ToggleRecording, Keys.Control | Keys.Return), 
+                    hk(CaptureScreenCommands.TakeSnapshot, Keys.Shift | Keys.Return), 
                     hk(CaptureScreenCommands.ResetViewport, Keys.Escape), 
                     hk(CaptureScreenCommands.OpenConfiguration, Keys.F12), 
                     //hk(CaptureScreenCommands.IncreaseZoom, Keys.Control | Keys.Add), 
