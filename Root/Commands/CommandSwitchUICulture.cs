@@ -10,9 +10,9 @@ namespace Kinovea.Root
 {
     class CommandSwitchUICulture : IUndoableCommand
     {
-		public string FriendlyName
+        public string FriendlyName
         {
-        	get { return RootLang.CommandSwitchUICulture_FriendlyName; }
+            get { return RootLang.CommandSwitchUICulture_FriendlyName; }
         }
 
         #region Members
@@ -35,14 +35,14 @@ namespace Kinovea.Root
 
         public void Execute()
         {
-        	log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCi.Name, ci.Name));
-        	ChangeToCulture(ci);
+            log.Debug(String.Format("Changing culture from [{0}] to [{1}].", oldCi.Name, ci.Name));
+            ChangeToCulture(ci);
         }
 
         public void Unexecute()
         {
-        	log.Debug(String.Format("Changing back culture from [{0}] to [{1}].", ci.Name, oldCi.Name));
-        	ChangeToCulture(oldCi);
+            log.Debug(String.Format("Changing back culture from [{0}] to [{1}].", ci.Name, oldCi.Name));
+            ChangeToCulture(oldCi);
         }
         private void ChangeToCulture(CultureInfo _newCulture)
         {
