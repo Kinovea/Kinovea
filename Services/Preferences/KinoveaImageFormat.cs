@@ -23,10 +23,10 @@ using System;
 namespace Kinovea.Services
 {
     // Prefixed with Kinovea to avoid conflict with System.Drawing.Imaging.
-	public enum KinoveaImageFormat
-	{
-		JPG,
-		PNG,
-		BMP
-	}
+    public enum KinoveaImageFormat
+    {
+        JPG,
+        PNG,
+        BMP
+    }
 }

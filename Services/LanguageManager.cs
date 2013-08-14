@@ -44,85 +44,85 @@ namespace Kinovea.Services
         // This big list of static properties is to support language names in the credits box.
         // We should have a GetContributors method here instead ?
         public static string English
-		{
-			get { return Languages["en"]; }
-		}
+        {
+            get { return Languages["en"]; }
+        }
         public static string Catalan
         {
             get { return Languages["ca"]; }
         }
         public static string Czech
-		{
-			get { return Languages["cs"]; }
-		}
+        {
+            get { return Languages["cs"]; }
+        }
         public static string Danish
-		{
-			get { return Languages["da"]; }
-		}
+        {
+            get { return Languages["da"]; }
+        }
         public static string Dutch
-		{
-			get { return Languages["nl"]; }
-		}
+        {
+            get { return Languages["nl"]; }
+        }
         public static string German
-		{
-			get { return Languages["de"]; }
-		}
+        {
+            get { return Languages["de"]; }
+        }
         public static string Portuguese
-		{
-			get { return Languages["pt"]; }
-		}
+        {
+            get { return Languages["pt"]; }
+        }
         public static string Spanish
-		{
-			get { return Languages["es"]; }
-		}
+        {
+            get { return Languages["es"]; }
+        }
         public static string Italian
-		{
-			get { return Languages["it"]; }
-		}
+        {
+            get { return Languages["it"]; }
+        }
         public static string Romanian
-		{
-			get { return Languages["ro"]; }
-		}
+        {
+            get { return Languages["ro"]; }
+        }
         public static string Polish
-		{
-			get { return Languages["pl"]; }
-		}
+        {
+            get { return Languages["pl"]; }
+        }
         public static string Finnish
-		{
-			get { return Languages["fi"]; }
-		}
+        {
+            get { return Languages["fi"]; }
+        }
         public static string Norwegian
-		{
-			get { return Languages["no"]; }
-		}
+        {
+            get { return Languages["no"]; }
+        }
         public static string Chinese
-		{
-			get { return Languages["zh-CHS"]; }
-		}
+        {
+            get { return Languages["zh-CHS"]; }
+        }
         public static string Turkish
-		{
-			get { return Languages["tr"]; }
-		}
+        {
+            get { return Languages["tr"]; }
+        }
         public static string Greek
-		{
-			get { return Languages["el"]; }
-		}
+        {
+            get { return Languages["el"]; }
+        }
         public static string Lithuanian
-		{
-			get { return Languages["lt"]; }
-		}
+        {
+            get { return Languages["lt"]; }
+        }
         public static string Swedish
-		{
-			get { return Languages["sv"]; }
-		}
+        {
+            get { return Languages["sv"]; }
+        }
         public static string Korean
-		{
-			get { return Languages["ko"]; }
-		}
+        {
+            get { return Languages["ko"]; }
+        }
         public static string Russian
-		{
-			get { return Languages["ru"]; }
-		}
+        {
+            get { return Languages["ru"]; }
+        }
         #endregion
         
         private static Dictionary<string, string> m_Languages = null;
@@ -155,8 +155,8 @@ namespace Kinovea.Services
         }
         public static bool IsSupportedCulture(CultureInfo ci)
         {
-        	string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
-        	return Languages.ContainsKey(neutral);
+            string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
+            return Languages.ContainsKey(neutral);
         }
     }
 }

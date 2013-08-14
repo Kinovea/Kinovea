@@ -133,10 +133,7 @@
     <Compile Include="CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
-    <Compile Include="Deprecated\DeviceCapability.cs" />
-    <Compile Include="Deprecated\DeviceConfiguration.cs" />
     <Compile Include="CommandManager.cs" />
-    <Compile Include="Deprecated\NetworkCameraFormat.cs" />
     <Compile Include="Events\DelegatesPool.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />

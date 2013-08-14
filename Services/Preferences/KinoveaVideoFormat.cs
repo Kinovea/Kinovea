@@ -23,9 +23,9 @@ using System;
 namespace Kinovea.Services
 {
     public enum KinoveaVideoFormat
-	{
-		MKV,
-		MP4,
-		AVI
-	}
+    {
+        MKV,
+        MP4,
+        AVI
+    }
 }
