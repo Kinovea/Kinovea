@@ -40,7 +40,7 @@ namespace Kinovea.Updater
         {
             // No sub modules.
         }
-        public void ExtendMenu(ToolStrip _menu)
+        public void ExtendMenu(ToolStrip menu)
         {
             //Catch Options Menu (5)  
             ToolStripMenuItem mnuCatchOptions = new ToolStripMenuItem();            
@@ -65,32 +65,20 @@ namespace Kinovea.Updater
             ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchOptions });
             ThisMenu.AllowMerge = true;
 
-            ToolStripManager.Merge(ThisMenu, _menu);
+            ToolStripManager.Merge(ThisMenu, menu);
 
             RefreshUICulture();
         }
-        public void ExtendToolBar(ToolStrip _toolbar)
-        {
-            // Nothing at this level.
-            // No sub modules.
-        }
-        public void ExtendStatusBar(ToolStrip _statusbar)
-        {
-            // Nothing at this level.
-            // No sub modules.
-        }
-        public void ExtendUI()
-        {
-            // No sub modules.
-        }
+        public void ExtendToolBar(ToolStrip _toolbar) {}
+        public void ExtendStatusBar(ToolStrip _statusbar) {}
+        public void ExtendUI() {}
+
         public void RefreshUICulture()
         {
             mnuCheckForUpdates.Text = UpdaterLang.mnuCheckForUpdates;
         }
         public bool CloseSubModules()
         {
-            // No sub modules to close.
-            // Nothing more to do here.
             return false;
         }
         public void PreferencesUpdated()
@@ -102,44 +90,34 @@ namespace Kinovea.Updater
         #region Menu Event Handlers
         private void mnuCheckForUpdatesOnClick(object sender, EventArgs e)
         {
-        	// Stop playing if needed.
+            // Stop playing if needed.
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.StopPlaying != null)
                 dp.StopPlaying();
 
             // Download the update configuration file from the webserver.
             HelpIndex hiRemote = new HelpIndex(Software.RemoteHelpIndex);
-			
-            if (hiRemote.LoadSuccess)
+            
+            if (!hiRemote.LoadSuccess)
             {
-                NotificationCenter.RaiseDisableKeyboardHandler(this);
-                
-                // Check if we are up to date.
-                bool testUpdate = false;
-                //testUpdate = true;
-                ThreePartsVersion currentVersion = new ThreePartsVersion(Software.Version);
-                if (hiRemote.AppInfos.Version > currentVersion || testUpdate)
-            	{
-                	// We are not up to date, display the full dialog.
-                	// The dialog is responsible for displaying the download success msg box.
-	                UpdateDialog2 ud = new UpdateDialog2(hiRemote);
-	                ud.ShowDialog();
-	               	ud.Dispose();
-                }
-                else
-                {
-                	// We are up to date, display a simple confirmation box.
-                	MessageBox.Show(UpdaterLang.Updater_UpToDate, UpdaterLang.Updater_Title, 
-                	                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    
-	            }
-                
-               NotificationCenter.RaiseEnableKeyboardHandler(this);
+                MessageBox.Show(UpdaterLang.Updater_InternetError, UpdaterLang.Updater_Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            
+            // Check if we are up to date.
+            bool testUpdate = false;
+            ThreePartsVersion currentVersion = new ThreePartsVersion(Software.Version);
+            if (hiRemote.AppInfos.Version > currentVersion || testUpdate)
+            {
+                // We are not up to date, display the full dialog.
+                // The dialog is responsible for displaying the download success msg box.
+                UpdateDialog2 ud = new UpdateDialog2(hiRemote);
+                ud.ShowDialog();
+                ud.Dispose();
             }
             else
             {
-                // Remote connection failed, we are probably firewalled.
-                MessageBox.Show(UpdaterLang.Updater_InternetError, UpdaterLang.Updater_Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(UpdaterLang.Updater_UpToDate, UpdaterLang.Updater_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         #endregion
