@@ -56,8 +56,8 @@ namespace Kinovea.ScreenManager
         }
         public bool CancelLastCommand
         {
-            get { return m_bCancelLastCommand; } // Unused.
-            set { m_bCancelLastCommand = value; }
+            get { return cancelLastCommand; } // Unused.
+            set { cancelLastCommand = value; }
         }
         public int ScreenCount
         {
@@ -67,27 +67,27 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private ScreenManagerUserInterface view;
-        private bool m_bCancelLastCommand;			// true when a RemoveScreen command was canceled by user.
+        private bool cancelLastCommand;			// true when a RemoveScreen command was canceled by user.
 
         //List of screens ( 0..n )
         public List<AbstractScreen> screenList = new List<AbstractScreen>();
-        public AbstractScreen m_ActiveScreen = null;
+        public AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         
         // Dual saving
-        private string m_DualSaveFileName;
-        private bool m_bDualSaveCancelled;
-        private bool m_bDualSaveInProgress;
-        private VideoFileWriter m_VideoFileWriter = new VideoFileWriter();
-        private BackgroundWorker m_bgWorkerDualSave;
-        private formProgressBar m_DualSaveProgressBar;
+        private string dualSaveFileName;
+        private bool dualSaveCancelled;
+        private bool dualSaveInProgress;
+        private VideoFileWriter videoFileWriter = new VideoFileWriter();
+        private BackgroundWorker bgWorkerDualSave;
+        private formProgressBar dualSaveProgressBar;
 
         // Video Filters
-        private bool m_bHasSvgFiles;
-        private string m_SvgPath;
-        private FileSystemWatcher m_SVGFilesWatcher = new FileSystemWatcher();
-        private bool m_BuildingSVGMenu;
-        private List<ToolStripMenuItem> m_filterMenus = new List<ToolStripMenuItem>();
+        private bool hasSvgFiles;
+        private string svgPath;
+        private FileSystemWatcher svgFilesWatcher = new FileSystemWatcher();
+        private bool buildingSVGMenu;
+        private List<ToolStripMenuItem> filterMenus = new List<ToolStripMenuItem>();
         
         #region Menus
         private ToolStripMenuItem mnuCloseFile = new ToolStripMenuItem();
@@ -134,27 +134,27 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Synchronization
-        private bool    m_bSynching;
-        private bool 	m_bSyncMerging;				// true if blending each other videos. 
-        private long    m_iSyncLag; 	            // Sync Lag in Frames, for static sync.
-        private long     m_iSyncLagMilliseconds;		// Sync lag in Milliseconds, for dynamic sync.
-        private bool 	m_bDynamicSynching;			// replace the common timer.
+        private bool synching;
+        private bool syncMerging;				// true if blending each other videos. 
+        private long syncLag; 	            // Sync Lag in Frames, for static sync.
+        private long syncLagMilliseconds;		// Sync lag in Milliseconds, for dynamic sync.
+        private bool dynamicSynching;			// replace the common timer.
         
         // Static Sync Positions
-        private long m_iCurrentFrame = 0;            // Current frame in trkFrame...
-        private long m_iLeftSyncFrame = 0;           // Sync reference in the left video
-        private long m_iRightSyncFrame = 0;          // Sync reference in the right video
-        private long m_iMaxFrame = 0;                // Max du trkFrame
+        private long currentFrame = 0;            // Current frame in trkFrame...
+        private long leftSyncFrame = 0;           // Sync reference in the left video
+        private long rightSyncFrame = 0;          // Sync reference in the right video
+        private long maxFrame = 0;                // Max du trkFrame
 
         // Dynamic Sync Flags.
-        private bool m_bRightIsStarting = false;    // true when the video is between [0] and [1] frames.
-        private bool m_bLeftIsStarting = false;
-        private bool m_bLeftIsCatchingUp = false;   // CatchingUp is when the video is the only one left running,
-        private bool m_bRightIsCatchingUp = false;  // heading towards end, the other video is waiting the lag.
+        private bool rightIsStarting = false;    // true when the video is between [0] and [1] frames.
+        private bool leftIsStarting = false;
+        private bool leftIsCatchingUp = false;   // CatchingUp is when the video is the only one left running,
+        private bool rightIsCatchingUp = false;  // heading towards end, the other video is waiting the lag.
 
         #endregion
 
-        private List<ScreenManagerState> m_StoredStates  = new List<ScreenManagerState>();
+        private List<ScreenManagerState> storedStates  = new List<ScreenManagerState>();
         private const int WM_KEYDOWN = 0x0100;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -176,27 +176,27 @@ namespace Kinovea.ScreenManager
             dp.StopPlaying = DoStopPlaying;
             
             // Watch for changes in the guides directory.
-            m_SvgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
-            m_SVGFilesWatcher.Path = m_SvgPath;
-            m_SVGFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
-            m_SVGFilesWatcher.Filter = "*.svg";
-            m_SVGFilesWatcher.IncludeSubdirectories = true;
-            m_SVGFilesWatcher.EnableRaisingEvents = true;
+            svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
+            svgFilesWatcher.Path = svgPath;
+            svgFilesWatcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
+            svgFilesWatcher.Filter = "*.svg";
+            svgFilesWatcher.IncludeSubdirectories = true;
+            svgFilesWatcher.EnableRaisingEvents = true;
             
-            m_SVGFilesWatcher.Changed += OnSVGFilesChanged;
-            m_SVGFilesWatcher.Created += OnSVGFilesChanged;
-            m_SVGFilesWatcher.Deleted += OnSVGFilesChanged;
-            m_SVGFilesWatcher.Renamed += OnSVGFilesChanged;
+            svgFilesWatcher.Changed += OnSVGFilesChanged;
+            svgFilesWatcher.Created += OnSVGFilesChanged;
+            svgFilesWatcher.Deleted += OnSVGFilesChanged;
+            svgFilesWatcher.Renamed += OnSVGFilesChanged;
         }
 
         private void InitializeVideoFilters()
         {
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterAutoLevels()));
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterContrast()));
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterSharpen()));
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
-            m_filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterAutoLevels()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterContrast()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterSharpen()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterEdgesOnly()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterMosaic()));
+            filterMenus.Add(CreateFilterMenu(new VideoFilterReverse()));
             //m_filterMenus.Add(CreateFilterMenu(new VideoFilterSandbox()));
         }
         private ToolStripMenuItem CreateFilterMenu(AbstractVideoFilter _filter)
@@ -207,7 +207,7 @@ namespace Kinovea.ScreenManager
             menu.MergeAction = MergeAction.Append;
             menu.Tag = _filter;
             menu.Click += (s,e) => {
-                PlayerScreen screen = m_ActiveScreen as PlayerScreen;
+                PlayerScreen screen = activeScreen as PlayerScreen;
                 if(screen == null || !screen.IsCaching)
                     return;
                 AbstractVideoFilter filter = (AbstractVideoFilter)((ToolStripMenuItem)s).Tag;
@@ -218,7 +218,7 @@ namespace Kinovea.ScreenManager
         }
         public void SetInteractiveEffect(InteractiveEffect _effect)
         {
-            PlayerScreen player = m_ActiveScreen as PlayerScreen;
+            PlayerScreen player = activeScreen as PlayerScreen;
             if(player != null)
                 player.SetInteractiveEffect(_effect);
         }
@@ -241,7 +241,7 @@ namespace Kinovea.ScreenManager
         {
             // No sub modules.
         }
-        public void ExtendMenu(ToolStrip _menu)
+        public void ExtendMenu(ToolStrip menu)
         {
             #region File
             ToolStripMenuItem mnuCatchFile = new ToolStripMenuItem();
@@ -381,10 +381,10 @@ namespace Kinovea.ScreenManager
             
             // Temporary hack for including filters sub menus until a full plugin system is in place.
             // We just check on their type. Ultimately each plugin will have a category or a submenu property.
-            foreach(ToolStripMenuItem menu in m_filterMenus)
+            foreach(ToolStripMenuItem m in filterMenus)
             {
-                if(menu.Tag is AdjustmentFilter)
-                    mnuCatchImage.DropDownItems.Add(menu);
+                if(m.Tag is AdjustmentFilter)
+                    mnuCatchImage.DropDownItems.Add(m);
             }
             
             mnuCatchImage.DropDownItems.Add(new ToolStripSeparator());
@@ -403,10 +403,10 @@ namespace Kinovea.ScreenManager
             
             mnuCatchMotion.DropDownItems.Add(mnuHighspeedCamera);
             mnuCatchMotion.DropDownItems.Add(new ToolStripSeparator());
-            foreach(ToolStripMenuItem menu in m_filterMenus)
+            foreach(ToolStripMenuItem m in filterMenus)
             {
-                if(!(menu.Tag is AdjustmentFilter))
-                    mnuCatchMotion.DropDownItems.Add(menu);
+                if(!(m.Tag is AdjustmentFilter))
+                    mnuCatchMotion.DropDownItems.Add(m);
             }
             #endregion
             
@@ -414,12 +414,12 @@ namespace Kinovea.ScreenManager
             ThisMenu.Items.AddRange(new ToolStripItem[] { mnuCatchFile, mnuCatchScreens, mnuCatchImage, mnuCatchMotion });
             ThisMenu.AllowMerge = true;
 
-            ToolStripManager.Merge(ThisMenu, _menu);
+            ToolStripManager.Merge(ThisMenu, menu);
 
             RefreshCultureMenu();
         }
         
-        public void ExtendToolBar(ToolStrip _toolbar)
+        public void ExtendToolBar(ToolStrip toolbar)
         {
             // Save
             toolSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -465,10 +465,10 @@ namespace Kinovea.ScreenManager
                                             new ToolStripSeparator(),
                                             toolTwoMixed });
             
-            ToolStripManager.Merge(ts, _toolbar);
+            ToolStripManager.Merge(ts, toolbar);
             
         }
-        public void ExtendStatusBar(ToolStrip _statusbar)
+        public void ExtendStatusBar(ToolStrip statusbar)
         {
             // Nothing at this level.
             // No sub modules.
@@ -533,23 +533,23 @@ namespace Kinovea.ScreenManager
             if (screenList[0].GetType() == screenList[1].GetType())
                 screenList[otherScreen].ExecuteCommand(e.Command);
         }
-        public void Screen_CloseAsked(AbstractScreen _sender)
+        public void Screen_CloseAsked(AbstractScreen screen)
         {
             // Should be phased out soon in favor of the event handler above.
         
             // If the screen is in Drawtime filter (e.g: Mosaic), we just go back to normal play.
-            if(_sender is PlayerScreen && ((PlayerScreen)_sender).InteractiveFiltering)
+            if(screen is PlayerScreen && ((PlayerScreen)screen).InteractiveFiltering)
             {
-                SetActiveScreen(_sender);
-                ((PlayerScreen)_sender).DeactivateInteractiveEffect();
+                SetActiveScreen(screen);
+                ((PlayerScreen)screen).DeactivateInteractiveEffect();
                 return;
             }
             
-            _sender.BeforeClose();
+            screen.BeforeClose();
             
             // Reorganise screens.
             // We leverage the fact that screens are always well ordered relative to menus.
-            if (screenList.Count > 0 && _sender == screenList[0])
+            if (screenList.Count > 0 && screen == screenList[0])
                 CloseFile(0);
             else
                 CloseFile(1);
@@ -557,85 +557,81 @@ namespace Kinovea.ScreenManager
             UpdateCaptureBuffers();
             PrepareSync(false);
         }
-        public void Screen_UpdateStatusBarAsked(AbstractScreen _SenderScreen)
+        public void Screen_UpdateStatusBarAsked(AbstractScreen screen)
         {
             UpdateStatusBar();
         }
-        public void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation)
+        public void Player_SpeedChanged(PlayerScreen screen, bool initialisation)
         {
-            if (!m_bSynching || screenList.Count != 2)
+            if (!synching || screenList.Count != 2)
                 return;
             
             if(PreferencesManager.PlayerPreferences.SyncLockSpeed)
             {
-                int otherScreen = _screen == screenList[0] ? 1 : 0;
-                ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)_screen).RealtimePercentage;
+                int otherScreen = screen == screenList[0] ? 1 : 0;
+                ((PlayerScreen)screenList[otherScreen]).RealtimePercentage = ((PlayerScreen)screen).RealtimePercentage;
             }
             
             SetSyncPoint(true);
         }
-        public void Player_PauseAsked(PlayerScreen _screen)
+        public void Player_PauseAsked(PlayerScreen screen)
         {
             // An individual player asks for a global pause.
-            if (m_bSynching && view.CommonPlaying)
+            if (synching && view.CommonPlaying)
             {
                 view.CommonPlaying = false;
                 CommonCtrl_Play();
             }
         }
-        public void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization)
+        public void Player_SelectionChanged(PlayerScreen screen, bool initialization)
         {
-            PrepareSync(_bInitialization);
+            PrepareSync(initialization);
         }
-        public void Player_ImageChanged(PlayerScreen _screen, Bitmap _image)
+        public void Player_ImageChanged(PlayerScreen screen, Bitmap image)
         {
-            if (!m_bSynching)
+            if (!synching)
                 return;
 
-            if(m_bDynamicSynching)
+            if(dynamicSynching)
                 DynamicSync();
             
             // Transfer the caller's image to the other screen.
             // The image has been cloned and transformed in the caller screen.
-            if(m_bSyncMerging && _image != null)
+            if(syncMerging && image != null)
             {
-                foreach (AbstractScreen screen in screenList)
+                foreach (AbstractScreen s in screenList)
                 {
-                    if (screen != _screen && screen is PlayerScreen)
-                        ((PlayerScreen)screen).SetSyncMergeImage(_image, !m_bDualSaveInProgress);
+                    if (s != screen && s is PlayerScreen)
+                        ((PlayerScreen)s).SetSyncMergeImage(image, !dualSaveInProgress);
                 }
             }
         }
-        public void Player_SendImage(PlayerScreen _screen, Bitmap _image)
+        public void Player_SendImage(PlayerScreen screen, Bitmap image)
         {
             // An image was sent from a screen to be added as an observational reference in the other screen.
+            // The image has been cloned and transformed in the caller screen.
             for(int i=0;i<screenList.Count;i++)
             {
-                if (screenList[i] != _screen && screenList[i] is PlayerScreen)
-                {
-                    // The image has been cloned and transformed in the caller screen.
-                    screenList[i].AddImageDrawing(_image);
-                }
+                if (screenList[i] != screen && screenList[i] is PlayerScreen)
+                    screenList[i].AddImageDrawing(image);
             }			
         }
-        public void Player_Reset(PlayerScreen _screen)
+        public void Player_Reset(PlayerScreen screen)
         {
             // A screen was reset. (ex: a video was reloded in place).
             // We need to also reset all the sync states.
             PrepareSync(true);
         }
-        public void Capture_FileSaved(CaptureScreen _screen)
+        public void Capture_FileSaved(CaptureScreen screen)
         {
             // A file was saved in one screen, we need to update the text on the other.
             for(int i=0;i<screenList.Count;i++)
             {
-                if (screenList[i] != _screen && screenList[i] is CaptureScreen)
-                {
+                if (screenList[i] != screen && screenList[i] is CaptureScreen)
                     screenList[i].RefreshUICulture();
-                }
             }
         }
-        public void Capture_LoadVideo(CaptureScreen _screen, string _filepath)
+        public void Capture_LoadVideo(CaptureScreen screen, string path)
         {
             // Launch a video in the other screen.
             
@@ -643,7 +639,7 @@ namespace Kinovea.ScreenManager
             {
                 // Create the screen if necessary.
                 // The buffer of the capture screen will be reset during the operation.
-                DoLoadMovieInScreen(_filepath, -1, true);
+                DoLoadMovieInScreen(path, -1, true);
             }
             else if(screenList.Count == 2)
             {
@@ -652,7 +648,7 @@ namespace Kinovea.ScreenManager
                 int iOtherScreenIndex = 0;
                 for(int i=0;i<screenList.Count;i++)
                 {
-                    if (screenList[i] != _screen)
+                    if (screenList[i] != screen)
                     {
                         otherScreen = screenList[i];
                         iOtherScreenIndex = i+1;
@@ -666,7 +662,7 @@ namespace Kinovea.ScreenManager
                 else if(otherScreen is PlayerScreen)
                 {
                     // Replace the video.
-                    DoLoadMovieInScreen(_filepath, iOtherScreenIndex, true);
+                    DoLoadMovieInScreen(path, iOtherScreenIndex, true);
                 }
             }
         }
@@ -686,11 +682,11 @@ namespace Kinovea.ScreenManager
         {
             DoStopPlaying();
             
-            if (m_bSynching)
+            if (synching)
             {
-                m_iCurrentFrame = 0;
-                OnCommonPositionChanged(m_iCurrentFrame, true);
-                view.UpdateTrkFrame(m_iCurrentFrame);
+                currentFrame = 0;
+                OnCommonPositionChanged(currentFrame, true);
+                view.UpdateTrkFrame(currentFrame);
                 
             }
             else
@@ -699,9 +695,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen is PlayerScreen)
-                    {
                         ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoFirst_Click(null, EventArgs.Empty);
-                    }
                 }
             }	
         }
@@ -709,13 +703,13 @@ namespace Kinovea.ScreenManager
         {
             DoStopPlaying();
             
-            if (m_bSynching)
+            if (synching)
             {
-                if (m_iCurrentFrame > 0)
+                if (currentFrame > 0)
                 {
-                    m_iCurrentFrame--;
-                    OnCommonPositionChanged(m_iCurrentFrame, true);
-                    view.UpdateTrkFrame(m_iCurrentFrame);
+                    currentFrame--;
+                    OnCommonPositionChanged(currentFrame, true);
+                    view.UpdateTrkFrame(currentFrame);
                 }
             }
             else
@@ -724,9 +718,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                    {
                         ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoPrevious_Click(null, EventArgs.Empty);
-                    }
                 }
             }	
         }
@@ -734,13 +726,13 @@ namespace Kinovea.ScreenManager
         {
             DoStopPlaying();
             
-            if (m_bSynching)
+            if (synching)
             {
-                if (m_iCurrentFrame < m_iMaxFrame)
+                if (currentFrame < maxFrame)
                 {
-                    m_iCurrentFrame++;
+                    currentFrame++;
                     OnCommonPositionChanged(-1, true);
-                    view.UpdateTrkFrame(m_iCurrentFrame);
+                    view.UpdateTrkFrame(currentFrame);
                 }
             }
             else
@@ -749,9 +741,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                    {
                         ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoNext_Click(null, EventArgs.Empty);
-                    }
                 }
             }	
         }
@@ -759,11 +749,11 @@ namespace Kinovea.ScreenManager
         {
             DoStopPlaying();
             
-            if (m_bSynching)
+            if (synching)
             {
-                m_iCurrentFrame = m_iMaxFrame;
-                OnCommonPositionChanged(m_iCurrentFrame, true);
-                view.UpdateTrkFrame(m_iCurrentFrame);
+                currentFrame = maxFrame;
+                OnCommonPositionChanged(currentFrame, true);
+                view.UpdateTrkFrame(currentFrame);
                 
             }
             else
@@ -772,15 +762,13 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen is PlayerScreen)
-                    {
                         ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoLast_Click(null, EventArgs.Empty);
-                    }
                 }
             }	
         }
         public void CommonCtrl_Play()
         {
-            if (m_bSynching)
+            if (synching)
             {
                 if (view.CommonPlaying)
                 {
@@ -791,8 +779,8 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     StopDynamicSync();
-                    m_bLeftIsStarting = false;
-                    m_bRightIsStarting = false;
+                    leftIsStarting = false;
+                    rightIsStarting = false;
                 }
             }
 
@@ -812,86 +800,85 @@ namespace Kinovea.ScreenManager
         }
         public void CommonCtrl_Sync()
         {
-            if (m_bSynching && screenList.Count == 2)
-            {
-                log.Debug("Sync point change.");
-                SetSyncPoint(false);
-                SetSyncLimits();
-                OnCommonPositionChanged(m_iCurrentFrame, true);
-            }
+            if (synching && screenList.Count != 2)
+                return;
+            
+            log.Debug("Sync point change.");
+            SetSyncPoint(false);
+            SetSyncLimits();
+            OnCommonPositionChanged(currentFrame, true);
         }
         public void CommonCtrl_Merge()
         {
-            if (m_bSynching && screenList.Count == 2)
-            {
-                m_bSyncMerging = view.Merging;
-                log.Debug(String.Format("SyncMerge videos is now {0}", m_bSyncMerging.ToString()));
+            if (!synching || screenList.Count != 2)
+                return;
+            
+            syncMerging = view.Merging;
+            log.Debug(String.Format("SyncMerge videos is now {0}", syncMerging.ToString()));
                 
-                // This will also do a full refresh, and triggers Player_ImageChanged().
-                ((PlayerScreen)screenList[0]).SyncMerge = m_bSyncMerging;
-                ((PlayerScreen)screenList[1]).SyncMerge = m_bSyncMerging;
-            }
+            // This will also do a full refresh, and triggers Player_ImageChanged().
+            ((PlayerScreen)screenList[0]).SyncMerge = syncMerging;
+            ((PlayerScreen)screenList[1]).SyncMerge = syncMerging;
         }
-    public void CommonCtrl_PositionChanged(long _iPosition)
-    {
-            // Manual static sync.
-            if (m_bSynching)
-            {
-                StopDynamicSync();
-                
-                EnsurePause(0);
-                EnsurePause(1);
-
-                view.DisplayAsPaused();
-
-                m_iCurrentFrame = _iPosition;
-                OnCommonPositionChanged(m_iCurrentFrame, true);
-            }	
-        }
-    public void CommonCtrl_Snapshot()
-    {
-        // Retrieve current images and create a composite out of them.
-        if (m_bSynching && screenList.Count == 2)
+        public void CommonCtrl_PositionChanged(long _iPosition)
         {
+            // Manual static sync.
+            if (!synching)
+                return;
+                
+            StopDynamicSync();
+                
+            EnsurePause(0);
+            EnsurePause(1);
+
+            view.DisplayAsPaused();
+
+            currentFrame = _iPosition;
+            OnCommonPositionChanged(currentFrame, true);
+        }
+    
+        public void CommonCtrl_Snapshot()
+        {
+            // Retrieve current images and create a composite out of them.
+            if (!synching || screenList.Count != 2)
+                return;
+        
             PlayerScreen ps1 = screenList[0] as PlayerScreen;
             PlayerScreen ps2 = screenList[1] as PlayerScreen;
-            if(ps1 != null && ps2 != null)
-            {
-                DoStopPlaying();
+            if (ps1 == null || ps2 == null)
+                return;
+            
+            DoStopPlaying();
                 
-                // get a copy of the images with drawings flushed on.
-                Bitmap leftImage = ps1.GetFlushedImage();
-                Bitmap rightImage = ps2.GetFlushedImage();
-                Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
+            // get a copy of the images with drawings flushed on.
+            Bitmap leftImage = ps1.GetFlushedImage();
+            Bitmap rightImage = ps2.GetFlushedImage();
+            Bitmap composite = ImageHelper.GetSideBySideComposite(leftImage, rightImage, false, true);
                 
-                // Configure Save dialog.
-                SaveFileDialog dlgSave = new SaveFileDialog();
-                dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
-                dlgSave.RestoreDirectory = true;
-                dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
-                dlgSave.FilterIndex = 1;
-                dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
+            // Configure Save dialog.
+            SaveFileDialog dlgSave = new SaveFileDialog();
+            dlgSave.Title = ScreenManagerLang.Generic_SaveImage;
+            dlgSave.RestoreDirectory = true;
+            dlgSave.Filter = ScreenManagerLang.dlgSaveFilter;
+            dlgSave.FilterIndex = 1;
+            dlgSave.FileName = String.Format("{0} - {1}", Path.GetFileNameWithoutExtension(ps1.FilePath), Path.GetFileNameWithoutExtension(ps2.FilePath));
                 
-                // Launch the dialog and save image.
-                if (dlgSave.ShowDialog() == DialogResult.OK)
-                {
-                    ImageHelper.Save(dlgSave.FileName, composite);
-                }
+            // Launch the dialog and save image.
+            if (dlgSave.ShowDialog() == DialogResult.OK)
+                ImageHelper.Save(dlgSave.FileName, composite);
 
-                composite.Dispose();
-                leftImage.Dispose();
-                rightImage.Dispose();
+            composite.Dispose();
+            leftImage.Dispose();
+            rightImage.Dispose();
                 
-                NotificationCenter.RaiseRefreshFileExplorer(this, false);
-            }
+            NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
-    }
+    
         public void CommonCtrl_DualVideo()
         {
             // Create and save a composite video with side by side synchronized images.
             // If merge is active, just save one video.
-            
-            if (!m_bSynching || screenList.Count != 2)
+            if (!synching || screenList.Count != 2)
                 return;
             
             PlayerScreen ps1 = screenList[0] as PlayerScreen;
@@ -912,40 +899,40 @@ namespace Kinovea.ScreenManager
             if (dlgSave.ShowDialog() != DialogResult.OK)
                 return;
             
-            long iCurrentFrame = m_iCurrentFrame;
-            m_bDualSaveCancelled = false;
-            m_DualSaveFileName = dlgSave.FileName;
+            long iCurrentFrame = currentFrame;
+            dualSaveCancelled = false;
+            dualSaveFileName = dlgSave.FileName;
             
             // Instanciate and configure the bgWorker.
-            m_bgWorkerDualSave = new BackgroundWorker();
-            m_bgWorkerDualSave.WorkerReportsProgress = true;
-            m_bgWorkerDualSave.WorkerSupportsCancellation = true;
-            m_bgWorkerDualSave.DoWork += bgWorkerDualSave_DoWork;
-            m_bgWorkerDualSave.ProgressChanged += bgWorkerDualSave_ProgressChanged;
-            m_bgWorkerDualSave.RunWorkerCompleted += bgWorkerDualSave_RunWorkerCompleted;
+            bgWorkerDualSave = new BackgroundWorker();
+            bgWorkerDualSave.WorkerReportsProgress = true;
+            bgWorkerDualSave.WorkerSupportsCancellation = true;
+            bgWorkerDualSave.DoWork += bgWorkerDualSave_DoWork;
+            bgWorkerDualSave.ProgressChanged += bgWorkerDualSave_ProgressChanged;
+            bgWorkerDualSave.RunWorkerCompleted += bgWorkerDualSave_RunWorkerCompleted;
             
             // Make sure none of the screen will try to update itself.
             // Otherwise it will cause access to the other screen image (in case of merge), which can cause a crash.
-            m_bDualSaveInProgress = true;
+            dualSaveInProgress = true;
             ps1.DualSaveInProgress = true;
             ps2.DualSaveInProgress = true;
             
             // Create the progress bar and launch the worker.
-            m_DualSaveProgressBar = new formProgressBar(true);
-            m_DualSaveProgressBar.Cancel = dualSave_CancelAsked;
-            m_bgWorkerDualSave.RunWorkerAsync();
-            m_DualSaveProgressBar.ShowDialog();
+            dualSaveProgressBar = new formProgressBar(true);
+            dualSaveProgressBar.Cancel = dualSave_CancelAsked;
+            bgWorkerDualSave.RunWorkerAsync();
+            dualSaveProgressBar.ShowDialog();
             
             // If cancelled, delete temporary file.
-            if(m_bDualSaveCancelled)
-                DeleteTemporaryFile(m_DualSaveFileName);
+            if(dualSaveCancelled)
+                DeleteTemporaryFile(dualSaveFileName);
             
             // Reset to where we were.
-            m_bDualSaveInProgress = false;
+            dualSaveInProgress = false;
             ps1.DualSaveInProgress = false;
             ps2.DualSaveInProgress = false;
-            m_iCurrentFrame = iCurrentFrame;
-            OnCommonPositionChanged(m_iCurrentFrame, true);
+            currentFrame = iCurrentFrame;
+            OnCommonPositionChanged(currentFrame, true);
         }
         #endregion
         
@@ -955,9 +942,9 @@ namespace Kinovea.ScreenManager
             if(screen == null)
                 return;
 
-            if (screenList.Count == 1 || screen == m_ActiveScreen)
+            if (screenList.Count == 1 || screen == activeScreen)
             {
-                m_ActiveScreen = screen;
+                activeScreen = screen;
                 OrganizeMenus();
                 return;
             }
@@ -965,7 +952,7 @@ namespace Kinovea.ScreenManager
             foreach (AbstractScreen s in screenList)
                 s.DisplayAsActiveScreen(s == screen);
                 
-            m_ActiveScreen = screen;
+            activeScreen = screen;
             OrganizeMenus();
         }
         public AbstractScreen GetScreenAt(int index)
@@ -1037,9 +1024,7 @@ namespace Kinovea.ScreenManager
 
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.UpdateStatusBar != null)
-            {
                 dp.UpdateStatusBar(StatusString);
-            }
         }
         public void OrganizeCommonControls()
         {
@@ -1059,13 +1044,10 @@ namespace Kinovea.ScreenManager
                     capScreen.SetShared(shared);
             }
         }
-        public void FullScreen(bool _bFullScreen)
+        public void FullScreen(bool fullScreen)
         {
-            // Propagate the new mode to screens.
             foreach (AbstractScreen screen in screenList)
-            {
-                screen.FullScreen(_bFullScreen);
-            }
+                screen.FullScreen(fullScreen);
         }
         public static void AlertInvalidFileName()
         {
@@ -1091,63 +1073,61 @@ namespace Kinovea.ScreenManager
             mnuImportImage.MergeAction = MergeAction.Append;
             AddImportImageMenu(mnuSVGTools);
             
-            AddSvgSubMenus(m_SvgPath, mnuSVGTools);
+            AddSvgSubMenus(svgPath, mnuSVGTools);
         }
-        private void AddImportImageMenu(ToolStripMenuItem _menu)
+        private void AddImportImageMenu(ToolStripMenuItem menu)
         {
-            _menu.DropDownItems.Add(mnuImportImage);
-            _menu.DropDownItems.Add(new ToolStripSeparator());
+            menu.DropDownItems.Add(mnuImportImage);
+            menu.DropDownItems.Add(new ToolStripSeparator());
         }
-        private void AddSvgSubMenus(string _dir, ToolStripMenuItem _menu)
+        private void AddSvgSubMenus(string dir, ToolStripMenuItem menu)
         {
             // This is a recursive function that browses a directory and its sub directories,
             // each directory is made into a menu tree, each svg file is added as a menu leaf.
-            m_BuildingSVGMenu = true;
+            if (!Directory.Exists(dir))
+                return;
             
-            if(Directory.Exists(_dir))
-            {
-                // Loop sub directories.
-                string[] subDirs = Directory.GetDirectories (_dir);
-                foreach (string subDir in subDirs)
-                {
-                    // Create a menu
-                    ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
-                    mnuSubDir.Text = Path.GetFileName(subDir);
-                    mnuSubDir.Image = Properties.Resources.folder;
-                    mnuSubDir.MergeAction = MergeAction.Append;
-                    
-                    // Build sub tree.
-                    AddSvgSubMenus(subDir, mnuSubDir);
-                    
-                    // Add to parent if non-empty.
-                    if(mnuSubDir.HasDropDownItems)
-                    {
-                        _menu.DropDownItems.Add(mnuSubDir);
-                    }
-                }
+            buildingSVGMenu = true;
 
-                // Then loop files within the sub directory.
-                foreach (string file in Directory.GetFiles(_dir))
-                {
-                    if (Path.GetExtension(file).ToLower().Equals(".svg"))
-                    {
-                        m_bHasSvgFiles = true;
-                        
-                        // Create a menu. 
-                        ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
-                        mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(file);
-                        mnuSVGDrawing.Tag = file;
-                        mnuSVGDrawing.Image = Properties.Resources.vector;
-                        mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
-                        mnuSVGDrawing.MergeAction = MergeAction.Append;
-                        
-                        // Add to parent.
-                        _menu.DropDownItems.Add(mnuSVGDrawing);
-                    }
-                }
+            // Loop sub directories.
+            string[] subDirs = Directory.GetDirectories (dir);
+            foreach (string subDir in subDirs)
+            {
+                // Create a menu
+                ToolStripMenuItem mnuSubDir = new ToolStripMenuItem();
+                mnuSubDir.Text = Path.GetFileName(subDir);
+                mnuSubDir.Image = Properties.Resources.folder;
+                mnuSubDir.MergeAction = MergeAction.Append;
+                    
+                // Build sub tree.
+                AddSvgSubMenus(subDir, mnuSubDir);
+                    
+                // Add to parent if non-empty.
+                if(mnuSubDir.HasDropDownItems)
+                    menu.DropDownItems.Add(mnuSubDir);
             }
-            
-            m_BuildingSVGMenu = false;
+
+            // Then loop files within the sub directory.
+            foreach (string file in Directory.GetFiles(dir))
+            {
+                if (!Path.GetExtension(file).ToLower().Equals(".svg"))
+                    continue;
+                
+                hasSvgFiles = true;
+                        
+                // Create a menu. 
+                ToolStripMenuItem mnuSVGDrawing = new ToolStripMenuItem();
+                mnuSVGDrawing.Text = Path.GetFileNameWithoutExtension(file);
+                mnuSVGDrawing.Tag = file;
+                mnuSVGDrawing.Image = Properties.Resources.vector;
+                mnuSVGDrawing.Click += new EventHandler(mnuSVGDrawing_OnClick);
+                mnuSVGDrawing.MergeAction = MergeAction.Append;
+                        
+                // Add to parent.
+                menu.DropDownItems.Add(mnuSVGDrawing);
+            }
+                    
+            buildingSVGMenu = false;
         }
         private void DoOrganizeMenu()
         {
@@ -1155,16 +1135,16 @@ namespace Kinovea.ScreenManager
             // and global screen configuration.
             
             #region Menus depending only on the state of the active screen
-            bool bActiveScreenIsEmpty = false;
-            if (m_ActiveScreen != null && screenList.Count > 0)
+            bool activeScreenIsEmpty = false;
+            if (activeScreen != null && screenList.Count > 0)
             {
-                if(!m_ActiveScreen.Full)
+                if(!activeScreen.Full)
                 {
-                    bActiveScreenIsEmpty = true;	
+                    activeScreenIsEmpty = true;	
                 }
-                else if (m_ActiveScreen is PlayerScreen)
+                else if (activeScreen is PlayerScreen)
                 {
-                    PlayerScreen player = m_ActiveScreen as PlayerScreen;
+                    PlayerScreen player = activeScreen as PlayerScreen;
                     
                     // 1. Video is loaded : save-able and analysis is loadable.
                     
@@ -1181,29 +1161,24 @@ namespace Kinovea.ScreenManager
                     // Image
                     mnuDeinterlace.Enabled = player.FrameServer.VideoReader.CanChangeDeinterlacing;
                     mnuMirror.Enabled = true;
-                    mnuSVGTools.Enabled = m_bHasSvgFiles;
+                    mnuSVGTools.Enabled = hasSvgFiles;
                     mnuCoordinateAxis.Enabled = true;
                     
                     mnuDeinterlace.Checked = player.Deinterlaced;
                     mnuMirror.Checked = player.Mirrored;
                     
                     if(!player.IsSingleFrame)
-                    {
                         ConfigureImageFormatMenus(player);
-                    }
                     else
-                    {
-                        // Prevent usage of format menu for image files
                         ConfigureImageFormatMenus(null);
-                    }
                     
                     // Motion
                     mnuHighspeedCamera.Enabled = true;
                     ConfigureVideoFilterMenus(player);
                 }
-                else if(m_ActiveScreen is CaptureScreen)
+                else if(activeScreen is CaptureScreen)
                 {
-                    CaptureScreen cs = m_ActiveScreen as CaptureScreen;   
+                    CaptureScreen cs = activeScreen as CaptureScreen;   
                     
                     // File
                     mnuSave.Enabled = false;
@@ -1218,7 +1193,7 @@ namespace Kinovea.ScreenManager
                     // Image
                     mnuDeinterlace.Enabled = false;
                     mnuMirror.Enabled = false;
-                    mnuSVGTools.Enabled = m_bHasSvgFiles;
+                    mnuSVGTools.Enabled = hasSvgFiles;
                     mnuCoordinateAxis.Enabled = false;
                     
                     mnuDeinterlace.Checked = false;
@@ -1233,16 +1208,16 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     // KO ?
-                    bActiveScreenIsEmpty = true;
+                    activeScreenIsEmpty = true;
                 }
             }
             else
             {
                 // No active screen. ( = no screens)
-                bActiveScreenIsEmpty = true;
+                activeScreenIsEmpty = true;
             }
 
-            if (bActiveScreenIsEmpty)
+            if (activeScreenIsEmpty)
             {
                 // File
                 mnuSave.Enabled = false;
@@ -1278,26 +1253,22 @@ namespace Kinovea.ScreenManager
             mnuCloseFile2.Enabled = false;
             string strClosingText = ScreenManagerLang.Generic_Close;
             
-            bool bAllScreensEmpty = false;
+            bool allScreensAreEmpty = false;
             switch (screenList.Count)
             {
                 case 0:
-
-                    // No screens at all.
-                    mnuSwapScreens.Enabled        = false;
-                    mnuToggleCommonCtrls.Enabled  = false;
-                    bAllScreensEmpty = true;
+                    mnuSwapScreens.Enabled = false;
+                    mnuToggleCommonCtrls.Enabled = false;
+                    allScreensAreEmpty = true;
                     break;
 
                 case 1:
-                    
-                    // Only one screen
-                    mnuSwapScreens.Enabled        = false;
-                    mnuToggleCommonCtrls.Enabled  = false;
+                    mnuSwapScreens.Enabled = false;
+                    mnuToggleCommonCtrls.Enabled = false;
 
                     if(!screenList[0].Full)
                     {
-                        bAllScreensEmpty = true;	
+                        allScreensAreEmpty = true;	
                     }
                     else if(screenList[0] is PlayerScreen)
                     {
@@ -1311,13 +1282,11 @@ namespace Kinovea.ScreenManager
                     }
                     else if(screenList[0] is CaptureScreen)
                     {
-                        bAllScreensEmpty = true;	
+                        allScreensAreEmpty = true;	
                     }
                     break;
 
                 case 2:
-
-                    // Two screens
                     mnuSwapScreens.Enabled = true;
                     mnuToggleCommonCtrls.Enabled = canShowCommonControls;
                     
@@ -1326,7 +1295,7 @@ namespace Kinovea.ScreenManager
                     {
                         if (screenList[0].Full)
                         {
-                            bAllScreensEmpty = false;
+                            allScreensAreEmpty = false;
                             
                             string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[0]).FileName;
                             mnuCloseFile.Text = strCompleteClosingText;
@@ -1337,13 +1306,13 @@ namespace Kinovea.ScreenManager
                         {
                             // Left screen is an empty PlayerScreen.
                             // Global emptiness might be changed below.
-                            bAllScreensEmpty = true;
+                            allScreensAreEmpty = true;
                         }
                     }
                     else if(screenList[0] is CaptureScreen)
                     {
                         // Global emptiness might be changed below.
-                        bAllScreensEmpty = true;
+                        allScreensAreEmpty = true;
                     }
 
                     // Right Screen.
@@ -1351,7 +1320,7 @@ namespace Kinovea.ScreenManager
                     {
                         if (screenList[1].Full)
                         {
-                            bAllScreensEmpty = false;
+                            allScreensAreEmpty = false;
                             
                             string strCompleteClosingText = strClosingText + " - " + ((PlayerScreen)screenList[1]).FileName;
                             mnuCloseFile2.Text = strCompleteClosingText;
@@ -1377,11 +1346,11 @@ namespace Kinovea.ScreenManager
                     // KO.
                     mnuSwapScreens.Enabled       = false;
                     mnuToggleCommonCtrls.Enabled = false;
-                    bAllScreensEmpty = true;
+                    allScreensAreEmpty = true;
                     break;
             }
 
-            if (bAllScreensEmpty)
+            if (allScreensAreEmpty)
             {
                 // No screens at all, or all screens empty => 1 menu visible but disabled.
 
@@ -1394,25 +1363,25 @@ namespace Kinovea.ScreenManager
             #endregion
 
         }
-        private void ConfigureVideoFilterMenus(PlayerScreen _player)
+        private void ConfigureVideoFilterMenus(PlayerScreen player)
         {
-            bool hasVideo = _player != null && _player.Full;
-            foreach(ToolStripMenuItem menu in m_filterMenus)
+            bool hasVideo = player != null && player.Full;
+            foreach(ToolStripMenuItem menu in filterMenus)
             {
                 AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
                 if(filter == null)
                     continue;
                 
                 menu.Visible = filter.Experimental ? Software.Experimental : true;
-                menu.Enabled = hasVideo ? _player.IsCaching : false;
+                menu.Enabled = hasVideo ? player.IsCaching : false;
             }
         }
-        private void ConfigureImageFormatMenus(AbstractScreen _screen)
+        private void ConfigureImageFormatMenus(AbstractScreen screen)
         {
             // Set the enable and check prop of the image formats menu according of current screen state.
-            if(_screen == null || 
-               !_screen.Full ||
-              (_screen is PlayerScreen && !((PlayerScreen)_screen).FrameServer.VideoReader.CanChangeAspectRatio))
+            if(screen == null || 
+               !screen.Full ||
+              (screen is PlayerScreen && !((PlayerScreen)screen).FrameServer.VideoReader.CanChangeAspectRatio))
             {
                 mnuFormat.Enabled = false;
                 return;
@@ -1428,7 +1397,7 @@ namespace Kinovea.ScreenManager
             mnuFormatForce43.Checked = false;
             mnuFormatForce169.Checked = false;
         
-            switch(_screen.AspectRatio)
+            switch(screen.AspectRatio)
             {
                 case ImageAspectRatio.Force43:
                     mnuFormatForce43.Checked = true;
@@ -1446,9 +1415,9 @@ namespace Kinovea.ScreenManager
         {
             // We are in the file watcher thread. NO direct UI Calls from here.
             log.Debug(String.Format("Action recorded in the guides directory: {0}", e.ChangeType));
-            if(!m_BuildingSVGMenu)
+            if(!buildingSVGMenu)
             {
-                m_BuildingSVGMenu = true;
+                buildingSVGMenu = true;
                 // Use "view" object just to merge back into the UI thread.
                 view.BeginInvoke((MethodInvoker) delegate {DoSVGFilesChanged();});
             }
@@ -1457,7 +1426,7 @@ namespace Kinovea.ScreenManager
         {
             mnuSVGTools.DropDownItems.Clear();
             AddImportImageMenu(mnuSVGTools);
-            AddSvgSubMenus(m_SvgPath, mnuSVGTools);
+            AddSvgSubMenus(svgPath, mnuSVGTools);
         }
         #endregion
 
@@ -1508,7 +1477,7 @@ namespace Kinovea.ScreenManager
             
         private void RefreshCultureMenuFilters()
         {
-            foreach(ToolStripMenuItem menu in m_filterMenus)
+            foreach(ToolStripMenuItem menu in filterMenus)
             {
                 AbstractVideoFilter filter = menu.Tag as AbstractVideoFilter;
                 if(filter != null)
@@ -1527,7 +1496,7 @@ namespace Kinovea.ScreenManager
             // If blending is activated, only get the image from left screen, since it already contains both images.
             log.Debug("Saving side by side video.");
             
-            if (!m_bSynching || screenList.Count != 2)
+            if (!synching || screenList.Count != 2)
                 return;
             
             PlayerScreen ps1 = screenList[0] as PlayerScreen;
@@ -1538,13 +1507,13 @@ namespace Kinovea.ScreenManager
             // Todo: get frame interval from one of the videos.
                 
             // Get first frame outside the loop, to be able to set video size.
-            m_iCurrentFrame = 0;
-            OnCommonPositionChanged(m_iCurrentFrame, false);
+            currentFrame = 0;
+            OnCommonPositionChanged(currentFrame, false);
             
             Bitmap img1 = ps1.GetFlushedImage();
             Bitmap img2 = null;
             Bitmap composite;
-            if(!m_bSyncMerging)
+            if(!syncMerging)
             {
                 img2 = ps2.GetFlushedImage();
                 composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
@@ -1558,7 +1527,7 @@ namespace Kinovea.ScreenManager
             
             // Configure a fake InfoVideo to setup image size.
             VideoInfo vi = new VideoInfo { OriginalSize = composite.Size };
-            SaveResult result = m_VideoFileWriter.OpenSavingContext(m_DualSaveFileName, vi, -1, false);
+            SaveResult result = videoFileWriter.OpenSavingContext(dualSaveFileName, vi, -1, false);
     
             if(result != SaveResult.Success)
             {
@@ -1566,24 +1535,24 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            m_VideoFileWriter.SaveFrame(composite);
+            videoFileWriter.SaveFrame(composite);
             
             img1.Dispose();
-            if(!m_bSyncMerging)
+            if(!syncMerging)
             {
                 img2.Dispose();
-            composite.Dispose();
+                composite.Dispose();
             }
 
             // Loop all remaining frames in static sync mode, but without refreshing the UI.
-            while(m_iCurrentFrame < m_iMaxFrame && !m_bDualSaveCancelled)
+            while(currentFrame < maxFrame && !dualSaveCancelled)
             {
-                m_iCurrentFrame++;
+                currentFrame++;
                 
-                if(m_bgWorkerDualSave.CancellationPending)
+                if(bgWorkerDualSave.CancellationPending)
                 {
                     e.Result = 1;
-                    m_bDualSaveCancelled = true;
+                    dualSaveCancelled = true;
                     break;
                 }
                 
@@ -1591,46 +1560,42 @@ namespace Kinovea.ScreenManager
                 OnCommonPositionChanged(-1, false);
                 img1 = ps1.GetFlushedImage();
                 composite = img1;				
-                if(!m_bSyncMerging)
+                if(!syncMerging)
                 {
                     img2 = ps2.GetFlushedImage();
                     composite = ImageHelper.GetSideBySideComposite(img1, img2, true, true);
                 }
                 
-            // Save to file.
-            m_VideoFileWriter.SaveFrame(composite);
+                videoFileWriter.SaveFrame(composite);
             
-            // Clean up and report progress.
-            img1.Dispose();
-            if(!m_bSyncMerging)
+                img1.Dispose();
+                if(!syncMerging)
                 {
-                img2.Dispose();
-                composite.Dispose();
+                    img2.Dispose();
+                    composite.Dispose();
+                }
+            
+                int percent = (int)(((double)(currentFrame+1)/maxFrame) * 100);
+                bgWorkerDualSave.ReportProgress(percent);
             }
             
-            int percent = (int)(((double)(m_iCurrentFrame+1)/m_iMaxFrame) * 100);
-            m_bgWorkerDualSave.ReportProgress(percent);
-            }
-            
-            if(!m_bDualSaveCancelled)
+            if(!dualSaveCancelled)
                 e.Result = 0;
         }
         private void bgWorkerDualSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if(m_bgWorkerDualSave.CancellationPending)
+            if(bgWorkerDualSave.CancellationPending)
                 return;
 
-            m_DualSaveProgressBar.Update(Math.Min(e.ProgressPercentage, 100), 100, true);
+            dualSaveProgressBar.Update(Math.Min(e.ProgressPercentage, 100), 100, true);
         }
         private void bgWorkerDualSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            m_DualSaveProgressBar.Close();
-            m_DualSaveProgressBar.Dispose();
+            dualSaveProgressBar.Close();
+            dualSaveProgressBar.Dispose();
             
-            if(!m_bDualSaveCancelled && (int)e.Result != 1)
-            {
-                m_VideoFileWriter.CloseSavingContext((int)e.Result == 0);
-            }
+            if(!dualSaveCancelled && (int)e.Result != 1)
+                videoFileWriter.CloseSavingContext((int)e.Result == 0);
             
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
         }
@@ -1640,25 +1605,25 @@ namespace Kinovea.ScreenManager
             // which we check periodically in the saving loop.
             // This will also end the bgWorker immediately,
             // maybe before we check for the cancellation in the other thread. 
-            m_VideoFileWriter.CloseSavingContext(false);
-            m_bDualSaveCancelled = true;
-            m_bgWorkerDualSave.CancelAsync();
+            videoFileWriter.CloseSavingContext(false);
+            dualSaveCancelled = true;
+            bgWorkerDualSave.CancelAsync();
         }
-        private void DeleteTemporaryFile(string _filename)
+        private void DeleteTemporaryFile(string filename)
         {
             log.Debug("Side by side video saving cancelled. Deleting temporary file.");
-            if(File.Exists(_filename))
+            if (!File.Exists(filename))
+                return;
+            
+            try
             {
-                try
-                {
-                    File.Delete(_filename);
-                }
-                catch (Exception exp)
-                {
-                    log.Error("Error while deleting temporary file.");
-                    log.Error(exp.Message);
-                    log.Error(exp.StackTrace);
-                }
+                File.Delete(filename);
+            }
+            catch (Exception exp)
+            {
+                log.Error("Error while deleting temporary file.");
+                log.Error(exp.Message);
+                log.Error(exp.StackTrace);
             }
         }
         #endregion
@@ -1691,7 +1656,7 @@ namespace Kinovea.ScreenManager
         
         public void SaveData()
         {
-            PlayerScreen player = m_ActiveScreen as PlayerScreen;
+            PlayerScreen player = activeScreen as PlayerScreen;
             if (player == null)
                 return;
             
@@ -1700,7 +1665,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuLoadAnalysisOnClick(object sender, EventArgs e)
         {
-            if (m_ActiveScreen != null && m_ActiveScreen is PlayerScreen)
+            if (activeScreen != null && activeScreen is PlayerScreen)
                 LoadAnalysis();
         }
         private void LoadAnalysis()
@@ -1712,15 +1677,11 @@ namespace Kinovea.ScreenManager
             openFileDialog.RestoreDirectory = true;
             openFileDialog.Filter = ScreenManagerLang.dlgLoadAnalysis_Filter;
             openFileDialog.FilterIndex = 1;
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                string filePath = openFileDialog.FileName;
-                if (filePath.Length > 0)
-                {
-                   ((PlayerScreen)m_ActiveScreen).FrameServer.Metadata.Load(filePath, true);
-                   ((PlayerScreen)m_ActiveScreen).m_PlayerScreenUI.PostImportMetadata();
-                }
-            }
+            if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            ((PlayerScreen)activeScreen).FrameServer.Metadata.Load(openFileDialog.FileName, true);
+            ((PlayerScreen)activeScreen).m_PlayerScreenUI.PostImportMetadata();
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {
@@ -1738,34 +1699,27 @@ namespace Kinovea.ScreenManager
         {
             ExportSpreadsheet(MetadataExportFormat.TrajectoryText);
         }
-        private void ExportSpreadsheet(MetadataExportFormat _format)
+        private void ExportSpreadsheet(MetadataExportFormat format)
         {
-            PlayerScreen player = m_ActiveScreen as PlayerScreen;
-            if (player != null)
-            {
-                if (player.FrameServer.Metadata.HasData)
-                {
-                    DoStopPlaying();    
+            PlayerScreen player = activeScreen as PlayerScreen;
+            if (player == null || !player.FrameServer.Metadata.HasData)
+                return;
+            
+            DoStopPlaying();    
 
-                    SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
-                    saveFileDialog.RestoreDirectory = true;
-                    saveFileDialog.Filter = ScreenManagerLang.dlgExportSpreadsheet_Filter;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = ScreenManagerLang.dlgExportSpreadsheet_Title;
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.Filter = ScreenManagerLang.dlgExportSpreadsheet_Filter;
                     
-                    saveFileDialog.FilterIndex = ((int)_format) + 1;
+            saveFileDialog.FilterIndex = ((int)format) + 1;
                         
-                    saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.FullPath);
+            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(player.FrameServer.Metadata.FullPath);
 
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        string filePath = saveFileDialog.FileName;
-                        if (filePath.Length > 0)
-                        {
-                            player.FrameServer.Metadata.Export(filePath, _format);  
-                        }
-                    }
-                }
-            }
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            player.FrameServer.Metadata.Export(saveFileDialog.FileName, format);  
         }
         #endregion
 
@@ -1778,13 +1732,11 @@ namespace Kinovea.ScreenManager
             
             if(RemoveScreen(0, true))
             {
-                m_bSynching = false;
+                synching = false;
                 
+                // Second screen is now in [0] spot.
                 if(screenList.Count > 0)
-                {
-                    // Second screen is now in [0] spot.
                     RemoveScreen(0, true);
-                }
             }
               
             // Display the new list.
@@ -1804,7 +1756,7 @@ namespace Kinovea.ScreenManager
             // Here : One player screen.
             //------------------------------------------------------------
             
-            m_bSynching = false;
+            synching = false;
             CommandManager cm = CommandManager.Instance();
 
             switch (screenList.Count)
@@ -1875,13 +1827,9 @@ namespace Kinovea.ScreenManager
                             //---------------------------------------------
                             
                             if(!screenList[0].Full && screenList[1].Full)
-                            {
                                 RemoveScreen(0, true);
-                            }
                             else
-                            {
                                 RemoveScreen(1, true);
-                            }
                         }
                         break;
                     }
@@ -1904,7 +1852,7 @@ namespace Kinovea.ScreenManager
             // 
             // Here : Two player screens.
             //------------------------------------------------------------
-            m_bSynching = false;
+            synching = false;
             CommandManager cm = CommandManager.Instance();
             
             switch (screenList.Count)
@@ -2002,7 +1950,7 @@ namespace Kinovea.ScreenManager
             // 
             // Here : One capture screens.
             //------------------------------------------------------------
-            m_bSynching = false;
+            synching = false;
             CommandManager cm = CommandManager.Instance();
            
             switch (screenList.Count)
@@ -2105,7 +2053,7 @@ namespace Kinovea.ScreenManager
             // 
             // Here : Two capture screens.
             //------------------------------------------------------------
-            m_bSynching = false;
+            synching = false;
             CommandManager cm = CommandManager.Instance();
             
             switch (screenList.Count)
@@ -2210,7 +2158,7 @@ namespace Kinovea.ScreenManager
             // 
             // Here : Mixed screen. The workspace preset is : [capture][player]
             //------------------------------------------------------------
-            m_bSynching = false;
+            synching = false;
             CommandManager cm = CommandManager.Instance();
             
             switch (screenList.Count)
@@ -2286,12 +2234,12 @@ namespace Kinovea.ScreenManager
         }
         private void mnuSwapScreensOnClick(object sender, EventArgs e)
         {
-            if (screenList.Count == 2)
-            {
-                IUndoableCommand command = new CommandSwapScreens(this);
-                CommandManager cm = CommandManager.Instance();
-                cm.LaunchUndoableCommand(command);
-            }
+            if (screenList.Count != 2)
+                return;
+            
+            IUndoableCommand command = new CommandSwapScreens(this);
+            CommandManager cm = CommandManager.Instance();
+            cm.LaunchUndoableCommand(command);
         }
         private void mnuToggleCommonCtrlsOnClick(object sender, EventArgs e)
         {
@@ -2302,7 +2250,7 @@ namespace Kinovea.ScreenManager
         #region Image
         private void mnuDeinterlaceOnClick(object sender, EventArgs e)
         {
-            PlayerScreen player = m_ActiveScreen as PlayerScreen;
+            PlayerScreen player = activeScreen as PlayerScreen;
             if(player != null)
             {
                 mnuDeinterlace.Checked = !mnuDeinterlace.Checked;
@@ -2323,11 +2271,11 @@ namespace Kinovea.ScreenManager
         }      
         private void ChangeAspectRatio(Video.ImageAspectRatio _aspectRatio)
         {
-            if(m_ActiveScreen == null)
+            if(activeScreen == null)
                 return;
         
-            if(m_ActiveScreen.AspectRatio != _aspectRatio)
-                m_ActiveScreen.AspectRatio = _aspectRatio;
+            if(activeScreen.AspectRatio != _aspectRatio)
+                activeScreen.AspectRatio = _aspectRatio;
             
             mnuFormatForce43.Checked = _aspectRatio == ImageAspectRatio.Force43;
             mnuFormatForce169.Checked = _aspectRatio == ImageAspectRatio.Force169;
@@ -2335,7 +2283,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuMirrorOnClick(object sender, EventArgs e)
         {
-            PlayerScreen player = m_ActiveScreen as PlayerScreen;
+            PlayerScreen player = activeScreen as PlayerScreen;
             if(player != null)
             {
                 mnuMirror.Checked = !mnuMirror.Checked;
@@ -2344,7 +2292,7 @@ namespace Kinovea.ScreenManager
         }
         private void mnuImportImage_OnClick(object sender, EventArgs e)
         {
-            if(m_ActiveScreen == null || !m_ActiveScreen.CapabilityDrawings)
+            if(activeScreen == null || !activeScreen.CapabilityDrawings)
                 return;
             
             // Display file open dialog and launch the drawing.
@@ -2370,16 +2318,16 @@ namespace Kinovea.ScreenManager
                 LoadDrawing(svgFile, true);
             }
         }
-        private void LoadDrawing(string _filePath, bool _bIsSVG)
+        private void LoadDrawing(string path, bool isSVG)
         {
-            if(_filePath != null && _filePath.Length > 0 && m_ActiveScreen != null && m_ActiveScreen.CapabilityDrawings)
+            if(path != null && path.Length > 0 && activeScreen != null && activeScreen.CapabilityDrawings)
             {
-                m_ActiveScreen.AddImageDrawing(_filePath, _bIsSVG);
+                activeScreen.AddImageDrawing(path, isSVG);
             }	
         }
         private void mnuCoordinateAxis_OnClick(object sender, EventArgs e)
         {
-            PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+            PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)
                 return;
 
@@ -2390,7 +2338,7 @@ namespace Kinovea.ScreenManager
         #region Motion
         private void mnuHighspeedCamera_OnClick(object sender, EventArgs e)
         {
-            PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+            PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps != null)
                 ps.ConfigureHighSpeedCamera();
         }
@@ -2402,12 +2350,12 @@ namespace Kinovea.ScreenManager
         {
             DoLoadMovieInScreen(e.Path, e.Target, false);
         }
-        private void DoLoadMovieInScreen(string _filePath, int _iForceScreen, bool _bStoreState)
+        private void DoLoadMovieInScreen(string path, int forcedScreen, bool storeState)
         {
-            if(!File.Exists(_filePath))
+            if(!File.Exists(path))
                 return;
                 
-            IUndoableCommand clmis = new CommandLoadMovieInScreen(this, _filePath, _iForceScreen, _bStoreState);
+            IUndoableCommand clmis = new CommandLoadMovieInScreen(this, path, forcedScreen, storeState);
             CommandManager cm = CommandManager.Instance();
             cm.LaunchUndoableCommand(clmis);
             
@@ -2449,7 +2397,7 @@ namespace Kinovea.ScreenManager
             if (screenList.Count != 2)
                 return;
             
-            if (m_ActiveScreen == screenList[0])
+            if (activeScreen == screenList[0])
                 SetActiveScreen(screenList[1]);
             else
                 SetActiveScreen(screenList[0]);
@@ -2457,14 +2405,14 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Synchronisation
-        private void PrepareSync(bool _bInitialization)
+        private void PrepareSync(bool initialization)
         {
             // Called each time the screen list change 
             // or when a screen changed selection.
             
             // We don't care which video was updated.
             // Set sync mode and reset sync.
-            m_bSynching = false;
+            synching = false;
 
             if ( (screenList.Count == 2))
             {
@@ -2472,22 +2420,22 @@ namespace Kinovea.ScreenManager
                 {
                     if (((PlayerScreen)screenList[0]).Full && ((PlayerScreen)screenList[1]).Full)
                     {
-                        m_bSynching = true;
+                        synching = true;
                         ((PlayerScreen)screenList[0]).Synched = true;
                         ((PlayerScreen)screenList[1]).Synched = true;
 
-                        if (_bInitialization)
+                        if (initialization)
                         {
                             log.Debug("PrepareSync() - Initialization (reset of sync point).");
                             // Static Sync
-                            m_iRightSyncFrame = 0;
-                            m_iLeftSyncFrame = 0;
-                            m_iSyncLag = 0;
-                            m_iCurrentFrame = 0;
+                            rightSyncFrame = 0;
+                            leftSyncFrame = 0;
+                            syncLag = 0;
+                            currentFrame = 0;
                             
                             ((PlayerScreen)screenList[0]).SyncPosition = 0;
                             ((PlayerScreen)screenList[1]).SyncPosition = 0;
-                            view.UpdateSyncPosition(m_iCurrentFrame);
+                            view.UpdateSyncPosition(currentFrame);
 
                             // Dynamic Sync
                             ResetDynamicSyncFlags();
@@ -2502,7 +2450,7 @@ namespace Kinovea.ScreenManager
                         SetSyncLimits();
 
                         // Mise à jour Players
-                        OnCommonPositionChanged(m_iCurrentFrame, true);
+                        OnCommonPositionChanged(currentFrame, true);
                     }
                     else
                     {
@@ -2538,13 +2486,13 @@ namespace Kinovea.ScreenManager
                 }
             }
 
-            if (!m_bSynching) 
+            if (!synching) 
             { 
                 StopDynamicSync();
                 view.DisplayAsPaused();
             }
         }
-        public void SetSyncPoint(bool _bIntervalOnly)
+        public void SetSyncPoint(bool intervalOnly)
         {
             //--------------------------------------------------------------------------------------------------
             // Registers the current position of each video as its sync frame. (Optional)
@@ -2567,35 +2515,35 @@ namespace Kinovea.ScreenManager
             // Si _bIntervalOnly == true, on ne veut pas changer les frames de référence
             // (Généralement après une modification du framerate de l'une des vidéos ou swap)
             //----------------------------------------------------------------------------
-            if (m_bSynching && screenList.Count == 2)
+            if (synching && screenList.Count == 2)
             {
                 // Registers current positions.
-                if (!_bIntervalOnly)
+                if (!intervalOnly)
                 {
                     // For timing label only
                     ((PlayerScreen)screenList[0]).SyncPosition = ((PlayerScreen)screenList[0]).Position;
                     ((PlayerScreen)screenList[1]).SyncPosition = ((PlayerScreen)screenList[1]).Position;
     
-                    m_iLeftSyncFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
-                    m_iRightSyncFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
+                    leftSyncFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
+                    rightSyncFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
                     
-                    log.Debug(String.Format("New Sync Points:[{0}][{1}], Sync lag:{2}",m_iLeftSyncFrame, m_iRightSyncFrame, m_iRightSyncFrame - m_iLeftSyncFrame));
+                    log.Debug(String.Format("New Sync Points:[{0}][{1}], Sync lag:{2}",leftSyncFrame, rightSyncFrame, rightSyncFrame - leftSyncFrame));
                 }
     
     
                 // Sync Lag is expressed in frames.
-                m_iSyncLag = m_iRightSyncFrame - m_iLeftSyncFrame;
+                syncLag = rightSyncFrame - leftSyncFrame;
     
                 // We need to recompute the lag in milliseconds because it can change even when 
                 // the references positions don't change. For exemple when varying framerate (speed).
-                long iLeftSyncMilliseconds = (long)(((PlayerScreen)screenList[0]).FrameInterval * m_iLeftSyncFrame);
-                long iRightSyncMilliseconds = (long)(((PlayerScreen)screenList[1]).FrameInterval * m_iRightSyncFrame);
-                m_iSyncLagMilliseconds = iRightSyncMilliseconds - iLeftSyncMilliseconds;
+                long iLeftSyncMilliseconds = (long)(((PlayerScreen)screenList[0]).FrameInterval * leftSyncFrame);
+                long iRightSyncMilliseconds = (long)(((PlayerScreen)screenList[1]).FrameInterval * rightSyncFrame);
+                syncLagMilliseconds = iRightSyncMilliseconds - iLeftSyncMilliseconds;
     
                 // Update common position (sign of m_iSyncLag might have changed.)
-                m_iCurrentFrame = m_iSyncLag > 0 ? m_iRightSyncFrame : m_iLeftSyncFrame;
+                currentFrame = syncLag > 0 ? rightSyncFrame : leftSyncFrame;
                 
-                view.UpdateSyncPosition(m_iCurrentFrame);  // <-- expects timestamp ?
+                view.UpdateSyncPosition(currentFrame);  // <-- expects timestamp ?
             }
         }
         private void SetSyncLimits()
@@ -2609,16 +2557,16 @@ namespace Kinovea.ScreenManager
             long leftEstimatedFrames = ((PlayerScreen)screenList[0]).EstimatedFrames;
             long rightEstimatedFrames = ((PlayerScreen)screenList[1]).EstimatedFrames;
 
-            if (m_iSyncLag > 0)
+            if (syncLag > 0)
             {
                 // Lag is positive. Right video starts first and its duration stay the same as original.
                 // Left video has to wait for an ammount of time.
 
                 // Check if lag is still valid. (?) Why is this needed ?
-                if (m_iSyncLag > rightEstimatedFrames)
-                    m_iSyncLag = 0; 
+                if (syncLag > rightEstimatedFrames)
+                    syncLag = 0; 
 
-                leftEstimatedFrames += m_iSyncLag;
+                leftEstimatedFrames += syncLag;
             }
             else
             {
@@ -2629,18 +2577,18 @@ namespace Kinovea.ScreenManager
                 //int iSyncLagFrames = ((PlayerScreen)screenList[1]).NormalizedToFrame(m_iSyncLag);
 
                 // Check if lag is still valid.(?)
-                if (-m_iSyncLag > leftEstimatedFrames)
-                    m_iSyncLag = 0;
+                if (-syncLag > leftEstimatedFrames)
+                    syncLag = 0;
                 
-                rightEstimatedFrames += (-m_iSyncLag);
+                rightEstimatedFrames += (-syncLag);
             }
 
-            m_iMaxFrame = (int)Math.Max(leftEstimatedFrames, rightEstimatedFrames);
-            view.SetupTrkFrame(0, m_iMaxFrame, m_iCurrentFrame);
+            maxFrame = (int)Math.Max(leftEstimatedFrames, rightEstimatedFrames);
+            view.SetupTrkFrame(0, maxFrame, currentFrame);
 
-            log.DebugFormat("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", m_iSyncLag, m_iSyncLagMilliseconds, m_iMaxFrame);
+            log.DebugFormat("m_iSyncLag:{0}, m_iSyncLagMilliseconds:{1}, MaxFrames:{2}", syncLag, syncLagMilliseconds, maxFrame);
         }
-        private void OnCommonPositionChanged(long _iFrame, bool _bAllowUIUpdate)
+        private void OnCommonPositionChanged(long frame, bool allowUIUpdate)
         {
             //------------------------------------------------------------------------------
             // This is where the "static sync" is done.
@@ -2653,82 +2601,74 @@ namespace Kinovea.ScreenManager
             //log.Debug(String.Format("Static Sync, common position changed to {0}",_iFrame));
             
             // Get corresponding position in each video, in frames
-            long iLeftFrame = 0;
-            long iRightFrame = 0;
+            long leftFrame = 0;
+            long rightFrame = 0;
 
-            if (_iFrame >= 0)
+            if (frame >= 0)
             {
-                if (m_iSyncLag > 0)
+                if (syncLag > 0)
                 {
                     // Right video must go ahead.
 
-                    iRightFrame = _iFrame;
-                    iLeftFrame = _iFrame - m_iSyncLag;
-                    if (iLeftFrame < 0)
-                    {
-                        iLeftFrame = 0;
-                    }
+                    rightFrame = frame;
+                    leftFrame = frame - syncLag;
+                    if (leftFrame < 0)
+                        leftFrame = 0;
                 }
                 else
                 {
                     // Left video must go ahead.
 
-                    iLeftFrame = _iFrame;
-                    iRightFrame = _iFrame - (-m_iSyncLag);
-                    if (iRightFrame < 0)
-                    {
-                        iRightFrame = 0;
-                    }
+                    leftFrame = frame;
+                    rightFrame = frame - (-syncLag);
+                    if (rightFrame < 0)
+                        rightFrame = 0;
                 }
 
                 // Force positions.
-                ((PlayerScreen)screenList[0]).GotoFrame(iLeftFrame, _bAllowUIUpdate);
-                ((PlayerScreen)screenList[1]).GotoFrame(iRightFrame, _bAllowUIUpdate);
+                ((PlayerScreen)screenList[0]).GotoFrame(leftFrame, allowUIUpdate);
+                ((PlayerScreen)screenList[1]).GotoFrame(rightFrame, allowUIUpdate);
             }
             else
             {
                 // Special case for ++.
-                if (m_iSyncLag > 0)
+                if (syncLag > 0)
                 {
                     // Right video must go ahead.
-                    ((PlayerScreen)screenList[1]).GotoNextFrame(_bAllowUIUpdate);
+                    ((PlayerScreen)screenList[1]).GotoNextFrame(allowUIUpdate);
 
-                    if (m_iCurrentFrame > m_iSyncLag)
-                    {
-                        ((PlayerScreen)screenList[0]).GotoNextFrame(_bAllowUIUpdate);
-                    }
+                    if (currentFrame > syncLag)
+                        ((PlayerScreen)screenList[0]).GotoNextFrame(allowUIUpdate);
                 }
                 else
                 {
                     // Left video must go ahead.
-                    ((PlayerScreen)screenList[0]).GotoNextFrame(_bAllowUIUpdate);
+                    ((PlayerScreen)screenList[0]).GotoNextFrame(allowUIUpdate);
 
-                    if (m_iCurrentFrame > -m_iSyncLag)
-                    {
-                        ((PlayerScreen)screenList[1]).GotoNextFrame(_bAllowUIUpdate);
-                    }
+                    if (currentFrame > -syncLag)
+                        ((PlayerScreen)screenList[1]).GotoNextFrame(allowUIUpdate);
                 }
             }
         }
         public void SwapSync()
         {
-            if (!m_bSynching || screenList.Count != 2)
+            if (!synching || screenList.Count != 2)
                 return;
             
-            long temp = m_iLeftSyncFrame;
-            m_iLeftSyncFrame = m_iRightSyncFrame;
-            m_iRightSyncFrame = temp;
+            long temp = leftSyncFrame;
+            leftSyncFrame = rightSyncFrame;
+            rightSyncFrame = temp;
 
             ResetDynamicSyncFlags();
         }
         private void StartDynamicSync()
         {
-            m_bDynamicSynching = true;
+            dynamicSynching = true;
             DynamicSync();
         }
         private void StopDynamicSync()
         {
-            m_bDynamicSynching = false;
+            dynamicSynching = false;
         }
         private void DynamicSync()
         {
@@ -2750,323 +2690,317 @@ namespace Kinovea.ScreenManager
             // XIsStarting 	: currently on [0] but a Play was asked.
             // XIsCatchingUp 	: video is between [0] and the point where both video will be running. 
             
-            
-            if (m_bSynching && screenList.Count == 2)
-            {
-                // L'ensemble de la supervision est réalisée en TimeStamps.
-                // Seul les décision de lancer / arrêter sont établies par rapport
-                // au temps auquel on est.
-
-                long iLeftPosition = ((PlayerScreen)screenList[0]).CurrentFrame;
-                long iRightPosition = ((PlayerScreen)screenList[1]).CurrentFrame;
-                long iLeftMilliseconds = (long)(iLeftPosition * ((PlayerScreen)screenList[0]).FrameInterval);
-                long iRightMilliseconds = (long)(iRightPosition * ((PlayerScreen)screenList[1]).FrameInterval);
-
-                //-----------------------------------------------------------------------
-                // Dans cette fonction, on part du principe que les deux vidéos tournent.
-                // Et on fait des 'Ensure Pause' quand nécessaire.
-                // On évite les Ensure Play' car l'utilisateur a pu 
-                // manuellement pauser une vidéo.
-                //-----------------------------------------------------------------------
-                #region [i][0]
-                if (iLeftPosition > 0 && iRightPosition == 0)
-                {
-                    EnsurePlay(0);
-                    
-                    // Etat 4. [i][0]
-                    m_bLeftIsStarting = false;
-
-                    if (m_iSyncLag == 0)
-                    {
-                        //-----------------------------------------------------
-                        // La vidéo de droite 
-                        // - vient de boucler et on doit attendre l'autre
-                        // - est en train de repartir.
-                        //-----------------------------------------------------
-                        if (!m_bRightIsStarting)
-                        {
-                            // Stop pour bouclage
-                            EnsurePause(1);
-                        }
-
-                        m_iCurrentFrame = iLeftPosition;
-                    }
-                    else if (m_iSyncLagMilliseconds > 0)
-                    {
-                        // La vidéo de droite est sur 0 et doit partir en premier.
-                        // Si elle n'est pas en train de repartir, c'est qu'on 
-                        // doit attendre que la vidéo de gauche ait finit son tour.
-                        if (!m_bRightIsStarting)
-                        {
-                            EnsurePause(1);
-                            m_iCurrentFrame = iLeftPosition + m_iSyncLag;
-                        }
-                        else
-                        {
-                            m_iCurrentFrame = iLeftPosition;
-                        }
-                    }
-                    else if (m_iSyncLagMilliseconds < 0)
-                    {
-                        // La vidéo de droite est sur 0, en train de prendre son retard.
-                        // On la relance si celle de gauche a fait son décalage.
-
-                        // Attention, ne pas relancer si celle de gauche est en fait en train de terminer son tour
-                        if (!m_bLeftIsCatchingUp && !m_bRightIsStarting)
-                        {
-                            EnsurePause(1);
-                            m_iCurrentFrame = iLeftPosition;
-                        }
-                        else if (iLeftMilliseconds > (-m_iSyncLagMilliseconds) - 24)
-                        {
-                            // La vidéo de gauche est sur le point de franchir le sync point.
-                            // les 24 ms supplémentaires sont pour tenir compte de l'inertie qu'à généralement
-                            // la vidéo qui est partie en premier...
-                            EnsurePlay(1);
-                            m_bRightIsStarting = true;
-                            m_bLeftIsCatchingUp = false;
-                            m_iCurrentFrame = iLeftPosition;
-                        }
-                        else
-                        {
-                            // La vidéo de gauche n'a pas encore fait son décalage.
-                            // On ne force pas sa lecture. (Pause manuelle possible).
-                            m_bLeftIsCatchingUp = true;
-                            m_iCurrentFrame = iLeftPosition;
-                        }
-                    }
-                }
-                #endregion
-                #region [0][0]
-                else if (iLeftPosition == 0 && iRightPosition == 0)
-                {
-                    // Etat 1. [0][0]
-                    m_iCurrentFrame = 0;
-
-                    // Les deux vidéos viennent de boucler ou sont en train de repartir.
-                    if (m_iSyncLag == 0)
-                    {
-                        //---------------------
-                        // Redemmarrage commun.
-                        //---------------------
-                        if (!m_bLeftIsStarting && !m_bRightIsStarting)
-                        {
-                            EnsurePlay(0);
-                            EnsurePlay(1);
-
-                            m_bRightIsStarting = true;
-                            m_bLeftIsStarting = true;
-                        }
-                    }
-                    else if (m_iSyncLagMilliseconds > 0)
-                    {
-                        // Redemarrage uniquement de la vidéo de droite, 
-                        // qui doit faire son décalage
-
-                        EnsurePause(0);
-                        EnsurePlay(1);
-                        m_bRightIsStarting = true;
-                        m_bRightIsCatchingUp = true;
-                    }
-                    else if (m_iSyncLagMilliseconds < 0)
-                    {
-                        // Redemarrage uniquement de la vidéo de gauche, 
-                        // qui doit faire son décalage
-
-                        EnsurePlay(0);
-                        EnsurePause(1);
-                        m_bLeftIsStarting = true;
-                        m_bLeftIsCatchingUp = true;
-                    }
-                }
-                #endregion
-                #region [0][i]
-                else if (iLeftPosition == 0 && iRightPosition > 0)
-                {
-                    // Etat [0][i]
-                    EnsurePlay(1);
-                    
-                    m_bRightIsStarting = false;
-
-                    if (m_iSyncLag == 0)
-                    {
-                        m_iCurrentFrame = iRightPosition;
-
-                        //--------------------------------------------------------------------
-                        // Configuration possible : la vidéo de gauche vient de boucler.
-                        // On la stoppe en attendant le redemmarrage commun.
-                        //--------------------------------------------------------------------
-                        if (!m_bLeftIsStarting)
-                        {
-                            EnsurePause(0);
-                        }
-                    }
-                    else if (m_iSyncLagMilliseconds > 0)
-                    {
-                        // La vidéo de gauche est sur 0, en train de prendre son retard.
-                        // On la relance si celle de droite a fait son décalage.
-
-                        // Attention ne pas relancer si la vidéo de droite est en train de finir son tour
-                        if (!m_bRightIsCatchingUp && !m_bLeftIsStarting)
-                        {
-                            // La vidéo de droite est en train de finir son tour tandisque celle de gauche a déjà bouclé.
-                            EnsurePause(0);
-                            m_iCurrentFrame = iRightPosition;
-                        }
-                        else if (iRightMilliseconds > m_iSyncLagMilliseconds - 24)
-                        {
-                            // La vidéo de droite est sur le point de franchir le sync point.
-                            // les 24 ms supplémentaires sont pour tenir compte de l'inertie qu'à généralement
-                            // la vidéo qui est partie en premier...
-                            EnsurePlay(0);
-                            m_bLeftIsStarting = true;
-                            m_bRightIsCatchingUp = false;
-                            m_iCurrentFrame = iRightPosition;
-                        }
-                        else
-                        {
-                            // La vidéo de droite n'a pas encore fait son décalage.
-                            // On ne force pas sa lecture. (Pause manuelle possible).
-                            m_bRightIsCatchingUp = true;
-                            m_iCurrentFrame = iRightPosition;
-                        }
-                    }
-                    else if (m_iSyncLagMilliseconds < 0)
-                    {
-                        // La vidéo de gauche est sur 0 et doit partir en premier.
-                        // Si elle n'est pas en train de repartir, c'est qu'on 
-                        // doit attendre que la vidéo de droite ait finit son tour.
-                        if (!m_bLeftIsStarting)
-                        {
-                            EnsurePause(0);
-                            m_iCurrentFrame = iRightPosition + m_iSyncLag;
-                        }
-                        else
-                        {
-                            // Rare, les deux première frames de chaque vidéo n'arrivent pas en même temps
-                            m_iCurrentFrame = iRightPosition;
-                        }
-                    }
-                }
-                #endregion
-                #region [i][i]
-                else
-                {
-                    // Etat [i][i]
-                    EnsurePlay(0);
-                    EnsurePlay(1);
-                    
-                    m_bLeftIsStarting = false;
-                    m_bRightIsStarting = false;
-
-                    m_iCurrentFrame = Math.Max(iLeftPosition, iRightPosition);
-                }
-                #endregion
-
-                // Update position for trkFrame.
-                object[] parameters = new object[] { m_iCurrentFrame };
-                
-                // Note: do we need to begin invoke here ?
-                view.BeginInvoke(view.delegateUpdateTrackerFrame, parameters);
-
-                //log.Debug(String.Format("Tick:[{0}][{1}], Starting:[{2}][{3}], Catching up:[{4}][{5}]", iLeftPosition, iRightPosition, m_bLeftIsStarting, m_bRightIsStarting, m_bLeftIsCatchingUp, m_bRightIsCatchingUp));
-            }
-            else
+            if (!synching || screenList.Count != 2)
             {
                 // This can happen when a screen is closed on the fly while synching.
                 StopDynamicSync();
-                m_bSynching = false;
+                synching = false;
                 view.DisplayAsPaused();
+                return;
             }
+
+            // L'ensemble de la supervision est réalisée en TimeStamps.
+            // Seul les décision de lancer / arrêter sont établies par rapport
+            // au temps auquel on est.
+
+            long leftPosition = ((PlayerScreen)screenList[0]).CurrentFrame;
+            long rightPosition = ((PlayerScreen)screenList[1]).CurrentFrame;
+            long leftMilliseconds = (long)(leftPosition * ((PlayerScreen)screenList[0]).FrameInterval);
+            long rightMilliseconds = (long)(rightPosition * ((PlayerScreen)screenList[1]).FrameInterval);
+
+            //-----------------------------------------------------------------------
+            // Dans cette fonction, on part du principe que les deux vidéos tournent.
+            // Et on fait des 'Ensure Pause' quand nécessaire.
+            // On évite les Ensure Play' car l'utilisateur a pu 
+            // manuellement pauser une vidéo.
+            //-----------------------------------------------------------------------
+            #region [i][0]
+            if (leftPosition > 0 && rightPosition == 0)
+            {
+                EnsurePlay(0);
+                    
+                // Etat 4. [i][0]
+                leftIsStarting = false;
+
+                if (syncLag == 0)
+                {
+                    //-----------------------------------------------------
+                    // La vidéo de droite 
+                    // - vient de boucler et on doit attendre l'autre
+                    // - est en train de repartir.
+                    //-----------------------------------------------------
+                    if (!rightIsStarting)
+                    {
+                        // Stop pour bouclage
+                        EnsurePause(1);
+                    }
+
+                    currentFrame = leftPosition;
+                }
+                else if (syncLagMilliseconds > 0)
+                {
+                    // La vidéo de droite est sur 0 et doit partir en premier.
+                    // Si elle n'est pas en train de repartir, c'est qu'on 
+                    // doit attendre que la vidéo de gauche ait finit son tour.
+                    if (!rightIsStarting)
+                    {
+                        EnsurePause(1);
+                        currentFrame = leftPosition + syncLag;
+                    }
+                    else
+                    {
+                        currentFrame = leftPosition;
+                    }
+                }
+                else if (syncLagMilliseconds < 0)
+                {
+                    // La vidéo de droite est sur 0, en train de prendre son retard.
+                    // On la relance si celle de gauche a fait son décalage.
+
+                    // Attention, ne pas relancer si celle de gauche est en fait en train de terminer son tour
+                    if (!leftIsCatchingUp && !rightIsStarting)
+                    {
+                        EnsurePause(1);
+                        currentFrame = leftPosition;
+                    }
+                    else if (leftMilliseconds > (-syncLagMilliseconds) - 24)
+                    {
+                        // La vidéo de gauche est sur le point de franchir le sync point.
+                        // les 24 ms supplémentaires sont pour tenir compte de l'inertie qu'à généralement
+                        // la vidéo qui est partie en premier...
+                        EnsurePlay(1);
+                        rightIsStarting = true;
+                        leftIsCatchingUp = false;
+                        currentFrame = leftPosition;
+                    }
+                    else
+                    {
+                        // La vidéo de gauche n'a pas encore fait son décalage.
+                        // On ne force pas sa lecture. (Pause manuelle possible).
+                        leftIsCatchingUp = true;
+                        currentFrame = leftPosition;
+                    }
+                }
+            }
+            #endregion
+            #region [0][0]
+            else if (leftPosition == 0 && rightPosition == 0)
+            {
+                // Etat 1. [0][0]
+                currentFrame = 0;
+
+                // Les deux vidéos viennent de boucler ou sont en train de repartir.
+                if (syncLag == 0)
+                {
+                    //---------------------
+                    // Redemmarrage commun.
+                    //---------------------
+                    if (!leftIsStarting && !rightIsStarting)
+                    {
+                        EnsurePlay(0);
+                        EnsurePlay(1);
+
+                        rightIsStarting = true;
+                        leftIsStarting = true;
+                    }
+                }
+                else if (syncLagMilliseconds > 0)
+                {
+                    // Redemarrage uniquement de la vidéo de droite, 
+                    // qui doit faire son décalage
+
+                    EnsurePause(0);
+                    EnsurePlay(1);
+                    rightIsStarting = true;
+                    rightIsCatchingUp = true;
+                }
+                else if (syncLagMilliseconds < 0)
+                {
+                    // Redemarrage uniquement de la vidéo de gauche, 
+                    // qui doit faire son décalage
+
+                    EnsurePlay(0);
+                    EnsurePause(1);
+                    leftIsStarting = true;
+                    leftIsCatchingUp = true;
+                }
+            }
+            #endregion
+            #region [0][i]
+            else if (leftPosition == 0 && rightPosition > 0)
+            {
+                // Etat [0][i]
+                EnsurePlay(1);
+                    
+                rightIsStarting = false;
+
+                if (syncLag == 0)
+                {
+                    currentFrame = rightPosition;
+
+                    //--------------------------------------------------------------------
+                    // Configuration possible : la vidéo de gauche vient de boucler.
+                    // On la stoppe en attendant le redemmarrage commun.
+                    //--------------------------------------------------------------------
+                    if (!leftIsStarting)
+                    {
+                        EnsurePause(0);
+                    }
+                }
+                else if (syncLagMilliseconds > 0)
+                {
+                    // La vidéo de gauche est sur 0, en train de prendre son retard.
+                    // On la relance si celle de droite a fait son décalage.
+
+                    // Attention ne pas relancer si la vidéo de droite est en train de finir son tour
+                    if (!rightIsCatchingUp && !leftIsStarting)
+                    {
+                        // La vidéo de droite est en train de finir son tour tandisque celle de gauche a déjà bouclé.
+                        EnsurePause(0);
+                        currentFrame = rightPosition;
+                    }
+                    else if (rightMilliseconds > syncLagMilliseconds - 24)
+                    {
+                        // La vidéo de droite est sur le point de franchir le sync point.
+                        // les 24 ms supplémentaires sont pour tenir compte de l'inertie qu'à généralement
+                        // la vidéo qui est partie en premier...
+                        EnsurePlay(0);
+                        leftIsStarting = true;
+                        rightIsCatchingUp = false;
+                        currentFrame = rightPosition;
+                    }
+                    else
+                    {
+                        // La vidéo de droite n'a pas encore fait son décalage.
+                        // On ne force pas sa lecture. (Pause manuelle possible).
+                        rightIsCatchingUp = true;
+                        currentFrame = rightPosition;
+                    }
+                }
+                else if (syncLagMilliseconds < 0)
+                {
+                    // La vidéo de gauche est sur 0 et doit partir en premier.
+                    // Si elle n'est pas en train de repartir, c'est qu'on 
+                    // doit attendre que la vidéo de droite ait finit son tour.
+                    if (!leftIsStarting)
+                    {
+                        EnsurePause(0);
+                        currentFrame = rightPosition + syncLag;
+                    }
+                    else
+                    {
+                        // Rare, les deux première frames de chaque vidéo n'arrivent pas en même temps
+                        currentFrame = rightPosition;
+                    }
+                }
+            }
+            #endregion
+            #region [i][i]
+            else
+            {
+                // Etat [i][i]
+                EnsurePlay(0);
+                EnsurePlay(1);
+                    
+                leftIsStarting = false;
+                rightIsStarting = false;
+
+                currentFrame = Math.Max(leftPosition, rightPosition);
+            }
+            #endregion
+
+            // Update position for trkFrame.
+            object[] parameters = new object[] { currentFrame };
+                
+            // Note: do we need to begin invoke here ?
+            view.BeginInvoke(view.delegateUpdateTrackerFrame, parameters);
+
+            //log.Debug(String.Format("Tick:[{0}][{1}], Starting:[{2}][{3}], Catching up:[{4}][{5}]", iLeftPosition, iRightPosition, m_bLeftIsStarting, m_bRightIsStarting, m_bLeftIsCatchingUp, m_bRightIsCatchingUp));
         }
-        private void EnsurePause(int _iScreen)
+        private void EnsurePause(int screenIndex)
         {
             //log.Debug(String.Format("Ensuring pause of screen [{0}]", _iScreen));
-            if (_iScreen < screenList.Count)
+            if (screenIndex < screenList.Count)
             {
-                if (((PlayerScreen)screenList[_iScreen]).IsPlaying)
-                {
-                    ((PlayerScreen)screenList[_iScreen]).m_PlayerScreenUI.OnButtonPlay();
-                }
+                if (((PlayerScreen)screenList[screenIndex]).IsPlaying)
+                    ((PlayerScreen)screenList[screenIndex]).m_PlayerScreenUI.OnButtonPlay();
             }
             else
             {
-                m_bSynching = false;
+                synching = false;
                 view.DisplayAsPaused();
             }
         }
-        private void EnsurePlay(int _iScreen)
+        private void EnsurePlay(int screenIndex)
         {
             //log.Debug(String.Format("Ensuring play of screen [{0}]", _iScreen));
-            if (_iScreen < screenList.Count)
+            if (screenIndex < screenList.Count)
             {
-                if (!((PlayerScreen)screenList[_iScreen]).IsPlaying)
-                {
-                    ((PlayerScreen)screenList[_iScreen]).m_PlayerScreenUI.OnButtonPlay();
-                }
+                if (!((PlayerScreen)screenList[screenIndex]).IsPlaying)
+                    ((PlayerScreen)screenList[screenIndex]).m_PlayerScreenUI.OnButtonPlay();
             }
             else
             {
-                m_bSynching = false;
+                synching = false;
                 view.DisplayAsPaused();
             }
         }
         private void ResetDynamicSyncFlags()
         {
-            m_bRightIsStarting = false;
-            m_bLeftIsStarting = false;
-            m_bLeftIsCatchingUp = false;
-            m_bRightIsCatchingUp = false;
+            rightIsStarting = false;
+            leftIsStarting = false;
+            leftIsCatchingUp = false;
+            rightIsCatchingUp = false;
         }
         private void SyncCatch()
         {
             // We sync back the videos.
             // Used when one video has been moved individually.
             log.Debug("SyncCatch() called.");
-            long iLeftFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
-            long iRightFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
+            long leftFrame = ((PlayerScreen)screenList[0]).CurrentFrame;
+            long rightFrame = ((PlayerScreen)screenList[1]).CurrentFrame;
 
-            if (m_iSyncLag > 0)
+            if (syncLag > 0)
             {
                 // Right video goes ahead.
-                if (iLeftFrame + m_iSyncLag == m_iCurrentFrame || (m_iCurrentFrame < m_iSyncLag && iLeftFrame == 0))
+                if (leftFrame + syncLag == currentFrame || (currentFrame < syncLag && leftFrame == 0))
                 {
                     // Left video wasn't moved, we'll move it according to right video.
-                    m_iCurrentFrame = iRightFrame;
+                    currentFrame = rightFrame;
                 }
-                else if (iRightFrame == m_iCurrentFrame)
+                else if (rightFrame == currentFrame)
                 {
                     // Right video wasn't moved, we'll move it according to left video.
-                    m_iCurrentFrame = iLeftFrame + m_iSyncLag;
+                    currentFrame = leftFrame + syncLag;
                 }
                 else
                 {
                     // Both videos were moved.
-                    m_iCurrentFrame = iLeftFrame + m_iSyncLag;
+                    currentFrame = leftFrame + syncLag;
                 }
             }
             else
             {
                 // Left video goes ahead.
-                if (iRightFrame - m_iSyncLag == m_iCurrentFrame || (m_iCurrentFrame < -m_iSyncLag && iRightFrame == 0))
+                if (rightFrame - syncLag == currentFrame || (currentFrame < -syncLag && rightFrame == 0))
                 {
                     // Right video wasn't moved, we'll move it according to left video.
-                    m_iCurrentFrame = iLeftFrame;
+                    currentFrame = leftFrame;
                 }
-                else if (iLeftFrame == m_iCurrentFrame)
+                else if (leftFrame == currentFrame)
                 {
                     // Left video wasn't moved, we'll move it according to right video.
-                    m_iCurrentFrame = iRightFrame - m_iSyncLag;
+                    currentFrame = rightFrame - syncLag;
                 }
                 else
                 {
                     // Both videos were moved.
-                    m_iCurrentFrame = iLeftFrame;
+                    currentFrame = leftFrame;
                 }
             }
 
-            OnCommonPositionChanged(m_iCurrentFrame, true);
-            view.UpdateTrkFrame(m_iCurrentFrame);
+            OnCommonPositionChanged(currentFrame, true);
+            view.UpdateTrkFrame(currentFrame);
 
         }
         #endregion
@@ -3078,16 +3012,15 @@ namespace Kinovea.ScreenManager
             // Before we start anything messy, let's store the current state of the ViewPort
             // So we can reinstate it later in case the user change his mind.
             //-------------------------------------------------------------------------------
-            m_StoredStates.Add(GetCurrentState());
+            storedStates.Add(GetCurrentState());
         }
         public ScreenManagerState GetCurrentState()
         {
-            ScreenManagerState mState = new ScreenManagerState();
+            ScreenManagerState currentState = new ScreenManagerState();
 
             foreach (AbstractScreen screen in screenList)
             {
                 ScreenState state = new ScreenState();
-
                 state.UniqueId = screen.UniqueId;
 
                 if (screen is PlayerScreen && screen.Full)
@@ -3102,338 +3035,329 @@ namespace Kinovea.ScreenManager
                     state.FilePath = "";
                     state.MetadataString = "";
                 }
-                mState.ScreenList.Add(state);
+
+                currentState.ScreenList.Add(state);
             }
 
-            return mState;
+            return currentState;
         }
         public void RecallState()
         {
+            // TODO: refactor this monster.
+
             //-------------------------------------------------
             // Reconfigure the ViewPort to match the old state.
             // Reload the right movie with its meta data.
             //-------------------------------------------------
-         
-            if (m_StoredStates.Count > 0)
+            if (storedStates.Count == 0)
+                return;
+            
+            int lastState = storedStates.Count - 1;
+            CommandManager cm = CommandManager.Instance();
+            ICommand css = new CommandShowScreens(this);
+
+            ScreenManagerState currentState = GetCurrentState();
+
+            switch (currentState.ScreenList.Count)
             {
-                int iLastState = m_StoredStates.Count -1;
-                CommandManager cm = CommandManager.Instance();
-                ICommand css = new CommandShowScreens(this);
-
-                ScreenManagerState CurrentState = GetCurrentState();
-
-                switch (CurrentState.ScreenList.Count)
-                {
-                    case 0:
-                        //-----------------------------
-                        // Il y a actuellement 0 écran.
-                        //-----------------------------
-                        switch (m_StoredStates[iLastState].ScreenList.Count)
-                        {
-                            case 0:
-                                // Il n'y en avait aucun : Ne rien faire.
+                case 0:
+                    //-----------------------------
+                    // Il y a actuellement 0 écran.
+                    //-----------------------------
+                    switch (storedStates[lastState].ScreenList.Count)
+                    {
+                        case 0:
+                            // Il n'y en avait aucun : Ne rien faire.
+                            break;
+                        case 1:
+                            {
+                                // Il y en avait un : Ajouter l'écran.
+                                ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState); 
+                                CommandManager.LaunchCommand(css);
                                 break;
-                            case 1:
-                                {
-                                    // Il y en avait un : Ajouter l'écran.
-                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState); 
-                                    CommandManager.LaunchCommand(css);
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    // Ajouter les deux écrans, on ne se préoccupe pas trop de l'ordre
-                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
-                                    CommandManager.LaunchCommand(css);
-                                    break;
-                                }
-                            default:
+                            }
+                        case 2:
+                            {
+                                // Ajouter les deux écrans, on ne se préoccupe pas trop de l'ordre
+                                ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
+                                ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
+                                CommandManager.LaunchCommand(css);
                                 break;
-                        }
-                        break;
-                    case 1:
-                        //-----------------------------
-                        // Il y a actuellement 1 écran.
-                        //-----------------------------
-                        switch (m_StoredStates[iLastState].ScreenList.Count)
-                        {
-                            case 0:
+                            }
+                        default:
+                            break;
+                    }
+                    break;
+                case 1:
+                    //-----------------------------
+                    // Il y a actuellement 1 écran.
+                    //-----------------------------
+                    switch (storedStates[lastState].ScreenList.Count)
+                    {
+                        case 0:
+                            {
+                                // Il n'y en avait aucun : Supprimer l'écran.
+                                RemoveScreen(0, false);
+                                CommandManager.LaunchCommand(css);
+                                break;
+                            }
+                        case 1:
+                            {
+                                // Il y en avait un : Remplacer si besoin.
+                                ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
+                                CommandManager.LaunchCommand(css);
+                                break;
+                            }
+                        case 2:
+                            {
+                                // Il y avait deux écran : Comparer chaque ancien écran avec le restant.
+                                int matchingScreen = -1;
+                                int i=0;
+                                while ((matchingScreen == -1) && (i < storedStates[lastState].ScreenList.Count))
                                 {
-                                    // Il n'y en avait aucun : Supprimer l'écran.
-                                    RemoveScreen(0, false);
-                                    CommandManager.LaunchCommand(css);
-                                    break;
+                                    if (storedStates[lastState].ScreenList[i].UniqueId == currentState.ScreenList[0].UniqueId)
+                                        matchingScreen = i;
+                                    else
+                                        i++;
                                 }
-                            case 1:
-                                {
-                                    // Il y en avait un : Remplacer si besoin.
-                                    ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                    CommandManager.LaunchCommand(css);
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    // Il y avait deux écran : Comparer chaque ancien écran avec le restant.
-                                    int iMatchingScreen = -1;
-                                    int i=0;
-                                    while ((iMatchingScreen == -1) && (i < m_StoredStates[iLastState].ScreenList.Count))
-                                    {
-                                        if (m_StoredStates[iLastState].ScreenList[i].UniqueId == CurrentState.ScreenList[0].UniqueId)
-                                        {
-                                            iMatchingScreen = i;
-                                        }
-                                        else
-                                        {
-                                            i++;
-                                        }
-                                    }
 
-                                    switch (iMatchingScreen)
-                                    {
-                                        case -1:
-                                            {
-                                                // No matching screen found
-                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
-                                                break;
-                                            }
-                                        case 0:
-                                            {
-                                                // the old 0 is the new 0, the old 1 doesn't exist yet.
-                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
-                                                break;
-                                            }
-                                        case 1:
-                                            {
-                                                // the old 1 is the new 0, the old 0 doesn't exist yet.
-                                                ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 1, CurrentState);
-                                                break;
-                                            }
-                                        default:
+                                switch (matchingScreen)
+                                {
+                                    case -1:
+                                        {
+                                            // No matching screen found
+                                            ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
+                                            ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
                                             break;
-                                    }
-                                    CommandManager.LaunchCommand(css);
-                                    break;
-                                }
-                            default:
-                                break;
-                        }
-                        break;
-                    case 2:
-                        // Il y a actuellement deux écrans.
-                        switch (m_StoredStates[iLastState].ScreenList.Count)
-                        {
-                            case 0:
-                                {
-                                    // Il n'yen avait aucun : supprimer les deux.
-                                    RemoveScreen(1, false);
-                                    RemoveScreen(0, false);
-                                    CommandManager.LaunchCommand(css);
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    // Il y en avait un : le rechercher parmi les nouveaux.
-                                    int iMatchingScreen = -1;
-                                    int i = 0;
-                                    while ((iMatchingScreen == -1) && (i < CurrentState.ScreenList.Count))
-                                    {
-                                        if (m_StoredStates[iLastState].ScreenList[0].UniqueId == CurrentState.ScreenList[i].UniqueId)
-                                        {
-                                            iMatchingScreen = i;
                                         }
+                                    case 0:
+                                        {
+                                            // the old 0 is the new 0, the old 1 doesn't exist yet.
+                                            ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
+                                            break;
+                                        }
+                                    case 1:
+                                        {
+                                            // the old 1 is the new 0, the old 0 doesn't exist yet.
+                                            ReinstateScreen(storedStates[lastState].ScreenList[0], 1, currentState);
+                                            break;
+                                        }
+                                    default:
+                                        break;
+                                }
+                                CommandManager.LaunchCommand(css);
+                                break;
+                            }
+                        default:
+                            break;
+                    }
+                    break;
+                case 2:
+                    // Il y a actuellement deux écrans.
+                    switch (storedStates[lastState].ScreenList.Count)
+                    {
+                        case 0:
+                            {
+                                // Il n'yen avait aucun : supprimer les deux.
+                                RemoveScreen(1, false);
+                                RemoveScreen(0, false);
+                                CommandManager.LaunchCommand(css);
+                                break;
+                            }
+                        case 1:
+                            {
+                                // Il y en avait un : le rechercher parmi les nouveaux.
+                                int matchingScreen = -1;
+                                int i = 0;
+                                while ((matchingScreen == -1) && (i < currentState.ScreenList.Count))
+                                {
+                                    if (storedStates[lastState].ScreenList[0].UniqueId == currentState.ScreenList[i].UniqueId)
+                                        matchingScreen = i;
                                         
-                                        i++;
-                                    }
-
-                                    switch (iMatchingScreen)
-                                    {
-                                        case -1:
-                                            // L'ancien écran n'a pas été retrouvé.
-                                            // On supprime tout et on le rajoute.
-                                            RemoveScreen(1, false);
-                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                            break;
-                                        case 0:
-                                            // L'ancien écran a été retrouvé dans l'écran [0]
-                                            // On supprime le second.
-                                            RemoveScreen(1, false);
-                                            break;
-                                        case 1:
-                                            // L'ancien écran a été retrouvé dans l'écran [1]
-                                            // On supprime le premier.
-                                            RemoveScreen(0, false);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    CommandManager.LaunchCommand(css);
-                                    break;
+                                    i++;
                                 }
-                            case 2:
+
+                                switch (matchingScreen)
                                 {
-                                    // Il y avait deux écrans également : Rechercher chacun parmi les nouveaux.
-                                    int[] iMatchingScreen = new int[2];
-                                    iMatchingScreen[0] = -1;
-                                    iMatchingScreen[1] = -1;
-                                    int i = 0;
-                                    while (i < CurrentState.ScreenList.Count)
-                                    {
-                                        if (m_StoredStates[iLastState].ScreenList[0].UniqueId == CurrentState.ScreenList[i].UniqueId)
-                                        {
-                                            iMatchingScreen[0] = i;
-                                        }
-                                        else if (m_StoredStates[iLastState].ScreenList[1].UniqueId == CurrentState.ScreenList[i].UniqueId)
-                                        {
-                                            iMatchingScreen[1] = i;
-                                        }
-
-                                        i++;
-                                    }
-
-                                    switch (iMatchingScreen[0])
-                                    {
-                                        case -1:
-                                            {
-                                                // => L'ancien écran [0] n'a pas été retrouvé.
-                                                switch (iMatchingScreen[1])
-                                                {
-                                                    case -1:
-                                                        {
-                                                            // Aucun écran n'a été retrouvé.
-                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
-                                                            break;
-                                                        }
-                                                    case 0:
-                                                        {
-                                                            // Ecran 0 non retrouvé, écran 1 retrouvé dans le 0.
-                                                            // Remplacer l'écran 1 par l'ancien 0.
-                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 1, CurrentState);
-                                                            break;
-                                                        }
-                                                    case 1:
-                                                        {
-                                                            // Ecran 0 non retrouvé, écran 1 retrouvé dans le 1.
-                                                            // Remplacer l'écran 0.
-                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[0], 0, CurrentState);
-                                                            break;
-                                                        }
-                                                    default:
-                                                        break;
-                                                }
-                                                break;
-                                            }
-                                        case 0:
-                                            {
-                                                // L'ancien écran [0] a été retrouvé dans l'écran [0]
-                                                switch (iMatchingScreen[1])
-                                                {
-                                                    case -1:
-                                                        {
-                                                            // Ecran 0 retrouvé dans le [0], écran 1 non retrouvé. 
-                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 1, CurrentState);
-                                                            break;
-                                                        }
-                                                    case 0:
-                                                        {
-                                                            // Ecran 0 retrouvé dans le [0], écran 1 retrouvé dans le [0].
-                                                            // Impossible.
-                                                            break;
-                                                        }
-                                                    case 1:
-                                                        {
-                                                            // Ecran 0 retrouvé dans le [0], écran 1 retrouvé dans le [1].
-                                                            // rien à faire.
-                                                            break;
-                                                        }
-                                                    default:
-                                                        break;
-                                                }
-                                                break;
-                                            }
-                                        case 1:
-                                            {
-                                                // L'ancien écran [0] a été retrouvé dans l'écran [1]
-                                                switch (iMatchingScreen[1])
-                                                {
-                                                    case -1:
-                                                        {
-                                                            // Ecran 0 retrouvé dans le [1], écran 1 non retrouvé. 
-                                                            ReinstateScreen(m_StoredStates[iLastState].ScreenList[1], 0, CurrentState);
-                                                            break;
-                                                        }
-                                                    case 0:
-                                                        {
-                                                            // Ecran 0 retrouvé dans le [1], écran 1 retrouvé dans le [0].
-                                                            // rien à faire (?)
-                                                            break;
-                                                        }
-                                                    case 1:
-                                                        {
-                                                            // Ecran 0 retrouvé dans le [1], écran 1 retrouvé dans le [1].
-                                                            // Impossible
-                                                            break;
-                                                        }
-                                                    default:
-                                                        break;
-                                                }
-                                                break;
-                                            }
-                                        default:
-                                            break;
-                                    }
-                                    CommandManager.LaunchCommand(css);
-                                    break;
+                                    case -1:
+                                        // L'ancien écran n'a pas été retrouvé.
+                                        // On supprime tout et on le rajoute.
+                                        RemoveScreen(1, false);
+                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
+                                        break;
+                                    case 0:
+                                        // L'ancien écran a été retrouvé dans l'écran [0]
+                                        // On supprime le second.
+                                        RemoveScreen(1, false);
+                                        break;
+                                    case 1:
+                                        // L'ancien écran a été retrouvé dans l'écran [1]
+                                        // On supprime le premier.
+                                        RemoveScreen(0, false);
+                                        break;
+                                    default:
+                                        break;
                                 }
-                            default:
+                                CommandManager.LaunchCommand(css);
                                 break;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                            }
+                        case 2:
+                            {
+                                // Il y avait deux écrans également : Rechercher chacun parmi les nouveaux.
+                                int[] matchingScreens = new int[2];
+                                matchingScreens[0] = -1;
+                                matchingScreens[1] = -1;
+                                int i = 0;
+                                while (i < currentState.ScreenList.Count)
+                                {
+                                    if (storedStates[lastState].ScreenList[0].UniqueId == currentState.ScreenList[i].UniqueId)
+                                        matchingScreens[0] = i;
+                                    else if (storedStates[lastState].ScreenList[1].UniqueId == currentState.ScreenList[i].UniqueId)
+                                        matchingScreens[1] = i;
 
-                // Once we have made such a recall, the Redo menu must be disabled...
-                cm.BlockRedo();
+                                    i++;
+                                }
 
-                UpdateCaptureBuffers();
-                
-                // Mettre à jour menus et Status bar
-                UpdateStatusBar();
-                OrganizeCommonControls();
-                OrganizeMenus();
+                                switch (matchingScreens[0])
+                                {
+                                    case -1:
+                                        {
+                                            // => L'ancien écran [0] n'a pas été retrouvé.
+                                            switch (matchingScreens[1])
+                                            {
+                                                case -1:
+                                                    {
+                                                        // Aucun écran n'a été retrouvé.
+                                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
+                                                        ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
+                                                        break;
+                                                    }
+                                                case 0:
+                                                    {
+                                                        // Ecran 0 non retrouvé, écran 1 retrouvé dans le 0.
+                                                        // Remplacer l'écran 1 par l'ancien 0.
+                                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 1, currentState);
+                                                        break;
+                                                    }
+                                                case 1:
+                                                    {
+                                                        // Ecran 0 non retrouvé, écran 1 retrouvé dans le 1.
+                                                        // Remplacer l'écran 0.
+                                                        ReinstateScreen(storedStates[lastState].ScreenList[0], 0, currentState);
+                                                        break;
+                                                    }
+                                                default:
+                                                    break;
+                                            }
+                                            break;
+                                        }
+                                    case 0:
+                                        {
+                                            // L'ancien écran [0] a été retrouvé dans l'écran [0]
+                                            switch (matchingScreens[1])
+                                            {
+                                                case -1:
+                                                    {
+                                                        // Ecran 0 retrouvé dans le [0], écran 1 non retrouvé. 
+                                                        ReinstateScreen(storedStates[lastState].ScreenList[1], 1, currentState);
+                                                        break;
+                                                    }
+                                                case 0:
+                                                    {
+                                                        // Ecran 0 retrouvé dans le [0], écran 1 retrouvé dans le [0].
+                                                        // Impossible.
+                                                        break;
+                                                    }
+                                                case 1:
+                                                    {
+                                                        // Ecran 0 retrouvé dans le [0], écran 1 retrouvé dans le [1].
+                                                        // rien à faire.
+                                                        break;
+                                                    }
+                                                default:
+                                                    break;
+                                            }
+                                            break;
+                                        }
+                                    case 1:
+                                        {
+                                            // L'ancien écran [0] a été retrouvé dans l'écran [1]
+                                            switch (matchingScreens[1])
+                                            {
+                                                case -1:
+                                                    {
+                                                        // Ecran 0 retrouvé dans le [1], écran 1 non retrouvé. 
+                                                        ReinstateScreen(storedStates[lastState].ScreenList[1], 0, currentState);
+                                                        break;
+                                                    }
+                                                case 0:
+                                                    {
+                                                        // Ecran 0 retrouvé dans le [1], écran 1 retrouvé dans le [0].
+                                                        // rien à faire (?)
+                                                        break;
+                                                    }
+                                                case 1:
+                                                    {
+                                                        // Ecran 0 retrouvé dans le [1], écran 1 retrouvé dans le [1].
+                                                        // Impossible
+                                                        break;
+                                                    }
+                                                default:
+                                                    break;
+                                            }
+                                            break;
+                                        }
+                                    default:
+                                        break;
+                                }
 
-                m_StoredStates.RemoveAt(iLastState);
+                                CommandManager.LaunchCommand(css);
+                                break;
+                            }
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
             }
+
+            // Once we have made such a recall, the Redo menu must be disabled...
+            cm.BlockRedo();
+
+            UpdateCaptureBuffers();
+                
+            // Mettre à jour menus et Status bar
+            UpdateStatusBar();
+            OrganizeCommonControls();
+            OrganizeMenus();
+
+            storedStates.RemoveAt(lastState);
         }
-        private void ReinstateScreen(ScreenState _OldScreen, int _iNewPosition, ScreenManagerState _CurrentState)
+        private void ReinstateScreen(ScreenState oldScreen, int newPosition, ScreenManagerState currentState)
         {
             CommandManager cm = CommandManager.Instance();
 
-            if (_iNewPosition > _CurrentState.ScreenList.Count - 1)
+            if (newPosition > currentState.ScreenList.Count - 1)
             {
                 // We need a new screen.
                 ICommand caps = new CommandAddPlayerScreen(this, false);
                 CommandManager.LaunchCommand(caps);
 
-                if (_OldScreen.Loaded)
-                {
-                    ReloadScreen(_OldScreen, _iNewPosition + 1);
-                }
+                if (oldScreen.Loaded)
+                    ReloadScreen(oldScreen, newPosition + 1);
             }
             else
             {
-                if (_OldScreen.Loaded)
+                if (oldScreen.Loaded)
                 {
-                    ReloadScreen(_OldScreen, _iNewPosition + 1);
+                    ReloadScreen(oldScreen, newPosition + 1);
                 }
-                else if (_CurrentState.ScreenList[_iNewPosition].Loaded)
+                else if (currentState.ScreenList[newPosition].Loaded)
                 {
                     // L'ancien n'est pas chargé mais le nouveau l'est.
                     // => unload movie.
-                    RemoveScreen(_iNewPosition, false);
+                    RemoveScreen(newPosition, false);
 
                     ICommand caps = new CommandAddPlayerScreen(this, false);
                     CommandManager.LaunchCommand(caps);
@@ -3445,39 +3369,39 @@ namespace Kinovea.ScreenManager
                 }
             }
         }
-        private bool RemoveScreen(int _iPosition, bool _bStoreState)
+        private bool RemoveScreen(int position, bool storeState)
         {
-            ICommand crs = new CommandRemoveScreen(this, _iPosition, _bStoreState);
+            ICommand crs = new CommandRemoveScreen(this, position, storeState);
             CommandManager.LaunchCommand(crs);
 
-            bool cancelled = m_bCancelLastCommand;
+            bool cancelled = cancelLastCommand;
             if (cancelled)
             {
                 CommandManager cm = CommandManager.Instance();
                 cm.UnstackLastCommand();
-                m_bCancelLastCommand = false;
+                cancelLastCommand = false;
             }
             
             return !cancelled;
         }
-        private void ReloadScreen(ScreenState _OldScreen, int _iNewPosition)
+        private void ReloadScreen(ScreenState oldScreen, int newPosition)
         {
-            if(!File.Exists(_OldScreen.FilePath))
+            if(!File.Exists(oldScreen.FilePath))
                 return;
             
             // We instantiate and launch it like a simple command (not undoable).
-            ICommand clmis = new CommandLoadMovieInScreen(this, _OldScreen.FilePath, _iNewPosition, false);
+            ICommand clmis = new CommandLoadMovieInScreen(this, oldScreen.FilePath, newPosition, false);
             CommandManager.LaunchCommand(clmis);
             
             // Check that everything went well
             // Potential problem : the video was deleted between do and undo.
             // _iNewPosition should always point to a valid position here.
-            if (screenList[_iNewPosition-1].Full)
+            if (screenList[newPosition-1].Full)
             {
-                PlayerScreen ps = m_ActiveScreen as PlayerScreen;
+                PlayerScreen ps = activeScreen as PlayerScreen;
                 if(ps != null)
                 {
-                    ps.FrameServer.Metadata.Load(_OldScreen.MetadataString, false);
+                    ps.FrameServer.Metadata.Load(oldScreen.MetadataString, false);
                     ps.m_PlayerScreenUI.PostImportMetadata();
                 }
             }
