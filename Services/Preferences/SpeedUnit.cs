@@ -23,12 +23,12 @@ using System;
 namespace Kinovea.Services
 {
     public enum SpeedUnit
-	{
-		MetersPerSecond,
-		KilometersPerHour,
-		FeetPerSecond,
-		MilesPerHour,
-		Knots,
-		PixelsPerFrame
-	}
+    {
+        MetersPerSecond,
+        KilometersPerHour,
+        FeetPerSecond,
+        MilesPerHour,
+        Knots,
+        PixelsPerFrame
+    }
 }

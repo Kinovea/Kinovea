@@ -24,46 +24,46 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-	/// <summary>
-	/// A class to encapsulate one item of the shortcut folders.
-	/// </summary>
-	public class ShortcutFolder : IComparable
-	{
-		public string Location 
-		{
-			get { return location; }
-		}
-		public string FriendlyName 
-		{
-			get { return friendlyName; }
-		}
-		
-		private string friendlyName;		
-		private string location;
-		
-		public ShortcutFolder(string friendlyName, string location)
-		{
-			this.friendlyName = friendlyName;
-			this.location = location;
-		}
-		public override string ToString()
-		{
-			return friendlyName;
-		}
-		public void WriteXML(XmlWriter writer)
+    /// <summary>
+    /// A class to encapsulate one item of the shortcut folders.
+    /// </summary>
+    public class ShortcutFolder : IComparable
+    {
+        public string Location 
         {
-		    writer.WriteElementString("FriendlyName", friendlyName);
+            get { return location; }
+        }
+        public string FriendlyName 
+        {
+            get { return friendlyName; }
+        }
+        
+        private string friendlyName;		
+        private string location;
+        
+        public ShortcutFolder(string friendlyName, string location)
+        {
+            this.friendlyName = friendlyName;
+            this.location = location;
+        }
+        public override string ToString()
+        {
+            return friendlyName;
+        }
+        public void WriteXML(XmlWriter writer)
+        {
+            writer.WriteElementString("FriendlyName", friendlyName);
             writer.WriteElementString("Location", location);
-		}
-		
-		public ShortcutFolder(XmlReader reader)
-		{
-		    reader.ReadStartElement();
-		    
-		    while(reader.NodeType == XmlNodeType.Element)
+        }
+        
+        public ShortcutFolder(XmlReader reader)
+        {
+            reader.ReadStartElement();
+            
+            while(reader.NodeType == XmlNodeType.Element)
             {
                 switch(reader.Name)
-				{
+                {
                     case "FriendlyName":
                         friendlyName = reader.ReadElementContentAsString();
                         break;
@@ -75,19 +75,19 @@ namespace Kinovea.Services
                         break;
                 }
             }
-		    
-		    reader.ReadEndElement();
-		}
-	
-		#region IComparable Implementation
+            
+            reader.ReadEndElement();
+        }
+    
+        #region IComparable Implementation
         public int CompareTo(object obj)
         {
-        	ShortcutFolder sf = obj as ShortcutFolder;
+            ShortcutFolder sf = obj as ShortcutFolder;
             if(sf != null)
             {
-            	String path1 = Path.GetFileName(this.location);
-            	String path2 = Path.GetFileName(sf.Location);
-            	return path1.CompareTo(path2);
+                String path1 = Path.GetFileName(this.location);
+                String path2 = Path.GetFileName(sf.Location);
+                return path1.CompareTo(path2);
             }
             else
             {
@@ -95,5 +95,5 @@ namespace Kinovea.Services
             }
         }
         #endregion
-	}
+    }
 }

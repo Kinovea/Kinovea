@@ -23,11 +23,11 @@ using System.Xml;
 
 namespace Kinovea.Services
 {
-	/// <summary>
-	/// This class encapsulate fading / persistence infos and utilities.
-	/// It is used by all drawings to delegate the computing of the opacity factor.
-	/// Each drawing instance has its own InfosFading with its own set of internal values. 
-	/// </summary>
+    /// <summary>
+    /// This class encapsulate fading / persistence infos and utilities.
+    /// It is used by all drawings to delegate the computing of the opacity factor.
+    /// Each drawing instance has its own InfosFading with its own set of internal values. 
+    /// </summary>
     public class InfosFading
     {
         
@@ -62,24 +62,24 @@ namespace Kinovea.Services
             get { return averageTimeStampsPerFrame; }
             set { averageTimeStampsPerFrame = value; }
         }
-		public float MasterFactor
-		{
-			get { return masterFactor; }
-			set { masterFactor = value; }
-		}
-		public int ContentHash
-		{
-		    get 
-		    { 
-		        int hash = enabled.GetHashCode();
-		        hash ^= useDefault.GetHashCode();
-		        hash ^= alwaysVisible.GetHashCode();
-		        hash ^= fadingFrames.GetHashCode();
-		        hash ^= referenceTimestamp.GetHashCode();
-		        hash ^= masterFactor.GetHashCode();
+        public float MasterFactor
+        {
+            get { return masterFactor; }
+            set { masterFactor = value; }
+        }
+        public int ContentHash
+        {
+            get 
+            { 
+                int hash = enabled.GetHashCode();
+                hash ^= useDefault.GetHashCode();
+                hash ^= alwaysVisible.GetHashCode();
+                hash ^= fadingFrames.GetHashCode();
+                hash ^= referenceTimestamp.GetHashCode();
+                hash ^= masterFactor.GetHashCode();
                 return hash;
-		    }
-		}
+            }
+        }
         #endregion
 
         #region Members
@@ -144,32 +144,32 @@ namespace Kinovea.Services
         {
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "Enabled":
-				        enabled = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "Enabled":
+                        enabled = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
-					case "Frames":
-				        fadingFrames = _xmlReader.ReadElementContentAsInt();
+                    case "Frames":
+                        fadingFrames = _xmlReader.ReadElementContentAsInt();
                         break;
-					case "UseDefault":
-				        useDefault = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                    case "UseDefault":
+                        useDefault = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
                     case "AlwaysVisible":
-						alwaysVisible = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
-						break;
-				    default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
-			
-			// Sanity check.
+                        alwaysVisible = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+            
+            // Sanity check.
             if (fadingFrames < 1) 
                 fadingFrames = 1;
         }
@@ -197,11 +197,11 @@ namespace Kinovea.Services
                 InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
                 if(info.AlwaysVisible)
                 {
-                	fOpacityFactor = 1.0f;
+                    fOpacityFactor = 1.0f;
                 }
                 else
                 {
-                	fOpacityFactor = ComputeOpacityFactor(referenceTimestamp, _iTimestamp, info.FadingFrames);
+                    fOpacityFactor = ComputeOpacityFactor(referenceTimestamp, _iTimestamp, info.FadingFrames);
                 }
             }
             else if (alwaysVisible)
@@ -219,10 +219,10 @@ namespace Kinovea.Services
         }
         public bool IsVisible(long _iRefTimestamp, long _iTestTimestamp, int iVisibleFrames)
         {
-        	// Is a given point visible at all ?
-        	// Currently used by trajectory in focus mode to check for kf labels visibility.
-        	
-        	return ComputeOpacityFactor(_iRefTimestamp, _iTestTimestamp, (long)iVisibleFrames) > 0;
+            // Is a given point visible at all ?
+            // Currently used by trajectory in focus mode to check for kf labels visibility.
+            
+            return ComputeOpacityFactor(_iRefTimestamp, _iTestTimestamp, (long)iVisibleFrames) > 0;
         }
         private double ComputeOpacityFactor(long _iRefTimestamp, long _iTestTimestamp, long iFadingFrames)
         {

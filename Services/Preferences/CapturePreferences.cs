@@ -35,55 +35,55 @@ namespace Kinovea.Services
         }
         public string ImageDirectory
         {
-        	get { return imageDirectory; }
-			set { imageDirectory = value; }
-		}
+            get { return imageDirectory; }
+            set { imageDirectory = value; }
+        }
         public string VideoDirectory 
         {
-        	get { return videoDirectory; }
-			set { videoDirectory = value; }
-		}        
-		public KinoveaImageFormat ImageFormat
-		{
-			get { return imageFormat; }
-			set { imageFormat = value; }
-		}
-		public KinoveaVideoFormat VideoFormat
-		{
-			get { return videoFormat; }
-			set { videoFormat = value; }
-		}
+            get { return videoDirectory; }
+            set { videoDirectory = value; }
+        }        
+        public KinoveaImageFormat ImageFormat
+        {
+            get { return imageFormat; }
+            set { imageFormat = value; }
+        }
+        public KinoveaVideoFormat VideoFormat
+        {
+            get { return videoFormat; }
+            set { videoFormat = value; }
+        }
         public string ImageFile
         {
-        	get { return imageFile; }
-			set { imageFile = value; }
+            get { return imageFile; }
+            set { imageFile = value; }
         }
-		public string VideoFile
+        public string VideoFile
         {
-        	get { return videoFile; }
-			set { videoFile = value; }
+            get { return videoFile; }
+            set { videoFile = value; }
         }
-		public bool CaptureUsePattern
-		{
-			get { return usePattern; }
-			set { usePattern = value; }
-		}
-		public string Pattern
-		{
-			get { return pattern; }
-			set { pattern = value; }
-		}
-		public long CaptureImageCounter
+        public bool CaptureUsePattern
         {
-        	get { return imageCounter; }
+            get { return usePattern; }
+            set { usePattern = value; }
+        }
+        public string Pattern
+        {
+            get { return pattern; }
+            set { pattern = value; }
+        }
+        public long CaptureImageCounter
+        {
+            get { return imageCounter; }
             set { imageCounter = value;}	
         }
-		public long CaptureVideoCounter
+        public long CaptureVideoCounter
         {
-        	get { return videoCounter; }
+            get { return videoCounter; }
             set { videoCounter = value;}	
         }
-		public int CaptureMemoryBuffer
+        public int CaptureMemoryBuffer
         {
             get { return memoryBuffer; }
             set { memoryBuffer = value; }
@@ -93,8 +93,8 @@ namespace Kinovea.Services
             get { return cameraBlurbs.Values.Cast<CameraBlurb>(); }
         }
         #endregion
-		
-		#region Members
+        
+        #region Members
         private string imageDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private string videoDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private KinoveaImageFormat imageFormat = KinoveaImageFormat.JPG;
@@ -108,7 +108,7 @@ namespace Kinovea.Services
         private int memoryBuffer = 768;
         private Dictionary<string, CameraBlurb> cameraBlurbs = new Dictionary<string, CameraBlurb>();
         
-		#endregion
+        #endregion
         
         public void AddCamera(CameraBlurb blurb)
         {
@@ -124,8 +124,8 @@ namespace Kinovea.Services
             if(cameraBlurbs.ContainsKey(identifier))
                cameraBlurbs.Remove(identifier);
         }
-    	
-    	public void WriteXML(XmlWriter writer)
+        
+        public void WriteXML(XmlWriter writer)
         {
             writer.WriteElementString("ImageDirectory", imageDirectory);
             if(!string.IsNullOrEmpty(imageFile))
@@ -158,17 +158,17 @@ namespace Kinovea.Services
                 writer.WriteEndElement();
             }
         }
-    	
-    	public void ReadXML(XmlReader reader)
+        
+        public void ReadXML(XmlReader reader)
         {
             reader.ReadStartElement();
 
             while(reader.NodeType == XmlNodeType.Element)
-			{
-				switch(reader.Name)
-				{
-					case "ImageDirectory":
-				        imageDirectory = reader.ReadElementContentAsString();
+            {
+                switch(reader.Name)
+                {
+                    case "ImageDirectory":
+                        imageDirectory = reader.ReadElementContentAsString();
                         break;
                     case "ImageFile":
                         imageFile = reader.ReadElementContentAsString();

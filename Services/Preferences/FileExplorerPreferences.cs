@@ -53,38 +53,38 @@ namespace Kinovea.Services
             get { return recentFiles;}
         }
         
-		public int ExplorerFilesSplitterDistance
+        public int ExplorerFilesSplitterDistance
         {
-        	// Splitter between folders and files on Explorer tab
+            // Splitter between folders and files on Explorer tab
             get { return explorerFilesSplitterDistance; }
             set { explorerFilesSplitterDistance = value; }
         }
-		public ExplorerThumbSize ExplorerThumbsSize
-		{
-			// Size category of the thumbnails.
+        public ExplorerThumbSize ExplorerThumbsSize
+        {
+            // Size category of the thumbnails.
             get { return explorerThumbsSize; }
             set { explorerThumbsSize = value; }				
-		}
-		public int ShortcutsFilesSplitterDistance
+        }
+        public int ShortcutsFilesSplitterDistance
         {
-        	// Splitter between folders and files on Shortcuts tab
+            // Splitter between folders and files on Shortcuts tab
             get { return shortcutsFilesSplitterDistance; }
             set { shortcutsFilesSplitterDistance = value; }
         }
         public List<ShortcutFolder> ShortcutFolders
         {
-        	get{ return shortcutFolders;}
+            get{ return shortcutFolders;}
         }
         public ActiveFileBrowserTab ActiveTab 
         {
-			get { return activeTab; }
-			set { activeTab = value; }
-		}
+            get { return activeTab; }
+            set { activeTab = value; }
+        }
         public string LastBrowsedDirectory 
         {
             get { return lastBrowsedDirectory; }
             set { lastBrowsedDirectory = value;}
-		}
+        }
         
         private List<string> recentFiles = new List<string>();
         private int maxRecentFiles = 5;
@@ -109,85 +109,85 @@ namespace Kinovea.Services
         }
         
         public void RemoveShortcut(ShortcutFolder shortcut)
-    	{
-    	    for(int i=shortcutFolders.Count-1; i>=0; i--)
-			{
-        		if(shortcutFolders[i].Location == shortcut.Location)
-        			shortcutFolders.RemoveAt(i);
-        	}
-    	    
-    	    shortcutFolders.Sort();
-    	}
-    	
-    	public void AddShortcut(ShortcutFolder shortcut)
-    	{
-    	    bool known = shortcutFolders.Any(s => s.Location == shortcut.Location);
-
-    	    if(!known)
-    	    {
-				shortcutFolders.Add(shortcut);
-				shortcutFolders.Sort();
-    	    }
-    	}
-    	
-    	public bool IsShortcutKnown(string path)
-    	{
-    	    return shortcutFolders.Any(s => s.Location == path);
-    	}
-    	
-    	public void WriteXML(XmlWriter writer)
         {
-    	    writer.WriteElementString("MaxRecentFiles", maxRecentFiles.ToString());
-    	    
-    	    if(recentFiles.Count > 0)
-    	    {
-    	        writer.WriteStartElement("RecentFiles");
-    	        
-    	        for(int i=0; i<maxRecentFiles; i++)
-    	        {
-    	            if(i >= recentFiles.Count)
-    	                break;
-    	            
-    	            if(string.IsNullOrEmpty(recentFiles[i]))
-    	                continue;
-    	            
-    	            writer.WriteElementString("RecentFile", recentFiles[i]);
-    	        }
-    	        
-    	        writer.WriteEndElement();
-    	    }
-    	    
+            for(int i=shortcutFolders.Count-1; i>=0; i--)
+            {
+                if(shortcutFolders[i].Location == shortcut.Location)
+                    shortcutFolders.RemoveAt(i);
+            }
+            
+            shortcutFolders.Sort();
+        }
+        
+        public void AddShortcut(ShortcutFolder shortcut)
+        {
+            bool known = shortcutFolders.Any(s => s.Location == shortcut.Location);
+
+            if(!known)
+            {
+                shortcutFolders.Add(shortcut);
+                shortcutFolders.Sort();
+            }
+        }
+        
+        public bool IsShortcutKnown(string path)
+        {
+            return shortcutFolders.Any(s => s.Location == path);
+        }
+        
+        public void WriteXML(XmlWriter writer)
+        {
+            writer.WriteElementString("MaxRecentFiles", maxRecentFiles.ToString());
+            
+            if(recentFiles.Count > 0)
+            {
+                writer.WriteStartElement("RecentFiles");
+                
+                for(int i=0; i<maxRecentFiles; i++)
+                {
+                    if(i >= recentFiles.Count)
+                        break;
+                    
+                    if(string.IsNullOrEmpty(recentFiles[i]))
+                        continue;
+                    
+                    writer.WriteElementString("RecentFile", recentFiles[i]);
+                }
+                
+                writer.WriteEndElement();
+            }
+            
             if(shortcutFolders.Count > 0)
-    	    {
-    	        writer.WriteStartElement("Shortcuts");
+            {
+                writer.WriteStartElement("Shortcuts");
 
-    	        foreach(ShortcutFolder shortcut in shortcutFolders)
-    	        {
-    	            writer.WriteStartElement("Shortcut");
-    	            shortcut.WriteXML(writer);
-    	            writer.WriteEndElement();
-    	        }
+                foreach(ShortcutFolder shortcut in shortcutFolders)
+                {
+                    writer.WriteStartElement("Shortcut");
+                    shortcut.WriteXML(writer);
+                    writer.WriteEndElement();
+                }
 
-    	        writer.WriteEndElement();
-    	    }
+                writer.WriteEndElement();
+            }
 
-    	    writer.WriteElementString("ThumbnailSize", explorerThumbsSize.ToString());
-    	    
+            writer.WriteElementString("ThumbnailSize", explorerThumbsSize.ToString());
+            
             writer.WriteElementString("ExplorerFilesSplitterDistance", explorerFilesSplitterDistance.ToString());
             writer.WriteElementString("ShortcutsFilesSplitterDistance", shortcutsFilesSplitterDistance.ToString());
             writer.WriteElementString("ActiveTab", activeTab.ToString());
         }
-    	
-    	public void ReadXML(XmlReader reader)
+        
+        public void ReadXML(XmlReader reader)
         {
             reader.ReadStartElement();
 
             while(reader.NodeType == XmlNodeType.Element)
-			{
-				switch(reader.Name)
-				{
-					case "MaxRecentFiles":
-				        maxRecentFiles = reader.ReadElementContentAsInt();
+            {
+                switch(reader.Name)
+                {
+                    case "MaxRecentFiles":
+                        maxRecentFiles = reader.ReadElementContentAsInt();
                         break;
                     case "RecentFiles":
                         ParseRecentFiles(reader);
@@ -210,21 +210,21 @@ namespace Kinovea.Services
                     default:
                         reader.ReadOuterXml();
                         break;
-				}
+                }
             }
             
             reader.ReadEndElement();
         }
-    	
-    	private void ParseRecentFiles(XmlReader reader)
+        
+        private void ParseRecentFiles(XmlReader reader)
         {
-    	    recentFiles.Clear();
-    	    bool empty = reader.IsEmptyElement;
+            recentFiles.Clear();
+            bool empty = reader.IsEmptyElement;
             
-    	    reader.ReadStartElement();
-    	    
-    	    if(empty)
-    	        return;
+            reader.ReadStartElement();
+            
+            if(empty)
+                return;
             
             while(reader.NodeType == XmlNodeType.Element)
             {
@@ -236,16 +236,16 @@ namespace Kinovea.Services
             
             reader.ReadEndElement();
         }
-    	
-    	private void ParseShortcuts(XmlReader reader)
+        
+        private void ParseShortcuts(XmlReader reader)
         {
-    	    shortcutFolders.Clear();
-    	    bool empty = reader.IsEmptyElement;
-    	    
+            shortcutFolders.Clear();
+            bool empty = reader.IsEmptyElement;
+            
             reader.ReadStartElement();
             
             if(empty)
-    	        return;
+                return;
             
             while(reader.NodeType == XmlNodeType.Element)
             {

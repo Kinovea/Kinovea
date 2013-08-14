@@ -60,12 +60,12 @@ namespace Kinovea.Services
         
         public CultureInfo GetSupportedCulture()
         {
-        	// Returns the actual culture used in the UI.
-        	CultureInfo ci = new CultureInfo(uiCultureName);
-        	if(LanguageManager.IsSupportedCulture(ci))
-        		return ci;
-        	else
-        		return new CultureInfo("en");
+            // Returns the actual culture used in the UI.
+            CultureInfo ci = new CultureInfo(uiCultureName);
+            if(LanguageManager.IsSupportedCulture(ci))
+                return ci;
+            else
+                return new CultureInfo("en");
         }
         
         public void WriteXML(XmlWriter writer)
@@ -80,11 +80,11 @@ namespace Kinovea.Services
             reader.ReadStartElement();
 
             while(reader.NodeType == XmlNodeType.Element)
-			{
-				switch(reader.Name)
-				{
-					case "Culture":
-				        uiCultureName = reader.ReadElementContentAsString();
+            {
+                switch(reader.Name)
+                {
+                    case "Culture":
+                        uiCultureName = reader.ReadElementContentAsString();
                         break;
                     case "ExplorerVisible":
                         explorerVisible = XmlHelper.ParseBoolean(reader.ReadElementContentAsString());
@@ -95,7 +95,7 @@ namespace Kinovea.Services
                     default:
                         reader.ReadOuterXml();
                         break;
-				}
+                }
             }
             
             reader.ReadEndElement();   
