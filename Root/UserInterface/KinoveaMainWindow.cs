@@ -35,32 +35,32 @@ namespace Kinovea.Root
         }
         public bool FullScreen
         {
-            get { return m_bFullScreen; }
+            get { return fullScreen; }
         }
         #endregion
 
         #region Members
-        private RootKernel mRootKernel;
+        private RootKernel rootKernel;
         private SupervisorUserInterface supervisorView;
-        private bool m_bFullScreen;
-        private Rectangle m_MemoBounds;
-        private FormWindowState m_MemoWindowState;
+        private bool fullScreen;
+        private Rectangle memoBounds;
+        private FormWindowState memoWindowState;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
-        public KinoveaMainWindow(RootKernel _RootKernel)
+        public KinoveaMainWindow(RootKernel rootKernel)
         {
             log.Debug("Create main UI window.");
-            
-            mRootKernel = _RootKernel;
+
+            this.rootKernel = rootKernel;
             InitializeComponent();
             
             this.Text = " Kinovea";
-            SupervisorControl = new SupervisorUserInterface(mRootKernel);
-            this.Controls.Add(SupervisorControl);
-            SupervisorControl.Dock = DockStyle.Fill;
-            SupervisorControl.BringToFront();
+            supervisorView = new SupervisorUserInterface(rootKernel);
+            this.Controls.Add(supervisorView);
+            supervisorView.Dock = DockStyle.Fill;
+            supervisorView.BringToFront();
         }
         #endregion
 
@@ -70,12 +70,12 @@ namespace Kinovea.Root
             
             this.SuspendLayout();
             
-            m_bFullScreen = !m_bFullScreen;
+            fullScreen = !fullScreen;
             
-            if(m_bFullScreen)
+            if(fullScreen)
             {
-                m_MemoBounds = this.Bounds;
-                m_MemoWindowState = this.WindowState;
+                memoBounds = this.Bounds;
+                memoWindowState = this.WindowState;
                 
                 // Go full screen. We switch to normal state first, otherwise it doesn't work each time.
                 this.FormBorderStyle = FormBorderStyle.None;
@@ -90,8 +90,8 @@ namespace Kinovea.Root
             else
             {
                 this.FormBorderStyle = FormBorderStyle.Sizable;
-                this.WindowState = m_MemoWindowState;
-                this.Bounds = m_MemoBounds;
+                this.WindowState = memoWindowState;
+                this.Bounds = memoBounds;
                 
                 this.menuStrip.Visible = true;
                 this.toolStrip.Visible = true;
@@ -104,10 +104,11 @@ namespace Kinovea.Root
         {
             supervisorView.PlugUI(fileExplorer, screenManager);
         }
+
         #region Event Handlers
         private void UserInterface_FormClosing(object sender, FormClosingEventArgs e)
         {
-            e.Cancel = mRootKernel.CloseSubModules();
+            e.Cancel = rootKernel.CloseSubModules();
         }
         #endregion
     }

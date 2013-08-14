@@ -46,15 +46,15 @@ namespace Kinovea.Root
         #region Properties
         public ScreenManagerKernel ScreenManager
         {
-            get { return m_ScreenManager; }
+            get { return screenManager; }
         }
         #endregion
         
         #region Members
-        private KinoveaMainWindow MainWindow;
-        private FileBrowserKernel m_FileBrowser;
-        private UpdaterKernel m_Updater;
-        private ScreenManagerKernel m_ScreenManager;
+        private KinoveaMainWindow mainWindow;
+        private FileBrowserKernel fileBrowser;
+        private UpdaterKernel updater;
+        private ScreenManagerKernel screenManager;
         
         #region Menus
         private ToolStripMenuItem mnuFile = new ToolStripMenuItem();
@@ -87,8 +87,8 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
         #endregion
         
-        private ToolStripButton m_ToolOpenFile = new ToolStripButton();
-        private ToolStripStatusLabel m_StatusLabel = new ToolStripStatusLabel();
+        private ToolStripButton toolOpenFile = new ToolStripButton();
+        private ToolStripStatusLabel statusLabel = new ToolStripStatusLabel();
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -102,13 +102,13 @@ namespace Kinovea.Root
             CameraTypeManager.LoadCameraManagers();
             
             BuildSubTree();
-            MainWindow = new KinoveaMainWindow(this);
+            mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
             
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
-            ExtendMenu(MainWindow.menuStrip);
-            ExtendToolBar(MainWindow.toolStrip);
-            ExtendStatusBar(MainWindow.statusStrip);
+            ExtendMenu(mainWindow.menuStrip);
+            ExtendToolBar(mainWindow.toolStrip);
+            ExtendStatusBar(mainWindow.statusStrip);
             ExtendUI();
 
             log.Debug("Register global services offered at Root level.");
@@ -131,12 +131,12 @@ namespace Kinovea.Root
             LogInitialConfiguration();
             
             if(CommandLineArgumentManager.Instance().InputFile != null)
-                m_ScreenManager.PrepareScreen();
+                screenManager.PrepareScreen();
         }
         public void Launch()
         {            
             log.Debug("Calling Application.Run() to boot up the UI.");
-            Application.Run(MainWindow);
+            Application.Run(mainWindow);
         }
         #endregion
         
@@ -144,44 +144,42 @@ namespace Kinovea.Root
         public void BuildSubTree()
         {   
             log.Debug("Building the modules tree.");            
-            m_FileBrowser     = new FileBrowserKernel();
-            m_Updater         = new UpdaterKernel();
-            m_ScreenManager   = new ScreenManagerKernel();
+            fileBrowser = new FileBrowserKernel();
+            updater = new UpdaterKernel();
+            screenManager = new ScreenManagerKernel();
             log.Debug("Modules tree built.");
         }
-        public void ExtendMenu(ToolStrip _menu)
+        public void ExtendMenu(ToolStrip menu)
         {
-            _menu.AllowMerge = true;
-            GetModuleMenus(_menu);
-            GetSubModulesMenus(_menu);
+            menu.AllowMerge = true;
+            GetModuleMenus(menu);
+            GetSubModulesMenus(menu);
         }
-        public void ExtendToolBar(ToolStrip _toolbar)
+        public void ExtendToolBar(ToolStrip toolbar)
         {
-            _toolbar.AllowMerge = true;
-            GetModuleToolBar(_toolbar);
-            GetSubModulesToolBars(_toolbar);
-            _toolbar.Visible = true;
+            toolbar.AllowMerge = true;
+            GetModuleToolBar(toolbar);
+            GetSubModulesToolBars(toolbar);
+            toolbar.Visible = true;
         }
-        public void ExtendStatusBar(ToolStrip _statusbar)
+        public void ExtendStatusBar(ToolStrip statusbar)
         {
-            if(_statusbar != null)
+            if(statusbar != null)
             {
                 // This level
-                m_StatusLabel = new ToolStripStatusLabel();
-                m_StatusLabel.ForeColor = Color.White;
-                _statusbar.Items.AddRange(new ToolStripItem[] { m_StatusLabel });
+                statusLabel = new ToolStripStatusLabel();
+                statusLabel.ForeColor = Color.White;
+                statusbar.Items.AddRange(new ToolStripItem[] { statusLabel });
             }
         }
         public void ExtendUI()
         {
-            // Sub Modules
-            m_FileBrowser.ExtendUI();
-            m_Updater.ExtendUI();
-            m_ScreenManager.ExtendUI();
+            fileBrowser.ExtendUI();
+            updater.ExtendUI();
+            screenManager.ExtendUI();
 
-            // Integrate the sub modules UI into the main kernel UI.
-            MainWindow.PlugUI(m_FileBrowser.UI, m_ScreenManager.UI);
-            MainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+            mainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
+            mainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
@@ -193,12 +191,11 @@ namespace Kinovea.Root
             CommandManager cm = CommandManager.Instance();
             cm.UpdateMenus();
 
-            m_ToolOpenFile.ToolTipText = RootLang.mnuOpenFile;
+            toolOpenFile.ToolTipText = RootLang.mnuOpenFile;
             
-            // Sub Modules
-            m_FileBrowser.RefreshUICulture();
-            m_Updater.RefreshUICulture();
-            m_ScreenManager.RefreshUICulture();
+            fileBrowser.RefreshUICulture();
+            updater.RefreshUICulture();
+            screenManager.RefreshUICulture();
             
             log.Debug("RefreshUICulture - Whole tree culture reloaded.");
         }
@@ -206,18 +203,18 @@ namespace Kinovea.Root
         {
             RefreshUICulture();
             
-            m_FileBrowser.PreferencesUpdated();
-            m_Updater.PreferencesUpdated();
-            m_ScreenManager.PreferencesUpdated();
+            fileBrowser.PreferencesUpdated();
+            updater.PreferencesUpdated();
+            screenManager.PreferencesUpdated();
         }
         public bool CloseSubModules()
         {
             log.Debug("Root is closing. Call close on all sub modules.");
-            bool cancel = m_ScreenManager.CloseSubModules();
+            bool cancel = screenManager.CloseSubModules();
             if(!cancel)
             {
-                m_FileBrowser.CloseSubModules();
-                m_Updater.CloseSubModules();
+                fileBrowser.CloseSubModules();
+                updater.CloseSubModules();
             }
 
             return cancel;
@@ -239,18 +236,18 @@ namespace Kinovea.Root
             }
             return filePath;
         }
-        public void DoUpdateStatusBar(string _status)
+        public void DoUpdateStatusBar(string status)
         {
-            m_StatusLabel.Text = _status;
+            statusLabel.Text = status;
         }
-        public void DoMakeTopMost(Form _form)
+        public void DoMakeTopMost(Form form)
         {
-            _form.Owner = MainWindow;
+            form.Owner = mainWindow;
         }
         #endregion
 
         #region Extension point helpers
-        private void GetModuleMenus(ToolStrip _menu)
+        private void GetModuleMenus(ToolStrip menu)
         {
             // Affectation of .Text property happens in RefreshCultureMenu
             
@@ -367,40 +364,39 @@ namespace Kinovea.Root
             #endregion
 
             // Top level merge.
-            MenuStrip ThisMenuStrip = new MenuStrip();
-            ThisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuMotion, mnuOptions, mnuHelp });
-            ThisMenuStrip.AllowMerge = true;
+            MenuStrip thisMenuStrip = new MenuStrip();
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuMotion, mnuOptions, mnuHelp });
+            thisMenuStrip.AllowMerge = true;
 
-            ToolStripManager.Merge(ThisMenuStrip, _menu);
+            ToolStripManager.Merge(thisMenuStrip, menu);
             
             // We need to affect the Text properties before merging with submenus.
             RefreshCultureMenu();
         }
-        private void GetSubModulesMenus(ToolStrip _menu)
+        private void GetSubModulesMenus(ToolStrip menu)
         {
-            m_FileBrowser.ExtendMenu(_menu);
-            m_Updater.ExtendMenu(_menu);
-            m_ScreenManager.ExtendMenu(_menu);
+            fileBrowser.ExtendMenu(menu);
+            updater.ExtendMenu(menu);
+            screenManager.ExtendMenu(menu);
         }
-        private void GetModuleToolBar(ToolStrip _toolbar)
+        private void GetModuleToolBar(ToolStrip toolbar)
         {
             // Open.
-            m_ToolOpenFile.DisplayStyle          = ToolStripItemDisplayStyle.Image;
-            m_ToolOpenFile.Image                 = Properties.Resources.folder;
-            m_ToolOpenFile.ToolTipText           = RootLang.mnuOpenFile;
-            m_ToolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
+            toolOpenFile.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolOpenFile.Image = Properties.Resources.folder;
+            toolOpenFile.ToolTipText = RootLang.mnuOpenFile;
+            toolOpenFile.Click += new EventHandler(mnuOpenFileOnClick);
             
-            _toolbar.Items.Add(m_ToolOpenFile);
+            toolbar.Items.Add(toolOpenFile);
         }
-        private void GetSubModulesToolBars(ToolStrip _toolbar)
+        private void GetSubModulesToolBars(ToolStrip toolbar)
         {
-            m_FileBrowser.ExtendToolBar(_toolbar);
-            m_Updater.ExtendToolBar(_toolbar);
-            m_ScreenManager.ExtendToolBar(_toolbar);
+            fileBrowser.ExtendToolBar(toolbar);
+            updater.ExtendToolBar(toolbar);
+            screenManager.ExtendToolBar(toolbar);
         }
         private void RefreshCultureMenu()
         {
-            // Get the appropriate text (RootLang knows the current Culture)
             mnuFile.Text = RootLang.mnuFile;
             mnuOpenFile.Text = RootLang.mnuOpenFile;
             mnuHistory.Text = RootLang.mnuHistory;
@@ -481,30 +477,30 @@ namespace Kinovea.Root
         #region View
         private void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
         {
-            if (MainWindow.SupervisorControl.IsExplorerCollapsed)
+            if (mainWindow.SupervisorControl.IsExplorerCollapsed)
             {
-                MainWindow.SupervisorControl.ExpandExplorer(true);
+                mainWindow.SupervisorControl.ExpandExplorer(true);
             }
             else
             {
-                MainWindow.SupervisorControl.CollapseExplorer();
+                mainWindow.SupervisorControl.CollapseExplorer();
             }
         }
         private void mnuFullScreenOnClick(object sender, EventArgs e)
         {
-            MainWindow.ToggleFullScreen();
+            mainWindow.ToggleFullScreen();
             
-            if(MainWindow.FullScreen)
+            if(mainWindow.FullScreen)
             {
-                MainWindow.SupervisorControl.CollapseExplorer();    
+                mainWindow.SupervisorControl.CollapseExplorer();    
             }
             else
             {
-                MainWindow.SupervisorControl.ExpandExplorer(true);    
+                mainWindow.SupervisorControl.ExpandExplorer(true);    
             }
             
            // Propagates the call to screens.
-           m_ScreenManager.FullScreen(MainWindow.FullScreen);
+           screenManager.FullScreen(mainWindow.FullScreen);
         }
         #endregion
 
@@ -614,7 +610,7 @@ namespace Kinovea.Root
             string resourceUri = GetLocalizedHelpResource(true);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-                Help.ShowHelp(MainWindow, resourceUri);
+                Help.ShowHelp(mainWindow, resourceUri);
             }
             else
             {
@@ -627,15 +623,15 @@ namespace Kinovea.Root
             string resourceUri = GetLocalizedHelpResource(false);
             if(resourceUri != null && resourceUri.Length > 0 && File.Exists(resourceUri))
             {
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(m_ScreenManager, resourceUri, -1, true);
+                IUndoableCommand clmis = new CommandLoadMovieInScreen(screenManager, resourceUri, -1, true);
                 CommandManager cm = CommandManager.Instance();
                 cm.LaunchUndoableCommand(clmis);
             }
             else
             {
                 log.Error(String.Format("Cannot find the video tutorial file. ({0}).", resourceUri));
-                MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
-                                    m_ScreenManager.resManager.GetString("LoadMovie_Error"),
+                MessageBox.Show(screenManager.resManager.GetString("LoadMovie_FileNotOpened"),
+                                    screenManager.resManager.GetString("LoadMovie_Error"),
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation);
             }
@@ -690,32 +686,23 @@ namespace Kinovea.Root
         }
        
         #region Lower Level Methods
-        private void OpenFileFromPath(string _FilePath)
+        private void OpenFileFromPath(string filePath)
         {
-            if (File.Exists(_FilePath))
+            if (File.Exists(filePath))
             {
-                //--------------------------------------------------------------------------
-                // CommandLoadMovieInScreen est une commande du ScreenManager.
-                // elle gère la création du screen si besoin, et demande 
-                // si on veut charger surplace ou dans un nouveau en fonction de l'existant.
-                //--------------------------------------------------------------------------
-                IUndoableCommand clmis = new CommandLoadMovieInScreen(m_ScreenManager, _FilePath, -1, true);
+                IUndoableCommand clmis = new CommandLoadMovieInScreen(screenManager, filePath, -1, true);
                 CommandManager cm = CommandManager.Instance();
                 cm.LaunchUndoableCommand(clmis);
 
-                //-------------------------------------------------------------
-                // Get the video ready to play (normalement inutile ici, car on
-                // l'a déjà fait dans le LoadMovieInScreen.
-                //-------------------------------------------------------------
-                ICommand css = new CommandShowScreens(m_ScreenManager);
+                ICommand css = new CommandShowScreens(screenManager);
                 CommandManager.LaunchCommand(css);
             }
             else
             {
-                MessageBox.Show(m_ScreenManager.resManager.GetString("LoadMovie_FileNotOpened"),
-                                m_ScreenManager.resManager.GetString("LoadMovie_Error"),
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation);
+                MessageBox.Show(screenManager.resManager.GetString("LoadMovie_FileNotOpened"),
+                    screenManager.resManager.GetString("LoadMovie_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
             }
         }
         private void LogInitialConfiguration()
@@ -728,7 +715,7 @@ namespace Kinovea.Root
             log.Debug("StretchImage : " + am.StretchImage.ToString());
             log.Debug("HideExplorer : " + am.HideExplorer.ToString());
         }
-        private string GetLocalizedHelpResource(bool _manual)
+        private string GetLocalizedHelpResource(bool manual)
         {
             // Find the local file path of a help resource (manual or help video) according to what is saved in the help index.
             
@@ -744,40 +731,38 @@ namespace Kinovea.Root
             }
                 
             // Loop into the file to find the required resource in the matching locale, or fallback to english.
-            string EnglishUri = "";
-            bool bLocaleFound = false;
-            bool bEnglishFound = false;
+            string englishUri = "";
+            bool localeFound = false;
+            bool englishFound = false;
             int i = 0;
 
             CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             string neutral = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
                             
             // Look for a matching locale, or English.
-            int iTotalResource = _manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
-            while (!bLocaleFound && i < iTotalResource)
+            int totalResource = manual ? hiLocal.UserGuides.Count : hiLocal.HelpVideos.Count;
+            while (!localeFound && i < totalResource)
             {
-                HelpItem hi = _manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
+                HelpItem hi = manual ? hiLocal.UserGuides[i] : hiLocal.HelpVideos[i];
                 
                 if (hi.Language == neutral)
                 {
-                    bLocaleFound = true;
+                    localeFound = true;
                     resourceUri = hi.FileLocation;
                     break;
                 }
 
                 if (hi.Language == "en")
                 {
-                    bEnglishFound = true;
-                    EnglishUri = hi.FileLocation;
+                    englishFound = true;
+                    englishUri = hi.FileLocation;
                 }
 
                 i++;
             }
 
-            if (!bLocaleFound && bEnglishFound)
-            {
-                resourceUri = EnglishUri;
-            }
+            if (!localeFound && englishFound)
+                resourceUri = englishUri;
             
             return resourceUri;
         }

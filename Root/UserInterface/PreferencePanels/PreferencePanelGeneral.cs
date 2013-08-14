@@ -87,11 +87,8 @@ namespace Kinovea.Root
             
             lblHistoryCount.Text = RootLang.dlgPreferences_LabelHistoryCount;
 
-            
-            // Fill current values
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
-            
         }
         private void SelectCurrentLanguage()
         {
@@ -107,11 +104,9 @@ namespace Kinovea.Root
                     found = true;
                 }
             }
+
             if(!found)
-            {
-                // The supported language is not in the combo box. (error).
                 cmbLanguage.SelectedIndex = 0;   
-            }
         }
         #endregion
         

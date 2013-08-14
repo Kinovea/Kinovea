@@ -39,14 +39,14 @@ namespace Kinovea.Root
     public partial class FormPreferences2 : Form
     {
         #region Members
-        private List<UserControl> m_PrefPages = new List<UserControl>();
-        private List<PreferencePanelButtton> m_PrefsButtons = new List<PreferencePanelButtton>();
-        private int m_ActivePage;
-        private static readonly int m_DefaultPage = 0;
+        private List<UserControl> pages = new List<UserControl>();
+        private List<PreferencePanelButtton> buttons = new List<PreferencePanelButtton>();
+        private int activePage;
+        private static readonly int defaultPage = 0;
         #endregion
         
         #region Construction and Initialization
-        public FormPreferences2(int _initPage)
+        public FormPreferences2(int initPage)
         {
             InitializeComponent();
             
@@ -55,12 +55,10 @@ namespace Kinovea.Root
             btnCancel.Text = RootLang.Generic_Cancel;
             
             ImportPages();
-            DisplayPage(_initPage);
+            DisplayPage(initPage);
         }
         private void ImportPages()
         {
-            // All pages are added dynamically, from a static list.
-
             //-----------------------------------------------------------------------------------------------------------------
             // Note on architecture:
             // Apparently SharpDevelop designer has trouble loading classes that are not directly deriving from UserControl.
@@ -72,13 +70,11 @@ namespace Kinovea.Root
             // To create a new Preference page: Add a new file from UserControl template, add IPreferencePanel as an interface.
             // Implement the functions and finally add it to the list here.
             //-----------------------------------------------------------------------------------------------------------------
-            
-            m_PrefPages.Add(new PreferencePanelGeneral());
-            m_PrefPages.Add(new PreferencePanelPlayer());
-            m_PrefPages.Add(new PreferencePanelDrawings());
-            m_PrefPages.Add(new PreferencePanelCapture());
-            m_PrefPages.Add(new PreferencePanelKeyboard());
-            
+            pages.Add(new PreferencePanelGeneral());
+            pages.Add(new PreferencePanelPlayer());
+            pages.Add(new PreferencePanelDrawings());
+            pages.Add(new PreferencePanelCapture());
+            pages.Add(new PreferencePanelKeyboard());
             AddPages();
         }
         private void AddPages()
@@ -86,26 +82,26 @@ namespace Kinovea.Root
             pnlButtons.Controls.Clear();
             
             int nextLeft = 0;
-            for(int i=0;i<m_PrefPages.Count;i++)
+            for(int i=0;i<pages.Count;i++)
             {
-                IPreferencePanel page = m_PrefPages[i] as IPreferencePanel;
-                if(page != null)
-                {
-                    // Button
-                    PreferencePanelButtton ppb = new PreferencePanelButtton(page);
-                    ppb.Click += new EventHandler(preferencePanelButton_Click);
+                IPreferencePanel page = pages[i] as IPreferencePanel;
+                if (page == null)
+                    continue;
+                
+                // Button
+                PreferencePanelButtton ppb = new PreferencePanelButtton(page);
+                ppb.Click += new EventHandler(preferencePanelButton_Click);
                     
-                    ppb.Left = nextLeft;
-                    nextLeft += ppb.Width;
+                ppb.Left = nextLeft;
+                nextLeft += ppb.Width;
                     
-                    pnlButtons.Controls.Add(ppb);
-                    m_PrefsButtons.Add(ppb);
+                pnlButtons.Controls.Add(ppb);
+                buttons.Add(ppb);
                     
-                    // Page
-                    page.Location = new Point(14, this.pnlButtons.Bottom + 14);
-                    page.Visible = false;
-                    this.Controls.Add((UserControl)page);
-                }
+                // Page
+                page.Location = new Point(14, this.pnlButtons.Bottom + 14);
+                page.Visible = false;
+                this.Controls.Add((UserControl)page);
             }
         }
         #endregion
@@ -114,7 +110,7 @@ namespace Kinovea.Root
         private void btnSave_Click(object sender, EventArgs e)
         {
             // Ask each page to commit its changes to the PreferencesManager.
-            foreach(IPreferencePanel page in m_PrefPages)
+            foreach(IPreferencePanel page in pages)
                 page.CommitChanges();
             
             PreferencesManager.Save();
@@ -132,39 +128,37 @@ namespace Kinovea.Root
             // A preference page button has been clicked.
             // Activate the button and load the page.
             PreferencePanelButtton selectedButton = sender as PreferencePanelButtton;
-            if(selectedButton != null)
-            {
-                foreach(PreferencePanelButtton pageButton in m_PrefsButtons)
-                {
-                    pageButton.SetSelected(pageButton == selectedButton);
-                }
+            if (selectedButton == null)
+                return;
             
-                LoadPage(selectedButton);
+            foreach(PreferencePanelButtton pageButton in buttons)
+            {
+                pageButton.SetSelected(pageButton == selectedButton);
             }
+            
+            LoadPage(selectedButton);
         }
-        private void DisplayPage(int _page)
+        private void DisplayPage(int page)
         {
             // This function can be used to directly load the pref dialog on a specific page.
-            int pageToDisplay = m_DefaultPage;
+            int pageToDisplay = defaultPage;
             
-            if(_page > 0 && _page < m_PrefPages.Count)
-            {
-                pageToDisplay = _page;
-            }
+            if(page > 0 && page < pages.Count)
+                pageToDisplay = page;
             
-            m_ActivePage = pageToDisplay;
-            for(int i=0;i<m_PrefPages.Count;i++)
+            activePage = pageToDisplay;
+            for(int i=0;i<pages.Count;i++)
             {
                 bool selected = (i == pageToDisplay);
-                m_PrefsButtons[i].SetSelected(selected);	
-                m_PrefPages[i].Visible = selected;
+                buttons[i].SetSelected(selected);	
+                pages[i].Visible = selected;
             }
         }
-        private void LoadPage(PreferencePanelButtton _button)
+        private void LoadPage(PreferencePanelButtton button)
         {
-            foreach(IPreferencePanel prefPanel in m_PrefPages)
+            foreach(IPreferencePanel prefPanel in pages)
             {
-                prefPanel.Visible = (prefPanel == _button.PreferencePanel);
+                prefPanel.Visible = (prefPanel == button.PreferencePanel);
             }			
         }
         #endregion

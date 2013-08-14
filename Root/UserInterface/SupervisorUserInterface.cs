@@ -30,27 +30,27 @@ namespace Kinovea.Root
         #region Properties
         public bool IsExplorerCollapsed
         {
-            get { return m_bExplorerCollapsed; }
+            get { return explorerCollapsed; }
         }
         #endregion
 
         #region Members
-        private int m_iOldSplitterDistance;
-        private bool m_bExplorerCollapsed;
-        private RootKernel RootKernel;
+        private int oldSplitterDistance;
+        private bool explorerCollapsed;
+        private RootKernel rootKernel;
         private bool isOpening;
-        private bool m_bInitialized;
+        private bool initialized;
         #endregion
 
         #region Construction Destruction
         public SupervisorUserInterface(RootKernel _RootKernel)
         {
-            RootKernel = _RootKernel;
+            rootKernel = _RootKernel;
             InitializeComponent();
-            m_bInitialized = false;
+            initialized = false;
 
             // Get Explorer values from settings.
-            m_iOldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
+            oldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
             
             NotificationCenter.LaunchOpenDialog += NotificationCenter_LaunchOpenDialog;
         }
@@ -61,7 +61,7 @@ namespace Kinovea.Root
         	else
                 ExpandExplorer(true);
 
-        	m_bInitialized = true;
+        	initialized = true;
         }
         #endregion
 
@@ -85,21 +85,21 @@ namespace Kinovea.Root
             
             splitWorkSpace.Panel1.Refresh();
 
-            if (m_bInitialized)
-            {
-                PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
-                PreferencesManager.GeneralPreferences.ExplorerVisible = true;
-                PreferencesManager.Save();
-            }
+            if (!initialized)
+                return;
+            
+            PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
+            PreferencesManager.GeneralPreferences.ExplorerVisible = true;
+            PreferencesManager.Save();
         }
         private void NotificationCenter_LaunchOpenDialog(object sender, EventArgs e)
         {
-            if(isOpening || RootKernel.ScreenManager.ScreenCount != 0)
+            if(isOpening || rootKernel.ScreenManager.ScreenCount != 0)
                 return;
             
             isOpening = true;
 
-            string filepath = RootKernel.LaunchOpenFileDialog();
+            string filepath = rootKernel.LaunchOpenFileDialog();
             if (filepath.Length > 0)
                 VideoTypeManager.LoadVideo(filepath, -1);
                 
@@ -111,25 +111,20 @@ namespace Kinovea.Root
         }
         private void _splitWorkSpace_DoubleClick(object sender, EventArgs e)
         {
-            if (m_bExplorerCollapsed)
+            if (explorerCollapsed)
                 ExpandExplorer(true);
             else
                 CollapseExplorer();
         }
-        private void _splitWorkSpace_MouseMove(object sender, MouseEventArgs e)
+        private void splitWorkSpace_MouseMove(object sender, MouseEventArgs e)
         {
-            if (m_bExplorerCollapsed && splitWorkSpace.SplitterDistance > 30)
-            {
+            if (explorerCollapsed && splitWorkSpace.SplitterDistance > 30)
                 ExpandExplorer(false);
-            }  
         }
         private void splitWorkSpace_Panel1_Click(object sender, EventArgs e)
         {
-             // Clic sur l'explorer
-            if (m_bExplorerCollapsed)
-            {
+            if (explorerCollapsed)
                 ExpandExplorer(true);
-            }
         }
         #endregion
 
@@ -139,56 +134,53 @@ namespace Kinovea.Root
             splitWorkSpace.Panel2.SuspendLayout();
             splitWorkSpace.Panel1.SuspendLayout();
 
-            if (m_bInitialized)
-            {
-                m_iOldSplitterDistance = splitWorkSpace.SplitterDistance;
-            }
-            else
-            {
-                m_iOldSplitterDistance = PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
-            }
-            m_bExplorerCollapsed = true;
+            oldSplitterDistance = initialized ? splitWorkSpace.SplitterDistance : PreferencesManager.GeneralPreferences.ExplorerSplitterDistance;
+            
+            explorerCollapsed = true;
             foreach (Control ctrl in splitWorkSpace.Panel1.Controls)
             {
                 ctrl.Visible = false;
             }
+            
             splitWorkSpace.SplitterDistance = 4;
             splitWorkSpace.SplitterWidth = 1;
             splitWorkSpace.BorderStyle = BorderStyle.None;
-            RootKernel.mnuToggleFileExplorer.Checked = false;
+            rootKernel.mnuToggleFileExplorer.Checked = false;
 
             splitWorkSpace.Panel1.ResumeLayout();
             splitWorkSpace.Panel2.ResumeLayout();
 
-            PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = m_iOldSplitterDistance;
+            PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = oldSplitterDistance;
             PreferencesManager.GeneralPreferences.ExplorerVisible = false;
             PreferencesManager.Save();
         }
         public void ExpandExplorer(bool resetSplitter)
         {
-            if (m_iOldSplitterDistance != -1)
+            if (oldSplitterDistance == -1)
+                return;
+            
+            splitWorkSpace.Panel2.SuspendLayout();
+            splitWorkSpace.Panel1.SuspendLayout();
+
+            explorerCollapsed = false;
+            foreach (Control ctrl in splitWorkSpace.Panel1.Controls)
             {
-                splitWorkSpace.Panel2.SuspendLayout();
-                splitWorkSpace.Panel1.SuspendLayout();
-
-                m_bExplorerCollapsed = false;
-                foreach (Control ctrl in splitWorkSpace.Panel1.Controls)
-                {
-                    ctrl.Visible = true;
-                }
-                if (resetSplitter) { splitWorkSpace.SplitterDistance = m_iOldSplitterDistance; }
-                splitWorkSpace.SplitterWidth = 4;
-                splitWorkSpace.BorderStyle = BorderStyle.FixedSingle;
-                RootKernel.mnuToggleFileExplorer.Checked = true;
-
-                splitWorkSpace.Panel1.ResumeLayout();
-                splitWorkSpace.Panel2.ResumeLayout();
-
-                PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
-                PreferencesManager.GeneralPreferences.ExplorerVisible = true;
-                PreferencesManager.Save();
+                ctrl.Visible = true;
             }
 
+            if (resetSplitter) 
+                splitWorkSpace.SplitterDistance = oldSplitterDistance;
+
+            splitWorkSpace.SplitterWidth = 4;
+            splitWorkSpace.BorderStyle = BorderStyle.FixedSingle;
+            rootKernel.mnuToggleFileExplorer.Checked = true;
+
+            splitWorkSpace.Panel1.ResumeLayout();
+            splitWorkSpace.Panel2.ResumeLayout();
+
+            PreferencesManager.GeneralPreferences.ExplorerSplitterDistance = splitWorkSpace.SplitterDistance;
+            PreferencesManager.GeneralPreferences.ExplorerVisible = true;
+            PreferencesManager.Save();
         }
         #endregion
 

@@ -53,7 +53,7 @@ namespace Kinovea.Root
             this.splitWorkSpace.TabIndex = 0;
             this.splitWorkSpace.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             this.splitWorkSpace.DoubleClick += new System.EventHandler(this._splitWorkSpace_DoubleClick);
-            this.splitWorkSpace.MouseMove += new System.Windows.Forms.MouseEventHandler(this._splitWorkSpace_MouseMove);
+            this.splitWorkSpace.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splitWorkSpace_MouseMove);
             // 
             // buttonCloseExplo
             // 

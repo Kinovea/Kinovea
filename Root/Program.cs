@@ -34,12 +34,12 @@ namespace Kinovea.Root
             get
             {
                 bool gotMutex;
-                mutex = new Mutex(false, "Local\\" + AppGuid, out gotMutex);
+                mutex = new Mutex(false, "Local\\" + appGuid, out gotMutex);
                 return gotMutex;
             }
         }
         private static Mutex mutex;
-        private static string AppGuid = "b049b83e-90f3-4e84-9289-52ee6ea2a9ea";
+        private static string appGuid = "b049b83e-90f3-4e84-9289-52ee6ea2a9ea";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 
