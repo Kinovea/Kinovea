@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
     public class CommandDeleteMultiDrawingItem : IUndoableCommand
     {
         public string FriendlyName {
-        	get { return ScreenManagerLang.mnuDeleteDrawing + " (" + m_MultiDrawing.DisplayName + ")"; }
+            get { return ScreenManagerLang.mnuDeleteDrawing + " (" + m_MultiDrawing.DisplayName + ")"; }
         }
 
         private PlayerScreenUserInterface m_psui;
@@ -52,19 +52,19 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-        	if(m_DrawingItem != null)
+            if(m_DrawingItem != null)
             {
-        	    m_MultiDrawing.Remove(m_DrawingItem);
-            	m_psui.pbSurfaceScreen.Invalidate();
+                m_MultiDrawing.Remove(m_DrawingItem);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
         public void Unexecute()
         {
             // Recreate the drawing.
-			if(m_DrawingItem != null)
+            if(m_DrawingItem != null)
             {
-			    m_MultiDrawing.Add(m_DrawingItem);
-            	m_psui.pbSurfaceScreen.Invalidate();
+                m_MultiDrawing.Add(m_DrawingItem);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
     }

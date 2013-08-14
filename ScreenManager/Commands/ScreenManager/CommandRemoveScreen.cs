@@ -39,7 +39,7 @@ namespace Kinovea.ScreenManager
     {
         public string FriendlyName
         {
-        	get { return ScreenManagerLang.CommandRemoveScreen_FriendlyName; }
+            get { return ScreenManagerLang.CommandRemoveScreen_FriendlyName; }
         }
         private ScreenManagerKernel screenManagerKernel;
         private int screenToRemoveIndex;
@@ -60,7 +60,7 @@ namespace Kinovea.ScreenManager
         public void Execute()
         {
 
-			// When there is only one screen, we don't want it to have the "active" screen look.
+            // When there is only one screen, we don't want it to have the "active" screen look.
             // Since we have 2 screens at most, we first clean up all of them, 
             // and we'll display the active screen look afterwards, only if needed.
             foreach (AbstractScreen screen in screenManagerKernel.screenList)

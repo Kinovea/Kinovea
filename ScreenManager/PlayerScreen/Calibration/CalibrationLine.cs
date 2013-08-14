@@ -38,9 +38,9 @@ namespace Kinovea.ScreenManager
     public class CalibrationLine : ICalibrator
     {
         public bool IsOriginSet
-		{
-			get { return (origin.X >= 0 && origin.Y >= 0); }
-		}
+        {
+            get { return (origin.X >= 0 && origin.Y >= 0); }
+        }
         
         public PointF Origin 
         {
@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 switch(r.Name)
                 {
                     case "Origin":
@@ -107,7 +107,7 @@ namespace Kinovea.ScreenManager
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
-				        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }

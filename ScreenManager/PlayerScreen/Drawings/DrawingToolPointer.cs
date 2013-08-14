@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolPointer : AbstractDrawingTool
     {
-    	#region Enum
+        #region Enum
         private enum SelectedObjectType
         {
             None,
@@ -39,44 +39,44 @@ namespace Kinovea.ScreenManager
             Grid,
             Plane
         }
-    	#endregion
-    	
-    	#region Properties
-    	public override string DisplayName
-    	{
-    		get { return ScreenManagerLang.ToolTip_DrawingToolPointer; }
-    	}
-    	public override Bitmap Icon
-    	{
-    		get { return Kinovea.ScreenManager.Properties.Drawings.handtool; }
-    	}
-		public override bool Attached
+        #endregion
+        
+        #region Properties
+        public override string DisplayName
         {
-        	get { return false; }
+            get { return ScreenManagerLang.ToolTip_DrawingToolPointer; }
         }
-		public override bool KeepTool
-    	{
-    		get { return true; }
-    	}
-    	public override bool KeepToolFrameChanged
-    	{
-    		get { return true; }
-    	}
-    	public override DrawingStyle StylePreset
-		{
-			get	{ throw new NotImplementedException(); }
-			set	{ throw new NotImplementedException(); }
-		}
-    	public override DrawingStyle DefaultStylePreset
-		{
-			get	{ throw new NotImplementedException(); }
-		}
-		
+        public override Bitmap Icon
+        {
+            get { return Kinovea.ScreenManager.Properties.Drawings.handtool; }
+        }
+        public override bool Attached
+        {
+            get { return false; }
+        }
+        public override bool KeepTool
+        {
+            get { return true; }
+        }
+        public override bool KeepToolFrameChanged
+        {
+            get { return true; }
+        }
+        public override DrawingStyle StylePreset
+        {
+            get	{ throw new NotImplementedException(); }
+            set	{ throw new NotImplementedException(); }
+        }
+        public override DrawingStyle DefaultStylePreset
+        {
+            get	{ throw new NotImplementedException(); }
+        }
+        
         public Point MouseDelta
         {
             get { return m_MouseDelta; }
         }
-		#endregion
+        #endregion
         
         #region Members
         //--------------------------------------------------------------------
@@ -108,7 +108,7 @@ namespace Kinovea.ScreenManager
 
             SetupHandCursors();
         }
-		#endregion
+        #endregion
         
         #region AbstractDrawingTool Implementation
         public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
@@ -146,16 +146,16 @@ namespace Kinovea.ScreenManager
             metadata.UnselectAll();
 
             if (!IsOnDrawing(metadata, _iActiveKeyFrameIndex, _MouseCoordinates, _iCurrentTimeStamp, _bAllFrames))
-			{
-            	if (!IsOnTrack(metadata, _MouseCoordinates, _iCurrentTimeStamp))
+            {
+                if (!IsOnTrack(metadata, _MouseCoordinates, _iCurrentTimeStamp))
                 {
-            		if (!IsOnExtraDrawing(metadata, _MouseCoordinates, _iCurrentTimeStamp))
-                	{
-            			// Moving the whole image (Direct Zoom)
-						m_SelectedObjectType = SelectedObjectType.None;
-						bHit = false;
-            		}
-            	}
+                    if (!IsOnExtraDrawing(metadata, _MouseCoordinates, _iCurrentTimeStamp))
+                    {
+                        // Moving the whole image (Direct Zoom)
+                        m_SelectedObjectType = SelectedObjectType.None;
+                        bHit = false;
+                    }
+                }
             }
             
             // Store position (descaled: in original image coords).
@@ -197,12 +197,12 @@ namespace Kinovea.ScreenManager
                         {
                             switch (m_SelectedObjectType)
                             {
-                            	case SelectedObjectType.ExtraDrawing:
-                            		if (metadata.SelectedExtraDrawing >= 0)
-                            		{
-                            			metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
-                            		}
-                            		break;
+                                case SelectedObjectType.ExtraDrawing:
+                                    if (metadata.SelectedExtraDrawing >= 0)
+                                    {
+                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveDrawing(deltaX, deltaY, _ModifierKeys);
+                                    }
+                                    break;
                                 case SelectedObjectType.Drawing:
                                     if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
                                     {
@@ -219,12 +219,12 @@ namespace Kinovea.ScreenManager
                         {
                             switch (m_SelectedObjectType)
                             {
-                            	case SelectedObjectType.ExtraDrawing:
-                            		if (metadata.SelectedExtraDrawing >= 0)
-                            		{
-                            			metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);		
-                            		}
-                            		break;
+                                case SelectedObjectType.ExtraDrawing:
+                                    if (metadata.SelectedExtraDrawing >= 0)
+                                    {
+                                        metadata.ExtraDrawings[metadata.SelectedExtraDrawing].MoveHandle(_MouseLocation, m_iResizingHandle, _ModifierKeys);		
+                                    }
+                                    break;
                                 case SelectedObjectType.Drawing:
                                     if (metadata.SelectedDrawingFrame >= 0 && metadata.SelectedDrawing >= 0)
                                     {
@@ -251,11 +251,11 @@ namespace Kinovea.ScreenManager
         }
         public void SetImageSize(Size _size)
         {
-        	m_ImgSize = new Size(_size.Width, _size.Height);	
+            m_ImgSize = new Size(_size.Width, _size.Height);	
         }
         public void SetZoomLocation(Point _point)
         {
-        	m_DirectZoomTopLeft = new Point(_point.X, _point.Y);	
+            m_DirectZoomTopLeft = new Point(_point.X, _point.Y);	
         }
         public Cursor GetCursor(int _type)
         {
@@ -264,23 +264,23 @@ namespace Kinovea.ScreenManager
             Cursor cur = cursorHandOpen;
             switch(_type)
             {
-            	case -1:
-            		cur = (m_iLastCursorType == 0)?cursorHandOpen:cursorHandClose;
-            		break;
-            	case 1:
-            		cur = cursorHandClose;
-					break;
+                case -1:
+                    cur = (m_iLastCursorType == 0)?cursorHandOpen:cursorHandClose;
+                    break;
+                case 1:
+                    cur = cursorHandClose;
+                    break;
             }
 
             return cur;
         }
         #endregion
         
-		#region Helpers
+        #region Helpers
         private bool IsOnDrawing(Metadata _Metadata, int _iActiveKeyFrameIndex, Point _MouseCoordinates, long _iCurrentTimeStamp, bool _bAllFrames)
         {
             bool bIsOnDrawing = false;
-			
+            
             if (_bAllFrames && _Metadata.Keyframes.Count > 0)
             {
                 int[] zOrder = _Metadata.GetKeyframesZOrder(_iCurrentTimeStamp);
@@ -340,31 +340,31 @@ namespace Kinovea.ScreenManager
         }
         private bool IsOnExtraDrawing(Metadata metadata, Point mouseCoordinates, long currentTimestamp)
         {
-        	// Test if we hit an unattached drawing.
-        	
-        	bool isOnDrawing = false;
+            // Test if we hit an unattached drawing.
+            
+            bool isOnDrawing = false;
             int hitResult = -1;
             int currentDrawing = 0;
 
             while (hitResult < 0 && currentDrawing < metadata.ExtraDrawings.Count)
             {
-            	hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem);
+                hitResult = metadata.ExtraDrawings[currentDrawing].HitTest(mouseCoordinates, currentTimestamp, metadata.CoordinateSystem);
                 if (hitResult >= 0)
                 {
-                	isOnDrawing = true;
-                	m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
-                	metadata.SelectedExtraDrawing = currentDrawing;
-                	
-                	// Handler hit ?
-	                if (hitResult > 0)
-	                {
-	                    manipulationType = ManipulationType.Resize;
-	                    m_iResizingHandle = hitResult;
-	                }
-	                else
-	                {
-	                    manipulationType = ManipulationType.Move;
-	                }
+                    isOnDrawing = true;
+                    m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
+                    metadata.SelectedExtraDrawing = currentDrawing;
+                    
+                    // Handler hit ?
+                    if (hitResult > 0)
+                    {
+                        manipulationType = ManipulationType.Resize;
+                        m_iResizingHandle = hitResult;
+                    }
+                    else
+                    {
+                        manipulationType = ManipulationType.Move;
+                    }
                 }
                 else
                 {
@@ -376,53 +376,53 @@ namespace Kinovea.ScreenManager
         }
         private bool IsOnTrack(Metadata _Metadata, Point _MouseCoordinates, long _iCurrentTimeStamp)
         {
-        	// Track have their own special hit test because we need to differenciate the interactive case from the edit case.
+            // Track have their own special hit test because we need to differenciate the interactive case from the edit case.
             bool bTrackHit = false;
 
             for (int i = 0; i < _Metadata.ExtraDrawings.Count; i++)
             {
-            	DrawingTrack trk = _Metadata.ExtraDrawings[i] as DrawingTrack;
-            	if(trk != null)
-            	{
-            		// Result: 
-	            	// -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
-	            
-	                int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
-	
-	                if (handle >= 0)
-	                {
-	                    bTrackHit = true;
-	                    m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
-                		_Metadata.SelectedExtraDrawing = i;
-	
-	                    if(handle > 1)
-	                	{
-	                		// Touched target or handler.
-	                    	// The handler would have been saved inside the track object.
-	                		manipulationType = ManipulationType.Move;	
-	                	}
-	                    else if (trk.Status == TrackStatus.Interactive)
-	                    {
-	                    	manipulationType = ManipulationType.Resize;
-	                    	m_iResizingHandle = handle;	
-	                    }
-	                    else
-	                    {
-	                    	// edit mode + 0 or 1.
-	                    	manipulationType = ManipulationType.Move;
-	                    }
-	                   
-	                    break;
-	                }
-	            }	
+                DrawingTrack trk = _Metadata.ExtraDrawings[i] as DrawingTrack;
+                if(trk != null)
+                {
+                    // Result: 
+                    // -1 = miss, 0 = on traj, 1 = on Cursor, 2 = on main label, 3+ = on keyframe label.
+                
+                    int handle = trk.HitTest(_MouseCoordinates, _iCurrentTimeStamp, _Metadata.CoordinateSystem);
+    
+                    if (handle >= 0)
+                    {
+                        bTrackHit = true;
+                        m_SelectedObjectType = SelectedObjectType.ExtraDrawing;
+                        _Metadata.SelectedExtraDrawing = i;
+    
+                        if(handle > 1)
+                        {
+                            // Touched target or handler.
+                            // The handler would have been saved inside the track object.
+                            manipulationType = ManipulationType.Move;	
+                        }
+                        else if (trk.Status == TrackStatus.Interactive)
+                        {
+                            manipulationType = ManipulationType.Resize;
+                            m_iResizingHandle = handle;	
+                        }
+                        else
+                        {
+                            // edit mode + 0 or 1.
+                            manipulationType = ManipulationType.Move;
+                        }
+                       
+                        break;
+                    }
+                }	
             }
 
             return bTrackHit;
         }
         private void SetupHandCursors()
         {
-        	// Hand cursor.
-        	Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Drawings.handopen24c;
+            // Hand cursor.
+            Bitmap bmpOpen = Kinovea.ScreenManager.Properties.Drawings.handopen24c;
             cursorHandOpen = new Cursor(bmpOpen.GetHicon());
             
             Bitmap bmpClose = Kinovea.ScreenManager.Properties.Drawings.handclose24b;
@@ -430,7 +430,7 @@ namespace Kinovea.ScreenManager
 
             m_iLastCursorType = 0;
         }
-    	#endregion
+        #endregion
     }
 
 }

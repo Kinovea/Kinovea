@@ -31,18 +31,18 @@ namespace Kinovea.ScreenManager
 {
     public class CommandAddCaptureScreen : IUndoableCommand
     {
-    	#region Properties
+        #region Properties
         public string FriendlyName
         {
-        	get { return ScreenManagerLang.CommandAddCaptureScreen_FriendlyName; }
+            get { return ScreenManagerLang.CommandAddCaptureScreen_FriendlyName; }
         }
         #endregion
         
         #region Members
         ScreenManagerKernel screenManagerKernel;
-		#endregion
+        #endregion
         
-		#region constructor
+        #region constructor
         public CommandAddCaptureScreen(ScreenManagerKernel _smk, bool _bStoreState)
         {
             this.screenManagerKernel = _smk;

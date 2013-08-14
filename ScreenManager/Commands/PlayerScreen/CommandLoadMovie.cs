@@ -44,13 +44,13 @@ namespace Kinovea.ScreenManager
         {
             get{ return ScreenManagerLang.CommandLoadMovie_FriendlyName;}
         }
-		#endregion
+        #endregion
         
         #region Members
         private string m_FilePath;
         private PlayerScreen m_PlayerScreen;
-		#endregion
-		
+        #endregion
+        
         #region constructor
         public CommandLoadMovie( PlayerScreen _PlayerScreen, String _FilePath)
         {
@@ -71,19 +71,19 @@ namespace Kinovea.ScreenManager
                 dp.StopPlaying();
             }
             
-			DirectLoad();
+            DirectLoad();
         }
 
         private void DirectLoad()
         {
-        	if(m_PlayerScreen.FrameServer.Loaded)
-        	{
-        		m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
-        	}
-        	
+            if(m_PlayerScreen.FrameServer.Loaded)
+            {
+                m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
+            }
+            
             OpenVideoResult res = m_PlayerScreen.FrameServer.Load(m_FilePath);
 
-        	switch (res)
+            switch (res)
             {
                 case OpenVideoResult.Success:
                     {
@@ -119,12 +119,12 @@ namespace Kinovea.ScreenManager
                     }
                 case OpenVideoResult.FileNotOpenned:
                     {
-        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_FileNotOpened);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_FileNotOpened);
                         break;
                     }
                 case OpenVideoResult.StreamInfoNotFound:
                     {
-        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_StreamInfoNotFound);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_StreamInfoNotFound);
                         break;
                     }
                 case OpenVideoResult.VideoStreamNotFound:
@@ -134,18 +134,18 @@ namespace Kinovea.ScreenManager
                     }
                 case OpenVideoResult.CodecNotFound:
                     {
-        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotFound);
                         break;
                     }
                 case OpenVideoResult.CodecNotOpened:
                     {
-        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotOpened);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotOpened);
                         break;
                     }
                 case OpenVideoResult.CodecNotSupported:
-        	    case OpenVideoResult.NotSupported:
+                case OpenVideoResult.NotSupported:
                     {
-        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotSupported);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_CodecNotSupported);
                         break;
                     }
                 case OpenVideoResult.Cancelled:
@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
                     }
                 default:
                     {
-        				DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_UnkownError);
+                        DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_UnkownError);
                         break;
                     }
             }
@@ -164,12 +164,12 @@ namespace Kinovea.ScreenManager
         }
         private void DisplayErrorAndDisable(string error)
         {
-        	m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(false);
-        	
-        	MessageBox.Show(
-        		error,
-               	Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error,
-               	MessageBoxButtons.OK,
+            m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(false);
+            
+            MessageBox.Show(
+                error,
+                Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_Error,
+                MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
     }

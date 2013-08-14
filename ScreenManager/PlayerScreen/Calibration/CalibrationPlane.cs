@@ -101,7 +101,7 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 switch(r.Name)
                 {
                     case "Size":
@@ -112,7 +112,7 @@ namespace Kinovea.ScreenManager
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
-				        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 switch(r.Name)
                 {
                     case "A":
@@ -144,7 +144,7 @@ namespace Kinovea.ScreenManager
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
-				        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }

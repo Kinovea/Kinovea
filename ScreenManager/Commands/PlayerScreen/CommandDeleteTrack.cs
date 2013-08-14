@@ -32,7 +32,7 @@ namespace Kinovea.ScreenManager
 
         public string FriendlyName
         {
-        	get { return ScreenManagerLang.mnuDeleteTrajectory; }
+            get { return ScreenManagerLang.mnuDeleteTrajectory; }
         }
 
         private PlayerScreenUserInterface m_psui;
@@ -50,19 +50,19 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-        	if(m_Track != null)
+            if(m_Track != null)
             {
-            	m_Metadata.ExtraDrawings.Remove(m_Track);
-            	m_psui.pbSurfaceScreen.Invalidate();
+                m_Metadata.ExtraDrawings.Remove(m_Track);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
         public void Unexecute()
         {
             // Recreate the drawing.
-			if(m_Track != null)
+            if(m_Track != null)
             {
-            	m_Metadata.ExtraDrawings.Add(m_Track);
-            	m_psui.pbSurfaceScreen.Invalidate();
+                m_Metadata.ExtraDrawings.Add(m_Track);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
     }

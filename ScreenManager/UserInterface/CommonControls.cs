@@ -32,9 +32,9 @@ namespace Kinovea.ScreenManager
     {
         #region Properties
         public IScreenManagerUIContainer Controller
-		{
-			set { controller = value; }
-		}
+        {
+            set { controller = value; }
+        }
         public bool Playing
         {
             get { return playing;  }
@@ -45,23 +45,23 @@ namespace Kinovea.ScreenManager
             }
         }
         public bool SyncMerging
-		{
-			get { return syncMerging; }
-			set 
-			{ 
-				syncMerging = value; 
-				RefreshMergeTooltip();
-			}
-		}
+        {
+            get { return syncMerging; }
+            set 
+            { 
+                syncMerging = value; 
+                RefreshMergeTooltip();
+            }
+        }
         #endregion
 
         #region Members
         private bool playing;
         private bool syncMerging;
-		private long oldPosition;
-		private IScreenManagerUIContainer controller;
-		private Button btnSnapShot = new Button();
-		private Button btnDualVideo = new Button();
+        private long oldPosition;
+        private IScreenManagerUIContainer controller;
+        private Button btnSnapShot = new Button();
+        private Button btnDualVideo = new Button();
         #endregion
 
         #region Construction
@@ -72,41 +72,41 @@ namespace Kinovea.ScreenManager
         }
         private void PostInit()
         {
-        	BackColor = Color.White;
+            BackColor = Color.White;
             
-        	btnSnapShot.BackColor = System.Drawing.Color.Transparent;
-        	btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
-        	btnSnapShot.FlatAppearance.BorderSize = 0;
-        	btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	btnSnapShot.Image = ScreenManager.Properties.Resources.snapsingle_1;
-        	btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
-        	btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
-        	btnSnapShot.Name = "btnSnapShot";
-        	btnSnapShot.Size = new System.Drawing.Size(30, 25);
-        	btnSnapShot.UseVisualStyleBackColor = false;
-        	btnSnapShot.Click += new System.EventHandler(btnSnapshot_Click);
-        	
-        	btnDualVideo.BackColor = System.Drawing.Color.Transparent;
-        	btnDualVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-        	btnDualVideo.Cursor = System.Windows.Forms.Cursors.Hand;
-        	btnDualVideo.FlatAppearance.BorderSize = 0;
-        	btnDualVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	btnDualVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	btnDualVideo.Image = ScreenManager.Properties.Resources.savevideo;
-        	btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnSnapShot.Top);
-        	btnDualVideo.MinimumSize = new System.Drawing.Size(25, 25);
-        	btnDualVideo.Name = "btnDualVideo";
-        	btnDualVideo.Size = new System.Drawing.Size(30, 25);
-        	btnDualVideo.UseVisualStyleBackColor = false;
-        	btnDualVideo.Click += new System.EventHandler(btnDualVideo_Click);
+            btnSnapShot.BackColor = System.Drawing.Color.Transparent;
+            btnSnapShot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            btnSnapShot.Cursor = System.Windows.Forms.Cursors.Hand;
+            btnSnapShot.FlatAppearance.BorderSize = 0;
+            btnSnapShot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            btnSnapShot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnSnapShot.Image = ScreenManager.Properties.Resources.snapsingle_1;
+            btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
+            btnSnapShot.MinimumSize = new System.Drawing.Size(25, 25);
+            btnSnapShot.Name = "btnSnapShot";
+            btnSnapShot.Size = new System.Drawing.Size(30, 25);
+            btnSnapShot.UseVisualStyleBackColor = false;
+            btnSnapShot.Click += new System.EventHandler(btnSnapshot_Click);
             
-        	this.Controls.Add(btnSnapShot);
-        	this.Controls.Add(btnDualVideo);
+            btnDualVideo.BackColor = System.Drawing.Color.Transparent;
+            btnDualVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            btnDualVideo.Cursor = System.Windows.Forms.Cursors.Hand;
+            btnDualVideo.FlatAppearance.BorderSize = 0;
+            btnDualVideo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            btnDualVideo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnDualVideo.Image = ScreenManager.Properties.Resources.savevideo;
+            btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnSnapShot.Top);
+            btnDualVideo.MinimumSize = new System.Drawing.Size(25, 25);
+            btnDualVideo.Name = "btnDualVideo";
+            btnDualVideo.Size = new System.Drawing.Size(30, 25);
+            btnDualVideo.UseVisualStyleBackColor = false;
+            btnDualVideo.Click += new System.EventHandler(btnDualVideo_Click);
+            
+            this.Controls.Add(btnSnapShot);
+            this.Controls.Add(btnDualVideo);
         }
-		#endregion
-		
+        #endregion
+        
         #region Public methods
         public void RefreshUICulture()
         {
@@ -125,7 +125,7 @@ namespace Kinovea.ScreenManager
             toolTips.SetToolTip(btnDualVideo, ScreenManagerLang.ToolTip_SideBySideVideo);
             
             RefreshMergeTooltip();
-		}
+        }
         public void First()
         {
             if(controller != null)
@@ -193,10 +193,10 @@ namespace Kinovea.ScreenManager
         
         #region UI Handlers
         private void CommonControls_Resize(object sender, EventArgs e)
-		{
-			btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
-			btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnMerge.Top);
-		}
+        {
+            btnSnapShot.Location = new System.Drawing.Point(trkFrame.Right + 10, btnMerge.Top);
+            btnDualVideo.Location = new System.Drawing.Point(btnSnapShot.Right + 10, btnMerge.Top);
+        }
         private void buttonGotoFirst_Click(object sender, EventArgs e)
         {
             First();
@@ -220,40 +220,40 @@ namespace Kinovea.ScreenManager
         private void btnSwap_Click(object sender, EventArgs e)
         {
             if(controller != null)
-            	controller.CommonCtrl_Swap(); 
+                controller.CommonCtrl_Swap(); 
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
             if(controller != null)
-            	controller.CommonCtrl_Sync(); 
+                controller.CommonCtrl_Sync(); 
         }
         private void btnMerge_Click(object sender, EventArgs e)
         {
-       		if(controller != null)
-        	{ 
-       			syncMerging = !syncMerging;
-       			controller.CommonCtrl_Merge();
-       			RefreshMergeTooltip();
-       		}
+            if(controller != null)
+            { 
+                syncMerging = !syncMerging;
+                controller.CommonCtrl_Merge();
+                RefreshMergeTooltip();
+            }
         }
         private void btnSnapshot_Click(object sender, EventArgs e)
         {
-       		if(controller != null)
-       			controller.CommonCtrl_Snapshot();
+            if(controller != null)
+                controller.CommonCtrl_Snapshot();
         }
         private void btnDualVideo_Click(object sender, EventArgs e)
         {
-       		if(controller != null)
-       			controller.CommonCtrl_DualVideo();
+            if(controller != null)
+                controller.CommonCtrl_DualVideo();
         }
         private void trkFrame_PositionChanged(object sender, PositionChangedEventArgs e)
         {
             if(e.Position != oldPosition)
-        	{
-        		oldPosition = e.Position;
-            	if(controller != null)
-            		controller.CommonCtrl_PositionChanged(e.Position); 
-        	}
+            {
+                oldPosition = e.Position;
+                if(controller != null)
+                    controller.CommonCtrl_PositionChanged(e.Position); 
+            }
         }
         #endregion
         
@@ -275,11 +275,11 @@ namespace Kinovea.ScreenManager
         }
         private void RefreshMergeTooltip()
         {
-        	if(syncMerging)
-            	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge);
+            if(syncMerging)
+                toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_DisableMerge);
             else
-            	toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge);	
+                toolTips.SetToolTip(btnMerge, ScreenManagerLang.ToolTip_CommonCtrl_EnableMerge);	
         }
-		#endregion
+        #endregion
     }
 }

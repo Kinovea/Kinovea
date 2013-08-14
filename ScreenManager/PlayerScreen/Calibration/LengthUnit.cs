@@ -23,14 +23,14 @@ using System;
 namespace Kinovea.ScreenManager
 {
     public enum LengthUnit
-	{
-	    Millimeters,
-	    Centimeters,
-		Meters,
-		Inches,
-		Feet,
-		Yards,
-		Percentage,
-		Pixels		  // Native unit.
-	}
+    {
+        Millimeters,
+        Centimeters,
+        Meters,
+        Inches,
+        Feet,
+        Yards,
+        Percentage,
+        Pixels		  // Native unit.
+    }
 }

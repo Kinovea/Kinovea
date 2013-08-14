@@ -43,7 +43,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string DisplayName
         {
-		    get {  return ScreenManagerLang.ToolTip_DrawingToolText; }
+            get {  return ScreenManagerLang.ToolTip_DrawingToolText; }
         }
         public override int ContentHash
         {
@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
         } 
         public DrawingStyle DrawingStyle
         {
-        	get { return m_Style;}
+            get { return m_Style;}
         }
         public override InfosFading InfosFading
         {
@@ -66,13 +66,13 @@ namespace Kinovea.ScreenManager
             set { m_InfosFading = value; }
         }
         public override DrawingCapabilities Caps
-		{
-			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
-		}
+        {
+            get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
+        }
         public override List<ToolStripItem> ContextMenu
-		{
-			get { return null; }
-		}
+        {
+            get { return null; }
+        }
         public TextBox EditBox
         {
             get { return m_TextBox; }
@@ -94,12 +94,12 @@ namespace Kinovea.ScreenManager
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
-      	private bool m_bEditMode;
-      	private IImageToViewportTransformer imageToViewportTransformer;
-      	
-      	private RoundedRectangle m_Background = new RoundedRectangle();
+        private bool m_bEditMode;
+        private IImageToViewportTransformer imageToViewportTransformer;
+        
+        private RoundedRectangle m_Background = new RoundedRectangle();
         private TextBox m_TextBox;
-      	private Control m_ContainerScreen;
+        private Control m_ContainerScreen;
         
         private const int m_iDefaultFontSize = 16;    		// will also be used for the text box.
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -124,12 +124,12 @@ namespace Kinovea.ScreenManager
             m_bEditMode = false;
 
             m_TextBox = new TextBox() { 
-      	         Visible = false, 
-      	         BackColor = Color.White, 
-      	         BorderStyle = BorderStyle.None, 
-      	         Multiline = true,
-      	         Text = m_Text,
-      	         Font = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize)
+                 Visible = false, 
+                 BackColor = Color.White, 
+                 BorderStyle = BorderStyle.None, 
+                 Multiline = true,
+                 Text = m_Text,
+                 Font = m_StyleHelper.GetFontDefaultSize(m_iDefaultFontSize)
             };
             
             m_TextBox.TextChanged += new EventHandler(TextBox_TextChanged);
@@ -156,9 +156,9 @@ namespace Kinovea.ScreenManager
             {
                 // Note: recompute background size in case the font floored.
                 SizeF textSize = _canvas.MeasureString(m_Text, fontText);
-			    Point bgLocation = _transformer.Transform(m_Background.Rectangle.Location);
-			    Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
-			    
+                Point bgLocation = _transformer.Transform(m_Background.Rectangle.Location);
+                Size bgSize = new Size((int)textSize.Width, (int)textSize.Height);
+                
                 //Rectangle rect = _transformer.Transform(m_Background.Rectangle);
                 Rectangle rect = new Rectangle(bgLocation, bgSize);
                 RoundedRectangle.Draw(_canvas, rect, brushBack, fontText.Height/4, false, false, null);
@@ -188,54 +188,54 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-		#region KVA Serialization
+        #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "Text":
-				        m_Text = _xmlReader.ReadElementContentAsString();
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "Text":
+                        m_Text = _xmlReader.ReadElementContentAsString();
                         break;
-					case "Position":
+                    case "Position":
                         Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                         Point location = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
                         m_Background.Rectangle = new Rectangle(location, Size.Empty);
-				        break;
+                        break;
                     case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "InfosFading":
-						m_InfosFading.ReadXml(_xmlReader);
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
-			
-			UpdateLabelRectangle();
+                        m_Style = new DrawingStyle(_xmlReader);
+                        BindStyle();
+                        break;
+                    case "InfosFading":
+                        m_InfosFading.ReadXml(_xmlReader);
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+            
+            UpdateLabelRectangle();
         }
-		public void WriteXml(XmlWriter _xmlWriter)
-		{
-		    _xmlWriter.WriteElementString("Text", m_Text);
+        public void WriteXml(XmlWriter _xmlWriter)
+        {
+            _xmlWriter.WriteElementString("Text", m_Text);
             _xmlWriter.WriteElementString("Position", String.Format(CultureInfo.InvariantCulture, "{0};{1}", m_Background.Rectangle.X, m_Background.Rectangle.Y));
             
-		    _xmlWriter.WriteStartElement("DrawingStyle");
+            _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("InfosFading");
             m_InfosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement(); 
-		}
+        }
         #endregion
         
         public void SetEditMode(bool _bEdit, IImageToViewportTransformer _transformer)

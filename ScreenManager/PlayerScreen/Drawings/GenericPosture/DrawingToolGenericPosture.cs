@@ -31,77 +31,77 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolGenericPosture : AbstractDrawingTool
     {
-    	#region Properties
-		public override string DisplayName
-		{
-		    get { return displayName;}
-		}
-		public override Bitmap Icon
-		{
-			get { return icon; }
-		}
-    	public override bool Attached
-    	{
-    		get { return true; }
-    	}
-		public override bool KeepTool
-    	{
-    		get { return false; }
-    	}
-    	public override bool KeepToolFrameChanged
-    	{
-    		get { return false; }
-    	}
-		public override DrawingStyle StylePreset
-		{
-			get { return m_StylePreset;}
-			set { m_StylePreset = value;}
-		}
-		public override DrawingStyle DefaultStylePreset
-		{
-			get { return m_DefaultStylePreset;}
-		}
-    	#endregion
-    	
-    	#region Members
-    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-    	private DrawingStyle m_StylePreset;
-    	private Guid id;
-    	private string displayName = "Generic Posture";
-    	private Bitmap icon = Properties.Drawings.generic_posture;
-    	#endregion
-		
-		#region Constructor
-		public DrawingToolGenericPosture()
-		{
-			m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
-			m_StylePreset = m_DefaultStylePreset.Clone();
-		}
-		#endregion
-		
-		#region Public Methods
-		public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-		{
-		    m_StylePreset = ToolManager.GenericPosture.m_StylePreset.Clone();
-		    
-		    GenericPosture posture = GenericPostureManager.Instanciate(id, false);
-		    return new DrawingGenericPosture(posture, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
-		}
-		public override Cursor GetCursor(double _fStretchFactor)
-		{
-			return Cursors.Cross;
-		}
-		public void SetInfo(GenericPosture posture)
-		{
-		    this.id = posture.Id;
-		    
-		    if(!string.IsNullOrEmpty(posture.Name))
-		       displayName = posture.Name;
-		    
-		    if(posture.Icon != null && posture.Icon.Width == 16 && posture.Icon.Height == 16)
-		      icon = posture.Icon;
-		}
-		#endregion
+        #region Properties
+        public override string DisplayName
+        {
+            get { return displayName;}
+        }
+        public override Bitmap Icon
+        {
+            get { return icon; }
+        }
+        public override bool Attached
+        {
+            get { return true; }
+        }
+        public override bool KeepTool
+        {
+            get { return false; }
+        }
+        public override bool KeepToolFrameChanged
+        {
+            get { return false; }
+        }
+        public override DrawingStyle StylePreset
+        {
+            get { return m_StylePreset;}
+            set { m_StylePreset = value;}
+        }
+        public override DrawingStyle DefaultStylePreset
+        {
+            get { return m_DefaultStylePreset;}
+        }
+        #endregion
+        
+        #region Members
+        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+        private DrawingStyle m_StylePreset;
+        private Guid id;
+        private string displayName = "Generic Posture";
+        private Bitmap icon = Properties.Drawings.generic_posture;
+        #endregion
+        
+        #region Constructor
+        public DrawingToolGenericPosture()
+        {
+            m_DefaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.DarkOliveGreen));
+            m_StylePreset = m_DefaultStylePreset.Clone();
+        }
+        #endregion
+        
+        #region Public Methods
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        {
+            m_StylePreset = ToolManager.GenericPosture.m_StylePreset.Clone();
+            
+            GenericPosture posture = GenericPostureManager.Instanciate(id, false);
+            return new DrawingGenericPosture(posture, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+        }
+        public override Cursor GetCursor(double _fStretchFactor)
+        {
+            return Cursors.Cross;
+        }
+        public void SetInfo(GenericPosture posture)
+        {
+            this.id = posture.Id;
+            
+            if(!string.IsNullOrEmpty(posture.Name))
+               displayName = posture.Name;
+            
+            if(posture.Icon != null && posture.Icon.Width == 16 && posture.Icon.Height == 16)
+              icon = posture.Icon;
+        }
+        #endregion
     }
 }
 

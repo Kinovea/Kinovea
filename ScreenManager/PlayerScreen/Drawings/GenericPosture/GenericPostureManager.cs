@@ -28,24 +28,24 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	public static class GenericPostureManager
-	{
-		#region Properties
-		public static List<DrawingToolGenericPosture> Tools
-		{
-		    get {
-		        if(!initialized)
-		            Initialize();
-		        
-		        return tools;
-		    }
-		}
-		#endregion
-		
-		#region Members
-		private static Dictionary<Guid, string> files = null;
-		private static List<DrawingToolGenericPosture> tools = null;
-		private static bool initialized = false;
+    public static class GenericPostureManager
+    {
+        #region Properties
+        public static List<DrawingToolGenericPosture> Tools
+        {
+            get {
+                if(!initialized)
+                    Initialize();
+                
+                return tools;
+            }
+        }
+        #endregion
+        
+        #region Members
+        private static Dictionary<Guid, string> files = null;
+        private static List<DrawingToolGenericPosture> tools = null;
+        private static bool initialized = false;
         #endregion
         
         #region Public methods
@@ -65,10 +65,10 @@ namespace Kinovea.ScreenManager
         private static void Initialize()
         {
             files = new Dictionary<Guid, string>();
-        	tools = new List<DrawingToolGenericPosture>();
-        	
-        	string dir = Path.GetDirectoryName(Application.ExecutablePath) + "\\DrawingTools";
-        	
+            tools = new List<DrawingToolGenericPosture>();
+            
+            string dir = Path.GetDirectoryName(Application.ExecutablePath) + "\\DrawingTools";
+            
             if(!Directory.Exists(dir))
                 return;
             
@@ -93,6 +93,6 @@ namespace Kinovea.ScreenManager
             }
         }
         #endregion
-	}
+    }
 }
 

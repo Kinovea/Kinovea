@@ -29,58 +29,58 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolCoordinateSystem : AbstractDrawingTool
     {
-    	#region Properties
-    	public override string DisplayName
-    	{
-    		get { return ScreenManagerLang.mnuCoordinateSystem; }
-    	}
-    	public override Bitmap Icon
-    	{
-    		get { return Properties.Drawings.coordinates; }
-    	}
-    	public override bool Attached
-    	{
-    		get { return false; }
-    	}
-    	public override bool KeepTool
-    	{
-    		get { return false; }
-    	}
-    	public override bool KeepToolFrameChanged
-    	{
-    		get { return false; }
-    	}
-    	public override DrawingStyle StylePreset
-		{
-			get { return stylePreset;}
-			set { stylePreset = value;}
-		}
-		public override DrawingStyle DefaultStylePreset
-		{
-			get { return defaultStylePreset;}
-		}
-    	#endregion
-    	
-    	#region Members
-    	private DrawingStyle defaultStylePreset = new DrawingStyle();
-    	private DrawingStyle stylePreset;
-    	#endregion
-		
-    	#region Public Methods
-    	public DrawingToolCoordinateSystem()
-    	{
-			defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.Red));
-    	    stylePreset = defaultStylePreset.Clone();
-    	}
-    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-    	{
-    	   return null;
-    	}
-    	public override Cursor GetCursor(double _fStretchFactor)
-    	{
-    		return Cursors.Cross;
-    	}
-    	#endregion
+        #region Properties
+        public override string DisplayName
+        {
+            get { return ScreenManagerLang.mnuCoordinateSystem; }
+        }
+        public override Bitmap Icon
+        {
+            get { return Properties.Drawings.coordinates; }
+        }
+        public override bool Attached
+        {
+            get { return false; }
+        }
+        public override bool KeepTool
+        {
+            get { return false; }
+        }
+        public override bool KeepToolFrameChanged
+        {
+            get { return false; }
+        }
+        public override DrawingStyle StylePreset
+        {
+            get { return stylePreset;}
+            set { stylePreset = value;}
+        }
+        public override DrawingStyle DefaultStylePreset
+        {
+            get { return defaultStylePreset;}
+        }
+        #endregion
+        
+        #region Members
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
+        #endregion
+        
+        #region Public Methods
+        public DrawingToolCoordinateSystem()
+        {
+            defaultStylePreset.Elements.Add("line color", new StyleElementColor(Color.Red));
+            stylePreset = defaultStylePreset.Clone();
+        }
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        {
+           return null;
+        }
+        public override Cursor GetCursor(double _fStretchFactor)
+        {
+            return Cursors.Cross;
+        }
+        #endregion
     }
 }
 

@@ -58,9 +58,9 @@ namespace Kinovea.ScreenManager
             // the redo and we'll want to keep teir values.
             if(m_Track != null)
             {
-            	m_Positions = m_Track.GetEndOfTrack(m_iTimeStamp);
-	            m_Track.ChopTrajectory(m_iTimeStamp);
-	            m_psui.pbSurfaceScreen.Invalidate();
+                m_Positions = m_Track.GetEndOfTrack(m_iTimeStamp);
+                m_Track.ChopTrajectory(m_iTimeStamp);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
         public void Unexecute()
@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
             // Revival of the discarded points.
             if(m_Positions != null && m_Track != null)
             {
-            	m_Track.AppendPoints(m_iTimeStamp, m_Positions);
+                m_Track.AppendPoints(m_iTimeStamp, m_Positions);
             }
             m_psui.pbSurfaceScreen.Invalidate();
         }

@@ -277,7 +277,7 @@ namespace Kinovea.ScreenManager
             Refresh();
         }
         #endregion
-		
+        
         
         #endregion
     }

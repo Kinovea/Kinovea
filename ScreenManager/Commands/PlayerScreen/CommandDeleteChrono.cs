@@ -31,7 +31,7 @@ namespace Kinovea.ScreenManager
     {
         public string FriendlyName
         {
-        	get { return ScreenManagerLang.mnuChronoDelete; }
+            get { return ScreenManagerLang.mnuChronoDelete; }
         }
 
         private PlayerScreenUserInterface m_psui;
@@ -51,17 +51,17 @@ namespace Kinovea.ScreenManager
         {
             if(m_Chrono != null)
             {
-            	m_Metadata.ExtraDrawings.Remove(m_Chrono);
-            	m_psui.pbSurfaceScreen.Invalidate();
+                m_Metadata.ExtraDrawings.Remove(m_Chrono);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
         public void Unexecute()
         {
             // Recreate the drawing.
-			if(m_Chrono != null)
+            if(m_Chrono != null)
             {
-            	m_Metadata.ExtraDrawings.Add(m_Chrono);
-            	m_psui.pbSurfaceScreen.Invalidate();
+                m_Metadata.ExtraDrawings.Add(m_Chrono);
+                m_psui.pbSurfaceScreen.Invalidate();
             }
         }
     }
