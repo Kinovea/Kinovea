@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.FileBrowser", "FileBrowser\Kinovea.FileBrowser.csproj", "{85924D93-541A-46E6-BF9A-EBE3B73887EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea", "Root\Kinovea.csproj", "{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.ScreenManager", "ScreenManager\Kinovea.ScreenManager.csproj", "{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Services", "Services\Kinovea.Services.csproj", "{8AA92254-A016-4A84-925C-F5B07E02F8A8}"
@@ -34,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Video.SVG", "Kinovea.Video.SVG\Kinovea.Video.SVG.csproj", "{2507E203-236D-4B02-8477-5FCBC30A670C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea.Video.GIF", "Kinovea.Video.GIF\Kinovea.Video.GIF.csproj", "{B2F5C3EB-9F9E-4B7A-ACBB-55781E62957C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinovea", "Kinovea\Kinovea.csproj", "{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,27 +72,6 @@ Global
 		{85924D93-541A-46E6-BF9A-EBE3B73887EC}.Release|Win32.ActiveCfg = Release|x86
 		{85924D93-541A-46E6-BF9A-EBE3B73887EC}.Release|x86.ActiveCfg = Release|x86
 		{85924D93-541A-46E6-BF9A-EBE3B73887EC}.Release|x86.Build.0 = Release|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Win32.ActiveCfg = Debug|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|x86.ActiveCfg = Debug|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|x86.Build.0 = Debug|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Any CPU.ActiveCfg = DebugExternals|Any CPU
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Any CPU.Build.0 = DebugExternals|Any CPU
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Mixed Platforms.ActiveCfg = DebugExternals|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Mixed Platforms.Build.0 = DebugExternals|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Win32.ActiveCfg = DebugExternals|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|x86.ActiveCfg = DebugExternals|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|x86.Build.0 = DebugExternals|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Mixed Platforms.Build.0 = Release|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Win32.ActiveCfg = Release|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|x86.ActiveCfg = Release|x86
-		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|x86.Build.0 = Release|x86
 		{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25C4B2FB-CA90-4E2E-8046-106FCF36CB81}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -302,6 +281,27 @@ Global
 		{B2F5C3EB-9F9E-4B7A-ACBB-55781E62957C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B2F5C3EB-9F9E-4B7A-ACBB-55781E62957C}.Release|Win32.ActiveCfg = Release|Any CPU
 		{B2F5C3EB-9F9E-4B7A-ACBB-55781E62957C}.Release|x86.ActiveCfg = Release|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|Win32.ActiveCfg = Debug|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|x86.ActiveCfg = Debug|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Debug|x86.Build.0 = Debug|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Any CPU.ActiveCfg = DebugExternals|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Any CPU.Build.0 = DebugExternals|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Mixed Platforms.ActiveCfg = DebugExternals|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Mixed Platforms.Build.0 = DebugExternals|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|Win32.ActiveCfg = DebugExternals|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|x86.ActiveCfg = DebugExternals|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.DebugExternals|x86.Build.0 = DebugExternals|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Mixed Platforms.Build.0 = Release|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|Win32.ActiveCfg = Release|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|x86.ActiveCfg = Release|x86
+		{BEBDDE90-1A14-47F9-9A2D-44B9B45C8502}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
