@@ -164,16 +164,15 @@ namespace Kinovea.FileBrowser
             if (string.IsNullOrEmpty(e.File))
                 return;
 
-
             foreach (ListViewItem item in lv.Items)
             {
-                if ((string)item.Tag == e.File)
-                {
-                    externalSelection = true;
-                    item.Selected = true;
-                    item.EnsureVisible();
-                    break;
-                }
+                if ((string)item.Tag != e.File)
+                    continue;
+                
+                externalSelection = true;
+                item.Selected = true;
+                item.EnsureVisible();
+                break;
             }
         }
         private void NotificationCenter_FileOpened(object sender, FileActionEventArgs e)
@@ -224,7 +223,7 @@ namespace Kinovea.FileBrowser
             }
             else if(activeTab == ActiveFileBrowserTab.Cameras)
             {
-                // Refresh for cameras.
+                // pass
             }
         }
         public void RefreshUICulture()
@@ -302,8 +301,6 @@ namespace Kinovea.FileBrowser
             
             PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance = splitExplorerFiles.SplitterDistance;
             PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance = splitShortcutsFiles.SplitterDistance;
-            
-            // Flush all prefs not previoulsy flushed.
             PreferencesManager.Save();
         }
         #endregion
@@ -315,7 +312,6 @@ namespace Kinovea.FileBrowser
         {
             currentExptreeItem = item;
             
-            // Update the list view and thumb page.
             if(!expanding && !initializing)
             {
                 // We don't maintain synchronization with the Shortcuts tab. 
@@ -330,28 +326,11 @@ namespace Kinovea.FileBrowser
         }
         private void etExplorer_MouseDown(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Right)
-            {
-                mnuDeleteShortcut.Visible = false;
-                    
-                // User must first select a node to add it to shortcuts.
-                if(etExplorer.IsOnSelectedItem(e.Location))
-                {
-                    if(!currentExptreeItem.Path.StartsWith("::"))
-                    {
-                        mnuAddToShortcuts.Visible = true;
-                    }
-                    else
-                    {
-                        // Root node selected. Cannot add.
-                        mnuAddToShortcuts.Visible = false;
-                    }
-                }
-                else
-                {
-                    mnuAddToShortcuts.Visible = false;
-                }
-            }
+            if (e.Button != MouseButtons.Right)
+                return;
+            
+            mnuDeleteShortcut.Visible = false;
+            mnuAddToShortcuts.Visible = etExplorer.IsOnSelectedItem(e.Location) && !currentExptreeItem.Path.StartsWith("::");
         }
         #endregion
         
@@ -415,30 +394,27 @@ namespace Kinovea.FileBrowser
         #endregion
         
         #region TreeView
-        private void etShortcuts_ExpTreeNodeSelected(string _selPath, CShItem _item)
+        private void etShortcuts_ExpTreeNodeSelected(string selectedPath, CShItem item)
         {
-            // Update the list view and thumb page.
-            currentShortcutItem = _item;
-            
-            // Initializing happens on the explorer tab. We'll refresh later.
-            if(!initializing)
-            {	
-                // The operation that will trigger the thumbnail refresh MUST only be called at the end. 
-                // Otherwise the other threads take precedence and the thumbnails are not 
-                // shown progressively but all at once, when other operations are over.
+            currentShortcutItem = item;
+            if (initializing)
+                return;
+            	
+            // The operation that will trigger the thumbnail refresh MUST only be called at the end. 
+            // Otherwise the other threads take precedence and the thumbnails are not 
+            // shown progressively but all at once, when other operations are over.
                 
-                // Start by updating hidden explorer tab.
-                // Update list and maintain synchronization with the tree.
-                UpdateFileList(currentShortcutItem, lvExplorer, false, false);
+            // Start by updating hidden explorer tab.
+            // Update list and maintain synchronization with the tree.
+            UpdateFileList(currentShortcutItem, lvExplorer, false, false);
                 
-                expanding = true;
-                etExplorer.ExpandANode(currentShortcutItem);
-                expanding = false;
-                currentExptreeItem = etExplorer.SelectedItem;
+            expanding = true;
+            etExplorer.ExpandANode(currentShortcutItem);
+            expanding = false;
+            currentExptreeItem = etExplorer.SelectedItem;
                 
-                // Finally update the shortcuts tab, and refresh thumbs.
-                UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
-            }
+            // Finally update the shortcuts tab, and refresh thumbs.
+            UpdateFileList(currentShortcutItem, lvShortcuts, true, true);
         }
         private void etShortcuts_MouseEnter(object sender, EventArgs e)
         {
@@ -535,9 +511,12 @@ namespace Kinovea.FileBrowser
         
         private int IndexOfCamera(List<CameraSummary> summaries, string id)
         {
-            for(int i = 0; i<summaries.Count; i++)
-                if(summaries[i].Identifier == id)
+            for (int i = 0; i < summaries.Count; i++)
+            {
+                if (summaries[i].Identifier == id)
                     return i;
+            }
+
             return -1;
         }
         

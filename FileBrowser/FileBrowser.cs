@@ -51,36 +51,18 @@ namespace Kinovea.FileBrowser
         }
 
         #region IKernel Implementation
-        public void BuildSubTree()
-        {
-            // No sub modules.
-        }
-        public void ExtendMenu(ToolStrip _menu)
-        {
-            // Nothing at this level.
-            // No sub modules.
-        }
-        public void ExtendToolBar(ToolStrip _toolbar)
-        {
-            // Nothing at this level.
-            // No sub modules.
-        }
-        public void ExtendStatusBar(ToolStrip _statusbar)
-        {
-            // Nothing at this level.
-            // No sub modules.
-        }
-        public void ExtendUI()
-        {
-            // No sub modules.
-        }
+        public void BuildSubTree() {}
+        public void ExtendMenu(ToolStrip menu) {}
+        public void ExtendToolBar(ToolStrip toolbar) {}
+        public void ExtendStatusBar(ToolStrip statusbar) {}
+        public void ExtendUI() {}
+
         public void RefreshUICulture()
         {
             view.RefreshUICulture();
         }
         public bool CloseSubModules()
         {
-            // Save last browsed directory
             view.Closing();
             return false;
         }
@@ -92,10 +74,8 @@ namespace Kinovea.FileBrowser
 
         private void CameraTypeManager_CamerasDiscovered(object sender, CamerasDiscoveredEventArgs e)
         {
-            // Update list of cameras.
             view.CamerasDiscovered(e.Summaries);
         }
-        
         
         private void CameraTypeManager_CameraSummaryUpdated(object sender, CameraSummaryUpdatedEventArgs e)
         {
