@@ -33,52 +33,52 @@ using Kinovea.Video;
 
 namespace Kinovea.Root
 {
-	/// <summary>
-	/// PreferencePanelGeneral.
-	/// </summary>
-	public partial class PreferencePanelGeneral : UserControl, IPreferencePanel
-	{
-		#region IPreferencePanel properties
-		public string Description
-		{
-			get { return description;}
-		}
-		public Bitmap Icon
-		{
-			get { return icon;}
-		}
-		#endregion
-		
-		#region Members
-		private string description;
-		private Bitmap icon;
-		private string uiCultureName;
-		private int maxRecentFiles;
+    /// <summary>
+    /// PreferencePanelGeneral.
+    /// </summary>
+    public partial class PreferencePanelGeneral : UserControl, IPreferencePanel
+    {
+        #region IPreferencePanel properties
+        public string Description
+        {
+            get { return description;}
+        }
+        public Bitmap Icon
+        {
+            get { return icon;}
+        }
         #endregion
-		
-		#region Construction & Initialization
-		public PreferencePanelGeneral()
-		{
-			InitializeComponent();
-			this.BackColor = Color.White;
-			
-			description = RootLang.dlgPreferences_ButtonGeneral;
-			icon = Resources.pref_general;
-			
-			ImportPreferences();
-			InitPage();
-		}
-		private void ImportPreferences()
+        
+        #region Members
+        private string description;
+        private Bitmap icon;
+        private string uiCultureName;
+        private int maxRecentFiles;
+        #endregion
+        
+        #region Construction & Initialization
+        public PreferencePanelGeneral()
+        {
+            InitializeComponent();
+            this.BackColor = Color.White;
+            
+            description = RootLang.dlgPreferences_ButtonGeneral;
+            icon = Resources.pref_general;
+            
+            ImportPreferences();
+            InitPage();
+        }
+        private void ImportPreferences()
         {
             CultureInfo ci = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             uiCultureName = ci.IsNeutralCulture ? ci.Name : ci.Parent.Name;
             maxRecentFiles = PreferencesManager.FileExplorerPreferences.MaxRecentFiles;
         }
-		private void InitPage()
-		{
-			// Localize and fill possible values
-			
-			lblLanguage.Text = RootLang.dlgPreferences_LabelLanguages;
+        private void InitPage()
+        {
+            // Localize and fill possible values
+            
+            lblLanguage.Text = RootLang.dlgPreferences_LabelLanguages;
             cmbLanguage.Items.Clear();
             foreach(KeyValuePair<string, string> lang in LanguageManager.Languages)
             {
@@ -92,8 +92,8 @@ namespace Kinovea.Root
             SelectCurrentLanguage();
             cmbHistoryCount.SelectedIndex = maxRecentFiles;
             
-		}
-		private void SelectCurrentLanguage()
+        }
+        private void SelectCurrentLanguage()
         {
             bool found = false;
             for(int i=0;i<cmbLanguage.Items.Count;i++)
@@ -113,10 +113,10 @@ namespace Kinovea.Root
                 cmbLanguage.SelectedIndex = 0;   
             }
         }
-		#endregion
-		
-		#region Handlers
-		private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        #endregion
+        
+        #region Handlers
+        private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             uiCultureName = ((LanguageIdentifier)cmbLanguage.Items[cmbLanguage.SelectedIndex]).Culture;
         }
@@ -124,12 +124,12 @@ namespace Kinovea.Root
         {
             maxRecentFiles = cmbHistoryCount.SelectedIndex;
         }
-		#endregion
-		
-		public void CommitChanges()
-		{
-		    PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
-			PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
-		}
-	}
+        #endregion
+        
+        public void CommitChanges()
+        {
+            PreferencesManager.GeneralPreferences.SetCulture(uiCultureName);
+            PreferencesManager.FileExplorerPreferences.MaxRecentFiles = maxRecentFiles;
+        }
+    }
 }

@@ -46,7 +46,7 @@ namespace Kinovea.Root
         [STAThread]
         private static void Main()
         {
-        	AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
             
             if (!Program.FirstInstance)
                 return;
@@ -56,7 +56,7 @@ namespace Kinovea.Root
             Software.LogInfo();
             
             Thread.CurrentThread.Name = "Main";
-            	
+                
             log.Debug("Application level initialisations.");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -79,33 +79,33 @@ namespace Kinovea.Root
         }
         
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
-		{
-			Exception ex = (Exception)args.ExceptionObject;
-			
-			string message = String.Format("Message: {0}", ex.Message);
-			string source = String.Format("Source: {0}", ex.Source);
-			string target = String.Format("Target site: {0}", ex.TargetSite);
-			string inner = String.Format("InnerException: {0}", ex.InnerException);
-			string trace = String.Format("Stack: {0}", ex.StackTrace);
-			
-			string dumpFile = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
-			using (StreamWriter sw = File.AppendText(Software.SettingsDirectory + dumpFile))
-			{
-				sw.WriteLine(message);
-				sw.WriteLine(source);
-				sw.WriteLine(target);
-				sw.WriteLine(inner);
-				sw.WriteLine(trace);
-				sw.Close();
-			}
-			
-			// Dump again in the log.
-			log.Error("----------------- Unhandled Crash -------------------------");
-			log.Error(message);
-			log.Error(source);
-			log.Error(target);
-			log.Error(inner);
-			log.Error(trace);
-		}
+        {
+            Exception ex = (Exception)args.ExceptionObject;
+            
+            string message = String.Format("Message: {0}", ex.Message);
+            string source = String.Format("Source: {0}", ex.Source);
+            string target = String.Format("Target site: {0}", ex.TargetSite);
+            string inner = String.Format("InnerException: {0}", ex.InnerException);
+            string trace = String.Format("Stack: {0}", ex.StackTrace);
+            
+            string dumpFile = string.Format("Unhandled Crash - {0}.txt", Guid.NewGuid());
+            using (StreamWriter sw = File.AppendText(Software.SettingsDirectory + dumpFile))
+            {
+                sw.WriteLine(message);
+                sw.WriteLine(source);
+                sw.WriteLine(target);
+                sw.WriteLine(inner);
+                sw.WriteLine(trace);
+                sw.Close();
+            }
+            
+            // Dump again in the log.
+            log.Error("----------------- Unhandled Crash -------------------------");
+            log.Error(message);
+            log.Error(source);
+            log.Error(target);
+            log.Error(inner);
+            log.Error(trace);
+        }
     }
 }
