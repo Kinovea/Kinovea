@@ -38,33 +38,31 @@ namespace Kinovea.FileBrowser
         }
 
         #region Members
-        FileBrowserUserInterface m_FbUi;
-        ShortcutFolder m_shortcut;
+        FileBrowserUserInterface view;
+        ShortcutFolder shortcut;
         #endregion
 
         #region Constructor
-        public CommandDeleteShortcut(FileBrowserUserInterface _FbUi, ShortcutFolder _shortcut)
+        public CommandDeleteShortcut(FileBrowserUserInterface view, ShortcutFolder shortcut)
         {
-            m_FbUi = _FbUi;
-            m_shortcut = _shortcut;
+            this.view = view;
+            this.shortcut = shortcut;
         }
         #endregion
 
         public void Execute()
         {
-            PreferencesManager.FileExplorerPreferences.RemoveShortcut(m_shortcut);
+            PreferencesManager.FileExplorerPreferences.RemoveShortcut(shortcut);
             PreferencesManager.Save();
-            
-            // Refresh the list.
-            m_FbUi.ReloadShortcuts();
+            view.ReloadShortcuts();
         }
 
         public void Unexecute()
         {
             // Add the shortcut back to the list (if it hasn't been added again in the meantime).
-            PreferencesManager.FileExplorerPreferences.AddShortcut(m_shortcut);
+            PreferencesManager.FileExplorerPreferences.AddShortcut(shortcut);
             PreferencesManager.Save();
-            m_FbUi.ReloadShortcuts();
+            view.ReloadShortcuts();
         }
     }
 }
