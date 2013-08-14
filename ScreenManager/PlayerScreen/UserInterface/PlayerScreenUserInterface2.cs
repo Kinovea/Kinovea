@@ -4467,7 +4467,7 @@ namespace Kinovea.ScreenManager
                 if(!PreferencesManager.PlayerPreferences.DefaultFading.Enabled)
                     iKeyFrameIndex = GetKeyframeIndex(vf.Timestamp);
 
-                string fileName = string.Format("{0}\\{1}{2}",
+                string filename = string.Format("{0}\\{1}{2}",
                     Path.GetDirectoryName(_filepath), 
                     BuildFilename(_filepath, vf.Timestamp, PreferencesManager.PlayerPreferences.TimecodeFormat), 
                     Path.GetExtension(_filepath));
@@ -4482,7 +4482,7 @@ namespace Kinovea.ScreenManager
                     result.SetResolution(vf.Image.HorizontalResolution, vf.Image.VerticalResolution);
                     Graphics g = Graphics.FromImage(result);
                     FlushOnGraphics(vf.Image, g, s, iKeyFrameIndex, vf.Timestamp);
-                    ImageHelper.Save(fileName, result);
+                    ImageHelper.Save(filename, result);
                 }
 
                 _bgWorker.ReportProgress(iCurrent++, total);

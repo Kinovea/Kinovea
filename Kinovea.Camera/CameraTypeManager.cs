@@ -69,8 +69,8 @@ namespace Kinovea.Camera
             
             string dir = Path.GetDirectoryName(Application.ExecutablePath);
             IEnumerable<string> files = Directory.GetFiles(dir, "Kinovea.Camera.*.dll");
-            foreach (string fileName in files)
-                AddAssembly(fileName, assemblies);
+            foreach (string filename in files)
+                AddAssembly(filename, assemblies);
                         
             // Register the camera managers.
             foreach (Assembly a in assemblies)

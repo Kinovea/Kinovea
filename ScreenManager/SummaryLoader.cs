@@ -26,19 +26,19 @@ namespace Kinovea.ScreenManager
         
         private bool isAlive;
         private bool cancellationPending;
-        private List<String> fileNames;
+        private List<String> filenames;
         private Size maxImageSize;
         private BackgroundWorker bgWorker = new BackgroundWorker();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public SummaryLoader(List<String> fileNames, Size maxImageSize)
+        public SummaryLoader(List<String> filenames, Size maxImageSize)
         {
-            this.fileNames = fileNames;
+            this.filenames = filenames;
             this.maxImageSize = maxImageSize;
         }
         public void Run()
         {
-            if(fileNames.Count < 1)
+            if(filenames.Count < 1)
                 return;
             
             isAlive = true;
@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
             bgWorker.DoWork += bgWorker_DoWork;
             bgWorker.WorkerSupportsCancellation = true;
             bgWorker.WorkerReportsProgress = true;
-            bgWorker.RunWorkerAsync(fileNames);
+            bgWorker.RunWorkerAsync(filenames);
         }
         public void Cancel()
         {

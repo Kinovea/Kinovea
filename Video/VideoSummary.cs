@@ -37,28 +37,28 @@ namespace Kinovea.Video
         public long DurationMilliseconds { get; private set; }
         public List<Bitmap> Thumbs { get; private set; }
         
-        private static readonly VideoSummary m_Invalid = new VideoSummary("", false, false, Size.Empty, 0, null);
+        private static readonly VideoSummary invalid = new VideoSummary("", false, false, Size.Empty, 0, null);
         
-        public VideoSummary(string _fileName, bool _isImage, bool _hasKva, Size _imageSize, long _durationMs, List<Bitmap> _thumbs)
+        public VideoSummary(string filename, bool isImage, bool hasKva, Size imageSize, long durationMs, List<Bitmap> thumbs)
         {
-            Filename = _fileName;
-            IsImage = _isImage;
-            HasKva = _hasKva;
-            ImageSize = _imageSize;
-            DurationMilliseconds = _durationMs;
-            Thumbs = _thumbs;
+            this.Filename = filename;
+            this.IsImage = isImage;
+            this.HasKva = hasKva;
+            this.ImageSize = imageSize;
+            this.DurationMilliseconds = durationMs;
+            this.Thumbs = thumbs;
         }
         
         public static VideoSummary Invalid {
-            get { return m_Invalid; }
+            get { return invalid; }
         }
-        public static VideoSummary GetInvalid(string _fileName)
+        public static VideoSummary GetInvalid(string filename)
         {
-            return new VideoSummary(_fileName, false, false, Size.Empty, 0, null);
+            return new VideoSummary(filename, false, false, Size.Empty, 0, null);
         }
-        public static bool HasCompanionKva(string _filename)
+        public static bool HasCompanionKva(string filename)
         {
-            string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(_filename), Path.GetFileNameWithoutExtension(_filename));
+            string kvaFile = string.Format("{0}\\{1}.kva", Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename));
             return File.Exists(kvaFile);
         }
     }

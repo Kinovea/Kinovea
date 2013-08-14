@@ -54,8 +54,8 @@ namespace Kinovea.Video
             
             string dir = Path.GetDirectoryName(Application.ExecutablePath);
             IEnumerable<string> files = Directory.GetFiles(dir, "Kinovea.Video.*.dll");
-            foreach (string fileName in files)
-                AddAssembly(fileName, assemblies);
+            foreach (string filename in files)
+                AddAssembly(filename, assemblies);
             
             // Register the VideoReaders implementations with the extensions they support.
             foreach (Assembly a in assemblies)
