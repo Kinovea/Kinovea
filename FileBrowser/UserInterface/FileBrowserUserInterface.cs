@@ -589,7 +589,7 @@ namespace Kinovea.FileBrowser
             // Each list element will store the CShItem it's referring to in its Tag property.
             ArrayList fileList = folder.GetFiles();
             
-            List<string> fileNames = new List<string>();
+            List<string> filenames = new List<string>();
             foreach(object item in fileList)
             {
                 CShItem shellItem = item as CShItem; 
@@ -603,7 +603,7 @@ namespace Kinovea.FileBrowser
                     if (string.IsNullOrEmpty(extension) || !VideoTypeManager.IsSupported(extension))
                         continue;
                         
-                    fileNames.Add(path);
+                    filenames.Add(path);
                 }
                 catch(Exception)
                 {
@@ -612,9 +612,9 @@ namespace Kinovea.FileBrowser
                 }
             }
             
-            fileNames.Sort(new AlphanumComparator());
+            filenames.Sort(new AlphanumComparator());
             
-            foreach(string filename in fileNames)
+            foreach(string filename in filenames)
             {
                 ListViewItem lvi = new ListViewItem(Path.GetFileName(filename));
                 lvi.Tag = filename;
@@ -631,7 +631,7 @@ namespace Kinovea.FileBrowser
             // (i.e. when we close a screen)
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.CurrentDirectoryChanged != null)
-                dp.CurrentDirectoryChanged(shortcuts, fileNames, refreshThumbnails);
+                dp.CurrentDirectoryChanged(shortcuts, filenames, refreshThumbnails);
             
             this.Cursor = Cursors.Default;
         }

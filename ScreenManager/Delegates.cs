@@ -35,12 +35,12 @@ namespace Kinovea.ScreenManager
     // Except for the simple Action delegate (nothing in, nothing out).
     //----------------------------------------------------------------------------------------------------------
     
-    public delegate void PropertyPagePrompter(IntPtr _windowHandle);
-    public delegate long TimeStampMapper(long _iInputTimestamp, bool bRelative);
-    public delegate string TimeCodeBuilder(long _iTimestamp, TimecodeFormat _timeCodeFormat, bool _bSynched);
-    public delegate void ClosestFrameAction(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly);
-    public delegate object BindReader(string _sourceProperty, Type _targetType);
-    public delegate void BindWriter(string _targetProperty, object _value);
-    public delegate void ImageProcessor(Bitmap _src);
-    public delegate void DelegateUpdateTrackerFrame(long _iFrame);
+    public delegate void PropertyPagePrompter(IntPtr windowHandle);
+    public delegate long TimeStampMapper(long inputTimestamp, bool relative);
+    public delegate string TimeCodeBuilder(long timestamp, TimecodeFormat timeCodeFormat, bool synched);
+    public delegate void ClosestFrameAction(Point mouse, List<AbstractTrackPoint> positions, int pixelTotalDistance, bool TwoDimensionsOnly);
+    public delegate object BindReader(string sourceProperty, Type targetType);
+    public delegate void BindWriter(string targetProperty, object value);
+    public delegate void ImageProcessor(Bitmap src);
+    public delegate void DelegateUpdateTrackerFrame(long frame);
 }
