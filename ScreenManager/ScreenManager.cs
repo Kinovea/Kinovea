@@ -963,6 +963,7 @@ namespace Kinovea.ScreenManager
 
             if (screenList.Count == 1 || screen == m_ActiveScreen)
             {
+                m_ActiveScreen = screen;
                 OrganizeMenus();
                 return;
             }
