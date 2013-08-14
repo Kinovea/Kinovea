@@ -958,27 +958,19 @@ namespace Kinovea.ScreenManager
         #region Public Methods
         public void SetActiveScreen(AbstractScreen screen)
         {
-            //-------------------------------------------------------------
-            // /!\ Calls in OrganizeMenu which is a bit heavy on the UI.
-            // Should only be called when necessary.
-            //-------------------------------------------------------------
             if(screen == null)
                 return;
- 
-            m_ActiveScreen = screen;
-            
-            if (screenList.Count == 1 || m_ActiveScreen == screen)
+
+            if (screenList.Count == 1 || screen == m_ActiveScreen)
             {
                 OrganizeMenus();
                 return;
             }
-            
-            foreach (AbstractScreen s in screenList)
-                if (s != screen)
-                    s.DisplayAsActiveScreen(false);
 
-           
-            m_ActiveScreen.DisplayAsActiveScreen(true);
+            foreach (AbstractScreen s in screenList)
+                s.DisplayAsActiveScreen(s == screen);
+                
+            m_ActiveScreen = screen;
             OrganizeMenus();
         }
         public AbstractScreen GetScreenAt(int index)
