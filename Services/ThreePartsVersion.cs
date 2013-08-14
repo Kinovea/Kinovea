@@ -43,86 +43,48 @@ namespace Kinovea.Services
 
         public static bool operator <(ThreePartsVersion a, ThreePartsVersion b)
         {
-            if (a != null && b != null)
+            if (a == null && b == null)
+                return false;
+            
+            if (a.Major < b.Major)
             {
-                if (a.Major < b.Major)
-                {
-                    return true;
-                }
-                else if (a.Major > b.Major)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (a.Minor < b.Minor)
-                    {
-                        return true;
-                    }
-                    else if (a.Minor > b.Minor)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        if (a.Revision < b.Revision)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            // > or ==
-                            return false;
-                        }
-                    }
-                }
+                return true;
+            }
+            else if (a.Major > b.Major)
+            {
+                return false;
             }
             else
             {
-                // ? 
-                // exception.
-                return false;
+                if (a.Minor < b.Minor)
+                    return true;
+                else if (a.Minor > b.Minor)
+                    return false;
+                else
+                    return a.Revision < b.Revision;
             }
         }
         public static bool operator >(ThreePartsVersion a, ThreePartsVersion b)
         {
-            if (a != null && b != null)
+            if (a == null && b == null)
+                return false;
+            
+            if (a.Major > b.Major)
             {
-                if (a.Major > b.Major)
-                {
-                    return true;
-                }
-                else if (a.Major < b.Major)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (a.Minor > b.Minor)
-                    {
-                        return true;
-                    }
-                    else if (a.Minor < b.Minor)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        if (a.Revision > b.Revision)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            // < or ==
-                            return false;
-                        }
-                    }
-                }
+                return true;
+            }
+            else if (a.Major < b.Major)
+            {
+                return false;
             }
             else
             {
-                return false;
+                if (a.Minor > b.Minor)
+                    return true;
+                else if (a.Minor < b.Minor)
+                    return false;
+                else
+                    return a.Revision > b.Revision;
             }
         }
         public override string ToString()

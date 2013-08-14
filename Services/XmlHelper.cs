@@ -34,27 +34,29 @@ namespace Kinovea.Services
         // Note: the built-in TypeConverters are crashing on some machines for unknown reason. (TypeDescriptor.GetConverter(typeof(Point)))
     	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-        public static Point ParsePoint(string _sPoint)
+        public static Point ParsePoint(string str)
         {
             Point point = Point.Empty;
+            
             try
             {
-                string[] a = _sPoint.Split(new char[] {';'});
+                string[] a = str.Split(new char[] {';'});
                 point = new Point(int.Parse(a[0]), int.Parse(a[1]));
             }
             catch (Exception)
             {
-                log.Error(String.Format("An error happened while parsing Point value. ({0}).", _sPoint));
+                log.Error(String.Format("An error happened while parsing Point value. ({0}).", str));
             }
 
             return point;
         }
-        public static PointF ParsePointF(string _sPoint)
+        public static PointF ParsePointF(string str)
         {
             PointF point = PointF.Empty;
+
             try
             {
-                string[] a = _sPoint.Split(new char[] {';'});
+                string[] a = str.Split(new char[] {';'});
                 
                 float x;
                 float y;
@@ -66,32 +68,34 @@ namespace Kinovea.Services
             }
             catch (Exception)
             {
-                log.Error(String.Format("An error happened while parsing PointF value. ({0}).", _sPoint));
+                log.Error(String.Format("An error happened while parsing PointF value. ({0}).", str));
             }
 
             return point;
         }
-        public static Size ParseSize(string sizeString)
+        public static Size ParseSize(string str)
         {
             Size size = Size.Empty;
+
             try
             {
-                string[] a = sizeString.Split(new char[] {';'});
+                string[] a = str.Split(new char[] {';'});
                 size = new Size(int.Parse(a[0]), int.Parse(a[1]));
             }
             catch (Exception)
             {
-                log.Error(String.Format("An error happened while parsing Size value. ({0}).", sizeString));
+                log.Error(String.Format("An error happened while parsing Size value. ({0}).", str));
             }
 
             return size;
         }
-        public static SizeF ParseSizeF(string sizeString)
+        public static SizeF ParseSizeF(string str)
         {
             SizeF size = SizeF.Empty;
+
             try
             {
-                string[] a = sizeString.Split(new char[] {';'});
+                string[] a = str.Split(new char[] {';'});
                 
                 float width;
                 float height;
@@ -103,24 +107,25 @@ namespace Kinovea.Services
             }
             catch (Exception)
             {
-                log.Error(String.Format("An error happened while parsing SizeF value. ({0}).", sizeString));
+                log.Error(String.Format("An error happened while parsing SizeF value. ({0}).", str));
             }
 
             return size;
         }
-        public static List<int> ParseIntList(string _intList)
+        public static List<int> ParseIntList(string str)
         {
             List<int> l = new List<int>();
             try
             {
-                string[] listAsStrings = _intList.Split(new char[] {';'});
+                string[] listAsStrings = str.Split(new char[] {';'});
                 foreach(string s in listAsStrings)
                     l.Add(int.Parse(s));
             }
             catch (Exception)
             {
-                log.Error(String.Format("An error happened while parsing List of ints. ({0}).", _intList));
+                log.Error(String.Format("An error happened while parsing List of ints. ({0}).", str));
             }
+
             return l;
         }
         public static Color ParseColor(string xmlColor, Color byDefault)
@@ -151,12 +156,12 @@ namespace Kinovea.Services
 
             return output;
         }
-        public static bool ParseBoolean(string _str)
+        public static bool ParseBoolean(string str)
         {
             // This function helps fix the discrepancy between:
             // - Boolean.ToString() which returns "False" or "True",
             // - ReadElementContentAsBoolean() which only accepts "false", "true", "1" or "0" as per XML spec and throws an exception otherwise.
-            return (_str != "false" && _str != "False" && _str != "0");
+            return (str != "false" && str != "False" && str != "0");
         }
         
         public static int ParsePointReference(string content)

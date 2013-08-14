@@ -33,10 +33,10 @@ namespace Kinovea.Services
         {
             get 
             { 
-                if(object.ReferenceEquals(m_Languages, null))
+                if(object.ReferenceEquals(languages, null))
                     Initialize();
                 
-                return m_Languages;
+                return languages;
             }
         }
         
@@ -125,33 +125,33 @@ namespace Kinovea.Services
         }
         #endregion
         
-        private static Dictionary<string, string> m_Languages = null;
+        private static Dictionary<string, string> languages = null;
         
         public static void Initialize()
         {
             // Alphabetical order by native name. (Check Wikipedia order if in doubt).
-            m_Languages = new Dictionary<string, string>();
-            m_Languages.Add("ca", "Català");
-            m_Languages.Add("cs", "Čeština");
-            m_Languages.Add("da", "Dansk");
-            m_Languages.Add("de", "Deutsch");
-            m_Languages.Add("el", "Ελληνικά");
-            m_Languages.Add("en", "English");
-            m_Languages.Add("es", "Español");
-            m_Languages.Add("fr", "Français");
-            m_Languages.Add("ko", "한국어");
-            m_Languages.Add("it", "Italiano");
-            m_Languages.Add("lt", "Lietuvių");
-            m_Languages.Add("nl", "Nederlands");
-            m_Languages.Add("no", "Norsk");
-            m_Languages.Add("pl", "Polski");
-            m_Languages.Add("pt", "Português");
-            m_Languages.Add("ro", "Română");
-            m_Languages.Add("ru", "Русский");
-            m_Languages.Add("fi", "Suomi");
-            m_Languages.Add("sv", "Svenska");
-            m_Languages.Add("tr", "Türkçe");
-            m_Languages.Add("zh-CHS", "简体中文");
+            languages = new Dictionary<string, string>();
+            languages.Add("ca", "Català");
+            languages.Add("cs", "Čeština");
+            languages.Add("da", "Dansk");
+            languages.Add("de", "Deutsch");
+            languages.Add("el", "Ελληνικά");
+            languages.Add("en", "English");
+            languages.Add("es", "Español");
+            languages.Add("fr", "Français");
+            languages.Add("ko", "한국어");
+            languages.Add("it", "Italiano");
+            languages.Add("lt", "Lietuvių");
+            languages.Add("nl", "Nederlands");
+            languages.Add("no", "Norsk");
+            languages.Add("pl", "Polski");
+            languages.Add("pt", "Português");
+            languages.Add("ro", "Română");
+            languages.Add("ru", "Русский");
+            languages.Add("fi", "Suomi");
+            languages.Add("sv", "Svenska");
+            languages.Add("tr", "Türkçe");
+            languages.Add("zh-CHS", "简体中文");
         }
         public static bool IsSupportedCulture(CultureInfo ci)
         {
