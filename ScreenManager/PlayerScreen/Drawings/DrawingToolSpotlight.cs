@@ -29,48 +29,48 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolSpotlight : AbstractDrawingTool
     {
-    	#region Properties
-    	public override string DisplayName
-    	{
-    		get { return ScreenManagerLang.ToolTip_DrawingToolSpotlight; }
-    	}
-    	public override Bitmap Icon
-    	{
-    		get { return Properties.Drawings.spotlight; }
-    	}
-    	public override bool Attached
-    	{
-    		get { return false; }
-    	}
-    	public override bool KeepTool
-    	{
-    		get { return false; }
-    	}
-    	public override bool KeepToolFrameChanged
-    	{
-    		get { return false; }
-    	}
-    	public override DrawingStyle StylePreset
-		{
-			get { return null;}
-			set { return;}
-		}
-		public override DrawingStyle DefaultStylePreset
-		{
-			get { return null;}
-		}
-    	#endregion
-		
-    	#region Public Methods
-    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-    	{
-    	    return null;
-    	}
-    	public override Cursor GetCursor(double _fStretchFactor)
-    	{
-    		return Cursors.Cross;
-    	}
-    	#endregion
+        #region Properties
+        public override string DisplayName
+        {
+            get { return ScreenManagerLang.ToolTip_DrawingToolSpotlight; }
+        }
+        public override Bitmap Icon
+        {
+            get { return Properties.Drawings.spotlight; }
+        }
+        public override bool Attached
+        {
+            get { return false; }
+        }
+        public override bool KeepTool
+        {
+            get { return false; }
+        }
+        public override bool KeepToolFrameChanged
+        {
+            get { return false; }
+        }
+        public override DrawingStyle StylePreset
+        {
+            get { return null;}
+            set { return;}
+        }
+        public override DrawingStyle DefaultStylePreset
+        {
+            get { return null;}
+        }
+        #endregion
+        
+        #region Public Methods
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        {
+            return null;
+        }
+        public override Cursor GetCursor(double _fStretchFactor)
+        {
+            return Cursors.Cross;
+        }
+        #endregion
     }
 }
 

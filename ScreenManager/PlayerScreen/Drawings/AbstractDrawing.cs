@@ -28,18 +28,18 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Describes a generic drawing.
+    /// <summary>
+    /// Describes a generic drawing.
     /// All drawings must implement rendering and manipulation methods.
-	/// </summary>
+    /// </summary>
     public abstract class AbstractDrawing
     {
-    	
-    	#region Properties
-    	/// <summary>
-    	/// Gets or set the fading object for this drawing. 
-    	/// This is used in opacity calculation for Persistence.
-    	/// </summary>
+        
+        #region Properties
+        /// <summary>
+        /// Gets or set the fading object for this drawing. 
+        /// This is used in opacity calculation for Persistence.
+        /// </summary>
         public abstract InfosFading InfosFading
         {
             get;
@@ -51,12 +51,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public abstract DrawingCapabilities Caps
         {
-        	get;
+            get;
         }
         
         /// <summary>
-    	/// Gets the list of extra context menu specific to this drawing.
-    	/// </summary>
+        /// Gets the list of extra context menu specific to this drawing.
+        /// </summary>
         public abstract List<ToolStripItem> ContextMenu
         {
             get;
@@ -78,7 +78,7 @@ namespace Kinovea.ScreenManager
             get;
         }
         #endregion
-    	
+        
         #region Abstract Methods
         /// <summary>
         /// Draw this drawing on the provided canvas.

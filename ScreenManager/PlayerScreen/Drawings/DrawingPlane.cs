@@ -36,23 +36,23 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("Plane")]
-	public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable, ITrackable
+    public class DrawingPlane : AbstractDrawing, IDecorable, IKvaSerializable, IScalable, IMeasurable, ITrackable
     {
-	    #region Events
-	    public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
+        #region Events
+        public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
         public event EventHandler ShowMeasurableInfoChanged;
         #endregion
         
         #region Properties
         public override string DisplayName
         {
-		    get 
-		    {  
+            get 
+            {  
                 if(inPerspective)
                     return ToolManager.Plane.DisplayName;
                 else
                     return ToolManager.Grid.DisplayName;
-		    }
+            }
         }
         public override int ContentHash
         {
@@ -69,15 +69,15 @@ namespace Kinovea.ScreenManager
         } 
         public DrawingStyle DrawingStyle
         {
-        	get { return style;}
+            get { return style;}
         }
-		public override InfosFading InfosFading
-		{
-			get { return infosFading; }
+        public override InfosFading InfosFading
+        {
+            get { return infosFading; }
             set { infosFading = value; }
-		}
-		public override List<ToolStripItem> ContextMenu
-		{
+        }
+        public override List<ToolStripItem> ContextMenu
+        {
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
@@ -86,12 +86,12 @@ namespace Kinovea.ScreenManager
                 contextMenu.Add(mnuCalibrate);
 
                 return contextMenu;
-		    }
-		}
-		public override DrawingCapabilities Caps
-		{
-			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
-		}
+            }
+        }
+        public override DrawingCapabilities Caps
+        {
+            get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
+        }
         public QuadrilateralF QuadImage
         {
             get { return quadImage;}
@@ -140,12 +140,12 @@ namespace Kinovea.ScreenManager
             styleHelper.GridDivisions = 8;
             if(preset != null)
             {
-			    style = preset.Clone();
-			    BindStyle();
+                style = preset.Clone();
+                BindStyle();
             }
-			
-			infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
-			infosFading.UseDefault = false;
+            
+            infosFading = new InfosFading(timestamp, averageTimeStampsPerFrame);
+            infosFading.UseDefault = false;
             infosFading.AlwaysVisible = true;
             
             planeWidth = 100;
@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
             quadPlane = new QuadrilateralF(planeWidth, planeHeight);
             
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
-			mnuCalibrate.Image = Properties.Drawings.linecalibrate;
+            mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingPlane(XmlReader _xmlReader, PointF _scale, Metadata _parent)
             : this(false, 0, 0, ToolManager.Grid.StylePreset.Clone())
@@ -164,11 +164,11 @@ namespace Kinovea.ScreenManager
         
         #region AbstractDrawing implementation
         public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
-		{
-        	double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
-        	if(opacityFactor <= 0)
-        	   return;
-        	
+        {
+            double opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
+            if(opacityFactor <= 0)
+               return;
+            
             QuadrilateralF quad = transformer.Transform(quadImage);
             
             using(penEdges = styleHelper.GetPen(opacityFactor, 1.0))
@@ -216,9 +216,9 @@ namespace Kinovea.ScreenManager
                     canvas.DrawLine(penEdges, quad.D, quad.A);
                 }
             }
-		}
-		public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
-		{
+        }
+        public override int HitTest(Point point, long currentTimestamp, IImageToViewportTransformer transformer)
+        {
             if(infosFading.GetOpacityFactor(currentTimestamp) <= 0)
                 return -1;
             
@@ -234,16 +234,16 @@ namespace Kinovea.ScreenManager
                 return 0;
             
             return -1;
-		}
-		public override void MoveDrawing(int dx, int dy, Keys modifierKeys)
-		{
-			if ((modifierKeys & Keys.Alt) == Keys.Alt)
+        }
+        public override void MoveDrawing(int dx, int dy, Keys modifierKeys)
+        {
+            if ((modifierKeys & Keys.Alt) == Keys.Alt)
             {
                 // Change the number of divisions.
                 styleHelper.GridDivisions = styleHelper.GridDivisions + ((dx - dy)/4);
                 styleHelper.GridDivisions = Math.Min(Math.Max(styleHelper.GridDivisions, minimumSubdivisions), maximumSubdivisions);
             }
-			else
+            else
             {
                 if(inPerspective)
                     TranslateInPlane(dx, dy);
@@ -252,16 +252,16 @@ namespace Kinovea.ScreenManager
             }
             
             SignalAllTrackablePointsMoved();
-		}
-		public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
-		{
-		    int handle = handleNumber - 1;
-		    quadImage[handle] = point;
-		    
-			if (inPerspective)
-			{
+        }
+        public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
+        {
+            int handle = handleNumber - 1;
+            quadImage[handle] = point;
+            
+            if (inPerspective)
+            {
                 planeIsConvex = quadImage.IsConvex;
-			}
+            }
             else
             {
                 if((modifiers & Keys.Shift) == Keys.Shift)
@@ -271,76 +271,76 @@ namespace Kinovea.ScreenManager
             }
             
             SignalTrackablePointMoved(handle);
-		}
-		#endregion
-	
-		#region KVA Serialization
-		private void ReadXml(XmlReader _xmlReader, PointF _scale)
+        }
+        #endregion
+    
+        #region KVA Serialization
+        private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             _xmlReader.ReadStartElement();
             
             Reset();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "PointUpperLeft":
-				        {
-				            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "PointUpperLeft":
+                        {
+                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                             quadImage.A = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-				            break;
-				        }
-				    case "PointUpperRight":
-				        {
-    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            break;
+                        }
+                    case "PointUpperRight":
+                        {
+                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                             quadImage.B = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-    				        break;
-				        }
-				    case "PointLowerRight":
-				        {
-    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            break;
+                        }
+                    case "PointLowerRight":
+                        {
+                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                             quadImage.C = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-    				        break;
-				        }
-				    case "PointLowerLeft":
-				        {
-    				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                            break;
+                        }
+                    case "PointLowerLeft":
+                        {
+                            Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                             quadImage.D = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
-    				        break;
-				        }
-				    case "Perspective":
+                            break;
+                        }
+                    case "Perspective":
                         inPerspective = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
-					case "DrawingStyle":
-						style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "InfosFading":
-						infosFading.ReadXml(_xmlReader);
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
+                    case "DrawingStyle":
+                        style = new DrawingStyle(_xmlReader);
+                        BindStyle();
+                        break;
+                    case "InfosFading":
+                        infosFading.ReadXml(_xmlReader);
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
             
-			// Sanity check for rectangular constraint.
-			if(!inPerspective && !quadImage.IsRectangle)
+            _xmlReader.ReadEndElement();
+            
+            // Sanity check for rectangular constraint.
+            if(!inPerspective && !quadImage.IsRectangle)
                 inPerspective = true;
                 
-			initialized = true;
+            initialized = true;
         }
-		public void WriteXml(XmlWriter _xmlWriter)
-		{
-		    _xmlWriter.WriteElementString("PointUpperLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.A.X, (int)quadImage.A.Y));
-		    _xmlWriter.WriteElementString("PointUpperRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.B.X, (int)quadImage.B.Y));
-		    _xmlWriter.WriteElementString("PointLowerRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.C.X, (int)quadImage.C.Y));
-		    _xmlWriter.WriteElementString("PointLowerLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.D.X, (int)quadImage.D.Y));
-		    
+        public void WriteXml(XmlWriter _xmlWriter)
+        {
+            _xmlWriter.WriteElementString("PointUpperLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.A.X, (int)quadImage.A.Y));
+            _xmlWriter.WriteElementString("PointUpperRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.B.X, (int)quadImage.B.Y));
+            _xmlWriter.WriteElementString("PointLowerRight", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.C.X, (int)quadImage.C.Y));
+            _xmlWriter.WriteElementString("PointLowerLeft", String.Format(CultureInfo.InvariantCulture, "{0};{1}", (int)quadImage.D.X, (int)quadImage.D.Y));
+            
             _xmlWriter.WriteElementString("Perspective", inPerspective ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
@@ -351,13 +351,13 @@ namespace Kinovea.ScreenManager
             infosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
         }
-		
-		#endregion
-		
-		#region IScalable implementation
-		public void Scale(Size imageSize)
-		{
-		    // Initialize corners positions
+        
+        #endregion
+        
+        #region IScalable implementation
+        public void Scale(Size imageSize)
+        {
+            // Initialize corners positions
             if (!initialized)
             {
                 initialized = true;
@@ -382,10 +382,10 @@ namespace Kinovea.ScreenManager
                     quadImage.D = new Point(2 * horzTenth, 8 * vertTenth);
                 }
             }
-		}
-		#endregion
-		
-		#region ITrackable implementation and support.
+        }
+        #endregion
+        
+        #region ITrackable implementation and support.
         public Guid ID
         {
             get { return id; }
@@ -470,17 +470,17 @@ namespace Kinovea.ScreenManager
         {
             // Translate grid on the plane, keeps the same part of the grid under the pointer.
             PointF old = projectiveMapping.Backward(start);
-		    PointF now = projectiveMapping.Backward(end);
-		    float dx = now.X - old.X;
-		    float dy = now.Y - old.Y;
-		    QuadrilateralF grid = quadPlane.Clone();
-		    grid.Translate(dx, dy);
-		    
-		    PointF a = projectiveMapping.Forward(grid.A);
-    		PointF b = projectiveMapping.Forward(grid.B);
-    		PointF c = projectiveMapping.Forward(grid.C);
-    		PointF d = projectiveMapping.Forward(grid.D);
-    		quadImage = new QuadrilateralF(a, b, c, d);
+            PointF now = projectiveMapping.Backward(end);
+            float dx = now.X - old.X;
+            float dy = now.Y - old.Y;
+            QuadrilateralF grid = quadPlane.Clone();
+            grid.Translate(dx, dy);
+            
+            PointF a = projectiveMapping.Forward(grid.A);
+            PointF b = projectiveMapping.Forward(grid.B);
+            PointF c = projectiveMapping.Forward(grid.C);
+            PointF d = projectiveMapping.Forward(grid.D);
+            quadImage = new QuadrilateralF(a, b, c, d);
         }
         
         private void mnuCalibrate_Click(object sender, EventArgs e)

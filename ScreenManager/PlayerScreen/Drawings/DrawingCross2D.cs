@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
         } 
         public DrawingStyle DrawingStyle
         {
-        	get { return m_Style;}
+            get { return m_Style;}
         }
         public override InfosFading InfosFading
         {
@@ -70,40 +70,40 @@ namespace Kinovea.ScreenManager
             set { m_InfosFading = value; }
         }
         public override DrawingCapabilities Caps
-		{
-			get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
-		}
+        {
+            get { return DrawingCapabilities.ConfigureColor | DrawingCapabilities.Fading | DrawingCapabilities.Track; }
+        }
         public override List<ToolStripItem> ContextMenu
-		{
-			get 
-			{ 
-				// Rebuild the menu to get the localized text.
-				List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-        		
-				mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
-				mnuShowCoordinates.Checked = ShowMeasurableInfo;
-        		
-        		contextMenu.Add(mnuShowCoordinates);
-        		
-				return contextMenu; 
-			}
-		}
+        {
+            get 
+            { 
+                // Rebuild the menu to get the localized text.
+                List<ToolStripItem> contextMenu = new List<ToolStripItem>();
+                
+                mnuShowCoordinates.Text = ScreenManagerLang.mnuShowCoordinates;
+                mnuShowCoordinates.Checked = ShowMeasurableInfo;
+                
+                contextMenu.Add(mnuShowCoordinates);
+                
+                return contextMenu; 
+            }
+        }
         
         public CalibrationHelper CalibrationHelper { get; set; }
         public bool ShowMeasurableInfo { get; set; }
         #endregion
 
         #region Members
-		private Guid id = Guid.NewGuid();
-    	private Dictionary<string, Point> points = new Dictionary<string, Point>();
-    	private bool tracking;
-    	
-		private KeyframeLabel m_LabelCoordinates;
-		// Decoration
+        private Guid id = Guid.NewGuid();
+        private Dictionary<string, Point> points = new Dictionary<string, Point>();
+        private bool tracking;
+        
+        private KeyframeLabel m_LabelCoordinates;
+        // Decoration
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
-		
+        
         // Context menu
         private ToolStripMenuItem mnuShowCoordinates = new ToolStripMenuItem();
         
@@ -130,7 +130,7 @@ namespace Kinovea.ScreenManager
             
             // Context menu
             mnuShowCoordinates.Click += new EventHandler(mnuShowCoordinates_Click);
-			mnuShowCoordinates.Image = Properties.Drawings.measure;
+            mnuShowCoordinates.Image = Properties.Drawings.measure;
         }
         public DrawingCross2D(XmlReader _xmlReader, PointF _scale, Metadata _parent)
             : this(Point.Empty,0,0, ToolManager.CrossMark.StylePreset.Clone())
@@ -186,10 +186,10 @@ namespace Kinovea.ScreenManager
             if (tracking || opacity > 0)
             {
                 int boxSide = transformer.Untransform(m_iDefaultRadius + 10);
-            	
+                
                 if(ShowMeasurableInfo && m_LabelCoordinates.HitTest(point, transformer))
-            		result = 1;
-            	else if (points["0"].Box(boxSide).Contains(point))
+                    result = 1;
+                else if (points["0"].Box(boxSide).Contains(point))
                     result = 0;
             }
             
@@ -197,42 +197,42 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-		#region Serialization
+        #region Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "CenterPoint":
-				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "CenterPoint":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                         points["0"] = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
-				        break;
-					case "CoordinatesVisible":
-				        ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+                    case "CoordinatesVisible":
+                        ShowMeasurableInfo = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "InfosFading":
-						m_InfosFading.ReadXml(_xmlReader);
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
-			m_LabelCoordinates.SetAttach(points["0"], true);
+                        m_Style = new DrawingStyle(_xmlReader);
+                        BindStyle();
+                        break;
+                    case "InfosFading":
+                        m_InfosFading.ReadXml(_xmlReader);
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
+            m_LabelCoordinates.SetAttach(points["0"], true);
         }
-		public void WriteXml(XmlWriter _xmlWriter)
-		{
-		    _xmlWriter.WriteElementString("CenterPoint", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["0"].X, points["0"].Y));
+        public void WriteXml(XmlWriter _xmlWriter)
+        {
+            _xmlWriter.WriteElementString("CenterPoint", String.Format(CultureInfo.InvariantCulture, "{0};{1}", points["0"].X, points["0"].Y));
             _xmlWriter.WriteElementString("CoordinatesVisible", ShowMeasurableInfo ? "true" : "false");
             
             _xmlWriter.WriteStartElement("DrawingStyle");
@@ -245,20 +245,20 @@ namespace Kinovea.ScreenManager
             
             if(ShowMeasurableInfo)
             {
-            	// Spreadsheet support.
-            	_xmlWriter.WriteStartElement("Coordinates");
-            	
-            	PointF p = new PointF(points["0"].X, points["0"].Y);
-            	PointF coords = CalibrationHelper.GetPoint(p);
-	            _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
-	            _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
-	            _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
-	            _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
-	            _xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
-            	
-            	_xmlWriter.WriteEndElement();
+                // Spreadsheet support.
+                _xmlWriter.WriteStartElement("Coordinates");
+                
+                PointF p = new PointF(points["0"].X, points["0"].Y);
+                PointF coords = CalibrationHelper.GetPoint(p);
+                _xmlWriter.WriteAttributeString("UserX", String.Format("{0:0.00}", coords.X));
+                _xmlWriter.WriteAttributeString("UserXInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.X));
+                _xmlWriter.WriteAttributeString("UserY", String.Format("{0:0.00}", coords.Y));
+                _xmlWriter.WriteAttributeString("UserYInvariant", String.Format(CultureInfo.InvariantCulture, "{0:0.00}", coords.Y));
+                _xmlWriter.WriteAttributeString("UserUnitLength", CalibrationHelper.GetLengthAbbreviation());
+                
+                _xmlWriter.WriteEndElement();
             }
-		}
+        }
         #endregion
         
         #region ITrackable implementation and support.
@@ -293,16 +293,16 @@ namespace Kinovea.ScreenManager
 
         #region Context menu
         private void mnuShowCoordinates_Click(object sender, EventArgs e)
-		{
-			// Enable / disable the display of the coordinates for this cross marker.
-			ShowMeasurableInfo = !ShowMeasurableInfo;
-			
-			// Use this setting as the default value for new lines.
-			if(ShowMeasurableInfoChanged != null)
-			    ShowMeasurableInfoChanged(this, EventArgs.Empty);
-			
-			CallInvalidateFromMenu(sender);
-		}
+        {
+            // Enable / disable the display of the coordinates for this cross marker.
+            ShowMeasurableInfo = !ShowMeasurableInfo;
+            
+            // Use this setting as the default value for new lines.
+            if(ShowMeasurableInfoChanged != null)
+                ShowMeasurableInfoChanged(this, EventArgs.Empty);
+            
+            CallInvalidateFromMenu(sender);
+        }
         #endregion
         
         #region Lower level helpers

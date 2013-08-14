@@ -47,7 +47,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string DisplayName
         {
-		    get {  return m_GenericPosture.Name; }
+            get {  return m_GenericPosture.Name; }
         }
         public override int ContentHash
         {
@@ -118,8 +118,8 @@ namespace Kinovea.ScreenManager
         
         #region Members
         private Guid id = Guid.NewGuid();
-    	private bool tracking;
-    	private GenericPosture m_GenericPosture;
+        private bool tracking;
+        private GenericPosture m_GenericPosture;
         private List<AngleHelper> m_Angles = new List<AngleHelper>();
         
         private ToolStripMenuItem menuOptions = new ToolStripMenuItem();
@@ -291,12 +291,12 @@ namespace Kinovea.ScreenManager
                             _xmlReader.ReadOuterXml();
                         break;
                    case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "InfosFading":
-						m_InfosFading.ReadXml(_xmlReader);
-						break;
+                        m_Style = new DrawingStyle(_xmlReader);
+                        BindStyle();
+                        break;
+                    case "InfosFading":
+                        m_InfosFading.ReadXml(_xmlReader);
+                        break;
                     default:
                         string unparsed = _xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
@@ -313,9 +313,9 @@ namespace Kinovea.ScreenManager
             _xmlReader.ReadStartElement();
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
+            {
                 if(_xmlReader.Name == "Point")
-				{
+                {
                     PointF p = XmlHelper.ParsePointF(_xmlReader.ReadElementContentAsString());
                     PointF adapted = new PointF(p.X * _scale.X, p.Y * _scale.Y);
                     points.Add(adapted);
@@ -323,7 +323,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     string unparsed = _xmlReader.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
@@ -636,9 +636,9 @@ namespace Kinovea.ScreenManager
             RoundedRectangle.Draw(_canvas, backRectangle, _brushFill, tempFont.Height/4, false, false, null);
     
             // Text
-			_canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
-    			
-    		tempFont.Dispose();
+            _canvas.DrawString(label, tempFont, fontBrush, backRectangle.Location);
+                
+            tempFont.Dispose();
             fontBrush.Dispose();
         }
         private void DrawDistanceText(PointF a, PointF b, string label, Graphics canvas, double opacity, IImageToViewportTransformer transformer, SolidBrush brushFill)

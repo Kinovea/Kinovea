@@ -62,7 +62,7 @@ namespace Kinovea.ScreenManager
         } 
         public DrawingStyle DrawingStyle
         {
-        	get { return m_Style;}
+            get { return m_Style;}
         }
         public override InfosFading InfosFading
         {
@@ -70,13 +70,13 @@ namespace Kinovea.ScreenManager
             set { m_InfosFading = value; }
         }
         public override DrawingCapabilities Caps
-		{
-			get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
-		}
+        {
+            get { return DrawingCapabilities.ConfigureColorSize | DrawingCapabilities.Fading; }
+        }
         public override List<ToolStripItem> ContextMenu
-		{
-			get { return null; }
-		}
+        {
+            get { return null; }
+        }
         #endregion
 
         #region Members
@@ -140,33 +140,33 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
-		#region KVA Serialization
+        #region KVA Serialization
         private void ReadXml(XmlReader _xmlReader, PointF _scale)
         {
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "PointList":
-				        ParsePointList(_xmlReader, _scale);
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "PointList":
+                        ParsePointList(_xmlReader, _scale);
                         break;
-					case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "InfosFading":
-						m_InfosFading.ReadXml(_xmlReader);
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
+                    case "DrawingStyle":
+                        m_Style = new DrawingStyle(_xmlReader);
+                        BindStyle();
+                        break;
+                    case "InfosFading":
+                        m_InfosFading.ReadXml(_xmlReader);
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
         }
         private void ParsePointList(XmlReader _xmlReader, PointF _scale)
         {
@@ -175,9 +175,9 @@ namespace Kinovea.ScreenManager
             _xmlReader.ReadStartElement();
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
+            {
                 if(_xmlReader.Name == "Point")
-				{
+                {
                     Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                     Point adapted = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
                     m_PointList.Add(adapted);
@@ -185,36 +185,36 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     string unparsed = _xmlReader.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
             _xmlReader.ReadEndElement();
         }
-		public void WriteXml(XmlWriter _xmlWriter)
-		{
-		    _xmlWriter.WriteStartElement("PointList");
+        public void WriteXml(XmlWriter _xmlWriter)
+        {
+            _xmlWriter.WriteStartElement("PointList");
             _xmlWriter.WriteAttributeString("Count", m_PointList.Count.ToString());
             foreach (Point p in m_PointList)
                 _xmlWriter.WriteElementString("Point", String.Format(CultureInfo.InvariantCulture, "{0};{1}", p.X, p.Y));
 
             _xmlWriter.WriteEndElement();
             
-		    _xmlWriter.WriteStartElement("DrawingStyle");
+            _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
             
             _xmlWriter.WriteStartElement("InfosFading");
             m_InfosFading.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement(); 
-		}
+        }
         #endregion
         
         #region IInitializable implementation
         public void ContinueSetup(Point point, Keys modifiers)
-		{
-			AddPoint(point, modifiers);
-		}
+        {
+            AddPoint(point, modifiers);
+        }
         #endregion
         
         #region Lower level helpers

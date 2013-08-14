@@ -26,20 +26,20 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// CalibrationHelper encapsulates informations used for pixels to real world calculations.
-	/// The user can specify the real distance of a Line drawing and a coordinate system.
-	/// We also keep the length units and the preferred unit for speeds.
-	/// 
-	/// 
-	/// </summary>
-	public class CalibrationHelper
-	{
-	    #region Events
-	    public event EventHandler CalibrationChanged;
-	    #endregion
-	    
-		#region Properties
+    /// <summary>
+    /// CalibrationHelper encapsulates informations used for pixels to real world calculations.
+    /// The user can specify the real distance of a Line drawing and a coordinate system.
+    /// We also keep the length units and the preferred unit for speeds.
+    /// 
+    /// 
+    /// </summary>
+    public class CalibrationHelper
+    {
+        #region Events
+        public event EventHandler CalibrationChanged;
+        #endregion
+        
+        #region Properties
         public bool IsCalibrated
         {
             get { return lengthUnit != LengthUnit.Pixels; }
@@ -56,87 +56,87 @@ namespace Kinovea.ScreenManager
             get { return speedUnit; }
             set { speedUnit = value;}
         }
-		
-		public double FramesPerSecond
-		{
-			// Frames per second, as in real action reference. (takes high speed camera into account.)
-			get { return framesPerSecond; }
-			set { framesPerSecond = value; }
-		}
-		
-		public CalibratorType CalibratorType
-		{
-		    get { return calibratorType;}
-		}
-		#endregion
-		
-		#region Members
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
-		private CalibratorType calibratorType = CalibratorType.Line;
-		private ICalibrator calibrator;
-		private CalibrationLine calibrationLine = new CalibrationLine();
-		private CalibrationPlane calibrationPlane = new CalibrationPlane();
-		
-		private LengthUnit lengthUnit = LengthUnit.Pixels;
-		private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
-		private double framesPerSecond = 25;
-		#endregion
-		
-		#region Constructor
-		public CalibrationHelper()
-		{
-			speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
-			calibrator = calibrationLine;
-		}
-		#endregion
-		
-		#region Methods specific to a calibration technique
-		public void SetCalibratorFromType(CalibratorType type)
-		{
-		    calibratorType = type;
-		    
-		    switch(type)
-		    {
-		        case CalibratorType.Line:
-		            calibrator = calibrationLine;
-		            break;
-		        case CalibratorType.Plane:
-		            calibrator = calibrationPlane;
-		            break;
-		    }
-		}
-		public void CalibrationByLine_SetPixelToUnit(float ratio)
-		{
-		    calibrationLine.SetPixelToUnit(ratio);
-		}
-		public void CalibrationByLine_SetOrigin(PointF p)
-		{
-		    calibrationLine.SetOrigin(p);
-		}
-		public PointF CalibrationByLine_GetOrigin()
-		{
-		    return calibrationLine.Origin;
-		}
-		public bool CalibrationByLine_GetIsOriginSet()
-		{
-		    return calibrationLine.IsOriginSet;
-		}
-		public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
-		{
-		    calibrationPlane.Initialize(size, quadImage);
-		}
-		public SizeF CalibrationByPlane_GetRectangleSize()
-		{
-		    return calibrationPlane.Size;
-		}
-		
-		#endregion
-		
-		#region Value extractors
-		public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
-		{
-		    float length = GetLength(p1, p2);
+        public double FramesPerSecond
+        {
+            // Frames per second, as in real action reference. (takes high speed camera into account.)
+            get { return framesPerSecond; }
+            set { framesPerSecond = value; }
+        }
+        
+        public CalibratorType CalibratorType
+        {
+            get { return calibratorType;}
+        }
+        #endregion
+        
+        #region Members
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
+        private CalibratorType calibratorType = CalibratorType.Line;
+        private ICalibrator calibrator;
+        private CalibrationLine calibrationLine = new CalibrationLine();
+        private CalibrationPlane calibrationPlane = new CalibrationPlane();
+        
+        private LengthUnit lengthUnit = LengthUnit.Pixels;
+        private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
+        private double framesPerSecond = 25;
+        #endregion
+        
+        #region Constructor
+        public CalibrationHelper()
+        {
+            speedUnit = PreferencesManager.PlayerPreferences.SpeedUnit;
+            calibrator = calibrationLine;
+        }
+        #endregion
+        
+        #region Methods specific to a calibration technique
+        public void SetCalibratorFromType(CalibratorType type)
+        {
+            calibratorType = type;
+            
+            switch(type)
+            {
+                case CalibratorType.Line:
+                    calibrator = calibrationLine;
+                    break;
+                case CalibratorType.Plane:
+                    calibrator = calibrationPlane;
+                    break;
+            }
+        }
+        public void CalibrationByLine_SetPixelToUnit(float ratio)
+        {
+            calibrationLine.SetPixelToUnit(ratio);
+        }
+        public void CalibrationByLine_SetOrigin(PointF p)
+        {
+            calibrationLine.SetOrigin(p);
+        }
+        public PointF CalibrationByLine_GetOrigin()
+        {
+            return calibrationLine.Origin;
+        }
+        public bool CalibrationByLine_GetIsOriginSet()
+        {
+            return calibrationLine.IsOriginSet;
+        }
+        public void CalibrationByPlane_Initialize(SizeF size, QuadrilateralF quadImage)
+        {
+            calibrationPlane.Initialize(size, quadImage);
+        }
+        public SizeF CalibrationByPlane_GetRectangleSize()
+        {
+            return calibrationPlane.Size;
+        }
+        
+        #endregion
+        
+        #region Value extractors
+        public string GetLengthText(PointF p1, PointF p2, bool precise, bool abbreviation)
+        {
+            float length = GetLength(p1, p2);
             string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
             string text = String.Format(valueTemplate, length);
             
@@ -144,17 +144,17 @@ namespace Kinovea.ScreenManager
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
-		}
-		
-		public float GetLength(PointF p1, PointF p2)
-		{
-		    PointF a = calibrator.Transform(p1);
+        }
+        
+        public float GetLength(PointF p1, PointF p2)
+        {
+            PointF a = calibrator.Transform(p1);
             PointF b = calibrator.Transform(p2);
             return GeometryHelper.GetDistance(a, b);
-		}
-		
-		public string GetPointText(PointF p, bool precise, bool abbreviation)
-		{
+        }
+        
+        public string GetPointText(PointF p, bool precise, bool abbreviation)
+        {
             PointF a = GetPoint(p);
             
             string valueTemplate = precise ? "{{{0:0.00};{1:0.00}}}" : "{{{0:0};{1:0}}}";
@@ -164,15 +164,15 @@ namespace Kinovea.ScreenManager
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
-		}
-		
-		public PointF GetPoint(PointF p)
-		{
-		    return calibrator.Transform(p);
-		}
-		
-		public string GetSpeedText(PointF p1, PointF p2, int frames)
-		{
+        }
+        
+        public PointF GetPoint(PointF p)
+        {
+            return calibrator.Transform(p);
+        }
+        
+        public string GetSpeedText(PointF p1, PointF p2, int frames)
+        {
             if((p1.X == p2.X && p1.Y == p2.Y) || frames == 0)
                 return "0" + " " + UnitHelper.SpeedAbbreviation(speedUnit);
             
@@ -188,28 +188,28 @@ namespace Kinovea.ScreenManager
             
             string text = String.Format("{0:0.00} {1}", speed, UnitHelper.SpeedAbbreviation(unit));
             return text;
-		}
-		#endregion
-		
-		#region Inverse transformations (from calibrated space to image space).
-		public float GetImageLength(PointF p1, PointF p2)
-		{
-		    PointF a = calibrator.Untransform(p1);
+        }
+        #endregion
+        
+        #region Inverse transformations (from calibrated space to image space).
+        public float GetImageLength(PointF p1, PointF p2)
+        {
+            PointF a = calibrator.Untransform(p1);
             PointF b = calibrator.Untransform(p2);
             return GeometryHelper.GetDistance(a, b);
-		}
-		
-		public PointF GetImagePoint(PointF p)
-		{
-		    return calibrator.Untransform(p);
-		}
-		#endregion
-		
-		public string GetLengthAbbreviation()
-		{
-		    return UnitHelper.LengthAbbreviation(lengthUnit);
-		}
-	   
+        }
+        
+        public PointF GetImagePoint(PointF p)
+        {
+            return calibrator.Untransform(p);
+        }
+        #endregion
+        
+        public string GetLengthAbbreviation()
+        {
+            return UnitHelper.LengthAbbreviation(lengthUnit);
+        }
+       
         #region Serialization
         public void WriteXml(XmlWriter w)
         {
@@ -236,13 +236,13 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 switch(r.Name)
                 {
                     case "CalibrationPlane":
                         calibratorType = CalibratorType.Plane;
                         calibrator = calibrationPlane;
-            		    calibrationPlane.ReadXml(r);
+                        calibrationPlane.ReadXml(r);
                         break;
                     case "CalibrationLine":
                         calibratorType = CalibratorType.Line;
@@ -254,7 +254,7 @@ namespace Kinovea.ScreenManager
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
-				        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }
@@ -262,5 +262,5 @@ namespace Kinovea.ScreenManager
             r.ReadEndElement();
         }
         #endregion
-	}
+    }
 }

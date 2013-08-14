@@ -28,75 +28,75 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolCross2D : AbstractDrawingTool
     {
-    	#region Properties
-    	public override string DisplayName
-    	{
-    		get { return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
-    	}
-    	public override Bitmap Icon
-    	{
-    		get { return Properties.Drawings.crossmark; }
-    	}
-    	public override bool Attached
-    	{
-    		get { return true; }
-    	}
-    	public override bool KeepTool
-    	{
-    		get { return true; }
-    	}
-    	public override bool KeepToolFrameChanged
-    	{
-    		get { return true; }
-    	}
-    	public override DrawingStyle StylePreset
-		{
-			get { return m_StylePreset;}
-			set { m_StylePreset = value;}
-		}
-		public override DrawingStyle DefaultStylePreset
-		{
-			get { return m_DefaultStylePreset;}
-		}
-    	#endregion
-		
-    	#region Private Methods
-    	private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
-    	private DrawingStyle m_StylePreset;
-    	#endregion
-		
-    	#region Constructor
-    	public DrawingToolCross2D()
-    	{
-    		m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
-    		m_StylePreset = m_DefaultStylePreset.Clone();
-    	}
-    	#endregion
-		
-    	#region Public Methods
-    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-    	{
-    		return new DrawingCross2D(_Origin, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
-    	}
-    	public override Cursor GetCursor(double _fStretchFactor)
-    	{
-    		// Draw custom cursor: cross inside a semi transparent circle (same as drawing).
-    		Color c = (Color)m_StylePreset.Elements["back color"].Value;
-    		Pen p = new Pen(c, 1);
-    		Bitmap b = new Bitmap(9, 9);
-    		Graphics g = Graphics.FromImage(b);
+        #region Properties
+        public override string DisplayName
+        {
+            get { return ScreenManagerLang.ToolTip_DrawingToolCross2D; }
+        }
+        public override Bitmap Icon
+        {
+            get { return Properties.Drawings.crossmark; }
+        }
+        public override bool Attached
+        {
+            get { return true; }
+        }
+        public override bool KeepTool
+        {
+            get { return true; }
+        }
+        public override bool KeepToolFrameChanged
+        {
+            get { return true; }
+        }
+        public override DrawingStyle StylePreset
+        {
+            get { return m_StylePreset;}
+            set { m_StylePreset = value;}
+        }
+        public override DrawingStyle DefaultStylePreset
+        {
+            get { return m_DefaultStylePreset;}
+        }
+        #endregion
+        
+        #region Private Methods
+        private DrawingStyle m_DefaultStylePreset = new DrawingStyle();
+        private DrawingStyle m_StylePreset;
+        #endregion
+        
+        #region Constructor
+        public DrawingToolCross2D()
+        {
+            m_DefaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.CornflowerBlue));
+            m_StylePreset = m_DefaultStylePreset.Clone();
+        }
+        #endregion
+        
+        #region Public Methods
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        {
+            return new DrawingCross2D(_Origin, _iTimestamp, _AverageTimeStampsPerFrame, m_StylePreset);
+        }
+        public override Cursor GetCursor(double _fStretchFactor)
+        {
+            // Draw custom cursor: cross inside a semi transparent circle (same as drawing).
+            Color c = (Color)m_StylePreset.Elements["back color"].Value;
+            Pen p = new Pen(c, 1);
+            Bitmap b = new Bitmap(9, 9);
+            Graphics g = Graphics.FromImage(b);
 
-    		// Center point is {4,4}
-    		g.DrawLine(p, 1, 4, 7, 4);
-    		g.DrawLine(p, 4, 1, 4, 7);
-    		
-    		SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, c));
-    		g.FillEllipse(tempBrush, 0, 0, 8, 8);
-    		tempBrush.Dispose();
-    		p.Dispose();
-    		
-    		return new Cursor(b.GetHicon());
-    	}
-    	#endregion
+            // Center point is {4,4}
+            g.DrawLine(p, 1, 4, 7, 4);
+            g.DrawLine(p, 4, 1, 4, 7);
+            
+            SolidBrush tempBrush = new SolidBrush(Color.FromArgb(32, c));
+            g.FillEllipse(tempBrush, 0, 0, 8, 8);
+            tempBrush.Dispose();
+            p.Dispose();
+            
+            return new Cursor(b.GetHicon());
+        }
+        #endregion
     }
 }

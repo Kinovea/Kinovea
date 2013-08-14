@@ -42,7 +42,7 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override string DisplayName
         {
-		    get {  return ScreenManagerLang.ToolTip_DrawingToolChrono; }
+            get {  return ScreenManagerLang.ToolTip_DrawingToolChrono; }
         }
         public override int ContentHash
         {
@@ -62,22 +62,22 @@ namespace Kinovea.ScreenManager
         } 
         public DrawingStyle DrawingStyle
         {
-        	get { return m_Style;}
+            get { return m_Style;}
         }
         public override InfosFading  InfosFading
         {
-        	// Fading is not modifiable from outside for chrono.
+            // Fading is not modifiable from outside for chrono.
             get { return null; }
             set { }
         }
         public override DrawingCapabilities Caps
-		{
-			get { return DrawingCapabilities.ConfigureColorSize; }
-		}
+        {
+            get { return DrawingCapabilities.ConfigureColorSize; }
+        }
         public override List<ToolStripItem> ContextMenu
-		{
-			get { return null; }
-		}
+        {
+            get { return null; }
+        }
         public Metadata ParentMetadata
         {
             get { return m_ParentMetadata; }    // unused.
@@ -101,17 +101,17 @@ namespace Kinovea.ScreenManager
         }
         public bool CountDown
         {
-        	get { return m_bCountdown;}
-        	set 
-        	{
-        		// We should only toggle to countdown if we do have a stop value.
-        		m_bCountdown = value;
-        	}
+            get { return m_bCountdown;}
+            set 
+            {
+                // We should only toggle to countdown if we do have a stop value.
+                m_bCountdown = value;
+            }
         }
         public bool HasTimeStop
         {
-        	// This is used to know if we can toggle to countdown or not.
-        	get{ return (m_iStopCountingTimestamp != long.MaxValue);}
+            // This is used to know if we can toggle to countdown or not.
+            get{ return (m_iStopCountingTimestamp != long.MaxValue);}
         }
         
         // The following properties are used from the formConfigureChrono.
@@ -145,7 +145,7 @@ namespace Kinovea.ScreenManager
         private StyleHelper m_StyleHelper = new StyleHelper();
         private DrawingStyle m_Style;
         private InfosFading m_InfosFading;
-		private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
+        private static readonly int m_iAllowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle m_MainBackground = new RoundedRectangle();
         private RoundedRectangle m_lblBackground = new RoundedRectangle();
         
@@ -267,15 +267,15 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-		#region KVA Serialization
-		public void WriteXml(XmlWriter _xmlWriter)
-		{
+        #region KVA Serialization
+        public void WriteXml(XmlWriter _xmlWriter)
+        {
             _xmlWriter.WriteElementString("Position", String.Format("{0};{1}", m_MainBackground.Rectangle.Location.X, m_MainBackground.Rectangle.Location.Y));
             
-		    _xmlWriter.WriteStartElement("Values");
-		    _xmlWriter.WriteElementString("Visible", (m_iVisibleTimestamp == long.MaxValue) ? "-1" : m_iVisibleTimestamp.ToString());
+            _xmlWriter.WriteStartElement("Values");
+            _xmlWriter.WriteElementString("Visible", (m_iVisibleTimestamp == long.MaxValue) ? "-1" : m_iVisibleTimestamp.ToString());
             _xmlWriter.WriteElementString("StartCounting", (m_iStartCountingTimestamp == long.MaxValue) ? "-1" : m_iStartCountingTimestamp.ToString());
-		    _xmlWriter.WriteElementString("StopCounting", (m_iStopCountingTimestamp == long.MaxValue) ? "-1" : m_iStopCountingTimestamp.ToString());
+            _xmlWriter.WriteElementString("StopCounting", (m_iStopCountingTimestamp == long.MaxValue) ? "-1" : m_iStopCountingTimestamp.ToString());
             _xmlWriter.WriteElementString("Invisible", (m_iInvisibleTimestamp == long.MaxValue) ? "-1" : m_iInvisibleTimestamp.ToString());
             _xmlWriter.WriteElementString("Countdown", m_bCountdown ? "true" : "false");
             
@@ -283,7 +283,7 @@ namespace Kinovea.ScreenManager
             string userDuration = "0";
             if (m_iStartCountingTimestamp != long.MaxValue && m_iStopCountingTimestamp != long.MaxValue)
             {
-             	userDuration = m_ParentMetadata.TimeStampsToTimecode(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimecodeFormat.Unknown, false);
+                userDuration = m_ParentMetadata.TimeStampsToTimecode(m_iStopCountingTimestamp - m_iStartCountingTimestamp, TimecodeFormat.Unknown, false);
             }
             _xmlWriter.WriteElementString("UserDuration", userDuration);
             
@@ -296,41 +296,41 @@ namespace Kinovea.ScreenManager
             _xmlWriter.WriteElementString("Show", m_bShowLabel ? "true" : "false");
             _xmlWriter.WriteEndElement();
             
-		    _xmlWriter.WriteStartElement("DrawingStyle");
+            _xmlWriter.WriteStartElement("DrawingStyle");
             m_Style.WriteXml(_xmlWriter);
             _xmlWriter.WriteEndElement();
-		}
-		private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
+        }
+        private void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback)
         {
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "Position":
-				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "Position":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
                         Point location = new Point((int)((float)p.X * _scale.X), (int)((float)p.Y * _scale.Y));
                         m_MainBackground.Rectangle = new Rectangle(location, Size.Empty);
                         break;
-					case "Values":
-						ParseWorkingValues(_xmlReader, _remapTimestampCallback);
-						break;
-					case "DrawingStyle":
-						m_Style = new DrawingStyle(_xmlReader);
-						BindStyle();
-						break;
-				    case "Label":
-						ParseLabel(_xmlReader);
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
+                    case "Values":
+                        ParseWorkingValues(_xmlReader, _remapTimestampCallback);
+                        break;
+                    case "DrawingStyle":
+                        m_Style = new DrawingStyle(_xmlReader);
+                        BindStyle();
+                        break;
+                    case "Label":
+                        ParseLabel(_xmlReader);
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
         }
         private void ParseWorkingValues(XmlReader _xmlReader, TimeStampMapper _remapTimestampCallback)
         {
@@ -342,36 +342,36 @@ namespace Kinovea.ScreenManager
             
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "Visible":
-				        m_iVisibleTimestamp = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "Visible":
+                        m_iVisibleTimestamp = _remapTimestampCallback(_xmlReader.ReadElementContentAsLong(), false);
                         break;
-					case "StartCounting":
+                    case "StartCounting":
                         long start = _xmlReader.ReadElementContentAsLong(); 
                         m_iStartCountingTimestamp = (start == -1) ? long.MaxValue : _remapTimestampCallback(start, false);
-						break;
-					case "StopCounting":
-						long stop = _xmlReader.ReadElementContentAsLong();
-						m_iStopCountingTimestamp = (stop == -1) ? long.MaxValue : _remapTimestampCallback(stop, false);
-						break;
-				    case "Invisible":
-						long hide = _xmlReader.ReadElementContentAsLong();
+                        break;
+                    case "StopCounting":
+                        long stop = _xmlReader.ReadElementContentAsLong();
+                        m_iStopCountingTimestamp = (stop == -1) ? long.MaxValue : _remapTimestampCallback(stop, false);
+                        break;
+                    case "Invisible":
+                        long hide = _xmlReader.ReadElementContentAsLong();
                         m_iInvisibleTimestamp = (hide == -1) ? long.MaxValue : _remapTimestampCallback(hide, false);                        
-						break;
-					case "Countdown":
-						m_bCountdown = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
+                        break;
+                    case "Countdown":
+                        m_bCountdown = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
             
             // Sanity check values.
             if (m_iVisibleTimestamp < 0) m_iVisibleTimestamp = 0;
@@ -398,26 +398,26 @@ namespace Kinovea.ScreenManager
         {
             _xmlReader.ReadStartElement();
             
-			while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "Text":
-				        m_Label = _xmlReader.ReadElementContentAsString();
+            while(_xmlReader.NodeType == XmlNodeType.Element)
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "Text":
+                        m_Label = _xmlReader.ReadElementContentAsString();
                         break;
-					case "Show":
+                    case "Show":
                         m_bShowLabel = XmlHelper.ParseBoolean(_xmlReader.ReadElementContentAsString());
-						break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			_xmlReader.ReadEndElement();
+                        break;
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
+            
+            _xmlReader.ReadEndElement();
         }
-		#endregion
+        #endregion
 
         #region PopMenu commands Implementation that change internal values.
         public void Start(long _iCurrentTimestamp)
@@ -493,11 +493,11 @@ namespace Kinovea.ScreenManager
             {
                 if (_iTimestamp <= m_iStopCountingTimestamp)
                 {
-                	// After start and before stop.
-                	if(m_bCountdown)
-                		timestamps = m_iStopCountingTimestamp - _iTimestamp;
-                	else
-                		timestamps = _iTimestamp - m_iStartCountingTimestamp;                		
+                    // After start and before stop.
+                    if(m_bCountdown)
+                        timestamps = m_iStopCountingTimestamp - _iTimestamp;
+                    else
+                        timestamps = _iTimestamp - m_iStartCountingTimestamp;                		
                 }
                 else
                 {
@@ -507,7 +507,7 @@ namespace Kinovea.ScreenManager
             }
             else
             {
-            	// Before start. Keep min value.
+                // Before start. Keep min value.
                 timestamps = m_bCountdown ? m_iStopCountingTimestamp - m_iStartCountingTimestamp : 0;
             }
 

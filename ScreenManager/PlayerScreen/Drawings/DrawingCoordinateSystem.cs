@@ -254,13 +254,13 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region IScalable implementation
-		public void Scale(Size imageSize)
-		{
-		    this.imageSize = imageSize;
-		    points["0"] = new Point(imageSize.Width / 2, imageSize.Height / 2);
-		}
-		#endregion
-		
+        public void Scale(Size imageSize)
+        {
+            this.imageSize = imageSize;
+            points["0"] = new Point(imageSize.Width / 2, imageSize.Height / 2);
+        }
+        #endregion
+        
         #region Context menu
         private void menuShowAxis_Click(object sender, EventArgs e)
         {
@@ -463,8 +463,8 @@ namespace Kinovea.ScreenManager
         }
         
         /// <summary>
-		/// Utility function to find nice spacing for tick marks.
-		/// </summary>
+        /// Utility function to find nice spacing for tick marks.
+        /// </summary>
         private static float RulerStepSize(float range, float targetSteps)
         {
             float minimum = range/targetSteps;

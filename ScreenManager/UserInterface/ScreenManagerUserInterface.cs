@@ -61,11 +61,11 @@ namespace Kinovea.ScreenManager
         #region Members
         private ThumbnailViewerContainer thumbnailViewerContainer = new ThumbnailViewerContainer();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
+        #endregion
         
-		public ScreenManagerUserInterface(IScreenManagerUIContainer controller)
+        public ScreenManagerUserInterface(IScreenManagerUIContainer controller)
         {
-        	log.Debug("Constructing ScreenManagerUserInterface.");
+            log.Debug("Constructing ScreenManagerUserInterface.");
             InitializeComponent();
             commonControls.Controller = controller;
             
@@ -159,19 +159,19 @@ namespace Kinovea.ScreenManager
             };
             
             this.Controls.Add(thumbnailViewerContainer);
-		}
+        }
         private void IdleDetector(object sender, EventArgs e)
-		{
-			log.Debug("Application is idle in ScreenManagerUserInterface.");
-			
-			// This is a one time only routine.
-			Application.Idle -= new EventHandler(this.IdleDetector);
-			
-			// Launch file.
-			string filePath = CommandLineArgumentManager.Instance().InputFile;
-			if(filePath != null && File.Exists(filePath) && FileLoadAsked != null)
-			    FileLoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
-		}
+        {
+            log.Debug("Application is idle in ScreenManagerUserInterface.");
+            
+            // This is a one time only routine.
+            Application.Idle -= new EventHandler(this.IdleDetector);
+            
+            // Launch file.
+            string filePath = CommandLineArgumentManager.Instance().InputFile;
+            if(filePath != null && File.Exists(filePath) && FileLoadAsked != null)
+                FileLoadAsked(this, new FileLoadAskedEventArgs(filePath, -1));
+        }
         private void pnlScreens_Resize(object sender, EventArgs e)
         {
             // Reposition Common Controls panel so it doesn't take more space than necessary.
@@ -214,7 +214,7 @@ namespace Kinovea.ScreenManager
         #region DragDrop
         private void DroppableArea_DragOver(object sender, DragEventArgs e)
         {
-        	e.Effect = DragDropEffects.All;
+            e.Effect = DragDropEffects.All;
         }
         private void ScreenManagerUserInterface_DragDrop(object sender, DragEventArgs e)
         {

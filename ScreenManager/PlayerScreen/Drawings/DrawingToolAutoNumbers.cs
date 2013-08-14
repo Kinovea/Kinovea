@@ -29,60 +29,60 @@ namespace Kinovea.ScreenManager
 {
     public class DrawingToolAutoNumbers : AbstractDrawingTool
     {
-    	#region Properties
-    	public override string DisplayName
-    	{
-    		get { return ScreenManagerLang.ToolTip_DrawingToolAutonumbers; }
-    	}
-    	public override Bitmap Icon
-    	{
-    		get { return Properties.Drawings.number; }
-    	}
-    	public override bool Attached
-    	{
-    		get { return false; }
-    	}
-    	public override bool KeepTool
-    	{
-    		get { return true; }
-    	}
-    	public override bool KeepToolFrameChanged
-    	{
-    		get { return true; }
-    	}
-    	public override DrawingStyle StylePreset
-		{
-			get { return stylePreset;}
-			set { stylePreset = value;}
-		}
-		public override DrawingStyle DefaultStylePreset
-		{
-			get { return defaultStylePreset;}
-		}
-    	#endregion
-    	
-    	#region Members
-    	private DrawingStyle defaultStylePreset = new DrawingStyle();
-    	private DrawingStyle stylePreset;
-    	#endregion
-		
-    	#region Public Methods
-    	public DrawingToolAutoNumbers()
-    	{
-    	    defaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.Black));
-    	    defaultStylePreset.Elements.Add("font size", new StyleElementFontSize(16));
-			stylePreset = defaultStylePreset.Clone();
-    	}
-    	public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
-    	{
-    	   return null;
-    	}
-    	public override Cursor GetCursor(double _fStretchFactor)
-    	{
-    	    // Would be cool to have a real cursor with the actual next number in it.
-    		return Cursors.Cross;
-    	}
-    	#endregion
+        #region Properties
+        public override string DisplayName
+        {
+            get { return ScreenManagerLang.ToolTip_DrawingToolAutonumbers; }
+        }
+        public override Bitmap Icon
+        {
+            get { return Properties.Drawings.number; }
+        }
+        public override bool Attached
+        {
+            get { return false; }
+        }
+        public override bool KeepTool
+        {
+            get { return true; }
+        }
+        public override bool KeepToolFrameChanged
+        {
+            get { return true; }
+        }
+        public override DrawingStyle StylePreset
+        {
+            get { return stylePreset;}
+            set { stylePreset = value;}
+        }
+        public override DrawingStyle DefaultStylePreset
+        {
+            get { return defaultStylePreset;}
+        }
+        #endregion
+        
+        #region Members
+        private DrawingStyle defaultStylePreset = new DrawingStyle();
+        private DrawingStyle stylePreset;
+        #endregion
+        
+        #region Public Methods
+        public DrawingToolAutoNumbers()
+        {
+            defaultStylePreset.Elements.Add("back color", new StyleElementColor(Color.Black));
+            defaultStylePreset.Elements.Add("font size", new StyleElementFontSize(16));
+            stylePreset = defaultStylePreset.Clone();
+        }
+        public override AbstractDrawing GetNewDrawing(Point _Origin, long _iTimestamp, long _AverageTimeStampsPerFrame)
+        {
+           return null;
+        }
+        public override Cursor GetCursor(double _fStretchFactor)
+        {
+            // Would be cool to have a real cursor with the actual next number in it.
+            return Cursors.Cross;
+        }
+        #endregion
     }
 }
 
