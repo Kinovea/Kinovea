@@ -17,9 +17,11 @@ namespace Kinovea.ScreenManager
 {
     public class SummaryLoader
     {
-        public bool IsAlive {
+        public bool IsAlive 
+        {
             get { return isAlive; }
         }
+
         public event EventHandler<SummaryLoadedEventArgs> SummaryLoaded;
         
         private bool isAlive;

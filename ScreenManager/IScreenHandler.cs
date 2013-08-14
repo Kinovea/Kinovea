@@ -42,18 +42,14 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public interface IScreenHandler
     {
-        //void Screen_SetActiveScreen(AbstractScreen _ActiveScreen);
-        void Screen_CloseAsked(AbstractScreen _SenderScreen);
-        void Screen_UpdateStatusBarAsked(AbstractScreen _SenderScreen);
-        
-        void Player_SpeedChanged(PlayerScreen _screen, bool _bInitialisation);
-        void Player_PauseAsked(PlayerScreen _screen);
-        void Player_SelectionChanged(PlayerScreen _screen, bool _bInitialization);
-        void Player_ImageChanged(PlayerScreen _screen, Bitmap _image);
-        void Player_SendImage(PlayerScreen _screen, Bitmap _image);
-        void Player_Reset(PlayerScreen _screen);
-        
-        //void Capture_FileSaved(CaptureScreen _screen);
-        //void Capture_LoadVideo(CaptureScreen _screen, string _filepath);
+        void Screen_CloseAsked(AbstractScreen screen);
+        void Screen_UpdateStatusBarAsked(AbstractScreen screen);
+
+        void Player_SpeedChanged(PlayerScreen screen, bool initialisation);
+        void Player_PauseAsked(PlayerScreen screen);
+        void Player_SelectionChanged(PlayerScreen screen, bool initialization);
+        void Player_ImageChanged(PlayerScreen screen, Bitmap image);
+        void Player_SendImage(PlayerScreen screen, Bitmap image);
+        void Player_Reset(PlayerScreen screen);
     }
 }

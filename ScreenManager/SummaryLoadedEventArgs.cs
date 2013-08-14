@@ -13,10 +13,10 @@ namespace Kinovea.ScreenManager
     {
         public readonly VideoSummary Summary;
         public readonly int Progress;
-        public SummaryLoadedEventArgs(VideoSummary _summary, int _progress)
+        public SummaryLoadedEventArgs(VideoSummary summary, int progress)
         {
-            Summary = _summary;
-            Progress = _progress;
+            this.Summary = summary;
+            this.Progress = progress;
         }
     }
 }
