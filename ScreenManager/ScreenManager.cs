@@ -1040,9 +1040,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
 
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.UpdateStatusBar != null)
-                dp.UpdateStatusBar(StatusString);
+            NotificationCenter.RaiseStatusUpdated(this, StatusString);
         }
         public void OrganizeCommonControls()
         {

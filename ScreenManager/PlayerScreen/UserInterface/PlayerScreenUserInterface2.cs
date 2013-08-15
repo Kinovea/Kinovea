@@ -4428,15 +4428,15 @@ namespace Kinovea.ScreenManager
             
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-            DelegatesPool dp = DelegatesPool.Instance();
             NotificationCenter.RaiseDisableKeyboardHandler(this);
             
             // Launch sequence saving configuration dialog
-            formRafaleExport fre = new formRafaleExport(this, 
-                                                        m_FrameServer.Metadata, 
-                                                        m_FrameServer.VideoReader.FilePath, 
-                                                        m_iSelDuration, 
-                                                        m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
+            formRafaleExport fre = new formRafaleExport(
+                this, 
+                m_FrameServer.Metadata, 
+                m_FrameServer.VideoReader.FilePath, 
+                m_iSelDuration, 
+                m_FrameServer.VideoReader.Info.AverageTimeStampsPerSeconds);
             fre.ShowDialog();
             fre.Dispose();
             m_FrameServer.AfterSave();
@@ -4536,7 +4536,6 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            DelegatesPool dp = DelegatesPool.Instance();
             NotificationCenter.RaiseDisableKeyboardHandler(this);
             
             saveInProgress = true;

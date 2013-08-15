@@ -104,7 +104,8 @@ namespace Kinovea.Root
             BuildSubTree();
             mainWindow = new KinoveaMainWindow(this);
             NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
-            
+            NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+
             log.Debug("Plug sub modules at UI extension points (Menus, ToolBars, StatusBAr, Windows).");
             ExtendMenu(mainWindow.menuStrip);
             ExtendToolBar(mainWindow.toolStrip);
@@ -112,8 +113,7 @@ namespace Kinovea.Root
             ExtendUI();
 
             log.Debug("Register global services offered at Root level.");
-            DelegatesPool dp = DelegatesPool.Instance();
-            dp.UpdateStatusBar = DoUpdateStatusBar;
+            
             Services.FormsHelper.SetMainForm(mainWindow);
         }
         #endregion
@@ -235,10 +235,6 @@ namespace Kinovea.Root
                 filePath = openFileDialog.FileName;
             }
             return filePath;
-        }
-        public void DoUpdateStatusBar(string status)
-        {
-            statusLabel.Text = status;
         }
         #endregion
 
