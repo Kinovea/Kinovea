@@ -19,6 +19,7 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
+using System.Collections.Generic;
 
 namespace Kinovea.Services
 {
@@ -85,6 +86,13 @@ namespace Kinovea.Services
         {
             if (StopPlayback != null)
                 StopPlayback(sender, EventArgs.Empty);
+        }
+
+        public static EventHandler<CurrentDirectoryChangedEventArgs> CurrentDirectoryChanged;
+        public static void RaiseCurrentDirectoryChanged(object sender, bool shortcuts, List<string> files, bool refresh)
+        {
+            if (CurrentDirectoryChanged != null)
+                CurrentDirectoryChanged(sender, new CurrentDirectoryChangedEventArgs(shortcuts, files, refresh));
         }
     }
 }

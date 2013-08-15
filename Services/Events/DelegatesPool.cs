@@ -43,12 +43,10 @@ namespace Kinovea.Services
     //----------------------------------------------------------------------------------------------------------
     
     public delegate void StatusBarUpdater(string _status);
-    public delegate void ThumbnailsContainer(bool shortcuts, List<String> files, bool refresh);
     
     public class DelegatesPool
     {
         public StatusBarUpdater UpdateStatusBar;
-        public ThumbnailsContainer CurrentDirectoryChanged;
   
         private static DelegatesPool _instance = null;
         
