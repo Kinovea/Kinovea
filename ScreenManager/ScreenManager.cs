@@ -169,10 +169,8 @@ namespace Kinovea.ScreenManager
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             
             InitializeVideoFilters();
-            
-            // Registers our exposed functions to the DelegatePool.
-            DelegatesPool dp = DelegatesPool.Instance();
-            dp.StopPlaying = DoStopPlaying;
+
+            NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             
             // Watch for changes in the guides directory.
             svgPath = Path.GetDirectoryName(Application.ExecutablePath) + "\\guides\\";
@@ -2396,16 +2394,10 @@ namespace Kinovea.ScreenManager
         
         public void DoStopPlaying()
         {
-            // Called from Supervisor, when user launch open dialog box.
-            
-            // 1. Stop each screen.
             foreach (AbstractScreen screen in screenList)
-            {
                 if (screen is PlayerScreen)
                     ((PlayerScreen)screen).StopPlaying();
-            }
 
-            // 2. Stop the common timer.
             StopDynamicSync();
             view.DisplayAsPaused();
         }

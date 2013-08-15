@@ -438,17 +438,11 @@ namespace Kinovea.Root
         #region File
         private void mnuOpenFileOnClick(object sender, EventArgs e)
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.StopPlaying != null)
-            {
-                dp.StopPlaying();
-            }
-
+            NotificationCenter.RaiseStopPlayback(this);
+            
             string filePath = LaunchOpenFileDialog();
             if (filePath.Length > 0)
-            {
                 OpenFileFromPath(filePath);
-            }
         }
         private void mnuHistoryResetOnClick(object sender, EventArgs e)
         {

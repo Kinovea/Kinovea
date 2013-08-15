@@ -90,10 +90,7 @@ namespace Kinovea.Updater
         #region Menu Event Handlers
         private void mnuCheckForUpdatesOnClick(object sender, EventArgs e)
         {
-            // Stop playing if needed.
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.StopPlaying != null)
-                dp.StopPlaying();
+            NotificationCenter.RaiseStopPlayback(this);
 
             // Download the update configuration file from the webserver.
             HelpIndex hiRemote = new HelpIndex(Software.RemoteHelpIndex);
