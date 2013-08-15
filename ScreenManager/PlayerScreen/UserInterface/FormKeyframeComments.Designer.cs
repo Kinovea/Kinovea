@@ -235,8 +235,6 @@ namespace Kinovea.ScreenManager
         	this.ShowInTaskbar = false;
         	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
         	this.Text = "   Commentaire...";
-        	this.MouseEnter += new System.EventHandler(this.formKeyframeComments_MouseEnter);
-        	this.MouseLeave += new System.EventHandler(this.formKeyframeComments_MouseLeave);
         	this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formKeyframeComments_FormClosing);
         	this.pnlTextArea.ResumeLayout(false);
         	this.pnlTitle.ResumeLayout(false);

@@ -136,7 +136,6 @@ namespace Kinovea.ScreenManager
         	this.tbTitle.TextChanged += new System.EventHandler(this.TbTitleTextChanged);
         	this.tbTitle.MouseLeave += new System.EventHandler(this.Controls_MouseLeave);
         	this.tbTitle.Click += new System.EventHandler(this.pbThumbnail_Click);
-        	this.tbTitle.Enter += new System.EventHandler(this.TbTitleEnter);
         	this.tbTitle.MouseEnter += new System.EventHandler(this.Controls_MouseEnter);
         	// 
         	// KeyframeBox

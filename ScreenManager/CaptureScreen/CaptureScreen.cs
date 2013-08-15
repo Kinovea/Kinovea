@@ -247,10 +247,7 @@ namespace Kinovea.ScreenManager
             if(manager == null)
                 return;
                 
-            FormsHelper.BeforeShow();
             bool needsReconnect = manager.Configure(summary);
-            FormsHelper.AfterShow();
-            
             log.DebugFormat("After configure, summary:{0}", manager.GetSummaryAsText(summary));
             
             if(needsReconnect)

@@ -100,7 +100,6 @@ namespace Kinovea.ScreenManager
                 e.Cancel = true;
                 m_bUserActivated = false;
                 SaveInfos();
-                ActivateKeyboardHandler();
             }
             else
             {
@@ -108,14 +107,6 @@ namespace Kinovea.ScreenManager
             }
 
             this.Visible = false;
-        }
-        private void formKeyframeComments_MouseEnter(object sender, EventArgs e)
-        {
-            DeactivateKeyboardHandler();
-        }
-        private void formKeyframeComments_MouseLeave(object sender, EventArgs e)
-        {
-            CheckMouseLeave();
         }
         #endregion
         
@@ -167,26 +158,6 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Lower level helpers
-        private void CheckMouseLeave()
-        {
-            // We really leave only if we left the whole control.
-            // we have to do this because placing the mouse over the text boxes will raise a
-            // formKeyframeComments_MouseLeave event...
-            if (!this.Bounds.Contains(Control.MousePosition))
-                ActivateKeyboardHandler(); 
-        }
-        private void DeactivateKeyboardHandler()
-        {
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
-        }
-        private void ActivateKeyboardHandler()
-        {
-            // Mouse leave the info box : reactivate the keyboard handling for the screens
-            // so we can use <space>, <return>, etc. as player shortcuts.
-            // This is sometimes strange. You put the mouse away to start typing, 
-            // and the first carriage return triggers the playback leaving the key image.
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
-        }
         private void LoadInfos()
         {
             // Update

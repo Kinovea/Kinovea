@@ -16,6 +16,9 @@ namespace Kinovea.Services
             mainForm = form;
         }
 
+        /// <summary>
+        /// Make the given form a child of the main Kinovea window.
+        /// </summary>
         public static void MakeTopmost(Form form)
         {
             if (mainForm == null)
@@ -24,20 +27,9 @@ namespace Kinovea.Services
             form.Owner = mainForm;
         }
 
-        public static void BeforeShow()
-        {
-            NotificationCenter.RaiseDisableKeyboardHandler(null);
-        }
-
-        public static void AfterShow()
-        {
-            NotificationCenter.RaiseEnableKeyboardHandler(null);
-        }
-
         /// <summary>
-        /// Locate the form under the mouse or center of screen if too close to border.
+        /// Locate the form under the mouse or at center of screen if too close to border.
         /// </summary>
-        /// <param name="_form"></param>
         public static void Locate(Form form)
         {
             if (Cursor.Position.X + (form.Width / 2) >= SystemInformation.PrimaryMonitorSize.Width ||
