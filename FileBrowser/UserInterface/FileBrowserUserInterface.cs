@@ -82,7 +82,7 @@ namespace Kinovea.FileBrowser
             
             BuildContextMenu();
             
-            NotificationCenter.ExplorerTabChangeAsked += NotificationCenter_ExplorerTabChangeAsked;
+            NotificationCenter.ExplorerTabChanged += NotificationCenter_ExplorerTabChangeAsked;
             NotificationCenter.RefreshFileExplorer += NotificationCenter_RefreshFileExplorer;
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
             NotificationCenter.FileOpened += NotificationCenter_FileOpened;
@@ -131,13 +131,9 @@ namespace Kinovea.FileBrowser
             // Now that we are at full size, we can load splitters from prefs.
             splitExplorerFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ExplorerFilesSplitterDistance;
             splitShortcutsFiles.SplitterDistance = PreferencesManager.FileExplorerPreferences.ShortcutsFilesSplitterDistance;
-            
-            // Switch thumbnail area to the right tab.
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ExplorerTabChanged != null)
-                dp.ExplorerTabChanged((ActiveFileBrowserTab)tabControl.SelectedIndex);
+
+            NotificationCenter.RaiseExplorerTabChanged(this, (ActiveFileBrowserTab)tabControl.SelectedIndex);
                 
-            // Load the initial directory.
             DoRefreshFileList(true);
         }
         #endregion
@@ -145,6 +141,9 @@ namespace Kinovea.FileBrowser
         #region Public interface
         private void NotificationCenter_ExplorerTabChangeAsked(object sender, ExplorerTabEventArgs e)
         {
+            if (sender == this)
+                return;
+
             programmaticTabChange = true;
             tabControl.SelectedIndex = (int)e.Tab;
         }
@@ -558,15 +557,9 @@ namespace Kinovea.FileBrowser
             PreferencesManager.FileExplorerPreferences.ActiveTab = activeTab;
             
             if(programmaticTabChange)
-            {
                 programmaticTabChange = false;
-            }
             else
-            {
-                DelegatesPool dp = DelegatesPool.Instance();
-                if (dp.ExplorerTabChanged != null)
-                    dp.ExplorerTabChanged(activeTab);
-            }
+                NotificationCenter.RaiseExplorerTabChanged(this, activeTab);
             
             DoRefreshFileList(true);
         }

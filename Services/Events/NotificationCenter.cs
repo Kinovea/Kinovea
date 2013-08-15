@@ -73,11 +73,11 @@ namespace Kinovea.Services
                 FileOpened(sender, new FileActionEventArgs(file));
         }
 
-        public static EventHandler<ExplorerTabEventArgs> ExplorerTabChangeAsked;
-        public static void RaiseExplorerTabChangeAsked(object sender, ActiveFileBrowserTab tab)
+        public static EventHandler<ExplorerTabEventArgs> ExplorerTabChanged;
+        public static void RaiseExplorerTabChanged(object sender, ActiveFileBrowserTab tab)
         {
-            if (ExplorerTabChangeAsked != null)
-                ExplorerTabChangeAsked(sender, new ExplorerTabEventArgs(tab));
+            if (ExplorerTabChanged != null)
+                ExplorerTabChanged(sender, new ExplorerTabEventArgs(tab));
         }
 
         public static EventHandler StopPlayback;

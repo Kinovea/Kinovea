@@ -56,11 +56,11 @@ namespace Kinovea.ScreenManager
             InitializeViewers();
             progressBar.Left = selector.Right + 10;
             progressBar.Visible = false;
-            
-            // Registers our exposed functions to the DelegatePool.
+
             DelegatesPool dp = DelegatesPool.Instance();
             dp.CurrentDirectoryChanged = CurrentDirectoryChanged;
-            dp.ExplorerTabChanged = ExplorerTab_Changed;
+
+            NotificationCenter.ExplorerTabChanged += (s, e) => SwitchContent(Convert(e.Tab));
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
             CameraTypeManager.CameraSummaryUpdated += CameraTypeManager_CameraSummaryUpdated;
@@ -122,7 +122,7 @@ namespace Kinovea.ScreenManager
         #region Private methods
         private void ExplorerTab_Changed(ActiveFileBrowserTab newTab)
         {
-            SwitchContent(GetThumbnailViewerContent(newTab));
+            SwitchContent(Convert(newTab));
         }
 
         private void CameraTypeManager_CamerasDiscovered(object sender,  CamerasDiscoveredEventArgs e)
@@ -186,7 +186,7 @@ namespace Kinovea.ScreenManager
             SelectorOption option = selector.Selected;
             ThumbnailViewerContent selectedContent = (ThumbnailViewerContent)option.Data;
             SwitchContent(selectedContent);
-            NotificationCenter.RaiseExplorerTabChangeAsked(this, GetFileExplorerTab(selectedContent));
+            NotificationCenter.RaiseExplorerTabChanged(this, Convert(selectedContent));
         }
         
         private void InitializeViewers()
@@ -284,7 +284,7 @@ namespace Kinovea.ScreenManager
             }
 
         }
-        private ActiveFileBrowserTab GetFileExplorerTab(ThumbnailViewerContent content)
+        private ActiveFileBrowserTab Convert(ThumbnailViewerContent content)
         {
             ActiveFileBrowserTab tab = ActiveFileBrowserTab.Explorer;
             
@@ -303,7 +303,7 @@ namespace Kinovea.ScreenManager
             
             return tab;
         }
-        private ThumbnailViewerContent GetThumbnailViewerContent(ActiveFileBrowserTab tab)
+        private ThumbnailViewerContent Convert(ActiveFileBrowserTab tab)
         {
             ThumbnailViewerContent content = ThumbnailViewerContent.Files;
             
