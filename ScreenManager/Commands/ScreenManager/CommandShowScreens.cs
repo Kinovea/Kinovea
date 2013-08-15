@@ -19,10 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -41,12 +37,10 @@ namespace Kinovea.ScreenManager
 
         ScreenManagerKernel screenManagerKernel;
 
-        #region constructor
-        public CommandShowScreens(ScreenManagerKernel _smk)
+        public CommandShowScreens(ScreenManagerKernel screenManagerKernel)
         {
-            screenManagerKernel = _smk;
+            this.screenManagerKernel = screenManagerKernel;
         }
-        #endregion
         
         public void Execute()
         {
