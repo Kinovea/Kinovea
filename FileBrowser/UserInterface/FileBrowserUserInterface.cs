@@ -625,10 +625,7 @@ namespace Kinovea.FileBrowser
             // desync can happen in case of renaming and deleting files.
             // the screenmanager backup list is used at BringBackThumbnail,
             // (i.e. when we close a screen)
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.CurrentDirectoryChanged != null)
-                dp.CurrentDirectoryChanged(shortcuts, filenames, refreshThumbnails);
-            
+            NotificationCenter.RaiseCurrentDirectoryChanged(this, shortcuts, filenames, refreshThumbnails);
             this.Cursor = Cursors.Default;
         }
         

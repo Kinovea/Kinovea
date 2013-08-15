@@ -133,6 +133,7 @@
     <Compile Include="CommandLine\CommandLineArgumentException.cs" />
     <Compile Include="CommandLine\CommandLineArgumentManager.cs" />
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
+    <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\DelegatesPool.cs" />

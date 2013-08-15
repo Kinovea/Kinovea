@@ -57,9 +57,7 @@ namespace Kinovea.ScreenManager
             progressBar.Left = selector.Right + 10;
             progressBar.Visible = false;
 
-            DelegatesPool dp = DelegatesPool.Instance();
-            dp.CurrentDirectoryChanged = CurrentDirectoryChanged;
-
+            NotificationCenter.CurrentDirectoryChanged += NotificationCenter_CurrentDirectoryChanged;
             NotificationCenter.ExplorerTabChanged += (s, e) => SwitchContent(Convert(e.Tab));
             
             CameraTypeManager.CamerasDiscovered += CameraTypeManager_CamerasDiscovered;
@@ -74,21 +72,6 @@ namespace Kinovea.ScreenManager
         {
             // tool tips of content type buttons.
             // Forward to viewer.
-        }
-        public void CurrentDirectoryChanged(bool shortcuts, List<string> files, bool refresh)
-        {
-            this.files = files;
-            
-            if(!refresh || !this.Visible)
-                return;
-            
-            if(currentContent != ThumbnailViewerContent.Files && currentContent != ThumbnailViewerContent.Shortcuts)
-                return;
-            
-            if(shortcuts)
-                viewerShortcuts.CurrentDirectoryChanged(files);
-            else
-                viewerFiles.CurrentDirectoryChanged(files);
         }
         
         public void HideContent()
@@ -120,6 +103,22 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private methods
+        private void NotificationCenter_CurrentDirectoryChanged(object sender, CurrentDirectoryChangedEventArgs e)
+        {
+            this.files = e.Files;
+
+            if (!e.Refresh || !this.Visible)
+                return;
+
+            if (currentContent != ThumbnailViewerContent.Files && currentContent != ThumbnailViewerContent.Shortcuts)
+                return;
+
+            if (e.Shortcuts)
+                viewerShortcuts.CurrentDirectoryChanged(files);
+            else
+                viewerFiles.CurrentDirectoryChanged(files);
+        }
+
         private void ExplorerTab_Changed(ActiveFileBrowserTab newTab)
         {
             SwitchContent(Convert(newTab));
