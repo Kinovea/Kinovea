@@ -21,7 +21,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Drawing;
 using System.Xml;
-
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -30,8 +29,6 @@ namespace Kinovea.ScreenManager
     /// CalibrationHelper encapsulates informations used for pixels to real world calculations.
     /// The user can specify the real distance of a Line drawing and a coordinate system.
     /// We also keep the length units and the preferred unit for speeds.
-    /// 
-    /// 
     /// </summary>
     public class CalibrationHelper
     {
@@ -71,8 +68,6 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
         private CalibratorType calibratorType = CalibratorType.Line;
         private ICalibrator calibrator;
         private CalibrationLine calibrationLine = new CalibrationLine();
@@ -81,6 +76,7 @@ namespace Kinovea.ScreenManager
         private LengthUnit lengthUnit = LengthUnit.Pixels;
         private SpeedUnit speedUnit = SpeedUnit.PixelsPerFrame;
         private double framesPerSecond = 25;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
         #region Constructor

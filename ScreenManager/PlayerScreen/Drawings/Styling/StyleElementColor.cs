@@ -38,10 +38,10 @@ namespace Kinovea.ScreenManager
 		#region Properties
 		public override object Value
 		{
-			get { return m_Color; }
+			get { return color; }
 			set 
 			{ 
-				m_Color = (value is Color) ? (Color)value : Color.Black;
+				color = (value is Color) ? (Color)value : Color.Black;
 				RaiseValueChanged();
 			}
 		}
@@ -60,18 +60,18 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private Color m_Color;
+		private Color color;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public StyleElementColor(Color _default)
+		public StyleElementColor(Color defaultColor)
 		{
-			m_Color = _default;
+			color = defaultColor;
 		}
-		public StyleElementColor(XmlReader _xmlReader)
+		public StyleElementColor(XmlReader xmlReader)
 		{
-			ReadXML(_xmlReader);
+			ReadXML(xmlReader);
 		}
 		#endregion
 		
@@ -85,32 +85,32 @@ namespace Kinovea.ScreenManager
 		}
 		public override AbstractStyleElement Clone()
 		{
-			AbstractStyleElement clone = new StyleElementColor(m_Color);
+			AbstractStyleElement clone = new StyleElementColor(color);
 			clone.Bind(this);
 			return clone;
 		}
-		public override void ReadXML(XmlReader _xmlReader)
+		public override void ReadXML(XmlReader xmlReader)
 		{
 		    // Do not use the .NET color converter at reading time either, it breaks on some installations.
-			_xmlReader.ReadStartElement();
-			string s = _xmlReader.ReadElementContentAsString("Value", "");
-			m_Color = XmlHelper.ParseColor(s, Color.Black);
-			_xmlReader.ReadEndElement();
+			xmlReader.ReadStartElement();
+			string s = xmlReader.ReadElementContentAsString("Value", "");
+			color = XmlHelper.ParseColor(s, Color.Black);
+			xmlReader.ReadEndElement();
 		}
-		public override void WriteXml(XmlWriter _xmlWriter)
+		public override void WriteXml(XmlWriter xmlWriter)
 		{
 			// Note: we don't use the .NET color converter at writing time.
 			// The color would be translated to its display name (DarkOliveGreen, CadetBlue, etc.), which is not portable.
 			// We do use a compatible format to be able to use the converter at reading time though.
-			string s = String.Format("{0};{1};{2};{3}", m_Color.A, m_Color.R, m_Color.G, m_Color.B);
-			_xmlWriter.WriteElementString("Value", s);
+			string s = String.Format("{0};{1};{2};{3}", color.A, color.R, color.G, color.B);
+			xmlWriter.WriteElementString("Value", s);
 		}
 		#endregion
 		
 		#region Private Methods
 		private void editor_Paint(object sender, PaintEventArgs e)
 		{
-			using(SolidBrush b = new SolidBrush(m_Color))
+			using(SolidBrush b = new SolidBrush(color))
 			{
 				e.Graphics.FillRectangle(b, e.ClipRectangle);
 				e.Graphics.DrawRectangle(Pens.LightGray, e.ClipRectangle.Left, e.ClipRectangle.Top, e.ClipRectangle.Width - 1, e.ClipRectangle.Height - 1);	
@@ -120,12 +120,13 @@ namespace Kinovea.ScreenManager
 		{
 			FormColorPicker picker = new FormColorPicker();
 			FormsHelper.Locate(picker);
-			if(picker.ShowDialog() == DialogResult.OK)
+			if (picker.ShowDialog() == DialogResult.OK)
 			{
-				m_Color = picker.PickedColor;
+				color = picker.PickedColor;
 				RaiseValueChanged();
 				((Control)sender).Invalidate();
 			}
+
 			picker.Dispose();
 		}	
 		#endregion

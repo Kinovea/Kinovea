@@ -4113,7 +4113,7 @@ namespace Kinovea.ScreenManager
             // This menu should only be accessible if we have a "Stop" value.
             mnuChronoCountdown.Checked = !mnuChronoCountdown.Checked;
             
-            IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.Countdown, (mnuChronoCountdown.Checked == true)?1:0);
+            IUndoableCommand cmc = new CommandModifyChrono(this, m_FrameServer.Metadata, ChronoModificationType.Countdown, mnuChronoCountdown.Checked ? 1 : 0);
             CommandManager cm = CommandManager.Instance();
             cm.LaunchUndoableCommand(cmc);
             

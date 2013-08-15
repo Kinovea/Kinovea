@@ -1187,7 +1187,7 @@ namespace Kinovea.ScreenManager
                 DrawingChrono dc = ad as DrawingChrono;
                 if(dc != null)
                 {
-                    if(atLeastOne == false)
+                    if(!atLeastOne)
                     {
                         w.WriteStartElement("Chronos");
                         atLeastOne = true;
@@ -1211,7 +1211,7 @@ namespace Kinovea.ScreenManager
                 DrawingTrack trk = ad as DrawingTrack;
                 if(trk != null)
                 {
-                    if(atLeastOne == false)
+                    if(!atLeastOne)
                     {
                         w.WriteStartElement("Tracks");
                         atLeastOne = true;

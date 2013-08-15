@@ -35,11 +35,9 @@ namespace Kinovea.ScreenManager
         public string Symbol { get; private set;}
         public string OptionGroup { get; private set;}
         public PointF LastPoint { get; private set;}
-        
         public bool DisplayCoordinates { get; set;}
         
         private List<IWeightedPoint> weightedPoints = new List<IWeightedPoint>();
-        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         public GenericPostureComputedPoint(XmlReader r)
@@ -49,7 +47,6 @@ namespace Kinovea.ScreenManager
             Color = Color.Transparent;
             OptionGroup = "";
             DisplayCoordinates = false;
-            
             
             bool isEmpty = r.IsEmptyElement;
             

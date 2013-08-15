@@ -30,120 +30,120 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Style element to represent line width.
-	/// Editor: owner drawn combo box.
-	/// Very similar to StyleElementPenSize, just the rendering changes. (lines vs circles)
-	/// </summary>
-	public class StyleElementLineSize : AbstractStyleElement
-	{
-		#region Properties
-		public override object Value
-		{
-			get { return m_iPenSize; }
-			set 
-			{ 
-				m_iPenSize = (value is int) ? (int)value : m_iDefaultSize;
-				RaiseValueChanged();
-			}
-		}
-		public override Bitmap Icon
-		{
-			get { return Properties.Drawings.linesize;}
-		}
-		public override string DisplayName
-		{
-			get { return ScreenManagerLang.Generic_LineSizePicker;}
-		}
-		public override string XmlName
-		{
-			get { return "LineSize";}
-		}
-		#endregion
-		
-		#region Members
-		private static readonly int[] m_Options = { 1, 2, 3, 4, 5, 7, 9, 11, 13 };
-		private static readonly int m_iDefaultSize = 3;
-		private int m_iPenSize;
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		#region Constructor
-		public StyleElementLineSize(int _default)
-		{
-			m_iPenSize = (Array.IndexOf(m_Options, _default) >= 0) ? _default : m_iDefaultSize;
-		}
-		public StyleElementLineSize(XmlReader _xmlReader)
-		{
-			ReadXML(_xmlReader);
-		}
-		#endregion
-		
-		#region Public Methods
-		public override Control GetEditor()
-		{
-			ComboBox editor = new ComboBox();
-			editor.DropDownStyle = ComboBoxStyle.DropDownList;
-			editor.ItemHeight = m_Options[m_Options.Length-1] + 4;
-			editor.DrawMode = DrawMode.OwnerDrawFixed;
-			foreach(int i in m_Options) editor.Items.Add(new object());
-			editor.SelectedIndex = Array.IndexOf(m_Options, m_iPenSize);
-			editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
-			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
-			return editor;
-		}
-		public override AbstractStyleElement Clone()
-		{
-			AbstractStyleElement clone = new StyleElementLineSize(m_iPenSize);
-			clone.Bind(this);
-			return clone;
-		}
-		public override void ReadXML(XmlReader _xmlReader)
-		{
-			_xmlReader.ReadStartElement();
-			string s = _xmlReader.ReadElementContentAsString("Value", "");
-			
-			int value = m_iDefaultSize;
-			try
-			{
-				TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
-				value = (int)intConverter.ConvertFromString(s);
-			}
-			catch(Exception)
-			{
-				log.ErrorFormat("An error happened while parsing XML for Line size. {0}", s);
-			}
-			
-			// Restrict to the actual list of "athorized" values.
-			m_iPenSize = (Array.IndexOf(m_Options, value) >= 0) ? value : m_iDefaultSize;
-			
-			_xmlReader.ReadEndElement();
-		}
-		public override void WriteXml(XmlWriter _xmlWriter)
-		{
-			_xmlWriter.WriteElementString("Value", m_iPenSize.ToString());
-		}
-		#endregion
-		
-		#region Private Methods
-		private void editor_DrawItem(object sender, DrawItemEventArgs e)
-		{
-			if(e.Index >= 0 && e.Index < m_Options.Length)
-			{
-				int itemPenSize = m_Options[e.Index];
-				int top = (e.Bounds.Height - itemPenSize) / 2;
-				e.Graphics.FillRectangle(Brushes.Black, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Width, itemPenSize);
-			}
-		}
-		private void editor_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			int index = ((ComboBox)sender).SelectedIndex;
-			if( index >= 0 && index < m_Options.Length)
-			{
-				m_iPenSize = m_Options[index];
-				RaiseValueChanged();
-			}
-		}
-		#endregion
-	}
+    /// <summary>
+    /// Style element to represent line width.
+    /// Editor: owner drawn combo box.
+    /// Very similar to StyleElementPenSize, just the rendering changes. (lines vs circles)
+    /// </summary>
+    public class StyleElementLineSize : AbstractStyleElement
+    {
+        #region Properties
+        public override object Value
+        {
+            get { return penSize; }
+            set 
+            { 
+                penSize = (value is int) ? (int)value : defaultSize;
+                RaiseValueChanged();
+            }
+        }
+        public override Bitmap Icon
+        {
+            get { return Properties.Drawings.linesize;}
+        }
+        public override string DisplayName
+        {
+            get { return ScreenManagerLang.Generic_LineSizePicker;}
+        }
+        public override string XmlName
+        {
+            get { return "LineSize";}
+        }
+        #endregion
+        
+        #region Members
+        private static readonly int[] options = { 1, 2, 3, 4, 5, 7, 9, 11, 13 };
+        private static readonly int defaultSize = 3;
+        private int penSize;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
+        
+        #region Constructor
+        public StyleElementLineSize(int givenDefault)
+        {
+            penSize = (Array.IndexOf(options, givenDefault) >= 0) ? givenDefault : defaultSize;
+        }
+        public StyleElementLineSize(XmlReader xmlReader)
+        {
+            ReadXML(xmlReader);
+        }
+        #endregion
+        
+        #region Public Methods
+        public override Control GetEditor()
+        {
+            ComboBox editor = new ComboBox();
+            editor.DropDownStyle = ComboBoxStyle.DropDownList;
+            editor.ItemHeight = options[options.Length-1] + 4;
+            editor.DrawMode = DrawMode.OwnerDrawFixed;
+            foreach(int i in options) editor.Items.Add(new object());
+            editor.SelectedIndex = Array.IndexOf(options, penSize);
+            editor.DrawItem += new DrawItemEventHandler(editor_DrawItem);
+            editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
+            return editor;
+        }
+        public override AbstractStyleElement Clone()
+        {
+            AbstractStyleElement clone = new StyleElementLineSize(penSize);
+            clone.Bind(this);
+            return clone;
+        }
+        public override void ReadXML(XmlReader xmlReader)
+        {
+            xmlReader.ReadStartElement();
+            string s = xmlReader.ReadElementContentAsString("Value", "");
+            
+            int value = defaultSize;
+            try
+            {
+                TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
+                value = (int)intConverter.ConvertFromString(s);
+            }
+            catch(Exception)
+            {
+                log.ErrorFormat("An error happened while parsing XML for Line size. {0}", s);
+            }
+            
+            // Restrict to the actual list of "athorized" values.
+            penSize = (Array.IndexOf(options, value) >= 0) ? value : defaultSize;
+            
+            xmlReader.ReadEndElement();
+        }
+        public override void WriteXml(XmlWriter xmlWriter)
+        {
+            xmlWriter.WriteElementString("Value", penSize.ToString());
+        }
+        #endregion
+        
+        #region Private Methods
+        private void editor_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0 || e.Index >= options.Length)
+                return;
+            
+            int itemPenSize = options[e.Index];
+            int top = (e.Bounds.Height - itemPenSize) / 2;
+            e.Graphics.FillRectangle(Brushes.Black, e.Bounds.Left, e.Bounds.Top + top, e.Bounds.Width, itemPenSize);
+        }
+        private void editor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = ((ComboBox)sender).SelectedIndex;
+            if( index >= 0 && index < options.Length)
+            {
+                penSize = options[index];
+                RaiseValueChanged();
+            }
+        }
+        #endregion
+    }
 }

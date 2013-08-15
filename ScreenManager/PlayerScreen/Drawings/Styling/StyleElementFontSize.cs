@@ -38,10 +38,10 @@ namespace Kinovea.ScreenManager
 		#region Properties
 		public override object Value
 		{
-			get { return m_iFontSize; }
+			get { return fontSize; }
 			set 
 			{ 
-				m_iFontSize = (value is int) ? (int)value : m_iDefaultFontSize;
+				fontSize = (value is int) ? (int)value : defaultFontSize;
 				RaiseValueChanged();
 			}
 		}
@@ -60,20 +60,20 @@ namespace Kinovea.ScreenManager
 		#endregion
 		
 		#region Members
-		private int m_iFontSize;
-		private static readonly int m_iDefaultFontSize = 10;
-		private static readonly string[] m_Options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
+		private int fontSize;
+		private static readonly int defaultFontSize = 10;
+		private static readonly string[] options = { "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36" };
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		#endregion
 		
 		#region Constructor
-		public StyleElementFontSize(int _default)
+		public StyleElementFontSize(int givenDefault)
 		{
-			m_iFontSize = (Array.IndexOf(m_Options, _default.ToString()) >= 0) ? _default : m_iDefaultFontSize;
+			fontSize = (Array.IndexOf(options, givenDefault.ToString()) >= 0) ? givenDefault : defaultFontSize;
 		}
-		public StyleElementFontSize(XmlReader _xmlReader)
+		public StyleElementFontSize(XmlReader xmlReader)
 		{
-			ReadXML(_xmlReader);
+			ReadXML(xmlReader);
 		}
 		#endregion
 
@@ -82,23 +82,23 @@ namespace Kinovea.ScreenManager
 		{
 			ComboBox editor = new ComboBox();
 			editor.DropDownStyle = ComboBoxStyle.DropDownList;
-			editor.Items.AddRange(m_Options);
-			editor.SelectedIndex = Array.IndexOf(m_Options, m_iFontSize.ToString());
+			editor.Items.AddRange(options);
+			editor.SelectedIndex = Array.IndexOf(options, fontSize.ToString());
 			editor.SelectedIndexChanged += new EventHandler(editor_SelectedIndexChanged);
 			return editor;
 		}
 		public override AbstractStyleElement Clone()
 		{
-			AbstractStyleElement clone = new StyleElementFontSize(m_iFontSize);
+			AbstractStyleElement clone = new StyleElementFontSize(fontSize);
 			clone.Bind(this);
 			return clone;
 		}
-		public override void ReadXML(XmlReader _xmlReader)
+		public override void ReadXML(XmlReader xmlReader)
 		{
-			_xmlReader.ReadStartElement();
-			string s = _xmlReader.ReadElementContentAsString("Value", "");
+			xmlReader.ReadStartElement();
+			string s = xmlReader.ReadElementContentAsString("Value", "");
 			
-			int value = m_iDefaultFontSize;
+			int value = defaultFontSize;
 			try
 			{
 				TypeConverter intConverter = TypeDescriptor.GetConverter(typeof(int));
@@ -110,13 +110,13 @@ namespace Kinovea.ScreenManager
 			}
 			
 			// Restrict to the actual list of "athorized" values.
-			m_iFontSize = (Array.IndexOf(m_Options, value.ToString()) >= 0) ? value : m_iDefaultFontSize;
+			fontSize = (Array.IndexOf(options, value.ToString()) >= 0) ? value : defaultFontSize;
 			
-			_xmlReader.ReadEndElement();
+			xmlReader.ReadEndElement();
 		}
-		public override void WriteXml(XmlWriter _xmlWriter)
+		public override void WriteXml(XmlWriter xmlWriter)
 		{
-			_xmlWriter.WriteElementString("Value", m_iFontSize.ToString());
+			xmlWriter.WriteElementString("Value", fontSize.ToString());
 		}
 		#endregion
 		
@@ -125,9 +125,9 @@ namespace Kinovea.ScreenManager
 		{
 			int i;
 			bool parsed = int.TryParse(((ComboBox)sender).Text, out i);
-			m_iFontSize = parsed ? i : m_iDefaultFontSize;
+			fontSize = parsed ? i : defaultFontSize;
 			RaiseValueChanged();
-			((ComboBox)sender).Text = m_iFontSize.ToString();
+			((ComboBox)sender).Text = fontSize.ToString();
 		}
 		#endregion
 	}

@@ -81,54 +81,49 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        protected internal StyleHelper m_BindTarget;		// An object containing a property that needs to be updated each time the style element value change.
-        private string m_BindTargetProperty;	// Name of the property to update when the style element value changes.
+        protected internal StyleHelper bindTarget;		// An object containing a property that needs to be updated each time the style element value change.
+        private string bindTargetProperty;	// Name of the property to update when the style element value changes.
         #endregion
         
         #region Public Methods
         public abstract Control GetEditor();
         public abstract AbstractStyleElement Clone();
-        public abstract void WriteXml(XmlWriter _xmlWriter);
-        public abstract void ReadXML(XmlReader _xmlReader);
+        public abstract void WriteXml(XmlWriter xmlWriter);
+        public abstract void ReadXML(XmlReader xmlReader);
         
-        public void Bind(StyleHelper _target, string _targetProperty)
+        public void Bind(StyleHelper target, string targetProperty)
         {
-            m_BindTarget = _target;
-            m_BindTargetProperty = _targetProperty;
+            bindTarget = target;
+            bindTargetProperty = targetProperty;
             
             // On bind, we push the style element value to the internal property.
             RaiseValueChanged();
         }
-        public void Bind(AbstractStyleElement _original)
+        public void Bind(AbstractStyleElement original)
         {
             // This function is used in the context of cloning, to clone the target data.
-            m_BindTarget = _original.m_BindTarget;
-            m_BindTargetProperty = _original.m_BindTargetProperty;
+            bindTarget = original.bindTarget;
+            bindTargetProperty = original.bindTargetProperty;
         }
         public void RaiseValueChanged()
         {
-            // 1. Update bound data
-            if(m_BindTarget != null && m_BindTarget.BindWrite != null && !string.IsNullOrEmpty(m_BindTargetProperty))
-            {
-                m_BindTarget.BindWrite(m_BindTargetProperty, Value);
-            }
+            if (bindTarget != null && bindTarget.BindWrite != null && !string.IsNullOrEmpty(bindTargetProperty))
+                bindTarget.BindWrite(bindTargetProperty, Value);
             
-            // 2. Raise event
-            if(ValueChanged != null) ValueChanged(null, EventArgs.Empty);
+            if (ValueChanged != null) 
+                ValueChanged(null, EventArgs.Empty);
         }
         public void ReadValue()
         {
             // Update in case the value has been modified externally.
             // Caveat: affecting Value will raise back BindWrite().
-            if(m_BindTarget != null && m_BindTarget.BindRead != null && !string.IsNullOrEmpty(m_BindTargetProperty))
-            {
-                Value = m_BindTarget.BindRead(m_BindTargetProperty, Value.GetType());
-            }
+            if (bindTarget != null && bindTarget.BindRead != null && !string.IsNullOrEmpty(bindTargetProperty))
+                Value = bindTarget.BindRead(bindTargetProperty, Value.GetType());
         }
         public override string ToString()
         {
             return String.Format("{0} Bound to:{1}",
-                                 Value.ToString(), string.IsNullOrEmpty(m_BindTargetProperty) ? "Nothing":m_BindTargetProperty);
+                Value.ToString(), string.IsNullOrEmpty(bindTargetProperty) ? "Nothing" : bindTargetProperty);
         }
         #endregion
     }

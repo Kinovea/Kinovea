@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
-using System;
 using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
@@ -57,7 +56,6 @@ namespace Kinovea.ScreenManager
         
         public void Unexecute()
         {
-        
         }
         
         private void LoadInSpecificTarget(int targetScreen)
