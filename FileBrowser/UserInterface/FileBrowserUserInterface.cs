@@ -82,9 +82,7 @@ namespace Kinovea.FileBrowser
             
             BuildContextMenu();
             
-            // Registers our exposed functions to the DelegatePool.
-            DelegatesPool dp = DelegatesPool.Instance();
-            dp.ChangeFileExplorerTab = DoChangeFileExplorerTab;
+            NotificationCenter.ExplorerTabChangeAsked += NotificationCenter_ExplorerTabChangeAsked;
             NotificationCenter.RefreshFileExplorer += NotificationCenter_RefreshFileExplorer;
             NotificationCenter.FileSelected += NotificationCenter_FileSelected;
             NotificationCenter.FileOpened += NotificationCenter_FileOpened;
@@ -145,6 +143,11 @@ namespace Kinovea.FileBrowser
         #endregion
 
         #region Public interface
+        private void NotificationCenter_ExplorerTabChangeAsked(object sender, ExplorerTabEventArgs e)
+        {
+            programmaticTabChange = true;
+            tabControl.SelectedIndex = (int)e.Tab;
+        }
         private void NotificationCenter_RefreshFileExplorer(object sender, RefreshFileExplorerEventArgs e)
         {
             DoRefreshFileList(e.RefreshThumbnails);
@@ -681,13 +684,7 @@ namespace Kinovea.FileBrowser
             DeleteSelectedShortcut();
         }
         #endregion
-        
-        private void DoChangeFileExplorerTab(ActiveFileBrowserTab tab)
-        {
-            programmaticTabChange = true;
-            tabControl.SelectedIndex = (int)tab;
-        }
-        
+
         private void BtnManualClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseDisableKeyboardHandler(this);

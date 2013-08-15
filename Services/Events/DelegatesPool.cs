@@ -45,7 +45,6 @@ namespace Kinovea.Services
     public delegate void StatusBarUpdater(string _status);
     public delegate void TopMostMaker(Form _form);
     public delegate void ThumbnailsContainer(bool shortcuts, List<String> files, bool refresh);
-    public delegate void FileExplorerTabChanger(ActiveFileBrowserTab tab);
     public delegate void ExplorerTabChanged(ActiveFileBrowserTab tab);
     
     public class DelegatesPool
@@ -54,7 +53,6 @@ namespace Kinovea.Services
         public Action StopPlaying;
         public TopMostMaker MakeTopMost;
         public ThumbnailsContainer CurrentDirectoryChanged;
-        public FileExplorerTabChanger ChangeFileExplorerTab;
         public ExplorerTabChanged ExplorerTabChanged;
   
         private static DelegatesPool _instance = null;
