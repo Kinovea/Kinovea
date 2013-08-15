@@ -69,9 +69,8 @@ namespace Kinovea.ScreenManager
         private ScreenManagerUserInterface view;
         private bool cancelLastCommand;			// true when a RemoveScreen command was canceled by user.
 
-        //List of screens ( 0..n )
-        public List<AbstractScreen> screenList = new List<AbstractScreen>();
-        public AbstractScreen activeScreen = null;
+        private List<AbstractScreen> screenList = new List<AbstractScreen>();
+        private AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         
         // Dual saving
@@ -955,6 +954,11 @@ namespace Kinovea.ScreenManager
             activeScreen = screen;
             OrganizeMenus();
         }
+        public void SetAllToInactive()
+        {
+            foreach (AbstractScreen screen in screenList)
+                screen.DisplayAsActiveScreen(false);
+        }
         public AbstractScreen GetScreenAt(int index)
         {
             return (index >= 0 && index < screenList.Count) ? screenList[index] : null;
@@ -1001,6 +1005,22 @@ namespace Kinovea.ScreenManager
             if (screenList.Count > 0)
                 SetActiveScreen(screenList[0]);
         }
+        
+        public void SwapScreens()
+        {
+            if (screenList.Count != 2)
+                return;
+            
+            AbstractScreen temp = screenList[0];
+            screenList[0] = screenList[1];
+            screenList[1] = temp;
+        }
+
+        public void OrganizeScreens()
+        {
+            view.OrganizeScreens(screenList);
+        }
+
         public void UpdateStatusBar()
         {
             //------------------------------------------------------------------
