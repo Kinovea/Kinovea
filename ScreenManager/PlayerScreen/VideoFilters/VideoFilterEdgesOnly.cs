@@ -28,34 +28,34 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-	public class VideoFilterEdgesOnly : AdjustmentFilter
-	{
-		#region Properties
-		public override string Name {
-		    get { return ScreenManagerLang.VideoFilterEdgesOnly_FriendlyName; }
-		}
-		public override Bitmap Icon {
-		    get { return null; }
-		}	
-		public override bool Experimental {
-			get { return true; }
-		}
-		public override ImageProcessor ImageProcessor {
-		    get { return ProcessSingleImage; }
-		}
-		#endregion
-		
-		private DifferenceEdgeDetector m_Filter = new DifferenceEdgeDetector();
-		
-		private void ProcessSingleImage(Bitmap _src)
-		{
-		    using(Bitmap gray = Grayscale.CommonAlgorithms.BT709.Apply(_src))
-		    using(Bitmap tmp = m_Filter.Apply(gray))
-		    {
+    public class VideoFilterEdgesOnly : AdjustmentFilter
+    {
+        #region Properties
+        public override string Name {
+            get { return ScreenManagerLang.VideoFilterEdgesOnly_FriendlyName; }
+        }
+        public override Bitmap Icon {
+            get { return null; }
+        }	
+        public override bool Experimental {
+            get { return true; }
+        }
+        public override ImageProcessor ImageProcessor {
+            get { return ProcessSingleImage; }
+        }
+        #endregion
+        
+        private DifferenceEdgeDetector m_Filter = new DifferenceEdgeDetector();
+        
+        private void ProcessSingleImage(Bitmap _src)
+        {
+            using(Bitmap gray = Grayscale.CommonAlgorithms.BT709.Apply(_src))
+            using(Bitmap tmp = m_Filter.Apply(gray))
+            {
                 // Paint the result on the source to emulate ApplyInPlace.
                 Graphics g = Graphics.FromImage(_src);
                 g.DrawImage(tmp, 0, 0);
-		    }
-		}
-	}
+            }
+        }
+    }
 }

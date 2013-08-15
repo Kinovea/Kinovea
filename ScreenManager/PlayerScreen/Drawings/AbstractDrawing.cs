@@ -33,8 +33,7 @@ namespace Kinovea.ScreenManager
     /// All drawings must implement rendering and manipulation methods.
     /// </summary>
     public abstract class AbstractDrawing
-    {
-        
+    {   
         #region Properties
         /// <summary>
         /// Gets or set the fading object for this drawing. 

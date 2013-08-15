@@ -33,27 +33,27 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// A control to let the user specify the current position in the video.
-	/// The control is comprised of a cursor and a list of markers.
-	/// 
-	/// When control is modified by user:
-	/// - The internal data is modified.
-	/// - Events are raised, which are listened to by parent control.
-	/// - Parent control update its own internal data state by reading the properties.
-	/// 
-	/// When control appearence needs to be updated
-	/// - This is when internal data of the parent control have been modified by other means.
-	/// - (At initialization for example)
-	/// - The public properties setters are provided, they doesn't raise the events back.
-	/// </summary>
-	public partial class FrameTracker : UserControl
+    /// <summary>
+    /// A control to let the user specify the current position in the video.
+    /// The control is comprised of a cursor and a list of markers.
+    /// 
+    /// When control is modified by user:
+    /// - The internal data is modified.
+    /// - Events are raised, which are listened to by parent control.
+    /// - Parent control update its own internal data state by reading the properties.
+    /// 
+    /// When control appearence needs to be updated
+    /// - This is when internal data of the parent control have been modified by other means.
+    /// - (At initialization for example)
+    /// - The public properties setters are provided, they doesn't raise the events back.
+    /// </summary>
+    public partial class FrameTracker : UserControl
     {
         #region Properties
         [Category("Behavior"), Browsable(true)]
         public long Minimum
         {
-        	get{return m_iMinimum;}
+            get{return m_iMinimum;}
             set
             {
                 m_iMinimum = value;
@@ -85,7 +85,7 @@ namespace Kinovea.ScreenManager
                 m_iPosition  = value;
                 if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
                 if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
-				UpdateCursorPosition();
+                UpdateCursorPosition();
             }
         }
         [Category("Behavior"), Browsable(true)]
@@ -95,7 +95,7 @@ namespace Kinovea.ScreenManager
             set { m_bReportOnMouseMove = value; }
         }
         #endregion
-			
+            
         #region Members
         private bool m_bInvalidateAsked;	// To prevent reentry in MouseMove before the paint event has been honored.	
         private long m_iMinimum;			// In absolute timestamps.
@@ -116,7 +116,7 @@ namespace Kinovea.ScreenManager
         private Bitmap bmpBumperLeft = Resources.liqbumperleft;
         private Bitmap bmpBumperRight = Resources.liqbumperright;
         private Bitmap bmpBackground = Resources.liqbackdock;
-       	
+        
         #region Markers handling
         private Metadata m_Metadata;
         
@@ -173,61 +173,61 @@ namespace Kinovea.ScreenManager
             // Prepare the images resources for faster painting.
             //bmpBumperLeft = Resources.liqbumperleft..to32bppPArgb();
         }
-		#endregion
-		
-		#region Public Methods
-		public void Remap(long _iMin, long _iMax)
+        #endregion
+        
+        #region Public Methods
+        public void Remap(long _iMin, long _iMax)
         {
-        	// This method is only a shortcut to updating min and max properties at once.
-        	// This method update the appearence of the control only, it doesn't raise the events back.
-        	m_iMinimum = _iMin;
-        	m_iMaximum = _iMax;
-        	
-        	if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
-        	if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
-        	
-        	UpdateMarkersPositions();
-        	UpdateCursorPosition();
-        	Invalidate();
+            // This method is only a shortcut to updating min and max properties at once.
+            // This method update the appearence of the control only, it doesn't raise the events back.
+            m_iMinimum = _iMin;
+            m_iMaximum = _iMax;
+            
+            if (m_iPosition < m_iMinimum) m_iPosition = m_iMinimum;
+            if (m_iPosition > m_iMaximum) m_iPosition = m_iMaximum;
+            
+            UpdateMarkersPositions();
+            UpdateCursorPosition();
+            Invalidate();
         }
-		public void EnableDisable(bool _bEnable)
-		{
-			m_bEnabled = _bEnable;
-			Invalidate();
-		}
-		public void UpdateMarkers(Metadata _metadata)
-		{
-			// Keep a ref on the Metadata object so we can update the
-			// markers position when only the size of the control changes.
-			
-			m_Metadata = _metadata;
+        public void EnableDisable(bool _bEnable)
+        {
+            m_bEnabled = _bEnable;
+            Invalidate();
+        }
+        public void UpdateMarkers(Metadata _metadata)
+        {
+            // Keep a ref on the Metadata object so we can update the
+            // markers position when only the size of the control changes.
+            
+            m_Metadata = _metadata;
             UpdateMarkersPositions();
             UpdateCacheSegmentMarkerPosition();
-		}
-		public void UpdateSyncPointMarker(long _marker)
-		{
-			m_SyncPointTimestamp = _marker;
-			UpdateSyncPointMarkerPosition();
-		}
-		public void UpdateCacheSegmentMarker(VideoSection _section)
-		{
-		    if(!_section.IsEmpty && m_PrebufferDisplay)
-		    {
-    		    m_CacheSegment = _section;
+        }
+        public void UpdateSyncPointMarker(long _marker)
+        {
+            m_SyncPointTimestamp = _marker;
+            UpdateSyncPointMarkerPosition();
+        }
+        public void UpdateCacheSegmentMarker(VideoSection _section)
+        {
+            if(!_section.IsEmpty && m_PrebufferDisplay)
+            {
+                m_CacheSegment = _section;
                 UpdateCacheSegmentMarkerPosition();
-		    }
-		}
-		#endregion
+            }
+        }
+        #endregion
         
-		#region Event Handlers - User Manipulation
+        #region Event Handlers - User Manipulation
         private void FrameTracker_MouseMove(object sender, MouseEventArgs e)
         {
-        	// Note: also raised on mouse down.
-        	// User wants to jump to position. Update the cursor and optionnaly the image.
-        	if(!m_bEnabled || m_bInvalidateAsked || e.Button != MouseButtons.Left)
-        	    return;
-        	
-        	Point mouseCoords = this.PointToClient(Cursor.Position);
+            // Note: also raised on mouse down.
+            // User wants to jump to position. Update the cursor and optionnaly the image.
+            if(!m_bEnabled || m_bInvalidateAsked || e.Button != MouseButtons.Left)
+                return;
+            
+            Point mouseCoords = this.PointToClient(Cursor.Position);
             
             if ((mouseCoords.X > m_iMinimumPixel) && (mouseCoords.X < m_iMaximumPixel))
             {
@@ -237,22 +237,22 @@ namespace Kinovea.ScreenManager
             
                 if (m_bReportOnMouseMove && PositionChanging != null)
                 {
-                	m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
-                	PositionChanging(this, new PositionChangedEventArgs(m_iPosition));
+                    m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
+                    PositionChanging(this, new PositionChangedEventArgs(m_iPosition));
                 }
                 else
                 {
-                	Invalidate();
+                    Invalidate();
                 }
             }
         }
         private void FrameTracker_MouseUp(object sender, MouseEventArgs e)
         {
-        	// End of a mouse move, jump to position.
-        	if(!m_bEnabled || e.Button != MouseButtons.Left)
-        	    return;
-        	
-        	Point mouseCoords = this.PointToClient(Cursor.Position);
+            // End of a mouse move, jump to position.
+            if(!m_bEnabled || e.Button != MouseButtons.Left)
+                return;
+            
+            Point mouseCoords = this.PointToClient(Cursor.Position);
             
             if ((mouseCoords.X > m_iMinimumPixel) && (mouseCoords.X < m_iMaximumPixel))
             {
@@ -262,13 +262,13 @@ namespace Kinovea.ScreenManager
                 { 
                     m_iPosition = GetTimestampFromCoord(m_iPixelPosition + m_iHalfCursorWidth);
                     PositionChanged(this, new PositionChangedEventArgs(m_iPosition));
-            	}
-	        }
+                }
+            }
         }
         private void FrameTracker_Resize(object sender, EventArgs e)
         {
-        	// Resize of the control only : internal data doesn't change.
-        	m_iMaximumPixel = this.Width - m_iSpacers - m_iHalfCursorWidth;
+            // Resize of the control only : internal data doesn't change.
+            m_iMaximumPixel = this.Width - m_iSpacers - m_iHalfCursorWidth;
             m_iMaxWidthPixel = m_iMaximumPixel - m_iMinimumPixel;
             UpdateMarkersPositions();
             UpdateCursorPosition();
@@ -279,28 +279,28 @@ namespace Kinovea.ScreenManager
         #region Painting
         private void FrameTracker_Paint(object sender, PaintEventArgs e)
         {
-        	// When we land in this function, m_iPixelPosition should have been set already.
-        	// It is the only member variable we'll use here.
-        	Graphics g = e.Graphics;
-        	g.PixelOffsetMode = PixelOffsetMode.Half; // <-- fix stretch.
-			g.InterpolationMode = InterpolationMode.NearestNeighbor;
-        	Draw(g);
-        	
-        	m_bInvalidateAsked = false;
+            // When we land in this function, m_iPixelPosition should have been set already.
+            // It is the only member variable we'll use here.
+            Graphics g = e.Graphics;
+            g.PixelOffsetMode = PixelOffsetMode.Half; // <-- fix stretch.
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            Draw(g);
+            
+            m_bInvalidateAsked = false;
         }
         private void Draw(Graphics _canvas)
         {
-        	// Background. (Note: it's faster to draw stretched than multiple tiles).
+            // Background. (Note: it's faster to draw stretched than multiple tiles).
             _canvas.DrawImage(bmpBackground, 22, 0, Width-40, bmpBackground.Height-1);
-        	
-        	// Bumpers.
-        	_canvas.DrawImageUnscaled(bmpBumperLeft, 10, 0);
-        	_canvas.DrawImageUnscaled(bmpBumperRight, Width-20, 0);
-        	
-        	if(!m_bEnabled)
-        	    return;
-        	
-        	if(m_PrebufferDisplay)
+            
+            // Bumpers.
+            _canvas.DrawImageUnscaled(bmpBumperLeft, 10, 0);
+            _canvas.DrawImageUnscaled(bmpBumperRight, Width-20, 0);
+            
+            if(!m_bEnabled)
+                return;
+            
+            if(m_PrebufferDisplay)
             {
                 foreach(Point mark in m_CacheSegmentMarks)
                     DrawMark(_canvas, Pens.LightSlateGray, Brushes.LightSteelBlue, mark);
@@ -309,8 +309,8 @@ namespace Kinovea.ScreenManager
                 int pixPos =  GetCoordFromTimestamp(m_iPosition);
                 _canvas.DrawLine(Pens.Red, pixPos, 5, pixPos, 13);
             }
-    	    else
-    	    {
+            else
+            {
                 foreach (int mark in m_KeyframesMarks)
                     DrawMark(_canvas, m_PenKeyBorder, m_PenKeyInside, mark);
 
@@ -346,32 +346,32 @@ namespace Kinovea.ScreenManager
         }
         private void DrawMark(Graphics _canvas, Pen _pBorder, Pen _pInside, int _iCoord)
         {
-        	// Mark for a single point in time (key image).
-        	if(_iCoord <= 0)
-        	    return;
-        	
-			int iLeft = _iCoord;
-        	int iTop = 5;
-        	int iWidth = 3;
-        	int iHeight = 8;
-        	
-			_canvas.DrawRectangle(_pBorder, iLeft, iTop, iWidth, iHeight );
-			_canvas.DrawRectangle(_pInside, iLeft + 1, iTop+1, iWidth-2, iHeight-2 );
+            // Mark for a single point in time (key image).
+            if(_iCoord <= 0)
+                return;
+            
+            int iLeft = _iCoord;
+            int iTop = 5;
+            int iWidth = 3;
+            int iHeight = 8;
+            
+            _canvas.DrawRectangle(_pBorder, iLeft, iTop, iWidth, iHeight );
+            _canvas.DrawRectangle(_pInside, iLeft + 1, iTop+1, iWidth-2, iHeight-2 );
         }
         private void DrawMark(Graphics _canvas, Pen _pBorder, Brush _bInside, Point _iCoords)
         {
-        	// Mark for a range in time (chrono or track).
-        	int iLeft = _iCoords.X;
-        	int iTop = 5;
-        	int iWidth = _iCoords.Y;
-        	int iHeight = 8;
-        	
-        	// Bound to bumpers.
-        	if(iLeft < m_iMinimumPixel) iLeft = m_iMinimumPixel;
-			if(iLeft + iWidth > m_iMaximumPixel) iWidth = m_iMaximumPixel - iLeft;
-        	
-			_canvas.FillRectangle(_bInside, iLeft, iTop, iWidth, iHeight);
-			_canvas.DrawRectangle(_pBorder, iLeft, iTop, iWidth, iHeight );
+            // Mark for a range in time (chrono or track).
+            int iLeft = _iCoords.X;
+            int iTop = 5;
+            int iWidth = _iCoords.Y;
+            int iHeight = 8;
+            
+            // Bound to bumpers.
+            if(iLeft < m_iMinimumPixel) iLeft = m_iMinimumPixel;
+            if(iLeft + iWidth > m_iMaximumPixel) iWidth = m_iMaximumPixel - iLeft;
+            
+            _canvas.FillRectangle(_bInside, iLeft, iTop, iWidth, iHeight);
+            _canvas.DrawRectangle(_pBorder, iLeft, iTop, iWidth, iHeight );
         }
         #endregion
         
@@ -389,46 +389,46 @@ namespace Kinovea.ScreenManager
                 return;
             
             // Key frames
-        	m_KeyframesMarks.Clear();
-        	foreach(Keyframe kf in m_Metadata.Keyframes)
-        	{
-        		// Only display Key image that are in the selection.
-        		if(kf.Position >= m_iMinimum && kf.Position <= m_iMaximum)
-        		{
-        			m_KeyframesMarks.Add(GetCoordFromTimestamp(kf.Position));
-        		}
-        	}
-        	
-        	// ExtraDrawings
-        	// We will store the range coords in a Point object, to get a couple of ints structure.
+            m_KeyframesMarks.Clear();
+            foreach(Keyframe kf in m_Metadata.Keyframes)
+            {
+                // Only display Key image that are in the selection.
+                if(kf.Position >= m_iMinimum && kf.Position <= m_iMaximum)
+                {
+                    m_KeyframesMarks.Add(GetCoordFromTimestamp(kf.Position));
+                }
+            }
+            
+            // ExtraDrawings
+            // We will store the range coords in a Point object, to get a couple of ints structure.
             // X will be the left coordinate, Y the width.
-        	m_ChronosMarks.Clear();
-        	m_TracksMarks.Clear();
-        	foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
-        	{
+            m_ChronosMarks.Clear();
+            m_TracksMarks.Clear();
+            foreach(AbstractDrawing ad in m_Metadata.ExtraDrawings)
+            {
                 DrawingChrono chrono = ad as DrawingChrono;
                 DrawingTrack trk = ad as DrawingTrack;
                 if(chrono != null)
                 {
-                	if(chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
-                	{
-                		// Only chronos that have an end and something inside the selection.
-            			if(chrono.TimeStart <= m_iMaximum && chrono.TimeStop >= m_iMinimum)
-            			    m_ChronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
-                	}
-        		}
+                    if(chrono.TimeStart != long.MaxValue && chrono.TimeStop != long.MaxValue)
+                    {
+                        // Only chronos that have an end and something inside the selection.
+                        if(chrono.TimeStart <= m_iMaximum && chrono.TimeStop >= m_iMinimum)
+                            m_ChronosMarks.Add(GetMarkerRange(chrono.TimeStart, chrono.TimeStop));
+                    }
+                }
                 else if(trk != null)
                 {
                     if(trk.BeginTimeStamp <= m_iMaximum && trk.EndTimeStamp >= m_iMinimum)
                         m_TracksMarks.Add(GetMarkerRange(trk.BeginTimeStamp, trk.EndTimeStamp));
                 }
-        	}
+            }
         }
         private void UpdateSyncPointMarkerPosition()
         {
             m_SyncPointMark = 0;
             if(m_SyncPointTimestamp != 0 && m_SyncPointTimestamp >= m_iMinimum && m_SyncPointTimestamp <= m_iMaximum)
-            	m_SyncPointMark = GetCoordFromTimestamp(m_SyncPointTimestamp);
+                m_SyncPointMark = GetCoordFromTimestamp(m_SyncPointTimestamp);
         }
         private void UpdateCacheSegmentMarkerPosition()
         {
@@ -465,9 +465,9 @@ namespace Kinovea.ScreenManager
         private int Rescale(long _iOldValue, long _iOldMax, long _iNewMax)
         {
             if(_iOldMax > 0)
-            	return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
+                return (int)(Math.Round((double)((double)_iOldValue * (double)_iNewMax) / (double)_iOldMax));
             else
-            	return 0;
+                return 0;
         }
         #endregion
     }

@@ -34,22 +34,22 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	public class VideoFilterAutoLevels : AdjustmentFilter
-	{
-		#region Properties
-		public override string Name {
-		    get { return ScreenManagerLang.VideoFilterAutoLevels_FriendlyName; }
-		}
-		public override Bitmap Icon {
-		    get { return Properties.Resources.chart_bar; }
-		}
-		public override ImageProcessor ImageProcessor {
-		    get { return ProcessSingleImage; }
-		}
-		#endregion
-		
-		private void ProcessSingleImage(Bitmap _src)
-		{
+    public class VideoFilterAutoLevels : AdjustmentFilter
+    {
+        #region Properties
+        public override string Name {
+            get { return ScreenManagerLang.VideoFilterAutoLevels_FriendlyName; }
+        }
+        public override Bitmap Icon {
+            get { return Properties.Resources.chart_bar; }
+        }
+        public override ImageProcessor ImageProcessor {
+            get { return ProcessSingleImage; }
+        }
+        #endregion
+        
+        private void ProcessSingleImage(Bitmap _src)
+        {
             ImageStatistics stats = new ImageStatistics(_src);
             LevelsLinear levelsLinear = new LevelsLinear {
                 InRed = stats.Red.GetRange( 0.87 ),
@@ -58,7 +58,7 @@ namespace Kinovea.ScreenManager
             };
             
             levelsLinear.ApplyInPlace(_src);
-		}
-	}
+        }
+    }
 }
 

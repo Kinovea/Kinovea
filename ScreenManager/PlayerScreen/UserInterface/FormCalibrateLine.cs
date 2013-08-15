@@ -30,15 +30,15 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// This dialog let the user specify how many real-world-units long is this line.
-	/// This will have an impact on all lines stored in this metadata.
-	/// Note that it is not possible to map pixels to pixels. 
-	/// Pixel are used exclusively internally. 
-	/// </summary>
+    /// <summary>
+    /// This dialog let the user specify how many real-world-units long is this line.
+    /// This will have an impact on all lines stored in this metadata.
+    /// Note that it is not possible to map pixels to pixels. 
+    /// Pixel are used exclusively internally. 
+    /// </summary>
     public partial class FormCalibrateLine : Form
     {
-    	#region Members
+        #region Members
         private CalibrationHelper calibrationHelper;
         private DrawingLine2D line;
         private float pixelLength;
@@ -49,12 +49,12 @@ namespace Kinovea.ScreenManager
         #region Construction & Initialization
         public FormCalibrateLine(CalibrationHelper calibrationHelper, DrawingLine2D line)
         {
-        	this.calibrationHelper = calibrationHelper;
-        	this.line = line;
-        	
-        	pixelLength = this.line.Length();
-        	calibratedLength = pixelLength;
-        	
+            this.calibrationHelper = calibrationHelper;
+            this.line = line;
+            
+            pixelLength = this.line.Length();
+            calibratedLength = pixelLength;
+            
             InitializeComponent();
             LocalizeForm();
             InitializeValues();
@@ -96,7 +96,7 @@ namespace Kinovea.ScreenManager
         #region User choices handlers
         private void textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-        	// We only accept numbers, points and coma in there.
+            // We only accept numbers, points and coma in there.
             char key = e.KeyChar;
             if (((key < '0') || (key > '9')) && (key != ',') && (key != '.') && (key != '\b'))
             {
@@ -108,20 +108,20 @@ namespace Kinovea.ScreenManager
         #region OK/Cancel Handlers
         private void btnOK_Click(object sender, EventArgs e)
         {
-        	if(tbMeasure.Text.Length == 0)
-        	    return;
-        	
-        	try
+            if(tbMeasure.Text.Length == 0)
+                return;
+            
+            try
             {
-            	float length = float.Parse(tbMeasure.Text);
-            	if(length <= 0)
-            	    return;
-            	
-            	float ratio = length / pixelLength;
-            	
-            	calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
+                float length = float.Parse(tbMeasure.Text);
+                if(length <= 0)
+                    return;
+                
+                float ratio = length / pixelLength;
+                
+                calibrationHelper.SetCalibratorFromType(CalibratorType.Line);
 
-            	calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
+                calibrationHelper.CalibrationByLine_SetPixelToUnit(ratio);
                 calibrationHelper.LengthUnit = (LengthUnit)cbUnit.SelectedIndex;
             }
             catch

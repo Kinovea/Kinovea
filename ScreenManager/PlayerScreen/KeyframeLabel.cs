@@ -33,35 +33,35 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// A class to encapsulate a mini label.
-	/// Mainly used for Keyframe labels / line measure / track speed.
-	/// 
-	/// The object is comprised of an attach point and the mini label itself.
-	/// The label can be moved relatively to the attach point from the container drawing tool.
-	/// 
-	/// The mini label position is expressed in absolute coordinates. (previously was relative to the attach).
-	/// 
-	/// The text to display is actually reset just before we need to draw it.
-	/// </summary>
+    /// <summary>
+    /// A class to encapsulate a mini label.
+    /// Mainly used for Keyframe labels / line measure / track speed.
+    /// 
+    /// The object is comprised of an attach point and the mini label itself.
+    /// The label can be moved relatively to the attach point from the container drawing tool.
+    /// 
+    /// The mini label position is expressed in absolute coordinates. (previously was relative to the attach).
+    /// 
+    /// The text to display is actually reset just before we need to draw it.
+    /// </summary>
     public class KeyframeLabel
     {
         #region Properties
-		public long Timestamp
+        public long Timestamp
         {
-        	get { return m_iTimestamp; }
-			set { m_iTimestamp = value; }	
+            get { return m_iTimestamp; }
+            set { m_iTimestamp = value; }	
         }
-		public int AttachIndex
-		{
-			get { return m_iAttachIndex; }
-			set { m_iAttachIndex = value; }
-		}
-		public Color BackColor
-		{
-			get { return m_StyleHelper.Bicolor.Background; }
-			set { m_StyleHelper.Bicolor = new Bicolor(value); }
-		}
+        public int AttachIndex
+        {
+            get { return m_iAttachIndex; }
+            set { m_iAttachIndex = value; }
+        }
+        public Color BackColor
+        {
+            get { return m_StyleHelper.Bicolor.Background; }
+            set { m_StyleHelper.Bicolor = new Bicolor(value); }
+        }
         #endregion
 
         #region Members
@@ -78,10 +78,10 @@ namespace Kinovea.ScreenManager
         public KeyframeLabel() : this(Point.Empty, Color.Black){}
         public KeyframeLabel(Point _attachPoint, Color _color)
         {
-        	m_AttachLocation = _attachPoint;
-        	m_Background.Rectangle = new Rectangle(_attachPoint.Translate(-20, -50), Size.Empty);
-        	m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
-        	m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, _color));
+            m_AttachLocation = _attachPoint;
+            m_Background.Rectangle = new Rectangle(_attachPoint.Translate(-20, -50), Size.Empty);
+            m_StyleHelper.Font = new Font("Arial", 8, FontStyle.Bold);
+            m_StyleHelper.Bicolor = new Bicolor(Color.FromArgb(160, _color));
         }
         public KeyframeLabel(XmlReader _xmlReader, PointF _scale)
             : this(Point.Empty, Color.Black)
@@ -104,11 +104,11 @@ namespace Kinovea.ScreenManager
         }
         public void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, double _fOpacityFactor)
         {
-        	using(SolidBrush fillBrush = m_StyleHelper.GetBackgroundBrush((int)(_fOpacityFactor*255)))
-        	using(Pen p = m_StyleHelper.GetBackgroundPen((int)(_fOpacityFactor*64)))
+            using(SolidBrush fillBrush = m_StyleHelper.GetBackgroundBrush((int)(_fOpacityFactor*255)))
+            using(Pen p = m_StyleHelper.GetBackgroundPen((int)(_fOpacityFactor*64)))
             using(Font f = m_StyleHelper.GetFont((float)_transformer.Scale))
             using(SolidBrush fontBrush = m_StyleHelper.GetForegroundBrush((int)(_fOpacityFactor*255)))
-        	{
+            {
                 
                 // Small dot and connector. 
                 Point attch = _transformer.Transform(m_AttachLocation);
@@ -123,12 +123,12 @@ namespace Kinovea.ScreenManager
                 Rectangle rect = new Rectangle(location, size);
                 RoundedRectangle.Draw(_canvas, rect, fillBrush, f.Height/4, false, false, null);
                 _canvas.DrawString(m_Text, f, fontBrush, rect.Location);
-        	}
+            }
         }    
         public void SetAttach(Point _point, bool _moveLabel)
         {
             int dx = _point.X - m_AttachLocation.X;
-			int dy = _point.Y - m_AttachLocation.Y;
+            int dy = _point.Y - m_AttachLocation.Y;
             
             m_AttachLocation = _point;
             
@@ -165,23 +165,23 @@ namespace Kinovea.ScreenManager
              _xmlReader.ReadStartElement();
              
              while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
-				switch(_xmlReader.Name)
-				{
-					case "SpacePosition":
-				        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
-				        Point location = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
-				        m_Background.Rectangle = new Rectangle(location, Size.Empty);
+            {
+                switch(_xmlReader.Name)
+                {
+                    case "SpacePosition":
+                        Point p = XmlHelper.ParsePoint(_xmlReader.ReadElementContentAsString());
+                        Point location = new Point((int)(_scale.X * p.X), (int)(_scale.Y * p.Y));
+                        m_Background.Rectangle = new Rectangle(location, Size.Empty);
                         break;
-					case "TimePosition":
+                    case "TimePosition":
                         m_iTimestamp = _xmlReader.ReadElementContentAsLong();
                         break;
-					default:
-						string unparsed = _xmlReader.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
+                    default:
+                        string unparsed = _xmlReader.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
              
             _xmlReader.ReadEndElement();
         }

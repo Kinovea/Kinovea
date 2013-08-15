@@ -29,21 +29,21 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// A simple dialog wrapping a progress bar and a background worker.
-	/// </summary>
-	public partial class formProgressBar2 : Form
-	{
-		#region Members
-		private bool m_Idle;
-		private bool m_AsPercentage;
-		private EventHandler m_IdleDetector;
-		private BackgroundWorker m_bgWorker = new BackgroundWorker();
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
-		
-		public formProgressBar2(bool _cancellable, bool _asPercentage, DoWorkEventHandler _doWork)
-		{
+    /// <summary>
+    /// A simple dialog wrapping a progress bar and a background worker.
+    /// </summary>
+    public partial class formProgressBar2 : Form
+    {
+        #region Members
+        private bool m_Idle;
+        private bool m_AsPercentage;
+        private EventHandler m_IdleDetector;
+        private BackgroundWorker m_bgWorker = new BackgroundWorker();
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
+        
+        public formProgressBar2(bool _cancellable, bool _asPercentage, DoWorkEventHandler _doWork)
+        {
             m_AsPercentage = _asPercentage;
             m_IdleDetector = (s,e) => m_Idle = true;
             
@@ -61,18 +61,18 @@ namespace Kinovea.ScreenManager
             this.Text = "   " + ScreenManagerLang.FormProgressBar_Title;
             labelInfos.Text = ScreenManagerLang.FormFileSave_Infos + " 0%";
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
-		}
-		private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        }
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-		    if (!m_Idle)
-		        return;
-		    
+            if (!m_Idle)
+                return;
+            
             m_Idle = false;
             
             int total = (int)e.UserState;
             int value = Math.Max(0, Math.Min(e.ProgressPercentage, total));
             
-        	progressBar.Maximum = total;
+            progressBar.Maximum = total;
             progressBar.Value = value;
 
             if(m_AsPercentage)
@@ -80,20 +80,20 @@ namespace Kinovea.ScreenManager
             else
                 labelInfos.Text = String.Format("{0} {1}/{2}", ScreenManagerLang.FormFileSave_Infos, value, total);
         }
-		private void WorkCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-		    this.Close();
-		}
-		private void formProgressBar_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			Application.Idle -= m_IdleDetector;
-		}
-		private void ButtonCancel_Click(object sender, EventArgs e)
-		{
-		    // This will switch to the UI thread but it will still be freezed as it's a modal dialog.
-		    // Any cleanup must be done directly in the background thread upon detecting cancellation.
-			btnCancel.Enabled = false;
-			m_bgWorker.CancelAsync();
-		}
-	}
+        private void WorkCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.Close();
+        }
+        private void formProgressBar_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Idle -= m_IdleDetector;
+        }
+        private void ButtonCancel_Click(object sender, EventArgs e)
+        {
+            // This will switch to the UI thread but it will still be freezed as it's a modal dialog.
+            // Any cleanup must be done directly in the background thread upon detecting cancellation.
+            btnCancel.Enabled = false;
+            m_bgWorker.CancelAsync();
+        }
+    }
 }

@@ -28,17 +28,17 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// The dialog lets the user configure the fading / persistence option for a given drawing.
-	/// We work with the actual drawing to display the change in real time.
-	/// If the user decide to cancel, there's a "fallback to memo" mechanism.
-	/// </summary>
+    /// <summary>
+    /// The dialog lets the user configure the fading / persistence option for a given drawing.
+    /// We work with the actual drawing to display the change in real time.
+    /// If the user decide to cancel, there's a "fallback to memo" mechanism.
+    /// </summary>
     public partial class formConfigureFading : Form
     {
-    	#region Members
+        #region Members
        private bool m_bManualClose = false;
         
-    	private PictureBox m_SurfaceScreen;        // Used to update the image while configuring.
+        private PictureBox m_SurfaceScreen;        // Used to update the image while configuring.
         private AbstractDrawing m_Drawing;			// Instance of the drawing we are modifying.
         private InfosFading m_MemoInfosFading;		// Memo to fallback to on cancel.
         #endregion
@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         #region Construction & Initialization
         public formConfigureFading(AbstractDrawing _drawing, PictureBox _SurfaceScreen)
         {
-        	m_SurfaceScreen = _SurfaceScreen;
+            m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
             m_MemoInfosFading = _drawing.InfosFading.Clone();
             
@@ -56,8 +56,8 @@ namespace Kinovea.ScreenManager
         }
         private void ConfigureForm()
         {
-        	// Display current values.
-        	trkValue.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
+            // Display current values.
+            trkValue.Maximum = PreferencesManager.PlayerPreferences.MaxFading;
             trkValue.Value = Math.Min(m_Drawing.InfosFading.FadingFrames, trkValue.Maximum);
             chkDefault.Checked = m_Drawing.InfosFading.UseDefault;
             chkAlwaysVisible.Checked = m_Drawing.InfosFading.AlwaysVisible;
@@ -75,11 +75,11 @@ namespace Kinovea.ScreenManager
             InfosFading info = PreferencesManager.PlayerPreferences.DefaultFading;
             if(info.AlwaysVisible)
             {
-            	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault;
+                chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault;
             }
             else
             {
-            	chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault + String.Format("({0})", Math.Min(info.FadingFrames, trkValue.Maximum));
+                chkDefault.Text = ScreenManagerLang.dlgConfigureFading_chkDefault + String.Format("({0})", Math.Min(info.FadingFrames, trkValue.Maximum));
             }
             
             UpdateValueLabel();
@@ -115,7 +115,7 @@ namespace Kinovea.ScreenManager
         }
         private void UpdateValueLabel()
         {
-        	int val = Math.Min(trkValue.Maximum, m_Drawing.InfosFading.FadingFrames);
+            int val = Math.Min(trkValue.Maximum, m_Drawing.InfosFading.FadingFrames);
             lblValue.Text = String.Format(ScreenManagerLang.dlgConfigureFading_lblValue, val.ToString());
         }
         private void EnableDisable()
@@ -163,7 +163,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_bManualClose)
             {
-            	m_Drawing.InfosFading = m_MemoInfosFading.Clone();
+                m_Drawing.InfosFading = m_MemoInfosFading.Clone();
                 m_SurfaceScreen.Invalidate();
             }
         }

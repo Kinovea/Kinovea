@@ -34,179 +34,179 @@ using Kinovea.Video.FFMpeg;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// FrameServerPlayer encapsulate the video file, meta data and everything 
-	/// needed to render the frame and access file functions.
-	/// PlayerScreenUserInterface is the View, FrameServerPlayer is the Model.
-	/// </summary>
-	public class FrameServerPlayer : AbstractFrameServer
-	{
-		#region Properties
-		public VideoReader VideoReader
-		{
-			get { return m_VideoReader; }
-			set { m_VideoReader = value; }
-		}
-		public Metadata Metadata
-		{
-			get { return m_Metadata; }
-			set { m_Metadata = value; }
-		}
-		public CoordinateSystem CoordinateSystem
-		{
-			get { return m_Metadata.CoordinateSystem; }
-		}
-		public bool Loaded
-		{
-		    get { return m_VideoReader != null && m_VideoReader.Loaded; }
-		}
-		public Bitmap CurrentImage {
-		    get { 
-		        if(m_VideoReader == null || !m_VideoReader.Loaded || m_VideoReader.Current == null)
-		            return null;
-		        else
-		            return m_VideoReader.Current.Image;
-		    }
-		}
-		#endregion
-		
-		#region Members
-		private VideoReader m_VideoReader;
-		private Metadata m_Metadata;
-		private formProgressBar m_FormProgressBar;
-		private BackgroundWorker m_BgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+    /// <summary>
+    /// FrameServerPlayer encapsulate the video file, meta data and everything 
+    /// needed to render the frame and access file functions.
+    /// PlayerScreenUserInterface is the View, FrameServerPlayer is the Model.
+    /// </summary>
+    public class FrameServerPlayer : AbstractFrameServer
+    {
+        #region Properties
+        public VideoReader VideoReader
+        {
+            get { return m_VideoReader; }
+            set { m_VideoReader = value; }
+        }
+        public Metadata Metadata
+        {
+            get { return m_Metadata; }
+            set { m_Metadata = value; }
+        }
+        public CoordinateSystem CoordinateSystem
+        {
+            get { return m_Metadata.CoordinateSystem; }
+        }
+        public bool Loaded
+        {
+            get { return m_VideoReader != null && m_VideoReader.Loaded; }
+        }
+        public Bitmap CurrentImage {
+            get { 
+                if(m_VideoReader == null || !m_VideoReader.Loaded || m_VideoReader.Current == null)
+                    return null;
+                else
+                    return m_VideoReader.Current.Image;
+            }
+        }
+        #endregion
+        
+        #region Members
+        private VideoReader m_VideoReader;
+        private Metadata m_Metadata;
+        private formProgressBar m_FormProgressBar;
+        private BackgroundWorker m_BgWorkerSave = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
         private SaveResult m_SaveResult;
         private bool m_SavingMetada;
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		#endregion
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
 
-		#region Constructor
-		public FrameServerPlayer()
-		{
+        #region Constructor
+        public FrameServerPlayer()
+        {
             m_BgWorkerSave.ProgressChanged += bgWorkerSave_ProgressChanged;
             m_BgWorkerSave.RunWorkerCompleted += bgWorkerSave_RunWorkerCompleted;
             m_BgWorkerSave.DoWork += bgWorkerSave_DoWork;
-		}
-		#endregion
-		
-		#region Public
-		public OpenVideoResult Load(string _FilePath)
-		{
-			// Instanciate appropriate video reader class depending on extension.
-			string extension = Path.GetExtension(_FilePath);
-			m_VideoReader = VideoTypeManager.GetVideoReader(extension);
-			if(m_VideoReader != null)
-			{
-			    m_VideoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
+        }
+        #endregion
+        
+        #region Public
+        public OpenVideoResult Load(string _FilePath)
+        {
+            // Instanciate appropriate video reader class depending on extension.
+            string extension = Path.GetExtension(_FilePath);
+            m_VideoReader = VideoTypeManager.GetVideoReader(extension);
+            if(m_VideoReader != null)
+            {
+                m_VideoReader.Options = new VideoOptions(PreferencesManager.PlayerPreferences.AspectRatio, PreferencesManager.PlayerPreferences.DeinterlaceByDefault);
                 return m_VideoReader.Open(_FilePath);
-			}
-			else
-			{
+            }
+            else
+            {
                 return OpenVideoResult.NotSupported;
-			}
-		}
-		public void Unload()
-		{
-			// Prepare the FrameServer for a new video by resetting everything.
-			if(m_VideoReader != null && m_VideoReader.Loaded)
+            }
+        }
+        public void Unload()
+        {
+            // Prepare the FrameServer for a new video by resetting everything.
+            if(m_VideoReader != null && m_VideoReader.Loaded)
                 m_VideoReader.Close();
-			
-			if(m_Metadata != null)
-			    m_Metadata.Reset();
-		}
-		public void SetupMetadata()
-		{
-			// Setup Metadata global infos in case we want to flush it to a file (or mux).
-			
-			if(m_Metadata == null || m_VideoReader == null)
-			    return;
-			
-			m_Metadata.ImageSize = m_VideoReader.Info.AspectRatioSize;
-			m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
-			m_Metadata.CalibrationHelper.FramesPerSecond = m_VideoReader.Info.FramesPerSeconds;
-			m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
-			
-			m_Metadata.PostSetup();
-			
-			log.Debug("Setup metadata.");
-		}
-		public override void Draw(Graphics _canvas)
-		{
-			// Draw the current image on canvas according to conf.
-			// This is called back from screen paint method.
-		}
-		public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, ImageRetriever _DelegateOutputBitmap)	
-		{
-			// Let the user select what he wants to save exactly.
-			formVideoExport fve = new formVideoExport(m_VideoReader.FilePath, m_Metadata, _fSlowmotionPercentage);
+            
+            if(m_Metadata != null)
+                m_Metadata.Reset();
+        }
+        public void SetupMetadata()
+        {
+            // Setup Metadata global infos in case we want to flush it to a file (or mux).
+            
+            if(m_Metadata == null || m_VideoReader == null)
+                return;
+            
+            m_Metadata.ImageSize = m_VideoReader.Info.AspectRatioSize;
+            m_Metadata.AverageTimeStampsPerFrame = m_VideoReader.Info.AverageTimeStampsPerFrame;
+            m_Metadata.CalibrationHelper.FramesPerSecond = m_VideoReader.Info.FramesPerSeconds;
+            m_Metadata.FirstTimeStamp = m_VideoReader.Info.FirstTimeStamp;
+            
+            m_Metadata.PostSetup();
+            
+            log.Debug("Setup metadata.");
+        }
+        public override void Draw(Graphics _canvas)
+        {
+            // Draw the current image on canvas according to conf.
+            // This is called back from screen paint method.
+        }
+        public void Save(double _fPlaybackFrameInterval, double _fSlowmotionPercentage, ImageRetriever _DelegateOutputBitmap)	
+        {
+            // Let the user select what he wants to save exactly.
+            formVideoExport fve = new formVideoExport(m_VideoReader.FilePath, m_Metadata, _fSlowmotionPercentage);
             if(fve.Spawn() == DialogResult.OK)
             {
-            	if(fve.SaveAnalysis)
-            	{
-            		m_Metadata.ToXmlFile(fve.Filename);
-            	}
-            	else
-            	{
-            		DoSave(fve.Filename,
-    						fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoReader.Info.FrameIntervalMilliseconds,
-    						fve.BlendDrawings,
-    						false,
-    						false,
-    						_DelegateOutputBitmap);
-            	}
+                if(fve.SaveAnalysis)
+                {
+                    m_Metadata.ToXmlFile(fve.Filename);
+                }
+                else
+                {
+                    DoSave(fve.Filename,
+                            fve.UseSlowMotion ? _fPlaybackFrameInterval : m_VideoReader.Info.FrameIntervalMilliseconds,
+                            fve.BlendDrawings,
+                            false,
+                            false,
+                            _DelegateOutputBitmap);
+                }
             }
-			
-			// Release configuration form.
+            
+            // Release configuration form.
             fve.Dispose();
-		}
-		public void SaveDiaporama(ImageRetriever _DelegateOutputBitmap, bool _diapo)
-		{
-			// Let the user configure the diaporama export.
-			using(formDiapoExport fde = new formDiapoExport(_diapo))
-			{
-			    if(fde.ShowDialog() == DialogResult.OK)
-    			{
-    				DoSave(fde.Filename, 
-    				       	fde.FrameInterval,
-    				       	true, 
-    				       	fde.PausedVideo ? false : true,
-    				       	fde.PausedVideo,
-    				       	_DelegateOutputBitmap);
-    			}
-			}
-		}
-		public void AfterSave()
-		{
-		    if(m_SavingMetada)
-		    {
-		        Metadata.CleanupHash();
-		        m_SavingMetada = false;
-		    }
+        }
+        public void SaveDiaporama(ImageRetriever _DelegateOutputBitmap, bool _diapo)
+        {
+            // Let the user configure the diaporama export.
+            using(formDiapoExport fde = new formDiapoExport(_diapo))
+            {
+                if(fde.ShowDialog() == DialogResult.OK)
+                {
+                    DoSave(fde.Filename, 
+                            fde.FrameInterval,
+                            true, 
+                            fde.PausedVideo ? false : true,
+                            fde.PausedVideo,
+                            _DelegateOutputBitmap);
+                }
+            }
+        }
+        public void AfterSave()
+        {
+            if(m_SavingMetada)
+            {
+                Metadata.CleanupHash();
+                m_SavingMetada = false;
+            }
 
             NotificationCenter.RaiseRefreshFileExplorer(this, false);
-		}
-		#endregion
-		
-		#region Saving processing
-		private void DoSave(string _FilePath, double _frameInterval, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, ImageRetriever _DelegateOutputBitmap)
+        }
+        #endregion
+        
+        #region Saving processing
+        private void DoSave(string _FilePath, double _frameInterval, bool _bFlushDrawings, bool _bKeyframesOnly, bool _bPausedVideo, ImageRetriever _DelegateOutputBitmap)
         {
-		    SavingSettings s = new SavingSettings();
-		    s.Section = m_VideoReader.WorkingZone;
-			s.File = _FilePath;
-			s.InputFrameInterval = _frameInterval;
-			s.FlushDrawings = _bFlushDrawings;
-			s.KeyframesOnly = _bKeyframesOnly;
-			s.PausedVideo = _bPausedVideo;
-			s.ImageRetriever = _DelegateOutputBitmap;
-			
+            SavingSettings s = new SavingSettings();
+            s.Section = m_VideoReader.WorkingZone;
+            s.File = _FilePath;
+            s.InputFrameInterval = _frameInterval;
+            s.FlushDrawings = _bFlushDrawings;
+            s.KeyframesOnly = _bKeyframesOnly;
+            s.PausedVideo = _bPausedVideo;
+            s.ImageRetriever = _DelegateOutputBitmap;
+            
             m_FormProgressBar = new formProgressBar(true);
             m_FormProgressBar.Cancel = Cancel_Asked;
-        	m_BgWorkerSave.RunWorkerAsync(s);
-        	m_FormProgressBar.ShowDialog();
-		}
-		
-		#region Background worker event handlers
-		private void bgWorkerSave_DoWork(object sender, DoWorkEventArgs e)
+            m_BgWorkerSave.RunWorkerAsync(s);
+            m_FormProgressBar.ShowDialog();
+        }
+        
+        #region Background worker event handlers
+        private void bgWorkerSave_DoWork(object sender, DoWorkEventArgs e)
         {
             Thread.CurrentThread.Name = "Saving";
             BackgroundWorker bgWorker = sender as BackgroundWorker;
@@ -219,17 +219,17 @@ namespace Kinovea.ScreenManager
             }
             
             SavingSettings settings = (SavingSettings)e.Argument;
-        	
-        	if(settings.ImageRetriever == null || settings.InputFrameInterval < 0 || bgWorker == null)
-        	{
-        	    m_SaveResult = SaveResult.UnknownError;
-        	    e.Result = 0;
-        	    return;
-        	}
-        	
-        	try
-        	{
-        	    log.DebugFormat("Saving selection [{0}]->[{1}] to: {2}", settings.Section.Start, settings.Section.End, Path.GetFileName(settings.File));
+            
+            if(settings.ImageRetriever == null || settings.InputFrameInterval < 0 || bgWorker == null)
+            {
+                m_SaveResult = SaveResult.UnknownError;
+                e.Result = 0;
+                return;
+            }
+            
+            try
+            {
+                log.DebugFormat("Saving selection [{0}]->[{1}] to: {2}", settings.Section.Start, settings.Section.End, Path.GetFileName(settings.File));
 
                 // TODO it may actually make more sense to split the saving methods for regular
                 // save, paused video and diaporama. It will cause inevitable code duplication but better encapsulation and simpler algo.
@@ -268,79 +268,79 @@ namespace Kinovea.ScreenManager
                 VideoFileWriter w = new VideoFileWriter();
                 m_SaveResult = w.Save(settings, m_VideoReader.Info, images, bgWorker);
                 m_VideoReader.AfterFrameEnumeration();
-        	}
-        	catch (Exception exp)
-			{
-        		m_SaveResult = SaveResult.UnknownError;
-				log.Error("Unknown error while saving video.");
-				log.Error(exp.StackTrace);
-			}
-        	
-        	e.Result = 0;
+            }
+            catch (Exception exp)
+            {
+                m_SaveResult = SaveResult.UnknownError;
+                log.Error("Unknown error while saving video.");
+                log.Error(exp.StackTrace);
+            }
+            
+            e.Result = 0;
         }
-		
-		/// <summary>
-		/// Lazily enumerate the images that will end up in the final file.
+        
+        /// <summary>
+        /// Lazily enumerate the images that will end up in the final file.
         /// Return fully painted bitmaps ready for saving in the output.
         /// In case of early cancellation or error, the caller must dispose the bitmap to avoid a leak.
-		/// </summary>
-		private IEnumerable<Bitmap> FrameEnumerator(SavingSettings _settings)
-		{
-		    // When we move to a full hierarchy of exporters classes,
-		    // each one will implement its own logic to transform the frames from
-		    // the working zone (or just the kf) to the final list of bitmaps to save.
-		    
-		    foreach(VideoFrame vf in m_VideoReader.FrameEnumerator())
-		    {
-		        if(vf == null)
-		        {
-		            log.Error("Working zone enumerator yield null.");
-		            yield break;
-		        }
-		        
-		        Bitmap bmp = vf.Image.CloneDeep();
+        /// </summary>
+        private IEnumerable<Bitmap> FrameEnumerator(SavingSettings _settings)
+        {
+            // When we move to a full hierarchy of exporters classes,
+            // each one will implement its own logic to transform the frames from
+            // the working zone (or just the kf) to the final list of bitmaps to save.
+            
+            foreach(VideoFrame vf in m_VideoReader.FrameEnumerator())
+            {
+                if(vf == null)
+                {
+                    log.Error("Working zone enumerator yield null.");
+                    yield break;
+                }
+                
+                Bitmap bmp = vf.Image.CloneDeep();
                 long ts = vf.Timestamp;
                 
-        	    Graphics g = Graphics.FromImage(bmp);
-        	    long keyframeDistance = _settings.ImageRetriever(g, bmp, ts, _settings.FlushDrawings, _settings.KeyframesOnly);
+                Graphics g = Graphics.FromImage(bmp);
+                long keyframeDistance = _settings.ImageRetriever(g, bmp, ts, _settings.FlushDrawings, _settings.KeyframesOnly);
 
-        	    if(!_settings.KeyframesOnly || keyframeDistance == 0)
-        	    {
-        	        int duplication = _settings.PausedVideo && keyframeDistance == 0 ? _settings.KeyframeDuplication : _settings.Duplication;
+                if(!_settings.KeyframesOnly || keyframeDistance == 0)
+                {
+                    int duplication = _settings.PausedVideo && keyframeDistance == 0 ? _settings.KeyframeDuplication : _settings.Duplication;
                     for(int i=0;i<duplication;i++)
                         yield return bmp;
-        	    }
-        	    
-        	    bmp.Dispose();
-		    }
-		}
-		private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
+                }
+                
+                bmp.Dispose();
+            }
+        }
+        private void bgWorkerSave_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-        	// This method should be called back from the writer when a frame has been processed.
-        	// call snippet : bgWorker.ReportProgress(iCurrentValue, iMaximum);
-        	// Fix the int/long madness.
-        	int iMaximum = (int)(long)e.UserState;
-        	int iValue = (int)Math.Min((long)e.ProgressPercentage, iMaximum);
+            // This method should be called back from the writer when a frame has been processed.
+            // call snippet : bgWorker.ReportProgress(iCurrentValue, iMaximum);
+            // Fix the int/long madness.
+            int iMaximum = (int)(long)e.UserState;
+            int iValue = (int)Math.Min((long)e.ProgressPercentage, iMaximum);
             m_FormProgressBar.Update(iValue, iMaximum, true);
         }
-		private void bgWorkerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgWorkerSave_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-        	m_FormProgressBar.Close();
-        	m_FormProgressBar.Dispose();
-        	
-        	if(m_SaveResult != SaveResult.Success)
-            	ReportError(m_SaveResult);
-        	else
-        		AfterSave();
+            m_FormProgressBar.Close();
+            m_FormProgressBar.Dispose();
+            
+            if(m_SaveResult != SaveResult.Success)
+                ReportError(m_SaveResult);
+            else
+                AfterSave();
         }
         #endregion
-		
+        
         private void ReportError(SaveResult _err)
         {
-        	switch(_err)
-        	{
-        		case SaveResult.Cancelled:
-        			// No error message if the user cancelled herself.
+            switch(_err)
+            {
+                case SaveResult.Cancelled:
+                    // No error message if the user cancelled herself.
                     break;
                 
                 case SaveResult.FileHeaderNotWritten:
@@ -362,22 +362,22 @@ namespace Kinovea.ScreenManager
                 default:
                     DisplayErrorMessage(ScreenManagerLang.Error_SaveMovie_LowLevelError);
                     break;
-        	}
+            }
         }
-		private void DisplayErrorMessage(string _err)
+        private void DisplayErrorMessage(string _err)
         {
-        	MessageBox.Show(
-        		_err.Replace("\\n", "\n"),
-               	ScreenManagerLang.Error_SaveMovie_Title,
-               	MessageBoxButtons.OK,
+            MessageBox.Show(
+                _err.Replace("\\n", "\n"),
+                ScreenManagerLang.Error_SaveMovie_Title,
+                MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
-		private void Cancel_Asked(object sender, EventArgs e)
-		{
-			// User cancelled from progress form.
-			m_BgWorkerSave.CancelAsync();
-	        m_FormProgressBar.Dispose();
-		}
-		#endregion
-	}
+        private void Cancel_Asked(object sender, EventArgs e)
+        {
+            // User cancelled from progress form.
+            m_BgWorkerSave.CancelAsync();
+            m_FormProgressBar.Dispose();
+        }
+        #endregion
+    }
 }

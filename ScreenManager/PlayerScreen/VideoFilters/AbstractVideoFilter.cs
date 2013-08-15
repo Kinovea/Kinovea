@@ -31,37 +31,37 @@ using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// AbstractVideoFilter define the way all Video Filters should behave.
-	/// A VideoFilter is an entity that can be used to modify a subset (or all)
-	/// of the images contained in the images collection when in analysis mode.
-	/// 
-	/// It is the basis of all special effects in Kinovea.
-	/// 
-	/// The output of a filter can be : 
-	/// - a single frame (eg. mosaic)
-	/// - same set of images but internally modified (colors adjust, contrast adjust, edges only, etc.)
-	/// - a set with more images (eg. smooth slow motion) 
-	/// - a special complex object (kinorama : background + motion layer segmented)
-	/// 
-	/// This class should encapsulate all there is to a VideoFilter except localization.
-	/// Ideally a concrete video filter should be loadable dynamically from an external assembly.
-	/// 
-	/// The class also provide support for threading and progress bar. 
-	/// </summary>
-	public abstract class AbstractVideoFilter
-	{
-		#region Properties
+    /// <summary>
+    /// AbstractVideoFilter define the way all Video Filters should behave.
+    /// A VideoFilter is an entity that can be used to modify a subset (or all)
+    /// of the images contained in the images collection when in analysis mode.
+    /// 
+    /// It is the basis of all special effects in Kinovea.
+    /// 
+    /// The output of a filter can be : 
+    /// - a single frame (eg. mosaic)
+    /// - same set of images but internally modified (colors adjust, contrast adjust, edges only, etc.)
+    /// - a set with more images (eg. smooth slow motion) 
+    /// - a special complex object (kinorama : background + motion layer segmented)
+    /// 
+    /// This class should encapsulate all there is to a VideoFilter except localization.
+    /// Ideally a concrete video filter should be loadable dynamically from an external assembly.
+    /// 
+    /// The class also provide support for threading and progress bar. 
+    /// </summary>
+    public abstract class AbstractVideoFilter
+    {
+        #region Properties
         public abstract string Name {
-        	get;
+            get;
         }
         public virtual Bitmap Icon {
-		    get { return null; }
-		}
+            get { return null; }
+        }
         public virtual bool Experimental {
             get { return false; }
         }
-		#endregion
+        #endregion
         
         #region Abstract Methods
         public abstract void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect);
@@ -90,19 +90,19 @@ namespace Kinovea.ScreenManager
         }
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-        	// Should be called by concrete filters to update progress bar.
-        	int iMaximum = (int)e.UserState;
+            // Should be called by concrete filters to update progress bar.
+            int iMaximum = (int)e.UserState;
             int iValue = (int)e.ProgressPercentage;
 
             if (iValue > iMaximum) { iValue = iMaximum; }
-        	
+            
             m_FormProgressBar.Update(iValue, iMaximum, false);
         }
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-        	m_FormProgressBar.Close();
-        	m_FormProgressBar.Dispose();
+            m_FormProgressBar.Close();
+            m_FormProgressBar.Dispose();
         }
         #endregion
-	}
+    }
 }

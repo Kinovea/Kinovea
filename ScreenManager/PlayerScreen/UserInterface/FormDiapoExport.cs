@@ -29,31 +29,31 @@ using Kinovea.ScreenManager.Languages;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// This dialog let the user configure a diaporama of the key images.
-	/// A diaporama here is a movie where each key image is seen for a lenghty period of time.
-	/// An other option is provided, for the creation of a more classic movie where each
-	/// key image is paused for a lengthy period of time. (but non key images are included in the video)
-	/// 
-	/// The dialog is only used to configure the interval time and file name.
-	/// </summary>
+    /// <summary>
+    /// This dialog let the user configure a diaporama of the key images.
+    /// A diaporama here is a movie where each key image is seen for a lenghty period of time.
+    /// An other option is provided, for the creation of a more classic movie where each
+    /// key image is paused for a lengthy period of time. (but non key images are included in the video)
+    /// 
+    /// The dialog is only used to configure the interval time and file name.
+    /// </summary>
     public partial class formDiapoExport : Form
     {
-    	#region Properties
-    	public string Filename
-		{
-			get { return m_OutputFileName; }
-		}   
-		public double FrameInterval
-		{
-			get { return m_fFrameInterval; }
-		}
-		public bool PausedVideo
-		{
-			get { return radioSavePausedVideo.Checked; }
-		}			
-    	#endregion
-    	
+        #region Properties
+        public string Filename
+        {
+            get { return m_OutputFileName; }
+        }   
+        public double FrameInterval
+        {
+            get { return m_fFrameInterval; }
+        }
+        public bool PausedVideo
+        {
+            get { return radioSavePausedVideo.Checked; }
+        }			
+        #endregion
+        
         #region Members
         private string m_OutputFileName;
         private double m_fFrameInterval;
@@ -75,7 +75,7 @@ namespace Kinovea.ScreenManager
             this.Text = "   " + ScreenManagerLang.CommandSaveMovie_FriendlyName;
             
             groupSaveMethod.Text = ScreenManagerLang.dlgDiapoExport_GroupDiapoType;
-			radioSaveSlideshow.Text = ScreenManagerLang.dlgDiapoExport_RadioSlideshow;            
+            radioSaveSlideshow.Text = ScreenManagerLang.dlgDiapoExport_RadioSlideshow;            
             radioSavePausedVideo.Text = ScreenManagerLang.dlgDiapoExport_RadioPausedVideo;
             
             grpboxConfig.Text = ScreenManagerLang.Generic_Configuration;
@@ -93,11 +93,11 @@ namespace Kinovea.ScreenManager
             // default option
             if(m_bDiaporama)
             {
-            	radioSaveSlideshow.Checked = true;
+                radioSaveSlideshow.Checked = true;
             }
             else
             {
-            	radioSavePausedVideo.Checked = true;
+                radioSavePausedVideo.Checked = true;
             }
             
         }
@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
         #region OK / Cancel handler
         private void btnOK_Click(object sender, EventArgs e)
         {
-        	// Hide/Close logic:
+            // Hide/Close logic:
             // We start by hiding the current dialog.
             // If the user cancels on the file choosing dialog, we show back ourselves.
             
@@ -143,21 +143,21 @@ namespace Kinovea.ScreenManager
             
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-				string filePath = saveFileDialog.FileName;
+                string filePath = saveFileDialog.FileName;
                 if (filePath.Length > 0)
                 {
-            		// Commit output props.
-                	m_OutputFileName = filePath;
-                	m_fFrameInterval = (double)trkInterval.Value;
-                	
-                	DialogResult = DialogResult.OK;
-                	result = DialogResult.OK;
+                    // Commit output props.
+                    m_OutputFileName = filePath;
+                    m_fFrameInterval = (double)trkInterval.Value;
+                    
+                    DialogResult = DialogResult.OK;
+                    result = DialogResult.OK;
                 }
             }
             
             if (result == DialogResult.OK)
             {
-            	Close();
+                Close();
             }
             else
             {
