@@ -50,7 +50,6 @@ namespace Kinovea.Services
     public class DelegatesPool
     {
         public StatusBarUpdater UpdateStatusBar;
-        public Action StopPlaying;
         public TopMostMaker MakeTopMost;
         public ThumbnailsContainer CurrentDirectoryChanged;
         public ExplorerTabChanged ExplorerTabChanged;

@@ -79,5 +79,12 @@ namespace Kinovea.Services
             if (ExplorerTabChangeAsked != null)
                 ExplorerTabChangeAsked(sender, new ExplorerTabEventArgs(tab));
         }
+
+        public static EventHandler StopPlayback;
+        public static void RaiseStopPlayback(object sender)
+        {
+            if (StopPlayback != null)
+                StopPlayback(sender, EventArgs.Empty);
+        }
     }
 }

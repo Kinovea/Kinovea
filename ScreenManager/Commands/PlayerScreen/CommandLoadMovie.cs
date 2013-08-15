@@ -46,10 +46,7 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.StopPlaying != null)
-                dp.StopPlaying();
-            
+            NotificationCenter.RaiseStopPlayback(this);
             DirectLoad();
         }
 
