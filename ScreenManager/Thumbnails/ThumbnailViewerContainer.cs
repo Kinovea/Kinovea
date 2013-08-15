@@ -186,10 +186,7 @@ namespace Kinovea.ScreenManager
             SelectorOption option = selector.Selected;
             ThumbnailViewerContent selectedContent = (ThumbnailViewerContent)option.Data;
             SwitchContent(selectedContent);
-            
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.ChangeFileExplorerTab != null)
-                dp.ChangeFileExplorerTab(GetFileExplorerTab(selectedContent));
+            NotificationCenter.RaiseExplorerTabChangeAsked(this, GetFileExplorerTab(selectedContent));
         }
         
         private void InitializeViewers()
