@@ -41,15 +41,19 @@ namespace Kinovea.ScreenManager
         public event EventHandler ClickInfos;
         #endregion
         
-        #region Members
-        private Keyframe m_Keyframe;
-        private bool m_bAutoUpdatingTitle;
-        #endregion
+        public bool Editing
+        {
+            get { return editing; }
+        }
+
+        private bool editing;
+        private Keyframe keyframe;
+        private bool manualUpdate;
         
         #region Constructor
-        public KeyframeBox(Keyframe _kf)
+        public KeyframeBox(Keyframe keyframe)
         {
-            m_Keyframe = _kf;
+            this.keyframe = keyframe;
             
             InitializeComponent();
             //lblTimecode.Visible = true;
@@ -67,9 +71,9 @@ namespace Kinovea.ScreenManager
         public void UpdateTitle(string _title)
         {
             lblTimecode.Text = _title;
-            m_bAutoUpdatingTitle = true;
+            manualUpdate = true;
             tbTitle.Text = _title;
-            m_bAutoUpdatingTitle = false;
+            manualUpdate = false;
         
             UpdateToolTip();	
         }
@@ -79,6 +83,7 @@ namespace Kinovea.ScreenManager
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
             ShowButtons();
+            editing = true;
             //this.Focus();
         }
         private void Controls_MouseLeave(object sender, EventArgs e)
@@ -88,6 +93,8 @@ namespace Kinovea.ScreenManager
             if(!pbThumbnail.ClientRectangle.Contains(clientMouse))
             {
                 HideButtons();
+                editing = false;
+
                 // Fixme: Doesn't prevent typing until another control takes focus.
                 StopEditing();
             }
@@ -113,9 +120,9 @@ namespace Kinovea.ScreenManager
         }
         private void TbTitleTextChanged(object sender, EventArgs e)
         {
-            if(!m_bAutoUpdatingTitle)
+            if(!manualUpdate)
             {
-                m_Keyframe.Title = tbTitle.Text;
+                keyframe.Title = tbTitle.Text;
                 UpdateToolTip();
             }
         }
@@ -138,22 +145,19 @@ namespace Kinovea.ScreenManager
             if(tbTitle.Text.Length == 0)
             {
                 // We reseted the title. We should now display the timecode.
-                m_bAutoUpdatingTitle = true;
-                tbTitle.Text = m_Keyframe.Title;
-                m_bAutoUpdatingTitle = false;
+                manualUpdate = true;
+                tbTitle.Text = keyframe.Title;
+                manualUpdate = false;
             }
+
             UpdateToolTip();
         }
         private void UpdateToolTip()
         {
-            if(m_Keyframe.TimeCode != m_Keyframe.Title)
-            {
-                toolTips.SetToolTip(pbThumbnail, m_Keyframe.Title + "\n" + m_Keyframe.TimeCode);
-            }
+            if(keyframe.TimeCode != keyframe.Title)
+                toolTips.SetToolTip(pbThumbnail, keyframe.Title + "\n" + keyframe.TimeCode);
             else
-            {
                 toolTips.SetToolTip(pbThumbnail, "");
-            }
         }
         #endregion
         

@@ -120,11 +120,17 @@ namespace Kinovea.ScreenManager
                         magnifier.Mode != MagnifierMode.None;
             }
         }
-        public bool Tracking {
+        public bool Tracking 
+        {
             get { return Tracks().Any(t => t.Status == TrackStatus.Edit) || TrackabilityManager.Tracking; }
         }
-        public bool HasTrack {
+        public bool HasTrack 
+        {
             get { return extraDrawings.Any(drawing => drawing is DrawingTrack); }
+        }
+        public bool TextEditingInProgress
+        {
+            get { return Labels().Any(l => l.Editing); }
         }
         public int SelectedDrawingFrame
         {
