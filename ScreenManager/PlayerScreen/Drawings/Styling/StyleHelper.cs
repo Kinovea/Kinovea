@@ -59,22 +59,22 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Color Color
         {
-            get { return m_Color; }
-            set { m_Color = value; }
+            get { return color; }
+            set { color = value; }
         }
         public int LineSize
         {
-            get { return m_iLineSize; }
-            set { m_iLineSize = value;}
+            get { return lineSize; }
+            set { lineSize = value;}
         }
         public LineEnding LineEnding
         {
-            get { return m_LineEnding; }
-            set { m_LineEnding = value;}
+            get { return lineEnding; }
+            set { lineEnding = value;}
         }
         public Font Font
         {
-            get { return m_Font; }
+            get { return font; }
             set 
             { 
                 if(value != null)
@@ -84,25 +84,25 @@ namespace Kinovea.ScreenManager
                     string fontName = value.Name;
                     FontStyle fontStyle = value.Style;
                     float fontSize = value.Size;
-                    m_Font.Dispose();
-                    m_Font = new Font(fontName, fontSize, fontStyle);
+                    font.Dispose();
+                    font = new Font(fontName, fontSize, fontStyle);
                 }
                 else
                 {
-                    m_Font.Dispose();
-                    m_Font = null;
+                    font.Dispose();
+                    font = null;
                 }
             }
         }
         public Bicolor Bicolor
         {
-            get { return m_Bicolor; }
-            set { m_Bicolor = value; }
+            get { return bicolor; }
+            set { bicolor = value; }
         }
         public TrackShape TrackShape
         {
-            get { return m_TrackShape; }
-            set { m_TrackShape = value;}
+            get { return trackShape; }
+            set { trackShape = value;}
         }
         public int GridDivisions
         {
@@ -115,12 +115,12 @@ namespace Kinovea.ScreenManager
             {
                 int iHash = 0;
                 
-                iHash ^= m_Color.GetHashCode();
-                iHash ^= m_iLineSize.GetHashCode();
-                iHash ^= m_Font.GetHashCode();
-                iHash ^= m_Bicolor.ContentHash;
-                iHash ^= m_LineEnding.GetHashCode();
-                iHash ^= m_TrackShape.GetHashCode();
+                iHash ^= color.GetHashCode();
+                iHash ^= lineSize.GetHashCode();
+                iHash ^= font.GetHashCode();
+                iHash ^= bicolor.ContentHash;
+                iHash ^= lineEnding.GetHashCode();
+                iHash ^= trackShape.GetHashCode();
                 
                 return iHash;
             }
@@ -128,17 +128,16 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Members
-        private Color m_Color;
-        private int m_iLineSize;
-        private Font m_Font = new Font("Arial", 12, FontStyle.Regular);
-        private Bicolor m_Bicolor;
-        private LineEnding m_LineEnding = LineEnding.None;
-        private TrackShape m_TrackShape = TrackShape.Solid;
+        private Color color;
+        private int lineSize;
+        private Font font = new Font("Arial", 12, FontStyle.Regular);
+        private Bicolor bicolor;
+        private LineEnding lineEnding = LineEnding.None;
+        private TrackShape trackShape = TrackShape.Solid;
         private int gridDivisions;
         
-        
         // Internal only
-        private static readonly int[] m_AllowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
+        private static readonly int[] allowedFontSizes = { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36 };
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
@@ -157,77 +156,78 @@ namespace Kinovea.ScreenManager
         /// Returns a Pen object suitable to draw a background or color only contour.
         /// The pen object will only integrate the color property and be of width 1.
         /// </summary>
-        /// <param name="_iAlpha">Alpha value to multiply the color with</param>
+        /// <param name="alpha">Alpha value to multiply the color with</param>
         /// <returns>Pen object initialized with the current value of color and width = 1.0</returns>
-        public Pen GetPen(int _iAlpha)
+        public Pen GetPen(int alpha)
         {
-            Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;			
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;			
             
             return NormalPen(new Pen(c, 1.0f));
         }
-        public Pen GetPen(double _fOpacity)
+        public Pen GetPen(double opacity)
         {
-            return GetPen((int)(_fOpacity * 255));
+            return GetPen((int)(opacity * 255));
         }
 
         /// <summary>
         /// Returns a Pen object suitable to draw a line or contour.
         /// The pen object will integrate the color, line size, line shape, and line endings properties.
         /// </summary>
-        /// <param name="_iAlpha">Alpha value to multiply the color with</param>
-        /// <param name="_fStretchFactor">zoom value to multiply the line size with</param>
+        /// <param name="alpha">Alpha value to multiply the color with</param>
+        /// <param name="stretchFactor">zoom value to multiply the line size with</param>
         /// <returns>Pen object initialized with the current value of color and line size properties</returns>
-        public Pen GetPen(int _iAlpha, double _fStretchFactor)
+        public Pen GetPen(int alpha, double stretchFactor)
         {
-            Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
-            float fPenWidth = (float)((double)m_iLineSize * _fStretchFactor);
-            if (fPenWidth < 1) fPenWidth = 1;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
+            float penWidth = (float)((double)lineSize * stretchFactor);
+            if (penWidth < 1) 
+                penWidth = 1;
             
-            Pen p = new Pen(c, fPenWidth);
+            Pen p = new Pen(c, penWidth);
             p.LineJoin = LineJoin.Round;
             
             // Line endings
-            p.StartCap = m_LineEnding.StartCap;
-            p.EndCap = m_LineEnding.EndCap;
+            p.StartCap = lineEnding.StartCap;
+            p.EndCap = lineEnding.EndCap;
             
             // Line shape
-            p.DashStyle = m_TrackShape.DashStyle;
+            p.DashStyle = trackShape.DashStyle;
             
             return p;
         }
-        public Pen GetPen(double _fOpacity, double _fStretchFactor)
+        public Pen GetPen(double opacity, double stretchFactor)
         {
-            return GetPen((int)(_fOpacity * 255), _fStretchFactor);
+            return GetPen((int)(opacity * 255), stretchFactor);
         }
         
         /// <summary>
         /// Returns a Brush object suitable to draw a background or colored area.
         /// Only use the color property.
         /// </summary>
-        /// <param name="_iAlpha">Alpha value to multiply the color with</param>
+        /// <param name="alpha">Alpha value to multiply the color with</param>
         /// <returns>Brush object initialized with the current value of color property</returns>
-        public SolidBrush GetBrush(int _iAlpha)
+        public SolidBrush GetBrush(int alpha)
         {
-            Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Color) : m_Color;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, color) : color;
             return new SolidBrush(c);
         }
-        public SolidBrush GetBrush(double _fOpacity)
+        public SolidBrush GetBrush(double opacity)
         {
-            return GetBrush((int)(_fOpacity * 255));
+            return GetBrush((int)(opacity * 255));
         }
         #endregion
         
         #region Font property
-        public Font GetFont(float _fStretchFactor)
+        public Font GetFont(float stretchFactor)
         {
-            float fFontSize = GetRescaledFontSize(_fStretchFactor);			
-            return new Font(m_Font.Name, fFontSize, m_Font.Style);
+            float fFontSize = GetRescaledFontSize(stretchFactor);			
+            return new Font(font.Name, fFontSize, font.Style);
         }
-        public Font GetFontDefaultSize(int _fontSize)
+        public Font GetFontDefaultSize(int fontSize)
         {
-            return new Font(m_Font.Name, _fontSize, m_Font.Style);
+            return new Font(font.Name, fontSize, font.Style);
         }
-        public void ForceFontSize(int _wantedHeight, String _text)
+        public void ForceFontSize(int wantedHeight, String text)
         {
             // Compute the optimal font size from a given background rectangle.
             // This is used when the user drag the bottom right corner to resize the text.
@@ -237,63 +237,63 @@ namespace Kinovea.ScreenManager
 
             // We must loop through all allowed font size and compute the output rectangle to find the best match.
             // We only compare with wanted height for simplicity.
-            int iSmallestDiff = int.MaxValue;
-            int iBestCandidate = m_AllowedFontSizes[0];
+            int smallestDiff = int.MaxValue;
+            int bestCandidate = allowedFontSizes[0];
             
-            foreach(int size in m_AllowedFontSizes)
+            foreach(int size in allowedFontSizes)
             {
-                Font testFont = new Font(m_Font.Name, size, m_Font.Style);
-                SizeF bgSize = g.MeasureString(_text + " ", testFont);
+                Font testFont = new Font(font.Name, size, font.Style);
+                SizeF bgSize = g.MeasureString(text + " ", testFont);
                 testFont.Dispose();
                 
-                int diff = (int)Math.Abs(_wantedHeight - (int)bgSize.Height);
+                int diff = (int)Math.Abs(wantedHeight - (int)bgSize.Height);
                 
-                if(diff < iSmallestDiff)
+                if(diff < smallestDiff)
                 {
-                    iSmallestDiff = diff;
-                    iBestCandidate = size;
+                    smallestDiff = diff;
+                    bestCandidate = size;
                 }	
             }
             
             g.Dispose();
             
             // Push to internal value.
-            string fontName = m_Font.Name;
-            FontStyle fontStyle = m_Font.Style;
-            m_Font.Dispose();
-            m_Font = new Font(fontName, iBestCandidate, fontStyle);
+            string fontName = font.Name;
+            FontStyle fontStyle = font.Style;
+            font.Dispose();
+            font = new Font(fontName, bestCandidate, fontStyle);
         }
         #endregion
         
         #region Bicolor property
-        public Color GetForegroundColor(int _iAlpha)
+        public Color GetForegroundColor(int alpha)
         {
-            Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Bicolor.Foreground) : m_Bicolor.Foreground;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Foreground) : bicolor.Foreground;
             return c;
         }
-        public SolidBrush GetForegroundBrush(int _iAlpha)
+        public SolidBrush GetForegroundBrush(int alpha)
         {
-            Color c = GetForegroundColor(_iAlpha);
+            Color c = GetForegroundColor(alpha);
             return new SolidBrush(c);
         }
-        public Pen GetForegroundPen(int _iAlpha)
+        public Pen GetForegroundPen(int alpha)
         {
-            Color c = GetForegroundColor(_iAlpha);
+            Color c = GetForegroundColor(alpha);
             return NormalPen(new Pen(c, 1.0f));
         }
-        public Color GetBackgroundColor(int _iAlpha)
+        public Color GetBackgroundColor(int alpha)
         {
-            Color c = (_iAlpha >= 0 && _iAlpha <= 255) ? Color.FromArgb(_iAlpha, m_Bicolor.Background) : m_Bicolor.Background;
+            Color c = (alpha >= 0 && alpha <= 255) ? Color.FromArgb(alpha, bicolor.Background) : bicolor.Background;
             return c;
         }
-        public SolidBrush GetBackgroundBrush(int _iAlpha)
+        public SolidBrush GetBackgroundBrush(int alpha)
         {
-            Color c = GetBackgroundColor(_iAlpha);
+            Color c = GetBackgroundColor(alpha);
             return new SolidBrush(c);
         }
-        public Pen GetBackgroundPen(int _iAlpha)
+        public Pen GetBackgroundPen(int alpha)
         {
-            Color c = GetBackgroundColor(_iAlpha);
+            Color c = GetBackgroundColor(alpha);
             return NormalPen(new Pen(c, 1.0f));
         }
         #endregion
@@ -301,26 +301,26 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Private Methods
-        private void DoBindWrite(string _targetProperty, object _value)
+        private void DoBindWrite(string targetProperty, object value)
         {
             // Check type and import value if compatible with the target prop.
             bool imported = false;
-            switch(_targetProperty)
+            switch(targetProperty)
             {
                 case "Color":
                     {
-                        if(_value is Color)
+                        if(value is Color)
                         {
-                            m_Color = (Color)_value;
+                            color = (Color)value;
                             imported = true;
                         }
                         break;	
                     }
                 case "LineSize":
                     {
-                        if(_value is int)
+                        if(value is int)
                         {
-                            m_iLineSize = (int)_value;
+                            lineSize = (int)value;
                             imported = true;
                         }
                         
@@ -328,9 +328,9 @@ namespace Kinovea.ScreenManager
                     }
                 case "LineEnding":
                     {
-                        if(_value is LineEnding)
+                        if(value is LineEnding)
                         {
-                            m_LineEnding = (LineEnding)_value;
+                            lineEnding = (LineEnding)value;
                             imported = true;
                         }
                         
@@ -338,9 +338,9 @@ namespace Kinovea.ScreenManager
                     }
                 case "TrackShape":
                     {
-                        if(_value is TrackShape)
+                        if(value is TrackShape)
                         {
-                            m_TrackShape = (TrackShape)_value;
+                            trackShape = (TrackShape)value;
                             imported = true;
                         }
                         
@@ -348,118 +348,119 @@ namespace Kinovea.ScreenManager
                     }
                 case "Font":
                     {
-                        if(_value is int)
+                        if(value is int)
                         {
                             // Recreate the font changing just the size.
-                            string fontName = m_Font.Name;
-                            FontStyle fontStyle = m_Font.Style;
-                            m_Font.Dispose();
-                            m_Font = new Font(fontName, (int)_value, fontStyle);
+                            string fontName = font.Name;
+                            FontStyle fontStyle = font.Style;
+                            font.Dispose();
+                            font = new Font(fontName, (int)value, fontStyle);
                             imported = true;
                         }
                         break;
                     }
                 case "Bicolor":
                     {
-                        if(_value is Color)
+                        if(value is Color)
                         {
-                            m_Bicolor.Background = (Color)_value;
+                            bicolor.Background = (Color)value;
                             imported = true;
                         }
                         break;	
                     }
                 case "GridDivisions":
                     {
-                        if(_value is int)
+                        if(value is int)
                         {
-                            gridDivisions = (int)_value;
+                            gridDivisions = (int)value;
                             imported = true;
                         }
                         break;
                     }
                 default:
                     {
-                        log.DebugFormat("Unknown target property \"{0}\"." , _targetProperty);
+                        log.DebugFormat("Unknown target property \"{0}\"." , targetProperty);
                         break;
                     }
             }
             
             if(imported)
             {
-                if(ValueChanged != null) ValueChanged(null, EventArgs.Empty);
+                if(ValueChanged != null) 
+                    ValueChanged(null, EventArgs.Empty);
             }
             else
             {
-                log.DebugFormat("Could not import value \"{0}\" to property \"{1}\"." , _value.ToString(), _targetProperty);
+                log.DebugFormat("Could not import value \"{0}\" to property \"{1}\"." , value.ToString(), targetProperty);
             }
             
         }
-        private object DoBindRead(string _sourceProperty, Type _targetType)
+        private object DoBindRead(string sourceProperty, Type targetType)
         {
             // Take the local property and extract something of the required type.
             // This function is used by style elements to stay up to date in case the bound property has been modified externally.
             // The style element might be of an entirely different type than the property.
             bool converted = false;
             object result = null;
-            switch(_sourceProperty)
+            switch(sourceProperty)
             {
                 case "Color":
                     {
-                        if(_targetType == typeof(Color))
+                        if(targetType == typeof(Color))
                         {
-                            result = m_Color;
+                            result = color;
                             converted = true;
                         }
                         break;	
                     }
                 case "LineSize":
                     {
-                        if(_targetType == typeof(int))
+                        if(targetType == typeof(int))
                         {
-                            result = m_iLineSize;
+                            result = lineSize;
                             converted = true;
                         }
                         break;
                     }
                 case "LineEnding":
                     {
-                        if(_targetType == typeof(LineEnding))
+                        if(targetType == typeof(LineEnding))
                         {
-                            result = m_LineEnding;
+                            result = lineEnding;
                             converted = true;
                         }
                         break;
                     }
                 case "TrackShape":
                     {
-                        if(_targetType == typeof(TrackShape))
+                        if(targetType == typeof(TrackShape))
                         {
-                            result = m_TrackShape;
+                            result = trackShape;
                             converted = true;
                         }
                         break;
                     }
                 case "Font":
                     {
-                        if(_targetType == typeof(int))
+                        if(targetType == typeof(int))
                         {
-                            result = (int)m_Font.Size;
+                            result = (int)font.Size;
                             converted = true;
                         }
                         break;
                     }
                 case "Bicolor":
                     {
-                        if(_targetType == typeof(Color))
+                        if(targetType == typeof(Color))
                         {
-                            result = m_Bicolor.Background;
+                            result = bicolor.Background;
                             converted = true;
                         }
                         break;	
                     }
                 case "GridDivisions":
                     {
-                        if(_targetType == typeof(int))
+                        if(targetType == typeof(int))
                         {
                             result = gridDivisions;
                             converted = true;
@@ -468,33 +469,35 @@ namespace Kinovea.ScreenManager
                     }
                 default:
                     {
-                        log.DebugFormat("Unknown source property \"{0}\"." , _sourceProperty);
+                        log.DebugFormat("Unknown source property \"{0}\"." , sourceProperty);
                         break;
                     }	
             }
             
             if(!converted)
             {
-                log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , _sourceProperty, _targetType);
+                log.DebugFormat("Could not convert property \"{0}\" to update value \"{1}\"." , sourceProperty, targetType);
             }
             
             return result;
         }
-        private float GetRescaledFontSize(float _fStretchFactor)
+        private float GetRescaledFontSize(float stretchFactor)
         {
             // Get the strecthed font size.
             // The final font size returned here may not be part of the allowed font sizes
             // and may exeed the max allowed font size, because it's just for rendering purposes.
-            float fFontSize = (float)(m_Font.Size * _fStretchFactor);
-            if(fFontSize < 8) fFontSize = 8;
-            return fFontSize;
+            float fontSize = (float)(font.Size * stretchFactor);
+            if(fontSize < 8) 
+                fontSize = 8;
+            
+            return fontSize;
         }
-        private Pen NormalPen(Pen _p)
+        private Pen NormalPen(Pen p)
         {
-            _p.StartCap = LineCap.Round;
-            _p.EndCap = LineCap.Round;
-            _p.LineJoin = LineJoin.Round;
-            return _p;
+            p.StartCap = LineCap.Round;
+            p.EndCap = LineCap.Round;
+            p.LineJoin = LineJoin.Round;
+            return p;
         }
         #endregion
     }
@@ -508,32 +511,32 @@ namespace Kinovea.ScreenManager
     {
         public Color Foreground
         {
-            get { return m_Foreground;}
+            get { return foreground;}
         }
         public Color Background
         {
-            get { return m_Background;}
+            get { return background;}
             set 
             { 
-                m_Background = value;
-                m_Foreground = value.GetBrightness() >= 0.5  ? Color.Black : Color.White;
+                background = value;
+                foreground = value.GetBrightness() >= 0.5  ? Color.Black : Color.White;
             }
         }
         public int ContentHash
         {
             get 
             {
-                return m_Background.GetHashCode() ^ m_Foreground.GetHashCode();
+                return background.GetHashCode() ^ foreground.GetHashCode();
             }
         }
         
-        private Color m_Foreground;
-        private Color m_Background;
+        private Color foreground;
+        private Color background;
         
-        public Bicolor(Color _backColor)
+        public Bicolor(Color backColor)
         {
-            m_Background = _backColor;
-            m_Foreground = _backColor.GetBrightness() >= 0.5  ? Color.Black : Color.White;
+            background = backColor;
+            foreground = backColor.GetBrightness() >= 0.5  ? Color.Black : Color.White;
         }
     }
     
@@ -570,10 +573,10 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public LineEnding(LineCap _start, LineCap _end)
+        public LineEnding(LineCap start, LineCap end)
         {
-            StartCap = _start;
-            EndCap = _end;
+            StartCap = start;
+            EndCap = end;
         }
     }
     
@@ -585,64 +588,45 @@ namespace Kinovea.ScreenManager
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }	
-            else
-            {
-                return base.CanConvertFrom(context, sourceType);
-            }
+            return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
         }
+
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if(destinationType == typeof(string))
-            {
-                return true;
-            }
-            else
-            {
-                return base.CanConvertTo(context, destinationType);
-            }
+            return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
         }	
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if(value is string)
-            {
-                string stringValue = value as string;
-                
-                if (stringValue.Length == 0)
-                    return LineEnding.None;
-                
-                string[] split = stringValue.Split(new Char[] { ';' });
-                
-                if(split.Length != 2)
-                    return LineEnding.None;
-                
-                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
-                LineCap start = (LineCap)enumConverter.ConvertFromString(context, culture, split[0]);
-                LineCap end = (LineCap)enumConverter.ConvertFromString(context, culture, split[1]);
-                
-                return new LineEnding(start, end);
-            }
-            else
-            {
+            if(!(value is string))
                 return base.ConvertFrom(context, culture, value);
-            }
+            
+            string stringValue = value as string;
+                
+            if (string.IsNullOrEmpty(stringValue))
+                return LineEnding.None;
+                
+            string[] split = stringValue.Split(new Char[] { ';' });
+                
+            if(split.Length != 2)
+                return LineEnding.None;
+                
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
+            LineCap start = (LineCap)enumConverter.ConvertFromString(context, culture, split[0]);
+            LineCap end = (LineCap)enumConverter.ConvertFromString(context, culture, split[1]);
+                
+            return new LineEnding(start, end);
         }
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(string))
-            {
-                LineEnding lineEnding = (LineEnding)value;
-                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
-                string result = String.Format("{0};{1}", 
-                                              enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.StartCap), 
-                                              enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.EndCap));
-                return result;
-            }
+            if (destinationType != typeof(string))
+                return base.ConvertTo(context, culture, value, destinationType);
 
-            return base.ConvertTo(context, culture, value, destinationType);
+            LineEnding lineEnding = (LineEnding)value;
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(LineCap));
+            string result = String.Format("{0};{1}", 
+                enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.StartCap), 
+                enumConverter.ConvertToString(context, culture, (LineCap)lineEnding.EndCap));
+            return result;
         }
     }
     
@@ -679,10 +663,10 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        public TrackShape(DashStyle _style, bool _steps)
+        public TrackShape(DashStyle style, bool steps)
         {
-            DashStyle = _style;
-            ShowSteps = _steps;
+            DashStyle = style;
+            ShowSteps = steps;
         }
     }
     
@@ -694,66 +678,50 @@ namespace Kinovea.ScreenManager
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }	
-            else
-            {
-                return base.CanConvertFrom(context, sourceType);
-            }
+            return sourceType == typeof(string) ? true : base.CanConvertFrom(context, sourceType);
         }
+        
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if(destinationType == typeof(string))
-            {
-                return true;
-            }
-            else
-            {
-                return base.CanConvertTo(context, destinationType);
-            }
-        }	
+            return destinationType == typeof(string) ? true : base.CanConvertTo(context, destinationType);
+        }
+    
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if(value is string)
-            {
-                string stringValue = value as string;
-                
-                if (stringValue.Length == 0)
-                    return TrackShape.Solid;
-                
-                string[] split = stringValue.Split(new Char[] { ';' });
-                
-                if(split.Length != 2)
-                    return TrackShape.Solid;
-                
-                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
-                DashStyle dash = (DashStyle)enumConverter.ConvertFromString(context, culture, split[0]);
-                
-                TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
-                bool steps = (bool)boolConverter.ConvertFromString(context, culture, split[1]);
-                
-                return new TrackShape(dash, steps);
-            }
-            else
-            {
+            if(!(value is string))
                 return base.ConvertFrom(context, culture, value);
-            }
+            
+            string stringValue = value as string;
+                
+            if (string.IsNullOrEmpty(stringValue))
+                return TrackShape.Solid;
+                
+            string[] split = stringValue.Split(new Char[] { ';' });
+                
+            if(split.Length != 2)
+                return TrackShape.Solid;
+                
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
+            DashStyle dash = (DashStyle)enumConverter.ConvertFromString(context, culture, split[0]);
+                
+            TypeConverter boolConverter = TypeDescriptor.GetConverter(typeof(bool));
+            bool steps = (bool)boolConverter.ConvertFromString(context, culture, split[1]);
+                
+            return new TrackShape(dash, steps);
         }
+
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(string))
-            {
-                TrackShape trackShape = (TrackShape)value;
-                TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
-                string result = String.Format("{0};{1}",
-                                              enumConverter.ConvertToString(context, culture, (DashStyle)trackShape.DashStyle), 
-                                              trackShape.ShowSteps?"true":"false");
-                return result;
-            }
-
-            return base.ConvertTo(context, culture, value, destinationType);
+            if (destinationType != typeof(string))
+                return base.ConvertTo(context, culture, value, destinationType);
+            
+            TrackShape trackShape = (TrackShape)value;
+            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(DashStyle));
+            string result = String.Format("{0};{1}",
+                enumConverter.ConvertToString(context, culture, (DashStyle)trackShape.DashStyle), 
+                trackShape.ShowSteps?"true":"false");
+                
+            return result;
         }
     }	
         

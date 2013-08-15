@@ -2532,7 +2532,7 @@ namespace Kinovea.ScreenManager
             // La pause de terminaison dépend à la fois du paramètre de synchro et 
             // des durées (en frames) respectives des deux vidéos.
             //
-            // Si _bIntervalOnly == true, on ne veut pas changer les frames de référence
+            // Si _bIntervalOnly, on ne veut pas changer les frames de référence
             // (Généralement après une modification du framerate de l'une des vidéos ou swap)
             //----------------------------------------------------------------------------
             if (synching && screenList.Count == 2)

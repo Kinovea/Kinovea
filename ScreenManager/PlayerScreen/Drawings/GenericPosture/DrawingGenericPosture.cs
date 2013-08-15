@@ -783,7 +783,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            if(hit == true)
+            if(hit)
                 return true;
             
             foreach(GenericPostureAbstractHitZone hitZone in m_GenericPosture.HitZones)
@@ -793,7 +793,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
                 
-            if(hit == true)
+            if(hit)
                 return true;
             
             foreach(GenericPostureEllipse ellipse in m_GenericPosture.Ellipses)
@@ -803,7 +803,7 @@ namespace Kinovea.ScreenManager
                     break;
             }
             
-            if(hit == true)
+            if(hit)
                 return true;
             
             foreach(GenericPostureSegment segment in m_GenericPosture.Segments)
