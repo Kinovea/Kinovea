@@ -18,97 +18,74 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
-using System.IO;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 using Kinovea.Video;
 
 namespace Kinovea.ScreenManager
 {
-    //-------------------------------------------------
-    // CommandLoadMovie
-    //
-    // Objet : Rendre le PlayerScreen opérationnel.
-    // - Charger un fichier vidéo dans le PlayerServer
-    //--------------------------------------------------
-
     public class CommandLoadMovie : ICommand
     {
-        #region Properties
         public string FriendlyName
         {
-            get{ return ScreenManagerLang.CommandLoadMovie_FriendlyName;}
+            get { return ScreenManagerLang.CommandLoadMovie_FriendlyName;}
         }
-        #endregion
         
         #region Members
-        private string m_FilePath;
-        private PlayerScreen m_PlayerScreen;
+        private string path;
+        private PlayerScreen player;
         #endregion
         
-        #region constructor
-        public CommandLoadMovie( PlayerScreen _PlayerScreen, String _FilePath)
+        public CommandLoadMovie( PlayerScreen player, String path)
         {
-            m_PlayerScreen = _PlayerScreen;    
-            m_FilePath = _FilePath;
+            this.player = player;    
+            this.path = path;
         }
-        #endregion
 
-        /// <summary>
-        /// Command execution. 
-        /// Load the given file in the given screen.
-        /// </summary>
         public void Execute()
         {
             DelegatesPool dp = DelegatesPool.Instance();
             if (dp.StopPlaying != null)
-            {
                 dp.StopPlaying();
-            }
             
             DirectLoad();
         }
 
         private void DirectLoad()
         {
-            if(m_PlayerScreen.FrameServer.Loaded)
-            {
-                m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
-            }
+            if(player.FrameServer.Loaded)
+                player.view.ResetToEmptyState();
             
-            OpenVideoResult res = m_PlayerScreen.FrameServer.Load(m_FilePath);
+            OpenVideoResult res = player.FrameServer.Load(path);
 
             switch (res)
             {
                 case OpenVideoResult.Success:
                     {
                         // Try to load first frame and other inits.
-                        int iPostLoadProcess = m_PlayerScreen.m_PlayerScreenUI.PostLoadProcess();
-                        m_PlayerScreen.AfterLoad();
+                        int postLoadResult = player.view.PostLoadProcess();
+                        player.AfterLoad();
 
-                        switch (iPostLoadProcess)
+                        switch (postLoadResult)
                         {
                             case 0:
                                 // Loading succeeded.
                                 // We already switched to analysis mode if possible.
-                                m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(true);
+                                player.view.EnableDisableActions(true);
                                 break;
                             case -1:
                                 {
                                     // Loading the first frame failed.
-                                    m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
+                                    player.view.ResetToEmptyState();
                                     DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_InconsistantMovieError);
                                     break;
                                 }
                             case -2:
                                 {
                                     // Loading first frame showed that the file is, in the end, not supported.
-                                    m_PlayerScreen.m_PlayerScreenUI.ResetToEmptyState();
+                                    player.view.ResetToEmptyState();
                                     DisplayErrorAndDisable(Kinovea.ScreenManager.Languages.ScreenManagerLang.LoadMovie_InconsistantMovieError);
                                     break;
                                 }
@@ -159,12 +136,12 @@ namespace Kinovea.ScreenManager
                     }
             }
 
-            m_PlayerScreen.UniqueId = System.Guid.NewGuid();
+            player.UniqueId = System.Guid.NewGuid();
           
         }
         private void DisplayErrorAndDisable(string error)
         {
-            m_PlayerScreen.m_PlayerScreenUI.EnableDisableActions(false);
+            player.view.EnableDisableActions(false);
             
             MessageBox.Show(
                 error,

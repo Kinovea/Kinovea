@@ -40,83 +40,83 @@ namespace Kinovea.ScreenManager
         #region Properties
         public override bool Full
         {
-        	get { return m_FrameServer.Loaded; }	
+            get { return frameServer.Loaded; }	
         }
         public override UserControl UI
         {
-        	get { return m_PlayerScreenUI; }	
+            get { return view; }	
         }
         public override Guid UniqueId
         {
-            get { return m_UniqueId; }
-            set { m_UniqueId = value; }
+            get { return uniqueId; }
+            set { uniqueId = value; }
         }
-		public override string FileName
-		{
-			get 
-			{ 
-                return m_FrameServer.Loaded ? Path.GetFileName(m_FrameServer.VideoReader.FilePath) :
-				                              ScreenManagerLang.statusEmptyScreen;
-			}
-		}
-		public override string Status
-		{
-			get	{return FileName;}
-		}
-		public override string FilePath
-		{
-			get { return m_FrameServer.VideoReader.FilePath; }
-		}
-		public override bool CapabilityDrawings
-		{
-			get { return true;}
-		}
-		public override ImageAspectRatio AspectRatio
+        public override string FileName
         {
-            get { return m_FrameServer.VideoReader.Options.ImageAspectRatio; }
+            get 
+            { 
+                return frameServer.Loaded ? Path.GetFileName(frameServer.VideoReader.FilePath) :
+                                              ScreenManagerLang.statusEmptyScreen;
+            }
+        }
+        public override string Status
+        {
+            get	{return FileName;}
+        }
+        public override string FilePath
+        {
+            get { return frameServer.VideoReader.FilePath; }
+        }
+        public override bool CapabilityDrawings
+        {
+            get { return true;}
+        }
+        public override ImageAspectRatio AspectRatio
+        {
+            get { return frameServer.VideoReader.Options.ImageAspectRatio; }
             set
             {
-                bool uncached = m_FrameServer.VideoReader.ChangeAspectRatio(value);
+                bool uncached = frameServer.VideoReader.ChangeAspectRatio(value);
                 
-                if (uncached && m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-                    m_PlayerScreenUI.UpdateWorkingZone(true);
+                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                    view.UpdateWorkingZone(true);
                     
-                m_PlayerScreenUI.AspectRatioChanged();
+                view.AspectRatioChanged();
             }
         }
         public FrameServerPlayer FrameServer
-		{
-			get { return m_FrameServer; }
-			set { m_FrameServer = value; }
-		}        
+        {
+            get { return frameServer; }
+            set { frameServer = value; }
+        }        
         public bool IsPlaying
         {
             get
             {
-                if (!m_FrameServer.Loaded)
+                if (!frameServer.Loaded)
                     return false;
                 else
-                    return m_PlayerScreenUI.IsCurrentlyPlaying;
+                    return view.IsCurrentlyPlaying;
             }
         }
         public bool IsSingleFrame
         {
-        	get
+            get
             {
-                if (!m_FrameServer.Loaded)
+                if (!frameServer.Loaded)
                     return false;
                 else
-                    return m_FrameServer.VideoReader.IsSingleFrame;
+                    return frameServer.VideoReader.IsSingleFrame;
             }	
         }
         public bool IsCaching
         {
             get
             {
-                if (!m_FrameServer.Loaded)
+                if (!frameServer.Loaded)
                     return false;
                 else
-                    return m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
+                    return frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching;
             }
         }
         public long CurrentFrame
@@ -127,7 +127,7 @@ namespace Kinovea.ScreenManager
                 // Only as accurate as the framerate is stable regarding to the timebase.
                 
                 // SyncCurrentPosition timestamp is already relative to selection start).
-                return (long)((double)m_PlayerScreenUI.SyncCurrentPosition / m_FrameServer.VideoReader.Info.AverageTimeStampsPerFrame);
+                return (long)((double)view.SyncCurrentPosition / frameServer.VideoReader.Info.AverageTimeStampsPerFrame);
             }
         }
         public long EstimatedFrames
@@ -135,89 +135,89 @@ namespace Kinovea.ScreenManager
             get 
             {
                 // Used to compute the total duration of the common track bar.
-                return m_FrameServer.VideoReader.EstimatedFrames;
+                return frameServer.VideoReader.EstimatedFrames;
             }
         }
         public double FrameInterval
         {
             get 
             { 
-            	// Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
-				if (m_FrameServer.Loaded && m_FrameServer.VideoReader.Info.FrameIntervalMilliseconds > 0)
-					return m_PlayerScreenUI.FrameInterval;
-				else
-					return 40;
-	        }
+                // Returns the playback interval between frames in Milliseconds, taking slow motion slider into account.
+                if (frameServer.Loaded && frameServer.VideoReader.Info.FrameIntervalMilliseconds > 0)
+                    return view.FrameInterval;
+                else
+                    return 40;
+            }
         }
         public double RealtimePercentage
         {
-        	get { return m_PlayerScreenUI.RealtimePercentage; }
-        	set { m_PlayerScreenUI.RealtimePercentage = value;}
+            get { return view.RealtimePercentage; }
+            set { view.RealtimePercentage = value;}
         }
         public bool Synched
         {
             //get { return m_PlayerScreenUI.m_bSynched; }
-            set { m_PlayerScreenUI.Synched = value;}
+            set { view.Synched = value;}
         }
         public long SyncPosition
         {
             // Reference timestamp for synchronization, expressed in local timebase.
-            get { return m_PlayerScreenUI.SyncPosition; }
-            set { m_PlayerScreenUI.SyncPosition = value; }
+            get { return view.SyncPosition; }
+            set { view.SyncPosition = value; }
         }
         public long Position
         {
             // Used to feed SyncPosition. 
-            get { return m_FrameServer.VideoReader.Current.Timestamp - m_FrameServer.VideoReader.Info.FirstTimeStamp; }
+            get { return frameServer.VideoReader.Current.Timestamp - frameServer.VideoReader.Info.FirstTimeStamp; }
         }
         public bool SyncMerge
         {
-        	set 
-        	{
-        		m_PlayerScreenUI.SyncMerge = value;
-        		RefreshImage();
-        	}
+            set 
+            {
+                view.SyncMerge = value;
+                RefreshImage();
+            }
         }
         public bool DualSaveInProgress
         {
-        	set { m_PlayerScreenUI.DualSaveInProgress = value; }
+            set { view.DualSaveInProgress = value; }
         }
         
         // Pseudo Filters (Impacts rendering)
         public bool Deinterlaced
         {
-            get { return m_FrameServer.VideoReader.Options.Deinterlace; }
+            get { return frameServer.VideoReader.Options.Deinterlace; }
             set
             {
-                bool uncached = m_FrameServer.VideoReader.ChangeDeinterlace(value);
+                bool uncached = frameServer.VideoReader.ChangeDeinterlace(value);
                 
-                if (uncached && m_FrameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
-					m_PlayerScreenUI.UpdateWorkingZone(true);
+                if (uncached && frameServer.VideoReader.DecodingMode == VideoDecodingMode.Caching)
+                    view.UpdateWorkingZone(true);
                 
-				RefreshImage();
+                RefreshImage();
             }
         }
         
         public bool Mirrored
         {
-            get { return m_FrameServer.Metadata.Mirrored; }
+            get { return frameServer.Metadata.Mirrored; }
             set
             {
-                m_FrameServer.Metadata.Mirrored = value;
+                frameServer.Metadata.Mirrored = value;
                 RefreshImage();
             }
         }
         public bool InteractiveFiltering {
-        	get {return m_PlayerScreenUI.InteractiveFiltering;}
+            get {return view.InteractiveFiltering;}
         }
         #endregion
 
         #region members
-        public PlayerScreenUserInterface m_PlayerScreenUI; // <-- FIXME: Rely on a IPlayerScreenUI or IPlayerScreenView rather than the concrete implementation.
-		
-        private IScreenHandler m_ScreenHandler;
-        private FrameServerPlayer m_FrameServer = new FrameServerPlayer();
-        private Guid m_UniqueId;
+        public PlayerScreenUserInterface view; // <-- FIXME: Rely on a IPlayerScreenUI or IPlayerScreenView rather than the concrete implementation.
+        
+        private IScreenHandler screenManager;
+        private FrameServerPlayer frameServer = new FrameServerPlayer();
+        private Guid uniqueId;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -225,9 +225,9 @@ namespace Kinovea.ScreenManager
         public PlayerScreen(IScreenHandler _screenHandler)
         {
             log.Debug("Constructing a PlayerScreen.");
-            m_ScreenHandler = _screenHandler;
-            m_UniqueId = System.Guid.NewGuid();
-            m_PlayerScreenUI = new PlayerScreenUserInterface(m_FrameServer, this);
+            screenManager = _screenHandler;
+            uniqueId = System.Guid.NewGuid();
+            view = new PlayerScreenUserInterface(frameServer, this);
             
             BindCommands();
         }
@@ -245,22 +245,22 @@ namespace Kinovea.ScreenManager
             // and the post init for trackable drawings is handled there by calling a command that is implemented here.
             
             // Event handlers
-            m_PlayerScreenUI.DrawingAdded += (s, e) => m_FrameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
-            m_PlayerScreenUI.CommandProcessed += (s, e) => OnCommandProcessed(e);
+            view.DrawingAdded += (s, e) => frameServer.Metadata.AddDrawing(e.Drawing, e.KeyframeIndex);
+            view.CommandProcessed += (s, e) => OnCommandProcessed(e);
             
             // Just for the magnifier. Remove as soon as possible when the adding of the magnifier is handled in Metadata.
-            m_PlayerScreenUI.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
+            view.TrackableDrawingAdded += (s, e) => AddTrackableDrawing(e.TrackableDrawing);
             
             // For magnifier AND other drawings. Remove as soon as possible, when delete drawing is handled in metadata.
             // Currently all the code for delete drawing is in the UI. It should be in Metadata.
-            m_PlayerScreenUI.TrackableDrawingDeleted += (s, e) => m_FrameServer.Metadata.DeleteTrackableDrawing(e.TrackableDrawing);
+            view.TrackableDrawingDeleted += (s, e) => frameServer.Metadata.DeleteTrackableDrawing(e.TrackableDrawing);
             
             
             // Commands
-            m_PlayerScreenUI.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
-            m_PlayerScreenUI.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
+            view.ToggleTrackingCommand = new ToggleCommand(ToggleTracking, IsTracking);
+            view.TrackDrawingsCommand = new RelayCommand<VideoFrame>(TrackDrawings);
             
-            m_FrameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
+            frameServer.Metadata.AddTrackableDrawingCommand = new RelayCommand<ITrackable>(AddTrackableDrawing);
             
         }
         
@@ -270,7 +270,7 @@ namespace Kinovea.ScreenManager
         
         public void ScreenUI_CloseAsked()
         {
-        	m_ScreenHandler.Screen_CloseAsked(this);
+            screenManager.Screen_CloseAsked(this);
         }
         public void ScreenUI_SetAsActiveScreen()
         {
@@ -278,41 +278,41 @@ namespace Kinovea.ScreenManager
         }
         public void ScreenUI_UpdateStatusBarAsked()
         {
-        	m_ScreenHandler.Screen_UpdateStatusBarAsked(this);
+            screenManager.Screen_UpdateStatusBarAsked(this);
         }
 
         public void PlayerScreenUI_SpeedChanged(bool _bIntervalOnly)
         {
             // Used for synchronisation handling.
-            m_ScreenHandler.Player_SpeedChanged(this, _bIntervalOnly);
+            screenManager.Player_SpeedChanged(this, _bIntervalOnly);
         }
         public void PlayerScreenUI_PauseAsked()
         {
-        	m_ScreenHandler.Player_PauseAsked(this);
+            screenManager.Player_PauseAsked(this);
         }
         public void PlayerScreenUI_SelectionChanged(bool _bInitialization)
         {
             // Used for synchronisation handling.
-            m_ScreenHandler.Player_SelectionChanged(this, _bInitialization);
+            screenManager.Player_SelectionChanged(this, _bInitialization);
         }
         public void PlayerScreenUI_ImageChanged(Bitmap _image)
         {
-        	m_ScreenHandler.Player_ImageChanged(this, _image);
+            screenManager.Player_ImageChanged(this, _image);
         }
         public void PlayerScreenUI_SendImage(Bitmap _image)
         {
-        	m_ScreenHandler.Player_SendImage(this, _image);
+            screenManager.Player_SendImage(this, _image);
         }
         public void PlayerScreenUI_Reset()
         {
-        	m_ScreenHandler.Player_Reset(this);
+            screenManager.Player_Reset(this);
         }
         #endregion
         
         #region AbstractScreen Implementation
         public override void DisplayAsActiveScreen(bool _bActive)
         {
-            m_PlayerScreenUI.DisplayAsActiveScreen(_bActive);
+            view.DisplayAsActiveScreen(_bActive);
         }
         public override void BeforeClose()
         {
@@ -320,43 +320,43 @@ namespace Kinovea.ScreenManager
             // Note: We shouldn't call ResetToEmptyState here because we will want
             // the close screen routine to detect if there is something left in the 
             // metadata and alerts the user.
-            if(m_FrameServer.Loaded)
-                m_PlayerScreenUI.StopPlaying();
+            if(frameServer.Loaded)
+                view.StopPlaying();
         }
         public override void AfterClose()
         {
-            if(!m_FrameServer.Loaded)
+            if(!frameServer.Loaded)
                 return;
             
-            m_FrameServer.VideoReader.Close();
-            m_PlayerScreenUI.ResetToEmptyState();
+            frameServer.VideoReader.Close();
+            view.ResetToEmptyState();
         }
         public override void RefreshUICulture()
         {
-            m_PlayerScreenUI.RefreshUICulture();
+            view.RefreshUICulture();
         }
         public override void PreferencesUpdated()
         {
         }
         public override void RefreshImage()
         {
-            m_PlayerScreenUI.RefreshImage();
+            view.RefreshImage();
         }
         public override void AddImageDrawing(string filename, bool isSvg)
         {
-            m_PlayerScreenUI.BeforeAddImageDrawing();
-        	m_FrameServer.Metadata.AddImageDrawing(filename, isSvg, m_FrameServer.VideoReader.Current.Timestamp);
-        	m_PlayerScreenUI.AfterAddImageDrawing();
+            view.BeforeAddImageDrawing();
+            frameServer.Metadata.AddImageDrawing(filename, isSvg, frameServer.VideoReader.Current.Timestamp);
+            view.AfterAddImageDrawing();
         }
         public override void AddImageDrawing(Bitmap bmp)
         {
-            m_PlayerScreenUI.BeforeAddImageDrawing();
-            m_FrameServer.Metadata.AddImageDrawing(bmp, m_FrameServer.VideoReader.Current.Timestamp);
-        	m_PlayerScreenUI.AfterAddImageDrawing();
+            view.BeforeAddImageDrawing();
+            frameServer.Metadata.AddImageDrawing(bmp, frameServer.VideoReader.Current.Timestamp);
+            view.AfterAddImageDrawing();
         }
         public override void FullScreen(bool _bFullScreen)
         {
-            m_PlayerScreenUI.FullScreen(_bFullScreen);
+            view.FullScreen(_bFullScreen);
         }
         public override void ExecuteCommand(int cmd)
         {
@@ -377,7 +377,7 @@ namespace Kinovea.ScreenManager
                 case PlayerScreenCommands.GotoNextKeyframe:
                 case PlayerScreenCommands.GotoSyncPoint:
                 case PlayerScreenCommands.AddKeyframe:
-                    m_PlayerScreenUI.ExecuteCommand(cmd, false);
+                    view.ExecuteCommand(cmd, false);
                     break;
                 default:
                     break;
@@ -388,56 +388,56 @@ namespace Kinovea.ScreenManager
         #region Other public methods called from the ScreenManager
         public void StopPlaying()
         {
-            m_PlayerScreenUI.StopPlaying();
+            view.StopPlaying();
         }
         public void GotoNextFrame(bool _bAllowUIUpdate)
         {
-            m_PlayerScreenUI.SyncSetCurrentFrame(-1, _bAllowUIUpdate);
+            view.SyncSetCurrentFrame(-1, _bAllowUIUpdate);
         }
         public void GotoFrame(long _frame, bool _bAllowUIUpdate)
         {
-        	m_PlayerScreenUI.SyncSetCurrentFrame(_frame, _bAllowUIUpdate);
+            view.SyncSetCurrentFrame(_frame, _bAllowUIUpdate);
         }
         public void ResetSelectionImages(MemoPlayerScreen _memo)
         {
-            m_PlayerScreenUI.ResetSelectionImages(_memo);
+            view.ResetSelectionImages(_memo);
         }
         public MemoPlayerScreen GetMemo()
         {
-            return m_PlayerScreenUI.GetMemo();
+            return view.GetMemo();
         }
         public void SetInteractiveEffect(InteractiveEffect _effect)
         {
-            m_PlayerScreenUI.SetInteractiveEffect(_effect);
+            view.SetInteractiveEffect(_effect);
         }
         public void DeactivateInteractiveEffect()
         {
-            m_PlayerScreenUI.DeactivateInteractiveEffect();
+            view.DeactivateInteractiveEffect();
         }
         public void SetSyncMergeImage(Bitmap _SyncMergeImage, bool _bUpdateUI)
-		{
-        	m_PlayerScreenUI.SetSyncMergeImage(_SyncMergeImage, _bUpdateUI);
-		}
+        {
+            view.SetSyncMergeImage(_SyncMergeImage, _bUpdateUI);
+        }
         public void Save()
         {
-        	m_PlayerScreenUI.Save();
+            view.Save();
         }
         public void ConfigureHighSpeedCamera()
         {
-        	m_PlayerScreenUI.DisplayConfigureSpeedBox(true);
+            view.DisplayConfigureSpeedBox(true);
         }
         public long GetOutputBitmap(Graphics _canvas, Bitmap _sourceImage, long _iTimestamp, bool _bFlushDrawings, bool _bKeyframesOnly)
         {
-        	return m_PlayerScreenUI.GetOutputBitmap(_canvas, _sourceImage, _iTimestamp, _bFlushDrawings, _bKeyframesOnly);
+            return view.GetOutputBitmap(_canvas, _sourceImage, _iTimestamp, _bFlushDrawings, _bKeyframesOnly);
         }
         public Bitmap GetFlushedImage()
         {
-        	return m_PlayerScreenUI.GetFlushedImage();
+            return view.GetFlushedImage();
         }
         public void ShowCoordinateSystem()
         {
-            m_FrameServer.Metadata.ShowCoordinateSystem();
-            m_PlayerScreenUI.RefreshImage();
+            frameServer.Metadata.ShowCoordinateSystem();
+            view.RefreshImage();
         }
         #endregion
 
@@ -447,9 +447,9 @@ namespace Kinovea.ScreenManager
         }
 
         private void AddTrackableDrawing(ITrackable trackableDrawing)
-		{
-		    m_FrameServer.Metadata.TrackabilityManager.Add(trackableDrawing, m_FrameServer.VideoReader.Current);
-		}
+        {
+            frameServer.Metadata.TrackabilityManager.Add(trackableDrawing, frameServer.VideoReader.Current);
+        }
 
         private void ToggleTracking(object parameter)
         {
@@ -457,7 +457,7 @@ namespace Kinovea.ScreenManager
             if(trackableDrawing == null)
                 return;
             
-            m_FrameServer.Metadata.TrackabilityManager.ToggleTracking(trackableDrawing);
+            frameServer.Metadata.TrackabilityManager.ToggleTracking(trackableDrawing);
         }
         private bool IsTracking(object parameter)
         {
@@ -465,7 +465,7 @@ namespace Kinovea.ScreenManager
             if(trackableDrawing == null)
                 return false;
             
-            return m_FrameServer.Metadata.TrackabilityManager.IsTracking(trackableDrawing);
+            return frameServer.Metadata.TrackabilityManager.IsTracking(trackableDrawing);
         }
         
         private ITrackable ConvertToTrackable(object parameter)
@@ -488,8 +488,8 @@ namespace Kinovea.ScreenManager
         
         private void TrackDrawings(VideoFrame frameToUse)
         {
-            VideoFrame frame = frameToUse ?? m_FrameServer.VideoReader.Current;
-            m_FrameServer.Metadata.TrackabilityManager.Track(frame);
+            VideoFrame frame = frameToUse ?? frameServer.VideoReader.Current;
+            frameServer.Metadata.TrackabilityManager.Track(frame);
         }
     }
 }

@@ -19,10 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -41,52 +37,34 @@ namespace Kinovea.ScreenManager
         	get { return ScreenManagerLang.ToolTip_AddKeyframe; }
         }
 
-        private PlayerScreenUserInterface m_psui;
-        private long m_iFramePosition;
-        private Metadata m_Metadata;
+        private PlayerScreenUserInterface view;
+        private long framePosition;
+        private Metadata metadata;
         
         #region constructor
-        public CommandAddKeyframe(PlayerScreenUserInterface _psui, Metadata _Metadata, long _iFramePosition)
+        public CommandAddKeyframe(PlayerScreenUserInterface view, Metadata metadata, long framePosition)
         {
-            m_psui = _psui;
-            m_iFramePosition = _iFramePosition;
-            m_Metadata = _Metadata;
+            this.view = view;
+            this.framePosition = framePosition;
+            this.metadata = metadata;
         }
         #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
         public void Execute()
         {
-            // Add a Keyframe at given position
-            m_psui.OnAddKeyframe(m_iFramePosition);
+            view.OnAddKeyframe(framePosition);
         }
+
         public void Unexecute()
         {
             // The PlayerScreen used at execute time may not be valid anymore...
             // The MetaData used at execute time may not be valid anymore...
-            // (use case : Add KF + Close screen + undo + undo)
+            // (ex: Add KF + Close screen + undo + undo)
 
             // Delete Keyframe at given position
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
-            {
-                m_psui.OnRemoveKeyframe(iIndex);
-            }
-        }
-        private int GetKeyframeIndex()
-        {
-            int iIndex = -1;
-            for (int i = 0; i < m_Metadata.Count; i++)
-            {
-                if (m_Metadata[i].Position == m_iFramePosition)
-                {
-                    iIndex = i;
-                }
-            }
-
-            return iIndex;
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index >= 0)
+                view.OnRemoveKeyframe(index);
         }
     }
 }

@@ -19,10 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -35,35 +31,33 @@ namespace Kinovea.ScreenManager
             get { return ScreenManagerLang.mnuDeleteTrajectory; }
         }
 
-        private PlayerScreenUserInterface m_psui;
-        private Metadata m_Metadata;
-        private DrawingTrack m_Track;
+        private PlayerScreenUserInterface view;
+        private Metadata metadata;
+        private DrawingTrack track;
         
-        #region constructor
-        public CommandDeleteTrack(PlayerScreenUserInterface _psui, Metadata _Metadata)
+        public CommandDeleteTrack(PlayerScreenUserInterface view, Metadata metadata)
         {
-            m_psui = _psui;
-            m_Metadata = _Metadata;
-            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingTrack;
+            this.view = view;
+            this.metadata = metadata;
+            this.track = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingTrack;
         }
-        #endregion
 
         public void Execute()
         {
-            if(m_Track != null)
-            {
-                m_Metadata.ExtraDrawings.Remove(m_Track);
-                m_psui.pbSurfaceScreen.Invalidate();
-            }
+            if (track == null)
+                return;
+            
+            metadata.ExtraDrawings.Remove(track);
+            view.DoInvalidate();
         }
+
         public void Unexecute()
         {
-            // Recreate the drawing.
-            if(m_Track != null)
-            {
-                m_Metadata.ExtraDrawings.Add(m_Track);
-                m_psui.pbSurfaceScreen.Invalidate();
-            }
+            if (track == null)
+                return;
+            
+            metadata.ExtraDrawings.Add(track);
+            view.DoInvalidate();
         }
     }
 }

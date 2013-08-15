@@ -64,7 +64,7 @@ namespace Kinovea.ScreenManager
                 int currentHash = GetKeyframesContentHash() ^ GetExtraDrawingsContentHash();
 
                 log.DebugFormat("IsDirty. Content hashes = reference:{0}, current:{1}.",referenceHash, currentHash);
-            	return currentHash != referenceHash;
+                return currentHash != referenceHash;
             }
         }
         public string GlobalTitle
@@ -78,9 +78,9 @@ namespace Kinovea.ScreenManager
             set { imageSize = value; }
         }
         public CoordinateSystem CoordinateSystem
-		{
-			get { return coordinateSystem; }
-		}
+        {
+            get { return coordinateSystem; }
+        }
         public string FullPath
         {
             get { return fullPath; }
@@ -111,10 +111,10 @@ namespace Kinovea.ScreenManager
         {
             get 
             {
-            	// This is used to know if there is anything to burn on the images when saving.
-            	// All kind of objects should be taken into account here, even those
-            	// that we currently don't save to the .kva but only draw on the image.
-            	// TODO: detect if any extradrawing is dirty.
+                // This is used to know if there is anything to burn on the images when saving.
+                // All kind of objects should be taken into account here, even those
+                // that we currently don't save to the .kva but only draw on the image.
+                // TODO: detect if any extradrawing is dirty.
                 return keyframes.Count > 0 ||
                         extraDrawings.Count > totalStaticExtraDrawings ||
                         magnifier.Mode != MagnifierMode.None;
@@ -137,22 +137,22 @@ namespace Kinovea.ScreenManager
             set { hitDrawingIndex = value; }
         }
         public List<AbstractDrawing> ExtraDrawings
-		{
-			get { return extraDrawings;}
-		}
+        {
+            get { return extraDrawings;}
+        }
         public int SelectedExtraDrawing
-		{
-			get { return hitExtraDrawingIndex; }
-			set { hitExtraDrawingIndex = value; }
-		}
+        {
+            get { return hitExtraDrawingIndex; }
+            set { hitExtraDrawingIndex = value; }
+        }
         public AbstractDrawing HitDrawing
         {
             get { return hitDrawing;}
         }
         public Magnifier Magnifier
         {
-        	get { return magnifier;}
-        	set { magnifier = value;}
+            get { return magnifier;}
+            set { magnifier = value;}
         }
         public SpotlightManager SpotlightManager
         {
@@ -184,14 +184,14 @@ namespace Kinovea.ScreenManager
             //get { return m_iSelectionStart; }
             set { selectionStart = value; }
         }         
-		public CalibrationHelper CalibrationHelper 
-		{
-			get { return calibrationHelper; }
-		}
-		public TrackabilityManager TrackabilityManager
-		{
-		    get { return trackabilityManager;}
-		}
+        public CalibrationHelper CalibrationHelper 
+        {
+            get { return calibrationHelper; }
+        }
+        public TrackabilityManager TrackabilityManager
+        {
+            get { return trackabilityManager;}
+        }
         #endregion
 
         #region Members
@@ -226,8 +226,8 @@ namespace Kinovea.ScreenManager
         private int duplicateFactor = 1;
         private int referenceHash;
         private CalibrationHelper calibrationHelper = new CalibrationHelper();
-		private CoordinateSystem coordinateSystem = new CoordinateSystem();
-		private TrackabilityManager trackabilityManager = new TrackabilityManager();
+        private CoordinateSystem coordinateSystem = new CoordinateSystem();
+        private TrackabilityManager trackabilityManager = new TrackabilityManager();
         
         // Read from XML, used for adapting the data to the current video
         private Size inputImageSize = new Size(0, 0);
@@ -254,13 +254,13 @@ namespace Kinovea.ScreenManager
         }
         public Metadata(string _kvaString,  VideoInfo _info, TimeCodeBuilder _TimeStampsToTimecodeCallback, ClosestFrameAction _ShowClosestFrameCallback)
             : this(_TimeStampsToTimecodeCallback, _ShowClosestFrameCallback)
-		{
+        {
             // Deserialization constructor
             imageSize = _info.AspectRatioSize;
             AverageTimeStampsPerFrame = _info.AverageTimeStampsPerFrame;
             fullPath = _info.FilePath;
             Load(_kvaString, false);
-		}
+        }
         #endregion
 
         #region Public Interface
@@ -324,6 +324,14 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Add/Delete drawings
+        public int GetKeyframeIndex(long position)
+        {
+            for (int i = 0; i < keyframes.Count; i++)
+                if (keyframes[i].Position == position)
+                    return i;
+
+            return -1;
+        }
         public void AddDrawing(AbstractDrawing drawing, int keyframeIndex)
         {
             keyframes[keyframeIndex].AddDrawing(drawing);
@@ -383,18 +391,18 @@ namespace Kinovea.ScreenManager
         }
         public void AddChrono(DrawingChrono _chrono)
         {
-        	_chrono.ParentMetadata = this;
-        	extraDrawings.Add(_chrono);
-        	hitExtraDrawingIndex = extraDrawings.Count - 1;
+            _chrono.ParentMetadata = this;
+            extraDrawings.Add(_chrono);
+            hitExtraDrawingIndex = extraDrawings.Count - 1;
         }
         public void AddTrack(DrawingTrack _track, ClosestFrameAction _showClosestFrame, Color _color)
         {
-        	_track.ParentMetadata = this;
-        	_track.Status = TrackStatus.Edit;
-        	_track.m_ShowClosestFrame = _showClosestFrame;
-        	_track.MainColor = _color;
-        	extraDrawings.Add(_track);
-        	hitExtraDrawingIndex = extraDrawings.Count - 1;
+            _track.ParentMetadata = this;
+            _track.Status = TrackStatus.Edit;
+            _track.m_ShowClosestFrame = _showClosestFrame;
+            _track.MainColor = _color;
+            extraDrawings.Add(_track);
+            hitExtraDrawingIndex = extraDrawings.Count - 1;
         }
         
         public void DeleteHitDrawing()
@@ -509,12 +517,12 @@ namespace Kinovea.ScreenManager
         }
         public void UpdateTrackPoint(Bitmap _bmp)
         {
-        	// Happens when mouse up and editing a track.
-        	if(hitExtraDrawingIndex < 0)
-        	    return;
-        	
-        	DrawingTrack t = extraDrawings[hitExtraDrawingIndex] as DrawingTrack;
-        	if(t != null && t.Status == TrackStatus.Edit)
+            // Happens when mouse up and editing a track.
+            if(hitExtraDrawingIndex < 0)
+                return;
+            
+            DrawingTrack t = extraDrawings[hitExtraDrawingIndex] as DrawingTrack;
+            if(t != null && t.Status == TrackStatus.Edit)
                 t.UpdateTrackPoint(_bmp);
         }
         public void CleanupHash()
@@ -528,8 +536,8 @@ namespace Kinovea.ScreenManager
         }
         public void ResizeFinished()
         {
-        	// This function can be used to trigger an update to drawings that do not 
-        	// render in the same way when the user is resizing the window or not.
+            // This function can be used to trigger an update to drawings that do not 
+            // render in the same way when the user is resizing the window or not.
             foreach(DrawingSVG svg in SVGs())
                 svg.ResizeFinished();
         }
@@ -555,7 +563,7 @@ namespace Kinovea.ScreenManager
         // For example, Tracks can here be handled with all other ExtraDrawings.
         public bool IsOnDrawing(int _iActiveKeyframeIndex, Point _MouseLocation, long _iTimestamp)
         {
-        	// Returns whether the mouse is on a drawing attached to a key image.
+            // Returns whether the mouse is on a drawing attached to a key image.
             bool hit = false;
             
             if (PreferencesManager.PlayerPreferences.DefaultFading.Enabled && keyframes.Count > 0)
@@ -579,26 +587,26 @@ namespace Kinovea.ScreenManager
         }
         public AbstractDrawing IsOnExtraDrawing(Point _MouseLocation, long _iTimestamp)
         {
-        	// Check if the mouse is on one of the drawings not attached to any key image.
-        	// Returns the drawing on which we stand (or null if none), and select it on the way.
-        	// the caller will then check its type and decide which action to perform.
-			
-        	AbstractDrawing result = null;
-			
-			for(int i=extraDrawings.Count-1;i>=0;i--)
+            // Check if the mouse is on one of the drawings not attached to any key image.
+            // Returns the drawing on which we stand (or null if none), and select it on the way.
+            // the caller will then check its type and decide which action to perform.
+            
+            AbstractDrawing result = null;
+            
+            for(int i=extraDrawings.Count-1;i>=0;i--)
             {
-			    AbstractDrawing candidate = extraDrawings[i];
-				int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp, coordinateSystem);
-            	if(hitRes >= 0)
-            	{
-            		hitExtraDrawingIndex = i;
-            		result = candidate;
-            		hitDrawing = candidate;
-            		break;
-            	}
+                AbstractDrawing candidate = extraDrawings[i];
+                int hitRes = candidate.HitTest(_MouseLocation, _iTimestamp, coordinateSystem);
+                if(hitRes >= 0)
+                {
+                    hitExtraDrawingIndex = i;
+                    result = candidate;
+                    hitDrawing = candidate;
+                    break;
+                }
             }
-			
-			return result;
+            
+            return result;
         }
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
@@ -722,25 +730,25 @@ namespace Kinovea.ScreenManager
             else
                 kvaDoc.LoadXml(_kva);
             
-        	string tempFile = Software.SettingsDirectory + "\\temp.kva";
-        	XmlWriterSettings settings = new XmlWriterSettings();
-			settings.Indent = true;
+            string tempFile = Software.SettingsDirectory + "\\temp.kva";
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
             
-    		XmlNode formatNode = kvaDoc.DocumentElement.SelectSingleNode("descendant::FormatVersion");
+            XmlNode formatNode = kvaDoc.DocumentElement.SelectSingleNode("descendant::FormatVersion");
             double format;
-    		bool read = double.TryParse(formatNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
-    		if(!read)
-    		{
-    		    log.ErrorFormat("The format couldn't be read. No conversion will be attempted. Read:{0}", formatNode.InnerText);
-    		    return result;
-    		}
-    		      
-    		if(format < 2.0 && format >= 1.3)
+            bool read = double.TryParse(formatNode.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out format);
+            if(!read)
+            {
+                log.ErrorFormat("The format couldn't be read. No conversion will be attempted. Read:{0}", formatNode.InnerText);
+                return result;
+            }
+                  
+            if(format < 2.0 && format >= 1.3)
             {
                 log.DebugFormat("Older format detected ({0}). Starting conversion", format); 
                 
                 try
-			    {
+                {
                     XslCompiledTransform xslt = new XslCompiledTransform();
                     string stylesheet = Application.StartupPath + "\\xslt\\kva-1.5to2.0.xsl";
                     xslt.Load(stylesheet);
@@ -757,90 +765,90 @@ namespace Kinovea.ScreenManager
                     {
                         StringBuilder builder = new StringBuilder();
                         using(XmlWriter xw = XmlWriter.Create(builder, settings))
-		                {    
+                        {    
                             xslt.Transform(kvaDoc, xw);
                         }
                         result = builder.ToString();
                     }
                     
                     log.DebugFormat("Older format converted.");
-    			}
-    			catch(Exception)
-    			{
-    			    log.ErrorFormat("An error occurred during KVA conversion. Conversion aborted.", format.ToString());
-    			}
+                }
+                catch(Exception)
+                {
+                    log.ErrorFormat("An error occurred during KVA conversion. Conversion aborted.", format.ToString());
+                }
             }
             else if(format <= 1.2)
             {
                 log.ErrorFormat("Format too old ({0}). No conversion will be attempted.", format.ToString());
             }
-			
-    		return result;
+            
+            return result;
         }
         private void ReadXml(XmlReader r)
-		{
+        {
             log.Debug("Importing Metadata from Kva XML.");
 
             r.MoveToContent();
             
             if(!(r.Name == "KinoveaVideoAnalysis"))
-        	    return;
+                return;
             
-        	r.ReadStartElement();
-        	r.ReadElementContentAsString("FormatVersion", "");
+            r.ReadStartElement();
+            r.ReadElementContentAsString("FormatVersion", "");
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 switch(r.Name)
-				{
+                {
                     case "Producer":
                         r.ReadElementContentAsString();
-						break;
+                        break;
                     case "OriginalFilename":
                         inputFileName = r.ReadElementContentAsString();
-						break;
-					case "GlobalTitle":
+                        break;
+                    case "GlobalTitle":
                         globalTitle = r.ReadElementContentAsString();
-						break;
-					case "ImageSize":
-						Point p = XmlHelper.ParsePoint(r.ReadElementContentAsString());
-						inputImageSize = new Size(p);
-						break;
-					case "AverageTimeStampsPerFrame":
-						inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
-						break;
-					case "FirstTimeStamp":
-						inputFirstTimeStamp = r.ReadElementContentAsLong();
-						break;
-					case "SelectionStart":
-						inputSelectionStart = r.ReadElementContentAsLong();
-						break;
+                        break;
+                    case "ImageSize":
+                        Point p = XmlHelper.ParsePoint(r.ReadElementContentAsString());
+                        inputImageSize = new Size(p);
+                        break;
+                    case "AverageTimeStampsPerFrame":
+                        inputAverageTimeStampsPerFrame = r.ReadElementContentAsLong();
+                        break;
+                    case "FirstTimeStamp":
+                        inputFirstTimeStamp = r.ReadElementContentAsLong();
+                        break;
+                    case "SelectionStart":
+                        inputSelectionStart = r.ReadElementContentAsLong();
+                        break;
                     case "DuplicationFactor":
-						duplicateFactor = r.ReadElementContentAsInt();
-						break;
-					case "Calibration":
+                        duplicateFactor = r.ReadElementContentAsInt();
+                        break;
+                    case "Calibration":
                         CalibrationHelper.ReadXml(r);
-						break;
-					case "Keyframes":
+                        break;
+                    case "Keyframes":
                         ParseKeyframes(r);
-						break;
-					case "Tracks":
+                        break;
+                    case "Tracks":
                         ParseTracks(r);
-						break;
-					case "Chronos":
-						ParseChronos(r);
-						break;
+                        break;
+                    case "Chronos":
+                        ParseChronos(r);
+                        break;
                     case "Spotlights":
-						ParseSpotlights(r);
-						break;
+                        ParseSpotlights(r);
+                        break;
                     case "AutoNumbers":
-						ParseAutoNumbers(r);
-						break;
+                        ParseAutoNumbers(r);
+                        break;
                     default:
-						// We still need to properly skip the unparsed nodes.
-						string unparsed = r.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
+                        // We still need to properly skip the unparsed nodes.
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
                 }
             }
             
@@ -853,15 +861,15 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 if(r.Name == "Keyframe")
-				{
+                {
                     ParseKeyframe(r);
                 }
                 else
                 {
                     string unparsed = r.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
@@ -870,62 +878,62 @@ namespace Kinovea.ScreenManager
         private void ParseKeyframe(XmlReader r)
         {
             // This will not create a fully functionnal Keyframe.
-        	// Must be followed by a call to PostImportMetadata()
+            // Must be followed by a call to PostImportMetadata()
             Keyframe kf = new Keyframe(this);
             
             r.ReadStartElement();
             
-			while(r.NodeType == XmlNodeType.Element)
-			{
-				switch(r.Name)
-				{
-					case "Position":
-				        int iInputPosition = r.ReadElementContentAsInt();
+            while(r.NodeType == XmlNodeType.Element)
+            {
+                switch(r.Name)
+                {
+                    case "Position":
+                        int iInputPosition = r.ReadElementContentAsInt();
                         kf.Position = DoRemapTimestamp(iInputPosition, false);
-						break;
-					case "Title":
-						kf.Title = r.ReadElementContentAsString();
-						break;
-					case "Comment":
-						kf.CommentRtf = r.ReadElementContentAsString();
-						break;
-		            case "Drawings":
-						ParseDrawings(r, kf);
-						break;
-					default:
-						string unparsed = r.ReadOuterXml();
-						log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-						break;
-				}
-			}
-			
-			r.ReadEndElement();
+                        break;
+                    case "Title":
+                        kf.Title = r.ReadElementContentAsString();
+                        break;
+                    case "Comment":
+                        kf.CommentRtf = r.ReadElementContentAsString();
+                        break;
+                    case "Drawings":
+                        ParseDrawings(r, kf);
+                        break;
+                    default:
+                        string unparsed = r.ReadOuterXml();
+                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                        break;
+                }
+            }
             
-			// Merge: insert key frame at the right place or merge drawings if there's already a keyframe.
-			bool merged = false;
-			for(int i = 0; i<keyframes.Count; i++)
-			{
-			    if(kf.Position < keyframes[i].Position)
-			    {
-			        keyframes.Insert(i, kf);
-			        merged = true;
-			        break;
-			    }
-			    else if(kf.Position == keyframes[i].Position)
-			    {
-			        foreach(AbstractDrawing ad in kf.Drawings)
-			        {
-			            keyframes[i].Drawings.Add(ad);
-			        }
-			        merged = true;
-			        break;
-			    }
-			}
-			
-			if(!merged)
-			{
-			    keyframes.Add(kf);
-			}
+            r.ReadEndElement();
+            
+            // Merge: insert key frame at the right place or merge drawings if there's already a keyframe.
+            bool merged = false;
+            for(int i = 0; i<keyframes.Count; i++)
+            {
+                if(kf.Position < keyframes[i].Position)
+                {
+                    keyframes.Insert(i, kf);
+                    merged = true;
+                    break;
+                }
+                else if(kf.Position == keyframes[i].Position)
+                {
+                    foreach(AbstractDrawing ad in kf.Drawings)
+                    {
+                        keyframes[i].Drawings.Add(ad);
+                    }
+                    merged = true;
+                    break;
+                }
+            }
+            
+            if(!merged)
+            {
+                keyframes.Add(kf);
+            }
         }
         private void ParseDrawings(XmlReader r, Keyframe _keyframe)
         {
@@ -934,7 +942,7 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 AbstractDrawing drawing = ParseDrawing(r);
                     
                 if (drawing != null)
@@ -972,12 +980,12 @@ namespace Kinovea.ScreenManager
                             
                             // Instanciate the drawing.
                             object[] parameters = new object[]{r, scaling, this};
-	                        drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
-	                    
-    	                    if(drawing != null)
-    	                       drawingRead = true;
+                            drawing = (AbstractDrawing)Activator.CreateInstance(t, parameters);
+                        
+                            if(drawing != null)
+                               drawingRead = true;
                         }
-	                   
+                       
                         break;
                     }
                 }
@@ -998,11 +1006,11 @@ namespace Kinovea.ScreenManager
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
-			{
+            {
                 // When we have other Chrono tools (cadence tool), make this dynamic
                 // on a similar model than for attached drawings. (see ParseDrawing())
                 if(r.Name == "Chrono")
-				{
+                {
                     DrawingChrono dc = new DrawingChrono(r, GetScaling(), DoRemapTimestamp);
                     
                     if (dc != null)
@@ -1011,7 +1019,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     string unparsed = r.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
@@ -1024,9 +1032,9 @@ namespace Kinovea.ScreenManager
             _xmlReader.ReadStartElement();
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
+            {
                 if(_xmlReader.Name == "Track")
-				{
+                {
                     DrawingTrack trk = new DrawingTrack(_xmlReader, GetScaling(), DoRemapTimestamp, imageSize);
                     
                     if (!trk.Invalid)
@@ -1038,7 +1046,7 @@ namespace Kinovea.ScreenManager
                 else
                 {
                     string unparsed = _xmlReader.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
@@ -1049,16 +1057,16 @@ namespace Kinovea.ScreenManager
             _xmlReader.ReadStartElement();
             
             while(_xmlReader.NodeType == XmlNodeType.Element)
-			{
+            {
                 if(_xmlReader.Name == "Spotlight")
-				{
+                {
                     Spotlight spotlight = new Spotlight(_xmlReader, GetScaling(), DoRemapTimestamp, averageTimeStampsPerFrame);
                     spotlightManager.Add(spotlight);
                 }
                 else
                 {
                     string unparsed = _xmlReader.ReadOuterXml();
-				    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
+                    log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                 }
             }
             
@@ -1086,22 +1094,22 @@ namespace Kinovea.ScreenManager
         #region Writing
         public String ToXmlString(int _iDuplicateFactor)
         {
-        	// The duplicate factor is used in the context of extreme slow motion (causing the output to be less than 8fps).
-        	// In that case there is frame duplication and we store this information in the metadata when it is embedded in the file.
-        	// On input, it will be used to adjust the key images positions.
-        	// We change the global variable so it can be used during xml export, but it's only temporary.
-        	// It is possible that an already duplicated clip is further slowed down.
-        	int memoDuplicateFactor = duplicateFactor;
-        	duplicateFactor *= _iDuplicateFactor;
-        	
-        	XmlWriterSettings settings = new XmlWriterSettings();
-			settings.Indent = false;
-			settings.CloseOutput = true;
-			
-			StringBuilder builder = new StringBuilder();
-			using(XmlWriter w = XmlWriter.Create(builder, settings))
-			{
-			    try
+            // The duplicate factor is used in the context of extreme slow motion (causing the output to be less than 8fps).
+            // In that case there is frame duplication and we store this information in the metadata when it is embedded in the file.
+            // On input, it will be used to adjust the key images positions.
+            // We change the global variable so it can be used during xml export, but it's only temporary.
+            // It is possible that an already duplicated clip is further slowed down.
+            int memoDuplicateFactor = duplicateFactor;
+            duplicateFactor *= _iDuplicateFactor;
+            
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = false;
+            settings.CloseOutput = true;
+            
+            StringBuilder builder = new StringBuilder();
+            using(XmlWriter w = XmlWriter.Create(builder, settings))
+            {
+                try
                 {
                    WriteXml(w);
                 }
@@ -1110,21 +1118,21 @@ namespace Kinovea.ScreenManager
                     log.Error("An error happened during the writing of the kva string");
                     log.Error(e);
                 }
-			}
-			
-			duplicateFactor = memoDuplicateFactor;
+            }
+            
+            duplicateFactor = memoDuplicateFactor;
             
             return builder.ToString();
         }
         public void ToXmlFile(string _file)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
-			settings.Indent = true;
-			settings.CloseOutput = true;
-			
-			using(XmlWriter w = XmlWriter.Create(_file, settings))
-			{
-			    try
+            settings.Indent = true;
+            settings.CloseOutput = true;
+            
+            using(XmlWriter w = XmlWriter.Create(_file, settings))
+            {
+                try
                 {
                    WriteXml(w);
                    CleanupHash();
@@ -1134,21 +1142,21 @@ namespace Kinovea.ScreenManager
                     log.Error("An error happened during the writing of the kva file");
                     log.Error(e);
                 }
-			}
+            }
         }
         private void WriteXml(XmlWriter w)
-		{
+        {
             // Convert the metadata to XML.
             // The XML Schema for the format should be available in the "tools/Schema/" folder of the source repository.
-        	
+            
             // The format contains both core infos to deserialize back to Metadata and helpers data for XSLT exports, 
             // so these exports have more user friendly values. (timecode vs timestamps, cm vs pixels, etc.)
             
             // Notes: 
             // Doubles must be written with the InvariantCulture. ("1.52" not "1,52").
             // Booleans must be converted to proper XML Boolean type ("true" not "True").
-        	
-        	w.WriteStartElement("KinoveaVideoAnalysis");
+            
+            w.WriteStartElement("KinoveaVideoAnalysis");
             WriteGeneralInformation(w);
             
             // Keyframes
@@ -1169,30 +1177,30 @@ namespace Kinovea.ScreenManager
             WriteSpotlights(w);
             WriteAutoNumbers(w);
             
-			w.WriteEndElement();
+            w.WriteEndElement();
         }
         private void WriteChronos(XmlWriter w)
         {
             bool atLeastOne = false;
             foreach(AbstractDrawing ad in extraDrawings)
             {
-            	DrawingChrono dc = ad as DrawingChrono;
-            	if(dc != null)
-            	{
-            		if(atLeastOne == false)
-            		{
-            			w.WriteStartElement("Chronos");
-            			atLeastOne = true;
-            		}
-            		
-            		w.WriteStartElement("Chrono");
-					dc.WriteXml(w);
-					w.WriteEndElement();
-            	}
+                DrawingChrono dc = ad as DrawingChrono;
+                if(dc != null)
+                {
+                    if(atLeastOne == false)
+                    {
+                        w.WriteStartElement("Chronos");
+                        atLeastOne = true;
+                    }
+                    
+                    w.WriteStartElement("Chrono");
+                    dc.WriteXml(w);
+                    w.WriteEndElement();
+                }
             }
             if(atLeastOne)
             {
-            	w.WriteEndElement();
+                w.WriteEndElement();
             }
         }
         private void WriteTracks(XmlWriter w)
@@ -1200,23 +1208,23 @@ namespace Kinovea.ScreenManager
             bool atLeastOne = false;
             foreach(AbstractDrawing ad in extraDrawings)
             {
-            	DrawingTrack trk = ad as DrawingTrack;
-            	if(trk != null)
-            	{
-            		if(atLeastOne == false)
-            		{
-            			w.WriteStartElement("Tracks");
-            			atLeastOne = true;
-            		}
-            		
-					w.WriteStartElement("Track");
-					trk.WriteXml(w);
-					w.WriteEndElement();
-            	}
+                DrawingTrack trk = ad as DrawingTrack;
+                if(trk != null)
+                {
+                    if(atLeastOne == false)
+                    {
+                        w.WriteStartElement("Tracks");
+                        atLeastOne = true;
+                    }
+                    
+                    w.WriteStartElement("Track");
+                    trk.WriteXml(w);
+                    w.WriteEndElement();
+                }
             }
             if(atLeastOne)
             {
-            	w.WriteEndElement();
+                w.WriteEndElement();
             }
         }
         private void WriteSpotlights(XmlWriter w)
@@ -1241,22 +1249,22 @@ namespace Kinovea.ScreenManager
         private void WriteGeneralInformation(XmlWriter w)
         {
             w.WriteElementString("FormatVersion", "2.0");
-			w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
-			w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(fullPath));
-			
-			if(!string.IsNullOrEmpty(globalTitle))
-			    w.WriteElementString("GlobalTitle", globalTitle);
-			
-			w.WriteElementString("ImageSize", imageSize.Width + ";" + imageSize.Height);
-			w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
-			w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
-			w.WriteElementString("SelectionStart", selectionStart.ToString());
-			
-			if(duplicateFactor > 1)
-			    w.WriteElementString("DuplicationFactor", duplicateFactor.ToString());
-			
-			// Calibration
-			WriteCalibrationHelp(w);
+            w.WriteElementString("Producer", Software.ApplicationName + "." + Software.Version);
+            w.WriteElementString("OriginalFilename", Path.GetFileNameWithoutExtension(fullPath));
+            
+            if(!string.IsNullOrEmpty(globalTitle))
+                w.WriteElementString("GlobalTitle", globalTitle);
+            
+            w.WriteElementString("ImageSize", imageSize.Width + ";" + imageSize.Height);
+            w.WriteElementString("AverageTimeStampsPerFrame", averageTimeStampsPerFrame.ToString());
+            w.WriteElementString("FirstTimeStamp", firstTimeStamp.ToString());
+            w.WriteElementString("SelectionStart", selectionStart.ToString());
+            
+            if(duplicateFactor > 1)
+                w.WriteElementString("DuplicationFactor", duplicateFactor.ToString());
+            
+            // Calibration
+            WriteCalibrationHelp(w);
         }
         private void WriteCalibrationHelp(XmlWriter w)
         {
@@ -1268,29 +1276,29 @@ namespace Kinovea.ScreenManager
         
         #endregion
         
-    	public void Export(string _filePath, MetadataExportFormat _format)
-    	{
-    	    switch(_format)
-    		{
-    	        case MetadataExportFormat.ODF:
-    	            ExporterODF exporterODF = new ExporterODF();
-    	            exporterODF.Export(_filePath, this);
-    	            break;
-    	            
-    	        case MetadataExportFormat.MSXML:
-    	            ExporterMSXML exporterMSXML = new ExporterMSXML();
-    	            exporterMSXML.Export(_filePath, this);
-    	            break;
-    	         case MetadataExportFormat.XHTML:
-    	            ExporterXHTML exporterXHTML = new ExporterXHTML();
-    	            exporterXHTML.Export(_filePath, this);
-    	            break;
-    	         case MetadataExportFormat.TrajectoryText:
-    	            ExporterTrajectoryText exporterTrajText = new ExporterTrajectoryText();
-    	            exporterTrajText.Export(_filePath, this);
-    	            break;
-    	    }
-    	}
+        public void Export(string _filePath, MetadataExportFormat _format)
+        {
+            switch(_format)
+            {
+                case MetadataExportFormat.ODF:
+                    ExporterODF exporterODF = new ExporterODF();
+                    exporterODF.Export(_filePath, this);
+                    break;
+                    
+                case MetadataExportFormat.MSXML:
+                    ExporterMSXML exporterMSXML = new ExporterMSXML();
+                    exporterMSXML.Export(_filePath, this);
+                    break;
+                 case MetadataExportFormat.XHTML:
+                    ExporterXHTML exporterXHTML = new ExporterXHTML();
+                    exporterXHTML.Export(_filePath, this);
+                    break;
+                 case MetadataExportFormat.TrajectoryText:
+                    ExporterTrajectoryText exporterTrajText = new ExporterTrajectoryText();
+                    exporterTrajText.Export(_filePath, this);
+                    break;
+            }
+        }
    
         #region Lower level Helpers
         public long DoRemapTimestamp(long _iInputTimestamp, bool bRelative)
@@ -1435,7 +1443,7 @@ namespace Kinovea.ScreenManager
         }
         private int GetExtraDrawingsContentHash()
         {
-        	int hash = 0;
+            int hash = 0;
             foreach (AbstractDrawing ad in extraDrawings)
                 hash ^= ad.ContentHash;
 
@@ -1443,30 +1451,30 @@ namespace Kinovea.ScreenManager
         }
         private void CreateStaticExtraDrawings()
         {
-        	// Add the static extra drawings.
-        	// These drawings are unique and not attached to any particular key image.
-        	
+            // Add the static extra drawings.
+            // These drawings are unique and not attached to any particular key image.
+            
             spotlightManager = new SpotlightManager();
-        	autoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
-        	drawingCoordinateSystem = new DrawingCoordinateSystem(new Point(-1,-1), ToolManager.CoordinateSystem.StylePreset.Clone());
-        	
-        	extraDrawings.Add(spotlightManager);
-        	extraDrawings.Add(autoNumberManager);
-        	extraDrawings.Add(drawingCoordinateSystem);
-        	
-        	// m_iStaticExtraDrawings is used to differenciate between static extra drawings
-        	// like multidrawing managers and dynamic extra drawings like tracks and chronos.
-        	totalStaticExtraDrawings = extraDrawings.Count;
-        	
-        	spotlightManager.TrackableDrawingAdded += (s, e) =>
-        	{
-        	    if(AddTrackableDrawingCommand != null) 
-        	        AddTrackableDrawingCommand.Execute(e.TrackableDrawing); 
-        	};
-        	
-        	spotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
+            autoNumberManager = new AutoNumberManager(ToolManager.AutoNumbers.StylePreset.Clone());
+            drawingCoordinateSystem = new DrawingCoordinateSystem(new Point(-1,-1), ToolManager.CoordinateSystem.StylePreset.Clone());
+            
+            extraDrawings.Add(spotlightManager);
+            extraDrawings.Add(autoNumberManager);
+            extraDrawings.Add(drawingCoordinateSystem);
+            
+            // m_iStaticExtraDrawings is used to differenciate between static extra drawings
+            // like multidrawing managers and dynamic extra drawings like tracks and chronos.
+            totalStaticExtraDrawings = extraDrawings.Count;
+            
+            spotlightManager.TrackableDrawingAdded += (s, e) =>
+            {
+                if(AddTrackableDrawingCommand != null) 
+                    AddTrackableDrawingCommand.Execute(e.TrackableDrawing); 
+            };
+            
+            spotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
         }
-		private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
+        private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
             UpdateTrajectoriesForKeyframes();
         }
@@ -1482,8 +1490,8 @@ namespace Kinovea.ScreenManager
             if(drawing is IScalable)
                 ((IScalable)drawing).Scale(this.ImageSize);
             
-			if(drawing is ITrackable && AddTrackableDrawingCommand != null)
-			    AddTrackableDrawingCommand.Execute(drawing as ITrackable);
+            if(drawing is ITrackable && AddTrackableDrawingCommand != null)
+                AddTrackableDrawingCommand.Execute(drawing as ITrackable);
             
             if(drawing is IMeasurable)
             {
