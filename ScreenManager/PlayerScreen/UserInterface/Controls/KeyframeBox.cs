@@ -119,10 +119,6 @@ namespace Kinovea.ScreenManager
                 UpdateToolTip();
             }
         }
-        private void TbTitleEnter(object sender, EventArgs e)
-        {
-            DeactivateKeyboardHandler();
-        }
         #endregion
         
         #region Private helpers
@@ -136,18 +132,9 @@ namespace Kinovea.ScreenManager
             btnClose.Visible = false;
             btnComment.Visible = false;
         }
-        private void DeactivateKeyboardHandler()
-        {
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
-        }
-        private void ActivateKeyboardHandler()
-        {
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
-        }
+        
         private void StopEditing()
         {
-            ActivateKeyboardHandler();
-            
             if(tbTitle.Text.Length == 0)
             {
                 // We reseted the title. We should now display the timecode.

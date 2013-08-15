@@ -527,11 +527,9 @@ namespace Kinovea.Root
         }
         private void mnuPreferencesOnClick(object sender, EventArgs e)
         {
-            FormsHelper.BeforeShow();
             FormPreferences2 fp = new FormPreferences2(-1);
             fp.ShowDialog();
             fp.Dispose();
-            FormsHelper.AfterShow();
             
             // Refresh Preferences
             log.Debug("Setting current ui culture.");

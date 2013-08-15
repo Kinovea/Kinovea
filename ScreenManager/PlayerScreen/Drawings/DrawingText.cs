@@ -246,14 +246,7 @@ namespace Kinovea.ScreenManager
                imageToViewportTransformer = _transformer; 
 
             if (m_bEditMode)
-            {    
-                NotificationCenter.RaiseDisableKeyboardHandler(this);
                 RelocateEditbox(); // This is needed because the container top-left corner may have changed 
-            }
-            else
-            {
-                NotificationCenter.RaiseEnableKeyboardHandler(this);
-            }
             
             m_TextBox.Visible = m_bEditMode;
         }

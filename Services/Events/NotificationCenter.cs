@@ -46,20 +46,6 @@ namespace Kinovea.Services
                 LaunchOpenDialog(sender, EventArgs.Empty);
         }
         
-        public static EventHandler DisableKeyboardHandler;
-        public static void RaiseDisableKeyboardHandler(object sender)
-        {
-            if(DisableKeyboardHandler != null)
-                DisableKeyboardHandler(sender, EventArgs.Empty);
-        }
-        
-        public static EventHandler EnableKeyboardHandler;
-        public static void RaiseEnableKeyboardHandler(object sender)
-        {
-            if(EnableKeyboardHandler != null)
-                EnableKeyboardHandler(sender, EventArgs.Empty);
-        }
-
         public static EventHandler<FileActionEventArgs> FileSelected;
         public static void RaiseFileSelected(object sender, string file)
         {

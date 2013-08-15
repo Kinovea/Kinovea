@@ -2336,8 +2336,6 @@ namespace Kinovea.ScreenManager
             if (!m_FrameServer.Loaded)
                 return;
             
-            FormsHelper.BeforeShow();
-
             formConfigureSpeed fcs = new formConfigureSpeed(m_FrameServer.VideoReader.Info.FramesPerSeconds, m_fHighSpeedFactor);
             if (_center)
             {
@@ -2355,8 +2353,6 @@ namespace Kinovea.ScreenManager
             }
             
             fcs.Dispose();
-
-            FormsHelper.AfterShow();
 
             // Update times.
             UpdateSelectionLabels();
@@ -4008,14 +4004,10 @@ namespace Kinovea.ScreenManager
             if(trk == null)
                 return;
             
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
-            
             formConfigureTrajectoryDisplay fctd = new formConfigureTrajectoryDisplay(trk, DoInvalidate);
             fctd.StartPosition = FormStartPosition.CenterScreen;
             fctd.ShowDialog();
             fctd.Dispose();
-            
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
         }
         private void OnShowClosestFrame(Point _mouse, List<AbstractTrackPoint> _positions, int _iPixelTotalDistance, bool _b2DOnly)
         {
@@ -4129,13 +4121,11 @@ namespace Kinovea.ScreenManager
             if(dc != null)
             {
                 // Change this chrono display.
-                FormsHelper.BeforeShow();
                 formConfigureChrono fcc = new formConfigureChrono(dc, DoInvalidate);
                 FormsHelper.Locate(fcc);
                 fcc.ShowDialog();
                 fcc.Dispose();
                 DoInvalidate();
-                FormsHelper.AfterShow();
             }
         }
         #endregion
@@ -4428,7 +4418,6 @@ namespace Kinovea.ScreenManager
             
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
             
             // Launch sequence saving configuration dialog
             formRafaleExport fre = new formRafaleExport(
@@ -4440,8 +4429,6 @@ namespace Kinovea.ScreenManager
             fre.ShowDialog();
             fre.Dispose();
             m_FrameServer.AfterSave();
-            
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -4508,9 +4495,7 @@ namespace Kinovea.ScreenManager
             StopPlaying();
             m_PlayerScreenUIHandler.PlayerScreenUI_PauseAsked();
             
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
             Save();
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
             
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
@@ -4536,13 +4521,10 @@ namespace Kinovea.ScreenManager
                 return;
             }
             
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
-            
             saveInProgress = true;
             m_FrameServer.SaveDiaporama(GetOutputBitmap, diaporama);
             saveInProgress = false;
             
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);

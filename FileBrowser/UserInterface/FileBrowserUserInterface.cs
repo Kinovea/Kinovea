@@ -677,8 +677,6 @@ namespace Kinovea.FileBrowser
 
         private void BtnManualClick(object sender, EventArgs e)
         {
-            NotificationCenter.RaiseDisableKeyboardHandler(this);
-            
             FormCameraWizard wizard = new FormCameraWizard();
             if(wizard.ShowDialog() == DialogResult.OK)
             {
@@ -688,8 +686,6 @@ namespace Kinovea.FileBrowser
             }
             
             wizard.Dispose();
-            
-            NotificationCenter.RaiseEnableKeyboardHandler(this);
         }
 
         private void listViews_SelectedIndexChanged(object sender, EventArgs e)

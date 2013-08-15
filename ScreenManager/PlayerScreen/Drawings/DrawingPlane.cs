@@ -485,14 +485,12 @@ namespace Kinovea.ScreenManager
         
         private void mnuCalibrate_Click(object sender, EventArgs e)
         {
-            FormsHelper.BeforeShow();
             FormCalibratePlane fcp = new FormCalibratePlane(CalibrationHelper, this);
             FormsHelper.Locate(fcp);
             fcp.ShowDialog();
             fcp.Dispose();
             
             CallInvalidateFromMenu(sender);
-            FormsHelper.AfterShow();
         }
         #endregion
 

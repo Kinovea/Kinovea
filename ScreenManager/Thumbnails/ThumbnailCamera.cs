@@ -116,7 +116,6 @@ namespace Kinovea.ScreenManager
         }
         public void StartRenaming()
         {
-            FormsHelper.BeforeShow();
             FormCameraAlias fca = new FormCameraAlias(Summary);
             FormsHelper.Locate(fca);
             if (fca.ShowDialog() == DialogResult.OK)
@@ -132,7 +131,6 @@ namespace Kinovea.ScreenManager
             }
 
             fca.Dispose();
-            FormsHelper.AfterShow();
         }
         #endregion
         
