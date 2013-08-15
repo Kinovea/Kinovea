@@ -53,7 +53,7 @@ namespace Kinovea.ScreenManager
             if(screenManagerKernel.View == null)
                 return;
             
-            screenManagerKernel.View.OrganizeScreens(screenManagerKernel.screenList);
+            screenManagerKernel.OrganizeScreens();
             screenManagerKernel.UpdateStatusBar();
         }
     }

@@ -45,24 +45,22 @@ namespace Kinovea.ScreenManager
 
         public void Execute()
         {
-            // We keep the list ordered. [0] = left.
-            AbstractScreen temp = screenManagerKernel.screenList[0];
-            screenManagerKernel.screenList[0] = screenManagerKernel.screenList[1];
-            screenManagerKernel.screenList[1] = temp;
-
-            // Show new disposition.
-            screenManagerKernel.View.OrganizeScreens(screenManagerKernel.screenList);
-            
-            // the following lines are placed here so they also get called at unexecute.
-            screenManagerKernel.OrganizeMenus();
-            screenManagerKernel.UpdateStatusBar();
-            screenManagerKernel.SwapSync();
-            screenManagerKernel.SetSyncPoint(true);
+            screenManagerKernel.SwapScreens();
+            screenManagerKernel.OrganizeScreens();
+            AfterSwap();
         }
 
         public void Unexecute()
         {
             Execute();
         } 
+
+        private void AfterSwap()
+        {
+            screenManagerKernel.OrganizeMenus();
+            screenManagerKernel.UpdateStatusBar();
+            screenManagerKernel.SwapSync();
+            screenManagerKernel.SetSyncPoint(true);
+        }
     }
 }

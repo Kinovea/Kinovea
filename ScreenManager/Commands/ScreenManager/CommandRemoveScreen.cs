@@ -59,78 +59,74 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Execute()
         {
-
-            // When there is only one screen, we don't want it to have the "active" screen look.
-            // Since we have 2 screens at most, we first clean up all of them, 
-            // and we'll display the active screen look afterwards, only if needed.
-            foreach (AbstractScreen screen in screenManagerKernel.screenList)
-            {
-                screen.DisplayAsActiveScreen(false);
-            }
+            screenManagerKernel.SetAllToInactive();
             
             // There are two types of closing demands: explicit and implicit.
             // explicit-close ask for a specific screen to be closed.
             // implicit-close just ask for a close, we choose which one here.
-            
             if(screenToRemoveIndex == -1)
             {
                 screenManagerKernel.RemoveFirstEmpty(storeState);
+                return;
+            }
+            
+            AbstractScreen screenToRemove = screenManagerKernel.GetScreenAt(screenToRemoveIndex);
+                
+            // Explicit. Make the other one the "active" screen if necessary.
+            // For now, we do different actions based on screen type. (fixme?)
+            if(screenToRemove is CaptureScreen)
+            {
+                RemoveScreen(screenToRemove);
+                return;
+            }
+
+            PlayerScreen playerScreen = screenToRemove as PlayerScreen;
+            bool confirmed = BeforeClose(playerScreen);
+            if (!confirmed)
+                return;
+
+            RemoveScreen(screenToRemove);
+        }
+
+        private void RemoveScreen(AbstractScreen screen)
+        {
+            if (storeState)
+                screenManagerKernel.StoreCurrentState();
+
+            screenManagerKernel.RemoveScreen(screen);
+        }
+
+        private bool BeforeClose(PlayerScreen screen)
+        {
+            if (!screen.FrameServer.Metadata.IsDirty)
+                return true;
+
+            DialogResult save = ConfirmDirty();
+            if (save == DialogResult.No)
+            {
+                return true;
+            }
+            else if (save == DialogResult.Cancel)
+            {
+                screenManagerKernel.CancelLastCommand = true;
+                return false;
             }
             else
             {
-                AbstractScreen screenToRemove = screenManagerKernel.GetScreenAt(screenToRemoveIndex);
-                
-                // Explicit. Make the other one the "active" screen if necessary.
-                // For now, we do different actions based on screen type. (fixme?)
-
-                if (screenToRemove is PlayerScreen)
-                {
-                    // check if dirty and ask for saving if so.
-                    PlayerScreen ps = (PlayerScreen)screenManagerKernel.screenList[screenToRemoveIndex];
-
-                    bool shouldRemove = true;
-                    if (ps.FrameServer.Metadata.IsDirty)
-                    {
-                        DialogResult dr = MessageBox.Show(ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
-                                                          ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
-                                                          MessageBoxButtons.YesNoCancel,
-                                                          MessageBoxIcon.Question);
-
-                        if (dr == DialogResult.Yes)
-                        {
-                            // Launch the save dialog.
-                            // Note: if user cancels this one, we will not save anything...
-                            screenManagerKernel.SaveData();
-                        }
-                        else if (dr == DialogResult.Cancel)
-                        {
-                            // Cancel the close.
-                            shouldRemove = false;
-                            screenManagerKernel.CancelLastCommand = true;
-                        }
-                    }
-
-                    if (shouldRemove)
-                    {
-                        // We store the current state now.
-                        // (We don't store it at construction time to handle the redo case better)
-                        if (storeState)
-                            screenManagerKernel.StoreCurrentState(); 
-                        
-                        screenManagerKernel.RemoveScreen(screenToRemove);
-                    }
-                }
-                else if(screenToRemove is CaptureScreen)
-                {
-                    // We store the current state now.
-                    // (We don't store it at construction time to handle the redo case better)
-                    if (storeState) 
-                        screenManagerKernel.StoreCurrentState(); 
-                    
-                    screenManagerKernel.RemoveScreen(screenToRemove);
-                }
+                screenManagerKernel.SaveData();
+                return true;
             }
         }
+
+        private DialogResult ConfirmDirty()
+        {
+            return MessageBox.Show(
+                ScreenManagerLang.InfoBox_MetadataIsDirty_Text.Replace("\\n", "\n"),
+                ScreenManagerLang.InfoBox_MetadataIsDirty_Title,
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
+
         public void Unexecute()
         {
             screenManagerKernel.RecallState();
