@@ -143,6 +143,7 @@
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
     <Compile Include="WinForms\Commands.cs" />
+    <Compile Include="WinForms\FormsHelper.cs" />
     <Compile Include="WinForms\HotkeyCommand.cs" />
     <Compile Include="WinForms\HotkeySettings.cs" />
     <Compile Include="WinForms\HotkeySettingsManager.cs" />

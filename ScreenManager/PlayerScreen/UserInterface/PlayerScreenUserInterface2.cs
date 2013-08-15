@@ -962,12 +962,8 @@ namespace Kinovea.ScreenManager
         }
         private void SetupKeyframeCommentsHub()
         {
-            DelegatesPool dp = DelegatesPool.Instance();
-            if (dp.MakeTopMost != null)
-            {
-                m_KeyframeCommentsHub = new formKeyframeComments(this);
-                dp.MakeTopMost(m_KeyframeCommentsHub);
-            }
+            m_KeyframeCommentsHub = new formKeyframeComments(this);
+            FormsHelper.MakeTopmost(m_KeyframeCommentsHub);
         }
         private void LookForLinkedAnalysis()
         {

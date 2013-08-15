@@ -114,7 +114,7 @@ namespace Kinovea.Root
             log.Debug("Register global services offered at Root level.");
             DelegatesPool dp = DelegatesPool.Instance();
             dp.UpdateStatusBar = DoUpdateStatusBar;
-            dp.MakeTopMost = DoMakeTopMost;
+            Services.FormsHelper.SetMainForm(mainWindow);
         }
         #endregion
 
@@ -239,10 +239,6 @@ namespace Kinovea.Root
         public void DoUpdateStatusBar(string status)
         {
             statusLabel.Text = status;
-        }
-        public void DoMakeTopMost(Form form)
-        {
-            form.Owner = mainWindow;
         }
         #endregion
 
