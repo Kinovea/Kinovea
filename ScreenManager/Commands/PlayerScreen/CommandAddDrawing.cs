@@ -18,11 +18,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -34,93 +31,56 @@ namespace Kinovea.ScreenManager
         {
             get
             {
-            	return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + m_Drawing.DisplayName + ")";
+            	return ScreenManagerLang.CommandAddDrawing_FriendlyName + " (" + drawing.DisplayName + ")";
             }
         }
 
-        private Action m_DoInvalidate;
-        private Action m_DoUndrawn;
-        private long m_iFramePosition;
-        private Metadata m_Metadata;
-        private int m_iTotalDrawings;
-        private AbstractDrawing m_Drawing;
+        private Action doInvalidate;
+        private Action doUndrawn;
+        private long framePosition;
+        private Metadata metadata;
+        private int totalDrawings;
+        private AbstractDrawing drawing;
 
-        #region constructor
-        public CommandAddDrawing(Action _invalidate, Action _undrawn, Metadata _Metadata, long _iFramePosition)
+        public CommandAddDrawing(Action invalidate, Action undrawn, Metadata metadata, long framePosition)
         {
-        	m_DoInvalidate = _invalidate;
-        	m_DoUndrawn = _undrawn;
+        	this.doInvalidate = invalidate;
+        	this.doUndrawn = undrawn;
         	
-            m_iFramePosition = _iFramePosition;
-            m_Metadata = _Metadata;
+            this.framePosition = framePosition;
+            this.metadata = metadata;
 
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0 && m_Metadata[iIndex].Drawings.Count >= 0)
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index >= 0 && metadata[index].Drawings.Count >= 0)
             {
-                m_iTotalDrawings = m_Metadata[iIndex].Drawings.Count;
-                m_Drawing = m_Metadata[iIndex].Drawings[0];
+                totalDrawings = metadata[index].Drawings.Count;
+                drawing = metadata[index].Drawings[0];
             }
         }
-        #endregion
 
-        /// <summary>
-        /// Command execution.
-        /// </summary>
         public void Execute()
         {
-            // We need to differenciate between two cases :
             // First execution : Work has already been done in the PlayerScreen (interactively).
             // Redo : We need to bring back the drawing to life.
 
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
-            {
-                if (m_Metadata[iIndex].Drawings.Count == m_iTotalDrawings)
-                {
-                    // first exec.
-                    // Nothing to do.
-                }
-                else if (m_Metadata[iIndex].Drawings.Count == m_iTotalDrawings - 1)
-                {
-                    //Redo.
-                    m_Metadata[iIndex].Drawings.Insert(0, m_Drawing);
-                    m_DoInvalidate();
-                }
-            }
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index < 0 || metadata[index].Drawings.Count != totalDrawings - 1)
+                return;
+            
+            metadata[index].Drawings.Insert(0, drawing);
+            doInvalidate();
         }
+
         public void Unexecute()
         {
             // Delete the last drawing on Keyframe.
-            
-            // 1. Look for the keyframe
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
-            {
-                if (m_Metadata[iIndex].Drawings.Count > 0)
-                {
-                    m_Metadata[iIndex].Drawings.RemoveAt(0);
-                    m_DoUndrawn();
-                    m_DoInvalidate();
-                }
-            }
-            else
-            {
-                // Keyframe may have been deleted since we added the drawing.
-                // All CommandAddDrawing for this frame are now orphans...
-            }
-        }
-        private int GetKeyframeIndex()
-        {
-            int iIndex = -1;
-            for (int i = 0; i < m_Metadata.Count; i++)
-            {
-                if (m_Metadata[i].Position == m_iFramePosition)
-                {
-                    iIndex = i;
-                }
-            }
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index < 0 || metadata[index].Drawings.Count <= 0)
+                return;
 
-            return iIndex;
+            metadata[index].Drawings.RemoveAt(0);
+            doUndrawn();
+            doInvalidate();
         }
     }
 }

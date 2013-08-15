@@ -18,11 +18,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -30,33 +27,29 @@ namespace Kinovea.ScreenManager
     public class CommandDeleteDrawing : IUndoableCommand
     {
 
-        public string FriendlyName {
-            get { return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + m_Drawing.DisplayName + ")"; }
-        }
-
-        private Action m_DoScreenInvalidate;
-        private long m_iFramePosition;
-        private Metadata m_Metadata;
-        private AbstractDrawing m_Drawing;
-        private int m_iDrawingIndex;
-
-        #region constructor
-        public CommandDeleteDrawing(Action _invalidate, Metadata _Metadata, long _iFramePosition, int _iDrawingIndex)
+        public string FriendlyName 
         {
-            m_DoScreenInvalidate = _invalidate;
-            m_iFramePosition = _iFramePosition;
-            m_Metadata = _Metadata;
-            m_iDrawingIndex = _iDrawingIndex;
-            
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
-                m_Drawing = m_Metadata[iIndex].Drawings[m_iDrawingIndex];
+            get { return ScreenManagerLang.CommandDeleteDrawing_FriendlyName + " (" + drawing.DisplayName + ")"; }
         }
-        #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
+        private Action doScreenInvalidate;
+        private long framePosition;
+        private Metadata metadata;
+        private AbstractDrawing drawing;
+        private int drawingIndex;
+
+        public CommandDeleteDrawing(Action invalidate, Metadata metadata, long framePosition, int drawingIndex)
+        {
+            this.doScreenInvalidate = invalidate;
+            this.framePosition = framePosition;
+            this.metadata = metadata;
+            this.drawingIndex = drawingIndex;
+            
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index >= 0)
+                drawing = metadata[index].Drawings[drawingIndex];
+        }
+        
         public void Execute()
         {
             // It should work because all add/delete actions modify the undo stack.
@@ -65,42 +58,24 @@ namespace Kinovea.ScreenManager
             // Even if drawings were added in between, we can't come back here
             // before all those new drawings have been unstacked from the m_CommandStack stack.
 
-            int iIndex = GetKeyframeIndex();
-            if (iIndex >= 0)
-            {
-                m_Metadata.DeleteDrawing(iIndex, m_iDrawingIndex);
-                m_DoScreenInvalidate();
-            }
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index < 0)
+                return;
+            
+            metadata.DeleteDrawing(index, drawingIndex);
+            doScreenInvalidate();
         }
+
         public void Unexecute()
         {
-            // Recreate the drawing.
-
-            // 1. Look for the keyframe
-            int index = GetKeyframeIndex();
-            if (index >= 0)
-            {
-                // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
-                // We must still be able to undo any Add action that where performed before.
-                m_Metadata.UndeleteDrawing(index, m_iDrawingIndex, m_Drawing);
-                m_DoScreenInvalidate();
-            }
-            else
-            {
-                // Keyframe may have been deleted since we added the drawing.
-                // All CommandDeleteDrawing for this frame are now orphans...
-            }
-        }
-        private int GetKeyframeIndex()
-        {
-            int iIndex = -1;
-            for (int i = 0; i < m_Metadata.Count; i++)
-            {
-                if (m_Metadata[i].Position == m_iFramePosition)
-                    iIndex = i;
-            }
-
-            return iIndex;
+            int index = metadata.GetKeyframeIndex(framePosition);
+            if (index < 0)
+                return;
+            
+            // We must insert exactly where we deleted, otherwise the drawing table gets messed up.
+            // We must still be able to undo any Add action that where performed before.
+            metadata.UndeleteDrawing(index, drawingIndex, drawing);
+            doScreenInvalidate();
         }
     }
 }

@@ -18,59 +18,49 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
 using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     public class CommandAddChrono : IUndoableCommand
     {
-
         public string FriendlyName
         {
             get { return ScreenManagerLang.CommandAddChrono_FriendlyName; }
         }
         
-        private Action m_DoInvalidate;
-        private Action m_DoUndrawn;
-        private Metadata m_Metadata;
-        private DrawingChrono m_Chrono;
+        private Action doInvalidate;
+        private Action doUndrawn;
+        private Metadata metadata;
+        private DrawingChrono chrono;
 
-        #region constructor
-        public CommandAddChrono(Action _invalidate, Action _undrawn, Metadata _Metadata)
+        public CommandAddChrono(Action invalidate, Action undrawn, Metadata metadata)
         {
-            m_DoInvalidate = _invalidate;
-        	m_DoUndrawn = _undrawn;
-            m_Metadata = _Metadata;
-            m_Chrono = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingChrono;
+            this.doInvalidate = invalidate;
+        	this.doUndrawn = undrawn;
+            this.metadata = metadata;
+            chrono = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingChrono;
         }
-        #endregion
 
         public void Execute()
         {
-        	// In the case of the first execution, the Chrono has already been added to the extra drawings list.
-        	if(m_Chrono != null)
-        	{
-        		if(m_Metadata.ExtraDrawings.IndexOf(m_Chrono) == -1)
-        		{
-        			m_Metadata.AddChrono(m_Chrono);
-        			m_DoInvalidate();
-        		}
-        	}
+            if (chrono == null || metadata.ExtraDrawings.IndexOf(chrono) != -1)
+                return;
+        		
+        	metadata.AddChrono(chrono);
+        	doInvalidate();
         }
+
         public void Unexecute()
         {
-            // Delete this chrono.
-            if(m_Chrono != null)
-            {
-            	m_Metadata.ExtraDrawings.Remove(m_Chrono);
-            	m_DoUndrawn();
-                m_DoInvalidate();
-            }
+            if (chrono == null)
+                return;
+            
+            metadata.ExtraDrawings.Remove(chrono);
+            doUndrawn();
+            doInvalidate();
         }
     }
 }

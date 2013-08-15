@@ -21,51 +21,45 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     public class CommandDeleteMultiDrawingItem : IUndoableCommand
     {
-        public string FriendlyName {
-            get { return ScreenManagerLang.mnuDeleteDrawing + " (" + m_MultiDrawing.DisplayName + ")"; }
+        public string FriendlyName 
+        {
+            get { return ScreenManagerLang.mnuDeleteDrawing + " (" + multiDrawing.DisplayName + ")"; }
         }
 
-        private PlayerScreenUserInterface m_psui;
-        private Metadata m_Metadata;
-        private AbstractMultiDrawing m_MultiDrawing;
-        private object m_DrawingItem;
+        private PlayerScreenUserInterface view;
+        private Metadata metadata;
+        private AbstractMultiDrawing multiDrawing;
+        private object drawingItem;
         
-        #region constructor
-        public CommandDeleteMultiDrawingItem(PlayerScreenUserInterface _psui, Metadata _Metadata)
+        public CommandDeleteMultiDrawingItem(PlayerScreenUserInterface view, Metadata metadata)
         {
-            m_psui = _psui;
-            m_Metadata = _Metadata;
-            m_MultiDrawing = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as AbstractMultiDrawing;
-            m_DrawingItem = m_MultiDrawing.SelectedItem;
+            this.view = view;
+            this.metadata = metadata;
+            this.multiDrawing = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as AbstractMultiDrawing;
+            this.drawingItem = multiDrawing.SelectedItem;
         }
-        #endregion
 
         public void Execute()
         {
-            if(m_DrawingItem != null)
-            {
-                m_MultiDrawing.Remove(m_DrawingItem);
-                m_psui.pbSurfaceScreen.Invalidate();
-            }
+            if (drawingItem == null)
+                return;
+            
+            multiDrawing.Remove(drawingItem);
+            view.DoInvalidate();
         }
         public void Unexecute()
         {
-            // Recreate the drawing.
-            if(m_DrawingItem != null)
-            {
-                m_MultiDrawing.Add(m_DrawingItem);
-                m_psui.pbSurfaceScreen.Invalidate();
-            }
+            if (drawingItem == null)
+                return;
+            
+            multiDrawing.Add(drawingItem);
+            view.DoInvalidate();
         }
     }
 }

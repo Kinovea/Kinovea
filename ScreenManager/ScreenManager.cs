@@ -694,7 +694,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen is PlayerScreen)
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoFirst_Click(null, EventArgs.Empty);
+                        ((PlayerScreen)screen).view.buttonGotoFirst_Click(null, EventArgs.Empty);
                 }
             }	
         }
@@ -717,7 +717,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoPrevious_Click(null, EventArgs.Empty);
+                        ((PlayerScreen)screen).view.buttonGotoPrevious_Click(null, EventArgs.Empty);
                 }
             }	
         }
@@ -740,7 +740,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen.GetType().FullName.Equals("Kinovea.ScreenManager.PlayerScreen"))
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoNext_Click(null, EventArgs.Empty);
+                        ((PlayerScreen)screen).view.buttonGotoNext_Click(null, EventArgs.Empty);
                 }
             }	
         }
@@ -761,7 +761,7 @@ namespace Kinovea.ScreenManager
                 foreach (AbstractScreen screen in screenList)
                 {
                     if (screen is PlayerScreen)
-                        ((PlayerScreen)screen).m_PlayerScreenUI.buttonGotoLast_Click(null, EventArgs.Empty);
+                        ((PlayerScreen)screen).view.buttonGotoLast_Click(null, EventArgs.Empty);
                 }
             }	
         }
@@ -1701,7 +1701,7 @@ namespace Kinovea.ScreenManager
                 return;
 
             ((PlayerScreen)activeScreen).FrameServer.Metadata.Load(openFileDialog.FileName, true);
-            ((PlayerScreen)activeScreen).m_PlayerScreenUI.PostImportMetadata();
+            ((PlayerScreen)activeScreen).view.PostImportMetadata();
         }
         private void mnuExportODF_OnClick(object sender, EventArgs e)
         {
@@ -2943,7 +2943,7 @@ namespace Kinovea.ScreenManager
             if (screenIndex < screenList.Count)
             {
                 if (((PlayerScreen)screenList[screenIndex]).IsPlaying)
-                    ((PlayerScreen)screenList[screenIndex]).m_PlayerScreenUI.OnButtonPlay();
+                    ((PlayerScreen)screenList[screenIndex]).view.OnButtonPlay();
             }
             else
             {
@@ -2957,7 +2957,7 @@ namespace Kinovea.ScreenManager
             if (screenIndex < screenList.Count)
             {
                 if (!((PlayerScreen)screenList[screenIndex]).IsPlaying)
-                    ((PlayerScreen)screenList[screenIndex]).m_PlayerScreenUI.OnButtonPlay();
+                    ((PlayerScreen)screenList[screenIndex]).view.OnButtonPlay();
             }
             else
             {
@@ -3422,7 +3422,7 @@ namespace Kinovea.ScreenManager
                 if(ps != null)
                 {
                     ps.FrameServer.Metadata.Load(oldScreen.MetadataString, false);
-                    ps.m_PlayerScreenUI.PostImportMetadata();
+                    ps.view.PostImportMetadata();
                 }
             }
         }

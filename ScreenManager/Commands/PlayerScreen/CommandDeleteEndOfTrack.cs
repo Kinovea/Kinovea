@@ -18,12 +18,8 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -35,42 +31,38 @@ namespace Kinovea.ScreenManager
             get { return ScreenManagerLang.mnuDeleteEndOfTrajectory; }
         }
 
-        private PlayerScreenUserInterface m_psui;
-        private Metadata m_Metadata;
-        private DrawingTrack m_Track;
-        private long m_iTimeStamp;
-        public List<AbstractTrackPoint> m_Positions;
+        private PlayerScreenUserInterface view;
+        private Metadata metadata;
+        private DrawingTrack track;
+        private long framePosition;
+        public List<AbstractTrackPoint> points;
 
-        #region constructor
-        public CommandDeleteEndOfTrack(PlayerScreenUserInterface _psui, Metadata _Metadata, long _iTimeStamp)
+        public CommandDeleteEndOfTrack(PlayerScreenUserInterface view, Metadata metadata, long framePosition)
         {
-            m_psui = _psui;
-            m_Metadata = _Metadata;
-            m_Track = m_Metadata.ExtraDrawings[m_Metadata.SelectedExtraDrawing] as DrawingTrack;
-            m_iTimeStamp = _iTimeStamp;
+            this.view = view;
+            this.metadata = metadata;
+            this.track = metadata.ExtraDrawings[metadata.SelectedExtraDrawing] as DrawingTrack;
+            this.framePosition = framePosition;
         }
-        #endregion
 
-       public void Execute()
+        public void Execute()
         {
             // We store the old end-of-track values only here (and not in the ctor) 
             // because some points may be moved between the undo and 
             // the redo and we'll want to keep teir values.
-            if(m_Track != null)
-            {
-                m_Positions = m_Track.GetEndOfTrack(m_iTimeStamp);
-                m_Track.ChopTrajectory(m_iTimeStamp);
-                m_psui.pbSurfaceScreen.Invalidate();
-            }
+            if (track == null)
+                return;
+            
+            points = track.GetEndOfTrack(framePosition);
+            track.ChopTrajectory(framePosition);
+            view.DoInvalidate();
         }
         public void Unexecute()
         {
-            // Revival of the discarded points.
-            if(m_Positions != null && m_Track != null)
-            {
-                m_Track.AppendPoints(m_iTimeStamp, m_Positions);
-            }
-            m_psui.pbSurfaceScreen.Invalidate();
+            if(points != null && track != null)
+                track.AppendPoints(framePosition, points);
+
+            view.DoInvalidate();
         }
     }
 }
