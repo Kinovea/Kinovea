@@ -24,17 +24,14 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml;
+using System.Linq;
 
 using Kinovea.Base;
 using Kinovea.ScreenManager.Languages;
@@ -247,6 +244,7 @@ namespace Kinovea.ScreenManager
         private bool m_bHandlersLocked;
         
         // Keyframes, Drawings, etc.
+        private List<KeyframeBox> thumbnails = new List<KeyframeBox>();
         private int m_iActiveKeyFrameIndex = -1;	// The index of the keyframe we are on, or -1 if not a KF.
         private AbstractDrawingTool m_ActiveTool;
         private DrawingToolPointer m_PointerTool;
@@ -349,6 +347,7 @@ namespace Kinovea.ScreenManager
             SetupPrimarySelectionPanel();
             SetupKeyframeCommentsHub();
             pnlThumbnails.Controls.Clear();
+            thumbnails.Clear();
             DockKeyframePanel(true);
 
             m_TimerEventHandler = new TimerEventHandler(MultimediaTimer_Tick);
@@ -378,6 +377,7 @@ namespace Kinovea.ScreenManager
             ShowHideRenderingSurface(false);
             SetupPrimarySelectionPanel();
             pnlThumbnails.Controls.Clear();
+            thumbnails.Clear();
             DockKeyframePanel(true);
             UpdateFramesMarkers();
             trkFrame.UpdateSyncPointMarker(m_iSyncPosition);
@@ -1106,6 +1106,12 @@ namespace Kinovea.ScreenManager
         #region Commands
         protected override bool ExecuteCommand(int cmd)
         {
+            if (m_FrameServer.Metadata.TextEditingInProgress)
+                return false;
+
+            if (thumbnails.Any(t => t.Editing))
+                return false;
+            
             // Command directly comming from hotkey: can propagate to the other screen.
             return ExecuteCommand(cmd, true);
         }
@@ -3085,30 +3091,8 @@ namespace Kinovea.ScreenManager
         private void SurfaceScreen_MouseEnter(object sender, EventArgs e)
         {
             // Set focus to surfacescreen to enable mouse scroll
-            
-            // But only if there is no Text edition going on.
-            bool bEditing = false;
-            if(m_FrameServer.Metadata.Count > m_iActiveKeyFrameIndex && m_iActiveKeyFrameIndex >= 0)
-            {
-                foreach (AbstractDrawing ad in m_FrameServer.Metadata[m_iActiveKeyFrameIndex].Drawings)
-                {
-                    DrawingText dt = ad as DrawingText;
-                    if (dt != null)
-                    {
-                        if(dt.EditMode)
-                        {
-                            bEditing = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            if(!bEditing)
-            {
+            if (!m_FrameServer.Metadata.TextEditingInProgress)
                 pbSurfaceScreen.Focus();
-            }
-            
         }
         private void FlushOnGraphics(Bitmap _sourceImage, Graphics g, Size _renderingSize, int _iKeyFrameIndex, long _iPosition)
         {
@@ -3321,6 +3305,7 @@ namespace Kinovea.ScreenManager
             // Should only be called when adding/removing a Thumbnail
             
             pnlThumbnails.Controls.Clear();
+            thumbnails.Clear();
 
             if (m_FrameServer.Metadata.Count > 0)
             {
@@ -3348,6 +3333,7 @@ namespace Kinovea.ScreenManager
                     iPixelsOffset += (iPixelsSpacing + box.Width);
 
                     pnlThumbnails.Controls.Add(box);
+                    thumbnails.Add(box);
 
                     iKeyframeIndex++;
                 }
@@ -3384,23 +3370,21 @@ namespace Kinovea.ScreenManager
             // keep it fast or fix the strategy.
 
             m_iActiveKeyFrameIndex = -1;
-
-            // We leverage the fact that pnlThumbnail is exclusively populated with thumboxes.
-            for (int i = 0; i < pnlThumbnails.Controls.Count; i++)
+            for (int i = 0; i < thumbnails.Count; i++)
             {
                 if (m_FrameServer.Metadata[i].Position == _iPosition)
                 {
                     m_iActiveKeyFrameIndex = i;
                     if(_bAllowUIUpdate)
                     {
-                        ((KeyframeBox)pnlThumbnails.Controls[i]).DisplayAsSelected(true);
-                        pnlThumbnails.ScrollControlIntoView(pnlThumbnails.Controls[i]);
+                        thumbnails[i].DisplayAsSelected(true);
+                        pnlThumbnails.ScrollControlIntoView(thumbnails[i]);
                     }
                 }
                 else
                 {
                     if(_bAllowUIUpdate)
-                        ((KeyframeBox)pnlThumbnails.Controls[i]).DisplayAsSelected(false);
+                        thumbnails[i].DisplayAsSelected(false);
                 }
             }
 
@@ -3420,40 +3404,32 @@ namespace Kinovea.ScreenManager
         private void EnableDisableKeyframes()
         {
             // Enable Keyframes that are within Working Zone, Disable others.
-
-            // We leverage the fact that pnlThumbnail is exclusively populated with thumboxes.
-            for (int i = 0; i < pnlThumbnails.Controls.Count; i++)
+            for (int i = 0; i < thumbnails.Count; i++)
             {
-                KeyframeBox tb = pnlThumbnails.Controls[i] as KeyframeBox;
-                if(tb != null)
-                {
-                    m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
+                KeyframeBox tb = thumbnails[i];
+                m_FrameServer.Metadata[i].TimeCode = TimeStampsToTimecode(m_FrameServer.Metadata[i].Position - m_iSelStart, PreferencesManager.PlayerPreferences.TimecodeFormat, false);
                     
-                    // Enable thumbs that are within Working Zone, grey out others.
-                    if (m_FrameServer.Metadata[i].Position >= m_iSelStart && m_FrameServer.Metadata[i].Position <= m_iSelEnd)
-                    {
-                        m_FrameServer.Metadata[i].Disabled = false;
+                if (m_FrameServer.Metadata[i].Position >= m_iSelStart && m_FrameServer.Metadata[i].Position <= m_iSelEnd)
+                {
+                    m_FrameServer.Metadata[i].Disabled = false;
                         
-                        tb.Enabled = true;
-                        tb.pbThumbnail.Image = m_FrameServer.Metadata[i].Thumbnail;
-                    }
-                    else
-                    {
-                        m_FrameServer.Metadata[i].Disabled = true;
-                        
-                        tb.Enabled = false;
-                        tb.pbThumbnail.Image = m_FrameServer.Metadata[i].DisabledThumbnail;
-                    }
-
-                    tb.UpdateTitle(m_FrameServer.Metadata[i].Title);
+                    tb.Enabled = true;
+                    tb.pbThumbnail.Image = m_FrameServer.Metadata[i].Thumbnail;
                 }
+                else
+                {
+                    m_FrameServer.Metadata[i].Disabled = true;
+                        
+                    tb.Enabled = false;
+                    tb.pbThumbnail.Image = m_FrameServer.Metadata[i].DisabledThumbnail;
+                }
+
+                tb.UpdateTitle(m_FrameServer.Metadata[i].Title);
             }
         }
         public void OnKeyframesTitleChanged()
         {
-            // Update trajectories.
             m_FrameServer.Metadata.UpdateTrajectoriesForKeyframes();
-            // Update thumb boxes.
             EnableDisableKeyframes();
             DoInvalidate();
         }
@@ -3473,7 +3449,7 @@ namespace Kinovea.ScreenManager
 
                 if (iNextKeyframe >= 0 && m_FrameServer.Metadata[iNextKeyframe].Position <= m_iSelEnd)
                 {
-                    ThumbBoxClick(pnlThumbnails.Controls[iNextKeyframe], EventArgs.Empty);
+                    ThumbBoxClick(thumbnails[iNextKeyframe], EventArgs.Empty);
                 }
                 
             }
@@ -3494,7 +3470,7 @@ namespace Kinovea.ScreenManager
 
                 if (iPrevKeyframe >= 0 && m_FrameServer.Metadata[iPrevKeyframe].Position >= m_iSelStart)
                 {
-                    ThumbBoxClick(pnlThumbnails.Controls[iPrevKeyframe], EventArgs.Empty);
+                    ThumbBoxClick(thumbnails[iPrevKeyframe], EventArgs.Empty);
                 }
 
             }
