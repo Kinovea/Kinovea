@@ -70,13 +70,13 @@ namespace Kinovea.ScreenManager
         #endregion
         
 		#region Concrete Public Methods
-		public void WriteXml(XmlWriter _xmlWriter)
+		public void WriteXml(XmlWriter xmlWriter)
 		{
-			_xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2}", X, Y, T));
+			xmlWriter.WriteString(String.Format(CultureInfo.InvariantCulture, "{0};{1};{2}", X, Y, T));
 		}
-		public void ReadXml(XmlReader _xmlReader)
+		public void ReadXml(XmlReader xmlReader)
         {
-            string xmlString = _xmlReader.ReadElementContentAsString();
+            string xmlString = xmlReader.ReadElementContentAsString();
 
             string[] split = xmlString.Split(new Char[] { ';' });
             try
@@ -91,9 +91,9 @@ namespace Kinovea.ScreenManager
                 // will default to {0,0,0}.
             }
         }
-		public Rectangle Box(int _radius)
+		public Rectangle Box(int radius)
 		{
-		    return new Point(X,Y).Box(_radius);
+		    return new Point(X,Y).Box(radius);
 		}
 		#endregion
 	}

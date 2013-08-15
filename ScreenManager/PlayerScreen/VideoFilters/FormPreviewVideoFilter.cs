@@ -30,24 +30,24 @@ using System.Windows.Forms;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-	/// formPreviewVideoFilter is a dialog to let the user decide 
-	/// if he really wants to apply a given filter.
-	/// No configuration is needed for the filter but the operation may be destrcutive
-	/// so we better ask him to confirm.
-	/// </summary>
-	public partial class formPreviewVideoFilter : Form
-	{
-		#region Members
+    /// formPreviewVideoFilter is a dialog to let the user decide 
+    /// if he really wants to apply a given filter.
+    /// No configuration is needed for the filter but the operation may be destrcutive
+    /// so we better ask him to confirm.
+    /// </summary>
+    public partial class formPreviewVideoFilter : Form
+    {
+        #region Members
         private Bitmap m_bmpPreview = null;
-		#endregion
+        #endregion
         
         public formPreviewVideoFilter(Bitmap _bmpPreview, string _windowTitle)
         {
-        	m_bmpPreview = _bmpPreview;
+            m_bmpPreview = _bmpPreview;
             InitializeComponent();
 
             // Culture
-			this.Text = "   " + _windowTitle;
+            this.Text = "   " + _windowTitle;
             btnOK.Text = ScreenManagerLang.Generic_Apply;
             btnCancel.Text = ScreenManagerLang.Generic_Cancel;
         }

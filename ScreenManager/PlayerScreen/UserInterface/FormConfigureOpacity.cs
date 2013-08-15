@@ -28,17 +28,17 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// The dialog lets the user configure the opacity option for image type drawing (SVG or Bitmap).
-	/// We work with the actual drawing to display the change in real time.
-	/// If the user decide to cancel, there's a "fallback to memo" mechanism.
-	/// </summary>
+    /// <summary>
+    /// The dialog lets the user configure the opacity option for image type drawing (SVG or Bitmap).
+    /// We work with the actual drawing to display the change in real time.
+    /// If the user decide to cancel, there's a "fallback to memo" mechanism.
+    /// </summary>
     public partial class formConfigureOpacity : Form
     {
-    	#region Members
+        #region Members
        private bool m_bManualClose = false;
         
-    	private PictureBox m_SurfaceScreen;        // Used to update the image while configuring.
+        private PictureBox m_SurfaceScreen;        // Used to update the image while configuring.
         private AbstractDrawing m_Drawing;			// Instance of the drawing we are modifying.
         private InfosFading m_MemoInfosFading;		// Memo to fallback to on cancel.
         #endregion
@@ -46,7 +46,7 @@ namespace Kinovea.ScreenManager
         #region Construction & Initialization
         public formConfigureOpacity(AbstractDrawing _drawing, PictureBox _SurfaceScreen)
         {
-        	m_SurfaceScreen = _SurfaceScreen;
+            m_SurfaceScreen = _SurfaceScreen;
             m_Drawing = _drawing;
             m_MemoInfosFading = _drawing.InfosFading.Clone();
             
@@ -56,8 +56,8 @@ namespace Kinovea.ScreenManager
         }
         private void ConfigureForm()
         {
-        	// Display current values.
-        	trkValue.Value = (int)Math.Ceiling(m_Drawing.InfosFading.MasterFactor * 100);
+            // Display current values.
+            trkValue.Value = (int)Math.Ceiling(m_Drawing.InfosFading.MasterFactor * 100);
         }
         private void LocalizeForm()
         {
@@ -73,7 +73,7 @@ namespace Kinovea.ScreenManager
         #region User choices handlers
         private void trkValue_ValueChanged(object sender, EventArgs e)
         {
-        	m_Drawing.InfosFading.MasterFactor = (float)trkValue.Value / 100;
+            m_Drawing.InfosFading.MasterFactor = (float)trkValue.Value / 100;
             UpdateValueLabel();
             m_SurfaceScreen.Invalidate();
         }
@@ -100,7 +100,7 @@ namespace Kinovea.ScreenManager
         {
             if (!m_bManualClose)
             {
-            	m_Drawing.InfosFading = m_MemoInfosFading.Clone();
+                m_Drawing.InfosFading = m_MemoInfosFading.Clone();
                 m_SurfaceScreen.Invalidate();
             }
         }

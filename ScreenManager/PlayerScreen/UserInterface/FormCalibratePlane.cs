@@ -72,7 +72,7 @@ namespace Kinovea.ScreenManager
                 tbA.Text = String.Format("{0:0.00}", size.Height);
                 tbB.Text = String.Format("{0:0.00}", size.Width);
                 
-            	cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
+                cbUnit.SelectedIndex = (int)calibrationHelper.LengthUnit;
             }
             else
             {
@@ -105,12 +105,12 @@ namespace Kinovea.ScreenManager
         
         private void textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-        	// Only accept numbers, decimal separator and backspace.
-        	// TODO: move to a helper.
-        	
-        	NumberFormatInfo nfi = Thread.CurrentThread.CurrentCulture.NumberFormat;
-        	string decimalSeparator = nfi.NumberDecimalSeparator;
-        	
+            // Only accept numbers, decimal separator and backspace.
+            // TODO: move to a helper.
+            
+            NumberFormatInfo nfi = Thread.CurrentThread.CurrentCulture.NumberFormat;
+            string decimalSeparator = nfi.NumberDecimalSeparator;
+            
             char key = e.KeyChar;
             if (((key < '0') || (key > '9')) && (key != decimalSeparator[0]) && (key != '\b'))
             {
@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
                 float a = float.Parse(tbA.Text);
                 float b = float.Parse(tbB.Text);
                 if(a <= 0 || b <= 0)
-            	    return;
+                    return;
                 
                 SizeF size = new SizeF(b, a);
                 
@@ -154,7 +154,7 @@ namespace Kinovea.ScreenManager
             Graphics canvas = e.Graphics;
             canvas.CompositingQuality = CompositingQuality.HighQuality;
             canvas.InterpolationMode = InterpolationMode.Bicubic;
-			canvas.SmoothingMode = SmoothingMode.AntiAlias;
+            canvas.SmoothingMode = SmoothingMode.AntiAlias;
             
             // Edges
             Pen p = new Pen(pnlQuadrilateral.ForeColor);
@@ -182,7 +182,7 @@ namespace Kinovea.ScreenManager
             
             SolidBrush brushBack = new SolidBrush(pnlQuadrilateral.BackColor);
             canvas.FillRectangle(brushBack, textOrigin.X, textOrigin.Y, labelSize.Width, labelSize.Height);
-			
+            
             SolidBrush brushFont = new SolidBrush(pnlQuadrilateral.ForeColor);
             canvas.DrawString(label, tempFont, brushFont, textOrigin);
 

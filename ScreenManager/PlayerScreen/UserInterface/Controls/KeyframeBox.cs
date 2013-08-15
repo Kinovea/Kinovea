@@ -26,10 +26,10 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// Represent a key image as a thumbnail.
-	/// Holds the key image id in the .Tag prop.
-	/// </summary>
+    /// <summary>
+    /// Represent a key image as a thumbnail.
+    /// Holds the key image id in the .Tag prop.
+    /// </summary>
     public partial class KeyframeBox : UserControl
     {
         #region Events
@@ -41,45 +41,45 @@ namespace Kinovea.ScreenManager
         public event EventHandler ClickInfos;
         #endregion
         
-		#region Members
-		private Keyframe m_Keyframe;
-		private bool m_bAutoUpdatingTitle;
-		#endregion
-		
-		#region Constructor
+        #region Members
+        private Keyframe m_Keyframe;
+        private bool m_bAutoUpdatingTitle;
+        #endregion
+        
+        #region Constructor
         public KeyframeBox(Keyframe _kf)
         {
-        	m_Keyframe = _kf;
-        	
+            m_Keyframe = _kf;
+            
             InitializeComponent();
             //lblTimecode.Visible = true;
             BackColor = Color.Black;
             btnClose.Parent = pbThumbnail;
             btnComment.Parent = pbThumbnail;
         }
-		#endregion
+        #endregion
         
-		#region Public Methods
-		public void DisplayAsSelected(bool _bSelected)
-		{
-			BackColor = _bSelected ? Color.SteelBlue : Color.Black;
-		}
-		public void UpdateTitle(string _title)
-		{
-			lblTimecode.Text = _title;
-			m_bAutoUpdatingTitle = true;
-			tbTitle.Text = _title;
-			m_bAutoUpdatingTitle = false;
-		
-			UpdateToolTip();	
-		}
-		#endregion
-		
+        #region Public Methods
+        public void DisplayAsSelected(bool _bSelected)
+        {
+            BackColor = _bSelected ? Color.SteelBlue : Color.Black;
+        }
+        public void UpdateTitle(string _title)
+        {
+            lblTimecode.Text = _title;
+            m_bAutoUpdatingTitle = true;
+            tbTitle.Text = _title;
+            m_bAutoUpdatingTitle = false;
+        
+            UpdateToolTip();	
+        }
+        #endregion
+        
         #region Event Handlers - Mouse Enter / Leave
         private void Controls_MouseEnter(object sender, EventArgs e)
         {
-        	ShowButtons();
-        	//this.Focus();
+            ShowButtons();
+            //this.Focus();
         }
         private void Controls_MouseLeave(object sender, EventArgs e)
         {
@@ -94,11 +94,11 @@ namespace Kinovea.ScreenManager
         }
         private void Controls_MouseDoubleClick(object sender, EventArgs e)
         {
-        	if (ClickInfos != null) ClickInfos(this, e);	
+            if (ClickInfos != null) ClickInfos(this, e);	
         }
         #endregion
 
-		#region Event Handlers - Buttons / Text
+        #region Event Handlers - Buttons / Text
         private void btnClose_Click(object sender, EventArgs e)
         {
             if (CloseThumb != null) CloseThumb(this, e);
@@ -113,15 +113,15 @@ namespace Kinovea.ScreenManager
         }
         private void TbTitleTextChanged(object sender, EventArgs e)
         {
-        	if(!m_bAutoUpdatingTitle)
-        	{
-        		m_Keyframe.Title = tbTitle.Text;
-        		UpdateToolTip();
-        	}
+            if(!m_bAutoUpdatingTitle)
+            {
+                m_Keyframe.Title = tbTitle.Text;
+                UpdateToolTip();
+            }
         }
         private void TbTitleEnter(object sender, EventArgs e)
         {
-        	DeactivateKeyboardHandler();
+            DeactivateKeyboardHandler();
         }
         #endregion
         
@@ -146,27 +146,27 @@ namespace Kinovea.ScreenManager
         }
         private void StopEditing()
         {
-        	ActivateKeyboardHandler();
-        	
-        	if(tbTitle.Text.Length == 0)
-    		{
-    			// We reseted the title. We should now display the timecode.
-    			m_bAutoUpdatingTitle = true;
-    			tbTitle.Text = m_Keyframe.Title;
-    			m_bAutoUpdatingTitle = false;
-    		}
-        	UpdateToolTip();
+            ActivateKeyboardHandler();
+            
+            if(tbTitle.Text.Length == 0)
+            {
+                // We reseted the title. We should now display the timecode.
+                m_bAutoUpdatingTitle = true;
+                tbTitle.Text = m_Keyframe.Title;
+                m_bAutoUpdatingTitle = false;
+            }
+            UpdateToolTip();
         }
         private void UpdateToolTip()
         {
-			if(m_Keyframe.TimeCode != m_Keyframe.Title)
-			{
-				toolTips.SetToolTip(pbThumbnail, m_Keyframe.Title + "\n" + m_Keyframe.TimeCode);
-			}
-			else
-			{
-				toolTips.SetToolTip(pbThumbnail, "");
-			}
+            if(m_Keyframe.TimeCode != m_Keyframe.Title)
+            {
+                toolTips.SetToolTip(pbThumbnail, m_Keyframe.Title + "\n" + m_Keyframe.TimeCode);
+            }
+            else
+            {
+                toolTips.SetToolTip(pbThumbnail, "");
+            }
         }
         #endregion
         

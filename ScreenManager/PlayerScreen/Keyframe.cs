@@ -60,41 +60,41 @@ namespace Kinovea.ScreenManager
             set { m_FullFrame = value; }
         }
         public string CommentRtf
-		{
-			get { return m_CommentRtf; }
-			set { m_CommentRtf = value; }
-		}
+        {
+            get { return m_CommentRtf; }
+            set { m_CommentRtf = value; }
+        }
         /// <summary>
-    	/// The title of a keyframe is dynamic.
-    	/// It is the timecode until the user actually manually changes it.
-    	/// </summary>
+        /// The title of a keyframe is dynamic.
+        /// It is the timecode until the user actually manually changes it.
+        /// </summary>
         public String Title
         {
-        	get 
+            get 
             { 
-            	if(m_Title != null)
-            	{
-            		if(m_Title.Length > 0)
-            		{
-            			return m_Title;
-            		}
-            		else 
-            		{
-            			return m_Timecode;
-            		}
-            	}
-            	else
-            	{
-            		return m_Timecode;
-            	}
+                if(m_Title != null)
+                {
+                    if(m_Title.Length > 0)
+                    {
+                        return m_Title;
+                    }
+                    else 
+                    {
+                        return m_Timecode;
+                    }
+                }
+                else
+                {
+                    return m_Timecode;
+                }
             }
             set 
             { 
-            	m_Title = value;
-            	m_ParentMetadata.UpdateTrajectoriesForKeyframes();
+                m_Title = value;
+                m_ParentMetadata.UpdateTrajectoriesForKeyframes();
             }
         }
-		public String TimeCode
+        public String TimeCode
         {
             get { return m_Timecode; }
             set { m_Timecode = value; }
@@ -137,15 +137,15 @@ namespace Kinovea.ScreenManager
         }
         public Keyframe(long _position, string _timecode, Bitmap _image, Metadata _ParentMetadata)
         {
-        	// Title is a variable default.
-        	// as long as it's null, it takes the value of timecode.
-        	// which is updated when selection change.
+            // Title is a variable default.
+            // as long as it's null, it takes the value of timecode.
+            // which is updated when selection change.
             // as soon as the user put value in title, we use it instead.
-        	m_Position = _position;
-        	m_Timecode = _timecode;
+            m_Position = _position;
+            m_Timecode = _timecode;
             m_Thumbnail = new Bitmap(_image, 100, 75);
             m_FullFrame = ImageHelper.ConvertToJPG(_image, 90);
-        	m_ParentMetadata = _ParentMetadata;
+            m_ParentMetadata = _ParentMetadata;
         }
         #endregion
 
@@ -186,11 +186,11 @@ namespace Kinovea.ScreenManager
                 w.WriteStartElement("Drawings");
                 foreach (AbstractDrawing drawing in m_Drawings)
                 {
-                	IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
-                	if(serializableDrawing != null)
-                	{
-                	    // The XML name for this drawing should be stored in its [XMLType] C# attribute.
-                	    Type t = serializableDrawing.GetType();
+                    IKvaSerializable serializableDrawing = drawing as IKvaSerializable;
+                    if(serializableDrawing != null)
+                    {
+                        // The XML name for this drawing should be stored in its [XMLType] C# attribute.
+                        Type t = serializableDrawing.GetType();
                         object[] attributes = t.GetCustomAttributes(typeof(XmlTypeAttribute), false);
                     
                         if(attributes.Length > 0)
@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
                             serializableDrawing.WriteXml(w);
                             w.WriteEndElement();
                         }
-                	}
+                    }
                 }
                 w.WriteEndElement();
             }
@@ -230,10 +230,10 @@ namespace Kinovea.ScreenManager
                 iHashCode ^= drawing.ContentHash;
 
             if(m_CommentRtf != null)
-            	iHashCode ^= m_CommentRtf.GetHashCode();
+                iHashCode ^= m_CommentRtf.GetHashCode();
             
             if(m_Title != null)
-            	iHashCode ^= m_Title.GetHashCode();
+                iHashCode ^= m_Title.GetHashCode();
             
             iHashCode ^= m_Timecode.GetHashCode();
 

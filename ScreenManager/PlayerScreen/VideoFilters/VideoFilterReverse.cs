@@ -37,7 +37,7 @@ namespace Kinovea.ScreenManager
             get { return Properties.Resources.revert; }
         }
         public override void Activate(IWorkingZoneFramesContainer _framesContainer, Action<InteractiveEffect> _setInteractiveEffect)
-		{
+        {
             // Should be quick so we don't go through the background thread.
             if(_framesContainer != null)
                 _framesContainer.Revert();

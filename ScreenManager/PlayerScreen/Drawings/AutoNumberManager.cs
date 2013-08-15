@@ -87,33 +87,33 @@ namespace Kinovea.ScreenManager
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         
-        public AutoNumberManager(DrawingStyle _preset)
+        public AutoNumberManager(DrawingStyle preset)
         {
             styleHelper.Bicolor = new Bicolor(Color.Black);
             styleHelper.Font = new Font("Arial", defaultFontSize, FontStyle.Bold);
-            if(_preset != null)
+            if(preset != null)
             {
-                style = _preset.Clone();
+                style = preset.Clone();
                 BindStyle();
             }
         }
-        public AutoNumberManager(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+        public AutoNumberManager(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
             : this(ToolManager.AutoNumbers.StylePreset.Clone())
         {
-            ReadXml(_xmlReader, _scale, _remapTimestampCallback, _iAverageTimeStampsPerFrame);
+            ReadXml(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame);
         }
         
         
         #region AbstractDrawing Implementation
-        public override void Draw(Graphics _canvas, IImageToViewportTransformer _transformer, bool _bSelected, long _iCurrentTimestamp)
+        public override void Draw(Graphics canvas, IImageToViewportTransformer transformer, bool selected, long currentTimestamp)
         {
             foreach(AutoNumber number in autoNumbers)
-                number.Draw(_canvas, _transformer, _iCurrentTimestamp);
+                number.Draw(canvas, transformer, currentTimestamp);
         }
-        public override void MoveDrawing(int _deltaX, int _deltaY, Keys _ModifierKeys)
+        public override void MoveDrawing(int deltaX, int deltaY, Keys modifierKeys)
         {
             if(selected >= 0 && selected < autoNumbers.Count)
-                autoNumbers[selected].MouseMove(_deltaX, _deltaY);
+                autoNumbers[selected].MouseMove(deltaX, deltaY);
         }
         public override void MoveHandle(Point point, int handleNumber, Keys modifiers)
         {
@@ -138,19 +138,19 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region AbstractMultiDrawing Implementation
-        public override void Add(object _item)
+        public override void Add(object item)
         {
             // Used in the context of redo.
-            AutoNumber number = _item as AutoNumber;
+            AutoNumber number = item as AutoNumber;
             if(number == null)
                 return;
             
             autoNumbers.Add(number);
             selected = autoNumbers.Count - 1;
         }
-        public override void Remove(object _item)
+        public override void Remove(object item)
         {
-            AutoNumber number = _item as AutoNumber;
+            AutoNumber number = item as AutoNumber;
             if(number == null)
                 return;
             
@@ -165,36 +165,36 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Public methods
-        public void Add(Point _point, long _iPosition, long _iAverageTimeStampsPerFrame)
+        public void Add(Point point, long position, long averageTimeStampsPerFrame)
         {
             // Equivalent to GetNewDrawing() for regular drawing tools.
-            int nextValue = NextValue(_iPosition);
-            selected = InsertSorted(new AutoNumber(_iPosition, _iAverageTimeStampsPerFrame, _point, nextValue, styleHelper));
+            int nextValue = NextValue(position);
+            selected = InsertSorted(new AutoNumber(position, averageTimeStampsPerFrame, point, nextValue, styleHelper));
         }
-        public void ReadXml(XmlReader _xmlReader, PointF _scale, TimeStampMapper _remapTimestampCallback, long _iAverageTimeStampsPerFrame)
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimeStampMapper remapTimestampCallback, long averageTimeStampsPerFrame)
         {
-            _xmlReader.ReadStartElement();
+            xmlReader.ReadStartElement();
             
-            while(_xmlReader.NodeType == XmlNodeType.Element)
+            while(xmlReader.NodeType == XmlNodeType.Element)
             {
-                switch(_xmlReader.Name)
+                switch(xmlReader.Name)
                 {
                     case "DrawingStyle":
-                        style = new DrawingStyle(_xmlReader);
+                        style = new DrawingStyle(xmlReader);
                         BindStyle();
                         break;
                     case "AutoNumber":
-                        AutoNumber number = new AutoNumber(_xmlReader, _scale, _remapTimestampCallback, _iAverageTimeStampsPerFrame, styleHelper);
+                        AutoNumber number = new AutoNumber(xmlReader, scale, remapTimestampCallback, averageTimeStampsPerFrame, styleHelper);
                         InsertSorted(number);
                         break;
                     default:
-                        string unparsed = _xmlReader.ReadOuterXml();
+                        string unparsed = xmlReader.ReadOuterXml();
                         log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
                         break;
                 }
             }	
             
-            _xmlReader.ReadEndElement();
+            xmlReader.ReadEndElement();
         }
         public void WriteXml(XmlWriter w)
         {
@@ -216,16 +216,9 @@ namespace Kinovea.ScreenManager
             style.Bind(styleHelper, "Bicolor", "back color");
             style.Bind(styleHelper, "Font", "font size");
         }
-        private int NextValue(long _iPosition)
+        private int NextValue(long position)
         {
-            if(autoNumbers.Count == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return NextValueVideo();
-            }
+            return autoNumbers.Count == 0 ? 1 : NextValueVideo();
         }
         private int NextValueVideo()
         {

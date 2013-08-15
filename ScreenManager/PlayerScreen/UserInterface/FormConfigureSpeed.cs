@@ -27,35 +27,35 @@ using System.Windows.Forms;
 
 namespace Kinovea.ScreenManager
 {
-	/// <summary>
-	/// This dialog let the user specify the original speed of the camera used.
-	/// This is used when the camera was filming at say, 1000 fps, 
-	/// and the resulting movie created at 24 fps. 
-	/// 
-	/// The result of this dialog is only a change in the way we compute the times.
-	/// The value stored in the PlayerScreen UI is not updated in real time. 
-	/// </summary>
+    /// <summary>
+    /// This dialog let the user specify the original speed of the camera used.
+    /// This is used when the camera was filming at say, 1000 fps, 
+    /// and the resulting movie created at 24 fps. 
+    /// 
+    /// The result of this dialog is only a change in the way we compute the times.
+    /// The value stored in the PlayerScreen UI is not updated in real time. 
+    /// </summary>
     public partial class formConfigureSpeed : Form
     {
-    	#region Properties
-    	public double SlowFactor
-    	{
-    		get 
-    		{ 
-	    		if (m_fRealWorldFps < 1)
-	            {
-	                // Fall back to original.
-	                return m_fSlowFactor;
-	            }
-	            else
-	            {
-	                return m_fRealWorldFps / m_fVideoFps;
-	            }
-    		}
-    	}
-    	#endregion
-    	
-    	#region Members
+        #region Properties
+        public double SlowFactor
+        {
+            get 
+            { 
+                if (m_fRealWorldFps < 1)
+                {
+                    // Fall back to original.
+                    return m_fSlowFactor;
+                }
+                else
+                {
+                    return m_fRealWorldFps / m_fVideoFps;
+                }
+            }
+        }
+        #endregion
+        
+        #region Members
         private double m_fVideoFps;					// This is the fps read in the video. (ex: 24 fps)
         private double m_fRealWorldFps;				// The current fps modified value (ex: 1000 fps).
         private double m_fSlowFactor;					// The current slow factor. (if we already used the dialog)
@@ -97,7 +97,7 @@ namespace Kinovea.ScreenManager
         {
             try
             {
-            	// FIXME: check how this play with culture variations on decimal separator.
+                // FIXME: check how this play with culture variations on decimal separator.
                 m_fRealWorldFps = double.Parse(tbFPSRealWorld.Text);
                 if (m_fRealWorldFps > 2000)
                 {
@@ -117,7 +117,7 @@ namespace Kinovea.ScreenManager
         }
         private void tbFPSRealWorld_KeyPress(object sender, KeyPressEventArgs e)
         {
-        	// We only accept numbers, points and coma in there.
+            // We only accept numbers, points and coma in there.
             char key = e.KeyChar;
             if (((key < '0') || (key > '9')) && (key != ',') && (key != '.') && (key != '\b'))
             {
