@@ -664,7 +664,6 @@
     <Compile Include="UserInterface\FormIconPicker.Designer.cs">
       <DependentUpon>FormIconPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\FormsHelper.cs" />
     <Compile Include="UserInterface\ScreenManagerUserInterface.cs">
       <SubType>UserControl</SubType>
     </Compile>
