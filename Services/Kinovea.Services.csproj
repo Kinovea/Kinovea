@@ -135,8 +135,8 @@
     <Compile Include="CommandLine\CommandLineArgumentParser.cs" />
     <Compile Include="Events\CurrentDirectoryChangedEventArgs.cs" />
     <Compile Include="Events\ExplorerTabEventArgs.cs" />
+    <Compile Include="Events\StatusUpdatedEventArgs.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
-    <Compile Include="Events\DelegatesPool.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />

@@ -94,5 +94,12 @@ namespace Kinovea.Services
             if (CurrentDirectoryChanged != null)
                 CurrentDirectoryChanged(sender, new CurrentDirectoryChangedEventArgs(shortcuts, files, refresh));
         }
+
+        public static EventHandler<StatusUpdatedEventArgs> StatusUpdated;
+        public static void RaiseStatusUpdated(object sender, string status)
+        {
+            if (StatusUpdated != null)
+                StatusUpdated(sender, new StatusUpdatedEventArgs(status));
+        }
     }
 }
