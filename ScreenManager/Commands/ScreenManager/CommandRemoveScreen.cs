@@ -18,45 +18,30 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 
 */
 
-using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using System.Windows.Forms;
+using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    //---------------------------------------------------------------
-    // CommandRemoveScreen
-    // entrée : _screenToRemove
-    // 0, 1, 2 : index du screen dans la collection du manager.
-    // -1 : fermer un écran vide si possible. ( sinon alerte ?)
-    // Attention ne travaille que sur la liste d'AbstractScreen, pas sur les UI.
-    //---------------------------------------------------------------
     public class CommandRemoveScreen : IUndoableCommand
     {
         public string FriendlyName
         {
             get { return ScreenManagerLang.CommandRemoveScreen_FriendlyName; }
         }
+
         private ScreenManagerKernel screenManagerKernel;
         private int screenToRemoveIndex;
         private bool storeState;
 
-        #region constructor
         public CommandRemoveScreen(ScreenManagerKernel screenManagerKernel, int screenToRemoveIndex, bool storeState)
         {
             this.screenManagerKernel = screenManagerKernel;
             this.screenToRemoveIndex = screenToRemoveIndex;
             this.storeState = storeState;
         }
-        #endregion
 
-        /// <summary>
-        /// Execution de la commande
-        /// </summary>
         public void Execute()
         {
             screenManagerKernel.SetAllToInactive();

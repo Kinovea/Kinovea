@@ -20,36 +20,25 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 #endregion
 
 using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
-using System.Windows.Forms;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
     public class CommandAddCaptureScreen : IUndoableCommand
     {
-        #region Properties
         public string FriendlyName
         {
             get { return ScreenManagerLang.CommandAddCaptureScreen_FriendlyName; }
         }
-        #endregion
         
-        #region Members
         ScreenManagerKernel screenManagerKernel;
-        #endregion
         
-        #region constructor
-        public CommandAddCaptureScreen(ScreenManagerKernel _smk, bool _bStoreState)
+        public CommandAddCaptureScreen(ScreenManagerKernel screenManagerKernel, bool storeState)
         {
-            this.screenManagerKernel = _smk;
-            if (_bStoreState) 
+            this.screenManagerKernel = screenManagerKernel;
+            if (storeState) 
                 screenManagerKernel.StoreCurrentState();
         }
-        #endregion
 
         public void Execute()
         {
@@ -59,8 +48,8 @@ namespace Kinovea.ScreenManager
             
             screen.RefreshUICulture();
             screenManagerKernel.AddScreen(screen);
-            
         }
+
         public void Unexecute()
         {
             screenManagerKernel.RecallState();

@@ -19,19 +19,12 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using System.Windows.Forms;
-
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    /// <summary>
-    /// Loads a file in a screen, create the screen if needed.
-    /// </summary>
     public class CommandLoadMovieInScreen : IUndoableCommand
     {
         public string FriendlyName
@@ -39,15 +32,15 @@ namespace Kinovea.ScreenManager
             get { return ScreenManagerLang.CommandLoadMovieInScreen_FriendlyName;}
         }
 
-        private String filePath;
+        private String path;
         private ScreenManagerKernel manager;
         private int targetScreen;
 
         #region constructor
-        public CommandLoadMovieInScreen(ScreenManagerKernel manager, String filePath, int targetScreen, bool storeState)
+        public CommandLoadMovieInScreen(ScreenManagerKernel manager, String path, int targetScreen, bool storeState)
         {
             this.manager = manager;
-            this.filePath = filePath;
+            this.path = path;
             this.targetScreen = targetScreen;
             if (storeState) 
                 manager.StoreCurrentState();
@@ -130,12 +123,12 @@ namespace Kinovea.ScreenManager
                 if (!confirmed)
                     return;
 
-                CommandManager.LaunchCommand(new CommandLoadMovie(playerScreen, filePath));
+                CommandManager.LaunchCommand(new CommandLoadMovie(playerScreen, path));
 
                 if (playerScreen.FrameServer.Loaded)
                 {
-                    NotificationCenter.RaiseFileOpened(this, filePath);
-                    SaveFileToHistory(filePath);
+                    NotificationCenter.RaiseFileOpened(this, path);
+                    SaveFileToHistory(path);
                 }
             
                 ShowScreens();

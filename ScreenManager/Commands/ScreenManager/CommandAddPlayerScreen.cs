@@ -19,50 +19,36 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 
 using Kinovea.ScreenManager.Languages;
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Threading;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
-    //--------------------------------------------
-    // CommandAddPlayerScreen -> devrait être réversible ?
-    // Charge le fichier spécifier dans un écran, en créé un si besoin.
-    // Si ok, réorganise les écrans pour montrer le nouveau ou décharger un ancien si besoin
-    // Affiche le nouvel écran avec la vidéo dedans, prête.
-    //--------------------------------------------
     public class CommandAddPlayerScreen : IUndoableCommand
     {
-
         public string FriendlyName
         {
         	get { return ScreenManagerLang.CommandAddPlayerScreen_FriendlyName; }
         }
         
-        private ScreenManagerKernel m_ScreenManagerKernel;
+        private ScreenManagerKernel screenManagerKernel;
 
-        #region constructor
-        public CommandAddPlayerScreen(ScreenManagerKernel _smk, bool _bStoreState)
+        public CommandAddPlayerScreen(ScreenManagerKernel screenManagerKernel, bool storeState)
         {
-            m_ScreenManagerKernel = _smk;
-            if (_bStoreState) { m_ScreenManagerKernel.StoreCurrentState(); }
+            this.screenManagerKernel = screenManagerKernel;
+            if (storeState) 
+                screenManagerKernel.StoreCurrentState();
         }
-        #endregion
 
-        /// <summary>
-        /// Add a PlayerScreen to the screen list and initialize it.
-        /// </summary>
         public void Execute()
         {
-            PlayerScreen screen = new PlayerScreen(m_ScreenManagerKernel);
+            PlayerScreen screen = new PlayerScreen(screenManagerKernel);
             screen.RefreshUICulture();
-            m_ScreenManagerKernel.AddScreen(screen);
+            screenManagerKernel.AddScreen(screen);
         }
+        
         public void Unexecute()
         {
-            m_ScreenManagerKernel.RecallState();
+            screenManagerKernel.RecallState();
         }
     }
 }
